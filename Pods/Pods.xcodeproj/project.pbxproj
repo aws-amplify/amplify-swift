@@ -1,0 +1,1020 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0068B7C03255BC7371A4AC209608E5E6 /* CwlCatchException.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 809469899EF7EF6C5E482CA65CE50C80 /* CwlCatchException.framework */; };
+		01BA0EAF0879892DAF27E49F66E93170 /* CwlDarwinDefinitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E452096C8EB59A17688AB737D91823 /* CwlDarwinDefinitions.swift */; };
+		11DAD3FF5A39F45BE1BF88143B6890CF /* Pods-AmplifyTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 935A24BE34FE1F65A9B1975F9164D564 /* Pods-AmplifyTests-dummy.m */; };
+		1AE6389D815B5F53DBB90CE18AA5D495 /* CwlCatchException.m in Sources */ = {isa = PBXBuildFile; fileRef = 28398A5DE6BF559F17F856CE87F33C03 /* CwlCatchException.m */; };
+		2306C0D59B81F527B5AB2A35F1E58D7F /* Pods-AmplifyTests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 20CDDE2433EAE2754D0DA5E9914644D1 /* Pods-AmplifyTests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2A0B4E3A51B64C8BB9E8E0CA511ACE80 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35366BBDAA0820C274A8FAA6C3C53C82 /* Foundation.framework */; };
+		2B467BDB196B5A70277D1AF60F9456B2 /* CwlCatchException-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = E34D0E4120B47073021B14A4EF2C5ECB /* CwlCatchException-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5EDE26D86B82066AD5EF268017CC8797 /* mach_excServer.c in Sources */ = {isa = PBXBuildFile; fileRef = 8F717259899E51EB61FF710E78605005 /* mach_excServer.c */; };
+		5F72668E9B3E3E958224F356DB13E70D /* mach_excServer.h in Headers */ = {isa = PBXBuildFile; fileRef = F98F727A20C6BAC8473F5F34FD107363 /* mach_excServer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		68A7E7457DD608F9D776E4D72ED8ECD6 /* CwlCatchException-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B0150CED9BCBBFC9F7A62D1F43CB2B69 /* CwlCatchException-dummy.m */; };
+		6E3E46450F74C0143351EA4B22E5D17C /* Pods-Amplify-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C082B633363AD4FE2AE0D2CBD2E678 /* Pods-Amplify-dummy.m */; };
+		867B63E018E688001D8AA72E27382220 /* CwlPreconditionTesting-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 48173B35FC9A6B1B0EE71B0AB666B110 /* CwlPreconditionTesting-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9189DF614AF79C41B90950A5D7D4613E /* CwlPreconditionTesting-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ADC18799C22A606B88E447E1AA30A27 /* CwlPreconditionTesting-dummy.m */; };
+		978EAC7992910C7743BA9130C7F9A007 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35366BBDAA0820C274A8FAA6C3C53C82 /* Foundation.framework */; };
+		A48ED3686F2F341F29B9E6686F7B27DF /* CwlMachBadInstructionHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = E383FEE1F72FF3932167561F322B3C8E /* CwlMachBadInstructionHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A6103B4C7E869FAD918F250873CAB731 /* Pods-Amplify-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 15BE92DD55F5A2A1226BE908FA1125D7 /* Pods-Amplify-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C57A109C1095500F758FA60EC124BBC7 /* CwlCatchException.h in Headers */ = {isa = PBXBuildFile; fileRef = 4595E2ECABC7871B8E57D2BE45F3FE2D /* CwlCatchException.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C62A39C55A474B812F2FE020D3BEFCFB /* CwlCatchException.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10C31CD3B7F76509E9B037AF026C906 /* CwlCatchException.swift */; };
+		DD54856B5F08180C41FA85B800ECE352 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35366BBDAA0820C274A8FAA6C3C53C82 /* Foundation.framework */; };
+		E2F7E59CA722EC6BB7971800965AFA93 /* CwlMachBadInstructionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 95419C333055F7522806214C3BA729D6 /* CwlMachBadInstructionHandler.m */; };
+		E67B6F5727E6587CADEEFB5E38605DA4 /* CwlPreconditionTesting.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D1EA1A0D311C96654558357CE40E138 /* CwlPreconditionTesting.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		EEEDE7C857B3D9A271EDADE2CDD4134A /* CwlBadInstructionException.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE33B3DB2A180189D4B209BB4808E4D7 /* CwlBadInstructionException.swift */; };
+		F488DC4B880473A8FC271815DD686E56 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35366BBDAA0820C274A8FAA6C3C53C82 /* Foundation.framework */; };
+		FBE221A594CEEA98D1908D3169B4B577 /* CwlCatchBadInstruction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBA2DDFBECE8300781E15721D68DC29 /* CwlCatchBadInstruction.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3975336573C1D602D9E7631020BF9F2B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FC5E460F7371EF6F7CBBB7F34869EDBA;
+			remoteInfo = CwlCatchException;
+		};
+		5795CCD5397DEE1D6825A66A07519B6A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FC5E460F7371EF6F7CBBB7F34869EDBA;
+			remoteInfo = CwlCatchException;
+		};
+		70D05A4126F9C83B92B2A9934BF34589 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C6D68E02B8534DC8D00DD0D9148C56DC;
+			remoteInfo = "Pods-Amplify";
+		};
+		7409A70B14FA7E96766A69E7C25B09A7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 789AFDEDD006C292A0946671F55C60FC;
+			remoteInfo = CwlPreconditionTesting;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		06129FADE8908D7A6A729EA62DA306AE /* Pods-AmplifyTests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AmplifyTests-acknowledgements.plist"; sourceTree = "<group>"; };
+		0C64295D817046A6ABBBDBFD0E6030DC /* Pods-AmplifyTests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-AmplifyTests.modulemap"; sourceTree = "<group>"; };
+		1147EEA63561884EBE1F269E67EFDFF7 /* CwlPreconditionTesting-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "CwlPreconditionTesting-Info.plist"; sourceTree = "<group>"; };
+		15BE92DD55F5A2A1226BE908FA1125D7 /* Pods-Amplify-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Amplify-umbrella.h"; sourceTree = "<group>"; };
+		1A5A5FCC0861D14A0A9C6A274B1A8D69 /* Pods-Amplify.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-Amplify.modulemap"; sourceTree = "<group>"; };
+		1EF862D2541F433D11F2E51B5F43E1CC /* CwlCatchException-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "CwlCatchException-prefix.pch"; sourceTree = "<group>"; };
+		1F4832B076A3F4D8E73B94E16D55404A /* CwlCatchException.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = CwlCatchException.modulemap; sourceTree = "<group>"; };
+		20CDDE2433EAE2754D0DA5E9914644D1 /* Pods-AmplifyTests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-AmplifyTests-umbrella.h"; sourceTree = "<group>"; };
+		2270D3E0D1EC90EB14F422F2488EAD4F /* Pods-Amplify.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Amplify.release.xcconfig"; sourceTree = "<group>"; };
+		23C3BFB84AC718F6EEF262F37E35A62B /* CwlPreconditionTesting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = CwlPreconditionTesting.framework; path = CwlPreconditionTesting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2713BBD5CCB7E400D2CAE2F747B3687C /* CwlPreconditionTesting.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = CwlPreconditionTesting.xcconfig; sourceTree = "<group>"; };
+		28398A5DE6BF559F17F856CE87F33C03 /* CwlCatchException.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = CwlCatchException.m; path = Sources/CwlCatchExceptionSupport/CwlCatchException.m; sourceTree = "<group>"; };
+		29A2DB535F9C1B5D6C6B23A16BC048D1 /* Pods-Amplify-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Amplify-Info.plist"; sourceTree = "<group>"; };
+		2ADC18799C22A606B88E447E1AA30A27 /* CwlPreconditionTesting-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "CwlPreconditionTesting-dummy.m"; sourceTree = "<group>"; };
+		2B46CF16A6D2EBEF14C5242B6DAC1CB6 /* Pods-AmplifyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AmplifyTests.debug.xcconfig"; sourceTree = "<group>"; };
+		2D1EA1A0D311C96654558357CE40E138 /* CwlPreconditionTesting.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = CwlPreconditionTesting.h; path = Sources/CwlPreconditionTesting/include/CwlPreconditionTesting.h; sourceTree = "<group>"; };
+		30F72FA4FD9C4B42D045D3C1DB75C556 /* Pods-AmplifyTests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AmplifyTests-Info.plist"; sourceTree = "<group>"; };
+		35366BBDAA0820C274A8FAA6C3C53C82 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		373419C5E387EEDAFFB4078B8AC00F8B /* Pods-Amplify.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Amplify.debug.xcconfig"; sourceTree = "<group>"; };
+		3A9EED71F11249B6CC21244C03D5276B /* Pods-Amplify-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Amplify-acknowledgements.markdown"; sourceTree = "<group>"; };
+		3AE62EA39AAFFAD46A56A2C8BA835319 /* Pods_Amplify.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_Amplify.framework; path = "Pods-Amplify.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E22AB8190C76E3FDB85F8A2D050D5C1 /* CwlCatchException.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = CwlCatchException.framework; path = CwlCatchException.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4595E2ECABC7871B8E57D2BE45F3FE2D /* CwlCatchException.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = CwlCatchException.h; path = Sources/CwlCatchExceptionSupport/include/CwlCatchException.h; sourceTree = "<group>"; };
+		48173B35FC9A6B1B0EE71B0AB666B110 /* CwlPreconditionTesting-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "CwlPreconditionTesting-umbrella.h"; sourceTree = "<group>"; };
+		5213F5D7A5BE0DE3AD3B863BD1B3DCD3 /* Pods_AmplifyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_AmplifyTests.framework; path = "Pods-AmplifyTests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		54E452096C8EB59A17688AB737D91823 /* CwlDarwinDefinitions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CwlDarwinDefinitions.swift; path = Sources/CwlPreconditionTesting/CwlDarwinDefinitions.swift; sourceTree = "<group>"; };
+		63938F4CDAD214064D2AF20329540816 /* CwlCatchException-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "CwlCatchException-Info.plist"; sourceTree = "<group>"; };
+		69967661743053A3111B226CD6A20E90 /* CwlPreconditionTesting.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = CwlPreconditionTesting.modulemap; sourceTree = "<group>"; };
+		6CBA2DDFBECE8300781E15721D68DC29 /* CwlCatchBadInstruction.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CwlCatchBadInstruction.swift; path = Sources/CwlPreconditionTesting/CwlCatchBadInstruction.swift; sourceTree = "<group>"; };
+		7E0D79A6A91C66CD19D3F1B67B740072 /* Pods-AmplifyTests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-AmplifyTests-frameworks.sh"; sourceTree = "<group>"; };
+		809469899EF7EF6C5E482CA65CE50C80 /* CwlCatchException.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CwlCatchException.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C768F1444F66E711ED30E51CAA792EA /* CwlPreconditionTesting-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "CwlPreconditionTesting-prefix.pch"; sourceTree = "<group>"; };
+		8ECAB953B2B596E93D581F33C2DF981E /* CwlCatchException.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = CwlCatchException.xcconfig; sourceTree = "<group>"; };
+		8F717259899E51EB61FF710E78605005 /* mach_excServer.c */ = {isa = PBXFileReference; includeInIndex = 1; name = mach_excServer.c; path = Sources/CwlMachBadInstructionHandler/mach_excServer.c; sourceTree = "<group>"; };
+		935A24BE34FE1F65A9B1975F9164D564 /* Pods-AmplifyTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-AmplifyTests-dummy.m"; sourceTree = "<group>"; };
+		95419C333055F7522806214C3BA729D6 /* CwlMachBadInstructionHandler.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = CwlMachBadInstructionHandler.m; path = Sources/CwlMachBadInstructionHandler/CwlMachBadInstructionHandler.m; sourceTree = "<group>"; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		A1C082B633363AD4FE2AE0D2CBD2E678 /* Pods-Amplify-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Amplify-dummy.m"; sourceTree = "<group>"; };
+		AB64F313279D18522D412285AD870193 /* Pods-AmplifyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AmplifyTests.release.xcconfig"; sourceTree = "<group>"; };
+		B0150CED9BCBBFC9F7A62D1F43CB2B69 /* CwlCatchException-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "CwlCatchException-dummy.m"; sourceTree = "<group>"; };
+		C98ED17D730E1F3F8FA2330D91768034 /* Pods-AmplifyTests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-AmplifyTests-acknowledgements.markdown"; sourceTree = "<group>"; };
+		D9C2B7EC6DD64D5799A685A4C4EB5240 /* Pods-Amplify-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Amplify-acknowledgements.plist"; sourceTree = "<group>"; };
+		E34D0E4120B47073021B14A4EF2C5ECB /* CwlCatchException-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "CwlCatchException-umbrella.h"; sourceTree = "<group>"; };
+		E383FEE1F72FF3932167561F322B3C8E /* CwlMachBadInstructionHandler.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = CwlMachBadInstructionHandler.h; path = Sources/CwlMachBadInstructionHandler/include/CwlMachBadInstructionHandler.h; sourceTree = "<group>"; };
+		F10C31CD3B7F76509E9B037AF026C906 /* CwlCatchException.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CwlCatchException.swift; path = Sources/CwlCatchException/CwlCatchException.swift; sourceTree = "<group>"; };
+		F98F727A20C6BAC8473F5F34FD107363 /* mach_excServer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mach_excServer.h; path = Sources/CwlMachBadInstructionHandler/mach_excServer.h; sourceTree = "<group>"; };
+		FE33B3DB2A180189D4B209BB4808E4D7 /* CwlBadInstructionException.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CwlBadInstructionException.swift; path = Sources/CwlPreconditionTesting/CwlBadInstructionException.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1C6586F7D9895E12B2E90E59AA58BFD5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0068B7C03255BC7371A4AC209608E5E6 /* CwlCatchException.framework in Frameworks */,
+				2A0B4E3A51B64C8BB9E8E0CA511ACE80 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6186853761DBA6C9F2EC696D8AB8DB29 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD54856B5F08180C41FA85B800ECE352 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7C4215E01888F8151047EA3CD06E1875 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F488DC4B880473A8FC271815DD686E56 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D85121DAEDF3AC1BD7905CEB77CE8154 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				978EAC7992910C7743BA9130C7F9A007 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0B119CC4CE94D541E414A99132BB56AB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				809469899EF7EF6C5E482CA65CE50C80 /* CwlCatchException.framework */,
+				1A71DF860667D4B382A234958516FF79 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		18D7DDA1068965A63AD201B8CFEC90C7 /* Pods-AmplifyTests */ = {
+			isa = PBXGroup;
+			children = (
+				0C64295D817046A6ABBBDBFD0E6030DC /* Pods-AmplifyTests.modulemap */,
+				C98ED17D730E1F3F8FA2330D91768034 /* Pods-AmplifyTests-acknowledgements.markdown */,
+				06129FADE8908D7A6A729EA62DA306AE /* Pods-AmplifyTests-acknowledgements.plist */,
+				935A24BE34FE1F65A9B1975F9164D564 /* Pods-AmplifyTests-dummy.m */,
+				7E0D79A6A91C66CD19D3F1B67B740072 /* Pods-AmplifyTests-frameworks.sh */,
+				30F72FA4FD9C4B42D045D3C1DB75C556 /* Pods-AmplifyTests-Info.plist */,
+				20CDDE2433EAE2754D0DA5E9914644D1 /* Pods-AmplifyTests-umbrella.h */,
+				2B46CF16A6D2EBEF14C5242B6DAC1CB6 /* Pods-AmplifyTests.debug.xcconfig */,
+				AB64F313279D18522D412285AD870193 /* Pods-AmplifyTests.release.xcconfig */,
+			);
+			name = "Pods-AmplifyTests";
+			path = "Target Support Files/Pods-AmplifyTests";
+			sourceTree = "<group>";
+		};
+		1A71DF860667D4B382A234958516FF79 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				35366BBDAA0820C274A8FAA6C3C53C82 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		1DC4167E3DB7F4EB5AE71DA66E43BFD6 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				69967661743053A3111B226CD6A20E90 /* CwlPreconditionTesting.modulemap */,
+				2713BBD5CCB7E400D2CAE2F747B3687C /* CwlPreconditionTesting.xcconfig */,
+				2ADC18799C22A606B88E447E1AA30A27 /* CwlPreconditionTesting-dummy.m */,
+				1147EEA63561884EBE1F269E67EFDFF7 /* CwlPreconditionTesting-Info.plist */,
+				8C768F1444F66E711ED30E51CAA792EA /* CwlPreconditionTesting-prefix.pch */,
+				48173B35FC9A6B1B0EE71B0AB666B110 /* CwlPreconditionTesting-umbrella.h */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/CwlPreconditionTesting";
+			sourceTree = "<group>";
+		};
+		565B714250303394EE65B63E8E846756 /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				E97070FC1D73725A2FE7818953F6BEC2 /* Pods-Amplify */,
+				18D7DDA1068965A63AD201B8CFEC90C7 /* Pods-AmplifyTests */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		80DD389025547382F12B7C5CB3596AE4 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				1F4832B076A3F4D8E73B94E16D55404A /* CwlCatchException.modulemap */,
+				8ECAB953B2B596E93D581F33C2DF981E /* CwlCatchException.xcconfig */,
+				B0150CED9BCBBFC9F7A62D1F43CB2B69 /* CwlCatchException-dummy.m */,
+				63938F4CDAD214064D2AF20329540816 /* CwlCatchException-Info.plist */,
+				1EF862D2541F433D11F2E51B5F43E1CC /* CwlCatchException-prefix.pch */,
+				E34D0E4120B47073021B14A4EF2C5ECB /* CwlCatchException-umbrella.h */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/CwlCatchException";
+			sourceTree = "<group>";
+		};
+		CC0A103C9A318CA3526D316C4FA8992E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3E22AB8190C76E3FDB85F8A2D050D5C1 /* CwlCatchException.framework */,
+				23C3BFB84AC718F6EEF262F37E35A62B /* CwlPreconditionTesting.framework */,
+				3AE62EA39AAFFAD46A56A2C8BA835319 /* Pods_Amplify.framework */,
+				5213F5D7A5BE0DE3AD3B863BD1B3DCD3 /* Pods_AmplifyTests.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CF1408CF629C7361332E53B88F7BD30C = {
+			isa = PBXGroup;
+			children = (
+				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
+				0B119CC4CE94D541E414A99132BB56AB /* Frameworks */,
+				D01C558FABD3D768F066DCFCB8900FD7 /* Pods */,
+				CC0A103C9A318CA3526D316C4FA8992E /* Products */,
+				565B714250303394EE65B63E8E846756 /* Targets Support Files */,
+			);
+			sourceTree = "<group>";
+		};
+		D01C558FABD3D768F066DCFCB8900FD7 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				FD4347061B506A1C991DDF0CD1716CDF /* CwlCatchException */,
+				EAC9309A1186D1BE67420B7030BD8F70 /* CwlPreconditionTesting */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		E97070FC1D73725A2FE7818953F6BEC2 /* Pods-Amplify */ = {
+			isa = PBXGroup;
+			children = (
+				1A5A5FCC0861D14A0A9C6A274B1A8D69 /* Pods-Amplify.modulemap */,
+				3A9EED71F11249B6CC21244C03D5276B /* Pods-Amplify-acknowledgements.markdown */,
+				D9C2B7EC6DD64D5799A685A4C4EB5240 /* Pods-Amplify-acknowledgements.plist */,
+				A1C082B633363AD4FE2AE0D2CBD2E678 /* Pods-Amplify-dummy.m */,
+				29A2DB535F9C1B5D6C6B23A16BC048D1 /* Pods-Amplify-Info.plist */,
+				15BE92DD55F5A2A1226BE908FA1125D7 /* Pods-Amplify-umbrella.h */,
+				373419C5E387EEDAFFB4078B8AC00F8B /* Pods-Amplify.debug.xcconfig */,
+				2270D3E0D1EC90EB14F422F2488EAD4F /* Pods-Amplify.release.xcconfig */,
+			);
+			name = "Pods-Amplify";
+			path = "Target Support Files/Pods-Amplify";
+			sourceTree = "<group>";
+		};
+		EAC9309A1186D1BE67420B7030BD8F70 /* CwlPreconditionTesting */ = {
+			isa = PBXGroup;
+			children = (
+				FE33B3DB2A180189D4B209BB4808E4D7 /* CwlBadInstructionException.swift */,
+				6CBA2DDFBECE8300781E15721D68DC29 /* CwlCatchBadInstruction.swift */,
+				54E452096C8EB59A17688AB737D91823 /* CwlDarwinDefinitions.swift */,
+				E383FEE1F72FF3932167561F322B3C8E /* CwlMachBadInstructionHandler.h */,
+				95419C333055F7522806214C3BA729D6 /* CwlMachBadInstructionHandler.m */,
+				2D1EA1A0D311C96654558357CE40E138 /* CwlPreconditionTesting.h */,
+				8F717259899E51EB61FF710E78605005 /* mach_excServer.c */,
+				F98F727A20C6BAC8473F5F34FD107363 /* mach_excServer.h */,
+				1DC4167E3DB7F4EB5AE71DA66E43BFD6 /* Support Files */,
+			);
+			name = CwlPreconditionTesting;
+			path = CwlPreconditionTesting;
+			sourceTree = "<group>";
+		};
+		FD4347061B506A1C991DDF0CD1716CDF /* CwlCatchException */ = {
+			isa = PBXGroup;
+			children = (
+				4595E2ECABC7871B8E57D2BE45F3FE2D /* CwlCatchException.h */,
+				28398A5DE6BF559F17F856CE87F33C03 /* CwlCatchException.m */,
+				F10C31CD3B7F76509E9B037AF026C906 /* CwlCatchException.swift */,
+				80DD389025547382F12B7C5CB3596AE4 /* Support Files */,
+			);
+			name = CwlCatchException;
+			path = CwlCatchException;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		46D4E63038E98E8D5B943709D6F5DC07 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B467BDB196B5A70277D1AF60F9456B2 /* CwlCatchException-umbrella.h in Headers */,
+				C57A109C1095500F758FA60EC124BBC7 /* CwlCatchException.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6614290A71713C9FC12350F77CA4D76A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2306C0D59B81F527B5AB2A35F1E58D7F /* Pods-AmplifyTests-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6C0BCB4F44287D253548B4727816BC18 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A48ED3686F2F341F29B9E6686F7B27DF /* CwlMachBadInstructionHandler.h in Headers */,
+				867B63E018E688001D8AA72E27382220 /* CwlPreconditionTesting-umbrella.h in Headers */,
+				E67B6F5727E6587CADEEFB5E38605DA4 /* CwlPreconditionTesting.h in Headers */,
+				5F72668E9B3E3E958224F356DB13E70D /* mach_excServer.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93C124159F7CB4AD94B805581E7AAB68 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6103B4C7E869FAD918F250873CAB731 /* Pods-Amplify-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		12CF2434E901C16C6D061B5D1F102B87 /* Pods-AmplifyTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D34F60F040E549E39ED241E44B735965 /* Build configuration list for PBXNativeTarget "Pods-AmplifyTests" */;
+			buildPhases = (
+				6614290A71713C9FC12350F77CA4D76A /* Headers */,
+				DF3EBCF2F0573701E6A0D3AC5696CD3A /* Sources */,
+				6186853761DBA6C9F2EC696D8AB8DB29 /* Frameworks */,
+				9C76C51A99F676EBC4A9F737A28F97ED /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D889EB8C7AAE887668253920236B0411 /* PBXTargetDependency */,
+				C113982A0CAE9527B615DDD487263553 /* PBXTargetDependency */,
+				EEE39868FC3D024674F1E3EEDFA8A0BD /* PBXTargetDependency */,
+			);
+			name = "Pods-AmplifyTests";
+			productName = "Pods-AmplifyTests";
+			productReference = 5213F5D7A5BE0DE3AD3B863BD1B3DCD3 /* Pods_AmplifyTests.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		789AFDEDD006C292A0946671F55C60FC /* CwlPreconditionTesting */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7BA569AFB58E34DA23747034093E42EF /* Build configuration list for PBXNativeTarget "CwlPreconditionTesting" */;
+			buildPhases = (
+				6C0BCB4F44287D253548B4727816BC18 /* Headers */,
+				FB8700295548E9829EFA9388A5C988A2 /* Sources */,
+				1C6586F7D9895E12B2E90E59AA58BFD5 /* Frameworks */,
+				86939C82EBD81671E7E67CC8C09DA831 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				47CE60AF6A8EC6187ABF9DB75F367A8D /* PBXTargetDependency */,
+			);
+			name = CwlPreconditionTesting;
+			productName = CwlPreconditionTesting;
+			productReference = 23C3BFB84AC718F6EEF262F37E35A62B /* CwlPreconditionTesting.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		C6D68E02B8534DC8D00DD0D9148C56DC /* Pods-Amplify */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 691359D6AE97D975716F990446C2737F /* Build configuration list for PBXNativeTarget "Pods-Amplify" */;
+			buildPhases = (
+				93C124159F7CB4AD94B805581E7AAB68 /* Headers */,
+				7B7EBC32306AAF1095AACC14C96B0898 /* Sources */,
+				D85121DAEDF3AC1BD7905CEB77CE8154 /* Frameworks */,
+				9D3413C4C597A731A48DCD8699C3DA58 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Pods-Amplify";
+			productName = "Pods-Amplify";
+			productReference = 3AE62EA39AAFFAD46A56A2C8BA835319 /* Pods_Amplify.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		FC5E460F7371EF6F7CBBB7F34869EDBA /* CwlCatchException */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2E079A0F1760AAE653C97884FCF82186 /* Build configuration list for PBXNativeTarget "CwlCatchException" */;
+			buildPhases = (
+				46D4E63038E98E8D5B943709D6F5DC07 /* Headers */,
+				084B35AEC9C59F453E12A6C5DC27F2AF /* Sources */,
+				7C4215E01888F8151047EA3CD06E1875 /* Frameworks */,
+				582AAB544E1ACB7041F8E344921E39BD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CwlCatchException;
+			productName = CwlCatchException;
+			productReference = 3E22AB8190C76E3FDB85F8A2D050D5C1 /* CwlCatchException.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BFDFE7DC352907FC980B868725387E98 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0930;
+				LastUpgradeCheck = 0930;
+			};
+			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
+			productRefGroup = CC0A103C9A318CA3526D316C4FA8992E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FC5E460F7371EF6F7CBBB7F34869EDBA /* CwlCatchException */,
+				789AFDEDD006C292A0946671F55C60FC /* CwlPreconditionTesting */,
+				C6D68E02B8534DC8D00DD0D9148C56DC /* Pods-Amplify */,
+				12CF2434E901C16C6D061B5D1F102B87 /* Pods-AmplifyTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		582AAB544E1ACB7041F8E344921E39BD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		86939C82EBD81671E7E67CC8C09DA831 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9C76C51A99F676EBC4A9F737A28F97ED /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9D3413C4C597A731A48DCD8699C3DA58 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		084B35AEC9C59F453E12A6C5DC27F2AF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68A7E7457DD608F9D776E4D72ED8ECD6 /* CwlCatchException-dummy.m in Sources */,
+				1AE6389D815B5F53DBB90CE18AA5D495 /* CwlCatchException.m in Sources */,
+				C62A39C55A474B812F2FE020D3BEFCFB /* CwlCatchException.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7B7EBC32306AAF1095AACC14C96B0898 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6E3E46450F74C0143351EA4B22E5D17C /* Pods-Amplify-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DF3EBCF2F0573701E6A0D3AC5696CD3A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				11DAD3FF5A39F45BE1BF88143B6890CF /* Pods-AmplifyTests-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FB8700295548E9829EFA9388A5C988A2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EEEDE7C857B3D9A271EDADE2CDD4134A /* CwlBadInstructionException.swift in Sources */,
+				FBE221A594CEEA98D1908D3169B4B577 /* CwlCatchBadInstruction.swift in Sources */,
+				01BA0EAF0879892DAF27E49F66E93170 /* CwlDarwinDefinitions.swift in Sources */,
+				E2F7E59CA722EC6BB7971800965AFA93 /* CwlMachBadInstructionHandler.m in Sources */,
+				9189DF614AF79C41B90950A5D7D4613E /* CwlPreconditionTesting-dummy.m in Sources */,
+				5EDE26D86B82066AD5EF268017CC8797 /* mach_excServer.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		47CE60AF6A8EC6187ABF9DB75F367A8D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CwlCatchException;
+			target = FC5E460F7371EF6F7CBBB7F34869EDBA /* CwlCatchException */;
+			targetProxy = 5795CCD5397DEE1D6825A66A07519B6A /* PBXContainerItemProxy */;
+		};
+		C113982A0CAE9527B615DDD487263553 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CwlPreconditionTesting;
+			target = 789AFDEDD006C292A0946671F55C60FC /* CwlPreconditionTesting */;
+			targetProxy = 7409A70B14FA7E96766A69E7C25B09A7 /* PBXContainerItemProxy */;
+		};
+		D889EB8C7AAE887668253920236B0411 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CwlCatchException;
+			target = FC5E460F7371EF6F7CBBB7F34869EDBA /* CwlCatchException */;
+			targetProxy = 3975336573C1D602D9E7631020BF9F2B /* PBXContainerItemProxy */;
+		};
+		EEE39868FC3D024674F1E3EEDFA8A0BD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Pods-Amplify";
+			target = C6D68E02B8534DC8D00DD0D9148C56DC /* Pods-Amplify */;
+			targetProxy = 70D05A4126F9C83B92B2A9934BF34589 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		24FDD606C85E6D746CE3D1A40AF4013E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8ECAB953B2B596E93D581F33C2DF981E /* CwlCatchException.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/CwlCatchException/CwlCatchException-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/CwlCatchException/CwlCatchException-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/CwlCatchException/CwlCatchException.modulemap";
+				PRODUCT_MODULE_NAME = CwlCatchException;
+				PRODUCT_NAME = CwlCatchException;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		2755ADCBFC2A87285129002DF7CFD5F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2713BBD5CCB7E400D2CAE2F747B3687C /* CwlPreconditionTesting.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting.modulemap";
+				PRODUCT_MODULE_NAME = CwlPreconditionTesting;
+				PRODUCT_NAME = CwlPreconditionTesting;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		3048B0C5C704DFFF688DA57F5380ED58 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_RELEASE=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 4.2;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Release;
+		};
+		4D4AB62B9CDAB5BA5285D7B52213C072 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8ECAB953B2B596E93D581F33C2DF981E /* CwlCatchException.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/CwlCatchException/CwlCatchException-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/CwlCatchException/CwlCatchException-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/CwlCatchException/CwlCatchException.modulemap";
+				PRODUCT_MODULE_NAME = CwlCatchException;
+				PRODUCT_NAME = CwlCatchException;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		5B0C8287D755FD95091CF35D87FB8B2D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_DEBUG=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Debug;
+		};
+		6AF792C3E8F503A8D993DB18BACBFE9C /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2713BBD5CCB7E400D2CAE2F747B3687C /* CwlPreconditionTesting.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting.modulemap";
+				PRODUCT_MODULE_NAME = CwlPreconditionTesting;
+				PRODUCT_NAME = CwlPreconditionTesting;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		787843A8D5168C4EDA626552083F8089 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 373419C5E387EEDAFFB4078B8AC00F8B /* Pods-Amplify.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-Amplify/Pods-Amplify-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-Amplify/Pods-Amplify.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		93B22610595F798F07EB3B49E3117570 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2270D3E0D1EC90EB14F422F2488EAD4F /* Pods-Amplify.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-Amplify/Pods-Amplify-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-Amplify/Pods-Amplify.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		CCF935400D81D6152EE2124855247F4F /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AB64F313279D18522D412285AD870193 /* Pods-AmplifyTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-AmplifyTests/Pods-AmplifyTests-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-AmplifyTests/Pods-AmplifyTests.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		F4F59F02A9B22A67B4B5759962C480B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2B46CF16A6D2EBEF14C5242B6DAC1CB6 /* Pods-AmplifyTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-AmplifyTests/Pods-AmplifyTests-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-AmplifyTests/Pods-AmplifyTests.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2E079A0F1760AAE653C97884FCF82186 /* Build configuration list for PBXNativeTarget "CwlCatchException" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				24FDD606C85E6D746CE3D1A40AF4013E /* Debug */,
+				4D4AB62B9CDAB5BA5285D7B52213C072 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5B0C8287D755FD95091CF35D87FB8B2D /* Debug */,
+				3048B0C5C704DFFF688DA57F5380ED58 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		691359D6AE97D975716F990446C2737F /* Build configuration list for PBXNativeTarget "Pods-Amplify" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				787843A8D5168C4EDA626552083F8089 /* Debug */,
+				93B22610595F798F07EB3B49E3117570 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7BA569AFB58E34DA23747034093E42EF /* Build configuration list for PBXNativeTarget "CwlPreconditionTesting" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2755ADCBFC2A87285129002DF7CFD5F8 /* Debug */,
+				6AF792C3E8F503A8D993DB18BACBFE9C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D34F60F040E549E39ED241E44B735965 /* Build configuration list for PBXNativeTarget "Pods-AmplifyTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F4F59F02A9B22A67B4B5759962C480B7 /* Debug */,
+				CCF935400D81D6152EE2124855247F4F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+}

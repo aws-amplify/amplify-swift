@@ -1,0 +1,8 @@
+# Xcode setups
+**/xcuserdata
+**/*.xcuserdata
+
+*.xcworkspace/
+Amplify.xcodeproj/xcuserdata
+Amplify.xcworkspace/xcuserdata
+xcuserdata

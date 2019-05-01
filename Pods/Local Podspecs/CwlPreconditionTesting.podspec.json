@@ -1,0 +1,35 @@
+{
+  "name": "CwlPreconditionTesting",
+  "version": "1.1.1",
+  "summary": "A small Swift framework for catching Mach BAD_INSTRUCTION exceptions.",
+  "description": "A Swift framework for catching Mach bad instruction exceptions as raised by Swift precondition failures, enabling testing of precondition and assertion logic. For details, see the article on [Cocoa with Love](https://cocoawithlove.com), [Partial functions in Swift, Part 2: Catching precondition failures](http://cocoawithlove.com/blog/2016/02/02/partial-functions-part-two-catching-precondition-failures.html)",
+  "homepage": "https://github.com/mattgallagher/CwlPreconditionTesting",
+  "license": {
+    "type": "ISC",
+    "file": "LICENSE.txt"
+  },
+  "authors": "Matt Gallagher",
+  "platforms": {
+    "ios": "8.0",
+    "osx": "10.9"
+  },
+  "source": {
+    "git": "https://github.com/mattgallagher/CwlPreconditionTesting.git",
+    "tag": "1.1.1"
+  },
+  "source_files": [
+    "Sources/CwlPreconditionTesting/CwlBadInstructionException.swift",
+    "Sources/CwlPreconditionTesting/CwlCatchBadInstruction.swift",
+    "Sources/CwlPreconditionTesting/CwlDarwinDefinitions.swift",
+    "Sources/CwlPreconditionTesting/include/CwlPreconditionTesting.h",
+    "Sources/CwlMachBadInstructionHandler/CwlMachBadInstructionHandler.m",
+    "Sources/CwlMachBadInstructionHandler/mach_excServer.c",
+    "Sources/CwlMachBadInstructionHandler/mach_excServer.h",
+    "Sources/CwlMachBadInstructionHandler/include/CwlMachBadInstructionHandler.h"
+  ],
+  "dependencies": {
+    "CwlCatchException": [
+
+    ]
+  }
+}

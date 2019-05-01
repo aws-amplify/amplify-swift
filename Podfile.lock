@@ -1,0 +1,30 @@
+PODS:
+  - CwlCatchException (1.0.2)
+  - CwlPreconditionTesting (1.1.1):
+    - CwlCatchException
+
+DEPENDENCIES:
+  - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`)
+  - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`)
+
+EXTERNAL SOURCES:
+  CwlCatchException:
+    :git: https://github.com/mattgallagher/CwlCatchException.git
+  CwlPreconditionTesting:
+    :git: https://github.com/mattgallagher/CwlPreconditionTesting.git
+
+CHECKOUT OPTIONS:
+  CwlCatchException:
+    :commit: 7cd2f8cacc4d22f21bc0b2309c3b18acf7957b66
+    :git: https://github.com/mattgallagher/CwlCatchException.git
+  CwlPreconditionTesting:
+    :commit: c228db5d2ad1b01ebc84435e823e6cca4e3db98b
+    :git: https://github.com/mattgallagher/CwlPreconditionTesting.git
+
+SPEC CHECKSUMS:
+  CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
+  CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
+
+PODFILE CHECKSUM: 02d9febc99b0be98a1e3091656effb8814dbc71d
+
+COCOAPODS: 1.6.1
