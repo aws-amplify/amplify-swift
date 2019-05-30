@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-final public class AnalyticsCategory: BaseCategory<CategoryMarker.Analytics, AnyAnalyticsCategoryPlugin> { }
+final public class AnalyticsCategory: BaseCategory<AnyAnalyticsCategoryPlugin, AnalyticsPluginSelectorFactory> { }
 
 extension AnalyticsCategory: AnalyticsCategoryClientBehavior {
     public func disable() {

@@ -9,8 +9,6 @@
 /// all plugins, but each category will also define client API behavior and optionally, plugin API behavior to describe
 /// the contract to which the plugin must conform.
 public protocol Plugin {
-    /// The Category for which this Plugin implements behavior
-    associatedtype PluginMarker: CategoryMarkerProtocol
 
     /// The key under which the plugin is registered in the Amplify configuration. Keys must be unique within the
     /// category configuration section.
@@ -37,6 +35,5 @@ public typealias PluginKey = String
 /// to store heterogenous collections of Plugins in a category.
 /// - Throws: PluginError.mismatchedPlugin if the instance is associated with the wrong category
 public protocol PluginInitializable {
-    associatedtype PluginInitializableMarker: CategoryMarkerProtocol
-    init<P: Plugin>(instance: P) where P.PluginMarker == PluginInitializableMarker
+    init<P: Plugin>(instance: P)
 }

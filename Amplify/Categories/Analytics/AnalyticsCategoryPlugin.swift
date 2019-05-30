@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public protocol AnalyticsCategoryPlugin: Plugin, AnalyticsCategoryClientBehavior
-    where PluginMarker == CategoryMarker.Analytics { }
+public protocol AnalyticsCategoryPlugin: Plugin, AnalyticsCategoryClientBehavior { }
 
 public protocol AnalyticsPluginSelector: PluginSelector, AnalyticsCategoryClientBehavior { }
 
 public struct AnyAnalyticsCategoryPlugin: AnalyticsCategoryPlugin, PluginInitializable {
+    
     public typealias PluginInitializableMarker = CategoryMarker.Analytics
 
     // Generic plugin behaviors
@@ -21,7 +21,7 @@ public struct AnyAnalyticsCategoryPlugin: AnalyticsCategoryPlugin, PluginInitial
     // Holder for client-specific behaviors
     private let clientBehavior: AnalyticsCategoryClientBehavior
 
-    public init<P: Plugin>(instance: P) where PluginInitializableMarker == P.PluginMarker {
+    public init<P: Plugin>(instance: P) {
         guard let clientBehavior = instance as? AnalyticsCategoryClientBehavior else {
             preconditionFailure("Plugin does not conform to AnalyticsCategoryClientBehavior")
         }

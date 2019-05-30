@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-final public class APICategory: BaseCategory<CategoryMarker.API, AnyAPICategoryPlugin> { }
+final public class APICategory: BaseCategory<AnyAPICategoryPlugin, AnalyticsPluginSelectorFactory> { }
 
 extension APICategory: APICategoryClientBehavior {
     public func delete() {

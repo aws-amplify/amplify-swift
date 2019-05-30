@@ -5,8 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public protocol APICategoryPlugin: Plugin, APICategoryPluginBehavior, APICategoryClientBehavior
-    where PluginMarker == CategoryMarker.API { }
+public protocol APICategoryPlugin: Plugin, APICategoryPluginBehavior, APICategoryClientBehavior { }
 
 public protocol APICategoryPluginBehavior {
     func prepareRequestBody(_ request: APIRequest) throws -> APIRequest
@@ -28,7 +27,7 @@ public struct AnyAPICategoryPlugin: APICategoryPlugin, PluginInitializable {
     private let clientBehavior: APICategoryClientBehavior
     private let pluginBehavior: APICategoryPluginBehavior
 
-    public init<P: Plugin>(instance: P) where PluginInitializableMarker == P.PluginMarker {
+    public init<P: Plugin>(instance: P) {
         guard let clientBehavior = instance as? APICategoryClientBehavior else {
             preconditionFailure("Plugin does not conform to APICategoryClientBehavior")
         }

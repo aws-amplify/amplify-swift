@@ -5,8 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public protocol StorageCategoryPlugin: Plugin, StorageCategoryClientBehavior
-    where PluginMarker == CategoryMarker.Storage { }
+public protocol StorageCategoryPlugin: Plugin, StorageCategoryClientBehavior { }
 
 public struct AnyStorageCategoryPlugin: StorageCategoryPlugin, PluginInitializable {
     public typealias PluginInitializableMarker = CategoryMarker.Storage
@@ -19,7 +18,7 @@ public struct AnyStorageCategoryPlugin: StorageCategoryPlugin, PluginInitializab
     // Holder for client-specific behaviors
     private let clientBehavior: StorageCategoryClientBehavior
 
-    public init<P: Plugin>(instance: P) where PluginInitializableMarker == P.PluginMarker {
+    public init<P: Plugin>(instance: P) {
         guard let clientBehavior = instance as? StorageCategoryClientBehavior else {
             preconditionFailure("Plugin does not conform to StorageCategoryClientBehavior")
         }

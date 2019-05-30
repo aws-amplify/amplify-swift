@@ -7,15 +7,14 @@
 //
 
 /// The base class for all Category objects
-public class BaseCategory<CategoryMarker, CategoryPluginType, Factory: PluginSelectorFactory>: Category
-where CategoryMarker == CategoryPluginType.PluginMarker, CategoryPluginType == Factory.PluginType {
-    public typealias Marker = CategoryMarker
-    public typealias PluginType = CategoryPluginType
-    public typealias PluginSelectorFactoryType = Factory
+public class BaseCategory<PT, F>: Category where PT: Plugin & PluginInitializable {
+    public typealias PluginSelectorFactoryType = F
+    
+    public typealias PluginType = PT
 
     /// Holds all plugins added to this category via `add(plugin:)`
     var pluginHolder = PluginHolder<PluginType>()
-
+    
     var pluginSelectorFactory: PluginSelectorFactoryType?
 
     /// Returns the default plugin for the category
@@ -31,7 +30,7 @@ where CategoryMarker == CategoryPluginType.PluginMarker, CategoryPluginType == F
     ///   - PluginError.emptyKey if the plugin's `key` property is empty
     ///   - PluginError.noSelector if the call to `add` would cause there to be more than one plugin added to this
     ///     category.
-    public func add<P>(plugin: P) throws where P: Plugin, Marker == P.PluginMarker {
+    public func add(plugin: PT) throws {
         try pluginHolder.add(plugin)
     }
 
@@ -41,7 +40,7 @@ where CategoryMarker == CategoryPluginType.PluginMarker, CategoryPluginType == F
     /// yet been added to the category, but callers *must* add a plugin selector before
     /// the second plugin is added. PluginSelectors are only required, and only invoked,
     /// if more than one plugin is registered for a category.
-    public func add(pluginSelectorFactory: PluginSelectorFactoryType) {
+    public func set(pluginSelectorFactory: PluginSelectorFactoryType) {
         self.pluginSelectorFactory = pluginSelectorFactory
     }
 
@@ -50,7 +49,7 @@ where CategoryMarker == CategoryPluginType.PluginMarker, CategoryPluginType == F
     /// - Parameter key: The PluginKey (String) of the plugin to retrieve
     /// - Returns: The wrapped plugin
     /// - Throws: PluginError.noSuchPlugin if no plugin exists for `key`
-    public func getPlugin(for key: PluginKey) throws -> PluginType {
+    public func getPlugin(for key: PluginKey) throws -> PT {
         return try pluginHolder.get(for: key)
     }
 

@@ -31,48 +31,22 @@ public class Amplify {
     ///
     /// - Parameter plugin: The AnalyticsCategoryPlugin to add
     /// - Throws: PluginError.emptyKey if `plugin.key` is empty
-    public static func add<P: AnalyticsCategoryPlugin>(plugin: P) throws {
-        try Analytics.add(plugin: plugin)
-    }
-
-    /// Adds `plugin` to the API category
-    ///
-    /// - Parameter plugin: The APICategoryPlugin to add
-    /// - Throws: PluginError.emptyKey if `plugin.key` is empty
-    public static func add<P: APICategoryPlugin>(plugin: P) throws {
-        try API.add(plugin: plugin)
-    }
-
-    /// Adds `plugin` to the Auth category
-    ///
-    /// - Parameter plugin: The AuthCategoryPlugin to add
-    /// - Throws: PluginError.emptyKey if `plugin.key` is empty
-    public static func add<P: AuthCategoryPlugin>(plugin: P) throws {
-        try Auth.add(plugin: plugin)
-    }
-
-    /// Adds `plugin` to the Hub category
-    ///
-    /// - Parameter plugin: The HubCategoryPlugin to add
-    /// - Throws: PluginError.emptyKey if `plugin.key` is empty
-    public static func add<P: HubCategoryPlugin>(plugin: P) throws {
-        try Hub.add(plugin: plugin)
-    }
-
-    /// Adds `plugin` to the Logging category
-    ///
-    /// - Parameter plugin: The LoggingCategoryPlugin to add
-    /// - Throws: PluginError.emptyKey if `plugin.key` is empty
-    public static func add<P: LoggingCategoryPlugin>(plugin: P) throws {
-        try Logging.add(plugin: plugin)
-    }
-
-    /// Adds `plugin` to the Storage category
-    ///
-    /// - Parameter plugin: The StorageCategoryPlugin to add
-    /// - Throws: PluginError.emptyKey if `plugin.key` is empty
-    public static func add<P: StorageCategoryPlugin>(plugin: P) throws {
-        try Storage.add(plugin: plugin)
+    public static func add<P: Plugin>(plugin: P) throws {
+        if let analyticsPlugin = plugin as? AnyAnalyticsCategoryPlugin {
+            try Analytics.add(plugin: analyticsPlugin)
+        } else if let analyticsPlugin = plugin as? AnyAPICategoryPlugin {
+            try API.add(plugin: analyticsPlugin)
+        } else if let analyticsPlugin = plugin as? AnyAuthCategoryPlugin {
+            try Auth.add(plugin: analyticsPlugin)
+        } else if let analyticsPlugin = plugin as? AnyHubCategoryPlugin {
+            try Hub.add(plugin: analyticsPlugin)
+        } else if let analyticsPlugin = plugin as? AnyLoggingCategoryPlugin {
+            try Logging.add(plugin: analyticsPlugin)
+        } else if let analyticsPlugin = plugin as? AnyStorageCategoryPlugin {
+            try Storage.add(plugin: analyticsPlugin)
+        } else {
+            throw PluginError.pluginConfigurationError("Plugin category does not exist.", "Please check if the library version is correct and supports the plugin's category.")
+        }
     }
 
 }

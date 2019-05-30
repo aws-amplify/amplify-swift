@@ -6,8 +6,7 @@
 //
 
 /// The behavior that all LoggingPlugins provide
-public protocol LoggingCategoryPlugin: Plugin, LoggingCategoryClientBehavior
-    where PluginMarker == CategoryMarker.Logging { }
+public protocol LoggingCategoryPlugin: Plugin, LoggingCategoryClientBehavior { }
 
 /// A type-erasing wrapper to allow for heterogeneous collections of plugins
 public struct AnyLoggingCategoryPlugin: LoggingCategoryPlugin, PluginInitializable {
@@ -21,7 +20,7 @@ public struct AnyLoggingCategoryPlugin: LoggingCategoryPlugin, PluginInitializab
     // Holder for client-specific behaviors
     private let clientBehavior: LoggingCategoryClientBehavior
 
-    public init<P: Plugin>(instance: P) where PluginInitializableMarker == P.PluginMarker {
+    public init<P: Plugin>(instance: P) {
         guard let clientBehavior = instance as? LoggingCategoryClientBehavior else {
             preconditionFailure("Plugin does not conform to LoggingCategoryClientBehavior")
         }

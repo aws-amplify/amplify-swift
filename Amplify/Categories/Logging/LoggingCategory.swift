@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-final public class LoggingCategory: BaseCategory<CategoryMarker.Logging, AnyLoggingCategoryPlugin> { }
+final public class LoggingCategory: BaseCategory<AnyLoggingCategoryPlugin, AnalyticsPluginSelectorFactory> { }
 
 extension LoggingCategory: LoggingCategoryClientBehavior {
     /// Logs a message at `error` level

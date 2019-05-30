@@ -7,8 +7,7 @@
 //
 
 /// Internal utility that holds plugins (wrapped in appropriate type-erasing wrappers) for a category.
-struct PluginHolder<PluginType: Plugin & PluginInitializable>
-where PluginType.PluginInitializableMarker == PluginType.PluginMarker {
+struct PluginHolder<PluginType: Plugin & PluginInitializable> {
     private(set) var plugins = [PluginKey: PluginType]()
 
     /// Wraps `plugin` in the `PluginType` wrapper and adds it to the `plugins` map associated with `plugin.key`. A
@@ -18,7 +17,7 @@ where PluginType.PluginInitializableMarker == PluginType.PluginMarker {
     /// - Parameter plugin: The Plugin to store. `plugin`'s `PluginMarker` associatedtype must match that of this
     ///   instances `PluginType` generic parameter.
     /// - Throws: PluginError.emptyKey if `plugin.key` is empty
-    mutating func add<P>(_ plugin: P) throws where P: Plugin, PluginType.PluginMarker == P.PluginMarker {
+    mutating func add(_ plugin: PluginType) throws {
         let key = plugin.key
         guard !key.isEmpty else {
             let pluginDescription = String(describing: plugin)
@@ -56,7 +55,7 @@ where PluginType.PluginInitializableMarker == PluginType.PluginMarker {
 
     /// Printable string of the category name for use in error/debug messages
     private var categoryName: String {
-        let name = String(describing: type(of: PluginType.PluginMarker.self))
+        let name = ""
         return name
     }
 
@@ -80,14 +79,15 @@ where PluginType.PluginInitializableMarker == PluginType.PluginMarker {
         }
 
         // plugins.count > 1
-        guard let key = defaultPluginKey else {
-            let keys = plugins.keys.joined(separator: ", ")
-            let failureMessage = """
-            No default plugin key specified. Set `defaultPluginKey` for the \(categoryName) category to one of the \
-            registered plugin keys: \(keys)
-            """
-            preconditionFailure(failureMessage)
-        }
+//        guard let key = defaultPluginKey else {
+//            let keys = plugins.keys.joined(separator: ", ")
+//            let failureMessage = """
+//            No default plugin key specified. Set `defaultPluginKey` for the \(categoryName) category to one of the \
+//            registered plugin keys: \(keys)
+//            """
+//            preconditionFailure(failureMessage)
+//        }
+        let key = "TODO"
 
         guard let defaultPlugin = plugins[key] else {
             // Should never happen

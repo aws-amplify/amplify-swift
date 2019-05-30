@@ -546,76 +546,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		24FDD606C85E6D746CE3D1A40AF4013E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8ECAB953B2B596E93D581F33C2DF981E /* CwlCatchException.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/CwlCatchException/CwlCatchException-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/CwlCatchException/CwlCatchException-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/CwlCatchException/CwlCatchException.modulemap";
-				PRODUCT_MODULE_NAME = CwlCatchException;
-				PRODUCT_NAME = CwlCatchException;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		2755ADCBFC2A87285129002DF7CFD5F8 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2713BBD5CCB7E400D2CAE2F747B3687C /* CwlPreconditionTesting.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting.modulemap";
-				PRODUCT_MODULE_NAME = CwlPreconditionTesting;
-				PRODUCT_NAME = CwlPreconditionTesting;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
 		3048B0C5C704DFFF688DA57F5380ED58 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -676,7 +606,77 @@
 			};
 			name = Release;
 		};
-		4D4AB62B9CDAB5BA5285D7B52213C072 /* Release */ = {
+		369BF6250A3C97BA13E28F2E98D62D95 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2713BBD5CCB7E400D2CAE2F747B3687C /* CwlPreconditionTesting.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting.modulemap";
+				PRODUCT_MODULE_NAME = CwlPreconditionTesting;
+				PRODUCT_NAME = CwlPreconditionTesting;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		4AC908170774D3289012E4D3F739F23E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8ECAB953B2B596E93D581F33C2DF981E /* CwlCatchException.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/CwlCatchException/CwlCatchException-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/CwlCatchException/CwlCatchException-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/CwlCatchException/CwlCatchException.modulemap";
+				PRODUCT_MODULE_NAME = CwlCatchException;
+				PRODUCT_NAME = CwlCatchException;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		55A45DC28C9E4A9CB281D1B303024704 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8ECAB953B2B596E93D581F33C2DF981E /* CwlCatchException.xcconfig */;
 			buildSettings = {
@@ -776,42 +776,6 @@
 			};
 			name = Debug;
 		};
-		6AF792C3E8F503A8D993DB18BACBFE9C /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2713BBD5CCB7E400D2CAE2F747B3687C /* CwlPreconditionTesting.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting.modulemap";
-				PRODUCT_MODULE_NAME = CwlPreconditionTesting;
-				PRODUCT_NAME = CwlPreconditionTesting;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
 		787843A8D5168C4EDA626552083F8089 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 373419C5E387EEDAFFB4078B8AC00F8B /* Pods-Amplify.debug.xcconfig */;
@@ -882,6 +846,42 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		B6F5C5EE2A36029448FCB8B11D73E571 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2713BBD5CCB7E400D2CAE2F747B3687C /* CwlPreconditionTesting.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/CwlPreconditionTesting/CwlPreconditionTesting.modulemap";
+				PRODUCT_MODULE_NAME = CwlPreconditionTesting;
+				PRODUCT_NAME = CwlPreconditionTesting;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -972,8 +972,8 @@
 		2E079A0F1760AAE653C97884FCF82186 /* Build configuration list for PBXNativeTarget "CwlCatchException" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				24FDD606C85E6D746CE3D1A40AF4013E /* Debug */,
-				4D4AB62B9CDAB5BA5285D7B52213C072 /* Release */,
+				4AC908170774D3289012E4D3F739F23E /* Debug */,
+				55A45DC28C9E4A9CB281D1B303024704 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -999,8 +999,8 @@
 		7BA569AFB58E34DA23747034093E42EF /* Build configuration list for PBXNativeTarget "CwlPreconditionTesting" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				2755ADCBFC2A87285129002DF7CFD5F8 /* Debug */,
-				6AF792C3E8F503A8D993DB18BACBFE9C /* Release */,
+				369BF6250A3C97BA13E28F2E98D62D95 /* Debug */,
+				B6F5C5EE2A36029448FCB8B11D73E571 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -5,8 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public protocol AuthCategoryPlugin: Plugin, AuthCategoryClientBehavior
-    where PluginMarker == CategoryMarker.Auth { }
+public protocol AuthCategoryPlugin: Plugin, AuthCategoryClientBehavior { }
 
 public struct AnyAuthCategoryPlugin: AuthCategoryPlugin, PluginInitializable {
     public typealias PluginInitializableMarker = CategoryMarker.Auth
@@ -19,7 +18,7 @@ public struct AnyAuthCategoryPlugin: AuthCategoryPlugin, PluginInitializable {
     // Holder for client-specific behaviors
     private let clientBehavior: AuthCategoryClientBehavior
 
-    public init<P: Plugin>(instance: P) where PluginInitializableMarker == P.PluginMarker {
+    public init<P: Plugin>(instance: P) {
         guard let clientBehavior = instance as? AuthCategoryClientBehavior else {
             preconditionFailure("Plugin does not conform to AuthCategoryClientBehavior")
         }

@@ -10,19 +10,18 @@
 public protocol Category: class {
     /// `Marker` is the CategoryMarker the conforming type is associated with. Conforms to `CategoryMarker`, but since
     /// that is inferred in subsequent definitions, it's not necessary to declare that conformance here.
-    associatedtype Marker
+//    associatedtype Marker
 
     /// The concrete "wrapper type" for the plugins. At a minimum, the PluginType will
     /// conform to `Plugin` and thus provide configuration and reset behavior; as well
     /// as `PluginWrapper`, allowing for the category to store different underlying
     /// types of Plugins in a collection.
     associatedtype PluginType
-        where PluginType.PluginMarker == Marker, PluginType.PluginInitializableMarker == Marker
 
     /// The base PluginSelectorFactory class for this category in cases where more than one plugin is added. See
     /// `PluginSelectorFactory` and `PluginSelector` for more details.
-    associatedtype PluginSelectorFactoryType: PluginSelectorFactory
-        where PluginSelectorFactoryType.PluginType == PluginType
+//    associatedtype PluginSelectorFactoryType: PluginSelectorFactory
+//        where PluginSelectorFactoryType.PluginType == PluginType
 
     /// Adds `plugin` to the list of Plugins that implement functionality for this category. If a plugin has
     /// already added to this category, callers must add a `PluginSelector` before adding a second plugin.
@@ -32,7 +31,7 @@ public protocol Category: class {
     ///   - PluginError.emptyKey if the plugin's `key` property is empty
     ///   - PluginError.noSelector if the call to `add` would cause there to be more than one plugin added to this
     ///     category.
-    func add<P: Plugin>(plugin: P) throws where P.PluginMarker == Self.Marker
+    func add(plugin: PluginType) throws
 
     /// Adds `pluginSelectorFactory` to the category, to allow API calls to be routed to
     /// the correct plugin in cases where more than one plugin has been added to the
@@ -40,7 +39,8 @@ public protocol Category: class {
     /// yet been added to the category, but callers *must* add a plugin selector before
     /// the second plugin is added. PluginSelectors are only required, and only invoked,
     /// if more than one plugin is registered for a category.
-    func add(pluginSelectorFactory: PluginSelectorFactoryType)
+    // TODO Shouldn't this be `set`? assumption: since we are not allowing more than one?
+//    func set(pluginSelectorFactory: PluginSelectorFactoryType)
 
     /// Returns the wrapped Plugin registered with `key`.
     ///

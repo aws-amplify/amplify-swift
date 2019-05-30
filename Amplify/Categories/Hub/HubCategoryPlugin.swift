@@ -5,8 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public protocol HubCategoryPlugin: Plugin, HubCategoryClientBehavior
-    where PluginMarker == CategoryMarker.Hub { }
+public protocol HubCategoryPlugin: Plugin, HubCategoryClientBehavior { }
 
 public struct AnyHubCategoryPlugin: HubCategoryPlugin, PluginInitializable {
     public typealias PluginInitializableMarker = CategoryMarker.Hub
@@ -19,7 +18,7 @@ public struct AnyHubCategoryPlugin: HubCategoryPlugin, PluginInitializable {
     // Holder for client-specific behaviors
     private let clientBehavior: HubCategoryClientBehavior
 
-    public init<P: Plugin>(instance: P) where PluginInitializableMarker == P.PluginMarker {
+    public init<P: Plugin>(instance: P)   {
         guard let clientBehavior = instance as? HubCategoryClientBehavior else {
             preconditionFailure("Plugin does not conform to HubCategoryClientBehavior")
         }

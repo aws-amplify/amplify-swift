@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-final public class AuthCategory: BaseCategory<CategoryMarker.Auth, AnyAuthCategoryPlugin> { }
+final public class AuthCategory: BaseCategory<AnyAuthCategoryPlugin, AnalyticsPluginSelectorFactory> { }
 
 extension AuthCategory: AuthCategoryClientBehavior {
     public func stub() {

@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-final public class StorageCategory: BaseCategory<CategoryMarker.Storage, AnyStorageCategoryPlugin> { }
+final public class StorageCategory: BaseCategory<AnyStorageCategoryPlugin, AnalyticsPluginSelectorFactory> { }
 
 extension StorageCategory: StorageCategoryClientBehavior {
     public func stub() {
