@@ -18,7 +18,7 @@ public struct AnyHubCategoryPlugin: HubCategoryPlugin, PluginInitializable {
     // Holder for client-specific behaviors
     private let clientBehavior: HubCategoryClientBehavior
 
-    public init<P: Plugin>(instance: P)   {
+    public init<P: Plugin>(instance: P) {
         guard let clientBehavior = instance as? HubCategoryClientBehavior else {
             preconditionFailure("Plugin does not conform to HubCategoryClientBehavior")
         }

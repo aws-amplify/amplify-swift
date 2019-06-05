@@ -45,7 +45,9 @@ public class Amplify {
         } else if let analyticsPlugin = plugin as? AnyStorageCategoryPlugin {
             try Storage.add(plugin: analyticsPlugin)
         } else {
-            throw PluginError.pluginConfigurationError("Plugin category does not exist.", "Please check if the library version is correct and supports the plugin's category.")
+            throw PluginError.pluginConfigurationError(
+                "Plugin category does not exist.",
+                "Please check if the library version is correct and supports the plugin's category.")
         }
     }
 
