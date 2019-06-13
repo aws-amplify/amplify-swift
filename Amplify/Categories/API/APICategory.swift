@@ -13,7 +13,7 @@ extension APICategory: APICategoryClientBehavior {
     }
 
     public func get() {
-        defaultPlugin.get()
+        return defaultPlugin.get()
     }
 
     public func head() {

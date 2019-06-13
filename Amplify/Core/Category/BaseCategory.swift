@@ -8,12 +8,12 @@
 /// The base class for all Category objects
 public class BaseCategory<PT, F>: Category where PT: Plugin & PluginInitializable {
     public typealias PluginSelectorFactoryType = F
-    
+
     public typealias PluginType = PT
 
     /// Holds all plugins added to this category via `add(plugin:)`
     var pluginHolder = PluginHolder<PluginType>()
-    
+
     var pluginSelectorFactory: PluginSelectorFactoryType?
 
     /// Returns the default plugin for the category

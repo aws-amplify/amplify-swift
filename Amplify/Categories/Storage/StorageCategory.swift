@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 final public class StorageCategory: BaseCategory<AnyStorageCategoryPlugin, AnalyticsPluginSelectorFactory> { }
 
 extension StorageCategory: StorageCategoryClientBehavior {

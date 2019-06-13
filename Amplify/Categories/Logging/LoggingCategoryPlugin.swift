@@ -11,7 +11,7 @@ public protocol LoggingCategoryPlugin: Plugin, LoggingCategoryClientBehavior { }
 /// A type-erasing wrapper to allow for heterogeneous collections of plugins
 public struct AnyLoggingCategoryPlugin: LoggingCategoryPlugin, PluginInitializable {
     public typealias PluginInitializableMarker = CategoryMarker.Logging
-    
+
     // Generic plugin behaviors
     public let key: PluginKey
     private let _configure: (Any) throws -> Void

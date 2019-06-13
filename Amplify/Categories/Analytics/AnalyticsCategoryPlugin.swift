@@ -10,7 +10,7 @@ public protocol AnalyticsCategoryPlugin: Plugin, AnalyticsCategoryClientBehavior
 public protocol AnalyticsPluginSelector: PluginSelector, AnalyticsCategoryClientBehavior { }
 
 public struct AnyAnalyticsCategoryPlugin: AnalyticsCategoryPlugin, PluginInitializable {
-    
+
     public typealias PluginInitializableMarker = CategoryMarker.Analytics
 
     // Generic plugin behaviors

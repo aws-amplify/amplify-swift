@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 public protocol StorageCategoryPlugin: Plugin, StorageCategoryClientBehavior { }
 
 public struct AnyStorageCategoryPlugin: StorageCategoryPlugin, PluginInitializable {
@@ -42,4 +44,5 @@ public struct AnyStorageCategoryPlugin: StorageCategoryPlugin, PluginInitializab
     public func stub() {
         clientBehavior.stub()
     }
+
 }

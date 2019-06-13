@@ -23,7 +23,7 @@ public final class AnalyticsPluginSelectorFactory: PluginSelectorFactory {
 //        
 //    }
 //    
-//    /// Removes the plugin registered for `key` from the list of Plugins that implement functionality for this category.
+//    /// Removes the plugin registered for `key` from the list of Plugins for this category.
 //    /// If no plugin has been added for `key`, no action is taken, making this method safe to call multiple times.
 //    ///
 //    /// - Parameter key: The key used to `add` the plugin
