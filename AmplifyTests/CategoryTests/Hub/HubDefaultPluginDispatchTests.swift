@@ -16,13 +16,5 @@ class HubDefaultPluginDispatchTests: XCTestCase {
 
     public func testCanDispatchOnCoreChannel() throws {
         XCTFail("Not yet implemented")
-//        let configuration = BasicAmplifyConfiguration()
-//        try Amplify.configure(configuration)
-//
-//        let payload = BasicHubPayload()
-//        let channel = HubChannel.core
-//
-//        // If this method completes without a preconditionFailure, then the test passes :)
-//        Amplify.Hub.dispatch(to: channel, payload: payload)
     }
 }

@@ -9,49 +9,6 @@
 struct PluginHolder<PluginType: Plugin & PluginInitializable> {
     private(set) var plugins = [PluginKey: PluginType]()
 
-    /// Wraps `plugin` in the `PluginType` wrapper and adds it to the `plugins` map associated with `plugin.key`. A
-    /// plugin must supply a non-empty key--if `plugin.key.isEmpty` evalutes to true, this method throws a
-    /// preconditionFailure
-    ///
-    /// - Parameter plugin: The Plugin to store. `plugin`'s `PluginMarker` associatedtype must match that of this
-    ///   instances `PluginType` generic parameter.
-    /// - Throws: PluginError.emptyKey if `plugin.key` is empty
-    mutating func add(_ plugin: PluginType) throws {
-        let key = plugin.key
-        guard !key.isEmpty else {
-            let pluginDescription = String(describing: plugin)
-            let error = PluginError.emptyKey("Plugin \(pluginDescription) has an empty `key`.",
-                "Set the `key` property for \(String(describing: plugin))")
-            throw error
-        }
-
-        let wrappedPlugin = PluginType(instance: plugin)
-        plugins[key] = wrappedPlugin
-    }
-
-    /// Returns the wrapped plugin for `key`.
-    ///
-    /// - Parameter key: The PluginKey (String) of the plugin to retrieve
-    /// - Returns: The wrapped plugin
-    /// - Throws: PluginError.noSuchPlugin if no plugin exists for `key`
-    func get(for key: PluginKey) throws -> PluginType {
-        guard let plugin = plugins[key] else {
-            let keys = plugins.keys.joined(separator: ", ")
-            let error = PluginError.noSuchPlugin("No plugin has been added for '\(key)'.",
-                "Either add a plugin for '\(key)', or use one of the known keys: \(keys)")
-            throw error
-        }
-        return plugin
-    }
-
-    /// Removes the plugin registered for `key` from the list of Plugins that implement functionality for this category.
-    /// If no plugin has been added for `key`, no action is taken, making this method safe to call multiple times.
-    ///
-    /// - Parameter key: The key used to `add` the plugin
-    mutating func remove(for key: PluginKey) {
-        plugins.removeValue(forKey: key)
-    }
-
     /// Printable string of the category name for use in error/debug messages
     private var categoryName: String {
         let name = ""

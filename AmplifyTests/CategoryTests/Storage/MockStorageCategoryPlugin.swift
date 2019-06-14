@@ -16,11 +16,11 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         notify()
     }
 
-    func stub() {
+    func reset() {
         notify()
     }
 
-    func reset() {
+    func stub() {
         notify()
     }
 }
@@ -29,4 +29,30 @@ class MockSecondStorageCategoryPlugin: MockStorageCategoryPlugin {
     override var key: String {
         return "MockSecondStorageCategoryPlugin"
     }
+}
+
+final class MockStorageCategoryPluginSelector: MessageReporter, StoragePluginSelector {
+    var selectedPluginKey: PluginKey? = "MockStorageCategoryPlugin"
+
+    func stub() {
+        notify()
+    }
+}
+
+class MockStoragePluginSelectorFactory: MessageReporter, PluginSelectorFactory {
+    var categoryType = CategoryType.storage
+
+    func makeSelector() -> PluginSelector {
+        notify()
+        return MockStorageCategoryPluginSelector()
+    }
+
+    func add(plugin: Plugin) {
+        notify()
+    }
+
+    func removePlugin(for key: PluginKey) {
+        notify()
+    }
+
 }

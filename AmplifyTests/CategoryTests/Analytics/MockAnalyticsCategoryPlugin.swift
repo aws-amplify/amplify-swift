@@ -46,3 +46,45 @@ class MockSecondAnalyticsCategoryPlugin: MockAnalyticsCategoryPlugin {
         return "MockSecondAnalyticsCategoryPlugin"
     }
 }
+
+final class MockAnalyticsCategoryPluginSelector: MessageReporter, AnalyticsPluginSelector {
+    var selectedPluginKey: PluginKey? = "MockAnalyticsCategoryPlugin"
+
+    func disable() {
+        notify()
+    }
+
+    func enable() {
+        notify()
+    }
+
+    func record(_ name: String) {
+        notify()
+    }
+
+    func record(_ event: AnalyticsEvent) {
+        notify()
+    }
+
+    func update(analyticsProfile: AnalyticsProfile) {
+        notify()
+    }
+}
+
+class MockAnalyticsPluginSelectorFactory: MessageReporter, PluginSelectorFactory {
+    var categoryType = CategoryType.analytics
+
+    func makeSelector() -> PluginSelector {
+        notify()
+        return MockAnalyticsCategoryPluginSelector()
+    }
+
+    func add(plugin: Plugin) {
+        notify()
+    }
+
+    func removePlugin(for key: PluginKey) {
+        notify()
+    }
+
+}

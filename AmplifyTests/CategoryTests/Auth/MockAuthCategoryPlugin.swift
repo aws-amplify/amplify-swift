@@ -16,11 +16,11 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         notify()
     }
 
-    func stub() {
+    func reset() {
         notify()
     }
 
-    func reset() {
+    func stub() {
         notify()
     }
 }
@@ -29,4 +29,30 @@ class MockSecondAuthCategoryPlugin: MockAuthCategoryPlugin {
     override var key: String {
         return "MockSecondAuthCategoryPlugin"
     }
+}
+
+final class MockAuthCategoryPluginSelector: MessageReporter, AuthPluginSelector {
+    var selectedPluginKey: PluginKey? = "MockAuthCategoryPlugin"
+
+    func stub() {
+        notify()
+    }
+}
+
+class MockAuthPluginSelectorFactory: MessageReporter, PluginSelectorFactory {
+    var categoryType = CategoryType.auth
+
+    func makeSelector() -> PluginSelector {
+        notify()
+        return MockAuthCategoryPluginSelector()
+    }
+
+    func add(plugin: Plugin) {
+        notify()
+    }
+
+    func removePlugin(for key: PluginKey) {
+        notify()
+    }
+
 }

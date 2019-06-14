@@ -23,7 +23,7 @@ class AnalyticsCategoryClientAPITests: XCTestCase {
         let amplifyConfiguration = BasicAmplifyConfiguration(analytics: categoryConfiguration)
 
         do {
-            Amplify.add(plugin: plugin)
+            try Amplify.add(plugin: plugin)
             try Amplify.configure(amplifyConfiguration)
         } catch let error as AmplifyError {
             XCTFail("setUp failed with error: \(error); \(error.errorDescription); \(error.recoverySuggestion)")

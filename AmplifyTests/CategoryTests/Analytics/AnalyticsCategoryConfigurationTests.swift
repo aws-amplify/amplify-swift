@@ -7,6 +7,7 @@
 
 import XCTest
 import Amplify
+import CwlPreconditionTesting
 
 class AnalyticsCategoryConfigurationTests: XCTestCase {
     override func setUp() {
@@ -15,12 +16,12 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
 
     func testCanAddAnalyticsPlugin() throws {
         let plugin = MockAnalyticsCategoryPlugin()
-        XCTAssertNoThrow(Amplify.add(plugin: plugin))
+        XCTAssertNoThrow(try Amplify.add(plugin: plugin))
     }
 
     func testCanConfigureAnalyticsPlugin() throws {
         let plugin = MockAnalyticsCategoryPlugin()
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
         let analyticsConfig = BasicCategoryConfiguration(
             plugins: ["MockAnalyticsCategoryPlugin": true]
@@ -42,7 +43,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
                 resetWasInvoked.fulfill()
             }
         }
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
         let analyticsConfig = BasicCategoryConfiguration(
             plugins: ["MockAnalyticsCategoryPlugin": true]
@@ -57,7 +58,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
 
     func testResetRemovesAddedPlugin() throws {
         let plugin = MockAnalyticsCategoryPlugin()
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
         let analyticsConfig = BasicCategoryConfiguration(
             plugins: ["MockAnalyticsCategoryPlugin": true]
@@ -76,12 +77,38 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testCanRegisterMultipleAnalyticsPlugins() throws {
+    func testThrowsAddingSecondPluginWithNoSelector() throws {
         let plugin1 = MockAnalyticsCategoryPlugin()
-        Amplify.add(plugin: plugin1)
+        try Amplify.add(plugin: plugin1)
 
         let plugin2 = MockSecondAnalyticsCategoryPlugin()
-        Amplify.add(plugin: plugin2)
+        XCTAssertThrowsError(try Amplify.add(plugin: plugin2),
+                             "Adding a second plugin before adding a selector should throw") { error in
+                                guard case PluginError.noSelector = error else {
+                                    XCTFail("Expected PluginError.noSelector")
+                                    return
+                                }
+        }
+    }
+
+    func testDoesNotThrowAddingSecondPluginWithSelector() throws {
+        let plugin1 = MockAnalyticsCategoryPlugin()
+        try Amplify.add(plugin: plugin1)
+
+        try Amplify.Analytics.set(pluginSelectorFactory: MockAnalyticsPluginSelectorFactory())
+
+        let plugin2 = MockSecondAnalyticsCategoryPlugin()
+        XCTAssertNoThrow(try Amplify.add(plugin: plugin2))
+    }
+
+    func testCanRegisterMultipleAnalyticsPlugins() throws {
+        let plugin1 = MockAnalyticsCategoryPlugin()
+        try Amplify.add(plugin: plugin1)
+
+        try Amplify.Analytics.set(pluginSelectorFactory: MockAnalyticsPluginSelectorFactory())
+
+        let plugin2 = MockSecondAnalyticsCategoryPlugin()
+        try Amplify.add(plugin: plugin2)
 
         let analyticsConfig = BasicCategoryConfiguration(
             plugins: [
@@ -106,7 +133,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
                 methodInvokedOnDefaultPlugin.fulfill()
             }
         }
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
         let analyticsConfig =
             BasicCategoryConfiguration(plugins: ["MockAnalyticsCategoryPlugin": true])
@@ -119,7 +146,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
     }
 
-    func testCanUseDefaultPluginIfMultiplePlugins() throws {
+    func testCanUseSelectorDerivedPluginIfMultiplePlugins() throws {
         let plugin1 = MockAnalyticsCategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin1.listeners.append { message in
@@ -127,7 +154,9 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
                 methodInvokedOnDefaultPlugin.fulfill()
             }
         }
-        Amplify.add(plugin: plugin1)
+        try Amplify.add(plugin: plugin1)
+
+        try Amplify.Analytics.set(pluginSelectorFactory: MockAnalyticsPluginSelectorFactory())
 
         let plugin2 = MockSecondAnalyticsCategoryPlugin()
         let methodShouldNotBeInvokedOnSecondPlugin =
@@ -138,7 +167,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
                 methodShouldNotBeInvokedOnSecondPlugin.fulfill()
             }
         }
-        Amplify.add(plugin: plugin2)
+        try Amplify.add(plugin: plugin2)
 
         let analyticsConfig = BasicCategoryConfiguration(
             plugins: [
@@ -164,7 +193,9 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
                 methodShouldNotBeInvokedOnDefaultPlugin.fulfill()
             }
         }
-        Amplify.add(plugin: plugin1)
+        try Amplify.add(plugin: plugin1)
+
+        try Amplify.Analytics.set(pluginSelectorFactory: MockAnalyticsPluginSelectorFactory())
 
         let plugin2 = MockSecondAnalyticsCategoryPlugin()
         let methodShouldBeInvokedOnSecondPlugin =
@@ -174,7 +205,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
                 methodShouldBeInvokedOnSecondPlugin.fulfill()
             }
         }
-        Amplify.add(plugin: plugin2)
+        try Amplify.add(plugin: plugin2)
 
         let analyticsConfig = BasicCategoryConfiguration(
             plugins: [
@@ -208,7 +239,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
                 }
             }
         }
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
         let analyticsConfig = BasicCategoryConfiguration(
             plugins: ["MockAnalyticsCategoryPlugin": true]

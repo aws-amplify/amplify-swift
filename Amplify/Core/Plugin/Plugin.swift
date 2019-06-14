@@ -8,8 +8,7 @@
 /// CategoryPlugins implement the behavior defined by the category. The `Plugin` protocol defines behavior common to
 /// all plugins, but each category will also define client API behavior and optionally, plugin API behavior to describe
 /// the contract to which the plugin must conform.
-public protocol Plugin {
-
+public protocol Plugin: CategoryTypeable {
     /// The key under which the plugin is registered in the Amplify configuration. Keys must be unique within the
     /// category configuration section.
     var key: PluginKey { get }

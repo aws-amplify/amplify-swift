@@ -26,7 +26,7 @@ class ConfigurationTests: XCTestCase {
 
     func testPreconditionFailureInvokingBeforeConfig() throws {
         let plugin = MockAPICategoryPlugin()
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
         let exception: BadInstructionException? = catchBadInstruction {
@@ -44,7 +44,7 @@ class ConfigurationTests: XCTestCase {
             }
         }
 
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
         let loggingConfig = BasicCategoryConfiguration(
             plugins: ["MockLoggingCategoryPlugin": true]
@@ -57,7 +57,7 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testThrowsOnNonExistentPlugin() throws {
-        Amplify.add(plugin: MockLoggingCategoryPlugin())
+        try Amplify.add(plugin: MockLoggingCategoryPlugin())
 
         let loggingConfig = BasicCategoryConfiguration(
             plugins: ["NonExistentPlugin": true]
@@ -88,7 +88,7 @@ class ConfigurationTests: XCTestCase {
 
     func testResetClearsPreviouslyAddedPlugins() throws {
         let plugin = MockLoggingCategoryPlugin()
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
         let loggingConfig = BasicCategoryConfiguration(
             plugins: ["MockLoggingCategoryPlugin": true]
@@ -118,7 +118,7 @@ class ConfigurationTests: XCTestCase {
             }
         }
 
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
         let loggingConfig = BasicCategoryConfiguration(
             plugins: ["MockLoggingCategoryPlugin": true]

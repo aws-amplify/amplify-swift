@@ -12,7 +12,7 @@
 ///
 /// PluginSelectorFactories are only invoked if there is more than one plugin added for a category. In those cases, they
 /// are invoked synchronously during every client-behavior API for that category, even for asynchronous methods. Thus,
-/// authors should ensure their PluginSelector performs well, or API call performance will suffer.
+/// authors should ensure their PluginSelector is lightweight, or API call performance will suffer.
 ///
 /// A PluginSelectorFactory must be added to a category before the second plugin is added. Failure to do so will result
 /// in a PluginError during `Category.add(plugin:)`. When the plugin selector is added, Amplify will immediately invoke
@@ -25,7 +25,10 @@
 ///
 /// The PluginSelectorFactory will be stored on the Category object, and retained until the Category is reset.
 /// Calls to `Amplify.reset()` will release any PluginSelectorFactory added to the Amplify categories.
-public protocol PluginSelectorFactory {
+public protocol PluginSelectorFactory: CategoryTypeable {
+    func makeSelector() -> PluginSelector
+    func add(plugin: Plugin)
+    func removePlugin(for key: PluginKey)
 }
 
 /// A plugin selector is an object that receives a client API call and synchronously populates the `selectedKey`

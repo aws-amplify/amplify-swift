@@ -23,7 +23,7 @@ class HubClientAPITests: XCTestCase {
 
     func testDispatch() throws {
         let plugin = MockHubCategoryPlugin()
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
@@ -33,7 +33,7 @@ class HubClientAPITests: XCTestCase {
             }
         }
 
-        let payload = BasicHubPayload()
+        let payload = HubPayload(event: "")
         let channel = HubChannel.core
 
         Amplify.Hub.dispatch(to: channel, payload: payload)
@@ -57,4 +57,7 @@ class HubClientAPITests: XCTestCase {
         XCTFail("Not yet implemented")
     }
 
+    func testMessagesAreProcessedInOrder() throws {
+        XCTFail("Not yet implemented")
+    }
 }

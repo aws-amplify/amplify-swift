@@ -7,6 +7,7 @@
 
 import XCTest
 import Amplify
+import CwlPreconditionTesting
 
 class AuthCategoryConfigurationTests: XCTestCase {
     override func setUp() {
@@ -15,12 +16,12 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
     func testCanAddAuthPlugin() throws {
         let plugin = MockAuthCategoryPlugin()
-        XCTAssertNoThrow(Amplify.add(plugin: plugin))
+        XCTAssertNoThrow(try Amplify.add(plugin: plugin))
     }
 
     func testCanConfigureAuthPlugin() throws {
         let plugin = MockAuthCategoryPlugin()
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
         let authConfig = BasicCategoryConfiguration(
             plugins: ["MockAuthCategoryPlugin": true]
@@ -42,7 +43,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
                 resetWasInvoked.fulfill()
             }
         }
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
         let authConfig = BasicCategoryConfiguration(
             plugins: ["MockAuthCategoryPlugin": true]
@@ -57,7 +58,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
     func testResetRemovesAddedPlugin() throws {
         let plugin = MockAuthCategoryPlugin()
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
         let authConfig = BasicCategoryConfiguration(
             plugins: ["MockAuthCategoryPlugin": true]
@@ -76,12 +77,38 @@ class AuthCategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testCanRegisterMultipleAuthPlugins() throws {
+    func testThrowsAddingSecondPluginWithNoSelector() throws {
         let plugin1 = MockAuthCategoryPlugin()
-        Amplify.add(plugin: plugin1)
+        try Amplify.add(plugin: plugin1)
 
         let plugin2 = MockSecondAuthCategoryPlugin()
-        Amplify.add(plugin: plugin2)
+        XCTAssertThrowsError(try Amplify.add(plugin: plugin2),
+                             "Adding a second plugin before adding a selector should throw") { error in
+                                guard case PluginError.noSelector = error else {
+                                    XCTFail("Expected PluginError.noSelector")
+                                    return
+                                }
+        }
+    }
+
+    func testDoesNotThrowAddingSecondPluginWithSelector() throws {
+        let plugin1 = MockAuthCategoryPlugin()
+        try Amplify.add(plugin: plugin1)
+
+        try Amplify.Auth.set(pluginSelectorFactory: MockAuthPluginSelectorFactory())
+
+        let plugin2 = MockSecondAuthCategoryPlugin()
+        XCTAssertNoThrow(try Amplify.add(plugin: plugin2))
+    }
+
+    func testCanRegisterMultipleAuthPlugins() throws {
+        let plugin1 = MockAuthCategoryPlugin()
+        try Amplify.add(plugin: plugin1)
+
+        try Amplify.Auth.set(pluginSelectorFactory: MockAuthPluginSelectorFactory())
+
+        let plugin2 = MockSecondAuthCategoryPlugin()
+        try Amplify.add(plugin: plugin2)
 
         let authConfig = BasicCategoryConfiguration(
             plugins: [
@@ -106,11 +133,10 @@ class AuthCategoryConfigurationTests: XCTestCase {
                 methodInvokedOnDefaultPlugin.fulfill()
             }
         }
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
-        let authConfig = BasicCategoryConfiguration(
-            plugins: ["MockAuthCategoryPlugin": true]
-        )
+        let authConfig =
+            BasicCategoryConfiguration(plugins: ["MockAuthCategoryPlugin": true])
         let amplifyConfig = BasicAmplifyConfiguration(auth: authConfig)
 
         try Amplify.configure(amplifyConfig)
@@ -120,7 +146,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
     }
 
-    func testCanUseDefaultPluginIfMultiplePlugins() throws {
+    func testCanUseSelectorDerivedPluginIfMultiplePlugins() throws {
         let plugin1 = MockAuthCategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin1.listeners.append { message in
@@ -128,20 +154,20 @@ class AuthCategoryConfigurationTests: XCTestCase {
                 methodInvokedOnDefaultPlugin.fulfill()
             }
         }
-        Amplify.add(plugin: plugin1)
+        try Amplify.add(plugin: plugin1)
+
+        try Amplify.Auth.set(pluginSelectorFactory: MockAuthPluginSelectorFactory())
 
         let plugin2 = MockSecondAuthCategoryPlugin()
-
         let methodShouldNotBeInvokedOnSecondPlugin =
             expectation(description: "test method should not be invoked on second plugin")
-
         methodShouldNotBeInvokedOnSecondPlugin.isInverted = true
         plugin2.listeners.append { message in
             if message == "stub()" {
                 methodShouldNotBeInvokedOnSecondPlugin.fulfill()
             }
         }
-        Amplify.add(plugin: plugin2)
+        try Amplify.add(plugin: plugin2)
 
         let authConfig = BasicCategoryConfiguration(
             plugins: [
@@ -167,7 +193,9 @@ class AuthCategoryConfigurationTests: XCTestCase {
                 methodShouldNotBeInvokedOnDefaultPlugin.fulfill()
             }
         }
-        Amplify.add(plugin: plugin1)
+        try Amplify.add(plugin: plugin1)
+
+        try Amplify.Auth.set(pluginSelectorFactory: MockAuthPluginSelectorFactory())
 
         let plugin2 = MockSecondAuthCategoryPlugin()
         let methodShouldBeInvokedOnSecondPlugin =
@@ -177,7 +205,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
                 methodShouldBeInvokedOnSecondPlugin.fulfill()
             }
         }
-        Amplify.add(plugin: plugin2)
+        try Amplify.add(plugin: plugin2)
 
         let authConfig = BasicCategoryConfiguration(
             plugins: [
@@ -211,7 +239,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
                 }
             }
         }
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
         let authConfig = BasicCategoryConfiguration(
             plugins: ["MockAuthCategoryPlugin": true]

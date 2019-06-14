@@ -32,22 +32,22 @@ public class Amplify {
     /// - Parameter plugin: The AnalyticsCategoryPlugin to add
     /// - Throws: PluginError.emptyKey if `plugin.key` is empty
     public static func add<P: Plugin>(plugin: P) throws {
-        if let analyticsPlugin = plugin as? AnyAnalyticsCategoryPlugin {
-            try Analytics.add(plugin: analyticsPlugin)
-        } else if let analyticsPlugin = plugin as? AnyAPICategoryPlugin {
-            try API.add(plugin: analyticsPlugin)
-        } else if let analyticsPlugin = plugin as? AnyAuthCategoryPlugin {
-            try Auth.add(plugin: analyticsPlugin)
-        } else if let analyticsPlugin = plugin as? AnyHubCategoryPlugin {
-            try Hub.add(plugin: analyticsPlugin)
-        } else if let analyticsPlugin = plugin as? AnyLoggingCategoryPlugin {
-            try Logging.add(plugin: analyticsPlugin)
-        } else if let analyticsPlugin = plugin as? AnyStorageCategoryPlugin {
-            try Storage.add(plugin: analyticsPlugin)
+        if let plugin = plugin as? AnalyticsCategoryPlugin {
+            try Analytics.add(plugin: plugin)
+        } else if let plugin = plugin as? APICategoryPlugin {
+            try API.add(plugin: plugin)
+        } else if let plugin = plugin as? AuthCategoryPlugin {
+            try Auth.add(plugin: plugin)
+        } else if let plugin = plugin as? HubCategoryPlugin {
+            try Hub.add(plugin: plugin)
+        } else if let plugin = plugin as? LoggingCategoryPlugin {
+            try Logging.add(plugin: plugin)
+        } else if let plugin = plugin as? StorageCategoryPlugin {
+            try Storage.add(plugin: plugin)
         } else {
             throw PluginError.pluginConfigurationError(
                 "Plugin category does not exist.",
-                "Please check if the library version is correct and supports the plugin's category.")
+                "Verify that the library version is correct and supports the plugin's category.")
         }
     }
 

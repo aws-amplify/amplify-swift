@@ -7,6 +7,7 @@
 
 import XCTest
 import Amplify
+import CwlPreconditionTesting
 
 class StorageCategoryConfigurationTests: XCTestCase {
     override func setUp() {
@@ -15,12 +16,12 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
     func testCanAddStoragePlugin() throws {
         let plugin = MockStorageCategoryPlugin()
-        XCTAssertNoThrow(Amplify.add(plugin: plugin))
+        XCTAssertNoThrow(try Amplify.add(plugin: plugin))
     }
 
     func testCanConfigureStoragePlugin() throws {
         let plugin = MockStorageCategoryPlugin()
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
         let storageConfig = BasicCategoryConfiguration(
             plugins: ["MockStorageCategoryPlugin": true]
@@ -42,7 +43,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
                 resetWasInvoked.fulfill()
             }
         }
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
         let storageConfig = BasicCategoryConfiguration(
             plugins: ["MockStorageCategoryPlugin": true]
@@ -57,7 +58,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
     func testResetRemovesAddedPlugin() throws {
         let plugin = MockStorageCategoryPlugin()
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
         let storageConfig = BasicCategoryConfiguration(
             plugins: ["MockStorageCategoryPlugin": true]
@@ -76,12 +77,38 @@ class StorageCategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testCanRegisterMultipleStoragePlugins() throws {
+    func testThrowsAddingSecondPluginWithNoSelector() throws {
         let plugin1 = MockStorageCategoryPlugin()
-        Amplify.add(plugin: plugin1)
+        try Amplify.add(plugin: plugin1)
 
         let plugin2 = MockSecondStorageCategoryPlugin()
-        Amplify.add(plugin: plugin2)
+        XCTAssertThrowsError(try Amplify.add(plugin: plugin2),
+                             "Adding a second plugin before adding a selector should throw") { error in
+                                guard case PluginError.noSelector = error else {
+                                    XCTFail("Expected PluginError.noSelector")
+                                    return
+                                }
+        }
+    }
+
+    func testDoesNotThrowAddingSecondPluginWithSelector() throws {
+        let plugin1 = MockStorageCategoryPlugin()
+        try Amplify.add(plugin: plugin1)
+
+        try Amplify.Storage.set(pluginSelectorFactory: MockStoragePluginSelectorFactory())
+
+        let plugin2 = MockSecondStorageCategoryPlugin()
+        XCTAssertNoThrow(try Amplify.add(plugin: plugin2))
+    }
+
+    func testCanRegisterMultipleStoragePlugins() throws {
+        let plugin1 = MockStorageCategoryPlugin()
+        try Amplify.add(plugin: plugin1)
+
+        try Amplify.Storage.set(pluginSelectorFactory: MockStoragePluginSelectorFactory())
+
+        let plugin2 = MockSecondStorageCategoryPlugin()
+        try Amplify.add(plugin: plugin2)
 
         let storageConfig = BasicCategoryConfiguration(
             plugins: [
@@ -106,11 +133,10 @@ class StorageCategoryConfigurationTests: XCTestCase {
                 methodInvokedOnDefaultPlugin.fulfill()
             }
         }
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
-        let storageConfig = BasicCategoryConfiguration(
-            plugins: ["MockStorageCategoryPlugin": true]
-        )
+        let storageConfig =
+            BasicCategoryConfiguration(plugins: ["MockStorageCategoryPlugin": true])
         let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
@@ -120,7 +146,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
     }
 
-    func testCanUseDefaultPluginIfMultiplePlugins() throws {
+    func testCanUseSelectorDerivedPluginIfMultiplePlugins() throws {
         let plugin1 = MockStorageCategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin1.listeners.append { message in
@@ -128,7 +154,9 @@ class StorageCategoryConfigurationTests: XCTestCase {
                 methodInvokedOnDefaultPlugin.fulfill()
             }
         }
-        Amplify.add(plugin: plugin1)
+        try Amplify.add(plugin: plugin1)
+
+        try Amplify.Storage.set(pluginSelectorFactory: MockStoragePluginSelectorFactory())
 
         let plugin2 = MockSecondStorageCategoryPlugin()
         let methodShouldNotBeInvokedOnSecondPlugin =
@@ -139,7 +167,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
                 methodShouldNotBeInvokedOnSecondPlugin.fulfill()
             }
         }
-        Amplify.add(plugin: plugin2)
+        try Amplify.add(plugin: plugin2)
 
         let storageConfig = BasicCategoryConfiguration(
             plugins: [
@@ -165,7 +193,9 @@ class StorageCategoryConfigurationTests: XCTestCase {
                 methodShouldNotBeInvokedOnDefaultPlugin.fulfill()
             }
         }
-        Amplify.add(plugin: plugin1)
+        try Amplify.add(plugin: plugin1)
+
+        try Amplify.Storage.set(pluginSelectorFactory: MockStoragePluginSelectorFactory())
 
         let plugin2 = MockSecondStorageCategoryPlugin()
         let methodShouldBeInvokedOnSecondPlugin =
@@ -175,7 +205,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
                 methodShouldBeInvokedOnSecondPlugin.fulfill()
             }
         }
-        Amplify.add(plugin: plugin2)
+        try Amplify.add(plugin: plugin2)
 
         let storageConfig = BasicCategoryConfiguration(
             plugins: [
@@ -209,7 +239,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
                 }
             }
         }
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
 
         let storageConfig = BasicCategoryConfiguration(
             plugins: ["MockStorageCategoryPlugin": true]

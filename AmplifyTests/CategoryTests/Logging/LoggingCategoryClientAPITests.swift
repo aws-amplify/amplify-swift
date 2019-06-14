@@ -25,12 +25,12 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
     func testErrorWithString() throws {
         let plugin = MockLoggingCategoryPlugin()
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "error(String)" {
+            if message == "error(_:file:function:line:)" {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
@@ -42,12 +42,12 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
     func testErrorWithError() throws {
         let plugin = MockLoggingCategoryPlugin()
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "error(Error)" {
+            if message == "error(error:file:function:line:)" {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
@@ -60,12 +60,12 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
     func testWarn() throws {
         let plugin = MockLoggingCategoryPlugin()
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "warn" {
+            if message == "warn(_:file:function:line:)" {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
@@ -77,12 +77,12 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
     func testInfo() throws {
         let plugin = MockLoggingCategoryPlugin()
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "info" {
+            if message == "info(_:file:function:line:)" {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
@@ -94,12 +94,12 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
     func testDebug() throws {
         let plugin = MockLoggingCategoryPlugin()
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "debug" {
+            if message == "debug(_:file:function:line:)" {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
@@ -111,12 +111,12 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
     func testVerbose() throws {
         let plugin = MockLoggingCategoryPlugin()
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "verbose" {
+            if message == "verbose(_:file:function:line:)" {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
@@ -130,7 +130,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
     func testAmplifyDoesNotEvaluateMessageAutoclosureForLoggingStatements() throws {
         let plugin = MockLoggingCategoryPlugin()
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
 
         let messageWasEvaluated = expectation(description: "message should not be evaluated")
@@ -142,7 +142,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
     func testAmplifyDoesNotEvaluateMessageAutoclosureForNonLoggingStatements() throws {
         let plugin = MockLoggingCategoryPlugin()
-        Amplify.add(plugin: plugin)
+        try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
 
         let messageWasEvaluated = expectation(description: "message should not be evaluated")
