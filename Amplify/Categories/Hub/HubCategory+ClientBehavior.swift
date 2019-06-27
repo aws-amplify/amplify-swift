@@ -33,7 +33,7 @@ extension HubCategory: HubCategoryClientBehavior {
         }
     }
 
-    public func listen(to channel: HubChannel,
+    public func listen(to channel: HubChannel?,
                        filteringWith filter: @escaping HubFilter,
                        onEvent: @escaping HubListener) -> UnsubscribeToken {
         switch pluginOrSelector {

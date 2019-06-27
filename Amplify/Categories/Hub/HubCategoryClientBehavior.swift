@@ -25,10 +25,12 @@ public protocol HubCategoryClientBehavior {
     func dispatch(to channel: HubChannel, payload: HubPayload)
 
     /// Listen to Hub messages on a particular channel, optionally filtering message prior to dispatching them
-    /// - Parameter channel: The channel to listen for messages on
-    /// - Parameter filter: If specified, a Hub message will be
+    /// - Parameter channel: The channel to listen for messages on. **NOTE** Failing to specify a channel may result in
+    ///             a large volume of messages being delivered to the filter and the listener.
+    /// - Parameter filter: If specified, candidate messages will be passed to this closure prior to dispatching to
+    ///             the `onEvent` listener. Only messages for which the filter returns `true` will be dispatched.
     /// - Parameter onEvent: The closure to invoke with the received message
-    func listen(to channel: HubChannel,
+    func listen(to channel: HubChannel?,
                 filteringWith filter: @escaping HubFilter,
                 onEvent: @escaping HubListener) -> UnsubscribeToken
 

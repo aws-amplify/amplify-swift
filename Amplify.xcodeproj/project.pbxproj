@@ -13,8 +13,6 @@
 		FA56F72322B14B420039754A /* Cancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F72222B14B420039754A /* Cancellable.swift */; };
 		FA56F72522B14B6A0039754A /* Resumable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F72422B14B6A0039754A /* Resumable.swift */; };
 		FA56F72722B14BF70039754A /* AmplifyOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F72622B14BF70039754A /* AmplifyOperation.swift */; };
-		FA56F72922B14DCD0039754A /* BasicEventPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F72822B14DCC0039754A /* BasicEventPublisher.swift */; };
-		FA56F72B22B152D30039754A /* EventPublishable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F72A22B152D30039754A /* EventPublishable.swift */; };
 		FAC0A29822B3DE4800B50912 /* HubPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A29722B3DE4800B50912 /* HubPublisher.swift */; };
 		FAC0A29B22B3DEEE00B50912 /* HubPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A29A22B3DEEE00B50912 /* HubPayload.swift */; };
 		FAC0A29D22B3E63000B50912 /* HubDispatchDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A29C22B3E63000B50912 /* HubDispatchDestination.swift */; };
@@ -117,8 +115,6 @@
 		FA56F72222B14B420039754A /* Cancellable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cancellable.swift; sourceTree = "<group>"; };
 		FA56F72422B14B6A0039754A /* Resumable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resumable.swift; sourceTree = "<group>"; };
 		FA56F72622B14BF70039754A /* AmplifyOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyOperation.swift; sourceTree = "<group>"; };
-		FA56F72822B14DCC0039754A /* BasicEventPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicEventPublisher.swift; sourceTree = "<group>"; };
-		FA56F72A22B152D30039754A /* EventPublishable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPublishable.swift; sourceTree = "<group>"; };
 		FAC0A29722B3DE4800B50912 /* HubPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPublisher.swift; sourceTree = "<group>"; };
 		FAC0A29A22B3DEEE00B50912 /* HubPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPayload.swift; sourceTree = "<group>"; };
 		FAC0A29C22B3E63000B50912 /* HubDispatchDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubDispatchDestination.swift; sourceTree = "<group>"; };
@@ -250,9 +246,7 @@
 				FAC23539227A055200424678 /* AmplifyError.swift */,
 				FA56F72622B14BF70039754A /* AmplifyOperation.swift */,
 				FA56F71D22B144F80039754A /* AsyncEvent.swift */,
-				FA56F72822B14DCC0039754A /* BasicEventPublisher.swift */,
 				FA56F72222B14B420039754A /* Cancellable.swift */,
-				FA56F72A22B152D30039754A /* EventPublishable.swift */,
 				FA56F72422B14B6A0039754A /* Resumable.swift */,
 			);
 			path = Support;
@@ -790,7 +784,6 @@
 				FAC23548227A055200424678 /* Category.swift in Sources */,
 				FAC23525227A053D00424678 /* LogLevel.swift in Sources */,
 				FA56F72322B14B420039754A /* Cancellable.swift in Sources */,
-				FA56F72B22B152D30039754A /* EventPublishable.swift in Sources */,
 				FAC23528227A053D00424678 /* AnalyticsCategoryClientBehavior.swift in Sources */,
 				FAC0A2A722B43F6600B50912 /* AnalyticsCategory+ClientBehavior.swift in Sources */,
 				FAC2353D227A055200424678 /* CategoryConfiguration.swift in Sources */,
@@ -824,7 +817,6 @@
 				FAC23527227A053D00424678 /* LoggingCategoryClientBehavior.swift in Sources */,
 				FAC23521227A053D00424678 /* APIRequest.swift in Sources */,
 				FAC23522227A053D00424678 /* LoggingCategory.swift in Sources */,
-				FA56F72922B14DCD0039754A /* BasicEventPublisher.swift in Sources */,
 				FAC2358F227A4A6E00424678 /* HubCategory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -7,15 +7,22 @@
 
 import Foundation
 
-public class AmplifyOperation<InProcessType, CompletedType, ErrorType: AmplifyError>: Operation {
-    private var eventPublisher = BasicEventPublisher<InProcessType, CompletedType, ErrorType>()
+public class AmplifyOperation<InProcessType, CompletedType, ErrorType: AmplifyError>: Operation,
+    CategoryTypeable {
+    public let id = UUID()
+
+    public func listenToOperationEvents(
+        filteringWith filter: @escaping HubFilter,
+        onEvent: @escaping HubListener) -> UnsubscribeToken {
+        let idFilteringWrapper: HubFilter = { payload in
+            guard let payload.message?.
+        }
+        let token = Amplify.Hub.listen(to: nil,
+                                       filteringWith: filter,
+                                       onEvent: onEvent)
+        return token
+    }
 }
 
 extension AmplifyOperation: Cancellable { }
 
-extension AmplifyOperation: EventPublishable {
-    public func subscribe(
-        _ onEvent: @escaping (AsyncEvent<InProcessType, CompletedType, ErrorType>) -> Void) -> Unsubscribe {
-        return eventPublisher.subscribe(onEvent)
-    }
-}
