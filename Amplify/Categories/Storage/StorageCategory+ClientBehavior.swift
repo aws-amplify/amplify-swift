@@ -23,12 +23,20 @@ extension StorageCategory: StorageCategoryClientBehavior {
         return plugin
     }
 
+    public func get(key: String, options: Any?) -> StorageGetOperation {
+        switch pluginOrSelector {
+        case .plugin(let plugin):
+            return plugin.get(key: key, options: options)
+        case .selector(let selector):
+            return plugin(from: selector).get(key: key, options: options)
+        }
+    }
+    
     public func stub() {
         switch pluginOrSelector {
         case .plugin(let plugin):
             plugin.stub()
         case .selector(let selector):
-            selector.stub()
             plugin(from: selector).stub()
         }
     }

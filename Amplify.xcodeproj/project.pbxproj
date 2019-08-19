@@ -3,12 +3,28 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		21265DAD2307389A004CCE39 /* AWSS3StoragePlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21265DA42307389A004CCE39 /* AWSS3StoragePlugin.framework */; };
+		21265DB22307389A004CCE39 /* AWSS3StoragePluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21265DB12307389A004CCE39 /* AWSS3StoragePluginTests.swift */; };
+		21265DFA2309D4EA004CCE39 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21265DF92309D4EA004CCE39 /* AppDelegate.swift */; };
+		21265DFC2309D4EA004CCE39 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21265DFB2309D4EA004CCE39 /* ViewController.swift */; };
+		21265DFF2309D4EA004CCE39 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 21265DFD2309D4EA004CCE39 /* Main.storyboard */; };
+		21265E012309D4EE004CCE39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21265E002309D4EE004CCE39 /* Assets.xcassets */; };
+		21265E042309D4EE004CCE39 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 21265E022309D4EE004CCE39 /* LaunchScreen.storyboard */; };
+		21265E262309D620004CCE39 /* AWSS3StoragePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21265E252309D620004CCE39 /* AWSS3StoragePlugin.swift */; };
+		21FFF97B230A4AC9005878EA /* StorageGetOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF97A230A4AC9005878EA /* StorageGetOperation.swift */; };
+		21FFF97D230A4D47005878EA /* StorageGetResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF97C230A4D47005878EA /* StorageGetResult.swift */; };
+		21FFF97F230A4DAB005878EA /* StorageGetError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF97E230A4DAB005878EA /* StorageGetError.swift */; };
+		21FFF981230A4E87005878EA /* AWSS3StorageGetOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF980230A4E87005878EA /* AWSS3StorageGetOperation.swift */; };
+		21FFF983230A519B005878EA /* EventPublishable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF982230A519B005878EA /* EventPublishable.swift */; };
+		7D5ED6C78E25246DDAF2F2EC /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */; };
 		9A7FF1D19CF0F11F96312DA4 /* Pods_AmplifyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176E334A02509BD4CE8866A6 /* Pods_AmplifyTests.framework */; };
-		D7B8A9AB7506F675F577A82D /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */; };
+		9F1570B537834ED7F87E6CE2 /* Pods_AWSS3StoragePluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED44BE0096B074979532239 /* Pods_AWSS3StoragePluginTests.framework */; };
+		DA8076A12E27D05D777F4F11 /* Pods_AWSS3StoragePlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A4AE82D161DB4E9B6EC9281 /* Pods_AWSS3StoragePlugin.framework */; };
+		E5BE25AAEAEB52916DA09C7B /* Pods_AmplifyAppExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 263EE84D0728C793C6181869 /* Pods_AmplifyAppExample.framework */; };
 		FA56F71E22B144F80039754A /* AsyncEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F71D22B144F80039754A /* AsyncEvent.swift */; };
 		FA56F72322B14B420039754A /* Cancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F72222B14B420039754A /* Cancellable.swift */; };
 		FA56F72522B14B6A0039754A /* Resumable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F72422B14B6A0039754A /* Resumable.swift */; };
@@ -95,6 +111,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		21265DAE2307389A004CCE39 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 21265DA32307389A004CCE39;
+			remoteInfo = AWSS3StoragePlugin;
+		};
 		FAC234DD2279F8DA00424678 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
@@ -106,11 +129,38 @@
 
 /* Begin PBXFileReference section */
 		176E334A02509BD4CE8866A6 /* Pods_AmplifyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		21265DA42307389A004CCE39 /* AWSS3StoragePlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSS3StoragePlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		21265DA72307389A004CCE39 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		21265DAC2307389A004CCE39 /* AWSS3StoragePluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSS3StoragePluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		21265DB12307389A004CCE39 /* AWSS3StoragePluginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginTests.swift; sourceTree = "<group>"; };
+		21265DB32307389A004CCE39 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		21265DF72309D4EA004CCE39 /* AmplifyAppExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmplifyAppExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		21265DF92309D4EA004CCE39 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		21265DFB2309D4EA004CCE39 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		21265DFE2309D4EA004CCE39 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		21265E002309D4EE004CCE39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		21265E032309D4EE004CCE39 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		21265E052309D4EE004CCE39 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		21265E252309D620004CCE39 /* AWSS3StoragePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePlugin.swift; sourceTree = "<group>"; };
+		21FFF97A230A4AC9005878EA /* StorageGetOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageGetOperation.swift; sourceTree = "<group>"; };
+		21FFF97C230A4D47005878EA /* StorageGetResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageGetResult.swift; sourceTree = "<group>"; };
+		21FFF97E230A4DAB005878EA /* StorageGetError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageGetError.swift; sourceTree = "<group>"; };
+		21FFF980230A4E87005878EA /* AWSS3StorageGetOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetOperation.swift; sourceTree = "<group>"; };
+		21FFF982230A519B005878EA /* EventPublishable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventPublishable.swift; sourceTree = "<group>"; };
+		263EE84D0728C793C6181869 /* Pods_AmplifyAppExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyAppExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2BC291E73D2FFB00D3F51A62 /* Pods-AmplifyAppExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAppExample.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAppExample/Pods-AmplifyAppExample.debug.xcconfig"; sourceTree = "<group>"; };
+		3A4AE82D161DB4E9B6EC9281 /* Pods_AWSS3StoragePlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSS3StoragePlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5572BBB2A874AEDC7E2E9ABF /* Pods-AmplifyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyTests/Pods-AmplifyTests.release.xcconfig"; sourceTree = "<group>"; };
 		5A112B8C39AC37F0FB71AF54 /* Pods-Amplify.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify.debug.xcconfig"; path = "Target Support Files/Pods-Amplify/Pods-Amplify.debug.xcconfig"; sourceTree = "<group>"; };
+		61CE693182BF781FBC4D3411 /* Pods-AWSS3StoragePlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePlugin/Pods-AWSS3StoragePlugin.release.xcconfig"; sourceTree = "<group>"; };
+		6BAC32194A15ACB56F07DC87 /* Pods-AWSS3StoragePlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePlugin/Pods-AWSS3StoragePlugin.debug.xcconfig"; sourceTree = "<group>"; };
+		714614E1FAB6C4EE80C07148 /* Pods-AWSS3StoragePluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		77A2D125114EA0FFA11A7EFD /* Pods-AmplifyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyTests/Pods-AmplifyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB74666B4E8B096CB3305EAE /* Pods-AmplifyAppExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAppExample.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAppExample/Pods-AmplifyAppExample.release.xcconfig"; sourceTree = "<group>"; };
+		CED44BE0096B074979532239 /* Pods_AWSS3StoragePluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSS3StoragePluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5ACA3446D45A4622167122C /* Pods-Amplify.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify.release.xcconfig"; path = "Target Support Files/Pods-Amplify/Pods-Amplify.release.xcconfig"; sourceTree = "<group>"; };
+		F2DDFB959501735121A13925 /* Pods-AWSS3StoragePluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		FA56F71D22B144F80039754A /* AsyncEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncEvent.swift; sourceTree = "<group>"; };
 		FA56F72222B14B420039754A /* Cancellable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cancellable.swift; sourceTree = "<group>"; };
 		FA56F72422B14B6A0039754A /* Resumable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resumable.swift; sourceTree = "<group>"; };
@@ -200,11 +250,36 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		21265DA12307389A004CCE39 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA8076A12E27D05D777F4F11 /* Pods_AWSS3StoragePlugin.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		21265DA92307389A004CCE39 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				21265DAD2307389A004CCE39 /* AWSS3StoragePlugin.framework in Frameworks */,
+				9F1570B537834ED7F87E6CE2 /* Pods_AWSS3StoragePluginTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		21265DF42309D4EA004CCE39 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E5BE25AAEAEB52916DA09C7B /* Pods_AmplifyAppExample.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FAC234CF2279F8DA00424678 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D7B8A9AB7506F675F577A82D /* Pods_Amplify.framework in Frameworks */,
+				7D5ED6C78E25246DDAF2F2EC /* Pods_Amplify.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -220,6 +295,38 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		21265DA52307389A004CCE39 /* AWSS3StoragePlugin */ = {
+			isa = PBXGroup;
+			children = (
+				21265DA72307389A004CCE39 /* Info.plist */,
+				21265E252309D620004CCE39 /* AWSS3StoragePlugin.swift */,
+				21FFF980230A4E87005878EA /* AWSS3StorageGetOperation.swift */,
+			);
+			path = AWSS3StoragePlugin;
+			sourceTree = "<group>";
+		};
+		21265DB02307389A004CCE39 /* AWSS3StoragePluginTests */ = {
+			isa = PBXGroup;
+			children = (
+				21265DB12307389A004CCE39 /* AWSS3StoragePluginTests.swift */,
+				21265DB32307389A004CCE39 /* Info.plist */,
+			);
+			path = AWSS3StoragePluginTests;
+			sourceTree = "<group>";
+		};
+		21265DF82309D4EA004CCE39 /* AmplifyAppExample */ = {
+			isa = PBXGroup;
+			children = (
+				21265DF92309D4EA004CCE39 /* AppDelegate.swift */,
+				21265DFB2309D4EA004CCE39 /* ViewController.swift */,
+				21265DFD2309D4EA004CCE39 /* Main.storyboard */,
+				21265E002309D4EE004CCE39 /* Assets.xcassets */,
+				21265E022309D4EE004CCE39 /* LaunchScreen.storyboard */,
+				21265E052309D4EE004CCE39 /* Info.plist */,
+			);
+			path = AmplifyAppExample;
+			sourceTree = "<group>";
+		};
 		3687F9047D3AA33BCC710C97 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -227,6 +334,12 @@
 				E5ACA3446D45A4622167122C /* Pods-Amplify.release.xcconfig */,
 				77A2D125114EA0FFA11A7EFD /* Pods-AmplifyTests.debug.xcconfig */,
 				5572BBB2A874AEDC7E2E9ABF /* Pods-AmplifyTests.release.xcconfig */,
+				6BAC32194A15ACB56F07DC87 /* Pods-AWSS3StoragePlugin.debug.xcconfig */,
+				61CE693182BF781FBC4D3411 /* Pods-AWSS3StoragePlugin.release.xcconfig */,
+				2BC291E73D2FFB00D3F51A62 /* Pods-AmplifyAppExample.debug.xcconfig */,
+				AB74666B4E8B096CB3305EAE /* Pods-AmplifyAppExample.release.xcconfig */,
+				714614E1FAB6C4EE80C07148 /* Pods-AWSS3StoragePluginTests.debug.xcconfig */,
+				F2DDFB959501735121A13925 /* Pods-AWSS3StoragePluginTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -236,6 +349,9 @@
 			children = (
 				84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */,
 				176E334A02509BD4CE8866A6 /* Pods_AmplifyTests.framework */,
+				3A4AE82D161DB4E9B6EC9281 /* Pods_AWSS3StoragePlugin.framework */,
+				263EE84D0728C793C6181869 /* Pods_AmplifyAppExample.framework */,
+				CED44BE0096B074979532239 /* Pods_AWSS3StoragePluginTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -248,6 +364,7 @@
 				FA56F71D22B144F80039754A /* AsyncEvent.swift */,
 				FA56F72222B14B420039754A /* Cancellable.swift */,
 				FA56F72422B14B6A0039754A /* Resumable.swift */,
+				21FFF982230A519B005878EA /* EventPublishable.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -267,6 +384,9 @@
 			children = (
 				FAC234D42279F8DA00424678 /* Amplify */,
 				FAC234DF2279F8DA00424678 /* AmplifyTests */,
+				21265DA52307389A004CCE39 /* AWSS3StoragePlugin */,
+				21265DB02307389A004CCE39 /* AWSS3StoragePluginTests */,
+				21265DF82309D4EA004CCE39 /* AmplifyAppExample */,
 				FAC234D32279F8DA00424678 /* Products */,
 				3687F9047D3AA33BCC710C97 /* Pods */,
 				C4DBE378379CBB2C3F4536BE /* Frameworks */,
@@ -278,6 +398,9 @@
 			children = (
 				FAC234D22279F8DA00424678 /* Amplify.framework */,
 				FAC234DB2279F8DA00424678 /* AmplifyTests.xctest */,
+				21265DA42307389A004CCE39 /* AWSS3StoragePlugin.framework */,
+				21265DAC2307389A004CCE39 /* AWSS3StoragePluginTests.xctest */,
+				21265DF72309D4EA004CCE39 /* AmplifyAppExample.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -335,6 +458,9 @@
 				FAC0A2B122B4402000B50912 /* StorageCategory+ClientBehavior.swift */,
 				FAC234F6227A053D00424678 /* StorageCategoryClientBehavior.swift */,
 				FAC234F8227A053D00424678 /* StorageCategoryPlugin.swift */,
+				21FFF97A230A4AC9005878EA /* StorageGetOperation.swift */,
+				21FFF97C230A4D47005878EA /* StorageGetResult.swift */,
+				21FFF97E230A4DAB005878EA /* StorageGetError.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -569,6 +695,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		21265D9F2307389A004CCE39 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FAC234CD2279F8DA00424678 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -579,6 +712,64 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		21265DA32307389A004CCE39 /* AWSS3StoragePlugin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 21265DB92307389A004CCE39 /* Build configuration list for PBXNativeTarget "AWSS3StoragePlugin" */;
+			buildPhases = (
+				99E2D788CC661BB15F324C6A /* [CP] Check Pods Manifest.lock */,
+				21265D9F2307389A004CCE39 /* Headers */,
+				21265DA02307389A004CCE39 /* Sources */,
+				21265DA12307389A004CCE39 /* Frameworks */,
+				21265DA22307389A004CCE39 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AWSS3StoragePlugin;
+			productName = AWSS3StoragePlugin;
+			productReference = 21265DA42307389A004CCE39 /* AWSS3StoragePlugin.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		21265DAB2307389A004CCE39 /* AWSS3StoragePluginTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 21265DBA2307389A004CCE39 /* Build configuration list for PBXNativeTarget "AWSS3StoragePluginTests" */;
+			buildPhases = (
+				85992DA543E0ADAC862D6E86 /* [CP] Check Pods Manifest.lock */,
+				21265DA82307389A004CCE39 /* Sources */,
+				21265DA92307389A004CCE39 /* Frameworks */,
+				21265DAA2307389A004CCE39 /* Resources */,
+				F90C939885FC37A0053DFBC7 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				21265DAF2307389A004CCE39 /* PBXTargetDependency */,
+			);
+			name = AWSS3StoragePluginTests;
+			productName = AWSS3StoragePluginTests;
+			productReference = 21265DAC2307389A004CCE39 /* AWSS3StoragePluginTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		21265DF62309D4EA004CCE39 /* AmplifyAppExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 21265E1C2309D4EE004CCE39 /* Build configuration list for PBXNativeTarget "AmplifyAppExample" */;
+			buildPhases = (
+				E0E0AF5807ACE11BA21415C1 /* [CP] Check Pods Manifest.lock */,
+				21265DF32309D4EA004CCE39 /* Sources */,
+				21265DF42309D4EA004CCE39 /* Frameworks */,
+				21265DF52309D4EA004CCE39 /* Resources */,
+				C3BB5362E6696D8E51D09F7C /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AmplifyAppExample;
+			productName = AmplifyAppExample;
+			productReference = 21265DF72309D4EA004CCE39 /* AmplifyAppExample.app */;
+			productType = "com.apple.product-type.application";
+		};
 		FAC234D12279F8DA00424678 /* Amplify */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FAC234E62279F8DA00424678 /* Build configuration list for PBXNativeTarget "Amplify" */;
@@ -625,10 +816,20 @@
 		FAC234C92279F8DA00424678 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1020;
+				LastSwiftUpdateCheck = 1030;
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "Amazon Web Services";
 				TargetAttributes = {
+					21265DA32307389A004CCE39 = {
+						CreatedOnToolsVersion = 10.3;
+						LastSwiftMigration = 1030;
+					};
+					21265DAB2307389A004CCE39 = {
+						CreatedOnToolsVersion = 10.3;
+					};
+					21265DF62309D4EA004CCE39 = {
+						CreatedOnToolsVersion = 10.3;
+					};
 					FAC234D12279F8DA00424678 = {
 						CreatedOnToolsVersion = 10.2.1;
 					};
@@ -652,11 +853,38 @@
 			targets = (
 				FAC234D12279F8DA00424678 /* Amplify */,
 				FAC234DA2279F8DA00424678 /* AmplifyTests */,
+				21265DA32307389A004CCE39 /* AWSS3StoragePlugin */,
+				21265DAB2307389A004CCE39 /* AWSS3StoragePluginTests */,
+				21265DF62309D4EA004CCE39 /* AmplifyAppExample */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		21265DA22307389A004CCE39 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		21265DAA2307389A004CCE39 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		21265DF52309D4EA004CCE39 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				21265E042309D4EE004CCE39 /* LaunchScreen.storyboard in Resources */,
+				21265E012309D4EE004CCE39 /* Assets.xcassets in Resources */,
+				21265DFF2309D4EA004CCE39 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FAC234D02279F8DA00424678 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -696,7 +924,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		9D7A6AE98E5582ADB1124CD3 /* [CP] Embed Pods Frameworks */ = {
+		85992DA543E0ADAC862D6E86 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -704,16 +932,53 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AmplifyTests/Pods-AmplifyTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/CwlCatchException/CwlCatchException.framework",
-				"${BUILT_PRODUCTS_DIR}/CwlPreconditionTesting/CwlPreconditionTesting.framework",
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Check Pods Manifest.lock";
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CwlCatchException.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CwlPreconditionTesting.framework",
+				"$(DERIVED_FILE_DIR)/Pods-AWSS3StoragePluginTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		99E2D788CC661BB15F324C6A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AWSS3StoragePlugin-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9D7A6AE98E5582ADB1124CD3 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AmplifyTests/Pods-AmplifyTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AmplifyTests/Pods-AmplifyTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -742,6 +1007,62 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		C3BB5362E6696D8E51D09F7C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AmplifyAppExample/Pods-AmplifyAppExample-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AmplifyAppExample/Pods-AmplifyAppExample-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AmplifyAppExample/Pods-AmplifyAppExample-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E0E0AF5807ACE11BA21415C1 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AmplifyAppExample-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F90C939885FC37A0053DFBC7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		FAC23581227A2D8C00424678 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -763,6 +1084,32 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		21265DA02307389A004CCE39 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				21FFF981230A4E87005878EA /* AWSS3StorageGetOperation.swift in Sources */,
+				21265E262309D620004CCE39 /* AWSS3StoragePlugin.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		21265DA82307389A004CCE39 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				21265DB22307389A004CCE39 /* AWSS3StoragePluginTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		21265DF32309D4EA004CCE39 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				21265DFC2309D4EA004CCE39 /* ViewController.swift in Sources */,
+				21265DFA2309D4EA004CCE39 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FAC234CE2279F8DA00424678 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -770,6 +1117,7 @@
 				FAC0A29B22B3DEEE00B50912 /* HubPayload.swift in Sources */,
 				FAC2352B227A053D00424678 /* AnalyticsEvent.swift in Sources */,
 				FAC23544227A055200424678 /* ConfigurationError.swift in Sources */,
+				21FFF97F230A4DAB005878EA /* StorageGetError.swift in Sources */,
 				FAC0A2A122B3E81000B50912 /* HubMessageQueue.swift in Sources */,
 				FAC23547227A055200424678 /* Plugin.swift in Sources */,
 				FAC23542227A055200424678 /* Foundation+Utils.swift in Sources */,
@@ -784,7 +1132,9 @@
 				FAC23548227A055200424678 /* Category.swift in Sources */,
 				FAC23525227A053D00424678 /* LogLevel.swift in Sources */,
 				FA56F72322B14B420039754A /* Cancellable.swift in Sources */,
+				21FFF983230A519B005878EA /* EventPublishable.swift in Sources */,
 				FAC23528227A053D00424678 /* AnalyticsCategoryClientBehavior.swift in Sources */,
+				21FFF97B230A4AC9005878EA /* StorageGetOperation.swift in Sources */,
 				FAC0A2A722B43F6600B50912 /* AnalyticsCategory+ClientBehavior.swift in Sources */,
 				FAC2353D227A055200424678 /* CategoryConfiguration.swift in Sources */,
 				FAC23595227A4B9800424678 /* HubCategoryPlugin.swift in Sources */,
@@ -815,6 +1165,7 @@
 				FAC0A2AD22B43FE700B50912 /* HubCategory+ClientBehavior.swift in Sources */,
 				FAC23523227A053D00424678 /* LoggingCategoryPlugin.swift in Sources */,
 				FAC23527227A053D00424678 /* LoggingCategoryClientBehavior.swift in Sources */,
+				21FFF97D230A4D47005878EA /* StorageGetResult.swift in Sources */,
 				FAC23521227A053D00424678 /* APIRequest.swift in Sources */,
 				FAC23522227A053D00424678 /* LoggingCategory.swift in Sources */,
 				FAC2358F227A4A6E00424678 /* HubCategory.swift in Sources */,
@@ -862,6 +1213,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		21265DAF2307389A004CCE39 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 21265DA32307389A004CCE39 /* AWSS3StoragePlugin */;
+			targetProxy = 21265DAE2307389A004CCE39 /* PBXContainerItemProxy */;
+		};
 		FAC234DE2279F8DA00424678 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = FAC234D12279F8DA00424678 /* Amplify */;
@@ -869,7 +1225,159 @@
 		};
 /* End PBXTargetDependency section */
 
+/* Begin PBXVariantGroup section */
+		21265DFD2309D4EA004CCE39 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				21265DFE2309D4EA004CCE39 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		21265E022309D4EE004CCE39 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				21265E032309D4EE004CCE39 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		21265DB52307389A004CCE39 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6BAC32194A15ACB56F07DC87 /* Pods-AWSS3StoragePlugin.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = AWSS3StoragePlugin/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.bAWSS3StoragePlugin;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		21265DB62307389A004CCE39 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 61CE693182BF781FBC4D3411 /* Pods-AWSS3StoragePlugin.release.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = AWSS3StoragePlugin/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.bAWSS3StoragePlugin;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		21265DB72307389A004CCE39 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 714614E1FAB6C4EE80C07148 /* Pods-AWSS3StoragePluginTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = AWSS3StoragePluginTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.lawmich.AWSS3StoragePluginTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		21265DB82307389A004CCE39 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F2DDFB959501735121A13925 /* Pods-AWSS3StoragePluginTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = AWSS3StoragePluginTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.lawmich.AWSS3StoragePluginTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		21265E1D2309D4EE004CCE39 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2BC291E73D2FFB00D3F51A62 /* Pods-AmplifyAppExample.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = AmplifyAppExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AmplifyAppExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		21265E1E2309D4EE004CCE39 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = AB74666B4E8B096CB3305EAE /* Pods-AmplifyAppExample.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = AmplifyAppExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AmplifyAppExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		FAC234E42279F8DA00424678 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1089,6 +1597,33 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		21265DB92307389A004CCE39 /* Build configuration list for PBXNativeTarget "AWSS3StoragePlugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				21265DB52307389A004CCE39 /* Debug */,
+				21265DB62307389A004CCE39 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		21265DBA2307389A004CCE39 /* Build configuration list for PBXNativeTarget "AWSS3StoragePluginTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				21265DB72307389A004CCE39 /* Debug */,
+				21265DB82307389A004CCE39 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		21265E1C2309D4EE004CCE39 /* Build configuration list for PBXNativeTarget "AmplifyAppExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				21265E1D2309D4EE004CCE39 /* Debug */,
+				21265E1E2309D4EE004CCE39 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		FAC234CC2279F8DA00424678 /* Build configuration list for PBXProject "Amplify" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
