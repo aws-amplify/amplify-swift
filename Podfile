@@ -14,4 +14,30 @@ target 'Amplify' do
     pod 'CwlCatchException', :git => 'https://github.com/mattgallagher/CwlCatchException.git'
   end
 
+  # target 'AWSS3StoragePlugin' do
+  #   inherit! :search_paths
+  #   # Pods for testing
+  #   pod 'AWSS3'
+  # end
+
+end
+
+target 'AWSS3StoragePlugin' do
+  use_frameworks!
+
+  pod 'AWSS3'
+  pod 'AWSCore'
+
+  target 'AWSS3StoragePluginTests' do
+    inherit! :search_paths
+    pod 'AWSS3'
+    pod 'AWSCore'
+
+  end
+
+end
+
+target 'AmplifyAppExample' do
+  use_frameworks!
+  pod 'AWSS3'
 end

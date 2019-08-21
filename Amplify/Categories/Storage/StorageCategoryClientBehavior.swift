@@ -7,7 +7,9 @@
 
 import Foundation
 
-/// Behavior of the Auth category that clients will use
+/// Behavior of the Storage category that clients will use
 public protocol StorageCategoryClientBehavior {
     func stub()
+    
+    func get(key: String, options: Any?) -> StorageGetOperation
 }
