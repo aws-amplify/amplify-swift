@@ -22,6 +22,6 @@ Pod::Spec.new do |s|
   
   s.requires_arc = true 
   s.dependency 'Amplify', '0.0.1'
-  s.source_files = 'AWSS3StoragePlugin/**/*.swift'
+  s.source_files = 'AWSPlugins/AWSS3StoragePlugin/**/*.swift'
 
 end

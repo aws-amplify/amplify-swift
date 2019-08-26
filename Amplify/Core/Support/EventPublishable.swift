@@ -14,6 +14,7 @@ public protocol EventPublishable {
     associatedtype InProcessType
     associatedtype CompletedType
     associatedtype ErrorType: AmplifyError
-    func subscribe(_ onEvent: @escaping (AsyncEvent<InProcessType, CompletedType, ErrorType>) -> Void) -> Unsubscribe
+    func subscribe(filteringWith filter: @escaping HubFilter, onEvent: @escaping HubListener) -> UnsubscribeToken
+    func dispatch(event: AsyncEvent<InProcessType, CompletedType, ErrorType>)
 }
 

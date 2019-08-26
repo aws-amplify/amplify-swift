@@ -24,7 +24,6 @@
 		11C5159F43F038CA7880FCEE2663915E /* AWSS3Serializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E70A301972F1B08181B6F6A8E0A8258 /* AWSS3Serializer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		13A52DFA790DBB17BD340EDA2BD46FC8 /* AWSURLRequestRetryHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = F3CE43BB1B82CE18D9DA42608FCC9CEF /* AWSURLRequestRetryHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1443F4986172D7C166827E3E8CDAA21D /* CwlDarwinDefinitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A0DFE4ACAD60A4287B44EE4466A2AF /* CwlDarwinDefinitions.swift */; };
-		148CA4686C8EE1AA4D5B2499F72889F5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2437A48056385AF46474DC58DE924CCB /* Foundation.framework */; };
 		16FF3216D31219C5F5A1AA5541FC5149 /* Pods-AWSS3StoragePlugin-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = DB77A5522A90C6AF4E80118B3D522366 /* Pods-AWSS3StoragePlugin-dummy.m */; };
 		176EE1FC318E9CD5AA1E79B1A79070D7 /* CwlCatchException.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99CAD386A6EE774B35B15E503B207D59 /* CwlCatchException.framework */; };
 		186F96B6619A57559F6A6CF6C386C29C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2437A48056385AF46474DC58DE924CCB /* Foundation.framework */; };
@@ -51,7 +50,6 @@
 		289F8D633987CF8933D7F48CD51967E2 /* AWSDDASLLogCapture.h in Headers */ = {isa = PBXBuildFile; fileRef = 01FADE46380E315248A29838187A2A36 /* AWSDDASLLogCapture.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		296C3E4D65C752A9B1573E011D25C3A5 /* AWSFMDatabaseQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = F0866872CE26B841E0090F8FFB0541D7 /* AWSFMDatabaseQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2A31D90B269E0FC4E7CC40501353D23F /* AWSExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = 5E8593CED27AB264CA0990FBBE93FA6D /* AWSExecutor.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		2BC926E6C937A747295AC3CC7E175044 /* Pods-AWSS3StoragePluginTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = DF43717830F8AC7B47DA1FE86FC94B93 /* Pods-AWSS3StoragePluginTests-dummy.m */; };
 		2C6DF43D33BD1C4CC4896FD8685745D1 /* AWSCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = 4626DE1E895C1CCDAC15F4F84EDC46E5 /* AWSCategory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2F9848BFD539AF511C5392200ACB170E /* AWSDDContextFilterLogFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = ED6D9EAD06ADC835AA7600376AA69AD6 /* AWSDDContextFilterLogFormatter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		30FF160C06EB855AC7E4539E57B2673D /* AWSFMDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E03A3E87EAE964020D43D90931A3FAC /* AWSFMDatabase.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -158,6 +156,7 @@
 		A4F52B2766132FD5933A31E56B90E9E7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2437A48056385AF46474DC58DE924CCB /* Foundation.framework */; };
 		A58B70E04A0CB8ABD7A153CF32EAC6EC /* AWSTask.h in Headers */ = {isa = PBXBuildFile; fileRef = F811F3C006DA66F6E9BA1C3B05264081 /* AWSTask.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A59EE7DCEDE4CF5C560A529AA61A7A5A /* AWSS3TransferUtilityTasks.m in Sources */ = {isa = PBXBuildFile; fileRef = 9DA9F9FC021148A35CE7ED37384BA659 /* AWSS3TransferUtilityTasks.m */; };
+		A6C0B8CFC635C2CA9920EE0639C07C9C /* Pods-AWSS3StoragePluginTests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = BF250CA830CB3438A9C50B25318933E9 /* Pods-AWSS3StoragePluginTests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A81152A334E18EC67B13C8DE062572C9 /* CwlCatchException.h in Headers */ = {isa = PBXBuildFile; fileRef = F7141FE5B265FE7791CF6C86B5D95972 /* CwlCatchException.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		ADCB2F0F91AEEEF59B890B6F26A69618 /* AWSService.h in Headers */ = {isa = PBXBuildFile; fileRef = B21996F4773D87FD9A5979D63512FB3E /* AWSService.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AE3963180578F41FD1975BA268A84A97 /* AWSDDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EFB8A19A9AFCA2854E9B5358C7B213B /* AWSDDFileLogger.m */; };
@@ -165,6 +164,7 @@
 		AF5EE33670AE9FAFEF05309866F57FDB /* AWSS3TransferUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = B6BA53179DFDC61A220FEFF04B878E23 /* AWSS3TransferUtility.m */; };
 		AF608D594A960E18B083084E999F293B /* AWSFMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD096A9736EE2C88EE6E06B7E04989A /* AWSFMDatabaseAdditions.m */; };
 		AF66AF015E286081DB48279E84D00286 /* CwlCatchException.m in Sources */ = {isa = PBXBuildFile; fileRef = 02E4E5A4836646F00EF11321BC071303 /* CwlCatchException.m */; };
+		B0FC8D1CD372E491239B8F19C66A5A2F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2437A48056385AF46474DC58DE924CCB /* Foundation.framework */; };
 		B10054BDBE8F98651F6E947C6CA4C4A6 /* AWSFMDatabaseAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 7670F47EE3EEFAB18320B5B0A111D10C /* AWSFMDatabaseAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B5682D439BEC32BB0EFE0746F1A1A902 /* AWSMTLReflection.h in Headers */ = {isa = PBXBuildFile; fileRef = 576635E177C1CFE4FDAC55FF710DD5DA /* AWSMTLReflection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B67A1C1DFE51F94A06FA6EC917155DEB /* AWSMTLModel+NSCoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AB7445715FED7CE426B25EC2A1C18E5 /* AWSMTLModel+NSCoding.m */; };
@@ -184,6 +184,7 @@
 		C1225F27DF3FDDB3817DF1E2EC3A255C /* AWSS3Resources.m in Sources */ = {isa = PBXBuildFile; fileRef = EDA15032FBBF9328C65AA7249BEFB3F7 /* AWSS3Resources.m */; };
 		C64FF6B220DBDA25D357BA3CE3CA943B /* AWSSTSService.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E0909E7D0C12952501C6D3C53757AB8 /* AWSSTSService.m */; };
 		C680D0AF3CC1D53C349F183E751F935F /* AWSURLRequestRetryHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A1D0551286D320767C35EC606EAA8D1 /* AWSURLRequestRetryHandler.m */; };
+		C897FFCFD5ABDFF82C0A8563FE95F89B /* Pods-AWSS3StoragePluginTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = DF43717830F8AC7B47DA1FE86FC94B93 /* Pods-AWSS3StoragePluginTests-dummy.m */; };
 		C936A5FC53498D029AD64D95D197D383 /* AWSDDASLLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = F6A01DF065645514A47863F6BB4C1EC5 /* AWSDDASLLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CEE0056A362AA78A46ED0E34861FE8F6 /* AWSFMDatabasePool.h in Headers */ = {isa = PBXBuildFile; fileRef = 0EA9DB3B210A24967E6EC977B1F8A4B9 /* AWSFMDatabasePool.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D04B99534567D445831D6DF60DD23D3E /* AWSCancellationTokenRegistration.h in Headers */ = {isa = PBXBuildFile; fileRef = F98BA7EF981C7B40F2AEE296DCCA0DFA /* AWSCancellationTokenRegistration.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -201,7 +202,6 @@
 		DAB88BF8E01A806FF86081735804BDA0 /* AWSFMDB+AWSHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B52391CBDB5EF7ACCE57AD7854F1EA4E /* AWSFMDB+AWSHelpers.m */; };
 		DBD3BEAF7BE86F0F3277D3D8A7CC0707 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2437A48056385AF46474DC58DE924CCB /* Foundation.framework */; };
 		DC88483772550DF489C06CB7E787B074 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2437A48056385AF46474DC58DE924CCB /* Foundation.framework */; };
-		DCD7C71FD9203267E63A48E5BF2C2813 /* Pods-AWSS3StoragePluginTests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = BF250CA830CB3438A9C50B25318933E9 /* Pods-AWSS3StoragePluginTests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DE8285C5CFED387A6E9B3E4F9E9DBB5A /* AWSCancellationToken.h in Headers */ = {isa = PBXBuildFile; fileRef = 24B0D8E19CE6CBFEE6516870A87E549A /* AWSCancellationToken.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E02897810F6F4BF8BF127FD5F6B5562D /* AWSIdentityProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = E3FBED902FCED422E00C6D4F34532BB7 /* AWSIdentityProvider.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E19E611EA874B30F9FF4145DF9918307 /* AWSS3.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DB82F24DFB23456166D8246AB19B75A /* AWSS3.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -243,6 +243,13 @@
 			remoteGlobalIDString = 9B172FACE90046AA5E100E650B6109DD;
 			remoteInfo = AWSCore;
 		};
+		06C135611DE61158D1B6AA007734F286 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 31F0084E2E60CA68AAF7E3224C77C86E;
+			remoteInfo = AWSS3;
+		};
 		0F17E5FEACCFDEAA62505D0255DE1E67 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
@@ -257,12 +264,19 @@
 			remoteGlobalIDString = E1431202A094E9A61640960B2E7DFCA4;
 			remoteInfo = "Pods-Amplify";
 		};
-		3DEC29985D3445CE7DAC9F0711B2317F /* PBXContainerItemProxy */ = {
+		20D4C6CF3EB89D57E0A4B2A038B495DC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 67802A3C17118D77F340B055A6591CF1;
-			remoteInfo = "Pods-AWSS3StoragePlugin";
+			remoteGlobalIDString = 308B5C440C446909122081D367A27A8F;
+			remoteInfo = CwlCatchException;
+		};
+		2814F09316AAAB9F0512C6ECC8CB32AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9B172FACE90046AA5E100E650B6109DD;
+			remoteInfo = AWSCore;
 		};
 		66327F50D2DF5D434BA827A407E60B9D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -278,6 +292,13 @@
 			remoteGlobalIDString = 9B172FACE90046AA5E100E650B6109DD;
 			remoteInfo = AWSCore;
 		};
+		7274E8D64BFBF1E4693969C4FEA60123 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 67802A3C17118D77F340B055A6591CF1;
+			remoteInfo = "Pods-AWSS3StoragePlugin";
+		};
 		79033E4F4F1C0C3F143CAB7370425C6D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
@@ -285,12 +306,12 @@
 			remoteGlobalIDString = 308B5C440C446909122081D367A27A8F;
 			remoteInfo = CwlCatchException;
 		};
-		89943F21FC26BC7FF84C4D4D3DA6D3DA /* PBXContainerItemProxy */ = {
+		A22A4E7D73C9CBFDC7627A1789C55037 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 9B172FACE90046AA5E100E650B6109DD;
-			remoteInfo = AWSCore;
+			remoteGlobalIDString = E4D853F6FBAB5A9BDBE843E4EFB22EB7;
+			remoteInfo = CwlPreconditionTesting;
 		};
 		A7E513B768C33E1E0D101927C7567E7B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -307,13 +328,6 @@
 			remoteInfo = CwlCatchException;
 		};
 		BFBFEB82A3BD767DBCA07F10AC7BCACC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 31F0084E2E60CA68AAF7E3224C77C86E;
-			remoteInfo = AWSS3;
-		};
-		C886CBE5F060D5E612EF380DA2992633 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
@@ -648,19 +662,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		94E3978EC0860F2066DD6C9EC16C6279 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0FC8D1CD372E491239B8F19C66A5A2F /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B3C1D760373135D76E80C8EF9C9906C9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				3EBD1DFC7072E4D27E1C6EE9BCF7A5EC /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C872F1D9F9F58EA853C412221A150CD2 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				148CA4686C8EE1AA4D5B2499F72889F5 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1146,6 +1160,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		266CE55DD2F29C8FEDF48175E577BE0E /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6C0B8CFC635C2CA9920EE0639C07C9C /* Pods-AWSS3StoragePluginTests-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4A48F6E741568CB90976EE15835856FB /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -1288,14 +1310,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D2C1DABFAE4A9D3642E58A774B75C971 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				DCD7C71FD9203267E63A48E5BF2C2813 /* Pods-AWSS3StoragePluginTests-umbrella.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		E01F5F92B366C27024DB1C0C8A7B679B /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -1404,19 +1418,21 @@
 		};
 		D4240F3A38F13E0136D92E7FD7AD535D /* Pods-AWSS3StoragePluginTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F2D9CFE9BA613BAC19471141C4D0FAC1 /* Build configuration list for PBXNativeTarget "Pods-AWSS3StoragePluginTests" */;
+			buildConfigurationList = 700B93E0EC7CD02025DA8F43E7F47C91 /* Build configuration list for PBXNativeTarget "Pods-AWSS3StoragePluginTests" */;
 			buildPhases = (
-				D2C1DABFAE4A9D3642E58A774B75C971 /* Headers */,
-				7F080ECC5ED9B18A78C33D6F89944BD5 /* Sources */,
-				C872F1D9F9F58EA853C412221A150CD2 /* Frameworks */,
-				ECA9F80D5CA52C84FC46737AB30D31B6 /* Resources */,
+				266CE55DD2F29C8FEDF48175E577BE0E /* Headers */,
+				40A2A02D33CBAC3D744E1865042E9963 /* Sources */,
+				94E3978EC0860F2066DD6C9EC16C6279 /* Frameworks */,
+				3704F24F8C1EF89B9A3173D7A9CC4700 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				9202C91B1563DDCE611F997953E51CEA /* PBXTargetDependency */,
-				D87A4EC4DCB0B27E78B62EF2CB7057B6 /* PBXTargetDependency */,
-				9BE1C69591D5B935CB30D55084AD3895 /* PBXTargetDependency */,
+				5B706DFFB1A06A8201B4EDD910707967 /* PBXTargetDependency */,
+				E00B57D42A75A90857C8382CFCEB8DCD /* PBXTargetDependency */,
+				A504B85731C85BD13FBB9A6C09714F51 /* PBXTargetDependency */,
+				67B0080562860B8E825DD305D6E84ED3 /* PBXTargetDependency */,
+				8B20EF42FA34CBA5678BE0ABA525DAB2 /* PBXTargetDependency */,
 			);
 			name = "Pods-AWSS3StoragePluginTests";
 			productName = "Pods-AWSS3StoragePluginTests";
@@ -1523,6 +1539,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3704F24F8C1EF89B9A3173D7A9CC4700 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4B124986EE1B96094B062771EA3D80AE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1572,16 +1595,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		ECA9F80D5CA52C84FC46737AB30D31B6 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		40A2A02D33CBAC3D744E1865042E9963 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C897FFCFD5ABDFF82C0A8563FE95F89B /* Pods-AWSS3StoragePluginTests-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		58CFDABA7CDB3DE68136E552077E3602 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1675,14 +1699,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		7F080ECC5ED9B18A78C33D6F89944BD5 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				2BC926E6C937A747295AC3CC7E175044 /* Pods-AWSS3StoragePluginTests-dummy.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		9141A1E9A6880EFAA5DC4D6125871566 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1769,35 +1785,41 @@
 			target = 31F0084E2E60CA68AAF7E3224C77C86E /* AWSS3 */;
 			targetProxy = BFBFEB82A3BD767DBCA07F10AC7BCACC /* PBXContainerItemProxy */;
 		};
+		5B706DFFB1A06A8201B4EDD910707967 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AWSCore;
+			target = 9B172FACE90046AA5E100E650B6109DD /* AWSCore */;
+			targetProxy = 2814F09316AAAB9F0512C6ECC8CB32AC /* PBXContainerItemProxy */;
+		};
 		5F83E3BE71596DE1F4136C4140276E34 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = CwlCatchException;
 			target = 308B5C440C446909122081D367A27A8F /* CwlCatchException */;
 			targetProxy = 79033E4F4F1C0C3F143CAB7370425C6D /* PBXContainerItemProxy */;
 		};
-		9202C91B1563DDCE611F997953E51CEA /* PBXTargetDependency */ = {
+		67B0080562860B8E825DD305D6E84ED3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = AWSCore;
-			target = 9B172FACE90046AA5E100E650B6109DD /* AWSCore */;
-			targetProxy = 89943F21FC26BC7FF84C4D4D3DA6D3DA /* PBXContainerItemProxy */;
+			name = CwlPreconditionTesting;
+			target = E4D853F6FBAB5A9BDBE843E4EFB22EB7 /* CwlPreconditionTesting */;
+			targetProxy = A22A4E7D73C9CBFDC7627A1789C55037 /* PBXContainerItemProxy */;
 		};
-		9BE1C69591D5B935CB30D55084AD3895 /* PBXTargetDependency */ = {
+		8B20EF42FA34CBA5678BE0ABA525DAB2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "Pods-AWSS3StoragePlugin";
 			target = 67802A3C17118D77F340B055A6591CF1 /* Pods-AWSS3StoragePlugin */;
-			targetProxy = 3DEC29985D3445CE7DAC9F0711B2317F /* PBXContainerItemProxy */;
+			targetProxy = 7274E8D64BFBF1E4693969C4FEA60123 /* PBXContainerItemProxy */;
+		};
+		A504B85731C85BD13FBB9A6C09714F51 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CwlCatchException;
+			target = 308B5C440C446909122081D367A27A8F /* CwlCatchException */;
+			targetProxy = 20D4C6CF3EB89D57E0A4B2A038B495DC /* PBXContainerItemProxy */;
 		};
 		BFB998906E8004BDFE40200E11C600EF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = CwlCatchException;
 			target = 308B5C440C446909122081D367A27A8F /* CwlCatchException */;
 			targetProxy = AA4125D0038DCCCC790807476CF408CA /* PBXContainerItemProxy */;
-		};
-		D87A4EC4DCB0B27E78B62EF2CB7057B6 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = AWSS3;
-			target = 31F0084E2E60CA68AAF7E3224C77C86E /* AWSS3 */;
-			targetProxy = C886CBE5F060D5E612EF380DA2992633 /* PBXContainerItemProxy */;
 		};
 		DA05A8FF74A9A600939DC6FD0643AFC0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1810,6 +1832,12 @@
 			name = AWSCore;
 			target = 9B172FACE90046AA5E100E650B6109DD /* AWSCore */;
 			targetProxy = 05250E021E5922FF6710477A5D162D75 /* PBXContainerItemProxy */;
+		};
+		E00B57D42A75A90857C8382CFCEB8DCD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AWSS3;
+			target = 31F0084E2E60CA68AAF7E3224C77C86E /* AWSS3 */;
+			targetProxy = 06C135611DE61158D1B6AA007734F286 /* PBXContainerItemProxy */;
 		};
 		EBD67AC923A972E20EC17B164F12E3AF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1961,6 +1989,44 @@
 			};
 			name = Debug;
 		};
+		5AD48AAE5A68198B690DF774A9206F8D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3735A2409E0089D43ACBEA9FDFC74F58 /* Pods-AWSS3StoragePluginTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
 		7033550A231B2E2FFEE54C50227D8CE8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2AD94298A4513BF530432B64ECE889D4 /* Pods-Amplify.debug.xcconfig */;
@@ -2033,6 +2099,45 @@
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
+		};
+		83978234C5BE49162652FA44A94696BB /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E192C1D63475A6A4D1D01E4B289ACD75 /* Pods-AWSS3StoragePluginTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
 		};
 		8791118DB98D92BBB0F17F3D44C8EF14 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -2215,44 +2320,6 @@
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
-		};
-		9655E46982DD20231362C333008D913C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3735A2409E0089D43ACBEA9FDFC74F58 /* Pods-AWSS3StoragePluginTests.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
 		};
 		A4A57FD36DD30772507B9A3AD28CB752 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -2574,45 +2641,6 @@
 			};
 			name = Debug;
 		};
-		F6400399F4C99C36546A291746F4935F /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = E192C1D63475A6A4D1D01E4B289ACD75 /* Pods-AWSS3StoragePluginTests.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2630,6 +2658,15 @@
 			buildConfigurations = (
 				196DFA3E4A09A28224918543529A1885 /* Debug */,
 				B01D14FDC83DCF9D4BE53066BEA96D05 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		700B93E0EC7CD02025DA8F43E7F47C91 /* Build configuration list for PBXNativeTarget "Pods-AWSS3StoragePluginTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5AD48AAE5A68198B690DF774A9206F8D /* Debug */,
+				83978234C5BE49162652FA44A94696BB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2693,15 +2730,6 @@
 			buildConfigurations = (
 				7C3B794B4D2D184F3D88EB3A9625E218 /* Debug */,
 				8791118DB98D92BBB0F17F3D44C8EF14 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F2D9CFE9BA613BAC19471141C4D0FAC1 /* Build configuration list for PBXNativeTarget "Pods-AWSS3StoragePluginTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				9655E46982DD20231362C333008D913C /* Debug */,
-				F6400399F4C99C36546A291746F4935F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

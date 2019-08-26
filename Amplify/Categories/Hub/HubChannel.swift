@@ -10,4 +10,7 @@ public enum HubChannel {
 
     /// Hub messages relating to the Amplify Core (e.g., configuration)
     case core
+    
+    /// Hub messages relating to Amplify Storage
+    case storage
 }

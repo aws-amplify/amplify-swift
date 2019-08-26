@@ -4,8 +4,10 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-
+import Foundation
 extension StorageCategory: StorageCategoryClientBehavior {
+    
+    
     private func plugin(from selector: StoragePluginSelector) -> StorageCategoryPlugin {
         guard let key = selector.selectedPluginKey else {
             preconditionFailure(
@@ -23,12 +25,66 @@ extension StorageCategory: StorageCategoryClientBehavior {
         return plugin
     }
 
-    public func get(key: String, options: Any?) -> StorageGetOperation {
+    public func get(key: String, options: StorageGetOption?, onComplete: ((CompletionEvent<StorageGetResult, StorageGetError>) -> Void)?) -> StorageGetOperation {
         switch pluginOrSelector {
         case .plugin(let plugin):
-            return plugin.get(key: key, options: options)
+            return plugin.get(key: key, options: options, onComplete: onComplete)
         case .selector(let selector):
-            return plugin(from: selector).get(key: key, options: options)
+            return plugin(from: selector).get(key: key, options: options, onComplete: onComplete)
+        }
+    }
+    
+    public func get(key: String, local: URL, options: StorageGetOption?, onComplete: ((CompletionEvent<StorageGetResult, StorageGetError>) -> Void)?) -> StorageGetOperation {
+        switch pluginOrSelector {
+        case .plugin(let plugin):
+            return plugin.get(key: key, local: local, options: options, onComplete: onComplete)
+        case .selector(let selector):
+            return plugin(from: selector).get(key: key, local: local, options: options, onComplete: onComplete)
+        }
+    }
+    
+    public func getURL(key: String, options: StorageGetUrlOption?, onComplete: ((CompletionEvent<StorageGetUrlResult, StorageGetUrlError>) -> Void)?) -> StorageGetUrlOperation {
+        switch pluginOrSelector {
+        case .plugin(let plugin):
+            return plugin.getURL(key: key, options: options, onComplete: onComplete)
+        case .selector(let selector):
+            return plugin(from: selector).getURL(key: key, options: options, onComplete: onComplete)
+        }
+    }
+    
+    public func put(key: String, data: Data, options: StoragePutOption?, onComplete: ((CompletionEvent<StoragePutResult, StoragePutError>) -> Void)?) -> StoragePutOperation {
+        switch pluginOrSelector {
+        case .plugin(let plugin):
+            return plugin.put(key: key, data: data, options: options, onComplete: onComplete)
+        case .selector(let selector):
+            return plugin(from: selector).put(key: key, data: data, options: options, onComplete: onComplete)
+        }
+    }
+    
+    public func put(key: String, local: URL, options: StoragePutOption?, onComplete: ((CompletionEvent<StoragePutResult, StoragePutError>) -> Void)?) -> StoragePutOperation {
+        switch pluginOrSelector {
+        case .plugin(let plugin):
+            return plugin.put(key: key, local: local, options: options, onComplete: onComplete)
+        case .selector(let selector):
+            return plugin(from: selector).put(key: key, local: local, options: options, onComplete: onComplete)
+        }
+    }
+    
+    public func remove(key: String, options: StorageRemoveOption?, onComplete: ((CompletionEvent<StorageRemoveResult, StorageRemoveError>) -> Void)?) -> StorageRemoveOperation {
+        switch pluginOrSelector {
+        case .plugin(let plugin):
+            return plugin.remove(key: key, options: options, onComplete: onComplete)
+        case .selector(let selector):
+            return plugin(from: selector).remove(key: key, options: options, onComplete: onComplete)
+        }
+    }
+    
+    public func list(options: StorageListOption?, onComplete: ((CompletionEvent<StorageListResult, StorageListError>) -> Void)?) -> StorageListOperation {
+        switch pluginOrSelector {
+        case .plugin(let plugin):
+            return plugin.list(options: options, onComplete: onComplete)
+        case .selector(let selector):
+            return plugin(from: selector).list(options: options, onComplete: onComplete)
         }
     }
     

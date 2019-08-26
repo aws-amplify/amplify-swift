@@ -32,6 +32,9 @@ target 'AWSS3StoragePlugin' do
     inherit! :search_paths
     pod 'AWSS3'
     pod 'AWSCore'
+    # Pods for testing
+    pod 'CwlPreconditionTesting', :git => 'https://github.com/mattgallagher/CwlPreconditionTesting.git'
+    pod 'CwlCatchException', :git => 'https://github.com/mattgallagher/CwlCatchException.git'
 
   end
 

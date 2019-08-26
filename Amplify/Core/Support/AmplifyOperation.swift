@@ -7,7 +7,7 @@
 
 import Foundation
 
-open class AmplifyOperation<InProcessType, CompletedType, ErrorType: AmplifyError>: Operation,
+open class AmplifyOperation<InProcessType, CompletedType, ErrorType: AmplifyError>: AsynchronousOperation,
 CategoryTypeable, EventPublishable {
     public init(categoryType: CategoryType) {
         self.categoryType = categoryType
@@ -17,7 +17,7 @@ CategoryTypeable, EventPublishable {
     
     public let id = UUID()
 
-    public func listenToOperationEvents(
+    public func subscribe(
         filteringWith filter: @escaping HubFilter,
         onEvent: @escaping HubListener) -> UnsubscribeToken {
 //        let idFilteringWrapper: HubFilter = { payload in
@@ -29,8 +29,10 @@ CategoryTypeable, EventPublishable {
         return token
     }
     
-    open func subscribe(_ onEvent: @escaping (AsyncEvent<InProcessType, CompletedType, ErrorType>) -> Void) -> Unsubscribe {
-        return { () -> Void in return }
+    public func dispatch(event: AsyncEvent<InProcessType, CompletedType, ErrorType>) {
+        // TODO: Pass event to the Hub
+        let payload = HubPayload(event: "event")
+        Amplify.Hub.dispatch(to: .storage, payload: payload)
     }
 }
 
