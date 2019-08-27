@@ -7,9 +7,30 @@
 
 import XCTest
 import CwlPreconditionTesting
+import Amplify
 @testable import AWSS3StoragePlugin
 
 class AWSS3StoragePluginTests: XCTestCase {
+    var storagePlugin: AWSS3StoragePlugin!
+    var service: MockAWSS3StorageService!
+    var queue: MockOperationQueue!
+    let key: String = "key"
+    let bucket: String = "bucket"
+
+    override func setUp() {
+        storagePlugin = AWSS3StoragePlugin()
+        service = MockAWSS3StorageService()
+        queue = MockOperationQueue()
+
+    }
+
+    // MARK: configuration tests
+    func testConfigureThrowsErrorForMissingBucket() {
+    }
+
+    func testConfigureThrowsErrorForMissingRegion() {
+    }
+
     func testNotConfiguredThrowsExceptionForGet() {
         let storagePlugin = AWSS3StoragePlugin()
 
@@ -73,15 +94,10 @@ class AWSS3StoragePluginTests: XCTestCase {
         XCTAssertNotNil(exception)
     }
 
-    // StoragePlugin Get API Tests
+    // MARK: Get API Tests
     func testPluginGet() {
         // Arrange
-        let storagePlugin = AWSS3StoragePlugin()
-        let service = MockAWSS3StorageService()
-        let queue = MockOperationQueue()
-        let bucket = "bucket"
         storagePlugin.configure(storageService: service, bucket: bucket, queue: queue)
-        let key = "key"
         let expectedKey = "public/" + key
 
         // Act
@@ -90,7 +106,7 @@ class AWSS3StoragePluginTests: XCTestCase {
         // Assert
         XCTAssertNotNil(result)
         guard let awss3StorageGetOperation = result as? AWSS3StorageGetOperation else {
-            XCTFail("operation not castable to ")
+            XCTFail("operation could not be cast as AWSS3StorageGetOperation")
             return
         }
         let request = awss3StorageGetOperation.request
@@ -101,17 +117,32 @@ class AWSS3StoragePluginTests: XCTestCase {
     }
 
     func testPluginGetWithOptions() {
+        // Arrange
+        let accessLevel = AccessLevel.Private
+        let options = StorageGetOption(accessLevel: accessLevel, options: nil)
+        storagePlugin.configure(storageService: service, bucket: bucket, queue: queue)
+        let expectedKey = accessLevel.rawValue + "/" + key
 
+        // Act
+        let result = storagePlugin.get(key: key, options: options, onComplete: nil)
+
+        // Assert
+        XCTAssertNotNil(result)
+        guard let awss3StorageGetOperation = result as? AWSS3StorageGetOperation else {
+            XCTFail("operation could not be cast as AWSS3StorageGetOperation")
+            return
+        }
+        let request = awss3StorageGetOperation.request
+        XCTAssertNotNil(request)
+        XCTAssertEqual(request.bucket, bucket)
+        XCTAssertEqual(request.key, expectedKey)
+        XCTAssertNil(request.fileURL)
     }
 
-    func testPluginGetWithLocalFile() {
+    // MARK: GET to local file API tests
+    func testPluginGetLocalFile() {
         // Arrange
-        let storagePlugin = AWSS3StoragePlugin()
-        let service = MockAWSS3StorageService()
-        let queue = MockOperationQueue()
-        let bucket = "bucket"
         storagePlugin.configure(storageService: service, bucket: bucket, queue: queue)
-        let key = "key"
         let expectedKey = "public/" + key
         let url = URL(fileURLWithPath: "path")
 
@@ -132,64 +163,71 @@ class AWSS3StoragePluginTests: XCTestCase {
         XCTAssertEqual(request.fileURL, url)
     }
 
-    // StoragePlugin Get URL Tests
-    func testAWSS3StoragePluginGet_Error() {
-
-    }
-
-    func testAWSS3StoragePluginGet_WithXOptions() {
-        // mostly same as above
-    }
-
-    func AWSS3StorageGetOperation_UnitTesting() {
+    func testPluginGetLocalFileWithOptions() {
         // Arrange
-        // set up an operation with the request object
-        // operation needs the storageLayer to do its work... so we need to pass by reference to it.
-        // AWSS3StorageLayer will then internally retrieve the singleton's and do the work.
-        // AWSS3StorageLayer protocol will abstract away which dependency we are wrapping,
-        // ie. StorageLayer protocol has download/upload/getUrl/list/remove/and more can be added.
-        // set up an operation with the storageLayer.
+        let accessLevel = AccessLevel.Protected
+        let options = StorageGetOption(accessLevel: .Protected, options: nil)
+        storagePlugin.configure(storageService: service, bucket: bucket, queue: queue)
+        let expectedKey = accessLevel.rawValue + "/" + key
+        let url = URL(fileURLWithPath: "path")
 
         // Act
-        // can we simply do operation.start() -> call the main method?
-        // this means MockAWSS3StorageLayer will be an instance we pass into init which we can assert that
-        // things are called
+        let result = storagePlugin.get(key: key, local: url, options: options, onComplete: nil)
 
         // Assert
-    }
+        XCTAssertNotNil(result)
 
-    // functional or integration in this sense uses real storage layer.
-    // so we need to create a real instance of the storagelayer with real data.
-    func testAWSS3StorageGetOperation_Functional() {
-        // Arrange
-        // create instance of AWss3storageLayer with real data
-        // create request for operation
-        // create oncomplete handler
-        // create operation with above
-
-        // Act
-        // operation.start? or queue it up..
-
-        // Assert
-        // make sure that the assert on completion worked
-        // make sure progress handler gets called?
-        // make sure we got the data back and it is valid
-    }
-
-    func testAWSS3StorageLayer_download_UnitTest() {
-        // so here we are constructing a real awss3storagelayer
-        // and a mock of transferUtility.
-
-        // now how do we mock transferUtility if the storageLayer is init with singletons?
-        // can we create MockAWSS3TransferUtility?
-        // when(AWSS3TransferUtility.s3TransferUtility(forKey:key).thenReturn(mockAwsS3TransferUtility)?
-    }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+        guard let awss3StorageGetOperation = result as? AWSS3StorageGetOperation else {
+            XCTFail("operation not castable to ")
+            return
         }
+        let request = awss3StorageGetOperation.request
+        XCTAssertNotNil(request)
+        XCTAssertEqual(request.bucket, bucket)
+        XCTAssertEqual(request.key, expectedKey)
+        XCTAssertEqual(request.fileURL, url)
     }
 
+    // MARK: GetURL API tests
+    func testPluginGetUrl() {
+    }
+
+    func testPluginGetUrlWithOptions() {
+    }
+
+    // MARK: Put API tests
+    func testPluginPut() {
+
+    }
+
+    func testPluginPutWithOptions() {
+
+    }
+
+    // MARK: Put to local file API tests
+    func testPluginPutToLocalFile() {
+
+    }
+
+    func testPluginPutToLocalFileWithOptions() {
+
+    }
+
+    // MARK: Remove API tests
+    func testPluginRemove() {
+
+    }
+
+    func testPluginRemoveWithOptions() {
+
+    }
+
+    // MARK: List API tests
+    func testPluginList() {
+
+    }
+
+    func testPluginListWithOptions() {
+
+    }
 }

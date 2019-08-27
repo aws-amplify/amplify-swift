@@ -8,6 +8,11 @@
 import Foundation
 
 public class StorageRemoveOption: StorageOption {
+    public init(accessLevel: AccessLevel?, options: Any?) {
+        self.accessLevel = accessLevel
+        self.options = options
+    }
+
     public var accessLevel: AccessLevel?
 
     public var options: Any?

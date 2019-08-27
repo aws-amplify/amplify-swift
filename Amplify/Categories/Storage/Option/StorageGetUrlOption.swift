@@ -7,9 +7,15 @@
 
 import Foundation
 public class StorageGetUrlOption: StorageOption {
+    public init(accessLevel: AccessLevel?, expires: Int?, options: Any?) {
+        self.accessLevel = accessLevel
+        self.expires = expires
+        self.options = options
+    }
+
     public var accessLevel: AccessLevel?
 
-    public var options: Any?
-
     public var expires: Int?
+
+    public var options: Any?
 }

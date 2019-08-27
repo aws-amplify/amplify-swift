@@ -392,10 +392,11 @@
 			isa = PBXGroup;
 			children = (
 				21265E252309D620004CCE39 /* AWSS3StoragePlugin.swift */,
-				21FFF9BC230DD71B005878EA /* API */,
 				21FFF9BA230DD304005878EA /* Operation */,
-				21FFF9D7230E06DD005878EA /* Support */,
+				21FFF9BB230DD694005878EA /* Request */,
 				21FFF9CB230DDB34005878EA /* Resources */,
+				21FFF9BC230DD71B005878EA /* Service */,
+				21FFF9D7230E06DD005878EA /* Support */,
 			);
 			path = AWSS3StoragePlugin;
 			sourceTree = "<group>";
@@ -404,10 +405,11 @@
 			isa = PBXGroup;
 			children = (
 				21265DB12307389A004CCE39 /* AWSS3StoragePluginTests.swift */,
-				21FFF9F323133EB9005878EA /* API */,
-				21FFF9F423133EEF005878EA /* Operation */,
 				21FFF9F223131C79005878EA /* Mocks */,
+				21FFF9F423133EEF005878EA /* Operation */,
+				21FFF9F723133F2F005878EA /* Request */,
 				21FFF9DC230EF99F005878EA /* Resources */,
+				21FFF9F323133EB9005878EA /* Service */,
 			);
 			path = AWSS3StoragePluginTests;
 			sourceTree = "<group>";
@@ -481,15 +483,14 @@
 			path = Request;
 			sourceTree = "<group>";
 		};
-		21FFF9BC230DD71B005878EA /* API */ = {
+		21FFF9BC230DD71B005878EA /* Service */ = {
 			isa = PBXGroup;
 			children = (
 				21FFF9CC230DDBFA005878EA /* AWSS3StorageService.swift */,
 				21FFF9B6230DBE2D005878EA /* AWSS3StorageServiceBehaviour.swift */,
 				21FFF9D6230E06AD005878EA /* Dependency */,
-				21FFF9BB230DD694005878EA /* Request */,
 			);
-			path = API;
+			path = Service;
 			sourceTree = "<group>";
 		};
 		21FFF9CB230DDB34005878EA /* Resources */ = {
@@ -555,13 +556,12 @@
 			path = Mocks;
 			sourceTree = "<group>";
 		};
-		21FFF9F323133EB9005878EA /* API */ = {
+		21FFF9F323133EB9005878EA /* Service */ = {
 			isa = PBXGroup;
 			children = (
 				21FFF9F523133F21005878EA /* AWSS3StorageServiceTests.swift */,
-				21FFF9F723133F2F005878EA /* Request */,
 			);
-			path = API;
+			path = Service;
 			sourceTree = "<group>";
 		};
 		21FFF9F423133EEF005878EA /* Operation */ = {

@@ -5,9 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 public class StorageListOption: StorageOption {
-    internal init(accessLevel: AccessLevel?, options: Any?, prefix: String?, limit: Int?) {
+    public init(accessLevel: AccessLevel?, prefix: String?, limit: Int?, options: Any?) {
         self.accessLevel = accessLevel
         self.options = options
         self.prefix = prefix
@@ -16,9 +15,9 @@ public class StorageListOption: StorageOption {
 
     public var accessLevel: AccessLevel?
 
-    public var options: Any?
+    public var prefix: String?
 
     public var limit: Int?
 
-    public var prefix: String?
+    public var options: Any?
 }

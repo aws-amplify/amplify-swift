@@ -32,10 +32,6 @@ class AWSS3StorageServiceTests: XCTestCase {
         failedInvoked = expectation(description: "Failed event was invoked on storage service")
     }
 
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
     func testStorageServiceExecuteGetRequest() {
         // Arrange
         let request = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key").build()

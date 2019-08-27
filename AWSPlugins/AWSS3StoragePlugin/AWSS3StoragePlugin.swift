@@ -64,17 +64,13 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
         self.queue = queue
     }
 
-    private var isConfigured: Bool {
-        return self.storageService != nil && self.bucket != nil
-    }
-
     public func reset() {
         self.storageService = nil
         self.bucket = nil
     }
 
     private func throwIfNotConfigured() {
-        if !isConfigured {
+        if !(self.storageService != nil && self.bucket != nil) {
             fatalError(AWSS3StoragePlugin.AWSS3StoragePluginNotConfiguredError)
         }
     }

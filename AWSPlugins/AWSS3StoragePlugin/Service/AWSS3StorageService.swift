@@ -110,7 +110,7 @@ public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
             if let error = task.error {
                 onEvent(StorageEvent.failed(StorageGetUrlError.unknown(error.localizedDescription, "TODO")))
             } else if let result = task.result {
-                onEvent(StorageEvent.completed(StorageGetUrlResult(url: result)))
+                onEvent(StorageEvent.completed(StorageGetUrlResult(url: result as URL)))
             } else {
 
             }
