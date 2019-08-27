@@ -9,7 +9,6 @@ import Foundation
 
 public class StorageRemoveOption: StorageOption {
     public var accessLevel: AccessLevel?
-    
+
     public var options: Any?
-    
 }

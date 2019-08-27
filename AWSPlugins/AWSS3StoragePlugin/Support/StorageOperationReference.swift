@@ -17,11 +17,11 @@ public class StorageOperationReference {
         task.suspend()
         //task.taskIdentifier
     }
-    
+
     func resume() {
         task.resume()
     }
-    
+
     func cancel() {
         task.cancel()
     }

@@ -7,9 +7,9 @@
 
 import Foundation
 public class StorageGetUrlResult {
-    public init(url: NSURL) {
+    public init(url: URL) {
         self.url = url
     }
-    
-    var url: NSURL
+
+    var url: URL
 }

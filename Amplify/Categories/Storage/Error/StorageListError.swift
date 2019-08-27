@@ -6,16 +6,26 @@
 //
 
 import Foundation
-public class StorageListError: AmplifyError {
-    internal init(errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion) {
-        self.errorDescription = errorDescription
-        self.recoverySuggestion = recoverySuggestion
+
+public enum StorageListError {
+    case httpStatusError(ErrorDescription, RecoverySuggestion)
+    case unknown(ErrorDescription, RecoverySuggestion)
+}
+
+extension StorageListError: AmplifyError {
+    public var errorDescription: ErrorDescription {
+        switch self {
+        case .httpStatusError(let description, _),
+             .unknown(let description, _):
+            return description
+        }
     }
-    
-    public var errorDescription: ErrorDescription
-    
-    // specific to the Put operation
-    public var recoverySuggestion: RecoverySuggestion
-    
-    
+
+    public var recoverySuggestion: RecoverySuggestion {
+        switch self {
+        case .httpStatusError(_, let recoverySuggestion),
+             .unknown(_, let recoverySuggestion):
+            return recoverySuggestion
+        }
+    }
 }

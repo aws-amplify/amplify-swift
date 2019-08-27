@@ -12,14 +12,14 @@ import Amplify
 public enum StorageEvent<InitiatedType, InProcessType, CompletedType, ErrorType: AmplifyError> {
 
     case initiated(InitiatedType)
-    
+
     /// The StorageEvent is running.
     case inProcess(InProcessType)
-    
+
     /// The StorageEvent is complete. No further status updates will be emitted for this event. Any result values will
     /// be available in the StorageEvent `value`
     case completed(CompletedType)
-    
+
     /// The StorageEvent failed. No further status updates will be emitted for this event. Any result values will be
     /// available in the StorageEvent `value`.
     case failed(ErrorType)

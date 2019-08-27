@@ -17,4 +17,3 @@ public protocol EventPublishable {
     func subscribe(filteringWith filter: @escaping HubFilter, onEvent: @escaping HubListener) -> UnsubscribeToken
     func dispatch(event: AsyncEvent<InProcessType, CompletedType, ErrorType>)
 }
-

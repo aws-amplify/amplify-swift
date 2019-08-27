@@ -6,13 +6,13 @@
 //
 
 import Foundation
-public class MockOperationQueue : OperationQueue {
-    
+public class MockOperationQueue: OperationQueue {
+
     private var mockOperationCount: Int = 0
     override public var operationCount: Int {
         return mockOperationCount
     }
-    override public func addOperation(_ op: Operation) {
+    override public func addOperation(_ operation: Operation) {
         mockOperationCount += 1
     }
 }

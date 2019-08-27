@@ -15,7 +15,7 @@ public class AWSS3StoragePutRequest {
     let data: Data?
     let local: URL?
     let contentType: String?
-    
+
     init(builder: Builder) {
         self.bucket = builder.bucket
         self.accessLevel = builder.accessLevel
@@ -24,7 +24,7 @@ public class AWSS3StoragePutRequest {
         self.local = builder.local
         self.contentType = builder.contentType
     }
-    
+
     var key: String {
         if let accessLevel = accessLevel {
             return accessLevel.rawValue + "/" + _key
@@ -32,7 +32,7 @@ public class AWSS3StoragePutRequest {
             return _key
         }
     }
-    
+
     class Builder {
         let bucket: String
         private(set) var accessLevel: AccessLevel?
@@ -40,17 +40,17 @@ public class AWSS3StoragePutRequest {
         private(set) var data: Data?
         private(set) var local: URL?
         private(set) var contentType: String?
-        
+
         init(bucket: String, key: String) {
             self.bucket = bucket
             self.key = key
         }
-        
+
         func data(_ data: Data) -> Builder {
             self.data = data
             return self
         }
-        
+
         func local(_ local: URL) -> Builder {
             self.local = local
             return self
@@ -59,12 +59,12 @@ public class AWSS3StoragePutRequest {
             self.accessLevel = accessLevel
             return self
         }
-        
+
         func contentType(_ contentType: String) -> Builder {
             self.contentType = contentType
             return self
         }
-        
+
         func build() -> AWSS3StoragePutRequest {
             return AWSS3StoragePutRequest(builder: self)
         }

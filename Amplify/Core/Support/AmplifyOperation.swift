@@ -12,9 +12,9 @@ CategoryTypeable, EventPublishable {
     public init(categoryType: CategoryType) {
         self.categoryType = categoryType
     }
-    
+
     public var categoryType: CategoryType
-    
+
     public let id = UUID()
 
     public func subscribe(
@@ -28,7 +28,7 @@ CategoryTypeable, EventPublishable {
                                        onEvent: onEvent)
         return token
     }
-    
+
     public func dispatch(event: AsyncEvent<InProcessType, CompletedType, ErrorType>) {
         // TODO: Pass event to the Hub
         let payload = HubPayload(event: "event")
@@ -37,4 +37,3 @@ CategoryTypeable, EventPublishable {
 }
 
 extension AmplifyOperation: Cancellable { }
-

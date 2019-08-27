@@ -12,67 +12,67 @@ import CwlPreconditionTesting
 class AWSS3StoragePluginTests: XCTestCase {
     func testNotConfiguredThrowsExceptionForGet() {
         let storagePlugin = AWSS3StoragePlugin()
-        
+
         let exception: BadInstructionException? = catchBadInstruction {
             _ = storagePlugin.get(key: "key", options: nil, onComplete: nil)
         }
-        
+
         XCTAssertNotNil(exception)
     }
-    
+
     func testNotConfiguredThrowsExceptionForGetWithLocalUrl() {
         let storagePlugin = AWSS3StoragePlugin()
         let url = URL(fileURLWithPath: "path")
-        
+
         let exception: BadInstructionException? = catchBadInstruction {
             _ = storagePlugin.get(key: "key", local: url, options: nil, onComplete: nil)
         }
-        
+
         XCTAssertNotNil(exception)
     }
-    
+
     func testNotConfiguredThrowsExceptionForPut() {
         let storagePlugin = AWSS3StoragePlugin()
         let data = Data()
-        
+
         let exception: BadInstructionException? = catchBadInstruction {
             _ = storagePlugin.put(key: "key", data: data, options: nil, onComplete: nil)
         }
-        
+
         XCTAssertNotNil(exception)
     }
-    
+
     func testNotConfiguredThrowsExceptionForPutWithLocalUrl() {
         let storagePlugin = AWSS3StoragePlugin()
         let url = URL(fileURLWithPath: "path")
-        
+
         let exception: BadInstructionException? = catchBadInstruction {
             _ = storagePlugin.put(key: "key", local: url, options: nil, onComplete: nil)
         }
-        
+
         XCTAssertNotNil(exception)
     }
-    
+
     func testNotConfiguredThrowsExceptionForRemove() {
         let storagePlugin = AWSS3StoragePlugin()
-        
+
         let exception: BadInstructionException? = catchBadInstruction {
             _ = storagePlugin.remove(key: "key", options: nil, onComplete: nil)
         }
-        
+
         XCTAssertNotNil(exception)
     }
-    
+
     func testNotConfiguredThrowsExceptionForList() {
         let storagePlugin = AWSS3StoragePlugin()
-        
+
         let exception: BadInstructionException? = catchBadInstruction {
             _ = storagePlugin.list(options: nil, onComplete: nil)
         }
-        
+
         XCTAssertNotNil(exception)
     }
-    
+
     // StoragePlugin Get API Tests
     func testPluginGet() {
         // Arrange
@@ -83,24 +83,27 @@ class AWSS3StoragePluginTests: XCTestCase {
         storagePlugin.configure(storageService: service, bucket: bucket, queue: queue)
         let key = "key"
         let expectedKey = "public/" + key
-        
+
         // Act
         let result = storagePlugin.get(key: key, options: nil, onComplete: nil)
-        
+
         // Assert
         XCTAssertNotNil(result)
-        let awss3StorageGetOperation = result as! AWSS3StorageGetOperation
+        guard let awss3StorageGetOperation = result as? AWSS3StorageGetOperation else {
+            XCTFail("operation not castable to ")
+            return
+        }
         let request = awss3StorageGetOperation.request
         XCTAssertNotNil(request)
         XCTAssertEqual(request.bucket, bucket)
         XCTAssertEqual(request.key, expectedKey)
         XCTAssertNil(request.fileURL)
     }
-    
+
     func testPluginGetWithOptions() {
-        
+
     }
-    
+
     func testPluginGetWithLocalFile() {
         // Arrange
         let storagePlugin = AWSS3StoragePlugin()
@@ -111,35 +114,33 @@ class AWSS3StoragePluginTests: XCTestCase {
         let key = "key"
         let expectedKey = "public/" + key
         let url = URL(fileURLWithPath: "path")
-        
+
         // Act
         let result = storagePlugin.get(key: key, local: url, options: nil, onComplete: nil)
-        
+
         // Assert
         XCTAssertNotNil(result)
-        let awss3StorageGetOperation = result as! AWSS3StorageGetOperation
+
+        guard let awss3StorageGetOperation = result as? AWSS3StorageGetOperation else {
+            XCTFail("operation not castable to ")
+            return
+        }
         let request = awss3StorageGetOperation.request
         XCTAssertNotNil(request)
         XCTAssertEqual(request.bucket, bucket)
         XCTAssertEqual(request.key, expectedKey)
         XCTAssertEqual(request.fileURL, url)
     }
-    
+
     // StoragePlugin Get URL Tests
     func testAWSS3StoragePluginGet_Error() {
-        
+
     }
-    
+
     func testAWSS3StoragePluginGet_WithXOptions() {
         // mostly same as above
     }
-    
-    // how to replace the singletons with mocks so they do nothing?
-    // can i move it into a protocol like? https://medium.com/@johnsundell/testing-swift-code-that-uses-system-singletons-in-3-easy-steps-89f4884cd325
-    // how about AWSS3Storage as a protocl which has methods for aWSS3 like downloadData/uploadData, etc.
-    // then we implement this AWSS3StorageLayer with calls to AWSS3TransferUtility/AWSS3Service/AWSS3GetPresignedUrl.
-    //
-    
+
     func AWSS3StorageGetOperation_UnitTesting() {
         // Arrange
         // set up an operation with the request object
@@ -148,42 +149,41 @@ class AWSS3StoragePluginTests: XCTestCase {
         // AWSS3StorageLayer protocol will abstract away which dependency we are wrapping,
         // ie. StorageLayer protocol has download/upload/getUrl/list/remove/and more can be added.
         // set up an operation with the storageLayer.
-        
+
         // Act
         // can we simply do operation.start() -> call the main method?
         // this means MockAWSS3StorageLayer will be an instance we pass into init which we can assert that
         // things are called
-        
+
         // Assert
     }
-    
+
     // functional or integration in this sense uses real storage layer.
     // so we need to create a real instance of the storagelayer with real data.
-    func testAWSS3StorageGetOperation_Functional(){
+    func testAWSS3StorageGetOperation_Functional() {
         // Arrange
         // create instance of AWss3storageLayer with real data
         // create request for operation
         // create oncomplete handler
         // create operation with above
-        
+
         // Act
         // operation.start? or queue it up..
-        
+
         // Assert
         // make sure that the assert on completion worked
         // make sure progress handler gets called?
         // make sure we got the data back and it is valid
     }
-    
+
     func testAWSS3StorageLayer_download_UnitTest() {
         // so here we are constructing a real awss3storagelayer
         // and a mock of transferUtility.
-        
+
         // now how do we mock transferUtility if the storageLayer is init with singletons?
         // can we create MockAWSS3TransferUtility?
         // when(AWSS3TransferUtility.s3TransferUtility(forKey:key).thenReturn(mockAwsS3TransferUtility)?
     }
-    
 
     func testPerformanceExample() {
         // This is an example of a performance test case.

@@ -13,12 +13,12 @@ public class StorageListOption: StorageOption {
         self.prefix = prefix
         self.limit = limit
     }
-    
+
     public var accessLevel: AccessLevel?
-    
+
     public var options: Any?
-    
+
     public var limit: Int?
-    
+
     public var prefix: String?
 }

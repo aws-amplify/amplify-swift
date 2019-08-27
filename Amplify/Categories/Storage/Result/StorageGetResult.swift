@@ -8,7 +8,6 @@
 import Foundation
 public class StorageGetResult {
     public init() {
-        
     }
     public init(data: Data) {
         self.data = data

@@ -10,7 +10,6 @@ public class StorageRemoveResult {
     public init(key: String) {
         self.key = key
     }
-    
-    // contains information like the key
+
     var key: String
 }

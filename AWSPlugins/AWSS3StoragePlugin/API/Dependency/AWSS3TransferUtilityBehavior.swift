@@ -12,16 +12,23 @@ public protocol AWSS3TransferUtilityBehavior {
     func downloadData(fromBucket: String,
                       key: String,
                       expression: AWSS3TransferUtilityDownloadExpression,
-                      completionHandler: (AWSS3TransferUtilityDownloadCompletionHandlerBlock)?) -> AWSTask<AWSS3TransferUtilityDownloadTask>
-    
-    func download(to fileURL: URL, bucket: String, key: String, expression: AWSS3TransferUtilityDownloadExpression, completionHandler: AWSS3TransferUtilityDownloadCompletionHandlerBlock?) -> AWSTask<AWSS3TransferUtilityDownloadTask>
-    
+                      completionHandler: (AWSS3TransferUtilityDownloadCompletionHandlerBlock)?)
+        -> AWSTask<AWSS3TransferUtilityDownloadTask>
+
+    func download(to fileURL: URL,
+                  bucket: String,
+                  key: String,
+                  expression: AWSS3TransferUtilityDownloadExpression,
+                  completionHandler: AWSS3TransferUtilityDownloadCompletionHandlerBlock?)
+        -> AWSTask<AWSS3TransferUtilityDownloadTask>
+
+    // swiftlint:disable function_parameter_count
     func uploadData(_ data: Data,
                     bucket: String,
                     key: String,
                     contentType: String,
                     expression: AWSS3TransferUtilityUploadExpression,
-                    completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?) -> AWSTask<AWSS3TransferUtilityUploadTask>
-
+                    completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?)
+        -> AWSTask<AWSS3TransferUtilityUploadTask>
 
 }

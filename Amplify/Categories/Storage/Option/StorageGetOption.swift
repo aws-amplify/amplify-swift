@@ -8,9 +8,8 @@
 import Foundation
 
 public class StorageGetOption: StorageOption {
-    
+
     public var accessLevel: AccessLevel?
-    
+
     public var options: Any?
 }
-

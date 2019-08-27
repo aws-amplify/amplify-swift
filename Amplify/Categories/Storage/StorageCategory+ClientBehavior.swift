@@ -6,8 +6,6 @@
 //
 import Foundation
 extension StorageCategory: StorageCategoryClientBehavior {
-    
-    
     private func plugin(from selector: StoragePluginSelector) -> StorageCategoryPlugin {
         guard let key = selector.selectedPluginKey else {
             preconditionFailure(
@@ -25,7 +23,10 @@ extension StorageCategory: StorageCategoryClientBehavior {
         return plugin
     }
 
-    public func get(key: String, options: StorageGetOption?, onComplete: ((CompletionEvent<StorageGetResult, StorageGetError>) -> Void)?) -> StorageGetOperation {
+    public func get(key: String,
+                    options: StorageGetOption?,
+                    onComplete: StorageGetCompletionEvent?) -> StorageGetOperation {
+
         switch pluginOrSelector {
         case .plugin(let plugin):
             return plugin.get(key: key, options: options, onComplete: onComplete)
@@ -33,8 +34,12 @@ extension StorageCategory: StorageCategoryClientBehavior {
             return plugin(from: selector).get(key: key, options: options, onComplete: onComplete)
         }
     }
-    
-    public func get(key: String, local: URL, options: StorageGetOption?, onComplete: ((CompletionEvent<StorageGetResult, StorageGetError>) -> Void)?) -> StorageGetOperation {
+
+    public func get(key: String,
+                    local: URL,
+                    options: StorageGetOption?,
+                    onComplete: StorageGetCompletionEvent?) -> StorageGetOperation {
+
         switch pluginOrSelector {
         case .plugin(let plugin):
             return plugin.get(key: key, local: local, options: options, onComplete: onComplete)
@@ -42,8 +47,11 @@ extension StorageCategory: StorageCategoryClientBehavior {
             return plugin(from: selector).get(key: key, local: local, options: options, onComplete: onComplete)
         }
     }
-    
-    public func getURL(key: String, options: StorageGetUrlOption?, onComplete: ((CompletionEvent<StorageGetUrlResult, StorageGetUrlError>) -> Void)?) -> StorageGetUrlOperation {
+
+    public func getURL(key: String,
+                       options: StorageGetUrlOption?,
+                       onComplete: StorageGetUrlCompletionEvent?) -> StorageGetUrlOperation {
+
         switch pluginOrSelector {
         case .plugin(let plugin):
             return plugin.getURL(key: key, options: options, onComplete: onComplete)
@@ -51,8 +59,12 @@ extension StorageCategory: StorageCategoryClientBehavior {
             return plugin(from: selector).getURL(key: key, options: options, onComplete: onComplete)
         }
     }
-    
-    public func put(key: String, data: Data, options: StoragePutOption?, onComplete: ((CompletionEvent<StoragePutResult, StoragePutError>) -> Void)?) -> StoragePutOperation {
+
+    public func put(key: String,
+                    data: Data,
+                    options: StoragePutOption?,
+                    onComplete: StoragePutCompletionEvent?) -> StoragePutOperation {
+
         switch pluginOrSelector {
         case .plugin(let plugin):
             return plugin.put(key: key, data: data, options: options, onComplete: onComplete)
@@ -60,8 +72,12 @@ extension StorageCategory: StorageCategoryClientBehavior {
             return plugin(from: selector).put(key: key, data: data, options: options, onComplete: onComplete)
         }
     }
-    
-    public func put(key: String, local: URL, options: StoragePutOption?, onComplete: ((CompletionEvent<StoragePutResult, StoragePutError>) -> Void)?) -> StoragePutOperation {
+
+    public func put(key: String,
+                    local: URL,
+                    options: StoragePutOption?,
+                    onComplete: StoragePutCompletionEvent?) -> StoragePutOperation {
+
         switch pluginOrSelector {
         case .plugin(let plugin):
             return plugin.put(key: key, local: local, options: options, onComplete: onComplete)
@@ -69,8 +85,11 @@ extension StorageCategory: StorageCategoryClientBehavior {
             return plugin(from: selector).put(key: key, local: local, options: options, onComplete: onComplete)
         }
     }
-    
-    public func remove(key: String, options: StorageRemoveOption?, onComplete: ((CompletionEvent<StorageRemoveResult, StorageRemoveError>) -> Void)?) -> StorageRemoveOperation {
+
+    public func remove(key: String,
+                       options: StorageRemoveOption?,
+                       onComplete: StorageRemoveCompletionEvent?) -> StorageRemoveOperation {
+
         switch pluginOrSelector {
         case .plugin(let plugin):
             return plugin.remove(key: key, options: options, onComplete: onComplete)
@@ -78,8 +97,9 @@ extension StorageCategory: StorageCategoryClientBehavior {
             return plugin(from: selector).remove(key: key, options: options, onComplete: onComplete)
         }
     }
-    
-    public func list(options: StorageListOption?, onComplete: ((CompletionEvent<StorageListResult, StorageListError>) -> Void)?) -> StorageListOperation {
+
+    public func list(options: StorageListOption?, onComplete: StorageListCompletionEvent?) -> StorageListOperation {
+
         switch pluginOrSelector {
         case .plugin(let plugin):
             return plugin.list(options: options, onComplete: onComplete)
@@ -87,7 +107,7 @@ extension StorageCategory: StorageCategoryClientBehavior {
             return plugin(from: selector).list(options: options, onComplete: onComplete)
         }
     }
-    
+
     public func stub() {
         switch pluginOrSelector {
         case .plugin(let plugin):

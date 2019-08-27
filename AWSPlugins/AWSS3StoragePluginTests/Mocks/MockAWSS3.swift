@@ -13,9 +13,9 @@ public class MockS3: AWSS3Behavior {
     public func listObjectsV2(_ request: AWSS3ListObjectsV2Request) -> AWSTask<AWSS3ListObjectsV2Output> {
         return AWSTask()
     }
-    
+
     public func deleteObject(_ request: AWSS3DeleteObjectRequest) -> AWSTask<AWSS3DeleteObjectOutput> {
-        
+
         return AWSTask()
     }
 }

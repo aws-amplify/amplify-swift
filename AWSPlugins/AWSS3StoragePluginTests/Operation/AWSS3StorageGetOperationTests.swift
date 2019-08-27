@@ -14,16 +14,12 @@ class AWSS3StorageGetOperationTests: XCTestCase {
 
     override func setUp() {
         Amplify.reset()
-        
+
         let hubConfig = BasicCategoryConfiguration(
             plugins: ["MockHubCategoryPlugin": true]
         )
-        
-        mockAmplifyConfig = BasicAmplifyConfiguration(hub: hubConfig)
-    }
 
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        mockAmplifyConfig = BasicAmplifyConfiguration(hub: hubConfig)
     }
 
     func testGetOperation() throws {
@@ -41,34 +37,32 @@ class AWSS3StorageGetOperationTests: XCTestCase {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
-        
+
         let mockStorageService = MockAWSS3StorageService()
         let request = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key").build()
-        
+
         let completionInvoked = expectation(description: "completion was invoked on operation")
         let failedInvoked = expectation(description: "failed was invoked on operation")
         failedInvoked.isInverted = true
-        
+
         let operation = AWSS3StorageGetOperation(request, service: mockStorageService, onComplete: { (event) in
-            switch (event) {
-            case .completed(_):
+            switch event {
+            case .completed:
                 completionInvoked.fulfill()
-                break
-            case .failed(_):
+            case .failed:
                 failedInvoked.fulfill()
-                break
             }
         })
-        
+
         // Act
         operation.start()
-        
+
         // Assert
         XCTAssertEqual(mockStorageService.executeGetRequestCalled, true)
         XCTAssertTrue(operation.isFinished)
         waitForExpectations(timeout: 1.0)
     }
-    
+
     func testGetOperationError() {
         // Arrange
         // set up mock service to return failure.

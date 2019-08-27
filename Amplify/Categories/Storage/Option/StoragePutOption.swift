@@ -8,9 +8,9 @@
 import Foundation
 public class StoragePutOption: StorageOption {
     public var accessLevel: AccessLevel?
-    
+
     public var options: Any?
-    
+
     public var contentType: String?
-    public var metadata: [String:String]?
+    public var metadata: [String: String]?
 }
