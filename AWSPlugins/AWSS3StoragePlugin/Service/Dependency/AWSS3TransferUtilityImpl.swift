@@ -8,7 +8,7 @@
 import Foundation
 import AWSS3
 
-public class AWSS3TransferUtilityImpl: AWSS3TransferUtilityBehavior {
+class AWSS3TransferUtilityImpl: AWSS3TransferUtilityBehavior {
 
     let transferUtility: AWSS3TransferUtility
 

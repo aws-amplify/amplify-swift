@@ -7,7 +7,7 @@
 
 import Foundation
 import Amplify
-import AWSS3StoragePlugin
+@testable import AWSS3StoragePlugin
 
 public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
 

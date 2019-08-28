@@ -8,8 +8,7 @@
 import Foundation
 import AWSS3
 
-public protocol AWSS3Behavior {
+protocol AWSS3Behavior {
     func listObjectsV2(_ request: AWSS3ListObjectsV2Request) -> AWSTask<AWSS3ListObjectsV2Output>
     func deleteObject(_ request: AWSS3DeleteObjectRequest) -> AWSTask<AWSS3DeleteObjectOutput>
-
 }

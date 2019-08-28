@@ -14,15 +14,15 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
 
     let request: AWSS3StorageListRequest
     let service: AWSS3StorageServiceBehaviour
-    let onComplete: ((CompletionEvent<StorageListResult, StorageListError>) -> Void)?
+    let onEvent: ((AsyncEvent<Void, StorageListResult, StorageListError>) -> Void)?
 
     init(_ request: AWSS3StorageListRequest,
          service: AWSS3StorageServiceBehaviour,
-         onComplete: ((CompletionEvent<CompletedType, ErrorType>) -> Void)?) {
+         onEvent: ((AsyncEvent<Void, CompletedType, ErrorType>) -> Void)?) {
 
         self.request = request
         self.service = service
-        self.onComplete = onComplete
+        self.onEvent = onEvent
         super.init(categoryType: .storage)
     }
 
@@ -36,14 +36,18 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
             case .initiated:
                 break
             case .inProcess(let progress):
-                self.dispatch(event: AsyncEvent.inProcess(progress))
+                let asyncEvent = AsyncEvent<Void, StorageListResult, StorageListError>.inProcess(progress)
+                self.dispatch(event: asyncEvent)
+                self.onEvent?(asyncEvent)
             case .completed(let result):
-                self.dispatch(event: AsyncEvent.completed(result))
-                self.onComplete?(CompletionEvent.completed(result))
+                let asyncEvent = AsyncEvent<Void, StorageListResult, StorageListError>.completed(result)
+                self.dispatch(event: asyncEvent)
+                self.onEvent?(asyncEvent)
                 self.finish()
             case .failed(let error):
-                self.dispatch(event: AsyncEvent.failed(error))
-                self.onComplete?(CompletionEvent.failed(error))
+                let asyncEvent = AsyncEvent<Void, StorageListResult, StorageListError>.failed(error)
+                self.dispatch(event: asyncEvent)
+                self.onEvent?(asyncEvent)
                 self.finish()
             }
         })

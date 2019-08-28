@@ -45,12 +45,18 @@ class AWSS3StorageGetOperationTests: XCTestCase {
         let failedInvoked = expectation(description: "failed was invoked on operation")
         failedInvoked.isInverted = true
 
-        let operation = AWSS3StorageGetOperation(request, service: mockStorageService, onComplete: { (event) in
+        let operation = AWSS3StorageGetOperation(request, service: mockStorageService, onEvent: { (event) in
             switch event {
             case .completed:
                 completionInvoked.fulfill()
             case .failed:
                 failedInvoked.fulfill()
+            case .unknown:
+                break
+            case .notInProcess:
+                break
+            case .inProcess:
+                break
             }
         })
 

@@ -9,36 +9,26 @@ import Amplify
 import Foundation
 
 class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
-    func get(key: String, options: StorageGetOption?, onComplete: StorageGetCompletionEvent?) -> StorageGetOperation {
+    func get(key: String, options: StorageGetOption?, onEvent: StorageGetEvent?) -> StorageGetOperation {
         return MockStorageGetOperation(categoryType: .storage)
-    }
-
-    func get(key: String, local: URL, options: StorageGetOption?,
-             onComplete: StorageGetCompletionEvent?) -> StorageGetOperation {
-        return MockStorageGetOperation(categoryType: .storage)
-    }
-
-    func getURL(key: String, options: StorageGetUrlOption?,
-                onComplete: StorageGetUrlCompletionEvent?) -> StorageGetUrlOperation {
-        return MockStorageGetUrlOperation(categoryType: .storage)
     }
 
     func put(key: String, data: Data, options: StoragePutOption?,
-             onComplete: StoragePutCompletionEvent?) -> StoragePutOperation {
+             onEvent: StoragePutEvent?) -> StoragePutOperation {
         return MockStoragePutOperation(categoryType: .storage)
     }
 
     func put(key: String, local: URL, options: StoragePutOption?,
-             onComplete: StoragePutCompletionEvent?) -> StoragePutOperation {
+             onEvent: StoragePutEvent?) -> StoragePutOperation {
         return MockStoragePutOperation(categoryType: .storage)
     }
 
     func remove(key: String, options: StorageRemoveOption?,
-                onComplete: StorageRemoveCompletionEvent?) -> StorageRemoveOperation {
+                onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
         return MockStorageRemoveOperation(categoryType: .storage)
     }
 
-    func list(options: StorageListOption?, onComplete: StorageListCompletionEvent?) -> StorageListOperation {
+    func list(options: StorageListOption?, onEvent: StorageListEvent?) -> StorageListOperation {
         return MockStorageListOperation(categoryType: .storage)
     }
 
@@ -66,36 +56,26 @@ class MockSecondStorageCategoryPlugin: MockStorageCategoryPlugin {
 }
 
 final class MockStorageCategoryPluginSelector: MessageReporter, StoragePluginSelector {
-    func get(key: String, options: StorageGetOption?, onComplete: StorageGetCompletionEvent?) -> StorageGetOperation {
+    func get(key: String, options: StorageGetOption?, onEvent: StorageGetEvent?) -> StorageGetOperation {
         return MockStorageGetOperation(categoryType: .storage)
-    }
-
-    func get(key: String, local: URL, options: StorageGetOption?,
-             onComplete: StorageGetCompletionEvent?) -> StorageGetOperation {
-        return MockStorageGetOperation(categoryType: .storage)
-    }
-
-    func getURL(key: String, options: StorageGetUrlOption?,
-                onComplete: StorageGetUrlCompletionEvent?) -> StorageGetUrlOperation {
-        return MockStorageGetUrlOperation(categoryType: .storage)
     }
 
     func put(key: String, data: Data, options: StoragePutOption?,
-             onComplete: StoragePutCompletionEvent?) -> StoragePutOperation {
+             onEvent: StoragePutEvent?) -> StoragePutOperation {
         return MockStoragePutOperation(categoryType: .storage)
     }
 
     func put(key: String, local: URL, options: StoragePutOption?,
-             onComplete: StoragePutCompletionEvent?) -> StoragePutOperation {
+             onEvent: StoragePutEvent?) -> StoragePutOperation {
         return MockStoragePutOperation(categoryType: .storage)
     }
 
     func remove(key: String, options: StorageRemoveOption?,
-                onComplete: StorageRemoveCompletionEvent?) -> StorageRemoveOperation {
+                onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
         return MockStorageRemoveOperation(categoryType: .storage)
     }
 
-    func list(options: StorageListOption?, onComplete: StorageListCompletionEvent?) -> StorageListOperation {
+    func list(options: StorageListOption?, onEvent: StorageListEvent?) -> StorageListOperation {
         return MockStorageListOperation(categoryType: .storage)
     }
 

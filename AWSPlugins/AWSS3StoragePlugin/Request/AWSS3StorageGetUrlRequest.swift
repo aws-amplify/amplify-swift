@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-public class AWSS3StorageGetUrlRequest {
+public struct AWSS3StorageGetUrlRequest {
     let bucket: String
     private let accessLevel: AccessLevel?
     private let _key: String

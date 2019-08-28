@@ -13,5 +13,10 @@ public class StorageGetResult {
         self.data = data
     }
 
+    public init(remote: URL) {
+        self.remote = remote
+    }
+
     var data: Data?
+    var remote: URL?
 }

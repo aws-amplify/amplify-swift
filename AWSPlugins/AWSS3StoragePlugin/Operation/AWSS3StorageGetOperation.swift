@@ -14,17 +14,17 @@ public class AWSS3StorageGetOperation: AmplifyOperation<Progress, StorageGetResu
 
     let request: AWSS3StorageGetRequest
     let service: AWSS3StorageServiceBehaviour
-    let onComplete: ((CompletionEvent<StorageGetResult, StorageGetError>) -> Void)?
+    let onEvent: ((AsyncEvent<Progress, StorageGetResult, StorageGetError>) -> Void)?
 
     var storageOperationReference: StorageOperationReference?
 
     init(_ request: AWSS3StorageGetRequest,
          service: AWSS3StorageServiceBehaviour,
-         onComplete: ((CompletionEvent<CompletedType, ErrorType>) -> Void)?) {
+         onEvent: ((AsyncEvent<Progress, CompletedType, ErrorType>) -> Void)?) {
 
         self.request = request
         self.service = service
-        self.onComplete = onComplete
+        self.onEvent = onEvent
         super.init(categoryType: .storage)
     }
 
@@ -42,19 +42,23 @@ public class AWSS3StorageGetOperation: AmplifyOperation<Progress, StorageGetResu
     }
 
     override public func main() {
-        self.service.execute(self.request, onEvent: { (event) in
+        service.execute(request, onEvent: { event in
             switch event {
             case .initiated(let reference):
                 self.storageOperationReference = reference
             case .inProcess(let progress):
                 let asyncEvent = AsyncEvent<Progress, StorageGetResult, StorageGetError>.inProcess(progress)
                 self.dispatch(event: asyncEvent)
+                self.onEvent?(asyncEvent)
             case .completed(let result):
-                self.dispatch(event: AsyncEvent<Progress, StorageGetResult, StorageGetError>.completed(result))
-                self.onComplete?(CompletionEvent.completed(result))
+                let asyncEvent = AsyncEvent<Progress, StorageGetResult, StorageGetError>.completed(result)
+                self.dispatch(event: asyncEvent)
+                self.onEvent?(asyncEvent)
                 self.finish()
             case .failed(let error):
-                self.onComplete?(CompletionEvent.failed(error))
+                let asyncEvent = AsyncEvent<Progress, StorageGetResult, StorageGetError>.failed(error)
+                self.dispatch(event: asyncEvent)
+                self.onEvent?(asyncEvent)
                 self.finish()
             }
         })

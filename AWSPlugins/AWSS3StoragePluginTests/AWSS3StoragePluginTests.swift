@@ -31,69 +31,6 @@ class AWSS3StoragePluginTests: XCTestCase {
     func testConfigureThrowsErrorForMissingRegion() {
     }
 
-    func testNotConfiguredThrowsExceptionForGet() {
-        let storagePlugin = AWSS3StoragePlugin()
-
-        let exception: BadInstructionException? = catchBadInstruction {
-            _ = storagePlugin.get(key: "key", options: nil, onComplete: nil)
-        }
-
-        XCTAssertNotNil(exception)
-    }
-
-    func testNotConfiguredThrowsExceptionForGetWithLocalUrl() {
-        let storagePlugin = AWSS3StoragePlugin()
-        let url = URL(fileURLWithPath: "path")
-
-        let exception: BadInstructionException? = catchBadInstruction {
-            _ = storagePlugin.get(key: "key", local: url, options: nil, onComplete: nil)
-        }
-
-        XCTAssertNotNil(exception)
-    }
-
-    func testNotConfiguredThrowsExceptionForPut() {
-        let storagePlugin = AWSS3StoragePlugin()
-        let data = Data()
-
-        let exception: BadInstructionException? = catchBadInstruction {
-            _ = storagePlugin.put(key: "key", data: data, options: nil, onComplete: nil)
-        }
-
-        XCTAssertNotNil(exception)
-    }
-
-    func testNotConfiguredThrowsExceptionForPutWithLocalUrl() {
-        let storagePlugin = AWSS3StoragePlugin()
-        let url = URL(fileURLWithPath: "path")
-
-        let exception: BadInstructionException? = catchBadInstruction {
-            _ = storagePlugin.put(key: "key", local: url, options: nil, onComplete: nil)
-        }
-
-        XCTAssertNotNil(exception)
-    }
-
-    func testNotConfiguredThrowsExceptionForRemove() {
-        let storagePlugin = AWSS3StoragePlugin()
-
-        let exception: BadInstructionException? = catchBadInstruction {
-            _ = storagePlugin.remove(key: "key", options: nil, onComplete: nil)
-        }
-
-        XCTAssertNotNil(exception)
-    }
-
-    func testNotConfiguredThrowsExceptionForList() {
-        let storagePlugin = AWSS3StoragePlugin()
-
-        let exception: BadInstructionException? = catchBadInstruction {
-            _ = storagePlugin.list(options: nil, onComplete: nil)
-        }
-
-        XCTAssertNotNil(exception)
-    }
-
     // MARK: Get API Tests
     func testPluginGet() {
         // Arrange
@@ -101,7 +38,7 @@ class AWSS3StoragePluginTests: XCTestCase {
         let expectedKey = "public/" + key
 
         // Act
-        let result = storagePlugin.get(key: key, options: nil, onComplete: nil)
+        let result = storagePlugin.get(key: key, options: nil, onEvent: nil)
 
         // Assert
         XCTAssertNotNil(result)
@@ -119,12 +56,13 @@ class AWSS3StoragePluginTests: XCTestCase {
     func testPluginGetWithOptions() {
         // Arrange
         let accessLevel = AccessLevel.Private
-        let options = StorageGetOption(accessLevel: accessLevel, options: nil)
+        let options = StorageGetOption(local: nil, download: nil, accessLevel: accessLevel, expires: nil,
+                                       options: nil, targetUser: nil)
         storagePlugin.configure(storageService: service, bucket: bucket, queue: queue)
         let expectedKey = accessLevel.rawValue + "/" + key
 
         // Act
-        let result = storagePlugin.get(key: key, options: options, onComplete: nil)
+        let result = storagePlugin.get(key: key, options: options, onEvent: nil)
 
         // Assert
         XCTAssertNotNil(result)
@@ -145,9 +83,14 @@ class AWSS3StoragePluginTests: XCTestCase {
         storagePlugin.configure(storageService: service, bucket: bucket, queue: queue)
         let expectedKey = "public/" + key
         let url = URL(fileURLWithPath: "path")
-
+        let options = StorageGetOption(local: url,
+                                       download: nil,
+                                       accessLevel: nil,
+                                       expires: nil,
+                                       options: nil,
+                                       targetUser: nil)
         // Act
-        let result = storagePlugin.get(key: key, local: url, options: nil, onComplete: nil)
+        let result = storagePlugin.get(key: key, options: options, onEvent: nil)
 
         // Assert
         XCTAssertNotNil(result)
@@ -166,13 +109,14 @@ class AWSS3StoragePluginTests: XCTestCase {
     func testPluginGetLocalFileWithOptions() {
         // Arrange
         let accessLevel = AccessLevel.Protected
-        let options = StorageGetOption(accessLevel: .Protected, options: nil)
+        let url = URL(fileURLWithPath: "path")
+        let options = StorageGetOption(local: url, download: nil, accessLevel: accessLevel,
+                                       expires: nil, options: nil, targetUser: nil)
         storagePlugin.configure(storageService: service, bucket: bucket, queue: queue)
         let expectedKey = accessLevel.rawValue + "/" + key
-        let url = URL(fileURLWithPath: "path")
 
         // Act
-        let result = storagePlugin.get(key: key, local: url, options: options, onComplete: nil)
+        let result = storagePlugin.get(key: key, options: options, onEvent: nil)
 
         // Assert
         XCTAssertNotNil(result)

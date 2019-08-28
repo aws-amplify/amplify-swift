@@ -11,9 +11,9 @@ import Amplify
 
 // AWSS3StorageService executes request against dependencies (TransferUtility, S3, PreSignedURLBuilder, etc)
 public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
-    var transferUtility: AWSS3TransferUtilityBehavior
-    var preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior
-    var awsS3: AWSS3Behavior
+    private var transferUtility: AWSS3TransferUtilityBehavior!
+    private var preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior!
+    private var awsS3: AWSS3Behavior!
 
     init(transferUtility: AWSS3TransferUtilityBehavior,
          preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior,
@@ -23,12 +23,18 @@ public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
         self.awsS3 = awsS3
     }
 
-    init(region: String, poolId: String, credentialsProviderRegion: String, key: String) {
+    // TODO: use builder pattern to init, 
+    init(region: String, poolId: String, credentialsProviderRegion: String, key: String) throws {
+        // TODO this will come from AWSMobileClient, in unit test, from the mocked
+        
         let credentialProvider = AWSCognitoCredentialsProvider(regionType:
             credentialsProviderRegion.aws_regionTypeValue(), identityPoolId: poolId)
-        let serviceConfiguration: AWSServiceConfiguration = AWSServiceConfiguration(region:
+        let serviceConfigurationOptional = AWSServiceConfiguration(region:
             region.aws_regionTypeValue(), credentialsProvider: credentialProvider)
 
+        guard let serviceConfiguration = serviceConfigurationOptional else {
+            throw PluginError.pluginConfigurationError("T##ErrorDescription", "T##RecoverySuggestion")
+        }
         AWSS3TransferUtility.register(with: serviceConfiguration, forKey: key)
         AWSS3PreSignedURLBuilder.register(with: serviceConfiguration, forKey: key)
         AWSS3.register(with: serviceConfiguration, forKey: key)
@@ -143,7 +149,7 @@ public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
             }
         }
 
-        self.transferUtility.uploadData(
+        transferUtility.uploadData(
             request.data!,
             bucket: request.bucket,
             key: request.key,
@@ -171,7 +177,7 @@ public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
             listObjectsV2Request.prefix = path
         }
 
-        self.awsS3.listObjectsV2(listObjectsV2Request).continueWith { (task) -> Any? in
+        awsS3.listObjectsV2(listObjectsV2Request).continueWith { (task) -> Any? in
             if let error = task.error {
                 onEvent(StorageEvent.failed(StorageListError.unknown(error.localizedDescription, "TODO")))
             } else if let results = task.result {
@@ -198,7 +204,7 @@ public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
         deleteObjectRequest.bucket = request.bucket
         deleteObjectRequest.key = request.key
 
-        self.awsS3.deleteObject(deleteObjectRequest).continueWith { (task) -> Any? in
+        awsS3.deleteObject(deleteObjectRequest).continueWith { (task) -> Any? in
             if let error = task.error {
                 onEvent(StorageEvent.failed(StorageRemoveError.unknown(error.localizedDescription, "TODO")))
             } else {

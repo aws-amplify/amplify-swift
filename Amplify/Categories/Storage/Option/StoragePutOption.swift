@@ -6,7 +6,8 @@
 //
 
 import Foundation
-public class StoragePutOption: StorageOption {
+
+public struct StoragePutOption: StorageOption {
     public init(accessLevel: AccessLevel?,
                 contentType: String?,
                 metadata: [String: String]?,

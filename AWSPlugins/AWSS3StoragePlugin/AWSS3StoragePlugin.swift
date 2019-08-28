@@ -17,38 +17,42 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
         """
 
     private var queue: OperationQueue = OperationQueue()
-    private var storageService: AWSS3StorageServiceBehaviour?
-    private var bucket: String?
+
+    // TODO: figure out how to
+    private var storageService: AWSS3StorageServiceBehaviour!
+    private var bucket: String!
 
     public var key: PluginKey {
         return AWSS3StoragePlugin.AWSS3StoragePluginKey
     }
 
+    // into extensions- init, execution, ~validation
     public func configure(using configuration: Any) throws {
         if let configuration = configuration as? [String: Any] {
             guard let bucket = configuration["Bucket"] as? String else {
-                throw PluginError.pluginConfigurationError(
-                    "Region not in configuration", "Region should be in the configuration")
+                throw PluginError.pluginConfigurationError("Region not in configuration",
+                                                           "Region should be in the configuration")
             }
             guard let region = configuration["Region"] as? String else {
-                throw PluginError.pluginConfigurationError(
-                    "Region not in configuration", "Region should be in the configuration")
-            }
-            guard let credentialsProvider = configuration["CredentialsProvider"] as? [String: Any] else {
-                throw PluginError.pluginConfigurationError(
-                    "CredentialsProvider not in configuration", "CredentialsProvider should be in the configuration")
-            }
-            guard let poolId = credentialsProvider["PoolId"] as? String else {
-                throw PluginError.pluginConfigurationError(
-                    "PoolId not in configuration", "PoolId should be in the configuration")
-            }
-            guard let credentialsProviderRegion = credentialsProvider["Region"] as? String else {
-                throw PluginError.pluginConfigurationError(
-                    "CredentialsProvider.Region not in configuration",
-                    "CredentialsProvider.Region should be in the configuration")
+                throw PluginError.pluginConfigurationError("Region not in configuration",
+                                                           "Region should be in the configuration")
             }
 
-            let storageService = AWSS3StorageService(region: region,
+            // TODO: remove and replace with awsmobileclient
+            guard let credentialsProvider = configuration["CredentialsProvider"] as? [String: Any] else {
+                throw PluginError.pluginConfigurationError("CredentialsProvider not in configuration",
+                                                           "CredentialsProvider should be in the configuration")
+            }
+            guard let poolId = credentialsProvider["PoolId"] as? String else {
+                throw PluginError.pluginConfigurationError("PoolId not in configuration",
+                                                           "PoolId should be in the configuration")
+            }
+            guard let credentialsProviderRegion = credentialsProvider["Region"] as? String else {
+                throw PluginError.pluginConfigurationError("CredentialsProvider.Region not in configuration",
+                                                           "CredentialsProvider.Region should be in the configuration")
+            }
+
+            let storageService = try AWSS3StorageService(region: region,
                                                      poolId: poolId,
                                                      credentialsProviderRegion: credentialsProviderRegion, key: key)
 
@@ -73,66 +77,39 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
         if !(self.storageService != nil && self.bucket != nil) {
             fatalError(AWSS3StoragePlugin.AWSS3StoragePluginNotConfiguredError)
         }
+        // TODO: remove self everywhere
+        // TODO: weaken self
+        //
     }
 
     public func get(key: String,
                     options: StorageGetOption?,
-                    onComplete: StorageGetCompletionEvent?) -> StorageGetOperation {
-        throwIfNotConfigured()
+                    onEvent: StorageGetEvent?) -> StorageGetOperation {
 
-        let request = AWSS3StorageGetRequest.Builder(bucket: self.bucket!, key: key)
-            .accessLevel(options?.accessLevel ?? .Public)
-            .build()
-        let operation = AWSS3StorageGetOperation(request, service: self.storageService!, onComplete: onComplete)
-        queue.addOperation(operation)
-
-        return operation
-    }
-
-    public func get(key: String,
-                    local: URL,
-                    options: StorageGetOption?,
-                    onComplete: StorageGetCompletionEvent?) -> StorageGetOperation {
-        throwIfNotConfigured()
-
-        let request = AWSS3StorageGetRequest.Builder(bucket: self.bucket!, key: key)
-            .accessLevel(options?.accessLevel ?? .Public)
-            .fileURL(local)
-            .build()
-
-        let operation = AWSS3StorageGetOperation(request, service: self.storageService!, onComplete: onComplete)
-
-        queue.addOperation(operation)
-
-        return operation
-    }
-
-    public func getURL(key: String,
-                       options: StorageGetUrlOption?,
-                       onComplete: StorageGetUrlCompletionEvent?) -> StorageGetUrlOperation {
-        throwIfNotConfigured()
-
-        let requestBuilder = AWSS3StorageGetUrlRequest.Builder(bucket: self.bucket!, key: key)
+        let requestBuilder = AWSS3StorageGetRequest.Builder(bucket: bucket!, key: key)
             .accessLevel(options?.accessLevel ?? .Public)
 
         if let options = options {
             if let expires = options.expires {
                 _ = requestBuilder.expires(expires)
             }
+            if let local = options.local {
+                _ = requestBuilder.fileURL(local)
+            }
         }
         let request = requestBuilder.build()
-        let operation = AWSS3StorageGetUrlOperation(request, service: self.storageService!, onComplete: onComplete)
+        let operation = AWSS3StorageGetOperation(request, service: storageService!, onEvent: onEvent)
         queue.addOperation(operation)
+
         return operation
     }
 
     public func put(key: String,
                     data: Data,
                     options: StoragePutOption?,
-                    onComplete: StoragePutCompletionEvent?) -> StoragePutOperation {
-        throwIfNotConfigured()
+                    onEvent: StoragePutEvent?) -> StoragePutOperation {
 
-        let requestBuilder = AWSS3StoragePutRequest.Builder(bucket: self.bucket!, key: key)
+        let requestBuilder = AWSS3StoragePutRequest.Builder(bucket: bucket, key: key)
             .data(data)
             .accessLevel(options?.accessLevel ?? .Public)
 
@@ -144,7 +121,7 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
 
         let request = requestBuilder.build()
 
-        let operation = AWSS3StoragePutOperation(request, service: self.storageService!, onComplete: onComplete)
+        let operation = AWSS3StoragePutOperation(request, service: storageService, onEvent: onEvent)
         queue.addOperation(operation)
         return operation
     }
@@ -152,10 +129,9 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
     public func put(key: String,
                     local: URL,
                     options: StoragePutOption?,
-                    onComplete: StoragePutCompletionEvent?) -> StoragePutOperation {
-        throwIfNotConfigured()
+                    onEvent: StoragePutEvent?) -> StoragePutOperation {
 
-        let requestBuilder = AWSS3StoragePutRequest.Builder(bucket: self.bucket!, key: key)
+        let requestBuilder = AWSS3StoragePutRequest.Builder(bucket: bucket, key: key)
             .local(local)
             .accessLevel(options?.accessLevel ?? .Public)
 
@@ -166,27 +142,25 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
         }
         let request = requestBuilder.build()
 
-        let operation = AWSS3StoragePutOperation(request, service: self.storageService!, onComplete: onComplete)
+        let operation = AWSS3StoragePutOperation(request, service: storageService, onEvent: onEvent)
         queue.addOperation(operation)
         return operation
     }
 
     public func remove(key: String,
                        options: StorageRemoveOption?,
-                       onComplete: StorageRemoveCompletionEvent?) -> StorageRemoveOperation {
-        throwIfNotConfigured()
+                       onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
 
-        let request  = AWSS3StorageRemoveRequest.Builder(bucket: self.bucket!, key: key).build()
+        let request  = AWSS3StorageRemoveRequest.Builder(bucket: bucket, key: key).build()
 
-        let operation = AWSS3StorageRemoveOperation(request, service: self.storageService!, onComplete: onComplete)
+        let operation = AWSS3StorageRemoveOperation(request, service: storageService, onEvent: onEvent)
         queue.addOperation(operation)
         return operation
     }
 
-    public func list(options: StorageListOption?, onComplete: StorageListCompletionEvent?) -> StorageListOperation {
-        throwIfNotConfigured()
+    public func list(options: StorageListOption?, onEvent: StorageListEvent?) -> StorageListOperation {
 
-        let requestBuilder = AWSS3StorageListRequest.Builder(bucket: self.bucket!)
+        let requestBuilder = AWSS3StorageListRequest.Builder(bucket: bucket)
 
         if let options  = options {
             if let limit = options.limit {
@@ -200,7 +174,7 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
 
         let request = requestBuilder.build()
 
-        let operation = AWSS3StorageListOperation(request, service: self.storageService!, onComplete: onComplete)
+        let operation = AWSS3StorageListOperation(request, service: storageService, onEvent: onEvent)
         queue.addOperation(operation)
         return operation
     }

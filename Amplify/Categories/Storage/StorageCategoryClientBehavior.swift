@@ -11,89 +11,64 @@ import Foundation
 public protocol StorageCategoryClientBehavior {
     func stub()
 
-    typealias StorageGetCompletionEvent = (CompletionEvent<StorageGetResult, StorageGetError>) -> Void
-    typealias StorageGetUrlCompletionEvent = (CompletionEvent<StorageGetUrlResult, StorageGetUrlError>) -> Void
-    typealias StoragePutCompletionEvent = (CompletionEvent<StoragePutResult, StoragePutError>) -> Void
-    typealias StorageRemoveCompletionEvent = (CompletionEvent<StorageRemoveResult, StorageRemoveError>) -> Void
-    typealias StorageListCompletionEvent = (CompletionEvent<StorageListResult, StorageListError>) -> Void
+    typealias StorageGetEvent = (AsyncEvent<Progress, StorageGetResult, StorageGetError>) -> Void
+    typealias StoragePutEvent = (AsyncEvent<Progress, StoragePutResult, StoragePutError>) -> Void
+    typealias StorageRemoveEvent = (AsyncEvent<Void, StorageRemoveResult, StorageRemoveError>) -> Void
+    typealias StorageListEvent = (AsyncEvent<Void, StorageListResult, StorageListError>) -> Void
 
-    /// Download object to memory from storage
+    /// Download object to memory from storage. Specify in the options to download to local file or retrieve remote URL
     ///
     /// - Parameters:
-    ///   - key: The unique identifier of the object in storage.
-    ///   - options: An instance of any type to contain specific plugin option values
-    ///   - onComplete: Triggered when the operation completes
+    ///   - key: The unique identifier for the object in storage.
+    ///   - options: Parameters to specific plugin behavior
+    ///   - onEvent: Triggered when event occurs
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     func get(key: String,
              options: StorageGetOption?,
-             onComplete: StorageGetCompletionEvent?) -> StorageGetOperation
-
-    /// Download object to local file from storage
-    ///
-    /// - Parameters:
-    ///   - key: The unique identifier of the object in storage.
-    ///   - local: The path to a local file.
-    ///   - options: An instance of any type to contain specific plugin option values
-    ///   - onComplete: Triggered when the operation completes
-    /// - Returns: An operation object that provides notifications and actions related to the execution of the work
-    func get(key: String,
-             local: URL,
-             options: StorageGetOption?,
-             onComplete: StorageGetCompletionEvent?) -> StorageGetOperation
-
-    /// Generate a remote URL for the specified object from storage
-    ///
-    /// - Parameters:
-    ///   - key: The unique identifier of the object in storage.
-    ///   - options: An instance of any type to contain specific plugin option values
-    ///   - onComplete: Triggered when the operation completes
-    /// - Returns: An operation object that provides notifications and actions related to the execution of the work
-    func getURL(key: String,
-                options: StorageGetUrlOption?,
-                onComplete: StorageGetUrlCompletionEvent?) -> StorageGetUrlOperation
+             onEvent: StorageGetEvent?) -> StorageGetOperation
 
     /// Upload data to storage
     ///
     /// - Parameters:
     ///   - key: The unique identifier of the object in storage.
     ///   - data: The data in memory to be uploaded
-    ///   - options: An instance of any type to contain specific plugin option values
-    ///   - onComplete: Triggered when the operation completes
+    ///   - options: Parameters to specific plugin behavior
+    ///   - onEvent: Triggered when event occurs
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     func put(key: String,
              data: Data,
              options: StoragePutOption?,
-             onComplete: StoragePutCompletionEvent?) -> StoragePutOperation
+             onEvent: StoragePutEvent?) -> StoragePutOperation
 
     /// Upload local file to storage
     ///
     /// - Parameters:
     ///   - key: The unique identifier of the object in storage.
     ///   - local: The path to a local file.
-    ///   - options: An instance of any type to contain specific plugin option values
-    ///   - onComplete: Triggered when the operation completes
+    ///   - options: Parameters to specific plugin behavior
+    ///   - onEvent: Triggered when event occurs
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     func put(key: String,
              local: URL,
              options: StoragePutOption?,
-             onComplete: StoragePutCompletionEvent?) -> StoragePutOperation
+             onEvent: StoragePutEvent?) -> StoragePutOperation
 
     /// Delete object from storage
     ///
     /// - Parameters:
     ///   - key: The unique identifier of the object in storage.
-    ///   - options: An instance of any type to contain specific plugin option values
-    ///   - onComplete: Triggered when the operation completes
+    ///   - options: Parameters to specific plugin behavior
+    ///   - onEvent: Triggered when event occurs
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     func remove(key: String,
                 options: StorageRemoveOption?,
-                onComplete: StorageRemoveCompletionEvent?) -> StorageRemoveOperation
+                onEvent: StorageRemoveEvent?) -> StorageRemoveOperation
 
     /// List the object identifiers under the heiarchy specified by the path, relative to access level, from storage
     ///
     /// - Parameters:
-    ///   - options: An instance of any type to contain specific plugin option values
-    ///   - onComplete: Triggered when the operation completes
+    ///   - options: Parameters to specific plugin behavior
+    ///   - onEvent: Triggered when event occurs
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
-    func list(options: StorageListOption?, onComplete: StorageListCompletionEvent?) -> StorageListOperation
+    func list(options: StorageListOption?, onEvent: StorageListEvent?) -> StorageListOperation
 }

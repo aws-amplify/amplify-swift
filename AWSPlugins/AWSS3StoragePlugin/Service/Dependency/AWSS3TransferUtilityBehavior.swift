@@ -8,7 +8,7 @@
 import Foundation
 import AWSS3
 
-public protocol AWSS3TransferUtilityBehavior {
+protocol AWSS3TransferUtilityBehavior {
     func downloadData(fromBucket: String,
                       key: String,
                       expression: AWSS3TransferUtilityDownloadExpression,

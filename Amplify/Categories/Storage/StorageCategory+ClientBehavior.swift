@@ -25,86 +25,61 @@ extension StorageCategory: StorageCategoryClientBehavior {
 
     public func get(key: String,
                     options: StorageGetOption?,
-                    onComplete: StorageGetCompletionEvent?) -> StorageGetOperation {
+                    onEvent: StorageGetEvent?) -> StorageGetOperation {
 
         switch pluginOrSelector {
         case .plugin(let plugin):
-            return plugin.get(key: key, options: options, onComplete: onComplete)
+            return plugin.get(key: key, options: options, onEvent: onEvent)
         case .selector(let selector):
-            return plugin(from: selector).get(key: key, options: options, onComplete: onComplete)
-        }
-    }
-
-    public func get(key: String,
-                    local: URL,
-                    options: StorageGetOption?,
-                    onComplete: StorageGetCompletionEvent?) -> StorageGetOperation {
-
-        switch pluginOrSelector {
-        case .plugin(let plugin):
-            return plugin.get(key: key, local: local, options: options, onComplete: onComplete)
-        case .selector(let selector):
-            return plugin(from: selector).get(key: key, local: local, options: options, onComplete: onComplete)
-        }
-    }
-
-    public func getURL(key: String,
-                       options: StorageGetUrlOption?,
-                       onComplete: StorageGetUrlCompletionEvent?) -> StorageGetUrlOperation {
-
-        switch pluginOrSelector {
-        case .plugin(let plugin):
-            return plugin.getURL(key: key, options: options, onComplete: onComplete)
-        case .selector(let selector):
-            return plugin(from: selector).getURL(key: key, options: options, onComplete: onComplete)
+            return plugin(from: selector).get(key: key, options: options, onEvent: onEvent)
         }
     }
 
     public func put(key: String,
                     data: Data,
                     options: StoragePutOption?,
-                    onComplete: StoragePutCompletionEvent?) -> StoragePutOperation {
+                    onEvent: StoragePutEvent?) -> StoragePutOperation {
 
         switch pluginOrSelector {
         case .plugin(let plugin):
-            return plugin.put(key: key, data: data, options: options, onComplete: onComplete)
+            return plugin.put(key: key, data: data, options: options, onEvent: onEvent)
         case .selector(let selector):
-            return plugin(from: selector).put(key: key, data: data, options: options, onComplete: onComplete)
+            return plugin(from: selector).put(key: key, data: data, options: options, onEvent: onEvent)
         }
     }
 
     public func put(key: String,
                     local: URL,
                     options: StoragePutOption?,
-                    onComplete: StoragePutCompletionEvent?) -> StoragePutOperation {
+                    onEvent: StoragePutEvent?) -> StoragePutOperation {
 
         switch pluginOrSelector {
         case .plugin(let plugin):
-            return plugin.put(key: key, local: local, options: options, onComplete: onComplete)
+            return plugin.put(key: key, local: local, options: options, onEvent: onEvent)
         case .selector(let selector):
-            return plugin(from: selector).put(key: key, local: local, options: options, onComplete: onComplete)
+            return plugin(from: selector).put(key: key, local: local, options: options, onEvent: onEvent)
         }
     }
 
     public func remove(key: String,
                        options: StorageRemoveOption?,
-                       onComplete: StorageRemoveCompletionEvent?) -> StorageRemoveOperation {
+                       onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
 
         switch pluginOrSelector {
         case .plugin(let plugin):
-            return plugin.remove(key: key, options: options, onComplete: onComplete)
+            return plugin.remove(key: key, options: options, onEvent: onEvent)
         case .selector(let selector):
-            return plugin(from: selector).remove(key: key, options: options, onComplete: onComplete)
+            return plugin(from: selector).remove(key: key, options: options, onEvent: onEvent)
         }
     }
 
-    public func list(options: StorageListOption?, onComplete: StorageListCompletionEvent?) -> StorageListOperation {
+    public func list(options: StorageListOption?, onEvent: StorageListEvent?) -> StorageListOperation {
 
         switch pluginOrSelector {
         case .plugin(let plugin):
-            return plugin.list(options: options, onComplete: onComplete)
+            return plugin.list(options: options, onEvent: onEvent)
         case .selector(let selector):
-            return plugin(from: selector).list(options: options, onComplete: onComplete)
+            return plugin(from: selector).list(options: options, onEvent: onEvent)
         }
     }
 

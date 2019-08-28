@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-public class AWSS3StoragePutRequest {
+public struct AWSS3StoragePutRequest {
     let bucket: String
     private let accessLevel: AccessLevel?
     private let _key: String

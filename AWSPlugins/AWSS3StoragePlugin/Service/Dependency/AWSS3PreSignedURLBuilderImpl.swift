@@ -8,7 +8,7 @@
 import Foundation
 import AWSS3
 
-public class AWSS3PreSignedURLBuilderImpl: AWSS3PreSignedURLBuilderBehavior {
+class AWSS3PreSignedURLBuilderImpl: AWSS3PreSignedURLBuilderBehavior {
     let preSignedURLBuilder: AWSS3PreSignedURLBuilder
     public init(_ preSignedURLBuilder: AWSS3PreSignedURLBuilder) {
         self.preSignedURLBuilder = preSignedURLBuilder

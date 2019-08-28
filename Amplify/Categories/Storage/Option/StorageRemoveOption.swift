@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class StorageRemoveOption: StorageOption {
+public struct StorageRemoveOption: StorageOption {
     public init(accessLevel: AccessLevel?, options: Any?) {
         self.accessLevel = accessLevel
         self.options = options

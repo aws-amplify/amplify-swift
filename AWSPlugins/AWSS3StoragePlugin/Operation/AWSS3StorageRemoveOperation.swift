@@ -14,15 +14,15 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, StorageRemoveRe
 
     let request: AWSS3StorageRemoveRequest
     let service: AWSS3StorageServiceBehaviour
-    let onComplete: ((CompletionEvent<StorageRemoveResult, StorageRemoveError>) -> Void)?
+    let onEvent: ((AsyncEvent<Void, StorageRemoveResult, StorageRemoveError>) -> Void)?
 
     init(_ request: AWSS3StorageRemoveRequest,
          service: AWSS3StorageServiceBehaviour,
-         onComplete: ((CompletionEvent<CompletedType, ErrorType>) -> Void)?) {
+         onEvent: ((AsyncEvent<Void, StorageRemoveResult, StorageRemoveError>) -> Void)?) {
 
         self.request = request
         self.service = service
-        self.onComplete = onComplete
+        self.onEvent = onEvent
         super.init(categoryType: .storage)
     }
 
@@ -38,12 +38,14 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, StorageRemoveRe
             case .inProcess:
                 break
             case .completed(let result):
-                self.dispatch(event: AsyncEvent.completed(StorageRemoveResult(key: "key")))
-                self.onComplete?(CompletionEvent.completed(result))
+                let asyncEvent = AsyncEvent<Void, StorageRemoveResult, StorageRemoveError>.completed(result)
+                self.dispatch(event: asyncEvent)
+                self.onEvent?(asyncEvent)
                 self.finish()
             case .failed(let error):
-                self.dispatch(event: AsyncEvent.failed(error))
-                self.onComplete?(CompletionEvent.failed(error))
+                let asyncEvent = AsyncEvent<Void, StorageRemoveResult, StorageRemoveError>.failed(error)
+                self.dispatch(event: asyncEvent)
+                self.onEvent?(asyncEvent)
                 self.finish()
             }
         })

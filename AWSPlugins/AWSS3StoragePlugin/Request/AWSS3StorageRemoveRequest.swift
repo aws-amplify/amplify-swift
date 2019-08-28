@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-public class AWSS3StorageRemoveRequest {
+public struct AWSS3StorageRemoveRequest {
     let bucket: String
     private let accessLevel: AccessLevel?
     private let _key: String

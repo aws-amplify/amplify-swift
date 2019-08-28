@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AWSS3StoragePlugin
+@testable import AWSS3StoragePlugin
 import AWSS3
 
 public class MockS3: AWSS3Behavior {

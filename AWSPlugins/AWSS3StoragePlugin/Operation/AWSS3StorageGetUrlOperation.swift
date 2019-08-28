@@ -14,17 +14,17 @@ public class AWSS3StorageGetUrlOperation: AmplifyOperation<Void, StorageGetUrlRe
 
     let request: AWSS3StorageGetUrlRequest
     let service: AWSS3StorageServiceBehaviour
-    let onComplete: ((CompletionEvent<StorageGetUrlResult, StorageGetUrlError>) -> Void)?
+    let onEvent: ((AsyncEvent<Void, StorageGetUrlResult, StorageGetUrlError>) -> Void)?
 
     var storageOperationReference: StorageOperationReference?
 
     init(_ request: AWSS3StorageGetUrlRequest,
          service: AWSS3StorageServiceBehaviour,
-         onComplete: ((CompletionEvent<CompletedType, ErrorType>) -> Void)?) {
+         onEvent: ((AsyncEvent<Void, CompletedType, ErrorType>) -> Void)?) {
 
         self.request = request
         self.service = service
-        self.onComplete = onComplete
+        self.onEvent = onEvent
         super.init(categoryType: .storage)
     }
 
@@ -39,13 +39,18 @@ public class AWSS3StorageGetUrlOperation: AmplifyOperation<Void, StorageGetUrlRe
             case .initiated:
                 break
             case .inProcess(let progress):
-                self.dispatch(event: AsyncEvent.inProcess(progress))
+                let asyncEvent = AsyncEvent<Void, StorageGetUrlResult, StorageGetUrlError>.inProcess(progress)
+                self.dispatch(event: asyncEvent)
+                self.onEvent?(asyncEvent)
             case .completed(let result):
-                self.dispatch(event: AsyncEvent.completed(result))
-                self.onComplete?(CompletionEvent.completed(result))
+                let asyncEvent = AsyncEvent<Void, StorageGetUrlResult, StorageGetUrlError>.completed(result)
+                self.dispatch(event: asyncEvent)
+                self.onEvent?(asyncEvent)
                 self.finish()
             case .failed(let error):
-                self.onComplete?(CompletionEvent.failed(error))
+                let asyncEvent = AsyncEvent<Void, StorageGetUrlResult, StorageGetUrlError>.failed(error)
+                self.dispatch(event: asyncEvent)
+                self.onEvent?(asyncEvent)
                 self.finish()
             }
         })

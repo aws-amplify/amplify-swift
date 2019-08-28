@@ -9,7 +9,8 @@ import Foundation
 import Amplify
 import AWSS3
 
-public protocol AWSS3StorageServiceBehaviour {
+// TODO: internal
+protocol AWSS3StorageServiceBehaviour {
 
     func execute(_ request: AWSS3StorageGetRequest, onEvent:
         @escaping (StorageEvent<StorageOperationReference, Progress, StorageGetResult, StorageGetError>) -> Void)

@@ -8,7 +8,7 @@
 import Foundation
 import AWSS3
 
-public class AWSS3Impl: AWSS3Behavior {
+class AWSS3Impl: AWSS3Behavior {
     let awsS3: AWSS3
 
     init(_ awsS3: AWSS3) {
