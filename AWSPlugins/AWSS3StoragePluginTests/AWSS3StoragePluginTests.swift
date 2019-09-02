@@ -46,11 +46,11 @@ class AWSS3StoragePluginTests: XCTestCase {
             XCTFail("operation could not be cast as AWSS3StorageGetOperation")
             return
         }
-        let request = awss3StorageGetOperation.request
-        XCTAssertNotNil(request)
-        XCTAssertEqual(request.bucket, bucket)
-        XCTAssertEqual(request.key, expectedKey)
-        XCTAssertNil(request.fileURL)
+        let requestBuilder = awss3StorageGetOperation.requestBuilder
+        XCTAssertNotNil(requestBuilder)
+        XCTAssertEqual(requestBuilder.bucket, bucket)
+        XCTAssertEqual(requestBuilder.key, expectedKey)
+        XCTAssertNil(requestBuilder.fileURL)
     }
 
     func testPluginGetWithOptions() {
@@ -70,11 +70,11 @@ class AWSS3StoragePluginTests: XCTestCase {
             XCTFail("operation could not be cast as AWSS3StorageGetOperation")
             return
         }
-        let request = awss3StorageGetOperation.request
-        XCTAssertNotNil(request)
-        XCTAssertEqual(request.bucket, bucket)
-        XCTAssertEqual(request.key, expectedKey)
-        XCTAssertNil(request.fileURL)
+        let requestBuilder = awss3StorageGetOperation.requestBuilder
+        XCTAssertNotNil(requestBuilder)
+        XCTAssertEqual(requestBuilder.bucket, bucket)
+        XCTAssertEqual(requestBuilder.key, expectedKey)
+        XCTAssertNil(requestBuilder.fileURL)
     }
 
     // MARK: GET to local file API tests
@@ -99,11 +99,11 @@ class AWSS3StoragePluginTests: XCTestCase {
             XCTFail("operation not castable to ")
             return
         }
-        let request = awss3StorageGetOperation.request
-        XCTAssertNotNil(request)
-        XCTAssertEqual(request.bucket, bucket)
-        XCTAssertEqual(request.key, expectedKey)
-        XCTAssertEqual(request.fileURL, url)
+        let requestBuilder = awss3StorageGetOperation.requestBuilder
+        XCTAssertNotNil(requestBuilder)
+        XCTAssertEqual(requestBuilder.bucket, bucket)
+        XCTAssertEqual(requestBuilder.key, expectedKey)
+        XCTAssertEqual(requestBuilder.fileURL, url)
     }
 
     func testPluginGetLocalFileWithOptions() {
@@ -125,11 +125,11 @@ class AWSS3StoragePluginTests: XCTestCase {
             XCTFail("operation not castable to ")
             return
         }
-        let request = awss3StorageGetOperation.request
-        XCTAssertNotNil(request)
-        XCTAssertEqual(request.bucket, bucket)
-        XCTAssertEqual(request.key, expectedKey)
-        XCTAssertEqual(request.fileURL, url)
+        let requestBuilder = awss3StorageGetOperation.requestBuilder
+        XCTAssertNotNil(requestBuilder)
+        XCTAssertEqual(requestBuilder.bucket, bucket)
+        XCTAssertEqual(requestBuilder.key, expectedKey)
+        XCTAssertEqual(requestBuilder.fileURL, url)
     }
 
     // MARK: GetURL API tests

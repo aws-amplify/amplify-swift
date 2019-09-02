@@ -10,36 +10,37 @@ import Amplify
 
 public struct AWSS3StorageRemoveRequest {
     let bucket: String
-    private let accessLevel: AccessLevel?
-    private let _key: String
+    let accessLevel: AccessLevel
+    let key: String
 
     init(builder: Builder) {
         self.bucket = builder.bucket
         self.accessLevel = builder.accessLevel
-        self._key = builder.key
+        self.key = builder.key
     }
 
-    var key: String {
-        if let accessLevel = accessLevel {
-            return accessLevel.rawValue + "/" + _key
-        } else {
-            return _key
+    func getFinalKey(identity: String) -> String {
+        if accessLevel == .Private || accessLevel == .Protected {
+            return accessLevel.rawValue + "/" + identity + "/" + key
         }
+
+        return accessLevel.rawValue + "/" + key
     }
 
-    class Builder {
+    func validate() -> StorageRemoveError? {
+        // return StorageGetError.unknown("error", "error")
+        return nil
+    }
+
+    public class Builder {
         let bucket: String
-        private(set) var accessLevel: AccessLevel?
+        let accessLevel: AccessLevel
         let key: String
 
-        init(bucket: String, key: String) {
+        init(bucket: String, key: String, accessLevel: AccessLevel) {
             self.bucket = bucket
             self.key = key
-        }
-
-        func accessLevel(_ accessLevel: AccessLevel) -> Builder {
             self.accessLevel = accessLevel
-            return self
         }
 
         func build() -> AWSS3StorageRemoveRequest {

@@ -17,6 +17,6 @@ public class StorageGetResult {
         self.remote = remote
     }
 
-    var data: Data?
-    var remote: URL?
+    public var data: Data?
+    public var remote: URL?
 }

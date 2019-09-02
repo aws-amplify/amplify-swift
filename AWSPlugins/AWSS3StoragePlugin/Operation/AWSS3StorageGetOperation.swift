@@ -16,6 +16,8 @@ public class AWSS3StorageGetOperation: AmplifyOperation<Progress, StorageGetResu
     let service: AWSS3StorageServiceBehaviour
     let onEvent: ((AsyncEvent<Progress, StorageGetResult, StorageGetError>) -> Void)?
 
+    var error: StorageGetError?
+    var identity: String?
     var storageOperationReference: StorageOperationReference?
 
     init(_ request: AWSS3StorageGetRequest,
@@ -41,8 +43,31 @@ public class AWSS3StorageGetOperation: AmplifyOperation<Progress, StorageGetResu
         cancel()
     }
 
+    public func failFast(_ error: StorageGetError) -> StorageGetOperation {
+        self.error = error
+        start()
+        return self
+    }
+
     override public func main() {
-        service.execute(request, onEvent: { event in
+        if let error = error {
+            let asyncEvent = AsyncEvent<Progress, StorageGetResult, StorageGetError>.failed(error)
+            self.onEvent?(asyncEvent)
+            self.dispatch(event: asyncEvent)
+            finish()
+            return
+        }
+
+        guard let identity = identity else {
+            let asyncEvent = AsyncEvent<Progress, StorageGetResult, StorageGetError>.failed(
+                StorageGetError.unknown("Did not pass identity over...", "no identity"))
+            self.onEvent?(asyncEvent)
+            self.dispatch(event: asyncEvent)
+            finish()
+            return
+        }
+
+        service.execute(request, identity: identity, onEvent: { event in
             switch event {
             case .initiated(let reference):
                 self.storageOperationReference = reference

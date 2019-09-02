@@ -27,20 +27,25 @@ target 'AWSS3StoragePlugin' do
 
   pod 'AWSS3'
   pod 'AWSCore'
+  pod 'AWSMobileClient'
 
   target 'AWSS3StoragePluginTests' do
     inherit! :search_paths
     pod 'AWSS3'
     pod 'AWSCore'
+    pod 'AWSMobileClient'
     # Pods for testing
     pod 'CwlPreconditionTesting', :git => 'https://github.com/mattgallagher/CwlPreconditionTesting.git'
     pod 'CwlCatchException', :git => 'https://github.com/mattgallagher/CwlCatchException.git'
-
   end
 
-end
-
-target 'AmplifyAppExample' do
-  use_frameworks!
-  pod 'AWSS3'
+  target 'AWSS3StoragePluginIntegrationTests' do
+    inherit! :search_paths
+    pod 'AWSS3'
+    pod 'AWSCore'
+    pod 'AWSMobileClient'
+    # Pods for testing
+    pod 'CwlPreconditionTesting', :git => 'https://github.com/mattgallagher/CwlPreconditionTesting.git'
+    pod 'CwlCatchException', :git => 'https://github.com/mattgallagher/CwlCatchException.git'
+  end
 end

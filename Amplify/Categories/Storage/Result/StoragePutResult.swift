@@ -14,5 +14,5 @@ public class StoragePutResult {
     }
 
     // contains information like the key
-    var key: String
+    public var key: String
 }

@@ -12,7 +12,10 @@ class AWSS3StorageServiceTests: XCTestCase {
     var mockTransferUtility: MockAWSS3TransferUtility!
     var mockPreSignedURLBuilder: MockAWSS3PreSignedURLBuilder!
     var mockS3: MockS3!
+    var mockMobileClient: MockAWSMobileClient!
+
     var storageService: AWSS3StorageService!
+
     var initiatedInvoked: XCTestExpectation!
     var inProcessInvoked: XCTestExpectation!
     var failedInvoked: XCTestExpectation!
@@ -22,9 +25,11 @@ class AWSS3StorageServiceTests: XCTestCase {
         mockTransferUtility = MockAWSS3TransferUtility()
         mockPreSignedURLBuilder = MockAWSS3PreSignedURLBuilder()
         mockS3 = MockS3()
+        mockMobileClient = MockAWSMobileClient()
         storageService = AWSS3StorageService(transferUtility: mockTransferUtility,
                                              preSignedURLBuilder: mockPreSignedURLBuilder,
-                                             awsS3: mockS3)
+                                             awsS3: mockS3,
+                                             awsMobileClient: mockMobileClient)
 
         initiatedInvoked = expectation(description: "Iniaited event was invoked on storage service")
         inProcessInvoked = expectation(description: "InProcess event was invoked on storage service")
@@ -34,11 +39,11 @@ class AWSS3StorageServiceTests: XCTestCase {
 
     func testStorageServiceExecuteGetRequest() {
         // Arrange
-        let request = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key").build()
+        let requestBuilder = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key")
         failedInvoked.isInverted = true
 
         // Act
-        storageService.execute(request) { (storageEvent) in
+        storageService.execute(requestBuilder) { (storageEvent) in
             switch storageEvent {
             case .initiated:
                 self.initiatedInvoked.fulfill()
@@ -59,14 +64,14 @@ class AWSS3StorageServiceTests: XCTestCase {
     func testStorageServiceExecuteGetRequestWithErrorOnCompletion() {
         // Arrange
         mockTransferUtility.errorOnCompletion = NSError(domain: "domain", code: 0, userInfo: nil)
-        let request = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key").build()
+        let requestBuilder = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key")
         initiatedInvoked.isInverted = false
         inProcessInvoked.isInverted = false
         completedInvoked.isInverted = true
         failedInvoked.isInverted = false
 
         // Act
-        storageService.execute(request) { (storageEvent) in
+        storageService.execute(requestBuilder) { (storageEvent) in
             switch storageEvent {
             case .initiated:
                 self.initiatedInvoked.fulfill()
@@ -87,14 +92,14 @@ class AWSS3StorageServiceTests: XCTestCase {
     func testStorageServiceExecuteGetRequestWithErrorOnContinuation() {
         // Arrange
         mockTransferUtility.errorOnContinuation = NSError(domain: "domain", code: 0, userInfo: nil)
-        let request = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key").build()
+        let requestBuilder = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key")
         initiatedInvoked.isInverted = true
         inProcessInvoked.isInverted = true
         completedInvoked.isInverted = true
         failedInvoked.isInverted = false
 
         // Act
-        storageService.execute(request) { (storageEvent) in
+        storageService.execute(requestBuilder) { (storageEvent) in
             switch storageEvent {
             case .initiated:
                 self.initiatedInvoked.fulfill()
@@ -115,14 +120,14 @@ class AWSS3StorageServiceTests: XCTestCase {
     func testStorageServiceExecuteGetRequestWithFileURL() {
         // Arrange
         let url = URL(fileURLWithPath: "path")
-        let request = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key").fileURL(url).build()
+        let requestBuilder = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key").fileURL(url)
         initiatedInvoked.isInverted = false
         inProcessInvoked.isInverted = false
         completedInvoked.isInverted = false
         failedInvoked.isInverted = true
 
         // Act
-        storageService.execute(request) { (storageEvent) in
+        storageService.execute(requestBuilder) { (storageEvent) in
             switch storageEvent {
             case .initiated:
                 self.initiatedInvoked.fulfill()

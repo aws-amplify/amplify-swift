@@ -37,6 +37,11 @@
                BlueprintName = "AWSS3StoragePluginTests"
                ReferencedContainer = "container:Amplify.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "AWSS3StoragePluginFunctionalTests/testGet2()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

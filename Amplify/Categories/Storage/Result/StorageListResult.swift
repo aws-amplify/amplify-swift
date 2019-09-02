@@ -11,5 +11,5 @@ public class StorageListResult {
         self.keys = keys
     }
 
-    var keys: [String]
+    public var keys: [String]
 }

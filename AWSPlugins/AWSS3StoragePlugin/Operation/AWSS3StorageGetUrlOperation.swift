@@ -16,6 +16,8 @@ public class AWSS3StorageGetUrlOperation: AmplifyOperation<Void, StorageGetUrlRe
     let service: AWSS3StorageServiceBehaviour
     let onEvent: ((AsyncEvent<Void, StorageGetUrlResult, StorageGetUrlError>) -> Void)?
 
+    var error: StorageGetUrlError?
+    var identity: String?
     var storageOperationReference: StorageOperationReference?
 
     init(_ request: AWSS3StorageGetUrlRequest,
@@ -33,8 +35,31 @@ public class AWSS3StorageGetUrlOperation: AmplifyOperation<Void, StorageGetUrlRe
         cancel()
     }
 
+    public func failFast(_ error: StorageGetUrlError) -> StorageGetUrlOperation {
+        self.error = error
+        start()
+        return self
+    }
+
     override public func main() {
-        self.service.execute(self.request, onEvent: { (event) in
+        if let error = error {
+            let asyncEvent = AsyncEvent<Void, StorageGetUrlResult, StorageGetUrlError>.failed(error)
+            self.onEvent?(asyncEvent)
+            self.dispatch(event: asyncEvent)
+            finish()
+            return
+        }
+
+        guard let identity = identity else {
+            let asyncEvent = AsyncEvent<Void, StorageGetUrlResult, StorageGetUrlError>.failed(
+                StorageGetUrlError.unknown("Did not pass identity over...", "no identity"))
+            self.onEvent?(asyncEvent)
+            self.dispatch(event: asyncEvent)
+            finish()
+            return
+        }
+
+        self.service.execute(request, identity: identity, onEvent: { (event) in
             switch event {
             case .initiated:
                 break

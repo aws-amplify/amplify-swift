@@ -10,13 +10,13 @@ import Foundation
 import AWSS3
 
 public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
-
     public var errorOnContinuation: NSError?
     public var errorOnCompletion: NSError?
 
     private(set) public var downloadDataCalled: Bool?
     private(set) public var downloadToURLCalled: Bool?
     private(set) public var uploadDataCalled: Bool?
+    private(set) public var uploadFileCalled: Bool?
 
     public func downloadData(fromBucket: String,
                              key: String,
@@ -117,5 +117,38 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
 
     public func expectDownloadDataCalled() {
         self.downloadDataCalled = true
+    }
+
+    public func uploadFile(_ fileURL: URL,
+                           bucket: String,
+                           key: String,
+                           contentType: String,
+                           expression: AWSS3TransferUtilityUploadExpression,
+                           completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?)
+    -> AWSTask<AWSS3TransferUtilityUploadTask> {
+        uploadFileCalled = true
+
+        if let error = self.errorOnContinuation {
+            let resultWithError = AWSTask<AWSS3TransferUtilityUploadTask>.init(error: error)
+            return resultWithError
+        }
+
+        let task = AWSS3TransferUtilityUploadTask()
+
+        if let progressBlock = expression.progressBlock {
+            progressBlock(task, Progress())
+        }
+
+        if let completionHandler = completionHandler {
+            if let error = self.errorOnCompletion {
+                completionHandler(task, error)
+            } else {
+                completionHandler(task, nil)
+            }
+        }
+
+        let result = AWSTask<AWSS3TransferUtilityUploadTask>.init(result: task)
+        return result
+
     }
 }

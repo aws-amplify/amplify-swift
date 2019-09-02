@@ -10,39 +10,35 @@ import Amplify
 
 public struct AWSS3StorageGetUrlRequest {
     let bucket: String
-    private let accessLevel: AccessLevel?
-    private let _key: String
+    private let accessLevel: AccessLevel
+    private let key: String
     let expires: Int?
 
     init(builder: Builder) {
         self.bucket = builder.bucket
         self.accessLevel = builder.accessLevel
-        self._key = builder.key
+        self.key = builder.key
         self.expires = builder.expires
     }
 
-    var key: String {
-        if let accessLevel = accessLevel {
-            return accessLevel.rawValue + "/" + _key
-        } else {
-            return _key
+    func getFinalKey(identity: String) -> String {
+        if accessLevel == .Private || accessLevel == .Protected {
+            return accessLevel.rawValue + "/" + identity + "/" + key
         }
+
+        return accessLevel.rawValue + "/" + key
     }
 
-    class Builder {
+    public class Builder {
         let bucket: String
-        private(set) var accessLevel: AccessLevel?
+        let accessLevel: AccessLevel
         let key: String
         private(set) var expires: Int?
 
-        init(bucket: String, key: String) {
+        init(bucket: String, key: String, accessLevel: AccessLevel) {
             self.bucket = bucket
             self.key = key
-        }
-
-        func accessLevel(_ accessLevel: AccessLevel) -> Builder {
             self.accessLevel = accessLevel
-            return self
         }
 
         func expires(_ expires: Int) -> Builder {

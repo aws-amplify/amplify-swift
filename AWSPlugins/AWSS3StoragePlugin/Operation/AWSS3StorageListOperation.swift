@@ -16,6 +16,9 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
     let service: AWSS3StorageServiceBehaviour
     let onEvent: ((AsyncEvent<Void, StorageListResult, StorageListError>) -> Void)?
 
+    var error: StorageListError?
+    var identity: String?
+
     init(_ request: AWSS3StorageListRequest,
          service: AWSS3StorageServiceBehaviour,
          onEvent: ((AsyncEvent<Void, CompletedType, ErrorType>) -> Void)?) {
@@ -30,8 +33,31 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
         cancel()
     }
 
+    public func failFast(_ error: StorageListError) -> StorageListOperation {
+        self.error = error
+        start()
+        return self
+    }
+
     override public func main() {
-        self.service.execute(self.request, onEvent: { (event) in
+        if let error = error {
+            let asyncEvent = AsyncEvent<Void, StorageListResult, StorageListError>.failed(error)
+            self.onEvent?(asyncEvent)
+            self.dispatch(event: asyncEvent)
+            finish()
+            return
+        }
+
+        guard let identity = identity else {
+            let asyncEvent = AsyncEvent<Void, StorageListResult, StorageListError>.failed(
+                StorageListError.unknown("Did not pass identity over...", "no identity"))
+            self.onEvent?(asyncEvent)
+            self.dispatch(event: asyncEvent)
+            finish()
+            return
+        }
+
+        self.service.execute(request, identity: identity, onEvent: { (event) in
             switch event {
             case .initiated:
                 break

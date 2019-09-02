@@ -39,13 +39,13 @@ class AWSS3StorageGetOperationTests: XCTestCase {
         }
 
         let mockStorageService = MockAWSS3StorageService()
-        let request = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key").build()
+        let requestBuilder = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key", accessLevel: .Public)
 
         let completionInvoked = expectation(description: "completion was invoked on operation")
         let failedInvoked = expectation(description: "failed was invoked on operation")
         failedInvoked.isInverted = true
 
-        let operation = AWSS3StorageGetOperation(request, service: mockStorageService, onEvent: { (event) in
+        let operation = AWSS3StorageGetOperation(requestBuilder, service: mockStorageService, onEvent: { (event) in
             switch event {
             case .completed:
                 completionInvoked.fulfill()

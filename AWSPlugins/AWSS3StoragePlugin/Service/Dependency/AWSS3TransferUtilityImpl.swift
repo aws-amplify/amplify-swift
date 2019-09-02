@@ -58,4 +58,20 @@ class AWSS3TransferUtilityImpl: AWSS3TransferUtilityBehavior {
                                               expression: expression,
                                               completionHandler: completionHandler)
     }
+
+    public func uploadFile(_ fileURL: URL,
+                             bucket: String,
+                             key: String,
+                             contentType: String,
+                             expression: AWSS3TransferUtilityUploadExpression,
+                             completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?)
+        -> AWSTask<AWSS3TransferUtilityUploadTask> {
+
+        return transferUtility.uploadFile(fileURL,
+                                          bucket: bucket,
+                                          key: key,
+                                          contentType: contentType,
+                                          expression: expression,
+                                          completionHandler: completionHandler)
+    }
 }

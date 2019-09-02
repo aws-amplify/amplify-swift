@@ -16,6 +16,9 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, StorageRemoveRe
     let service: AWSS3StorageServiceBehaviour
     let onEvent: ((AsyncEvent<Void, StorageRemoveResult, StorageRemoveError>) -> Void)?
 
+    var error: StorageRemoveError?
+    var identity: String?
+
     init(_ request: AWSS3StorageRemoveRequest,
          service: AWSS3StorageServiceBehaviour,
          onEvent: ((AsyncEvent<Void, StorageRemoveResult, StorageRemoveError>) -> Void)?) {
@@ -30,8 +33,31 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, StorageRemoveRe
         cancel()
     }
 
+    public func failFast(_ error: StorageRemoveError) -> StorageRemoveOperation {
+        self.error = error
+        start()
+        return self
+    }
+
     override public func main() {
-        self.service.execute(self.request, onEvent: { (event) in
+        if let error = error {
+            let asyncEvent = AsyncEvent<Void, StorageRemoveResult, StorageRemoveError>.failed(error)
+            self.onEvent?(asyncEvent)
+            self.dispatch(event: asyncEvent)
+            finish()
+            return
+        }
+
+        guard let identity = identity else {
+            let asyncEvent = AsyncEvent<Void, StorageRemoveResult, StorageRemoveError>.failed(
+                StorageRemoveError.unknown("Did not pass identity over...", "no identity"))
+            self.onEvent?(asyncEvent)
+            self.dispatch(event: asyncEvent)
+            finish()
+            return
+        }
+
+        self.service.execute(self.request, identity: identity, onEvent: { (event) in
             switch event {
             case .initiated:
                 break

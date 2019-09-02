@@ -6,10 +6,9 @@
 //
 
 import Foundation
-public class StorageGetUrlResult {
-    public init(url: URL) {
-        self.url = url
-    }
+import AWSCore
 
-    public var url: URL
+protocol AWSMobileClientBehavior {
+    func getIdentityId() -> AWSTask<NSString>
 }
+

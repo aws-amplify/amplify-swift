@@ -11,5 +11,5 @@ public class StorageRemoveResult {
         self.key = key
     }
 
-    var key: String
+    public var key: String
 }

@@ -10,42 +10,39 @@ import Amplify
 
 public struct AWSS3StorageListRequest {
     let bucket: String
-    private let accessLevel: AccessLevel?
-    private let _prefix: String?
-    let limit: Int?
+    let accessLevel: AccessLevel
+    private let prefix: String?
+    private let limit: Int?
 
     init(builder: Builder) {
         self.bucket = builder.bucket
         self.accessLevel = builder.accessLevel
-        self._prefix = builder.prefix
+        self.prefix = builder.prefix
         self.limit = builder.limit
     }
 
-    var prefix: String? {
-        if let accessLevel = accessLevel, let prefix = _prefix {
-            return accessLevel.rawValue + prefix
-        } else if let accessLevel = accessLevel {
-            return accessLevel.rawValue
-        } else if let prefix = _prefix {
-            return prefix
+    func getFinalPrefix(identity: String) -> String {
+        if let prefix = prefix {
+            return accessLevel.rawValue + "/" + identity + "/" + prefix
         }
 
+        return accessLevel.rawValue + "/"
+    }
+
+    func validate() -> StorageListError? {
+        // return StorageGetError.unknown("error", "error")
         return nil
     }
 
-    class Builder {
+    public class Builder {
         let bucket: String
-        private(set) var accessLevel: AccessLevel?
+        let accessLevel: AccessLevel
         private(set) var prefix: String?
         private(set) var limit: Int?
 
-        init(bucket: String) {
+        init(bucket: String, accessLevel: AccessLevel) {
             self.bucket = bucket
-        }
-
-        func accessLevel(_ accessLevel: AccessLevel) -> Builder {
             self.accessLevel = accessLevel
-            return self
         }
 
         func limit(_ limit: Int) -> Builder {

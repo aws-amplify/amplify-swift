@@ -8,9 +8,11 @@
 import Foundation
 import AWSS3
 import Amplify
+import AWSMobileClient
 
 // AWSS3StorageService executes request against dependencies (TransferUtility, S3, PreSignedURLBuilder, etc)
 public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
+
     private var transferUtility: AWSS3TransferUtilityBehavior!
     private var preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior!
     private var awsS3: AWSS3Behavior!
@@ -24,28 +26,34 @@ public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
     }
 
     // TODO: use builder pattern to init, 
-    init(region: String, poolId: String, credentialsProviderRegion: String, key: String) throws {
-        // TODO this will come from AWSMobileClient, in unit test, from the mocked
-        
-        let credentialProvider = AWSCognitoCredentialsProvider(regionType:
-            credentialsProviderRegion.aws_regionTypeValue(), identityPoolId: poolId)
+    init(region: String, key: String) throws {
+
         let serviceConfigurationOptional = AWSServiceConfiguration(region:
-            region.aws_regionTypeValue(), credentialsProvider: credentialProvider)
+            region.aws_regionTypeValue(), credentialsProvider: AWSMobileClient.sharedInstance())
 
         guard let serviceConfiguration = serviceConfigurationOptional else {
             throw PluginError.pluginConfigurationError("T##ErrorDescription", "T##RecoverySuggestion")
         }
-        AWSS3TransferUtility.register(with: serviceConfiguration, forKey: key)
+
+        // TODO: this is sort of a hack - need to figure out how to deallocate the nsurlsession?
+        let transferUtility = AWSS3TransferUtility.s3TransferUtility(forKey: key)
+        if let transferUtility = transferUtility {
+            self.transferUtility = AWSS3TransferUtilityImpl(transferUtility)
+        } else {
+            AWSS3TransferUtility.register(with: serviceConfiguration, forKey: key)
+            self.transferUtility = AWSS3TransferUtilityImpl(AWSS3TransferUtility.s3TransferUtility(forKey: key)!)
+
+        }
+
         AWSS3PreSignedURLBuilder.register(with: serviceConfiguration, forKey: key)
         AWSS3.register(with: serviceConfiguration, forKey: key)
 
-        self.transferUtility = AWSS3TransferUtilityImpl(AWSS3TransferUtility.s3TransferUtility(forKey: key)!)
         self.preSignedURLBuilder = AWSS3PreSignedURLBuilderImpl(
             AWSS3PreSignedURLBuilder.s3PreSignedURLBuilder(forKey: key))
         self.awsS3 = AWSS3Impl(AWSS3.s3(forKey: key))
     }
 
-    public func execute(_ request: AWSS3StorageGetRequest, onEvent:
+    public func execute(_ request: AWSS3StorageGetRequest, identity: String, onEvent:
         @escaping (StorageEvent<StorageOperationReference, Progress, StorageGetResult, StorageGetError>) -> Void) {
 
         let expression = AWSS3TransferUtilityDownloadExpression()
@@ -74,12 +82,11 @@ public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
 
         let continuationBlock = { (task: AWSTask<AWSS3TransferUtilityDownloadTask>) -> Any? in
             if let error = task.error {
-                onEvent(StorageEvent.failed(StorageGetError.unknown("test", "test")))
+                onEvent(StorageEvent.failed(StorageGetError.unknown(error.localizedDescription, "test")))
             } else if let downloadTask = task.result {
                 onEvent(StorageEvent.initiated(StorageOperationReference(downloadTask)))
             } else {
-                // Fail hard
-                onEvent(StorageEvent.failed(StorageGetError.unknown("test", "test")))
+                onEvent(StorageEvent.failed(StorageGetError.unknown("Failed to ", "")))
             }
 
             return nil
@@ -87,28 +94,28 @@ public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
 
         if let fileURL = request.fileURL {
             let task = transferUtility.download(to: fileURL,
-                                                bucket: request.bucket,
-                                                key: request.key,
-                                                expression: expression,
-                                                completionHandler: completionHandler)
+                                                     bucket: request.bucket,
+                                                     key: request.getFinalKey(identity: identity),
+                                                     expression: expression,
+                                                     completionHandler: completionHandler)
             task.continueWith(block: continuationBlock)
         } else {
             let task = transferUtility.downloadData(
                 fromBucket: request.bucket,
-                key: request.key,
+                key: request.getFinalKey(identity: identity),
                 expression: expression,
                 completionHandler: completionHandler)
             task.continueWith(block: continuationBlock)
         }
     }
 
-    public func execute(_ request: AWSS3StorageGetUrlRequest, onEvent:
+    public func execute(_ request: AWSS3StorageGetUrlRequest, identity: String, onEvent:
         @escaping (StorageEvent<Void, Void, StorageGetUrlResult, StorageGetUrlError>) -> Void) {
-        print("Executing AWSS3StorageGetUrlOperation")
+        onEvent(StorageEvent.initiated(()))
 
         let getPresignedURLRequest = AWSS3GetPreSignedURLRequest()
         getPresignedURLRequest.bucket = request.bucket
-        getPresignedURLRequest.key = request.key
+        getPresignedURLRequest.key = request.getFinalKey(identity: identity)
         getPresignedURLRequest.httpMethod = AWSHTTPMethod.GET
         getPresignedURLRequest.expires = NSDate(timeIntervalSinceNow: 18000) as Date
 
@@ -123,12 +130,11 @@ public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
 
             return nil
         }
-
-        onEvent(StorageEvent.initiated(()))
     }
 
-    public func execute(_ request: AWSS3StoragePutRequest, onEvent:
+    public func execute(_ request: AWSS3StoragePutRequest, identity: String, onEvent:
         @escaping (StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>) -> Void) {
+
         let uploadExpression = AWSS3TransferUtilityUploadExpression()
         uploadExpression.progressBlock = {(task, progress) in
             onEvent(StorageEvent.inProcess(progress))
@@ -149,34 +155,51 @@ public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
             }
         }
 
-        transferUtility.uploadData(
-            request.data!,
-            bucket: request.bucket,
-            key: request.key,
-            contentType: "application/octet-stream", // contentType or "binary/octet-stream
-            expression: uploadExpression,
-            completionHandler: completionHandler).continueWith {(task) -> AnyObject? in
-                if let error = task.error {
-                    onEvent(StorageEvent.failed(StoragePutError.unknown(error.localizedDescription, "TODO")))
-                } else if let uploadTask = task.result {
-                    onEvent(StorageEvent.initiated(StorageOperationReference(uploadTask)))
-                } else {
+        let continuationBlock = { (task: AWSTask<AWSS3TransferUtilityUploadTask>) -> Any? in
+            if let error = task.error {
+                onEvent(StorageEvent.failed(StoragePutError.unknown(error.localizedDescription, "test")))
+            } else if let uploadTask = task.result {
+                onEvent(StorageEvent.initiated(StorageOperationReference(uploadTask)))
+            } else {
+                onEvent(StorageEvent.failed(StoragePutError.unknown("Failed to ", "")))
+            }
 
-                }
-                return nil
+            return nil
         }
+
+        if let fileURL = request.fileURL {
+            let task = transferUtility.uploadFile(fileURL,
+                                                  bucket: request.bucket,
+                                                  key: request.getFinalKey(identity: identity),
+                                                  contentType: request.contentType ?? "application/octet-stream",
+                                                  expression: uploadExpression,
+                                                  completionHandler: completionHandler)
+
+            task.continueWith(block: continuationBlock)
+        } else {
+            let task = transferUtility.uploadData(
+                request.data!,
+                bucket: request.bucket,
+                key: request.getFinalKey(identity: identity),
+                contentType: "application/octet-stream", // contentType or "binary/octet-stream
+                expression: uploadExpression,
+                completionHandler: completionHandler)
+            task.continueWith(block: continuationBlock)
+        }
+
+
     }
 
     // TODO: batch operation until all results have been gathered.
-    public func execute(_ request: AWSS3StorageListRequest, onEvent:
+    // list will only list 1000. can we set a limit
+    public func execute(_ request: AWSS3StorageListRequest, identity: String, onEvent:
         @escaping (StorageEvent<Void, Void, StorageListResult, StorageListError>) -> Void) {
+        onEvent(StorageEvent.initiated(()))
 
         let listObjectsV2Request: AWSS3ListObjectsV2Request = AWSS3ListObjectsV2Request()
         listObjectsV2Request.bucket = request.bucket
-        if let path = request.prefix {
-            listObjectsV2Request.prefix = path
-        }
-
+        listObjectsV2Request.prefix = request.getFinalPrefix(identity: identity)
+        
         awsS3.listObjectsV2(listObjectsV2Request).continueWith { (task) -> Any? in
             if let error = task.error {
                 onEvent(StorageEvent.failed(StorageListError.unknown(error.localizedDescription, "TODO")))
@@ -190,19 +213,19 @@ public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
                     onEvent(StorageEvent.completed(StorageListResult(keys: list)))
                 }
             } else {
-
+                onEvent(StorageEvent.failed(StorageListError.unknown("no error or result", "TODO")))
             }
 
             return nil
         }
-        onEvent(StorageEvent.initiated(()))
     }
 
-    public func execute(_ request: AWSS3StorageRemoveRequest, onEvent:
+    public func execute(_ request: AWSS3StorageRemoveRequest, identity: String, onEvent:
         @escaping (StorageEvent<Void, Void, StorageRemoveResult, StorageRemoveError>) -> Void) {
+
         let deleteObjectRequest: AWSS3DeleteObjectRequest = AWSS3DeleteObjectRequest()
         deleteObjectRequest.bucket = request.bucket
-        deleteObjectRequest.key = request.key
+        deleteObjectRequest.key = request.getFinalKey(identity: identity)
 
         awsS3.deleteObject(deleteObjectRequest).continueWith { (task) -> Any? in
             if let error = task.error {

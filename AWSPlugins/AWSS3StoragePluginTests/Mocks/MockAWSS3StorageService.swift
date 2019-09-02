@@ -17,7 +17,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
     private(set) public var executeListRequestCalled: Bool?
     private(set) public var executeRemoveRequestCalled: Bool?
 
-    public func execute(_ request: AWSS3StorageGetRequest, onEvent:
+    public func execute(_ request: AWSS3StorageGetRequest, identity: String, onEvent:
         @escaping (StorageEvent<StorageOperationReference, Progress, StorageGetResult, StorageGetError>) -> Void) {
 
         executeGetRequestCalled = true
@@ -26,19 +26,19 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
         onEvent(StorageEvent.completed(StorageGetResult()))
     }
 
-    public func execute(_ request: AWSS3StorageGetUrlRequest, onEvent:
+    public func execute(_ request: AWSS3StorageGetUrlRequest, identity: String, onEvent:
         @escaping (StorageEvent<Void, Void, StorageGetUrlResult, StorageGetUrlError>) -> Void) {
 
         executeGetUrlRequestCalled = true
     }
 
-    public func execute(_ request: AWSS3StoragePutRequest, onEvent:
+    public func execute(_ request: AWSS3StoragePutRequest, identity: String, onEvent:
         @escaping (StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>) -> Void) {
 
         executePutRequestCalled = true
     }
 
-    public func execute(_ request: AWSS3StorageListRequest, onEvent:
+    public func execute(_ request: AWSS3StorageListRequest, identity: String, onEvent:
         @escaping (StorageEvent<Void, Void, StorageListResult, StorageListError>) -> Void) {
 
         executeListRequestCalled = true
@@ -46,7 +46,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
         onEvent(StorageEvent.completed(StorageListResult(keys: ["list"])))
     }
 
-    public func execute(_ request: AWSS3StorageRemoveRequest, onEvent:
+    public func execute(_ request: AWSS3StorageRemoveRequest, identity: String, onEvent:
         @escaping (StorageEvent<Void, Void, StorageRemoveResult, StorageRemoveError>) -> Void) {
         executeRemoveRequestCalled = true
     }

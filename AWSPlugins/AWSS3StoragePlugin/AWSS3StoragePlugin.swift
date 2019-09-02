@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSS3
+import AWSMobileClient
 
 public class AWSS3StoragePlugin: StorageCategoryPlugin {
 
@@ -21,46 +22,33 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
     // TODO: figure out how to
     private var storageService: AWSS3StorageServiceBehaviour!
     private var bucket: String!
-
     public var key: PluginKey {
         return AWSS3StoragePlugin.AWSS3StoragePluginKey
+    }
+
+    public init() {
     }
 
     // into extensions- init, execution, ~validation
     public func configure(using configuration: Any) throws {
         if let configuration = configuration as? [String: Any] {
             guard let bucket = configuration["Bucket"] as? String else {
-                throw PluginError.pluginConfigurationError("Region not in configuration",
-                                                           "Region should be in the configuration")
+                throw PluginError.pluginConfigurationError("Bucket not in configuration",
+                                                           "Bucket should be in the configuration")
             }
             guard let region = configuration["Region"] as? String else {
                 throw PluginError.pluginConfigurationError("Region not in configuration",
                                                            "Region should be in the configuration")
             }
 
-            // TODO: remove and replace with awsmobileclient
-            guard let credentialsProvider = configuration["CredentialsProvider"] as? [String: Any] else {
-                throw PluginError.pluginConfigurationError("CredentialsProvider not in configuration",
-                                                           "CredentialsProvider should be in the configuration")
-            }
-            guard let poolId = credentialsProvider["PoolId"] as? String else {
-                throw PluginError.pluginConfigurationError("PoolId not in configuration",
-                                                           "PoolId should be in the configuration")
-            }
-            guard let credentialsProviderRegion = credentialsProvider["Region"] as? String else {
-                throw PluginError.pluginConfigurationError("CredentialsProvider.Region not in configuration",
-                                                           "CredentialsProvider.Region should be in the configuration")
-            }
-
             let storageService = try AWSS3StorageService(region: region,
-                                                     poolId: poolId,
-                                                     credentialsProviderRegion: credentialsProviderRegion, key: key)
+                                                         key: key)
 
             self.configure(storageService: storageService, bucket: bucket)
         }
     }
 
-    internal func configure(storageService: AWSS3StorageServiceBehaviour,
+    func configure(storageService: AWSS3StorageServiceBehaviour,
                             bucket: String,
                             queue: OperationQueue = OperationQueue()) {
         self.storageService = storageService
@@ -69,39 +57,47 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
     }
 
     public func reset() {
+        // TODO: storageService.reset() as well.
         self.storageService = nil
         self.bucket = nil
-    }
-
-    private func throwIfNotConfigured() {
-        if !(self.storageService != nil && self.bucket != nil) {
-            fatalError(AWSS3StoragePlugin.AWSS3StoragePluginNotConfiguredError)
-        }
-        // TODO: remove self everywhere
-        // TODO: weaken self
-        //
     }
 
     public func get(key: String,
                     options: StorageGetOption?,
                     onEvent: StorageGetEvent?) -> StorageGetOperation {
 
-        let requestBuilder = AWSS3StorageGetRequest.Builder(bucket: bucket!, key: key)
-            .accessLevel(options?.accessLevel ?? .Public)
-
+        let requestBuilder = AWSS3StorageGetRequest.Builder(bucket: bucket!,
+                                                            key: key,
+                                                            accessLevel: options?.accessLevel ?? .Public)
         if let options = options {
-            if let expires = options.expires {
-                _ = requestBuilder.expires(expires)
-            }
             if let local = options.local {
                 _ = requestBuilder.fileURL(local)
             }
         }
-        let request = requestBuilder.build()
-        let operation = AWSS3StorageGetOperation(request, service: storageService!, onEvent: onEvent)
-        queue.addOperation(operation)
 
-        return operation
+        let request = requestBuilder.build()
+        let getOperation = AWSS3StorageGetOperation(request, service: storageService!, onEvent: onEvent)
+
+        if let error = request.validate() {
+            return getOperation.failFast(error)
+        }
+
+        let fetchIdentityOperation = FetchIdentityOperation()
+
+        let adapterOperation = BlockOperation {
+            [unowned fetchIdentityOperation, unowned getOperation] in
+            if let error = fetchIdentityOperation.storageError {
+                getOperation.error = error
+            } else if let identity = fetchIdentityOperation.identity {
+                _ = getOperation.identity = identity as String
+            }
+        }
+
+        getOperation.addDependency(adapterOperation)
+        adapterOperation.addDependency(fetchIdentityOperation)
+        queue.addOperations([fetchIdentityOperation, adapterOperation, getOperation], waitUntilFinished: false)
+
+        return getOperation
     }
 
     public func put(key: String,
@@ -109,21 +105,7 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
                     options: StoragePutOption?,
                     onEvent: StoragePutEvent?) -> StoragePutOperation {
 
-        let requestBuilder = AWSS3StoragePutRequest.Builder(bucket: bucket, key: key)
-            .data(data)
-            .accessLevel(options?.accessLevel ?? .Public)
-
-        if let options = options {
-            if let contentType = options.contentType {
-                _ = requestBuilder.contentType(contentType)
-            }
-        }
-
-        let request = requestBuilder.build()
-
-        let operation = AWSS3StoragePutOperation(request, service: storageService, onEvent: onEvent)
-        queue.addOperation(operation)
-        return operation
+        return put(key: key, data: data, local: nil, options: options, onEvent: onEvent)
     }
 
     public func put(key: String,
@@ -131,36 +113,50 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
                     options: StoragePutOption?,
                     onEvent: StoragePutEvent?) -> StoragePutOperation {
 
-        let requestBuilder = AWSS3StoragePutRequest.Builder(bucket: bucket, key: key)
-            .local(local)
-            .accessLevel(options?.accessLevel ?? .Public)
-
-        if let options = options {
-            if let contentType = options.contentType {
-                _ = requestBuilder.contentType(contentType)
-            }
-        }
-        let request = requestBuilder.build()
-
-        let operation = AWSS3StoragePutOperation(request, service: storageService, onEvent: onEvent)
-        queue.addOperation(operation)
-        return operation
+        return put(key: key, data: nil, local: local, options: options, onEvent: onEvent)
     }
 
     public func remove(key: String,
                        options: StorageRemoveOption?,
                        onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
 
-        let request  = AWSS3StorageRemoveRequest.Builder(bucket: bucket, key: key).build()
+        let requestBuilder  = AWSS3StorageRemoveRequest.Builder(bucket: bucket,
+                                                                key: key,
+                                                                accessLevel: options?.accessLevel ?? .Public)
 
-        let operation = AWSS3StorageRemoveOperation(request, service: storageService, onEvent: onEvent)
-        queue.addOperation(operation)
-        return operation
+        if let options = options {
+            // TODO: extract extra variables
+        }
+
+        let request = requestBuilder.build()
+        let removeOperation = AWSS3StorageRemoveOperation(request, service: storageService, onEvent: onEvent)
+        if let error = request.validate() {
+            return removeOperation.failFast(error)
+        }
+
+        let fetchIdentityOperation = FetchIdentityOperation()
+
+        let adapterOperation = BlockOperation {
+            [unowned fetchIdentityOperation, unowned removeOperation] in
+            if let error = fetchIdentityOperation.storageError {
+                let error = StorageRemoveError.unknown(error.errorDescription, error.localizedDescription)
+                removeOperation.error = error
+            } else if let identity = fetchIdentityOperation.identity {
+                _ = removeOperation.identity = identity as String
+            }
+        }
+
+        removeOperation.addDependency(adapterOperation)
+        adapterOperation.addDependency(fetchIdentityOperation)
+        queue.addOperations([fetchIdentityOperation, adapterOperation, removeOperation], waitUntilFinished: false)
+
+        return removeOperation
     }
 
     public func list(options: StorageListOption?, onEvent: StorageListEvent?) -> StorageListOperation {
 
-        let requestBuilder = AWSS3StorageListRequest.Builder(bucket: bucket)
+        let requestBuilder = AWSS3StorageListRequest.Builder(bucket: bucket,
+                                                             accessLevel: options?.accessLevel ?? .Public)
 
         if let options  = options {
             if let limit = options.limit {
@@ -171,14 +167,79 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
                 _ = requestBuilder.prefix(prefix)
             }
         }
-
         let request = requestBuilder.build()
+        let listOperation = AWSS3StorageListOperation(request, service: storageService, onEvent: onEvent)
 
-        let operation = AWSS3StorageListOperation(request, service: storageService, onEvent: onEvent)
-        queue.addOperation(operation)
-        return operation
+        if let error = request.validate() {
+            return listOperation.failFast(error)
+        }
+
+        let fetchIdentityOperation = FetchIdentityOperation()
+
+        let adapterOperation = BlockOperation {
+            [unowned fetchIdentityOperation, unowned listOperation] in
+            if let error = fetchIdentityOperation.storageError {
+                let error = StorageListError.unknown(error.errorDescription, error.localizedDescription)
+                listOperation.error = error
+            } else if let identity = fetchIdentityOperation.identity {
+                _ = listOperation.identity = identity as String
+            }
+        }
+
+        listOperation.addDependency(adapterOperation)
+        adapterOperation.addDependency(fetchIdentityOperation)
+        queue.addOperations([fetchIdentityOperation, adapterOperation, listOperation], waitUntilFinished: false)
+
+        return listOperation
     }
 
     public func stub() {
+    }
+
+    private func put(key: String,
+                     data: Data?,
+                     local: URL?,
+                     options: StoragePutOption?,
+                     onEvent: StoragePutEvent?) -> StoragePutOperation {
+
+        let requestBuilder = AWSS3StoragePutRequest.Builder(bucket: bucket,
+                                                            key: key,
+                                                            accessLevel: options?.accessLevel ?? .Public)
+        if let data = data {
+            _ = requestBuilder.data(data)
+        } else if let local = local {
+            _ = requestBuilder.fileURL(local)
+        }
+
+        if let options = options {
+            if let contentType = options.contentType {
+                _ = requestBuilder.contentType(contentType)
+            }
+        }
+
+        let request = requestBuilder.build()
+        let putOperation = AWSS3StoragePutOperation(request, service: storageService, onEvent: onEvent)
+
+        if let error = request.validate() {
+            return putOperation.failFast(error)
+        }
+
+        let fetchIdentityOperation = FetchIdentityOperation()
+
+        let adapterOperation = BlockOperation {
+            [unowned fetchIdentityOperation, unowned putOperation] in
+            if let error = fetchIdentityOperation.storageError {
+                let error = StoragePutError.unknown(error.errorDescription, error.localizedDescription)
+                putOperation.error = error
+            } else if let identity = fetchIdentityOperation.identity {
+                _ = putOperation.identity = identity as String
+            }
+        }
+
+        putOperation.addDependency(adapterOperation)
+        adapterOperation.addDependency(fetchIdentityOperation)
+        queue.addOperations([fetchIdentityOperation, adapterOperation, putOperation], waitUntilFinished: false)
+
+        return putOperation
     }
 }

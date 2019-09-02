@@ -20,7 +20,7 @@ class AWSS3StorageGetRequestTests: XCTestCase {
 
     func testMandatoryFields() {
         // Arrange
-        let requestBuilder = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key")
+        let requestBuilder = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key", accessLevel: .Public)
 
         // Act
         let request = requestBuilder.build()
@@ -36,7 +36,7 @@ class AWSS3StorageGetRequestTests: XCTestCase {
     func testOptionalFields() {
         // Arrange
         let url = URL(fileURLWithPath: "path")
-        let requestBuilder = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key")
+        let requestBuilder = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key", accessLevel: .Public)
             .accessLevel(.Private)
             .fileURL(url)
         let expectedKey = "private/key"

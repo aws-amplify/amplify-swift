@@ -10,40 +10,49 @@ import Amplify
 
 public struct AWSS3StoragePutRequest {
     let bucket: String
-    private let accessLevel: AccessLevel?
-    private let _key: String
+    let accessLevel: AccessLevel
+    let key: String
     let data: Data?
-    let local: URL?
+    let fileURL: URL?
     let contentType: String?
 
     init(builder: Builder) {
         self.bucket = builder.bucket
         self.accessLevel = builder.accessLevel
-        self._key = builder.key
+        self.key = builder.key
         self.data = builder.data
-        self.local = builder.local
+        self.fileURL = builder.fileURL
         self.contentType = builder.contentType
     }
 
-    var key: String {
-        if let accessLevel = accessLevel {
-            return accessLevel.rawValue + "/" + _key
-        } else {
-            return _key
+    func getFinalKey(identity: String) -> String {
+        if accessLevel == .Private || accessLevel == .Protected {
+            return accessLevel.rawValue + "/" + identity + "/" + key
         }
+
+        return accessLevel.rawValue + "/" + key
     }
 
-    class Builder {
+    func validate() -> StoragePutError? {
+        if let _ = data, let _ = fileURL {
+            return StoragePutError.unknown("Both data and local", "was specified")
+        }
+        // return StorageGetError.unknown("error", "error")
+        return nil
+    }
+    
+    public class Builder {
         let bucket: String
-        private(set) var accessLevel: AccessLevel?
+        let accessLevel: AccessLevel
         let key: String
         private(set) var data: Data?
-        private(set) var local: URL?
+        private(set) var fileURL: URL?
         private(set) var contentType: String?
 
-        init(bucket: String, key: String) {
+        init(bucket: String, key: String, accessLevel: AccessLevel) {
             self.bucket = bucket
             self.key = key
+            self.accessLevel = accessLevel
         }
 
         func data(_ data: Data) -> Builder {
@@ -51,12 +60,8 @@ public struct AWSS3StoragePutRequest {
             return self
         }
 
-        func local(_ local: URL) -> Builder {
-            self.local = local
-            return self
-        }
-        func accessLevel(_ accessLevel: AccessLevel) -> Builder {
-            self.accessLevel = accessLevel
+        func fileURL(_ fileURL: URL) -> Builder {
+            self.fileURL = fileURL
             return self
         }
 

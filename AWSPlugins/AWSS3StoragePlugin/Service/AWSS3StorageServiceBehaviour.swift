@@ -9,21 +9,20 @@ import Foundation
 import Amplify
 import AWSS3
 
-// TODO: internal
 protocol AWSS3StorageServiceBehaviour {
 
-    func execute(_ request: AWSS3StorageGetRequest, onEvent:
+    func execute(_ request: AWSS3StorageGetRequest, identity: String, onEvent:
         @escaping (StorageEvent<StorageOperationReference, Progress, StorageGetResult, StorageGetError>) -> Void)
 
-    func execute(_ request: AWSS3StorageGetUrlRequest, onEvent:
+    func execute(_ request: AWSS3StorageGetUrlRequest, identity: String, onEvent:
         @escaping (StorageEvent<Void, Void, StorageGetUrlResult, StorageGetUrlError>) -> Void)
 
-    func execute(_ request: AWSS3StoragePutRequest, onEvent:
+    func execute(_ request: AWSS3StoragePutRequest, identity: String, onEvent:
         @escaping (StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>) -> Void)
 
-    func execute(_ request: AWSS3StorageListRequest, onEvent:
+    func execute(_ request: AWSS3StorageListRequest, identity: String, onEvent:
         @escaping (StorageEvent<Void, Void, StorageListResult, StorageListError>) -> Void)
 
-    func execute(_ request: AWSS3StorageRemoveRequest, onEvent:
+    func execute(_ request: AWSS3StorageRemoveRequest, identity: String, onEvent:
         @escaping (StorageEvent<Void, Void, StorageRemoveResult, StorageRemoveError>) -> Void)
 }

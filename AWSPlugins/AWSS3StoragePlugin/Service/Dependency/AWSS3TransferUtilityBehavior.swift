@@ -31,4 +31,12 @@ protocol AWSS3TransferUtilityBehavior {
                     completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?)
         -> AWSTask<AWSS3TransferUtilityUploadTask>
 
+    func uploadFile(_ fileURL: URL,
+                    bucket: String,
+                    key: String,
+                    contentType: String,
+                    expression: AWSS3TransferUtilityUploadExpression,
+                    completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?)
+        -> AWSTask<AWSS3TransferUtilityUploadTask>
+
 }
