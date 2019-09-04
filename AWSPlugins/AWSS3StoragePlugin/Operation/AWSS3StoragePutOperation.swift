@@ -8,24 +8,26 @@
 import Foundation
 import Amplify
 import AWSS3
+import AWSMobileClient
 
 public class AWSS3StoragePutOperation: AmplifyOperation<Progress, StoragePutResult, StoragePutError>,
     StoragePutOperation {
 
     let request: AWSS3StoragePutRequest
     let service: AWSS3StorageServiceBehaviour
+    let mobileClient: AWSMobileClientBehavior
     let onEvent: ((AsyncEvent<Progress, StoragePutResult, StoragePutError>) -> Void)?
 
-    var error: StoragePutError?
-    var identity: String?
     var storageOperationReference: StorageOperationReference?
 
     init(_ request: AWSS3StoragePutRequest,
          service: AWSS3StorageServiceBehaviour,
+         mobileClient: AWSMobileClientBehavior,
          onEvent: ((AsyncEvent<Progress, CompletedType, ErrorType>) -> Void)?) {
 
         self.request = request
         self.service = service
+        self.mobileClient = mobileClient
         self.onEvent = onEvent
         super.init(categoryType: .storage)
     }
@@ -43,14 +45,8 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, StoragePutResu
         cancel()
     }
 
-    public func failFast(_ error: StoragePutError) -> StoragePutOperation {
-        self.error = error
-        start()
-        return self
-    }
-
     override public func main() {
-        if let error = error {
+        if let error = request.validate() {
             let asyncEvent = AsyncEvent<Progress, StoragePutResult, StoragePutError>.failed(error)
             self.onEvent?(asyncEvent)
             self.dispatch(event: asyncEvent)
@@ -58,34 +54,59 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, StoragePutResu
             return
         }
 
-        guard let identity = identity else {
-            let asyncEvent = AsyncEvent<Progress, StoragePutResult, StoragePutError>.failed(
-                StoragePutError.unknown("Did not pass identity over...", "no identity"))
-            self.onEvent?(asyncEvent)
-            self.dispatch(event: asyncEvent)
-            finish()
-            return
-        }
-
-        self.service.execute(request, identity: identity, onEvent: { (event) in
+        let serviceOnEventBlock = {
+            (event: StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>) -> Void in
             switch event {
             case .initiated(let reference):
                 self.storageOperationReference = reference
             case .inProcess(let progress):
-                let asyncEvent = AsyncEvent<Progress, StoragePutResult, StoragePutError>.inProcess(progress)
-                self.dispatch(event: asyncEvent)
-                self.onEvent?(asyncEvent)
+                self.sendProgressAsyncEvent(progress)
             case .completed(let result):
-                let asyncEvent = AsyncEvent<Progress, StoragePutResult, StoragePutError>.completed(result)
-                self.dispatch(event: asyncEvent)
-                self.onEvent?(asyncEvent)
+                self.sendSuccessAsyncEvent(result)
+
                 self.finish()
             case .failed(let error):
-                let asyncEvent = AsyncEvent<Progress, StoragePutResult, StoragePutError>.failed(error)
-                self.dispatch(event: asyncEvent)
-                self.onEvent?(asyncEvent)
+                self.sendFailedAsyncEvent(error)
+
                 self.finish()
             }
-        })
+        }
+
+        let getIdentityContinuationBlock = { (task: AWSTask<NSString>) -> Any? in
+            if let error = task.error as? AWSMobileClientError {
+                // TODO MAP to error
+                let error = StoragePutError.unknown("No Identitiy", "no identity!")
+                self.sendFailedAsyncEvent(error)
+                self.finish()
+            } else if let identity = task.result {
+                self.service.execute(self.request, identity: identity as String, onEvent: serviceOnEventBlock)
+            } else {
+                let error = StoragePutError.unknown("No Identitiy", "no identity!")
+                self.sendFailedAsyncEvent(error)
+                self.finish()
+            }
+
+            return nil
+        }
+
+        mobileClient.getIdentityId().continueWith(block: getIdentityContinuationBlock)
+    }
+
+    private func sendProgressAsyncEvent(_ progress: Progress) {
+        let asyncEvent = AsyncEvent<Progress, StoragePutResult, StoragePutError>.inProcess(progress)
+        dispatch(event: asyncEvent)
+        onEvent?(asyncEvent)
+    }
+
+    private func sendSuccessAsyncEvent(_ result: StoragePutResult) {
+        let asyncEvent = AsyncEvent<Progress, StoragePutResult, StoragePutError>.completed(result)
+        dispatch(event: asyncEvent)
+        onEvent?(asyncEvent)
+    }
+
+    private func sendFailedAsyncEvent(_ error: StoragePutError) {
+        let asyncEvent = AsyncEvent<Progress, StoragePutResult, StoragePutError>.failed(error)
+        onEvent?(asyncEvent)
+        dispatch(event: asyncEvent)
     }
 }

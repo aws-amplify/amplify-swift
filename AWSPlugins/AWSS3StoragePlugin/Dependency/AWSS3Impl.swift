@@ -22,4 +22,8 @@ class AWSS3Impl: AWSS3Behavior {
     public func deleteObject(_ request: AWSS3DeleteObjectRequest) -> AWSTask<AWSS3DeleteObjectOutput> {
         return awsS3.deleteObject(request)
     }
+
+    public func getS3() -> AWSS3 {
+        return awsS3
+    }
 }

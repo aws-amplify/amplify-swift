@@ -17,4 +17,8 @@ class AWSMobileClientImpl: AWSMobileClientBehavior {
     func getIdentityId() -> AWSTask<NSString> {
         return awsMobileClient.getIdentityId()
     }
+
+    func getCognitoCredentialsProvider() -> AWSCognitoCredentialsProvider {
+        return awsMobileClient
+    }
 }

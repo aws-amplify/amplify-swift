@@ -9,6 +9,7 @@ import Foundation
 import AWSCore
 
 protocol AWSMobileClientBehavior {
+    func getCognitoCredentialsProvider() -> AWSCognitoCredentialsProvider
     func getIdentityId() -> AWSTask<NSString>
 }
 

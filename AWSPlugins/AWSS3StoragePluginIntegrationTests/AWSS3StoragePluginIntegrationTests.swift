@@ -324,9 +324,27 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
 //
 //    // MARK: Negative Tests
 //
-//    func testGetNonexistentKey() {
-//        XCTFail("Not yet implemented")
-//    }
+    func testGetNonexistentKey() {
+        let key = "testGetNonexistentKey"
+        let failInvoked = expectation(description: "Failed is invoked")
+        let operation = Amplify.Storage.get(key: key, options: nil) { (event) in
+            switch event {
+            case .unknown:
+                break
+            case .notInProcess:
+                break
+            case .inProcess:
+                break
+            case .completed:
+                XCTFail("Negative test completed successfully")
+            case .failed(let error):
+                failInvoked.fulfill()
+            }
+        }
+
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 100)
+    }
 //
 //    func testPutDataFromMissingFile() {
 //        XCTFail("Not yet implemented")

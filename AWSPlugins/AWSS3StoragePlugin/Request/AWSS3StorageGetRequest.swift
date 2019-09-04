@@ -21,6 +21,7 @@ public struct AWSS3StorageGetRequest {
         self.fileURL = builder.fileURL
     }
 
+    // TODO: refactor this as all requests will use something similar to this
     func getFinalKey(identity: String) -> String {
         if accessLevel == .Private || accessLevel == .Protected {
             return accessLevel.rawValue + "/" + identity + "/" + key
@@ -30,7 +31,14 @@ public struct AWSS3StorageGetRequest {
     }
 
     func validate() -> StorageGetError? {
-        // return StorageGetError.unknown("error", "error")
+        if bucket.isEmpty {
+            return StorageGetError.unknown("bucket is empty", "bucket is empty")
+        }
+
+        if key.isEmpty {
+            return StorageGetError.unknown("key is empty", "key is empty")
+        }
+
         return nil
     }
 

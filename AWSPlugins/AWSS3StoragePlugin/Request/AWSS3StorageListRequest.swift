@@ -22,15 +22,28 @@ public struct AWSS3StorageListRequest {
     }
 
     func getFinalPrefix(identity: String) -> String {
-        if let prefix = prefix {
-            return accessLevel.rawValue + "/" + identity + "/" + prefix
+        if accessLevel == .Private || accessLevel == .Protected {
+            if let prefix = prefix {
+                return accessLevel.rawValue + "/" + identity + "/" + prefix
+            }
+
+            return accessLevel.rawValue + "/" + identity + "/"
         }
 
         return accessLevel.rawValue + "/"
     }
 
     func validate() -> StorageListError? {
-        // return StorageGetError.unknown("error", "error")
+        if bucket.isEmpty {
+            return StorageListError.unknown("bucket is empty", "bucket is empty")
+        }
+
+        if let prefix = prefix {
+            if prefix.isEmpty {
+                return StorageListError.unknown("prefix is specified but is empty", "empty")
+            }
+        }
+        
         return nil
     }
 

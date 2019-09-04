@@ -28,7 +28,14 @@ public struct AWSS3StorageRemoveRequest {
     }
 
     func validate() -> StorageRemoveError? {
-        // return StorageGetError.unknown("error", "error")
+        if bucket.isEmpty {
+            return StorageRemoveError.unknown("bucket is empty", "bucket is empty")
+        }
+
+        if key.isEmpty {
+            return StorageRemoveError.unknown("key is empty", "key is empty")
+        }
+
         return nil
     }
 

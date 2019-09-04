@@ -29,6 +29,18 @@ public struct AWSS3StorageGetUrlRequest {
         return accessLevel.rawValue + "/" + key
     }
 
+    func validate() -> StorageGetUrlError? {
+        if bucket.isEmpty {
+            return StorageGetUrlError.unknown("bucket is empty", "bucket is empty")
+        }
+
+        if key.isEmpty {
+            return StorageGetUrlError.unknown("key is empty", "key is empty")
+        }
+
+        return nil
+    }
+
     public class Builder {
         let bucket: String
         let accessLevel: AccessLevel

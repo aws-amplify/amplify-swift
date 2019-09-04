@@ -34,13 +34,28 @@ public struct AWSS3StoragePutRequest {
     }
 
     func validate() -> StoragePutError? {
-        if let _ = data, let _ = fileURL {
+        if bucket.isEmpty {
+            return StoragePutError.unknown("bucket is empty", "bucket is empty")
+        }
+
+        if key.isEmpty {
+            return StoragePutError.unknown("key is empty", "key is empty")
+        }
+
+        if data != nil && fileURL != nil {
             return StoragePutError.unknown("Both data and local", "was specified")
         }
-        // return StorageGetError.unknown("error", "error")
+
+        if let contentType = contentType {
+            if contentType.isEmpty {
+                return StoragePutError.unknown("content type specified but is empty", "")
+            }
+            // else if contentTypeValidator(contentType) {
+        }
+
         return nil
     }
-    
+
     public class Builder {
         let bucket: String
         let accessLevel: AccessLevel

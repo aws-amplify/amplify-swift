@@ -11,7 +11,9 @@ import AWSMobileClient
 
 public class AWSS3StoragePlugin: StorageCategoryPlugin {
 
-    public static let AWSS3StoragePluginKey = "AWSS3StoragePlugin"
+    private static let AWSS3StoragePluginKey = "AWSS3StoragePlugin"
+
+    // TODO move this variable somewhere else into constant file
     private static let AWSS3StoragePluginNotConfiguredError = """
         AWSS3StoragePlugin not configured.
         Call Amplify.configure() to configure. This could happen if Amplify.reset().
@@ -19,9 +21,10 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
 
     private var queue: OperationQueue = OperationQueue()
 
-    // TODO: figure out how to
     private var storageService: AWSS3StorageServiceBehaviour!
     private var bucket: String!
+    private var mobileClient: AWSMobileClientBehavior!
+
     public var key: PluginKey {
         return AWSS3StoragePlugin.AWSS3StoragePluginKey
     }
@@ -29,35 +32,49 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
     public init() {
     }
 
-    // into extensions- init, execution, ~validation
     public func configure(using configuration: Any) throws {
         if let configuration = configuration as? [String: Any] {
             guard let bucket = configuration["Bucket"] as? String else {
                 throw PluginError.pluginConfigurationError("Bucket not in configuration",
                                                            "Bucket should be in the configuration")
             }
+
+            if bucket.isEmpty {
+                throw PluginError.pluginConfigurationError("Bucket is empty in configuration",
+                                                           "Bucket should not be empty in the configuration")
+            }
+
             guard let region = configuration["Region"] as? String else {
                 throw PluginError.pluginConfigurationError("Region not in configuration",
                                                            "Region should be in the configuration")
             }
 
-            let storageService = try AWSS3StorageService(region: region,
-                                                         key: key)
+            if region.isEmpty {
+                throw PluginError.pluginConfigurationError("Region should not be empty in configuration",
+                                                           "Region should not be empty in the configuration")
+            }
 
-            self.configure(storageService: storageService, bucket: bucket)
+            let mobileClient = AWSMobileClientImpl(AWSMobileClient.sharedInstance())
+            let storageService = try AWSS3StorageService(region: region,
+                                                         mobileClient: mobileClient,
+                                                         pluginKey: key)
+
+            self.configure(storageService: storageService, bucket: bucket, mobileClient: mobileClient)
         }
     }
 
     func configure(storageService: AWSS3StorageServiceBehaviour,
-                            bucket: String,
-                            queue: OperationQueue = OperationQueue()) {
+                   bucket: String,
+                   mobileClient: AWSMobileClientBehavior,
+                   queue: OperationQueue = OperationQueue()) {
         self.storageService = storageService
         self.bucket = bucket
+        self.mobileClient = mobileClient
         self.queue = queue
     }
 
     public func reset() {
-        // TODO: storageService.reset() as well.
+        // TODO: storageService.reset() as well. need to understand how to deinit
         self.storageService = nil
         self.bucket = nil
     }
@@ -75,28 +92,11 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
             }
         }
 
-        let request = requestBuilder.build()
-        let getOperation = AWSS3StorageGetOperation(request, service: storageService!, onEvent: onEvent)
-
-        if let error = request.validate() {
-            return getOperation.failFast(error)
-        }
-
-        let fetchIdentityOperation = FetchIdentityOperation()
-
-        let adapterOperation = BlockOperation {
-            [unowned fetchIdentityOperation, unowned getOperation] in
-            if let error = fetchIdentityOperation.storageError {
-                getOperation.error = error
-            } else if let identity = fetchIdentityOperation.identity {
-                _ = getOperation.identity = identity as String
-            }
-        }
-
-        getOperation.addDependency(adapterOperation)
-        adapterOperation.addDependency(fetchIdentityOperation)
-        queue.addOperations([fetchIdentityOperation, adapterOperation, getOperation], waitUntilFinished: false)
-
+        let getOperation = AWSS3StorageGetOperation(requestBuilder.build(),
+                                                    service: storageService!,
+                                                    mobileClient: mobileClient!,
+                                                    onEvent: onEvent)
+        queue.addOperation(getOperation)
         return getOperation
     }
 
@@ -104,7 +104,6 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
                     data: Data,
                     options: StoragePutOption?,
                     onEvent: StoragePutEvent?) -> StoragePutOperation {
-
         return put(key: key, data: data, local: nil, options: options, onEvent: onEvent)
     }
 
@@ -112,7 +111,6 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
                     local: URL,
                     options: StoragePutOption?,
                     onEvent: StoragePutEvent?) -> StoragePutOperation {
-
         return put(key: key, data: nil, local: local, options: options, onEvent: onEvent)
     }
 
@@ -128,27 +126,11 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
             // TODO: extract extra variables
         }
 
-        let request = requestBuilder.build()
-        let removeOperation = AWSS3StorageRemoveOperation(request, service: storageService, onEvent: onEvent)
-        if let error = request.validate() {
-            return removeOperation.failFast(error)
-        }
-
-        let fetchIdentityOperation = FetchIdentityOperation()
-
-        let adapterOperation = BlockOperation {
-            [unowned fetchIdentityOperation, unowned removeOperation] in
-            if let error = fetchIdentityOperation.storageError {
-                let error = StorageRemoveError.unknown(error.errorDescription, error.localizedDescription)
-                removeOperation.error = error
-            } else if let identity = fetchIdentityOperation.identity {
-                _ = removeOperation.identity = identity as String
-            }
-        }
-
-        removeOperation.addDependency(adapterOperation)
-        adapterOperation.addDependency(fetchIdentityOperation)
-        queue.addOperations([fetchIdentityOperation, adapterOperation, removeOperation], waitUntilFinished: false)
+        let removeOperation = AWSS3StorageRemoveOperation(requestBuilder.build(),
+                                                          service: storageService,
+                                                          mobileClient: mobileClient!,
+                                                          onEvent: onEvent)
+        queue.addOperation(removeOperation)
 
         return removeOperation
     }
@@ -167,28 +149,12 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
                 _ = requestBuilder.prefix(prefix)
             }
         }
-        let request = requestBuilder.build()
-        let listOperation = AWSS3StorageListOperation(request, service: storageService, onEvent: onEvent)
 
-        if let error = request.validate() {
-            return listOperation.failFast(error)
-        }
-
-        let fetchIdentityOperation = FetchIdentityOperation()
-
-        let adapterOperation = BlockOperation {
-            [unowned fetchIdentityOperation, unowned listOperation] in
-            if let error = fetchIdentityOperation.storageError {
-                let error = StorageListError.unknown(error.errorDescription, error.localizedDescription)
-                listOperation.error = error
-            } else if let identity = fetchIdentityOperation.identity {
-                _ = listOperation.identity = identity as String
-            }
-        }
-
-        listOperation.addDependency(adapterOperation)
-        adapterOperation.addDependency(fetchIdentityOperation)
-        queue.addOperations([fetchIdentityOperation, adapterOperation, listOperation], waitUntilFinished: false)
+        let listOperation = AWSS3StorageListOperation(requestBuilder.build(),
+                                                      service: storageService,
+                                                      mobileClient: mobileClient!,
+                                                      onEvent: onEvent)
+        queue.addOperation(listOperation)
 
         return listOperation
     }
@@ -217,29 +183,17 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
             }
         }
 
-        let request = requestBuilder.build()
-        let putOperation = AWSS3StoragePutOperation(request, service: storageService, onEvent: onEvent)
-
-        if let error = request.validate() {
-            return putOperation.failFast(error)
-        }
-
-        let fetchIdentityOperation = FetchIdentityOperation()
-
-        let adapterOperation = BlockOperation {
-            [unowned fetchIdentityOperation, unowned putOperation] in
-            if let error = fetchIdentityOperation.storageError {
-                let error = StoragePutError.unknown(error.errorDescription, error.localizedDescription)
-                putOperation.error = error
-            } else if let identity = fetchIdentityOperation.identity {
-                _ = putOperation.identity = identity as String
-            }
-        }
-
-        putOperation.addDependency(adapterOperation)
-        adapterOperation.addDependency(fetchIdentityOperation)
-        queue.addOperations([fetchIdentityOperation, adapterOperation, putOperation], waitUntilFinished: false)
+        let putOperation = AWSS3StoragePutOperation(requestBuilder.build(),
+                                                    service: storageService,
+                                                    mobileClient: mobileClient!,
+                                                    onEvent: onEvent)
+        queue.addOperation(putOperation)
 
         return putOperation
     }
+
+    // TODO: escape hatch implementation
+//    func getS3() ->  {
+//        return storageService.getS3().
+//    }
 }
