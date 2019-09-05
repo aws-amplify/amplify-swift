@@ -6,8 +6,9 @@
 //
 
 import XCTest
-import Amplify
 import CwlPreconditionTesting
+
+@testable import Amplify
 
 class AnalyticsCategoryConfigurationTests: XCTestCase {
     override func setUp() {
@@ -252,4 +253,43 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
     }
 
+    func testPreconditionFailureInvokingBeforeConfig() throws {
+        let plugin = MockAnalyticsCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+
+        // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
+        let exception: BadInstructionException? = catchBadInstruction {
+            Amplify.Analytics.record("test")
+        }
+        XCTAssertNotNil(exception)
+    }
+
+    func testThrowsConfiguringTwice() throws {
+        let plugin = MockAnalyticsCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+        let categoryConfig = BasicCategoryConfiguration(
+            plugins: ["MockAnalyticsCategoryPlugin": true]
+        )
+
+        try Amplify.Analytics.configure(using: categoryConfig)
+        XCTAssertThrowsError(try plugin.configure(using: categoryConfig),
+                             "configure() an already configured plugin should throw") { error in
+                                guard case ConfigurationError.amplifyAlreadyConfigured = error else {
+                                    XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
+                                    return
+                                }
+        }
+    }
+
+    func testCanConfigureAfterReset() throws {
+        let plugin = MockAnalyticsCategoryPlugin()
+        let analyticsConfig = BasicCategoryConfiguration(
+            plugins: ["MockAnalyticsCategoryPlugin": true]
+        )
+
+        let amplifyConfig = BasicAmplifyConfiguration(analytics: analyticsConfig)
+        try plugin.configure(using: amplifyConfig)
+        plugin.reset()
+        XCTAssertNoThrow(try plugin.configure(using: amplifyConfig))
+    }
 }

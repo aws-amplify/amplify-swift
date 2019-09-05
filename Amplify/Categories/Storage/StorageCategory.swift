@@ -44,33 +44,7 @@ final public class StorageCategory: Category {
         return .selector(selector)
     }
 
-    // MARK: - Configuration
-
-    /// For each key in the category configuration's `plugins` section, retrieves the plugin added for that
-    /// key, then invokes `configure` on that plugin.
-    ///
-    /// - Parameter configuration: The category-specific configuration
-    /// - Throws:
-    ///   - PluginError.noSuchPlugin if there is no plugin added for the specified key
-    ///   - PluginError.pluginConfigurationError: If any plugin encounters an error during configuration
-    public func configure(using configuration: CategoryConfiguration) throws {
-        for (pluginKey, pluginConfiguration) in configuration.plugins {
-            let plugin = try getPlugin(for: pluginKey)
-            try plugin.configure(using: pluginConfiguration)
-        }
-    }
-
-    /// Convenience method for configuring the category using the top-level AmplifyConfiguration
-    ///
-    /// - Parameter amplifyConfiguration: The AmplifyConfiguration
-    /// - Throws:
-    ///   - PluginError.pluginConfigurationError: If any plugin encounters an error during configuration
-    func configure(using amplifyConfiguration: AmplifyConfiguration) throws {
-        guard let configuration = categoryConfiguration(from: amplifyConfiguration) else {
-            return
-        }
-        try configure(using: configuration)
-    }
+    var isConfigured = false
 
     // MARK: - Plugin handling
 
@@ -156,11 +130,6 @@ final public class StorageCategory: Category {
         self.pluginSelectorFactory = pluginSelectorFactory
 
         plugins.values.forEach { self.pluginSelectorFactory?.add(plugin: $0) }
-    }
-
-    /// Invokes `reset` on each added plugin
-    public func resetPlugins() {
-        plugins.values.forEach { $0.reset() }
     }
 
 }

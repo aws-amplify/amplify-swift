@@ -9,19 +9,6 @@
 /// requests to those plugins appropriately.
 public protocol Category: class, CategoryTypeable {
 
-    // MARK: - Configuration
-
-    /// Configures the category and added plugins using `configuration`
-    ///
-    /// - Parameter configuration: The CategoryConfiguration
-    /// - Throws:
-    ///   - PluginError.noSuchPlugin: If the specified configuration references a plugin that has not been added
-    ///     using `add(plugin:)`
-    ///   - PluginError.pluginConfigurationError: If any plugin encounters an error during configuration
-    func configure(using configuration: CategoryConfiguration) throws
-
-    // MARK: - Plugin handling
-
     // NOTE: `add(plugin:)`, `getPlugin(for key:)`, and `set(pluginSelectorFactory:` must be implemented in the actual
     // category classes, since they operate on specific plugin types
 
@@ -38,8 +25,5 @@ public protocol Category: class, CategoryTypeable {
     /// the second plugin is added. PluginSelectors are only required, and only invoked,
     /// if more than one plugin is registered for a category.
     func set(pluginSelectorFactory: PluginSelectorFactory) throws
-
-    /// Invokes `reset` on each added plugin
-    func resetPlugins()
 
 }

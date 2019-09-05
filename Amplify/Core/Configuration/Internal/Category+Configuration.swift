@@ -6,7 +6,7 @@
 //
 
 // Internal utility extensions
-extension Category {
+extension CategoryTypeable {
 
     /// Returns the appropriate category-specific configuration section from an AmplifyConfiguration
     ///
@@ -14,21 +14,19 @@ extension Category {
     ///   configuration section
     /// - Returns: The category-specific configuration section, or nil if the configuration has no value for the section
     func categoryConfiguration(from amplifyConfiguration: AmplifyConfiguration) -> CategoryConfiguration? {
-        switch self {
-        case is AnalyticsCategory:
+        switch categoryType {
+        case .analytics:
             return amplifyConfiguration.analytics
-        case is APICategory:
+        case .api:
             return amplifyConfiguration.api
-        case is AuthCategory:
+        case .auth:
             return amplifyConfiguration.auth
-        case is HubCategory:
+        case .hub:
             return amplifyConfiguration.hub
-        case is LoggingCategory:
+        case .logging:
             return amplifyConfiguration.logging
-        case is StorageCategory:
+        case .storage:
             return amplifyConfiguration.storage
-        default:
-            return nil
         }
     }
 
