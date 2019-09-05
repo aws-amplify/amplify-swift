@@ -7,6 +7,7 @@
 
 import Foundation
 import AWSCore
+import Amplify
 
 protocol AWSAuthServiceBehavior {
     func configure()
@@ -15,5 +16,5 @@ protocol AWSAuthServiceBehavior {
 
     func getCognitoCredentialsProvider() -> AWSCognitoCredentialsProvider
 
-    func getIdentityId() -> Result<String, Error>
+    func getIdentityId() -> Result<String, StorageError>
 }

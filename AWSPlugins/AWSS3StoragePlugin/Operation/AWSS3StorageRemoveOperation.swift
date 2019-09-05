@@ -44,15 +44,22 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, StorageRemoveRe
         let identityIdResult = authService.getIdentityId()
 
         guard case let .success(identityId) = identityIdResult else {
-            // TODO figure this out
-            //let error = identityIdResult.mapError
-            let error = StorageRemoveError.unknown("identity", "identity")
-            dispatch(error)
+            if case let .failure(error) = identityIdResult {
+                let storageRemoveError = StorageRemoveError.identity(error.errorDescription, error.recoverySuggestion)
+                dispatch(storageRemoveError)
+            }
+
             finish()
             return
         }
 
-        storageService.execute(request, identityId: identityId, onEvent: onEventHandler)
+        let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
+                                                           identityId: identityId,
+                                                           key: request.key)
+
+        storageService.delete(bucket: request.bucket,
+                              serviceKey: serviceKey,
+                              onEvent: onEventHandler)
     }
 
     private func onEventHandler(event: StorageEvent<Void, Void, StorageRemoveResult, StorageRemoveError>) {

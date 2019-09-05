@@ -23,7 +23,7 @@ protocol AWSS3TransferUtilityBehavior {
         -> AWSTask<AWSS3TransferUtilityDownloadTask>
 
     // swiftlint:disable function_parameter_count
-    func uploadData(_ data: Data,
+    func uploadData(data: Data,
                     bucket: String,
                     key: String,
                     contentType: String,
@@ -31,7 +31,7 @@ protocol AWSS3TransferUtilityBehavior {
                     completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?)
         -> AWSTask<AWSS3TransferUtilityUploadTask>
 
-    func uploadFile(_ fileURL: URL,
+    func uploadFile(fileURL: URL,
                     bucket: String,
                     key: String,
                     contentType: String,
@@ -39,4 +39,19 @@ protocol AWSS3TransferUtilityBehavior {
                     completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?)
         -> AWSTask<AWSS3TransferUtilityUploadTask>
 
+    func uploadUsingMultiPart(fileURL: URL,
+                                     bucket: String,
+                                     key: String,
+                                     contentType: String,
+                                     expression: AWSS3TransferUtilityMultiPartUploadExpression,
+                                     completionHandler: AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock?)
+        -> AWSTask<AWSS3TransferUtilityMultiPartUploadTask>
+
+    func uploadUsingMultiPart(data: Data,
+                                     bucket: String,
+                                     key: String,
+                                     contentType: String,
+                                     expression: AWSS3TransferUtilityMultiPartUploadExpression,
+                                     completionHandler: AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock?)
+        -> AWSTask<AWSS3TransferUtilityMultiPartUploadTask>
 }

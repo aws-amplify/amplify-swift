@@ -57,15 +57,28 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, StoragePutResu
         let identityIdResult = authService.getIdentityId()
 
         guard case let .success(identityId) = identityIdResult else {
-            // TODO figure this out
-            //let error = identityIdResult.mapError
-            let error = StoragePutError.unknown("identity", "identity")
-            dispatch(error)
+            if case let .failure(error) = identityIdResult {
+                let storagePutError = StoragePutError.identity(error.errorDescription, error.recoverySuggestion)
+                dispatch(storagePutError)
+            }
+
             finish()
             return
         }
 
-        storageService.execute(request, identityId: identityId, onEvent: onEventHandler)
+        let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
+                                                           identityId: identityId,
+                                                           key: request.key)
+
+        // TODO: check size and then upload using multipart upload.
+        
+        storageService.upload(bucket: request.bucket,
+                              serviceKey: serviceKey,
+                              key: request.key,
+                              fileURL: request.fileURL,
+                              data: request.data,
+                              contentType: request.contentType,
+                              onEvent: onEventHandler)
     }
 
     private func onEventHandler(

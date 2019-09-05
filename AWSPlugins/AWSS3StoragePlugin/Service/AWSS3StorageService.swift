@@ -11,6 +11,7 @@ import Amplify
 import AWSMobileClient
 
 public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
+
     var transferUtility: AWSS3TransferUtilityBehavior!
     var preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior!
     var awsS3: AWSS3Behavior!
