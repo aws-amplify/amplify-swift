@@ -10,10 +10,12 @@ import Foundation
 import Amplify
 
 class MockHubCategoryPlugin: MessageReporter, HubCategoryPlugin {
-    func listen(to channel: HubChannel?, filteringWith filter: @escaping HubFilter, onEvent: @escaping HubListener) -> UnsubscribeToken {
+    func listen(to channel: HubChannel?,
+                filteringWith filter: @escaping HubFilter,
+                onEvent: @escaping HubListener) -> UnsubscribeToken {
         return UUID()
     }
-    
+
     var key: String {
         return "MockHubCategoryPlugin"
     }
@@ -49,10 +51,12 @@ class MockSecondHubCategoryPlugin: MockHubCategoryPlugin {
 }
 
 final class MockHubCategoryPluginSelector: MessageReporter, HubPluginSelector {
-    func listen(to channel: HubChannel?, filteringWith filter: @escaping HubFilter, onEvent: @escaping HubListener) -> UnsubscribeToken {
+    func listen(to channel: HubChannel?,
+                filteringWith filter: @escaping HubFilter,
+                onEvent: @escaping HubListener) -> UnsubscribeToken {
         return UUID()
     }
-    
+
     var selectedPluginKey: PluginKey? = "MockHubCategoryPlugin"
 
     func dispatch(to channel: HubChannel, payload: HubPayload) {
