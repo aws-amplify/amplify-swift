@@ -757,8 +757,8 @@
 				21FFF986230B7A5D005878EA /* AsychronousOperation.swift */,
 				FA56F71D22B144F80039754A /* AsyncEvent.swift */,
 				FA56F72222B14B420039754A /* Cancellable.swift */,
-				FA56F72422B14B6A0039754A /* Resumable.swift */,
 				21FFF982230A519B005878EA /* EventPublishable.swift */,
+				FA56F72422B14B6A0039754A /* Resumable.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
