@@ -10,7 +10,7 @@ import Foundation
 public struct StorageGetOption: StorageOption {
 
     // AccessLevel
-    public var accessLevel: AccessLevel?
+    public var accessLevel: StorageAccessLevel?
 
     // Specifics the user when retrieving data
     public let targetIdentityId: String?
@@ -21,7 +21,7 @@ public struct StorageGetOption: StorageOption {
     // Extra options
     public var options: Any?
 
-    public init(accessLevel: AccessLevel? = nil,
+    public init(accessLevel: StorageAccessLevel? = nil,
                 targetIdentityId: String? = nil,
                 storageGetDestination: StorageGetDestination? = nil,
                 options: Any? = nil) {

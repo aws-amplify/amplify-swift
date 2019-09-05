@@ -8,12 +8,12 @@
 import Foundation
 
 public struct StorageRemoveOption: StorageOption {
-    public init(accessLevel: AccessLevel?, options: Any?) {
+    public init(accessLevel: StorageAccessLevel?, options: Any?) {
         self.accessLevel = accessLevel
         self.options = options
     }
 
-    public var accessLevel: AccessLevel?
+    public var accessLevel: StorageAccessLevel?
 
     public var options: Any?
 }

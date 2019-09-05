@@ -43,7 +43,7 @@
 		21FFF981230A4E87005878EA /* AWSS3StorageGetOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF980230A4E87005878EA /* AWSS3StorageGetOperation.swift */; };
 		21FFF983230A519B005878EA /* EventPublishable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF982230A519B005878EA /* EventPublishable.swift */; };
 		21FFF988230B7B2C005878EA /* AsychronousOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF986230B7A5D005878EA /* AsychronousOperation.swift */; };
-		21FFF98E230C81E6005878EA /* AccessLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF98D230C81E6005878EA /* AccessLevel.swift */; };
+		21FFF98E230C81E6005878EA /* StorageAccessLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF98D230C81E6005878EA /* StorageAccessLevel.swift */; };
 		21FFF994230C96CB005878EA /* StoragePutOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF98F230C96CA005878EA /* StoragePutOperation.swift */; };
 		21FFF995230C96CB005878EA /* StorageListOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF990230C96CB005878EA /* StorageListOperation.swift */; };
 		21FFF997230C96CB005878EA /* StorageRemoveOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF992230C96CB005878EA /* StorageRemoveOperation.swift */; };
@@ -253,7 +253,7 @@
 		21FFF980230A4E87005878EA /* AWSS3StorageGetOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetOperation.swift; sourceTree = "<group>"; };
 		21FFF982230A519B005878EA /* EventPublishable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventPublishable.swift; sourceTree = "<group>"; };
 		21FFF986230B7A5D005878EA /* AsychronousOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsychronousOperation.swift; sourceTree = "<group>"; };
-		21FFF98D230C81E6005878EA /* AccessLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessLevel.swift; sourceTree = "<group>"; };
+		21FFF98D230C81E6005878EA /* StorageAccessLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageAccessLevel.swift; sourceTree = "<group>"; };
 		21FFF98F230C96CA005878EA /* StoragePutOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoragePutOperation.swift; sourceTree = "<group>"; };
 		21FFF990230C96CB005878EA /* StorageListOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageListOperation.swift; sourceTree = "<group>"; };
 		21FFF992230C96CB005878EA /* StorageRemoveOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageRemoveOperation.swift; sourceTree = "<group>"; };
@@ -759,7 +759,6 @@
 				FA56F72222B14B420039754A /* Cancellable.swift */,
 				FA56F72422B14B6A0039754A /* Resumable.swift */,
 				21FFF982230A519B005878EA /* EventPublishable.swift */,
-				21FFF98D230C81E6005878EA /* AccessLevel.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -850,6 +849,7 @@
 		FAC234F5227A053D00424678 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
+				21FFF98D230C81E6005878EA /* StorageAccessLevel.swift */,
 				FAC234FA227A053D00424678 /* StorageCategory.swift */,
 				FAC0A2B122B4402000B50912 /* StorageCategory+ClientBehavior.swift */,
 				FAC234F6227A053D00424678 /* StorageCategoryClientBehavior.swift */,
@@ -1737,7 +1737,7 @@
 				FA56F72722B14BF70039754A /* AmplifyOperation.swift in Sources */,
 				FAC23591227A4AF000424678 /* HubCategoryClientBehavior.swift in Sources */,
 				FAC9DC2D227F7B8C000D5DD7 /* PluginHolder.swift in Sources */,
-				21FFF98E230C81E6005878EA /* AccessLevel.swift in Sources */,
+				21FFF98E230C81E6005878EA /* StorageAccessLevel.swift in Sources */,
 				FAC23520227A053D00424678 /* APIResponse.swift in Sources */,
 				FAC23515227A053D00424678 /* AuthCategory.swift in Sources */,
 				2125E29C23209EF400B3DEB5 /* StorageGetDestination.swift in Sources */,

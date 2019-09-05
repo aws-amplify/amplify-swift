@@ -55,7 +55,7 @@ class AWSS3StoragePluginTests: XCTestCase {
 
     func testPluginGetWithOptions() {
         // Arrange
-        let accessLevel = AccessLevel.Private
+        let accessLevel = StorageAccessLevel.Private
         let options = StorageGetOption(local: nil, download: nil, accessLevel: accessLevel, expires: nil,
                                        options: nil, targetUser: nil)
         storagePlugin.configure(storageService: service, bucket: bucket, queue: queue)
@@ -108,7 +108,7 @@ class AWSS3StoragePluginTests: XCTestCase {
 
     func testPluginGetLocalFileWithOptions() {
         // Arrange
-        let accessLevel = AccessLevel.Protected
+        let accessLevel = StorageAccessLevel.Protected
         let url = URL(fileURLWithPath: "path")
         let options = StorageGetOption(local: url, download: nil, accessLevel: accessLevel,
                                        expires: nil, options: nil, targetUser: nil)

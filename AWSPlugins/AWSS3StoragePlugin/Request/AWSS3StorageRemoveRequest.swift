@@ -10,11 +10,11 @@ import Amplify
 
 public struct AWSS3StorageRemoveRequest {
     let bucket: String
-    let accessLevel: AccessLevel
+    let accessLevel: StorageAccessLevel
     let key: String
 
     init(bucket: String,
-         accessLevel: AccessLevel,
+         accessLevel: StorageAccessLevel,
          key: String) {
         self.bucket = bucket
         self.accessLevel = accessLevel

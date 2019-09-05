@@ -10,14 +10,14 @@ import Amplify
 
 public struct AWSS3StorageGetRequest {
     let bucket: String
-    let accessLevel: AccessLevel
+    let accessLevel: StorageAccessLevel
     let targetIdentityId: String?
     let key: String
     let storageGetDestination: StorageGetDestination
     let options: Any?
 
     public init(bucket: String,
-                accessLevel: AccessLevel,
+                accessLevel: StorageAccessLevel,
                 targetIdentityId: String?,
                 key: String,
                 storageGetDestination: StorageGetDestination,

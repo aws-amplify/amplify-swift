@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 
 public class StorageRequestUtils {
-    public static func getServiceKey(accessLevel: AccessLevel, identityId: String, key: String) -> String {
+    public static func getServiceKey(accessLevel: StorageAccessLevel, identityId: String, key: String) -> String {
         if accessLevel == .Private || accessLevel == .Protected {
             return accessLevel.rawValue + "/" + identityId + "/" + key
         }
@@ -17,7 +17,7 @@ public class StorageRequestUtils {
         return accessLevel.rawValue + "/" + key
     }
 
-    public static func getServicePrefix(accessLevel: AccessLevel, identityId: String, prefix: String?) -> String {
+    public static func getServicePrefix(accessLevel: StorageAccessLevel, identityId: String, prefix: String?) -> String {
         return getServiceKey(accessLevel: accessLevel, identityId: identityId, key: prefix ?? "")
     }
 }

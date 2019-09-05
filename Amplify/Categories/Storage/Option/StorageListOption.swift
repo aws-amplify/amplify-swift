@@ -6,7 +6,7 @@
 //
 
 public struct StorageListOption: StorageOption {
-    public init(accessLevel: AccessLevel?, prefix: String?, limit: Int?, options: Any?, targetUser: String?) {
+    public init(accessLevel: StorageAccessLevel?, prefix: String?, limit: Int?, options: Any?, targetUser: String?) {
         self.accessLevel = accessLevel
         self.options = options
         self.prefix = prefix
@@ -14,7 +14,7 @@ public struct StorageListOption: StorageOption {
         self.targetUser = targetUser
     }
 
-    public var accessLevel: AccessLevel?
+    public var accessLevel: StorageAccessLevel?
 
     public var prefix: String?
 

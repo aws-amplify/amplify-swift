@@ -10,12 +10,12 @@ import Amplify
 
 public struct AWSS3StorageListRequest {
     let bucket: String
-    let accessLevel: AccessLevel
+    let accessLevel: StorageAccessLevel
     let prefix: String?
     let limit: Int?
 
     init(bucket: String,
-         accessLevel: AccessLevel,
+         accessLevel: StorageAccessLevel,
          prefix: String? = nil,
          limit: Int? = nil) {
         self.bucket = bucket

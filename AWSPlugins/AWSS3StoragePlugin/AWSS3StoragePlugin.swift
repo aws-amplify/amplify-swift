@@ -23,7 +23,7 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
     private var storageService: AWSS3StorageServiceBehaviour!
     private var authService: AWSAuthServiceBehavior!
     private var queue: OperationQueue!
-    private var defaultAccessLevel: AccessLevel!
+    private var defaultAccessLevel: StorageAccessLevel!
 
     public var key: PluginKey {
         return AWSS3StoragePlugin.AWSS3StoragePluginKey
@@ -73,7 +73,7 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
                    storageService: AWSS3StorageServiceBehaviour,
                    authService: AWSAuthServiceBehavior,
                    queue: OperationQueue = OperationQueue(),
-                   defaultAccessLevel: AccessLevel = .Public) {
+                   defaultAccessLevel: StorageAccessLevel = .Public) {
         self.bucket = bucket
         self.storageService = storageService
         self.authService = authService

@@ -8,7 +8,7 @@
 import Foundation
 
 public struct StoragePutOption: StorageOption {
-    public init(accessLevel: AccessLevel?,
+    public init(accessLevel: StorageAccessLevel?,
                 contentType: String?,
                 metadata: [String: String]?,
                 options: Any?) {
@@ -18,7 +18,7 @@ public struct StoragePutOption: StorageOption {
         self.options = options
     }
 
-    public var accessLevel: AccessLevel?
+    public var accessLevel: StorageAccessLevel?
 
     public var metadata: [String: String]?
 
