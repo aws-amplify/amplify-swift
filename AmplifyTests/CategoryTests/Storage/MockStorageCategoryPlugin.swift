@@ -112,10 +112,6 @@ class MockStorageGetOperation: AmplifyOperation<Progress, StorageGetResult, Stor
     }
 }
 
-class MockStorageGetUrlOperation: AmplifyOperation<Void, StorageGetUrlResult, StorageGetUrlError>,
-StorageGetUrlOperation {
-}
-
 class MockStoragePutOperation: AmplifyOperation<Progress, StoragePutResult, StoragePutError>, StoragePutOperation {
     func pause() {
     }
