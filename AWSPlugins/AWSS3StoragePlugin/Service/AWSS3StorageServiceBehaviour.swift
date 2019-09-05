@@ -10,19 +10,23 @@ import Amplify
 import AWSS3
 
 protocol AWSS3StorageServiceBehaviour {
+    func configure(region: AWSRegionType,
+                   cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
+                   identifier: String) throws
+    
+    func reset()
 
-    func execute(_ request: AWSS3StorageGetRequest, identity: String, onEvent:
+    func getEscapeHatch() -> AWSS3
+
+    func execute(_ request: AWSS3StorageGetRequest, identityId: String, onEvent:
         @escaping (StorageEvent<StorageOperationReference, Progress, StorageGetResult, StorageGetError>) -> Void)
 
-    func execute(_ request: AWSS3StorageGetUrlRequest, identity: String, onEvent:
-        @escaping (StorageEvent<Void, Void, StorageGetUrlResult, StorageGetUrlError>) -> Void)
-
-    func execute(_ request: AWSS3StoragePutRequest, identity: String, onEvent:
+    func execute(_ request: AWSS3StoragePutRequest, identityId: String, onEvent:
         @escaping (StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>) -> Void)
 
-    func execute(_ request: AWSS3StorageListRequest, identity: String, onEvent:
+    func execute(_ request: AWSS3StorageListRequest, identityId: String, onEvent:
         @escaping (StorageEvent<Void, Void, StorageListResult, StorageListError>) -> Void)
 
-    func execute(_ request: AWSS3StorageRemoveRequest, identity: String, onEvent:
+    func execute(_ request: AWSS3StorageRemoveRequest, identityId: String, onEvent:
         @escaping (StorageEvent<Void, Void, StorageRemoveResult, StorageRemoveError>) -> Void)
 }

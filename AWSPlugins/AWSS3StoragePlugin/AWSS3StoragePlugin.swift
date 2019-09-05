@@ -19,11 +19,11 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
         Call Amplify.configure() to configure. This could happen if Amplify.reset().
         """
 
-    private var queue: OperationQueue = OperationQueue()
-
-    private var storageService: AWSS3StorageServiceBehaviour!
     private var bucket: String!
-    private var mobileClient: AWSMobileClientBehavior!
+    private var storageService: AWSS3StorageServiceBehaviour!
+    private var authService: AWSAuthServiceBehavior!
+    private var queue: OperationQueue!
+    private var defaultAccessLevel: AccessLevel!
 
     public var key: PluginKey {
         return AWSS3StoragePlugin.AWSS3StoragePluginKey
@@ -54,47 +54,57 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
                                                            "Region should not be empty in the configuration")
             }
 
-            let mobileClient = AWSMobileClientImpl(AWSMobileClient.sharedInstance())
-            let storageService = try AWSS3StorageService(region: region,
-                                                         mobileClient: mobileClient,
-                                                         pluginKey: key)
+            // TODO what if we cannot get regionTypeValue() ?? validation here.
+            let regionType = region.aws_regionTypeValue()
 
-            self.configure(storageService: storageService, bucket: bucket, mobileClient: mobileClient)
+            let authService = AWSAuthService()
+            authService.configure()
+
+            let storageService = AWSS3StorageService()
+            try storageService.configure(region: regionType,
+                                         cognitoCredentialsProvider: authService.getCognitoCredentialsProvider(),
+                                         identifier: key)
+
+            configure(bucket: bucket, storageService: storageService, authService: authService)
         }
     }
 
-    func configure(storageService: AWSS3StorageServiceBehaviour,
-                   bucket: String,
-                   mobileClient: AWSMobileClientBehavior,
-                   queue: OperationQueue = OperationQueue()) {
-        self.storageService = storageService
+    func configure(bucket: String,
+                   storageService: AWSS3StorageServiceBehaviour,
+                   authService: AWSAuthServiceBehavior,
+                   queue: OperationQueue = OperationQueue(),
+                   defaultAccessLevel: AccessLevel = .Public) {
         self.bucket = bucket
-        self.mobileClient = mobileClient
+        self.storageService = storageService
+        self.authService = authService
         self.queue = queue
+        self.defaultAccessLevel = defaultAccessLevel
     }
 
     public func reset() {
-        // TODO: storageService.reset() as well. need to understand how to deinit
-        self.storageService = nil
-        self.bucket = nil
+        bucket = nil
+        storageService.reset()
+        storageService = nil
+        authService.reset()
+        authService = nil
+        queue = nil
     }
 
     public func get(key: String,
                     options: StorageGetOption?,
                     onEvent: StorageGetEvent?) -> StorageGetOperation {
 
-        let requestBuilder = AWSS3StorageGetRequest.Builder(bucket: bucket!,
-                                                            key: key,
-                                                            accessLevel: options?.accessLevel ?? .Public)
-        if let options = options {
-            if let local = options.local {
-                _ = requestBuilder.fileURL(local)
-            }
-        }
+        let storageGetDestination = options?.storageGetDestination ?? .url(expires: nil)
+        let request = AWSS3StorageGetRequest(bucket: bucket,
+                                             accessLevel: options?.accessLevel ?? defaultAccessLevel,
+                                             targetIdentityId: options?.targetIdentityId,
+                                             key: key,
+                                             storageGetDestination: storageGetDestination,
+                                             options: options?.options)
 
-        let getOperation = AWSS3StorageGetOperation(requestBuilder.build(),
-                                                    service: storageService!,
-                                                    mobileClient: mobileClient!,
+        let getOperation = AWSS3StorageGetOperation(request,
+                                                    storageService: storageService,
+                                                    authService: authService,
                                                     onEvent: onEvent)
         queue.addOperation(getOperation)
         return getOperation
@@ -117,18 +127,12 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
     public func remove(key: String,
                        options: StorageRemoveOption?,
                        onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
-
-        let requestBuilder  = AWSS3StorageRemoveRequest.Builder(bucket: bucket,
-                                                                key: key,
-                                                                accessLevel: options?.accessLevel ?? .Public)
-
-        if let options = options {
-            // TODO: extract extra variables
-        }
-
-        let removeOperation = AWSS3StorageRemoveOperation(requestBuilder.build(),
-                                                          service: storageService,
-                                                          mobileClient: mobileClient!,
+        let request = AWSS3StorageRemoveRequest(bucket: bucket,
+                                                accessLevel: options?.accessLevel ?? .Public,
+                                                key: key)
+        let removeOperation = AWSS3StorageRemoveOperation(request,
+                                                          storageService: storageService,
+                                                          authService: authService,
                                                           onEvent: onEvent)
         queue.addOperation(removeOperation)
 
@@ -136,23 +140,13 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
     }
 
     public func list(options: StorageListOption?, onEvent: StorageListEvent?) -> StorageListOperation {
-
-        let requestBuilder = AWSS3StorageListRequest.Builder(bucket: bucket,
-                                                             accessLevel: options?.accessLevel ?? .Public)
-
-        if let options  = options {
-            if let limit = options.limit {
-                _ = requestBuilder.limit(limit)
-            }
-
-            if let prefix = options.prefix {
-                _ = requestBuilder.prefix(prefix)
-            }
-        }
-
-        let listOperation = AWSS3StorageListOperation(requestBuilder.build(),
-                                                      service: storageService,
-                                                      mobileClient: mobileClient!,
+        let request = AWSS3StorageListRequest(bucket: bucket,
+                                                     accessLevel: options?.accessLevel ?? .Public,
+                                                     prefix: options?.prefix,
+                                                     limit: options?.limit)
+        let listOperation = AWSS3StorageListOperation(request,
+                                                      storageService: storageService,
+                                                      authService: authService,
                                                       onEvent: onEvent)
         queue.addOperation(listOperation)
 
@@ -167,33 +161,22 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
                      local: URL?,
                      options: StoragePutOption?,
                      onEvent: StoragePutEvent?) -> StoragePutOperation {
-
-        let requestBuilder = AWSS3StoragePutRequest.Builder(bucket: bucket,
-                                                            key: key,
-                                                            accessLevel: options?.accessLevel ?? .Public)
-        if let data = data {
-            _ = requestBuilder.data(data)
-        } else if let local = local {
-            _ = requestBuilder.fileURL(local)
-        }
-
-        if let options = options {
-            if let contentType = options.contentType {
-                _ = requestBuilder.contentType(contentType)
-            }
-        }
-
-        let putOperation = AWSS3StoragePutOperation(requestBuilder.build(),
-                                                    service: storageService,
-                                                    mobileClient: mobileClient!,
+        let request = AWSS3StoragePutRequest(bucket: bucket,
+                                             accessLevel: options?.accessLevel ?? .Public,
+                                             key: key,
+                                             data: data,
+                                             fileURL: local,
+                                             contentType: options?.contentType)
+        let putOperation = AWSS3StoragePutOperation(request,
+                                                    storageService: storageService,
+                                                    authService: authService,
                                                     onEvent: onEvent)
         queue.addOperation(putOperation)
 
         return putOperation
     }
 
-    // TODO: escape hatch implementation
-//    func getS3() ->  {
-//        return storageService.getS3().
-//    }
+    func getEscapeHatch() -> AWSS3 {
+        return storageService.getEscapeHatch()
+    }
 }

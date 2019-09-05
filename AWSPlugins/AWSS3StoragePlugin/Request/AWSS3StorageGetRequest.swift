@@ -10,57 +10,59 @@ import Amplify
 
 public struct AWSS3StorageGetRequest {
     let bucket: String
-    private let accessLevel: AccessLevel
-    private let key: String
-    let fileURL: URL?
+    let accessLevel: AccessLevel
+    let targetIdentityId: String?
+    let key: String
+    let storageGetDestination: StorageGetDestination
+    let options: Any?
 
-    init(builder: Builder) {
-        self.bucket = builder.bucket
-        self.accessLevel = builder.accessLevel
-        self.key = builder.key
-        self.fileURL = builder.fileURL
+    public init(bucket: String,
+                accessLevel: AccessLevel,
+                targetIdentityId: String?,
+                key: String,
+                storageGetDestination: StorageGetDestination,
+                options: Any?) {
+        self.bucket = bucket
+        self.accessLevel = accessLevel
+        self.targetIdentityId = targetIdentityId
+        self.key = key
+        self.storageGetDestination = storageGetDestination
+        self.options = options
     }
 
-    // TODO: refactor this as all requests will use something similar to this
-    func getFinalKey(identity: String) -> String {
-        if accessLevel == .Private || accessLevel == .Protected {
-            return accessLevel.rawValue + "/" + identity + "/" + key
-        }
-
-        return accessLevel.rawValue + "/" + key
-    }
-
+    // TODO: gettings for things in options
     func validate() -> StorageGetError? {
         if bucket.isEmpty {
             return StorageGetError.unknown("bucket is empty", "bucket is empty")
+        }
+
+        if let targetIdentityId = targetIdentityId {
+            if targetIdentityId.isEmpty {
+                return StorageGetError.unknown("The targetIde is specified but is empty", "..")
+            }
+
+            if accessLevel == .Public {
+                return StorageGetError.unknown("makes no sense to be public with target", ".")
+            }
         }
 
         if key.isEmpty {
             return StorageGetError.unknown("key is empty", "key is empty")
         }
 
+        switch(storageGetDestination) {
+        case .data:
+            break
+        case .file:
+            break
+        case .url(let expires):
+            if let expires = expires {
+                if expires <= 0 {
+                    return StorageGetError.unknown("expires should be non-zero", "")
+                }
+            }
+        }
+
         return nil
-    }
-
-    class Builder {
-        let bucket: String
-        let accessLevel: AccessLevel
-        let key: String
-        private(set) var fileURL: URL?
-
-        init(bucket: String, key: String, accessLevel: AccessLevel) {
-            self.bucket = bucket
-            self.key = key
-            self.accessLevel = accessLevel
-        }
-
-        func fileURL(_ fileURL: URL) -> Builder {
-            self.fileURL = fileURL
-            return self
-        }
-
-        func build() -> AWSS3StorageGetRequest {
-            return AWSS3StorageGetRequest(builder: self)
-        }
     }
 }

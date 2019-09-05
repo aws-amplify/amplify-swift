@@ -7,6 +7,5 @@
 
 import Foundation
 public protocol StorageOption {
-    var accessLevel: AccessLevel? { get set }
     var options: Any? { get set }
 }

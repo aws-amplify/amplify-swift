@@ -7,18 +7,23 @@
 
 import Foundation
 import AWSMobileClient
+import Amplify
 
 class AWSMobileClientImpl: AWSMobileClientBehavior {
+
     let awsMobileClient: AWSMobileClient
+
     init(_ awsMobileClient: AWSMobileClient) {
         self.awsMobileClient = awsMobileClient
+    }
+
+    func getCognitoCredentialsProvider() -> AWSCognitoCredentialsProvider {
+        return awsMobileClient
     }
 
     func getIdentityId() -> AWSTask<NSString> {
         return awsMobileClient.getIdentityId()
     }
 
-    func getCognitoCredentialsProvider() -> AWSCognitoCredentialsProvider {
-        return awsMobileClient
-    }
+    
 }

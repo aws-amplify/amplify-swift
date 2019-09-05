@@ -10,12 +10,14 @@ import AWSS3
 import Amplify
 
 extension AWSS3StorageService {
-    public func execute(_ request: AWSS3StorageRemoveRequest, identity: String, onEvent:
+    public func execute(_ request: AWSS3StorageRemoveRequest, identityId: String, onEvent:
         @escaping (StorageEvent<Void, Void, StorageRemoveResult, StorageRemoveError>) -> Void) {
 
         let deleteObjectRequest: AWSS3DeleteObjectRequest = AWSS3DeleteObjectRequest()
         deleteObjectRequest.bucket = request.bucket
-        deleteObjectRequest.key = request.getFinalKey(identity: identity)
+        deleteObjectRequest.key = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
+                                                                    identityId: identityId,
+                                                                    key: request.key)
 
         awsS3.deleteObject(deleteObjectRequest).continueWith { (task) -> Any? in
             if let error = task.error {

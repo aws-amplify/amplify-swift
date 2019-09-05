@@ -11,7 +11,6 @@ import Amplify
 import AWSS3StoragePlugin
 import AWSS3
 
-
 class AWSS3StoragePluginIntegrationTests: XCTestCase {
 
     override func setUp() {
@@ -110,7 +109,7 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
         let key = "testPutDataFromFile"
         let filePath = NSTemporaryDirectory() + "testPutDataFromFile.tmp"
         var testData = "testPutDataFromFile"
-        for _ in 1...20 {
+        for _ in 1...5 {
             testData += testData
         }
         let fileURL = URL(fileURLWithPath: filePath)
@@ -139,7 +138,12 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
     func testGetDataToMemory() {
         let key = "test-image.png"
         let completeInvoked = expectation(description: "Completed is invoked")
-        let operation = Amplify.Storage.get(key: "test-image.png", options: nil) { (event) in
+        let options = StorageGetOption(accessLevel: nil,
+                                       targetIdentityId: nil,
+                                       storageGetDestination: .data,
+                                       options: nil)
+
+        let operation = Amplify.Storage.get(key: "test-image.png", options: options) { (event) in
             switch event {
             case .unknown:
                 break
@@ -166,14 +170,8 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
 
     func testGetRemoteURL() {
         let key = "test-image.png"
-        let option = StorageGetOption(local: nil,
-                                       download: false,
-                                       accessLevel: nil,
-                                       expires: nil,
-                                       options: nil,
-                                       targetUser: nil)
         let completeInvoked = expectation(description: "Completed is invoked")
-        let operation = Amplify.Storage.get(key: key, options: option) { (event) in
+        let operation = Amplify.Storage.get(key: key, options: nil) { (event) in
             switch event {
             case .unknown:
                 break

@@ -14,19 +14,19 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
     StorageListOperation {
 
     let request: AWSS3StorageListRequest
-    let service: AWSS3StorageServiceBehaviour
-    let mobileClient: AWSMobileClientBehavior
+    let storageService: AWSS3StorageServiceBehaviour
+    let authService: AWSAuthServiceBehavior
     let onEvent: ((AsyncEvent<Void, StorageListResult, StorageListError>) -> Void)?
 
     init(_ request: AWSS3StorageListRequest,
-         service: AWSS3StorageServiceBehaviour,
-         mobileClient: AWSMobileClientBehavior,
+         storageService: AWSS3StorageServiceBehaviour,
+         authService: AWSAuthServiceBehavior,
          onEvent: ((AsyncEvent<Void, CompletedType, ErrorType>) -> Void)?) {
 
         self.request = request
-        self.service = service
+        self.storageService = storageService
         self.onEvent = onEvent
-        self.mobileClient = mobileClient
+        self.authService = authService
         super.init(categoryType: .storage)
     }
 
@@ -36,53 +36,47 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
 
     override public func main() {
         if let error = request.validate() {
-            sendFailedAsyncEvent(error)
+            dispatch(error)
             finish()
             return
         }
 
-        let serviceOnEventBlock = { (event: StorageEvent<Void, Void, StorageListResult, StorageListError>) -> Void in
-            switch event {
-            case .initiated:
-                break
-            case .inProcess:
-                break
-            case .completed(let result):
-                self.sendSuccessAsyncEvent(result)
-                self.finish()
-            case .failed(let error):
-                self.sendFailedAsyncEvent(error)
-                self.finish()
-            }
+        let identityIdResult = authService.getIdentityId()
+
+        guard case let .success(identityId) = identityIdResult else {
+            // TODO figure this out
+            //let error = identityIdResult.mapError
+            let error = StorageListError.unknown("identity", "identity")
+            dispatch(error)
+            finish()
+            return
         }
 
-        let getIdentityContinuationBlock = { (task: AWSTask<NSString>) -> Any? in
-            if let error = task.error as? AWSMobileClientError {
-                // TODO MAP to error
-                let error = StorageListError.unknown("No Identitiy", "no identity!")
-                self.sendFailedAsyncEvent(error)
-                self.finish()
-            } else if let identity = task.result {
-                self.service.execute(self.request, identity: identity as String, onEvent: serviceOnEventBlock)
-            } else {
-                let error = StorageListError.unknown("No Identitiy", "no identity!")
-                self.sendFailedAsyncEvent(error)
-                self.finish()
-            }
-
-            return nil
-        }
-
-        mobileClient.getIdentityId().continueWith(block: getIdentityContinuationBlock)
+        storageService.execute(request, identityId: identityId, onEvent: onEventHandler)
     }
 
-    private func sendSuccessAsyncEvent(_ result: StorageListResult) {
+    private func onEventHandler(event: StorageEvent<Void, Void, StorageListResult, StorageListError>) {
+        switch event {
+        case .initiated:
+            break
+        case .inProcess:
+            break
+        case .completed(let result):
+            dispatch(result)
+            finish()
+        case .failed(let error):
+            dispatch(error)
+            finish()
+        }
+    }
+
+    private func dispatch(_ result: StorageListResult) {
         let asyncEvent = AsyncEvent<Void, StorageListResult, StorageListError>.completed(result)
         dispatch(event: asyncEvent)
         onEvent?(asyncEvent)
     }
 
-    private func sendFailedAsyncEvent(_ error: StorageListError) {
+    private func dispatch(_ error: StorageListError) {
         let asyncEvent = AsyncEvent<Void, StorageListResult, StorageListError>.failed(error)
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)

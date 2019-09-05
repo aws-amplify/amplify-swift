@@ -8,28 +8,27 @@
 import Foundation
 
 public struct StorageGetOption: StorageOption {
-    public init(local: URL?, download: Bool?, accessLevel: AccessLevel?, expires: Int?, options: Any?,
-                targetUser: String?) {
-        self.local = local
-        self.download = download
-        self.accessLevel = accessLevel
-        self.expires = expires
-        self.options = options
-        self.targetUser = targetUser
-    }
 
-    // The path to a local file.
-    public var local: URL?
-
-    // The flag to determine whether to return remoteURL or download to memory or local URL
-    public var download: Bool?
-
-    // Specifics the user when retrieving data for user other than self under the Protected AccessLevel
-    public var targetUser: String?
-
+    // AccessLevel
     public var accessLevel: AccessLevel?
 
-    public var expires: Int?
+    // Specifics the user when retrieving data
+    public let targetIdentityId: String?
 
+    //
+    public let storageGetDestination: StorageGetDestination
+
+    // Extra options
     public var options: Any?
+
+    public init(accessLevel: AccessLevel? = nil,
+                targetIdentityId: String? = nil,
+                storageGetDestination: StorageGetDestination? = nil,
+                options: Any? = nil) {
+        self.accessLevel = accessLevel
+        self.targetIdentityId = targetIdentityId
+        self.storageGetDestination = storageGetDestination ?? .url(expires: nil)
+        self.options = options
+    }
 }
+

@@ -29,10 +29,13 @@
                   Identifier = "AWSS3StoragePluginIntegrationTests/testGetDataToFile()">
                </Test>
                <Test
-                  Identifier = "AWSS3StoragePluginIntegrationTests/testGetRemoteURL()">
+                  Identifier = "AWSS3StoragePluginIntegrationTests/testGetNonexistentKey()">
                </Test>
                <Test
                   Identifier = "AWSS3StoragePluginIntegrationTests/testListFromPublic()">
+               </Test>
+               <Test
+                  Identifier = "AWSS3StoragePluginIntegrationTests/testPutData()">
                </Test>
                <Test
                   Identifier = "AWSS3StoragePluginIntegrationTests/testPutDataFromFile()">

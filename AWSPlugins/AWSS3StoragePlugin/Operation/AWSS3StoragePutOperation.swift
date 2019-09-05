@@ -14,20 +14,20 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, StoragePutResu
     StoragePutOperation {
 
     let request: AWSS3StoragePutRequest
-    let service: AWSS3StorageServiceBehaviour
-    let mobileClient: AWSMobileClientBehavior
+    let storageService: AWSS3StorageServiceBehaviour
+    let authService: AWSAuthServiceBehavior
     let onEvent: ((AsyncEvent<Progress, StoragePutResult, StoragePutError>) -> Void)?
 
     var storageOperationReference: StorageOperationReference?
 
     init(_ request: AWSS3StoragePutRequest,
-         service: AWSS3StorageServiceBehaviour,
-         mobileClient: AWSMobileClientBehavior,
+         storageService: AWSS3StorageServiceBehaviour,
+         authService: AWSAuthServiceBehavior,
          onEvent: ((AsyncEvent<Progress, CompletedType, ErrorType>) -> Void)?) {
 
         self.request = request
-        self.service = service
-        self.mobileClient = mobileClient
+        self.storageService = storageService
+        self.authService = authService
         self.onEvent = onEvent
         super.init(categoryType: .storage)
     }
@@ -54,57 +54,49 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, StoragePutResu
             return
         }
 
-        let serviceOnEventBlock = {
-            (event: StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>) -> Void in
-            switch event {
-            case .initiated(let reference):
-                self.storageOperationReference = reference
-            case .inProcess(let progress):
-                self.sendProgressAsyncEvent(progress)
-            case .completed(let result):
-                self.sendSuccessAsyncEvent(result)
+        let identityIdResult = authService.getIdentityId()
 
-                self.finish()
-            case .failed(let error):
-                self.sendFailedAsyncEvent(error)
-
-                self.finish()
-            }
+        guard case let .success(identityId) = identityIdResult else {
+            // TODO figure this out
+            //let error = identityIdResult.mapError
+            let error = StoragePutError.unknown("identity", "identity")
+            dispatch(error)
+            finish()
+            return
         }
 
-        let getIdentityContinuationBlock = { (task: AWSTask<NSString>) -> Any? in
-            if let error = task.error as? AWSMobileClientError {
-                // TODO MAP to error
-                let error = StoragePutError.unknown("No Identitiy", "no identity!")
-                self.sendFailedAsyncEvent(error)
-                self.finish()
-            } else if let identity = task.result {
-                self.service.execute(self.request, identity: identity as String, onEvent: serviceOnEventBlock)
-            } else {
-                let error = StoragePutError.unknown("No Identitiy", "no identity!")
-                self.sendFailedAsyncEvent(error)
-                self.finish()
-            }
-
-            return nil
-        }
-
-        mobileClient.getIdentityId().continueWith(block: getIdentityContinuationBlock)
+        storageService.execute(request, identityId: identityId, onEvent: onEventHandler)
     }
 
-    private func sendProgressAsyncEvent(_ progress: Progress) {
+    private func onEventHandler(
+        event: StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>) {
+        switch event {
+        case .initiated(let reference):
+            storageOperationReference = reference
+        case .inProcess(let progress):
+            dispatch(progress)
+        case .completed(let result):
+            dispatch(result)
+            finish()
+        case .failed(let error):
+            dispatch(error)
+            finish()
+        }
+    }
+
+    private func dispatch(_ progress: Progress) {
         let asyncEvent = AsyncEvent<Progress, StoragePutResult, StoragePutError>.inProcess(progress)
         dispatch(event: asyncEvent)
         onEvent?(asyncEvent)
     }
 
-    private func sendSuccessAsyncEvent(_ result: StoragePutResult) {
+    private func dispatch(_ result: StoragePutResult) {
         let asyncEvent = AsyncEvent<Progress, StoragePutResult, StoragePutError>.completed(result)
         dispatch(event: asyncEvent)
         onEvent?(asyncEvent)
     }
 
-    private func sendFailedAsyncEvent(_ error: StoragePutError) {
+    private func dispatch(_ error: StoragePutError) {
         let asyncEvent = AsyncEvent<Progress, StoragePutResult, StoragePutError>.failed(error)
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)

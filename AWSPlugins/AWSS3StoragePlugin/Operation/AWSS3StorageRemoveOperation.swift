@@ -14,18 +14,18 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, StorageRemoveRe
     StorageRemoveOperation {
 
     let request: AWSS3StorageRemoveRequest
-    let service: AWSS3StorageServiceBehaviour
-    let mobileClient: AWSMobileClientBehavior
+    let storageService: AWSS3StorageServiceBehaviour
+    let authService: AWSAuthServiceBehavior
     let onEvent: ((AsyncEvent<Void, StorageRemoveResult, StorageRemoveError>) -> Void)?
 
     init(_ request: AWSS3StorageRemoveRequest,
-         service: AWSS3StorageServiceBehaviour,
-         mobileClient: AWSMobileClientBehavior,
+         storageService: AWSS3StorageServiceBehaviour,
+         authService: AWSAuthServiceBehavior,
          onEvent: ((AsyncEvent<Void, StorageRemoveResult, StorageRemoveError>) -> Void)?) {
 
         self.request = request
-        self.service = service
-        self.mobileClient = mobileClient
+        self.storageService = storageService
+        self.authService = authService
         self.onEvent = onEvent
         super.init(categoryType: .storage)
     }
@@ -36,53 +36,47 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, StorageRemoveRe
 
     override public func main() {
         if let error = request.validate() {
-            self.sendFailedAsyncEvent(error)
+            self.dispatch(error)
             finish()
             return
         }
 
-        let serviceOnEventBlock = { (event: StorageEvent<Void, Void, StorageRemoveResult, StorageRemoveError>) -> Void in
-            switch event {
-            case .initiated:
-                break
-            case .inProcess:
-                break
-            case .completed(let result):
-                self.sendSuccessAsyncEvent(result)
-                self.finish()
-            case .failed(let error):
-                self.sendFailedAsyncEvent(error)
-                self.finish()
-            }
+        let identityIdResult = authService.getIdentityId()
+
+        guard case let .success(identityId) = identityIdResult else {
+            // TODO figure this out
+            //let error = identityIdResult.mapError
+            let error = StorageRemoveError.unknown("identity", "identity")
+            dispatch(error)
+            finish()
+            return
         }
 
-        let getIdentityContinuationBlock = { (task: AWSTask<NSString>) -> Any? in
-            if let error = task.error as? AWSMobileClientError {
-                // TODO MAP to error
-                let error = StorageRemoveError.unknown("No Identitiy", "no identity!")
-                self.sendFailedAsyncEvent(error)
-                self.finish()
-            } else if let identity = task.result {
-                self.service.execute(self.request, identity: identity as String, onEvent: serviceOnEventBlock)
-            } else {
-                let error = StorageRemoveError.unknown("No Identitiy", "no identity!")
-                self.sendFailedAsyncEvent(error)
-                self.finish()
-            }
-
-            return nil
-        }
-
-        mobileClient.getIdentityId().continueWith(block: getIdentityContinuationBlock)
+        storageService.execute(request, identityId: identityId, onEvent: onEventHandler)
     }
 
-    private func sendSuccessAsyncEvent(_ result: StorageRemoveResult) {
+    private func onEventHandler(event: StorageEvent<Void, Void, StorageRemoveResult, StorageRemoveError>) {
+        switch event {
+        case .initiated:
+            break
+        case .inProcess:
+            break
+        case .completed(let result):
+            dispatch(result)
+            finish()
+        case .failed(let error):
+            dispatch(error)
+            finish()
+        }
+    }
+
+    private func dispatch(_ result: StorageRemoveResult) {
         let asyncEvent = AsyncEvent<Void, StorageRemoveResult, StorageRemoveError>.completed(result)
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }
 
-    private func sendFailedAsyncEvent(_ error: StorageRemoveError) {
+    private func dispatch(_ error: StorageRemoveError) {
         let asyncEvent = AsyncEvent<Void, StorageRemoveResult, StorageRemoveError>.failed(error)
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)

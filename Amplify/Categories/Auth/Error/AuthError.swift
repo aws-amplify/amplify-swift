@@ -6,12 +6,13 @@
 //
 
 import Foundation
-public enum StorageGetUrlError {
+
+public enum AuthError {
     case httpStatusError(ErrorDescription, RecoverySuggestion)
     case unknown(ErrorDescription, RecoverySuggestion)
 }
 
-extension StorageGetUrlError: AmplifyError {
+extension AuthError: AmplifyError {
     public var errorDescription: ErrorDescription {
         switch self {
         case .httpStatusError(let description, _),

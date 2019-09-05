@@ -8,6 +8,7 @@
 import Foundation
 import AWSS3
 
+// TODO: better naming - Reference?
 public class StorageOperationReference {
     let task: AWSS3TransferUtilityTask
     init(_ task: AWSS3TransferUtilityTask) {

@@ -10,14 +10,15 @@ import AWSS3
 import Amplify
 
 extension AWSS3StorageService {
-    public func execute(_ request: AWSS3StorageListRequest, identity: String, onEvent:
+    public func execute(_ request: AWSS3StorageListRequest, identityId: String, onEvent:
         @escaping (StorageEvent<Void, Void, StorageListResult, StorageListError>) -> Void) {
         onEvent(StorageEvent.initiated(()))
 
         let listObjectsV2Request: AWSS3ListObjectsV2Request = AWSS3ListObjectsV2Request()
         listObjectsV2Request.bucket = request.bucket
-        listObjectsV2Request.prefix = request.getFinalPrefix(identity: identity)
-
+        listObjectsV2Request.prefix = StorageRequestUtils.getServicePrefix(accessLevel: request.accessLevel,
+                                                                           identityId: identityId,
+                                                                           prefix: request.prefix)
         // TODO: implementation details - use request.options.limit.
         // Figure out batching logic
         awsS3.listObjectsV2(listObjectsV2Request).continueWith { (task) -> Any? in

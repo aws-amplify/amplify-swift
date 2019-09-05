@@ -13,18 +13,12 @@ public struct AWSS3StorageRemoveRequest {
     let accessLevel: AccessLevel
     let key: String
 
-    init(builder: Builder) {
-        self.bucket = builder.bucket
-        self.accessLevel = builder.accessLevel
-        self.key = builder.key
-    }
-
-    func getFinalKey(identity: String) -> String {
-        if accessLevel == .Private || accessLevel == .Protected {
-            return accessLevel.rawValue + "/" + identity + "/" + key
-        }
-
-        return accessLevel.rawValue + "/" + key
+    init(bucket: String,
+         accessLevel: AccessLevel,
+         key: String) {
+        self.bucket = bucket
+        self.accessLevel = accessLevel
+        self.key = key
     }
 
     func validate() -> StorageRemoveError? {
@@ -37,21 +31,5 @@ public struct AWSS3StorageRemoveRequest {
         }
 
         return nil
-    }
-
-    public class Builder {
-        let bucket: String
-        let accessLevel: AccessLevel
-        let key: String
-
-        init(bucket: String, key: String, accessLevel: AccessLevel) {
-            self.bucket = bucket
-            self.key = key
-            self.accessLevel = accessLevel
-        }
-
-        func build() -> AWSS3StorageRemoveRequest {
-            return AWSS3StorageRemoveRequest(builder: self)
-        }
     }
 }

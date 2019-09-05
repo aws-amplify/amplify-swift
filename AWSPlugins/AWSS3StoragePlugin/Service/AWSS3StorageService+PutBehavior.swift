@@ -11,7 +11,7 @@ import Amplify
 
 extension AWSS3StorageService {
 
-    public func execute(_ request: AWSS3StoragePutRequest, identity: String, onEvent:
+    public func execute(_ request: AWSS3StoragePutRequest, identityId: String, onEvent:
         @escaping (StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>) -> Void) {
 
         let uploadExpression = AWSS3TransferUtilityUploadExpression()
@@ -46,10 +46,16 @@ extension AWSS3StorageService {
             return nil
         }
 
+        // TODO: MultiUpload
+
+        let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
+                                                           identityId: identityId,
+                                                           key: request.key)
+
         if let fileURL = request.fileURL {
             let task = transferUtility.uploadFile(fileURL,
                                                   bucket: request.bucket,
-                                                  key: request.getFinalKey(identity: identity),
+                                                  key: serviceKey,
                                                   contentType: request.contentType ?? "application/octet-stream",
                                                   expression: uploadExpression,
                                                   completionHandler: completionHandler)
@@ -58,7 +64,7 @@ extension AWSS3StorageService {
             let task = transferUtility.uploadData(
                 request.data!,
                 bucket: request.bucket,
-                key: request.getFinalKey(identity: identity),
+                key: serviceKey,
                 contentType: request.contentType ?? "application/octet-stream",
                 expression: uploadExpression,
                 completionHandler: completionHandler)
