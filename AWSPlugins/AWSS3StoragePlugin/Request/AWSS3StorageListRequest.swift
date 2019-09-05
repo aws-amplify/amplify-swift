@@ -35,6 +35,12 @@ public struct AWSS3StorageListRequest {
             }
         }
 
+        if let limit = limit {
+            if limit < 0 {
+                return StorageListError.unknown("limit is negative", "")
+            }
+        }
+
         return nil
     }
 }

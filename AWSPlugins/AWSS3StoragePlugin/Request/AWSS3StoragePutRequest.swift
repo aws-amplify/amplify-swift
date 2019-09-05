@@ -15,19 +15,25 @@ public struct AWSS3StoragePutRequest {
     let data: Data?
     let fileURL: URL?
     let contentType: String?
+    let metadata: [String: String]?
+    let options: Any?
 
     init(bucket: String,
          accessLevel: StorageAccessLevel,
          key: String,
          data: Data?,
          fileURL: URL?,
-         contentType: String?) {
+         contentType: String?,
+         metadata: [String: String]?,
+         options: Any?) {
         self.bucket = bucket
         self.accessLevel = accessLevel
         self.key = key
         self.data = data
         self.fileURL = fileURL
         self.contentType = contentType
+        self.metadata = metadata
+        self.options = options
     }
 
     func validate() -> StoragePutError? {

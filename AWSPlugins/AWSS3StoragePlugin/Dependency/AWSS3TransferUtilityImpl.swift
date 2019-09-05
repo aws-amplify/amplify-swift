@@ -43,7 +43,7 @@ class AWSS3TransferUtilityImpl: AWSS3TransferUtilityBehavior {
     }
 
     // swiftlint:disable function_parameter_count
-    public func uploadData(_ data: Data,
+    public func uploadData(data: Data,
                            bucket: String,
                            key: String,
                            contentType: String,
@@ -59,12 +59,12 @@ class AWSS3TransferUtilityImpl: AWSS3TransferUtilityBehavior {
                                               completionHandler: completionHandler)
     }
 
-    public func uploadFile(_ fileURL: URL,
-                             bucket: String,
-                             key: String,
-                             contentType: String,
-                             expression: AWSS3TransferUtilityUploadExpression,
-                             completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?)
+    public func uploadFile(fileURL: URL,
+                           bucket: String,
+                           key: String,
+                           contentType: String,
+                           expression: AWSS3TransferUtilityUploadExpression,
+                           completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?)
         -> AWSTask<AWSS3TransferUtilityUploadTask> {
 
         return transferUtility.uploadFile(fileURL,
@@ -73,5 +73,37 @@ class AWSS3TransferUtilityImpl: AWSS3TransferUtilityBehavior {
                                           contentType: contentType,
                                           expression: expression,
                                           completionHandler: completionHandler)
+    }
+
+    public func uploadUsingMultiPart(fileURL: URL,
+                                     bucket: String,
+                                     key: String,
+                                     contentType: String,
+                                     expression: AWSS3TransferUtilityMultiPartUploadExpression,
+                                     completionHandler: AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock?)
+        -> AWSTask<AWSS3TransferUtilityMultiPartUploadTask> {
+
+        return transferUtility.uploadUsingMultiPart(fileURL: fileURL,
+                                                    bucket: bucket,
+                                                    key: key,
+                                                    contentType: contentType,
+                                                    expression: expression,
+                                                    completionHandler: completionHandler)
+    }
+
+    public func uploadUsingMultiPart(data: Data,
+                                     bucket: String,
+                                     key: String,
+                                     contentType: String,
+                                     expression: AWSS3TransferUtilityMultiPartUploadExpression,
+                                     completionHandler: AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock?)
+        -> AWSTask<AWSS3TransferUtilityMultiPartUploadTask> {
+
+        return transferUtility.uploadUsingMultiPart(data: data,
+                                                    bucket: bucket,
+                                                    key: key,
+                                                    contentType: contentType,
+                                                    expression: expression,
+                                                    completionHandler: completionHandler)
     }
 }

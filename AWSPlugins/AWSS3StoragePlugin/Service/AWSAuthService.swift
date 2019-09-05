@@ -18,7 +18,6 @@ public class AWSAuthService: AWSAuthServiceBehavior {
     }
 
     func configure() {
-        // TODO any validation on mobile client instance?
         configure(mobileClient: AWSMobileClientImpl(AWSMobileClient.sharedInstance()))
     }
 
@@ -34,24 +33,34 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         return mobileClient.getCognitoCredentialsProvider()
     }
 
-    func getIdentityId() -> Result<String, Error> {
+    func getIdentityId() -> Result<String, StorageError> {
         let task = mobileClient.getIdentityId()
         task.waitUntilFinished()
 
         guard task.error == nil else {
-            //let error = task.error!
-            // MAP Error
+            if let error = task.error! as? AWSMobileClientError {
+                return .failure(map(error))
+            }
 
-            let error = StorageGetError.unknown("Error in getIdneittyId", "no identity!")
-            return Result.failure(error)
+            return .failure(StorageError.identity("Could not determine error", "no identity!"))
         }
 
         guard let identityId = task.result else {
-            let error = StorageGetError.unknown("No Identity", "no identity!")
-            return Result.failure(error)
-
+            let error = StorageError.identity("No Identity", "no identity!")
+            return .failure(error)
         }
 
         return .success(identityId as String)
+    }
+
+    private func map(_ error: AWSMobileClientError) -> StorageError {
+        switch error {
+        case .identityIdUnavailable(let message):
+            return StorageError.identity(message, error.localizedDescription)
+        case .guestAccessNotAllowed(let message):
+            return StorageError.identity(message, error.localizedDescription)
+        default:
+            return StorageError.identity(error.localizedDescription, "")
+        }
     }
 }

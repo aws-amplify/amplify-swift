@@ -30,7 +30,6 @@ public struct AWSS3StorageGetRequest {
         self.options = options
     }
 
-    // TODO: gettings for things in options
     func validate() -> StorageGetError? {
         if bucket.isEmpty {
             return StorageGetError.unknown("bucket is empty", "bucket is empty")
@@ -41,7 +40,7 @@ public struct AWSS3StorageGetRequest {
                 return StorageGetError.unknown("The targetIde is specified but is empty", "..")
             }
 
-            if accessLevel == .Public {
+            if accessLevel == .public {
                 return StorageGetError.unknown("makes no sense to be public with target", ".")
             }
         }
@@ -50,7 +49,7 @@ public struct AWSS3StorageGetRequest {
             return StorageGetError.unknown("key is empty", "key is empty")
         }
 
-        switch(storageGetDestination) {
+        switch storageGetDestination {
         case .data:
             break
         case .file:

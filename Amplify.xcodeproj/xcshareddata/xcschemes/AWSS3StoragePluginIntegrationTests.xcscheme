@@ -23,6 +23,9 @@
             </BuildableReference>
             <SkippedTests>
                <Test
+                  Identifier = "AWSS3StoragePluginIntegrationTests/testEscapeHatchForHeadObject()">
+               </Test>
+               <Test
                   Identifier = "AWSS3StoragePluginIntegrationTests/testFailConfiguration()">
                </Test>
                <Test
@@ -32,6 +35,12 @@
                   Identifier = "AWSS3StoragePluginIntegrationTests/testGetNonexistentKey()">
                </Test>
                <Test
+                  Identifier = "AWSS3StoragePluginIntegrationTests/testGetRemoteURL()">
+               </Test>
+               <Test
+                  Identifier = "AWSS3StoragePluginIntegrationTests/testListFromProtected()">
+               </Test>
+               <Test
                   Identifier = "AWSS3StoragePluginIntegrationTests/testListFromPublic()">
                </Test>
                <Test
@@ -39,6 +48,9 @@
                </Test>
                <Test
                   Identifier = "AWSS3StoragePluginIntegrationTests/testPutDataFromFile()">
+               </Test>
+               <Test
+                  Identifier = "AWSS3StoragePluginIntegrationTests/testPutToProtectedAndListThenGetThenRemove()">
                </Test>
                <Test
                   Identifier = "AWSS3StoragePluginIntegrationTests/testRemoveKey()">

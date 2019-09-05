@@ -10,7 +10,6 @@ import AWSMobileClient
 import Amplify
 
 class AWSMobileClientImpl: AWSMobileClientBehavior {
-
     let awsMobileClient: AWSMobileClient
 
     init(_ awsMobileClient: AWSMobileClient) {
@@ -24,5 +23,4 @@ class AWSMobileClientImpl: AWSMobileClientBehavior {
     func getIdentityId() -> AWSTask<NSString> {
         return awsMobileClient.getIdentityId()
     }
-
 }

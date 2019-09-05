@@ -10,13 +10,15 @@ import Foundation
 public enum StoragePutError {
     case httpStatusError(ErrorDescription, RecoverySuggestion)
     case unknown(ErrorDescription, RecoverySuggestion)
+    case identity(ErrorDescription, RecoverySuggestion)
 }
 
 extension StoragePutError: AmplifyError {
     public var errorDescription: ErrorDescription {
         switch self {
         case .httpStatusError(let description, _),
-             .unknown(let description, _):
+             .unknown(let description, _),
+             .identity(let description, _):
             return description
         }
     }
@@ -24,7 +26,8 @@ extension StoragePutError: AmplifyError {
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .httpStatusError(_, let recoverySuggestion),
-             .unknown(_, let recoverySuggestion):
+             .unknown(_, let recoverySuggestion),
+             .identity(_, let recoverySuggestion):
             return recoverySuggestion
         }
     }

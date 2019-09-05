@@ -44,15 +44,20 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
         let identityIdResult = authService.getIdentityId()
 
         guard case let .success(identityId) = identityIdResult else {
-            // TODO figure this out
-            //let error = identityIdResult.mapError
-            let error = StorageListError.unknown("identity", "identity")
-            dispatch(error)
+            if case let .failure(error) = identityIdResult {
+                let storageListError = StorageListError.identity(error.errorDescription, error.recoverySuggestion)
+                dispatch(storageListError)
+            }
+
             finish()
             return
         }
 
-        storageService.execute(request, identityId: identityId, onEvent: onEventHandler)
+        let prefix = StorageRequestUtils.getServicePrefix(accessLevel: request.accessLevel,
+                                                          identityId: identityId,
+                                                          prefix: request.prefix)
+
+        storageService.list(bucket: request.bucket, prefix: prefix, onEvent: onEventHandler)
     }
 
     private func onEventHandler(event: StorageEvent<Void, Void, StorageListResult, StorageListError>) {

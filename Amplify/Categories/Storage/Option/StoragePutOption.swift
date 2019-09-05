@@ -8,21 +8,26 @@
 import Foundation
 
 public struct StoragePutOption: StorageOption {
-    public init(accessLevel: StorageAccessLevel?,
-                contentType: String?,
-                metadata: [String: String]?,
-                options: Any?) {
-        self.accessLevel = accessLevel
-        self.contentType = contentType
-        self.metadata = metadata
-        self.options = options
-    }
-
+    // AccessLevel
     public var accessLevel: StorageAccessLevel?
 
     public var metadata: [String: String]?
 
     public var contentType: String?
 
+    // Extra options
     public var options: Any?
+
+    // TODO: tags (may be in options)
+    // TODO: expires (may be in metadata)
+    
+    public init(accessLevel: StorageAccessLevel?,
+                contentType: String? = nil,
+                metadata: [String: String]? = nil,
+                options: Any? = nil) {
+        self.accessLevel = accessLevel
+        self.contentType = contentType
+        self.metadata = metadata
+        self.options = options
+    }
 }

@@ -10,7 +10,7 @@ import Amplify
 
 public class StorageRequestUtils {
     public static func getServiceKey(accessLevel: StorageAccessLevel, identityId: String, key: String) -> String {
-        if accessLevel == .Private || accessLevel == .Protected {
+        if accessLevel == .private || accessLevel == .protected {
             return accessLevel.rawValue + "/" + identityId + "/" + key
         }
 

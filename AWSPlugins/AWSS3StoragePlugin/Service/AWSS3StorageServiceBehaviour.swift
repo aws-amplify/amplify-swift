@@ -9,6 +9,24 @@ import Foundation
 import Amplify
 import AWSS3
 
+public typealias StorageDownloadOnEventHandler =
+    (StorageEvent<StorageOperationReference, Progress, StorageGetResult, StorageGetError>) -> Void
+
+public typealias StorageGetPreSignedUrlOnEventHandler =
+    (StorageEvent<StorageOperationReference, Progress, StorageGetResult, StorageGetError>) -> Void
+
+public typealias StorageDeleteOnEventHandler =
+    (StorageEvent<Void, Void, StorageRemoveResult, StorageRemoveError>) -> Void
+
+public typealias StorageListOnEventHandler =
+    (StorageEvent<Void, Void, StorageListResult, StorageListError>) -> Void
+
+public typealias StorageUploadOnEventHandler =
+    (StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>) -> Void
+
+public typealias StorageMultiPartUploadOnEventHandler =
+    (StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>) -> Void
+
 protocol AWSS3StorageServiceBehaviour {
     func configure(region: AWSRegionType,
                    cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
@@ -18,15 +36,37 @@ protocol AWSS3StorageServiceBehaviour {
 
     func getEscapeHatch() -> AWSS3
 
-    func execute(_ request: AWSS3StorageGetRequest, identityId: String, onEvent:
-        @escaping (StorageEvent<StorageOperationReference, Progress, StorageGetResult, StorageGetError>) -> Void)
+    func download(bucket: String,
+                  serviceKey: String,
+                  fileURL: URL?,
+                  onEvent: @escaping StorageDownloadOnEventHandler)
 
-    func execute(_ request: AWSS3StoragePutRequest, identityId: String, onEvent:
-        @escaping (StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>) -> Void)
+    func getPreSignedURL(bucket: String,
+                         serviceKey: String,
+                         expires: Int?,
+                         onEvent: @escaping StorageGetPreSignedUrlOnEventHandler)
 
-    func execute(_ request: AWSS3StorageListRequest, identityId: String, onEvent:
-        @escaping (StorageEvent<Void, Void, StorageListResult, StorageListError>) -> Void)
+    func upload(bucket: String,
+                serviceKey: String,
+                key: String,
+                fileURL: URL?,
+                data: Data?,
+                contentType: String?,
+                onEvent: @escaping StorageUploadOnEventHandler)
 
-    func execute(_ request: AWSS3StorageRemoveRequest, identityId: String, onEvent:
-        @escaping (StorageEvent<Void, Void, StorageRemoveResult, StorageRemoveError>) -> Void)
+    func multiPartUpload(bucket: String,
+                         serviceKey: String,
+                         key: String,
+                         fileURL: URL?,
+                         data: Data?,
+                         contentType: String?,
+                         onEvent: @escaping StorageMultiPartUploadOnEventHandler)
+
+    func list(bucket: String,
+                     prefix: String,
+                     onEvent: @escaping StorageListOnEventHandler)
+
+    func delete(bucket: String,
+                      serviceKey: String,
+                      onEvent: @escaping StorageDeleteOnEventHandler)
 }

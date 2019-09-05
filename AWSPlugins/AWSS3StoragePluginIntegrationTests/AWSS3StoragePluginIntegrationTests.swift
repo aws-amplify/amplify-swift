@@ -38,10 +38,33 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
                 AWSMobileClient.sharedInstance().signOut()
             }
 
-            mobileClientIsInitialized.fulfill()
+            // TODO: This is pretty hacky since I had to go into aws console to confirm user
+            // we need login for tests which put into protected/private folder.
+            let username = "testUser123@amazon.com"
+            let password = "testPassword123!"
+
+            AWSMobileClient.sharedInstance().signIn(username: username, password: password, completionHandler: { (result, error) in
+                if let error = error {
+                    print("error signing in \(error)")
+
+                    AWSMobileClient.sharedInstance().signUp(username: username, password: password, completionHandler: { (result, error) in
+                        if let error = error {
+                            print("error signing up \(error)")
+                        } else if let result = result {
+                            print("completed sign up \(result)")
+                        }
+
+                        mobileClientIsInitialized.fulfill()
+                    })
+                } else if let result = result {
+                    print("completed sign in \(result)")
+                    mobileClientIsInitialized.fulfill()
+                }
+            })
+
         }
 
-        wait(for: [mobileClientIsInitialized], timeout: 5)
+        wait(for: [mobileClientIsInitialized], timeout: 100)
         print("AWSMobileClient Initialized")
 
         // Set up Amplify
@@ -49,6 +72,7 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
             "Bucket": "swift6a3ad8b2b9f4402187f051de89548cc0-devo",
             "Region": "us-east-1"
         ]
+
         let storageConfig = BasicCategoryConfiguration(
             plugins: ["AWSS3StoragePlugin": awss3StoragePluginConfig]
         )
@@ -67,6 +91,7 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
     override func tearDown() {
         print("Amplify reset")
         Amplify.reset()
+        sleep(5)
     }
 
     // MARK: Configuration Tests
@@ -143,7 +168,7 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
                                        storageGetDestination: .data,
                                        options: nil)
 
-        let operation = Amplify.Storage.get(key: "test-image.png", options: options) { (event) in
+        let operation = Amplify.Storage.get(key: key, options: options) { (event) in
             switch event {
             case .unknown:
                 break
@@ -215,6 +240,28 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
         waitForExpectations(timeout: 100)
     }
 
+    func testListFromProtected() {
+        let completeInvoked = expectation(description: "Completed is invoked")
+        let options = StorageListOption(accessLevel: .protected, prefix: nil, limit: nil, options: nil, targetUser: nil)
+        let operation = Amplify.Storage.list(options: options) { (event) in
+            switch event {
+            case .unknown:
+                break
+            case .notInProcess:
+                break
+            case .inProcess:
+                break
+            case .completed(let result):
+                print("Got result: \(result.keys)")
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Failed with \(error)")
+            }
+        }
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 100)
+    }
+
     func testRemoveKey() {
         let key = "testRemoveKey"
         let dataString = "testRemoveKey"
@@ -253,11 +300,34 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
 
         waitForExpectations(timeout: 100)
     }
-//
-//    func testEscapeHatch() {
-//        XCTFail("Not yet implemented")
-//    }
-//
+
+    func testEscapeHatchForHeadObject() {
+        // TODO: upload to public with metadata and then get
+        do {
+            let plugin = try Amplify.Storage.getPlugin(for: "AWSS3StoragePlugin")
+            if let plugin = plugin as? AWSS3StoragePlugin {
+                let awsS3 = plugin.getEscapeHatch()
+
+                let request = AWSS3HeadObjectRequest()
+                request?.bucket = "swift6a3ad8b2b9f4402187f051de89548cc0-devo" // TODO retrieve from above
+                request?.key = "public/test-image.png"
+
+                let task = awsS3.headObject(request!)
+                task.waitUntilFinished()
+
+                if let error = task.error {
+                    XCTFail("Failed to get headObject \(error)")
+                } else if let result = task.result {
+                    print("headObject \(result)")
+                }
+            } else {
+                XCTFail("Failed to get AWSS3StoragePlugin")
+            }
+        } catch {
+            XCTFail("Failed to get AWSS3StoragePlugin")
+        }
+    }
+
 //    // MARK: Resumability Tests
 //
 //    func testPutLargeDataAndPauseThenResume() {
@@ -276,15 +346,52 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
 //        XCTFail("Not yet implemented")
 //    }
 //
-//    // MARK: AccessLevel Tests
+    // MARK: AccessLevel Tests
 //
 //    func testPutToPublicAndListThenGetThenRemoveFromOtherUser() {
 //        XCTFail("Not yet implemented")
 //    }
 //
-//    func testPutToProtectedAndListThenGetThenRemove() {
-//        XCTFail("Not yet implemented")
-//    }
+    func testPutToProtectedAndListThenGetThenRemove() {
+
+        // TODO Sign in. here instead of in set up.
+        //
+
+
+
+        let key = "testPutToProtectedAndListThenGetThenRemove"
+        let dataString = "testPutToProtectedAndListThenGetThenRemove"
+        let data = dataString.data(using: .utf8)!
+        let options = StoragePutOption(accessLevel: .protected,
+                                       contentType: nil,
+                                       metadata: nil,
+                                       options: nil)
+
+        let putExpectation = expectation(description: "Put operation should be successful")
+        let operation = Amplify.Storage.put(key: key, data: data, options: options) { (event) in
+            switch event {
+            case .unknown:
+                break
+            case .notInProcess:
+                break
+            case .inProcess:
+                break
+            case .completed:
+                putExpectation.fulfill()
+            case .failed(let error):
+                print("failed \(error)")
+                break
+            }
+        }
+
+        waitForExpectations(timeout: 100) { (error) in
+            if let error = error {
+                XCTFail("timeout errored: \(error)")
+            }
+        }
+
+        // TODO List and then Remove
+    }
 //
 //    func testPutToProtectedAndListThenGetThenFailRemoveFromOtherUser() {
 //        XCTFail("Not yet implemented")
