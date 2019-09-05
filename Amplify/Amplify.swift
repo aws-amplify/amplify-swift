@@ -47,4 +47,5 @@ public class Amplify {
                 "Verify that the library version is correct and supports the plugin's category.")
         }
     }
+
 }

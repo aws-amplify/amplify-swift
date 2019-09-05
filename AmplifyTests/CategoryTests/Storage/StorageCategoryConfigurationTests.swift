@@ -6,8 +6,9 @@
 //
 
 import XCTest
-import Amplify
 import CwlPreconditionTesting
+
+@testable import Amplify
 
 class StorageCategoryConfigurationTests: XCTestCase {
     override func setUp() {
@@ -250,6 +251,48 @@ class StorageCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
         try Amplify.Storage.getPlugin(for: "MockStorageCategoryPlugin").configure(using: true)
         waitForExpectations(timeout: 1.0)
+    }
+
+    func testPreconditionFailureInvokingBeforeConfig() throws {
+        let plugin = MockStorageCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+
+        // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
+        let exception: BadInstructionException? = catchBadInstruction {
+            _ = Amplify.Storage.get(key: "foo", options: nil, onEvent: nil)
+        }
+        XCTAssertNotNil(exception)
+    }
+
+    // MARK: - Test internal config behavior guarantees
+
+    func testThrowsConfiguringTwice() throws {
+        let plugin = MockStorageCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+        let categoryConfig = BasicCategoryConfiguration(
+            plugins: ["MockStorageCategoryPlugin": true]
+        )
+
+        try Amplify.Storage.configure(using: categoryConfig)
+        XCTAssertThrowsError(try Amplify.Storage.configure(using: categoryConfig),
+                             "configure() an already configured plugin should throw") { error in
+                                guard case ConfigurationError.amplifyAlreadyConfigured = error else {
+                                    XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
+                                    return
+                                }
+        }
+    }
+
+    func testCanConfigureAfterReset() throws {
+        let plugin = MockStorageCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+        let categoryConfig = BasicCategoryConfiguration(
+            plugins: ["MockStorageCategoryPlugin": true]
+        )
+
+        try Amplify.Storage.configure(using: categoryConfig)
+        Amplify.Storage.reset()
+        XCTAssertNoThrow(try Amplify.Storage.configure(using: categoryConfig))
     }
 
 }

@@ -7,9 +7,9 @@
 
 import XCTest
 import Foundation
-
-import Amplify
 import CwlPreconditionTesting
+
+@testable import Amplify
 
 class HubCategoryConfigurationTests: XCTestCase {
     override func setUp() {
@@ -252,6 +252,48 @@ class HubCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
         try Amplify.Hub.getPlugin(for: "MockHubCategoryPlugin").configure(using: true)
         waitForExpectations(timeout: 1.0)
+    }
+
+    func testPreconditionFailureInvokingBeforeConfig() throws {
+        let plugin = MockHubCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+
+        // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
+        let exception: BadInstructionException? = catchBadInstruction {
+            Amplify.Hub.dispatch(to: HubChannel.core, payload: HubPayload(event: "foo"))
+        }
+        XCTAssertNotNil(exception)
+    }
+
+    // MARK: - Test internal config behavior guarantees
+
+    func testThrowsConfiguringTwice() throws {
+        let plugin = MockHubCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+        let categoryConfig = BasicCategoryConfiguration(
+            plugins: ["MockHubCategoryPlugin": true]
+        )
+
+        try Amplify.Hub.configure(using: categoryConfig)
+        XCTAssertThrowsError(try Amplify.Hub.configure(using: categoryConfig),
+                             "configure() an already configured plugin should throw") { error in
+                                guard case ConfigurationError.amplifyAlreadyConfigured = error else {
+                                    XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
+                                    return
+                                }
+        }
+    }
+
+    func testCanConfigureAfterReset() throws {
+        let plugin = MockHubCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+        let categoryConfig = BasicCategoryConfiguration(
+            plugins: ["MockHubCategoryPlugin": true]
+        )
+
+        try Amplify.Hub.configure(using: categoryConfig)
+        Amplify.Hub.reset()
+        XCTAssertNoThrow(try Amplify.Hub.configure(using: categoryConfig))
     }
 
 }

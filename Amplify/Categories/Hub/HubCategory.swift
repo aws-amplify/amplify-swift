@@ -21,6 +21,15 @@ final public class HubCategory: Category {
     /// this property if no plugins are added, or if more than one plugin is added without a pluginSelectorFactory,
     /// will cause a preconditionFailure.
     var pluginOrSelector: PluginOrSelector {
+        guard isConfigured else {
+            preconditionFailure(
+                """
+                \(categoryType.displayName) category is not configured. Call Amplify.configure() before using
+                any methods on the category.
+                """
+            )
+        }
+
         if plugins.count == 1, let plugin = plugins.first?.value {
             return .plugin(plugin)
         }
