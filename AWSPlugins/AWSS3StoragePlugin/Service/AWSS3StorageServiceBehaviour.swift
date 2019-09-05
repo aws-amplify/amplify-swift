@@ -13,7 +13,7 @@ protocol AWSS3StorageServiceBehaviour {
     func configure(region: AWSRegionType,
                    cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
                    identifier: String) throws
-    
+
     func reset()
 
     func getEscapeHatch() -> AWSS3

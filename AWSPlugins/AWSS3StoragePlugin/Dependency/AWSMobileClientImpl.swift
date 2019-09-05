@@ -25,5 +25,4 @@ class AWSMobileClientImpl: AWSMobileClientBehavior {
         return awsMobileClient.getIdentityId()
     }
 
-    
 }

@@ -37,7 +37,7 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
             if userState != UserState.signedOut {
                 AWSMobileClient.sharedInstance().signOut()
             }
-            
+
             mobileClientIsInitialized.fulfill()
         }
 

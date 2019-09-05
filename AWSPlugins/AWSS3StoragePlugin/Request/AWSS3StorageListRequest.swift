@@ -34,7 +34,7 @@ public struct AWSS3StorageListRequest {
                 return StorageListError.unknown("prefix is specified but is empty", "empty")
             }
         }
-        
+
         return nil
     }
 }

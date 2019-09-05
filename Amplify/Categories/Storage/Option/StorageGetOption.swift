@@ -31,4 +31,3 @@ public struct StorageGetOption: StorageOption {
         self.options = options
     }
 }
-
