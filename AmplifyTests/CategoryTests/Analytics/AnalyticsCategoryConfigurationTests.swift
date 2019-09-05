@@ -264,6 +264,8 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(exception)
     }
 
+    // MARK: - Test internal config behavior guarantees
+
     func testThrowsConfiguringTwice() throws {
         let plugin = MockAnalyticsCategoryPlugin()
         try Amplify.add(plugin: plugin)
@@ -272,7 +274,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         )
 
         try Amplify.Analytics.configure(using: categoryConfig)
-        XCTAssertThrowsError(try plugin.configure(using: categoryConfig),
+        XCTAssertThrowsError(try Amplify.Analytics.configure(using: categoryConfig),
                              "configure() an already configured plugin should throw") { error in
                                 guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                                     XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
@@ -283,13 +285,14 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
 
     func testCanConfigureAfterReset() throws {
         let plugin = MockAnalyticsCategoryPlugin()
-        let analyticsConfig = BasicCategoryConfiguration(
+        try Amplify.add(plugin: plugin)
+        let categoryConfig = BasicCategoryConfiguration(
             plugins: ["MockAnalyticsCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(analytics: analyticsConfig)
-        try plugin.configure(using: amplifyConfig)
-        plugin.reset()
-        XCTAssertNoThrow(try plugin.configure(using: amplifyConfig))
+        try Amplify.Analytics.configure(using: categoryConfig)
+        Amplify.Analytics.reset()
+        XCTAssertNoThrow(try Amplify.Analytics.configure(using: categoryConfig))
     }
+
 }

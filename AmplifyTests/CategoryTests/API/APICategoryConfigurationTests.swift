@@ -6,8 +6,9 @@
 //
 
 import XCTest
-import Amplify
 import CwlPreconditionTesting
+
+@testable import Amplify
 
 class APICategoryConfigurationTests: XCTestCase {
     override func setUp() {
@@ -250,6 +251,48 @@ class APICategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
         try Amplify.API.getPlugin(for: "MockAPICategoryPlugin").configure(using: true)
         waitForExpectations(timeout: 1.0)
+    }
+
+    func testPreconditionFailureInvokingBeforeConfig() throws {
+        let plugin = MockAPICategoryPlugin()
+        try Amplify.add(plugin: plugin)
+
+        // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
+        let exception: BadInstructionException? = catchBadInstruction {
+            Amplify.API.get()
+        }
+        XCTAssertNotNil(exception)
+    }
+
+    // MARK: - Test internal config behavior guarantees
+
+    func testThrowsConfiguringTwice() throws {
+        let plugin = MockAPICategoryPlugin()
+        try Amplify.add(plugin: plugin)
+        let categoryConfig = BasicCategoryConfiguration(
+            plugins: ["MockAPICategoryPlugin": true]
+        )
+
+        try Amplify.API.configure(using: categoryConfig)
+        XCTAssertThrowsError(try Amplify.API.configure(using: categoryConfig),
+                             "configure() an already configured plugin should throw") { error in
+                                guard case ConfigurationError.amplifyAlreadyConfigured = error else {
+                                    XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
+                                    return
+                                }
+        }
+    }
+
+    func testCanConfigureAfterReset() throws {
+        let plugin = MockAPICategoryPlugin()
+        try Amplify.add(plugin: plugin)
+        let categoryConfig = BasicCategoryConfiguration(
+            plugins: ["MockAPICategoryPlugin": true]
+        )
+
+        try Amplify.API.configure(using: categoryConfig)
+        Amplify.API.reset()
+        XCTAssertNoThrow(try Amplify.API.configure(using: categoryConfig))
     }
 
 }

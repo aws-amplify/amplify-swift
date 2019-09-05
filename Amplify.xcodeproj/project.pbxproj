@@ -30,7 +30,6 @@
 		2125E289231F431600B3DEB5 /* AWSS3StorageService+PutBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E281231F422700B3DEB5 /* AWSS3StorageService+PutBehavior.swift */; };
 		2125E28A231F431900B3DEB5 /* AWSS3StorageService+RemoveBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E285231F42AC00B3DEB5 /* AWSS3StorageService+RemoveBehavior.swift */; };
 		2125E29023205A7400B3DEB5 /* StorageRequestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E28D23203E4E00B3DEB5 /* StorageRequestUtils.swift */; };
-		2125E293232063D800B3DEB5 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E292232063D800B3DEB5 /* AuthError.swift */; };
 		2125E2972320667300B3DEB5 /* AWSAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2962320667300B3DEB5 /* AWSAuthService.swift */; };
 		2125E29A2320671B00B3DEB5 /* AWSAuthServiceBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2992320671B00B3DEB5 /* AWSAuthServiceBehavior.swift */; };
 		2125E29C23209EF400B3DEB5 /* StorageGetDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E29B23209EF400B3DEB5 /* StorageGetDestination.swift */; };
@@ -98,7 +97,6 @@
 		FA09B92B2321A10E000E064D /* AnalyticsCategoryConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92A2321A10E000E064D /* AnalyticsCategoryConfiguration.swift */; };
 		FA09B92D2321A27F000E064D /* CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92C2321A27F000E064D /* CategoryConfigurable.swift */; };
 		FA09B92F2321A2DE000E064D /* APICategoryConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92E2321A2DE000E064D /* APICategoryConfiguration.swift */; };
-		FA09B9312321A2F7000E064D /* AuthCategoryConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B9302321A2F7000E064D /* AuthCategoryConfiguration.swift */; };
 		FA09B9332321A305000E064D /* HubCategoryConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B9322321A305000E064D /* HubCategoryConfiguration.swift */; };
 		FA09B9382321A359000E064D /* LoggingCategoryConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B9372321A359000E064D /* LoggingCategoryConfiguration.swift */; };
 		FA09B93B2321A36F000E064D /* StorageCategoryConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B93A2321A36F000E064D /* StorageCategoryConfiguration.swift */; };
@@ -114,21 +112,16 @@
 		FAC0A2A122B3E81000B50912 /* HubMessageQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2A022B3E81000B50912 /* HubMessageQueue.swift */; };
 		FAC0A2A722B43F6600B50912 /* AnalyticsCategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2A622B43F6600B50912 /* AnalyticsCategory+ClientBehavior.swift */; };
 		FAC0A2A922B43FB300B50912 /* APICategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2A822B43FB300B50912 /* APICategory+ClientBehavior.swift */; };
-		FAC0A2AB22B43FC700B50912 /* AuthCategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2AA22B43FC700B50912 /* AuthCategory+ClientBehavior.swift */; };
 		FAC0A2AD22B43FE700B50912 /* HubCategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2AC22B43FE700B50912 /* HubCategory+ClientBehavior.swift */; };
 		FAC0A2AF22B4400100B50912 /* LoggingCategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2AE22B4400100B50912 /* LoggingCategory+ClientBehavior.swift */; };
 		FAC0A2B222B4402000B50912 /* StorageCategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2B122B4402000B50912 /* StorageCategory+ClientBehavior.swift */; };
 		FAC0A2B422B4513100B50912 /* AnalyticsPluginSelectorFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2B322B4513100B50912 /* AnalyticsPluginSelectorFactoryTests.swift */; };
 		FAC0A2B622B456F200B50912 /* APIPluginSelectorFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2B522B456F200B50912 /* APIPluginSelectorFactoryTests.swift */; };
-		FAC0A2B822B45EA900B50912 /* AuthPluginSelectorFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2B722B45EA800B50912 /* AuthPluginSelectorFactoryTests.swift */; };
 		FAC0A2BA22B4601200B50912 /* HubPluginSelectorFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2B922B4601100B50912 /* HubPluginSelectorFactoryTests.swift */; };
 		FAC0A2BD22B4603800B50912 /* MockLoggingCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2BB22B4603800B50912 /* MockLoggingCategoryPlugin.swift */; };
 		FAC0A2BE22B4603800B50912 /* LoggingPluginSelectorFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2BC22B4603800B50912 /* LoggingPluginSelectorFactoryTests.swift */; };
 		FAC0A2C022B4605B00B50912 /* StoragePluginSelectorFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2BF22B4605B00B50912 /* StoragePluginSelectorFactoryTests.swift */; };
 		FAC234DC2279F8DA00424678 /* Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC234D22279F8DA00424678 /* Amplify.framework */; };
-		FAC23513227A053D00424678 /* AuthCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC234F2227A053D00424678 /* AuthCategoryPlugin.swift */; };
-		FAC23514227A053D00424678 /* AuthCategoryClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC234F3227A053D00424678 /* AuthCategoryClientBehavior.swift */; };
-		FAC23515227A053D00424678 /* AuthCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC234F4227A053D00424678 /* AuthCategory.swift */; };
 		FAC23516227A053D00424678 /* StorageCategoryClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC234F6227A053D00424678 /* StorageCategoryClientBehavior.swift */; };
 		FAC23518227A053D00424678 /* StorageCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC234F8227A053D00424678 /* StorageCategoryPlugin.swift */; };
 		FAC2351A227A053D00424678 /* StorageCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC234FA227A053D00424678 /* StorageCategory.swift */; };
@@ -157,9 +150,6 @@
 		FAC23547227A055200424678 /* Plugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2353A227A055200424678 /* Plugin.swift */; };
 		FAC23548227A055200424678 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2353B227A055200424678 /* Category.swift */; };
 		FAC2354B227A055A00424678 /* Amplify.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2354A227A055A00424678 /* Amplify.swift */; };
-		FAC23561227A056600424678 /* AuthCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2354E227A056600424678 /* AuthCategoryConfigurationTests.swift */; };
-		FAC23562227A056600424678 /* MockAuthCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2354F227A056600424678 /* MockAuthCategoryPlugin.swift */; };
-		FAC23563227A056600424678 /* AuthCategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23550227A056600424678 /* AuthCategoryClientAPITests.swift */; };
 		FAC23564227A056600424678 /* StorageCategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23552227A056600424678 /* StorageCategoryClientAPITests.swift */; };
 		FAC23565227A056600424678 /* MockStorageCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23553227A056600424678 /* MockStorageCategoryPlugin.swift */; };
 		FAC23566227A056600424678 /* StorageCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23554227A056600424678 /* StorageCategoryConfigurationTests.swift */; };
@@ -244,7 +234,6 @@
 		2125E283231F429E00B3DEB5 /* AWSS3StorageService+ListBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+ListBehavior.swift"; sourceTree = "<group>"; };
 		2125E285231F42AC00B3DEB5 /* AWSS3StorageService+RemoveBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+RemoveBehavior.swift"; sourceTree = "<group>"; };
 		2125E28D23203E4E00B3DEB5 /* StorageRequestUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageRequestUtils.swift; sourceTree = "<group>"; };
-		2125E292232063D800B3DEB5 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
 		2125E2962320667300B3DEB5 /* AWSAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthService.swift; sourceTree = "<group>"; };
 		2125E2992320671B00B3DEB5 /* AWSAuthServiceBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthServiceBehavior.swift; sourceTree = "<group>"; };
 		2125E29B23209EF400B3DEB5 /* StorageGetDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageGetDestination.swift; sourceTree = "<group>"; };
@@ -331,7 +320,6 @@
 		FA09B92A2321A10E000E064D /* AnalyticsCategoryConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsCategoryConfiguration.swift; sourceTree = "<group>"; };
 		FA09B92C2321A27F000E064D /* CategoryConfigurable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryConfigurable.swift; sourceTree = "<group>"; };
 		FA09B92E2321A2DE000E064D /* APICategoryConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICategoryConfiguration.swift; sourceTree = "<group>"; };
-		FA09B9302321A2F7000E064D /* AuthCategoryConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCategoryConfiguration.swift; sourceTree = "<group>"; };
 		FA09B9322321A305000E064D /* HubCategoryConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubCategoryConfiguration.swift; sourceTree = "<group>"; };
 		FA09B9372321A359000E064D /* LoggingCategoryConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingCategoryConfiguration.swift; sourceTree = "<group>"; };
 		FA09B93A2321A36F000E064D /* StorageCategoryConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageCategoryConfiguration.swift; sourceTree = "<group>"; };
@@ -347,13 +335,11 @@
 		FAC0A2A022B3E81000B50912 /* HubMessageQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubMessageQueue.swift; sourceTree = "<group>"; };
 		FAC0A2A622B43F6600B50912 /* AnalyticsCategory+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnalyticsCategory+ClientBehavior.swift"; sourceTree = "<group>"; };
 		FAC0A2A822B43FB300B50912 /* APICategory+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+ClientBehavior.swift"; sourceTree = "<group>"; };
-		FAC0A2AA22B43FC700B50912 /* AuthCategory+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthCategory+ClientBehavior.swift"; sourceTree = "<group>"; };
 		FAC0A2AC22B43FE700B50912 /* HubCategory+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HubCategory+ClientBehavior.swift"; sourceTree = "<group>"; };
 		FAC0A2AE22B4400100B50912 /* LoggingCategory+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoggingCategory+ClientBehavior.swift"; sourceTree = "<group>"; };
 		FAC0A2B122B4402000B50912 /* StorageCategory+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageCategory+ClientBehavior.swift"; sourceTree = "<group>"; };
 		FAC0A2B322B4513100B50912 /* AnalyticsPluginSelectorFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsPluginSelectorFactoryTests.swift; sourceTree = "<group>"; };
 		FAC0A2B522B456F200B50912 /* APIPluginSelectorFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIPluginSelectorFactoryTests.swift; sourceTree = "<group>"; };
-		FAC0A2B722B45EA800B50912 /* AuthPluginSelectorFactoryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthPluginSelectorFactoryTests.swift; sourceTree = "<group>"; };
 		FAC0A2B922B4601100B50912 /* HubPluginSelectorFactoryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HubPluginSelectorFactoryTests.swift; sourceTree = "<group>"; };
 		FAC0A2BB22B4603800B50912 /* MockLoggingCategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockLoggingCategoryPlugin.swift; sourceTree = "<group>"; };
 		FAC0A2BC22B4603800B50912 /* LoggingPluginSelectorFactoryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggingPluginSelectorFactoryTests.swift; sourceTree = "<group>"; };
@@ -362,9 +348,6 @@
 		FAC234D62279F8DA00424678 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FAC234DB2279F8DA00424678 /* AmplifyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AmplifyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAC234E22279F8DA00424678 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		FAC234F2227A053D00424678 /* AuthCategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthCategoryPlugin.swift; sourceTree = "<group>"; };
-		FAC234F3227A053D00424678 /* AuthCategoryClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthCategoryClientBehavior.swift; sourceTree = "<group>"; };
-		FAC234F4227A053D00424678 /* AuthCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthCategory.swift; sourceTree = "<group>"; };
 		FAC234F6227A053D00424678 /* StorageCategoryClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageCategoryClientBehavior.swift; sourceTree = "<group>"; };
 		FAC234F8227A053D00424678 /* StorageCategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageCategoryPlugin.swift; sourceTree = "<group>"; };
 		FAC234FA227A053D00424678 /* StorageCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageCategory.swift; sourceTree = "<group>"; };
@@ -393,9 +376,6 @@
 		FAC2353A227A055200424678 /* Plugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Plugin.swift; sourceTree = "<group>"; };
 		FAC2353B227A055200424678 /* Category.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		FAC2354A227A055A00424678 /* Amplify.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Amplify.swift; sourceTree = "<group>"; };
-		FAC2354E227A056600424678 /* AuthCategoryConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthCategoryConfigurationTests.swift; sourceTree = "<group>"; };
-		FAC2354F227A056600424678 /* MockAuthCategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAuthCategoryPlugin.swift; sourceTree = "<group>"; };
-		FAC23550227A056600424678 /* AuthCategoryClientAPITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthCategoryClientAPITests.swift; sourceTree = "<group>"; };
 		FAC23552227A056600424678 /* StorageCategoryClientAPITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageCategoryClientAPITests.swift; sourceTree = "<group>"; };
 		FAC23553227A056600424678 /* MockStorageCategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockStorageCategoryPlugin.swift; sourceTree = "<group>"; };
 		FAC23554227A056600424678 /* StorageCategoryConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageCategoryConfigurationTests.swift; sourceTree = "<group>"; };
@@ -507,14 +487,6 @@
 				2125E2022318327300B3DEB5 /* Info.plist */,
 			);
 			path = Resources;
-			sourceTree = "<group>";
-		};
-		2125E291232063C700B3DEB5 /* Error */ = {
-			isa = PBXGroup;
-			children = (
-				2125E292232063D800B3DEB5 /* AuthError.swift */,
-			);
-			path = Error;
 			sourceTree = "<group>";
 		};
 		21265DA52307389A004CCE39 /* AWSS3StoragePlugin */ = {
@@ -779,14 +751,6 @@
 			path = Internal;
 			sourceTree = "<group>";
 		};
-		FA09B9362321A341000E064D /* Internal */ = {
-			isa = PBXGroup;
-			children = (
-				FA09B9302321A2F7000E064D /* AuthCategoryConfiguration.swift */,
-			);
-			path = Internal;
-			sourceTree = "<group>";
-		};
 		FA09B9392321A35D000E064D /* Internal */ = {
 			isa = PBXGroup;
 			children = (
@@ -890,25 +854,11 @@
 			children = (
 				FAC2350A227A053D00424678 /* Analytics */,
 				FAC234FB227A053D00424678 /* API */,
-				FAC234EF227A053D00424678 /* Auth */,
 				FAC2358B227A46A900424678 /* Hub */,
 				FAC23503227A053D00424678 /* Logging */,
 				FAC234F5227A053D00424678 /* Storage */,
 			);
 			path = Categories;
-			sourceTree = "<group>";
-		};
-		FAC234EF227A053D00424678 /* Auth */ = {
-			isa = PBXGroup;
-			children = (
-				FA09B9362321A341000E064D /* Internal */,
-				FAC234F4227A053D00424678 /* AuthCategory.swift */,
-				FAC0A2AA22B43FC700B50912 /* AuthCategory+ClientBehavior.swift */,
-				FAC234F3227A053D00424678 /* AuthCategoryClientBehavior.swift */,
-				FAC234F2227A053D00424678 /* AuthCategoryPlugin.swift */,
-				2125E291232063C700B3DEB5 /* Error */,
-			);
-			path = Auth;
 			sourceTree = "<group>";
 		};
 		FAC234F5227A053D00424678 /* Storage */ = {
@@ -993,23 +943,11 @@
 			children = (
 				FAC2355D227A056600424678 /* Analytics */,
 				FAC23555227A056600424678 /* API */,
-				FAC2354D227A056600424678 /* Auth */,
 				FAC23584227A442000424678 /* Hub */,
 				FAC23559227A056600424678 /* Logging */,
 				FAC23551227A056600424678 /* Storage */,
 			);
 			path = CategoryTests;
-			sourceTree = "<group>";
-		};
-		FAC2354D227A056600424678 /* Auth */ = {
-			isa = PBXGroup;
-			children = (
-				FAC23550227A056600424678 /* AuthCategoryClientAPITests.swift */,
-				FAC2354E227A056600424678 /* AuthCategoryConfigurationTests.swift */,
-				FAC0A2B722B45EA800B50912 /* AuthPluginSelectorFactoryTests.swift */,
-				FAC2354F227A056600424678 /* MockAuthCategoryPlugin.swift */,
-			);
-			path = Auth;
 			sourceTree = "<group>";
 		};
 		FAC23551227A056600424678 /* Storage */ = {
@@ -1765,12 +1703,10 @@
 				FAC23547227A055200424678 /* Plugin.swift in Sources */,
 				FAC23542227A055200424678 /* Foundation+Utils.swift in Sources */,
 				FAC0A2AF22B4400100B50912 /* LoggingCategory+ClientBehavior.swift in Sources */,
-				FAC23514227A053D00424678 /* AuthCategoryClientBehavior.swift in Sources */,
 				21FFF9E623106407005878EA /* StorageGetOption.swift in Sources */,
 				FAC23545227A055200424678 /* AmplifyConfiguration.swift in Sources */,
 				21FFF994230C96CB005878EA /* StoragePutOperation.swift in Sources */,
 				21FFF9F1231066C9005878EA /* StorageOption.swift in Sources */,
-				FA09B9312321A2F7000E064D /* AuthCategoryConfiguration.swift in Sources */,
 				FAC2351E227A053D00424678 /* APICategory.swift in Sources */,
 				FAC2351B227A053D00424678 /* APICategoryClientBehavior.swift in Sources */,
 				FAC9DC32227FE405000D5DD7 /* PluginSelector.swift in Sources */,
@@ -1795,16 +1731,13 @@
 				FAC2352D227A053D00424678 /* AnalyticsCategoryPlugin.swift in Sources */,
 				FA56F71E22B144F80039754A /* AsyncEvent.swift in Sources */,
 				FAC23543227A055200424678 /* Category+Configuration.swift in Sources */,
-				FAC23513227A053D00424678 /* AuthCategoryPlugin.swift in Sources */,
 				FA09B93F2321A6BB000E064D /* BasicAmplifyConfiguration.swift in Sources */,
 				21FFF995230C96CB005878EA /* StorageListOperation.swift in Sources */,
-				FAC0A2AB22B43FC700B50912 /* AuthCategory+ClientBehavior.swift in Sources */,
 				FA56F72722B14BF70039754A /* AmplifyOperation.swift in Sources */,
 				FAC23591227A4AF000424678 /* HubCategoryClientBehavior.swift in Sources */,
 				21FFF98E230C81E6005878EA /* StorageAccessLevel.swift in Sources */,
 				FA09B92F2321A2DE000E064D /* APICategoryConfiguration.swift in Sources */,
 				FAC23520227A053D00424678 /* APIResponse.swift in Sources */,
-				FAC23515227A053D00424678 /* AuthCategory.swift in Sources */,
 				2125E29C23209EF400B3DEB5 /* StorageGetDestination.swift in Sources */,
 				FAC2354B227A055A00424678 /* Amplify.swift in Sources */,
 				FA09B92D2321A27F000E064D /* CategoryConfigurable.swift in Sources */,
@@ -1820,7 +1753,6 @@
 				2125E271231CFCE400B3DEB5 /* StoragePutError.swift in Sources */,
 				FAC0A2B222B4402000B50912 /* StorageCategory+ClientBehavior.swift in Sources */,
 				FA56F72522B14B6A0039754A /* Resumable.swift in Sources */,
-				2125E293232063D800B3DEB5 /* AuthError.swift in Sources */,
 				21FFF997230C96CB005878EA /* StorageRemoveOperation.swift in Sources */,
 				FAC2351C227A053D00424678 /* APICategoryPlugin.swift in Sources */,
 				21FFF9A0230C972B005878EA /* StorageRemoveResult.swift in Sources */,
@@ -1853,8 +1785,6 @@
 				FAC23567227A056600424678 /* APICategoryClientAPITests.swift in Sources */,
 				FAC0A2BD22B4603800B50912 /* MockLoggingCategoryPlugin.swift in Sources */,
 				FAC23599227A598B00424678 /* HubDefaultPluginTests.swift in Sources */,
-				FAC0A2B822B45EA900B50912 /* AuthPluginSelectorFactoryTests.swift in Sources */,
-				FAC23562227A056600424678 /* MockAuthCategoryPlugin.swift in Sources */,
 				FAC23575227A056B00424678 /* FoundationUtilsTests.swift in Sources */,
 				FAC0A2BA22B4601200B50912 /* HubPluginSelectorFactoryTests.swift in Sources */,
 				FAC0A2B422B4513100B50912 /* AnalyticsPluginSelectorFactoryTests.swift in Sources */,
@@ -1865,9 +1795,7 @@
 				FAC23564227A056600424678 /* StorageCategoryClientAPITests.swift in Sources */,
 				FAC2356A227A056600424678 /* LoggingCategoryConfigurationTests.swift in Sources */,
 				FAC23568227A056600424678 /* MockAPICategoryPlugin.swift in Sources */,
-				FAC23561227A056600424678 /* AuthCategoryConfigurationTests.swift in Sources */,
 				FAC23579227A057000424678 /* MessageReporter.swift in Sources */,
-				FAC23563227A056600424678 /* AuthCategoryClientAPITests.swift in Sources */,
 				FAC2356E227A056600424678 /* AnalyticsCategoryClientAPITests.swift in Sources */,
 				FAC23574227A056B00424678 /* ConfigurationTests.swift in Sources */,
 				FAC0A29F22B3E78C00B50912 /* HubPerformanceTests.swift in Sources */,

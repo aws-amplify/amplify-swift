@@ -56,8 +56,6 @@ extension Amplify {
                 try Analytics.configure(using: configuration)
             case .api:
                 try API.configure(using: configuration)
-            case .auth:
-                try Auth.configure(using: configuration)
             case .hub:
                 try Hub.configure(using: configuration)
             case .logging:
@@ -87,9 +85,6 @@ extension Amplify {
             case .api:
                 API.reset()
                 API = APICategory()
-            case .auth:
-                Auth.reset()
-                Auth = AuthCategory()
             case .hub:
                 Hub.reset()
                 Hub = HubCategory()
