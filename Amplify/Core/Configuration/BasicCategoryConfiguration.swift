@@ -8,9 +8,9 @@
 /// The most basic configuration for a category, consisting only of a `plugins` property
 public struct BasicCategoryConfiguration: CategoryConfiguration {
     /// A map of plugins to their specific configurations
-    public private(set) var plugins: [PluginKey: Any]
+    public private(set) var plugins: [String: Any]
 
-    public init(plugins: [PluginKey: Any]) {
+    public init(plugins: [String: Any]) {
         self.plugins = plugins
     }
 }

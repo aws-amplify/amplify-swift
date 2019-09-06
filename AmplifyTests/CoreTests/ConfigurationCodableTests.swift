@@ -6,17 +6,18 @@
 //
 
 import XCTest
+import Amplify
 
+/// For these tests, be sure to cast any concrete objects as the appropriate configuration protocol, to ensure the
+/// *protocols* are Codable, not the implementing types
 class ConfigurationCodableTests: XCTestCase {
-    func testConfigurationIsCodable() {
-        XCTFail("Not yet implemented")
+    func testAmplifyConfigurationIsCodable() {
+        let config = BasicAmplifyConfiguration() as AmplifyConfiguration
+        XCTAssertTrue(config is Codable)
     }
 
-    func testConfigurationDecodesRealExample() {
-        XCTFail("Not yet implemented")
-    }
-
-    func testConfigurationEncodesRealExample() {
-        XCTFail("Not yet implemented")
+    func testCategoryConfigurationIsCodable() {
+        let config = BasicCategoryConfiguration(plugins: [:]) as CategoryConfiguration
+        XCTAssertTrue(config is Codable)
     }
 }

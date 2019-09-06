@@ -9,5 +9,5 @@
 public protocol CategoryConfiguration {
     /// A map of category plugin configurations by PluginKey. Such configurations are defined by the plugins
     /// themselves, and may be of any type.
-    var plugins: [PluginKey: Any] { get }
+    var plugins: [String: Any] { get }
 }

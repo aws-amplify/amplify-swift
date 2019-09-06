@@ -101,6 +101,8 @@
 		FA09B9382321A359000E064D /* LoggingCategoryConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B9372321A359000E064D /* LoggingCategoryConfiguration.swift */; };
 		FA09B93B2321A36F000E064D /* StorageCategoryConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B93A2321A36F000E064D /* StorageCategoryConfiguration.swift */; };
 		FA09B93F2321A6BB000E064D /* BasicAmplifyConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B93E2321A6BB000E064D /* BasicAmplifyConfiguration.swift */; };
+		FA09B9412321BB78000E064D /* JSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B9402321BB78000E064D /* JSONValue.swift */; };
+		FA09B9432321CB0C000E064D /* JSONValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B9422321CB0C000E064D /* JSONValueTests.swift */; };
 		FA56F71E22B144F80039754A /* AsyncEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F71D22B144F80039754A /* AsyncEvent.swift */; };
 		FA56F72322B14B420039754A /* Cancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F72222B14B420039754A /* Cancellable.swift */; };
 		FA56F72522B14B6A0039754A /* Resumable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F72422B14B6A0039754A /* Resumable.swift */; };
@@ -324,6 +326,8 @@
 		FA09B9372321A359000E064D /* LoggingCategoryConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingCategoryConfiguration.swift; sourceTree = "<group>"; };
 		FA09B93A2321A36F000E064D /* StorageCategoryConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageCategoryConfiguration.swift; sourceTree = "<group>"; };
 		FA09B93E2321A6BB000E064D /* BasicAmplifyConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicAmplifyConfiguration.swift; sourceTree = "<group>"; };
+		FA09B9402321BB78000E064D /* JSONValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValue.swift; sourceTree = "<group>"; };
+		FA09B9422321CB0C000E064D /* JSONValueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValueTests.swift; sourceTree = "<group>"; };
 		FA56F71D22B144F80039754A /* AsyncEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncEvent.swift; sourceTree = "<group>"; };
 		FA56F72222B14B420039754A /* Cancellable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cancellable.swift; sourceTree = "<group>"; };
 		FA56F72422B14B6A0039754A /* Resumable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resumable.swift; sourceTree = "<group>"; };
@@ -785,6 +789,7 @@
 				FA56F71D22B144F80039754A /* AsyncEvent.swift */,
 				FA56F72222B14B420039754A /* Cancellable.swift */,
 				21FFF982230A519B005878EA /* EventPublishable.swift */,
+				FA09B9402321BB78000E064D /* JSONValue.swift */,
 				FA56F72422B14B6A0039754A /* Resumable.swift */,
 			);
 			path = Support;
@@ -1000,6 +1005,7 @@
 				FAC23573227A056B00424678 /* ConfigurationCodableTests.swift */,
 				FAC23571227A056B00424678 /* ConfigurationTests.swift */,
 				FAC23572227A056B00424678 /* FoundationUtilsTests.swift */,
+				FA09B9422321CB0C000E064D /* JSONValueTests.swift */,
 			);
 			path = CoreTests;
 			sourceTree = "<group>";
@@ -1709,6 +1715,7 @@
 				21FFF9F1231066C9005878EA /* StorageOption.swift in Sources */,
 				FAC2351E227A053D00424678 /* APICategory.swift in Sources */,
 				FAC2351B227A053D00424678 /* APICategoryClientBehavior.swift in Sources */,
+				FA09B9412321BB78000E064D /* JSONValue.swift in Sources */,
 				FAC9DC32227FE405000D5DD7 /* PluginSelector.swift in Sources */,
 				FAC0A29822B3DE4800B50912 /* HubPublisher.swift in Sources */,
 				FAC0A2A922B43FB300B50912 /* APICategory+ClientBehavior.swift in Sources */,
@@ -1798,6 +1805,7 @@
 				FAC23579227A057000424678 /* MessageReporter.swift in Sources */,
 				FAC2356E227A056600424678 /* AnalyticsCategoryClientAPITests.swift in Sources */,
 				FAC23574227A056B00424678 /* ConfigurationTests.swift in Sources */,
+				FA09B9432321CB0C000E064D /* JSONValueTests.swift in Sources */,
 				FAC0A29F22B3E78C00B50912 /* HubPerformanceTests.swift in Sources */,
 				FAC235A1227A5D8C00424678 /* HubDefaultPluginDispatchTests.swift in Sources */,
 				FAC2356C227A056600424678 /* LoggingCategoryClientAPITests.swift in Sources */,
