@@ -20,7 +20,6 @@ public struct StoragePutOption: StorageOption {
 
     // TODO: tags (may be in options)
     // TODO: expires (may be in metadata)
-    
     public init(accessLevel: StorageAccessLevel?,
                 contentType: String? = nil,
                 metadata: [String: String]? = nil,

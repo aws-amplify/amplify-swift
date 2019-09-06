@@ -40,18 +40,18 @@ protocol AWSS3TransferUtilityBehavior {
         -> AWSTask<AWSS3TransferUtilityUploadTask>
 
     func uploadUsingMultiPart(fileURL: URL,
-                                     bucket: String,
-                                     key: String,
-                                     contentType: String,
-                                     expression: AWSS3TransferUtilityMultiPartUploadExpression,
-                                     completionHandler: AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock?)
+                              bucket: String,
+                              key: String,
+                              contentType: String,
+                              expression: AWSS3TransferUtilityMultiPartUploadExpression,
+                              completionHandler: AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock?)
         -> AWSTask<AWSS3TransferUtilityMultiPartUploadTask>
 
     func uploadUsingMultiPart(data: Data,
-                                     bucket: String,
-                                     key: String,
-                                     contentType: String,
-                                     expression: AWSS3TransferUtilityMultiPartUploadExpression,
-                                     completionHandler: AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock?)
+                              bucket: String,
+                              key: String,
+                              contentType: String,
+                              expression: AWSS3TransferUtilityMultiPartUploadExpression,
+                              completionHandler: AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock?)
         -> AWSTask<AWSS3TransferUtilityMultiPartUploadTask>
 }

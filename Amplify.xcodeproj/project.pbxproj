@@ -35,6 +35,7 @@
 		2125E29E2320FD9800B3DEB5 /* StorageErrorHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E279231F049100B3DEB5 /* StorageErrorHelper.swift */; };
 		2125E2A22321A38500B3DEB5 /* AWSS3StorageService+GetPreSignedURLBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2A12321A38500B3DEB5 /* AWSS3StorageService+GetPreSignedURLBehavior.swift */; };
 		2125E2A42321AC2400B3DEB5 /* AWSS3StorageService+MultiPartUploadBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2A32321AC2400B3DEB5 /* AWSS3StorageService+MultiPartUploadBehavior.swift */; };
+		2125E2A62321D19000B3DEB5 /* UploadSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2A52321D19000B3DEB5 /* UploadSource.swift */; };
 		21265DAD2307389A004CCE39 /* AWSS3StoragePlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21265DA42307389A004CCE39 /* AWSS3StoragePlugin.framework */; };
 		21265DB22307389A004CCE39 /* AWSS3StoragePluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21265DB12307389A004CCE39 /* AWSS3StoragePluginTests.swift */; };
 		21265E262309D620004CCE39 /* AWSS3StoragePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21265E252309D620004CCE39 /* AWSS3StoragePlugin.swift */; };
@@ -244,6 +245,7 @@
 		2125E29B23209EF400B3DEB5 /* StorageGetDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageGetDestination.swift; sourceTree = "<group>"; };
 		2125E2A12321A38500B3DEB5 /* AWSS3StorageService+GetPreSignedURLBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+GetPreSignedURLBehavior.swift"; sourceTree = "<group>"; };
 		2125E2A32321AC2400B3DEB5 /* AWSS3StorageService+MultiPartUploadBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+MultiPartUploadBehavior.swift"; sourceTree = "<group>"; };
+		2125E2A52321D19000B3DEB5 /* UploadSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSource.swift; sourceTree = "<group>"; };
 		21265DA42307389A004CCE39 /* AWSS3StoragePlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSS3StoragePlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		21265DA72307389A004CCE39 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21265DAC2307389A004CCE39 /* AWSS3StoragePluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSS3StoragePluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -639,6 +641,7 @@
 				21FFF9DA230E1C74005878EA /* StorageOperationReference.swift */,
 				2125E279231F049100B3DEB5 /* StorageErrorHelper.swift */,
 				2125E28D23203E4E00B3DEB5 /* StorageRequestUtils.swift */,
+				2125E2A52321D19000B3DEB5 /* UploadSource.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -1650,6 +1653,7 @@
 				21FFF9C2230DD9DC005878EA /* AWSS3Behavior.swift in Sources */,
 				21FFF981230A4E87005878EA /* AWSS3StorageGetOperation.swift in Sources */,
 				2125E1B8231721BB00B3DEB5 /* AWSMobileClientBehavior.swift in Sources */,
+				2125E2A62321D19000B3DEB5 /* UploadSource.swift in Sources */,
 				2125E2A42321AC2400B3DEB5 /* AWSS3StorageService+MultiPartUploadBehavior.swift in Sources */,
 				2125E27E231F40E400B3DEB5 /* AWSS3StorageService+DownloadBehavior.swift in Sources */,
 				21FFF9BE230DD77F005878EA /* AWSS3TransferUtilityBehavior.swift in Sources */,

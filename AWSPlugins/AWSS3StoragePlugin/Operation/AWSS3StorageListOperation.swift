@@ -57,7 +57,7 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
                                                           identityId: identityId,
                                                           prefix: request.prefix)
 
-        storageService.list(bucket: request.bucket, prefix: prefix, onEvent: onEventHandler)
+        storageService.list(prefix: prefix, onEvent: onEventHandler)
     }
 
     private func onEventHandler(event: StorageEvent<Void, Void, StorageListResult, StorageListError>) {

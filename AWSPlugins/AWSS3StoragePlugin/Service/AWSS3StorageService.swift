@@ -16,12 +16,14 @@ public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
     var preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior!
     var awsS3: AWSS3Behavior!
     var identifier: String!
+    var bucket: String!
 
     public init() {
 
     }
 
     func configure(region: AWSRegionType,
+                   bucket: String,
                    cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
                    identifier: String) throws {
         let serviceConfigurationOptional = AWSServiceConfiguration(region: region,
@@ -47,23 +49,31 @@ public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
         configure(transferUtility: AWSS3TransferUtilityImpl(transferUtility),
                   preSignedURLBuilder: preSignedURLBuilder,
                   awsS3: awsS3,
+                  bucket: bucket,
                   identifier: identifier)
     }
 
     func configure(transferUtility: AWSS3TransferUtilityBehavior,
                    preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior,
                    awsS3: AWSS3Behavior,
+                   bucket: String,
                    identifier: String) {
         self.transferUtility = transferUtility
         self.preSignedURLBuilder = preSignedURLBuilder
         self.awsS3 = awsS3
+        self.bucket = bucket
         self.identifier = identifier
     }
 
     func reset() {
         AWSS3TransferUtility.remove(forKey: identifier)
+        transferUtility = nil
         AWSS3PreSignedURLBuilder.remove(forKey: identifier)
+        preSignedURLBuilder = nil
         AWSS3.remove(forKey: identifier)
+        awsS3 = nil
+        bucket = nil
+        identifier = nil
     }
 
     func getEscapeHatch() -> AWSS3 {

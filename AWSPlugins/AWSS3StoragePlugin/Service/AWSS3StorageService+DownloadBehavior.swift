@@ -9,17 +9,14 @@ import Foundation
 import AWSS3
 import Amplify
 
-
-
 public typealias DownloadTaskCreatedHandler = (AWSTask<AWSS3TransferUtilityDownloadTask>) -> Any?
 
 extension AWSS3StorageService {
-    public func download(bucket: String,
-                         serviceKey: String,
+    public func download(serviceKey: String,
                          fileURL: URL?,
                          onEvent: @escaping StorageDownloadOnEventHandler) {
 
-        let makeDownloadTaskCreatedHandler = AWSS3StorageService.makeDownloadTaskCreatedHandler(onEvent: onEvent)
+        let downloadTaskCreatedHandler = AWSS3StorageService.makeDownloadTaskCreatedHandler(onEvent: onEvent)
         let expression = AWSS3TransferUtilityDownloadExpression()
         expression.progressBlock = AWSS3StorageService.makeOnDownloadProgressHandler(onEvent: onEvent)
         let onDownloadCompletedHandler = AWSS3StorageService.makeDownloadCompletedHandler(onEvent: onEvent)
@@ -30,19 +27,19 @@ extension AWSS3StorageService {
                                      key: serviceKey,
                                      expression: expression,
                                      completionHandler: onDownloadCompletedHandler)
-                .continueWith(block: makeDownloadTaskCreatedHandler)
+                .continueWith(block: downloadTaskCreatedHandler)
         } else {
             transferUtility.downloadData(fromBucket: bucket,
                                          key: serviceKey,
                                          expression: expression,
                                          completionHandler: onDownloadCompletedHandler)
-                .continueWith(block: makeDownloadTaskCreatedHandler)
+                .continueWith(block: downloadTaskCreatedHandler)
 
         }
     }
 
-    private static func makeDownloadTaskCreatedHandler(onEvent: @escaping StorageDownloadOnEventHandler)
-        -> DownloadTaskCreatedHandler {
+    private static func makeDownloadTaskCreatedHandler(
+        onEvent: @escaping StorageDownloadOnEventHandler) -> DownloadTaskCreatedHandler {
 
         let block: DownloadTaskCreatedHandler = { (task: AWSTask<AWSS3TransferUtilityDownloadTask>) -> Any? in
             guard task.error == nil else {
@@ -66,8 +63,9 @@ extension AWSS3StorageService {
         return block
     }
 
-    private static func makeOnDownloadProgressHandler(onEvent: @escaping StorageDownloadOnEventHandler)
-        -> AWSS3TransferUtilityProgressBlock {
+    private static func makeOnDownloadProgressHandler(
+        onEvent: @escaping StorageDownloadOnEventHandler) -> AWSS3TransferUtilityProgressBlock {
+
         let block: AWSS3TransferUtilityProgressBlock = {(task, progress) in
             onEvent(StorageEvent.inProcess(progress))
         }
@@ -75,8 +73,8 @@ extension AWSS3StorageService {
         return block
     }
 
-    private static func makeDownloadCompletedHandler(onEvent: @escaping StorageDownloadOnEventHandler)
-        -> AWSS3TransferUtilityDownloadCompletionHandlerBlock {
+    private static func makeDownloadCompletedHandler(
+        onEvent: @escaping StorageDownloadOnEventHandler) -> AWSS3TransferUtilityDownloadCompletionHandlerBlock {
 
         let block: AWSS3TransferUtilityDownloadCompletionHandlerBlock = { (task, location, data, error ) in
             guard let response = task.response else {
@@ -107,6 +105,7 @@ extension AWSS3StorageService {
 
             onEvent(StorageEvent.completed(StorageGetResult(data: data)))
         }
+
         return block
     }
 }

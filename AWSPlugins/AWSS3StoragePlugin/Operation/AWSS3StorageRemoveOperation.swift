@@ -57,8 +57,7 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, StorageRemoveRe
                                                            identityId: identityId,
                                                            key: request.key)
 
-        storageService.delete(bucket: request.bucket,
-                              serviceKey: serviceKey,
+        storageService.delete(serviceKey: serviceKey,
                               onEvent: onEventHandler)
     }
 

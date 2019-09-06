@@ -9,44 +9,30 @@ import Foundation
 import Amplify
 
 public struct AWSS3StoragePutRequest {
-    let bucket: String
     let accessLevel: StorageAccessLevel
     let key: String
-    let data: Data?
-    let fileURL: URL?
+    let uploadSource: UploadSource
     let contentType: String?
     let metadata: [String: String]?
     let options: Any?
 
-    init(bucket: String,
-         accessLevel: StorageAccessLevel,
+    init(accessLevel: StorageAccessLevel,
          key: String,
-         data: Data?,
-         fileURL: URL?,
+         uploadSource: UploadSource,
          contentType: String?,
          metadata: [String: String]?,
          options: Any?) {
-        self.bucket = bucket
         self.accessLevel = accessLevel
         self.key = key
-        self.data = data
-        self.fileURL = fileURL
+        self.uploadSource = uploadSource
         self.contentType = contentType
         self.metadata = metadata
         self.options = options
     }
 
     func validate() -> StoragePutError? {
-        if bucket.isEmpty {
-            return StoragePutError.unknown("bucket is empty", "bucket is empty")
-        }
-
         if key.isEmpty {
             return StoragePutError.unknown("key is empty", "key is empty")
-        }
-
-        if data != nil && fileURL != nil {
-            return StoragePutError.unknown("Both data and local", "was specified")
         }
 
         if let contentType = contentType {
@@ -57,5 +43,10 @@ public struct AWSS3StoragePutRequest {
         }
 
         return nil
+    }
+
+    func isLargeUpload() -> Bool {
+        // TODO: The request contains context on what is considered a large upload like data size
+        return false
     }
 }
