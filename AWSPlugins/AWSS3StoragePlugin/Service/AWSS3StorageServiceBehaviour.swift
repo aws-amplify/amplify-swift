@@ -29,6 +29,7 @@ public typealias StorageMultiPartUploadOnEventHandler =
 
 protocol AWSS3StorageServiceBehaviour {
     func configure(region: AWSRegionType,
+                   bucket: String,
                    cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
                    identifier: String) throws
 
@@ -36,37 +37,29 @@ protocol AWSS3StorageServiceBehaviour {
 
     func getEscapeHatch() -> AWSS3
 
-    func download(bucket: String,
-                  serviceKey: String,
+    func download(serviceKey: String,
                   fileURL: URL?,
                   onEvent: @escaping StorageDownloadOnEventHandler)
 
-    func getPreSignedURL(bucket: String,
-                         serviceKey: String,
+    func getPreSignedURL(serviceKey: String,
                          expires: Int?,
                          onEvent: @escaping StorageGetPreSignedUrlOnEventHandler)
 
-    func upload(bucket: String,
-                serviceKey: String,
+    func upload(serviceKey: String,
                 key: String,
-                fileURL: URL?,
-                data: Data?,
+                uploadSource: UploadSource,
                 contentType: String?,
                 onEvent: @escaping StorageUploadOnEventHandler)
 
-    func multiPartUpload(bucket: String,
-                         serviceKey: String,
+    func multiPartUpload(serviceKey: String,
                          key: String,
-                         fileURL: URL?,
-                         data: Data?,
+                         uploadSource: UploadSource,
                          contentType: String?,
                          onEvent: @escaping StorageMultiPartUploadOnEventHandler)
 
-    func list(bucket: String,
-                     prefix: String,
-                     onEvent: @escaping StorageListOnEventHandler)
+    func list(prefix: String,
+              onEvent: @escaping StorageListOnEventHandler)
 
-    func delete(bucket: String,
-                      serviceKey: String,
-                      onEvent: @escaping StorageDeleteOnEventHandler)
+    func delete(serviceKey: String,
+                onEvent: @escaping StorageDeleteOnEventHandler)
 }

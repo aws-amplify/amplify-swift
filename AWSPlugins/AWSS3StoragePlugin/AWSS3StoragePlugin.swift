@@ -62,6 +62,7 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
 
             let storageService = AWSS3StorageService()
             try storageService.configure(region: regionType,
+                                         bucket: bucket,
                                          cognitoCredentialsProvider: authService.getCognitoCredentialsProvider(),
                                          identifier: key)
 
@@ -95,8 +96,7 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
                     onEvent: StorageGetEvent?) -> StorageGetOperation {
 
         let storageGetDestination = options?.storageGetDestination ?? .url(expires: nil)
-        let request = AWSS3StorageGetRequest(bucket: bucket,
-                                             accessLevel: options?.accessLevel ?? defaultAccessLevel,
+        let request = AWSS3StorageGetRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
                                              targetIdentityId: options?.targetIdentityId,
                                              key: key,
                                              storageGetDestination: storageGetDestination,
@@ -115,21 +115,36 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
                     data: Data,
                     options: StoragePutOption?,
                     onEvent: StoragePutEvent?) -> StoragePutOperation {
-        return put(key: key, data: data, local: nil, options: options, onEvent: onEvent)
+
+        let request = AWSS3StoragePutRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
+                                             key: key,
+                                             uploadSource: .data(data: data),
+                                             contentType: options?.contentType,
+                                             metadata: options?.metadata,
+                                             options: options?.options)
+
+        return put(request, onEvent: onEvent)
     }
 
     public func put(key: String,
                     local: URL,
                     options: StoragePutOption?,
                     onEvent: StoragePutEvent?) -> StoragePutOperation {
-        return put(key: key, data: nil, local: local, options: options, onEvent: onEvent)
+
+        let request = AWSS3StoragePutRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
+                                             key: key,
+                                             uploadSource: .file(file: local),
+                                             contentType: options?.contentType,
+                                             metadata: options?.metadata,
+                                             options: options?.options)
+
+        return put(request, onEvent: onEvent)
     }
 
     public func remove(key: String,
                        options: StorageRemoveOption?,
                        onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
-        let request = AWSS3StorageRemoveRequest(bucket: bucket,
-                                                accessLevel: options?.accessLevel ?? defaultAccessLevel,
+        let request = AWSS3StorageRemoveRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
                                                 key: key)
         let removeOperation = AWSS3StorageRemoveOperation(request,
                                                           storageService: storageService,
@@ -141,10 +156,9 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
     }
 
     public func list(options: StorageListOption?, onEvent: StorageListEvent?) -> StorageListOperation {
-        let request = AWSS3StorageListRequest(bucket: bucket,
-                                                     accessLevel: options?.accessLevel ?? defaultAccessLevel,
-                                                     prefix: options?.prefix,
-                                                     limit: options?.limit)
+        let request = AWSS3StorageListRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
+                                              prefix: options?.prefix,
+                                              limit: options?.limit)
         let listOperation = AWSS3StorageListOperation(request,
                                                       storageService: storageService,
                                                       authService: authService,
@@ -157,19 +171,7 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
     public func stub() {
     }
 
-    private func put(key: String,
-                     data: Data?,
-                     local: URL?,
-                     options: StoragePutOption?,
-                     onEvent: StoragePutEvent?) -> StoragePutOperation {
-        let request = AWSS3StoragePutRequest(bucket: bucket,
-                                             accessLevel: options?.accessLevel ?? defaultAccessLevel,
-                                             key: key,
-                                             data: data,
-                                             fileURL: local,
-                                             contentType: options?.contentType,
-                                             metadata: options?.metadata,
-                                             options: options?.options)
+    private func put(_ request: AWSS3StoragePutRequest, onEvent: StoragePutEvent?) -> StoragePutOperation {
 
         let putOperation = AWSS3StoragePutOperation(request,
                                                     storageService: storageService,

@@ -30,7 +30,6 @@ public class AWSS3StorageGetOperation: AmplifyOperation<Progress, StorageGetResu
         self.authService = authService
         self.onEvent = onEvent
         super.init(categoryType: .storage)
-
         // TODO pass onEvent to the Hub
     }
 
@@ -73,18 +72,15 @@ public class AWSS3StorageGetOperation: AmplifyOperation<Progress, StorageGetResu
                                                            key: request.key)
         switch request.storageGetDestination {
         case .data:
-            storageService.download(bucket: request.bucket,
-                                    serviceKey: serviceKey,
+            storageService.download(serviceKey: serviceKey,
                                     fileURL: nil,
                                     onEvent: onEventHandler)
         case .file(let local):
-            storageService.download(bucket: request.bucket,
-                                    serviceKey: serviceKey,
+            storageService.download(serviceKey: serviceKey,
                                     fileURL: local,
                                     onEvent: onEventHandler)
         case .url(let expires):
-            storageService.getPreSignedURL(bucket: request.bucket,
-                                           serviceKey: serviceKey,
+            storageService.getPreSignedURL(serviceKey: serviceKey,
                                            expires: expires,
                                            onEvent: onEventHandler)
         }
@@ -94,7 +90,6 @@ public class AWSS3StorageGetOperation: AmplifyOperation<Progress, StorageGetResu
         event: StorageEvent<StorageOperationReference, Progress, StorageGetResult, StorageGetError>) {
         switch event {
         case .initiated(let reference):
-            // TODO: figure out thread safey 
             storageOperationReference = reference
         case .inProcess(let progress):
             dispatch(progress)
@@ -115,7 +110,6 @@ public class AWSS3StorageGetOperation: AmplifyOperation<Progress, StorageGetResu
 
     private func dispatch(_ result: StorageGetResult) {
         let asyncEvent = AsyncEvent<Progress, StorageGetResult, StorageGetError>.completed(result)
-        // TODO will be going thur hub completely
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }

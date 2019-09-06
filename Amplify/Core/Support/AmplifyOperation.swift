@@ -30,7 +30,7 @@ CategoryTypeable, EventPublishable {
     }
 
     public func dispatch(event: AsyncEvent<InProcessType, CompletedType, ErrorType>) {
-        // TODO: Pass event to the Hub
+
         let payload = HubPayload(event: "event")
         //Amplify.Hub.dispatch(to: .storage, payload: payload)
     }

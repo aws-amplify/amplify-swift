@@ -70,15 +70,19 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, StoragePutResu
                                                            identityId: identityId,
                                                            key: request.key)
 
-        // TODO: check size and then upload using multipart upload.
-        
-        storageService.upload(bucket: request.bucket,
-                              serviceKey: serviceKey,
-                              key: request.key,
-                              fileURL: request.fileURL,
-                              data: request.data,
-                              contentType: request.contentType,
-                              onEvent: onEventHandler)
+        if request.isLargeUpload() {
+            storageService.multiPartUpload(serviceKey: serviceKey,
+                                           key: request.key,
+                                           uploadSource: request.uploadSource,
+                                           contentType: request.contentType,
+                                           onEvent: onEventHandler)
+        } else {
+            storageService.upload(serviceKey: serviceKey,
+                                  key: request.key,
+                                  uploadSource: request.uploadSource,
+                                  contentType: request.contentType,
+                                  onEvent: onEventHandler)
+        }
     }
 
     private func onEventHandler(

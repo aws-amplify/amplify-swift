@@ -9,20 +9,17 @@ import Foundation
 import Amplify
 
 public struct AWSS3StorageGetRequest {
-    let bucket: String
     let accessLevel: StorageAccessLevel
     let targetIdentityId: String?
     let key: String
     let storageGetDestination: StorageGetDestination
     let options: Any?
 
-    public init(bucket: String,
-                accessLevel: StorageAccessLevel,
+    public init(accessLevel: StorageAccessLevel,
                 targetIdentityId: String?,
                 key: String,
                 storageGetDestination: StorageGetDestination,
                 options: Any?) {
-        self.bucket = bucket
         self.accessLevel = accessLevel
         self.targetIdentityId = targetIdentityId
         self.key = key
@@ -31,10 +28,6 @@ public struct AWSS3StorageGetRequest {
     }
 
     func validate() -> StorageGetError? {
-        if bucket.isEmpty {
-            return StorageGetError.unknown("bucket is empty", "bucket is empty")
-        }
-
         if let targetIdentityId = targetIdentityId {
             if targetIdentityId.isEmpty {
                 return StorageGetError.unknown("The targetIde is specified but is empty", "..")

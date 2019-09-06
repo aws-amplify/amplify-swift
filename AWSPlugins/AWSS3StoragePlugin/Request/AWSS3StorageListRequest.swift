@@ -9,26 +9,19 @@ import Foundation
 import Amplify
 
 public struct AWSS3StorageListRequest {
-    let bucket: String
     let accessLevel: StorageAccessLevel
     let prefix: String?
     let limit: Int?
 
-    init(bucket: String,
-         accessLevel: StorageAccessLevel,
+    init(accessLevel: StorageAccessLevel,
          prefix: String? = nil,
          limit: Int? = nil) {
-        self.bucket = bucket
         self.accessLevel = accessLevel
         self.prefix = prefix
         self.limit = limit
     }
 
     func validate() -> StorageListError? {
-        if bucket.isEmpty {
-            return StorageListError.unknown("bucket is empty", "bucket is empty")
-        }
-
         if let prefix = prefix {
             if prefix.isEmpty {
                 return StorageListError.unknown("prefix is specified but is empty", "empty")

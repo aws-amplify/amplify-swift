@@ -9,14 +9,33 @@ import Foundation
 import AWSS3
 import Amplify
 
-extension AWSS3StorageService {
-    public func list(bucket: String, prefix: String, onEvent: @escaping StorageListOnEventHandler) {
-        let request = AWSS3StorageService.makeListObjectsV2Request(bucket: bucket, prefix: prefix)
+typealias ListCompletedHandler = (AWSTask<AWSS3ListObjectsV2Output>) -> Any?
 
+extension AWSS3StorageService {
+    public func list(prefix: String, onEvent: @escaping StorageListOnEventHandler) {
         // TODO: implementation details - use request.options.limit.
         // listObjectsV2Request.maxKeys ?
         // Figure out if we need ay batching logic
-        awsS3.listObjectsV2(request).continueWith { (task) -> Any? in
+
+        let request = AWSS3StorageService.makeListObjectsV2Request(bucket: bucket, prefix: prefix)
+        let listCompletedHandler = AWSS3StorageService.makeListCompletedHandler(onEvent: onEvent)
+
+        awsS3.listObjectsV2(request).continueWith(block: listCompletedHandler)
+    }
+
+    private static func makeListObjectsV2Request(bucket: String,
+                                                 prefix: String) -> AWSS3ListObjectsV2Request {
+        let request: AWSS3ListObjectsV2Request = AWSS3ListObjectsV2Request()
+        request.bucket = bucket
+        request.prefix = prefix
+
+        return request
+    }
+
+    private static func makeListCompletedHandler(
+        onEvent: @escaping StorageListOnEventHandler) -> ListCompletedHandler {
+
+        let block: ListCompletedHandler = { (task: AWSTask<AWSS3ListObjectsV2Output>) -> Any? in
             guard task.error == nil else {
                 let error = task.error!
                 onEvent(StorageEvent.failed(StorageListError.unknown(error.localizedDescription, "TODO")))
@@ -39,16 +58,8 @@ extension AWSS3StorageService {
 
             return nil
         }
+
+        return block
     }
-
-    private static func makeListObjectsV2Request(bucket: String,
-                                                 prefix: String) -> AWSS3ListObjectsV2Request {
-        let request: AWSS3ListObjectsV2Request = AWSS3ListObjectsV2Request()
-        request.bucket = bucket
-        request.prefix = prefix 
-
-        return request
-    }
-
 
 }

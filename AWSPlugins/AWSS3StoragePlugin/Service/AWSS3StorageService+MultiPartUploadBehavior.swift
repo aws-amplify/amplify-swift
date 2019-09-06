@@ -9,33 +9,84 @@ import Foundation
 import AWSS3
 import Amplify
 
+public typealias MultiPartUploadTaskCreatedHandler = (AWSTask<AWSS3TransferUtilityMultiPartUploadTask>) -> Any?
+
 extension AWSS3StorageService {
 
-    public func multiPartUpload(bucket: String,
-                                serviceKey: String,
+    public func multiPartUpload(serviceKey: String,
                                 key: String,
-                                fileURL: URL?,
-                                data: Data?,
+                                uploadSource: UploadSource,
                                 contentType: String?,
                                 onEvent: @escaping StorageMultiPartUploadOnEventHandler) {
 
-        let uploadExpression = AWSS3TransferUtilityUploadExpression()
-        uploadExpression.progressBlock = {(task, progress) in
+        let multiPartUploadTaskCreatedHandler =
+            AWSS3StorageService.makeMultiPartUploadTaskCreatedHandler(onEvent: onEvent)
+        let expression = AWSS3TransferUtilityMultiPartUploadExpression()
+        expression.progressBlock = AWSS3StorageService.makeOnMultiPartUploadProgressHandler(onEvent: onEvent)
+        let onMultiPartUploadCompletedHandler =
+            AWSS3StorageService.makeMultiPartUploadCompletedHandler(onEvent: onEvent, key: key)
+
+        switch uploadSource {
+        case .data(let data):
+            transferUtility.uploadUsingMultiPart(data: data,
+                                                 bucket: bucket,
+                                                 key: serviceKey,
+                                                 contentType: contentType ?? "application/octet-stream",
+                                                 expression: expression,
+                                                 completionHandler: onMultiPartUploadCompletedHandler)
+                .continueWith(block: multiPartUploadTaskCreatedHandler)
+        case .file(let fileURL):
+            transferUtility.uploadUsingMultiPart(fileURL: fileURL,
+                                                 bucket: bucket,
+                                                 key: serviceKey,
+                                                 contentType: contentType ?? "application/octet-stream",
+                                                 expression: expression,
+                                                 completionHandler: onMultiPartUploadCompletedHandler)
+                .continueWith(block: multiPartUploadTaskCreatedHandler)
+        }
+    }
+
+    private static func makeMultiPartUploadTaskCreatedHandler(
+        onEvent: @escaping StorageMultiPartUploadOnEventHandler) -> MultiPartUploadTaskCreatedHandler {
+
+        let block: MultiPartUploadTaskCreatedHandler = {
+            (task: AWSTask<AWSS3TransferUtilityMultiPartUploadTask>) -> Any? in
+
+            guard task.error == nil else {
+                let error = task.error! as NSError
+                let innerMessage = StorageErrorHelper.getInnerMessage(error)
+                let errorDescription = StorageErrorHelper.getErrorDescription(innerMessage: innerMessage)
+                onEvent(StorageEvent.failed(StoragePutError.unknown(errorDescription, "Recovery Message")))
+
+                return nil
+            }
+
+            guard let uploadTask = task.result else {
+                onEvent(StorageEvent.failed(StoragePutError.unknown("No ContinuationBlock data", "")))
+                return nil
+            }
+
+            onEvent(StorageEvent.initiated(StorageOperationReference(uploadTask)))
+            return nil
+        }
+
+        return block
+    }
+
+    private static func makeOnMultiPartUploadProgressHandler(
+        onEvent: @escaping StorageMultiPartUploadOnEventHandler) -> AWSS3TransferUtilityMultiPartProgressBlock {
+        let block: AWSS3TransferUtilityMultiPartProgressBlock = {(task, progress) in
             onEvent(StorageEvent.inProcess(progress))
         }
 
-        let onCompletedHandler = { (task: AWSS3TransferUtilityUploadTask, error: Error?) -> Void in
-            guard let response = task.response else {
-                onEvent(StorageEvent.failed(StoragePutError.unknown("Missing HTTP Status", "")))
-                return
-            }
+        return block
+    }
 
-            guard response.statusCode == 200 else {
-                onEvent(StorageEvent.failed(StoragePutError.httpStatusError(
-                    "status code \(response.statusCode)", "Check the status code")))
-                return
-            }
+    private static func makeMultiPartUploadCompletedHandler(
+        onEvent: @escaping StorageMultiPartUploadOnEventHandler,
+        key: String) -> AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock {
 
+        let block: AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock = { (task, error ) -> Void in
             guard error == nil else {
                 let error = error! as NSError
                 onEvent(StorageEvent.failed(StoragePutError.unknown("Error with code: \(error.code) ", "")))
@@ -45,35 +96,6 @@ extension AWSS3StorageService {
             onEvent(StorageEvent.completed(StoragePutResult(key: key)))
         }
 
-        let onTaskCreatedHandler = { (task: AWSTask<AWSS3TransferUtilityUploadTask>) -> Any? in
-            if let error = task.error {
-                onEvent(StorageEvent.failed(StoragePutError.unknown(error.localizedDescription, "test")))
-            } else if let uploadTask = task.result {
-                onEvent(StorageEvent.initiated(StorageOperationReference(uploadTask)))
-            } else {
-                onEvent(StorageEvent.failed(StoragePutError.unknown("Failed to ", "")))
-            }
-
-            return nil
-        }
-
-        // TODO: implementation details MultiPart Upload
-        if let fileURL = fileURL {
-//            transferUtility.uploadUsingMultiPart(fileURL: fileURL,
-//                                                 bucket: bucket,
-//                                                 key: serviceKey,
-//                                                 contentType: contentType ?? "application/octet-stream",
-//                                                 expression: uploadExpression,
-//                                                 completionHandler: onCompletedHandler)
-        } else if let data = data {
-            transferUtility.uploadData(data: data,
-                                       bucket: bucket,
-                                       key: serviceKey,
-                                       contentType: contentType ?? "application/octet-stream",
-                                       expression: uploadExpression,
-                                       completionHandler: onCompletedHandler).continueWith(block: onTaskCreatedHandler)
-        } else {
-            onEvent(StorageEvent.failed(StoragePutError.unknown("no file or data", "")))
-        }
+        return block
     }
 }
