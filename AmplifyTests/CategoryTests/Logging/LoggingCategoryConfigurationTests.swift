@@ -24,11 +24,11 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         let plugin = MockLoggingCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
-        let loggingConfig = BasicCategoryConfiguration(
+        let loggingConfig = LoggingCategoryConfiguration(
             plugins: ["MockLoggingCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(logging: loggingConfig)
+        let amplifyConfig = AmplifyConfiguration(logging: loggingConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -46,11 +46,11 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin)
 
-        let loggingConfig = BasicCategoryConfiguration(
+        let loggingConfig = LoggingCategoryConfiguration(
             plugins: ["MockLoggingCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(logging: loggingConfig)
+        let amplifyConfig = AmplifyConfiguration(logging: loggingConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.reset()
@@ -61,11 +61,11 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         let plugin = MockLoggingCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
-        let loggingConfig = BasicCategoryConfiguration(
+        let loggingConfig = LoggingCategoryConfiguration(
             plugins: ["MockLoggingCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(logging: loggingConfig)
+        let amplifyConfig = AmplifyConfiguration(logging: loggingConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.reset()
@@ -111,14 +111,14 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         let plugin2 = MockSecondLoggingCategoryPlugin()
         try Amplify.add(plugin: plugin2)
 
-        let loggingConfig = BasicCategoryConfiguration(
+        let loggingConfig = LoggingCategoryConfiguration(
             plugins: [
                 "MockLoggingCategoryPlugin": true,
                 "MockSecondLoggingCategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(logging: loggingConfig)
+        let amplifyConfig = AmplifyConfiguration(logging: loggingConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -136,9 +136,8 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin)
 
-        let loggingConfig =
-            BasicCategoryConfiguration(plugins: ["MockLoggingCategoryPlugin": true])
-        let amplifyConfig = BasicAmplifyConfiguration(logging: loggingConfig)
+        let loggingConfig = LoggingCategoryConfiguration(plugins: ["MockLoggingCategoryPlugin": true])
+        let amplifyConfig = AmplifyConfiguration(logging: loggingConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -170,14 +169,14 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin2)
 
-        let loggingConfig = BasicCategoryConfiguration(
+        let loggingConfig = LoggingCategoryConfiguration(
             plugins: [
                 "MockLoggingCategoryPlugin": true,
                 "MockSecondLoggingCategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(logging: loggingConfig)
+        let amplifyConfig = AmplifyConfiguration(logging: loggingConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.Logging.error("test", file: #file, function: #function, line: #line)
@@ -208,14 +207,14 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin2)
 
-        let loggingConfig = BasicCategoryConfiguration(
+        let loggingConfig = LoggingCategoryConfiguration(
             plugins: [
                 "MockLoggingCategoryPlugin": true,
                 "MockSecondLoggingCategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(logging: loggingConfig)
+        let amplifyConfig = AmplifyConfiguration(logging: loggingConfig)
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Logging.getPlugin(for: "MockSecondLoggingCategoryPlugin")
@@ -243,11 +242,11 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin)
 
-        let loggingConfig = BasicCategoryConfiguration(
+        let loggingConfig = LoggingCategoryConfiguration(
             plugins: ["MockLoggingCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(logging: loggingConfig)
+        let amplifyConfig = AmplifyConfiguration(logging: loggingConfig)
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin").configure(using: true)
@@ -270,7 +269,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
     func testThrowsConfiguringTwice() throws {
         let plugin = MockLoggingCategoryPlugin()
         try Amplify.add(plugin: plugin)
-        let categoryConfig = BasicCategoryConfiguration(
+        let categoryConfig = LoggingCategoryConfiguration(
             plugins: ["MockLoggingCategoryPlugin": true]
         )
 
@@ -287,7 +286,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
     func testCanConfigureAfterReset() throws {
         let plugin = MockLoggingCategoryPlugin()
         try Amplify.add(plugin: plugin)
-        let categoryConfig = BasicCategoryConfiguration(
+        let categoryConfig = LoggingCategoryConfiguration(
             plugins: ["MockLoggingCategoryPlugin": true]
         )
 

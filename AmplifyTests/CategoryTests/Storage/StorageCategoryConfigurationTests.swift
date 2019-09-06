@@ -24,11 +24,11 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let plugin = MockStorageCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
-        let storageConfig = BasicCategoryConfiguration(
+        let storageConfig = StorageCategoryConfiguration(
             plugins: ["MockStorageCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
+        let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -46,11 +46,11 @@ class StorageCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin)
 
-        let storageConfig = BasicCategoryConfiguration(
+        let storageConfig = StorageCategoryConfiguration(
             plugins: ["MockStorageCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
+        let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.reset()
@@ -61,11 +61,11 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let plugin = MockStorageCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
-        let storageConfig = BasicCategoryConfiguration(
+        let storageConfig = StorageCategoryConfiguration(
             plugins: ["MockStorageCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
+        let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.reset()
@@ -111,14 +111,14 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let plugin2 = MockSecondStorageCategoryPlugin()
         try Amplify.add(plugin: plugin2)
 
-        let storageConfig = BasicCategoryConfiguration(
+        let storageConfig = StorageCategoryConfiguration(
             plugins: [
                 "MockStorageCategoryPlugin": true,
                 "MockSecondStorageCategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
+        let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -136,9 +136,8 @@ class StorageCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin)
 
-        let storageConfig =
-            BasicCategoryConfiguration(plugins: ["MockStorageCategoryPlugin": true])
-        let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
+        let storageConfig = StorageCategoryConfiguration(plugins: ["MockStorageCategoryPlugin": true])
+        let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -170,14 +169,14 @@ class StorageCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin2)
 
-        let storageConfig = BasicCategoryConfiguration(
+        let storageConfig = StorageCategoryConfiguration(
             plugins: [
                 "MockStorageCategoryPlugin": true,
                 "MockSecondStorageCategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
+        let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.Storage.stub()
@@ -208,14 +207,14 @@ class StorageCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin2)
 
-        let storageConfig = BasicCategoryConfiguration(
+        let storageConfig = StorageCategoryConfiguration(
             plugins: [
                 "MockStorageCategoryPlugin": true,
                 "MockSecondStorageCategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
+        let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Storage.getPlugin(for: "MockSecondStorageCategoryPlugin").stub()
@@ -242,11 +241,11 @@ class StorageCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin)
 
-        let storageConfig = BasicCategoryConfiguration(
+        let storageConfig = StorageCategoryConfiguration(
             plugins: ["MockStorageCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
+        let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Storage.getPlugin(for: "MockStorageCategoryPlugin").configure(using: true)
@@ -269,7 +268,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
     func testThrowsConfiguringTwice() throws {
         let plugin = MockStorageCategoryPlugin()
         try Amplify.add(plugin: plugin)
-        let categoryConfig = BasicCategoryConfiguration(
+        let categoryConfig = StorageCategoryConfiguration(
             plugins: ["MockStorageCategoryPlugin": true]
         )
 
@@ -286,7 +285,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
     func testCanConfigureAfterReset() throws {
         let plugin = MockStorageCategoryPlugin()
         try Amplify.add(plugin: plugin)
-        let categoryConfig = BasicCategoryConfiguration(
+        let categoryConfig = StorageCategoryConfiguration(
             plugins: ["MockStorageCategoryPlugin": true]
         )
 

@@ -6,24 +6,33 @@
 //
 
 /// Configures the Amplify system with sub-configurations for each supported category
-public protocol AmplifyConfiguration {
+public struct AmplifyConfiguration: Codable {
     /// Configurations for the Amplify Analytics category
-    var analytics: CategoryConfiguration? { get }
+    let analytics: AnalyticsCategoryConfiguration?
 
     /// Configurations for the Amplify API category
-    var api: CategoryConfiguration? { get }
-
-    /// Configurations for the Amplify Auth category
-    var auth: CategoryConfiguration? { get }
+    let api: APICategoryConfiguration?
 
     /// Configurations for the Amplify Hub category
-    var hub: CategoryConfiguration? { get }
+    let hub: HubCategoryConfiguration?
 
     /// Configurations for the Amplify Logging category
-    var logging: CategoryConfiguration? { get }
+    let logging: LoggingCategoryConfiguration?
 
     /// Configurations for the Amplify Storage category
-    var storage: CategoryConfiguration? { get }
+    let storage: StorageCategoryConfiguration?
+
+    public init(analytics: AnalyticsCategoryConfiguration? = nil,
+                api: APICategoryConfiguration? = nil,
+                hub: HubCategoryConfiguration? = nil,
+                logging: LoggingCategoryConfiguration? = nil,
+                storage: StorageCategoryConfiguration? = nil) {
+        self.analytics = analytics
+        self.api = api
+        self.hub = hub
+        self.logging = logging
+        self.storage = storage
+    }
 }
 
 extension Amplify {

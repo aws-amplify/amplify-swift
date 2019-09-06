@@ -25,11 +25,11 @@ class HubCategoryConfigurationTests: XCTestCase {
         let plugin = MockHubCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
-        let hubConfig = BasicCategoryConfiguration(
+        let hubConfig = HubCategoryConfiguration(
             plugins: ["MockHubCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(hub: hubConfig)
+        let amplifyConfig = AmplifyConfiguration(hub: hubConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -47,11 +47,11 @@ class HubCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin)
 
-        let hubConfig = BasicCategoryConfiguration(
+        let hubConfig = HubCategoryConfiguration(
             plugins: ["MockHubCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(hub: hubConfig)
+        let amplifyConfig = AmplifyConfiguration(hub: hubConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.reset()
@@ -62,11 +62,11 @@ class HubCategoryConfigurationTests: XCTestCase {
         let plugin = MockHubCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
-        let hubConfig = BasicCategoryConfiguration(
+        let hubConfig = HubCategoryConfiguration(
             plugins: ["MockHubCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(hub: hubConfig)
+        let amplifyConfig = AmplifyConfiguration(hub: hubConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.reset()
@@ -112,14 +112,14 @@ class HubCategoryConfigurationTests: XCTestCase {
         let plugin2 = MockSecondHubCategoryPlugin()
         try Amplify.add(plugin: plugin2)
 
-        let hubConfig = BasicCategoryConfiguration(
+        let hubConfig = HubCategoryConfiguration(
             plugins: [
                 "MockHubCategoryPlugin": true,
                 "MockSecondHubCategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(hub: hubConfig)
+        let amplifyConfig = AmplifyConfiguration(hub: hubConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -137,9 +137,8 @@ class HubCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin)
 
-        let hubConfig =
-            BasicCategoryConfiguration(plugins: ["MockHubCategoryPlugin": true])
-        let amplifyConfig = BasicAmplifyConfiguration(hub: hubConfig)
+        let hubConfig = HubCategoryConfiguration(plugins: ["MockHubCategoryPlugin": true])
+        let amplifyConfig = AmplifyConfiguration(hub: hubConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -171,14 +170,14 @@ class HubCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin2)
 
-        let hubConfig = BasicCategoryConfiguration(
+        let hubConfig = HubCategoryConfiguration(
             plugins: [
                 "MockHubCategoryPlugin": true,
                 "MockSecondHubCategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(hub: hubConfig)
+        let amplifyConfig = AmplifyConfiguration(hub: hubConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.Hub.removeListener(UUID())
@@ -209,14 +208,14 @@ class HubCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin2)
 
-        let hubConfig = BasicCategoryConfiguration(
+        let hubConfig = HubCategoryConfiguration(
             plugins: [
                 "MockHubCategoryPlugin": true,
                 "MockSecondHubCategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(hub: hubConfig)
+        let amplifyConfig = AmplifyConfiguration(hub: hubConfig)
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Hub.getPlugin(for: "MockSecondHubCategoryPlugin").removeListener(UUID())
@@ -243,11 +242,11 @@ class HubCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin)
 
-        let hubConfig = BasicCategoryConfiguration(
+        let hubConfig = HubCategoryConfiguration(
             plugins: ["MockHubCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(hub: hubConfig)
+        let amplifyConfig = AmplifyConfiguration(hub: hubConfig)
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Hub.getPlugin(for: "MockHubCategoryPlugin").configure(using: true)
@@ -270,7 +269,7 @@ class HubCategoryConfigurationTests: XCTestCase {
     func testThrowsConfiguringTwice() throws {
         let plugin = MockHubCategoryPlugin()
         try Amplify.add(plugin: plugin)
-        let categoryConfig = BasicCategoryConfiguration(
+        let categoryConfig = HubCategoryConfiguration(
             plugins: ["MockHubCategoryPlugin": true]
         )
 
@@ -287,7 +286,7 @@ class HubCategoryConfigurationTests: XCTestCase {
     func testCanConfigureAfterReset() throws {
         let plugin = MockHubCategoryPlugin()
         try Amplify.add(plugin: plugin)
-        let categoryConfig = BasicCategoryConfiguration(
+        let categoryConfig = HubCategoryConfiguration(
             plugins: ["MockHubCategoryPlugin": true]
         )
 

@@ -24,11 +24,11 @@ class APICategoryConfigurationTests: XCTestCase {
         let plugin = MockAPICategoryPlugin()
         try Amplify.add(plugin: plugin)
 
-        let apiConfig = BasicCategoryConfiguration(
+        let apiConfig = APICategoryConfiguration(
             plugins: ["MockAPICategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(api: apiConfig)
+        let amplifyConfig = AmplifyConfiguration(api: apiConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -46,11 +46,11 @@ class APICategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin)
 
-        let apiConfig = BasicCategoryConfiguration(
+        let apiConfig = APICategoryConfiguration(
             plugins: ["MockAPICategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(api: apiConfig)
+        let amplifyConfig = AmplifyConfiguration(api: apiConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.reset()
@@ -61,11 +61,11 @@ class APICategoryConfigurationTests: XCTestCase {
         let plugin = MockAPICategoryPlugin()
         try Amplify.add(plugin: plugin)
 
-        let apiConfig = BasicCategoryConfiguration(
+        let apiConfig = APICategoryConfiguration(
             plugins: ["MockAPICategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(api: apiConfig)
+        let amplifyConfig = AmplifyConfiguration(api: apiConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.reset()
@@ -111,14 +111,14 @@ class APICategoryConfigurationTests: XCTestCase {
         let plugin2 = MockSecondAPICategoryPlugin()
         try Amplify.add(plugin: plugin2)
 
-        let apiConfig = BasicCategoryConfiguration(
+        let apiConfig = APICategoryConfiguration(
             plugins: [
                 "MockAPICategoryPlugin": true,
                 "MockSecondAPICategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(api: apiConfig)
+        let amplifyConfig = AmplifyConfiguration(api: apiConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -136,9 +136,8 @@ class APICategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin)
 
-        let apiConfig =
-            BasicCategoryConfiguration(plugins: ["MockAPICategoryPlugin": true])
-        let amplifyConfig = BasicAmplifyConfiguration(api: apiConfig)
+        let apiConfig = APICategoryConfiguration(plugins: ["MockAPICategoryPlugin": true])
+        let amplifyConfig = AmplifyConfiguration(api: apiConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -170,14 +169,14 @@ class APICategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin2)
 
-        let apiConfig = BasicCategoryConfiguration(
+        let apiConfig = APICategoryConfiguration(
             plugins: [
                 "MockAPICategoryPlugin": true,
                 "MockSecondAPICategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(api: apiConfig)
+        let amplifyConfig = AmplifyConfiguration(api: apiConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.API.get()
@@ -208,14 +207,14 @@ class APICategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin2)
 
-        let apiConfig = BasicCategoryConfiguration(
+        let apiConfig = APICategoryConfiguration(
             plugins: [
                 "MockAPICategoryPlugin": true,
                 "MockSecondAPICategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(api: apiConfig)
+        let amplifyConfig = AmplifyConfiguration(api: apiConfig)
 
         try Amplify.configure(amplifyConfig)
         try Amplify.API.getPlugin(for: "MockSecondAPICategoryPlugin").get()
@@ -242,11 +241,11 @@ class APICategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin)
 
-        let apiConfig = BasicCategoryConfiguration(
+        let apiConfig = APICategoryConfiguration(
             plugins: ["MockAPICategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(api: apiConfig)
+        let amplifyConfig = AmplifyConfiguration(api: apiConfig)
 
         try Amplify.configure(amplifyConfig)
         try Amplify.API.getPlugin(for: "MockAPICategoryPlugin").configure(using: true)
@@ -269,7 +268,7 @@ class APICategoryConfigurationTests: XCTestCase {
     func testThrowsConfiguringTwice() throws {
         let plugin = MockAPICategoryPlugin()
         try Amplify.add(plugin: plugin)
-        let categoryConfig = BasicCategoryConfiguration(
+        let categoryConfig = APICategoryConfiguration(
             plugins: ["MockAPICategoryPlugin": true]
         )
 
@@ -286,7 +285,7 @@ class APICategoryConfigurationTests: XCTestCase {
     func testCanConfigureAfterReset() throws {
         let plugin = MockAPICategoryPlugin()
         try Amplify.add(plugin: plugin)
-        let categoryConfig = BasicCategoryConfiguration(
+        let categoryConfig = APICategoryConfiguration(
             plugins: ["MockAPICategoryPlugin": true]
         )
 

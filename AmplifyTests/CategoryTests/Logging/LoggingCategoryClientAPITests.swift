@@ -9,16 +9,16 @@ import XCTest
 import Amplify
 
 class LoggingCategoryClientAPITests: XCTestCase {
-    var mockAmplifyConfig: BasicAmplifyConfiguration!
+    var mockAmplifyConfig: AmplifyConfiguration!
 
     override func setUp() {
         Amplify.reset()
 
-        let loggingConfig = BasicCategoryConfiguration(
+        let loggingConfig = LoggingCategoryConfiguration(
             plugins: ["MockLoggingCategoryPlugin": true]
         )
 
-        mockAmplifyConfig = BasicAmplifyConfiguration(logging: loggingConfig)
+        mockAmplifyConfig = AmplifyConfiguration(logging: loggingConfig)
     }
 
     // MARK: - Test passthrough delegations

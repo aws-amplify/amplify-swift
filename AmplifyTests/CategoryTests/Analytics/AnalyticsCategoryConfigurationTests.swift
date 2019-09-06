@@ -24,11 +24,11 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         let plugin = MockAnalyticsCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
-        let analyticsConfig = BasicCategoryConfiguration(
+        let analyticsConfig = AnalyticsCategoryConfiguration(
             plugins: ["MockAnalyticsCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(analytics: analyticsConfig)
+        let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -46,11 +46,11 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin)
 
-        let analyticsConfig = BasicCategoryConfiguration(
+        let analyticsConfig = AnalyticsCategoryConfiguration(
             plugins: ["MockAnalyticsCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(analytics: analyticsConfig)
+        let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.reset()
@@ -61,11 +61,11 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         let plugin = MockAnalyticsCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
-        let analyticsConfig = BasicCategoryConfiguration(
+        let analyticsConfig = AnalyticsCategoryConfiguration(
             plugins: ["MockAnalyticsCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(analytics: analyticsConfig)
+        let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.reset()
@@ -111,14 +111,14 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         let plugin2 = MockSecondAnalyticsCategoryPlugin()
         try Amplify.add(plugin: plugin2)
 
-        let analyticsConfig = BasicCategoryConfiguration(
+        let analyticsConfig = AnalyticsCategoryConfiguration(
             plugins: [
                 "MockAnalyticsCategoryPlugin": true,
                 "MockSecondAnalyticsCategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(analytics: analyticsConfig)
+        let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -137,8 +137,8 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         try Amplify.add(plugin: plugin)
 
         let analyticsConfig =
-            BasicCategoryConfiguration(plugins: ["MockAnalyticsCategoryPlugin": true])
-        let amplifyConfig = BasicAmplifyConfiguration(analytics: analyticsConfig)
+            AnalyticsCategoryConfiguration(plugins: ["MockAnalyticsCategoryPlugin": true])
+        let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -170,14 +170,14 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin2)
 
-        let analyticsConfig = BasicCategoryConfiguration(
+        let analyticsConfig = AnalyticsCategoryConfiguration(
             plugins: [
                 "MockAnalyticsCategoryPlugin": true,
                 "MockSecondAnalyticsCategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(analytics: analyticsConfig)
+        let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.Analytics.record("test")
@@ -208,14 +208,14 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin2)
 
-        let analyticsConfig = BasicCategoryConfiguration(
+        let analyticsConfig = AnalyticsCategoryConfiguration(
             plugins: [
                 "MockAnalyticsCategoryPlugin": true,
                 "MockSecondAnalyticsCategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(analytics: analyticsConfig)
+        let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig)
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Analytics.getPlugin(for: "MockSecondAnalyticsCategoryPlugin").record("test")
@@ -242,11 +242,11 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin)
 
-        let analyticsConfig = BasicCategoryConfiguration(
+        let analyticsConfig = AnalyticsCategoryConfiguration(
             plugins: ["MockAnalyticsCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(analytics: analyticsConfig)
+        let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig)
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Analytics.getPlugin(for: "MockAnalyticsCategoryPlugin").configure(using: true)
@@ -269,7 +269,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
     func testThrowsConfiguringTwice() throws {
         let plugin = MockAnalyticsCategoryPlugin()
         try Amplify.add(plugin: plugin)
-        let categoryConfig = BasicCategoryConfiguration(
+        let categoryConfig = AnalyticsCategoryConfiguration(
             plugins: ["MockAnalyticsCategoryPlugin": true]
         )
 
@@ -286,7 +286,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
     func testCanConfigureAfterReset() throws {
         let plugin = MockAnalyticsCategoryPlugin()
         try Amplify.add(plugin: plugin)
-        let categoryConfig = BasicCategoryConfiguration(
+        let categoryConfig = AnalyticsCategoryConfiguration(
             plugins: ["MockAnalyticsCategoryPlugin": true]
         )
 

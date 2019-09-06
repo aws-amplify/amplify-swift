@@ -52,7 +52,7 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
         let storageConfig = BasicCategoryConfiguration(
             plugins: ["AWSS3StoragePlugin": awss3StoragePluginConfig]
         )
-        let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
+        let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         let plugin = AWSS3StoragePlugin()
         do {

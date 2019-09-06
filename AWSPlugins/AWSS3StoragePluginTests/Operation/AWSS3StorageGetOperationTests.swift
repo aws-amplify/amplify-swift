@@ -10,7 +10,7 @@ import Amplify
 @testable import AWSS3StoragePlugin
 
 class AWSS3StorageGetOperationTests: XCTestCase {
-    var mockAmplifyConfig: BasicAmplifyConfiguration!
+    var mockAmplifyConfig: AmplifyConfiguration!
 
     override func setUp() {
         Amplify.reset()
@@ -19,7 +19,7 @@ class AWSS3StorageGetOperationTests: XCTestCase {
             plugins: ["MockHubCategoryPlugin": true]
         )
 
-        mockAmplifyConfig = BasicAmplifyConfiguration(hub: hubConfig)
+        mockAmplifyConfig = AmplifyConfiguration(hub: hubConfig)
     }
 
     func testGetOperation() throws {
