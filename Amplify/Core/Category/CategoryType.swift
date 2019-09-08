@@ -19,9 +19,6 @@ public enum CategoryType: String {
     /// Retrieve data from a remote service
     case api
 
-    /// Identify and authorize users of your application
-    case auth
-
     /// Listen for or dispatch Amplify events
     case hub
 
@@ -41,8 +38,6 @@ public extension CategoryType {
             return "Analytics"
         case .api:
             return "API"
-        case .auth:
-            return "Auth"
         case .hub:
             return "Hub"
         case .logging:

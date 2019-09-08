@@ -9,16 +9,16 @@ import XCTest
 import Amplify
 
 class HubClientAPITests: XCTestCase {
-    var mockAmplifyConfig: BasicAmplifyConfiguration!
+    var mockAmplifyConfig: AmplifyConfiguration!
 
     override func setUp() {
         Amplify.reset()
 
-        let hubConfig = BasicCategoryConfiguration(
+        let hubConfig = HubCategoryConfiguration(
             plugins: ["MockHubCategoryPlugin": true]
         )
 
-        mockAmplifyConfig = BasicAmplifyConfiguration(hub: hubConfig)
+        mockAmplifyConfig = AmplifyConfiguration(hub: hubConfig)
     }
 
     func testDispatch() throws {

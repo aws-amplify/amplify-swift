@@ -6,8 +6,9 @@
 //
 
 import XCTest
-import Amplify
 import CwlPreconditionTesting
+
+@testable import Amplify
 
 class StorageCategoryConfigurationTests: XCTestCase {
     override func setUp() {
@@ -23,11 +24,11 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let plugin = MockStorageCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
-        let storageConfig = BasicCategoryConfiguration(
+        let storageConfig = StorageCategoryConfiguration(
             plugins: ["MockStorageCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
+        let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -45,11 +46,11 @@ class StorageCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin)
 
-        let storageConfig = BasicCategoryConfiguration(
+        let storageConfig = StorageCategoryConfiguration(
             plugins: ["MockStorageCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
+        let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.reset()
@@ -60,11 +61,11 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let plugin = MockStorageCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
-        let storageConfig = BasicCategoryConfiguration(
+        let storageConfig = StorageCategoryConfiguration(
             plugins: ["MockStorageCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
+        let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.reset()
@@ -110,14 +111,14 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let plugin2 = MockSecondStorageCategoryPlugin()
         try Amplify.add(plugin: plugin2)
 
-        let storageConfig = BasicCategoryConfiguration(
+        let storageConfig = StorageCategoryConfiguration(
             plugins: [
                 "MockStorageCategoryPlugin": true,
                 "MockSecondStorageCategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
+        let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -135,9 +136,8 @@ class StorageCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin)
 
-        let storageConfig =
-            BasicCategoryConfiguration(plugins: ["MockStorageCategoryPlugin": true])
-        let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
+        let storageConfig = StorageCategoryConfiguration(plugins: ["MockStorageCategoryPlugin": true])
+        let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
 
@@ -169,14 +169,14 @@ class StorageCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin2)
 
-        let storageConfig = BasicCategoryConfiguration(
+        let storageConfig = StorageCategoryConfiguration(
             plugins: [
                 "MockStorageCategoryPlugin": true,
                 "MockSecondStorageCategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
+        let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
         Amplify.Storage.stub()
@@ -207,14 +207,14 @@ class StorageCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin2)
 
-        let storageConfig = BasicCategoryConfiguration(
+        let storageConfig = StorageCategoryConfiguration(
             plugins: [
                 "MockStorageCategoryPlugin": true,
                 "MockSecondStorageCategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
+        let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Storage.getPlugin(for: "MockSecondStorageCategoryPlugin").stub()
@@ -241,15 +241,57 @@ class StorageCategoryConfigurationTests: XCTestCase {
         }
         try Amplify.add(plugin: plugin)
 
-        let storageConfig = BasicCategoryConfiguration(
+        let storageConfig = StorageCategoryConfiguration(
             plugins: ["MockStorageCategoryPlugin": true]
         )
 
-        let amplifyConfig = BasicAmplifyConfiguration(storage: storageConfig)
+        let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Storage.getPlugin(for: "MockStorageCategoryPlugin").configure(using: true)
         waitForExpectations(timeout: 1.0)
+    }
+
+    func testPreconditionFailureInvokingBeforeConfig() throws {
+        let plugin = MockStorageCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+
+        // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
+        let exception: BadInstructionException? = catchBadInstruction {
+            _ = Amplify.Storage.get(key: "foo", options: nil, onEvent: nil)
+        }
+        XCTAssertNotNil(exception)
+    }
+
+    // MARK: - Test internal config behavior guarantees
+
+    func testThrowsConfiguringTwice() throws {
+        let plugin = MockStorageCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+        let categoryConfig = StorageCategoryConfiguration(
+            plugins: ["MockStorageCategoryPlugin": true]
+        )
+
+        try Amplify.Storage.configure(using: categoryConfig)
+        XCTAssertThrowsError(try Amplify.Storage.configure(using: categoryConfig),
+                             "configure() an already configured plugin should throw") { error in
+                                guard case ConfigurationError.amplifyAlreadyConfigured = error else {
+                                    XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
+                                    return
+                                }
+        }
+    }
+
+    func testCanConfigureAfterReset() throws {
+        let plugin = MockStorageCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+        let categoryConfig = StorageCategoryConfiguration(
+            plugins: ["MockStorageCategoryPlugin": true]
+        )
+
+        try Amplify.Storage.configure(using: categoryConfig)
+        Amplify.Storage.reset()
+        XCTAssertNoThrow(try Amplify.Storage.configure(using: categoryConfig))
     }
 
 }

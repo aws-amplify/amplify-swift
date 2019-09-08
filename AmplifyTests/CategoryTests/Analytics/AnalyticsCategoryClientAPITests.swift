@@ -17,10 +17,10 @@ class AnalyticsCategoryClientAPITests: XCTestCase {
         Amplify.reset()
         plugin = MockAnalyticsCategoryPlugin()
         analytics = Amplify.Analytics
-        let categoryConfiguration = BasicCategoryConfiguration(
+        let categoryConfiguration = AnalyticsCategoryConfiguration(
             plugins: ["MockAnalyticsCategoryPlugin": true]
         )
-        let amplifyConfiguration = BasicAmplifyConfiguration(analytics: categoryConfiguration)
+        let amplifyConfiguration = AmplifyConfiguration(analytics: categoryConfiguration)
 
         do {
             try Amplify.add(plugin: plugin)

@@ -22,7 +22,6 @@ public class Amplify {
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset
     public static internal(set) var Analytics = AnalyticsCategory()
     public static internal(set) var API = APICategory()
-    public static internal(set) var Auth = AuthCategory()
     public static internal(set) var Hub = HubCategory()
     public static internal(set) var Logging = LoggingCategory()
     public static internal(set) var Storage = StorageCategory()
@@ -36,8 +35,6 @@ public class Amplify {
             try Analytics.add(plugin: plugin)
         } else if let plugin = plugin as? APICategoryPlugin {
             try API.add(plugin: plugin)
-        } else if let plugin = plugin as? AuthCategoryPlugin {
-            try Auth.add(plugin: plugin)
         } else if let plugin = plugin as? HubCategoryPlugin {
             try Hub.add(plugin: plugin)
         } else if let plugin = plugin as? LoggingCategoryPlugin {
@@ -50,4 +47,5 @@ public class Amplify {
                 "Verify that the library version is correct and supports the plugin's category.")
         }
     }
+
 }
