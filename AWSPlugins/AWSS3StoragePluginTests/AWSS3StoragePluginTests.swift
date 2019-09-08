@@ -12,16 +12,25 @@ import Amplify
 
 class AWSS3StoragePluginTests: XCTestCase {
     var storagePlugin: AWSS3StoragePlugin!
-    var service: MockAWSS3StorageService!
+    var storageService: MockAWSS3StorageService!
+    var authService: MockAWSAuthService!
     var queue: MockOperationQueue!
-    let key: String = "key"
-    let bucket: String = "bucket"
+    let testKey = "key"
+    let bucket = "bucket"
+    let defaultAccessLevel: StorageAccessLevel = .public
+    let testIdentityId = "TestIdentityId"
 
     override func setUp() {
         storagePlugin = AWSS3StoragePlugin()
-        service = MockAWSS3StorageService()
+        storageService = MockAWSS3StorageService()
+        authService = MockAWSAuthService()
         queue = MockOperationQueue()
 
+        storagePlugin.configure(bucket: bucket,
+                                storageService: storageService,
+                                authService: authService,
+                                queue: queue,
+                                defaultAccessLevel: defaultAccessLevel)
     }
 
     // MARK: configuration tests
@@ -33,103 +42,52 @@ class AWSS3StoragePluginTests: XCTestCase {
 
     // MARK: Get API Tests
     func testPluginGet() {
-        // Arrange
-        storagePlugin.configure(storageService: service, bucket: bucket, queue: queue)
-        let expectedKey = "public/" + key
-
         // Act
-        let result = storagePlugin.get(key: key, options: nil, onEvent: nil)
+        let operation = storagePlugin.get(key: testKey, options: nil, onEvent: nil)
 
         // Assert
-        XCTAssertNotNil(result)
-        guard let awss3StorageGetOperation = result as? AWSS3StorageGetOperation else {
+        XCTAssertNotNil(operation)
+        guard let awss3StorageGetOperation = operation as? AWSS3StorageGetOperation else {
             XCTFail("operation could not be cast as AWSS3StorageGetOperation")
             return
         }
-        let requestBuilder = awss3StorageGetOperation.requestBuilder
-        XCTAssertNotNil(requestBuilder)
-        XCTAssertEqual(requestBuilder.bucket, bucket)
-        XCTAssertEqual(requestBuilder.key, expectedKey)
-        XCTAssertNil(requestBuilder.fileURL)
+        let request = awss3StorageGetOperation.request
+
+        XCTAssertNotNil(request)
+        XCTAssertEqual(request.accessLevel, defaultAccessLevel)
+        XCTAssertNil(request.targetIdentityId)
+        XCTAssertEqual(request.key, testKey)
+        //XCTAssertEqual(request.storageGetDestination, StorageGetDestination.url(expires: nil))
+        XCTAssertNil(request.options)
     }
 
     func testPluginGetWithOptions() {
         // Arrange
-        let accessLevel = StorageAccessLevel.Private
-        let options = StorageGetOption(local: nil, download: nil, accessLevel: accessLevel, expires: nil,
-                                       options: nil, targetUser: nil)
-        storagePlugin.configure(storageService: service, bucket: bucket, queue: queue)
-        let expectedKey = accessLevel.rawValue + "/" + key
-
+        let privateAccessLevel = StorageAccessLevel.private
+        let storageDestination = StorageGetDestination.data
+        // TODO: test adding options.options.
+        let options = StorageGetOption(accessLevel: privateAccessLevel,
+                                       targetIdentityId: testIdentityId,
+                                       storageGetDestination: storageDestination,
+                                       options: nil)
         // Act
-        let result = storagePlugin.get(key: key, options: options, onEvent: nil)
+        let operation = storagePlugin.get(key: testKey, options: options, onEvent: nil)
 
         // Assert
-        XCTAssertNotNil(result)
-        guard let awss3StorageGetOperation = result as? AWSS3StorageGetOperation else {
+        XCTAssertNotNil(operation)
+        guard let awss3StorageGetOperation = operation as? AWSS3StorageGetOperation else {
             XCTFail("operation could not be cast as AWSS3StorageGetOperation")
             return
         }
-        let requestBuilder = awss3StorageGetOperation.requestBuilder
-        XCTAssertNotNil(requestBuilder)
-        XCTAssertEqual(requestBuilder.bucket, bucket)
-        XCTAssertEqual(requestBuilder.key, expectedKey)
-        XCTAssertNil(requestBuilder.fileURL)
-    }
+        let request = awss3StorageGetOperation.request
 
-    // MARK: GET to local file API tests
-    func testPluginGetLocalFile() {
-        // Arrange
-        storagePlugin.configure(storageService: service, bucket: bucket, queue: queue)
-        let expectedKey = "public/" + key
-        let url = URL(fileURLWithPath: "path")
-        let options = StorageGetOption(local: url,
-                                       download: nil,
-                                       accessLevel: nil,
-                                       expires: nil,
-                                       options: nil,
-                                       targetUser: nil)
-        // Act
-        let result = storagePlugin.get(key: key, options: options, onEvent: nil)
-
-        // Assert
-        XCTAssertNotNil(result)
-
-        guard let awss3StorageGetOperation = result as? AWSS3StorageGetOperation else {
-            XCTFail("operation not castable to ")
-            return
-        }
-        let requestBuilder = awss3StorageGetOperation.requestBuilder
-        XCTAssertNotNil(requestBuilder)
-        XCTAssertEqual(requestBuilder.bucket, bucket)
-        XCTAssertEqual(requestBuilder.key, expectedKey)
-        XCTAssertEqual(requestBuilder.fileURL, url)
-    }
-
-    func testPluginGetLocalFileWithOptions() {
-        // Arrange
-        let accessLevel = StorageAccessLevel.Protected
-        let url = URL(fileURLWithPath: "path")
-        let options = StorageGetOption(local: url, download: nil, accessLevel: accessLevel,
-                                       expires: nil, options: nil, targetUser: nil)
-        storagePlugin.configure(storageService: service, bucket: bucket, queue: queue)
-        let expectedKey = accessLevel.rawValue + "/" + key
-
-        // Act
-        let result = storagePlugin.get(key: key, options: options, onEvent: nil)
-
-        // Assert
-        XCTAssertNotNil(result)
-
-        guard let awss3StorageGetOperation = result as? AWSS3StorageGetOperation else {
-            XCTFail("operation not castable to ")
-            return
-        }
-        let requestBuilder = awss3StorageGetOperation.requestBuilder
-        XCTAssertNotNil(requestBuilder)
-        XCTAssertEqual(requestBuilder.bucket, bucket)
-        XCTAssertEqual(requestBuilder.key, expectedKey)
-        XCTAssertEqual(requestBuilder.fileURL, url)
+        XCTAssertNotNil(request)
+        XCTAssertNotEqual(request.accessLevel, defaultAccessLevel)
+        XCTAssertEqual(request.accessLevel, privateAccessLevel)
+        XCTAssertEqual(request.targetIdentityId, testIdentityId)
+        XCTAssertEqual(request.key, testKey)
+        //XCTAssertEqual(request.storageGetDestination, StorageGetDestination.url(expires: nil))
+        //XCTAssertNotNil(request.options)
     }
 
     // MARK: GetURL API tests
