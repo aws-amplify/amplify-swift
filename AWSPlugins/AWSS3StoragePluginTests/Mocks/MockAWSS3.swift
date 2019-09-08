@@ -10,6 +10,10 @@ import Foundation
 import AWSS3
 
 public class MockS3: AWSS3Behavior {
+    public func getS3() -> AWSS3 {
+        return AWSS3()
+    }
+
     public func listObjectsV2(_ request: AWSS3ListObjectsV2Request) -> AWSTask<AWSS3ListObjectsV2Output> {
         return AWSTask()
     }

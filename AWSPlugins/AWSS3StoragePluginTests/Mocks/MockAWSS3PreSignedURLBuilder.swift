@@ -11,7 +11,6 @@ import AWSS3
 
 public class MockAWSS3PreSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior {
     public func getPreSignedURL(_ getPreSignedURLRequest: AWSS3GetPreSignedURLRequest) -> AWSTask<NSURL> {
-
         return AWSTask()
     }
 

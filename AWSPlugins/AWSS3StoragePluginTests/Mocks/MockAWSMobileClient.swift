@@ -10,6 +10,10 @@ import Foundation
 import AWSS3
 
 public class MockAWSMobileClient: AWSMobileClientBehavior {
+    public func getCognitoCredentialsProvider() -> AWSCognitoCredentialsProvider {
+        return AWSCognitoCredentialsProvider()
+    }
+
     public func getIdentityId() -> AWSTask<NSString> {
         return AWSTask<NSString>()
     }
