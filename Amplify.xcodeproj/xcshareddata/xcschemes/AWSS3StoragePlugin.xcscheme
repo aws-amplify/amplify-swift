@@ -43,16 +43,6 @@
                </Test>
             </SkippedTests>
          </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2125E1FD2318327300B3DEB5"
-               BuildableName = "AWSS3StoragePluginIntegrationTests.xctest"
-               BlueprintName = "AWSS3StoragePluginIntegrationTests"
-               ReferencedContainer = "container:Amplify.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

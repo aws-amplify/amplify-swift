@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		0C490842533B83E6C51749F7 /* Pods_AWSS3StoragePluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 775BF14873ADD75B332E9423 /* Pods_AWSS3StoragePluginIntegrationTests.framework */; };
+		210FCC692325C4970017EA4B /* AWSAuthServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210FCC682325C4970017EA4B /* AWSAuthServiceTests.swift */; };
+		210FCC6D2325ECC00017EA4B /* StorageErrorConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210FCC6A2325ECBA0017EA4B /* StorageErrorConstants.swift */; };
+		210FCC6F23260B530017EA4B /* AuthErrorConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210FCC6E23260B530017EA4B /* AuthErrorConstants.swift */; };
+		211FA8EE23257E9D00818C27 /* AWSS3StorageServiceDownloadBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211FA8ED23257E9D00818C27 /* AWSS3StorageServiceDownloadBehaviorTests.swift */; };
 		2125E1B7231721B700B3DEB5 /* AWSMobileClientImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E1B523171DBA00B3DEB5 /* AWSMobileClientImpl.swift */; };
 		2125E1B8231721BB00B3DEB5 /* AWSMobileClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E1B323171D5E00B3DEB5 /* AWSMobileClientBehavior.swift */; };
 		2125E2012318327300B3DEB5 /* AWSS3StoragePluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2002318327300B3DEB5 /* AWSS3StoragePluginIntegrationTests.swift */; };
@@ -23,7 +27,7 @@
 		2125E26F231CFCE400B3DEB5 /* StorageRemoveError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E26B231CFCE300B3DEB5 /* StorageRemoveError.swift */; };
 		2125E271231CFCE400B3DEB5 /* StoragePutError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E26D231CFCE300B3DEB5 /* StoragePutError.swift */; };
 		2125E272231CFCE400B3DEB5 /* StorageListError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E26E231CFCE300B3DEB5 /* StorageListError.swift */; };
-		2125E274231CFD3C00B3DEB5 /* StorageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E273231CFD3C00B3DEB5 /* StorageError.swift */; };
+		2125E274231CFD3C00B3DEB5 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E273231CFD3C00B3DEB5 /* AuthError.swift */; };
 		2125E27E231F40E400B3DEB5 /* AWSS3StorageService+DownloadBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E277231F035600B3DEB5 /* AWSS3StorageService+DownloadBehavior.swift */; };
 		2125E288231F431300B3DEB5 /* AWSS3StorageService+ListBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E283231F429E00B3DEB5 /* AWSS3StorageService+ListBehavior.swift */; };
 		2125E289231F431600B3DEB5 /* AWSS3StorageService+UploadBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E281231F422700B3DEB5 /* AWSS3StorageService+UploadBehavior.swift */; };
@@ -75,15 +79,12 @@
 		21FFF9EB2310667A005878EA /* StoragePutOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF9EA2310667A005878EA /* StoragePutOption.swift */; };
 		21FFF9ED2310668F005878EA /* StorageListOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF9EC2310668F005878EA /* StorageListOption.swift */; };
 		21FFF9EF231066A6005878EA /* StorageRemoveOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF9EE231066A6005878EA /* StorageRemoveOption.swift */; };
-		21FFF9F1231066C9005878EA /* StorageOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF9F0231066C9005878EA /* StorageOption.swift */; };
 		21FFFA0D231341EC005878EA /* AWSS3StorageServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF9F523133F21005878EA /* AWSS3StorageServiceTests.swift */; };
 		21FFFA0E231341F0005878EA /* AWSS3StorageGetRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF9F823133FD1005878EA /* AWSS3StorageGetRequestTests.swift */; };
-		21FFFA0F231341F3005878EA /* AWSS3StorageGetUrlRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF9FA23133FF2005878EA /* AWSS3StorageGetUrlRequestTests.swift */; };
 		21FFFA10231341F7005878EA /* AWSS3StorageListRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF9FC23134005005878EA /* AWSS3StorageListRequestTests.swift */; };
 		21FFFA11231341FB005878EA /* AWSS3StoragePutRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF9FF23134018005878EA /* AWSS3StoragePutRequestTests.swift */; };
 		21FFFA1223134201005878EA /* AWSS3StorageRemoveRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFFA0123134027005878EA /* AWSS3StorageRemoveRequestTests.swift */; };
 		21FFFA1323134204005878EA /* AWSS3StorageGetOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFFA0323134071005878EA /* AWSS3StorageGetOperationTests.swift */; };
-		21FFFA1423134207005878EA /* AWSS3StorageGetUrlOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFFA052313407D005878EA /* AWSS3StorageGetUrlOperationTests.swift */; };
 		21FFFA152313432E005878EA /* AWSS3StorageListOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFFA0723134088005878EA /* AWSS3StorageListOperationTests.swift */; };
 		21FFFA1623134332005878EA /* AWSS3StoragePutOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFFA0923134095005878EA /* AWSS3StoragePutOperationTests.swift */; };
 		21FFFA1723134336005878EA /* AWSS3StorageRemoveOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFFA0B231340A1005878EA /* AWSS3StorageRemoveOperationTests.swift */; };
@@ -217,6 +218,10 @@
 
 /* Begin PBXFileReference section */
 		176E334A02509BD4CE8866A6 /* Pods_AmplifyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		210FCC682325C4970017EA4B /* AWSAuthServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthServiceTests.swift; sourceTree = "<group>"; };
+		210FCC6A2325ECBA0017EA4B /* StorageErrorConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageErrorConstants.swift; sourceTree = "<group>"; };
+		210FCC6E23260B530017EA4B /* AuthErrorConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthErrorConstants.swift; sourceTree = "<group>"; };
+		211FA8ED23257E9D00818C27 /* AWSS3StorageServiceDownloadBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceDownloadBehaviorTests.swift; sourceTree = "<group>"; };
 		2125E1B323171D5E00B3DEB5 /* AWSMobileClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSMobileClientBehavior.swift; sourceTree = "<group>"; };
 		2125E1B523171DBA00B3DEB5 /* AWSMobileClientImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSMobileClientImpl.swift; sourceTree = "<group>"; };
 		2125E1FE2318327300B3DEB5 /* AWSS3StoragePluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSS3StoragePluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -234,7 +239,7 @@
 		2125E26B231CFCE300B3DEB5 /* StorageRemoveError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageRemoveError.swift; sourceTree = "<group>"; };
 		2125E26D231CFCE300B3DEB5 /* StoragePutError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoragePutError.swift; sourceTree = "<group>"; };
 		2125E26E231CFCE300B3DEB5 /* StorageListError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageListError.swift; sourceTree = "<group>"; };
-		2125E273231CFD3C00B3DEB5 /* StorageError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageError.swift; sourceTree = "<group>"; };
+		2125E273231CFD3C00B3DEB5 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
 		2125E277231F035600B3DEB5 /* AWSS3StorageService+DownloadBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+DownloadBehavior.swift"; sourceTree = "<group>"; };
 		2125E279231F049100B3DEB5 /* StorageErrorHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageErrorHelper.swift; sourceTree = "<group>"; };
 		2125E281231F422700B3DEB5 /* AWSS3StorageService+UploadBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+UploadBehavior.swift"; sourceTree = "<group>"; };
@@ -291,15 +296,12 @@
 		21FFF9EA2310667A005878EA /* StoragePutOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoragePutOption.swift; sourceTree = "<group>"; };
 		21FFF9EC2310668F005878EA /* StorageListOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageListOption.swift; sourceTree = "<group>"; };
 		21FFF9EE231066A6005878EA /* StorageRemoveOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageRemoveOption.swift; sourceTree = "<group>"; };
-		21FFF9F0231066C9005878EA /* StorageOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageOption.swift; sourceTree = "<group>"; };
 		21FFF9F523133F21005878EA /* AWSS3StorageServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceTests.swift; sourceTree = "<group>"; };
 		21FFF9F823133FD1005878EA /* AWSS3StorageGetRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetRequestTests.swift; sourceTree = "<group>"; };
-		21FFF9FA23133FF2005878EA /* AWSS3StorageGetUrlRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetUrlRequestTests.swift; sourceTree = "<group>"; };
 		21FFF9FC23134005005878EA /* AWSS3StorageListRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StorageListRequestTests.swift; sourceTree = "<group>"; };
 		21FFF9FF23134018005878EA /* AWSS3StoragePutRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePutRequestTests.swift; sourceTree = "<group>"; };
 		21FFFA0123134027005878EA /* AWSS3StorageRemoveRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StorageRemoveRequestTests.swift; sourceTree = "<group>"; };
 		21FFFA0323134071005878EA /* AWSS3StorageGetOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetOperationTests.swift; sourceTree = "<group>"; };
-		21FFFA052313407D005878EA /* AWSS3StorageGetUrlOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetUrlOperationTests.swift; sourceTree = "<group>"; };
 		21FFFA0723134088005878EA /* AWSS3StorageListOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StorageListOperationTests.swift; sourceTree = "<group>"; };
 		21FFFA0923134095005878EA /* AWSS3StoragePutOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePutOperationTests.swift; sourceTree = "<group>"; };
 		21FFFA0B231340A1005878EA /* AWSS3StorageRemoveOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StorageRemoveOperationTests.swift; sourceTree = "<group>"; };
@@ -555,7 +557,7 @@
 		21FFF9A3230C973D005878EA /* Error */ = {
 			isa = PBXGroup;
 			children = (
-				2125E273231CFD3C00B3DEB5 /* StorageError.swift */,
+				2125E273231CFD3C00B3DEB5 /* AuthError.swift */,
 				21FFF97E230A4DAB005878EA /* StorageGetError.swift */,
 				2125E26E231CFCE300B3DEB5 /* StorageListError.swift */,
 				2125E26D231CFCE300B3DEB5 /* StoragePutError.swift */,
@@ -642,6 +644,8 @@
 				21FFF9D4230DFDB6005878EA /* StorageEvent.swift */,
 				21FFF9DA230E1C74005878EA /* StorageOperationReference.swift */,
 				2125E279231F049100B3DEB5 /* StorageErrorHelper.swift */,
+				210FCC6A2325ECBA0017EA4B /* StorageErrorConstants.swift */,
+				210FCC6E23260B530017EA4B /* AuthErrorConstants.swift */,
 				2125E28D23203E4E00B3DEB5 /* StorageRequestUtils.swift */,
 				2125E2A52321D19000B3DEB5 /* UploadSource.swift */,
 			);
@@ -662,7 +666,6 @@
 				2125E29B23209EF400B3DEB5 /* StorageGetDestination.swift */,
 				21FFF9E523106407005878EA /* StorageGetOption.swift */,
 				21FFF9EC2310668F005878EA /* StorageListOption.swift */,
-				21FFF9F0231066C9005878EA /* StorageOption.swift */,
 				21FFF9EA2310667A005878EA /* StoragePutOption.swift */,
 				21FFF9EE231066A6005878EA /* StorageRemoveOption.swift */,
 			);
@@ -686,6 +689,8 @@
 		21FFF9F323133EB9005878EA /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				210FCC682325C4970017EA4B /* AWSAuthServiceTests.swift */,
+				211FA8ED23257E9D00818C27 /* AWSS3StorageServiceDownloadBehaviorTests.swift */,
 				21FFF9F523133F21005878EA /* AWSS3StorageServiceTests.swift */,
 			);
 			path = Service;
@@ -695,7 +700,6 @@
 			isa = PBXGroup;
 			children = (
 				21FFFA0323134071005878EA /* AWSS3StorageGetOperationTests.swift */,
-				21FFFA052313407D005878EA /* AWSS3StorageGetUrlOperationTests.swift */,
 				21FFFA0723134088005878EA /* AWSS3StorageListOperationTests.swift */,
 				21FFFA0923134095005878EA /* AWSS3StoragePutOperationTests.swift */,
 				21FFFA0B231340A1005878EA /* AWSS3StorageRemoveOperationTests.swift */,
@@ -707,7 +711,6 @@
 			isa = PBXGroup;
 			children = (
 				21FFF9F823133FD1005878EA /* AWSS3StorageGetRequestTests.swift */,
-				21FFF9FA23133FF2005878EA /* AWSS3StorageGetUrlRequestTests.swift */,
 				21FFF9FC23134005005878EA /* AWSS3StorageListRequestTests.swift */,
 				21FFF9FF23134018005878EA /* AWSS3StoragePutRequestTests.swift */,
 				21FFFA0123134027005878EA /* AWSS3StorageRemoveRequestTests.swift */,
@@ -1675,10 +1678,12 @@
 				21FFF9CF230DEC18005878EA /* AWSS3TransferUtilityImpl.swift in Sources */,
 				2125E288231F431300B3DEB5 /* AWSS3StorageService+ListBehavior.swift in Sources */,
 				2125E2972320667300B3DEB5 /* AWSAuthService.swift in Sources */,
+				210FCC6F23260B530017EA4B /* AuthErrorConstants.swift in Sources */,
 				21FFF9CD230DDBFA005878EA /* AWSS3StorageService.swift in Sources */,
 				21FFF9C6230DDA22005878EA /* AWSS3StoragePutRequest.swift in Sources */,
 				2125E28A231F431900B3DEB5 /* AWSS3StorageService+DeleteBehavior.swift in Sources */,
 				21FFF9B7230DBE2D005878EA /* AWSS3StorageServiceBehaviour.swift in Sources */,
+				210FCC6D2325ECC00017EA4B /* StorageErrorConstants.swift in Sources */,
 				21FFF9D5230DFDB6005878EA /* StorageEvent.swift in Sources */,
 				21FFF9DB230E1C74005878EA /* StorageOperationReference.swift in Sources */,
 				21FFF9B0230CA9D9005878EA /* AWSS3StoragePutOperation.swift in Sources */,
@@ -1692,12 +1697,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				210FCC692325C4970017EA4B /* AWSAuthServiceTests.swift in Sources */,
 				21FFFA2823148AB5005878EA /* MessageReporter.swift in Sources */,
 				21265DB22307389A004CCE39 /* AWSS3StoragePluginTests.swift in Sources */,
 				21FFFA1623134332005878EA /* AWSS3StoragePutOperationTests.swift in Sources */,
 				21FFFA0D231341EC005878EA /* AWSS3StorageServiceTests.swift in Sources */,
 				21FFFA1F2313453D005878EA /* MockOperationQueue.swift in Sources */,
-				21FFFA1423134207005878EA /* AWSS3StorageGetUrlOperationTests.swift in Sources */,
+				211FA8EE23257E9D00818C27 /* AWSS3StorageServiceDownloadBehaviorTests.swift in Sources */,
 				21FFFA1323134204005878EA /* AWSS3StorageGetOperationTests.swift in Sources */,
 				21FFFA2923148ABE005878EA /* MockHubCategoryPlugin.swift in Sources */,
 				21FFFA0E231341F0005878EA /* AWSS3StorageGetRequestTests.swift in Sources */,
@@ -1709,7 +1715,6 @@
 				21FFFA1723134336005878EA /* AWSS3StorageRemoveOperationTests.swift in Sources */,
 				2125E2A82321DCDD00B3DEB5 /* MockAWSAuthService.swift in Sources */,
 				21FFFA152313432E005878EA /* AWSS3StorageListOperationTests.swift in Sources */,
-				21FFFA0F231341F3005878EA /* AWSS3StorageGetUrlRequestTests.swift in Sources */,
 				21FFFA11231341FB005878EA /* AWSS3StoragePutRequestTests.swift in Sources */,
 				21FFFA1223134201005878EA /* AWSS3StorageRemoveRequestTests.swift in Sources */,
 				21FFFA1D23134507005878EA /* MockAWSS3PreSignedURLBuilder.swift in Sources */,
@@ -1731,7 +1736,6 @@
 				21FFF9E623106407005878EA /* StorageGetOption.swift in Sources */,
 				FAC23545227A055200424678 /* AmplifyConfiguration.swift in Sources */,
 				21FFF994230C96CB005878EA /* StoragePutOperation.swift in Sources */,
-				21FFF9F1231066C9005878EA /* StorageOption.swift in Sources */,
 				FAC2351E227A053D00424678 /* APICategory.swift in Sources */,
 				FAC2351B227A053D00424678 /* APICategoryClientBehavior.swift in Sources */,
 				FA09B9412321BB78000E064D /* JSONValue.swift in Sources */,
@@ -1741,7 +1745,7 @@
 				FAC23548227A055200424678 /* Category.swift in Sources */,
 				FA09B9382321A359000E064D /* LoggingCategory+CategoryConfigurable.swift in Sources */,
 				FAC23525227A053D00424678 /* LogLevel.swift in Sources */,
-				2125E274231CFD3C00B3DEB5 /* StorageError.swift in Sources */,
+				2125E274231CFD3C00B3DEB5 /* AuthError.swift in Sources */,
 				FA56F72322B14B420039754A /* Cancellable.swift in Sources */,
 				21FFF9EF231066A6005878EA /* StorageRemoveOption.swift in Sources */,
 				21FFF983230A519B005878EA /* EventPublishable.swift in Sources */,

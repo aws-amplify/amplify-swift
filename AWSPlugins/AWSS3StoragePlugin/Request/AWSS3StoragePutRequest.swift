@@ -32,12 +32,14 @@ public struct AWSS3StoragePutRequest {
 
     func validate() -> StoragePutError? {
         if key.isEmpty {
-            return StoragePutError.unknown("key is empty", "key is empty")
+            return StoragePutError.validation(StorageErrorConstants.KeyIsEmpty.ErrorDescription,
+                                              StorageErrorConstants.KeyIsEmpty.RecoverySuggestion)
         }
 
         if let contentType = contentType {
             if contentType.isEmpty {
-                return StoragePutError.unknown("content type specified but is empty", "")
+                return StoragePutError.validation(StorageErrorConstants.ContentTypeIsEmpty.ErrorDescription,
+                                               StorageErrorConstants.ContentTypeIsEmpty.RecoverySuggestion)
             }
             // else if contentTypeValidator(contentType) {
         }

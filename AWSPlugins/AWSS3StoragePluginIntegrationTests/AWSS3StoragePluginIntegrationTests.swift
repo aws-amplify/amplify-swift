@@ -13,57 +13,29 @@ import AWSS3
 
 class AWSS3StoragePluginIntegrationTests: XCTestCase {
 
+    let user1 = "testUser111@amazon.com"
+    let user2 = "testUser122@amazon.com"
+    let password = "testPassword123!"
+
     override func setUp() {
         // Set up AWSMobileClient
-        // AWSInfo will read from the awsconfiguration.json file only from the main bundle, so we can't even just have
-        // the awsconfiguration.json file in the test target.
-        // https://stackoverflow.com/questions/1879247/why-cant-code-inside-unit-tests-find-bundle-resources
-
         // Once https://github.com/aws-amplify/aws-sdk-ios/pull/1812 is done, we can add code like/
         // AWSInfo.configure(values we pass in), can even read from awsconfiguration.json or amplifyconfiguration.json.
         let mobileClientIsInitialized = expectation(description: "AWSMobileClient is initialized")
-
         AWSMobileClient.sharedInstance().initialize { (userState, error) in
             guard error == nil else {
                 XCTFail("Error initializing AWSMobileClient. Error: \(error!.localizedDescription)")
                 return
             }
-
             guard let userState = userState else {
                 XCTFail("userState is unexpectedly empty initializing AWSMobileClient")
                 return
             }
-
             if userState != UserState.signedOut {
                 AWSMobileClient.sharedInstance().signOut()
             }
-
-            // TODO: This is pretty hacky since I had to go into aws console to confirm user
-            // we need login for tests which put into protected/private folder.
-            let username = "testUser123@amazon.com"
-            let password = "testPassword123!"
-
-            AWSMobileClient.sharedInstance().signIn(username: username, password: password, completionHandler: { (result, error) in
-                if let error = error {
-                    print("error signing in \(error)")
-
-                    AWSMobileClient.sharedInstance().signUp(username: username, password: password, completionHandler: { (result, error) in
-                        if let error = error {
-                            print("error signing up \(error)")
-                        } else if let result = result {
-                            print("completed sign up \(result)")
-                        }
-
-                        mobileClientIsInitialized.fulfill()
-                    })
-                } else if let result = result {
-                    print("completed sign in \(result)")
-                    mobileClientIsInitialized.fulfill()
-                }
-            })
-
+            mobileClientIsInitialized.fulfill()
         }
-
         wait(for: [mobileClientIsInitialized], timeout: 100)
         print("AWSMobileClient Initialized")
 
@@ -72,12 +44,10 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
             "Bucket": "swift6a3ad8b2b9f4402187f051de89548cc0-devo",
             "Region": "us-east-1"
         ]
-
-        let storageConfig = BasicCategoryConfiguration(
-            plugins: ["AWSS3StoragePlugin": awss3StoragePluginConfig]
+        let storageConfig = StorageCategoryConfiguration(
+            plugins: ["AWSS3StoragePlugin": true]
         )
         let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
-
         let plugin = AWSS3StoragePlugin()
         do {
             try Amplify.add(plugin: plugin)
@@ -94,15 +64,35 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
         sleep(5)
     }
 
+    // MARK: Integration test one-time setup
+    func testSetUpIntegrationTestData() {
+        // Sign up and confirm User1
+        // perhaps we cache it and then check if user1 has been successfully signed up.
+        AWSMobileClient.sharedInstance().signUp(username: user1, password: password) { (result, error) in
+            guard error == nil else {
+                // if already signed up, then we are done.
+
+                XCTFail("Failed to sign up user1 with error \(error)")
+                return
+            }
+
+            if let result = result {
+                // Confirm user1 with admin
+            }
+        }
+
+        // TODO: Sign up and confirm User2
+    }
+
     // MARK: Configuration Tests
 
-    func testSetAccessLevelThenPutWithNewDefault() {
-        XCTFail("Not yet implemented")
-    }
-
-    func testFailConfiguration() {
-        XCTFail("Not yet implemented")
-    }
+//    func testSetAccessLevelThenPutWithNewDefault() {
+//        XCTFail("Not yet implemented")
+//    }
+//
+//    func testFailConfiguration() {
+//        XCTFail("Not yet implemented")
+//    }
 
     // MARK: Basic tests
 
@@ -242,7 +232,11 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
 
     func testListFromProtected() {
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageListOption(accessLevel: .protected, prefix: nil, limit: nil, options: nil, targetUser: nil)
+        let options = StorageListOption(accessLevel: .protected,
+                                        targetIdentityId: nil,
+                                        path: nil,
+                                        limit: nil,
+                                        options: nil)
         let operation = Amplify.Storage.list(options: options) { (event) in
             switch event {
             case .unknown:
@@ -355,9 +349,9 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
     func testPutToProtectedAndListThenGetThenRemove() {
 
         // TODO Sign in. here instead of in set up.
-        //
-
-
+        AWSMobileClient.sharedInstance().signIn(username: user1, password: password) { (result, error) in
+            // TODO
+        }
 
         let key = "testPutToProtectedAndListThenGetThenRemove"
         let dataString = "testPutToProtectedAndListThenGetThenRemove"
@@ -434,16 +428,12 @@ class AWSS3StoragePluginIntegrationTests: XCTestCase {
         let failInvoked = expectation(description: "Failed is invoked")
         let operation = Amplify.Storage.get(key: key, options: nil) { (event) in
             switch event {
-            case .unknown:
-                break
-            case .notInProcess:
-                break
-            case .inProcess:
-                break
             case .completed:
-                XCTFail("Negative test completed successfully")
+                XCTFail("Should not have completed successfully")
             case .failed(let error):
                 failInvoked.fulfill()
+            default:
+                break
             }
         }
 

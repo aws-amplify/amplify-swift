@@ -11,14 +11,6 @@ import AWSMobileClient
 
 public class AWSS3StoragePlugin: StorageCategoryPlugin {
 
-    private static let AWSS3StoragePluginKey = "AWSS3StoragePlugin"
-
-    // TODO move this variable somewhere else into constant file
-    private static let AWSS3StoragePluginNotConfiguredError = """
-        AWSS3StoragePlugin not configured.
-        Call Amplify.configure() to configure. This could happen if Amplify.reset().
-        """
-
     private var bucket: String!
     private var storageService: AWSS3StorageServiceBehaviour!
     private var authService: AWSAuthServiceBehavior!
@@ -26,7 +18,7 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
     private var defaultAccessLevel: StorageAccessLevel!
 
     public var key: PluginKey {
-        return AWSS3StoragePlugin.AWSS3StoragePluginKey
+        return "AWSS3StoragePlugin"
     }
 
     public init() {
@@ -145,7 +137,8 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
                        options: StorageRemoveOption?,
                        onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
         let request = AWSS3StorageRemoveRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
-                                                key: key)
+                                                key: key,
+                                                options: options?.options)
         let removeOperation = AWSS3StorageRemoveOperation(request,
                                                           storageService: storageService,
                                                           authService: authService,
@@ -157,8 +150,10 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
 
     public func list(options: StorageListOption?, onEvent: StorageListEvent?) -> StorageListOperation {
         let request = AWSS3StorageListRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
-                                              prefix: options?.prefix,
-                                              limit: options?.limit)
+                                              targetIdentityId: options?.targetIdentityId,
+                                              prefix: options?.path,
+                                              limit: options?.limit,
+                                              options: options?.options)
         let listOperation = AWSS3StorageListOperation(request,
                                                       storageService: storageService,
                                                       authService: authService,

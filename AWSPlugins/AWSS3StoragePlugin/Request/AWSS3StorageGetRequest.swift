@@ -30,16 +30,14 @@ public struct AWSS3StorageGetRequest {
     func validate() -> StorageGetError? {
         if let targetIdentityId = targetIdentityId {
             if targetIdentityId.isEmpty {
-                return StorageGetError.unknown("The targetIde is specified but is empty", "..")
-            }
-
-            if accessLevel == .public {
-                return StorageGetError.unknown("makes no sense to be public with target", ".")
+                return StorageGetError.validation(StorageErrorConstants.IdentityIdIsEmpty.ErrorDescription,
+                                                  StorageErrorConstants.IdentityIdIsEmpty.RecoverySuggestion)
             }
         }
 
         if key.isEmpty {
-            return StorageGetError.unknown("key is empty", "key is empty")
+            return StorageGetError.validation(StorageErrorConstants.KeyIsEmpty.ErrorDescription,
+                                              StorageErrorConstants.KeyIsEmpty.RecoverySuggestion)
         }
 
         switch storageGetDestination {
@@ -50,7 +48,8 @@ public struct AWSS3StorageGetRequest {
         case .url(let expires):
             if let expires = expires {
                 if expires <= 0 {
-                    return StorageGetError.unknown("expires should be non-zero", "")
+                    return StorageGetError.validation(StorageErrorConstants.ExpiresIsInvalid.ErrorDescription,
+                                                      StorageErrorConstants.ExpiresIsInvalid.RecoverySuggestion)
                 }
             }
         }

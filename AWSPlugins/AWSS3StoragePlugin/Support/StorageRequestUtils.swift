@@ -17,7 +17,9 @@ public class StorageRequestUtils {
         return accessLevel.rawValue + "/" + key
     }
 
-    public static func getServicePrefix(accessLevel: StorageAccessLevel, identityId: String, prefix: String?) -> String {
+    public static func getServicePrefix(accessLevel: StorageAccessLevel,
+                                        identityId: String,
+                                        prefix: String?) -> String {
         return getServiceKey(accessLevel: accessLevel, identityId: identityId, key: prefix ?? "")
     }
 }

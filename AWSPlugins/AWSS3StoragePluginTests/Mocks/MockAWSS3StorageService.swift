@@ -7,48 +7,83 @@
 
 import Foundation
 import Amplify
+import AWSS3
 @testable import AWSS3StoragePlugin
 
 public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
 
-    private(set) public var executeGetRequestCalled: Bool?
-    private(set) public var executeGetUrlRequestCalled: Bool?
-    private(set) public var executePutRequestCalled: Bool?
-    private(set) public var executeListRequestCalled: Bool?
-    private(set) public var executeRemoveRequestCalled: Bool?
+    private(set) public var downloadDataCalled: Bool?
+    private(set) public var downloadToFileCalled: Bool?
+    private(set) public var getPreSignedURLCalled: Bool?
+    private(set) public var uploadCalled: Bool?
+    private(set) public var multiPartUploadCalled: Bool?
+    private(set) public var listCalled: Bool?
+    private(set) public var deleteCalled: Bool?
 
-    public func execute(_ request: AWSS3StorageGetRequest, identity: String, onEvent:
-        @escaping (StorageEvent<StorageOperationReference, Progress, StorageGetResult, StorageGetError>) -> Void) {
+    private var mockS3: AWSS3Behavior = MockS3()
 
-        executeGetRequestCalled = true
-
-        onEvent(StorageEvent.inProcess(Progress()))
-        onEvent(StorageEvent.completed(StorageGetResult()))
+    public func configure(region: AWSRegionType,
+                          bucket: String,
+                          cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
+                          identifier: String) throws {
     }
 
-    public func execute(_ request: AWSS3StorageGetUrlRequest, identity: String, onEvent:
-        @escaping (StorageEvent<Void, Void, StorageGetUrlResult, StorageGetUrlError>) -> Void) {
-
-        executeGetUrlRequestCalled = true
+    public func reset() {
     }
 
-    public func execute(_ request: AWSS3StoragePutRequest, identity: String, onEvent:
-        @escaping (StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>) -> Void) {
+    public func download(serviceKey: String, fileURL: URL?, onEvent: @escaping StorageDownloadOnEventHandler) {
 
-        executePutRequestCalled = true
+        if fileURL != nil {
+            downloadToFileCalled = true
+        } else {
+            downloadDataCalled = true
+        }
+
+        let data = Data()
+        onEvent(StorageEvent.completed(StorageGetResult(data: data)))
     }
 
-    public func execute(_ request: AWSS3StorageListRequest, identity: String, onEvent:
-        @escaping (StorageEvent<Void, Void, StorageListResult, StorageListError>) -> Void) {
+    public func getPreSignedURL(serviceKey: String,
+                                expires: Int?,
+                                onEvent: @escaping StorageGetPreSignedUrlOnEventHandler) {
+        getPreSignedURLCalled = true
 
-        executeListRequestCalled = true
-
-        onEvent(StorageEvent.completed(StorageListResult(keys: ["list"])))
+        let url = URL(fileURLWithPath: "path")
+        onEvent(StorageEvent.completed(StorageGetResult(remote: url)))
     }
 
-    public func execute(_ request: AWSS3StorageRemoveRequest, identity: String, onEvent:
-        @escaping (StorageEvent<Void, Void, StorageRemoveResult, StorageRemoveError>) -> Void) {
-        executeRemoveRequestCalled = true
+    public func upload(serviceKey: String,
+                       key: String,
+                       uploadSource: UploadSource,
+                       contentType: String?,
+                       onEvent: @escaping StorageUploadOnEventHandler) {
+        uploadCalled = true
+
+        onEvent(StorageEvent.completed(StoragePutResult(key: key)))
     }
 
+    public func multiPartUpload(serviceKey: String,
+                                key: String,
+                                uploadSource: UploadSource,
+                                contentType: String?,
+                                onEvent: @escaping StorageMultiPartUploadOnEventHandler) {
+        multiPartUploadCalled = true
+
+        onEvent(StorageEvent.completed(StoragePutResult(key: key)))
+    }
+
+    public func list(prefix: String, onEvent: @escaping StorageListOnEventHandler) {
+        listCalled = true
+
+        onEvent(StorageEvent.completed(StorageListResult(keys: [])))
+    }
+
+    public func delete(serviceKey: String, onEvent: @escaping StorageDeleteOnEventHandler) {
+        deleteCalled = true
+        onEvent(StorageEvent.completed(StorageRemoveResult(key: serviceKey)))
+    }
+
+    public func getEscapeHatch() -> AWSS3 {
+        return mockS3.getS3()
+    }
 }

@@ -10,7 +10,9 @@ import Foundation
 public enum StorageListError {
     case httpStatusError(ErrorDescription, RecoverySuggestion)
     case unknown(ErrorDescription, RecoverySuggestion)
+    case validation(ErrorDescription, RecoverySuggestion)
     case identity(ErrorDescription, RecoverySuggestion)
+
 }
 
 extension StorageListError: AmplifyError {
@@ -18,6 +20,7 @@ extension StorageListError: AmplifyError {
         switch self {
         case .httpStatusError(let description, _),
              .unknown(let description, _),
+             .validation(let description, _),
              .identity(let description, _):
             return description
         }
@@ -27,6 +30,7 @@ extension StorageListError: AmplifyError {
         switch self {
         case .httpStatusError(_, let recoverySuggestion),
              .unknown(_, let recoverySuggestion),
+             .validation(_, let recoverySuggestion),
              .identity(_, let recoverySuggestion):
             return recoverySuggestion
         }

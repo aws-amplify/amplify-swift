@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct StorageGetOption: StorageOption {
+public struct StorageGetOption {
 
     // AccessLevel
     public var accessLevel: StorageAccessLevel?

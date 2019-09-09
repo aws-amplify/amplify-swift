@@ -32,7 +32,7 @@ CategoryTypeable, EventPublishable {
     public func dispatch(event: AsyncEvent<InProcessType, CompletedType, ErrorType>) {
 
         let payload = HubPayload(event: "event")
-        //Amplify.Hub.dispatch(to: .storage, payload: payload)
+        Amplify.Hub.dispatch(to: .storage, payload: payload)
     }
 }
 
