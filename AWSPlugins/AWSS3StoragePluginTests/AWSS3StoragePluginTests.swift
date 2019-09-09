@@ -17,6 +17,7 @@ class AWSS3StoragePluginTests: XCTestCase {
     var queue: MockOperationQueue!
     let testKey = "key"
     let testBucket = "bucket"
+    let testRegion = "us-east-1"
     let defaultAccessLevel: StorageAccessLevel = .public
     let testIdentityId = "TestIdentityId"
     let testContentType = "TestContentType"
@@ -31,14 +32,26 @@ class AWSS3StoragePluginTests: XCTestCase {
         authService = MockAWSAuthService()
         queue = MockOperationQueue()
 
-        storagePlugin.configure(bucket: testBucket,
-                                storageService: storageService,
+        storagePlugin.configure(storageService: storageService,
                                 authService: authService,
                                 queue: queue,
                                 defaultAccessLevel: defaultAccessLevel)
     }
 
     // MARK: configuration tests
+    func testConfigure() throws {
+        let bucket = JSONValue.init(stringLiteral: testBucket)
+        let region = JSONValue.init(stringLiteral: testRegion)
+        let storagePluginConfig = JSONValue.init(
+            dictionaryLiteral: (PluginConstants.Bucket, bucket), (PluginConstants.Region, region))
+
+        do {
+            try storagePlugin.configure(using: storagePluginConfig)
+        } catch {
+            XCTFail("Failed to configure storage plugin")
+        }
+    }
+
     func testConfigureThrowsErrorForMissingBucket() {
     }
 
