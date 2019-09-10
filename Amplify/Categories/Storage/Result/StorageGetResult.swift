@@ -9,7 +9,7 @@ import Foundation
 public class StorageGetResult {
     public init() {
     }
-    public init(data: Data) {
+    public init(data: Data? = nil) {
         self.data = data
     }
 

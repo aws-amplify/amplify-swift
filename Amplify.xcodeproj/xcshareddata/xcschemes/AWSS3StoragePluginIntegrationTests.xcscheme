@@ -24,6 +24,9 @@
             </BuildableReference>
             <SkippedTests>
                <Test
+                  Identifier = "AWSS3StoragePluginAccessLevelTests/testPutToProtectedAndListThenRemoveThenFailGet()">
+               </Test>
+               <Test
                   Identifier = "AWSS3StoragePluginAccessLevelTests/testSetUpOnce()">
                </Test>
                <Test

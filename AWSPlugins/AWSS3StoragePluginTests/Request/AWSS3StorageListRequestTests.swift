@@ -50,6 +50,29 @@ class AWSS3StorageListRequestTests: XCTestCase {
         XCTAssertEqual(recovery, StorageErrorConstants.IdentityIdIsEmpty.RecoverySuggestion)
     }
 
+    func testValidateTargetIdentityIdWithPrivateAccessLevelError() {
+        let request = AWSS3StorageListRequest(accessLevel: .private,
+                                              targetIdentityId: testTargetIdentityId,
+                                              prefix: testPrefix,
+                                              limit: testLimit,
+                                              options: testOptions)
+
+        let storageListErrorOptional = request.validate()
+
+        guard let error = storageListErrorOptional else {
+            XCTFail("Missing StorageListError")
+            return
+        }
+
+        guard case .validation(let description, let recovery) = error else {
+            XCTFail("Error does not match validation error")
+            return
+        }
+
+        XCTAssertEqual(description, StorageErrorConstants.PrivateWithTarget.ErrorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.PrivateWithTarget.RecoverySuggestion)
+    }
+
     func testValidateEmptyPrefixError() {
         let request = AWSS3StorageListRequest(accessLevel: .protected,
                                               targetIdentityId: testTargetIdentityId,

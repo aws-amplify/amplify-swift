@@ -49,6 +49,29 @@ class AWSS3StorageGetRequestTests: XCTestCase {
         XCTAssertEqual(recovery, StorageErrorConstants.IdentityIdIsEmpty.RecoverySuggestion)
     }
 
+    func testValidateTargetIdentityIdWithPrivateAccessLevelError() {
+        let request = AWSS3StorageGetRequest(accessLevel: .private,
+                                             targetIdentityId: testTargetIdentityId,
+                                             key: testKey,
+                                             storageGetDestination: .data,
+                                             options: testOptions)
+
+        let storageGetErrorOptional = request.validate()
+
+        guard let error = storageGetErrorOptional else {
+            XCTFail("Missing StorageGetError")
+            return
+        }
+
+        guard case .validation(let description, let recovery) = error else {
+            XCTFail("Error does not match validation error")
+            return
+        }
+
+        XCTAssertEqual(description, StorageErrorConstants.PrivateWithTarget.ErrorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.PrivateWithTarget.RecoverySuggestion)
+    }
+
     func testValidateKeyIsEmptyError() {
         let request = AWSS3StorageGetRequest(accessLevel: .protected,
                                              targetIdentityId: testTargetIdentityId,

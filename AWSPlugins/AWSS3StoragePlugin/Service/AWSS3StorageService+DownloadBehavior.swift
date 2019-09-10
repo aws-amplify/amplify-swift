@@ -84,10 +84,17 @@ extension AWSS3StorageService {
 
             guard response.statusCode == 200 else {
                 // TODO HttpStatus Mapper
-                onEvent(StorageEvent.failed(StorageGetError.httpStatusError(
-                    "status code \(response.statusCode)", "Check the status code")))
-
                 // TODO any retry logic based on status code?
+                if response.statusCode == 404 {
+                    onEvent(StorageEvent.failed(StorageGetError.notFound(
+                        StorageErrorConstants.KeyNotFound.ErrorDescription,
+                        StorageErrorConstants.KeyNotFound.RecoverySuggestion)))
+
+                } else {
+                    onEvent(StorageEvent.failed(StorageGetError.httpStatusError(
+                        "status code \(response.statusCode)", "Check the status code")))
+                }
+
                 return
             }
 
@@ -95,11 +102,6 @@ extension AWSS3StorageService {
                 let error = error! as NSError
 
                 onEvent(StorageEvent.failed(StorageGetError.unknown("Error with code: \(error.code) ", "")))
-                return
-            }
-
-            guard let data = data else {
-                onEvent(StorageEvent.failed(StorageGetError.unknown("No completionBlock data", "")))
                 return
             }
 

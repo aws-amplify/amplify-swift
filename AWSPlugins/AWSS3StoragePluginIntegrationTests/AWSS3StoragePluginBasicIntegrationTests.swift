@@ -10,8 +10,8 @@ import AWSMobileClient
 import Amplify
 import AWSS3StoragePlugin
 import AWSS3
+
 class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
-    // MARK: Basic tests
 
     func testPutData() {
         let key = "testPutData"
@@ -21,26 +21,23 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
         let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
             switch event {
-            case .unknown:
-                break
-            case .notInProcess:
-                break
-            case .inProcess:
-                break
             case .completed:
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Failed with \(error)")
+            default:
+                break
             }
         }
 
+        XCTAssertNotNil(operation)
         waitForExpectations(timeout: 60)
     }
 
     func testPutDataFromFile() {
         let key = "testPutDataFromFile"
-        let filePath = NSTemporaryDirectory() + "testPutDataFromFile.tmp"
-        var testData = "testPutDataFromFile"
+        let filePath = NSTemporaryDirectory() + key + ".tmp"
+        var testData = key
         for _ in 1...5 {
             testData += testData
         }
@@ -60,12 +57,12 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 100)
+        waitForExpectations(timeout: 60)
     }
 
     func testGetDataToMemory() {
-        let key = "test-image.png"
-
+        let key = "testGetDataToMemory"
+        putData(key: key, data: key.data(using: .utf8)!)
         let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageGetOption(accessLevel: nil,
                                        targetIdentityId: nil,
@@ -87,76 +84,117 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     }
 
     func testGetDataToFile() {
-        XCTFail("Not yet implemented")
+        let key = "testGetDataToFile"
+        let timestamp = String(Date().timeIntervalSince1970)
+        let timestampData = timestamp.data(using: .utf8)!
+        putData(key: key, data: timestampData)
+        let filePath = NSTemporaryDirectory() + key + ".tmp"
+        let fileURL = URL(fileURLWithPath: filePath)
+        removeIfExists(fileURL)
+        let completeInvoked = expectation(description: "Completed is invoked")
+        let options = StorageGetOption(accessLevel: nil,
+                                       targetIdentityId: nil,
+                                       storageGetDestination: .file(local: fileURL),
+                                       options: nil)
+
+        let operation = Amplify.Storage.get(key: key, options: options) { (event) in
+            switch event {
+            case .completed:
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Failed with \(error)")
+            default:
+                break
+            }
+        }
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 60)
+
+        let fileExists = FileManager.default.fileExists(atPath: fileURL.path)
+        XCTAssertTrue(fileExists)
+        do {
+            let result = try String(contentsOf: fileURL, encoding: .utf8)
+            XCTAssertEqual(result, timestamp)
+        } catch {
+            XCTFail("Failed to read file that has been downloaded to")
+        }
+        removeIfExists(fileURL)
     }
 
     func testGetRemoteURL() {
-        let key = "test-image.png"
+        let key = "testGetRemoteURL"
+        putData(key: key, dataString: key)
+
+        var remoteURLOptional: URL?
         let completeInvoked = expectation(description: "Completed is invoked")
         let operation = Amplify.Storage.get(key: key, options: nil) { (event) in
             switch event {
-            case .unknown:
-                break
-            case .notInProcess:
-                break
-            case .inProcess:
-                break
             case .completed(let result):
-                if let remote = result.remote {
-                    print("Got result: \(remote)")
+                if let result = result.remote {
+                    remoteURLOptional = result
                 } else {
                     XCTFail("Missing remote url from result")
                 }
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Failed with \(error)")
+            default:
+                break
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 100)
+        waitForExpectations(timeout: 15)
+        guard let remoteURL = remoteURLOptional else {
+            XCTFail("Failed to get remoteURL")
+            return
+        }
+
+        let dataTaskCompleteInvoked = expectation(description: "Completion of retrieving data at URL is invoked")
+        let task = URLSession.shared.dataTask(with: remoteURL) { (data, response, error) in
+            guard error == nil else {
+                XCTFail("Failed to received data from url eith error \(error)")
+                return
+            }
+
+            guard let response = response as? HTTPURLResponse, (200...299).contains(response.statusCode) else {
+                XCTFail("Failed to received data with bad status code")
+                return
+            }
+
+            guard let data = data else {
+                XCTFail("Failed to received data, empty data object")
+                return
+            }
+
+            let dataString = String(data: data, encoding: .utf8)!
+            XCTAssertEqual(dataString, key)
+            dataTaskCompleteInvoked.fulfill()
+        }
+        task.resume()
+
+        waitForExpectations(timeout: 15)
     }
 
     func testListFromPublic() {
+        let key = "testListFromPublic"
+        putData(key: key, dataString: key)
         let completeInvoked = expectation(description: "Completed is invoked")
-        let operation = Amplify.Storage.list(options: nil) { (event) in
-            switch event {
-            case .unknown:
-                break
-            case .notInProcess:
-                break
-            case .inProcess:
-                break
-            case .completed(let result):
-                print("Got result: \(result.keys)")
-                completeInvoked.fulfill()
-            case .failed(let error):
-                XCTFail("Failed with \(error)")
-            }
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 100)
-    }
-
-    func testListFromProtected() {
-        let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageListOption(accessLevel: .protected,
+        let options = StorageListOption(accessLevel: .public,
                                         targetIdentityId: nil,
-                                        path: nil,
+                                        path: key,
                                         limit: nil,
                                         options: nil)
         let operation = Amplify.Storage.list(options: options) { (event) in
             switch event {
-            case .unknown:
-                break
-            case .notInProcess:
-                break
-            case .inProcess:
-                break
             case .completed(let result):
-                print("Got result: \(result.keys)")
+                XCTAssertNotNil(result)
+                XCTAssertNotNil(result.keys)
+                XCTAssertEqual(result.keys.count, 1)
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Failed with \(error)")
+            default:
+                break
             }
         }
         XCTAssertNotNil(operation)
@@ -165,67 +203,86 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
     func testRemoveKey() {
         let key = "testRemoveKey"
-        let dataString = "testRemoveKey"
-        let data = dataString.data(using: .utf8)!
-        let completeInvoked = expectation(description: "Completed is invoked")
+        putData(key: key, dataString: key)
 
-        _ = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+        let completeInvoked = expectation(description: "Completed is invoked")
+        let removeOperation = Amplify.Storage.remove(key: key, options: nil) { (event) in
             switch event {
-            case .unknown:
-                break
-            case .notInProcess:
-                break
-            case .inProcess:
-                break
-            case .completed:
-                let removeOperation = Amplify.Storage.remove(key: key, options: nil) { (event) in
-                    switch event {
-                    case .unknown:
-                        break
-                    case .notInProcess:
-                        break
-                    case .inProcess:
-                        break
-                    case .completed(let result):
-                        print("Got result: \(result.key)")
-                        completeInvoked.fulfill()
-                    case .failed(let error):
-                        XCTFail("Failed with \(error)")
-                    }
-                }
-                XCTAssertNotNil(removeOperation)
+            case .completed(let result):
+                completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Failed with \(error)")
+            default:
+                break
             }
         }
-
-        waitForExpectations(timeout: 100)
+        XCTAssertNotNil(removeOperation)
+        waitForExpectations(timeout: 60)
     }
 
-    func testEscapeHatchForHeadObject() {
-        // TODO: upload to public with metadata and then get
+    func testEscapeHatchAndGetHeadObject() {
+        let key = "testEscapeHatchAndGetHeadObject"
+        putData(key: key, dataString: key)
+
         do {
-            let plugin = try Amplify.Storage.getPlugin(for: "AWSS3StoragePlugin")
-            if let plugin = plugin as? AWSS3StoragePlugin {
-                let awsS3 = plugin.getEscapeHatch()
+            let pluginOptional = try Amplify.Storage.getPlugin(for: "AWSS3StoragePlugin")
 
-                let request = AWSS3HeadObjectRequest()
-                request?.bucket = "swift6a3ad8b2b9f4402187f051de89548cc0-devo" // TODO retrieve from above
-                request?.key = "public/test-image.png"
+            guard let plugin = pluginOptional as? AWSS3StoragePlugin else {
+                XCTFail("Could not cast as AWSS3StoragePlugin")
+                return
+            }
 
-                let task = awsS3.headObject(request!)
-                task.waitUntilFinished()
+            let awsS3 = plugin.getEscapeHatch()
+            let request: AWSS3HeadObjectRequest = AWSS3HeadObjectRequest()
+            request.bucket = bucket
+            request.key = "public/" + key
 
-                if let error = task.error {
-                    XCTFail("Failed to get headObject \(error)")
-                } else if let result = task.result {
-                    print("headObject \(result)")
-                }
-            } else {
-                XCTFail("Failed to get AWSS3StoragePlugin")
+            let task = awsS3.headObject(request)
+            task.waitUntilFinished()
+
+            if let error = task.error {
+                XCTFail("Failed to get headObject \(error)")
+            } else if let result = task.result {
+                print("headObject \(result)")
+                XCTAssertNotNil(result)
             }
         } catch {
             XCTFail("Failed to get AWSS3StoragePlugin")
+        }
+    }
+
+    // MARK: Helper functions
+
+    func putData(key: String, dataString: String) {
+        putData(key: key, data: dataString.data(using: .utf8)!)
+    }
+
+    func putData(key: String, data: Data) {
+        let completeInvoked = expectation(description: "Completed is invoked")
+
+        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+            switch event {
+            case .completed:
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Failed with \(error)")
+            default:
+                break
+            }
+        }
+
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 60)
+    }
+
+    func removeIfExists(_ fileURL: URL) {
+        let fileExists = FileManager.default.fileExists(atPath: fileURL.path)
+        if fileExists {
+            do {
+                try FileManager.default.removeItem(at: fileURL)
+            } catch {
+                XCTFail("Failed to delete file at \(fileURL)")
+            }
         }
     }
 }

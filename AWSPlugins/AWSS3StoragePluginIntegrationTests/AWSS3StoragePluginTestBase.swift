@@ -16,7 +16,6 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     let bucket = "swift6a3ad8b2b9f4402187f051de89548cc0-devo"
     let region = "us-east-1"
-    let password = "testPassword123!"
 
     override func setUp() {
         // Set up AWSMobileClient

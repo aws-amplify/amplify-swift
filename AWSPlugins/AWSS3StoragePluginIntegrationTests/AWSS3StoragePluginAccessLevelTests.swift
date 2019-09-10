@@ -13,37 +13,269 @@ import AWSS3
 import AWSCognitoIdentityProvider
 
 class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
-    let sharedEmail = "testingUser@amazon.com"
-    let userPoolId = "us-east-1_lwhKEyalg"
-
     let user1 = "storageUser1@testing.com"
     let user2  = "storageUser2@testing.com"
-    let commonPassword = "Abc123@@!!"
+    let password = "Abc123@@!!"
 
-
-
+    // This is a run once function to set up users then use console to verify and run rest of these tests.
     func testSetUpOnce() {
         signUpUser(username: user1)
+        signUpUser(username: user2)
     }
 
-    //    func testPutToPublicAndListThenGetThenRemoveFromOtherUser() {
-    //        XCTFail("Not yet implemented")
-    //    }
-    //
-
-    func testPutToProtectedAndListThenRemoveThenFailGet() {
-        signIn(username: user1)
+    func testPutToProtectedAndListThenGetThenRemove() {
         let key = "testPutToProtectedAndListThenGetThenRemove"
-        let dataString = "testPutToProtectedAndListThenGetThenRemove"
-        let data = dataString.data(using: .utf8)!
+        let accessLevel: StorageAccessLevel = .protected
+        putThenListThenGetThenRemoveForSingleUser(username: user1, key: key, accessLevel: accessLevel)
+    }
+
+    func testPutToPrivateAndListThenGetThenRemove() {
+        let key = #function
+        let accessLevel: StorageAccessLevel = .private
+        putThenListThenGetThenRemoveForSingleUser(username: user1, key: key, accessLevel: accessLevel)
+    }
+
+    func testPutToPublicAndListThenGetThenRemoveFromOtherUser() {
+        let key = "testPutToPublicAndListThenGetThenRemoveFromOtherUser"
+        let accessLevel: StorageAccessLevel = .public
+
+        // Sign into user1
+        signIn(username: user1)
+        let user1IdentityId = getIdentityId()
+
+        // Put data
+        put(key: key, data: key, accessLevel: accessLevel)
+
+        // Sign out of user1 and into user2
+        AWSMobileClient.sharedInstance().signOut()
+        signIn(username: user2)
+        let user2IdentityId = getIdentityId()
+        XCTAssertNotEqual(user1IdentityId, user2IdentityId)
+
+        // list keys as user2
+        let keys = list(path: key, accessLevel: accessLevel)
+        XCTAssertNotNil(keys)
+        XCTAssertEqual(keys!.count, 1)
+
+        // get key as user2
+        let data = get(key: key, accessLevel: accessLevel)
+        XCTAssertNotNil(data)
+
+        // remove key as user2
+        remove(key: key, accessLevel: accessLevel)
+
+        // get key after removal should return NotFound
+        let getFailedExpectation = expectation(description: "Get Operation should fail")
+        let getOptions = StorageGetOption(accessLevel: accessLevel,
+                                          targetIdentityId: nil,
+                                          storageGetDestination: .data,
+                                          options: nil)
+        _ = Amplify.Storage.get(key: key, options: getOptions) { (event) in
+            switch event {
+            case .completed(let results):
+                XCTFail("Should not have completed with result \(results)")
+            case .failed(let error):
+                guard case .notFound = error else {
+                    XCTFail("Expected notFound error")
+                    return
+                }
+                getFailedExpectation.fulfill()
+            default:
+                break
+            }
+        }
+        waitForExpectations(timeout: 30)
+    }
+
+    func testPutToProtectedAndListThenGetFromOtherUser() {
+        let key = "testPutToProtectedAndListThenGetThenFailRemoveFromOtherUser"
+        let accessLevel: StorageAccessLevel = .protected
+
+        // Sign into user1
+        signIn(username: user1)
+        let user1IdentityId = getIdentityId()
 
         // Put
+        put(key: key, data: key, accessLevel: accessLevel)
+
+        // Sign out of user1 and into user2
+        AWSMobileClient.sharedInstance().signOut()
+        signIn(username: user2)
+        let user2IdentityId = getIdentityId()
+        XCTAssertNotEqual(user1IdentityId, user2IdentityId)
+
+        // list keys for user1 as user2
+        let keys = list(path: key, accessLevel: accessLevel, targetIdentityId: user1IdentityId)
+        XCTAssertNotNil(keys)
+        XCTAssertEqual(keys!.count, 1)
+
+        // get key for user1 as user2
+        let data = get(key: key, accessLevel: accessLevel, targetIdentityId: user1IdentityId)
+        XCTAssertNotNil(data)
+    }
+
+    // Should this test really exist? or should we just test that a
+    // remove request cannot be made with private and targetIdentityId?
+    func testPutToPrivateAndFailListThenFailGetFromOtherUser() {
+        let key = "testPutToPrivateAndFailListThenFailGetFromOtherUser"
+        let accessLevel: StorageAccessLevel = .private
+
+        // Sign into user1
+        signIn(username: user1)
+        let user1IdentityId = getIdentityId()
+
+        // Put
+        put(key: key, data: key, accessLevel: accessLevel)
+
+        // Sign out of user1 and into user2
+        AWSMobileClient.sharedInstance().signOut()
+        signIn(username: user2)
+        let user2IdentityId = getIdentityId()
+        XCTAssertNotEqual(user1IdentityId, user2IdentityId)
+
+        // list keys for user1 as user2 - should fail with validation error
+        let listFailedExpectation = expectation(description: "List operation should fail")
+        let listOptions = StorageListOption(accessLevel: accessLevel,
+                                            targetIdentityId: user1IdentityId,
+                                            path: key,
+                                            limit: nil,
+                                            options: nil)
+        _ = Amplify.Storage.list(options: listOptions) { (event) in
+            switch event {
+            case .completed:
+                XCTFail("Should not have completed")
+            case .failed(let error):
+                guard case .validation(let errorDescription, _) = error else {
+                    XCTFail("Expected validation error")
+                    return
+                }
+                listFailedExpectation.fulfill()
+            default:
+                break
+            }
+        }
+        waitForExpectations(timeout: 5)
+
+        // get key for user1 as user2 - should fail with validation error
+        let getFailedExpectation = expectation(description: "Get Operation should fail")
+        let getOptions = StorageGetOption(accessLevel: accessLevel,
+                                          targetIdentityId: user1IdentityId,
+                                          storageGetDestination: .data,
+                                          options: nil)
+        _ = Amplify.Storage.get(key: key, options: getOptions) { (event) in
+            switch event {
+            case .completed(let results):
+                XCTFail("Should not have completed")
+            case .failed(let error):
+                guard case .validation(let errorDescription, _) = error else {
+                    XCTFail("Expected validation error")
+                    return
+                }
+                getFailedExpectation.fulfill()
+            default:
+                break
+            }
+        }
+        waitForExpectations(timeout: 5)
+    }
+
+    // Mark: Commonn test functions
+
+    func putThenListThenGetThenRemoveForSingleUser(username: String, key: String, accessLevel: StorageAccessLevel) {
+        signIn(username: username)
+
+        // Put
+        put(key: key, data: key, accessLevel: accessLevel)
+
+        // List
+        let keys = list(path: key, accessLevel: accessLevel)
+        XCTAssertNotNil(keys)
+        XCTAssertEqual(keys!.count, 1)
+
+        // Get
+        let data = get(key: key, accessLevel: accessLevel)
+        XCTAssertNotNil(data)
+
+        // Remove
+        remove(key: key, accessLevel: accessLevel)
+
+        // Get key after removal should return NotFound
+        let getFailedExpectation = expectation(description: "Get Operation should fail")
+        let getOptions = StorageGetOption(accessLevel: accessLevel,
+                                          targetIdentityId: nil,
+                                          storageGetDestination: .data,
+                                          options: nil)
+        _ = Amplify.Storage.get(key: key, options: getOptions) { (event) in
+            switch event {
+            case .completed(let results):
+                XCTFail("Should not have completed with result \(results)")
+            case .failed(let error):
+                guard case .notFound = error else {
+                    XCTFail("Expected notFound error")
+                    return
+                }
+                getFailedExpectation.fulfill()
+            default:
+                break
+            }
+        }
+        waitForExpectations(timeout: 5)
+    }
+
+    // MARK: StoragePlugin Helper functions
+
+    func list(path: String, accessLevel: StorageAccessLevel, targetIdentityId: String? = nil) -> [String]? {
+        var keys: [String]?
+        let listExpectation = expectation(description: "List operation should be successful")
+        let listOptions = StorageListOption(accessLevel: accessLevel,
+                                            targetIdentityId: targetIdentityId,
+                                            path: path,
+                                            limit: nil,
+                                            options: nil)
+        _ = Amplify.Storage.list(options: listOptions) { (event) in
+            switch event {
+            case .completed(let results):
+                keys = results.keys
+                listExpectation.fulfill()
+            case .failed(let error):
+                XCTFail("Failed to list with error \(error)")
+            default:
+                break
+            }
+        }
+        waitForExpectations(timeout: 5)
+        return keys
+    }
+
+    func get(key: String, accessLevel: StorageAccessLevel, targetIdentityId: String? = nil) -> Data? {
+        var data: Data?
+        let getExpectation = expectation(description: "Get Operation should be successful")
+        let getOptions = StorageGetOption(accessLevel: accessLevel,
+                                          targetIdentityId: targetIdentityId,
+                                          storageGetDestination: .data,
+                                          options: nil)
+        _ = Amplify.Storage.get(key: key, options: getOptions) { (event) in
+            switch event {
+            case .completed(let results):
+                data = results.data
+                getExpectation.fulfill()
+            case .failed(let error):
+                XCTFail("Failed to get with error \(error)")
+            default:
+                break
+            }
+        }
+        waitForExpectations(timeout: 5)
+        return data
+    }
+
+    func put(key: String, data: String, accessLevel: StorageAccessLevel) {
         let putExpectation = expectation(description: "Put operation should be successful")
-        let putOptions = StoragePutOption(accessLevel: .protected,
-                                       contentType: nil,
-                                       metadata: nil,
-                                       options: nil)
-        _ = Amplify.Storage.put(key: key, data: data, options: putOptions) { (event) in
+        let putOptions = StoragePutOption(accessLevel: accessLevel,
+                                          contentType: nil,
+                                          metadata: nil,
+                                          options: nil)
+        _ = Amplify.Storage.put(key: key, data: data.data(using: .utf8)!, options: putOptions) { (event) in
             switch event {
             case .completed:
                 putExpectation.fulfill()
@@ -53,31 +285,12 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
+        waitForExpectations(timeout: 5)
+    }
 
-        waitForExpectations(timeout: 60)
-
-        // List
-        let listExpectation = expectation(description: "List operation should be successful")
-        let listOptions = StorageListOption(accessLevel: .protected,
-                                            targetIdentityId: nil,
-                                            path: key,
-                                            limit: nil,
-                                            options: nil)
-        _ = Amplify.Storage.list(options: listOptions) { (event) in
-            switch event {
-            case .completed(let results):
-                print("results from list: \(results.keys)")
-                XCTAssertEqual(results.keys.count, 1, "The result should be 1 since path is set to the key")
-                listExpectation.fulfill()
-            case .failed(let error):
-                XCTFail("Failed to list from user's own protected folder with error \(error)")
-            default:
-                break
-            }
-        }
-
+    func remove(key: String, accessLevel: StorageAccessLevel) {
         let removeExpectation = expectation(description: "Remove Operation should be successful")
-        let removeOptions = StorageRemoveOption(accessLevel: .protected, options: nil)
+        let removeOptions = StorageRemoveOption(accessLevel: accessLevel, options: nil)
         _ = Amplify.Storage.remove(key: key, options: removeOptions) { (event) in
             switch event {
             case .completed(let results):
@@ -89,135 +302,52 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
-        waitForExpectations(timeout: 60)
-
-        // Get
-        let getFailedExpectation = expectation(description: "Get Operation should fail")
-        let getOptions = StorageGetOption(accessLevel: .protected,
-                                          targetIdentityId: nil,
-                                          storageGetDestination: .data,
-                                          options: nil)
-        _ = Amplify.Storage.get(key: key, options: getOptions) { (event) in
-            switch event {
-            case .completed(let results):
-                XCTFail("Should not have completed with result \(results)")
-            case .failed(let error):
-                // TODO: propagate 404's to StorageGetError.data? ("Key is missing", "")
-                print("Failed with error \(error)")
-                getFailedExpectation.fulfill()
-            default:
-                break
-            }
-        }
-
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: 5)
     }
-    //
-    //    func testPutToProtectedAndListThenGetThenFailRemoveFromOtherUser() {
-    //        XCTFail("Not yet implemented")
-    //    }
-    //
-    //    func testPutToPrivateAndListThenGetThenRemove() {
-    //        XCTFail("Not yet implemented")
-    //    }
-    //
-    //    func testPutToPrivateAndFailListThenFailGetThenFailRemoveFromOtherUser() {
-    //        XCTFail("Not yet implemented")
-    //    }
 
-    func signIn(username: String, password: String? = nil, verifySignState: SignInState = .signedIn) {
-        let passwordToUse = password ?? commonPassword
+    // MARK: Auth Helper functions
+
+    func signIn(username: String) {
         let signInWasSuccessful = expectation(description: "signIn was successful")
-        AWSMobileClient.sharedInstance().signIn(username: username, password: passwordToUse) { (signInResult, error) in
+        AWSMobileClient.sharedInstance().signIn(username: username, password: password) { (result, error) in
             if let error = error {
-                XCTFail("User login failed: \(error.localizedDescription)")
+                XCTFail("Sign in failed: \(error.localizedDescription)")
                 return
             }
 
-            guard let signInResult = signInResult else {
-                XCTFail("User login failed, signInResult unexpectedly nil")
+            guard let result = result else {
+                XCTFail("No result from SignIn")
                 return
             }
-            XCTAssertEqual(signInResult.signInState, verifySignState, "Could not verify sign in state")
+            XCTAssertEqual(result.signInState, .signedIn)
             signInWasSuccessful.fulfill()
         }
-        wait(for: [signInWasSuccessful], timeout: 5)
+        waitForExpectations(timeout: 5)
     }
 
-    // This is pulled in from AWSMobileClient Tests and is not working. Resources created with Amplify CLI do not
-    // have admin permissions to verify the user. so for now just go into the console after signUpUser
-    func signUpAndVerifyUser(username: String, customUserAttributes: [String: String]? = nil) {
-        signUpUser(username: username, customUserAttributes: customUserAttributes)
-        adminVerifyUser(username: username)
-    }
-
-    func signUpUser(username: String, customUserAttributes: [String: String]? = nil) {
-        var userAttributes = ["email": sharedEmail]
-        if let customUserAttributes = customUserAttributes {
-            userAttributes.merge(customUserAttributes) { current, _ in current }
-        }
-
+    func signUpUser(username: String) {
         let signUpExpectation = expectation(description: "successful sign up expectation.")
-        AWSMobileClient.sharedInstance().signUp(
-            username: username,
-            password: commonPassword/*,
-            userAttributes: userAttributes*/) { (signUpResult, error) in
-                if let error = error {
-                    var errorMessage: String
-                    if let mobileClientError = error as? AWSMobileClientError {
-                        //errorMessage = mobileClientError.message
-                        errorMessage = mobileClientError.localizedDescription
-                    } else {
-                        errorMessage = error.localizedDescription
-                    }
-                    XCTFail("Unexpected failure: \(errorMessage)")
-                    return
-                }
+        AWSMobileClient.sharedInstance().signUp(username: username, password: password) { (result, error) in
+            guard error == nil else {
+                let error = error
+                XCTFail("Failed to sign up user with error: \(error?.localizedDescription)")
+                return
+            }
 
-                guard let signUpResult = signUpResult else {
-                    XCTFail("signUpResult unexpectedly nil")
-                    return
-                }
+            guard result != nil else {
+                XCTFail("result from signUp should not be nil")
+                return
+            }
 
-                switch(signUpResult.signUpConfirmationState) {
-                case .confirmed:
-                    print("User is signed up and confirmed.")
-                case .unconfirmed:
-                    print("""
-                        User is not confirmed and needs verification
-                        via \(signUpResult.codeDeliveryDetails!.deliveryMedium)
-                        sent at \(signUpResult.codeDeliveryDetails!.destination!)
-                        """)
-                case .unknown:
-                    print("Unexpected case")
-                }
-
-                XCTAssertTrue(signUpResult.signUpConfirmationState == .unconfirmed, "User is expected to be marked as unconfirmed.")
-
-                signUpExpectation.fulfill()
+            signUpExpectation.fulfill()
         }
 
-        wait(for: [signUpExpectation], timeout: 5)
+        waitForExpectations(timeout: 5)
     }
 
-    func adminVerifyUser(username: String) {
-        guard let adminConfirmSignUpRequest = AWSCognitoIdentityProviderAdminConfirmSignUpRequest() else {
-            XCTFail("Unable to create adminConfirmSignUpRequest")
-            return
-        }
-
-        adminConfirmSignUpRequest.username = username
-        adminConfirmSignUpRequest.userPoolId = userPoolId
-        let credentialsProvider = AWSMobileClient.sharedInstance()
-        let region = "us-east-1"
-        let configuration = AWSServiceConfiguration(region: region.aws_regionTypeValue(), credentialsProvider: credentialsProvider)!
-        AWSCognitoIdentityProvider.register(with: configuration, forKey: "TEST")
-        let client = AWSCognitoIdentityProvider(forKey: "TEST")
-        client.adminConfirmSignUp(adminConfirmSignUpRequest).continueWith(block: { (task) -> Any? in
-            if let error = task.error {
-                XCTFail("Could not confirm user. Failing the test: \(error)")
-            }
-            return nil
-        }).waitUntilFinished()
+    func getIdentityId() -> String {
+        let getIdentityIdForUser2Task = AWSMobileClient.sharedInstance().getIdentityId()
+        getIdentityIdForUser2Task.waitUntilFinished()
+        return getIdentityIdForUser2Task.result! as String
     }
 }

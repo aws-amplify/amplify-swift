@@ -33,6 +33,11 @@ public struct AWSS3StorageListRequest {
                 return StorageListError.validation(StorageErrorConstants.IdentityIdIsEmpty.ErrorDescription,
                                                   StorageErrorConstants.IdentityIdIsEmpty.RecoverySuggestion)
             }
+
+            if accessLevel == .private {
+                return StorageListError.validation(StorageErrorConstants.PrivateWithTarget.ErrorDescription,
+                                                  StorageErrorConstants.PrivateWithTarget.RecoverySuggestion)
+            }
         }
 
         if let prefix = prefix {

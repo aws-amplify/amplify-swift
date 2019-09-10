@@ -133,6 +133,10 @@ class AWSS3StorageGetOperationTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
+    func testGetOperationDownloadDataFromTargetIdentityId() {
+        // TODO: like testGetOperationDownloadData but we verify that the targetIdentityId overrides the identitiyId
+    }
+
     func testGetOperationDownloadLocal() {
         let url = URL(fileURLWithPath: "path")
         let request = AWSS3StorageGetRequest(accessLevel: .public,
@@ -159,6 +163,10 @@ class AWSS3StorageGetOperationTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
+    func testGetOperationDownloadLocalFromTargetIdentityId() {
+        // TODO: like testGetOperationDownloadLocal but we verify that targetIdentityID overrides identityid
+    }
+
     func testGetOperationGetPresignedURL() {
         let request = AWSS3StorageGetRequest(accessLevel: .public,
                                              targetIdentityId: nil,
@@ -182,5 +190,9 @@ class AWSS3StorageGetOperationTests: XCTestCase {
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.getPreSignedURLCalled, true)
         waitForExpectations(timeout: 1)
+    }
+
+    func testGetOperationGetPresignedURLFromTargetIdentityId() {
+        // TODO: like testGetOperationGetPresignedURL but we verify that targetIdentityID overrides identityid
     }
 }

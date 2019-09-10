@@ -10,6 +10,8 @@ import Amplify
 import AWSS3
 import AWSMobileClient
 
+// TODO: thread safety: everything has to be locked down
+// TODO verify no retain cycle
 public class AWSS3StorageGetOperation: AmplifyOperation<Progress, StorageGetResult, StorageGetError>,
     StorageGetOperation {
 
@@ -41,7 +43,6 @@ public class AWSS3StorageGetOperation: AmplifyOperation<Progress, StorageGetResu
         self.storageOperationReference?.resume()
     }
 
-    // TODO: thread safety: everything has to be locked down
     override public func cancel() {
         self.storageOperationReference?.cancel()
         cancel()
@@ -66,9 +67,9 @@ public class AWSS3StorageGetOperation: AmplifyOperation<Progress, StorageGetResu
             return
         }
 
-        // TODO verify no retain cycle
+        let targetIdentityId = request.targetIdentityId ?? identityId
         let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
-                                                           identityId: identityId,
+                                                           identityId: targetIdentityId,
                                                            key: request.key)
         switch request.storageGetDestination {
         case .data:

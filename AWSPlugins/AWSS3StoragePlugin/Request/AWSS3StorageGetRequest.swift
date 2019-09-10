@@ -33,6 +33,11 @@ public struct AWSS3StorageGetRequest {
                 return StorageGetError.validation(StorageErrorConstants.IdentityIdIsEmpty.ErrorDescription,
                                                   StorageErrorConstants.IdentityIdIsEmpty.RecoverySuggestion)
             }
+
+            if accessLevel == .private {
+                return StorageGetError.validation(StorageErrorConstants.PrivateWithTarget.ErrorDescription,
+                                                  StorageErrorConstants.PrivateWithTarget.RecoverySuggestion)
+            }
         }
 
         if key.isEmpty {

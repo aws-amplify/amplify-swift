@@ -12,17 +12,24 @@ import AWSS3StoragePlugin
 import AWSS3
 class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
 
-    //    // MARK: Negative Tests
-    //
     func testGetNonexistentKey() {
         let key = "testGetNonexistentKey"
         let failInvoked = expectation(description: "Failed is invoked")
-        let operation = Amplify.Storage.get(key: key, options: nil) { (event) in
+        let options = StorageGetOption(accessLevel: nil,
+                                       targetIdentityId: nil,
+                                       storageGetDestination: .data,
+                                       options: nil)
+        let operation = Amplify.Storage.get(key: key, options: options) { (event) in
             switch event {
             case .completed:
                 XCTFail("Should not have completed successfully")
             case .failed(let error):
-                // TODO: Check for Error is of type 404 or we made our own.
+                guard case let .notFound(errorDescription, _) = error else {
+                    XCTFail("Should have been validation error")
+                    return
+                }
+
+                XCTAssertEqual(errorDescription, StorageErrorConstants.KeyNotFound.ErrorDescription)
                 failInvoked.fulfill()
             default:
                 break
@@ -30,8 +37,9 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 100)
+        waitForExpectations(timeout: 10)
     }
+
     //
     //    func testPutDataFromMissingFile() {
     //        XCTFail("Not yet implemented")
