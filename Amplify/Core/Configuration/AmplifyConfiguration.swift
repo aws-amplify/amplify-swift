@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 /// Configures the Amplify system with sub-configurations for each supported category
 public struct AmplifyConfiguration: Codable {
     /// Configurations for the Amplify Analytics category
@@ -46,7 +48,7 @@ extension Amplify {
     /// - Throws:
     ///   - ConfigurationError.amplifyAlreadyConfigured: If `configure` has already been invoked, but `reset` has not
     ///   - PluginError.noSuchPlugin: If one of the configurations specifies a plugin key that has not been added
-    public static func configure(_ configuration: AmplifyConfiguration) throws {
+    public static func configure(_ configuration: AmplifyConfiguration? = nil) throws {
         guard !isConfigured else {
             let error = ConfigurationError.amplifyAlreadyConfigured(
                 "Amplify has already been configured.",
@@ -57,6 +59,8 @@ extension Amplify {
             )
             throw error
         }
+
+        let configuration = try Amplify.resolve(configuration: configuration)
 
         // Looping through all categories to ensure we don't accidentally forget a category at some point in the future
         for categoryType in CategoryType.allCases {
@@ -108,4 +112,13 @@ extension Amplify {
 
         isConfigured = false
     }
+
+    static func resolve(configuration: AmplifyConfiguration? = nil) throws -> AmplifyConfiguration {
+        if let configuration = configuration {
+            return configuration
+        }
+
+        return try AmplifyConfiguration()
+    }
+
 }

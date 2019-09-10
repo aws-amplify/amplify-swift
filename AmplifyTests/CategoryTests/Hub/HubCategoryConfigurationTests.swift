@@ -10,6 +10,7 @@ import Foundation
 import CwlPreconditionTesting
 
 @testable import Amplify
+@testable import AmplifyTestCommon
 
 class HubCategoryConfigurationTests: XCTestCase {
     override func setUp() {
