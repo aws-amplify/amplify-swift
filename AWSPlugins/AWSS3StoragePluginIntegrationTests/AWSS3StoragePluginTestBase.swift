@@ -41,16 +41,13 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
         // Set up Amplify storage configuration
 
-
-        FIX THIS
-
-        
-        let bucketJSONValue = JSONValue.init(stringLiteral: bucket)
-        let regionJSONValue = JSONValue.init(stringLiteral: region)
-        let storagePluginConfig = JSONValue.init(
-            dictionaryLiteral: ("Bucket", bucketJSONValue), ("Region", regionJSONValue))
         let storageConfig = StorageCategoryConfiguration(
-            plugins: ["AWSS3StoragePlugin": storagePluginConfig]
+            plugins: [
+                "AWSS3StoragePlugin": [
+                    "Bucket": bucket,
+                    "Region": region
+                ]
+            ]
         )
 
         // TODO: Set up Amplify Hub configuration, and others like logging, auth
