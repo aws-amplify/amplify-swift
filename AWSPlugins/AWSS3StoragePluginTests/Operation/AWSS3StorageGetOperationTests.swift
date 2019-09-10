@@ -7,6 +7,7 @@
 
 import XCTest
 import Amplify
+@testable import AmplifyTestCommon
 @testable import AWSS3StoragePlugin
 
 // TODO Currently we only verify that the method on storage service was called.
