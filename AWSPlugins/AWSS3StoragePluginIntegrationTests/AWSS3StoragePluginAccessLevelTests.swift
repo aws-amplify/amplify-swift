@@ -23,6 +23,57 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         signUpUser(username: user2)
     }
 
+    func testListFromProtectedForUnauthenticatedUser() {
+        let key = "testListFromProtectedForUnauthenticatedUserShouldReturnAccessDenied"
+        let completeInvoked = expectation(description: "Completed is invoked")
+        let options = StorageListOption(accessLevel: .protected,
+                                        targetIdentityId: nil,
+                                        path: key,
+                                        limit: nil,
+                                        options: nil)
+        let operation = Amplify.Storage.list(options: options) { (event) in
+            switch event {
+            case .completed(let result):
+                XCTAssertNotNil(result)
+                XCTAssertNotNil(result.keys)
+                XCTAssertEqual(result.keys.count, 0)
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Failed with \(error)")
+            default:
+                break
+            }
+        }
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 20)
+    }
+
+    func testListFromPrivateForUnauthenticatedUserForReturnAccessDenied() {
+        let key = "testListFromPrivateForUnauthenticatedUserForReturnAccessDenied"
+        let listFailedExpectation = expectation(description: "List Operation should fail")
+        let options = StorageListOption(accessLevel: .private,
+                                        targetIdentityId: nil,
+                                        path: key,
+                                        limit: nil,
+                                        options: nil)
+        let operation = Amplify.Storage.list(options: options) { (event) in
+            switch event {
+            case .completed:
+                XCTFail("Should not have completed")
+            case .failed(let error):
+                guard case .accessDenied = error else {
+                    XCTFail("Expected accessDenied error")
+                    return
+                }
+                listFailedExpectation.fulfill()
+            default:
+                break
+            }
+        }
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 10)
+    }
+
     func testPutToProtectedAndListThenGetThenRemove() {
         let key = "testPutToProtectedAndListThenGetThenRemove"
         let accessLevel: StorageAccessLevel = .protected

@@ -73,4 +73,28 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         Amplify.reset()
         sleep(5)
     }
+
+    // MARK: Common Helper functions
+    
+    func putData(key: String, dataString: String) {
+        putData(key: key, data: dataString.data(using: .utf8)!)
+    }
+
+    func putData(key: String, data: Data) {
+        let completeInvoked = expectation(description: "Completed is invoked")
+
+        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+            switch event {
+            case .completed:
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Failed with \(error)")
+            default:
+                break
+            }
+        }
+
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 60)
+    }
 }

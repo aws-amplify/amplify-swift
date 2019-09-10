@@ -12,6 +12,7 @@ public enum StorageListError {
     case unknown(ErrorDescription, RecoverySuggestion)
     case validation(ErrorDescription, RecoverySuggestion)
     case identity(ErrorDescription, RecoverySuggestion)
+    case accessDenied(ErrorDescription, RecoverySuggestion)
 
 }
 
@@ -21,7 +22,8 @@ extension StorageListError: AmplifyError {
         case .httpStatusError(let description, _),
              .unknown(let description, _),
              .validation(let description, _),
-             .identity(let description, _):
+             .identity(let description, _),
+             .accessDenied(let description, _):
             return description
         }
     }
@@ -31,7 +33,8 @@ extension StorageListError: AmplifyError {
         case .httpStatusError(_, let recoverySuggestion),
              .unknown(_, let recoverySuggestion),
              .validation(_, let recoverySuggestion),
-             .identity(_, let recoverySuggestion):
+             .identity(_, let recoverySuggestion),
+             .accessDenied(_, let recoverySuggestion):
             return recoverySuggestion
         }
     }

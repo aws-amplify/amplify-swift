@@ -7,6 +7,8 @@
 
 import XCTest
 import Amplify
+@testable import AmplifyTestCommon
+
 @testable import AWSS3StoragePlugin
 
 class AWSS3StorageRemoveOperationTests: XCTestCase {

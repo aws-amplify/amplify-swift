@@ -50,9 +50,43 @@ extension AWSS3StorageService {
         let block: UploadTaskCreatedHandler = { (task: AWSTask<AWSS3TransferUtilityUploadTask>) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
+
+                // default error handling on NSError
                 let innerMessage = StorageErrorHelper.getInnerMessage(error)
                 let errorDescription = StorageErrorHelper.getErrorDescription(innerMessage: innerMessage)
-                onEvent(StorageEvent.failed(StoragePutError.unknown(errorDescription, "Recovery Message")))
+                var storagePutError = StoragePutError.unknown(errorDescription, "RecoverMessage")
+
+                // Ensure it is a transferUtilityErrorDomain - maybe not needed
+                guard error.domain == AWSS3TransferUtilityErrorDomain else {
+                    onEvent(StorageEvent.failed(storagePutError))
+                    return nil
+                }
+
+                // Try to get specific error
+                let errorTypeOptional = AWSS3TransferUtilityErrorType.init(rawValue: error.code)
+                guard let errorType = errorTypeOptional else {
+                    onEvent(StorageEvent.failed(storagePutError))
+                    return nil
+                }
+
+                // Extract specific error details and map to Amplify error
+                switch errorType {
+                case .clientError:
+                    break
+                case .unknown:
+                    break
+                case .redirection:
+                    break
+                case .serverError:
+                    break
+                case .localFileNotFound:
+                    storagePutError = StoragePutError.missingFile(StorageErrorConstants.MissingFile.ErrorDescription,
+                                                                 StorageErrorConstants.MissingFile.RecoverySuggestion)
+                default:
+                    break
+                }
+
+                onEvent(StorageEvent.failed(storagePutError))
 
                 return nil
             }

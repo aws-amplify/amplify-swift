@@ -34,6 +34,26 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 60)
     }
 
+    func testPutEmptyData() {
+        let key = "testPutEmptyData"
+        let data = "".data(using: .utf8)!
+        let completeInvoked = expectation(description: "Completed is invoked")
+
+        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+            switch event {
+            case .completed:
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Failed with \(error)")
+            default:
+                break
+            }
+        }
+
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 60)
+    }
+
     func testPutDataFromFile() {
         let key = "testPutDataFromFile"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
@@ -43,6 +63,28 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: testData.data(using: .utf8), attributes: nil)
+
+        let completeInvoked = expectation(description: "Completed is invoked")
+        let operation = Amplify.Storage.put(key: key, local: fileURL, options: nil) { (event) in
+            switch event {
+            case .completed:
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Failed with \(error)")
+            default:
+                break
+            }
+        }
+
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 60)
+    }
+
+    func testPutEmptyDataFromFile() {
+        let key = "testPutEmptyDataFromFile"
+        let filePath = NSTemporaryDirectory() + key + ".tmp"
+        let fileURL = URL(fileURLWithPath: filePath)
+        FileManager.default.createFile(atPath: filePath, contents: "".data(using: .utf8), attributes: nil)
 
         let completeInvoked = expectation(description: "Completed is invoked")
         let operation = Amplify.Storage.put(key: key, local: fileURL, options: nil) { (event) in
@@ -201,6 +243,31 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 100)
     }
 
+    func testListEmpty() {
+        let key = "testListEmpty"
+        let completeInvoked = expectation(description: "Completed is invoked")
+        let options = StorageListOption(accessLevel: .public,
+                                        targetIdentityId: nil,
+                                        path: key,
+                                        limit: nil,
+                                        options: nil)
+        let operation = Amplify.Storage.list(options: options) { (event) in
+            switch event {
+            case .completed(let result):
+                XCTAssertNotNil(result)
+                XCTAssertNotNil(result.keys)
+                XCTAssertEqual(result.keys.count, 0)
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Failed with \(error)")
+            default:
+                break
+            }
+        }
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 10)
+    }
+
     func testRemoveKey() {
         let key = "testRemoveKey"
         putData(key: key, dataString: key)
@@ -252,28 +319,6 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     }
 
     // MARK: Helper functions
-
-    func putData(key: String, dataString: String) {
-        putData(key: key, data: dataString.data(using: .utf8)!)
-    }
-
-    func putData(key: String, data: Data) {
-        let completeInvoked = expectation(description: "Completed is invoked")
-
-        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
-            switch event {
-            case .completed:
-                completeInvoked.fulfill()
-            case .failed(let error):
-                XCTFail("Failed with \(error)")
-            default:
-                break
-            }
-        }
-
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
-    }
 
     func removeIfExists(_ fileURL: URL) {
         let fileExists = FileManager.default.fileExists(atPath: fileURL.path)

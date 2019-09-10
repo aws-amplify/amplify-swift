@@ -30,9 +30,6 @@
                   Identifier = "AWSS3StoragePluginAccessLevelTests/testSetUpOnce()">
                </Test>
                <Test
-                  Identifier = "AWSS3StoragePluginBasicIntegrationTests">
-               </Test>
-               <Test
                   Identifier = "AWSS3StoragePluginIntegrationTests">
                </Test>
                <Test
