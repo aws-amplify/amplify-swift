@@ -40,14 +40,36 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 10)
     }
 
-    //
-    //    func testPutDataFromMissingFile() {
-    //        XCTFail("Not yet implemented")
-    //    }
-    //
-    //    func testPutDataForEmptyObject() {
-    //        XCTFail("Not yet implemented")
-    //    }
+    func testPutDataFromMissingFile() {
+        let key = "testPutDataFromMissingFile"
+        let filePath = NSTemporaryDirectory() + key + ".tmp"
+        var testData = key
+        for _ in 1...5 {
+            testData += testData
+        }
+        let fileURL = URL(fileURLWithPath: filePath)
+        //FileManager.default.createFile(atPath: filePath, contents: testData.data(using: .utf8), attributes: nil)
+
+        let failedInvoked = expectation(description: "Failed is invoked")
+        let operation = Amplify.Storage.put(key: key, local: fileURL, options: nil) { (event) in
+            switch event {
+            case .completed:
+                XCTFail("Completed event is received")
+            case .failed(let error):
+                guard case let .missingFile = error else {
+                    XCTFail("Should have been missing File error")
+                    return
+                }
+                failedInvoked.fulfill()
+            default:
+                break
+            }
+        }
+
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 10)
+    }
+
     //
     //    func testListNonExistentKey() {
     //        XCTFail("Not yet implemented")
@@ -55,7 +77,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
     //        // change this and test that accessDenied is returned ..
     //    }
     //
-    //    func testRemoveNonExistentKey() {
-    //        XCTFail("Not yet implemented")
-    //    }
+    func testRemoveNonExistentKey() {
+        XCTFail("Not yet implemented")
+    }
 }

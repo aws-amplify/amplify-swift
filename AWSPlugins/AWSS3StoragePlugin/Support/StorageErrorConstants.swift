@@ -40,4 +40,12 @@ public struct StorageErrorConstants {
     public static let PrivateWithTarget = (
         ErrorDescription: "Cannot perform this action on a target for private access level",
         RecoverySuggestion: "")
+
+    public static let MissingFile = (
+        ErrorDescription: "The file is missing",
+        RecoverySuggestion: "")
+
+    public static let AccessDenied = (
+        ErrorDescription: "Access denied!",
+        RecoverySuggestion: "")
 }
