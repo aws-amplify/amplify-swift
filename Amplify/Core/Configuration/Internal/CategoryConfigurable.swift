@@ -27,6 +27,6 @@ protocol CategoryConfigurable: class, CategoryTypeable {
     func configure(using amplifyConfiguration: AmplifyConfiguration) throws
 
     /// Clears the category configurations, and invokes `reset` on each added plugin
-    func reset()
+    func reset(onComplete: @escaping (() -> Void))
 
 }

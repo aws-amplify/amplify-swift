@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import Amplify
+@testable import Amplify
 
 class HubDefaultPluginDispatchTests: XCTestCase {
 

@@ -5,9 +5,9 @@
 //
 
 import XCTest
-import Amplify
 import CwlPreconditionTesting
 
+@testable import Amplify
 @testable import AmplifyTestCommon
 
 class ConfigurationTests: XCTestCase {
@@ -115,7 +115,7 @@ class ConfigurationTests: XCTestCase {
 
         let resetWasInvoked = expectation(description: "Reset was invoked")
         plugin.listeners.append { message in
-            if message == "reset()" {
+            if message == "reset" {
                 resetWasInvoked.fulfill()
             }
         }
@@ -140,4 +140,14 @@ class ConfigurationTests: XCTestCase {
         XCTAssertNoThrow(try Amplify.configure(amplifyConfig))
     }
 
+    func testDecodeConfiguration() throws {
+        let jsonString = """
+        {"UserAgent":"aws-amplify-cli/2.0","Version":"1.0","Storage":{"plugins":{"MockStorageCategoryPlugin":{}}}}
+        """
+
+        let jsonData = jsonString.data(using: .utf8)!
+        let decoder = JSONDecoder()
+        let config = try decoder.decode(AmplifyConfiguration.self, from: jsonData)
+        XCTAssertNotNil(config.storage)
+    }
 }

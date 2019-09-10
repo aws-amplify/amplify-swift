@@ -41,7 +41,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         let plugin = MockLoggingCategoryPlugin()
         let resetWasInvoked = expectation(description: "reset() was invoked")
         plugin.listeners.append { message in
-            if message == "reset()" {
+            if message == "reset" {
                 resetWasInvoked.fulfill()
             }
         }
@@ -292,7 +292,11 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         )
 
         try Amplify.Logging.configure(using: categoryConfig)
-        Amplify.Logging.reset()
+
+        let semaphore = DispatchSemaphore(value: 1)
+        Amplify.Logging.reset { semaphore.signal() }
+        semaphore.wait()
+
         XCTAssertNoThrow(try Amplify.Logging.configure(using: categoryConfig))
     }
 

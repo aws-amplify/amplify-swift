@@ -5,16 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 extension LoggingCategory: CategoryConfigurable {
 
     func configure(using configuration: CategoryConfiguration) throws {
         guard !isConfigured else {
             let error = ConfigurationError.amplifyAlreadyConfigured(
                 "\(categoryType.displayName) has already been configured.",
-                """
-                Either remove the duplicate call to `Amplify.configure()`, or call \
-                `Amplify.reset()` before issuing the second call to `configure()`
-                """
+                "Remove the duplicate call to `Amplify.configure()`"
             )
             throw error
         }
@@ -34,9 +33,18 @@ extension LoggingCategory: CategoryConfigurable {
         try configure(using: configuration)
     }
 
-    public func reset() {
-        plugins.values.forEach { $0.reset() }
+    func reset(onComplete: @escaping (() -> Void)) {
+        let group = DispatchGroup()
+
+        for plugin in plugins.values {
+            group.enter()
+            plugin.reset { group.leave() }
+        }
+
+        group.wait()
+
         isConfigured = false
+        onComplete()
     }
 
 }

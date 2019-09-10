@@ -6,8 +6,7 @@
 //
 
 import XCTest
-import Amplify
-
+@testable import Amplify
 @testable import AmplifyTestCommon
 
 // Tests that the client behavior API calls pass through from Category to CategoryPlugin

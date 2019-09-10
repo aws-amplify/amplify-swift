@@ -16,7 +16,7 @@
 public class Amplify {
 
     /// If `true`, `configure()` has already been invoked, and subsequent calls to `configure` will throw a
-    /// ConfigurationError.amplifyAlreadyConfigured error until `reset()` is called.
+    /// ConfigurationError.amplifyAlreadyConfigured error.
     static var isConfigured = false
 
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset

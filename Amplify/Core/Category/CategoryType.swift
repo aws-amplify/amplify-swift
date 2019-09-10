@@ -41,7 +41,7 @@ public extension CategoryType {
         case .hub:
             return "Hub"
         case .logging:
-            return "Loggin"
+            return "Logging"
         case .storage:
             return "Storage"
         }

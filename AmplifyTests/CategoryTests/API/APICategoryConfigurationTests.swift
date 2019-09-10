@@ -41,7 +41,7 @@ class APICategoryConfigurationTests: XCTestCase {
         let plugin = MockAPICategoryPlugin()
         let resetWasInvoked = expectation(description: "reset() was invoked")
         plugin.listeners.append { message in
-            if message == "reset()" {
+            if message == "reset" {
                 resetWasInvoked.fulfill()
             }
         }
@@ -291,7 +291,11 @@ class APICategoryConfigurationTests: XCTestCase {
         )
 
         try Amplify.API.configure(using: categoryConfig)
-        Amplify.API.reset()
+
+        let semaphore = DispatchSemaphore(value: 1)
+        Amplify.API.reset { semaphore.signal() }
+        semaphore.wait()
+
         XCTAssertNoThrow(try Amplify.API.configure(using: categoryConfig))
     }
 

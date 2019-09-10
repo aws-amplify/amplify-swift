@@ -16,8 +16,9 @@ class MockLoggingCategoryPlugin: MessageReporter, LoggingCategoryPlugin {
         notify()
     }
 
-    func reset() {
-        notify()
+    func reset(onComplete: @escaping (() -> Void)) {
+        notify("reset")
+        onComplete()
     }
 
     func error(_ message: @autoclosure () -> String, file: String, function: String, line: Int) {

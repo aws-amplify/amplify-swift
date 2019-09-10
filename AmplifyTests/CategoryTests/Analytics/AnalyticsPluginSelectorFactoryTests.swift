@@ -6,8 +6,7 @@
 //
 
 import XCTest
-import Amplify
-
+@testable import Amplify
 @testable import AmplifyTestCommon
 
 class AnalyticsPluginSelectorFactoryTests: XCTestCase {

@@ -41,7 +41,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         let plugin = MockAnalyticsCategoryPlugin()
         let resetWasInvoked = expectation(description: "reset() was invoked")
         plugin.listeners.append { message in
-            if message == "reset()" {
+            if message == "reset" {
                 resetWasInvoked.fulfill()
             }
         }
@@ -292,7 +292,11 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         )
 
         try Amplify.Analytics.configure(using: categoryConfig)
-        Amplify.Analytics.reset()
+
+        let semaphore = DispatchSemaphore(value: 1)
+        Amplify.Analytics.reset { semaphore.signal() }
+        semaphore.wait()
+
         XCTAssertNoThrow(try Amplify.Analytics.configure(using: categoryConfig))
     }
 
