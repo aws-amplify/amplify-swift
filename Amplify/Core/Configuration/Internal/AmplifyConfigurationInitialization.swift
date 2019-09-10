@@ -8,9 +8,7 @@
 import Foundation
 
 extension AmplifyConfiguration {
-    init(bundle: Bundle? = nil) throws {
-        let bundle = bundle ?? Bundle.main
-
+    init(bundle: Bundle) throws {
         guard let path = bundle.path(forResource: "amplifyconfiguration", ofType: "json") else {
             throw ConfigurationError.invalidAmplifyConfigurationFile(
                 """

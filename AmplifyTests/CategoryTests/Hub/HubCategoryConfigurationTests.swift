@@ -42,7 +42,7 @@ class HubCategoryConfigurationTests: XCTestCase {
         let plugin = MockHubCategoryPlugin()
         let resetWasInvoked = expectation(description: "reset() was invoked")
         plugin.listeners.append { message in
-            if message == "reset()" {
+            if message == "reset" {
                 resetWasInvoked.fulfill()
             }
         }
@@ -292,7 +292,11 @@ class HubCategoryConfigurationTests: XCTestCase {
         )
 
         try Amplify.Hub.configure(using: categoryConfig)
-        Amplify.Hub.reset()
+
+        let semaphore = DispatchSemaphore(value: 1)
+        Amplify.Hub.reset { semaphore.signal() }
+        semaphore.wait()
+
         XCTAssertNoThrow(try Amplify.Hub.configure(using: categoryConfig))
     }
 

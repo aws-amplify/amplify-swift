@@ -40,8 +40,9 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         notify()
     }
 
-    func reset() {
-        notify()
+    func reset(onComplete: @escaping (() -> Void)) {
+        notify("reset")
+        onComplete()
     }
 
     func stub() {

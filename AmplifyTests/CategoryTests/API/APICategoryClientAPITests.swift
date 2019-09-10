@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import Amplify
+@testable import Amplify
 
 class APICategoryClientAPITests: XCTestCase {
     override func setUp() {

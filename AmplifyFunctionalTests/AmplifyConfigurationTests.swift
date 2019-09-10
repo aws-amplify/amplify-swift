@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import Amplify
+@testable import Amplify
 
 @testable import AmplifyTestCommon
 
@@ -24,6 +24,7 @@ class AmplifyConfigurationTests: XCTestCase {
         try Amplify.add(plugin: plugin)
         try Amplify.configure()
         XCTAssertNotNil(try Amplify.Storage.getPlugin(for: plugin.key))
+        XCTAssertNoThrow(Amplify.Storage.stub())
     }
 
     func testMultipleConfigureCallsFromFileThrowError() throws {

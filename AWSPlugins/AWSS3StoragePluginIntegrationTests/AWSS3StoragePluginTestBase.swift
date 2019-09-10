@@ -40,6 +40,11 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         print("AWSMobileClient Initialized")
 
         // Set up Amplify storage configuration
+
+
+        FIX THIS
+
+        
         let bucketJSONValue = JSONValue.init(stringLiteral: bucket)
         let regionJSONValue = JSONValue.init(stringLiteral: region)
         let storagePluginConfig = JSONValue.init(

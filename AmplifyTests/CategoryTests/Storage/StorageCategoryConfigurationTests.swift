@@ -42,7 +42,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let plugin = MockStorageCategoryPlugin()
         let resetWasInvoked = expectation(description: "reset() was invoked")
         plugin.listeners.append { message in
-            if message == "reset()" {
+            if message == "reset" {
                 resetWasInvoked.fulfill()
             }
         }
@@ -292,7 +292,11 @@ class StorageCategoryConfigurationTests: XCTestCase {
         )
 
         try Amplify.Storage.configure(using: categoryConfig)
-        Amplify.Storage.reset()
+
+        let semaphore = DispatchSemaphore(value: 1)
+        Amplify.Storage.reset { semaphore.signal() }
+        semaphore.wait()
+
         XCTAssertNoThrow(try Amplify.Storage.configure(using: categoryConfig))
     }
 

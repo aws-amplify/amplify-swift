@@ -44,8 +44,9 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         notify()
     }
 
-    func reset() {
-        notify()
+    func reset(onComplete: @escaping (() -> Void)) {
+        notify("reset")
+        onComplete()
     }
 
     func prepareRequestBody(_ request: APIRequest) throws -> APIRequest {

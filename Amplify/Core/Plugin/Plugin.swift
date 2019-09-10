@@ -8,7 +8,7 @@
 /// CategoryPlugins implement the behavior defined by the category. The `Plugin` protocol defines behavior common to
 /// all plugins, but each category will also define client API behavior and optionally, plugin API behavior to describe
 /// the contract to which the plugin must conform.
-public protocol Plugin: CategoryTypeable {
+public protocol Plugin: CategoryTypeable, PluginResettable {
     /// The key under which the plugin is registered in the Amplify configuration. Keys must be unique within the
     /// category configuration section.
     var key: PluginKey { get }
@@ -21,10 +21,6 @@ public protocol Plugin: CategoryTypeable {
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If the plugin encounters an error during configuration
     func configure(using configuration: Any) throws
-
-    /// Called when the client calls `Amplify.reset()`. When invoked, the plugin must release resources and reset
-    /// shared state. Shortly calling `reset()` on the plugin, the category and its associated plugins will be released.
-    func reset()
 }
 
 /// Convenience typealias to clarify when Strings are being used as plugin keys
