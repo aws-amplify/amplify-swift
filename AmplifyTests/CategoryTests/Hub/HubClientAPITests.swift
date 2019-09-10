@@ -8,6 +8,8 @@
 import XCTest
 import Amplify
 
+@testable import AmplifyTestCommon
+
 class HubClientAPITests: XCTestCase {
     var mockAmplifyConfig: AmplifyConfiguration!
 

@@ -8,6 +8,8 @@
 import XCTest
 import Amplify
 
+@testable import AmplifyTestCommon
+
 class AnalyticsPluginSelectorFactoryTests: XCTestCase {
 
     override func setUp() {

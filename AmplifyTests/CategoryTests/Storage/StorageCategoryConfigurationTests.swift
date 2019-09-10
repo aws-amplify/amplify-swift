@@ -8,6 +8,8 @@
 import XCTest
 import CwlPreconditionTesting
 
+@testable import AmplifyTestCommon
+
 @testable import Amplify
 
 class StorageCategoryConfigurationTests: XCTestCase {

@@ -9,6 +9,7 @@ import XCTest
 import CwlPreconditionTesting
 
 @testable import Amplify
+@testable import AmplifyTestCommon
 
 class AnalyticsCategoryConfigurationTests: XCTestCase {
     override func setUp() {

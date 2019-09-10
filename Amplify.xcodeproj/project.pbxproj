@@ -91,13 +91,12 @@
 		21FFFA1E2313450E005878EA /* MockAWSS3TransferUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFFA182313447E005878EA /* MockAWSS3TransferUtility.swift */; };
 		21FFFA1F2313453D005878EA /* MockOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF9E1230F08F7005878EA /* MockOperationQueue.swift */; };
 		21FFFA2023134542005878EA /* MockAWSS3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF9D8230E1851005878EA /* MockAWSS3.swift */; };
-		21FFFA2823148AB5005878EA /* MessageReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23578227A056F00424678 /* MessageReporter.swift */; };
-		21FFFA2923148ABE005878EA /* MockHubCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23589227A45D500424678 /* MockHubCategoryPlugin.swift */; };
 		3263D332138415AF42E64FF7 /* Pods_AmplifyTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDC7F1C368154B364CB74742 /* Pods_AmplifyTestApp.framework */; };
 		7D5ED6C78E25246DDAF2F2EC /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */; };
 		9A7FF1D19CF0F11F96312DA4 /* Pods_AmplifyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176E334A02509BD4CE8866A6 /* Pods_AmplifyTests.framework */; };
 		9F1570B537834ED7F87E6CE2 /* Pods_AWSS3StoragePluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED44BE0096B074979532239 /* Pods_AWSS3StoragePluginTests.framework */; };
 		DA8076A12E27D05D777F4F11 /* Pods_AWSS3StoragePlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A4AE82D161DB4E9B6EC9281 /* Pods_AWSS3StoragePlugin.framework */; };
+		E2404F97BAFBE14273B869B2 /* Pods_AmplifyTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A758B7EC0289740B40CF0BE8 /* Pods_AmplifyTestCommon.framework */; };
 		FA09B92B2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92A2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift */; };
 		FA09B92D2321A27F000E064D /* CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92C2321A27F000E064D /* CategoryConfigurable.swift */; };
 		FA09B92F2321A2DE000E064D /* APICategory+CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92E2321A2DE000E064D /* APICategory+CategoryConfigurable.swift */; };
@@ -127,7 +126,6 @@
 		FAC0A2B422B4513100B50912 /* AnalyticsPluginSelectorFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2B322B4513100B50912 /* AnalyticsPluginSelectorFactoryTests.swift */; };
 		FAC0A2B622B456F200B50912 /* APIPluginSelectorFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2B522B456F200B50912 /* APIPluginSelectorFactoryTests.swift */; };
 		FAC0A2BA22B4601200B50912 /* HubPluginSelectorFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2B922B4601100B50912 /* HubPluginSelectorFactoryTests.swift */; };
-		FAC0A2BD22B4603800B50912 /* MockLoggingCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2BB22B4603800B50912 /* MockLoggingCategoryPlugin.swift */; };
 		FAC0A2BE22B4603800B50912 /* LoggingPluginSelectorFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2BC22B4603800B50912 /* LoggingPluginSelectorFactoryTests.swift */; };
 		FAC0A2C022B4605B00B50912 /* StoragePluginSelectorFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2BF22B4605B00B50912 /* StoragePluginSelectorFactoryTests.swift */; };
 		FAC234DC2279F8DA00424678 /* Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC234D22279F8DA00424678 /* Amplify.framework */; };
@@ -159,22 +157,17 @@
 		FAC23548227A055200424678 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2353B227A055200424678 /* Category.swift */; };
 		FAC2354B227A055A00424678 /* Amplify.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2354A227A055A00424678 /* Amplify.swift */; };
 		FAC23564227A056600424678 /* StorageCategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23552227A056600424678 /* StorageCategoryClientAPITests.swift */; };
-		FAC23565227A056600424678 /* MockStorageCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23553227A056600424678 /* MockStorageCategoryPlugin.swift */; };
 		FAC23566227A056600424678 /* StorageCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23554227A056600424678 /* StorageCategoryConfigurationTests.swift */; };
 		FAC23567227A056600424678 /* APICategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23556227A056600424678 /* APICategoryClientAPITests.swift */; };
-		FAC23568227A056600424678 /* MockAPICategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23557227A056600424678 /* MockAPICategoryPlugin.swift */; };
 		FAC23569227A056600424678 /* APICategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23558227A056600424678 /* APICategoryConfigurationTests.swift */; };
 		FAC2356A227A056600424678 /* LoggingCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2355A227A056600424678 /* LoggingCategoryConfigurationTests.swift */; };
 		FAC2356C227A056600424678 /* LoggingCategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2355C227A056600424678 /* LoggingCategoryClientAPITests.swift */; };
-		FAC2356D227A056600424678 /* MockAnalyticsCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2355E227A056600424678 /* MockAnalyticsCategoryPlugin.swift */; };
 		FAC2356E227A056600424678 /* AnalyticsCategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2355F227A056600424678 /* AnalyticsCategoryClientAPITests.swift */; };
 		FAC2356F227A056600424678 /* AnalyticsCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23560227A056600424678 /* AnalyticsCategoryConfigurationTests.swift */; };
 		FAC23574227A056B00424678 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23571227A056B00424678 /* ConfigurationTests.swift */; };
 		FAC23575227A056B00424678 /* FoundationUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23572227A056B00424678 /* FoundationUtilsTests.swift */; };
-		FAC23579227A057000424678 /* MessageReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23578227A056F00424678 /* MessageReporter.swift */; };
 		FAC23586227A443200424678 /* HubCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23585227A443200424678 /* HubCategoryConfigurationTests.swift */; };
 		FAC23588227A446C00424678 /* HubClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23587227A446C00424678 /* HubClientAPITests.swift */; };
-		FAC2358A227A45D500424678 /* MockHubCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23589227A45D500424678 /* MockHubCategoryPlugin.swift */; };
 		FAC2358F227A4A6E00424678 /* HubCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2358E227A4A6E00424678 /* HubCategory.swift */; };
 		FAC23591227A4AF000424678 /* HubCategoryClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23590227A4AF000424678 /* HubCategoryClientBehavior.swift */; };
 		FAC23595227A4B9800424678 /* HubCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23594227A4B9800424678 /* HubCategoryPlugin.swift */; };
@@ -182,6 +175,20 @@
 		FAC235A1227A5D8C00424678 /* HubDefaultPluginDispatchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC235A0227A5D8C00424678 /* HubDefaultPluginDispatchTests.swift */; };
 		FAC235A3227A5ED000424678 /* HubChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC235A2227A5ED000424678 /* HubChannel.swift */; };
 		FAC9DC32227FE405000D5DD7 /* PluginSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9DC31227FE405000D5DD7 /* PluginSelector.swift */; };
+		FACA35EB2326B217000E74F6 /* AmplifyConfigurationInitializationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACA35EA2326B217000E74F6 /* AmplifyConfigurationInitializationTests.swift */; };
+		FACA35ED2326BB54000E74F6 /* AmplifyConfigurationInitialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACA35EC2326BB54000E74F6 /* AmplifyConfigurationInitialization.swift */; };
+		FACA35F52327FB14000E74F6 /* AmplifyConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACA35F42327FB14000E74F6 /* AmplifyConfigurationTests.swift */; };
+		FACA35F72327FB14000E74F6 /* Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC234D22279F8DA00424678 /* Amplify.framework */; };
+		FACA36082327FBD4000E74F6 /* AmplifyTestCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = FACA36062327FBD4000E74F6 /* AmplifyTestCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FACA360B2327FBD4000E74F6 /* AmplifyTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FACA36042327FBD4000E74F6 /* AmplifyTestCommon.framework */; };
+		FACA360C2327FBD4000E74F6 /* AmplifyTestCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FACA36042327FBD4000E74F6 /* AmplifyTestCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		FACA36152327FC39000E74F6 /* MessageReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23578227A056F00424678 /* MessageReporter.swift */; };
+		FACA361A2327FC69000E74F6 /* MockStorageCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23553227A056600424678 /* MockStorageCategoryPlugin.swift */; };
+		FACA361B2327FC74000E74F6 /* MockLoggingCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2BB22B4603800B50912 /* MockLoggingCategoryPlugin.swift */; };
+		FACA361C2327FC7D000E74F6 /* MockHubCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23589227A45D500424678 /* MockHubCategoryPlugin.swift */; };
+		FACA361D2327FC84000E74F6 /* MockAPICategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23557227A056600424678 /* MockAPICategoryPlugin.swift */; };
+		FACA361E2327FC8E000E74F6 /* MockAnalyticsCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2355E227A056600424678 /* MockAnalyticsCategoryPlugin.swift */; };
+		FACA36222327FDD7000E74F6 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = FACA36212327FDD2000E74F6 /* amplifyconfiguration.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -213,7 +220,77 @@
 			remoteGlobalIDString = FAC234D12279F8DA00424678;
 			remoteInfo = Amplify;
 		};
+		FACA35F82327FB14000E74F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FAC234D12279F8DA00424678;
+			remoteInfo = Amplify;
+		};
+		FACA35FD2327FB31000E74F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2125E2502319EC3000B3DEB5;
+			remoteInfo = AmplifyTestApp;
+		};
+		FACA36092327FBD4000E74F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FACA36032327FBD4000E74F6;
+			remoteInfo = AmplifyTestCommon;
+		};
+		FACA36112327FBE4000E74F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FACA36032327FBD4000E74F6;
+			remoteInfo = AmplifyTestCommon;
+		};
+		FACA36132327FBEF000E74F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FACA36032327FBD4000E74F6;
+			remoteInfo = AmplifyTestCommon;
+		};
+		FACA36162327FC48000E74F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FACA36032327FBD4000E74F6;
+			remoteInfo = AmplifyTestCommon;
+		};
+		FACA36182327FC53000E74F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FACA36032327FBD4000E74F6;
+			remoteInfo = AmplifyTestCommon;
+		};
+		FACA361F2327FDB2000E74F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FAC234D12279F8DA00424678;
+			remoteInfo = Amplify;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FACA36102327FBD4000E74F6 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				FACA360C2327FBD4000E74F6 /* AmplifyTestCommon.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		176E334A02509BD4CE8866A6 /* Pods_AmplifyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -307,6 +384,7 @@
 		21FFFA1A23134493005878EA /* MockAWSS3PreSignedURLBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAWSS3PreSignedURLBuilder.swift; sourceTree = "<group>"; };
 		263EE84D0728C793C6181869 /* Pods_AmplifyAppExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyAppExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2BC291E73D2FFB00D3F51A62 /* Pods-AmplifyAppExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAppExample.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAppExample/Pods-AmplifyAppExample.debug.xcconfig"; sourceTree = "<group>"; };
+		36E795204EA20B3CFFCC506F /* Pods-AmplifyTestCommon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTestCommon.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyTestCommon/Pods-AmplifyTestCommon.debug.xcconfig"; sourceTree = "<group>"; };
 		3A4AE82D161DB4E9B6EC9281 /* Pods_AWSS3StoragePlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSS3StoragePlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A701A7BDEC4F0F422684E06 /* Pods-AWSS3StoragePluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePluginIntegrationTests/Pods-AWSS3StoragePluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		3DC2B7D365B42B3A832601FA /* Pods-AmplifyTestApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTestApp.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyTestApp/Pods-AmplifyTestApp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -323,9 +401,11 @@
 		7C3FEC43EAE7679472832809 /* Pods-AmplifyExampleApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyExampleApp.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyExampleApp/Pods-AmplifyExampleApp.debug.xcconfig"; sourceTree = "<group>"; };
 		7D0D6B9DC4C64E1EA75D21B3 /* Pods-AmplifyTestApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTestApp.release.xcconfig"; path = "Target Support Files/Pods-AmplifyTestApp/Pods-AmplifyTestApp.release.xcconfig"; sourceTree = "<group>"; };
 		84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A758B7EC0289740B40CF0BE8 /* Pods_AmplifyTestCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyTestCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB74666B4E8B096CB3305EAE /* Pods-AmplifyAppExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAppExample.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAppExample/Pods-AmplifyAppExample.release.xcconfig"; sourceTree = "<group>"; };
 		CDC7F1C368154B364CB74742 /* Pods_AmplifyTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CED44BE0096B074979532239 /* Pods_AWSS3StoragePluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSS3StoragePluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E525BACD638CA2C070983756 /* Pods-AmplifyTestCommon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTestCommon.release.xcconfig"; path = "Target Support Files/Pods-AmplifyTestCommon/Pods-AmplifyTestCommon.release.xcconfig"; sourceTree = "<group>"; };
 		E5ACA3446D45A4622167122C /* Pods-Amplify.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify.release.xcconfig"; path = "Target Support Files/Pods-Amplify/Pods-Amplify.release.xcconfig"; sourceTree = "<group>"; };
 		F2DDFB959501735121A13925 /* Pods-AWSS3StoragePluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		FA09B92A2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnalyticsCategory+CategoryConfigurable.swift"; sourceTree = "<group>"; };
@@ -415,6 +495,15 @@
 		FAC235A0227A5D8C00424678 /* HubDefaultPluginDispatchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubDefaultPluginDispatchTests.swift; sourceTree = "<group>"; };
 		FAC235A2227A5ED000424678 /* HubChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubChannel.swift; sourceTree = "<group>"; };
 		FAC9DC31227FE405000D5DD7 /* PluginSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginSelector.swift; sourceTree = "<group>"; };
+		FACA35EA2326B217000E74F6 /* AmplifyConfigurationInitializationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyConfigurationInitializationTests.swift; sourceTree = "<group>"; };
+		FACA35EC2326BB54000E74F6 /* AmplifyConfigurationInitialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyConfigurationInitialization.swift; sourceTree = "<group>"; };
+		FACA35F22327FB14000E74F6 /* AmplifyFunctionalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AmplifyFunctionalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FACA35F42327FB14000E74F6 /* AmplifyConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyConfigurationTests.swift; sourceTree = "<group>"; };
+		FACA35F62327FB14000E74F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FACA36042327FBD4000E74F6 /* AmplifyTestCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AmplifyTestCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FACA36062327FBD4000E74F6 /* AmplifyTestCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AmplifyTestCommon.h; sourceTree = "<group>"; };
+		FACA36072327FBD4000E74F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FACA36212327FDD2000E74F6 /* amplifyconfiguration.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -431,6 +520,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FACA360B2327FBD4000E74F6 /* AmplifyTestCommon.framework in Frameworks */,
 				3263D332138415AF42E64FF7 /* Pods_AmplifyTestApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -469,6 +559,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FACA35EF2327FB14000E74F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FACA35F72327FB14000E74F6 /* Amplify.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FACA36012327FBD4000E74F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E2404F97BAFBE14273B869B2 /* Pods_AmplifyTestCommon.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -484,6 +590,7 @@
 		2125E2522319EC3100B3DEB5 /* AmplifyTestApp */ = {
 			isa = PBXGroup;
 			children = (
+				FACA36212327FDD2000E74F6 /* amplifyconfiguration.json */,
 				2125E2102318D73B00B3DEB5 /* awsconfiguration.json */,
 				2125E2532319EC3100B3DEB5 /* AppDelegate.swift */,
 				2125E2552319EC3100B3DEB5 /* ViewController.swift */,
@@ -734,6 +841,8 @@
 				4148B4F4A49CCC0F81A06425 /* Pods-AWSS3StoragePluginIntegrationTests.release.xcconfig */,
 				3DC2B7D365B42B3A832601FA /* Pods-AmplifyTestApp.debug.xcconfig */,
 				7D0D6B9DC4C64E1EA75D21B3 /* Pods-AmplifyTestApp.release.xcconfig */,
+				36E795204EA20B3CFFCC506F /* Pods-AmplifyTestCommon.debug.xcconfig */,
+				E525BACD638CA2C070983756 /* Pods-AmplifyTestCommon.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -749,6 +858,7 @@
 				486B1E23E6FFC462A82A9345 /* Pods_AmplifyExampleApp.framework */,
 				775BF14873ADD75B332E9423 /* Pods_AWSS3StoragePluginIntegrationTests.framework */,
 				CDC7F1C368154B364CB74742 /* Pods_AmplifyTestApp.framework */,
+				A758B7EC0289740B40CF0BE8 /* Pods_AmplifyTestCommon.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -788,6 +898,7 @@
 		FA09B93D2321A64E000E064D /* Internal */ = {
 			isa = PBXGroup;
 			children = (
+				FACA35EC2326BB54000E74F6 /* AmplifyConfigurationInitialization.swift */,
 				FAC23536227A055200424678 /* Category+Configuration.swift */,
 				FA09B92C2321A27F000E064D /* CategoryConfigurable.swift */,
 			);
@@ -825,6 +936,8 @@
 			children = (
 				FAC234D42279F8DA00424678 /* Amplify */,
 				FAC234DF2279F8DA00424678 /* AmplifyTests */,
+				FACA36052327FBD4000E74F6 /* AmplifyTestCommon */,
+				FACA35F32327FB14000E74F6 /* AmplifyFunctionalTests */,
 				21FFF9B9230DBEF8005878EA /* AWSPlugins */,
 				2125E2522319EC3100B3DEB5 /* AmplifyTestApp */,
 				FAC234D32279F8DA00424678 /* Products */,
@@ -842,6 +955,8 @@
 				21265DAC2307389A004CCE39 /* AWSS3StoragePluginTests.xctest */,
 				2125E1FE2318327300B3DEB5 /* AWSS3StoragePluginIntegrationTests.xctest */,
 				2125E2512319EC3000B3DEB5 /* AmplifyTestApp.app */,
+				FACA35F22327FB14000E74F6 /* AmplifyFunctionalTests.xctest */,
+				FACA36042327FBD4000E74F6 /* AmplifyTestCommon.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -862,7 +977,6 @@
 			children = (
 				FAC2354C227A056600424678 /* CategoryTests */,
 				FAC23570227A056B00424678 /* CoreTests */,
-				FAC23577227A056F00424678 /* Mocks */,
 				FAC2357B227A059900424678 /* Resources */,
 			);
 			path = AmplifyTests;
@@ -975,7 +1089,6 @@
 		FAC23551227A056600424678 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
-				FAC23553227A056600424678 /* MockStorageCategoryPlugin.swift */,
 				FAC23552227A056600424678 /* StorageCategoryClientAPITests.swift */,
 				FAC23554227A056600424678 /* StorageCategoryConfigurationTests.swift */,
 				FAC0A2BF22B4605B00B50912 /* StoragePluginSelectorFactoryTests.swift */,
@@ -989,7 +1102,6 @@
 				FAC23556227A056600424678 /* APICategoryClientAPITests.swift */,
 				FAC23558227A056600424678 /* APICategoryConfigurationTests.swift */,
 				FAC0A2B522B456F200B50912 /* APIPluginSelectorFactoryTests.swift */,
-				FAC23557227A056600424678 /* MockAPICategoryPlugin.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -1000,7 +1112,6 @@
 				FAC2355C227A056600424678 /* LoggingCategoryClientAPITests.swift */,
 				FAC2355A227A056600424678 /* LoggingCategoryConfigurationTests.swift */,
 				FAC0A2BC22B4603800B50912 /* LoggingPluginSelectorFactoryTests.swift */,
-				FAC0A2BB22B4603800B50912 /* MockLoggingCategoryPlugin.swift */,
 			);
 			path = Logging;
 			sourceTree = "<group>";
@@ -1011,7 +1122,6 @@
 				FAC2355F227A056600424678 /* AnalyticsCategoryClientAPITests.swift */,
 				FAC23560227A056600424678 /* AnalyticsCategoryConfigurationTests.swift */,
 				FAC0A2B322B4513100B50912 /* AnalyticsPluginSelectorFactoryTests.swift */,
-				FAC2355E227A056600424678 /* MockAnalyticsCategoryPlugin.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -1019,6 +1129,7 @@
 		FAC23570227A056B00424678 /* CoreTests */ = {
 			isa = PBXGroup;
 			children = (
+				FACA35EA2326B217000E74F6 /* AmplifyConfigurationInitializationTests.swift */,
 				FAC23571227A056B00424678 /* ConfigurationTests.swift */,
 				FAC23572227A056B00424678 /* FoundationUtilsTests.swift */,
 				FA09B9422321CB0C000E064D /* JSONValueTests.swift */,
@@ -1030,6 +1141,11 @@
 			isa = PBXGroup;
 			children = (
 				FAC23578227A056F00424678 /* MessageReporter.swift */,
+				FAC2355E227A056600424678 /* MockAnalyticsCategoryPlugin.swift */,
+				FAC23557227A056600424678 /* MockAPICategoryPlugin.swift */,
+				FAC23589227A45D500424678 /* MockHubCategoryPlugin.swift */,
+				FAC0A2BB22B4603800B50912 /* MockLoggingCategoryPlugin.swift */,
+				FAC23553227A056600424678 /* MockStorageCategoryPlugin.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -1070,7 +1186,6 @@
 				FAC23598227A598B00424678 /* HubDefaultPluginTests.swift */,
 				FAC0A29E22B3E78C00B50912 /* HubPerformanceTests.swift */,
 				FAC0A2B922B4601100B50912 /* HubPluginSelectorFactoryTests.swift */,
-				FAC23589227A45D500424678 /* MockHubCategoryPlugin.swift */,
 			);
 			path = Hub;
 			sourceTree = "<group>";
@@ -1109,6 +1224,25 @@
 			path = Plugin;
 			sourceTree = "<group>";
 		};
+		FACA35F32327FB14000E74F6 /* AmplifyFunctionalTests */ = {
+			isa = PBXGroup;
+			children = (
+				FACA35F42327FB14000E74F6 /* AmplifyConfigurationTests.swift */,
+				FACA35F62327FB14000E74F6 /* Info.plist */,
+			);
+			path = AmplifyFunctionalTests;
+			sourceTree = "<group>";
+		};
+		FACA36052327FBD4000E74F6 /* AmplifyTestCommon */ = {
+			isa = PBXGroup;
+			children = (
+				FAC23577227A056F00424678 /* Mocks */,
+				FACA36062327FBD4000E74F6 /* AmplifyTestCommon.h */,
+				FACA36072327FBD4000E74F6 /* Info.plist */,
+			);
+			path = AmplifyTestCommon;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1123,6 +1257,14 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FACA35FF2327FBD4000E74F6 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FACA36082327FBD4000E74F6 /* AmplifyTestCommon.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1143,6 +1285,7 @@
 			);
 			dependencies = (
 				2125E2052318327300B3DEB5 /* PBXTargetDependency */,
+				FACA36192327FC53000E74F6 /* PBXTargetDependency */,
 				2125E264231C275D00B3DEB5 /* PBXTargetDependency */,
 			);
 			name = AWSS3StoragePluginIntegrationTests;
@@ -1159,10 +1302,12 @@
 				2125E24E2319EC3000B3DEB5 /* Frameworks */,
 				2125E24F2319EC3000B3DEB5 /* Resources */,
 				360F766AA21C261B2891BADD /* [CP] Embed Pods Frameworks */,
+				FACA36102327FBD4000E74F6 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				FACA360A2327FBD4000E74F6 /* PBXTargetDependency */,
 			);
 			name = AmplifyTestApp;
 			productName = AmplifyTestApp;
@@ -1204,6 +1349,7 @@
 			);
 			dependencies = (
 				21265DAF2307389A004CCE39 /* PBXTargetDependency */,
+				FACA36172327FC48000E74F6 /* PBXTargetDependency */,
 			);
 			name = AWSS3StoragePluginTests;
 			productName = AWSS3StoragePluginTests;
@@ -1245,11 +1391,52 @@
 			);
 			dependencies = (
 				FAC234DE2279F8DA00424678 /* PBXTargetDependency */,
+				FACA36122327FBE4000E74F6 /* PBXTargetDependency */,
 			);
 			name = AmplifyTests;
 			productName = AmplifyTests;
 			productReference = FAC234DB2279F8DA00424678 /* AmplifyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		FACA35F12327FB14000E74F6 /* AmplifyFunctionalTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FACA35FA2327FB14000E74F6 /* Build configuration list for PBXNativeTarget "AmplifyFunctionalTests" */;
+			buildPhases = (
+				FACA35EE2327FB14000E74F6 /* Sources */,
+				FACA35EF2327FB14000E74F6 /* Frameworks */,
+				FACA35F02327FB14000E74F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FACA35F92327FB14000E74F6 /* PBXTargetDependency */,
+				FACA36142327FBEF000E74F6 /* PBXTargetDependency */,
+				FACA35FE2327FB31000E74F6 /* PBXTargetDependency */,
+			);
+			name = AmplifyFunctionalTests;
+			productName = AmplifyFunctionalTests;
+			productReference = FACA35F22327FB14000E74F6 /* AmplifyFunctionalTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		FACA36032327FBD4000E74F6 /* AmplifyTestCommon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FACA360D2327FBD4000E74F6 /* Build configuration list for PBXNativeTarget "AmplifyTestCommon" */;
+			buildPhases = (
+				8934CE3BAE4AA68651840D9C /* [CP] Check Pods Manifest.lock */,
+				FACA35FF2327FBD4000E74F6 /* Headers */,
+				FACA36002327FBD4000E74F6 /* Sources */,
+				FACA36012327FBD4000E74F6 /* Frameworks */,
+				FACA36022327FBD4000E74F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FACA36202327FDB2000E74F6 /* PBXTargetDependency */,
+			);
+			name = AmplifyTestCommon;
+			productName = AmplifyTestCommon;
+			productReference = FACA36042327FBD4000E74F6 /* AmplifyTestCommon.framework */;
+			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
@@ -1281,6 +1468,13 @@
 					FAC234DA2279F8DA00424678 = {
 						CreatedOnToolsVersion = 10.2.1;
 					};
+					FACA35F12327FB14000E74F6 = {
+						CreatedOnToolsVersion = 10.3;
+						TestTargetID = 2125E2502319EC3000B3DEB5;
+					};
+					FACA36032327FBD4000E74F6 = {
+						CreatedOnToolsVersion = 10.3;
+					};
 				};
 			};
 			buildConfigurationList = FAC234CC2279F8DA00424678 /* Build configuration list for PBXProject "Amplify" */;
@@ -1297,7 +1491,9 @@
 			projectRoot = "";
 			targets = (
 				FAC234D12279F8DA00424678 /* Amplify */,
+				FACA36032327FBD4000E74F6 /* AmplifyTestCommon */,
 				FAC234DA2279F8DA00424678 /* AmplifyTests */,
+				FACA35F12327FB14000E74F6 /* AmplifyFunctionalTests */,
 				21265DA32307389A004CCE39 /* AWSS3StoragePlugin */,
 				21265DAB2307389A004CCE39 /* AWSS3StoragePluginTests */,
 				2125E1FD2318327300B3DEB5 /* AWSS3StoragePluginIntegrationTests */,
@@ -1321,6 +1517,7 @@
 			files = (
 				2125E265231C2D3100B3DEB5 /* awsconfiguration.json in Resources */,
 				2125E25E2319EC3200B3DEB5 /* LaunchScreen.storyboard in Resources */,
+				FACA36222327FDD7000E74F6 /* amplifyconfiguration.json in Resources */,
 				2125E25B2319EC3200B3DEB5 /* Assets.xcassets in Resources */,
 				2125E2592319EC3100B3DEB5 /* Main.storyboard in Resources */,
 			);
@@ -1348,6 +1545,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		FAC234D92279F8DA00424678 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FACA35F02327FB14000E74F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FACA36022327FBD4000E74F6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1533,6 +1744,28 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		8934CE3BAE4AA68651840D9C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AmplifyTestCommon-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		99E2D788CC661BB15F324C6A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1692,14 +1925,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				21FFFA2823148AB5005878EA /* MessageReporter.swift in Sources */,
 				21265DB22307389A004CCE39 /* AWSS3StoragePluginTests.swift in Sources */,
 				21FFFA1623134332005878EA /* AWSS3StoragePutOperationTests.swift in Sources */,
 				21FFFA0D231341EC005878EA /* AWSS3StorageServiceTests.swift in Sources */,
 				21FFFA1F2313453D005878EA /* MockOperationQueue.swift in Sources */,
 				21FFFA1423134207005878EA /* AWSS3StorageGetUrlOperationTests.swift in Sources */,
 				21FFFA1323134204005878EA /* AWSS3StorageGetOperationTests.swift in Sources */,
-				21FFFA2923148ABE005878EA /* MockHubCategoryPlugin.swift in Sources */,
 				21FFFA0E231341F0005878EA /* AWSS3StorageGetRequestTests.swift in Sources */,
 				21FFFA2023134542005878EA /* MockAWSS3.swift in Sources */,
 				21FFFA10231341F7005878EA /* AWSS3StorageListRequestTests.swift in Sources */,
@@ -1739,6 +1970,7 @@
 				FAC0A29822B3DE4800B50912 /* HubPublisher.swift in Sources */,
 				FAC0A2A922B43FB300B50912 /* APICategory+ClientBehavior.swift in Sources */,
 				FAC23548227A055200424678 /* Category.swift in Sources */,
+				FACA35ED2326BB54000E74F6 /* AmplifyConfigurationInitialization.swift in Sources */,
 				FA09B9382321A359000E064D /* LoggingCategory+CategoryConfigurable.swift in Sources */,
 				FAC23525227A053D00424678 /* LogLevel.swift in Sources */,
 				2125E274231CFD3C00B3DEB5 /* StorageError.swift in Sources */,
@@ -1810,19 +2042,15 @@
 				FAC0A2B622B456F200B50912 /* APIPluginSelectorFactoryTests.swift in Sources */,
 				FAC0A2BE22B4603800B50912 /* LoggingPluginSelectorFactoryTests.swift in Sources */,
 				FAC23567227A056600424678 /* APICategoryClientAPITests.swift in Sources */,
-				FAC0A2BD22B4603800B50912 /* MockLoggingCategoryPlugin.swift in Sources */,
+				FACA35EB2326B217000E74F6 /* AmplifyConfigurationInitializationTests.swift in Sources */,
 				FAC23599227A598B00424678 /* HubDefaultPluginTests.swift in Sources */,
 				FAC23575227A056B00424678 /* FoundationUtilsTests.swift in Sources */,
 				FAC0A2BA22B4601200B50912 /* HubPluginSelectorFactoryTests.swift in Sources */,
 				FAC0A2B422B4513100B50912 /* AnalyticsPluginSelectorFactoryTests.swift in Sources */,
 				FAC23569227A056600424678 /* APICategoryConfigurationTests.swift in Sources */,
-				FAC2356D227A056600424678 /* MockAnalyticsCategoryPlugin.swift in Sources */,
-				FAC23565227A056600424678 /* MockStorageCategoryPlugin.swift in Sources */,
 				FAC23588227A446C00424678 /* HubClientAPITests.swift in Sources */,
 				FAC23564227A056600424678 /* StorageCategoryClientAPITests.swift in Sources */,
 				FAC2356A227A056600424678 /* LoggingCategoryConfigurationTests.swift in Sources */,
-				FAC23568227A056600424678 /* MockAPICategoryPlugin.swift in Sources */,
-				FAC23579227A057000424678 /* MessageReporter.swift in Sources */,
 				FAC2356E227A056600424678 /* AnalyticsCategoryClientAPITests.swift in Sources */,
 				FAC23574227A056B00424678 /* ConfigurationTests.swift in Sources */,
 				FA09B9432321CB0C000E064D /* JSONValueTests.swift in Sources */,
@@ -1830,8 +2058,28 @@
 				FAC235A1227A5D8C00424678 /* HubDefaultPluginDispatchTests.swift in Sources */,
 				FAC2356C227A056600424678 /* LoggingCategoryClientAPITests.swift in Sources */,
 				FAC0A2C022B4605B00B50912 /* StoragePluginSelectorFactoryTests.swift in Sources */,
-				FAC2358A227A45D500424678 /* MockHubCategoryPlugin.swift in Sources */,
 				FAC23586227A443200424678 /* HubCategoryConfigurationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FACA35EE2327FB14000E74F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FACA35F52327FB14000E74F6 /* AmplifyConfigurationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FACA36002327FBD4000E74F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FACA361C2327FC7D000E74F6 /* MockHubCategoryPlugin.swift in Sources */,
+				FACA361A2327FC69000E74F6 /* MockStorageCategoryPlugin.swift in Sources */,
+				FACA361B2327FC74000E74F6 /* MockLoggingCategoryPlugin.swift in Sources */,
+				FACA36152327FC39000E74F6 /* MessageReporter.swift in Sources */,
+				FACA361D2327FC84000E74F6 /* MockAPICategoryPlugin.swift in Sources */,
+				FACA361E2327FC8E000E74F6 /* MockAnalyticsCategoryPlugin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1857,6 +2105,46 @@
 			isa = PBXTargetDependency;
 			target = FAC234D12279F8DA00424678 /* Amplify */;
 			targetProxy = FAC234DD2279F8DA00424678 /* PBXContainerItemProxy */;
+		};
+		FACA35F92327FB14000E74F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FAC234D12279F8DA00424678 /* Amplify */;
+			targetProxy = FACA35F82327FB14000E74F6 /* PBXContainerItemProxy */;
+		};
+		FACA35FE2327FB31000E74F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2125E2502319EC3000B3DEB5 /* AmplifyTestApp */;
+			targetProxy = FACA35FD2327FB31000E74F6 /* PBXContainerItemProxy */;
+		};
+		FACA360A2327FBD4000E74F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FACA36032327FBD4000E74F6 /* AmplifyTestCommon */;
+			targetProxy = FACA36092327FBD4000E74F6 /* PBXContainerItemProxy */;
+		};
+		FACA36122327FBE4000E74F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FACA36032327FBD4000E74F6 /* AmplifyTestCommon */;
+			targetProxy = FACA36112327FBE4000E74F6 /* PBXContainerItemProxy */;
+		};
+		FACA36142327FBEF000E74F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FACA36032327FBD4000E74F6 /* AmplifyTestCommon */;
+			targetProxy = FACA36132327FBEF000E74F6 /* PBXContainerItemProxy */;
+		};
+		FACA36172327FC48000E74F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FACA36032327FBD4000E74F6 /* AmplifyTestCommon */;
+			targetProxy = FACA36162327FC48000E74F6 /* PBXContainerItemProxy */;
+		};
+		FACA36192327FC53000E74F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FACA36032327FBD4000E74F6 /* AmplifyTestCommon */;
+			targetProxy = FACA36182327FC53000E74F6 /* PBXContainerItemProxy */;
+		};
+		FACA36202327FDB2000E74F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FAC234D12279F8DA00424678 /* Amplify */;
+			targetProxy = FACA361F2327FDB2000E74F6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1926,6 +2214,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3DC2B7D365B42B3A832601FA /* Pods-AmplifyTestApp.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W3DRXD72QU;
@@ -1946,6 +2235,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7D0D6B9DC4C64E1EA75D21B3 /* Pods-AmplifyTestApp.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W3DRXD72QU;
@@ -1976,7 +2266,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = AWSPlugins/AWSS3StoragePlugin/Resources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2005,7 +2295,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = AWSPlugins/AWSS3StoragePlugin/Resources/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2277,6 +2567,102 @@
 			};
 			name = Release;
 		};
+		FACA35FB2327FB14000E74F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				INFOPLIST_FILE = AmplifyFunctionalTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AmplifyFunctionalTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AmplifyTestApp.app/AmplifyTestApp";
+			};
+			name = Debug;
+		};
+		FACA35FC2327FB14000E74F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				INFOPLIST_FILE = AmplifyFunctionalTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AmplifyFunctionalTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AmplifyTestApp.app/AmplifyTestApp";
+			};
+			name = Release;
+		};
+		FACA360E2327FBD4000E74F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 36E795204EA20B3CFFCC506F /* Pods-AmplifyTestCommon.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = AmplifyTestCommon/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AmplifyTestCommon;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FACA360F2327FBD4000E74F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E525BACD638CA2C070983756 /* Pods-AmplifyTestCommon.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = AmplifyTestCommon/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AmplifyTestCommon;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2339,6 +2725,24 @@
 			buildConfigurations = (
 				FAC234EA2279F8DA00424678 /* Debug */,
 				FAC234EB2279F8DA00424678 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FACA35FA2327FB14000E74F6 /* Build configuration list for PBXNativeTarget "AmplifyFunctionalTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FACA35FB2327FB14000E74F6 /* Debug */,
+				FACA35FC2327FB14000E74F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FACA360D2327FBD4000E74F6 /* Build configuration list for PBXNativeTarget "AmplifyTestCommon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FACA360E2327FBD4000E74F6 /* Debug */,
+				FACA360F2327FBD4000E74F6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

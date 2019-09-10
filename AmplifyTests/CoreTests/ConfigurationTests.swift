@@ -8,6 +8,8 @@ import XCTest
 import Amplify
 import CwlPreconditionTesting
 
+@testable import AmplifyTestCommon
+
 class ConfigurationTests: XCTestCase {
     override func setUp() {
         Amplify.reset()
@@ -138,11 +140,4 @@ class ConfigurationTests: XCTestCase {
         XCTAssertNoThrow(try Amplify.configure(amplifyConfig))
     }
 
-    func testConfigureReadsFromFile() throws {
-        XCTFail("Not yet implemented")
-    }
-
-    func testMultipleConfigureCallsFromFileThrowError() throws {
-        XCTFail("Not yet implemented")
-    }
 }
