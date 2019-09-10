@@ -11,15 +11,13 @@ import XCTest
 class AWSS3StorageListRequestTests: XCTestCase {
 
     let testTargetIdentityId = "TestTargetIdentityId"
-    let testPrefix = "TestPrefix"
-    let testLimit = 5
+    let testPath = "TestPath"
     let testOptions: Any? = [:]
 
     func testValidateSuccess() {
         let request = AWSS3StorageListRequest(accessLevel: .protected,
                                               targetIdentityId: testTargetIdentityId,
-                                              prefix: testPrefix,
-                                              limit: testLimit,
+                                              path: testPath,
                                               options: testOptions)
 
         let storageListErrorOptional = request.validate()
@@ -30,8 +28,7 @@ class AWSS3StorageListRequestTests: XCTestCase {
     func testValidateEmptyTargetIdentityIdError() {
         let request = AWSS3StorageListRequest(accessLevel: .protected,
                                               targetIdentityId: "",
-                                              prefix: testPrefix,
-                                              limit: testLimit,
+                                              path: testPath,
                                               options: testOptions)
 
         let storageListErrorOptional = request.validate()
@@ -53,8 +50,7 @@ class AWSS3StorageListRequestTests: XCTestCase {
     func testValidateTargetIdentityIdWithPrivateAccessLevelError() {
         let request = AWSS3StorageListRequest(accessLevel: .private,
                                               targetIdentityId: testTargetIdentityId,
-                                              prefix: testPrefix,
-                                              limit: testLimit,
+                                              path: testPath,
                                               options: testOptions)
 
         let storageListErrorOptional = request.validate()
@@ -73,11 +69,10 @@ class AWSS3StorageListRequestTests: XCTestCase {
         XCTAssertEqual(recovery, StorageErrorConstants.PrivateWithTarget.RecoverySuggestion)
     }
 
-    func testValidateEmptyPrefixError() {
+    func testValidateEmptyPathError() {
         let request = AWSS3StorageListRequest(accessLevel: .protected,
                                               targetIdentityId: testTargetIdentityId,
-                                              prefix: "",
-                                              limit: testLimit,
+                                              path: "",
                                               options: testOptions)
 
         let storageListErrorOptional = request.validate()
@@ -92,30 +87,7 @@ class AWSS3StorageListRequestTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(description, StorageErrorConstants.PrefixIsEmpty.ErrorDescription)
-        XCTAssertEqual(recovery, StorageErrorConstants.PrefixIsEmpty.RecoverySuggestion)
-    }
-
-    func testValidateLimitIsInvalidError() {
-        let request = AWSS3StorageListRequest(accessLevel: .protected,
-                                              targetIdentityId: testTargetIdentityId,
-                                              prefix: testPrefix,
-                                              limit: -1,
-                                              options: testOptions)
-
-        let storageListErrorOptional = request.validate()
-
-        guard let error = storageListErrorOptional else {
-            XCTFail("Missing StorageListError")
-            return
-        }
-
-        guard case .validation(let description, let recovery) = error else {
-            XCTFail("Error does not match validation error")
-            return
-        }
-
-        XCTAssertEqual(description, StorageErrorConstants.LimitIsInvalid.ErrorDescription)
-        XCTAssertEqual(recovery, StorageErrorConstants.LimitIsInvalid.RecoverySuggestion)
+        XCTAssertEqual(description, StorageErrorConstants.PathIsEmpty.ErrorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.PathIsEmpty.RecoverySuggestion)
     }
 }

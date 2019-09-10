@@ -9,4 +9,5 @@ import Foundation
 struct PluginConstants {
     static let Bucket = "Bucket"
     static let Region = "Region"
+    static let DefaultAccessLevel = "DefaultAccessLevel"
 }

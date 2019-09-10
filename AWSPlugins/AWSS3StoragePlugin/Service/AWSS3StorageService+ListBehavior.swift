@@ -12,28 +12,33 @@ import Amplify
 typealias ListCompletedHandler = (AWSTask<AWSS3ListObjectsV2Output>) -> Any?
 
 extension AWSS3StorageService {
-    public func list(prefix: String, onEvent: @escaping StorageListOnEventHandler) {
+    public func list(prefix: String, path: String?, onEvent: @escaping StorageListOnEventHandler) {
         // TODO: implementation details - use request.options.limit.
         // listObjectsV2Request.maxKeys ?
         // Figure out if we need ay batching logic
 
-        let request = AWSS3StorageService.makeListObjectsV2Request(bucket: bucket, prefix: prefix)
-        let listCompletedHandler = AWSS3StorageService.makeListCompletedHandler(onEvent: onEvent)
+        var finalPrefix = prefix
+        if let path = path {
+            finalPrefix += path
+        }
+
+        let request = AWSS3StorageService.makeListObjectsV2Request(bucket: bucket, finalPrefix: finalPrefix)
+        let listCompletedHandler = AWSS3StorageService.makeListCompletedHandler(onEvent: onEvent, prefix: prefix)
 
         awsS3.listObjectsV2(request).continueWith(block: listCompletedHandler)
     }
 
     private static func makeListObjectsV2Request(bucket: String,
-                                                 prefix: String) -> AWSS3ListObjectsV2Request {
+                                                 finalPrefix: String) -> AWSS3ListObjectsV2Request {
         let request: AWSS3ListObjectsV2Request = AWSS3ListObjectsV2Request()
         request.bucket = bucket
-        request.prefix = prefix
+        request.prefix = finalPrefix
 
         return request
     }
 
     private static func makeListCompletedHandler(
-        onEvent: @escaping StorageListOnEventHandler) -> ListCompletedHandler {
+        onEvent: @escaping StorageListOnEventHandler, prefix: String) -> ListCompletedHandler {
 
         let block: ListCompletedHandler = { (task: AWSTask<AWSS3ListObjectsV2Output>) -> Any? in
             guard task.error == nil else {
@@ -70,8 +75,11 @@ extension AWSS3StorageService {
 
             var list: [String] = Array()
             if let contents = result.contents {
-                for s3Key in contents {
-                    list.append(s3Key.key!)
+                for content in contents {
+                    if let fullKey = content.key {
+                        let resultKey = String(fullKey.dropFirst(prefix.count))
+                        list.append(resultKey)
+                    }
                 }
             }
 

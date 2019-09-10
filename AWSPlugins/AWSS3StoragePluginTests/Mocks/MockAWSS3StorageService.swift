@@ -72,7 +72,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
         onEvent(StorageEvent.completed(StoragePutResult(key: key)))
     }
 
-    public func list(prefix: String, onEvent: @escaping StorageListOnEventHandler) {
+    public func list(prefix: String, path: String?, onEvent: @escaping StorageListOnEventHandler) {
         listCalled = true
 
         onEvent(StorageEvent.completed(StorageListResult(keys: [])))

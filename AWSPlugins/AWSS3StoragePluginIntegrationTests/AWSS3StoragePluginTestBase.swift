@@ -49,7 +49,6 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         )
 
         // TODO: Set up Amplify Hub configuration, and others like logging, auth
-
         let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
         //TODO: let amplifyConfig = AmplifyConfiguration(analytics: nil, api: nil, hub: hubConfig, logging: nil, storage: storageConfig)
 

@@ -11,19 +11,16 @@ import Amplify
 public struct AWSS3StorageListRequest {
     let accessLevel: StorageAccessLevel
     let targetIdentityId: String?
-    let prefix: String?
-    let limit: Int?
+    let path: String?
     let options: Any?
 
     init(accessLevel: StorageAccessLevel,
          targetIdentityId: String?,
-         prefix: String? = nil,
-         limit: Int? = nil,
+         path: String? = nil,
          options: Any? = nil) {
         self.accessLevel = accessLevel
         self.targetIdentityId = targetIdentityId
-        self.prefix = prefix
-        self.limit = limit
+        self.path = path
         self.options = options
     }
 
@@ -40,17 +37,10 @@ public struct AWSS3StorageListRequest {
             }
         }
 
-        if let prefix = prefix {
-            if prefix.isEmpty {
-                return StorageListError.validation(StorageErrorConstants.PrefixIsEmpty.ErrorDescription,
-                                                   StorageErrorConstants.PrefixIsEmpty.RecoverySuggestion)
-            }
-        }
-
-        if let limit = limit {
-            if limit < 0 {
-                return StorageListError.validation(StorageErrorConstants.LimitIsInvalid.ErrorDescription,
-                                                   StorageErrorConstants.LimitIsInvalid.RecoverySuggestion)
+        if let path = path {
+            if path.isEmpty {
+                return StorageListError.validation(StorageErrorConstants.PathIsEmpty.ErrorDescription,
+                                                   StorageErrorConstants.PathIsEmpty.RecoverySuggestion)
             }
         }
 

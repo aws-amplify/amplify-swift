@@ -136,11 +136,16 @@ class AWSS3StoragePutOperationTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    // TODO: finalize on when to trigger multipart upload
     func testPutOperationMultiPartUpload() {
+        var testLargeDataString = "testLargeDataString"
+        for _ in 1...20 {
+            testLargeDataString += testLargeDataString
+        }
+        let testLargeData = testLargeDataString.data(using: .utf8)!
+        XCTAssertTrue(testLargeData.count > 10000000, "Could not create data object greater than 10MB")
         let request = AWSS3StoragePutRequest(accessLevel: .protected,
                                              key: testKey,
-                                             uploadSource: UploadSource.data(data: testData),
+                                             uploadSource: UploadSource.data(data: testLargeData),
                                              contentType: nil,
                                              metadata: nil,
                                              options: nil)
@@ -148,12 +153,12 @@ class AWSS3StoragePutOperationTests: XCTestCase {
         let operation = AWSS3StoragePutOperation(request,
                                                  storageService: mockStorageService,
                                                  authService: mockAuthService) { (event) in
-                                                    switch event {
-                                                    case .completed:
-                                                        completeInvoked.fulfill()
-                                                    default:
-                                                        XCTFail("Should have received completed event")
-                                                    }
+            switch event {
+            case .completed:
+                completeInvoked.fulfill()
+            default:
+                XCTFail("Should have received completed event")
+            }
         }
 
         operation.start()
@@ -162,4 +167,6 @@ class AWSS3StoragePutOperationTests: XCTestCase {
         XCTAssertEqual(mockStorageService.multiPartUploadCalled, true)
         waitForExpectations(timeout: 1)
     }
+
+    // TODO: test that the storageService.list is called with prefix and path
 }

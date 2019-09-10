@@ -29,7 +29,6 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let options = StorageListOption(accessLevel: .protected,
                                         targetIdentityId: nil,
                                         path: key,
-                                        limit: nil,
                                         options: nil)
         let operation = Amplify.Storage.list(options: options) { (event) in
             switch event {
@@ -54,7 +53,6 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let options = StorageListOption(accessLevel: .private,
                                         targetIdentityId: nil,
                                         path: key,
-                                        limit: nil,
                                         options: nil)
         let operation = Amplify.Storage.list(options: options) { (event) in
             switch event {
@@ -189,7 +187,6 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let listOptions = StorageListOption(accessLevel: accessLevel,
                                             targetIdentityId: user1IdentityId,
                                             path: key,
-                                            limit: nil,
                                             options: nil)
         _ = Amplify.Storage.list(options: listOptions) { (event) in
             switch event {
@@ -281,7 +278,6 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let listOptions = StorageListOption(accessLevel: accessLevel,
                                             targetIdentityId: targetIdentityId,
                                             path: path,
-                                            limit: nil,
                                             options: nil)
         _ = Amplify.Storage.list(options: listOptions) { (event) in
             switch event {

@@ -11,11 +11,6 @@ import Amplify
 import AWSS3StoragePlugin
 import AWSS3
 class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
-
-//    func testPutLargeDataWithMultiPart() {
-//        XCTFail("Not yet implemented")
-//    }
-//
     // Retrieve a URL which expires in 15 seconds.
     func testGetRemoteURLWithExpires() {
         let key = "testGetRemoteURLWithExpires"
@@ -97,6 +92,10 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 15)
     }
 
+    //    func testPutLargeDataWithMultiPart() {
+    //        XCTFail("Not yet implemented")
+    //    }
+    //
 //
 //    func testPutWithMetadata() {
 //        XCTFail("Not yet implemented")
@@ -106,8 +105,5 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
 //        XCTFail("Not yet implemented")
 //    }
 //
-//    func testListWithLimit() {
-//        XCTFail("Not yet implemented")
-//    }
 
 }

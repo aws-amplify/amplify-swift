@@ -10,16 +10,14 @@ import Amplify
 
 public class StorageRequestUtils {
     public static func getServiceKey(accessLevel: StorageAccessLevel, identityId: String, key: String) -> String {
-        if accessLevel == .private || accessLevel == .protected {
-            return accessLevel.rawValue + "/" + identityId + "/" + key
-        }
-
-        return accessLevel.rawValue + "/" + key
+        return getAccessLevelPrefix(accessLevel: accessLevel, identityId: identityId) + key
     }
 
-    public static func getServicePrefix(accessLevel: StorageAccessLevel,
-                                        identityId: String,
-                                        prefix: String?) -> String {
-        return getServiceKey(accessLevel: accessLevel, identityId: identityId, key: prefix ?? "")
+    public static func getAccessLevelPrefix(accessLevel: StorageAccessLevel, identityId: String) -> String {
+        if accessLevel == .private || accessLevel == .protected {
+            return accessLevel.rawValue + "/" + identityId + "/"
+        }
+
+        return accessLevel.rawValue + "/"
     }
 }

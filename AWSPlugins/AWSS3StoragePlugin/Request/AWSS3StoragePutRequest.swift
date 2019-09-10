@@ -48,7 +48,28 @@ public struct AWSS3StoragePutRequest {
     }
 
     func isLargeUpload() -> Bool {
-        // TODO: The request contains context on what is considered a large upload like data size
-        return false
+        var isLargeUpload = false
+        switch uploadSource {
+        case .file(let file):
+            do {
+                let attr = try FileManager.default.attributesOfItem(atPath: file.path)
+                if let fileSize = attr[FileAttributeKey.size] as? UInt64 {
+                    print("Got file size: \(fileSize)")
+                    if fileSize > 10000000 {
+                        isLargeUpload = true
+                    }
+                }
+            } catch {
+                print("ErrorGettingFileSize: \(error)")
+            }
+        case .data(let data):
+            let dataCount = data.count
+            print("Got data size: \(dataCount)")
+            if dataCount > 10000000 { // 10000000 = 10 MB
+                isLargeUpload = true
+            }
+        }
+
+        return isLargeUpload
     }
 }

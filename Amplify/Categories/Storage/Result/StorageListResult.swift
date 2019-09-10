@@ -12,4 +12,12 @@ public class StorageListResult {
     }
 
     public var keys: [String]
+
+    // TOOD
+    // JS also returns
+    /*
+     eTag: item.ETag,
+     lastModified: item.LastModified,
+     size: item.Size
+     */
 }

@@ -77,4 +77,12 @@ class AWSS3StoragePutRequestTests: XCTestCase {
         XCTAssertEqual(description, StorageErrorConstants.ContentTypeIsEmpty.ErrorDescription)
         XCTAssertEqual(recovery, StorageErrorConstants.ContentTypeIsEmpty.RecoverySuggestion)
     }
+
+    func testIslargeUploadReturnsTrueForLargeFile() {
+
+    }
+
+    func testIsLargeUploadReturnsTrueForLargeData() {
+
+    }
 }

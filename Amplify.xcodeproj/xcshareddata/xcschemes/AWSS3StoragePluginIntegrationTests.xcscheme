@@ -24,49 +24,7 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "AWSS3StoragePluginAccessLevelTests/testPutToProtectedAndListThenRemoveThenFailGet()">
-               </Test>
-               <Test
                   Identifier = "AWSS3StoragePluginAccessLevelTests/testSetUpOnce()">
-               </Test>
-               <Test
-                  Identifier = "AWSS3StoragePluginIntegrationTests">
-               </Test>
-               <Test
-                  Identifier = "AWSS3StoragePluginIntegrationTests/testEscapeHatchForHeadObject()">
-               </Test>
-               <Test
-                  Identifier = "AWSS3StoragePluginIntegrationTests/testFailConfiguration()">
-               </Test>
-               <Test
-                  Identifier = "AWSS3StoragePluginIntegrationTests/testGetDataToFile()">
-               </Test>
-               <Test
-                  Identifier = "AWSS3StoragePluginIntegrationTests/testGetNonexistentKey()">
-               </Test>
-               <Test
-                  Identifier = "AWSS3StoragePluginIntegrationTests/testGetRemoteURL()">
-               </Test>
-               <Test
-                  Identifier = "AWSS3StoragePluginIntegrationTests/testListFromProtected()">
-               </Test>
-               <Test
-                  Identifier = "AWSS3StoragePluginIntegrationTests/testListFromPublic()">
-               </Test>
-               <Test
-                  Identifier = "AWSS3StoragePluginIntegrationTests/testPutData()">
-               </Test>
-               <Test
-                  Identifier = "AWSS3StoragePluginIntegrationTests/testPutDataFromFile()">
-               </Test>
-               <Test
-                  Identifier = "AWSS3StoragePluginIntegrationTests/testPutToProtectedAndListThenGetThenRemove()">
-               </Test>
-               <Test
-                  Identifier = "AWSS3StoragePluginIntegrationTests/testRemoveKey()">
-               </Test>
-               <Test
-                  Identifier = "AWSS3StoragePluginIntegrationTests/testSetAccessLevelThenPutWithNewDefault()">
                </Test>
             </SkippedTests>
          </TestableReference>

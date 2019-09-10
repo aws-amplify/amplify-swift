@@ -69,15 +69,4 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         XCTAssertNotNil(operation)
         waitForExpectations(timeout: 10)
     }
-
-    //
-    //    func testListNonExistentKey() {
-    //        XCTFail("Not yet implemented")
-    //        // So we should set a custom Prefix since by default it will list from the "public/" folder. we need to..
-    //        // change this and test that accessDenied is returned ..
-    //    }
-    //
-    func testRemoveNonExistentKey() {
-        XCTFail("Not yet implemented")
-    }
 }

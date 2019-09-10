@@ -48,7 +48,6 @@ public class StorageErrorHelper {
         case .accessDenied:
             return StorageListError.accessDenied(StorageErrorConstants.AccessDenied.ErrorDescription,
                                                  StorageErrorConstants.AccessDenied.RecoverySuggestion)
-            break
         case .expiredToken:
             break
         case .invalidAccessKeyId:
@@ -60,7 +59,6 @@ public class StorageErrorHelper {
         case .accessFailure:
             return StorageListError.accessDenied(StorageErrorConstants.AccessDenied.ErrorDescription,
                                                  StorageErrorConstants.AccessDenied.RecoverySuggestion)
-            break
         case .authMissingFailure:
             break
         case .throttling:

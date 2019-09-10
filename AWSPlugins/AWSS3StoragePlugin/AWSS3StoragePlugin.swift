@@ -25,6 +25,7 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
 
     public func configure(using configuration: Any) throws {
 
+        // Retrieve configuration
         guard let config = configuration as? JSONValue else {
             throw PluginError.pluginConfigurationError("Unexpected configuration object not castable to JSONValue",
                                                        "")
@@ -72,6 +73,24 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
                                                        "")
         }
 
+        // Get override access level if any
+        var accessLevel = StorageAccessLevel.public
+        if let defaultAccessLevelConfig = configObject[PluginConstants.DefaultAccessLevel] {
+            guard case let .string(defaultAccessLevelString) = defaultAccessLevelConfig else {
+                throw PluginError.pluginConfigurationError("Default Access Level configured but not a string",
+                                                           "")
+            }
+
+            let defaultAccessLevelOptional = StorageAccessLevel.init(rawValue: defaultAccessLevelString)
+            guard let defaultAccessLevel = defaultAccessLevelOptional else {
+                throw PluginError.pluginConfigurationError("Default Access Level not correct string",
+                                                           "")
+            }
+
+            accessLevel = defaultAccessLevel
+        }
+
+        // Initialize dependencies
         let authService = AWSAuthService()
         authService.configure()
 
@@ -81,13 +100,13 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
                                      cognitoCredentialsProvider: authService.getCognitoCredentialsProvider(),
                                      identifier: key)
 
-        configure(storageService: storageService, authService: authService)
+        configure(storageService: storageService, authService: authService, defaultAccessLevel: accessLevel)
     }
 
     func configure(storageService: AWSS3StorageServiceBehaviour,
                    authService: AWSAuthServiceBehavior,
-                   queue: OperationQueue = OperationQueue(),
-                   defaultAccessLevel: StorageAccessLevel = .public) {
+                   defaultAccessLevel: StorageAccessLevel,
+                   queue: OperationQueue = OperationQueue()) {
         self.storageService = storageService
         self.authService = authService
         self.queue = queue
@@ -95,11 +114,19 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
     }
 
     public func reset() {
-        storageService.reset()
-        storageService = nil
-        authService.reset()
-        authService = nil
-        queue = nil
+        if storageService != nil {
+            storageService.reset()
+            storageService = nil
+        }
+
+        if authService != nil {
+            authService.reset()
+            authService = nil
+        }
+
+        if queue != nil {
+            queue = nil
+        }
     }
 
     public func get(key: String,
@@ -170,8 +197,7 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
     public func list(options: StorageListOption?, onEvent: StorageListEvent?) -> StorageListOperation {
         let request = AWSS3StorageListRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
                                               targetIdentityId: options?.targetIdentityId,
-                                              prefix: options?.path,
-                                              limit: options?.limit,
+                                              path: options?.path,
                                               options: options?.options)
         let listOperation = AWSS3StorageListOperation(request,
                                                       storageService: storageService,

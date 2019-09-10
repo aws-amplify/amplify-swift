@@ -24,7 +24,6 @@ class AWSS3StoragePluginTests: XCTestCase {
     let testURL = URL(fileURLWithPath: "fileURLWithPath")
     let testData = Data()
     let testPath = "TestPath"
-    let testLimit = 10
 
     override func setUp() {
         storagePlugin = AWSS3StoragePlugin()
@@ -34,8 +33,8 @@ class AWSS3StoragePluginTests: XCTestCase {
 
         storagePlugin.configure(storageService: storageService,
                                 authService: authService,
-                                queue: queue,
-                                defaultAccessLevel: defaultAccessLevel)
+                                defaultAccessLevel: defaultAccessLevel,
+                                queue: queue)
     }
 
     // MARK: configuration tests
@@ -50,6 +49,10 @@ class AWSS3StoragePluginTests: XCTestCase {
         } catch {
             XCTFail("Failed to configure storage plugin")
         }
+    }
+
+    func testConfigureWithDefaultAccessLevelWithOverrideRequestAccessLevelOnAPICalls() {
+
     }
 
     func testConfigureThrowsErrorForMissingBucket() {
@@ -69,6 +72,16 @@ class AWSS3StoragePluginTests: XCTestCase {
     func testConfigureThrowsForInvalidRegion() {
 
     }
+
+    func testConfigureThrowsForInvalidDefaultAccessLevel() {
+
+    }
+
+    func testConfigureThrowsForSpecifiedAndEmptyDefaultAccessLevel() {
+        
+    }
+
+
 
     // MARK: Get API Tests
     func testPluginGet() {
@@ -290,7 +303,7 @@ class AWSS3StoragePluginTests: XCTestCase {
         let request = awss3StorageListOperation.request
         XCTAssertNotNil(request)
         XCTAssertEqual(request.accessLevel, defaultAccessLevel)
-        XCTAssertNil(request.prefix)
+        XCTAssertNil(request.path)
         XCTAssertNil(request.options)
         XCTAssertEqual(queue.size, 1)
     }
@@ -299,7 +312,6 @@ class AWSS3StoragePluginTests: XCTestCase {
         let options = StorageListOption(accessLevel: .private,
                                         targetIdentityId: testIdentityId,
                                         path: testPath,
-                                        limit: testLimit,
                                         options: [:])
 
         let operation = storagePlugin.list(options: options, onEvent: nil)
@@ -314,7 +326,7 @@ class AWSS3StoragePluginTests: XCTestCase {
         XCTAssertNotEqual(request.accessLevel, defaultAccessLevel)
         XCTAssertEqual(request.accessLevel, .private)
         XCTAssertNotNil(request.targetIdentityId, testIdentityId)
-        XCTAssertEqual(request.prefix, testPath)
+        XCTAssertEqual(request.path, testPath)
         XCTAssertNotNil(request.options)
         XCTAssertEqual(queue.size, 1)
     }

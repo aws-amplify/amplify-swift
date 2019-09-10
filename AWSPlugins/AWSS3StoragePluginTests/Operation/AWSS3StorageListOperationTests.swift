@@ -15,7 +15,7 @@ class AWSS3StorageListOperationTests: XCTestCase {
     var mockStorageService: MockAWSS3StorageService!
     var mockAuthService: MockAWSAuthService!
 
-    let testPrefix = "TestPrefix"
+    let testPath = "TestPath"
 
     override func setUp() {
         let hubConfig = HubCategoryConfiguration(
@@ -52,8 +52,7 @@ class AWSS3StorageListOperationTests: XCTestCase {
     func testListOperationValidationError() {
         let request = AWSS3StorageListRequest(accessLevel: .public,
                                               targetIdentityId: nil,
-                                              prefix: "",
-                                              limit: nil,
+                                              path: "",
                                               options: nil)
 
          let failedInvoked = expectation(description: "failed was invoked on operation")
@@ -82,8 +81,7 @@ class AWSS3StorageListOperationTests: XCTestCase {
         mockAuthService.getIdentityIdError = AuthError.identity("", "")
         let request = AWSS3StorageListRequest(accessLevel: .public,
                                               targetIdentityId: nil,
-                                              prefix: testPrefix,
-                                              limit: nil,
+                                              path: testPath,
                                               options: nil)
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
@@ -110,8 +108,7 @@ class AWSS3StorageListOperationTests: XCTestCase {
     func testListOperationListObjects() {
         let request = AWSS3StorageListRequest(accessLevel: .public,
                                               targetIdentityId: nil,
-                                              prefix: testPrefix,
-                                              limit: nil,
+                                              path: testPath,
                                               options: nil)
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageListOperation(request,

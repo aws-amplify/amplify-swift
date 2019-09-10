@@ -21,13 +21,9 @@ public struct StorageErrorConstants {
         ErrorDescription: "ExpiresIsInvalid",
         RecoverySuggestion: "ExpiresIsInvalid")
 
-    public static let PrefixIsEmpty = (
+    public static let PathIsEmpty = (
         ErrorDescription: "The path is empty",
-        RecoverySuggestion: "PrefixIsEmpty")
-
-    public static let LimitIsInvalid = (
-        ErrorDescription: "The limit is invalid",
-        RecoverySuggestion: "LimitIsInvalid")
+        RecoverySuggestion: "PathIsEmpty")
 
     public static let ContentTypeIsEmpty = (
         ErrorDescription: "ContentType is empty",
