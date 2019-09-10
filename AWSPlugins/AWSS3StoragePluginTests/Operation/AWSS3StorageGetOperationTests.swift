@@ -9,68 +9,190 @@ import XCTest
 import Amplify
 @testable import AWSS3StoragePlugin
 
+// TODO Currently we only verify that the method on storage service was called.
+// we should also verify that the call was done with correct parameters
 class AWSS3StorageGetOperationTests: XCTestCase {
-    var mockAmplifyConfig: AmplifyConfiguration!
+
+    var hubPlugin: MockHubCategoryPlugin!
+    var mockStorageService: MockAWSS3StorageService!
+    var mockAuthService: MockAWSAuthService!
+
+    let testKey = "TestKey"
 
     override func setUp() {
-        Amplify.reset()
-
-        let hubConfig = BasicCategoryConfiguration(
+        let hubConfig = HubCategoryConfiguration(
             plugins: ["MockHubCategoryPlugin": true]
         )
+        hubPlugin = MockHubCategoryPlugin()
+        let mockAmplifyConfig = AmplifyConfiguration(hub: hubConfig)
 
-        mockAmplifyConfig = AmplifyConfiguration(hub: hubConfig)
+        do {
+            try Amplify.add(plugin: hubPlugin)
+            try Amplify.configure(mockAmplifyConfig)
+        } catch let error as AmplifyError {
+            XCTFail("setUp failed with error: \(error); \(error.errorDescription); \(error.recoverySuggestion)")
+        } catch {
+            XCTFail("setup failed with unknown error")
+        }
+
+//        let methodWasInvokedOnHubPlugin = expectation(
+//            description: "method was invoked on hub plugin")
+//        hubPlugin.listeners.append { message in
+//            if message == "dispatch(to:payload:)" {
+//                methodWasInvokedOnHubPlugin.fulfill()
+//            }
+//        }
+
+        mockStorageService = MockAWSS3StorageService()
+        mockAuthService = MockAWSAuthService()
     }
 
-    func testGetOperation() throws {
-        // Arrange
-        let plugin = MockHubCategoryPlugin()
-        try Amplify.add(plugin: plugin)
-        try Amplify.configure(mockAmplifyConfig)
-        let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
-        // TODO: update notify to propagate the message to the message reporter mock to get individual
-        // messages for the listeners, so we can check what it was, Progress vs Completed/Failed
-        // instead of just 2 fulfillment counts
-        methodWasInvokedOnPlugin.expectedFulfillmentCount = 2
-        plugin.listeners.append { message in
-            if message == "dispatch(to:payload:)" {
-                methodWasInvokedOnPlugin.fulfill()
+    override func tearDown() {
+        Amplify.reset()
+    }
+
+    func testGetOperationValidationError() {
+        let request = AWSS3StorageGetRequest(accessLevel: .public,
+                                             targetIdentityId: nil,
+                                             key: "",
+                                             storageGetDestination: .data,
+                                             options: nil)
+        let failedInvoked = expectation(description: "failed was invoked on operation")
+        let operation = AWSS3StorageGetOperation(request,
+                                                 storageService: mockStorageService,
+                                                 authService: mockAuthService) { (event) in
+            switch event {
+            case .failed(let error):
+                guard case .validation = error else {
+                    XCTFail("Should have failed with validation error")
+                    return
+                }
+                failedInvoked.fulfill()
+            default:
+                XCTFail("Should have received failed event")
             }
         }
 
-        let mockStorageService = MockAWSS3StorageService()
-        let requestBuilder = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key", accessLevel: .Public)
-
-        let completionInvoked = expectation(description: "completion was invoked on operation")
-        let failedInvoked = expectation(description: "failed was invoked on operation")
-        failedInvoked.isInverted = true
-
-        let operation = AWSS3StorageGetOperation(requestBuilder, service: mockStorageService, onEvent: { (event) in
-            switch event {
-            case .completed:
-                completionInvoked.fulfill()
-            case .failed:
-                failedInvoked.fulfill()
-            case .unknown:
-                break
-            case .notInProcess:
-                break
-            case .inProcess:
-                break
-            }
-        })
-
-        // Act
         operation.start()
 
-        // Assert
-        XCTAssertEqual(mockStorageService.executeGetRequestCalled, true)
         XCTAssertTrue(operation.isFinished)
-        waitForExpectations(timeout: 1.0)
+        waitForExpectations(timeout: 1)
     }
 
-    func testGetOperationError() {
-        // Arrange
-        // set up mock service to return failure.
+    func testGetOperationGetIdentityIdError() {
+        mockAuthService.getIdentityIdError = AuthError.identity("", "")
+        let request = AWSS3StorageGetRequest(accessLevel: .public,
+                                             targetIdentityId: nil,
+                                             key: testKey,
+                                             storageGetDestination: .data,
+                                             options: nil)
+        let failedInvoked = expectation(description: "failed was invoked on operation")
+        let operation = AWSS3StorageGetOperation(request,
+                                                 storageService: mockStorageService,
+                                                 authService: mockAuthService) { (event) in
+            switch event {
+            case .failed(let error):
+                guard case .identity = error else {
+                    XCTFail("Should have failed with identity error")
+                    return
+                }
+                failedInvoked.fulfill()
+            default:
+                XCTFail("Should have received failed event")
+            }
+        }
+
+        operation.start()
+
+        XCTAssertTrue(operation.isFinished)
+        waitForExpectations(timeout: 1)
+    }
+
+    func testGetOperationDownloadData() {
+        let request = AWSS3StorageGetRequest(accessLevel: .public,
+                                             targetIdentityId: nil,
+                                             key: testKey,
+                                             storageGetDestination: .data,
+                                             options: nil)
+        let completeInvoked = expectation(description: "complete was invoked on operation")
+        let operation = AWSS3StorageGetOperation(request,
+                                                 storageService: mockStorageService,
+                                                 authService: mockAuthService) { (event) in
+            switch event {
+            case .completed:
+                completeInvoked.fulfill()
+            default:
+                XCTFail("Should have received completed event")
+            }
+        }
+
+        operation.start()
+
+        XCTAssertTrue(operation.isFinished)
+        XCTAssertEqual(mockStorageService.downloadDataCalled, true)
+        waitForExpectations(timeout: 1)
+    }
+
+    func testGetOperationDownloadDataFromTargetIdentityId() {
+        // TODO: like testGetOperationDownloadData but we verify that the targetIdentityId overrides the identitiyId
+    }
+
+    func testGetOperationDownloadLocal() {
+        let url = URL(fileURLWithPath: "path")
+        let request = AWSS3StorageGetRequest(accessLevel: .public,
+                                             targetIdentityId: nil,
+                                             key: testKey,
+                                             storageGetDestination: .file(local: url),
+                                             options: nil)
+        let completeInvoked = expectation(description: "complete was invoked on operation")
+        let operation = AWSS3StorageGetOperation(request,
+                                                 storageService: mockStorageService,
+                                                 authService: mockAuthService) { (event) in
+            switch event {
+            case .completed:
+                completeInvoked.fulfill()
+            default:
+                XCTFail("Should have received completed event")
+            }
+        }
+
+        operation.start()
+
+        XCTAssertTrue(operation.isFinished)
+        XCTAssertEqual(mockStorageService.downloadToFileCalled, true)
+        waitForExpectations(timeout: 1)
+    }
+
+    func testGetOperationDownloadLocalFromTargetIdentityId() {
+        // TODO: like testGetOperationDownloadLocal but we verify that targetIdentityID overrides identityid
+    }
+
+    func testGetOperationGetPresignedURL() {
+        let request = AWSS3StorageGetRequest(accessLevel: .public,
+                                             targetIdentityId: nil,
+                                             key: testKey,
+                                             storageGetDestination: .url(expires: nil),
+                                             options: nil)
+        let completeInvoked = expectation(description: "complete was invoked on operation")
+        let operation = AWSS3StorageGetOperation(request,
+                                                 storageService: mockStorageService,
+                                                 authService: mockAuthService) { (event) in
+            switch event {
+            case .completed:
+                completeInvoked.fulfill()
+            default:
+                XCTFail("Should have received completed event")
+            }
+        }
+
+        operation.start()
+
+        XCTAssertTrue(operation.isFinished)
+        XCTAssertEqual(mockStorageService.getPreSignedURLCalled, true)
+        waitForExpectations(timeout: 1)
+    }
+
+    func testGetOperationGetPresignedURLFromTargetIdentityId() {
+        // TODO: like testGetOperationGetPresignedURL but we verify that targetIdentityID overrides identityid
     }
 }

@@ -12,6 +12,9 @@ import Amplify
 @testable import AWSS3StoragePlugin
 
 public class MockAWSAuthService: AWSAuthServiceBehavior {
+
+    var getIdentityIdError: AuthError?
+
     public func configure() {
     }
 
@@ -23,7 +26,11 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
         return cognitoCredentialsProvider
     }
 
-    public func getIdentityId() -> Result<String, StorageError> {
-        return Result.success("IdentityId")
+    public func getIdentityId() -> Result<String, AuthError> {
+        if let error = getIdentityIdError {
+            return .failure(error)
+        }
+
+        return .success("IdentityId")
     }
 }

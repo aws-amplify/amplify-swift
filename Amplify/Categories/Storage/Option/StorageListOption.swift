@@ -5,23 +5,26 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public struct StorageListOption: StorageOption {
-    public init(accessLevel: StorageAccessLevel?, prefix: String?, limit: Int?, options: Any?, targetUser: String?) {
-        self.accessLevel = accessLevel
-        self.options = options
-        self.prefix = prefix
-        self.limit = limit
-        self.targetUser = targetUser
-    }
-
+public struct StorageListOption {
     public var accessLevel: StorageAccessLevel?
 
-    public var prefix: String?
+    public var targetIdentityId: String?
 
-    // Specifics the user when retrieving data for user other than self under the Protected AccessLevel
-    public var targetUser: String?
+    public var path: String?
 
     public var limit: Int?
 
     public var options: Any?
+
+    public init(accessLevel: StorageAccessLevel?,
+                targetIdentityId: String?,
+                path: String?,
+                limit: Int?,
+                options: Any?) {
+        self.accessLevel = accessLevel
+        self.targetIdentityId = targetIdentityId
+        self.options = options
+        self.path = path
+        self.limit = limit
+    }
 }

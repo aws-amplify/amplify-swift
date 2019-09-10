@@ -6,13 +6,13 @@
 //
 
 import Foundation
-public enum StorageError {
+public enum AuthError {
     case httpStatusError(ErrorDescription, RecoverySuggestion)
     case unknown(ErrorDescription, RecoverySuggestion)
     case identity(ErrorDescription, RecoverySuggestion)
 }
 
-extension StorageError: AmplifyError {
+extension AuthError: AmplifyError {
     public var errorDescription: ErrorDescription {
         switch self {
         case .httpStatusError(let description, _),

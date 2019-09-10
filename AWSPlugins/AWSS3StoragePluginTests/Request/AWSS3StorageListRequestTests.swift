@@ -6,27 +6,116 @@
 //
 
 import XCTest
+@testable import AWSS3StoragePlugin
 
 class AWSS3StorageListRequestTests: XCTestCase {
 
-    override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    let testTargetIdentityId = "TestTargetIdentityId"
+    let testPrefix = "TestPrefix"
+    let testLimit = 5
+    let testOptions: Any? = [:]
+
+    func testValidateSuccess() {
+        let request = AWSS3StorageListRequest(accessLevel: .protected,
+                                              targetIdentityId: testTargetIdentityId,
+                                              prefix: testPrefix,
+                                              limit: testLimit,
+                                              options: testOptions)
+
+        let storageListErrorOptional = request.validate()
+
+        XCTAssertNil(storageListErrorOptional)
     }
 
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
+    func testValidateEmptyTargetIdentityIdError() {
+        let request = AWSS3StorageListRequest(accessLevel: .protected,
+                                              targetIdentityId: "",
+                                              prefix: testPrefix,
+                                              limit: testLimit,
+                                              options: testOptions)
 
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
+        let storageListErrorOptional = request.validate()
 
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+        guard let error = storageListErrorOptional else {
+            XCTFail("Missing StorageListError")
+            return
         }
+
+        guard case .validation(let description, let recovery) = error else {
+            XCTFail("Error does not match validation error")
+            return
+        }
+
+        XCTAssertEqual(description, StorageErrorConstants.IdentityIdIsEmpty.ErrorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.IdentityIdIsEmpty.RecoverySuggestion)
     }
 
+    func testValidateTargetIdentityIdWithPrivateAccessLevelError() {
+        let request = AWSS3StorageListRequest(accessLevel: .private,
+                                              targetIdentityId: testTargetIdentityId,
+                                              prefix: testPrefix,
+                                              limit: testLimit,
+                                              options: testOptions)
+
+        let storageListErrorOptional = request.validate()
+
+        guard let error = storageListErrorOptional else {
+            XCTFail("Missing StorageListError")
+            return
+        }
+
+        guard case .validation(let description, let recovery) = error else {
+            XCTFail("Error does not match validation error")
+            return
+        }
+
+        XCTAssertEqual(description, StorageErrorConstants.PrivateWithTarget.ErrorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.PrivateWithTarget.RecoverySuggestion)
+    }
+
+    func testValidateEmptyPrefixError() {
+        let request = AWSS3StorageListRequest(accessLevel: .protected,
+                                              targetIdentityId: testTargetIdentityId,
+                                              prefix: "",
+                                              limit: testLimit,
+                                              options: testOptions)
+
+        let storageListErrorOptional = request.validate()
+
+        guard let error = storageListErrorOptional else {
+            XCTFail("Missing StorageListError")
+            return
+        }
+
+        guard case .validation(let description, let recovery) = error else {
+            XCTFail("Error does not match validation error")
+            return
+        }
+
+        XCTAssertEqual(description, StorageErrorConstants.PrefixIsEmpty.ErrorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.PrefixIsEmpty.RecoverySuggestion)
+    }
+
+    func testValidateLimitIsInvalidError() {
+        let request = AWSS3StorageListRequest(accessLevel: .protected,
+                                              targetIdentityId: testTargetIdentityId,
+                                              prefix: testPrefix,
+                                              limit: -1,
+                                              options: testOptions)
+
+        let storageListErrorOptional = request.validate()
+
+        guard let error = storageListErrorOptional else {
+            XCTFail("Missing StorageListError")
+            return
+        }
+
+        guard case .validation(let description, let recovery) = error else {
+            XCTFail("Error does not match validation error")
+            return
+        }
+
+        XCTAssertEqual(description, StorageErrorConstants.LimitIsInvalid.ErrorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.LimitIsInvalid.RecoverySuggestion)
+    }
 }

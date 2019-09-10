@@ -10,6 +10,7 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      onlyGenerateCoverageForSpecifiedTargets = "YES"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
@@ -22,6 +23,18 @@
                ReferencedContainer = "container:Amplify.xcodeproj">
             </BuildableReference>
             <SkippedTests>
+               <Test
+                  Identifier = "AWSS3StoragePluginAccessLevelTests/testPutToProtectedAndListThenRemoveThenFailGet()">
+               </Test>
+               <Test
+                  Identifier = "AWSS3StoragePluginAccessLevelTests/testSetUpOnce()">
+               </Test>
+               <Test
+                  Identifier = "AWSS3StoragePluginBasicIntegrationTests">
+               </Test>
+               <Test
+                  Identifier = "AWSS3StoragePluginIntegrationTests">
+               </Test>
                <Test
                   Identifier = "AWSS3StoragePluginIntegrationTests/testEscapeHatchForHeadObject()">
                </Test>

@@ -6,27 +6,75 @@
 //
 
 import XCTest
+@testable import AWSS3StoragePlugin
 
 class AWSS3StoragePutRequestTests: XCTestCase {
 
-    override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    let testTargetIdentityId = "TestTargetIdentityId"
+    let testKey = "TestKey"
+    let testOptions: Any? = [:]
+    let testData = Data()
+    let testContentType = "TestContentType"
+    let testMetadata: [String: String] = [:]
+
+    func testValidateSuccess() {
+        let request = AWSS3StoragePutRequest(accessLevel: .protected,
+                                             key: testKey,
+                                             uploadSource: .data(data: testData),
+                                             contentType: testContentType,
+                                             metadata: testMetadata,
+                                             options: testOptions)
+
+        let storagePutErrorOptional = request.validate()
+
+        XCTAssertNil(storagePutErrorOptional)
     }
 
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
+    func testValidateEmptyKeyError() {
+        let request = AWSS3StoragePutRequest(accessLevel: .protected,
+                                             key: "",
+                                             uploadSource: .data(data: testData),
+                                             contentType: testContentType,
+                                             metadata: testMetadata,
+                                             options: testOptions)
 
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
+        let storagePutErrorOptional = request.validate()
 
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+        guard let error = storagePutErrorOptional else {
+            XCTFail("Missing StoragePutError")
+            return
         }
+
+        guard case .validation(let description, let recovery) = error else {
+            XCTFail("Error does not match validation error")
+            return
+        }
+
+        XCTAssertEqual(description, StorageErrorConstants.KeyIsEmpty.ErrorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.KeyIsEmpty.RecoverySuggestion)
     }
 
+    func testValidateEmptyContentTypeError() {
+        let request = AWSS3StoragePutRequest(accessLevel: .protected,
+                                             key: testKey,
+                                             uploadSource: .data(data: testData),
+                                             contentType: "",
+                                             metadata: testMetadata,
+                                             options: testOptions)
+
+        let storagePutErrorOptional = request.validate()
+
+        guard let error = storagePutErrorOptional else {
+            XCTFail("Missing StoragePutError")
+            return
+        }
+
+        guard case .validation(let description, let recovery) = error else {
+            XCTFail("Error does not match validation error")
+            return
+        }
+
+        XCTAssertEqual(description, StorageErrorConstants.ContentTypeIsEmpty.ErrorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.ContentTypeIsEmpty.RecoverySuggestion)
+    }
 }

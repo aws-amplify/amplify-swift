@@ -6,6 +6,7 @@
 //
 
 import Foundation
-public protocol StorageOption {
-    var options: Any? { get set }
+struct PluginConstants {
+    static let Bucket = "Bucket"
+    static let Region = "Region"
 }

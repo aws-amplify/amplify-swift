@@ -11,71 +11,83 @@ import AWSMobileClient
 
 public class AWSS3StoragePlugin: StorageCategoryPlugin {
 
-    private static let AWSS3StoragePluginKey = "AWSS3StoragePlugin"
-
-    // TODO move this variable somewhere else into constant file
-    private static let AWSS3StoragePluginNotConfiguredError = """
-        AWSS3StoragePlugin not configured.
-        Call Amplify.configure() to configure. This could happen if Amplify.reset().
-        """
-
-    private var bucket: String!
     private var storageService: AWSS3StorageServiceBehaviour!
     private var authService: AWSAuthServiceBehavior!
     private var queue: OperationQueue!
     private var defaultAccessLevel: StorageAccessLevel!
 
     public var key: PluginKey {
-        return AWSS3StoragePlugin.AWSS3StoragePluginKey
+        return "AWSS3StoragePlugin"
     }
 
     public init() {
     }
 
     public func configure(using configuration: Any) throws {
-        if let configuration = configuration as? [String: Any] {
-            guard let bucket = configuration["Bucket"] as? String else {
-                throw PluginError.pluginConfigurationError("Bucket not in configuration",
-                                                           "Bucket should be in the configuration")
-            }
 
-            if bucket.isEmpty {
-                throw PluginError.pluginConfigurationError("Bucket is empty in configuration",
-                                                           "Bucket should not be empty in the configuration")
-            }
-
-            guard let region = configuration["Region"] as? String else {
-                throw PluginError.pluginConfigurationError("Region not in configuration",
-                                                           "Region should be in the configuration")
-            }
-
-            if region.isEmpty {
-                throw PluginError.pluginConfigurationError("Region should not be empty in configuration",
-                                                           "Region should not be empty in the configuration")
-            }
-
-            // TODO what if we cannot get regionTypeValue() ?? validation here.
-            let regionType = region.aws_regionTypeValue()
-
-            let authService = AWSAuthService()
-            authService.configure()
-
-            let storageService = AWSS3StorageService()
-            try storageService.configure(region: regionType,
-                                         bucket: bucket,
-                                         cognitoCredentialsProvider: authService.getCognitoCredentialsProvider(),
-                                         identifier: key)
-
-            configure(bucket: bucket, storageService: storageService, authService: authService)
+        guard let config = configuration as? JSONValue else {
+            throw PluginError.pluginConfigurationError("Unexpected configuration object not castable to JSONValue",
+                                                       "")
         }
+
+        guard case let .object(configObject) = config else {
+            throw PluginError.pluginConfigurationError("Did not find config object",
+                                                       "")
+        }
+
+        guard let bucket = configObject[PluginConstants.Bucket] else {
+            throw PluginError.pluginConfigurationError("Bucket not in configuration",
+                                                       "Bucket should be in the configuration")
+        }
+
+        guard case let .string(bucketValue) = bucket else {
+            throw PluginError.pluginConfigurationError("Missing bucket value",
+                                                       "")
+        }
+
+        if bucketValue.isEmpty {
+            throw PluginError.pluginConfigurationError("Bucket is empty",
+                                                       "Bucket should not be empty in the configuration")
+        }
+
+        guard let region = configObject[PluginConstants.Region] else {
+            throw PluginError.pluginConfigurationError("Region not in configuration",
+                                                       "Region should be in the configuration")
+        }
+
+        guard case let .string(regionValue) = region else {
+            throw PluginError.pluginConfigurationError("Missing region value",
+                                                       "")
+        }
+
+        if regionValue.isEmpty {
+            throw PluginError.pluginConfigurationError("Region is empty",
+                                                       "")
+        }
+
+        let regionType = regionValue.aws_regionTypeValue()
+
+        guard regionType != AWSRegionType.Unknown else {
+            throw PluginError.pluginConfigurationError("Region is Unknown",
+                                                       "")
+        }
+
+        let authService = AWSAuthService()
+        authService.configure()
+
+        let storageService = AWSS3StorageService()
+        try storageService.configure(region: regionType,
+                                     bucket: bucketValue,
+                                     cognitoCredentialsProvider: authService.getCognitoCredentialsProvider(),
+                                     identifier: key)
+
+        configure(storageService: storageService, authService: authService)
     }
 
-    func configure(bucket: String,
-                   storageService: AWSS3StorageServiceBehaviour,
+    func configure(storageService: AWSS3StorageServiceBehaviour,
                    authService: AWSAuthServiceBehavior,
                    queue: OperationQueue = OperationQueue(),
                    defaultAccessLevel: StorageAccessLevel = .public) {
-        self.bucket = bucket
         self.storageService = storageService
         self.authService = authService
         self.queue = queue
@@ -83,7 +95,6 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
     }
 
     public func reset() {
-        bucket = nil
         storageService.reset()
         storageService = nil
         authService.reset()
@@ -145,7 +156,8 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
                        options: StorageRemoveOption?,
                        onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
         let request = AWSS3StorageRemoveRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
-                                                key: key)
+                                                key: key,
+                                                options: options?.options)
         let removeOperation = AWSS3StorageRemoveOperation(request,
                                                           storageService: storageService,
                                                           authService: authService,
@@ -157,8 +169,10 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
 
     public func list(options: StorageListOption?, onEvent: StorageListEvent?) -> StorageListOperation {
         let request = AWSS3StorageListRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
-                                              prefix: options?.prefix,
-                                              limit: options?.limit)
+                                              targetIdentityId: options?.targetIdentityId,
+                                              prefix: options?.path,
+                                              limit: options?.limit,
+                                              options: options?.options)
         let listOperation = AWSS3StorageListOperation(request,
                                                       storageService: storageService,
                                                       authService: authService,

@@ -7,15 +7,14 @@
 
 import Foundation
 
-public struct StoragePutOption: StorageOption {
-    // AccessLevel
+public struct StoragePutOption {
+
     public var accessLevel: StorageAccessLevel?
 
     public var metadata: [String: String]?
 
     public var contentType: String?
 
-    // Extra options
     public var options: Any?
 
     // TODO: tags (may be in options)

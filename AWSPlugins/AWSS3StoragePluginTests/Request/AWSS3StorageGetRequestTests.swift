@@ -10,52 +10,111 @@ import XCTest
 
 class AWSS3StorageGetRequestTests: XCTestCase {
 
-    override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    let testTargetIdentityId = "TestTargetIdentityId"
+    let testKey = "TestKey"
+    let testOptions: Any? = [:]
+
+    func testValidateSuccess() {
+        let request = AWSS3StorageGetRequest(accessLevel: .protected,
+                                             targetIdentityId: testTargetIdentityId,
+                                             key: testKey,
+                                             storageGetDestination: .data,
+                                             options: testOptions)
+
+        let storageGetErrorOptional = request.validate()
+
+        XCTAssertNil(storageGetErrorOptional)
     }
 
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
+    func testValidateEmptyTargetIdentityIdError() {
+        let request = AWSS3StorageGetRequest(accessLevel: .protected,
+                                             targetIdentityId: "",
+                                             key: testKey,
+                                             storageGetDestination: .data,
+                                             options: testOptions)
 
-    func testMandatoryFields() {
-        // Arrange
-        let requestBuilder = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key", accessLevel: .Public)
+        let storageGetErrorOptional = request.validate()
 
-        // Act
-        let request = requestBuilder.build()
-
-        // Assert
-        XCTAssertNotNil(request)
-        XCTAssertEqual(request.key, "key")
-        XCTAssertEqual(request.bucket, "bucket")
-        XCTAssertNil(request.fileURL)
-
-    }
-
-    func testOptionalFields() {
-        // Arrange
-        let url = URL(fileURLWithPath: "path")
-        let requestBuilder = AWSS3StorageGetRequest.Builder(bucket: "bucket", key: "key", accessLevel: .Public)
-            .accessLevel(.Private)
-            .fileURL(url)
-        let expectedKey = "private/key"
-
-        // Act
-        let request = requestBuilder.build()
-
-        // Assert
-        XCTAssertNotNil(request)
-        XCTAssertEqual(request.key, expectedKey)
-        XCTAssertEqual(request.bucket, "bucket")
-        XCTAssertEqual(request.fileURL, url)
-    }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+        guard let error = storageGetErrorOptional else {
+            XCTFail("Missing StorageGetError")
+            return
         }
+
+        guard case .validation(let description, let recovery) = error else {
+            XCTFail("Error does not match validation error")
+            return
+        }
+
+        XCTAssertEqual(description, StorageErrorConstants.IdentityIdIsEmpty.ErrorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.IdentityIdIsEmpty.RecoverySuggestion)
     }
 
+    func testValidateTargetIdentityIdWithPrivateAccessLevelError() {
+        let request = AWSS3StorageGetRequest(accessLevel: .private,
+                                             targetIdentityId: testTargetIdentityId,
+                                             key: testKey,
+                                             storageGetDestination: .data,
+                                             options: testOptions)
+
+        let storageGetErrorOptional = request.validate()
+
+        guard let error = storageGetErrorOptional else {
+            XCTFail("Missing StorageGetError")
+            return
+        }
+
+        guard case .validation(let description, let recovery) = error else {
+            XCTFail("Error does not match validation error")
+            return
+        }
+
+        XCTAssertEqual(description, StorageErrorConstants.PrivateWithTarget.ErrorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.PrivateWithTarget.RecoverySuggestion)
+    }
+
+    func testValidateKeyIsEmptyError() {
+        let request = AWSS3StorageGetRequest(accessLevel: .protected,
+                                             targetIdentityId: testTargetIdentityId,
+                                             key: "",
+                                             storageGetDestination: .data,
+                                             options: testOptions)
+
+        let storageGetErrorOptional = request.validate()
+
+        guard let error = storageGetErrorOptional else {
+            XCTFail("Missing StorageGetError")
+            return
+        }
+
+        guard case .validation(let description, let recovery) = error else {
+            XCTFail("Error does not match validation error")
+            return
+        }
+
+        XCTAssertEqual(description, StorageErrorConstants.KeyIsEmpty.ErrorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.KeyIsEmpty.RecoverySuggestion)
+    }
+
+    func testValidateURLStorageGetDestinationWithNonPositiveExpiresError() {
+        let request = AWSS3StorageGetRequest(accessLevel: .protected,
+                                             targetIdentityId: testTargetIdentityId,
+                                             key: testKey,
+                                             storageGetDestination: .url(expires: -1),
+                                             options: testOptions)
+
+        let storageGetErrorOptional = request.validate()
+
+        guard let error = storageGetErrorOptional else {
+            XCTFail("Missing StorageGetError")
+            return
+        }
+
+        guard case .validation(let description, let recovery) = error else {
+            XCTFail("Error does not match validation error")
+            return
+        }
+
+        XCTAssertEqual(description, StorageErrorConstants.ExpiresIsInvalid.ErrorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.ExpiresIsInvalid.RecoverySuggestion)
+    }
 }

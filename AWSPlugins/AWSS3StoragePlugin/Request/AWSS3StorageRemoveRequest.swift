@@ -11,16 +11,20 @@ import Amplify
 public struct AWSS3StorageRemoveRequest {
     let accessLevel: StorageAccessLevel
     let key: String
+    let options: Any?
 
     init(accessLevel: StorageAccessLevel,
-         key: String) {
+         key: String,
+         options: Any? = nil) {
         self.accessLevel = accessLevel
         self.key = key
+        self.options = options
     }
 
     func validate() -> StorageRemoveError? {
         if key.isEmpty {
-            return StorageRemoveError.unknown("key is empty", "key is empty")
+            return StorageRemoveError.validation(StorageErrorConstants.KeyIsEmpty.ErrorDescription,
+                                                 StorageErrorConstants.KeyIsEmpty.RecoverySuggestion)
         }
 
         return nil
