@@ -17,6 +17,9 @@
 		210FCC7C2326EAF70017EA4B /* AWSS3StoragePluginAccessLevelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210FCC7B2326EAF70017EA4B /* AWSS3StoragePluginAccessLevelTests.swift */; };
 		210FCC7E2326EB0F0017EA4B /* AWSS3StoragePluginOptionsUsabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210FCC7D2326EB0F0017EA4B /* AWSS3StoragePluginOptionsUsabilityTests.swift */; };
 		210FCC812326EB2A0017EA4B /* AWSS3StoragePluginNegativeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210FCC802326EB2A0017EA4B /* AWSS3StoragePluginNegativeTests.swift */; };
+		210FCC832328C1DC0017EA4B /* AWSS3StoragePlugin+APIBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210FCC822328C1DC0017EA4B /* AWSS3StoragePlugin+APIBehavior.swift */; };
+		210FCC852328D50B0017EA4B /* AWSS3StoragePlugin+Configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210FCC842328D50B0017EA4B /* AWSS3StoragePlugin+Configure.swift */; };
+		210FCC872328DA090017EA4B /* AWSS3StoragePlugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210FCC862328DA090017EA4B /* AWSS3StoragePlugin+Reset.swift */; };
 		211FA8EE23257E9D00818C27 /* AWSS3StorageServiceDownloadBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211FA8ED23257E9D00818C27 /* AWSS3StorageServiceDownloadBehaviorTests.swift */; };
 		2125E1B7231721B700B3DEB5 /* AWSMobileClientImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E1B523171DBA00B3DEB5 /* AWSMobileClientImpl.swift */; };
 		2125E1B8231721BB00B3DEB5 /* AWSMobileClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E1B323171D5E00B3DEB5 /* AWSMobileClientBehavior.swift */; };
@@ -315,6 +318,9 @@
 		210FCC7B2326EAF70017EA4B /* AWSS3StoragePluginAccessLevelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginAccessLevelTests.swift; sourceTree = "<group>"; };
 		210FCC7D2326EB0F0017EA4B /* AWSS3StoragePluginOptionsUsabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginOptionsUsabilityTests.swift; sourceTree = "<group>"; };
 		210FCC802326EB2A0017EA4B /* AWSS3StoragePluginNegativeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginNegativeTests.swift; sourceTree = "<group>"; };
+		210FCC822328C1DC0017EA4B /* AWSS3StoragePlugin+APIBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSS3StoragePlugin+APIBehavior.swift"; sourceTree = "<group>"; };
+		210FCC842328D50B0017EA4B /* AWSS3StoragePlugin+Configure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSS3StoragePlugin+Configure.swift"; sourceTree = "<group>"; };
+		210FCC862328DA090017EA4B /* AWSS3StoragePlugin+Reset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSS3StoragePlugin+Reset.swift"; sourceTree = "<group>"; };
 		211FA8ED23257E9D00818C27 /* AWSS3StorageServiceDownloadBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceDownloadBehaviorTests.swift; sourceTree = "<group>"; };
 		2125E1B323171D5E00B3DEB5 /* AWSMobileClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSMobileClientBehavior.swift; sourceTree = "<group>"; };
 		2125E1B523171DBA00B3DEB5 /* AWSMobileClientImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSMobileClientImpl.swift; sourceTree = "<group>"; };
@@ -601,6 +607,35 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		210FCC882328DABC0017EA4B /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				210FCC6E23260B530017EA4B /* AuthErrorConstants.swift */,
+				210FCC712326E5D20017EA4B /* PluginConstants.swift */,
+				210FCC6A2325ECBA0017EA4B /* StorageErrorConstants.swift */,
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
+		210FCC892328DB0E0017EA4B /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				21FFF9D4230DFDB6005878EA /* StorageEvent.swift */,
+				21FFF9DA230E1C74005878EA /* StorageOperationReference.swift */,
+				2125E2A52321D19000B3DEB5 /* UploadSource.swift */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
+		210FCC8A2328DB200017EA4B /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				2125E279231F049100B3DEB5 /* StorageErrorHelper.swift */,
+				2125E28D23203E4E00B3DEB5 /* StorageRequestUtils.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		2125E1FF2318327300B3DEB5 /* AWSS3StoragePluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -643,12 +678,15 @@
 			isa = PBXGroup;
 			children = (
 				21265E252309D620004CCE39 /* AWSS3StoragePlugin.swift */,
+				210FCC822328C1DC0017EA4B /* AWSS3StoragePlugin+APIBehavior.swift */,
+				210FCC842328D50B0017EA4B /* AWSS3StoragePlugin+Configure.swift */,
+				210FCC862328DA090017EA4B /* AWSS3StoragePlugin+Reset.swift */,
+				21FFF9D6230E06AD005878EA /* Dependency */,
 				21FFF9BA230DD304005878EA /* Operation */,
 				21FFF9BB230DD694005878EA /* Request */,
-				21FFF9BC230DD71B005878EA /* Service */,
-				21FFF9D6230E06AD005878EA /* Dependency */,
-				21FFF9D7230E06DD005878EA /* Support */,
 				21FFF9CB230DDB34005878EA /* Resources */,
+				21FFF9BC230DD71B005878EA /* Service */,
+				21FFF9D7230E06DD005878EA /* Support */,
 			);
 			path = AWSS3StoragePlugin;
 			sourceTree = "<group>";
@@ -775,14 +813,9 @@
 		21FFF9D7230E06DD005878EA /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				210FCC6E23260B530017EA4B /* AuthErrorConstants.swift */,
-				210FCC712326E5D20017EA4B /* PluginConstants.swift */,
-				210FCC6A2325ECBA0017EA4B /* StorageErrorConstants.swift */,
-				2125E279231F049100B3DEB5 /* StorageErrorHelper.swift */,
-				21FFF9D4230DFDB6005878EA /* StorageEvent.swift */,
-				21FFF9DA230E1C74005878EA /* StorageOperationReference.swift */,
-				2125E28D23203E4E00B3DEB5 /* StorageRequestUtils.swift */,
-				2125E2A52321D19000B3DEB5 /* UploadSource.swift */,
+				210FCC882328DABC0017EA4B /* Constants */,
+				210FCC892328DB0E0017EA4B /* Internal */,
+				210FCC8A2328DB200017EA4B /* Utils */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -1943,7 +1976,9 @@
 				2125E27E231F40E400B3DEB5 /* AWSS3StorageService+DownloadBehavior.swift in Sources */,
 				21FFF9BE230DD77F005878EA /* AWSS3TransferUtilityBehavior.swift in Sources */,
 				21265E262309D620004CCE39 /* AWSS3StoragePlugin.swift in Sources */,
+				210FCC872328DA090017EA4B /* AWSS3StoragePlugin+Reset.swift in Sources */,
 				2125E29023205A7400B3DEB5 /* StorageRequestUtils.swift in Sources */,
+				210FCC832328C1DC0017EA4B /* AWSS3StoragePlugin+APIBehavior.swift in Sources */,
 				21FFF9C0230DD9B4005878EA /* AWSS3PreSignedURLBuilderBehavior.swift in Sources */,
 				2125E289231F431600B3DEB5 /* AWSS3StorageService+UploadBehavior.swift in Sources */,
 				21FFF9C8230DDA30005878EA /* AWSS3StorageListRequest.swift in Sources */,
@@ -1964,6 +1999,7 @@
 				21FFF9B7230DBE2D005878EA /* AWSS3StorageServiceBehaviour.swift in Sources */,
 				210FCC6D2325ECC00017EA4B /* StorageErrorConstants.swift in Sources */,
 				21FFF9D5230DFDB6005878EA /* StorageEvent.swift in Sources */,
+				210FCC852328D50B0017EA4B /* AWSS3StoragePlugin+Configure.swift in Sources */,
 				21FFF9DB230E1C74005878EA /* StorageOperationReference.swift in Sources */,
 				21FFF9B0230CA9D9005878EA /* AWSS3StoragePutOperation.swift in Sources */,
 				2125E29E2320FD9800B3DEB5 /* StorageErrorHelper.swift in Sources */,

@@ -8,6 +8,7 @@
 import Foundation
 import AWSS3
 
+// Behavior that the implemenation class for AWSS3TransferUtility will use.
 protocol AWSS3TransferUtilityBehavior {
     func downloadData(fromBucket: String,
                       key: String,

@@ -43,28 +43,9 @@ extension AWSS3StorageService {
         let block: ListCompletedHandler = { (task: AWSTask<AWSS3ListObjectsV2Output>) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
-                // default error handling on NSError
-                let innerMessage = StorageErrorHelper.getInnerMessage(error)
-                let errorDescription = StorageErrorHelper.getErrorDescription(innerMessage: innerMessage)
-                var storageListError = StorageListError.unknown(errorDescription, "RecoverMessage")
-
-                // Ensure it is the right domain
-                guard error.domain == AWSServiceErrorDomain else {
-                    onEvent(StorageEvent.failed(storageListError))
-                    return nil
-                }
-
-                // Try to get specific erorr
-                let errorTypeOptional = AWSServiceErrorType.init(rawValue: error.code)
-                guard let errorType = errorTypeOptional else {
-                    onEvent(StorageEvent.failed(storageListError))
-                    return nil
-                }
-
-                // Extract specific error details and map to Amplify error
-                let storageListErrorOptional = StorageErrorHelper.map(errorType)
-
-                onEvent(StorageEvent.failed(storageListErrorOptional ?? storageListError))
+                let storageErrorString = StorageErrorHelper.map(error)
+                onEvent(StorageEvent.failed(StorageListError.service(storageErrorString.errorDescription,
+                                                                     storageErrorString.recoverySuggestion)))
                 return nil
             }
 

@@ -9,6 +9,10 @@ import Foundation
 import AWSMobileClient
 import Amplify
 
+/// The class confirming to AWSMobileClientBehavior which uses an instance of the AWSMobileClient to perform its methods
+/// This class acts as a wrapper to expose AWSMobileClient functionality through an instance over a singleton, and
+/// allows for mocking in unit tests. The methods contain no other logic other than calling the same method using
+/// the AWSMobileClient instance. 
 class AWSMobileClientImpl: AWSMobileClientBehavior {
     let awsMobileClient: AWSMobileClient
 

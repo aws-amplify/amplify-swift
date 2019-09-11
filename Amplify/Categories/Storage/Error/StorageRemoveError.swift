@@ -12,7 +12,7 @@ public enum StorageRemoveError {
     case unknown(ErrorDescription, RecoverySuggestion)
     case validation(ErrorDescription, RecoverySuggestion)
     case identity(ErrorDescription, RecoverySuggestion)
-
+    case service(ErrorDescription, RecoverySuggestion)
 }
 
 extension StorageRemoveError: AmplifyError {
@@ -21,6 +21,7 @@ extension StorageRemoveError: AmplifyError {
         case .httpStatusError(let description, _),
              .unknown(let description, _),
              .validation(let description, _),
+             .service(let description, _),
              .identity(let description, _):
             return description
         }
@@ -31,6 +32,7 @@ extension StorageRemoveError: AmplifyError {
         case .httpStatusError(_, let recoverySuggestion),
              .unknown(_, let recoverySuggestion),
              .validation(_, let recoverySuggestion),
+             .service(_, let recoverySuggestion),
              .identity(_, let recoverySuggestion):
             return recoverySuggestion
         }

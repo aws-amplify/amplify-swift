@@ -11,4 +11,3 @@ public protocol CategoryConfiguration: Codable {
     /// themselves, and may be of any type.
     var plugins: [String: JSONValue] { get }
 }
-

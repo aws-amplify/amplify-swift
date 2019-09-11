@@ -11,6 +11,7 @@ import Amplify
 /// The high-level status of an StorageEvent
 public enum StorageEvent<InitiatedType, InProcessType, CompletedType, ErrorType: AmplifyError> {
 
+    /// The StorageEvent has started.
     case initiated(InitiatedType)
 
     /// The StorageEvent is running.

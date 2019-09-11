@@ -8,11 +8,13 @@
 import Foundation
 import Amplify
 
-public struct AWSS3StorageRemoveRequest {
+/// Stores the values of the storage request and provides validation on the stored properties.
+struct AWSS3StorageRemoveRequest {
     let accessLevel: StorageAccessLevel
     let key: String
     let options: Any?
 
+    /// Creates an instance with storage request input values.
     init(accessLevel: StorageAccessLevel,
          key: String,
          options: Any? = nil) {
@@ -21,10 +23,10 @@ public struct AWSS3StorageRemoveRequest {
         self.options = options
     }
 
+    /// Performs client side validation and returns a `StorageRemoveError` for any validation failures.
     func validate() -> StorageRemoveError? {
-        if key.isEmpty {
-            return StorageRemoveError.validation(StorageErrorConstants.KeyIsEmpty.ErrorDescription,
-                                                 StorageErrorConstants.KeyIsEmpty.RecoverySuggestion)
+        if let error = StorageRequestUtils.validateKey(key) {
+            return StorageRemoveError.validation(error.errorDescription, error.recoverySuggestion)
         }
 
         return nil

@@ -8,13 +8,15 @@
 import Foundation
 import Amplify
 
-public struct AWSS3StorageGetRequest {
+/// Stores the values of the storage request and provides validation on the properties.
+struct AWSS3StorageGetRequest {
     let accessLevel: StorageAccessLevel
     let targetIdentityId: String?
     let key: String
     let storageGetDestination: StorageGetDestination
     let options: Any?
 
+    /// Creates an instance with storage request input values.
     public init(accessLevel: StorageAccessLevel,
                 targetIdentityId: String?,
                 key: String,
@@ -27,36 +29,18 @@ public struct AWSS3StorageGetRequest {
         self.options = options
     }
 
+    /// Performs client side validation and returns a `StorageGetError` for any validation failures.
     func validate() -> StorageGetError? {
-        if let targetIdentityId = targetIdentityId {
-            if targetIdentityId.isEmpty {
-                return StorageGetError.validation(StorageErrorConstants.IdentityIdIsEmpty.ErrorDescription,
-                                                  StorageErrorConstants.IdentityIdIsEmpty.RecoverySuggestion)
-            }
-
-            if accessLevel == .private {
-                return StorageGetError.validation(StorageErrorConstants.PrivateWithTarget.ErrorDescription,
-                                                  StorageErrorConstants.PrivateWithTarget.RecoverySuggestion)
-            }
+        if let error = StorageRequestUtils.validateTargetIdentityId(targetIdentityId, accessLevel: accessLevel) {
+            return StorageGetError.validation(error.errorDescription, error.recoverySuggestion)
         }
 
-        if key.isEmpty {
-            return StorageGetError.validation(StorageErrorConstants.KeyIsEmpty.ErrorDescription,
-                                              StorageErrorConstants.KeyIsEmpty.RecoverySuggestion)
+        if let error = StorageRequestUtils.validateKey(key) {
+            return StorageGetError.validation(error.errorDescription, error.recoverySuggestion)
         }
 
-        switch storageGetDestination {
-        case .data:
-            break
-        case .file:
-            break
-        case .url(let expires):
-            if let expires = expires {
-                if expires <= 0 {
-                    return StorageGetError.validation(StorageErrorConstants.ExpiresIsInvalid.ErrorDescription,
-                                                      StorageErrorConstants.ExpiresIsInvalid.RecoverySuggestion)
-                }
-            }
+        if let error = StorageRequestUtils.validate(storageGetDestination) {
+            return StorageGetError.validation(error.errorDescription, error.recoverySuggestion)
         }
 
         return nil

@@ -13,7 +13,7 @@ public enum StoragePutError {
     case validation(ErrorDescription, RecoverySuggestion)
     case identity(ErrorDescription, RecoverySuggestion)
     case missingFile(ErrorDescription, RecoverySuggestion)
-
+    case service(ErrorDescription, RecoverySuggestion)
 }
 
 extension StoragePutError: AmplifyError {
@@ -23,6 +23,7 @@ extension StoragePutError: AmplifyError {
              .unknown(let description, _),
              .validation(let description, _),
              .identity(let description, _),
+             .service(let description, _),
              .missingFile(let description, _):
             return description
         }
@@ -34,6 +35,7 @@ extension StoragePutError: AmplifyError {
              .unknown(_, let recoverySuggestion),
              .validation(_, let recoverySuggestion),
              .identity(_, let recoverySuggestion),
+             .service(_, let recoverySuggestion),
              .missingFile(_, let recoverySuggestion):
             return recoverySuggestion
         }

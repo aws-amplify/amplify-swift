@@ -59,6 +59,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             case .completed:
                 XCTFail("Should not have completed")
             case .failed(let error):
+                // TODO: service error, check string? 
                 guard case .accessDenied = error else {
                     XCTFail("Expected accessDenied error")
                     return

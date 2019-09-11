@@ -8,7 +8,7 @@
 import XCTest
 import AWSMobileClient
 import Amplify
-import AWSS3StoragePlugin
+@testable import AWSS3StoragePlugin
 import AWSS3
 class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
     func testGetNonexistentKey() {
@@ -28,7 +28,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
                     return
                 }
 
-                XCTAssertEqual(errorDescription, StorageErrorConstants.KeyNotFound.ErrorDescription)
+                XCTAssertEqual(errorDescription, StorageErrorConstants.KeyNotFound.errorDescription)
                 failInvoked.fulfill()
             default:
                 break

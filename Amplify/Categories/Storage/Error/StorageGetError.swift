@@ -12,6 +12,7 @@ public enum StorageGetError {
     case validation(ErrorDescription, RecoverySuggestion)
     case identity(ErrorDescription, RecoverySuggestion)
     case notFound(ErrorDescription, RecoverySuggestion)
+    case service(ErrorDescription, RecoverySuggestion)
 }
 
 extension StorageGetError: AmplifyError {
@@ -21,6 +22,7 @@ extension StorageGetError: AmplifyError {
              .unknown(let description, _),
              .validation(let description, _),
              .identity(let description, _),
+             .service(let description, _),
              .notFound(let description, _):
             return description
         }
@@ -32,6 +34,7 @@ extension StorageGetError: AmplifyError {
              .unknown(_, let recoverySuggestion),
              .validation(_, let recoverySuggestion),
              .identity(_, let recoverySuggestion),
+             .service(_, let recoverySuggestion),
              .notFound(_, let recoverySuggestion):
             return recoverySuggestion
         }
