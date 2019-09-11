@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 /// Behavior of the API category that clients will use
 public protocol APICategoryClientBehavior {
     func delete()
