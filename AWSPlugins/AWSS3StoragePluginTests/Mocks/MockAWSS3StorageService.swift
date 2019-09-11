@@ -85,7 +85,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
         onEvent(StorageEvent.completed(StorageRemoveResult(key: serviceKey)))
     }
 
-    public func getEscapeHatch() -> AWSS3 {
+    public func getEscapeHatch() -> AWSS3? {
         return mockS3.getS3()
     }
 }

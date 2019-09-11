@@ -126,22 +126,6 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
         }
     }
 
-    func testConfigureThrowsErrorForMissingRegionValue() {
-
-        let bucket = JSONValue.init(stringLiteral: testBucket)
-        let storagePluginConfig = JSONValue.init(
-            dictionaryLiteral: (PluginConstants.Bucket, bucket), (PluginConstants.Region, ""))
-
-        XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
-                XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
-                return
-            }
-
-            XCTAssertEqual(errorDescription, PluginErrorConstants.missingRegion.errorDescription)
-        }
-    }
-
     func testConfigureThrowsForEmptyRegionValue() {
         let bucket = JSONValue.init(stringLiteral: testBucket)
         let region = JSONValue.init(stringLiteral: "")
@@ -170,7 +154,7 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
                 return
             }
 
-            XCTAssertEqual(errorDescription, PluginErrorConstants.invalidBucket.errorDescription)
+            XCTAssertEqual(errorDescription, PluginErrorConstants.invalidRegion.errorDescription)
         }
     }
 

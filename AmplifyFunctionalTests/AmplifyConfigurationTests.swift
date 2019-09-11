@@ -24,7 +24,7 @@ class AmplifyConfigurationTests: XCTestCase {
         try Amplify.add(plugin: plugin)
         try Amplify.configure()
         XCTAssertNotNil(try Amplify.Storage.getPlugin(for: plugin.key))
-        XCTAssertNoThrow(Amplify.Storage.stub())
+        XCTAssertNoThrow(Amplify.Storage.get(key: "", options: nil, onEvent: nil))
     }
 
     func testMultipleConfigureCallsFromFileThrowError() throws {

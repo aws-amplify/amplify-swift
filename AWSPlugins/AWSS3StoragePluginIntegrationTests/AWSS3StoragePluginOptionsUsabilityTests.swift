@@ -124,7 +124,12 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
                 return
             }
 
-            let awsS3 = plugin.getEscapeHatch()
+            let awsS3Optional = plugin.getEscapeHatch()
+            guard let awsS3 = awsS3Optional else {
+                XCTFail("Failed to get AWSS3 service")
+                return
+            }
+            
             let request: AWSS3HeadObjectRequest = AWSS3HeadObjectRequest()
             if case let .string(bucket) = bucket {
                 request.bucket = bucket

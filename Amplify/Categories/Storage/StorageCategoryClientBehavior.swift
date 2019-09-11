@@ -9,8 +9,6 @@ import Foundation
 
 /// Behavior of the Storage category that clients will use
 public protocol StorageCategoryClientBehavior {
-    func stub()
-
     typealias StorageGetEvent = (AsyncEvent<Progress, StorageGetResult, StorageGetError>) -> Void
     typealias StoragePutEvent = (AsyncEvent<Progress, StoragePutResult, StoragePutError>) -> Void
     typealias StorageRemoveEvent = (AsyncEvent<Void, StorageRemoveResult, StorageRemoveError>) -> Void

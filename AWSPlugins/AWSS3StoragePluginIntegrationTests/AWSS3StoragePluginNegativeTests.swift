@@ -28,7 +28,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
                     return
                 }
 
-                XCTAssertEqual(errorDescription, StorageErrorConstants.KeyNotFound.errorDescription)
+                XCTAssertEqual(errorDescription, StorageErrorConstants.keyNotFound.errorDescription)
                 failInvoked.fulfill()
             default:
                 break

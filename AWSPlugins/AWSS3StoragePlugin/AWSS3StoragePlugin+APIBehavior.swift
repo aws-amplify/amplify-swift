@@ -143,13 +143,10 @@ extension AWSS3StoragePlugin {
         return listOperation
     }
 
-    public func stub() {
-    }
-
     /// Retrieve the escape hatch to perform low level operations on S3
     ///
     /// - Returns: S3 client
-    public func getEscapeHatch() -> AWSS3 {
+    public func getEscapeHatch() -> AWSS3? {
         return storageService.getEscapeHatch()
     }
 
@@ -158,11 +155,6 @@ extension AWSS3StoragePlugin {
     ///
     /// Constructs an operation to perform the work, and adds it to the OperationQueue to perform the work
     /// asychronously.
-    ///
-    /// - Parameters:
-    ///   - request: <#request description#>
-    ///   - onEvent: <#onEvent description#>
-    /// - Returns: <#return value description#>
     private func put(_ request: AWSS3StoragePutRequest, onEvent: StoragePutEvent?) -> StoragePutOperation {
 
         let putOperation = AWSS3StoragePutOperation(request,

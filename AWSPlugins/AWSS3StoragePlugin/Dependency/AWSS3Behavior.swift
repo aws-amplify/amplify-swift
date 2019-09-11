@@ -18,5 +18,5 @@ protocol AWSS3Behavior {
     func deleteObject(_ request: AWSS3DeleteObjectRequest) -> AWSTask<AWSS3DeleteObjectOutput>
 
     // return the instance of AWSS3
-    func getS3() -> AWSS3
+    func getS3() -> AWSS3?
 }

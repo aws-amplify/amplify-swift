@@ -12,6 +12,7 @@ import Amplify
 class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
 
     // MARK: Get API Tests
+    
     func testPluginGet() {
         let operation = storagePlugin.get(key: testKey, options: nil, onEvent: nil)
 
@@ -62,6 +63,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
     }
 
     // MARK: Put API tests
+
     func testPluginPut() {
         let operation = storagePlugin.put(key: testKey,
                                           data: testData,
@@ -122,6 +124,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
     }
 
     // MARK: Put to local file API tests
+
     func testPluginPutToLocalFile() {
         let operation = storagePlugin.put(key: testKey,
                                           local: testURL,
@@ -184,6 +187,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
     }
 
     // MARK: Remove API tests
+
     func testPluginRemove() {
         let operation = storagePlugin.remove(key: testKey, options: nil, onEvent: nil)
 
@@ -220,6 +224,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
     }
 
     // MARK: List API tests
+
     func testPluginList() {
         let operation = storagePlugin.list(options: nil, onEvent: nil)
 
@@ -259,4 +264,10 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(queue.size, 1)
     }
 
+    // MARK: Escape hatch
+
+    func testGetEscapeHatch() {
+        let awsS3 = storagePlugin.getEscapeHatch()
+        XCTAssertNotNil(awsS3)
+    }
 }

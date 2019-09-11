@@ -10,25 +10,27 @@ import Foundation
 
 class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
     func get(key: String, options: StorageGetOption?, onEvent: StorageGetEvent?) -> StorageGetOperation {
+        notify("get")
         return MockStorageGetOperation(categoryType: .storage)
     }
 
-    func put(key: String, data: Data, options: StoragePutOption?,
-             onEvent: StoragePutEvent?) -> StoragePutOperation {
+    func put(key: String, data: Data, options: StoragePutOption?, onEvent: StoragePutEvent?) -> StoragePutOperation {
+        notify("put")
         return MockStoragePutOperation(categoryType: .storage)
     }
 
-    func put(key: String, local: URL, options: StoragePutOption?,
-             onEvent: StoragePutEvent?) -> StoragePutOperation {
+    func put(key: String, local: URL, options: StoragePutOption?, onEvent: StoragePutEvent?) -> StoragePutOperation {
+        notify("put")
         return MockStoragePutOperation(categoryType: .storage)
     }
 
-    func remove(key: String, options: StorageRemoveOption?,
-                onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
+    func remove(key: String, options: StorageRemoveOption?, onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
+        notify("remove")
         return MockStorageRemoveOperation(categoryType: .storage)
     }
 
     func list(options: StorageListOption?, onEvent: StorageListEvent?) -> StorageListOperation {
+        notify("list")
         return MockStorageListOperation(categoryType: .storage)
     }
 
@@ -44,10 +46,6 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         notify("reset")
         onComplete()
     }
-
-    func stub() {
-        notify()
-    }
 }
 
 class MockSecondStorageCategoryPlugin: MockStorageCategoryPlugin {
@@ -58,33 +56,31 @@ class MockSecondStorageCategoryPlugin: MockStorageCategoryPlugin {
 
 final class MockStorageCategoryPluginSelector: MessageReporter, StoragePluginSelector {
     func get(key: String, options: StorageGetOption?, onEvent: StorageGetEvent?) -> StorageGetOperation {
+        notify("get")
         return MockStorageGetOperation(categoryType: .storage)
     }
 
-    func put(key: String, data: Data, options: StoragePutOption?,
-             onEvent: StoragePutEvent?) -> StoragePutOperation {
+    func put(key: String, data: Data, options: StoragePutOption?, onEvent: StoragePutEvent?) -> StoragePutOperation {
+        notify("put")
         return MockStoragePutOperation(categoryType: .storage)
     }
 
-    func put(key: String, local: URL, options: StoragePutOption?,
-             onEvent: StoragePutEvent?) -> StoragePutOperation {
+    func put(key: String, local: URL, options: StoragePutOption?, onEvent: StoragePutEvent?) -> StoragePutOperation {
+        notify("put")
         return MockStoragePutOperation(categoryType: .storage)
     }
 
-    func remove(key: String, options: StorageRemoveOption?,
-                onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
+    func remove(key: String, options: StorageRemoveOption?, onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
+        notify("remove")
         return MockStorageRemoveOperation(categoryType: .storage)
     }
 
     func list(options: StorageListOption?, onEvent: StorageListEvent?) -> StorageListOperation {
+        notify("list")
         return MockStorageListOperation(categoryType: .storage)
     }
 
     var selectedPluginKey: PluginKey? = "MockStorageCategoryPlugin"
-
-    func stub() {
-        notify()
-    }
 }
 
 class MockStoragePluginSelectorFactory: MessageReporter, PluginSelectorFactory {

@@ -82,13 +82,4 @@ extension StorageCategory: StorageCategoryClientBehavior {
             return plugin(from: selector).list(options: options, onEvent: onEvent)
         }
     }
-
-    public func stub() {
-        switch pluginOrSelector {
-        case .plugin(let plugin):
-            plugin.stub()
-        case .selector(let selector):
-            plugin(from: selector).stub()
-        }
-    }
 }
