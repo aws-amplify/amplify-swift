@@ -1,0 +1,21 @@
+{
+  "name": "CwlCatchException",
+  "version": "1.0.2",
+  "summary": "A small Swift framework for catching Objective-C exceptions.",
+  "description": "A simple Swift wrapper around an Objective-C @try/@catch statement that selectively catches Objective-C exceptions by NSException subtype, rethrowing if any caught exception is not the expected subtype.",
+  "homepage": "https://github.com/mattgallagher/CwlCatchException",
+  "license": {
+    "type": "ISC",
+    "file": "LICENSE.txt"
+  },
+  "authors": "Matt Gallagher",
+  "platforms": {
+    "ios": "8.0",
+    "osx": "10.9"
+  },
+  "source": {
+    "git": "https://github.com/mattgallagher/CwlCatchException.git",
+    "tag": "1.0.2"
+  },
+  "source_files": "Sources/**/*.{swift,m,h}"
+}

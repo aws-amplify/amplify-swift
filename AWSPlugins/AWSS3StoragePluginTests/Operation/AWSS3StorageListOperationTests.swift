@@ -1,0 +1,133 @@
+//
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import XCTest
+@testable import Amplify
+@testable import AmplifyTestCommon
+@testable import AWSS3StoragePlugin
+
+class AWSS3StorageListOperationTests: XCTestCase {
+    var hubPlugin: MockHubCategoryPlugin!
+    var mockStorageService: MockAWSS3StorageService!
+    var mockAuthService: MockAWSAuthService!
+
+    let testPath = "TestPath"
+
+    override func setUp() {
+        let hubConfig = HubCategoryConfiguration(
+            plugins: ["MockHubCategoryPlugin": true]
+        )
+        hubPlugin = MockHubCategoryPlugin()
+        let mockAmplifyConfig = AmplifyConfiguration(hub: hubConfig)
+
+        do {
+            try Amplify.add(plugin: hubPlugin)
+            try Amplify.configure(mockAmplifyConfig)
+        } catch let error as AmplifyError {
+            XCTFail("setUp failed with error: \(error); \(error.errorDescription); \(error.recoverySuggestion)")
+        } catch {
+            XCTFail("setup failed with unknown error")
+        }
+
+//        let methodWasInvokedOnHubPlugin = expectation(
+//            description: "method was invoked on hub plugin")
+//        hubPlugin.listeners.append { message in
+//            if message == "dispatch(to:payload:)" {
+//                methodWasInvokedOnHubPlugin.fulfill()
+//            }
+//        }
+
+        mockStorageService = MockAWSS3StorageService()
+        mockAuthService = MockAWSAuthService()
+    }
+
+    override func tearDown() {
+        Amplify.reset()
+    }
+
+    func testListOperationValidationError() {
+        let request = AWSS3StorageListRequest(accessLevel: .public,
+                                              targetIdentityId: nil,
+                                              path: "",
+                                              options: nil)
+
+         let failedInvoked = expectation(description: "failed was invoked on operation")
+        let operation = AWSS3StorageListOperation(request,
+                                                 storageService: mockStorageService,
+                                                 authService: mockAuthService) { (event) in
+            switch event {
+            case .failed(let error):
+                guard case .validation = error else {
+                    XCTFail("Should have failed with validation error")
+                    return
+                }
+                failedInvoked.fulfill()
+            default:
+                XCTFail("Should have received failed event")
+            }
+        }
+
+        operation.start()
+
+        XCTAssertTrue(operation.isFinished)
+        waitForExpectations(timeout: 1)
+    }
+
+    func testListOperationGetIdentityIdError() {
+        mockAuthService.getIdentityIdError = AuthError.identity("", "")
+        let request = AWSS3StorageListRequest(accessLevel: .public,
+                                              targetIdentityId: nil,
+                                              path: testPath,
+                                              options: nil)
+        let failedInvoked = expectation(description: "failed was invoked on operation")
+        let operation = AWSS3StorageListOperation(request,
+                                                 storageService: mockStorageService,
+                                                 authService: mockAuthService) { (event) in
+            switch event {
+            case .failed(let error):
+                guard case .identity = error else {
+                    XCTFail("Should have failed with identity error")
+                    return
+                }
+                failedInvoked.fulfill()
+            default:
+                XCTFail("Should have received failed event")
+            }
+        }
+
+        operation.start()
+
+        XCTAssertTrue(operation.isFinished)
+        waitForExpectations(timeout: 1)
+    }
+
+    func testListOperationListObjects() {
+        let request = AWSS3StorageListRequest(accessLevel: .public,
+                                              targetIdentityId: nil,
+                                              path: testPath,
+                                              options: nil)
+        let completeInvoked = expectation(description: "complete was invoked on operation")
+        let operation = AWSS3StorageListOperation(request,
+                                                 storageService: mockStorageService,
+                                                 authService: mockAuthService) { (event) in
+            switch event {
+            case .completed:
+                completeInvoked.fulfill()
+            default:
+                XCTFail("Should have received completed event")
+            }
+        }
+
+        operation.start()
+
+        XCTAssertTrue(operation.isFinished)
+        XCTAssertEqual(mockStorageService.listCalled, true)
+        waitForExpectations(timeout: 1)
+    }
+
+    // TODO: test that the storageService.list is called with prefix and path
+}
