@@ -74,7 +74,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         sleep(15)
 
         let urlExpired = expectation(description: "Retrieving expired url should have bad response")
-        let task2 = URLSession.shared.dataTask(with: remoteURL) { (data, response, error) in
+        let task2 = URLSession.shared.dataTask(with: remoteURL) { (_, response, error) in
             guard error == nil else {
                 XCTFail("Failed to received data from url with error \(error)")
                 return

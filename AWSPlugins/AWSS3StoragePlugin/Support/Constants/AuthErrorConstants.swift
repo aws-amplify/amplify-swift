@@ -8,7 +8,7 @@
 import Foundation
 
 struct AuthErrorConstants {
-    static let ContentTypeIsEmpty = (
+    static let contentTypeIsEmpty = (
         ErrorDescription: "ContentType is empty",
         RecoverySuggestion: "ContentTypeIsEmpty")
 }

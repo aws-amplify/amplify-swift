@@ -12,7 +12,7 @@ import AWSS3
 /// perform its methods. This class acts as a wrapper to expose AWSS3PreSignedURLBuilder functionality through an
 /// instance over a singleton, and allows for mocking in unit tests. The methods contain no other logic other than
 /// calling the same method using the AWSS3PreSignedURLBuilder instance.
-class AWSS3PreSignedURLBuilderImpl: AWSS3PreSignedURLBuilderBehavior {
+class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
 
     let preSignedURLBuilder: AWSS3PreSignedURLBuilder
 

@@ -35,7 +35,6 @@ extension AWSS3StoragePlugin {
         let defaultAccessLevel = try AWSS3StoragePlugin.getDefaultAccessLevel(configObject)
 
         let authService = AWSAuthService()
-        authService.configure()
 
         let storageService = AWSS3StorageService()
         try storageService.configure(region: region,

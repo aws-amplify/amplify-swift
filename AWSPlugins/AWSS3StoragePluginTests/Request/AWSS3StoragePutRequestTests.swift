@@ -50,8 +50,8 @@ class AWSS3StoragePutRequestTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(description, StorageErrorConstants.KeyIsEmpty.errorDescription)
-        XCTAssertEqual(recovery, StorageErrorConstants.KeyIsEmpty.recoverySuggestion)
+        XCTAssertEqual(description, StorageErrorConstants.keyIsEmpty.errorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.keyIsEmpty.recoverySuggestion)
     }
 
     func testValidateEmptyContentTypeError() {
@@ -74,8 +74,8 @@ class AWSS3StoragePutRequestTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(description, StorageErrorConstants.ContentTypeIsEmpty.errorDescription)
-        XCTAssertEqual(recovery, StorageErrorConstants.ContentTypeIsEmpty.recoverySuggestion)
+        XCTAssertEqual(description, StorageErrorConstants.contentTypeIsEmpty.errorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.contentTypeIsEmpty.recoverySuggestion)
     }
 
     func testValidateMetadataKeyIsInvalid() {

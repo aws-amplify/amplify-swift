@@ -40,7 +40,7 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "AWSS3StoragePluginFunctionalTests/testGet2()">
+                  Identifier = "AWSS3StorageServiceDownloadBehaviorTests/testStorageServiceDownloadData()">
                </Test>
             </SkippedTests>
          </TestableReference>

@@ -12,7 +12,7 @@ import AWSS3
 /// perform its methods. This class acts as a wrapper to expose AWSS3TransferUtility functionality through an
 /// instance over a singleton, and allows for mocking in unit tests. The methods contain no other logic other than
 /// calling the same method using the AWSS3TransferUtility instance.
-class AWSS3TransferUtilityImpl: AWSS3TransferUtilityBehavior {
+class AWSS3TransferUtilityAdapter: AWSS3TransferUtilityBehavior {
 
     let transferUtility: AWSS3TransferUtility
 

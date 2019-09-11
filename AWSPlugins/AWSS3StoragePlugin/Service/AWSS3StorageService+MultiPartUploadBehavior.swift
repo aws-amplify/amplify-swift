@@ -29,7 +29,7 @@ extension AWSS3StorageService {
                 expression.setValue(value, forRequestHeader: key)
             }
         }
-        
+
         let onMultiPartUploadCompletedHandler =
             AWSS3StorageService.makeMultiPartUploadCompletedHandler(onEvent: onEvent, key: key)
 

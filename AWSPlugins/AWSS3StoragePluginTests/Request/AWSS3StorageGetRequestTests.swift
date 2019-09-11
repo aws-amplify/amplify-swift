@@ -45,8 +45,8 @@ class AWSS3StorageGetRequestTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(description, StorageErrorConstants.IdentityIdIsEmpty.errorDescription)
-        XCTAssertEqual(recovery, StorageErrorConstants.IdentityIdIsEmpty.recoverySuggestion)
+        XCTAssertEqual(description, StorageErrorConstants.identityIdIsEmpty.errorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.identityIdIsEmpty.recoverySuggestion)
     }
 
     func testValidateTargetIdentityIdWithPrivateAccessLevelError() {
@@ -68,8 +68,8 @@ class AWSS3StorageGetRequestTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(description, StorageErrorConstants.PrivateWithTarget.errorDescription)
-        XCTAssertEqual(recovery, StorageErrorConstants.PrivateWithTarget.recoverySuggestion)
+        XCTAssertEqual(description, StorageErrorConstants.privateWithTarget.errorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.privateWithTarget.recoverySuggestion)
     }
 
     func testValidateKeyIsEmptyError() {
@@ -91,8 +91,8 @@ class AWSS3StorageGetRequestTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(description, StorageErrorConstants.KeyIsEmpty.errorDescription)
-        XCTAssertEqual(recovery, StorageErrorConstants.KeyIsEmpty.recoverySuggestion)
+        XCTAssertEqual(description, StorageErrorConstants.keyIsEmpty.errorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.keyIsEmpty.recoverySuggestion)
     }
 
     func testValidateURLStorageGetDestinationWithNonPositiveExpiresError() {
@@ -114,7 +114,7 @@ class AWSS3StorageGetRequestTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(description, StorageErrorConstants.ExpiresIsInvalid.errorDescription)
-        XCTAssertEqual(recovery, StorageErrorConstants.ExpiresIsInvalid.recoverySuggestion)
+        XCTAssertEqual(description, StorageErrorConstants.expiresIsInvalid.errorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.expiresIsInvalid.recoverySuggestion)
     }
 }

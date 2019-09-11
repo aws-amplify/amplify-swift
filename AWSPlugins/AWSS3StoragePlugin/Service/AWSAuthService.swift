@@ -8,25 +8,14 @@
 import Foundation
 import Amplify
 import AWSMobileClient
-import AWSS3
 
-public class AWSAuthService: AWSAuthServiceBehavior {
+class AWSAuthService: AWSAuthServiceBehavior {
 
-    var mobileClient: AWSMobileClientBehavior!
+    var mobileClient: AWSMobileClientBehavior
 
-    public init() {
-    }
-
-    func configure() {
-        configure(mobileClient: AWSMobileClientImpl(AWSMobileClient.sharedInstance()))
-    }
-
-    func configure(mobileClient: AWSMobileClientBehavior) {
+    init(mobileClient: AWSMobileClientBehavior? = nil) {
+        let mobileClient = mobileClient ?? AWSMobileClientAdapter(AWSMobileClient.sharedInstance())
         self.mobileClient = mobileClient
-    }
-
-    func reset() {
-        self.mobileClient = nil
     }
 
     func getCognitoCredentialsProvider() -> AWSCognitoCredentialsProvider {
@@ -42,13 +31,13 @@ public class AWSAuthService: AWSAuthServiceBehavior {
                 return .failure(map(error))
             }
 
-            return .failure(AuthError.identity(AuthErrorConstants.ContentTypeIsEmpty.ErrorDescription,
-                                               AuthErrorConstants.ContentTypeIsEmpty.RecoverySuggestion))
+            return .failure(AuthError.identity(AuthErrorConstants.contentTypeIsEmpty.ErrorDescription,
+                                               AuthErrorConstants.contentTypeIsEmpty.RecoverySuggestion))
         }
 
         guard let identityId = task.result else {
-            let error = AuthError.identity(AuthErrorConstants.ContentTypeIsEmpty.ErrorDescription,
-                                           AuthErrorConstants.ContentTypeIsEmpty.RecoverySuggestion)
+            let error = AuthError.identity(AuthErrorConstants.contentTypeIsEmpty.ErrorDescription,
+                                           AuthErrorConstants.contentTypeIsEmpty.RecoverySuggestion)
             return .failure(error)
         }
 

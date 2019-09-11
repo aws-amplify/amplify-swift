@@ -13,7 +13,7 @@ import Amplify
 /// This class acts as a wrapper to expose AWSMobileClient functionality through an instance over a singleton, and
 /// allows for mocking in unit tests. The methods contain no other logic other than calling the same method using
 /// the AWSMobileClient instance. 
-class AWSMobileClientImpl: AWSMobileClientBehavior {
+class AWSMobileClientAdapter: AWSMobileClientBehavior {
     let awsMobileClient: AWSMobileClient
 
     init(_ awsMobileClient: AWSMobileClient) {

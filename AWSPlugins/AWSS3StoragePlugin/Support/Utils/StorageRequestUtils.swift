@@ -11,13 +11,32 @@ import Amplify
 class StorageRequestUtils {
     static let metadataKeyPrefix = "x-amz-meta-"
 
-    static func getServiceKey(accessLevel: StorageAccessLevel, identityId: String, key: String) -> String {
-        return getAccessLevelPrefix(accessLevel: accessLevel, identityId: identityId) + key
+    static func getServiceKey(accessLevel: StorageAccessLevel,
+                              identityId: String,
+                              key: String) -> String {
+
+        return getServiceKey(accessLevel: accessLevel, identityId: identityId, targetIdentityId: nil, key: key)
     }
 
-    static func getAccessLevelPrefix(accessLevel: StorageAccessLevel, identityId: String) -> String {
+    static func getServiceKey(accessLevel: StorageAccessLevel,
+                              identityId: String,
+                              targetIdentityId: String?,
+                              key: String) -> String {
+
+        return getAccessLevelPrefix(accessLevel: accessLevel,
+                                    identityId: identityId,
+                                    targetIdentityId: targetIdentityId) + key
+    }
+
+    static func getAccessLevelPrefix(accessLevel: StorageAccessLevel,
+                                     identityId: String,
+                                     targetIdentityId: String?) -> String {
+
+        let targetIdentityId = targetIdentityId ?? identityId
+
         if accessLevel == .private || accessLevel == .protected {
-            return accessLevel.rawValue + "/" + identityId + "/"
+
+            return accessLevel.rawValue + "/" + targetIdentityId + "/"
         }
 
         return accessLevel.rawValue + "/"
@@ -27,7 +46,6 @@ class StorageRequestUtils {
         guard let metadata = metadata else {
             return nil
         }
-
         var serviceMetadata: [String: String] = [:]
         for (key, value) in metadata {
             let serviceKey = metadataKeyPrefix + key
@@ -38,14 +56,14 @@ class StorageRequestUtils {
     }
 
     static func validateTargetIdentityId(_ targetIdentityId: String?,
-                         accessLevel: StorageAccessLevel) -> StorageErrorString? {
+                                         accessLevel: StorageAccessLevel) -> StorageErrorString? {
         if let targetIdentityId = targetIdentityId {
             if targetIdentityId.isEmpty {
-                return StorageErrorConstants.IdentityIdIsEmpty
+                return StorageErrorConstants.identityIdIsEmpty
             }
 
             if accessLevel == .private {
-                return StorageErrorConstants.PrivateWithTarget
+                return StorageErrorConstants.privateWithTarget
             }
         }
 
@@ -54,7 +72,7 @@ class StorageRequestUtils {
 
     static func validateKey(_ key: String) -> StorageErrorString? {
         if key.isEmpty {
-            return StorageErrorConstants.KeyIsEmpty
+            return StorageErrorConstants.keyIsEmpty
         }
 
         return nil
@@ -69,7 +87,7 @@ class StorageRequestUtils {
         case .url(let expires):
             if let expires = expires {
                 if expires <= 0 {
-                    return StorageErrorConstants.ExpiresIsInvalid
+                    return StorageErrorConstants.expiresIsInvalid
                 }
             }
         }
@@ -80,7 +98,7 @@ class StorageRequestUtils {
     static func validatePath(_ path: String?) -> StorageErrorString? {
         if let path = path {
             if path.isEmpty {
-                return StorageErrorConstants.PathIsEmpty
+                return StorageErrorConstants.pathIsEmpty
             }
         }
 
@@ -90,7 +108,7 @@ class StorageRequestUtils {
     static func validateContentType(_ contentType: String?) -> StorageErrorString? {
         if let contentType = contentType {
             if contentType.isEmpty {
-                return StorageErrorConstants.ContentTypeIsEmpty
+                return StorageErrorConstants.contentTypeIsEmpty
             }
             // TODO content type validation
         }
@@ -102,7 +120,7 @@ class StorageRequestUtils {
         if let metadata = metadata {
             for (key, value) in metadata {
                 if key != key.lowercased() {
-                    return StorageErrorConstants.MetadataKeysInvalid
+                    return StorageErrorConstants.metadataKeysInvalid
                 }
                 // TODO: validate that metadata values are within a certain size.
                 // https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html#object-metadata 2KB
@@ -114,6 +132,7 @@ class StorageRequestUtils {
 
     // TODO: clean up
     static func isLargeUpload(_ uploadSource: UploadSource) -> Bool {
+        let sizeThreshold = 10000000 // 10MB
         var isLargeUpload = false
         switch uploadSource {
         case .file(let file):
@@ -121,7 +140,7 @@ class StorageRequestUtils {
                 let attr = try FileManager.default.attributesOfItem(atPath: file.path)
                 if let fileSize = attr[FileAttributeKey.size] as? UInt64 {
                     print("Got file size: \(fileSize)")
-                    if fileSize > 10000000 {
+                    if fileSize > sizeThreshold {
                         isLargeUpload = true
                     }
                 }
@@ -131,7 +150,7 @@ class StorageRequestUtils {
         case .data(let data):
             let dataCount = data.count
             print("Got data size: \(dataCount)")
-            if dataCount > 10000000 { // 10000000 = 10 MB
+            if dataCount > sizeThreshold { // 10000000 = 10 MB
                 isLargeUpload = true
             }
         }

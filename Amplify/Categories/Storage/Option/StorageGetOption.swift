@@ -9,16 +9,12 @@ import Foundation
 
 public struct StorageGetOption {
 
-    // AccessLevel
     public var accessLevel: StorageAccessLevel?
 
-    // Specifics the user when retrieving data
     public let targetIdentityId: String?
 
-    //
     public let storageGetDestination: StorageGetDestination
 
-    // Extra options
     public var options: Any?
 
     // TODO: transferAcceleration should be in options most likely. and can be set globally

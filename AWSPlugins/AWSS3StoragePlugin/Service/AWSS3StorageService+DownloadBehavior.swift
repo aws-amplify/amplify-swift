@@ -87,8 +87,8 @@ extension AWSS3StorageService {
                 // TODO any retry logic based on status code?
                 if response.statusCode == 404 {
                     onEvent(StorageEvent.failed(StorageGetError.notFound(
-                        StorageErrorConstants.KeyNotFound.errorDescription,
-                        StorageErrorConstants.KeyNotFound.recoverySuggestion)))
+                        StorageErrorConstants.keyNotFound.errorDescription,
+                        StorageErrorConstants.keyNotFound.recoverySuggestion)))
 
                 } else {
                     onEvent(StorageEvent.failed(StorageGetError.httpStatusError(

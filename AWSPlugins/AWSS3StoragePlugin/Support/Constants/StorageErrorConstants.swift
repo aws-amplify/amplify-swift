@@ -10,45 +10,44 @@ import Amplify
 
 typealias StorageErrorString = (errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion)
 
-// TODO: lowercase, enum
 struct StorageErrorConstants {
-    static let IdentityIdIsEmpty: StorageErrorString = (
+    static let identityIdIsEmpty: StorageErrorString = (
         "IdentityId is empty",
          "IdentityId")
 
-    static let KeyIsEmpty: StorageErrorString = (
+    static let keyIsEmpty: StorageErrorString = (
         "KeyIsEmpty",
          "KeyIsEmpty")
 
-    static let ExpiresIsInvalid: StorageErrorString = (
+    static let expiresIsInvalid: StorageErrorString = (
         "ExpiresIsInvalid",
          "ExpiresIsInvalid")
 
-    static let PathIsEmpty: StorageErrorString = (
+    static let pathIsEmpty: StorageErrorString = (
         "The path is empty",
          "PathIsEmpty")
 
-    static let ContentTypeIsEmpty: StorageErrorString = (
+    static let contentTypeIsEmpty: StorageErrorString = (
         "ContentType is empty",
         "ContentTypeIsEmpty")
 
-    static let KeyNotFound: StorageErrorString = (
+    static let keyNotFound: StorageErrorString = (
         "key not found",
         "key not found")
 
-    static let PrivateWithTarget: StorageErrorString = (
+    static let privateWithTarget: StorageErrorString = (
         "Cannot perform this action on a target for private access level",
          "")
 
-    static let MissingFile: StorageErrorString = (
+    static let missingFile: StorageErrorString = (
         "The file is missing",
          "")
 
-    static let AccessDenied: StorageErrorString = (
+    static let accessDenied: StorageErrorString = (
         "Access denied!",
         "")
 
-    static let MetadataKeysInvalid: StorageErrorString = (
+    static let metadataKeysInvalid: StorageErrorString = (
         "Metadata keys should all be lowercased",
         "")
 }

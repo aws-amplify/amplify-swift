@@ -52,36 +52,36 @@ class AWSS3StoragePluginTests: XCTestCase {
     }
 
     func testConfigureWithDefaultAccessLevelWithOverrideRequestAccessLevelOnAPICalls() {
-
+        XCTFail("Not yet implemented")
     }
 
     func testConfigureThrowsErrorForMissingBucket() {
+        XCTFail("Not yet implemented")
     }
 
     func testConfigureThrowsForEmptyBucket() {
-
+        XCTFail("Not yet implemented")
     }
 
     func testConfigureThrowsErrorForMissingRegion() {
+        XCTFail("Not yet implemented")
     }
 
     func testConfigureThrowsForEmptyRegion() {
-
+        XCTFail("Not yet implemented")
     }
 
     func testConfigureThrowsForInvalidRegion() {
-
+        XCTFail("Not yet implemented")
     }
 
     func testConfigureThrowsForInvalidDefaultAccessLevel() {
-
+        XCTFail("Not yet implemented")
     }
 
     func testConfigureThrowsForSpecifiedAndEmptyDefaultAccessLevel() {
-        
+        XCTFail("Not yet implemented")
     }
-
-
 
     // MARK: Get API Tests
     func testPluginGet() {

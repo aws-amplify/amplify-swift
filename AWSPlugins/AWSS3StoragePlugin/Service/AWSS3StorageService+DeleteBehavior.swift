@@ -41,7 +41,7 @@ extension AWSS3StorageService {
             if let result = task.result {
                 print("delete request result \(result)")
             }
-            
+
             onEvent(StorageEvent.completed(StorageRemoveResult(key: serviceKey)))
 
             return nil

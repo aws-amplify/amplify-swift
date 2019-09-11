@@ -10,9 +10,6 @@ import AWSCore
 import Amplify
 
 protocol AWSAuthServiceBehavior {
-    func configure()
-
-    func reset()
 
     func getCognitoCredentialsProvider() -> AWSCognitoCredentialsProvider
 

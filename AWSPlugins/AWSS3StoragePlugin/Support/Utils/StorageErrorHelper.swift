@@ -52,8 +52,7 @@ class StorageErrorHelper {
         }
 
         // Try to get specific error
-        let errorTypeOptional = AWSS3TransferUtilityErrorType.init(rawValue: error.code)
-        guard let errorType = errorTypeOptional else {
+        guard let errorType = AWSS3TransferUtilityErrorType.init(rawValue: error.code) else {
             return storageErrorString
         }
 
@@ -68,7 +67,7 @@ class StorageErrorHelper {
         case .serverError:
             break
         case .localFileNotFound:
-            return StorageErrorConstants.MissingFile
+            return StorageErrorConstants.missingFile
         default:
             break
         }
@@ -84,7 +83,6 @@ class StorageErrorHelper {
         return "The error is [" + innerMessage + "]"
     }
 
-    // TODO remove or keep swiftlint exception
     // swiftlint:disable cyclomatic_complexity
     static func map(_ errorType: AWSServiceErrorType) -> StorageErrorString? {
         switch errorType {
@@ -101,7 +99,7 @@ class StorageErrorHelper {
         case .authFailure:
             break
         case .accessDeniedException:
-            return StorageErrorConstants.AccessDenied
+            return StorageErrorConstants.accessDenied
         case .unrecognizedClientException:
             break
         case .incompleteSignature:
@@ -111,7 +109,7 @@ class StorageErrorHelper {
         case .missingAuthenticationToken:
             break
         case .accessDenied:
-            return StorageErrorConstants.AccessDenied
+            return StorageErrorConstants.accessDenied
         case .expiredToken:
             break
         case .invalidAccessKeyId:
@@ -121,7 +119,7 @@ class StorageErrorHelper {
         case .tokenRefreshRequired:
             break
         case .accessFailure:
-            return StorageErrorConstants.AccessDenied
+            return StorageErrorConstants.accessDenied
         case .authMissingFailure:
             break
         case .throttling:

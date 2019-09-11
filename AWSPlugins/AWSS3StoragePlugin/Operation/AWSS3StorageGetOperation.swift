@@ -36,15 +36,15 @@ public class AWSS3StorageGetOperation: AmplifyOperation<Progress, StorageGetResu
     }
 
     public func pause() {
-        self.storageOperationReference?.pause()
+        storageOperationReference?.pause()
     }
 
     public func resume() {
-        self.storageOperationReference?.resume()
+        storageOperationReference?.resume()
     }
 
     override public func cancel() {
-        self.storageOperationReference?.cancel()
+        storageOperationReference?.cancel()
         cancel()
     }
 
@@ -67,9 +67,9 @@ public class AWSS3StorageGetOperation: AmplifyOperation<Progress, StorageGetResu
             return
         }
 
-        let targetIdentityId = request.targetIdentityId ?? identityId
         let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
-                                                           identityId: targetIdentityId,
+                                                           identityId: identityId,
+                                                           targetIdentityId: request.targetIdentityId,
                                                            key: request.key)
         switch request.storageGetDestination {
         case .data:

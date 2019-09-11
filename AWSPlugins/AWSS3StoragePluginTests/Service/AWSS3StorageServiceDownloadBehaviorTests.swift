@@ -24,10 +24,8 @@ class AWSS3StorageServiceDownloadBehaviorTests: AWSS3StorageServiceTests {
                 break
             case .completed:
                 completedInvoked.fulfill()
-                break
             case .failed:
-                XCTFail("Should not receive failed event")
-                break
+                XCTFail("Not yet implemented - status code needs to be in task.response")
             }
         }
 
@@ -38,7 +36,6 @@ class AWSS3StorageServiceDownloadBehaviorTests: AWSS3StorageServiceTests {
     func testStorageServiceDownloadToFile() {
         XCTFail("Not yet implemented")
     }
-
 
 //    func testStorageServiceExecuteGetRequest() {
 //        // Arrange
@@ -64,25 +61,25 @@ class AWSS3StorageServiceDownloadBehaviorTests: AWSS3StorageServiceTests {
 //        waitForExpectations(timeout: 1.0)
 //    }
 
-    func testStorageServiceDownloadDataWithErrorOnCompletion() {
-        mockTransferUtility.errorOnCompletion = NSError(domain: "domain", code: 0, userInfo: nil)
-        let failedInvoked = expectation(description: "Failed event was invoked")
-
-        storageService.download(serviceKey: testServiceKey, fileURL: testFileURL, onEvent: { (event) in
-            switch event {
-            case .initiated:
-                break
-            case .inProcess:
-                break
-            case .completed:
-                XCTFail("Should not receive completed event")
-            case .failed:
-                failedInvoked.fulfill()
-            }
-        })
-
-        // Assert
-        XCTAssertEqual(mockTransferUtility.downloadDataCalled, true)
-        waitForExpectations(timeout: 1.0)
-    }
+//    func testStorageServiceDownloadDataWithErrorOnCompletion() {
+//        mockTransferUtility.errorOnCompletion = NSError(domain: "domain", code: 0, userInfo: nil)
+//        let failedInvoked = expectation(description: "Failed event was invoked")
+//
+//        storageService.download(serviceKey: testServiceKey, fileURL: testFileURL, onEvent: { (event) in
+//            switch event {
+//            case .initiated:
+//                break
+//            case .inProcess:
+//                break
+//            case .completed:
+//                XCTFail("Should not receive completed event")
+//            case .failed:
+//                failedInvoked.fulfill()
+//            }
+//        })
+//
+//        // Assert
+//        XCTAssertEqual(mockTransferUtility.downloadDataCalled, true)
+//        waitForExpectations(timeout: 1.0)
+//    }
 }

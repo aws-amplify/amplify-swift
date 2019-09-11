@@ -42,11 +42,11 @@ public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
             throw PluginError.pluginConfigurationError("fail to create transferUtiltiy", "failed")
         }
 
-        let preSignedURLBuilder = AWSS3PreSignedURLBuilderImpl(
+        let preSignedURLBuilder = AWSS3PreSignedURLBuilderAdapter(
             AWSS3PreSignedURLBuilder.s3PreSignedURLBuilder(forKey: identifier))
-        let awsS3 = AWSS3Impl(AWSS3.s3(forKey: identifier))
+        let awsS3 = AWSS3Adapter(AWSS3.s3(forKey: identifier))
 
-        configure(transferUtility: AWSS3TransferUtilityImpl(transferUtility),
+        configure(transferUtility: AWSS3TransferUtilityAdapter(transferUtility),
                   preSignedURLBuilder: preSignedURLBuilder,
                   awsS3: awsS3,
                   bucket: bucket,

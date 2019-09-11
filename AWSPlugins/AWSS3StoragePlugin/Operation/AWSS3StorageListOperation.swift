@@ -53,9 +53,9 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
             return
         }
 
-        let targetIdentityId = request.targetIdentityId ?? identityId
         let accessLevelPrefix = StorageRequestUtils.getAccessLevelPrefix(accessLevel: request.accessLevel,
-                                                                         identityId: targetIdentityId)
+                                                                         identityId: identityId,
+                                                                         targetIdentityId: request.targetIdentityId)
 
         storageService.list(prefix: accessLevelPrefix, path: request.path, onEvent: onEventHandler)
     }
