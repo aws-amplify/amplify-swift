@@ -10,18 +10,7 @@ import AWSS3
 import Amplify
 import AWSMobileClient
 
-public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
-
-    var transferUtility: AWSS3TransferUtilityBehavior!
-    var preSignedURLBuilder: AWSS3PreSignedURLBuilderBehavior!
-    var awsS3: AWSS3Behavior!
-    var identifier: String!
-    var bucket: String!
-
-    public init() {
-
-    }
-
+extension AWSS3StorageService {
     func configure(region: AWSRegionType,
                    bucket: String,
                    cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
@@ -63,20 +52,5 @@ public class AWSS3StorageService: AWSS3StorageServiceBehaviour {
         self.awsS3 = awsS3
         self.bucket = bucket
         self.identifier = identifier
-    }
-
-    func reset() {
-        AWSS3TransferUtility.remove(forKey: identifier)
-        transferUtility = nil
-        AWSS3PreSignedURLBuilder.remove(forKey: identifier)
-        preSignedURLBuilder = nil
-        AWSS3.remove(forKey: identifier)
-        awsS3 = nil
-        bucket = nil
-        identifier = nil
-    }
-
-    func getEscapeHatch() -> AWSS3 {
-        return awsS3.getS3()
     }
 }

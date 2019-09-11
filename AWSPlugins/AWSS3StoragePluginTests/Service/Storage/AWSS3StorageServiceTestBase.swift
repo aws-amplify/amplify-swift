@@ -8,7 +8,7 @@
 import XCTest
 @testable import AWSS3StoragePlugin
 
-class AWSS3StorageServiceTests: XCTestCase {
+class AWSS3StorageServiceTestBase: XCTestCase {
     var mockTransferUtility: MockAWSS3TransferUtility!
     var mockPreSignedURLBuilder: MockAWSS3PreSignedURLBuilder!
     var mockS3: MockS3!

@@ -12,6 +12,7 @@ import XCTest
 
 // TODO Currently we only verify that the method on storage service was called.
 // we should also verify that the call was done with correct parameters
+// TODO: mock - verify pattern.
 class AWSS3StorageGetOperationTests: XCTestCase {
 
     var hubPlugin: MockHubCategoryPlugin!

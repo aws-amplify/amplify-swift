@@ -8,7 +8,7 @@
 import XCTest
 @testable import AWSS3StoragePlugin
 
-class AWSS3StorageServiceDownloadBehaviorTests: AWSS3StorageServiceTests {
+class AWSS3StorageServiceDownloadBehaviorTests: AWSS3StorageServiceTestBase {
 
     let testServiceKey = "TestServiceKey"
     let testFileURL = URL(fileURLWithPath: "path")
