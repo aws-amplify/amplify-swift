@@ -10,6 +10,7 @@ import Amplify
 
 typealias StorageErrorString = (errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion)
 
+// TODO: lowercase, enum
 struct StorageErrorConstants {
     static let IdentityIdIsEmpty: StorageErrorString = (
         "IdentityId is empty",

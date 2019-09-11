@@ -36,7 +36,7 @@ class AWSS3StorageServiceDownloadBehaviorTests: AWSS3StorageServiceTests {
     }
 
     func testStorageServiceDownloadToFile() {
-
+        XCTFail("Not yet implemented")
     }
 
 

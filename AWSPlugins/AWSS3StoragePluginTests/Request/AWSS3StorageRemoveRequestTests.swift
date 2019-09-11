@@ -44,8 +44,8 @@ class AWSS3StorageRemoveRequestTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(description, StorageErrorConstants.KeyIsEmpty.ErrorDescription)
-        XCTAssertEqual(recovery, StorageErrorConstants.KeyIsEmpty.RecoverySuggestion)
+        XCTAssertEqual(description, StorageErrorConstants.KeyIsEmpty.errorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.KeyIsEmpty.recoverySuggestion)
     }
 
 }

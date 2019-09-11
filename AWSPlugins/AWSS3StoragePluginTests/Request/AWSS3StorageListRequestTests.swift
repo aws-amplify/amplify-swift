@@ -43,8 +43,8 @@ class AWSS3StorageListRequestTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(description, StorageErrorConstants.IdentityIdIsEmpty.ErrorDescription)
-        XCTAssertEqual(recovery, StorageErrorConstants.IdentityIdIsEmpty.RecoverySuggestion)
+        XCTAssertEqual(description, StorageErrorConstants.IdentityIdIsEmpty.errorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.IdentityIdIsEmpty.recoverySuggestion)
     }
 
     func testValidateTargetIdentityIdWithPrivateAccessLevelError() {
@@ -65,8 +65,8 @@ class AWSS3StorageListRequestTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(description, StorageErrorConstants.PrivateWithTarget.ErrorDescription)
-        XCTAssertEqual(recovery, StorageErrorConstants.PrivateWithTarget.RecoverySuggestion)
+        XCTAssertEqual(description, StorageErrorConstants.PrivateWithTarget.errorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.PrivateWithTarget.recoverySuggestion)
     }
 
     func testValidateEmptyPathError() {
@@ -87,7 +87,7 @@ class AWSS3StorageListRequestTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(description, StorageErrorConstants.PathIsEmpty.ErrorDescription)
-        XCTAssertEqual(recovery, StorageErrorConstants.PathIsEmpty.RecoverySuggestion)
+        XCTAssertEqual(description, StorageErrorConstants.PathIsEmpty.errorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.PathIsEmpty.recoverySuggestion)
     }
 }
