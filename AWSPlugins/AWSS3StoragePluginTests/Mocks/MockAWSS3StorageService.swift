@@ -56,6 +56,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
                        key: String,
                        uploadSource: UploadSource,
                        contentType: String?,
+                       metadata: [String: String]?,
                        onEvent: @escaping StorageUploadOnEventHandler) {
         uploadCalled = true
 
@@ -66,6 +67,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
                                 key: String,
                                 uploadSource: UploadSource,
                                 contentType: String?,
+                                metadata: [String: String]?,
                                 onEvent: @escaping StorageMultiPartUploadOnEventHandler) {
         multiPartUploadCalled = true
 

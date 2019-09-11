@@ -70,17 +70,21 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, StoragePutResu
                                                            identityId: identityId,
                                                            key: request.key)
 
+        let serviceMetadata = StorageRequestUtils.getServiceMetadata(request.metadata)
+
         if request.isLargeUpload() {
             storageService.multiPartUpload(serviceKey: serviceKey,
                                            key: request.key,
                                            uploadSource: request.uploadSource,
                                            contentType: request.contentType,
+                                           metadata: serviceMetadata,
                                            onEvent: onEventHandler)
         } else {
             storageService.upload(serviceKey: serviceKey,
                                   key: request.key,
                                   uploadSource: request.uploadSource,
                                   contentType: request.contentType,
+                                  metadata: serviceMetadata,
                                   onEvent: onEventHandler)
         }
     }

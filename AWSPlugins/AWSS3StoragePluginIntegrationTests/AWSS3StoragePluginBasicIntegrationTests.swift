@@ -15,8 +15,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
     func testPutData() {
         let key = "testPutData"
-        let dataString = "testPutDataString"
-        let data = dataString.data(using: .utf8)!
+        let data = key.data(using: .utf8)!
         let completeInvoked = expectation(description: "Completed is invoked")
 
         let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
@@ -441,7 +440,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
             let awsS3 = plugin.getEscapeHatch()
             let request: AWSS3HeadObjectRequest = AWSS3HeadObjectRequest()
-            request.bucket = bucket
+            if case let .string(bucket) = bucket {
+                request.bucket = bucket
+            }
             request.key = "public/" + key
 
             let task = awsS3.headObject(request)

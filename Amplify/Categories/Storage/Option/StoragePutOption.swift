@@ -19,6 +19,13 @@ public struct StoragePutOption {
 
     // TODO: tags (may be in options)
     // TODO: expires (may be in metadata)
+    // TODO: transferAcceleration should be in options most likely. and can be set globally
+    // https://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
+
+    // TODO: multipartConcurrenyLimit probably in options (this is how many parts for multipart upload
+    // TODO: retryLimit - per request and also global
+    // TODO: timeoutIntervalForResource max duration of a transfer. can be overriden in global. does it need to be in request
+
     public init(accessLevel: StorageAccessLevel?,
                 contentType: String? = nil,
                 metadata: [String: String]? = nil,

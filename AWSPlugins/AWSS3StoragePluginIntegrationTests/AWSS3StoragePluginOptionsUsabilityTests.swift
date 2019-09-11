@@ -92,18 +92,78 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 15)
     }
 
-    //    func testPutLargeDataWithMultiPart() {
-    //        XCTFail("Not yet implemented")
-    //    }
-    //
-//
-//    func testPutWithMetadata() {
-//        XCTFail("Not yet implemented")
-//    }
-//
+    func testPutWithMetadata() {
+        let key = "testputwithmetadata"
+        let value = key + "Value"
+        let data = key.data(using: .utf8)!
+        let metadataKey = "metadatakey"
+        let metadataValue = metadataKey + "Value"
+        let metadata = [key: value, metadataKey: metadataValue]
+        let options = StoragePutOption(accessLevel: nil, contentType: nil, metadata: metadata, options: nil)
+        let completeInvoked = expectation(description: "Completed is invoked")
+
+        let operation = Amplify.Storage.put(key: key, data: data, options: options) { (event) in
+            switch event {
+            case .completed:
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Failed with \(error)")
+            default:
+                break
+            }
+        }
+
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 60)
+
+        do {
+            let pluginOptional = try Amplify.Storage.getPlugin(for: "AWSS3StoragePlugin")
+
+            guard let plugin = pluginOptional as? AWSS3StoragePlugin else {
+                XCTFail("Could not cast as AWSS3StoragePlugin")
+                return
+            }
+
+            let awsS3 = plugin.getEscapeHatch()
+            let request: AWSS3HeadObjectRequest = AWSS3HeadObjectRequest()
+            if case let .string(bucket) = bucket {
+                request.bucket = bucket
+            }
+            request.key = "public/" + key
+
+            let task = awsS3.headObject(request)
+            task.waitUntilFinished()
+
+            if let error = task.error {
+                XCTFail("Failed to get headObject \(error)")
+            } else if let result = task.result {
+                let headObjectOutput = result as AWSS3HeadObjectOutput
+                print("headObject \(result)")
+                XCTAssertNotNil(headObjectOutput)
+                XCTAssertNotNil(headObjectOutput.metadata)
+                if let metadata = headObjectOutput.metadata {
+                    XCTAssertEqual(metadata[key], value)
+                    XCTAssertEqual(metadata[metadataKey], metadataValue)
+                }
+            }
+        } catch {
+            XCTFail("Failed to get AWSS3StoragePlugin")
+        }
+    }
+
+    func testPutLargeDataWithMetadata() {
+
+    }
+
+    func testPutWithContentType() {
+
+    }
+
 //    func testPutWithTags() {
 //        XCTFail("Not yet implemented")
 //    }
 //
-
+//    func testPutLargeDataWithMultiPart() {
+//        XCTFail("Not yet implemented")
+//    }
 }

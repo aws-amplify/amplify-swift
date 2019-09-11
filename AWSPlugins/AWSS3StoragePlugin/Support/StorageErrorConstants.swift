@@ -44,4 +44,8 @@ public struct StorageErrorConstants {
     public static let AccessDenied = (
         ErrorDescription: "Access denied!",
         RecoverySuggestion: "")
+
+    public static let MetadataKeysInvalid = (
+        ErrorDescription: "Metadata keys should all be lowercased",
+        RecoverySuggestion: "")
 }

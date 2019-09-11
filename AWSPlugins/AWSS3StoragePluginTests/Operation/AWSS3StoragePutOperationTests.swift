@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import Amplify
+@testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSS3StoragePlugin
 
@@ -168,5 +168,5 @@ class AWSS3StoragePutOperationTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    // TODO: test that the storageService.list is called with prefix and path
+    // test that storage put is called with the correct metadata values.
 }

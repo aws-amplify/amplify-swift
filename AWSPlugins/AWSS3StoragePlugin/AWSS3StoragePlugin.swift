@@ -113,7 +113,7 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
         self.defaultAccessLevel = defaultAccessLevel
     }
 
-    public func reset() {
+    public func reset(onComplete: @escaping (() -> Void)) {
         if storageService != nil {
             storageService.reset()
             storageService = nil
@@ -127,6 +127,8 @@ public class AWSS3StoragePlugin: StorageCategoryPlugin {
         if queue != nil {
             queue = nil
         }
+
+        onComplete()
     }
 
     public func get(key: String,

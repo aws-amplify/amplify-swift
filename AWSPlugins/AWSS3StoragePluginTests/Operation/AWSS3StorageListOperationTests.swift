@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import Amplify
+@testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSS3StoragePlugin
 
@@ -128,4 +128,6 @@ class AWSS3StorageListOperationTests: XCTestCase {
         XCTAssertEqual(mockStorageService.listCalled, true)
         waitForExpectations(timeout: 1)
     }
+
+    // TODO: test that the storageService.list is called with prefix and path
 }

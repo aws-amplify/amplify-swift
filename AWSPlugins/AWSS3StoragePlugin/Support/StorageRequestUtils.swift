@@ -9,6 +9,8 @@ import Foundation
 import Amplify
 
 public class StorageRequestUtils {
+    static let metadataKeyPrefix = "x-amz-meta-"
+
     public static func getServiceKey(accessLevel: StorageAccessLevel, identityId: String, key: String) -> String {
         return getAccessLevelPrefix(accessLevel: accessLevel, identityId: identityId) + key
     }
@@ -19,5 +21,19 @@ public class StorageRequestUtils {
         }
 
         return accessLevel.rawValue + "/"
+    }
+
+    public static func getServiceMetadata(_ metadata: [String: String]?) -> [String: String]? {
+        guard let metadata = metadata else {
+            return nil
+        }
+
+        var serviceMetadata: [String: String] = [:]
+        for (key, value) in metadata {
+            let serviceKey = metadataKeyPrefix + key
+            serviceMetadata[serviceKey] = value
+        }
+
+        return serviceMetadata
     }
 }

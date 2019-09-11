@@ -17,11 +17,22 @@ extension AWSS3StorageService {
                        key: String,
                        uploadSource: UploadSource,
                        contentType: String?,
+                       metadata: [String: String]?,
                        onEvent: @escaping StorageUploadOnEventHandler) {
 
         let uploadTaskCreatedHandler = AWSS3StorageService.makeUploadTaskCreatedHandler(onEvent: onEvent)
         let expression = AWSS3TransferUtilityUploadExpression()
         expression.progressBlock = AWSS3StorageService.makeOnUploadProgressHandler(onEvent: onEvent)
+
+        if let metadata = metadata {
+            for (key, value) in metadata {
+                expression.setValue(value, forRequestHeader: key)
+            }
+        }
+
+        // TODO: Implement tagging functionality, got 403 on tagging using below code
+        //expression.setValue("Project=blue&Classification=confidential", forRequestHeader: "x-amz-tagging")
+
         let onUploadCompletedHandler = AWSS3StorageService.makeUploadCompletedHandler(onEvent: onEvent, key: key)
 
         switch uploadSource {

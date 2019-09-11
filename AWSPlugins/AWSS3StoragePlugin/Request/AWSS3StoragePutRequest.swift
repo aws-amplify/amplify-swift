@@ -44,6 +44,19 @@ public struct AWSS3StoragePutRequest {
             // else if contentTypeValidator(contentType) {
         }
 
+        if let metadata = metadata {
+            for (key, value) in metadata {
+                if key != key.lowercased() {
+                    return StoragePutError.validation(StorageErrorConstants.MetadataKeysInvalid.ErrorDescription,
+                                                      StorageErrorConstants.MetadataKeysInvalid.RecoverySuggestion)
+                }
+            }
+        }
+        // TODO: validate that metadata keys are lower case
+
+        // TODO: validate that metadata values are within a certain size.
+        // https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html#object-metadata 2KB
+
         return nil
     }
 

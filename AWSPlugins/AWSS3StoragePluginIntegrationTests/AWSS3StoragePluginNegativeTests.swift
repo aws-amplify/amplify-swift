@@ -11,7 +11,6 @@ import Amplify
 import AWSS3StoragePlugin
 import AWSS3
 class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
-
     func testGetNonexistentKey() {
         let key = "testGetNonexistentKey"
         let failInvoked = expectation(description: "Failed is invoked")
@@ -48,8 +47,6 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
             testData += testData
         }
         let fileURL = URL(fileURLWithPath: filePath)
-        //FileManager.default.createFile(atPath: filePath, contents: testData.data(using: .utf8), attributes: nil)
-
         let failedInvoked = expectation(description: "Failed is invoked")
         let operation = Amplify.Storage.put(key: key, local: fileURL, options: nil) { (event) in
             switch event {
@@ -69,4 +66,9 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         XCTAssertNotNil(operation)
         waitForExpectations(timeout: 10)
     }
+
+    // TODO: possibly after understanding content-type
+//    func testPutWithInvalidContentType() {
+//
+//    }
 }

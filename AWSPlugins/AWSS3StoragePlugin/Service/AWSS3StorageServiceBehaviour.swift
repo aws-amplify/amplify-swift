@@ -49,12 +49,14 @@ protocol AWSS3StorageServiceBehaviour {
                 key: String,
                 uploadSource: UploadSource,
                 contentType: String?,
+                metadata: [String: String]?,
                 onEvent: @escaping StorageUploadOnEventHandler)
 
     func multiPartUpload(serviceKey: String,
                          key: String,
                          uploadSource: UploadSource,
                          contentType: String?,
+                         metadata: [String: String]?,
                          onEvent: @escaping StorageMultiPartUploadOnEventHandler)
 
     func list(prefix: String,

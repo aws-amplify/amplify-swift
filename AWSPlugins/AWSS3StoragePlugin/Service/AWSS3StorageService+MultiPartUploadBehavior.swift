@@ -17,12 +17,19 @@ extension AWSS3StorageService {
                                 key: String,
                                 uploadSource: UploadSource,
                                 contentType: String?,
+                                metadata: [String: String]?,
                                 onEvent: @escaping StorageMultiPartUploadOnEventHandler) {
 
         let multiPartUploadTaskCreatedHandler =
             AWSS3StorageService.makeMultiPartUploadTaskCreatedHandler(onEvent: onEvent)
         let expression = AWSS3TransferUtilityMultiPartUploadExpression()
         expression.progressBlock = AWSS3StorageService.makeOnMultiPartUploadProgressHandler(onEvent: onEvent)
+        if let metadata = metadata {
+            for (key, value) in metadata {
+                expression.setValue(value, forRequestHeader: key)
+            }
+        }
+        
         let onMultiPartUploadCompletedHandler =
             AWSS3StorageService.makeMultiPartUploadCompletedHandler(onEvent: onEvent, key: key)
 

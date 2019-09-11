@@ -7,7 +7,7 @@
 
 import XCTest
 import AWSMobileClient
-import Amplify
+@testable import Amplify
 import AWSS3StoragePlugin
 import AWSS3
 class AWSS3StoragePluginConfigurationTests: AWSS3StoragePluginTestBase {
@@ -15,16 +15,14 @@ class AWSS3StoragePluginConfigurationTests: AWSS3StoragePluginTestBase {
     func testConfigureWithIncorrectDefaultAccessLevelValueShouldThrow() {
         Amplify.reset()
 
-        let bucketJSONValue = JSONValue.init(stringLiteral: bucket)
-        let regionJSONValue = JSONValue.init(stringLiteral: region)
-        let defaultAccessLevelJSONValue = JSONValue.init(stringLiteral: "public123")
-
-        let storagePluginConfig = JSONValue.init(dictionaryLiteral: ("Bucket", bucketJSONValue),
-                                                 ("Region", regionJSONValue),
-                                                 ("DefaultAccessLevel", defaultAccessLevelJSONValue))
-
         let storageConfig = StorageCategoryConfiguration(
-            plugins: ["AWSS3StoragePlugin": storagePluginConfig]
+            plugins: [
+                "AWSS3StoragePlugin": [
+                    "Bucket": bucket,
+                    "Region": region,
+                    "DefaultAccessLevel": "public123"
+                ]
+            ]
         )
 
         let amplifyConfig = AmplifyConfiguration(storage: storageConfig)

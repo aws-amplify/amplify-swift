@@ -21,6 +21,9 @@ public struct StorageGetOption {
     // Extra options
     public var options: Any?
 
+    // TODO: transferAcceleration should be in options most likely. and can be set globally
+    // https://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
+
     public init(accessLevel: StorageAccessLevel? = nil,
                 targetIdentityId: String? = nil,
                 storageGetDestination: StorageGetDestination? = nil,
