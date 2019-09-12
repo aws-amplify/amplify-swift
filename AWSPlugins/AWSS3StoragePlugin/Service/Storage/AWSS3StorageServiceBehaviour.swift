@@ -9,25 +9,29 @@ import Foundation
 import Amplify
 import AWSS3
 
-public typealias StorageDownloadOnEventHandler =
-    (StorageEvent<StorageOperationReference, Progress, StorageGetResult, StorageGetError>) -> Void
-
-public typealias StorageGetPreSignedUrlOnEventHandler =
-    (StorageEvent<StorageOperationReference, Progress, StorageGetResult, StorageGetError>) -> Void
-
-public typealias StorageDeleteOnEventHandler =
-    (StorageEvent<Void, Void, StorageRemoveResult, StorageRemoveError>) -> Void
-
-public typealias StorageListOnEventHandler =
-    (StorageEvent<Void, Void, StorageListResult, StorageListError>) -> Void
-
-public typealias StorageUploadOnEventHandler =
-    (StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>) -> Void
-
-public typealias StorageMultiPartUploadOnEventHandler =
-    (StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>) -> Void
-
 protocol AWSS3StorageServiceBehaviour {
+    typealias StorageDownloadOnEventHandler = (StorageDownloadOnEvent) -> Void
+    typealias StorageDownloadOnEvent =
+        StorageEvent<StorageOperationReference, Progress, StorageGetResult, StorageGetError>
+
+    typealias StorageGetPreSignedURLOnEventHandler = (StorageGetPreSignedURLOnEvent) -> Void
+    typealias StorageGetPreSignedURLOnEvent =
+        StorageEvent<StorageOperationReference, Progress, StorageGetResult, StorageGetError>
+
+    typealias StorageDeleteOnEventHandler = (StorageDeleteOnEvent) -> Void
+    typealias StorageDeleteOnEvent = StorageEvent<Void, Void, StorageRemoveResult, StorageRemoveError>
+
+    typealias StorageListOnEventHandler = (StorageListOnEvent) -> Void
+    typealias StorageListOnEvent = StorageEvent<Void, Void, StorageListResult, StorageListError>
+
+    typealias StorageUploadOnEventHandler = (StorageUploadOnEvent) -> Void
+    typealias StorageUploadOnEvent =
+        StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>
+
+    typealias StorageMultiPartUploadOnEventHandler = (StorageMultiPartUploadOnEvent) -> Void
+    typealias StorageMultiPartUploadOnEvent =
+        StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>
+
     func configure(region: AWSRegionType,
                    bucket: String,
                    cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
@@ -43,7 +47,7 @@ protocol AWSS3StorageServiceBehaviour {
 
     func getPreSignedURL(serviceKey: String,
                          expires: Int?,
-                         onEvent: @escaping StorageGetPreSignedUrlOnEventHandler)
+                         onEvent: @escaping StorageGetPreSignedURLOnEventHandler)
 
     func upload(serviceKey: String,
                 key: String,

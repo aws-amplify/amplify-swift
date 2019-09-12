@@ -9,45 +9,9 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSS3StoragePlugin
+import AWSS3
 
-class AWSS3StorageListOperationTests: XCTestCase {
-    var hubPlugin: MockHubCategoryPlugin!
-    var mockStorageService: MockAWSS3StorageService!
-    var mockAuthService: MockAWSAuthService!
-
-    let testPath = "TestPath"
-
-    override func setUp() {
-        let hubConfig = HubCategoryConfiguration(
-            plugins: ["MockHubCategoryPlugin": true]
-        )
-        hubPlugin = MockHubCategoryPlugin()
-        let mockAmplifyConfig = AmplifyConfiguration(hub: hubConfig)
-
-        do {
-            try Amplify.add(plugin: hubPlugin)
-            try Amplify.configure(mockAmplifyConfig)
-        } catch let error as AmplifyError {
-            XCTFail("setUp failed with error: \(error); \(error.errorDescription); \(error.recoverySuggestion)")
-        } catch {
-            XCTFail("setup failed with unknown error")
-        }
-
-//        let methodWasInvokedOnHubPlugin = expectation(
-//            description: "method was invoked on hub plugin")
-//        hubPlugin.listeners.append { message in
-//            if message == "dispatch(to:payload:)" {
-//                methodWasInvokedOnHubPlugin.fulfill()
-//            }
-//        }
-
-        mockStorageService = MockAWSS3StorageService()
-        mockAuthService = MockAWSAuthService()
-    }
-
-    override func tearDown() {
-        Amplify.reset()
-    }
+class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
 
     func testListOperationValidationError() {
         let request = AWSS3StorageListRequest(accessLevel: .public,
@@ -73,8 +37,8 @@ class AWSS3StorageListOperationTests: XCTestCase {
 
         operation.start()
 
-        XCTAssertTrue(operation.isFinished)
         waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
     }
 
     func testListOperationGetIdentityIdError() {
@@ -101,15 +65,17 @@ class AWSS3StorageListOperationTests: XCTestCase {
 
         operation.start()
 
-        XCTAssertTrue(operation.isFinished)
         waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
     }
 
     func testListOperationListObjects() {
+        mockStorageService.storageListEvents = [StorageEvent.completed(StorageListResult(keys: []))]
         let request = AWSS3StorageListRequest(accessLevel: .public,
                                               targetIdentityId: nil,
                                               path: testPath,
                                               options: nil)
+        let expectedPrefix = StorageAccessLevel.public.rawValue + "/"
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
                                                  storageService: mockStorageService,
@@ -118,16 +84,66 @@ class AWSS3StorageListOperationTests: XCTestCase {
             case .completed:
                 completeInvoked.fulfill()
             default:
-                XCTFail("Should have received completed event")
+                XCTFail("Unexpected event invoked on operation")
             }
         }
 
         operation.start()
 
-        XCTAssertTrue(operation.isFinished)
-        XCTAssertEqual(mockStorageService.listCalled, true)
         waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+        mockStorageService.verifyList(prefix: expectedPrefix, path: testPath)
     }
 
-    // TODO: test that the storageService.list is called with prefix and path
+    func testListOperationListObjectsFail() {
+        mockStorageService.storageListEvents = [StorageEvent.failed(StorageListError.service("", ""))]
+        let request = AWSS3StorageListRequest(accessLevel: .public,
+                                              targetIdentityId: nil,
+                                              path: testPath,
+                                              options: nil)
+        let expectedPrefix = StorageAccessLevel.public.rawValue + "/"
+        let failedInvoked = expectation(description: "failed was invoked on operation")
+        let operation = AWSS3StorageListOperation(request,
+                                                  storageService: mockStorageService,
+                                                  authService: mockAuthService) { (event) in
+            switch event {
+            case .failed:
+                failedInvoked.fulfill()
+            default:
+                XCTFail("Unexpected event invoked on operation")
+            }
+        }
+
+        operation.start()
+
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+        mockStorageService.verifyList(prefix: expectedPrefix, path: testPath)
+    }
+
+    func testListOperationListObjectsForTargetIdentityId() {
+        mockStorageService.storageListEvents = [StorageEvent.completed(StorageListResult(keys: []))]
+        let request = AWSS3StorageListRequest(accessLevel: .protected,
+                                              targetIdentityId: testTargetIdentityId,
+                                              path: testPath,
+                                              options: nil)
+        let expectedPrefix = StorageAccessLevel.protected.rawValue + "/" + testTargetIdentityId + "/"
+        let completeInvoked = expectation(description: "complete was invoked on operation")
+        let operation = AWSS3StorageListOperation(request,
+                                                  storageService: mockStorageService,
+                                                  authService: mockAuthService) { (event) in
+            switch event {
+            case .completed:
+                completeInvoked.fulfill()
+            default:
+                XCTFail("Unexpected event invoked on operation")
+            }
+        }
+
+        operation.start()
+
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+        mockStorageService.verifyList(prefix: expectedPrefix, path: testPath)
+    }
 }

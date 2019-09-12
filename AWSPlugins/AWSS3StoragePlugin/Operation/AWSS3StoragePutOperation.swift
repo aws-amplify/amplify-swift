@@ -66,12 +66,6 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, StoragePutResu
             return
         }
 
-        let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
-                                                           identityId: identityId,
-                                                           key: request.key)
-
-        let serviceMetadata = StorageRequestUtils.getServiceMetadata(request.metadata)
-
         let uploadSizeResult = StorageRequestUtils.getSize(request.uploadSource)
 
         guard case let .success(uploadSize) = uploadSizeResult else {
@@ -82,6 +76,11 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, StoragePutResu
             finish()
             return
         }
+
+        let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
+                                                           identityId: identityId,
+                                                           key: request.key)
+        let serviceMetadata = StorageRequestUtils.getServiceMetadata(request.metadata)
 
         if uploadSize > PluginConstants.MultiPartUploadSizeThreshold {
             storageService.multiPartUpload(serviceKey: serviceKey,

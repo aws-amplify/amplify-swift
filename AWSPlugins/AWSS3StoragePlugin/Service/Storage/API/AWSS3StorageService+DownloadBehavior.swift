@@ -12,9 +12,9 @@ import Amplify
 public typealias DownloadTaskCreatedHandler = (AWSTask<AWSS3TransferUtilityDownloadTask>) -> Any?
 
 extension AWSS3StorageService {
-    public func download(serviceKey: String,
-                         fileURL: URL?,
-                         onEvent: @escaping StorageDownloadOnEventHandler) {
+    func download(serviceKey: String,
+                  fileURL: URL?,
+                  onEvent: @escaping StorageDownloadOnEventHandler) {
 
         let downloadTaskCreatedHandler = AWSS3StorageService.makeDownloadTaskCreatedHandler(onEvent: onEvent)
         let expression = AWSS3TransferUtilityDownloadExpression()

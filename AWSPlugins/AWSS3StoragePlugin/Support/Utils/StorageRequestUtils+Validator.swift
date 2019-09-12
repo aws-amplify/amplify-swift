@@ -22,6 +22,8 @@ extension StorageRequestUtils {
             if accessLevel == .private {
                 return StorageErrorConstants.privateWithTarget
             }
+
+            // TODO: if it is public, it doesn't make sense to have a targetIdentityId.
         }
 
         return nil
@@ -90,17 +92,6 @@ extension StorageRequestUtils {
     static func validateFileExists(_ file: URL) -> StorageErrorString? {
         if !FileManager.default.fileExists(atPath: file.path) {
             return StorageErrorConstants.missingFile
-        }
-
-        return nil
-    }
-
-    static func validate(_ uploadSource: UploadSource) -> StorageErrorString? {
-        switch uploadSource {
-        case .file(let file):
-            return validateFileExists(file)
-        case .data:
-            break
         }
 
         return nil

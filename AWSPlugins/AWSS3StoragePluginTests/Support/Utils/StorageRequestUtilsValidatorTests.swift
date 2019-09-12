@@ -142,34 +142,4 @@ class StorageRequestUtilsValidatorTests: XCTestCase {
         XCTAssertNotNil(result)
         XCTAssertEqual(result!.errorDescription, StorageErrorConstants.missingFile.errorDescription)
     }
-
-    // MARK: Validate UploadSource
-
-    func testValidateWithDataUploadSourceSuccess() {
-        let uploadSource = UploadSource.data(data: Data())
-        let result = StorageRequestUtils.validate(uploadSource)
-        XCTAssertNil(result)
-    }
-
-    func testValidateWithFileUploadSourceSuccess() {
-        let key = "testValidateWithFileUploadSourceSuccess"
-        let filePath = NSTemporaryDirectory() + key + ".tmp"
-        let fileURL = URL(fileURLWithPath: filePath)
-        FileManager.default.createFile(atPath: filePath, contents: key.data(using: .utf8), attributes: nil)
-
-        let uploadSource = UploadSource.file(file: fileURL)
-
-        let result = StorageRequestUtils.validate(uploadSource)
-        XCTAssertNil(result)
-    }
-
-    func testValidateWithFileUploadSourceReturnsError() {
-        let fileURL = URL(fileURLWithPath: "path")
-        let uploadSource = UploadSource.file(file: fileURL)
-
-        let result = StorageRequestUtils.validate(uploadSource)
-        XCTAssertNotNil(result)
-        XCTAssertEqual(result!.errorDescription, StorageErrorConstants.missingFile.errorDescription)
-    }
-
 }

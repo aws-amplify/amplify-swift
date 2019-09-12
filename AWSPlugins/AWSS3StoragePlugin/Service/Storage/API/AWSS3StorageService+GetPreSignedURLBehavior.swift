@@ -12,9 +12,9 @@ import Amplify
 public typealias GetURLCompletedHandler = (AWSTask<NSURL>) -> Any?
 
 extension AWSS3StorageService {
-    public func getPreSignedURL(serviceKey: String,
-                                expires: Int?,
-                                onEvent: @escaping StorageGetPreSignedUrlOnEventHandler) {
+    func getPreSignedURL(serviceKey: String,
+                         expires: Int?,
+                         onEvent: @escaping StorageGetPreSignedURLOnEventHandler) {
 
         let getPresignedURLRequest = AWSS3StorageService.makeAWSS3GetPreSignedURLRequest(bucket: bucket,
                                                                                          key: serviceKey,
@@ -44,7 +44,7 @@ extension AWSS3StorageService {
     }
 
     private static func makeGetPreSignedURLCompletedHandler(
-        onEvent: @escaping StorageGetPreSignedUrlOnEventHandler) -> GetURLCompletedHandler {
+        onEvent: @escaping StorageGetPreSignedURLOnEventHandler) -> GetURLCompletedHandler {
 
         let block: GetURLCompletedHandler = { (task: AWSTask<NSURL>) -> Any? in
             guard task.error == nil else {

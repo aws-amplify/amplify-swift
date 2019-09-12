@@ -4,7 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-
+import XCTest
 import Foundation
 import Amplify
 import AWSS3
@@ -12,15 +12,51 @@ import AWSS3
 
 public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
 
-    private(set) public var downloadDataCalled: Bool?
-    private(set) public var downloadToFileCalled: Bool?
-    private(set) public var getPreSignedURLCalled: Bool?
-    private(set) public var uploadCalled: Bool?
-    private(set) public var multiPartUploadCalled: Bool?
-    private(set) public var listCalled: Bool?
-    private(set) public var deleteCalled: Bool?
+    // MARK: method call counts
 
-    private var mockS3: AWSS3Behavior = MockS3()
+    var downloadCalled = 0
+    var getPreSignedURLCalled = 0
+    var uploadCalled = 0
+    var multiPartUploadCalled = 0
+    var listCalled = 0
+    var deleteCalled = 0
+
+    // MARK: method arguments
+
+    var downloadServiceKey: String?
+    var downloadFileURL: URL?
+
+    var getPreSignedURLServiceKey: String?
+    var getPreSignedURLExpires: Int?
+
+    var uploadServiceKey: String?
+    var uploadKey: String?
+    var uploadUploadSource: UploadSource?
+    var uploadContentType: String?
+    var uploadMetadata: [String: String]?
+
+    var multiPartUploadServiceKey: String?
+    var multiPartUploadKey: String?
+    var multiPartUploadUploadSource: UploadSource?
+    var multiPartUploadContentType: String?
+    var multiPartUploadMetadata: [String: String]?
+
+    var listPrefix: String?
+    var listPath: String?
+
+    var deleteServiceKey: String?
+
+    // MARK: Mock behavior
+
+    // array of StorageEvents to be mocked as the stream of events.
+    var storageDownloadEvents: [StorageDownloadOnEvent]?
+    var storageGetPreSignedURLEvents: [StorageGetPreSignedURLOnEvent]?
+    var storageUploadEvents: [StorageUploadOnEvent]?
+    var storageMultiPartUploadEvents: [StorageMultiPartUploadOnEvent]?
+    var storageListEvents: [StorageListOnEvent]?
+    var storageDeleteEvents: [StorageDeleteOnEvent]?
+
+    // MARK: Mock functionality
 
     public func configure(region: AWSRegionType,
                           bucket: String,
@@ -32,24 +68,27 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
     }
 
     public func download(serviceKey: String, fileURL: URL?, onEvent: @escaping StorageDownloadOnEventHandler) {
+        downloadCalled += 1
 
-        if fileURL != nil {
-            downloadToFileCalled = true
-        } else {
-            downloadDataCalled = true
+        downloadServiceKey = serviceKey
+        downloadFileURL = fileURL
+
+        for event in storageDownloadEvents ?? [] {
+            onEvent(event)
         }
-
-        let data = Data()
-        onEvent(StorageEvent.completed(StorageGetResult(data: data)))
     }
 
     public func getPreSignedURL(serviceKey: String,
                                 expires: Int?,
-                                onEvent: @escaping StorageGetPreSignedUrlOnEventHandler) {
-        getPreSignedURLCalled = true
+                                onEvent: @escaping StorageGetPreSignedURLOnEventHandler) {
+        getPreSignedURLCalled += 1
 
-        let url = URL(fileURLWithPath: "path")
-        onEvent(StorageEvent.completed(StorageGetResult(remote: url)))
+        getPreSignedURLServiceKey = serviceKey
+        getPreSignedURLExpires = expires
+
+        for event in storageGetPreSignedURLEvents ?? [] {
+            onEvent(event)
+        }
     }
 
     public func upload(serviceKey: String,
@@ -58,9 +97,17 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
                        contentType: String?,
                        metadata: [String: String]?,
                        onEvent: @escaping StorageUploadOnEventHandler) {
-        uploadCalled = true
+        uploadCalled += 1
 
-        onEvent(StorageEvent.completed(StoragePutResult(key: key)))
+        uploadServiceKey = serviceKey
+        uploadKey = key
+        uploadUploadSource = uploadSource
+        uploadContentType = contentType
+        uploadMetadata = metadata
+
+        for event in storageUploadEvents ?? [] {
+            onEvent(event)
+        }
     }
 
     public func multiPartUpload(serviceKey: String,
@@ -69,23 +116,121 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
                                 contentType: String?,
                                 metadata: [String: String]?,
                                 onEvent: @escaping StorageMultiPartUploadOnEventHandler) {
-        multiPartUploadCalled = true
+        multiPartUploadCalled += 1
 
-        onEvent(StorageEvent.completed(StoragePutResult(key: key)))
+        multiPartUploadServiceKey = serviceKey
+        multiPartUploadKey = key
+        multiPartUploadUploadSource = uploadSource
+        multiPartUploadContentType = contentType
+        multiPartUploadMetadata = metadata
+
+        for event in storageMultiPartUploadEvents ?? [] {
+            onEvent(event)
+        }
     }
 
     public func list(prefix: String, path: String?, onEvent: @escaping StorageListOnEventHandler) {
-        listCalled = true
+        listCalled += 1
 
-        onEvent(StorageEvent.completed(StorageListResult(keys: [])))
+        listPrefix = prefix
+        listPath = path
+
+        for event in storageListEvents ?? [] {
+            onEvent(event)
+        }
     }
 
     public func delete(serviceKey: String, onEvent: @escaping StorageDeleteOnEventHandler) {
-        deleteCalled = true
-        onEvent(StorageEvent.completed(StorageRemoveResult(key: serviceKey)))
+        deleteCalled += 1
+
+        deleteServiceKey = serviceKey
+
+        for event in storageDeleteEvents ?? [] {
+            onEvent(event)
+        }
     }
 
     public func getEscapeHatch() -> AWSS3? {
-        return mockS3.getS3()
+        return nil
+    }
+
+    // MARK: Mock verify
+
+    public func verifyDownload(serviceKey: String, fileURL: URL?) {
+        XCTAssertEqual(downloadCalled, 1)
+        XCTAssertEqual(downloadServiceKey, serviceKey)
+        XCTAssertEqual(downloadFileURL, fileURL)
+    }
+
+    public func verifyGetPreSignedURL(serviceKey: String,
+                                expires: Int?) {
+        getPreSignedURLCalled += 1
+
+        XCTAssertEqual(getPreSignedURLServiceKey, serviceKey)
+        XCTAssertEqual(getPreSignedURLExpires, expires)
+    }
+
+    public func verifyUpload(serviceKey: String,
+                            key: String,
+                            uploadSource: UploadSource,
+                            contentType: String?,
+                            metadata: [String: String]?) {
+        XCTAssertEqual(uploadCalled, 1)
+
+        XCTAssertEqual(uploadServiceKey, serviceKey)
+        XCTAssertEqual(uploadKey, key)
+        if let uploadUploadSource = uploadUploadSource {
+            var uploadSourceEqual = false
+            if case .data(_) = uploadSource, case .data(_) = uploadUploadSource {
+                uploadSourceEqual = true
+            }
+            if case .file(_) = uploadSource, case .file(_) = uploadUploadSource {
+                uploadSourceEqual = true
+            }
+            XCTAssertTrue(uploadSourceEqual)
+        } else {
+            XCTFail("uploadSource is empty")
+        }
+
+        XCTAssertEqual(uploadContentType, contentType)
+        XCTAssertEqual(uploadMetadata, metadata)
+    }
+
+    public func verifyMultiPartUpload(serviceKey: String,
+                                      key: String,
+                                      uploadSource: UploadSource,
+                                      contentType: String?,
+                                      metadata: [String: String]?) {
+        XCTAssertEqual(multiPartUploadCalled, 1)
+
+        XCTAssertEqual(multiPartUploadServiceKey, serviceKey)
+        XCTAssertEqual(multiPartUploadKey, key)
+        if let multiPartUploadUploadSource = multiPartUploadUploadSource {
+            var uploadSourceEqual = false
+            if case .data(_) = uploadSource, case .data(_) = multiPartUploadUploadSource {
+                uploadSourceEqual = true
+            }
+            if case .file(_) = uploadSource, case .file(_) = multiPartUploadUploadSource {
+                uploadSourceEqual = true
+            }
+            XCTAssertTrue(uploadSourceEqual)
+        } else {
+            XCTFail("uploadSource is empty")
+        }
+        XCTAssertEqual(multiPartUploadContentType, contentType)
+        XCTAssertEqual(multiPartUploadMetadata, metadata)
+    }
+
+    public func verifyList(prefix: String, path: String?) {
+        XCTAssertEqual(listCalled, 1)
+
+        XCTAssertEqual(listPrefix, prefix)
+        XCTAssertEqual(listPath, path)
+    }
+
+    public func verifyDelete(serviceKey: String) {
+        XCTAssertEqual(deleteCalled, 1)
+
+        XCTAssertEqual(deleteServiceKey, serviceKey)
     }
 }

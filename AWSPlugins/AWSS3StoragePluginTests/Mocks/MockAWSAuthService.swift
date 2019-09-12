@@ -14,6 +14,7 @@ import Amplify
 public class MockAWSAuthService: AWSAuthServiceBehavior {
 
     var getIdentityIdError: AuthError?
+    var identityId: String?
 
     public func configure() {
     }
@@ -31,6 +32,6 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
             return .failure(error)
         }
 
-        return .success("IdentityId")
+        return .success(identityId ?? "IdentityId")
     }
 }

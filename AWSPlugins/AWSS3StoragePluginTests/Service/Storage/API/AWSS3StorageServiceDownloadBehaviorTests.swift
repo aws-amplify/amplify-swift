@@ -29,7 +29,7 @@ class AWSS3StorageServiceDownloadBehaviorTests: AWSS3StorageServiceTestBase {
             }
         }
 
-        XCTAssertEqual(mockTransferUtility.downloadDataCalled, true)
+        XCTAssertEqual(mockTransferUtility.downloadDataCalled, 1)
         waitForExpectations(timeout: 1.0)
     }
 

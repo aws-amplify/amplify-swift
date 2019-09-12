@@ -13,12 +13,12 @@ public typealias MultiPartUploadTaskCreatedHandler = (AWSTask<AWSS3TransferUtili
 
 extension AWSS3StorageService {
 
-    public func multiPartUpload(serviceKey: String,
-                                key: String,
-                                uploadSource: UploadSource,
-                                contentType: String?,
-                                metadata: [String: String]?,
-                                onEvent: @escaping StorageMultiPartUploadOnEventHandler) {
+    func multiPartUpload(serviceKey: String,
+                         key: String,
+                         uploadSource: UploadSource,
+                         contentType: String?,
+                         metadata: [String: String]?,
+                         onEvent: @escaping StorageMultiPartUploadOnEventHandler) {
 
         let multiPartUploadTaskCreatedHandler =
             AWSS3StorageService.makeMultiPartUploadTaskCreatedHandler(onEvent: onEvent)

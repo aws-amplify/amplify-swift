@@ -9,49 +9,9 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSS3StoragePlugin
+import AWSS3
 
-// TODO Currently we only verify that the method on storage service was called.
-// we should also verify that the call was done with correct parameters
-// TODO: mock - verify pattern.
-class AWSS3StorageGetOperationTests: XCTestCase {
-
-    var hubPlugin: MockHubCategoryPlugin!
-    var mockStorageService: MockAWSS3StorageService!
-    var mockAuthService: MockAWSAuthService!
-
-    let testKey = "TestKey"
-
-    override func setUp() {
-        let hubConfig = HubCategoryConfiguration(
-            plugins: ["MockHubCategoryPlugin": true]
-        )
-        hubPlugin = MockHubCategoryPlugin()
-        let mockAmplifyConfig = AmplifyConfiguration(hub: hubConfig)
-
-        do {
-            try Amplify.add(plugin: hubPlugin)
-            try Amplify.configure(mockAmplifyConfig)
-        } catch let error as AmplifyError {
-            XCTFail("setUp failed with error: \(error); \(error.errorDescription); \(error.recoverySuggestion)")
-        } catch {
-            XCTFail("setup failed with unknown error")
-        }
-
-//        let methodWasInvokedOnHubPlugin = expectation(
-//            description: "method was invoked on hub plugin")
-//        hubPlugin.listeners.append { message in
-//            if message == "dispatch(to:payload:)" {
-//                methodWasInvokedOnHubPlugin.fulfill()
-//            }
-//        }
-
-        mockStorageService = MockAWSS3StorageService()
-        mockAuthService = MockAWSAuthService()
-    }
-
-    override func tearDown() {
-        Amplify.reset()
-    }
+class AWSS3StorageGetOperationTests: AWSS3StorageOperationTestBase {
 
     func testGetOperationValidationError() {
         let request = AWSS3StorageGetRequest(accessLevel: .public,
@@ -76,9 +36,8 @@ class AWSS3StorageGetOperationTests: XCTestCase {
         }
 
         operation.start()
-
-        XCTAssertTrue(operation.isFinished)
         waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
     }
 
     func testGetOperationGetIdentityIdError() {
@@ -111,11 +70,17 @@ class AWSS3StorageGetOperationTests: XCTestCase {
     }
 
     func testGetOperationDownloadData() {
+        mockStorageService.storageDownloadEvents = [
+            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.completed(StorageGetResult(data: Data()))]
         let request = AWSS3StorageGetRequest(accessLevel: .public,
                                              targetIdentityId: nil,
                                              key: testKey,
                                              storageGetDestination: .data,
                                              options: nil)
+        let expectedServiceKey = StorageAccessLevel.public.rawValue + "/" + testKey
+        let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageGetOperation(request,
                                                  storageService: mockStorageService,
@@ -123,29 +88,99 @@ class AWSS3StorageGetOperationTests: XCTestCase {
             switch event {
             case .completed:
                 completeInvoked.fulfill()
+            case .inProcess:
+                inProcessInvoked.fulfill()
             default:
-                XCTFail("Should have received completed event")
+                XCTFail("Unexpected event invoked on operation")
             }
         }
 
         operation.start()
 
         XCTAssertTrue(operation.isFinished)
-        XCTAssertEqual(mockStorageService.downloadDataCalled, true)
         waitForExpectations(timeout: 1)
+        mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
+    }
+
+    func testGetOperationDownloadDataFailed() {
+        mockStorageService.storageDownloadEvents = [
+            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.failed(StorageGetError.service("", ""))]
+        let request = AWSS3StorageGetRequest(accessLevel: .public,
+                                             targetIdentityId: nil,
+                                             key: testKey,
+                                             storageGetDestination: .data,
+                                             options: nil)
+        let expectedServiceKey = StorageAccessLevel.public.rawValue + "/" + testKey
+        let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
+        let failInvoked = expectation(description: "fail was invoked on operation")
+        let operation = AWSS3StorageGetOperation(request,
+                                                 storageService: mockStorageService,
+                                                 authService: mockAuthService) { (event) in
+            switch event {
+            case .failed:
+                failInvoked.fulfill()
+            case .inProcess:
+                inProcessInvoked.fulfill()
+            default:
+                XCTFail("Unexpected event invoked on operation")
+            }
+        }
+
+        operation.start()
+
+        XCTAssertTrue(operation.isFinished)
+        waitForExpectations(timeout: 1)
+        mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
 
     func testGetOperationDownloadDataFromTargetIdentityId() {
-        // TODO: like testGetOperationDownloadData but we verify that the targetIdentityId overrides the identitiyId
+        mockStorageService.storageDownloadEvents = [
+            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.completed(StorageGetResult(data: Data()))]
+        let request = AWSS3StorageGetRequest(accessLevel: .protected,
+                                             targetIdentityId: testTargetIdentityId,
+                                             key: testKey,
+                                             storageGetDestination: .data,
+                                             options: nil)
+        let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testTargetIdentityId + "/" + testKey
+        let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
+        let completeInvoked = expectation(description: "complete was invoked on operation")
+        let operation = AWSS3StorageGetOperation(request,
+                                                 storageService: mockStorageService,
+                                                 authService: mockAuthService) { (event) in
+            switch event {
+            case .completed:
+                completeInvoked.fulfill()
+            case .inProcess:
+                inProcessInvoked.fulfill()
+            default:
+                XCTFail("Unexpected event invoked on operation")
+            }
+        }
+
+        operation.start()
+
+        XCTAssertTrue(operation.isFinished)
+        waitForExpectations(timeout: 1)
+        mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
 
     func testGetOperationDownloadLocal() {
+        mockStorageService.storageDownloadEvents = [
+            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.completed(StorageGetResult(data: Data()))]
         let url = URL(fileURLWithPath: "path")
         let request = AWSS3StorageGetRequest(accessLevel: .public,
                                              targetIdentityId: nil,
                                              key: testKey,
                                              storageGetDestination: .file(local: url),
                                              options: nil)
+        let expectedServiceKey = StorageAccessLevel.public.rawValue + "/" + testKey
+        let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageGetOperation(request,
                                                  storageService: mockStorageService,
@@ -153,28 +188,33 @@ class AWSS3StorageGetOperationTests: XCTestCase {
             switch event {
             case .completed:
                 completeInvoked.fulfill()
+            case .inProcess:
+                inProcessInvoked.fulfill()
             default:
-                XCTFail("Should have received completed event")
+                XCTFail("Unexpected event invoked on operation")
             }
         }
 
         operation.start()
 
-        XCTAssertTrue(operation.isFinished)
-        XCTAssertEqual(mockStorageService.downloadToFileCalled, true)
         waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+        mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: url)
     }
 
     func testGetOperationDownloadLocalFromTargetIdentityId() {
-        // TODO: like testGetOperationDownloadLocal but we verify that targetIdentityID overrides identityid
-    }
-
-    func testGetOperationGetPresignedURL() {
-        let request = AWSS3StorageGetRequest(accessLevel: .public,
-                                             targetIdentityId: nil,
+        mockStorageService.storageDownloadEvents = [
+            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.completed(StorageGetResult(data: Data()))]
+        let url = URL(fileURLWithPath: "path")
+        let request = AWSS3StorageGetRequest(accessLevel: .protected,
+                                             targetIdentityId: testTargetIdentityId,
                                              key: testKey,
-                                             storageGetDestination: .url(expires: nil),
+                                             storageGetDestination: .file(local: url),
                                              options: nil)
+        let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testTargetIdentityId + "/" + testKey
+        let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageGetOperation(request,
                                                  storageService: mockStorageService,
@@ -182,19 +222,89 @@ class AWSS3StorageGetOperationTests: XCTestCase {
             switch event {
             case .completed:
                 completeInvoked.fulfill()
+            case .inProcess:
+                inProcessInvoked.fulfill()
             default:
-                XCTFail("Should have received completed event")
+                XCTFail("Unexpected event invoked on operation")
             }
         }
 
         operation.start()
 
         XCTAssertTrue(operation.isFinished)
-        XCTAssertEqual(mockStorageService.getPreSignedURLCalled, true)
         waitForExpectations(timeout: 1)
+        mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: url)
+    }
+
+    func testGetOperationGetPresignedURL() {
+        mockAuthService.identityId = testIdentityId
+        mockStorageService.storageGetPreSignedURLEvents = [
+            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.completed(StorageGetResult(remote: URL(fileURLWithPath: "path")))]
+        let expectedExpires = 100
+        let request = AWSS3StorageGetRequest(accessLevel: .protected,
+                                             targetIdentityId: nil,
+                                             key: testKey,
+                                             storageGetDestination: .url(expires: expectedExpires),
+                                             options: nil)
+        let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
+        let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
+        let completeInvoked = expectation(description: "complete was invoked on operation")
+        let operation = AWSS3StorageGetOperation(request,
+                                                 storageService: mockStorageService,
+                                                 authService: mockAuthService) { (event) in
+            switch event {
+            case .completed:
+                completeInvoked.fulfill()
+            case .inProcess:
+                inProcessInvoked.fulfill()
+            default:
+                XCTFail("Unexpected event invoked on operation")
+            }
+        }
+
+        operation.start()
+
+        XCTAssertTrue(operation.isFinished)
+        XCTAssertEqual(mockStorageService.getPreSignedURLCalled, 1)
+        waitForExpectations(timeout: 1)
+        mockStorageService.verifyGetPreSignedURL(serviceKey: expectedServiceKey, expires: expectedExpires)
     }
 
     func testGetOperationGetPresignedURLFromTargetIdentityId() {
-        // TODO: like testGetOperationGetPresignedURL but we verify that targetIdentityID overrides identityid
+        mockStorageService.storageGetPreSignedURLEvents = [
+            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.completed(StorageGetResult(remote: URL(fileURLWithPath: "path")))]
+        let request = AWSS3StorageGetRequest(accessLevel: .protected,
+                                             targetIdentityId: testTargetIdentityId,
+                                             key: testKey,
+                                             storageGetDestination: .url(expires: nil),
+                                             options: nil)
+        let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testTargetIdentityId + "/" + testKey
+        let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
+        let completeInvoked = expectation(description: "complete was invoked on operation")
+        let operation = AWSS3StorageGetOperation(request,
+                                                 storageService: mockStorageService,
+                                                 authService: mockAuthService) { (event) in
+            switch event {
+            case .completed:
+                completeInvoked.fulfill()
+            case .inProcess:
+                inProcessInvoked.fulfill()
+            default:
+                XCTFail("Unexpected event invoked on operation")
+            }
+        }
+
+        operation.start()
+
+        XCTAssertTrue(operation.isFinished)
+        XCTAssertEqual(mockStorageService.getPreSignedURLCalled, 1)
+        waitForExpectations(timeout: 1)
+        mockStorageService.verifyGetPreSignedURL(serviceKey: expectedServiceKey, expires: nil)
     }
+
+    // TODO: missing unit tets for pause resume and cancel. do we create a mock of the StorageOperationReference?
 }

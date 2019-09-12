@@ -124,29 +124,4 @@ class AWSS3StoragePutRequestTests: XCTestCase {
 //    func testValidateMetadataValuesTooLarge() {
 //
 //    }
-
-    func testValidateFileIsMissing() {
-        let url = URL(fileURLWithPath: "path")
-        let request = AWSS3StoragePutRequest(accessLevel: .protected,
-                                             key: testKey,
-                                             uploadSource: .file(file: url),
-                                             contentType: testContentType,
-                                             metadata: testMetadata,
-                                             options: testOptions)
-
-        let storagePutErrorOptional = request.validate()
-
-        guard let error = storagePutErrorOptional else {
-            XCTFail("Missing StoragePutError")
-            return
-        }
-
-        guard case .validation(let description, let recovery) = error else {
-            XCTFail("Error does not match validation error")
-            return
-        }
-
-        XCTAssertEqual(description, StorageErrorConstants.missingFile.errorDescription)
-        XCTAssertEqual(recovery, StorageErrorConstants.missingFile.recoverySuggestion)
-    }
 }

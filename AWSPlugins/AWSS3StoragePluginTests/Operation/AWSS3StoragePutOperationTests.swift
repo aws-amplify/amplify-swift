@@ -9,47 +9,9 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSS3StoragePlugin
+import AWSS3
 
-class AWSS3StoragePutOperationTests: XCTestCase {
-    var hubPlugin: MockHubCategoryPlugin!
-    var mockStorageService: MockAWSS3StorageService!
-    var mockAuthService: MockAWSAuthService!
-
-    let testKey = "TestKey"
-    let testData = Data()
-
-    override func setUp() {
-        let hubConfig = HubCategoryConfiguration(
-            plugins: ["MockHubCategoryPlugin": true]
-        )
-        hubPlugin = MockHubCategoryPlugin()
-        let mockAmplifyConfig = AmplifyConfiguration(hub: hubConfig)
-
-        do {
-            try Amplify.add(plugin: hubPlugin)
-            try Amplify.configure(mockAmplifyConfig)
-        } catch let error as AmplifyError {
-            XCTFail("setUp failed with error: \(error); \(error.errorDescription); \(error.recoverySuggestion)")
-        } catch {
-            XCTFail("setup failed with unknown error")
-        }
-
-        // TODO: verify that the hub was called after we build it
-//        let methodWasInvokedOnHubPlugin = expectation(
-//            description: "method was invoked on hub plugin")
-//        hubPlugin.listeners.append { message in
-//            if message == "dispatch(to:payload:)" {
-//                methodWasInvokedOnHubPlugin.fulfill()
-//            }
-//        }
-
-        mockStorageService = MockAWSS3StorageService()
-        mockAuthService = MockAWSAuthService()
-    }
-
-    override func tearDown() {
-        Amplify.reset()
-    }
+class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
 
     func testPutOperationValidationError() {
         let request = AWSS3StoragePutRequest(accessLevel: .protected,
@@ -76,8 +38,8 @@ class AWSS3StoragePutOperationTests: XCTestCase {
 
         operation.start()
 
-        XCTAssertTrue(operation.isFinished)
         waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
     }
 
     func testPutOperationGetIdentityIdError() {
@@ -92,7 +54,7 @@ class AWSS3StoragePutOperationTests: XCTestCase {
         let operation = AWSS3StoragePutOperation(request,
                                                  storageService: mockStorageService,
                                                  authService: mockAuthService) { (event) in
-                                                    switch event {
+            switch event {
             case .failed(let error):
                 guard case .identity = error else {
                     XCTFail("Should have failed with identity error")
@@ -106,49 +68,58 @@ class AWSS3StoragePutOperationTests: XCTestCase {
 
         operation.start()
 
-        XCTAssertTrue(operation.isFinished)
         waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
     }
 
-    func testPutOperationUpload() {
+    func testPutOperationGetSizeForMissingFileError() {
+        let url = URL(fileURLWithPath: "missingFile")
         let request = AWSS3StoragePutRequest(accessLevel: .protected,
                                              key: testKey,
-                                             uploadSource: UploadSource.data(data: testData),
+                                             uploadSource: UploadSource.file(file: url),
                                              contentType: nil,
                                              metadata: nil,
                                              options: nil)
-        let completeInvoked = expectation(description: "complete was invoked on operation")
+        let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StoragePutOperation(request,
                                                  storageService: mockStorageService,
                                                  authService: mockAuthService) { (event) in
-                                                    switch event {
-                                                    case .completed:
-                                                        completeInvoked.fulfill()
-                                                    default:
-                                                        XCTFail("Should have received completed event")
-                                                    }
+            switch event {
+            case .failed(let error):
+                guard case .missingFile = error else {
+                    XCTFail("Should have failed with missing file error")
+                    return
+                }
+                failedInvoked.fulfill()
+            default:
+                XCTFail("Should have received failed event")
+            }
         }
 
         operation.start()
 
-        XCTAssertTrue(operation.isFinished)
-        XCTAssertEqual(mockStorageService.uploadCalled, true)
         waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
     }
 
-    func testPutOperationMultiPartUpload() {
-        var testLargeDataString = "testLargeDataString"
-        for _ in 1...20 {
-            testLargeDataString += testLargeDataString
-        }
-        let testLargeData = testLargeDataString.data(using: .utf8)!
-        XCTAssertTrue(testLargeData.count > 10000000, "Could not create data object greater than 10MB")
+    func testPutOperationUploadSuccess() {
+        mockAuthService.identityId = testIdentityId
+        mockStorageService.storageUploadEvents = [
+            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.completed(StoragePutResult(key: testKey))]
+
+        let expectedUploadSource = UploadSource.data(data: testData)
+        let metadata = ["mykey": "Value"]
+        let expectedMetadata = ["x-amz-meta-mykey": "Value"]
         let request = AWSS3StoragePutRequest(accessLevel: .protected,
                                              key: testKey,
-                                             uploadSource: UploadSource.data(data: testLargeData),
-                                             contentType: nil,
-                                             metadata: nil,
+                                             uploadSource: expectedUploadSource,
+                                             contentType: testContentType,
+                                             metadata: metadata,
                                              options: nil)
+        let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
+        let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StoragePutOperation(request,
                                                  storageService: mockStorageService,
@@ -156,6 +127,8 @@ class AWSS3StoragePutOperationTests: XCTestCase {
             switch event {
             case .completed:
                 completeInvoked.fulfill()
+            case .inProcess:
+                inProcessInvoked.fulfill()
             default:
                 XCTFail("Should have received completed event")
             }
@@ -163,10 +136,108 @@ class AWSS3StoragePutOperationTests: XCTestCase {
 
         operation.start()
 
-        XCTAssertTrue(operation.isFinished)
-        XCTAssertEqual(mockStorageService.multiPartUploadCalled, true)
         waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+        XCTAssertEqual(mockStorageService.uploadCalled, 1)
+        mockStorageService.verifyUpload(serviceKey: expectedServiceKey,
+                                        key: testKey,
+                                        uploadSource: expectedUploadSource,
+                                        contentType: testContentType,
+                                        metadata: expectedMetadata)
     }
 
-    // test that storage put is called with the correct metadata values.
+    func testPutOperationUploadFail() {
+        mockAuthService.identityId = testIdentityId
+        mockStorageService.storageUploadEvents = [
+            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.failed(StoragePutError.service("", ""))]
+
+        let expectedUploadSource = UploadSource.data(data: testData)
+        let request = AWSS3StoragePutRequest(accessLevel: .protected,
+                                             key: testKey,
+                                             uploadSource: expectedUploadSource,
+                                             contentType: nil,
+                                             metadata: nil,
+                                             options: nil)
+        let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
+        let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
+        let failInvoked = expectation(description: "failed was invoked on operation")
+        let operation = AWSS3StoragePutOperation(request,
+                                                 storageService: mockStorageService,
+                                                 authService: mockAuthService) { (event) in
+            switch event {
+            case .failed:
+                failInvoked.fulfill()
+            case .inProcess:
+                inProcessInvoked.fulfill()
+            default:
+                XCTFail("Should have received completed event")
+            }
+        }
+
+        operation.start()
+
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+        XCTAssertEqual(mockStorageService.uploadCalled, 1)
+        mockStorageService.verifyUpload(serviceKey: expectedServiceKey,
+                                        key: testKey,
+                                        uploadSource: expectedUploadSource,
+                                        contentType: nil,
+                                        metadata: nil)
+    }
+
+    func testPutOperationMultiPartUploadSuccess() {
+        mockAuthService.identityId = testIdentityId
+        mockStorageService.storageMultiPartUploadEvents = [
+            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.inProcess(Progress()),
+            StorageEvent.completed(StoragePutResult(key: testKey))]
+
+        var testLargeDataString = "testLargeDataString"
+        for _ in 1...20 {
+            testLargeDataString += testLargeDataString
+        }
+        let testLargeData = testLargeDataString.data(using: .utf8)!
+        XCTAssertTrue(testLargeData.count > PluginConstants.MultiPartUploadSizeThreshold,
+                      "Could not create data object greater than MultiPartUploadSizeThreshold")
+        let expectedUploadSource = UploadSource.data(data: testLargeData)
+        let metadata = ["mykey": "Value"]
+        let expectedMetadata = ["x-amz-meta-mykey": "Value"]
+        let request = AWSS3StoragePutRequest(accessLevel: .protected,
+                                             key: testKey,
+                                             uploadSource: expectedUploadSource,
+                                             contentType: testContentType,
+                                             metadata: metadata,
+                                             options: nil)
+        let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
+        let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
+        let completeInvoked = expectation(description: "complete was invoked on operation")
+        let operation = AWSS3StoragePutOperation(request,
+                                                 storageService: mockStorageService,
+                                                 authService: mockAuthService) { (event) in
+            switch event {
+            case .completed:
+                completeInvoked.fulfill()
+            case .inProcess:
+                inProcessInvoked.fulfill()
+            default:
+                XCTFail("Should have received completed event")
+            }
+        }
+
+        operation.start()
+
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+        XCTAssertEqual(mockStorageService.multiPartUploadCalled, 1)
+        mockStorageService.verifyMultiPartUpload(serviceKey: expectedServiceKey,
+                                                 key: testKey,
+                                                 uploadSource: expectedUploadSource,
+                                                 contentType: testContentType,
+                                                 metadata: expectedMetadata)
+    }
+
+    // TODO: test pause, resume, canel, etc.
 }
