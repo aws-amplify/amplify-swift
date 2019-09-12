@@ -26,7 +26,7 @@ final public class AWSS3StoragePlugin: StorageCategoryPlugin {
 
     /// The unique key of the plugin within the storage category.
     public var key: PluginKey {
-        return "AWSS3StoragePlugin"
+        return PluginConstants.AWSS3StoragePlugin
     }
 
     /// Instantiates an instance of the AWSS3StoragePlugin.

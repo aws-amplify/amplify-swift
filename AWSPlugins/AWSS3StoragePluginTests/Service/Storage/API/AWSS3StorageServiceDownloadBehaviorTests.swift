@@ -33,9 +33,9 @@ class AWSS3StorageServiceDownloadBehaviorTests: AWSS3StorageServiceTestBase {
         waitForExpectations(timeout: 1.0)
     }
 
-    func testStorageServiceDownloadToFile() {
-        XCTFail("Not yet implemented")
-    }
+//    func testStorageServiceDownloadToFile() {
+//        XCTFail("Not yet implemented")
+//    }
 
 //    func testStorageServiceExecuteGetRequest() {
 //        // Arrange

@@ -268,6 +268,6 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
 
     func testGetEscapeHatch() {
         let awsS3 = storagePlugin.getEscapeHatch()
-        XCTAssertNotNil(awsS3)
+        XCTAssertNil(awsS3)
     }
 }

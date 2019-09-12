@@ -11,6 +11,14 @@ import Amplify
 
 class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
 
+    // MARK: Plugin Key test
+    func testPluginKey() {
+        let pluginKey = storagePlugin.key
+        XCTAssertEqual(pluginKey, "AWSS3StoragePlugin")
+    }
+
+    // MARK: Configuration tests
+
     func testConfigureSuccess() throws {
         let bucket = JSONValue.init(stringLiteral: testBucket)
         let region = JSONValue.init(stringLiteral: testRegion)
