@@ -127,27 +127,49 @@ class StorageRequestUtilsValidatorTests: XCTestCase {
     // MARK: ValidateFileExists tests
 
     func testValidateFileExistsForUrlSuccess() {
-        // TODO need to get a real file
+        let key = "testValidateFileExistsForUrlSuccess"
+        let filePath = NSTemporaryDirectory() + key + ".tmp"
+        let fileURL = URL(fileURLWithPath: filePath)
+        FileManager.default.createFile(atPath: filePath, contents: key.data(using: .utf8), attributes: nil)
+
+        let result = StorageRequestUtils.validateFileExists(fileURL)
+        XCTAssertNil(result)
     }
 
     func testValidateFileExistsForEmptyFileReturnsError() {
-        let url = URL(fileURLWithPath: "path")
-        let result = StorageRequestUtils.validateFileExists(url)
+        let fileURL = URL(fileURLWithPath: "path")
+        let result = StorageRequestUtils.validateFileExists(fileURL)
         XCTAssertNotNil(result)
         XCTAssertEqual(result!.errorDescription, StorageErrorConstants.missingFile.errorDescription)
     }
 
-    func testValidateFileExistsForDataUploadSourceSuccess() {
-        let result = StorageRequestUtils.validateFileExists(.data(data: Data()))
+    // MARK: Validate UploadSource
+
+    func testValidateWithDataUploadSourceSuccess() {
+        let uploadSource = UploadSource.data(data: Data())
+        let result = StorageRequestUtils.validate(uploadSource)
         XCTAssertNil(result)
     }
 
-    func testValidateFileExistsForFileUploadSourceSuccess() {
-        // TODO: need to get a real file
+    func testValidateWithFileUploadSourceSuccess() {
+        let key = "testValidateWithFileUploadSourceSuccess"
+        let filePath = NSTemporaryDirectory() + key + ".tmp"
+        let fileURL = URL(fileURLWithPath: filePath)
+        FileManager.default.createFile(atPath: filePath, contents: key.data(using: .utf8), attributes: nil)
+
+        let uploadSource = UploadSource.file(file: fileURL)
+
+        let result = StorageRequestUtils.validate(uploadSource)
+        XCTAssertNil(result)
     }
 
-    func testValidateFileExistsForFileUpload() {
-        
+    func testValidateWithFileUploadSourceReturnsError() {
+        let fileURL = URL(fileURLWithPath: "path")
+        let uploadSource = UploadSource.file(file: fileURL)
+
+        let result = StorageRequestUtils.validate(uploadSource)
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result!.errorDescription, StorageErrorConstants.missingFile.errorDescription)
     }
 
 }

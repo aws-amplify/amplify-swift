@@ -72,10 +72,10 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, StoragePutResu
 
         let serviceMetadata = StorageRequestUtils.getServiceMetadata(request.metadata)
 
-        let isLargeUploadResult = StorageRequestUtils.isLargeUpload(request.uploadSource)
+        let uploadSizeResult = StorageRequestUtils.getSize(request.uploadSource)
 
-        guard case let .success(isLargeUpload) = isLargeUploadResult else {
-            if case let .failure(error) = isLargeUploadResult {
+        guard case let .success(uploadSize) = uploadSizeResult else {
+            if case let .failure(error) = uploadSizeResult {
                 dispatch(error)
             }
 
@@ -83,7 +83,7 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, StoragePutResu
             return
         }
 
-        if isLargeUpload {
+        if uploadSize > PluginConstants.MultiPartUploadSizeThreshold {
             storageService.multiPartUpload(serviceKey: serviceKey,
                                            key: request.key,
                                            uploadSource: request.uploadSource,

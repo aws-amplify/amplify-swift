@@ -95,7 +95,7 @@ extension StorageRequestUtils {
         return nil
     }
 
-    static func validateFileExists(_ uploadSource: UploadSource) -> StorageErrorString? {
+    static func validate(_ uploadSource: UploadSource) -> StorageErrorString? {
         switch uploadSource {
         case .file(let file):
             return validateFileExists(file)

@@ -46,7 +46,7 @@ struct AWSS3StoragePutRequest {
             return StoragePutError.validation(error.errorDescription, error.recoverySuggestion)
         }
 
-        if let error = StorageRequestUtils.validateFileExists(uploadSource) {
+        if let error = StorageRequestUtils.validate(uploadSource) {
             return StoragePutError.validation(error.errorDescription, error.recoverySuggestion)
         }
 

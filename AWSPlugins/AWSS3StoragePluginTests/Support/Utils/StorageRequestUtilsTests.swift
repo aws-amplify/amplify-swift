@@ -8,25 +8,4 @@
 import XCTest
 
 class StorageRequestUtilsTests: XCTestCase {
-
-    // MARK: isLargeUpload tests
-
-    func testIsLargeUploadForNonExistentFileReturnsFailure() {
-
-    }
-
-    func testIsLargeUploadForLargeFileReturnsTrue() {
-    }
-
-    func testIsLargeUploadForSmallFileReturnsFalse() {
-
-    }
-
-    func testIsLargeUploadForLargeDataReturnsTrue() {
-
-    }
-
-    func testIsLargeUploadForSmallDataReturnsFalse() {
-
-    }
 }

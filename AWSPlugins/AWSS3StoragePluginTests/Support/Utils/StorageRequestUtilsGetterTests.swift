@@ -134,4 +134,45 @@ class StorageRequestUtilsGetterTests: XCTestCase {
             XCTAssertTrue(key.contains(StorageRequestUtils.metadataKeyPrefix))
         }
     }
+
+    // MARK: GetSize tests
+
+    func testGetSizeForFileUploadSourceReturnsSize() {
+        let key = "testGetSizeForFileUploadSourceReturnsSize"
+        let filePath = NSTemporaryDirectory() + key + ".tmp"
+        let fileURL = URL(fileURLWithPath: filePath)
+        FileManager.default.createFile(atPath: filePath, contents: key.data(using: .utf8), attributes: nil)
+        let uploadSource = UploadSource.file(file: fileURL)
+        let result = StorageRequestUtils.getSize(uploadSource)
+        guard case let .success(size) = result else {
+            XCTFail("Valid file should return success result")
+            return
+        }
+
+        XCTAssertNotNil(size)
+    }
+
+    func testGetSizeForMissingFileReturnsError() {
+        let fileURL = URL(fileURLWithPath: "path")
+        let uploadSource = UploadSource.file(file: fileURL)
+        let result = StorageRequestUtils.getSize(uploadSource)
+        guard case let .failure(error) = result else {
+            XCTFail("missing file should return error result")
+            return
+        }
+
+        XCTAssertNotNil(error)
+        XCTAssertEqual(error.errorDescription, StorageErrorConstants.missingFile.errorDescription)
+    }
+
+    func testGetSizeForDataReturnsSize() {
+        let uploadSource = UploadSource.data(data: Data())
+        let result = StorageRequestUtils.getSize(uploadSource)
+        guard case let .success(size) = result else {
+            XCTFail("Valid data should return success result")
+            return
+        }
+
+        XCTAssertNotNil(size)
+    }
 }

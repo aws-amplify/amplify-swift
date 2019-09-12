@@ -8,7 +8,7 @@
 import XCTest
 import AWSMobileClient
 import Amplify
-import AWSS3StoragePlugin
+@testable import AWSS3StoragePlugin
 import AWSS3
 import AWSCognitoIdentityProvider
 
@@ -60,10 +60,11 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 XCTFail("Should not have completed")
             case .failed(let error):
                 // TODO: service error, check string? 
-                guard case .accessDenied = error else {
+                guard case let .service(description, suggestion) = error else {
                     XCTFail("Expected accessDenied error")
                     return
                 }
+                XCTAssertEqual(description, StorageErrorConstants.accessDenied.errorDescription)
                 listFailedExpectation.fulfill()
             default:
                 break

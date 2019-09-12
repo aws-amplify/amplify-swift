@@ -53,10 +53,11 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
             case .completed:
                 XCTFail("Completed event is received")
             case .failed(let error):
-                guard case let .missingFile = error else {
-                    XCTFail("Should have been missing File error")
+                guard case let .validation(error) = error else {
+                    XCTFail("Should have been service error with missing File description")
                     return
                 }
+                //XCTAssertEqual(error.0, StorageErrorConstants.missingFile.errorDescription)
                 failedInvoked.fulfill()
             default:
                 break

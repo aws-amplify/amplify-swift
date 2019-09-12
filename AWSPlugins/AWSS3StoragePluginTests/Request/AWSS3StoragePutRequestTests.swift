@@ -17,12 +17,27 @@ class AWSS3StoragePutRequestTests: XCTestCase {
     let testContentType = "TestContentType"
     let testMetadata: [String: String] = [:]
 
-    // TODO: Success test with upload source .file and is an existing file
-    
-    func testValidateSuccess() {
+    func testValidateSuccessWithDataUploadSource() {
         let request = AWSS3StoragePutRequest(accessLevel: .protected,
                                              key: testKey,
                                              uploadSource: .data(data: testData),
+                                             contentType: testContentType,
+                                             metadata: testMetadata,
+                                             options: testOptions)
+
+        let storagePutErrorOptional = request.validate()
+
+        XCTAssertNil(storagePutErrorOptional)
+    }
+
+    func testValidateSuccessWithFileUploadSource() {
+        let key = "testValidateSuccessWithFileUploadSource"
+        let filePath = NSTemporaryDirectory() + key + ".tmp"
+        let fileURL = URL(fileURLWithPath: filePath)
+        FileManager.default.createFile(atPath: filePath, contents: key.data(using: .utf8), attributes: nil)
+        let request = AWSS3StoragePutRequest(accessLevel: .protected,
+                                             key: testKey,
+                                             uploadSource: .file(file: fileURL),
                                              contentType: testContentType,
                                              metadata: testMetadata,
                                              options: testOptions)
@@ -110,7 +125,7 @@ class AWSS3StoragePutRequestTests: XCTestCase {
 //
 //    }
 
-    func testValidateFileExists() {
+    func testValidateFileIsMissing() {
         let url = URL(fileURLWithPath: "path")
         let request = AWSS3StoragePutRequest(accessLevel: .protected,
                                              key: testKey,
