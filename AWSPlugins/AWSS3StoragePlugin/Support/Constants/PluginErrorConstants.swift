@@ -47,4 +47,12 @@ struct PluginErrorConstants {
         "The default access level specified is invalid",
         "Specify an override with one of the valid access level values such as 'public', 'protected', or 'private'.")
 
+    static let serviceConfigurationInitializationError: PluginErrorString = (
+        "Could not initialize service configuration",
+        "This should not happen")
+
+    static let transferUtilityInitializationError: PluginErrorString = (
+        "Could not initialize transfer utility",
+        "This should not happen")
+
 }

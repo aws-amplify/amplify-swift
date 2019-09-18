@@ -26,7 +26,9 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour {
                                                                    credentialsProvider: cognitoCredentialsProvider)
 
         guard let serviceConfiguration = serviceConfigurationOptional else {
-            throw PluginError.pluginConfigurationError("T##ErrorDescription", "T##RecoverySuggestion")
+            throw PluginError.pluginConfigurationError(
+                PluginErrorConstants.serviceConfigurationInitializationError.errorDescription,
+                PluginErrorConstants.serviceConfigurationInitializationError.recoverySuggestion)
         }
 
         AWSS3TransferUtility.register(with: serviceConfiguration, forKey: identifier)
@@ -35,7 +37,9 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour {
 
         let transferUtilityOptional = AWSS3TransferUtility.s3TransferUtility(forKey: identifier)
         guard let transferUtility = transferUtilityOptional else {
-            throw PluginError.pluginConfigurationError("fail to create transferUtiltiy", "failed")
+            throw PluginError.pluginConfigurationError(
+                PluginErrorConstants.transferUtilityInitializationError.errorDescription,
+                PluginErrorConstants.transferUtilityInitializationError.recoverySuggestion)
         }
 
         let preSignedURLBuilder = AWSS3PreSignedURLBuilderAdapter(

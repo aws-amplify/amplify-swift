@@ -95,9 +95,9 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(queue.size, 1)
     }
 
-    
+
     // MARK: DownloadFile API Tests
-    
+
     func testPluginDownloadFile() {
         let operation = storagePlugin.downloadFile(key: testKey, local: testURL, options: nil, onEvent: nil)
 
@@ -338,12 +338,5 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(request.path, testPath)
         XCTAssertNotNil(request.options)
         XCTAssertEqual(queue.size, 1)
-    }
-
-    // MARK: Escape hatch
-
-    func testGetEscapeHatch() {
-        let awsS3 = storagePlugin.getEscapeHatch()
-        XCTAssertNil(awsS3)
     }
 }

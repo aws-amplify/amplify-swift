@@ -144,8 +144,8 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
         }
     }
 
-    public func getEscapeHatch() -> AWSS3? {
-        return nil
+    public func getEscapeHatch() -> AWSS3 {
+        return AWSS3()
     }
 
     // MARK: Mock verify

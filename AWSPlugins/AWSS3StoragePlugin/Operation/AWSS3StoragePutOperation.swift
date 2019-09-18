@@ -79,6 +79,7 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
 
         let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
                                                            identityId: identityId,
+                                                           targetIdentityId: nil,
                                                            key: request.key)
         let serviceMetadata = StorageRequestUtils.getServiceMetadata(request.metadata)
 

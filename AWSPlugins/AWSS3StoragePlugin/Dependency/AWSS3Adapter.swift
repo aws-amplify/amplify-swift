@@ -26,7 +26,7 @@ class AWSS3Adapter: AWSS3Behavior {
         return awsS3.deleteObject(request)
     }
 
-    public func getS3() -> AWSS3? {
+    public func getS3() -> AWSS3 {
         return awsS3
     }
 }

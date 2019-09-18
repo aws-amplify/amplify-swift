@@ -13,13 +13,6 @@ extension StorageRequestUtils {
 
     static func getServiceKey(accessLevel: StorageAccessLevel,
                               identityId: String,
-                              key: String) -> String {
-
-        return getServiceKey(accessLevel: accessLevel, identityId: identityId, targetIdentityId: nil, key: key)
-    }
-
-    static func getServiceKey(accessLevel: StorageAccessLevel,
-                              identityId: String,
                               targetIdentityId: String?,
                               key: String) -> String {
 

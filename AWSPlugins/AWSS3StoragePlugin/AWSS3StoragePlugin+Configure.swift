@@ -36,10 +36,10 @@ extension AWSS3StoragePlugin {
         let defaultAccessLevel = try AWSS3StoragePlugin.getDefaultAccessLevel(configObject)
 
         let authService = AWSAuthService()
-
+        let cognitoCredentialsProvider = authService.getCognitoCredentialsProvider()
         let storageService = try AWSS3StorageService(region: region,
                                                      bucket: bucket,
-                                                     cognitoCredentialsProvider: authService.getCognitoCredentialsProvider(),
+                                                     cognitoCredentialsProvider: cognitoCredentialsProvider,
                                                      identifier: key)
 
         configure(storageService: storageService, authService: authService, defaultAccessLevel: defaultAccessLevel)
