@@ -14,11 +14,10 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
     func testGetNonexistentKey() {
         let key = "testGetNonexistentKey"
         let failInvoked = expectation(description: "Failed is invoked")
-        let options = StorageGetOptions(accessLevel: nil,
-                                       targetIdentityId: nil,
-                                       storageGetDestination: .data,
-                                       options: nil)
-        let operation = Amplify.Storage.get(key: key, options: options) { (event) in
+        let options = StorageGetDataOptions(accessLevel: nil,
+                                            targetIdentityId: nil,
+                                            options: nil)
+        let operation = Amplify.Storage.getData(key: key, options: options) { (event) in
             switch event {
             case .completed:
                 XCTFail("Should not have completed successfully")

@@ -7,26 +7,23 @@
 
 import Foundation
 
-public struct StorageGetOptions {
+public struct StorageGetURLOptions {
 
     public var accessLevel: StorageAccessLevel?
 
     public let targetIdentityId: String?
 
-    public let storageGetDestination: StorageGetDestination
+    public let expires: Int?
 
     public var options: Any?
 
-    // TODO: transferAcceleration should be in options most likely. and can be set globally
-    // https://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
-
     public init(accessLevel: StorageAccessLevel? = nil,
                 targetIdentityId: String? = nil,
-                storageGetDestination: StorageGetDestination? = nil,
+                expires: Int? = nil,
                 options: Any? = nil) {
         self.accessLevel = accessLevel
         self.targetIdentityId = targetIdentityId
-        self.storageGetDestination = storageGetDestination ?? .url(expires: nil)
+        self.expires = expires
         self.options = options
     }
 }

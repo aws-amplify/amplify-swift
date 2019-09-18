@@ -24,6 +24,7 @@ class AWSS3StoragePluginTests: XCTestCase {
     let testURL = URL(fileURLWithPath: "fileURLWithPath")
     let testData = Data()
     let testPath = "TestPath"
+    let testExpires = 10
 
     override func setUp() {
         storagePlugin = AWSS3StoragePlugin()

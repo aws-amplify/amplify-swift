@@ -68,7 +68,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testRemoveOperationDeleteSuccess() {
-        mockStorageService.storageDeleteEvents = [StorageEvent.completed(StorageRemoveResult(key: testKey))]
+        mockStorageService.storageServiceDeleteEvents = [StorageEvent.completed(())]
         let request = AWSS3StorageRemoveRequest(accessLevel: .public,
                                                 key: testKey,
                                                 options: nil)
@@ -93,7 +93,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testRemoveOperationDeleteFail() {
-        mockStorageService.storageDeleteEvents = [StorageEvent.failed(StorageRemoveError.service("", ""))]
+        mockStorageService.storageServiceDeleteEvents = [StorageEvent.failed(StorageServiceError.service("", ""))]
         let request = AWSS3StorageRemoveRequest(accessLevel: .public,
                                                 key: testKey,
                                                 options: nil)
@@ -119,7 +119,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
 
     func testRemoveOperationDeleteForPrivateAccessLevel() {
         mockAuthService.identityId = testIdentityId
-        mockStorageService.storageDeleteEvents = [StorageEvent.completed(StorageRemoveResult(key: testKey))]
+        mockStorageService.storageServiceDeleteEvents = [StorageEvent.completed(())]
         let request = AWSS3StorageRemoveRequest(accessLevel: .private,
                                                 key: testKey,
                                                 options: nil)

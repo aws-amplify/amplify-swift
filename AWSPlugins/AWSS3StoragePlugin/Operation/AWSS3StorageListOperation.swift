@@ -60,7 +60,7 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
         storageService.list(prefix: accessLevelPrefix, path: request.path, onEvent: onEventHandler)
     }
 
-    private func onEventHandler(event: StorageEvent<Void, Void, StorageListResult, StorageListError>) {
+    private func onEventHandler(event: StorageEvent<Void, Void, StorageListResult, StorageServiceError>) {
         switch event {
         case .initiated:
             break
@@ -70,7 +70,8 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
             dispatch(result)
             finish()
         case .failed(let error):
-            dispatch(error)
+            let storageListError = StorageListError.service(error.errorDescription, error.recoverySuggestion)
+            dispatch(storageListError)
             finish()
         }
     }

@@ -70,7 +70,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testListOperationListObjects() {
-        mockStorageService.storageListEvents = [StorageEvent.completed(StorageListResult(keys: []))]
+        mockStorageService.storageServiceListEvents = [StorageEvent.completed(StorageListResult(keys: []))]
         let request = AWSS3StorageListRequest(accessLevel: .public,
                                               targetIdentityId: nil,
                                               path: testPath,
@@ -96,7 +96,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testListOperationListObjectsFail() {
-        mockStorageService.storageListEvents = [StorageEvent.failed(StorageListError.service("", ""))]
+        mockStorageService.storageServiceListEvents = [StorageEvent.failed(StorageServiceError.service("", ""))]
         let request = AWSS3StorageListRequest(accessLevel: .public,
                                               targetIdentityId: nil,
                                               path: testPath,
@@ -122,7 +122,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testListOperationListObjectsForTargetIdentityId() {
-        mockStorageService.storageListEvents = [StorageEvent.completed(StorageListResult(keys: []))]
+        mockStorageService.storageServiceListEvents = [StorageEvent.completed(StorageListResult(keys: []))]
         let request = AWSS3StorageListRequest(accessLevel: .protected,
                                               targetIdentityId: testTargetIdentityId,
                                               path: testPath,

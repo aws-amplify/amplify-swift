@@ -9,38 +9,31 @@ import Foundation
 import Amplify
 
 /// Stores the values of the storage request and provides validation on the properties.
-struct AWSS3StorageGetRequest {
+struct AWSS3StorageGetDataRequest {
     let accessLevel: StorageAccessLevel
     let targetIdentityId: String?
     let key: String
-    let storageGetDestination: StorageGetDestination
     let options: Any?
 
     /// Creates an instance with storage request input values.
     public init(accessLevel: StorageAccessLevel,
                 targetIdentityId: String?,
                 key: String,
-                storageGetDestination: StorageGetDestination,
                 options: Any?) {
         self.accessLevel = accessLevel
         self.targetIdentityId = targetIdentityId
         self.key = key
-        self.storageGetDestination = storageGetDestination
         self.options = options
     }
 
-    /// Performs client side validation and returns a `StorageGetError` for any validation failures.
-    func validate() -> StorageGetError? {
+    /// Performs client side validation and returns a `StorageGetDataError` for any validation failures.
+    func validate() -> StorageGetDataError? {
         if let error = StorageRequestUtils.validateTargetIdentityId(targetIdentityId, accessLevel: accessLevel) {
-            return StorageGetError.validation(error.errorDescription, error.recoverySuggestion)
+            return StorageGetDataError.validation(error.errorDescription, error.recoverySuggestion)
         }
 
         if let error = StorageRequestUtils.validateKey(key) {
-            return StorageGetError.validation(error.errorDescription, error.recoverySuggestion)
-        }
-
-        if let error = StorageRequestUtils.validate(storageGetDestination) {
-            return StorageGetError.validation(error.errorDescription, error.recoverySuggestion)
+            return StorageGetDataError.validation(error.errorDescription, error.recoverySuggestion)
         }
 
         return nil

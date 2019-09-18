@@ -6,10 +6,5 @@
 //
 
 import Foundation
-public class StorageRemoveResult {
-    public init(key: String) {
-        self.key = key
-    }
-
-    public var key: String
+public protocol StorageDownloadFileOperation: AmplifyOperation<Progress, Void, StorageDownloadFileError>, Resumable {
 }

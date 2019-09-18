@@ -14,11 +14,10 @@ public typealias MultiPartUploadTaskCreatedHandler = (AWSTask<AWSS3TransferUtili
 extension AWSS3StorageService {
 
     func multiPartUpload(serviceKey: String,
-                         key: String,
                          uploadSource: UploadSource,
                          contentType: String?,
                          metadata: [String: String]?,
-                         onEvent: @escaping StorageMultiPartUploadOnEventHandler) {
+                         onEvent: @escaping StorageServiceMultiPartUploadEventHandler) {
 
         let multiPartUploadTaskCreatedHandler =
             AWSS3StorageService.makeMultiPartUploadTaskCreatedHandler(onEvent: onEvent)
@@ -31,7 +30,7 @@ extension AWSS3StorageService {
         }
 
         let onMultiPartUploadCompletedHandler =
-            AWSS3StorageService.makeMultiPartUploadCompletedHandler(onEvent: onEvent, key: key)
+            AWSS3StorageService.makeMultiPartUploadCompletedHandler(onEvent: onEvent)
 
         switch uploadSource {
         case .data(let data):
@@ -54,7 +53,7 @@ extension AWSS3StorageService {
     }
 
     private static func makeMultiPartUploadTaskCreatedHandler(
-        onEvent: @escaping StorageMultiPartUploadOnEventHandler) -> MultiPartUploadTaskCreatedHandler {
+        onEvent: @escaping StorageServiceMultiPartUploadEventHandler) -> MultiPartUploadTaskCreatedHandler {
 
         let block: MultiPartUploadTaskCreatedHandler = {
             (task: AWSTask<AWSS3TransferUtilityMultiPartUploadTask>) -> Any? in
@@ -63,13 +62,13 @@ extension AWSS3StorageService {
                 let error = task.error! as NSError
                 let innerMessage = StorageErrorHelper.getInnerMessage(error)
                 let errorDescription = StorageErrorHelper.getErrorDescription(innerMessage: innerMessage)
-                onEvent(StorageEvent.failed(StoragePutError.unknown(errorDescription, "Recovery Message")))
+                onEvent(StorageEvent.failed(StorageServiceError.unknown(errorDescription, "Recovery Message")))
 
                 return nil
             }
 
             guard let uploadTask = task.result else {
-                onEvent(StorageEvent.failed(StoragePutError.unknown("No ContinuationBlock data", "")))
+                onEvent(StorageEvent.failed(StorageServiceError.unknown("No ContinuationBlock data", "")))
                 return nil
             }
 
@@ -81,7 +80,7 @@ extension AWSS3StorageService {
     }
 
     private static func makeOnMultiPartUploadProgressHandler(
-        onEvent: @escaping StorageMultiPartUploadOnEventHandler) -> AWSS3TransferUtilityMultiPartProgressBlock {
+        onEvent: @escaping StorageServiceMultiPartUploadEventHandler) -> AWSS3TransferUtilityMultiPartProgressBlock {
         let block: AWSS3TransferUtilityMultiPartProgressBlock = {(task, progress) in
             onEvent(StorageEvent.inProcess(progress))
         }
@@ -90,17 +89,17 @@ extension AWSS3StorageService {
     }
 
     private static func makeMultiPartUploadCompletedHandler(
-        onEvent: @escaping StorageMultiPartUploadOnEventHandler,
-        key: String) -> AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock {
+        onEvent: @escaping StorageServiceMultiPartUploadEventHandler)
+        -> AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock {
 
         let block: AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock = { (task, error ) -> Void in
             guard error == nil else {
                 let error = error! as NSError
-                onEvent(StorageEvent.failed(StoragePutError.unknown("Error with code: \(error.code) ", "")))
+                onEvent(StorageEvent.failed(StorageServiceError.unknown("Error with code: \(error.code) ", "")))
                 return
             }
 
-            onEvent(StorageEvent.completed(StoragePutResult(key: key)))
+            onEvent(StorageEvent.completed(()))
         }
 
         return block

@@ -23,6 +23,8 @@ class AWSS3StorageOperationTestBase: XCTestCase {
     let testPath = "TestPath"
     let testData = Data()
     let testContentType = "TestContentType"
+    let testExpires = 10
+    let testURL = URL(fileURLWithPath: "path")
 
     override func setUp() {
         let hubConfig = HubCategoryConfiguration(
@@ -51,7 +53,7 @@ class AWSS3StorageOperationTestBase: XCTestCase {
         mockStorageService = MockAWSS3StorageService()
         mockAuthService = MockAWSAuthService()
     }
-    
+
     override func tearDown() {
         Amplify.reset()
     }

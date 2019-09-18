@@ -6,5 +6,5 @@
 //
 
 import Foundation
-public protocol StorageRemoveOperation: AmplifyOperation<Void, StorageRemoveResult, StorageRemoveError> {
+public protocol StorageRemoveOperation: AmplifyOperation<Void, String, StorageRemoveError> {
 }

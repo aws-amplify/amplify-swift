@@ -12,7 +12,7 @@ import Amplify
 typealias ListCompletedHandler = (AWSTask<AWSS3ListObjectsV2Output>) -> Any?
 
 extension AWSS3StorageService {
-    func list(prefix: String, path: String?, onEvent: @escaping StorageListOnEventHandler) {
+    func list(prefix: String, path: String?, onEvent: @escaping StorageServiceListEventHandler) {
         // TODO: implementation details - use request.options.limit.
         // listObjectsV2Request.maxKeys ?
         // Figure out if we need ay batching logic
@@ -38,19 +38,19 @@ extension AWSS3StorageService {
     }
 
     private static func makeListCompletedHandler(
-        onEvent: @escaping StorageListOnEventHandler, prefix: String) -> ListCompletedHandler {
+        onEvent: @escaping StorageServiceListEventHandler, prefix: String) -> ListCompletedHandler {
 
         let block: ListCompletedHandler = { (task: AWSTask<AWSS3ListObjectsV2Output>) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
                 let storageErrorString = StorageErrorHelper.map(error)
-                onEvent(StorageEvent.failed(StorageListError.service(storageErrorString.errorDescription,
+                onEvent(StorageEvent.failed(StorageServiceError.service(storageErrorString.errorDescription,
                                                                      storageErrorString.recoverySuggestion)))
                 return nil
             }
 
             guard let result = task.result else {
-                onEvent(StorageEvent.failed(StorageListError.unknown("no error or result", "TODO")))
+                onEvent(StorageEvent.failed(StorageServiceError.unknown("no error or result", "TODO")))
                 return nil
             }
 

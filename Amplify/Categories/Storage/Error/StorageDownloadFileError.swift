@@ -6,7 +6,7 @@
 //
 
 import Foundation
-public enum StorageGetError {
+public enum StorageDownloadFileError {
     case httpStatusError(ErrorDescription, RecoverySuggestion)
     case unknown(ErrorDescription, RecoverySuggestion)
     case validation(ErrorDescription, RecoverySuggestion)
@@ -15,7 +15,7 @@ public enum StorageGetError {
     case service(ErrorDescription, RecoverySuggestion)
 }
 
-extension StorageGetError: AmplifyError {
+extension StorageDownloadFileError: AmplifyError {
     public var errorDescription: ErrorDescription {
         switch self {
         case .httpStatusError(let description, _),

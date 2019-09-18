@@ -9,27 +9,40 @@ import Amplify
 import Foundation
 
 class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
-    func get(key: String, options: StorageGetOptions?, onEvent: StorageGetEvent?) -> StorageGetOperation {
-        notify("get")
-        return MockStorageGetOperation(categoryType: .storage)
+
+    func getURL(key: String, options: StorageGetURLOptions?, onEvent: StorageGetURLEventHandler?) -> StorageGetURLOperation {
+        notify("getURL")
+        return MockStorageGetURLOperation(categoryType: .storage)
     }
 
-    func put(key: String, data: Data, options: StoragePutOptions?, onEvent: StoragePutEvent?) -> StoragePutOperation {
+    func getData(key: String, options: StorageGetDataOptions?, onEvent: StorageGetDataEventHandler?)
+        -> StorageGetDataOperation {
+        notify("getData")
+        return MockStorageGetDataOperation(categoryType: .storage)
+    }
+
+    func downloadFile(key: String, local: URL, options: StorageDownloadFileOptions?, onEvent: StorageDownloadFileEventHandler?)
+        -> StorageDownloadFileOperation {
+        notify("downloadFile")
+        return MockStorageDownloadFileOperation(categoryType: .storage)
+    }
+
+    func put(key: String, data: Data, options: StoragePutOptions?, onEvent: StoragePutEventHandler?) -> StoragePutOperation {
         notify("put")
         return MockStoragePutOperation(categoryType: .storage)
     }
 
-    func put(key: String, local: URL, options: StoragePutOptions?, onEvent: StoragePutEvent?) -> StoragePutOperation {
-        notify("put")
+    func put(key: String, local: URL, options: StoragePutOptions?, onEvent: StoragePutEventHandler?) -> StoragePutOperation {
+        notify("putFile")
         return MockStoragePutOperation(categoryType: .storage)
     }
 
-    func remove(key: String, options: StorageRemoveOptions?, onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
+    func remove(key: String, options: StorageRemoveOptions?, onEvent: StorageRemoveEventHandler?) -> StorageRemoveOperation {
         notify("remove")
         return MockStorageRemoveOperation(categoryType: .storage)
     }
 
-    func list(options: StorageListOptions?, onEvent: StorageListEvent?) -> StorageListOperation {
+    func list(options: StorageListOptions?, onEvent: StorageListEventHandler?) -> StorageListOperation {
         notify("list")
         return MockStorageListOperation(categoryType: .storage)
     }
@@ -55,27 +68,39 @@ class MockSecondStorageCategoryPlugin: MockStorageCategoryPlugin {
 }
 
 final class MockStorageCategoryPluginSelector: MessageReporter, StoragePluginSelector {
-    func get(key: String, options: StorageGetOptions?, onEvent: StorageGetEvent?) -> StorageGetOperation {
-        notify("get")
-        return MockStorageGetOperation(categoryType: .storage)
+
+    func getURL(key: String, options: StorageGetURLOptions?, onEvent: StorageGetURLEventHandler?) -> StorageGetURLOperation {
+        notify("getURL")
+        return MockStorageGetURLOperation(categoryType: .storage)
     }
 
-    func put(key: String, data: Data, options: StoragePutOptions?, onEvent: StoragePutEvent?) -> StoragePutOperation {
+    func getData(key: String, options: StorageGetDataOptions?, onEvent: StorageGetDataEventHandler?) -> StorageGetDataOperation {
+        notify("getData")
+        return MockStorageGetDataOperation(categoryType: .storage)
+    }
+
+    func downloadFile(key: String, local: URL, options: StorageDownloadFileOptions?, onEvent: StorageDownloadFileEventHandler?)
+        -> StorageDownloadFileOperation {
+        notify("downloadFile")
+        return MockStorageDownloadFileOperation(categoryType: .storage)
+    }
+
+    func put(key: String, data: Data, options: StoragePutOptions?, onEvent: StoragePutEventHandler?) -> StoragePutOperation {
         notify("put")
         return MockStoragePutOperation(categoryType: .storage)
     }
 
-    func put(key: String, local: URL, options: StoragePutOptions?, onEvent: StoragePutEvent?) -> StoragePutOperation {
+    func put(key: String, local: URL, options: StoragePutOptions?, onEvent: StoragePutEventHandler?) -> StoragePutOperation {
         notify("put")
         return MockStoragePutOperation(categoryType: .storage)
     }
 
-    func remove(key: String, options: StorageRemoveOptions?, onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
+    func remove(key: String, options: StorageRemoveOptions?, onEvent: StorageRemoveEventHandler?) -> StorageRemoveOperation {
         notify("remove")
         return MockStorageRemoveOperation(categoryType: .storage)
     }
 
-    func list(options: StorageListOptions?, onEvent: StorageListEvent?) -> StorageListOperation {
+    func list(options: StorageListOptions?, onEvent: StorageListEventHandler?) -> StorageListOperation {
         notify("list")
         return MockStorageListOperation(categoryType: .storage)
     }
@@ -101,7 +126,8 @@ class MockStoragePluginSelectorFactory: MessageReporter, PluginSelectorFactory {
 
 }
 
-class MockStorageGetOperation: AmplifyOperation<Progress, StorageGetResult, StorageGetError>, StorageGetOperation {
+class MockStorageGetURLOperation: AmplifyOperation<Void, URL, StorageGetURLError>,
+    StorageGetURLOperation {
     func pause() {
     }
 
@@ -109,7 +135,8 @@ class MockStorageGetOperation: AmplifyOperation<Progress, StorageGetResult, Stor
     }
 }
 
-class MockStoragePutOperation: AmplifyOperation<Progress, StoragePutResult, StoragePutError>, StoragePutOperation {
+class MockStorageGetDataOperation: AmplifyOperation<Progress, Data, StorageGetDataError>,
+    StorageGetDataOperation {
     func pause() {
     }
 
@@ -117,7 +144,24 @@ class MockStoragePutOperation: AmplifyOperation<Progress, StoragePutResult, Stor
     }
 }
 
-class MockStorageRemoveOperation: AmplifyOperation<Void, StorageRemoveResult, StorageRemoveError>,
+class MockStorageDownloadFileOperation: AmplifyOperation<Progress, Void, StorageDownloadFileError>,
+    StorageDownloadFileOperation {
+    func pause() {
+    }
+
+    func resume() {
+    }
+}
+
+class MockStoragePutOperation: AmplifyOperation<Progress, String, StoragePutError>, StoragePutOperation {
+    func pause() {
+    }
+
+    func resume() {
+    }
+}
+
+class MockStorageRemoveOperation: AmplifyOperation<Void, String, StorageRemoveError>,
 StorageRemoveOperation {
     func pause() {
     }

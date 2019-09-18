@@ -37,18 +37,9 @@ extension StorageRequestUtils {
         return nil
     }
 
-    static func validate(_ storageGetDestination: StorageGetDestination) -> StorageErrorString? {
-        switch storageGetDestination {
-        case .data:
-            break
-        case .file:
-            break
-        case .url(let expires):
-            if let expires = expires {
-                if expires <= 0 {
-                    return StorageErrorConstants.expiresIsInvalid
-                }
-            }
+    static func validate(expires: Int) -> StorageErrorString? {
+        if expires <= 0 {
+            return StorageErrorConstants.expiresIsInvalid
         }
 
         return nil

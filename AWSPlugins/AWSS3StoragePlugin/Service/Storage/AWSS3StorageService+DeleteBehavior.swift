@@ -13,10 +13,9 @@ typealias DeleteCompletedHandler = (AWSTask<AWSS3DeleteObjectOutput>) -> Any?
 
 extension AWSS3StorageService {
 
-    func delete(serviceKey: String, onEvent: @escaping StorageDeleteOnEventHandler) {
+    func delete(serviceKey: String, onEvent: @escaping StorageServiceDeleteEventHandler) {
         let request = AWSS3StorageService.makeDeleteObjectRequest(bucket: bucket, serviceKey: serviceKey)
-        let deleteCompletedHandler = AWSS3StorageService.makeDeleteCompletedHandler(onEvent: onEvent,
-                                                                                    serviceKey: serviceKey)
+        let deleteCompletedHandler = AWSS3StorageService.makeDeleteCompletedHandler(onEvent: onEvent)
         awsS3.deleteObject(request).continueWith(block: deleteCompletedHandler)
     }
 
@@ -28,13 +27,13 @@ extension AWSS3StorageService {
         return request
     }
 
-    private static func makeDeleteCompletedHandler(onEvent: @escaping StorageDeleteOnEventHandler, serviceKey: String)
+    private static func makeDeleteCompletedHandler(onEvent: @escaping StorageServiceDeleteEventHandler)
         -> DeleteCompletedHandler {
 
         let block: DeleteCompletedHandler = { (task: AWSTask<AWSS3DeleteObjectOutput>) -> Any? in
             guard task.error == nil else {
                 let error = task.error!
-                onEvent(StorageEvent.failed(StorageRemoveError.unknown(error.localizedDescription, "TODO")))
+                onEvent(StorageEvent.failed(StorageServiceError.unknown(error.localizedDescription, "TODO")))
                 return nil
             }
 
@@ -42,7 +41,7 @@ extension AWSS3StorageService {
                 print("delete request result \(result)")
             }
 
-            onEvent(StorageEvent.completed(StorageRemoveResult(key: serviceKey)))
+            onEvent(StorageEvent.completed(()))
 
             return nil
         }

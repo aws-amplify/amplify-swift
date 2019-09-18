@@ -10,13 +10,13 @@ import Amplify
 import AWSS3
 import AWSMobileClient
 
-public class AWSS3StoragePutOperation: AmplifyOperation<Progress, StoragePutResult, StoragePutError>,
+public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, StoragePutError>,
     StoragePutOperation {
 
     let request: AWSS3StoragePutRequest
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
-    let onEvent: ((AsyncEvent<Progress, StoragePutResult, StoragePutError>) -> Void)?
+    let onEvent: ((AsyncEvent<Progress, String, StoragePutError>) -> Void)?
 
     var storageOperationReference: StorageOperationReference?
 
@@ -47,7 +47,7 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, StoragePutResu
 
     override public func main() {
         if let error = request.validate() {
-            let asyncEvent = AsyncEvent<Progress, StoragePutResult, StoragePutError>.failed(error)
+            let asyncEvent = AsyncEvent<Progress, String, StoragePutError>.failed(error)
             self.onEvent?(asyncEvent)
             self.dispatch(event: asyncEvent)
             finish()
@@ -82,16 +82,14 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, StoragePutResu
                                                            key: request.key)
         let serviceMetadata = StorageRequestUtils.getServiceMetadata(request.metadata)
 
-        if uploadSize > PluginConstants.MultiPartUploadSizeThreshold {
+        if uploadSize > PluginConstants.multiPartUploadSizeThreshold {
             storageService.multiPartUpload(serviceKey: serviceKey,
-                                           key: request.key,
                                            uploadSource: request.uploadSource,
                                            contentType: request.contentType,
                                            metadata: serviceMetadata,
                                            onEvent: onEventHandler)
         } else {
             storageService.upload(serviceKey: serviceKey,
-                                  key: request.key,
                                   uploadSource: request.uploadSource,
                                   contentType: request.contentType,
                                   metadata: serviceMetadata,
@@ -100,35 +98,36 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, StoragePutResu
     }
 
     private func onEventHandler(
-        event: StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>) {
+        event: StorageEvent<StorageOperationReference, Progress, Void, StorageServiceError>) {
         switch event {
         case .initiated(let reference):
             storageOperationReference = reference
         case .inProcess(let progress):
             dispatch(progress)
-        case .completed(let result):
-            dispatch(result)
+        case .completed:
+            dispatch(request.key)
             finish()
         case .failed(let error):
-            dispatch(error)
+            let storagePutError = StoragePutError.service(error.errorDescription, error.recoverySuggestion)
+            dispatch(storagePutError)
             finish()
         }
     }
 
     private func dispatch(_ progress: Progress) {
-        let asyncEvent = AsyncEvent<Progress, StoragePutResult, StoragePutError>.inProcess(progress)
+        let asyncEvent = AsyncEvent<Progress, String, StoragePutError>.inProcess(progress)
         dispatch(event: asyncEvent)
         onEvent?(asyncEvent)
     }
 
-    private func dispatch(_ result: StoragePutResult) {
-        let asyncEvent = AsyncEvent<Progress, StoragePutResult, StoragePutError>.completed(result)
+    private func dispatch(_ result: String) {
+        let asyncEvent = AsyncEvent<Progress, String, StoragePutError>.completed(result)
         dispatch(event: asyncEvent)
         onEvent?(asyncEvent)
     }
 
     private func dispatch(_ error: StoragePutError) {
-        let asyncEvent = AsyncEvent<Progress, StoragePutResult, StoragePutError>.failed(error)
+        let asyncEvent = AsyncEvent<Progress, String, StoragePutError>.failed(error)
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }

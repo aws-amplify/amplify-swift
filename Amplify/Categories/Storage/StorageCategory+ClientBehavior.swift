@@ -23,22 +23,47 @@ extension StorageCategory: StorageCategoryClientBehavior {
         return plugin
     }
 
-    public func get(key: String,
-                    options: StorageGetOptions?,
-                    onEvent: StorageGetEvent?) -> StorageGetOperation {
+    public func getURL(key: String,
+                       options: StorageGetURLOptions?,
+                       onEvent: StorageGetURLEventHandler?) -> StorageGetURLOperation {
 
         switch pluginOrSelector {
         case .plugin(let plugin):
-            return plugin.get(key: key, options: options, onEvent: onEvent)
+            return plugin.getURL(key: key, options: options, onEvent: onEvent)
         case .selector(let selector):
-            return plugin(from: selector).get(key: key, options: options, onEvent: onEvent)
+            return plugin(from: selector).getURL(key: key, options: options, onEvent: onEvent)
+        }
+    }
+
+    public func getData(key: String,
+                        options: StorageGetDataOptions?,
+                        onEvent: StorageGetDataEventHandler?) -> StorageGetDataOperation {
+
+        switch pluginOrSelector {
+        case .plugin(let plugin):
+            return plugin.getData(key: key, options: options, onEvent: onEvent)
+        case .selector(let selector):
+            return plugin(from: selector).getData(key: key, options: options, onEvent: onEvent)
+        }
+    }
+
+    public func downloadFile(key: String,
+                             local: URL,
+                             options: StorageDownloadFileOptions?,
+                             onEvent: StorageDownloadFileEventHandler?) -> StorageDownloadFileOperation {
+
+        switch pluginOrSelector {
+        case .plugin(let plugin):
+            return plugin.downloadFile(key: key, local: local, options: options, onEvent: onEvent)
+        case .selector(let selector):
+            return plugin(from: selector).downloadFile(key: key, local: local, options: options, onEvent: onEvent)
         }
     }
 
     public func put(key: String,
                     data: Data,
                     options: StoragePutOptions?,
-                    onEvent: StoragePutEvent?) -> StoragePutOperation {
+                    onEvent: StoragePutEventHandler?) -> StoragePutOperation {
 
         switch pluginOrSelector {
         case .plugin(let plugin):
@@ -51,7 +76,7 @@ extension StorageCategory: StorageCategoryClientBehavior {
     public func put(key: String,
                     local: URL,
                     options: StoragePutOptions?,
-                    onEvent: StoragePutEvent?) -> StoragePutOperation {
+                    onEvent: StoragePutEventHandler?) -> StoragePutOperation {
 
         switch pluginOrSelector {
         case .plugin(let plugin):
@@ -63,7 +88,7 @@ extension StorageCategory: StorageCategoryClientBehavior {
 
     public func remove(key: String,
                        options: StorageRemoveOptions?,
-                       onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
+                       onEvent: StorageRemoveEventHandler?) -> StorageRemoveOperation {
 
         switch pluginOrSelector {
         case .plugin(let plugin):
@@ -73,7 +98,7 @@ extension StorageCategory: StorageCategoryClientBehavior {
         }
     }
 
-    public func list(options: StorageListOptions?, onEvent: StorageListEvent?) -> StorageListOperation {
+    public func list(options: StorageListOptions?, onEvent: StorageListEventHandler?) -> StorageListOperation {
 
         switch pluginOrSelector {
         case .plugin(let plugin):

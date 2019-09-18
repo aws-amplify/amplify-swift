@@ -104,10 +104,10 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
 
     func testPutOperationUploadSuccess() {
         mockAuthService.identityId = testIdentityId
-        mockStorageService.storageUploadEvents = [
+        mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completed(StoragePutResult(key: testKey))]
+            StorageEvent.completed(())]
 
         let expectedUploadSource = UploadSource.data(data: testData)
         let metadata = ["mykey": "Value"]
@@ -148,10 +148,10 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
 
     func testPutOperationUploadFail() {
         mockAuthService.identityId = testIdentityId
-        mockStorageService.storageUploadEvents = [
+        mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.failed(StoragePutError.service("", ""))]
+            StorageEvent.failed(StorageServiceError.service("", ""))]
 
         let expectedUploadSource = UploadSource.data(data: testData)
         let request = AWSS3StoragePutRequest(accessLevel: .protected,
@@ -190,17 +190,17 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
 
     func testPutOperationMultiPartUploadSuccess() {
         mockAuthService.identityId = testIdentityId
-        mockStorageService.storageMultiPartUploadEvents = [
+        mockStorageService.storageServiceMultiPartUploadEvents = [
             StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completed(StoragePutResult(key: testKey))]
+            StorageEvent.completed(())]
 
         var testLargeDataString = "testLargeDataString"
         for _ in 1...20 {
             testLargeDataString += testLargeDataString
         }
         let testLargeData = testLargeDataString.data(using: .utf8)!
-        XCTAssertTrue(testLargeData.count > PluginConstants.MultiPartUploadSizeThreshold,
+        XCTAssertTrue(testLargeData.count > PluginConstants.multiPartUploadSizeThreshold,
                       "Could not create data object greater than MultiPartUploadSizeThreshold")
         let expectedUploadSource = UploadSource.data(data: testLargeData)
         let metadata = ["mykey": "Value"]

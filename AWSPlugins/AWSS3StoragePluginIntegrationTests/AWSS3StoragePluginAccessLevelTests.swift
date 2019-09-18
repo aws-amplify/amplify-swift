@@ -117,11 +117,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
         // get key after removal should return NotFound
         let getFailedExpectation = expectation(description: "Get Operation should fail")
-        let getOptions = StorageGetOptions(accessLevel: accessLevel,
-                                          targetIdentityId: nil,
-                                          storageGetDestination: .data,
-                                          options: nil)
-        _ = Amplify.Storage.get(key: key, options: getOptions) { (event) in
+        let getOptions = StorageGetDataOptions(accessLevel: accessLevel,
+                                               targetIdentityId: nil,
+                                               options: nil)
+        _ = Amplify.Storage.getData(key: key, options: getOptions) { (event) in
             switch event {
             case .completed(let results):
                 XCTFail("Should not have completed with result \(results)")
@@ -208,11 +207,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
         // get key for user1 as user2 - should fail with validation error
         let getFailedExpectation = expectation(description: "Get Operation should fail")
-        let getOptions = StorageGetOptions(accessLevel: accessLevel,
-                                          targetIdentityId: user1IdentityId,
-                                          storageGetDestination: .data,
-                                          options: nil)
-        _ = Amplify.Storage.get(key: key, options: getOptions) { (event) in
+        let getOptions = StorageGetDataOptions(accessLevel: accessLevel,
+                                               targetIdentityId: user1IdentityId,
+                                               options: nil)
+        _ = Amplify.Storage.getData(key: key, options: getOptions) { (event) in
             switch event {
             case .completed(let results):
                 XCTFail("Should not have completed")
@@ -251,11 +249,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
         // Get key after removal should return NotFound
         let getFailedExpectation = expectation(description: "Get Operation should fail")
-        let getOptions = StorageGetOptions(accessLevel: accessLevel,
-                                          targetIdentityId: nil,
-                                          storageGetDestination: .data,
-                                          options: nil)
-        _ = Amplify.Storage.get(key: key, options: getOptions) { (event) in
+        let getOptions = StorageGetDataOptions(accessLevel: accessLevel,
+                                               targetIdentityId: nil,
+                                               options: nil)
+        _ = Amplify.Storage.getData(key: key, options: getOptions) { (event) in
             switch event {
             case .completed(let results):
                 XCTFail("Should not have completed with result \(results)")
@@ -299,14 +296,13 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     func get(key: String, accessLevel: StorageAccessLevel, targetIdentityId: String? = nil) -> Data? {
         var data: Data?
         let getExpectation = expectation(description: "Get Operation should be successful")
-        let getOptions = StorageGetOptions(accessLevel: accessLevel,
-                                          targetIdentityId: targetIdentityId,
-                                          storageGetDestination: .data,
-                                          options: nil)
-        _ = Amplify.Storage.get(key: key, options: getOptions) { (event) in
+        let getOptions = StorageGetDataOptions(accessLevel: accessLevel,
+                                               targetIdentityId: targetIdentityId,
+                                               options: nil)
+        _ = Amplify.Storage.getData(key: key, options: getOptions) { (event) in
             switch event {
-            case .completed(let results):
-                data = results.data
+            case .completed(let result):
+                data = result
                 getExpectation.fulfill()
             case .failed(let error):
                 XCTFail("Failed to get with error \(error)")
@@ -321,9 +317,9 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     func put(key: String, data: String, accessLevel: StorageAccessLevel) {
         let putExpectation = expectation(description: "Put operation should be successful")
         let putOptions = StoragePutOptions(accessLevel: accessLevel,
-                                          contentType: nil,
-                                          metadata: nil,
-                                          options: nil)
+                                           contentType: nil,
+                                           metadata: nil,
+                                           options: nil)
         _ = Amplify.Storage.put(key: key, data: data.data(using: .utf8)!, options: putOptions) { (event) in
             switch event {
             case .completed:
@@ -342,8 +338,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let removeOptions = StorageRemoveOptions(accessLevel: accessLevel, options: nil)
         _ = Amplify.Storage.remove(key: key, options: removeOptions) { (event) in
             switch event {
-            case .completed(let results):
-                print("results from remove: \(results.key)")
+            case .completed(let key):
                 removeExpectation.fulfill()
             case .failed(let error):
                 XCTFail("Failed to remove with error \(error)")

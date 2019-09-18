@@ -12,17 +12,17 @@ import AWSMobileClient
 
 // TODO: thread safety: everything has to be locked down
 // TODO verify no retain cycle
-public class AWSS3StorageGetOperation: AmplifyOperation<Progress, StorageGetResult, StorageGetError>,
-    StorageGetOperation {
+public class AWSS3StorageGetDataOperation: AmplifyOperation<Progress, Data, StorageGetDataError>,
+    StorageGetDataOperation {
 
-    let request: AWSS3StorageGetRequest
+    let request: AWSS3StorageGetDataRequest
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
-    let onEvent: ((AsyncEvent<Progress, StorageGetResult, StorageGetError>) -> Void)?
+    let onEvent: ((AsyncEvent<Progress, Data, StorageGetDataError>) -> Void)?
 
     var storageOperationReference: StorageOperationReference?
 
-    init(_ request: AWSS3StorageGetRequest,
+    init(_ request: AWSS3StorageGetDataRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
          onEvent: ((AsyncEvent<Progress, CompletedType, ErrorType>) -> Void)?) {
@@ -59,7 +59,7 @@ public class AWSS3StorageGetOperation: AmplifyOperation<Progress, StorageGetResu
 
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
-                let storageGetError = StorageGetError.identity(error.errorDescription, error.recoverySuggestion)
+                let storageGetError = StorageGetDataError.identity(error.errorDescription, error.recoverySuggestion)
                 dispatch(storageGetError)
             }
 
@@ -71,52 +71,47 @@ public class AWSS3StorageGetOperation: AmplifyOperation<Progress, StorageGetResu
                                                            identityId: identityId,
                                                            targetIdentityId: request.targetIdentityId,
                                                            key: request.key)
-        switch request.storageGetDestination {
-        case .data:
-            storageService.download(serviceKey: serviceKey,
-                                    fileURL: nil,
-                                    onEvent: onEventHandler)
-        case .file(let local):
-            storageService.download(serviceKey: serviceKey,
-                                    fileURL: local,
-                                    onEvent: onEventHandler)
-        case .url(let expires):
-            storageService.getPreSignedURL(serviceKey: serviceKey,
-                                           expires: expires,
-                                           onEvent: onEventHandler)
-        }
+
+        storageService.download(serviceKey: serviceKey,
+                                fileURL: nil,
+                                onEvent: onEventHandler)
     }
 
     private func onEventHandler(
-        event: StorageEvent<StorageOperationReference, Progress, StorageGetResult, StorageGetError>) {
+        event: StorageEvent<StorageOperationReference, Progress, Data?, StorageServiceError>) {
         switch event {
         case .initiated(let reference):
             storageOperationReference = reference
         case .inProcess(let progress):
             dispatch(progress)
         case .completed(let result):
-            dispatch(result)
-            finish()
+            if let data = result {
+                dispatch(data)
+                finish()
+            } else {
+
+            }
         case .failed(let error):
-            dispatch(error)
+            let storageGetDataError = StorageGetDataError.service(error.errorDescription, error.recoverySuggestion)
+            dispatch(storageGetDataError)
             finish()
         }
     }
 
     private func dispatch(_ progress: Progress) {
-        let asyncEvent = AsyncEvent<Progress, StorageGetResult, StorageGetError>.inProcess(progress)
+        let asyncEvent = AsyncEvent<Progress, Data, StorageGetDataError>.inProcess(progress)
         dispatch(event: asyncEvent)
         onEvent?(asyncEvent)
     }
 
-    private func dispatch(_ result: StorageGetResult) {
-        let asyncEvent = AsyncEvent<Progress, StorageGetResult, StorageGetError>.completed(result)
+    private func dispatch(_ result: Data) {
+        let asyncEvent = AsyncEvent<Progress, Data, StorageGetDataError>.completed(result)
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }
 
-    private func dispatch(_ error: StorageGetError) {
-        let asyncEvent = AsyncEvent<Progress, StorageGetResult, StorageGetError>.failed(error)
+    private func dispatch(_ error: StorageGetDataError) {
+        let asyncEvent = AsyncEvent<Progress, Data, StorageGetDataError>.failed(error)
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }

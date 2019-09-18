@@ -20,19 +20,14 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         let completeInvoked = expectation(description: "Completed is invoked")
 
         let expires = 10
-        let options = StorageGetOptions(accessLevel: nil,
-                                       targetIdentityId: nil,
-                                       storageGetDestination: .url(expires: expires),
-                                       options: nil)
-        let operation = Amplify.Storage.get(key: key, options: options) { (event) in
+        let options = StorageGetURLOptions(accessLevel: nil,
+                                           targetIdentityId: nil,
+                                           expires: expires,
+                                           options: nil)
+        let operation = Amplify.Storage.getURL(key: key, options: options) { (event) in
             switch event {
             case .completed(let result):
-                if let result = result.remote {
-                    print("with expires: \(result)")
-                    remoteURLOptional = result
-                } else {
-                    XCTFail("Missing remote url from result")
-                }
+                remoteURLOptional = result
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Failed with \(error)")

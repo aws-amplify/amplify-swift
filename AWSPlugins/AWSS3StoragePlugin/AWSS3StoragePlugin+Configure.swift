@@ -38,9 +38,9 @@ extension AWSS3StoragePlugin {
         let authService = AWSAuthService()
 
         let storageService = try AWSS3StorageService(region: region,
-                                                 bucket: bucket,
-                                                 cognitoCredentialsProvider: authService.getCognitoCredentialsProvider(),
-                                                 identifier: key)
+                                                     bucket: bucket,
+                                                     cognitoCredentialsProvider: authService.getCognitoCredentialsProvider(),
+                                                     identifier: key)
 
         configure(storageService: storageService, authService: authService, defaultAccessLevel: defaultAccessLevel)
     }
@@ -70,7 +70,7 @@ extension AWSS3StoragePlugin {
 
     /// Retrieves the bucket from configuration, validates, and returns it.
     private static func getBucket(_ configuration: [String: JSONValue]) throws -> String {
-        guard let bucket = configuration[PluginConstants.Bucket] else {
+        guard let bucket = configuration[PluginConstants.bucket] else {
             throw PluginError.pluginConfigurationError(PluginErrorConstants.missingBucket.errorDescription,
                                                        PluginErrorConstants.missingBucket.recoverySuggestion)
         }
@@ -90,7 +90,7 @@ extension AWSS3StoragePlugin {
 
     /// Retrieves the region from configuration, validates, and transforms to and returns the AWSRegionType
     private static func getRegionType(_ configuration: [String: JSONValue]) throws -> AWSRegionType {
-        guard let region = configuration[PluginConstants.Region] else {
+        guard let region = configuration[PluginConstants.region] else {
             throw PluginError.pluginConfigurationError(PluginErrorConstants.missingRegion.errorDescription,
                                                        PluginErrorConstants.missingRegion.recoverySuggestion)
         }
@@ -117,7 +117,7 @@ extension AWSS3StoragePlugin {
     /// Checks if the access level is specified in the configurationand and retrieves it. Returns the default
     /// public access level if none is found in the configuration.
     private static func getDefaultAccessLevel(_ configuration: [String: JSONValue]) throws -> StorageAccessLevel {
-        if let defaultAccessLevelConfig = configuration[PluginConstants.DefaultAccessLevel] {
+        if let defaultAccessLevelConfig = configuration[PluginConstants.defaultAccessLevel] {
             guard case let .string(defaultAccessLevelString) = defaultAccessLevelConfig else {
                 throw PluginError.pluginConfigurationError(
                     PluginErrorConstants.invalidDefaultAccessLevel.errorDescription,

@@ -59,30 +59,6 @@ class StorageRequestUtilsValidatorTests: XCTestCase {
         XCTAssertEqual(result!.errorDescription, StorageErrorConstants.keyIsEmpty.errorDescription)
     }
 
-    // MARK: ValidateStorageDestination tests
-
-    func testValidateUrlStorageDestinationWithNonPositiveExpiresReturnsError() {
-        let result = StorageRequestUtils.validate(StorageGetDestination.url(expires: -1))
-        XCTAssertNotNil(result)
-        XCTAssertEqual(result!.errorDescription, StorageErrorConstants.expiresIsInvalid.errorDescription)
-    }
-
-    func testValidateUrlStorageDestinationWithPositiveExpiresSuccess() {
-        let result = StorageRequestUtils.validate(StorageGetDestination.url(expires: 10))
-        XCTAssertNil(result)
-    }
-
-    func testValidateFileStorageDestinationSuccess() {
-        let url = URL(fileURLWithPath: "path")
-        let result = StorageRequestUtils.validate(StorageGetDestination.file(local: url))
-        XCTAssertNil(result)
-    }
-
-    func testValidateDataStorageDestinationSuccess() {
-        let result = StorageRequestUtils.validate(StorageGetDestination.data)
-        XCTAssertNil(result)
-    }
-
     // MARK: ValidatePath tests
 
     func testValidatePathSuccess() {
@@ -110,7 +86,7 @@ class StorageRequestUtilsValidatorTests: XCTestCase {
     }
 
     // MARK: ValidateMetadata tests
-    
+
     func testValidateMetadataSuccess() {
         let metadata = ["key1": "value1", "key2": "value2"]
         let result = StorageRequestUtils.validateMetadata(metadata)

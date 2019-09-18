@@ -10,27 +10,26 @@ import Amplify
 import AWSS3
 
 protocol AWSS3StorageServiceBehaviour {
-    typealias StorageDownloadOnEventHandler = (StorageDownloadOnEvent) -> Void
-    typealias StorageDownloadOnEvent =
-        StorageEvent<StorageOperationReference, Progress, StorageGetResult, StorageGetError>
+    typealias StorageServiceDownloadEventHandler = (StorageServiceDownloadEvent) -> Void
+    typealias StorageServiceDownloadEvent =
+        StorageEvent<StorageOperationReference, Progress, Data?, StorageServiceError>
 
-    typealias StorageGetPreSignedURLOnEventHandler = (StorageGetPreSignedURLOnEvent) -> Void
-    typealias StorageGetPreSignedURLOnEvent =
-        StorageEvent<StorageOperationReference, Progress, StorageGetResult, StorageGetError>
+    typealias StorageServiceGetPreSignedURLEventHandler = (StorageServiceGetPreSignedURLEvent) -> Void
+    typealias StorageServiceGetPreSignedURLEvent = StorageEvent<Void, Void, URL, StorageServiceError>
 
-    typealias StorageDeleteOnEventHandler = (StorageDeleteOnEvent) -> Void
-    typealias StorageDeleteOnEvent = StorageEvent<Void, Void, StorageRemoveResult, StorageRemoveError>
+    typealias StorageServiceDeleteEventHandler = (StorageServiceDeleteEvent) -> Void
+    typealias StorageServiceDeleteEvent = StorageEvent<Void, Void, Void, StorageServiceError>
 
-    typealias StorageListOnEventHandler = (StorageListOnEvent) -> Void
-    typealias StorageListOnEvent = StorageEvent<Void, Void, StorageListResult, StorageListError>
+    typealias StorageServiceListEventHandler = (StorageServiceListEvent) -> Void
+    typealias StorageServiceListEvent = StorageEvent<Void, Void, StorageListResult, StorageServiceError>
 
-    typealias StorageUploadOnEventHandler = (StorageUploadOnEvent) -> Void
-    typealias StorageUploadOnEvent =
-        StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>
+    typealias StorageServiceUploadEventHandler = (StorageServiceUploadEvent) -> Void
+    typealias StorageServiceUploadEvent =
+        StorageEvent<StorageOperationReference, Progress, Void, StorageServiceError>
 
-    typealias StorageMultiPartUploadOnEventHandler = (StorageMultiPartUploadOnEvent) -> Void
-    typealias StorageMultiPartUploadOnEvent =
-        StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>
+    typealias StorageServiceMultiPartUploadEventHandler = (StorageServiceMultiPartUploadEvent) -> Void
+    typealias StorageServiceMultiPartUploadEvent =
+        StorageEvent<StorageOperationReference, Progress, Void, StorageServiceError>
 
     func reset()
 
@@ -38,30 +37,28 @@ protocol AWSS3StorageServiceBehaviour {
 
     func download(serviceKey: String,
                   fileURL: URL?,
-                  onEvent: @escaping StorageDownloadOnEventHandler)
+                  onEvent: @escaping StorageServiceDownloadEventHandler)
 
     func getPreSignedURL(serviceKey: String,
-                         expires: Int?,
-                         onEvent: @escaping StorageGetPreSignedURLOnEventHandler)
+                         expires: Int,
+                         onEvent: @escaping StorageServiceGetPreSignedURLEventHandler)
 
     func upload(serviceKey: String,
-                key: String,
                 uploadSource: UploadSource,
                 contentType: String?,
                 metadata: [String: String]?,
-                onEvent: @escaping StorageUploadOnEventHandler)
+                onEvent: @escaping StorageServiceUploadEventHandler)
 
     func multiPartUpload(serviceKey: String,
-                         key: String,
                          uploadSource: UploadSource,
                          contentType: String?,
                          metadata: [String: String]?,
-                         onEvent: @escaping StorageMultiPartUploadOnEventHandler)
+                         onEvent: @escaping StorageServiceMultiPartUploadEventHandler)
 
     func list(prefix: String,
               path: String?,
-              onEvent: @escaping StorageListOnEventHandler)
+              onEvent: @escaping StorageServiceListEventHandler)
 
     func delete(serviceKey: String,
-                onEvent: @escaping StorageDeleteOnEventHandler)
+                onEvent: @escaping StorageServiceDeleteEventHandler)
 }

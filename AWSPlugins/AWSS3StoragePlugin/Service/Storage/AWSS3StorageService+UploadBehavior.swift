@@ -14,11 +14,10 @@ public typealias UploadTaskCreatedHandler = (AWSTask<AWSS3TransferUtilityUploadT
 extension AWSS3StorageService {
 
     func upload(serviceKey: String,
-                key: String,
                 uploadSource: UploadSource,
                 contentType: String?,
                 metadata: [String: String]?,
-                onEvent: @escaping StorageUploadOnEventHandler) {
+                onEvent: @escaping StorageServiceUploadEventHandler) {
 
         let uploadTaskCreatedHandler = AWSS3StorageService.makeUploadTaskCreatedHandler(onEvent: onEvent)
         let expression = AWSS3TransferUtilityUploadExpression()
@@ -33,7 +32,7 @@ extension AWSS3StorageService {
         // TODO: Implement tagging functionality, got 403 on tagging using below code
         //expression.setValue("Project=blue&Classification=confidential", forRequestHeader: "x-amz-tagging")
 
-        let onUploadCompletedHandler = AWSS3StorageService.makeUploadCompletedHandler(onEvent: onEvent, key: key)
+        let onUploadCompletedHandler = AWSS3StorageService.makeUploadCompletedHandler(onEvent: onEvent)
 
         switch uploadSource {
         case .data(let data):
@@ -56,20 +55,20 @@ extension AWSS3StorageService {
     }
 
     private static func makeUploadTaskCreatedHandler(
-        onEvent: @escaping StorageUploadOnEventHandler) -> UploadTaskCreatedHandler {
+        onEvent: @escaping StorageServiceUploadEventHandler) -> UploadTaskCreatedHandler {
 
         let block: UploadTaskCreatedHandler = { (task: AWSTask<AWSS3TransferUtilityUploadTask>) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
                 let storageErrorString = StorageErrorHelper.mapTransferUtilityError(error)
-                onEvent(StorageEvent.failed(StoragePutError.service(storageErrorString.errorDescription,
+                onEvent(StorageEvent.failed(StorageServiceError.service(storageErrorString.errorDescription,
                                                                     storageErrorString.recoverySuggestion)))
 
                 return nil
             }
 
             guard let uploadTask = task.result else {
-                onEvent(StorageEvent.failed(StoragePutError.unknown("No ContinuationBlock data", "")))
+                onEvent(StorageEvent.failed(StorageServiceError.unknown("No ContinuationBlock data", "")))
                 return nil
             }
 
@@ -81,7 +80,7 @@ extension AWSS3StorageService {
     }
 
     private static func makeOnUploadProgressHandler(
-        onEvent: @escaping StorageUploadOnEventHandler) -> AWSS3TransferUtilityProgressBlock {
+        onEvent: @escaping StorageServiceUploadEventHandler) -> AWSS3TransferUtilityProgressBlock {
             let block: AWSS3TransferUtilityProgressBlock = {(task, progress) in
                 onEvent(StorageEvent.inProcess(progress))
             }
@@ -89,30 +88,29 @@ extension AWSS3StorageService {
             return block
     }
 
-    private static func makeUploadCompletedHandler(
-        onEvent: @escaping StorageUploadOnEventHandler,
-        key: String) -> AWSS3TransferUtilityUploadCompletionHandlerBlock {
+    private static func makeUploadCompletedHandler(onEvent: @escaping StorageServiceUploadEventHandler)
+        -> AWSS3TransferUtilityUploadCompletionHandlerBlock {
 
         let block: AWSS3TransferUtilityUploadCompletionHandlerBlock = { (task, error ) -> Void in
             guard let response = task.response else {
-                onEvent(StorageEvent.failed(StoragePutError.unknown("Missing HTTP Status", "")))
+                onEvent(StorageEvent.failed(StorageServiceError.unknown("Missing HTTP Status", "")))
                 return
             }
 
             guard response.statusCode == 200 else {
                 //StorageErrorHelper.mapHttpResponse(response.statusCode)
-                onEvent(StorageEvent.failed(StoragePutError.httpStatusError(
+                onEvent(StorageEvent.failed(StorageServiceError.httpStatusError(
                     "status code \(response.statusCode)", "Check the status code")))
                 return
             }
 
             guard error == nil else {
                 let error = error! as NSError
-                onEvent(StorageEvent.failed(StoragePutError.unknown("Error with code: \(error.code) ", "")))
+                onEvent(StorageEvent.failed(StorageServiceError.unknown("Error with code: \(error.code) ", "")))
                 return
             }
 
-            onEvent(StorageEvent.completed(StoragePutResult(key: key)))
+            onEvent(StorageEvent.completed(()))
         }
 
         return block

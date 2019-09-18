@@ -14,7 +14,7 @@ public typealias DownloadTaskCreatedHandler = (AWSTask<AWSS3TransferUtilityDownl
 extension AWSS3StorageService {
     func download(serviceKey: String,
                   fileURL: URL?,
-                  onEvent: @escaping StorageDownloadOnEventHandler) {
+                  onEvent: @escaping StorageServiceDownloadEventHandler) {
 
         let downloadTaskCreatedHandler = AWSS3StorageService.makeDownloadTaskCreatedHandler(onEvent: onEvent)
         let expression = AWSS3TransferUtilityDownloadExpression()
@@ -39,20 +39,20 @@ extension AWSS3StorageService {
     }
 
     private static func makeDownloadTaskCreatedHandler(
-        onEvent: @escaping StorageDownloadOnEventHandler) -> DownloadTaskCreatedHandler {
+        onEvent: @escaping StorageServiceDownloadEventHandler) -> DownloadTaskCreatedHandler {
 
         let block: DownloadTaskCreatedHandler = { (task: AWSTask<AWSS3TransferUtilityDownloadTask>) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
                 let innerMessage = StorageErrorHelper.getInnerMessage(error)
                 let errorDescription = StorageErrorHelper.getErrorDescription(innerMessage: innerMessage)
-                onEvent(StorageEvent.failed(StorageGetError.unknown(errorDescription, "Recovery Message")))
+                onEvent(StorageEvent.failed(StorageServiceError.unknown(errorDescription, "Recovery Message")))
 
                 return nil
             }
 
             guard let downloadTask = task.result else {
-                onEvent(StorageEvent.failed(StorageGetError.unknown("No ContinuationBlock data", "")))
+                onEvent(StorageEvent.failed(StorageServiceError.unknown("No ContinuationBlock data", "")))
                 return nil
             }
 
@@ -64,7 +64,7 @@ extension AWSS3StorageService {
     }
 
     private static func makeOnDownloadProgressHandler(
-        onEvent: @escaping StorageDownloadOnEventHandler) -> AWSS3TransferUtilityProgressBlock {
+        onEvent: @escaping StorageServiceDownloadEventHandler) -> AWSS3TransferUtilityProgressBlock {
 
         let block: AWSS3TransferUtilityProgressBlock = {(task, progress) in
             onEvent(StorageEvent.inProcess(progress))
@@ -74,11 +74,11 @@ extension AWSS3StorageService {
     }
 
     private static func makeDownloadCompletedHandler(
-        onEvent: @escaping StorageDownloadOnEventHandler) -> AWSS3TransferUtilityDownloadCompletionHandlerBlock {
+        onEvent: @escaping StorageServiceDownloadEventHandler) -> AWSS3TransferUtilityDownloadCompletionHandlerBlock {
 
         let block: AWSS3TransferUtilityDownloadCompletionHandlerBlock = { (task, location, data, error ) in
             guard let response = task.response else {
-                onEvent(StorageEvent.failed(StorageGetError.unknown("Missing HTTP Status", "")))
+                onEvent(StorageEvent.failed(StorageServiceError.unknown("Missing HTTP Status", "")))
                 return
             }
 
@@ -86,12 +86,12 @@ extension AWSS3StorageService {
                 // TODO HttpStatus Mapper
                 // TODO any retry logic based on status code?
                 if response.statusCode == 404 {
-                    onEvent(StorageEvent.failed(StorageGetError.notFound(
+                    onEvent(StorageEvent.failed(StorageServiceError.notFound(
                         StorageErrorConstants.keyNotFound.errorDescription,
                         StorageErrorConstants.keyNotFound.recoverySuggestion)))
 
                 } else {
-                    onEvent(StorageEvent.failed(StorageGetError.httpStatusError(
+                    onEvent(StorageEvent.failed(StorageServiceError.httpStatusError(
                         "status code \(response.statusCode)", "Check the status code")))
                 }
 
@@ -101,11 +101,11 @@ extension AWSS3StorageService {
             guard error == nil else {
                 let error = error! as NSError
 
-                onEvent(StorageEvent.failed(StorageGetError.unknown("Error with code: \(error.code) ", "")))
+                onEvent(StorageEvent.failed(StorageServiceError.unknown("Error with code: \(error.code) ", "")))
                 return
             }
 
-            onEvent(StorageEvent.completed(StorageGetResult(data: data)))
+            onEvent(StorageEvent.completed(data))
         }
 
         return block

@@ -13,8 +13,8 @@ public typealias GetURLCompletedHandler = (AWSTask<NSURL>) -> Any?
 
 extension AWSS3StorageService {
     func getPreSignedURL(serviceKey: String,
-                         expires: Int?,
-                         onEvent: @escaping StorageGetPreSignedURLOnEventHandler) {
+                         expires: Int,
+                         onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
 
         let getPresignedURLRequest = AWSS3StorageService.makeAWSS3GetPreSignedURLRequest(bucket: bucket,
                                                                                          key: serviceKey,
@@ -29,36 +29,33 @@ extension AWSS3StorageService {
 
     private static func makeAWSS3GetPreSignedURLRequest(bucket: String,
                                                         key: String,
-                                                        expires: Int?) -> AWSS3GetPreSignedURLRequest {
+                                                        expires: Int) -> AWSS3GetPreSignedURLRequest {
         let request = AWSS3GetPreSignedURLRequest()
         request.bucket = bucket
         request.key = key
         request.httpMethod = AWSHTTPMethod.GET
-        var timeIntervalSinceNow: TimeInterval = 18000
-        if let expires = expires {
-            timeIntervalSinceNow = Double(expires)
-        }
+        let timeIntervalSinceNow = Double(expires)
         request.expires = NSDate(timeIntervalSinceNow: timeIntervalSinceNow) as Date
 
         return request
     }
 
     private static func makeGetPreSignedURLCompletedHandler(
-        onEvent: @escaping StorageGetPreSignedURLOnEventHandler) -> GetURLCompletedHandler {
+        onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) -> GetURLCompletedHandler {
 
         let block: GetURLCompletedHandler = { (task: AWSTask<NSURL>) -> Any? in
             guard task.error == nil else {
                 let error = task.error!
-                onEvent(StorageEvent.failed(StorageGetError.unknown(error.localizedDescription, "TODO")))
+                onEvent(StorageEvent.failed(StorageServiceError.unknown(error.localizedDescription, "TODO")))
                 return nil
             }
 
             guard let result = task.result else {
-                onEvent(StorageEvent.failed(StorageGetError.unknown("No PresignedURL continueWith data", "")))
+                onEvent(StorageEvent.failed(StorageServiceError.unknown("No PresignedURL continueWith data", "")))
                 return nil
             }
 
-            onEvent(StorageEvent.completed(StorageGetResult(remote: result as URL)))
+            onEvent(StorageEvent.completed(result as URL))
 
             return nil
         }
