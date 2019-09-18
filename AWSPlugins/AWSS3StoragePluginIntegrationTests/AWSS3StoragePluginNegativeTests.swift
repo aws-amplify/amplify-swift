@@ -14,7 +14,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
     func testGetNonexistentKey() {
         let key = "testGetNonexistentKey"
         let failInvoked = expectation(description: "Failed is invoked")
-        let options = StorageGetOption(accessLevel: nil,
+        let options = StorageGetOptions(accessLevel: nil,
                                        targetIdentityId: nil,
                                        storageGetDestination: .data,
                                        options: nil)

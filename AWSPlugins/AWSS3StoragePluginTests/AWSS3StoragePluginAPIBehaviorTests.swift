@@ -37,7 +37,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
     }
 
     func testPluginGetWithOptions() {
-        let options = StorageGetOption(accessLevel: .private,
+        let options = StorageGetOptions(accessLevel: .private,
                                        targetIdentityId: testIdentityId,
                                        storageGetDestination: .data,
                                        options: [:])
@@ -91,7 +91,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
     }
 
     func testPluginPutWithOptions() {
-        let options = StoragePutOption(accessLevel: .private,
+        let options = StoragePutOptions(accessLevel: .private,
                                        contentType: testContentType,
                                        metadata: [:],
                                        options: [:])
@@ -153,7 +153,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
     }
 
     func testPluginPutToLocalFileWithOptions() {
-        let options = StoragePutOption(accessLevel: .private,
+        let options = StoragePutOptions(accessLevel: .private,
                                        contentType: testContentType,
                                        metadata: [:],
                                        options: [:])
@@ -205,7 +205,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
     }
 
     func testPluginRemoveWithOptions() {
-        let options = StorageRemoveOption(accessLevel: .private, options: [:])
+        let options = StorageRemoveOptions(accessLevel: .private, options: [:])
 
         let operation = storagePlugin.remove(key: testKey, options: options, onEvent: nil)
 
@@ -242,7 +242,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
     }
 
     func testPluginListWithOptions() {
-        let options = StorageListOption(accessLevel: .private,
+        let options = StorageListOptions(accessLevel: .private,
                                         targetIdentityId: testIdentityId,
                                         path: testPath,
                                         options: [:])

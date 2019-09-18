@@ -24,7 +24,7 @@ extension StorageCategory: StorageCategoryClientBehavior {
     }
 
     public func get(key: String,
-                    options: StorageGetOption?,
+                    options: StorageGetOptions?,
                     onEvent: StorageGetEvent?) -> StorageGetOperation {
 
         switch pluginOrSelector {
@@ -37,7 +37,7 @@ extension StorageCategory: StorageCategoryClientBehavior {
 
     public func put(key: String,
                     data: Data,
-                    options: StoragePutOption?,
+                    options: StoragePutOptions?,
                     onEvent: StoragePutEvent?) -> StoragePutOperation {
 
         switch pluginOrSelector {
@@ -50,7 +50,7 @@ extension StorageCategory: StorageCategoryClientBehavior {
 
     public func put(key: String,
                     local: URL,
-                    options: StoragePutOption?,
+                    options: StoragePutOptions?,
                     onEvent: StoragePutEvent?) -> StoragePutOperation {
 
         switch pluginOrSelector {
@@ -62,7 +62,7 @@ extension StorageCategory: StorageCategoryClientBehavior {
     }
 
     public func remove(key: String,
-                       options: StorageRemoveOption?,
+                       options: StorageRemoveOptions?,
                        onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
 
         switch pluginOrSelector {
@@ -73,7 +73,7 @@ extension StorageCategory: StorageCategoryClientBehavior {
         }
     }
 
-    public func list(options: StorageListOption?, onEvent: StorageListEvent?) -> StorageListOperation {
+    public func list(options: StorageListOptions?, onEvent: StorageListEvent?) -> StorageListOperation {
 
         switch pluginOrSelector {
         case .plugin(let plugin):

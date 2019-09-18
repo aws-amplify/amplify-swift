@@ -24,7 +24,7 @@ extension AWSS3StoragePlugin {
     ///   - onEvent: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
     public func get(key: String,
-                    options: StorageGetOption?,
+                    options: StorageGetOptions?,
                     onEvent: StorageGetEvent?) -> StorageGetOperation {
 
         let storageGetDestination = options?.storageGetDestination ?? .url(expires: nil)
@@ -56,7 +56,7 @@ extension AWSS3StoragePlugin {
     /// - Returns: An operation object representing the work to be done.
     public func put(key: String,
                     data: Data,
-                    options: StoragePutOption?,
+                    options: StoragePutOptions?,
                     onEvent: StoragePutEvent?) -> StoragePutOperation {
 
         let request = AWSS3StoragePutRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
@@ -82,7 +82,7 @@ extension AWSS3StoragePlugin {
     /// - Returns: An operation object representing the work to be done.
     public func put(key: String,
                     local: URL,
-                    options: StoragePutOption?,
+                    options: StoragePutOptions?,
                     onEvent: StoragePutEvent?) -> StoragePutOperation {
 
         let request = AWSS3StoragePutRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
@@ -106,7 +106,7 @@ extension AWSS3StoragePlugin {
     ///   - onEvent: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
     public func remove(key: String,
-                       options: StorageRemoveOption?,
+                       options: StorageRemoveOptions?,
                        onEvent: StorageRemoveEvent?) -> StorageRemoveOperation {
         let request = AWSS3StorageRemoveRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
                                                 key: key,
@@ -129,7 +129,7 @@ extension AWSS3StoragePlugin {
     ///   - options: Additional parameters to specify API behavior.
     ///   - onEvent: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
-    public func list(options: StorageListOption?, onEvent: StorageListEvent?) -> StorageListOperation {
+    public func list(options: StorageListOptions?, onEvent: StorageListEvent?) -> StorageListOperation {
         let request = AWSS3StorageListRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
                                               targetIdentityId: options?.targetIdentityId,
                                               path: options?.path,

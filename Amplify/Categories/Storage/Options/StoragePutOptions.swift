@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct StoragePutOption {
+public struct StoragePutOptions {
 
     public var accessLevel: StorageAccessLevel?
 

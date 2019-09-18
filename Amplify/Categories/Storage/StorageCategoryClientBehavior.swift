@@ -22,7 +22,7 @@ public protocol StorageCategoryClientBehavior {
     ///   - onEvent: Triggered when event occurs
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     func get(key: String,
-             options: StorageGetOption?,
+             options: StorageGetOptions?,
              onEvent: StorageGetEvent?) -> StorageGetOperation
 
     /// Upload data to storage
@@ -35,7 +35,7 @@ public protocol StorageCategoryClientBehavior {
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     func put(key: String,
              data: Data,
-             options: StoragePutOption?,
+             options: StoragePutOptions?,
              onEvent: StoragePutEvent?) -> StoragePutOperation
 
     /// Upload local file to storage
@@ -48,7 +48,7 @@ public protocol StorageCategoryClientBehavior {
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     func put(key: String,
              local: URL,
-             options: StoragePutOption?,
+             options: StoragePutOptions?,
              onEvent: StoragePutEvent?) -> StoragePutOperation
 
     /// Delete object from storage
@@ -59,7 +59,7 @@ public protocol StorageCategoryClientBehavior {
     ///   - onEvent: Triggered when event occurs
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     func remove(key: String,
-                options: StorageRemoveOption?,
+                options: StorageRemoveOptions?,
                 onEvent: StorageRemoveEvent?) -> StorageRemoveOperation
 
     /// List the object identifiers under the heiarchy specified by the path, relative to access level, from storage
@@ -68,5 +68,5 @@ public protocol StorageCategoryClientBehavior {
     ///   - options: Parameters to specific plugin behavior
     ///   - onEvent: Triggered when event occurs
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
-    func list(options: StorageListOption?, onEvent: StorageListEvent?) -> StorageListOperation
+    func list(options: StorageListOptions?, onEvent: StorageListEvent?) -> StorageListOperation
 }

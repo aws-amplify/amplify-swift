@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public struct StorageListOption {
+public struct StorageListOptions {
     public var accessLevel: StorageAccessLevel?
 
     public var targetIdentityId: String?

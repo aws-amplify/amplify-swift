@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct StorageRemoveOption {
+public struct StorageRemoveOptions {
     public var accessLevel: StorageAccessLevel?
 
     public var options: Any?

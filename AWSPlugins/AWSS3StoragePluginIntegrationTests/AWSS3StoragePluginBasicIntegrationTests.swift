@@ -157,7 +157,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let key = "testGetDataToMemory"
         putData(key: key, data: key.data(using: .utf8)!)
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageGetOption(accessLevel: nil,
+        let options = StorageGetOptions(accessLevel: nil,
                                        targetIdentityId: nil,
                                        storageGetDestination: .data,
                                        options: nil)
@@ -185,7 +185,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let fileURL = URL(fileURLWithPath: filePath)
         removeIfExists(fileURL)
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageGetOption(accessLevel: nil,
+        let options = StorageGetOptions(accessLevel: nil,
                                        targetIdentityId: nil,
                                        storageGetDestination: .file(local: fileURL),
                                        options: nil)
@@ -272,7 +272,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let key = "testListFromPublic"
         putData(key: key, dataString: key)
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageListOption(accessLevel: .public,
+        let options = StorageListOptions(accessLevel: .public,
                                         targetIdentityId: nil,
                                         path: key,
                                         options: nil)
@@ -296,7 +296,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     func testListEmpty() {
         let key = "testListEmpty"
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageListOption(accessLevel: .public,
+        let options = StorageListOptions(accessLevel: .public,
                                         targetIdentityId: nil,
                                         path: key,
                                         options: nil)
@@ -328,7 +328,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageListOption(accessLevel: .public,
+        let options = StorageListOptions(accessLevel: .public,
                                         targetIdentityId: nil,
                                         path: folder,
                                         options: nil)
@@ -365,7 +365,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageListOption(accessLevel: .public,
+        let options = StorageListOptions(accessLevel: .public,
                                         targetIdentityId: nil,
                                         path: key1,
                                         options: nil)
