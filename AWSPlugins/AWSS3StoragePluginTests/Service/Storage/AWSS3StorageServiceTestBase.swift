@@ -24,13 +24,11 @@ class AWSS3StorageServiceTestBase: XCTestCase {
         mockPreSignedURLBuilder = MockAWSS3PreSignedURLBuilder()
         mockS3 = MockS3()
         mockMobileClient = MockAWSMobileClient()
-        storageService = AWSS3StorageService()
-
-        storageService.configure(transferUtility: mockTransferUtility,
-                                 preSignedURLBuilder: mockPreSignedURLBuilder,
-                                 awsS3: mockS3,
-                                 bucket: bucket,
-                                 identifier: identifier)
+        storageService = AWSS3StorageService(transferUtility: mockTransferUtility,
+                                             preSignedURLBuilder: mockPreSignedURLBuilder,
+                                             awsS3: mockS3,
+                                             bucket: bucket,
+                                             identifier: identifier)
     }
 
     func testConfigure() {

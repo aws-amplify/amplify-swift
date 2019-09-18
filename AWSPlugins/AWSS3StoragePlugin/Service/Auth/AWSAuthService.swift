@@ -11,7 +11,7 @@ import AWSMobileClient
 
 class AWSAuthService: AWSAuthServiceBehavior {
 
-    var mobileClient: AWSMobileClientBehavior
+    var mobileClient: AWSMobileClientBehavior!
 
     init(mobileClient: AWSMobileClientBehavior? = nil) {
         let mobileClient = mobileClient ?? AWSMobileClientAdapter(AWSMobileClient.sharedInstance())
@@ -53,5 +53,9 @@ class AWSAuthService: AWSAuthServiceBehavior {
         default:
             return AuthError.identity(error.localizedDescription, "")
         }
+    }
+
+    func reset() {
+        mobileClient = nil
     }
 }

@@ -32,11 +32,6 @@ protocol AWSS3StorageServiceBehaviour {
     typealias StorageMultiPartUploadOnEvent =
         StorageEvent<StorageOperationReference, Progress, StoragePutResult, StoragePutError>
 
-    func configure(region: AWSRegionType,
-                   bucket: String,
-                   cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
-                   identifier: String) throws
-
     func reset()
 
     func getEscapeHatch() -> AWSS3?

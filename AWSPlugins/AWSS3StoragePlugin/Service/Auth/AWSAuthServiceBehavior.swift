@@ -11,6 +11,8 @@ import Amplify
 
 protocol AWSAuthServiceBehavior {
 
+    func reset()
+    
     func getCognitoCredentialsProvider() -> AWSCognitoCredentialsProvider
 
     func getIdentityId() -> Result<String, AuthError>
