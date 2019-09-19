@@ -218,6 +218,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
         var remoteURLOptional: URL?
         let completeInvoked = expectation(description: "Completed is invoked")
+
         let operation = Amplify.Storage.getURL(key: key, options: nil) { (event) in
             switch event {
             case .completed(let result):

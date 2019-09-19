@@ -12,7 +12,7 @@ public struct StorageRemoveOptions {
 
     public var options: Any?
 
-    public init(accessLevel: StorageAccessLevel?, options: Any?) {
+    public init(accessLevel: StorageAccessLevel?, options: Any? = nil) {
         self.accessLevel = accessLevel
         self.options = options
     }

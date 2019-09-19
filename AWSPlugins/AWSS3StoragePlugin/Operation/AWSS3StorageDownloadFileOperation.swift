@@ -22,6 +22,9 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
 
     var storageOperationReference: StorageOperationReference?
 
+    /// Concurrent queue for synchronizing access to `storageOperationReference`.
+    private let taskQueue = DispatchQueue(label: Bundle.main.bundleIdentifier! + ".rw.task", attributes: .concurrent)
+
     init(_ request: AWSS3StorageDownloadFileRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
@@ -36,16 +39,22 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
     }
 
     public func pause() {
-        storageOperationReference?.pause()
+        taskQueue.async(flags: .barrier) {
+            self.storageOperationReference?.pause()
+        }
     }
 
     public func resume() {
-        storageOperationReference?.resume()
+        taskQueue.async(flags: .barrier) {
+            self.storageOperationReference?.resume()
+        }
     }
 
     override public func cancel() {
-        storageOperationReference?.cancel()
-        cancel()
+        taskQueue.async(flags: .barrier) {
+            self.storageOperationReference?.cancel()
+        }
+        super.cancel()
     }
 
     override public func main() {

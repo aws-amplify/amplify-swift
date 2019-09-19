@@ -18,7 +18,7 @@ public struct StorageDownloadFileOptions {
     // TODO: transferAcceleration should be in options most likely. and can be set globally
     // https://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
 
-    public init(accessLevel: StorageAccessLevel? = nil,
+    public init(accessLevel: StorageAccessLevel?,
                 targetIdentityId: String? = nil,
                 options: Any? = nil) {
         self.accessLevel = accessLevel

@@ -34,7 +34,7 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<Void, URL, StorageErr
     }
 
     override public func cancel() {
-        cancel()
+        super.cancel()
     }
 
     override public func main() {

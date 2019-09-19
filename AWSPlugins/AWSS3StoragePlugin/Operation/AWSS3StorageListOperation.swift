@@ -31,7 +31,7 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
     }
 
     override public func cancel() {
-        cancel()
+        super.cancel()
     }
 
     override public func main() {

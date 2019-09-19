@@ -17,7 +17,7 @@ public struct StorageGetURLOptions {
 
     public var options: Any?
 
-    public init(accessLevel: StorageAccessLevel? = nil,
+    public init(accessLevel: StorageAccessLevel?,
                 targetIdentityId: String? = nil,
                 expires: Int? = nil,
                 options: Any? = nil) {

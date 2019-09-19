@@ -15,9 +15,9 @@ public struct StorageListOptions {
     public var options: Any?
 
     public init(accessLevel: StorageAccessLevel?,
-                targetIdentityId: String?,
-                path: String?,
-                options: Any?) {
+                targetIdentityId: String? = nil,
+                path: String? = nil,
+                options: Any? = nil) {
         self.accessLevel = accessLevel
         self.targetIdentityId = targetIdentityId
         self.options = options
