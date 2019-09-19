@@ -54,18 +54,28 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
         taskQueue.async(flags: .barrier) {
             self.storageOperationReference?.cancel()
         }
+
         super.cancel()
     }
 
     override public func main() {
+        if isCancelled {
+            finish()
+            return
+        }
+
         if let error = request.validate() {
             dispatch(error)
             finish()
             return
         }
 
-        let identityIdResult = authService.getIdentityId()
+        if isCancelled {
+            finish()
+            return
+        }
 
+        let identityIdResult = authService.getIdentityId()
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
                 dispatch(error)
@@ -75,20 +85,34 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
             return
         }
 
+        if isCancelled {
+            finish()
+            return
+        }
+
         let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
                                                            identityId: identityId,
                                                            targetIdentityId: request.targetIdentityId,
                                                            key: request.key)
+
+        if isCancelled {
+            finish()
+            return
+        }
+
         storageService.download(serviceKey: serviceKey,
                                 fileURL: request.local,
                                 onEvent: onEventHandler)
     }
 
-    private func onEventHandler(
-        event: StorageEvent<StorageOperationReference, Progress, Data?, StorageError>) {
+    private func onEventHandler(event: StorageEvent<StorageOperationReference, Progress, Data?, StorageError>) {
         switch event {
         case .initiated(let reference):
             storageOperationReference = reference
+            if isCancelled {
+                storageOperationReference?.cancel()
+                finish()
+            }
         case .inProcess(let progress):
             dispatch(progress)
         case .completed:

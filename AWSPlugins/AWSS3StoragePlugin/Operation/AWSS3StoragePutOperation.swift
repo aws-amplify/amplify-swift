@@ -55,16 +55,23 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
     }
 
     override public func main() {
+        if isCancelled {
+            finish()
+            return
+        }
+
         if let error = request.validate() {
-            let asyncEvent = AsyncEvent<Progress, String, StorageError>.failed(error)
-            self.onEvent?(asyncEvent)
-            self.dispatch(event: asyncEvent)
+            dispatch(error)
+            finish()
+            return
+        }
+
+        if isCancelled {
             finish()
             return
         }
 
         let identityIdResult = authService.getIdentityId()
-
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
                 dispatch(error)
@@ -74,8 +81,12 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
             return
         }
 
-        let uploadSizeResult = StorageRequestUtils.getSize(request.uploadSource)
+        if isCancelled {
+            finish()
+            return
+        }
 
+        let uploadSizeResult = StorageRequestUtils.getSize(request.uploadSource)
         guard case let .success(uploadSize) = uploadSizeResult else {
             if case let .failure(error) = uploadSizeResult {
                 dispatch(error)
@@ -85,11 +96,21 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
             return
         }
 
+        if isCancelled {
+            finish()
+            return
+        }
+
         let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
                                                            identityId: identityId,
                                                            targetIdentityId: nil,
                                                            key: request.key)
         let serviceMetadata = StorageRequestUtils.getServiceMetadata(request.metadata)
+
+        if isCancelled {
+            finish()
+            return
+        }
 
         if uploadSize > PluginConstants.multiPartUploadSizeThreshold {
             storageService.multiPartUpload(serviceKey: serviceKey,
@@ -111,6 +132,10 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
         switch event {
         case .initiated(let reference):
             storageOperationReference = reference
+            if isCancelled {
+                storageOperationReference?.cancel()
+                finish()
+            }
         case .inProcess(let progress):
             dispatch(progress)
         case .completed:

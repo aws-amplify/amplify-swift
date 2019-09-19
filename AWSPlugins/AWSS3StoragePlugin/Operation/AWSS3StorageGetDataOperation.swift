@@ -59,8 +59,18 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<Progress, Data, Stor
     }
 
     override public func main() {
+        if isCancelled {
+            finish()
+            return
+        }
+
         if let error = request.validate() {
             dispatch(error)
+            finish()
+            return
+        }
+
+        if isCancelled {
             finish()
             return
         }
@@ -76,10 +86,20 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<Progress, Data, Stor
             return
         }
 
+        if isCancelled {
+            finish()
+            return
+        }
+
         let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
                                                            identityId: identityId,
                                                            targetIdentityId: request.targetIdentityId,
                                                            key: request.key)
+
+        if isCancelled {
+            finish()
+            return
+        }
 
         storageService.download(serviceKey: serviceKey,
                                 fileURL: nil,
@@ -90,15 +110,21 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<Progress, Data, Stor
         switch event {
         case .initiated(let reference):
             storageOperationReference = reference
+            if isCancelled {
+                storageOperationReference?.cancel()
+                finish()
+            }
         case .inProcess(let progress):
             dispatch(progress)
         case .completed(let result):
-            if let data = result {
-                dispatch(data)
+            guard let data = result else {
+                dispatch(StorageError.unknown("this should never be the case here", "s"))
                 finish()
-            } else {
-
+                return
             }
+
+            dispatch(data)
+            finish()
         case .failed(let error):
             dispatch(error)
             finish()
