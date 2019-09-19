@@ -6,5 +6,5 @@
 //
 
 import Foundation
-public protocol StorageGetURLOperation: AmplifyOperation<Void, URL, StorageGetURLError> {
+public protocol StorageGetURLOperation: AmplifyOperation<Void, URL, StorageError> {
 }

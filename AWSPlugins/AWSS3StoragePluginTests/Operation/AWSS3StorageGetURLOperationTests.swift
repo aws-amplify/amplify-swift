@@ -41,7 +41,7 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testGetURLOperationGetIdentityIdError() {
-        mockAuthService.getIdentityIdError = AuthError.identity("", "")
+        mockAuthService.getIdentityIdError = StorageError.identity("", "")
         let request = AWSS3StorageGetURLRequest(accessLevel: .public,
                                                 targetIdentityId: nil,
                                                 key: testKey,
@@ -103,7 +103,7 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
     func testGetOperationGetPresignedURLFailed() {
         mockAuthService.identityId = testIdentityId
         mockStorageService.storageServiceGetPreSignedURLEvents = [
-            StorageEvent.failed(StorageServiceError.service("", ""))]
+            StorageEvent.failed(StorageError.service("", ""))]
         let expectedExpires = 100
         let request = AWSS3StorageGetURLRequest(accessLevel: .protected,
                                                 targetIdentityId: nil,

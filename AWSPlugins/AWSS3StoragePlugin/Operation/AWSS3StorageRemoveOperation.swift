@@ -10,18 +10,18 @@ import Amplify
 import AWSS3
 import AWSMobileClient
 
-public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, StorageRemoveError>,
+public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, StorageError>,
     StorageRemoveOperation {
 
     let request: AWSS3StorageRemoveRequest
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
-    let onEvent: ((AsyncEvent<Void, String, StorageRemoveError>) -> Void)?
+    let onEvent: ((AsyncEvent<Void, String, StorageError>) -> Void)?
 
     init(_ request: AWSS3StorageRemoveRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         onEvent: ((AsyncEvent<Void, String, StorageRemoveError>) -> Void)?) {
+         onEvent: ((AsyncEvent<Void, String, StorageError>) -> Void)?) {
 
         self.request = request
         self.storageService = storageService
@@ -45,8 +45,7 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, Storage
 
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
-                let storageRemoveError = StorageRemoveError.identity(error.errorDescription, error.recoverySuggestion)
-                dispatch(storageRemoveError)
+                dispatch(error)
             }
 
             finish()
@@ -62,7 +61,7 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, Storage
                               onEvent: onEventHandler)
     }
 
-    private func onEventHandler(event: StorageEvent<Void, Void, Void, StorageServiceError>) {
+    private func onEventHandler(event: StorageEvent<Void, Void, Void, StorageError>) {
         switch event {
         case .initiated:
             break
@@ -72,20 +71,19 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, Storage
             dispatch(request.key)
             finish()
         case .failed(let error):
-            let storageRemoveError = StorageRemoveError.service(error.errorDescription, error.recoverySuggestion)
-            dispatch(storageRemoveError)
+            dispatch(error)
             finish()
         }
     }
 
     private func dispatch(_ result: String) {
-        let asyncEvent = AsyncEvent<Void, String, StorageRemoveError>.completed(result)
+        let asyncEvent = AsyncEvent<Void, String, StorageError>.completed(result)
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }
 
-    private func dispatch(_ error: StorageRemoveError) {
-        let asyncEvent = AsyncEvent<Void, String, StorageRemoveError>.failed(error)
+    private func dispatch(_ error: StorageError) {
+        let asyncEvent = AsyncEvent<Void, String, StorageError>.failed(error)
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }

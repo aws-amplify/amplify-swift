@@ -152,7 +152,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let plugin1 = MockStorageCategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin1.listeners.append { message in
-            if message == "get" {
+            if message == "getData" {
                 methodInvokedOnDefaultPlugin.fulfill()
             }
         }

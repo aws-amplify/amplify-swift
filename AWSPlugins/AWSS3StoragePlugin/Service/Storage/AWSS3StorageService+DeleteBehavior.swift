@@ -33,7 +33,7 @@ extension AWSS3StorageService {
         let block: DeleteCompletedHandler = { (task: AWSTask<AWSS3DeleteObjectOutput>) -> Any? in
             guard task.error == nil else {
                 let error = task.error!
-                onEvent(StorageEvent.failed(StorageServiceError.unknown(error.localizedDescription, "TODO")))
+                onEvent(StorageEvent.failed(StorageError.unknown(error.localizedDescription, "TODO")))
                 return nil
             }
 

@@ -12,13 +12,13 @@ import AWSMobileClient
 
 // TODO: thread safety: everything has to be locked down
 // TODO verify no retain cycle
-public class AWSS3StorageGetDataOperation: AmplifyOperation<Progress, Data, StorageGetDataError>,
+public class AWSS3StorageGetDataOperation: AmplifyOperation<Progress, Data, StorageError>,
     StorageGetDataOperation {
 
     let request: AWSS3StorageGetDataRequest
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
-    let onEvent: ((AsyncEvent<Progress, Data, StorageGetDataError>) -> Void)?
+    let onEvent: ((AsyncEvent<Progress, Data, StorageError>) -> Void)?
 
     var storageOperationReference: StorageOperationReference?
 
@@ -59,8 +59,7 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<Progress, Data, Stor
 
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
-                let storageGetError = StorageGetDataError.identity(error.errorDescription, error.recoverySuggestion)
-                dispatch(storageGetError)
+                dispatch(error)
             }
 
             finish()
@@ -77,8 +76,7 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<Progress, Data, Stor
                                 onEvent: onEventHandler)
     }
 
-    private func onEventHandler(
-        event: StorageEvent<StorageOperationReference, Progress, Data?, StorageServiceError>) {
+    private func onEventHandler(event: StorageEvent<StorageOperationReference, Progress, Data?, StorageError>) {
         switch event {
         case .initiated(let reference):
             storageOperationReference = reference
@@ -92,26 +90,25 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<Progress, Data, Stor
 
             }
         case .failed(let error):
-            let storageGetDataError = StorageGetDataError.service(error.errorDescription, error.recoverySuggestion)
-            dispatch(storageGetDataError)
+            dispatch(error)
             finish()
         }
     }
 
     private func dispatch(_ progress: Progress) {
-        let asyncEvent = AsyncEvent<Progress, Data, StorageGetDataError>.inProcess(progress)
+        let asyncEvent = AsyncEvent<Progress, Data, StorageError>.inProcess(progress)
         dispatch(event: asyncEvent)
         onEvent?(asyncEvent)
     }
 
     private func dispatch(_ result: Data) {
-        let asyncEvent = AsyncEvent<Progress, Data, StorageGetDataError>.completed(result)
+        let asyncEvent = AsyncEvent<Progress, Data, StorageError>.completed(result)
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }
 
-    private func dispatch(_ error: StorageGetDataError) {
-        let asyncEvent = AsyncEvent<Progress, Data, StorageGetDataError>.failed(error)
+    private func dispatch(_ error: StorageError) {
+        let asyncEvent = AsyncEvent<Progress, Data, StorageError>.failed(error)
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }

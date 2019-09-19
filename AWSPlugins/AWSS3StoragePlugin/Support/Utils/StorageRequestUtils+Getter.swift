@@ -48,22 +48,22 @@ extension StorageRequestUtils {
         return serviceMetadata
     }
 
-    static func getSize(_ uploadSource: UploadSource) -> Result<UInt64, StoragePutError> {
+    static func getSize(_ uploadSource: UploadSource) -> Result<UInt64, StorageError> {
         switch uploadSource {
         case .file(let file):
             if let error = validateFileExists(file) {
-                return .failure(StoragePutError.missingFile(error.errorDescription, error.recoverySuggestion))
+                return .failure(StorageError.missingFile(error.errorDescription, error.recoverySuggestion))
             }
 
             do {
                 let attributeOfItem = try FileManager.default.attributesOfItem(atPath: file.path)
                 guard let fileSize = attributeOfItem[FileAttributeKey.size] as? UInt64 else {
-                    return .failure(StoragePutError.unknown("file Issue", "File Issue"))
+                    return .failure(StorageError.unknown("file Issue", "File Issue"))
                 }
 
                 return .success(fileSize)
             } catch {
-                return .failure(StoragePutError.unknown("File issue", "file issue"))
+                return .failure(StorageError.unknown("File issue", "file issue"))
             }
 
         case .data(let data):

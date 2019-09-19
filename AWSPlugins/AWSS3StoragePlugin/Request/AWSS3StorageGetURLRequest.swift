@@ -29,19 +29,19 @@ struct AWSS3StorageGetURLRequest {
         self.options = options
     }
 
-    /// Performs client side validation and returns a `StorageGetError` for any validation failures.
-    func validate() -> StorageGetURLError? {
+    /// Performs client side validation and returns a `StorageError` for any validation failures.
+    func validate() -> StorageError? {
         if let error = StorageRequestUtils.validateTargetIdentityId(targetIdentityId, accessLevel: accessLevel) {
-            return StorageGetURLError.validation(error.errorDescription, error.recoverySuggestion)
+            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
         }
 
         if let error = StorageRequestUtils.validateKey(key) {
-            return StorageGetURLError.validation(error.errorDescription, error.recoverySuggestion)
+            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
         }
 
         if let expires = expires {
             if let error = StorageRequestUtils.validate(expires: expires) {
-                return StorageGetURLError.validation(error.errorDescription, error.recoverySuggestion)
+                return StorageError.validation(error.errorDescription, error.recoverySuggestion)
             }
         }
 

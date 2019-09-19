@@ -25,9 +25,9 @@ class AWSS3StoragePutRequestTests: XCTestCase {
                                              metadata: testMetadata,
                                              options: testOptions)
 
-        let storagePutErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        XCTAssertNil(storagePutErrorOptional)
+        XCTAssertNil(storageErrorOptional)
     }
 
     func testValidateSuccessWithFileUploadSource() {
@@ -42,9 +42,9 @@ class AWSS3StoragePutRequestTests: XCTestCase {
                                              metadata: testMetadata,
                                              options: testOptions)
 
-        let storagePutErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        XCTAssertNil(storagePutErrorOptional)
+        XCTAssertNil(storageErrorOptional)
     }
 
     func testValidateEmptyKeyError() {
@@ -55,10 +55,10 @@ class AWSS3StoragePutRequestTests: XCTestCase {
                                              metadata: testMetadata,
                                              options: testOptions)
 
-        let storagePutErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storagePutErrorOptional else {
-            XCTFail("Missing StoragePutError")
+        guard let error = storageErrorOptional else {
+            XCTFail("Missing StorageError")
             return
         }
 
@@ -79,10 +79,10 @@ class AWSS3StoragePutRequestTests: XCTestCase {
                                              metadata: testMetadata,
                                              options: testOptions)
 
-        let storagePutErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storagePutErrorOptional else {
-            XCTFail("Missing StoragePutError")
+        guard let error = storageErrorOptional else {
+            XCTFail("Missing StorageError")
             return
         }
 
@@ -104,10 +104,10 @@ class AWSS3StoragePutRequestTests: XCTestCase {
                                              metadata: metadata,
                                              options: testOptions)
 
-        let storagePutErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storagePutErrorOptional else {
-            XCTFail("Missing StoragePutError")
+        guard let error = storageErrorOptional else {
+            XCTFail("Missing StorageError")
             return
         }
 

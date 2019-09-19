@@ -26,14 +26,14 @@ struct AWSS3StorageGetDataRequest {
         self.options = options
     }
 
-    /// Performs client side validation and returns a `StorageGetDataError` for any validation failures.
-    func validate() -> StorageGetDataError? {
+    /// Performs client side validation and returns a `StorageError` for any validation failures.
+    func validate() -> StorageError? {
         if let error = StorageRequestUtils.validateTargetIdentityId(targetIdentityId, accessLevel: accessLevel) {
-            return StorageGetDataError.validation(error.errorDescription, error.recoverySuggestion)
+            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
         }
 
         if let error = StorageRequestUtils.validateKey(key) {
-            return StorageGetDataError.validation(error.errorDescription, error.recoverySuggestion)
+            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
         }
 
         return nil

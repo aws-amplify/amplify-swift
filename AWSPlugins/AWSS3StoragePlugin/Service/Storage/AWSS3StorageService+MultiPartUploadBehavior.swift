@@ -62,13 +62,13 @@ extension AWSS3StorageService {
                 let error = task.error! as NSError
                 let innerMessage = StorageErrorHelper.getInnerMessage(error)
                 let errorDescription = StorageErrorHelper.getErrorDescription(innerMessage: innerMessage)
-                onEvent(StorageEvent.failed(StorageServiceError.unknown(errorDescription, "Recovery Message")))
+                onEvent(StorageEvent.failed(StorageError.unknown(errorDescription, "Recovery Message")))
 
                 return nil
             }
 
             guard let uploadTask = task.result else {
-                onEvent(StorageEvent.failed(StorageServiceError.unknown("No ContinuationBlock data", "")))
+                onEvent(StorageEvent.failed(StorageError.unknown("No ContinuationBlock data", "")))
                 return nil
             }
 
@@ -95,7 +95,7 @@ extension AWSS3StorageService {
         let block: AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock = { (task, error ) -> Void in
             guard error == nil else {
                 let error = error! as NSError
-                onEvent(StorageEvent.failed(StorageServiceError.unknown("Error with code: \(error.code) ", "")))
+                onEvent(StorageEvent.failed(StorageError.unknown("Error with code: \(error.code) ", "")))
                 return
             }
 

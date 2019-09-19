@@ -6,5 +6,5 @@
 //
 
 import Foundation
-public protocol StorageDownloadFileOperation: AmplifyOperation<Progress, Void, StorageDownloadFileError>, Resumable {
+public protocol StorageDownloadFileOperation: AmplifyOperation<Progress, Void, StorageError>, Resumable {
 }

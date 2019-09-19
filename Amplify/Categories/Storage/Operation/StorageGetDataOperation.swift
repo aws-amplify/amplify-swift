@@ -6,6 +6,6 @@
 //
 
 import Foundation
-public protocol StorageGetDataOperation: AmplifyOperation<Progress, Data, StorageGetDataError>,
+public protocol StorageGetDataOperation: AmplifyOperation<Progress, Data, StorageError>,
     Resumable {
 }

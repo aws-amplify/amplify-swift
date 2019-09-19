@@ -22,9 +22,9 @@ class AWSS3StorageDownloadFileRequestTests: XCTestCase {
                                                       local: testURL,
                                                       options: testOptions)
 
-        let storageDownloadFileErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        XCTAssertNil(storageDownloadFileErrorOptional)
+        XCTAssertNil(storageErrorOptional)
     }
 
     func testValidateEmptyTargetIdentityIdError() {
@@ -34,9 +34,9 @@ class AWSS3StorageDownloadFileRequestTests: XCTestCase {
                                                       local: testURL,
                                                       options: testOptions)
 
-        let storageDownloadFileErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storageDownloadFileErrorOptional else {
+        guard let error = storageErrorOptional else {
             XCTFail("Missing StorageDownloadFile")
             return
         }
@@ -57,9 +57,9 @@ class AWSS3StorageDownloadFileRequestTests: XCTestCase {
                                                       local: testURL,
                                                       options: testOptions)
 
-        let storageDownloadFileErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storageDownloadFileErrorOptional else {
+        guard let error = storageErrorOptional else {
             XCTFail("Missing StorageDownloadFile")
             return
         }
@@ -80,9 +80,9 @@ class AWSS3StorageDownloadFileRequestTests: XCTestCase {
                                                       local: testURL,
                                                       options: testOptions)
 
-        let storageDownloadFileErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storageDownloadFileErrorOptional else {
+        guard let error = storageErrorOptional else {
             XCTFail("Missing StorageDownloadFile")
             return
         }

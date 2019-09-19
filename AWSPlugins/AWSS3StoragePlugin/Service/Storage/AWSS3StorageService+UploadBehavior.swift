@@ -61,14 +61,14 @@ extension AWSS3StorageService {
             guard task.error == nil else {
                 let error = task.error! as NSError
                 let storageErrorString = StorageErrorHelper.mapTransferUtilityError(error)
-                onEvent(StorageEvent.failed(StorageServiceError.service(storageErrorString.errorDescription,
+                onEvent(StorageEvent.failed(StorageError.service(storageErrorString.errorDescription,
                                                                     storageErrorString.recoverySuggestion)))
 
                 return nil
             }
 
             guard let uploadTask = task.result else {
-                onEvent(StorageEvent.failed(StorageServiceError.unknown("No ContinuationBlock data", "")))
+                onEvent(StorageEvent.failed(StorageError.unknown("No ContinuationBlock data", "")))
                 return nil
             }
 
@@ -93,20 +93,20 @@ extension AWSS3StorageService {
 
         let block: AWSS3TransferUtilityUploadCompletionHandlerBlock = { (task, error ) -> Void in
             guard let response = task.response else {
-                onEvent(StorageEvent.failed(StorageServiceError.unknown("Missing HTTP Status", "")))
+                onEvent(StorageEvent.failed(StorageError.unknown("Missing HTTP Status", "")))
                 return
             }
 
             guard response.statusCode == 200 else {
                 //StorageErrorHelper.mapHttpResponse(response.statusCode)
-                onEvent(StorageEvent.failed(StorageServiceError.httpStatusError(
+                onEvent(StorageEvent.failed(StorageError.httpStatusError(
                     "status code \(response.statusCode)", "Check the status code")))
                 return
             }
 
             guard error == nil else {
                 let error = error! as NSError
-                onEvent(StorageEvent.failed(StorageServiceError.unknown("Error with code: \(error.code) ", "")))
+                onEvent(StorageEvent.failed(StorageError.unknown("Error with code: \(error.code) ", "")))
                 return
             }
 

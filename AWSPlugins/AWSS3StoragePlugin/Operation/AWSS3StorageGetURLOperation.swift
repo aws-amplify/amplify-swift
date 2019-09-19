@@ -12,13 +12,13 @@ import AWSMobileClient
 
 // TODO: thread safety: everything has to be locked down
 // TODO verify no retain cycle
-public class AWSS3StorageGetURLOperation: AmplifyOperation<Void, URL, StorageGetURLError>,
+public class AWSS3StorageGetURLOperation: AmplifyOperation<Void, URL, StorageError>,
     StorageGetURLOperation {
 
     let request: AWSS3StorageGetURLRequest
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
-    let onEvent: ((AsyncEvent<Void, URL, StorageGetURLError>) -> Void)?
+    let onEvent: ((AsyncEvent<Void, URL, StorageError>) -> Void)?
 
     init(_ request: AWSS3StorageGetURLRequest,
          storageService: AWSS3StorageServiceBehaviour,
@@ -48,8 +48,7 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<Void, URL, StorageGet
 
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
-                let storageGetError = StorageGetURLError.identity(error.errorDescription, error.recoverySuggestion)
-                dispatch(storageGetError)
+                dispatch(error)
             }
 
             finish()
@@ -66,15 +65,13 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<Void, URL, StorageGet
                                        onEvent: onEventHandler)
     }
 
-    private func onEventHandler(
-        event: StorageEvent<Void, Void, URL, StorageServiceError>) {
+    private func onEventHandler(event: StorageEvent<Void, Void, URL, StorageError>) {
         switch event {
         case .completed(let result):
             dispatch(result)
             finish()
         case .failed(let error):
-            let storageGetURLError = StorageGetURLError.service(error.errorDescription, error.recoverySuggestion)
-            dispatch(storageGetURLError)
+            dispatch(error)
             finish()
         default:
             break
@@ -82,13 +79,13 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<Void, URL, StorageGet
     }
 
     private func dispatch(_ result: URL) {
-        let asyncEvent = AsyncEvent<Void, URL, StorageGetURLError>.completed(result)
+        let asyncEvent = AsyncEvent<Void, URL, StorageError>.completed(result)
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }
 
-    private func dispatch(_ error: StorageGetURLError) {
-        let asyncEvent = AsyncEvent<Void, URL, StorageGetURLError>.failed(error)
+    private func dispatch(_ error: StorageError) {
+        let asyncEvent = AsyncEvent<Void, URL, StorageError>.failed(error)
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }

@@ -41,7 +41,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testDownloadFileOperationGetIdentityIdError() {
-        mockAuthService.getIdentityIdError = AuthError.identity("", "")
+        mockAuthService.getIdentityIdError = StorageError.identity("", "")
         let request = AWSS3StorageDownloadFileRequest(accessLevel: .public,
                                                       targetIdentityId: nil,
                                                       key: testKey,
@@ -107,7 +107,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.failed(StorageServiceError.service("", ""))]
+            StorageEvent.failed(StorageError.service("", ""))]
         let url = URL(fileURLWithPath: "path")
         let request = AWSS3StorageDownloadFileRequest(accessLevel: .public,
                                                       targetIdentityId: nil,

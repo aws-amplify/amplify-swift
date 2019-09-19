@@ -10,13 +10,13 @@ import Amplify
 import AWSS3
 import AWSMobileClient
 
-public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, StoragePutError>,
+public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, StorageError>,
     StoragePutOperation {
 
     let request: AWSS3StoragePutRequest
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
-    let onEvent: ((AsyncEvent<Progress, String, StoragePutError>) -> Void)?
+    let onEvent: ((AsyncEvent<Progress, String, StorageError>) -> Void)?
 
     var storageOperationReference: StorageOperationReference?
 
@@ -47,7 +47,7 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
 
     override public func main() {
         if let error = request.validate() {
-            let asyncEvent = AsyncEvent<Progress, String, StoragePutError>.failed(error)
+            let asyncEvent = AsyncEvent<Progress, String, StorageError>.failed(error)
             self.onEvent?(asyncEvent)
             self.dispatch(event: asyncEvent)
             finish()
@@ -58,8 +58,7 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
 
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
-                let storagePutError = StoragePutError.identity(error.errorDescription, error.recoverySuggestion)
-                dispatch(storagePutError)
+                dispatch(error)
             }
 
             finish()
@@ -99,7 +98,7 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
     }
 
     private func onEventHandler(
-        event: StorageEvent<StorageOperationReference, Progress, Void, StorageServiceError>) {
+        event: StorageEvent<StorageOperationReference, Progress, Void, StorageError>) {
         switch event {
         case .initiated(let reference):
             storageOperationReference = reference
@@ -109,26 +108,25 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
             dispatch(request.key)
             finish()
         case .failed(let error):
-            let storagePutError = StoragePutError.service(error.errorDescription, error.recoverySuggestion)
-            dispatch(storagePutError)
+            dispatch(error)
             finish()
         }
     }
 
     private func dispatch(_ progress: Progress) {
-        let asyncEvent = AsyncEvent<Progress, String, StoragePutError>.inProcess(progress)
+        let asyncEvent = AsyncEvent<Progress, String, StorageError>.inProcess(progress)
         dispatch(event: asyncEvent)
         onEvent?(asyncEvent)
     }
 
     private func dispatch(_ result: String) {
-        let asyncEvent = AsyncEvent<Progress, String, StoragePutError>.completed(result)
+        let asyncEvent = AsyncEvent<Progress, String, StorageError>.completed(result)
         dispatch(event: asyncEvent)
         onEvent?(asyncEvent)
     }
 
-    private func dispatch(_ error: StoragePutError) {
-        let asyncEvent = AsyncEvent<Progress, String, StoragePutError>.failed(error)
+    private func dispatch(_ error: StorageError) {
+        let asyncEvent = AsyncEvent<Progress, String, StorageError>.failed(error)
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }

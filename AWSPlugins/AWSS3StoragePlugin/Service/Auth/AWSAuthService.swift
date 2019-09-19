@@ -22,7 +22,7 @@ class AWSAuthService: AWSAuthServiceBehavior {
         return mobileClient.getCognitoCredentialsProvider()
     }
 
-    func getIdentityId() -> Result<String, AuthError> {
+    func getIdentityId() -> Result<String, StorageError> {
         let task = mobileClient.getIdentityId()
         task.waitUntilFinished()
 
@@ -31,27 +31,27 @@ class AWSAuthService: AWSAuthServiceBehavior {
                 return .failure(map(error))
             }
 
-            return .failure(AuthError.identity(AuthErrorConstants.contentTypeIsEmpty.ErrorDescription,
-                                               AuthErrorConstants.contentTypeIsEmpty.RecoverySuggestion))
+            return .failure(StorageError.identity(StorageErrorConstants.contentTypeIsEmpty.errorDescription,
+                                               StorageErrorConstants.contentTypeIsEmpty.recoverySuggestion))
         }
 
         guard let identityId = task.result else {
-            let error = AuthError.identity(AuthErrorConstants.contentTypeIsEmpty.ErrorDescription,
-                                           AuthErrorConstants.contentTypeIsEmpty.RecoverySuggestion)
+            let error = StorageError.identity(StorageErrorConstants.contentTypeIsEmpty.errorDescription,
+                                           StorageErrorConstants.contentTypeIsEmpty.recoverySuggestion)
             return .failure(error)
         }
 
         return .success(identityId as String)
     }
 
-    private func map(_ error: AWSMobileClientError) -> AuthError {
+    private func map(_ error: AWSMobileClientError) -> StorageError {
         switch error {
         case .identityIdUnavailable(let message):
-            return AuthError.identity(message, error.localizedDescription)
+            return StorageError.identity(message, error.localizedDescription)
         case .guestAccessNotAllowed(let message):
-            return AuthError.identity(message, error.localizedDescription)
+            return StorageError.identity(message, error.localizedDescription)
         default:
-            return AuthError.identity(error.localizedDescription, "")
+            return StorageError.identity(error.localizedDescription, "")
         }
     }
 

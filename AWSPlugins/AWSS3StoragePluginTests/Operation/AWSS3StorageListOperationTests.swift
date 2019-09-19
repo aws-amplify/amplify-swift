@@ -42,7 +42,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testListOperationGetIdentityIdError() {
-        mockAuthService.getIdentityIdError = AuthError.identity("", "")
+        mockAuthService.getIdentityIdError = StorageError.identity("", "")
         let request = AWSS3StorageListRequest(accessLevel: .public,
                                               targetIdentityId: nil,
                                               path: testPath,
@@ -96,7 +96,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testListOperationListObjectsFail() {
-        mockStorageService.storageServiceListEvents = [StorageEvent.failed(StorageServiceError.service("", ""))]
+        mockStorageService.storageServiceListEvents = [StorageEvent.failed(StorageError.service("", ""))]
         let request = AWSS3StorageListRequest(accessLevel: .public,
                                               targetIdentityId: nil,
                                               path: testPath,

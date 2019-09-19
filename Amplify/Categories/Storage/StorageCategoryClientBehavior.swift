@@ -9,12 +9,12 @@ import Foundation
 
 /// Behavior of the Storage category that clients will use
 public protocol StorageCategoryClientBehavior {
-    typealias StorageGetURLEventHandler = (AsyncEvent<Void, URL, StorageGetURLError>) -> Void
-    typealias StorageGetDataEventHandler = (AsyncEvent<Progress, Data, StorageGetDataError>) -> Void
-    typealias StorageDownloadFileEventHandler = (AsyncEvent<Progress, Void, StorageDownloadFileError>) -> Void
-    typealias StoragePutEventHandler = (AsyncEvent<Progress, String, StoragePutError>) -> Void
-    typealias StorageRemoveEventHandler = (AsyncEvent<Void, String, StorageRemoveError>) -> Void
-    typealias StorageListEventHandler = (AsyncEvent<Void, StorageListResult, StorageListError>) -> Void
+    typealias StorageGetURLEventHandler = (AsyncEvent<Void, URL, StorageError>) -> Void
+    typealias StorageGetDataEventHandler = (AsyncEvent<Progress, Data, StorageError>) -> Void
+    typealias StorageDownloadFileEventHandler = (AsyncEvent<Progress, Void, StorageError>) -> Void
+    typealias StoragePutEventHandler = (AsyncEvent<Progress, String, StorageError>) -> Void
+    typealias StorageRemoveEventHandler = (AsyncEvent<Void, String, StorageError>) -> Void
+    typealias StorageListEventHandler = (AsyncEvent<Void, StorageListResult, StorageError>) -> Void
 
     /// Retrieve the remote URL for the object from storage.
     ///

@@ -20,9 +20,9 @@ class AWSS3StorageGetDataRequestTests: XCTestCase {
                                                  key: testKey,
                                                  options: testOptions)
 
-        let storageGetDataErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        XCTAssertNil(storageGetDataErrorOptional)
+        XCTAssertNil(storageErrorOptional)
     }
 
     func testValidateEmptyTargetIdentityIdError() {
@@ -31,10 +31,10 @@ class AWSS3StorageGetDataRequestTests: XCTestCase {
                                              key: testKey,
                                              options: testOptions)
 
-        let storageGetDataErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storageGetDataErrorOptional else {
-            XCTFail("Missing StorageGetDataError")
+        guard let error = storageErrorOptional else {
+            XCTFail("Missing StorageError")
             return
         }
 
@@ -53,10 +53,10 @@ class AWSS3StorageGetDataRequestTests: XCTestCase {
                                              key: testKey,
                                              options: testOptions)
 
-        let storageGetDataErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storageGetDataErrorOptional else {
-            XCTFail("Missing StorageGetDataError")
+        guard let error = storageErrorOptional else {
+            XCTFail("Missing StorageError")
             return
         }
 
@@ -75,10 +75,10 @@ class AWSS3StorageGetDataRequestTests: XCTestCase {
                                                  key: "",
                                                  options: testOptions)
 
-        let storageGetDataErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storageGetDataErrorOptional else {
-            XCTFail("Missing StorageGetDataError")
+        guard let error = storageErrorOptional else {
+            XCTFail("Missing StorageError")
             return
         }
 

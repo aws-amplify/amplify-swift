@@ -126,7 +126,7 @@ class MockStoragePluginSelectorFactory: MessageReporter, PluginSelectorFactory {
 
 }
 
-class MockStorageGetURLOperation: AmplifyOperation<Void, URL, StorageGetURLError>,
+class MockStorageGetURLOperation: AmplifyOperation<Void, URL, StorageError>,
     StorageGetURLOperation {
     func pause() {
     }
@@ -135,7 +135,7 @@ class MockStorageGetURLOperation: AmplifyOperation<Void, URL, StorageGetURLError
     }
 }
 
-class MockStorageGetDataOperation: AmplifyOperation<Progress, Data, StorageGetDataError>,
+class MockStorageGetDataOperation: AmplifyOperation<Progress, Data, StorageError>,
     StorageGetDataOperation {
     func pause() {
     }
@@ -144,7 +144,7 @@ class MockStorageGetDataOperation: AmplifyOperation<Progress, Data, StorageGetDa
     }
 }
 
-class MockStorageDownloadFileOperation: AmplifyOperation<Progress, Void, StorageDownloadFileError>,
+class MockStorageDownloadFileOperation: AmplifyOperation<Progress, Void, StorageError>,
     StorageDownloadFileOperation {
     func pause() {
     }
@@ -153,7 +153,7 @@ class MockStorageDownloadFileOperation: AmplifyOperation<Progress, Void, Storage
     }
 }
 
-class MockStoragePutOperation: AmplifyOperation<Progress, String, StoragePutError>, StoragePutOperation {
+class MockStoragePutOperation: AmplifyOperation<Progress, String, StorageError>, StoragePutOperation {
     func pause() {
     }
 
@@ -161,7 +161,7 @@ class MockStoragePutOperation: AmplifyOperation<Progress, String, StoragePutErro
     }
 }
 
-class MockStorageRemoveOperation: AmplifyOperation<Void, String, StorageRemoveError>,
+class MockStorageRemoveOperation: AmplifyOperation<Void, String, StorageError>,
 StorageRemoveOperation {
     func pause() {
     }
@@ -170,7 +170,7 @@ StorageRemoveOperation {
     }
 }
 
-class MockStorageListOperation: AmplifyOperation<Void, StorageListResult, StorageListError>, StorageListOperation {
+class MockStorageListOperation: AmplifyOperation<Void, StorageListResult, StorageError>, StorageListOperation {
     func pause() {
     }
 

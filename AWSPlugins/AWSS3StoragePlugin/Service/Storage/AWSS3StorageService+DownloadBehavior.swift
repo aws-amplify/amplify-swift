@@ -46,13 +46,13 @@ extension AWSS3StorageService {
                 let error = task.error! as NSError
                 let innerMessage = StorageErrorHelper.getInnerMessage(error)
                 let errorDescription = StorageErrorHelper.getErrorDescription(innerMessage: innerMessage)
-                onEvent(StorageEvent.failed(StorageServiceError.unknown(errorDescription, "Recovery Message")))
+                onEvent(StorageEvent.failed(StorageError.unknown(errorDescription, "Recovery Message")))
 
                 return nil
             }
 
             guard let downloadTask = task.result else {
-                onEvent(StorageEvent.failed(StorageServiceError.unknown("No ContinuationBlock data", "")))
+                onEvent(StorageEvent.failed(StorageError.unknown("No ContinuationBlock data", "")))
                 return nil
             }
 
@@ -78,7 +78,7 @@ extension AWSS3StorageService {
 
         let block: AWSS3TransferUtilityDownloadCompletionHandlerBlock = { (task, location, data, error ) in
             guard let response = task.response else {
-                onEvent(StorageEvent.failed(StorageServiceError.unknown("Missing HTTP Status", "")))
+                onEvent(StorageEvent.failed(StorageError.unknown("Missing HTTP Status", "")))
                 return
             }
 
@@ -86,12 +86,12 @@ extension AWSS3StorageService {
                 // TODO HttpStatus Mapper
                 // TODO any retry logic based on status code?
                 if response.statusCode == 404 {
-                    onEvent(StorageEvent.failed(StorageServiceError.notFound(
+                    onEvent(StorageEvent.failed(StorageError.notFound(
                         StorageErrorConstants.keyNotFound.errorDescription,
                         StorageErrorConstants.keyNotFound.recoverySuggestion)))
 
                 } else {
-                    onEvent(StorageEvent.failed(StorageServiceError.httpStatusError(
+                    onEvent(StorageEvent.failed(StorageError.httpStatusError(
                         "status code \(response.statusCode)", "Check the status code")))
                 }
 
@@ -101,7 +101,7 @@ extension AWSS3StorageService {
             guard error == nil else {
                 let error = error! as NSError
 
-                onEvent(StorageEvent.failed(StorageServiceError.unknown("Error with code: \(error.code) ", "")))
+                onEvent(StorageEvent.failed(StorageError.unknown("Error with code: \(error.code) ", "")))
                 return
             }
 

@@ -12,13 +12,13 @@ import AWSMobileClient
 
 // TODO: thread safety: everything has to be locked down
 // TODO verify no retain cycle
-public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void, StorageDownloadFileError>,
+public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void, StorageError>,
     StorageDownloadFileOperation {
 
     let request: AWSS3StorageDownloadFileRequest
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
-    let onEvent: ((AsyncEvent<Progress, Void, StorageDownloadFileError>) -> Void)?
+    let onEvent: ((AsyncEvent<Progress, Void, StorageError>) -> Void)?
 
     var storageOperationReference: StorageOperationReference?
 
@@ -59,8 +59,7 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
 
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
-                let storageGetError = StorageDownloadFileError.identity(error.errorDescription, error.recoverySuggestion)
-                dispatch(storageGetError)
+                dispatch(error)
             }
 
             finish()
@@ -77,7 +76,7 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
     }
 
     private func onEventHandler(
-        event: StorageEvent<StorageOperationReference, Progress, Data?, StorageServiceError>) {
+        event: StorageEvent<StorageOperationReference, Progress, Data?, StorageError>) {
         switch event {
         case .initiated(let reference):
             storageOperationReference = reference
@@ -87,27 +86,25 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
             dispatch()
             finish()
         case .failed(let error):
-            let storageDownloadFileError = StorageDownloadFileError.service(
-                error.errorDescription, error.recoverySuggestion)
-            dispatch(storageDownloadFileError)
+            dispatch(error)
             finish()
         }
     }
 
     private func dispatch(_ progress: Progress) {
-        let asyncEvent = AsyncEvent<Progress, Void, StorageDownloadFileError>.inProcess(progress)
+        let asyncEvent = AsyncEvent<Progress, Void, StorageError>.inProcess(progress)
         dispatch(event: asyncEvent)
         onEvent?(asyncEvent)
     }
 
     private func dispatch() {
-        let asyncEvent = AsyncEvent<Progress, Void, StorageDownloadFileError>.completed(())
+        let asyncEvent = AsyncEvent<Progress, Void, StorageError>.completed(())
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }
 
-    private func dispatch(_ error: StorageDownloadFileError) {
-        let asyncEvent = AsyncEvent<Progress, Void, StorageDownloadFileError>.failed(error)
+    private func dispatch(_ error: StorageError) {
+        let asyncEvent = AsyncEvent<Progress, Void, StorageError>.failed(error)
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }

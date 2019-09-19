@@ -22,9 +22,9 @@ class AWSS3StorageGetURLRequestTests: XCTestCase {
                                                 expires: testExpires,
                                                 options: testOptions)
 
-        let storageGetURLErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        XCTAssertNil(storageGetURLErrorOptional)
+        XCTAssertNil(storageErrorOptional)
     }
 
     func testValidateEmptyTargetIdentityIdError() {
@@ -34,10 +34,10 @@ class AWSS3StorageGetURLRequestTests: XCTestCase {
                                                 expires: testExpires,
                                                 options: testOptions)
 
-        let storageGetURLErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storageGetURLErrorOptional else {
-            XCTFail("Missing storageGetURLError")
+        guard let error = storageErrorOptional else {
+            XCTFail("Missing storageError")
             return
         }
 
@@ -57,10 +57,10 @@ class AWSS3StorageGetURLRequestTests: XCTestCase {
                                              expires: testExpires,
                                              options: testOptions)
 
-        let storageGetURLErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storageGetURLErrorOptional else {
-            XCTFail("Missing storageGetURLError")
+        guard let error = storageErrorOptional else {
+            XCTFail("Missing storageError")
             return
         }
 
@@ -80,10 +80,10 @@ class AWSS3StorageGetURLRequestTests: XCTestCase {
                                              expires: testExpires,
                                              options: testOptions)
 
-        let storageGetURLErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storageGetURLErrorOptional else {
-            XCTFail("Missing storageGetURLError")
+        guard let error = storageErrorOptional else {
+            XCTFail("Missing storageError")
             return
         }
 
@@ -103,10 +103,10 @@ class AWSS3StorageGetURLRequestTests: XCTestCase {
                                              expires: -1,
                                              options: testOptions)
 
-        let storageGetURLErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storageGetURLErrorOptional else {
-            XCTFail("Missing storageGetURLError")
+        guard let error = storageErrorOptional else {
+            XCTFail("Missing storageError")
             return
         }
 

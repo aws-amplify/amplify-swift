@@ -44,13 +44,13 @@ extension AWSS3StorageService {
             guard task.error == nil else {
                 let error = task.error! as NSError
                 let storageErrorString = StorageErrorHelper.map(error)
-                onEvent(StorageEvent.failed(StorageServiceError.service(storageErrorString.errorDescription,
+                onEvent(StorageEvent.failed(StorageError.service(storageErrorString.errorDescription,
                                                                      storageErrorString.recoverySuggestion)))
                 return nil
             }
 
             guard let result = task.result else {
-                onEvent(StorageEvent.failed(StorageServiceError.unknown("no error or result", "TODO")))
+                onEvent(StorageEvent.failed(StorageError.unknown("no error or result", "TODO")))
                 return nil
             }
 

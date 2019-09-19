@@ -29,14 +29,14 @@ struct AWSS3StorageDownloadFileRequest {
         self.options = options
     }
 
-    /// Performs client side validation and returns a `StorageDownloadFileError` for any validation failures.
-    func validate() -> StorageDownloadFileError? {
+    /// Performs client side validation and returns a `StorageError` for any validation failures.
+    func validate() -> StorageError? {
         if let error = StorageRequestUtils.validateTargetIdentityId(targetIdentityId, accessLevel: accessLevel) {
-            return StorageDownloadFileError.validation(error.errorDescription, error.recoverySuggestion)
+            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
         }
 
         if let error = StorageRequestUtils.validateKey(key) {
-            return StorageDownloadFileError.validation(error.errorDescription, error.recoverySuggestion)
+            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
         }
 
         return nil
