@@ -14,11 +14,10 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
     func testGetNonexistentKey() {
         let key = "testGetNonexistentKey"
         let failInvoked = expectation(description: "Failed is invoked")
-        let options = StorageGetOption(accessLevel: nil,
-                                       targetIdentityId: nil,
-                                       storageGetDestination: .data,
-                                       options: nil)
-        let operation = Amplify.Storage.get(key: key, options: options) { (event) in
+        let options = StorageGetDataOptions(accessLevel: nil,
+                                            targetIdentityId: nil,
+                                            options: nil)
+        let operation = Amplify.Storage.getData(key: key, options: options) { (event) in
             switch event {
             case .completed:
                 XCTFail("Should not have completed successfully")
@@ -28,7 +27,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
                     return
                 }
 
-                XCTAssertEqual(errorDescription, StorageErrorConstants.KeyNotFound.errorDescription)
+                XCTAssertEqual(errorDescription, StorageErrorConstants.keyNotFound.errorDescription)
                 failInvoked.fulfill()
             default:
                 break
@@ -53,10 +52,11 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
             case .completed:
                 XCTFail("Completed event is received")
             case .failed(let error):
-                guard case let .missingFile = error else {
-                    XCTFail("Should have been missing File error")
+                guard case let .missingFile(error) = error else {
+                    XCTFail("Should have been service error with missing File description")
                     return
                 }
+                //XCTAssertEqual(error.0, StorageErrorConstants.missingFile.errorDescription)
                 failedInvoked.fulfill()
             default:
                 break

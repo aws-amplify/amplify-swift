@@ -22,9 +22,9 @@ class AWSS3StorageRemoveRequestTests: XCTestCase {
                                                 key: testKey,
                                                 options: testOptions)
 
-        let storageRemoveErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        XCTAssertNil(storageRemoveErrorOptional)
+        XCTAssertNil(storageErrorOptional)
     }
 
     func testValidateEmptyKeyError() {
@@ -32,10 +32,10 @@ class AWSS3StorageRemoveRequestTests: XCTestCase {
                                                 key: "",
                                                 options: testOptions)
 
-        let storageRemoveErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storageRemoveErrorOptional else {
-            XCTFail("Missing StorageRemoveError")
+        guard let error = storageErrorOptional else {
+            XCTFail("Missing StorageError")
             return
         }
 

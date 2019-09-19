@@ -6,5 +6,5 @@
 //
 
 import Foundation
-public protocol StoragePutOperation: AmplifyOperation<Progress, StoragePutResult, StoragePutError>, Resumable {
+public protocol StoragePutOperation: AmplifyOperation<Progress, String, StorageError>, Resumable {
 }

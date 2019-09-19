@@ -11,45 +11,7 @@ import XCTest
 
 @testable import AWSS3StoragePlugin
 
-class AWSS3StorageRemoveOperationTests: XCTestCase {
-
-    var hubPlugin: MockHubCategoryPlugin!
-    var mockStorageService: MockAWSS3StorageService!
-    var mockAuthService: MockAWSAuthService!
-
-    let testKey = "TestKey"
-
-    override func setUp() {
-        let hubConfig = HubCategoryConfiguration(
-            plugins: ["MockHubCategoryPlugin": true]
-        )
-        hubPlugin = MockHubCategoryPlugin()
-        let mockAmplifyConfig = AmplifyConfiguration(hub: hubConfig)
-
-        do {
-            try Amplify.add(plugin: hubPlugin)
-            try Amplify.configure(mockAmplifyConfig)
-        } catch let error as AmplifyError {
-            XCTFail("setUp failed with error: \(error); \(error.errorDescription); \(error.recoverySuggestion)")
-        } catch {
-            XCTFail("setup failed with unknown error")
-        }
-
-//        let methodWasInvokedOnHubPlugin = expectation(
-//            description: "method was invoked on hub plugin")
-//        hubPlugin.listeners.append { message in
-//            if message == "dispatch(to:payload:)" {
-//                methodWasInvokedOnHubPlugin.fulfill()
-//            }
-//        }
-
-        mockStorageService = MockAWSS3StorageService()
-        mockAuthService = MockAWSAuthService()
-    }
-
-    override func tearDown() {
-        Amplify.reset()
-    }
+class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
 
     func testRemoveOperationValidationError() {
         let request = AWSS3StorageRemoveRequest(accessLevel: .public,
@@ -79,7 +41,7 @@ class AWSS3StorageRemoveOperationTests: XCTestCase {
     }
 
     func testRemoveOperationGetIdentityIdError() {
-        mockAuthService.getIdentityIdError = AuthError.identity("", "")
+        mockAuthService.getIdentityIdError = StorageError.identity("", "")
         let request = AWSS3StorageRemoveRequest(accessLevel: .public,
                                                 key: testKey,
                                                 options: nil)
@@ -105,10 +67,12 @@ class AWSS3StorageRemoveOperationTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    func testGetOperationDownloadData() {
+    func testRemoveOperationDeleteSuccess() {
+        mockStorageService.storageServiceDeleteEvents = [StorageEvent.completed(())]
         let request = AWSS3StorageRemoveRequest(accessLevel: .public,
                                                 key: testKey,
                                                 options: nil)
+        let expectedServiceKey = StorageAccessLevel.public.rawValue + "/" + testKey
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageRemoveOperation(request,
                                                     storageService: mockStorageService,
@@ -123,8 +87,59 @@ class AWSS3StorageRemoveOperationTests: XCTestCase {
 
         operation.start()
 
-        XCTAssertTrue(operation.isFinished)
-        XCTAssertEqual(mockStorageService.deleteCalled, true)
         waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+        mockStorageService.verifyDelete(serviceKey: expectedServiceKey)
+    }
+
+    func testRemoveOperationDeleteFail() {
+        mockStorageService.storageServiceDeleteEvents = [StorageEvent.failed(StorageError.service("", ""))]
+        let request = AWSS3StorageRemoveRequest(accessLevel: .public,
+                                                key: testKey,
+                                                options: nil)
+        let expectedServiceKey = StorageAccessLevel.public.rawValue + "/" + testKey
+        let failedInvoked = expectation(description: "failed was invoked on operation")
+        let operation = AWSS3StorageRemoveOperation(request,
+                                                    storageService: mockStorageService,
+                                                    authService: mockAuthService) { (event) in
+            switch event {
+            case .failed:
+                failedInvoked.fulfill()
+            default:
+                XCTFail("Should have received failed event")
+            }
+        }
+
+        operation.start()
+
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+        mockStorageService.verifyDelete(serviceKey: expectedServiceKey)
+    }
+
+    func testRemoveOperationDeleteForPrivateAccessLevel() {
+        mockAuthService.identityId = testIdentityId
+        mockStorageService.storageServiceDeleteEvents = [StorageEvent.completed(())]
+        let request = AWSS3StorageRemoveRequest(accessLevel: .private,
+                                                key: testKey,
+                                                options: nil)
+        let expectedServiceKey = StorageAccessLevel.private.rawValue + "/" + testIdentityId + "/" + testKey
+        let completeInvoked = expectation(description: "complete was invoked on operation")
+        let operation = AWSS3StorageRemoveOperation(request,
+                                                    storageService: mockStorageService,
+                                                    authService: mockAuthService) { (event) in
+            switch event {
+            case .completed:
+                completeInvoked.fulfill()
+            default:
+                XCTFail("Should have received completed event")
+            }
+        }
+
+        operation.start()
+
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(operation.isFinished)
+        mockStorageService.verifyDelete(serviceKey: expectedServiceKey)
     }
 }

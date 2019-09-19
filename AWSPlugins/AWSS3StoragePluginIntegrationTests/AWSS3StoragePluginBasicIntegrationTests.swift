@@ -105,7 +105,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             testData += testData
         }
         let data = testData.data(using: .utf8)!
-        XCTAssertTrue(data.count > 10000000, "Could not create data object greater than 10MB")
+        XCTAssertTrue(data.count > 10_000_000, "Could not create data object greater than 10MB")
         let completeInvoked = expectation(description: "Completed is invoked")
 
         let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
@@ -157,12 +157,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let key = "testGetDataToMemory"
         putData(key: key, data: key.data(using: .utf8)!)
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageGetOption(accessLevel: nil,
-                                       targetIdentityId: nil,
-                                       storageGetDestination: .data,
-                                       options: nil)
+        let options = StorageGetDataOptions(accessLevel: nil,
+                                            targetIdentityId: nil,
+                                            options: nil)
 
-        let operation = Amplify.Storage.get(key: key, options: options) { (event) in
+        let operation = Amplify.Storage.getData(key: key, options: options) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -176,8 +175,8 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 60)
     }
 
-    func testGetDataToFile() {
-        let key = "testGetDataToFile"
+    func testDownloadFile() {
+        let key = "testDownloadFile"
         let timestamp = String(Date().timeIntervalSince1970)
         let timestampData = timestamp.data(using: .utf8)!
         putData(key: key, data: timestampData)
@@ -185,12 +184,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let fileURL = URL(fileURLWithPath: filePath)
         removeIfExists(fileURL)
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageGetOption(accessLevel: nil,
-                                       targetIdentityId: nil,
-                                       storageGetDestination: .file(local: fileURL),
-                                       options: nil)
+        let options = StorageDownloadFileOptions(accessLevel: nil,
+                                                 targetIdentityId: nil,
+                                                 options: nil)
 
-        let operation = Amplify.Storage.get(key: key, options: options) { (event) in
+        let operation = Amplify.Storage.downloadFile(key: key, local: fileURL, options: options) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -220,14 +218,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
         var remoteURLOptional: URL?
         let completeInvoked = expectation(description: "Completed is invoked")
-        let operation = Amplify.Storage.get(key: key, options: nil) { (event) in
+        let operation = Amplify.Storage.getURL(key: key, options: nil) { (event) in
             switch event {
             case .completed(let result):
-                if let result = result.remote {
-                    remoteURLOptional = result
-                } else {
-                    XCTFail("Missing remote url from result")
-                }
+                remoteURLOptional = result
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Failed with \(error)")
@@ -272,7 +266,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let key = "testListFromPublic"
         putData(key: key, dataString: key)
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageListOption(accessLevel: .public,
+        let options = StorageListOptions(accessLevel: .public,
                                         targetIdentityId: nil,
                                         path: key,
                                         options: nil)
@@ -296,7 +290,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     func testListEmpty() {
         let key = "testListEmpty"
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageListOption(accessLevel: .public,
+        let options = StorageListOptions(accessLevel: .public,
                                         targetIdentityId: nil,
                                         path: key,
                                         options: nil)
@@ -328,7 +322,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageListOption(accessLevel: .public,
+        let options = StorageListOptions(accessLevel: .public,
                                         targetIdentityId: nil,
                                         path: folder,
                                         options: nil)
@@ -365,7 +359,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageListOption(accessLevel: .public,
+        let options = StorageListOptions(accessLevel: .public,
                                         targetIdentityId: nil,
                                         path: key1,
                                         options: nil)

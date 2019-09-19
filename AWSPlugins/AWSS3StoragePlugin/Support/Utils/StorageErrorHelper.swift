@@ -35,9 +35,9 @@ class StorageErrorHelper {
         }
 
         // Extract specific error details and map to Amplify error
-        let storageListErrorOptional = StorageErrorHelper.map(errorType)
+        let storageErrorOptional = StorageErrorHelper.map(errorType)
 
-        return storageListErrorOptional ?? storageErrorString
+        return storageErrorOptional ?? storageErrorString
     }
 
     static func mapTransferUtilityError(_ error: NSError) -> StorageErrorString {

@@ -132,7 +132,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let plugin = MockStorageCategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin.listeners.append { message in
-            if message == "stub()" {
+            if message == "getData" {
                 methodInvokedOnDefaultPlugin.fulfill()
             }
         }
@@ -143,7 +143,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        Amplify.Storage.stub()
+        Amplify.Storage.getData(key: "", options: nil, onEvent: nil)
 
         waitForExpectations(timeout: 1.0)
     }
@@ -152,7 +152,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let plugin1 = MockStorageCategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin1.listeners.append { message in
-            if message == "stub()" {
+            if message == "getData" {
                 methodInvokedOnDefaultPlugin.fulfill()
             }
         }
@@ -165,7 +165,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
             expectation(description: "test method should not be invoked on second plugin")
         methodShouldNotBeInvokedOnSecondPlugin.isInverted = true
         plugin2.listeners.append { message in
-            if message == "stub()" {
+            if message == "getData" {
                 methodShouldNotBeInvokedOnSecondPlugin.fulfill()
             }
         }
@@ -181,7 +181,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
-        Amplify.Storage.stub()
+        Amplify.Storage.getData(key: "", options: nil, onEvent: nil)
         waitForExpectations(timeout: 1.0)
     }
 
@@ -191,7 +191,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
             expectation(description: "test method should not be invoked on default plugin")
         methodShouldNotBeInvokedOnDefaultPlugin.isInverted = true
         plugin1.listeners.append { message in
-            if message == "stub()" {
+            if message == "getDatab" {
                 methodShouldNotBeInvokedOnDefaultPlugin.fulfill()
             }
         }
@@ -203,7 +203,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let methodShouldBeInvokedOnSecondPlugin =
             expectation(description: "test method should be invoked on second plugin")
         plugin2.listeners.append { message in
-            if message == "stub()" {
+            if message == "getData" {
                 methodShouldBeInvokedOnSecondPlugin.fulfill()
             }
         }
@@ -219,7 +219,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
-        try Amplify.Storage.getPlugin(for: "MockSecondStorageCategoryPlugin").stub()
+        try Amplify.Storage.getPlugin(for: "MockSecondStorageCategoryPlugin").getData(key: "", options: nil, onEvent: nil)
         waitForExpectations(timeout: 1.0)
     }
 
@@ -260,7 +260,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
         let exception: BadInstructionException? = catchBadInstruction {
-            _ = Amplify.Storage.get(key: "foo", options: nil, onEvent: nil)
+            _ = Amplify.Storage.getData(key: "foo", options: nil, onEvent: nil)
         }
         XCTAssertNotNil(exception)
     }

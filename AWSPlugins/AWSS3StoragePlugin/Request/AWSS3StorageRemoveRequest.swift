@@ -23,10 +23,10 @@ struct AWSS3StorageRemoveRequest {
         self.options = options
     }
 
-    /// Performs client side validation and returns a `StorageRemoveError` for any validation failures.
-    func validate() -> StorageRemoveError? {
+    /// Performs client side validation and returns a `StorageError` for any validation failures.
+    func validate() -> StorageError? {
         if let error = StorageRequestUtils.validateKey(key) {
-            return StorageRemoveError.validation(error.errorDescription, error.recoverySuggestion)
+            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
         }
 
         return nil

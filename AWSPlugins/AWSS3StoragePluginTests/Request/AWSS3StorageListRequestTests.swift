@@ -20,9 +20,9 @@ class AWSS3StorageListRequestTests: XCTestCase {
                                               path: testPath,
                                               options: testOptions)
 
-        let storageListErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        XCTAssertNil(storageListErrorOptional)
+        XCTAssertNil(storageErrorOptional)
     }
 
     func testValidateEmptyTargetIdentityIdError() {
@@ -31,10 +31,10 @@ class AWSS3StorageListRequestTests: XCTestCase {
                                               path: testPath,
                                               options: testOptions)
 
-        let storageListErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storageListErrorOptional else {
-            XCTFail("Missing StorageListError")
+        guard let error = storageErrorOptional else {
+            XCTFail("Missing StorageError")
             return
         }
 
@@ -53,10 +53,10 @@ class AWSS3StorageListRequestTests: XCTestCase {
                                               path: testPath,
                                               options: testOptions)
 
-        let storageListErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storageListErrorOptional else {
-            XCTFail("Missing StorageListError")
+        guard let error = storageErrorOptional else {
+            XCTFail("Missing StorageError")
             return
         }
 
@@ -75,10 +75,10 @@ class AWSS3StorageListRequestTests: XCTestCase {
                                               path: "",
                                               options: testOptions)
 
-        let storageListErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storageListErrorOptional else {
-            XCTFail("Missing StorageListError")
+        guard let error = storageErrorOptional else {
+            XCTFail("Missing StorageError")
             return
         }
 

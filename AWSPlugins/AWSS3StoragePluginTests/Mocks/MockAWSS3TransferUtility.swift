@@ -14,12 +14,12 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
     public var errorOnContinuation: NSError?
     public var errorOnCompletion: NSError?
 
-    private(set) public var downloadDataCalled: Bool?
-    private(set) public var downloadToURLCalled: Bool?
-    private(set) public var uploadDataCalled: Bool?
-    private(set) public var uploadFileCalled: Bool?
-    private(set) public var multiPartUploadFileCalled: Bool?
-    private(set) public var multiPartUploadDataCalled: Bool?
+    private(set) public var downloadDataCalled = 0
+    private(set) public var downloadToURLCalled = 0
+    private(set) public var uploadDataCalled = 0
+    private(set) public var uploadFileCalled = 0
+    private(set) public var multiPartUploadFileCalled = 0
+    private(set) public var multiPartUploadDataCalled = 0
 
     public func downloadData(fromBucket: String,
                              key: String,
@@ -27,7 +27,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
                              completionHandler: (AWSS3TransferUtilityDownloadCompletionHandlerBlock)?)
     -> AWSTask<AWSS3TransferUtilityDownloadTask> {
 
-        downloadDataCalled = true
+        downloadDataCalled += 1
 
         if let error = self.errorOnContinuation {
             let resultWithError = AWSTask<AWSS3TransferUtilityDownloadTask>.init(error: error)
@@ -63,7 +63,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
                          completionHandler: AWSS3TransferUtilityDownloadCompletionHandlerBlock?)
     -> AWSTask<AWSS3TransferUtilityDownloadTask> {
 
-        downloadToURLCalled = true
+        downloadToURLCalled += 1
 
         if let error = self.errorOnContinuation {
             let resultWithError = AWSTask<AWSS3TransferUtilityDownloadTask>.init(error: error)
@@ -97,7 +97,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
                            completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?)
     -> AWSTask<AWSS3TransferUtilityUploadTask> {
 
-        uploadDataCalled = true
+        uploadDataCalled += 1
 
         if let error = self.errorOnContinuation {
             let resultWithError = AWSTask<AWSS3TransferUtilityUploadTask>.init(error: error)
@@ -122,10 +122,6 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
         return result
     }
 
-    public func expectDownloadDataCalled() {
-        self.downloadDataCalled = true
-    }
-
     public func uploadFile(fileURL: URL,
                            bucket: String,
                            key: String,
@@ -133,7 +129,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
                            expression: AWSS3TransferUtilityUploadExpression,
                            completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?)
     -> AWSTask<AWSS3TransferUtilityUploadTask> {
-        uploadFileCalled = true
+        uploadFileCalled += 1
 
         if let error = self.errorOnContinuation {
             let resultWithError = AWSTask<AWSS3TransferUtilityUploadTask>.init(error: error)
@@ -167,7 +163,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
                                      completionHandler: AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock?)
         -> AWSTask<AWSS3TransferUtilityMultiPartUploadTask> {
 
-        multiPartUploadFileCalled = true
+        multiPartUploadFileCalled += 1
 
         if let error = self.errorOnContinuation {
             let resultWithError = AWSTask<AWSS3TransferUtilityMultiPartUploadTask>.init(error: error)
@@ -200,7 +196,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
                                      completionHandler: AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock?)
         -> AWSTask<AWSS3TransferUtilityMultiPartUploadTask> {
 
-        multiPartUploadDataCalled = true
+        multiPartUploadDataCalled += 1
 
         if let error = self.errorOnContinuation {
             let resultWithError = AWSTask<AWSS3TransferUtilityMultiPartUploadTask>.init(error: error)

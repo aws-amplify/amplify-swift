@@ -17,7 +17,7 @@ class AWSS3StoragePutRequestTests: XCTestCase {
     let testContentType = "TestContentType"
     let testMetadata: [String: String] = [:]
 
-    func testValidateSuccess() {
+    func testValidateSuccessWithDataUploadSource() {
         let request = AWSS3StoragePutRequest(accessLevel: .protected,
                                              key: testKey,
                                              uploadSource: .data(data: testData),
@@ -25,9 +25,26 @@ class AWSS3StoragePutRequestTests: XCTestCase {
                                              metadata: testMetadata,
                                              options: testOptions)
 
-        let storagePutErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        XCTAssertNil(storagePutErrorOptional)
+        XCTAssertNil(storageErrorOptional)
+    }
+
+    func testValidateSuccessWithFileUploadSource() {
+        let key = "testValidateSuccessWithFileUploadSource"
+        let filePath = NSTemporaryDirectory() + key + ".tmp"
+        let fileURL = URL(fileURLWithPath: filePath)
+        FileManager.default.createFile(atPath: filePath, contents: key.data(using: .utf8), attributes: nil)
+        let request = AWSS3StoragePutRequest(accessLevel: .protected,
+                                             key: testKey,
+                                             uploadSource: .file(file: fileURL),
+                                             contentType: testContentType,
+                                             metadata: testMetadata,
+                                             options: testOptions)
+
+        let storageErrorOptional = request.validate()
+
+        XCTAssertNil(storageErrorOptional)
     }
 
     func testValidateEmptyKeyError() {
@@ -38,10 +55,10 @@ class AWSS3StoragePutRequestTests: XCTestCase {
                                              metadata: testMetadata,
                                              options: testOptions)
 
-        let storagePutErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storagePutErrorOptional else {
-            XCTFail("Missing StoragePutError")
+        guard let error = storageErrorOptional else {
+            XCTFail("Missing StorageError")
             return
         }
 
@@ -62,10 +79,10 @@ class AWSS3StoragePutRequestTests: XCTestCase {
                                              metadata: testMetadata,
                                              options: testOptions)
 
-        let storagePutErrorOptional = request.validate()
+        let storageErrorOptional = request.validate()
 
-        guard let error = storagePutErrorOptional else {
-            XCTFail("Missing StoragePutError")
+        guard let error = storageErrorOptional else {
+            XCTFail("Missing StorageError")
             return
         }
 
@@ -79,18 +96,32 @@ class AWSS3StoragePutRequestTests: XCTestCase {
     }
 
     func testValidateMetadataKeyIsInvalid() {
+        let metadata = ["InvalidKeyNotLowerCase": "someValue"]
+        let request = AWSS3StoragePutRequest(accessLevel: .protected,
+                                             key: testKey,
+                                             uploadSource: .data(data: testData),
+                                             contentType: testContentType,
+                                             metadata: metadata,
+                                             options: testOptions)
 
+        let storageErrorOptional = request.validate()
+
+        guard let error = storageErrorOptional else {
+            XCTFail("Missing StorageError")
+            return
+        }
+
+        guard case .validation(let description, let recovery) = error else {
+            XCTFail("Error does not match validation error")
+            return
+        }
+
+        XCTAssertEqual(description, StorageErrorConstants.metadataKeysInvalid.errorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.metadataKeysInvalid.recoverySuggestion)
     }
 
-    func testValidateMetadataValuesTooLarge() {
-
-    }
-
-    func testIslargeUploadReturnsTrueForLargeFile() {
-
-    }
-
-    func testIsLargeUploadReturnsTrueForLargeData() {
-
-    }
+    // TODO: testValidateMetadataValuesTooLarge
+//    func testValidateMetadataValuesTooLarge() {
+//
+//    }
 }

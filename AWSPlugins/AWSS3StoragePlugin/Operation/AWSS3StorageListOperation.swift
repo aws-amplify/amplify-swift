@@ -10,13 +10,13 @@ import Amplify
 import AWSS3
 import AWSMobileClient
 
-public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult, StorageListError>,
+public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult, StorageError>,
     StorageListOperation {
 
     let request: AWSS3StorageListRequest
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
-    let onEvent: ((AsyncEvent<Void, StorageListResult, StorageListError>) -> Void)?
+    let onEvent: ((AsyncEvent<Void, StorageListResult, StorageError>) -> Void)?
 
     init(_ request: AWSS3StorageListRequest,
          storageService: AWSS3StorageServiceBehaviour,
@@ -45,8 +45,7 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
 
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
-                let storageListError = StorageListError.identity(error.errorDescription, error.recoverySuggestion)
-                dispatch(storageListError)
+                dispatch(error)
             }
 
             finish()
@@ -60,7 +59,7 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
         storageService.list(prefix: accessLevelPrefix, path: request.path, onEvent: onEventHandler)
     }
 
-    private func onEventHandler(event: StorageEvent<Void, Void, StorageListResult, StorageListError>) {
+    private func onEventHandler(event: StorageEvent<Void, Void, StorageListResult, StorageError>) {
         switch event {
         case .initiated:
             break
@@ -76,13 +75,13 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
     }
 
     private func dispatch(_ result: StorageListResult) {
-        let asyncEvent = AsyncEvent<Void, StorageListResult, StorageListError>.completed(result)
+        let asyncEvent = AsyncEvent<Void, StorageListResult, StorageError>.completed(result)
         dispatch(event: asyncEvent)
         onEvent?(asyncEvent)
     }
 
-    private func dispatch(_ error: StorageListError) {
-        let asyncEvent = AsyncEvent<Void, StorageListResult, StorageListError>.failed(error)
+    private func dispatch(_ error: StorageError) {
+        let asyncEvent = AsyncEvent<Void, StorageListResult, StorageError>.failed(error)
         onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }

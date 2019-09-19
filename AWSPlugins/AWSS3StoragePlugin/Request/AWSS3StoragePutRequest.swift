@@ -32,18 +32,18 @@ struct AWSS3StoragePutRequest {
         self.options = options
     }
 
-    /// Performs client side validation and returns a `StoragePutError` for any validation failures.
-    func validate() -> StoragePutError? {
+    /// Performs client side validation and returns a `StorageError` for any validation failures.
+    func validate() -> StorageError? {
         if let error = StorageRequestUtils.validateKey(key) {
-            return StoragePutError.validation(error.errorDescription, error.recoverySuggestion)
+            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
         }
 
         if let error = StorageRequestUtils.validateContentType(contentType) {
-            return StoragePutError.validation(error.errorDescription, error.recoverySuggestion)
+            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
         }
 
         if let error = StorageRequestUtils.validateMetadata(metadata) {
-            return StoragePutError.validation(error.errorDescription, error.recoverySuggestion)
+            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
         }
 
         return nil

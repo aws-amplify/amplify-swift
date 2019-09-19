@@ -8,7 +8,7 @@
 import XCTest
 import AWSMobileClient
 import Amplify
-import AWSS3StoragePlugin
+@testable import AWSS3StoragePlugin
 import AWSS3
 import AWSCognitoIdentityProvider
 
@@ -26,7 +26,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     func testListFromProtectedForUnauthenticatedUser() {
         let key = "testListFromProtectedForUnauthenticatedUserShouldReturnAccessDenied"
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageListOption(accessLevel: .protected,
+        let options = StorageListOptions(accessLevel: .protected,
                                         targetIdentityId: nil,
                                         path: key,
                                         options: nil)
@@ -50,7 +50,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     func testListFromPrivateForUnauthenticatedUserForReturnAccessDenied() {
         let key = "testListFromPrivateForUnauthenticatedUserForReturnAccessDenied"
         let listFailedExpectation = expectation(description: "List Operation should fail")
-        let options = StorageListOption(accessLevel: .private,
+        let options = StorageListOptions(accessLevel: .private,
                                         targetIdentityId: nil,
                                         path: key,
                                         options: nil)
@@ -60,10 +60,11 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 XCTFail("Should not have completed")
             case .failed(let error):
                 // TODO: service error, check string? 
-                guard case .accessDenied = error else {
+                guard case let .service(description, suggestion) = error else {
                     XCTFail("Expected accessDenied error")
                     return
                 }
+                XCTAssertEqual(description, StorageErrorConstants.accessDenied.errorDescription)
                 listFailedExpectation.fulfill()
             default:
                 break
@@ -116,11 +117,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
         // get key after removal should return NotFound
         let getFailedExpectation = expectation(description: "Get Operation should fail")
-        let getOptions = StorageGetOption(accessLevel: accessLevel,
-                                          targetIdentityId: nil,
-                                          storageGetDestination: .data,
-                                          options: nil)
-        _ = Amplify.Storage.get(key: key, options: getOptions) { (event) in
+        let getOptions = StorageGetDataOptions(accessLevel: accessLevel,
+                                               targetIdentityId: nil,
+                                               options: nil)
+        _ = Amplify.Storage.getData(key: key, options: getOptions) { (event) in
             switch event {
             case .completed(let results):
                 XCTFail("Should not have completed with result \(results)")
@@ -185,7 +185,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
         // list keys for user1 as user2 - should fail with validation error
         let listFailedExpectation = expectation(description: "List operation should fail")
-        let listOptions = StorageListOption(accessLevel: accessLevel,
+        let listOptions = StorageListOptions(accessLevel: accessLevel,
                                             targetIdentityId: user1IdentityId,
                                             path: key,
                                             options: nil)
@@ -207,11 +207,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
         // get key for user1 as user2 - should fail with validation error
         let getFailedExpectation = expectation(description: "Get Operation should fail")
-        let getOptions = StorageGetOption(accessLevel: accessLevel,
-                                          targetIdentityId: user1IdentityId,
-                                          storageGetDestination: .data,
-                                          options: nil)
-        _ = Amplify.Storage.get(key: key, options: getOptions) { (event) in
+        let getOptions = StorageGetDataOptions(accessLevel: accessLevel,
+                                               targetIdentityId: user1IdentityId,
+                                               options: nil)
+        _ = Amplify.Storage.getData(key: key, options: getOptions) { (event) in
             switch event {
             case .completed(let results):
                 XCTFail("Should not have completed")
@@ -250,11 +249,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
         // Get key after removal should return NotFound
         let getFailedExpectation = expectation(description: "Get Operation should fail")
-        let getOptions = StorageGetOption(accessLevel: accessLevel,
-                                          targetIdentityId: nil,
-                                          storageGetDestination: .data,
-                                          options: nil)
-        _ = Amplify.Storage.get(key: key, options: getOptions) { (event) in
+        let getOptions = StorageGetDataOptions(accessLevel: accessLevel,
+                                               targetIdentityId: nil,
+                                               options: nil)
+        _ = Amplify.Storage.getData(key: key, options: getOptions) { (event) in
             switch event {
             case .completed(let results):
                 XCTFail("Should not have completed with result \(results)")
@@ -276,7 +274,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     func list(path: String, accessLevel: StorageAccessLevel, targetIdentityId: String? = nil) -> [String]? {
         var keys: [String]?
         let listExpectation = expectation(description: "List operation should be successful")
-        let listOptions = StorageListOption(accessLevel: accessLevel,
+        let listOptions = StorageListOptions(accessLevel: accessLevel,
                                             targetIdentityId: targetIdentityId,
                                             path: path,
                                             options: nil)
@@ -298,14 +296,13 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     func get(key: String, accessLevel: StorageAccessLevel, targetIdentityId: String? = nil) -> Data? {
         var data: Data?
         let getExpectation = expectation(description: "Get Operation should be successful")
-        let getOptions = StorageGetOption(accessLevel: accessLevel,
-                                          targetIdentityId: targetIdentityId,
-                                          storageGetDestination: .data,
-                                          options: nil)
-        _ = Amplify.Storage.get(key: key, options: getOptions) { (event) in
+        let getOptions = StorageGetDataOptions(accessLevel: accessLevel,
+                                               targetIdentityId: targetIdentityId,
+                                               options: nil)
+        _ = Amplify.Storage.getData(key: key, options: getOptions) { (event) in
             switch event {
-            case .completed(let results):
-                data = results.data
+            case .completed(let result):
+                data = result
                 getExpectation.fulfill()
             case .failed(let error):
                 XCTFail("Failed to get with error \(error)")
@@ -319,10 +316,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
     func put(key: String, data: String, accessLevel: StorageAccessLevel) {
         let putExpectation = expectation(description: "Put operation should be successful")
-        let putOptions = StoragePutOption(accessLevel: accessLevel,
-                                          contentType: nil,
-                                          metadata: nil,
-                                          options: nil)
+        let putOptions = StoragePutOptions(accessLevel: accessLevel,
+                                           contentType: nil,
+                                           metadata: nil,
+                                           options: nil)
         _ = Amplify.Storage.put(key: key, data: data.data(using: .utf8)!, options: putOptions) { (event) in
             switch event {
             case .completed:
@@ -338,11 +335,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
     func remove(key: String, accessLevel: StorageAccessLevel) {
         let removeExpectation = expectation(description: "Remove Operation should be successful")
-        let removeOptions = StorageRemoveOption(accessLevel: accessLevel, options: nil)
+        let removeOptions = StorageRemoveOptions(accessLevel: accessLevel, options: nil)
         _ = Amplify.Storage.remove(key: key, options: removeOptions) { (event) in
             switch event {
-            case .completed(let results):
-                print("results from remove: \(results.key)")
+            case .completed(let key):
                 removeExpectation.fulfill()
             case .failed(let error):
                 XCTFail("Failed to remove with error \(error)")

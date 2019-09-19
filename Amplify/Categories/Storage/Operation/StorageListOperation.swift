@@ -6,5 +6,5 @@
 //
 
 import Foundation
-public protocol StorageListOperation: AmplifyOperation<Void, StorageListResult, StorageListError> {
+public protocol StorageListOperation: AmplifyOperation<Void, StorageListResult, StorageError> {
 }
