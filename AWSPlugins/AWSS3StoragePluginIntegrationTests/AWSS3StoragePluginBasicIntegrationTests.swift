@@ -158,8 +158,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         putData(key: key, data: key.data(using: .utf8)!)
         let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageGetDataOptions(accessLevel: nil,
-                                            targetIdentityId: nil,
-                                            options: nil)
+                                            targetIdentityId: nil)
 
         let operation = Amplify.Storage.getData(key: key, options: options) { (event) in
             switch event {
@@ -185,8 +184,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         removeIfExists(fileURL)
         let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageDownloadFileOptions(accessLevel: nil,
-                                                 targetIdentityId: nil,
-                                                 options: nil)
+                                                 targetIdentityId: nil)
 
         let operation = Amplify.Storage.downloadFile(key: key, local: fileURL, options: options) { (event) in
             switch event {
@@ -269,8 +267,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageListOptions(accessLevel: .public,
                                         targetIdentityId: nil,
-                                        path: key,
-                                        options: nil)
+                                        path: key)
         let operation = Amplify.Storage.list(options: options) { (event) in
             switch event {
             case .completed(let result):
@@ -293,8 +290,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageListOptions(accessLevel: .public,
                                         targetIdentityId: nil,
-                                        path: key,
-                                        options: nil)
+                                        path: key)
         let operation = Amplify.Storage.list(options: options) { (event) in
             switch event {
             case .completed(let result):
@@ -325,8 +321,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageListOptions(accessLevel: .public,
                                         targetIdentityId: nil,
-                                        path: folder,
-                                        options: nil)
+                                        path: folder)
         let operation = Amplify.Storage.list(options: options) { (event) in
             switch event {
             case .completed(let result):
@@ -362,8 +357,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageListOptions(accessLevel: .public,
                                         targetIdentityId: nil,
-                                        path: key1,
-                                        options: nil)
+                                        path: key1)
         let operation = Amplify.Storage.list(options: options) { (event) in
             switch event {
             case .completed(let result):

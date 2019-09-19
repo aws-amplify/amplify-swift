@@ -18,7 +18,7 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
                                                 targetIdentityId: nil,
                                                 key: "",
                                                 expires: 0,
-                                                options: nil)
+                                                pluginOptions: nil)
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageGetURLOperation(request,
                                                     storageService: mockStorageService,
@@ -46,7 +46,7 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
                                                 targetIdentityId: nil,
                                                 key: testKey,
                                                 expires: testExpires,
-                                                options: nil)
+                                                pluginOptions: nil)
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageGetURLOperation(request,
                                                  storageService: mockStorageService,
@@ -78,7 +78,7 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
                                                 targetIdentityId: nil,
                                                 key: testKey,
                                                 expires: expectedExpires,
-                                                options: nil)
+                                                pluginOptions: nil)
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageGetURLOperation(request,
@@ -109,7 +109,7 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
                                                 targetIdentityId: nil,
                                                 key: testKey,
                                                 expires: expectedExpires,
-                                                options: nil)
+                                                pluginOptions: nil)
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageGetURLOperation(request,
@@ -138,7 +138,7 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
                                                 targetIdentityId: testTargetIdentityId,
                                                 key: testKey,
                                                 expires: nil,
-                                                options: nil)
+                                                pluginOptions: nil)
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testTargetIdentityId + "/" + testKey
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageGetURLOperation(request,
@@ -158,6 +158,6 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
         XCTAssertEqual(mockStorageService.getPreSignedURLCalled, 1)
         waitForExpectations(timeout: 1)
         mockStorageService.verifyGetPreSignedURL(serviceKey: expectedServiceKey,
-                                                 expires: PluginConstants.defaultURLExpireTime)
+                                                 expires: AWSS3StorageGetURLRequest.defaultExpireInSeconds)
     }
 }

@@ -12,7 +12,7 @@ class AWSS3StorageDownloadFileRequestTests: XCTestCase {
 
     let testTargetIdentityId = "TestTargetIdentityId"
     let testKey = "TestKey"
-    let testOptions: Any? = [:]
+    let testPluginOptions: Any? = [:]
     let testURL = URL(fileURLWithPath: "path")
 
     func testValidateSuccess() {
@@ -20,7 +20,7 @@ class AWSS3StorageDownloadFileRequestTests: XCTestCase {
                                                       targetIdentityId: testTargetIdentityId,
                                                       key: testKey,
                                                       local: testURL,
-                                                      options: testOptions)
+                                                      pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -32,7 +32,7 @@ class AWSS3StorageDownloadFileRequestTests: XCTestCase {
                                                       targetIdentityId: "",
                                                       key: testKey,
                                                       local: testURL,
-                                                      options: testOptions)
+                                                      pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -55,7 +55,7 @@ class AWSS3StorageDownloadFileRequestTests: XCTestCase {
                                                       targetIdentityId: testTargetIdentityId,
                                                       key: testKey,
                                                       local: testURL,
-                                                      options: testOptions)
+                                                      pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -78,7 +78,7 @@ class AWSS3StorageDownloadFileRequestTests: XCTestCase {
                                                       targetIdentityId: testTargetIdentityId,
                                                       key: "",
                                                       local: testURL,
-                                                      options: testOptions)
+                                                      pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 

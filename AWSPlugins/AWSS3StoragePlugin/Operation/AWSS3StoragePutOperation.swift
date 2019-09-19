@@ -103,7 +103,6 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
 
         let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
                                                            identityId: identityId,
-                                                           targetIdentityId: nil,
                                                            key: request.key)
         let serviceMetadata = StorageRequestUtils.getServiceMetadata(request.metadata)
 
@@ -112,7 +111,7 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
             return
         }
 
-        if uploadSize > PluginConstants.multiPartUploadSizeThreshold {
+        if uploadSize > AWSS3StoragePutRequest.multiPartUploadSizeThreshold {
             storageService.multiPartUpload(serviceKey: serviceKey,
                                            uploadSource: request.uploadSource,
                                            contentType: request.contentType,

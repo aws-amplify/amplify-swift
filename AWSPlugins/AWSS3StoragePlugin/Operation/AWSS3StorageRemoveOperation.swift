@@ -68,7 +68,6 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, Storage
 
         let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
                                                            identityId: identityId,
-                                                           targetIdentityId: nil,
                                                            key: request.key)
 
         if isCancelled {

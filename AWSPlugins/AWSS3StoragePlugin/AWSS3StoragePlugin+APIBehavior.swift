@@ -31,7 +31,7 @@ extension AWSS3StoragePlugin {
                                                 targetIdentityId: options?.targetIdentityId,
                                                 key: key,
                                                 expires: options?.expires,
-                                                options: options?.options)
+                                                pluginOptions: options?.pluginOptions)
 
         let getURLOperation = AWSS3StorageGetURLOperation(request,
                                                           storageService: storageService,
@@ -59,7 +59,7 @@ extension AWSS3StoragePlugin {
         let request = AWSS3StorageGetDataRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
                                                  targetIdentityId: options?.targetIdentityId,
                                                  key: key,
-                                                 options: options?.options)
+                                                 pluginOptions: options?.pluginOptions)
 
         let getDataOperation = AWSS3StorageGetDataOperation(request,
                                                         storageService: storageService,
@@ -90,7 +90,7 @@ extension AWSS3StoragePlugin {
                                                       targetIdentityId: options?.targetIdentityId,
                                                       key: key,
                                                       local: local,
-                                                      options: options?.options)
+                                                      pluginOptions: options?.pluginOptions)
 
         let downloadFileOperation = AWSS3StorageDownloadFileOperation(request,
                                                              storageService: storageService,
@@ -122,7 +122,7 @@ extension AWSS3StoragePlugin {
                                              uploadSource: .data(data: data),
                                              contentType: options?.contentType,
                                              metadata: options?.metadata,
-                                             options: options?.options)
+                                             pluginOptions: options?.pluginOptions)
 
         return put(request, onEvent: onEvent)
     }
@@ -148,7 +148,7 @@ extension AWSS3StoragePlugin {
                                              uploadSource: .file(file: local),
                                              contentType: options?.contentType,
                                              metadata: options?.metadata,
-                                             options: options?.options)
+                                             pluginOptions: options?.pluginOptions)
 
         return put(request, onEvent: onEvent)
     }
@@ -168,7 +168,7 @@ extension AWSS3StoragePlugin {
                        onEvent: StorageRemoveEventHandler?) -> StorageRemoveOperation {
         let request = AWSS3StorageRemoveRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
                                                 key: key,
-                                                options: options?.options)
+                                                pluginOptions: options?.pluginOptions)
         let removeOperation = AWSS3StorageRemoveOperation(request,
                                                           storageService: storageService,
                                                           authService: authService,
@@ -191,7 +191,7 @@ extension AWSS3StoragePlugin {
         let request = AWSS3StorageListRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
                                               targetIdentityId: options?.targetIdentityId,
                                               path: options?.path,
-                                              options: options?.options)
+                                              pluginOptions: options?.pluginOptions)
         let listOperation = AWSS3StorageListOperation(request,
                                                       storageService: storageService,
                                                       authService: authService,

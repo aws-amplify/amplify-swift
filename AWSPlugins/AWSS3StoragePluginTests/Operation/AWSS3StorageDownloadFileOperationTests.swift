@@ -18,7 +18,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
                                                       targetIdentityId: nil,
                                                       key: "",
                                                       local: testURL,
-                                                      options: nil)
+                                                      pluginOptions: nil)
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageDownloadFileOperation(request,
                                                           storageService: mockStorageService,
@@ -46,7 +46,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
                                                       targetIdentityId: nil,
                                                       key: testKey,
                                                       local: testURL,
-                                                      options: nil)
+                                                      pluginOptions: nil)
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageDownloadFileOperation(request,
                                                           storageService: mockStorageService,
@@ -79,7 +79,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
                                                       targetIdentityId: nil,
                                                       key: testKey,
                                                       local: testURL,
-                                                      options: nil)
+                                                      pluginOptions: nil)
         let expectedServiceKey = StorageAccessLevel.public.rawValue + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
@@ -113,7 +113,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
                                                       targetIdentityId: nil,
                                                       key: testKey,
                                                       local: testURL,
-                                                      options: nil)
+                                                      pluginOptions: nil)
         let expectedServiceKey = StorageAccessLevel.public.rawValue + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let failedInvoked = expectation(description: "failed was invoked on operation")
@@ -147,7 +147,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
                                                       targetIdentityId: testTargetIdentityId,
                                                       key: testKey,
                                                       local: testURL,
-                                                      options: nil)
+                                                      pluginOptions: nil)
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testTargetIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")

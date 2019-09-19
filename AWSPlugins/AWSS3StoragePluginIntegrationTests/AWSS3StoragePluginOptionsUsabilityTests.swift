@@ -22,8 +22,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         let expires = 10
         let options = StorageGetURLOptions(accessLevel: nil,
                                            targetIdentityId: nil,
-                                           expires: expires,
-                                           options: nil)
+                                           expires: expires)
         let operation = Amplify.Storage.getURL(key: key, options: options) { (event) in
             switch event {
             case .completed(let result):
@@ -94,7 +93,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         let metadataKey = "metadatakey"
         let metadataValue = metadataKey + "Value"
         let metadata = [key: value, metadataKey: metadataValue]
-        let options = StoragePutOptions(accessLevel: nil, contentType: nil, metadata: metadata, options: nil)
+        let options = StoragePutOptions(accessLevel: nil, contentType: nil, metadata: metadata)
         let completeInvoked = expectation(description: "Completed is invoked")
 
         let operation = Amplify.Storage.put(key: key, data: data, options: options) { (event) in

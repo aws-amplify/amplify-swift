@@ -5,25 +5,28 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
+// StorageGetURLOptions specifies additional options when retrieving the remote URL.
 public struct StorageGetURLOptions {
 
-    public var accessLevel: StorageAccessLevel?
+    // Access level of the storage system.
+    public let accessLevel: StorageAccessLevel?
 
+    // Target user to apply the action on.
     public let targetIdentityId: String?
 
+    // Number of seconds before the URL expires.
     public let expires: Int?
 
-    public var options: Any?
+    // Extra plugin specific options.
+    public let pluginOptions: Any?
 
     public init(accessLevel: StorageAccessLevel?,
                 targetIdentityId: String? = nil,
                 expires: Int? = nil,
-                options: Any? = nil) {
+                pluginOptions: Any? = nil) {
         self.accessLevel = accessLevel
         self.targetIdentityId = targetIdentityId
         self.expires = expires
-        self.options = options
+        self.pluginOptions = pluginOptions
     }
 }

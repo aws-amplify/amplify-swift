@@ -5,24 +5,26 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
+// StorageGetDataOptions specifies additional options when getting data.
 public struct StorageGetDataOptions {
 
-    public var accessLevel: StorageAccessLevel?
+    // Access level of the storage system.
+    public let accessLevel: StorageAccessLevel?
 
+    // Target user to apply the action on.
     public let targetIdentityId: String?
 
-    public var options: Any?
+    // Extra plugin specific options.
+    public let pluginOptions: Any?
 
-    // TODO: transferAcceleration should be in options most likely. and can be set globally
+    // TODO: transferAcceleration should be in pluginOptions
     // https://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
-
+    
     public init(accessLevel: StorageAccessLevel?,
                 targetIdentityId: String? = nil,
-                options: Any? = nil) {
+                pluginOptions: Any? = nil) {
         self.accessLevel = accessLevel
         self.targetIdentityId = targetIdentityId
-        self.options = options
+        self.pluginOptions = pluginOptions
     }
 }

@@ -12,7 +12,7 @@ class AWSS3StorageGetURLRequestTests: XCTestCase {
 
     let testTargetIdentityId = "TestTargetIdentityId"
     let testKey = "TestKey"
-    let testOptions: Any? = [:]
+    let testPluginOptions: Any? = [:]
     let testExpires = 10
 
     func testValidateSuccess() {
@@ -20,7 +20,7 @@ class AWSS3StorageGetURLRequestTests: XCTestCase {
                                                 targetIdentityId: testTargetIdentityId,
                                                 key: testKey,
                                                 expires: testExpires,
-                                                options: testOptions)
+                                                pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -32,7 +32,7 @@ class AWSS3StorageGetURLRequestTests: XCTestCase {
                                                 targetIdentityId: "",
                                                 key: testKey,
                                                 expires: testExpires,
-                                                options: testOptions)
+                                                pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -52,10 +52,10 @@ class AWSS3StorageGetURLRequestTests: XCTestCase {
 
     func testValidateTargetIdentityIdWithPrivateAccessLevelError() {
         let request = AWSS3StorageGetURLRequest(accessLevel: .private,
-                                             targetIdentityId: testTargetIdentityId,
-                                             key: testKey,
-                                             expires: testExpires,
-                                             options: testOptions)
+                                                targetIdentityId: testTargetIdentityId,
+                                                key: testKey,
+                                                expires: testExpires,
+                                                pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -75,10 +75,10 @@ class AWSS3StorageGetURLRequestTests: XCTestCase {
 
     func testValidateKeyIsEmptyError() {
         let request = AWSS3StorageGetURLRequest(accessLevel: .protected,
-                                             targetIdentityId: testTargetIdentityId,
-                                             key: "",
-                                             expires: testExpires,
-                                             options: testOptions)
+                                                targetIdentityId: testTargetIdentityId,
+                                                key: "",
+                                                expires: testExpires,
+                                                pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -98,10 +98,10 @@ class AWSS3StorageGetURLRequestTests: XCTestCase {
 
     func testValidateURLNonPositiveExpiresError() {
         let request = AWSS3StorageGetURLRequest(accessLevel: .protected,
-                                             targetIdentityId: testTargetIdentityId,
-                                             key: testKey,
-                                             expires: -1,
-                                             options: testOptions)
+                                                targetIdentityId: testTargetIdentityId,
+                                                key: testKey,
+                                                expires: -1,
+                                                pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 

@@ -13,17 +13,17 @@ struct AWSS3StorageGetDataRequest {
     let accessLevel: StorageAccessLevel
     let targetIdentityId: String?
     let key: String
-    let options: Any?
+    let pluginOptions: Any?
 
     /// Creates an instance with storage request input values.
     public init(accessLevel: StorageAccessLevel,
                 targetIdentityId: String?,
                 key: String,
-                options: Any?) {
+                pluginOptions: Any?) {
         self.accessLevel = accessLevel
         self.targetIdentityId = targetIdentityId
         self.key = key
-        self.options = options
+        self.pluginOptions = pluginOptions
     }
 
     /// Performs client side validation and returns a `StorageError` for any validation failures.

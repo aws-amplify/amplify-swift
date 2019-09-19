@@ -11,6 +11,4 @@ struct PluginConstants {
     static let bucket = "Bucket"
     static let region = "Region"
     static let defaultAccessLevel = "DefaultAccessLevel"
-    static let multiPartUploadSizeThreshold = 10_000_000 // 10MB
-    static let defaultURLExpireTime = 18_000 // in seconds
 }

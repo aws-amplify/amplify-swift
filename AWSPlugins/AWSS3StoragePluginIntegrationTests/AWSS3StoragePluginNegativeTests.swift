@@ -16,13 +16,13 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         let failInvoked = expectation(description: "Failed is invoked")
         let options = StorageGetDataOptions(accessLevel: nil,
                                             targetIdentityId: nil,
-                                            options: nil)
+                                            pluginOptions: nil)
         let operation = Amplify.Storage.getData(key: key, options: options) { (event) in
             switch event {
             case .completed:
                 XCTFail("Should not have completed successfully")
             case .failed(let error):
-                guard case let .notFound(errorDescription, _) = error else {
+                guard case let .keyNotFound(errorDescription, _) = error else {
                     XCTFail("Should have been validation error")
                     return
                 }
@@ -52,7 +52,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
             case .completed:
                 XCTFail("Completed event is received")
             case .failed(let error):
-                guard case let .missingFile(error) = error else {
+                guard case let .missingLocalFile(error) = error else {
                     XCTFail("Should have been service error with missing File description")
                     return
                 }

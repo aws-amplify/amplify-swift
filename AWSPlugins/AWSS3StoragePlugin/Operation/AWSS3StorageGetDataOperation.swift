@@ -93,8 +93,8 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<Progress, Data, Stor
 
         let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
                                                            identityId: identityId,
-                                                           targetIdentityId: request.targetIdentityId,
-                                                           key: request.key)
+                                                           key: request.key,
+                                                           targetIdentityId: request.targetIdentityId)
 
         if isCancelled {
             finish()

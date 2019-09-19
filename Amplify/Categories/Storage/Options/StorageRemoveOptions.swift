@@ -5,15 +5,17 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
+// StorageRemoveOptions specifies additional options when removing an object from storage.
 public struct StorageRemoveOptions {
-    public var accessLevel: StorageAccessLevel?
 
-    public var options: Any?
+    // Access level of the storage system.
+    public let accessLevel: StorageAccessLevel?
 
-    public init(accessLevel: StorageAccessLevel?, options: Any? = nil) {
+    // Extra plugin specific options
+    public let pluginOptions: Any?
+
+    public init(accessLevel: StorageAccessLevel?, pluginOptions: Any? = nil) {
         self.accessLevel = accessLevel
-        self.options = options
+        self.pluginOptions = pluginOptions
     }
 }

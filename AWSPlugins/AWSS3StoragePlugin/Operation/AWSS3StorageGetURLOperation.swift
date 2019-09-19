@@ -71,8 +71,8 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<Void, URL, StorageErr
 
         let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
                                                            identityId: identityId,
-                                                           targetIdentityId: request.targetIdentityId,
-                                                           key: request.key)
+                                                           key: request.key,
+                                                           targetIdentityId: request.targetIdentityId)
 
         if isCancelled {
             finish()
@@ -80,7 +80,7 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<Void, URL, StorageErr
         }
 
         storageService.getPreSignedURL(serviceKey: serviceKey,
-                                       expires: request.expires ?? PluginConstants.defaultURLExpireTime,
+                                       expires: request.expires,
                                        onEvent: onEventHandler)
     }
 

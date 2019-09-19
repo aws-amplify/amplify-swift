@@ -5,22 +5,28 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+// StorageListOptions specifies additional options when listing keys from storage.
 public struct StorageListOptions {
-    public var accessLevel: StorageAccessLevel?
 
-    public var targetIdentityId: String?
+    // Access level for the storage system.
+    public let accessLevel: StorageAccessLevel?
 
-    public var path: String?
+    // Target user to apply the action on.
+    public let targetIdentityId: String?
 
-    public var options: Any?
+    // Path to the keys.
+    public let path: String?
+
+    // Extra plugin specific options.
+    public let pluginOptions: Any?
 
     public init(accessLevel: StorageAccessLevel?,
                 targetIdentityId: String? = nil,
                 path: String? = nil,
-                options: Any? = nil) {
+                pluginOptions: Any? = nil) {
         self.accessLevel = accessLevel
         self.targetIdentityId = targetIdentityId
-        self.options = options
+        self.pluginOptions = pluginOptions
         self.path = path
     }
 }
