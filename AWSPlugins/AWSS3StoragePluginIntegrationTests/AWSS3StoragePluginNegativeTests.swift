@@ -13,6 +13,7 @@ import AWSS3
 class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
     func testGetNonexistentKey() {
         let key = "testGetNonexistentKey"
+        let expectedKey = "public/" + key
         let failInvoked = expectation(description: "Failed is invoked")
         let options = StorageGetDataOptions(accessLevel: nil,
                                             targetIdentityId: nil,
@@ -22,12 +23,12 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
             case .completed:
                 XCTFail("Should not have completed successfully")
             case .failed(let error):
-                guard case let .keyNotFound(errorDescription, _) = error else {
+                guard case let .keyNotFound(key, errorDescription, _) = error else {
                     XCTFail("Should have been validation error")
                     return
                 }
 
-                XCTAssertEqual(errorDescription, StorageErrorConstants.keyNotFound.errorDescription)
+                XCTAssertEqual(key, expectedKey)
                 failInvoked.fulfill()
             default:
                 break

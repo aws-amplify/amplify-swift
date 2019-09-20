@@ -45,13 +45,14 @@ extension AWSS3StorageService {
 
         let block: GetURLCompletedHandler = { (task: AWSTask<NSURL>) -> Any? in
             guard task.error == nil else {
-                let error = task.error!
-                onEvent(StorageEvent.failed(StorageError.unknown(error.localizedDescription, "TODO")))
+                let error = task.error! as NSError
+                let storageError = StorageErrorHelper.mapServiceError(error)
+                onEvent(StorageEvent.failed(storageError))
                 return nil
             }
 
             guard let result = task.result else {
-                onEvent(StorageEvent.failed(StorageError.unknown("No PresignedURL continueWith data", "")))
+                onEvent(StorageEvent.failed(StorageError.unknown("Missing result data")))
                 return nil
             }
 

@@ -41,7 +41,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testDownloadFileOperationGetIdentityIdError() {
-        mockAuthService.getIdentityIdError = StorageError.identity("", "")
+        mockAuthService.getIdentityIdError = AuthError.identity("", "", "")
         let request = AWSS3StorageDownloadFileRequest(accessLevel: .public,
                                                       targetIdentityId: nil,
                                                       key: testKey,

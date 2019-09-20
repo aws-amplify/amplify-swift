@@ -43,7 +43,7 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testPutOperationGetIdentityIdError() {
-        mockAuthService.getIdentityIdError = StorageError.identity("", "")
+        mockAuthService.getIdentityIdError = AuthError.identity("", "", "")
         let request = AWSS3StoragePutRequest(accessLevel: .protected,
                                              key: testKey,
                                              uploadSource: UploadSource.data(data: testData),

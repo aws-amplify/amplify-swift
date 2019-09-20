@@ -43,14 +43,13 @@ extension AWSS3StorageService {
         let block: ListCompletedHandler = { (task: AWSTask<AWSS3ListObjectsV2Output>) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
-                let storageErrorString = StorageErrorHelper.map(error)
-                onEvent(StorageEvent.failed(StorageError.service(storageErrorString.errorDescription,
-                                                                     storageErrorString.recoverySuggestion)))
+                let storageError = StorageErrorHelper.mapServiceError(error)
+                onEvent(StorageEvent.failed(storageError))
                 return nil
             }
 
             guard let result = task.result else {
-                onEvent(StorageEvent.failed(StorageError.unknown("no error or result", "TODO")))
+                onEvent(StorageEvent.failed(StorageError.unknown("Missing result data")))
                 return nil
             }
 

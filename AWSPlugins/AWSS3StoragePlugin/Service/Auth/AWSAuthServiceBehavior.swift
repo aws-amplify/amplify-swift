@@ -15,5 +15,5 @@ protocol AWSAuthServiceBehavior {
     
     func getCognitoCredentialsProvider() -> AWSCognitoCredentialsProvider
 
-    func getIdentityId() -> Result<String, StorageError>
+    func getIdentityId() -> Result<String, AuthError>
 }

@@ -40,7 +40,7 @@ class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testGetDataOperationGetIdentityIdError() {
-        mockAuthService.getIdentityIdError = StorageError.identity("", "")
+        mockAuthService.getIdentityIdError = AuthError.identity("", "", "")
         let request = AWSS3StorageGetDataRequest(accessLevel: .public,
                                                  targetIdentityId: nil,
                                                  key: testKey,

@@ -58,7 +58,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 XCTFail("Should not have completed")
             case .failed(let error):
                 // TODO: service error, check string? 
-                guard case let .service(description, suggestion) = error else {
+                guard case let .accessDenied(description, suggestion) = error else {
                     XCTFail("Expected accessDenied error")
                     return
                 }
@@ -190,7 +190,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             case .completed:
                 XCTFail("Should not have completed")
             case .failed(let error):
-                guard case .validation(let errorDescription, _) = error else {
+                guard case .validation(let field, let errorDescription, _) = error else {
                     XCTFail("Expected validation error")
                     return
                 }
@@ -210,7 +210,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             case .completed(let results):
                 XCTFail("Should not have completed")
             case .failed(let error):
-                guard case .validation(let errorDescription, _) = error else {
+                guard case .validation(let field, let errorDescription, _) = error else {
                     XCTFail("Expected validation error")
                     return
                 }

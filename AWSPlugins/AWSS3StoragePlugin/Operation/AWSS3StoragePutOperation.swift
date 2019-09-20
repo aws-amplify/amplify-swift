@@ -74,7 +74,7 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
         let identityIdResult = authService.getIdentityId()
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
-                dispatch(error)
+                dispatch(StorageError.identity(error.errorDescription, error.recoverySuggestion))
             }
 
             finish()
