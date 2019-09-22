@@ -10,7 +10,7 @@ import Amplify
 
 /// Stores the values of the storage request and provides validation on the stored properties.
 struct AWSS3StoragePutRequest {
-    static let multiPartUploadSizeThreshold = 10_000_000 // 10MB
+    static let multiPartUploadSizeThreshold = 5_000_000 // 5MB
 
     let accessLevel: StorageAccessLevel
     let key: String
