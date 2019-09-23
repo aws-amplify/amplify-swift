@@ -70,22 +70,12 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
             return
         }
 
-        if isCancelled {
-            finish()
-            return
-        }
-
         let identityIdResult = authService.getIdentityId()
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
                 dispatch(error)
             }
 
-            finish()
-            return
-        }
-
-        if isCancelled {
             finish()
             return
         }

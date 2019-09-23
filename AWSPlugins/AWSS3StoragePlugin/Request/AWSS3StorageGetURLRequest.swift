@@ -11,6 +11,7 @@ import Amplify
 /// Stores the values of the storage request and provides validation on the properties.
 struct AWSS3StorageGetURLRequest {
 
+    /// The default amount of time before the URL expires is 18000 seconds, or 5 hours.
     static let defaultExpireInSeconds = 18_000
 
     let accessLevel: StorageAccessLevel

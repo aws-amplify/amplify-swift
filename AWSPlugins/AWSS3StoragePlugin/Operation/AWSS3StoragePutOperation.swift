@@ -66,11 +66,6 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
             return
         }
 
-        if isCancelled {
-            finish()
-            return
-        }
-
         let identityIdResult = authService.getIdentityId()
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
@@ -81,22 +76,12 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
             return
         }
 
-        if isCancelled {
-            finish()
-            return
-        }
-
         let uploadSizeResult = StorageRequestUtils.getSize(request.uploadSource)
         guard case let .success(uploadSize) = uploadSizeResult else {
             if case let .failure(error) = uploadSizeResult {
                 dispatch(error)
             }
 
-            finish()
-            return
-        }
-
-        if isCancelled {
             finish()
             return
         }

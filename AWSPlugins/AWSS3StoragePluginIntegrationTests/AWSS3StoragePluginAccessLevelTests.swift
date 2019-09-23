@@ -23,6 +23,9 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         signUpUser(username: user2)
     }
 
+    /// Given: An unauthenticated user
+    /// When: List API with protected access level
+    /// Then: Operation completes successfully with no items since there are no keys at that location.
     func testListFromProtectedForUnauthenticatedUser() {
         let key = "testListFromProtectedForUnauthenticatedUserShouldReturnAccessDenied"
         let completeInvoked = expectation(description: "Completed is invoked")
@@ -46,6 +49,9 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 20)
     }
 
+    /// Given: An unauthenticated user
+    /// When: List API with private access level
+    /// Then: Operation fails with access denied service error
     func testListFromPrivateForUnauthenticatedUserForReturnAccessDenied() {
         let key = "testListFromPrivateForUnauthenticatedUserForReturnAccessDenied"
         let listFailedExpectation = expectation(description: "List Operation should fail")
@@ -72,18 +78,27 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 10)
     }
 
+    /// Given: `user1` user uploads some data with protected access level
+    /// When: The user retrieves and removes the data
+    /// Then: The operations complete successful
     func testPutToProtectedAndListThenGetThenRemove() {
         let key = "testPutToProtectedAndListThenGetThenRemove"
         let accessLevel: StorageAccessLevel = .protected
         putThenListThenGetThenRemoveForSingleUser(username: user1, key: key, accessLevel: accessLevel)
     }
 
+    /// Given: `user1` user uploads some data with private access level
+    /// When: The user retrieves and removes the data
+    /// Then: The operations complete successful
     func testPutToPrivateAndListThenGetThenRemove() {
         let key = #function
         let accessLevel: StorageAccessLevel = .private
         putThenListThenGetThenRemoveForSingleUser(username: user1, key: key, accessLevel: accessLevel)
     }
 
+    /// Given: `user1` user uploads some data with public access level
+    /// When: `user2` lists, gets, and removes the data for `user1`
+    /// Then: The list, get, and remove operations complete successful and data is retrieved then removed.
     func testPutToPublicAndListThenGetThenRemoveFromOtherUser() {
         let key = "testPutToPublicAndListThenGetThenRemoveFromOtherUser"
         let accessLevel: StorageAccessLevel = .public
@@ -134,6 +149,9 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 30)
     }
 
+    /// Given: `user1` user uploads some data with protected access level
+    /// When: `user2` lists, gets, and removes the data for `user1`
+    /// Then: The list and get operations complete successful and data is retrieved.
     func testPutToProtectedAndListThenGetFromOtherUser() {
         let key = "testPutToProtectedAndListThenGetThenFailRemoveFromOtherUser"
         let accessLevel: StorageAccessLevel = .protected
@@ -161,8 +179,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         XCTAssertNotNil(data)
     }
 
-    // Should this test really exist? or should we just test that a
-    // remove request cannot be made with private and targetIdentityId?
+
+    /// Given: `user1` user uploads some data with private access level
+    /// When: `user2` lists and gets the data for `user1`
+    /// Then: The list and get operations fail with validation errors
     func testPutToPrivateAndFailListThenFailGetFromOtherUser() {
         let key = "testPutToPrivateAndFailListThenFailGetFromOtherUser"
         let accessLevel: StorageAccessLevel = .private

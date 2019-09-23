@@ -11,7 +11,10 @@ import Amplify
 import AWSS3StoragePlugin
 import AWSS3
 class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
-    // Retrieve a URL which expires in 15 seconds.
+
+    /// Given: An object in storage
+    /// When: Call the GetURL API with 10 second expiry time
+    /// Then: Retrieve data successfully when the URL has not expired and fail to after the expiry time
     func testGetRemoteURLWithExpires() {
         let key = "testGetRemoteURLWithExpires"
         putData(key: key, dataString: key)
@@ -86,6 +89,9 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 15)
     }
 
+    /// Given: An object uploaded with metadata with key `metadataKey` and value `metadataValue`
+    /// When: Call the headObject API
+    /// Then: The expected metadata should exist on the object
     func testPutWithMetadata() {
         let key = "testputwithmetadata"
         let value = key + "Value"

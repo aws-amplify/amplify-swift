@@ -46,11 +46,6 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
             return
         }
 
-        if isCancelled {
-            finish()
-            return
-        }
-
         let identityIdResult = authService.getIdentityId()
 
         guard case let .success(identityId) = identityIdResult else {
@@ -58,11 +53,6 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
                 dispatch(error)
             }
 
-            finish()
-            return
-        }
-
-        if isCancelled {
             finish()
             return
         }

@@ -13,6 +13,9 @@ import AWSS3
 
 class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
+    /// Given: An data object
+    /// When: Upload the data
+    /// Then: The operation completes successfully
     func testPutData() {
         let key = "testPutData"
         let data = key.data(using: .utf8)!
@@ -33,6 +36,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 60)
     }
 
+    /// Given: A empty data object
+    /// When: Upload the data
+    /// Then: The operation completes successfully
     func testPutEmptyData() {
         let key = "testPutEmptyData"
         let data = "".data(using: .utf8)!
@@ -53,6 +59,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 60)
     }
 
+    /// Given: A file with contents
+    /// When: Upload the file
+    /// Then: The operation completes successfully
     func testPutDataFromFile() {
         let key = "testPutDataFromFile"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
@@ -76,6 +85,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 60)
     }
 
+    /// Given: A file with empty contents
+    /// When: Upload the file
+    /// Then: The operation completes successfully
     func testPutEmptyDataFromFile() {
         let key = "testPutEmptyDataFromFile"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
@@ -98,6 +110,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 60)
     }
 
+    /// Given: A large  data object
+    /// When: Upload the data
+    /// Then: The operation completes successfully
     func testPutLargeData() {
         let key = "testPutLargeData"
         var testData = key
@@ -123,6 +138,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 60)
     }
 
+    /// Given: A large file
+    /// When: Upload the file
+    /// Then: The operation completes successfully
     func testPutLargeFile() {
         let key = "testPutLargeFile"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
@@ -153,6 +171,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 60)
     }
 
+    /// Given: An object in storage
+    /// When: Call the getData API
+    /// Then: The operation completes successfully with the data retrieved
     func testGetDataToMemory() {
         let key = "testGetDataToMemory"
         putData(key: key, data: key.data(using: .utf8)!)
@@ -174,6 +195,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 60)
     }
 
+    /// Given: An object in storage
+    /// When: Call the downloadFile API
+    /// Then: The operation completes successfully the local file containing the data from the object
     func testDownloadFile() {
         let key = "testDownloadFile"
         let timestamp = String(Date().timeIntervalSince1970)
@@ -210,6 +234,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         removeIfExists(fileURL)
     }
 
+    /// Given: An object in storage
+    /// When: Call the getURL API
+    /// Then: The operation completes successfully with the URL retrieved
     func testGetRemoteURL() {
         let key = "testGetRemoteURL"
         putData(key: key, dataString: key)
@@ -261,6 +288,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 15)
     }
 
+    /// Given: An object in storage
+    /// When: Call the list API
+    /// Then: The operation completes successfully with the key retrieved
     func testListFromPublic() {
         let key = "testListFromPublic"
         putData(key: key, dataString: key)
@@ -285,6 +315,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 100)
     }
 
+    /// Given: No object in storage for the key
+    /// When: Call the list API
+    /// Then: The operation completes successfully with empty list of keys returned
     func testListEmpty() {
         let key = "testListEmpty"
         let completeInvoked = expectation(description: "Completed is invoked")
@@ -308,6 +341,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 10)
     }
 
+    /// Given: No object in storage for the key
+    /// When: Call the list API
+    /// Then: The operation completes successfully with empty list of keys returned
     func testListWithPathUsingFolderNameWithForwardSlash() {
         let key = "testListWithPathUsingFolderNameWithForwardSlash"
         let folder = key + "/"
@@ -343,6 +379,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 10)
     }
 
+    /// Given: Objects with identifiers specified in `keys` array stored in folder named (`key1`+`key2`)
+    /// When: Call the list API using the path `key1`
+    /// Then: The operation completes successfully with list of keys returned from the folder.
     func testListWithPathUsingIncompleteFolderName() {
         let key1 = "testListWithPathUsingIncomp"
         let key2 = "leteFolderName"
@@ -378,6 +417,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 10)
     }
 
+    /// Given: An object in storage
+    /// When: Call the remove API
+    /// Then: The operation completes successfully with the key removed from storage
     func testRemoveKey() {
         let key = "testRemoveKey"
         putData(key: key, dataString: key)
@@ -397,6 +439,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 60)
     }
 
+    /// Given: Object with key `key` does not exist in storage
+    /// When: Call the remove API
+    /// Then: The operation completes successfully.
     func testRemoveNonExistentKey() {
         let key = "testRemoveNonExistentKey"
 
@@ -415,6 +460,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 60)
     }
 
+    /// Given: Object with key `key` in storage
+    /// When: Using the escape hatch and calling headObject API  using the key "public/`key`"
+    /// Then: The request completes successful
     func testEscapeHatchAndGetHeadObject() {
         let key = "testEscapeHatchAndGetHeadObject"
         putData(key: key, dataString: key)
