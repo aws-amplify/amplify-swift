@@ -18,9 +18,9 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
     let authService: AWSAuthServiceBehavior
     let onEvent: ((AsyncEvent<Progress, String, StorageError>) -> Void)?
 
-    var storageOperationReference: StorageOperationReference?
+    var storageTaskReference: StorageTaskReference?
 
-    /// Concurrent queue for synchronizing access to `storageOperationReference`.
+    /// Concurrent queue for synchronizing access to `storageTaskReference`.
     private let taskQueue = DispatchQueue(label: Bundle.main.bundleIdentifier! + ".rw.task", attributes: .concurrent)
 
     init(_ request: AWSS3StoragePutRequest,
@@ -37,19 +37,19 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
 
     public func pause() {
         taskQueue.async(flags: .barrier) {
-            self.storageOperationReference?.pause()
+            self.storageTaskReference?.pause()
         }
     }
 
     public func resume() {
         taskQueue.async(flags: .barrier) {
-            self.storageOperationReference?.resume()
+            self.storageTaskReference?.resume()
         }
     }
 
     override public func cancel() {
         taskQueue.async(flags: .barrier) {
-            self.storageOperationReference?.cancel()
+            self.storageTaskReference?.cancel()
         }
         super.cancel()
     }
@@ -112,12 +112,12 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
     }
 
     private func onEventHandler(
-        event: StorageEvent<StorageOperationReference, Progress, Void, StorageError>) {
+        event: StorageEvent<StorageTaskReference, Progress, Void, StorageError>) {
         switch event {
         case .initiated(let reference):
-            storageOperationReference = reference
+            storageTaskReference = reference
             if isCancelled {
-                storageOperationReference?.cancel()
+                storageTaskReference?.cancel()
                 finish()
             }
         case .inProcess(let progress):

@@ -149,7 +149,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 30)
     }
 
-    /// Given: `user1` user uploads some data with protected access level
+    /// GivenK: `user1` user uploads some data with protected access level
     /// When: `user2` lists, gets, and removes the data for `user1`
     /// Then: The list and get operations complete successful and data is retrieved.
     func testPutToProtectedAndListThenGetFromOtherUser() {

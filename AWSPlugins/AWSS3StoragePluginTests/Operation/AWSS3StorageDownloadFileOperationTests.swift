@@ -71,7 +71,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
 
     func testDownloadFileOperationDownloadLocal() {
         mockStorageService.storageServiceDownloadEvents = [
-            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(nil)]
         let url = URL(fileURLWithPath: "path")
@@ -105,7 +105,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
 
     func testDownloadFileOperationDownloadLocalFailed() {
         mockStorageService.storageServiceDownloadEvents = [
-            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.failed(StorageError.service("", ""))]
         let url = URL(fileURLWithPath: "path")
@@ -139,7 +139,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
 
     func testGetOperationDownloadLocalFromTargetIdentityId() {
         mockStorageService.storageServiceDownloadEvents = [
-            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(nil)]
         let url = URL(fileURLWithPath: "path")
@@ -171,5 +171,5 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: url)
     }
 
-    // TODO: missing unit tets for pause resume and cancel. do we create a mock of the StorageOperationReference?
+    // TODO: missing unit tets for pause resume and cancel. do we create a mock of the StorageTaskReference?
 }

@@ -56,7 +56,7 @@ extension AWSS3StorageService {
                 return nil
             }
 
-            onEvent(StorageEvent.initiated(StorageOperationReference(downloadTask)))
+            onEvent(StorageEvent.initiated(StorageTaskReference(downloadTask)))
             return nil
         }
 
