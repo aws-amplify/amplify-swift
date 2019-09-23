@@ -95,7 +95,6 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(queue.size, 1)
     }
 
-
     // MARK: DownloadFile API Tests
 
     func testPluginDownloadFile() {

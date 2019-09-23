@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -123,11 +123,11 @@
 		21FFFA1F2313453D005878EA /* MockOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF9E1230F08F7005878EA /* MockOperationQueue.swift */; };
 		21FFFA2023134542005878EA /* MockAWSS3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF9D8230E1851005878EA /* MockAWSS3.swift */; };
 		3263D332138415AF42E64FF7 /* Pods_AmplifyTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDC7F1C368154B364CB74742 /* Pods_AmplifyTestApp.framework */; };
-		7D5ED6C78E25246DDAF2F2EC /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */; };
+		7D5ED6C78E25246DDAF2F2EC /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */; platformFilter = ios; };
 		9A7FF1D19CF0F11F96312DA4 /* Pods_AmplifyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176E334A02509BD4CE8866A6 /* Pods_AmplifyTests.framework */; };
 		9F1570B537834ED7F87E6CE2 /* Pods_AWSS3StoragePluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED44BE0096B074979532239 /* Pods_AWSS3StoragePluginTests.framework */; };
-		DA8076A12E27D05D777F4F11 /* Pods_AWSS3StoragePlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A4AE82D161DB4E9B6EC9281 /* Pods_AWSS3StoragePlugin.framework */; };
-		E2404F97BAFBE14273B869B2 /* Pods_AmplifyTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A758B7EC0289740B40CF0BE8 /* Pods_AmplifyTestCommon.framework */; };
+		DA8076A12E27D05D777F4F11 /* Pods_AWSS3StoragePlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A4AE82D161DB4E9B6EC9281 /* Pods_AWSS3StoragePlugin.framework */; platformFilter = ios; };
+		E2404F97BAFBE14273B869B2 /* Pods_AmplifyTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A758B7EC0289740B40CF0BE8 /* Pods_AmplifyTestCommon.framework */; platformFilter = ios; };
 		FA09B92B2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92A2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift */; };
 		FA09B92D2321A27F000E064D /* CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92C2321A27F000E064D /* CategoryConfigurable.swift */; };
 		FA09B92F2321A2DE000E064D /* APICategory+CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92E2321A2DE000E064D /* APICategory+CategoryConfigurable.swift */; };
@@ -1640,7 +1640,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1030;
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1100;
 				ORGANIZATIONNAME = "Amazon Web Services";
 				TargetAttributes = {
 					2125E1FD2318327300B3DEB5 = {
@@ -2449,7 +2449,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W3DRXD72QU;
 				INFOPLIST_FILE = AmplifyTestApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2470,7 +2470,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W3DRXD72QU;
 				INFOPLIST_FILE = AmplifyTestApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2487,7 +2487,7 @@
 			baseConfigurationReference = 6BAC32194A15ACB56F07DC87 /* Pods-AWSS3StoragePlugin.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = W3DRXD72QU;
@@ -2633,7 +2633,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2691,7 +2691,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
