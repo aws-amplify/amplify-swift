@@ -222,7 +222,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 5)
     }
 
-    // Mark: Commonn test functions
+    // MARK: - Common test functions
 
     func putThenListThenGetThenRemoveForSingleUser(username: String, key: String, accessLevel: StorageAccessLevel) {
         signIn(username: username)

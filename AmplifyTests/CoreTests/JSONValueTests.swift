@@ -25,6 +25,8 @@ class JSONValueTests: XCTestCase {
         XCTAssertEqual(decodedObject, expectedObject)
     }
 
+    // This test relies on `sortedKeys` to make string comparison easier
+    @available(iOS 11.0, *)
     func testEncode() throws {
         let encoder = JSONEncoder()
         encoder.outputFormatting = .sortedKeys

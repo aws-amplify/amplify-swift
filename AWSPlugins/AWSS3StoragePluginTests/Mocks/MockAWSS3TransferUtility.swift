@@ -35,7 +35,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
         }
 
         let task = AWSS3TransferUtilityDownloadTask()
-        
+
         //let url = URL(fileURLWithPath: "path")
         //let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
         //task.response = response

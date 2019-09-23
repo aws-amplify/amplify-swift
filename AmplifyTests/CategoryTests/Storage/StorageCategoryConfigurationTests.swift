@@ -143,7 +143,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        Amplify.Storage.getData(key: "", options: nil, onEvent: nil)
+        _ = Amplify.Storage.getData(key: "", options: nil, onEvent: nil)
 
         waitForExpectations(timeout: 1.0)
     }
@@ -181,7 +181,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
-        Amplify.Storage.getData(key: "", options: nil, onEvent: nil)
+        _ = Amplify.Storage.getData(key: "", options: nil, onEvent: nil)
         waitForExpectations(timeout: 1.0)
     }
 
@@ -219,7 +219,8 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
-        try Amplify.Storage.getPlugin(for: "MockSecondStorageCategoryPlugin").getData(key: "", options: nil, onEvent: nil)
+        _ = try Amplify.Storage.getPlugin(for: "MockSecondStorageCategoryPlugin")
+            .getData(key: "", options: nil, onEvent: nil)
         waitForExpectations(timeout: 1.0)
     }
 

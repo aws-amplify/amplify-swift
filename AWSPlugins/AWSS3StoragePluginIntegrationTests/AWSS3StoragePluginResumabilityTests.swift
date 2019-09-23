@@ -12,8 +12,6 @@ import AWSS3StoragePlugin
 import AWSS3
 class AWSS3StoragePluginResumabilityTests: AWSS3StoragePluginTestBase {
 
-    // MARK: Resumability Tests
-
     func testPutLargeDataAndPauseThenResume() {
         let key = "testPutLargeDataAndPauseThenResume"
         var testData = key
