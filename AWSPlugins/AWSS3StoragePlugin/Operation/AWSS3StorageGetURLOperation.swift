@@ -49,22 +49,12 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<Void, URL, StorageErr
             return
         }
 
-        if isCancelled {
-            finish()
-            return
-        }
-
         let identityIdResult = authService.getIdentityId()
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
                 dispatch(StorageError.identity(error.errorDescription, error.recoverySuggestion))
             }
 
-            finish()
-            return
-        }
-
-        if isCancelled {
             finish()
             return
         }

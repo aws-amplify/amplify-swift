@@ -8,7 +8,4 @@
 import XCTest
 
 class AWSS3StorageServiceUploadBehaviorTests: AWSS3StorageServiceTestBase {
-
-   
-
 }

@@ -14,7 +14,8 @@ public struct StorageDownloadFileOptions {
     // Target user to apply the action on.
     public let targetIdentityId: String?
 
-    // Extra plugin specific options.
+    // Extra plugin specific options, only used in special circumstances when the existing options do not provide
+    // a way to utilize the underlying storage system's functionality. See plugin documentation for expected key/values
     public let pluginOptions: Any?
 
     public init(accessLevel: StorageAccessLevel?,

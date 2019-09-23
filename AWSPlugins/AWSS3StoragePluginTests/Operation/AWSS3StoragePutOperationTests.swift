@@ -105,7 +105,7 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
     func testPutOperationUploadSuccess() {
         mockAuthService.identityId = testIdentityId
         mockStorageService.storageServiceUploadEvents = [
-            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(())]
 
@@ -149,7 +149,7 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
     func testPutOperationUploadFail() {
         mockAuthService.identityId = testIdentityId
         mockStorageService.storageServiceUploadEvents = [
-            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.failed(StorageError.service("", ""))]
 
@@ -191,7 +191,7 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
     func testPutOperationMultiPartUploadSuccess() {
         mockAuthService.identityId = testIdentityId
         mockStorageService.storageServiceMultiPartUploadEvents = [
-            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(())]
 

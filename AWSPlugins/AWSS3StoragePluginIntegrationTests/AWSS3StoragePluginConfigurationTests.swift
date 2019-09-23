@@ -12,6 +12,9 @@ import AWSS3StoragePlugin
 import AWSS3
 class AWSS3StoragePluginConfigurationTests: AWSS3StoragePluginTestBase {
 
+    /// Given:  AWSS3StoragePlugin configuration with incorrect DefaultAccessLevel value
+    /// When: Configure Amplify
+    /// Then: The call throws a PluginError.pluginConfigurationError
     func testConfigureWithIncorrectDefaultAccessLevelValueShouldThrow() {
         Amplify.reset()
 

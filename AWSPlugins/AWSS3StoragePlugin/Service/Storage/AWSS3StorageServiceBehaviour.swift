@@ -12,7 +12,7 @@ import AWSS3
 protocol AWSS3StorageServiceBehaviour {
     typealias StorageServiceDownloadEventHandler = (StorageServiceDownloadEvent) -> Void
     typealias StorageServiceDownloadEvent =
-        StorageEvent<StorageOperationReference, Progress, Data?, StorageError>
+        StorageEvent<StorageTaskReference, Progress, Data?, StorageError>
 
     typealias StorageServiceGetPreSignedURLEventHandler = (StorageServiceGetPreSignedURLEvent) -> Void
     typealias StorageServiceGetPreSignedURLEvent = StorageEvent<Void, Void, URL, StorageError>
@@ -25,11 +25,11 @@ protocol AWSS3StorageServiceBehaviour {
 
     typealias StorageServiceUploadEventHandler = (StorageServiceUploadEvent) -> Void
     typealias StorageServiceUploadEvent =
-        StorageEvent<StorageOperationReference, Progress, Void, StorageError>
+        StorageEvent<StorageTaskReference, Progress, Void, StorageError>
 
     typealias StorageServiceMultiPartUploadEventHandler = (StorageServiceMultiPartUploadEvent) -> Void
     typealias StorageServiceMultiPartUploadEvent =
-        StorageEvent<StorageOperationReference, Progress, Void, StorageError>
+        StorageEvent<StorageTaskReference, Progress, Void, StorageError>
 
     func reset()
 

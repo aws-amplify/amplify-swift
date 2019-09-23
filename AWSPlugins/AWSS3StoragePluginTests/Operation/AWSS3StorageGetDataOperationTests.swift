@@ -69,7 +69,7 @@ class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
 
     func testGetDataOperationDownloadData() {
         mockStorageService.storageServiceDownloadEvents = [
-            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(Data())]
         let request = AWSS3StorageGetDataRequest(accessLevel: .public,
@@ -101,7 +101,7 @@ class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
 
     func testGetDataOperationDownloadDataFailed() {
         mockStorageService.storageServiceDownloadEvents = [
-            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.failed(StorageError.service("", ""))]
         let request = AWSS3StorageGetDataRequest(accessLevel: .public,
@@ -133,7 +133,7 @@ class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
 
     func testGetOperationDownloadDataFromTargetIdentityId() {
         mockStorageService.storageServiceDownloadEvents = [
-            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(Data())]
         let request = AWSS3StorageGetDataRequest(accessLevel: .protected,
@@ -163,5 +163,5 @@ class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
 
-    // TODO: missing unit tets for pause resume and cancel. do we create a mock of the StorageOperationReference?
+    // TODO: missing unit tets for pause resume and cancel. do we create a mock of the StorageTaskReference?
 }

@@ -11,6 +11,10 @@ import Amplify
 @testable import AWSS3StoragePlugin
 import AWSS3
 class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
+
+    /// Given: Object with key `key` does not exist in storage
+    /// When: Call the get API
+    /// Then: The operation fails with StorageError.keyNotFound
     func testGetNonexistentKey() {
         let key = "testGetNonexistentKey"
         let expectedKey = "public/" + key
@@ -39,6 +43,9 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: 10)
     }
 
+    /// Given: A path to file that does not exist
+    /// When: Upload the file
+    /// Then: The operation fails with StorageError.missingLocalFile
     func testPutDataFromMissingFile() {
         let key = "testPutDataFromMissingFile"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
