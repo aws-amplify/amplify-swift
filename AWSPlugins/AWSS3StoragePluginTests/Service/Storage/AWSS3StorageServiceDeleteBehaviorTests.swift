@@ -8,7 +8,4 @@
 import XCTest
 
 class AWSS3StorageServiceDeleteBehaviorTests: AWSS3StorageServiceTestBase {
-
-    
-
 }
