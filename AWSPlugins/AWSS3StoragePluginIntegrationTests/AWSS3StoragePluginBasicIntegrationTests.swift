@@ -115,15 +115,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation completes successfully
     func testPutLargeData() {
         let key = "testPutLargeData"
-        var testData = key
-        for _ in 1...20 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
-        XCTAssertTrue(data.count > 10_000_000, "Could not create data object greater than 10MB")
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+        let operation = Amplify.Storage.put(key: key,
+                                            data: AWSS3StoragePluginTestBase.largeDataObject,
+                                            options: nil) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -146,14 +142,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
 
-        var testData = key
-        for _ in 1...20 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
-        FileManager.default.createFile(atPath: filePath, contents: data, attributes: nil)
+        FileManager.default.createFile(atPath: filePath,
+                                       contents: AWSS3StoragePluginTestBase.largeDataObject,
+                                       attributes: nil)
 
-        XCTAssertTrue(data.count > 10000000, "Could not create data object greater than 10MB")
         let completeInvoked = expectation(description: "Completed is invoked")
 
         let operation = Amplify.Storage.put(key: key, local: fileURL, options: nil) { (event) in

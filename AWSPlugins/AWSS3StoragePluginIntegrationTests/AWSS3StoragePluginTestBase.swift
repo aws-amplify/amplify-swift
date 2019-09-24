@@ -16,6 +16,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     let bucket: JSONValue = "swift6a3ad8b2b9f4402187f051de89548cc0-devo"
     let region: JSONValue = "us-east-1"
+    static let largeDataObject = Data(repeating: 0xff, count: 1024 * 1024 * 6) // 6MB
 
     override func setUp() {
         // Set up AWSMobileClient

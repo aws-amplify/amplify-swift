@@ -18,12 +18,7 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
     /// Then: The operation is stalled (no progress, completed, or failed event)
     func testGetLargeDataAndPause() {
         let key = "testGetLargeDataAndPause"
-        var testData = key
-        for _ in 1...15 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
-        putData(key: key, data: data)
+        putData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
@@ -58,12 +53,7 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
     /// Then: The operation should complete successfully
     func testGetLargeDataAndPauseThenResume() {
         let key = "testGetLargeDataAndPauseThenResume"
-        var testData = key
-        for _ in 1...15 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
-        putData(key: key, data: data)
+        putData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
@@ -96,12 +86,7 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
     /// Then: The operation should not complete or fail.
     func testGetLargeDataAndCancel() {
         let key = "testGetLargeDataAndCancel"
-        var testData = key
-        for _ in 1...15 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
-        putData(key: key, data: data)
+        putData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
@@ -118,7 +103,7 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
                 }
             case .completed:
                 completedInvoked.fulfill()
-            case .failed(let error):
+            case .failed:
                 failedInvoked.fulfill()
             default:
                 break

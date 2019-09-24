@@ -10,8 +10,6 @@ import Amplify
 import AWSS3
 import AWSMobileClient
 
-// TODO: thread safety: everything has to be locked down
-// TODO verify no retain cyclestorageOperationReference
 public class AWSS3StorageGetDataOperation: AmplifyOperation<Progress, Data, StorageError>,
     StorageGetDataOperation {
 
@@ -22,8 +20,8 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<Progress, Data, Stor
 
     var storageTaskReference: StorageTaskReference?
 
-    /// Concurrent queue for synchronizing access to `storageTaskReference`.
-    private let taskQueue = DispatchQueue(label: Bundle.main.bundleIdentifier! + ".rw.task", attributes: .concurrent)
+    /// Serial queue for synchronizing access to `storageTaskReference`.
+    private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.StorageTaskActionQueue")
 
     init(_ request: AWSS3StorageGetDataRequest,
          storageService: AWSS3StorageServiceBehaviour,
@@ -38,23 +36,24 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<Progress, Data, Stor
         // TODO pass onEvent to the Hub
     }
 
-    public func pause() {
-        taskQueue.async(flags: .barrier) {
+    override public func pause() {
+        storageTaskActionQueue.async {
             self.storageTaskReference?.pause()
+            super.pause()
         }
     }
 
-    public func resume() {
-        taskQueue.async(flags: .barrier) {
+    override public func resume() {
+        storageTaskActionQueue.async {
             self.storageTaskReference?.resume()
+            super.resume()
         }
     }
 
     override public func cancel() {
-        taskQueue.async(flags: .barrier) {
+        storageTaskActionQueue.async {
             self.storageTaskReference?.cancel()
         }
-        
         super.cancel()
     }
 
@@ -91,18 +90,20 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<Progress, Data, Stor
             return
         }
 
-        storageService.download(serviceKey: serviceKey,
-                                fileURL: nil,
-                                onEvent: onEventHandler)
+        storageService.download(serviceKey: serviceKey, fileURL: nil) { [weak self] event in
+            self?.onEventHandler(event: event)
+        }
     }
 
     private func onEventHandler(event: StorageEvent<StorageTaskReference, Progress, Data?, StorageError>) {
         switch event {
         case .initiated(let reference):
-            storageTaskReference = reference
-            if isCancelled {
-                storageTaskReference?.cancel()
-                finish()
+            storageTaskActionQueue.async {
+                self.storageTaskReference = reference
+                if self.isCancelled {
+                    self.storageTaskReference?.cancel()
+                    self.finish()
+                }
             }
         case .inProcess(let progress):
             dispatch(progress)

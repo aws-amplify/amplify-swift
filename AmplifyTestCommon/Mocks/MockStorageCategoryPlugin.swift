@@ -128,52 +128,52 @@ class MockStoragePluginSelectorFactory: MessageReporter, PluginSelectorFactory {
 
 class MockStorageGetURLOperation: AmplifyOperation<Void, URL, StorageError>,
     StorageGetURLOperation {
-    func pause() {
+    override func pause() {
     }
 
-    func resume() {
+    override func resume() {
     }
 }
 
 class MockStorageGetDataOperation: AmplifyOperation<Progress, Data, StorageError>,
     StorageGetDataOperation {
-    func pause() {
+    override func pause() {
     }
 
-    func resume() {
+    override func resume() {
     }
 }
 
 class MockStorageDownloadFileOperation: AmplifyOperation<Progress, Void, StorageError>,
     StorageDownloadFileOperation {
-    func pause() {
+    override func pause() {
     }
 
-    func resume() {
+    override func resume() {
     }
 }
 
 class MockStoragePutOperation: AmplifyOperation<Progress, String, StorageError>, StoragePutOperation {
-    func pause() {
+    override func pause() {
     }
 
-    func resume() {
+    override func resume() {
     }
 }
 
 class MockStorageRemoveOperation: AmplifyOperation<Void, String, StorageError>,
 StorageRemoveOperation {
-    func pause() {
+    override func pause() {
     }
 
-    func resume() {
+    override func resume() {
     }
 }
 
 class MockStorageListOperation: AmplifyOperation<Void, StorageListResult, StorageError>, StorageListOperation {
-    func pause() {
+    override func pause() {
     }
 
-    func resume() {
+    override func resume() {
     }
 }

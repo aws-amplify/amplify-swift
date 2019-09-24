@@ -65,8 +65,9 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, Storage
             return
         }
 
-        storageService.delete(serviceKey: serviceKey,
-                              onEvent: onEventHandler)
+        storageService.delete(serviceKey: serviceKey) { [weak self] event in
+            self?.onEventHandler(event: event)
+        }
     }
 
     private func onEventHandler(event: StorageEvent<Void, Void, Void, StorageError>) {

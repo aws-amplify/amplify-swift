@@ -18,18 +18,15 @@ class AWSS3StoragePluginPutDataResumabilityTests: AWSS3StoragePluginTestBase {
     /// Then: The operation is stalled (no progress, completed, or failed event)
     func testPutLargeDataThenPause() {
         let key = "testPutLargeDataAndPauseThenResume"
-        var testData = key
-        for _ in 1...15 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
         let completeInvoked = expectation(description: "Completion invoked")
         completeInvoked.isInverted = true
         let failedInvoked = expectation(description: "Failed invoked")
         failedInvoked.isInverted = true
-        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+        let operation = Amplify.Storage.put(key: key,
+                                            data: AWSS3StoragePluginTestBase.largeDataObject,
+                                            options: nil) { (event) in
             switch event {
             case .inProcess(let progress):
                 // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
@@ -56,15 +53,12 @@ class AWSS3StoragePluginPutDataResumabilityTests: AWSS3StoragePluginTestBase {
     /// Then: The operation should complete successfully
     func testPutLargeDataAndPauseThenResume() {
         let key = "testPutLargeDataAndPauseThenResume"
-        var testData = key
-        for _ in 1...15 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
         let completeInvoked = expectation(description: "Completed is invoked")
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
-        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+        let operation = Amplify.Storage.put(key: key,
+                                            data: AWSS3StoragePluginTestBase.largeDataObject,
+                                            options: nil) { (event) in
             switch event {
             case .inProcess(let progress):
                 // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
@@ -92,17 +86,15 @@ class AWSS3StoragePluginPutDataResumabilityTests: AWSS3StoragePluginTestBase {
     /// Then: The operation should complete successfully
     func testPutLargeDataAndCancel() {
         let key = "testPutLargeDataAndCancel"
-        var testData = key
-        for _ in 1...15 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
         let progressInvoked = expectation(description: "Progress invoked")
+        progressInvoked.assertForOverFulfill = false
         let completedInvoked = expectation(description: "Completion invoked")
         completedInvoked.isInverted = true
         let failedInvoked = expectation(description: "Failed invoked")
         failedInvoked.isInverted = true
-        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+        let operation = Amplify.Storage.put(key: key,
+                                            data: AWSS3StoragePluginTestBase.largeDataObject,
+                                            options: nil) { (event) in
             switch event {
             case .inProcess(let progress):
                 // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
@@ -111,7 +103,7 @@ class AWSS3StoragePluginPutDataResumabilityTests: AWSS3StoragePluginTestBase {
                 }
             case .completed:
                 completedInvoked.fulfill()
-            case .failed(let error):
+            case .failed:
                 failedInvoked.fulfill()
             default:
                 break

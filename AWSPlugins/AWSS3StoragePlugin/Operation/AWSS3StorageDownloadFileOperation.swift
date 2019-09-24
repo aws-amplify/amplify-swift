@@ -22,8 +22,8 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
 
     var storageTaskReference: StorageTaskReference?
 
-    /// Concurrent queue for synchronizing access to `storageTaskReference`.
-    private let taskQueue = DispatchQueue(label: Bundle.main.bundleIdentifier! + ".rw.task", attributes: .concurrent)
+    /// Serial queue for synchronizing access to `storageTaskReference`.
+    private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.StorageTaskActionQueue")
 
     init(_ request: AWSS3StorageDownloadFileRequest,
          storageService: AWSS3StorageServiceBehaviour,
@@ -38,20 +38,22 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
         // TODO pass onEvent to the Hub
     }
 
-    public func pause() {
-        taskQueue.async(flags: .barrier) {
+    override public func pause() {
+        storageTaskActionQueue.async {
             self.storageTaskReference?.pause()
+            super.pause()
         }
     }
 
-    public func resume() {
-        taskQueue.async(flags: .barrier) {
+    override public func resume() {
+        storageTaskActionQueue.async {
             self.storageTaskReference?.resume()
+            super.resume()
         }
     }
 
     override public func cancel() {
-        taskQueue.async(flags: .barrier) {
+        storageTaskActionQueue.async {
             self.storageTaskReference?.cancel()
         }
 
@@ -90,18 +92,20 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
             return
         }
 
-        storageService.download(serviceKey: serviceKey,
-                                fileURL: request.local,
-                                onEvent: onEventHandler)
+        storageService.download(serviceKey: serviceKey, fileURL: request.local) { [weak self] event in
+            self?.onEventHandler(event: event)
+        }
     }
 
     private func onEventHandler(event: StorageEvent<StorageTaskReference, Progress, Data?, StorageError>) {
         switch event {
         case .initiated(let reference):
-            storageTaskReference = reference
-            if isCancelled {
-                storageTaskReference?.cancel()
-                finish()
+            storageTaskActionQueue.async {
+                self.storageTaskReference = reference
+                if self.isCancelled {
+                    self.storageTaskReference?.cancel()
+                    self.finish()
+                }
             }
         case .inProcess(let progress):
             dispatch(progress)
