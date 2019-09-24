@@ -101,7 +101,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     func testPutLargeData() {
         let key = "testPutLargeData"
         var testData = key
-        for _ in 1...20 {
+        for _ in 1 ... 20 {
             testData += testData
         }
         let data = testData.data(using: .utf8)!
@@ -129,7 +129,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let fileURL = URL(fileURLWithPath: filePath)
 
         var testData = key
-        for _ in 1...20 {
+        for _ in 1 ... 20 {
             testData += testData
         }
         let data = testData.data(using: .utf8)!
@@ -243,7 +243,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
                 return
             }
 
-            guard let response = response as? HTTPURLResponse, (200...299).contains(response.statusCode) else {
+            guard let response = response as? HTTPURLResponse, (200 ... 299).contains(response.statusCode) else {
                 XCTFail("Failed to received data with bad status code")
                 return
             }
@@ -315,7 +315,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let key = "testListWithPathUsingFolderNameWithForwardSlash"
         let folder = key + "/"
         var keys: [String] = []
-        for fileIndex in 1...10 {
+        for fileIndex in 1 ... 10 {
             let key = folder + "file" + String(fileIndex) + ".txt"
             keys.append(key)
             putData(key: key, dataString: key)
@@ -352,7 +352,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let key2 = "leteFolderName"
         let folder = key1 + key2 + "/"
         var keys: [String] = []
-        for fileIndex in 1...10 {
+        for fileIndex in 1 ... 10 {
             let key = folder + "file" + String(fileIndex) + ".txt"
             keys.append(key)
             putData(key: key, dataString: key)

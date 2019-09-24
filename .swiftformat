@@ -34,7 +34,7 @@
   --hexliteralcase lowercase
   --octalgrouping none
 
---disable ranges
+--enable ranges
   --ranges spaced
 
 --disable redundantSelf
