@@ -49,13 +49,13 @@ class SynchronizedQueueTests: XCTestCase {
     /// Then: It maintains state in a thread safe way, and does not crash
     func testConcurrentAdd() {
         let synchronizedQueue = SynchronizedQueue<Int>()
-        DispatchQueue.concurrentPerform(iterations: 5000) { iteration in
+        DispatchQueue.concurrentPerform(iterations: 5_000) { iteration in
             synchronizedQueue.add(iteration)
         }
 
         // Note that we can't assert the order in which these were actually added since `concurrentPerform` doesn't
         // assert that work is performed serially
-        XCTAssertEqual(synchronizedQueue.count, 5000)
+        XCTAssertEqual(synchronizedQueue.count, 5_000)
     }
 
     /// Given: A populated SynchronizedQueue
@@ -63,11 +63,11 @@ class SynchronizedQueueTests: XCTestCase {
     /// Then: It maintains state in a thread safe way, and does not crash
     func testConcurrentDrain() {
         let synchronizedQueue = SynchronizedQueue<Int>()
-        DispatchQueue.concurrentPerform(iterations: 5000) { iteration in
+        DispatchQueue.concurrentPerform(iterations: 5_000) { iteration in
             synchronizedQueue.add(iteration)
         }
 
-        DispatchQueue.concurrentPerform(iterations: 5000) { _ in
+        DispatchQueue.concurrentPerform(iterations: 5_000) { _ in
             _ = synchronizedQueue.next()
         }
 
@@ -92,7 +92,7 @@ class SynchronizedQueueTests: XCTestCase {
         }
 
         DispatchQueue.global().async {
-            DispatchQueue.concurrentPerform(iterations: 5000) { iteration in
+            DispatchQueue.concurrentPerform(iterations: 5_000) { iteration in
                 synchronizedQueue.add(iteration)
             }
             allElementsAreAdded.set(true)

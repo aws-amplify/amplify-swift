@@ -51,7 +51,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
                 return
             }
 
-            guard let response = response as? HTTPURLResponse, (200...299).contains(response.statusCode) else {
+            guard let response = response as? HTTPURLResponse, (200 ... 299).contains(response.statusCode) else {
                 XCTFail("Failed to received data with bad status code")
                 return
             }
