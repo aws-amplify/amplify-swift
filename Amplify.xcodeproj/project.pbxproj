@@ -11,8 +11,7 @@
 		210DBC122332B3C0009B9E51 /* StorageDownloadFileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC112332B3C0009B9E51 /* StorageDownloadFileOperation.swift */; };
 		210DBC142332B3C6009B9E51 /* StorageGetURLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC132332B3C6009B9E51 /* StorageGetURLOperation.swift */; };
 		210DBC162332B3CB009B9E51 /* StorageGetDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC152332B3CB009B9E51 /* StorageGetDataOperation.swift */; };
-		210DBC262332B539009B9E51 /* StorageDownloadFileOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC232332B538009B9E51 /* StorageDownloadFileOptions.swift */; };
-		210DBC272332B539009B9E51 /* StorageGetDataOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC242332B538009B9E51 /* StorageGetDataOptions.swift */; };
+		210DBC272332B539009B9E51 /* StorageGetOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC242332B538009B9E51 /* StorageGetOptions.swift */; };
 		210DBC282332B539009B9E51 /* StorageGetURLOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC252332B538009B9E51 /* StorageGetURLOptions.swift */; };
 		210DBC2F2332BAB2009B9E51 /* AWSS3StorageDownloadFileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC2A2332BAAB009B9E51 /* AWSS3StorageDownloadFileRequest.swift */; };
 		210DBC302332BAB6009B9E51 /* AWSS3StorageGetDataRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC2B2332BAAB009B9E51 /* AWSS3StorageGetDataRequest.swift */; };
@@ -83,11 +82,11 @@
 		21265DAD2307389A004CCE39 /* AWSS3StoragePlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21265DA42307389A004CCE39 /* AWSS3StoragePlugin.framework */; };
 		21265DB22307389A004CCE39 /* AWSS3StoragePluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21265DB12307389A004CCE39 /* AWSS3StoragePluginTestBase.swift */; };
 		21265E262309D620004CCE39 /* AWSS3StoragePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21265E252309D620004CCE39 /* AWSS3StoragePlugin.swift */; };
-		21D1CE8C2334233F0003BAA8 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D1CE8B2334233F0003BAA8 /* AuthError.swift */; };
 		2196FB5B23397BCB00F8EEB5 /* AWSS3StoragePluginGetDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2196FB5A23397BCB00F8EEB5 /* AWSS3StoragePluginGetDataResumabilityTests.swift */; };
 		2196FB5D23397BDF00F8EEB5 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2196FB5C23397BDF00F8EEB5 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift */; };
 		2196FB5F23397C0600F8EEB5 /* AWSS3StoragePluginPutDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2196FB5E23397C0600F8EEB5 /* AWSS3StoragePluginPutDataResumabilityTests.swift */; };
 		2196FB6123397C2300F8EEB5 /* AWSS3StoragePluginUploadFileResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2196FB6023397C2300F8EEB5 /* AWSS3StoragePluginUploadFileResumabilityTests.swift */; };
+		21D1CE8C2334233F0003BAA8 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D1CE8B2334233F0003BAA8 /* AuthError.swift */; };
 		21FFF983230A519B005878EA /* EventPublishable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF982230A519B005878EA /* EventPublishable.swift */; };
 		21FFF988230B7B2C005878EA /* AsychronousOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF986230B7A5D005878EA /* AsychronousOperation.swift */; };
 		21FFF98E230C81E6005878EA /* StorageAccessLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF98D230C81E6005878EA /* StorageAccessLevel.swift */; };
@@ -336,8 +335,7 @@
 		210DBC112332B3C0009B9E51 /* StorageDownloadFileOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageDownloadFileOperation.swift; sourceTree = "<group>"; };
 		210DBC132332B3C6009B9E51 /* StorageGetURLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageGetURLOperation.swift; sourceTree = "<group>"; };
 		210DBC152332B3CB009B9E51 /* StorageGetDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageGetDataOperation.swift; sourceTree = "<group>"; };
-		210DBC232332B538009B9E51 /* StorageDownloadFileOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageDownloadFileOptions.swift; sourceTree = "<group>"; };
-		210DBC242332B538009B9E51 /* StorageGetDataOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageGetDataOptions.swift; sourceTree = "<group>"; };
+		210DBC242332B538009B9E51 /* StorageGetOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageGetOptions.swift; sourceTree = "<group>"; };
 		210DBC252332B538009B9E51 /* StorageGetURLOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageGetURLOptions.swift; sourceTree = "<group>"; };
 		210DBC292332BAAB009B9E51 /* AWSS3StorageGetURLRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetURLRequest.swift; sourceTree = "<group>"; };
 		210DBC2A2332BAAB009B9E51 /* AWSS3StorageDownloadFileRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageDownloadFileRequest.swift; sourceTree = "<group>"; };
@@ -414,11 +412,11 @@
 		21265DB12307389A004CCE39 /* AWSS3StoragePluginTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginTestBase.swift; sourceTree = "<group>"; };
 		21265DB32307389A004CCE39 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21265E252309D620004CCE39 /* AWSS3StoragePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePlugin.swift; sourceTree = "<group>"; };
-		21D1CE8B2334233F0003BAA8 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
 		2196FB5A23397BCB00F8EEB5 /* AWSS3StoragePluginGetDataResumabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginGetDataResumabilityTests.swift; sourceTree = "<group>"; };
 		2196FB5C23397BDF00F8EEB5 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginDownloadFileResumabilityTests.swift; sourceTree = "<group>"; };
 		2196FB5E23397C0600F8EEB5 /* AWSS3StoragePluginPutDataResumabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginPutDataResumabilityTests.swift; sourceTree = "<group>"; };
 		2196FB6023397C2300F8EEB5 /* AWSS3StoragePluginUploadFileResumabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginUploadFileResumabilityTests.swift; sourceTree = "<group>"; };
+		21D1CE8B2334233F0003BAA8 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
 		21FFF982230A519B005878EA /* EventPublishable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventPublishable.swift; sourceTree = "<group>"; };
 		21FFF986230B7A5D005878EA /* AsychronousOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsychronousOperation.swift; sourceTree = "<group>"; };
 		21FFF98D230C81E6005878EA /* StorageAccessLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageAccessLevel.swift; sourceTree = "<group>"; };
@@ -965,8 +963,7 @@
 		21FFF9E72310640D005878EA /* Options */ = {
 			isa = PBXGroup;
 			children = (
-				210DBC232332B538009B9E51 /* StorageDownloadFileOptions.swift */,
-				210DBC242332B538009B9E51 /* StorageGetDataOptions.swift */,
+				210DBC242332B538009B9E51 /* StorageGetOptions.swift */,
 				210DBC252332B538009B9E51 /* StorageGetURLOptions.swift */,
 				21FFF9EC2310668F005878EA /* StorageListOptions.swift */,
 				21FFF9EA2310667A005878EA /* StoragePutOptions.swift */,
@@ -2249,7 +2246,6 @@
 				21FFF98E230C81E6005878EA /* StorageAccessLevel.swift in Sources */,
 				210DBC472332F0C5009B9E51 /* StorageError.swift in Sources */,
 				FA09B92F2321A2DE000E064D /* APICategory+CategoryConfigurable.swift in Sources */,
-				210DBC262332B539009B9E51 /* StorageDownloadFileOptions.swift in Sources */,
 				FAC23520227A053D00424678 /* APIResponse.swift in Sources */,
 				FAC2354B227A055A00424678 /* Amplify.swift in Sources */,
 				FA09B92D2321A27F000E064D /* CategoryConfigurable.swift in Sources */,
@@ -2269,7 +2265,7 @@
 				FA4E730C23282917003B8EEB /* Amplify+Resolve.swift in Sources */,
 				FA56F72522B14B6A0039754A /* Resumable.swift in Sources */,
 				21FFF997230C96CB005878EA /* StorageRemoveOperation.swift in Sources */,
-				210DBC272332B539009B9E51 /* StorageGetDataOptions.swift in Sources */,
+				210DBC272332B539009B9E51 /* StorageGetOptions.swift in Sources */,
 				FAC2351C227A053D00424678 /* APICategoryPlugin.swift in Sources */,
 				210DBC162332B3CB009B9E51 /* StorageGetDataOperation.swift in Sources */,
 				FAC235A3227A5ED000424678 /* HubChannel.swift in Sources */,

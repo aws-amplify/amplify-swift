@@ -46,7 +46,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
     /// Given: A path to file that does not exist
     /// When: Upload the file
     /// Then: The operation fails with StorageError.missingLocalFile
-    func testPutDataFromMissingFile() {
+    func testUploadFileFromMissingFile() {
         let key = "testPutDataFromMissingFile"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         var testData = key
@@ -55,7 +55,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         }
         let fileURL = URL(fileURLWithPath: filePath)
         let failedInvoked = expectation(description: "Failed is invoked")
-        let operation = Amplify.Storage.put(key: key, local: fileURL, options: nil) { (event) in
+        let operation = Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil) { (event) in
             switch event {
             case .completed:
                 XCTFail("Completed event is received")

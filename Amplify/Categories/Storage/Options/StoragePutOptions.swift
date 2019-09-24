@@ -5,6 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+public typealias StoragePutDataOptions = StoragePutOptions
+public typealias StorageUploadFileOptions = StoragePutOptions
+
 // StoragePutOptions specifies additional options when uploading an object to storage.
 public struct StoragePutOptions {
 

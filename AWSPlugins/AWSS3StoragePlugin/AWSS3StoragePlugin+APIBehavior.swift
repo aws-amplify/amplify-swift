@@ -42,6 +42,18 @@ extension AWSS3StoragePlugin {
         return getURLOperation
     }
 
+    public func getURL(key: String) -> StorageGetURLOperation {
+        return getURL(key: key, options: nil, onEvent: nil)
+    }
+
+    public func getURL(key: String, options: StorageGetURLOptions?) -> StorageGetURLOperation {
+        return getURL(key: key, options: options, onEvent: nil)
+    }
+
+    public func getURL(key: String, onEvent: StorageGetURLEventHandler?) -> StorageGetURLOperation {
+        return getURL(key: key, options: nil, onEvent: onEvent)
+    }
+
     /// Downloads to memory of the S3 object.
     ///
     /// Stores the input in a storage request, constructs an operation to perform the work, queues it in the
@@ -62,12 +74,24 @@ extension AWSS3StoragePlugin {
                                                  pluginOptions: options?.pluginOptions)
 
         let getDataOperation = AWSS3StorageGetDataOperation(request,
-                                                        storageService: storageService,
-                                                        authService: authService,
-                                                        onEvent: onEvent)
+                                                            storageService: storageService,
+                                                            authService: authService,
+                                                            onEvent: onEvent)
 
         queue.addOperation(getDataOperation)
         return getDataOperation
+    }
+
+    public func getData(key: String) -> StorageGetDataOperation {
+        return getData(key: key, options: nil, onEvent: nil)
+    }
+
+    public func getData(key: String, options: StorageGetDataOptions?) -> StorageGetDataOperation {
+        return getData(key: key, options: options, onEvent: nil)
+    }
+
+    public func getData(key: String, onEvent: StorageGetDataEventHandler?) -> StorageGetDataOperation {
+        return getData(key: key, options: nil, onEvent: onEvent)
     }
 
     /// Downloads to file of the S3 object.
@@ -101,6 +125,20 @@ extension AWSS3StoragePlugin {
         return downloadFileOperation
     }
 
+    public func downloadFile(key: String, local: URL) -> StorageDownloadFileOperation {
+        downloadFile(key: key, local: local, options: nil, onEvent: nil)
+    }
+
+    public func downloadFile(key: String, local: URL, options: StorageDownloadFileOptions?)
+        -> StorageDownloadFileOperation {
+        downloadFile(key: key, local: local, options: options, onEvent: nil)
+    }
+
+    public func downloadFile(key: String, local: URL, onEvent: StorageDownloadFileEventHandler?)
+        -> StorageDownloadFileOperation {
+            downloadFile(key: key, local: local, options: nil, onEvent: onEvent)
+    }
+
     /// Uploads the data object with the specified key to the S3 bucket.
     ///
     /// Stores the input in a storage request, constructs an operation to perform the work, adds it to the
@@ -112,10 +150,10 @@ extension AWSS3StoragePlugin {
     ///   - options: Additional parameters to specify API behavior.
     ///   - onEvent: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
-    public func put(key: String,
-                    data: Data,
-                    options: StoragePutOptions?,
-                    onEvent: StoragePutEventHandler?) -> StoragePutOperation {
+    public func putData(key: String,
+                        data: Data,
+                        options: StoragePutDataOptions?,
+                        onEvent: StoragePutDataEventHandler?) -> StoragePutDataOperation {
 
         let request = AWSS3StoragePutRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
                                              key: key,
@@ -125,6 +163,18 @@ extension AWSS3StoragePlugin {
                                              pluginOptions: options?.pluginOptions)
 
         return put(request, onEvent: onEvent)
+    }
+
+    public func putData(key: String, data: Data) -> StoragePutDataOperation {
+        return putData(key: key, data: data, options: nil, onEvent: nil)
+    }
+
+    public func putData(key: String, data: Data, options: StoragePutDataOptions?) -> StoragePutDataOperation {
+        return putData(key: key, data: data, options: options, onEvent: nil)
+    }
+
+    public func putData(key: String, data: Data, onEvent: StoragePutDataEventHandler?) -> StoragePutDataOperation {
+        return putData(key: key, data: data, options: nil, onEvent: onEvent)
     }
 
     /// Uploads the file located at the local URL with the specified key to the S3 bucket.
@@ -138,10 +188,10 @@ extension AWSS3StoragePlugin {
     ///   - options: Additional parameters to specify API behavior.
     ///   - onEvent: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
-    public func put(key: String,
-                    local: URL,
-                    options: StoragePutOptions?,
-                    onEvent: StoragePutEventHandler?) -> StoragePutOperation {
+    public func uploadFile(key: String,
+                           local: URL,
+                           options: StorageUploadFileOptions?,
+                           onEvent: StorageUploadFileEventHandler?) -> StorageUploadFileOperation {
 
         let request = AWSS3StoragePutRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
                                              key: key,
@@ -151,6 +201,19 @@ extension AWSS3StoragePlugin {
                                              pluginOptions: options?.pluginOptions)
 
         return put(request, onEvent: onEvent)
+    }
+
+    public func uploadFile(key: String, local: URL) -> StorageUploadFileOperation {
+        return uploadFile(key: key, local: local, options: nil, onEvent: nil)
+    }
+
+    public func uploadFile(key: String, local: URL, options: StorageUploadFileOptions?) -> StorageUploadFileOperation {
+        return uploadFile(key: key, local: local, options: options, onEvent: nil)
+    }
+
+    public func uploadFile(key: String, local: URL, onEvent: StorageUploadFileEventHandler?)
+        -> StorageUploadFileOperation {
+        return uploadFile(key: key, local: local, options: nil, onEvent: onEvent)
     }
 
     /// Removes the object from S3 at the specified key.
@@ -178,6 +241,18 @@ extension AWSS3StoragePlugin {
         return removeOperation
     }
 
+    public func remove(key: String) -> StorageRemoveOperation {
+        return remove(key: key, options: nil, onEvent: nil)
+    }
+
+    public func remove(key: String, options: StorageRemoveOptions?) -> StorageRemoveOperation {
+        return remove(key: key, options: options, onEvent: nil)
+    }
+
+    public func remove(key: String, onEvent: StorageRemoveEventHandler?) -> StorageRemoveOperation {
+        return remove(key: key, options: nil, onEvent: onEvent)
+    }
+
     /// Lists all of the keys in the bucket, under specified access level.
     ///
     /// Stores the input in a storage request, constructs an operation to perform the work, adds it to the
@@ -199,6 +274,18 @@ extension AWSS3StoragePlugin {
         queue.addOperation(listOperation)
 
         return listOperation
+    }
+
+    public func list() -> StorageListOperation {
+        return list(options: nil, onEvent: nil)
+    }
+
+    public func list(options: StorageListOptions?) -> StorageListOperation {
+        return list(options: options, onEvent: nil)
+    }
+
+    public func list(onEvent: StorageListEventHandler?) -> StorageListOperation {
+        return list(options: nil, onEvent: onEvent)
     }
 
     /// Retrieve the escape hatch to perform low level operations on S3

@@ -21,7 +21,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let data = key.data(using: .utf8)!
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+        let operation = Amplify.Storage.putData(key: key, data: data, options: nil) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -44,7 +44,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let data = "".data(using: .utf8)!
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+        let operation = Amplify.Storage.putData(key: key, data: data, options: nil) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -62,7 +62,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Given: A file with contents
     /// When: Upload the file
     /// Then: The operation completes successfully
-    func testPutDataFromFile() {
+    func testuploadFile() {
         let key = "testPutDataFromFile"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
 
@@ -70,7 +70,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         FileManager.default.createFile(atPath: filePath, contents: key.data(using: .utf8), attributes: nil)
 
         let completeInvoked = expectation(description: "Completed is invoked")
-        let operation = Amplify.Storage.put(key: key, local: fileURL, options: nil) { (event) in
+        let operation = Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -88,14 +88,14 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Given: A file with empty contents
     /// When: Upload the file
     /// Then: The operation completes successfully
-    func testPutEmptyDataFromFile() {
+    func testUploadFileWithEmptyDataFromFile() {
         let key = "testPutEmptyDataFromFile"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: "".data(using: .utf8), attributes: nil)
 
         let completeInvoked = expectation(description: "Completed is invoked")
-        let operation = Amplify.Storage.put(key: key, local: fileURL, options: nil) { (event) in
+        let operation = Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -123,7 +123,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         XCTAssertTrue(data.count > 10_000_000, "Could not create data object greater than 10MB")
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+        let operation = Amplify.Storage.putData(key: key, data: data, options: nil) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -141,7 +141,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Given: A large file
     /// When: Upload the file
     /// Then: The operation completes successfully
-    func testPutLargeFile() {
+    func testUploadLargeFile() {
         let key = "testPutLargeFile"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
@@ -156,7 +156,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         XCTAssertTrue(data.count > 10000000, "Could not create data object greater than 10MB")
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.put(key: key, local: fileURL, options: nil) { (event) in
+        let operation = Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()

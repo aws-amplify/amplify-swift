@@ -331,7 +331,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let putOptions = StoragePutOptions(accessLevel: accessLevel,
                                            contentType: nil,
                                            metadata: nil)
-        _ = Amplify.Storage.put(key: key, data: data.data(using: .utf8)!, options: putOptions) { (event) in
+        _ = Amplify.Storage.putData(key: key, data: data.data(using: .utf8)!, options: putOptions) { (event) in
             switch event {
             case .completed:
                 putExpectation.fulfill()

@@ -14,7 +14,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
     // MARK: GetURL API Tests
 
     func testPluginGetURL() {
-        let operation = storagePlugin.getURL(key: testKey, options: nil, onEvent: nil)
+        let operation = storagePlugin.getURL(key: testKey)
 
         XCTAssertNotNil(operation)
         guard let awss3StorageGetURLOperation = operation as? AWSS3StorageGetURLOperation else {
@@ -37,7 +37,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
                                         expires: testExpires,
                                         pluginOptions: [:])
 
-        let operation = storagePlugin.getURL(key: testKey, options: options, onEvent: nil)
+        let operation = storagePlugin.getURL(key: testKey, options: options)
 
         XCTAssertNotNil(operation)
         guard let awss3StorageGetURLOperation = operation as? AWSS3StorageGetURLOperation else {
@@ -58,7 +58,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
     // MARK: GetData API Tests
 
     func testPluginGetData() {
-        let operation = storagePlugin.getData(key: testKey, options: nil, onEvent: nil)
+        let operation = storagePlugin.getData(key: testKey)
 
         XCTAssertNotNil(operation)
         guard let awss3StorageGetDataOperation = operation as? AWSS3StorageGetDataOperation else {
@@ -74,12 +74,12 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(queue.size, 1)
     }
 
-    func testPluginGetWithOptions() {
+    func testPluginGetDataWithOptions() {
         let options = StorageGetDataOptions(accessLevel: .private,
                                             targetIdentityId: testIdentityId,
                                             pluginOptions: [:])
 
-        let operation = storagePlugin.getData(key: testKey, options: options, onEvent: nil)
+        let operation = storagePlugin.getData(key: testKey, options: options)
 
         XCTAssertNotNil(operation)
         guard let awss3StorageGetDataOperation = operation as? AWSS3StorageGetDataOperation else {
@@ -98,7 +98,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
     // MARK: DownloadFile API Tests
 
     func testPluginDownloadFile() {
-        let operation = storagePlugin.downloadFile(key: testKey, local: testURL, options: nil, onEvent: nil)
+        let operation = storagePlugin.downloadFile(key: testKey, local: testURL)
 
         XCTAssertNotNil(operation)
         guard let awss3StorageDownloadFileOperation = operation as? AWSS3StorageDownloadFileOperation else {
@@ -120,7 +120,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
                                                  targetIdentityId: testIdentityId,
                                                  pluginOptions: [:])
 
-        let operation = storagePlugin.downloadFile(key: testKey, local: testURL, options: options, onEvent: nil)
+        let operation = storagePlugin.downloadFile(key: testKey, local: testURL, options: options)
 
         XCTAssertNotNil(operation)
         guard let awss3StorageDownloadFileOperation = operation as? AWSS3StorageDownloadFileOperation else {
@@ -137,13 +137,11 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(queue.size, 1)
     }
 
-    // MARK: Put API tests
+    // MARK: PutData API tests
 
-    func testPluginPut() {
-        let operation = storagePlugin.put(key: testKey,
-                                          data: testData,
-                                          options: nil,
-                                          onEvent: nil)
+    func testPluginPutData() {
+        let operation = storagePlugin.putData(key: testKey,
+                                              data: testData)
 
         XCTAssertNotNil(operation)
         guard let awss3StoragePutOperation = operation as? AWSS3StoragePutOperation else {
@@ -165,16 +163,15 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(queue.size, 1)
     }
 
-    func testPluginPutWithOptions() {
+    func testPluginPutDataWithOptions() {
         let options = StoragePutOptions(accessLevel: .private,
                                        contentType: testContentType,
                                        metadata: [:],
                                        pluginOptions: [:])
 
-        let operation = storagePlugin.put(key: testKey,
-                                          data: testData,
-                                          options: options,
-                                          onEvent: nil)
+        let operation = storagePlugin.putData(key: testKey,
+                                              data: testData,
+                                              options: options)
 
         XCTAssertNotNil(operation)
         guard let awss3StoragePutOperation = operation as? AWSS3StoragePutOperation else {
@@ -198,13 +195,11 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(queue.size, 1)
     }
 
-    // MARK: Put to local file API tests
+    // MARK: UploadFile API tests
 
-    func testPluginPutToLocalFile() {
-        let operation = storagePlugin.put(key: testKey,
-                                          local: testURL,
-                                          options: nil,
-                                          onEvent: nil)
+    func testPluginUploadFile() {
+        let operation = storagePlugin.uploadFile(key: testKey,
+                                                 local: testURL)
 
         XCTAssertNotNil(operation)
         guard let awss3StoragePutOperation = operation as? AWSS3StoragePutOperation else {
@@ -227,16 +222,15 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(queue.size, 1)
     }
 
-    func testPluginPutToLocalFileWithOptions() {
+    func testPluginUploadFileWithOptions() {
         let options = StoragePutOptions(accessLevel: .private,
                                        contentType: testContentType,
                                        metadata: [:],
                                        pluginOptions: [:])
 
-        let operation = storagePlugin.put(key: testKey,
+        let operation = storagePlugin.uploadFile(key: testKey,
                                           local: testURL,
-                                          options: options,
-                                          onEvent: nil)
+                                          options: options)
 
         XCTAssertNotNil(operation)
         guard let awss3StoragePutOperation = operation as? AWSS3StoragePutOperation else {
@@ -264,7 +258,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
     // MARK: Remove API tests
 
     func testPluginRemove() {
-        let operation = storagePlugin.remove(key: testKey, options: nil, onEvent: nil)
+        let operation = storagePlugin.remove(key: testKey)
 
         XCTAssertNotNil(operation)
         guard let awss3StorageRemoveOperation = operation as? AWSS3StorageRemoveOperation else {
@@ -282,7 +276,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
     func testPluginRemoveWithOptions() {
         let options = StorageRemoveOptions(accessLevel: .private, pluginOptions: [:])
 
-        let operation = storagePlugin.remove(key: testKey, options: options, onEvent: nil)
+        let operation = storagePlugin.remove(key: testKey, options: options)
 
         XCTAssertNotNil(operation)
         guard let awss3StorageRemoveOperation = operation as? AWSS3StorageRemoveOperation else {
@@ -301,7 +295,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
     // MARK: List API tests
 
     func testPluginList() {
-        let operation = storagePlugin.list(options: nil, onEvent: nil)
+        let operation = storagePlugin.list()
 
         XCTAssertNotNil(operation)
         guard let awss3StorageListOperation = operation as? AWSS3StorageListOperation else {
@@ -322,7 +316,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
                                         path: testPath,
                                         pluginOptions: [:])
 
-        let operation = storagePlugin.list(options: options, onEvent: nil)
+        let operation = storagePlugin.list(options: options)
 
         XCTAssertNotNil(operation)
         guard let awss3StorageListOperation = operation as? AWSS3StorageListOperation else {

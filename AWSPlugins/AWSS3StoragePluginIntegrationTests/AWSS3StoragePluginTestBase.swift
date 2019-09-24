@@ -80,7 +80,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     func putData(key: String, data: Data) {
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+        let operation = Amplify.Storage.putData(key: key, data: data, options: nil) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()

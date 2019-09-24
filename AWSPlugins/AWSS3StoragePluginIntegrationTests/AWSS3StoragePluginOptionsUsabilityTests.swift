@@ -92,7 +92,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
     /// Given: An object uploaded with metadata with key `metadataKey` and value `metadataValue`
     /// When: Call the headObject API
     /// Then: The expected metadata should exist on the object
-    func testPutWithMetadata() {
+    func testPutDataWithMetadata() {
         let key = "testputwithmetadata"
         let value = key + "Value"
         let data = key.data(using: .utf8)!
@@ -102,7 +102,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         let options = StoragePutOptions(accessLevel: nil, contentType: nil, metadata: metadata)
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.put(key: key, data: data, options: options) { (event) in
+        let operation = Amplify.Storage.putData(key: key, data: data, options: options) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
