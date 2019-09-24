@@ -16,7 +16,7 @@ final class HubChannelDispatcher {
     private let listenersById = SynchronizedDictionary<UUID, FilteredListener>()
 
     init() {
-        messageQueue = OperationQueue()
+        self.messageQueue = OperationQueue()
         messageQueue.name = "com.amazonaws.HubChannelDispatcher"
         messageQueue.maxConcurrentOperationCount = 1
     }

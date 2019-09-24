@@ -36,7 +36,7 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, Storage
 
     override public func main() {
         if let error = request.validate() {
-            self.dispatch(error)
+            dispatch(error)
             finish()
             return
         }

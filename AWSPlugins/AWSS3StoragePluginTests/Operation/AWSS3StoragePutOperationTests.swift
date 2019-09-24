@@ -196,7 +196,7 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
             StorageEvent.completed(())]
 
         var testLargeDataString = "testLargeDataString"
-        for _ in 1...20 {
+        for _ in 1 ... 20 {
             testLargeDataString += testLargeDataString
         }
         let testLargeData = testLargeDataString.data(using: .utf8)!

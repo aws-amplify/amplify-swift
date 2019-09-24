@@ -42,7 +42,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         let key = "testPutDataFromMissingFile"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         var testData = key
-        for _ in 1...5 {
+        for _ in 1 ... 5 {
             testData += testData
         }
         let fileURL = URL(fileURLWithPath: filePath)
