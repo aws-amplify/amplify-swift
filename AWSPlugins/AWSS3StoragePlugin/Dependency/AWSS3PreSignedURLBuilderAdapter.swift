@@ -21,6 +21,6 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
     }
 
     public func getPreSignedURL(_ getPreSignedURLRequest: AWSS3GetPreSignedURLRequest) -> AWSTask<NSURL> {
-        return self.preSignedURLBuilder.getPreSignedURL(getPreSignedURLRequest)
+        return preSignedURLBuilder.getPreSignedURL(getPreSignedURLRequest)
     }
 }
