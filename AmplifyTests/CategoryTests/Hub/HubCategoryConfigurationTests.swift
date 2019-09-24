@@ -80,35 +80,9 @@ class HubCategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testThrowsAddingSecondPluginWithNoSelector() throws {
-        let plugin1 = MockHubCategoryPlugin()
-        try Amplify.add(plugin: plugin1)
-
-        let plugin2 = MockSecondHubCategoryPlugin()
-        XCTAssertThrowsError(try Amplify.add(plugin: plugin2),
-                             "Adding a second plugin before adding a selector should throw") { error in
-                                guard case PluginError.noSelector = error else {
-                                    XCTFail("Expected PluginError.noSelector")
-                                    return
-                                }
-        }
-    }
-
-    func testDoesNotThrowAddingSecondPluginWithSelector() throws {
-        let plugin1 = MockHubCategoryPlugin()
-        try Amplify.add(plugin: plugin1)
-
-        try Amplify.Hub.set(pluginSelectorFactory: MockHubPluginSelectorFactory())
-
-        let plugin2 = MockSecondHubCategoryPlugin()
-        XCTAssertNoThrow(try Amplify.add(plugin: plugin2))
-    }
-
     func testCanRegisterMultipleHubPlugins() throws {
         let plugin1 = MockHubCategoryPlugin()
         try Amplify.add(plugin: plugin1)
-
-        try Amplify.Hub.set(pluginSelectorFactory: MockHubPluginSelectorFactory())
 
         let plugin2 = MockSecondHubCategoryPlugin()
         try Amplify.add(plugin: plugin2)
@@ -149,27 +123,11 @@ class HubCategoryConfigurationTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
     }
 
-    func testCanUseSelectorDerivedPluginIfMultiplePlugins() throws {
+    func testPreconditionFailureInvokingWithMultiplePlugins() throws {
         let plugin1 = MockHubCategoryPlugin()
-        let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
-        plugin1.listeners.append { message in
-            if message == "removeListener" {
-                methodInvokedOnDefaultPlugin.fulfill()
-            }
-        }
         try Amplify.add(plugin: plugin1)
 
-        try Amplify.Hub.set(pluginSelectorFactory: MockHubPluginSelectorFactory())
-
         let plugin2 = MockSecondHubCategoryPlugin()
-        let methodShouldNotBeInvokedOnSecondPlugin =
-            expectation(description: "test method should not be invoked on second plugin")
-        methodShouldNotBeInvokedOnSecondPlugin.isInverted = true
-        plugin2.listeners.append { message in
-            if message == "removeListener" {
-                methodShouldNotBeInvokedOnSecondPlugin.fulfill()
-            }
-        }
         try Amplify.add(plugin: plugin2)
 
         let hubConfig = HubCategoryConfiguration(
@@ -182,9 +140,12 @@ class HubCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(hub: hubConfig)
 
         try Amplify.configure(amplifyConfig)
-        let unsubscribeToken = UnsubscribeToken(channel: .storage, id: UUID())
-        Amplify.Hub.removeListener(unsubscribeToken)
-        waitForExpectations(timeout: 1.0)
+
+        let exception: BadInstructionException? = catchBadInstruction {
+            let unsubscribeToken = UnsubscribeToken(channel: .storage, id: UUID())
+            Amplify.Hub.removeListener(unsubscribeToken)
+        }
+        XCTAssertNotNil(exception)
     }
 
     func testCanUseSpecifiedPlugin() throws {
@@ -198,8 +159,6 @@ class HubCategoryConfigurationTests: XCTestCase {
             }
         }
         try Amplify.add(plugin: plugin1)
-
-        try Amplify.Hub.set(pluginSelectorFactory: MockHubPluginSelectorFactory())
 
         let plugin2 = MockSecondHubCategoryPlugin()
         let methodShouldBeInvokedOnSecondPlugin =
