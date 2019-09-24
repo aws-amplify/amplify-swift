@@ -37,7 +37,7 @@
 --enable ranges
   --ranges spaced
 
---disable redundantSelf
+--enable redundantSelf
   --self init-only
   --selfrequired 
 

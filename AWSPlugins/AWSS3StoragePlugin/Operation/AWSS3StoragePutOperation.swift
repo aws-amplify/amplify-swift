@@ -48,8 +48,8 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
     override public func main() {
         if let error = request.validate() {
             let asyncEvent = AsyncEvent<Progress, String, StorageError>.failed(error)
-            self.onEvent?(asyncEvent)
-            self.dispatch(event: asyncEvent)
+            onEvent?(asyncEvent)
+            dispatch(event: asyncEvent)
             finish()
             return
         }
