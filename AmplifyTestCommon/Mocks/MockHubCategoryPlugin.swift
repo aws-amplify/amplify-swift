@@ -10,12 +10,6 @@ import Foundation
 import Amplify
 
 class MockHubCategoryPlugin: MessageReporter, HubCategoryPlugin {
-    func listen(to channel: HubChannel?,
-                filteringWith filter: @escaping HubFilter,
-                onEvent: @escaping HubListener) -> UnsubscribeToken {
-        return UUID()
-    }
-
     var key: String {
         return "MockHubCategoryPlugin"
     }
@@ -30,18 +24,18 @@ class MockHubCategoryPlugin: MessageReporter, HubCategoryPlugin {
     }
 
     func dispatch(to channel: HubChannel, payload: HubPayload) {
-        notify()
+        notify("dispatch")
     }
 
     func listen(to channel: HubChannel,
-                filteringWith filter: @escaping HubFilter,
-                onEvent: @escaping HubListener) -> UnsubscribeToken {
-        notify()
-        return UUID()
+                filteringWith filter: HubFilter?,
+                onEvent: @escaping HubListener) -> UnsubscribeToken{
+        notify("listen")
+        return UnsubscribeToken(channel: channel, id: UUID())
     }
 
     func removeListener(_ token: UnsubscribeToken) {
-        notify()
+        notify("removeListener")
     }
 }
 
@@ -52,27 +46,21 @@ class MockSecondHubCategoryPlugin: MockHubCategoryPlugin {
 }
 
 final class MockHubCategoryPluginSelector: MessageReporter, HubPluginSelector {
-    func listen(to channel: HubChannel?,
-                filteringWith filter: @escaping HubFilter,
-                onEvent: @escaping HubListener) -> UnsubscribeToken {
-        return UUID()
-    }
-
     var selectedPluginKey: PluginKey? = "MockHubCategoryPlugin"
 
     func dispatch(to channel: HubChannel, payload: HubPayload) {
-        notify()
+        notify("dispatch")
     }
 
     func listen(to channel: HubChannel,
-                filteringWith filter: @escaping HubFilter,
+                filteringWith filter: HubFilter?,
                 onEvent: @escaping HubListener) -> UnsubscribeToken {
-        notify()
-        return UUID()
+        notify("listen")
+        return UnsubscribeToken(channel: channel, id: UUID())
     }
 
     func removeListener(_ token: UnsubscribeToken) {
-        notify()
+        notify("removeListener")
     }
 }
 

@@ -15,7 +15,11 @@ CategoryTypeable, EventPublishable {
 
     public var categoryType: CategoryType
 
+    // swiftlint:disable identifier_name
+    /// The unique ID of the operation. In categories where operations are persisted for future processing, this id can
+    /// be used to identify previously-scheduled work for progress tracking or other functions.
     public let id = UUID()
+    // swiftlint:enable identifier_name
 
     public func subscribe(
         filteringWith filter: @escaping HubFilter,
@@ -23,7 +27,8 @@ CategoryTypeable, EventPublishable {
 //        let idFilteringWrapper: HubFilter = { payload in
 //            guard let payload.message?.
 //        }
-        let token = Amplify.Hub.listen(to: nil,
+//TODO: Derive channel from category type
+let token = Amplify.Hub.listen(to: HubChannel.storage,
                                        filteringWith: filter,
                                        onEvent: onEvent)
         return token
