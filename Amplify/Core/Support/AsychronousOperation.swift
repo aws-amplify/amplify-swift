@@ -7,20 +7,25 @@
 
 import Foundation
 
+/// This class is to facilitate executing asychronous requests. The caller can transition the operation to its finished
+/// state by calling finish() in the callback of an asychronous request to ensure that the operation is only removed
+/// from the OperationQueue after it has completed all its work. This class is not inherently thread safe. Although it
+/// is a subclass of Foundation's Operation, it contains private state to support pausing, resuming, and finishing, that
+/// must be managed by callers.
 open class AsynchronousOperation: Operation {
 
     /// State for this operation.
     @objc private enum OperationState: Int {
-        case notRunning
+        case notExecuting
         case executing
         case finished
     }
 
     /// Concurrent queue for synchronizing access to `state`.
-    private let stateQueue = DispatchQueue(label: "com.amazonaws.AsynchronousOperation", attributes: .concurrent)
+    private let stateQueue = DispatchQueue(label: "com.amazonaws.amplify.AsyncOperation", attributes: .concurrent)
 
     /// Private backing stored property for `state`.
-    private var _state: OperationState = .notRunning
+    private var _state: OperationState = .notExecuting
 
     /// The state of the operation
     @objc private dynamic var state: OperationState {
@@ -29,7 +34,7 @@ open class AsynchronousOperation: Operation {
     }
 
     // MARK: - Various `Operation` properties
-    open override var isReady: Bool { return state == .notRunning && super.isReady }
+    open override var isReady: Bool { return state == .notExecuting && super.isReady }
     public final override var isExecuting: Bool { return state == .executing }
     public final override var isFinished: Bool { return state == .finished }
 
@@ -62,7 +67,7 @@ open class AsynchronousOperation: Operation {
     // Call this function to pause an operation that is currently executing
     open func pause() {
         if isExecuting {
-            state = .notRunning
+            state = .notExecuting
         }
     }
 

@@ -21,7 +21,7 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<Progress, Data, Stor
     var storageTaskReference: StorageTaskReference?
 
     /// Serial queue for synchronizing access to `storageTaskReference`.
-    private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.StorageTaskActionQueue")
+    private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
     init(_ request: AWSS3StorageGetDataRequest,
          storageService: AWSS3StorageServiceBehaviour,
@@ -53,8 +53,8 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<Progress, Data, Stor
     override public func cancel() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.cancel()
+            super.cancel()
         }
-        super.cancel()
     }
 
     override public func main() {

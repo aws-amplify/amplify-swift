@@ -33,7 +33,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: A empty data object
@@ -56,7 +56,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: A file with contents
@@ -82,7 +82,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: A file with empty contents
@@ -107,7 +107,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: A large  data object
@@ -131,7 +131,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: A large file
@@ -160,7 +160,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: An object in storage
@@ -184,7 +184,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: An object in storage
@@ -213,7 +213,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
 
         let fileExists = FileManager.default.fileExists(atPath: fileURL.path)
         XCTAssertTrue(fileExists)
@@ -248,7 +248,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 15)
+        waitForExpectations(timeout: networkTimeout)
         guard let remoteURL = remoteURLOptional else {
             XCTFail("Failed to get remoteURL")
             return
@@ -277,7 +277,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
         task.resume()
 
-        waitForExpectations(timeout: 15)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: An object in storage
@@ -304,7 +304,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 100)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: No object in storage for the key
@@ -330,7 +330,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: No object in storage for the key
@@ -368,7 +368,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: Objects with identifiers specified in `keys` array stored in folder named (`key1`+`key2`)
@@ -406,7 +406,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: An object in storage
@@ -428,7 +428,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(removeOperation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: Object with key `key` does not exist in storage
@@ -449,7 +449,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(removeOperation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: Object with key `key` in storage

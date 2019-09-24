@@ -39,7 +39,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: A path to file that does not exist
@@ -67,7 +67,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     // TODO: possibly after understanding content-type

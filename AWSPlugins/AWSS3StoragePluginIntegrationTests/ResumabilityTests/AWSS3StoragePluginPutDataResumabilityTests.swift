@@ -24,6 +24,8 @@ class AWSS3StoragePluginPutDataResumabilityTests: AWSS3StoragePluginTestBase {
         completeInvoked.isInverted = true
         let failedInvoked = expectation(description: "Failed invoked")
         failedInvoked.isInverted = true
+        let noProgressAfterPause = expectation(description: "Progress after pause is invoked")
+        noProgressAfterPause.isInverted = true
         let operation = Amplify.Storage.put(key: key,
                                             data: AWSS3StoragePluginTestBase.largeDataObject,
                                             options: nil) { (event) in
@@ -32,6 +34,11 @@ class AWSS3StoragePluginPutDataResumabilityTests: AWSS3StoragePluginTestBase {
                 // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
                 if progress.fractionCompleted > 0.3 {
                     progressInvoked.fulfill()
+                }
+
+                // After pausing, progress events still trickle in, but should not exceed
+                if progress.fractionCompleted > 0.7 {
+                    noProgressAfterPause.fulfill()
                 }
             case .completed:
                 completeInvoked.fulfill()
@@ -43,9 +50,9 @@ class AWSS3StoragePluginPutDataResumabilityTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        wait(for: [progressInvoked], timeout: 15)
+        wait(for: [progressInvoked], timeout: networkTimeout)
         operation.pause()
-        wait(for: [completeInvoked, failedInvoked], timeout: 30)
+        wait(for: [completeInvoked, failedInvoked, noProgressAfterPause], timeout: 30)
     }
 
     /// Given: A large data object to upload
@@ -75,10 +82,10 @@ class AWSS3StoragePluginPutDataResumabilityTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        wait(for: [progressInvoked], timeout: 15)
+        wait(for: [progressInvoked], timeout: networkTimeout)
         operation.pause()
         operation.resume()
-        wait(for: [completeInvoked], timeout: 60)
+        wait(for: [completeInvoked], timeout: networkTimeout)
     }
 
     /// Given: A large data object to upload
@@ -111,10 +118,9 @@ class AWSS3StoragePluginPutDataResumabilityTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        wait(for: [progressInvoked], timeout: 15)
+        wait(for: [progressInvoked], timeout: networkTimeout)
         operation.cancel()
-        XCTAssertTrue(operation.isCancelled)
-        wait(for: [completedInvoked, failedInvoked], timeout: 15)
+        wait(for: [completedInvoked, failedInvoked], timeout: 30)
     }
 
 }

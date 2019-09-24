@@ -23,7 +23,7 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
     var storageTaskReference: StorageTaskReference?
 
     /// Serial queue for synchronizing access to `storageTaskReference`.
-    private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.StorageTaskActionQueue")
+    private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
     init(_ request: AWSS3StorageDownloadFileRequest,
          storageService: AWSS3StorageServiceBehaviour,
@@ -55,9 +55,8 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
     override public func cancel() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.cancel()
+            super.cancel()
         }
-
-        super.cancel()
     }
 
     override public func main() {

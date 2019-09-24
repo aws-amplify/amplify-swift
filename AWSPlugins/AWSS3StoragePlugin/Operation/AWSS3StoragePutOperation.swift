@@ -21,7 +21,7 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
     var storageTaskReference: StorageTaskReference?
 
     /// Serial queue for synchronizing access to `storageTaskReference`.
-    private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.StorageTaskActionQueue")
+    private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
     init(_ request: AWSS3StoragePutRequest,
          storageService: AWSS3StorageServiceBehaviour,
@@ -52,9 +52,8 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
     override public func cancel() {
         storageTaskActionQueue.async {
             self.storageTaskReference?.cancel()
+            super.cancel()
         }
-
-        super.cancel()
     }
 
     override public func main() {

@@ -46,7 +46,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 20)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: An unauthenticated user
@@ -75,7 +75,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: `user1` user uploads some data with protected access level
@@ -146,7 +146,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
-        waitForExpectations(timeout: 30)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// GivenK: `user1` user uploads some data with protected access level
@@ -219,7 +219,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: networkTimeout)
 
         // get key for user1 as user2 - should fail with validation error
         let getFailedExpectation = expectation(description: "Get Operation should fail")
@@ -239,7 +239,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     // MARK: - Common test functions
@@ -280,7 +280,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     // MARK: StoragePlugin Helper functions
@@ -302,7 +302,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: networkTimeout)
         return keys
     }
 
@@ -322,7 +322,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: networkTimeout)
         return data
     }
 
@@ -341,7 +341,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     func remove(key: String, accessLevel: StorageAccessLevel) {
@@ -357,7 +357,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     // MARK: Auth Helper functions
@@ -377,7 +377,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             XCTAssertEqual(result.signInState, .signedIn)
             signInWasSuccessful.fulfill()
         }
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     func signUpUser(username: String) {
@@ -397,7 +397,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             signUpExpectation.fulfill()
         }
 
-        waitForExpectations(timeout: 5)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     func getIdentityId() -> String {
