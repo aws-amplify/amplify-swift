@@ -38,7 +38,7 @@ extension APICategory: APICategoryClientBehavior {
         case .plugin(let plugin):
             plugin.get()
         case .selector(let selector):
-            selector.get()
+            _ = selector.get()
             plugin(from: selector).get()
         }
     }
