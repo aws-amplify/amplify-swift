@@ -69,14 +69,13 @@ struct DefaultHubPluginPerformanceTestHelpers {
                                                  testCase: testCase)
     }
 
-    // swiftlint:disable function_parameter_count
+    // swiftlint:disable:next function_parameter_count
     static func makeTestObjectsForDispatcherTypes<T: Dispatcher>(listenerCount: Int,
                                                                  listenerChannels: [HubChannel],
                                                                  dispatcherType: T.Type,
                                                                  dispatcherChannels: [HubChannel],
                                                                  expectedChannels: [HubChannel],
                                                                  testCase: XCTestCase) -> PerformanceTestObjects {
-        // swiftlint:enable function_parameter_count
 
         var dispatchers = [Dispatcher]()
         for channel in dispatcherChannels {
