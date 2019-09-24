@@ -135,7 +135,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let data = testData.data(using: .utf8)!
         FileManager.default.createFile(atPath: filePath, contents: data, attributes: nil)
 
-        XCTAssertTrue(data.count > 10000000, "Could not create data object greater than 10MB")
+        XCTAssertTrue(data.count > 10_000_000, "Could not create data object greater than 10MB")
         let completeInvoked = expectation(description: "Completed is invoked")
 
         let operation = Amplify.Storage.put(key: key, local: fileURL, options: nil) { (event) in

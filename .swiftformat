@@ -24,9 +24,9 @@
 --enable linebreaks
   --linebreaks lf
 
---disable numberFormatting
+--enable numberFormatting
   --binarygrouping none
-  --decimalgrouping none
+  --decimalgrouping 3
   --exponentcase lowercase
   --exponentgrouping disabled
   --fractiongrouping disabled
