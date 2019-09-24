@@ -10,41 +10,73 @@ import Foundation
 
 class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
 
-    func getURL(key: String, options: StorageGetURLOptions?, onEvent: StorageGetURLEventHandler?) -> StorageGetURLOperation {
+    func getURL(key: String,
+                options: StorageGetURLRequest.Options?,
+                onEvent: StorageGetURLOperation.EventHandler?) -> StorageGetURLOperation {
         notify("getURL")
-        return MockStorageGetURLOperation(categoryType: .storage)
+        let options = options ?? StorageGetURLRequest.Options()
+        let request = StorageGetURLRequest(key: key, options: options)
+        return MockStorageGetURLOperation(categoryType: .storage, request: request)
     }
 
-    func getData(key: String, options: StorageGetDataOptions?, onEvent: StorageGetDataEventHandler?)
+    func getData(key: String,
+                 options: StorageGetDataRequest.Options?,
+                 onEvent: StorageGetDataOperation.EventHandler?)
         -> StorageGetDataOperation {
         notify("getData")
-        return MockStorageGetDataOperation(categoryType: .storage)
+            let options = options ?? StorageGetDataRequest.Options()
+            let request = StorageGetDataRequest(key: key, options: options)
+            return MockStorageGetDataOperation(categoryType: .storage, request: request)
     }
 
-    func downloadFile(key: String, local: URL, options: StorageDownloadFileOptions?, onEvent: StorageDownloadFileEventHandler?)
+    func downloadFile(key: String,
+                      local: URL,
+                      options: StorageDownloadFileRequest.Options?,
+                      onEvent: StorageDownloadFileOperation.EventHandler?)
         -> StorageDownloadFileOperation {
         notify("downloadFile")
-        return MockStorageDownloadFileOperation(categoryType: .storage)
+            let options = options ?? StorageDownloadFileRequest.Options()
+            let request = StorageDownloadFileRequest(key: key, local: local, options: options)
+            return MockStorageDownloadFileOperation(categoryType: .storage, request: request)
     }
 
-    func put(key: String, data: Data, options: StoragePutOptions?, onEvent: StoragePutEventHandler?) -> StoragePutOperation {
+    func put(key: String,
+             data: Data,
+             options: StoragePutRequest.Options?,
+             onEvent: StoragePutOperation.EventHandler?) -> StoragePutOperation {
         notify("put")
-        return MockStoragePutOperation(categoryType: .storage)
+        let options = options ?? StoragePutRequest.Options()
+        let source = StoragePutRequest.Source.data(data)
+        let request = StoragePutRequest(key: key, source: source, options: options)
+        return MockStoragePutOperation(categoryType: .storage, request: request)
     }
 
-    func put(key: String, local: URL, options: StoragePutOptions?, onEvent: StoragePutEventHandler?) -> StoragePutOperation {
+    func put(key: String,
+             local: URL,
+             options: StoragePutRequest.Options?,
+             onEvent: StoragePutOperation.EventHandler?) -> StoragePutOperation {
         notify("putFile")
-        return MockStoragePutOperation(categoryType: .storage)
+        let options = options ?? StoragePutRequest.Options()
+        let source = StoragePutRequest.Source.local(local)
+        let request = StoragePutRequest(key: key, source: source, options: options)
+        return MockStoragePutOperation(categoryType: .storage, request: request)
     }
 
-    func remove(key: String, options: StorageRemoveOptions?, onEvent: StorageRemoveEventHandler?) -> StorageRemoveOperation {
+    func remove(key: String,
+                options: StorageRemoveRequest.Options?,
+                onEvent: StorageRemoveOperation.EventHandler?) -> StorageRemoveOperation {
         notify("remove")
-        return MockStorageRemoveOperation(categoryType: .storage)
+        let options = options ?? StorageRemoveRequest.Options()
+        let request = StorageRemoveRequest(key: key, options: options)
+        return MockStorageRemoveOperation(categoryType: .storage, request: request)
     }
 
-    func list(options: StorageListOptions?, onEvent: StorageListEventHandler?) -> StorageListOperation {
+    func list(options: StorageListRequest.Options?,
+              onEvent: StorageListOperation.EventHandler?) -> StorageListOperation {
         notify("list")
-        return MockStorageListOperation(categoryType: .storage)
+        let options = options ?? StorageListRequest.Options()
+        let request = StorageListRequest(options: options)
+        return MockStorageListOperation(categoryType: .storage, request: request)
     }
 
     var key: String {
@@ -67,8 +99,8 @@ class MockSecondStorageCategoryPlugin: MockStorageCategoryPlugin {
     }
 }
 
-class MockStorageGetURLOperation: AmplifyOperation<Void, URL, StorageError>,
-    StorageGetURLOperation {
+class MockStorageGetURLOperation: AmplifyOperation<StorageGetURLRequest, Void, URL, StorageError>,
+StorageGetURLOperation {
     override func pause() {
     }
 
@@ -76,7 +108,7 @@ class MockStorageGetURLOperation: AmplifyOperation<Void, URL, StorageError>,
     }
 }
 
-class MockStorageGetDataOperation: AmplifyOperation<Progress, Data, StorageError>,
+class MockStorageGetDataOperation: AmplifyOperation<StorageGetDataRequest, Progress, Data, StorageError>,
     StorageGetDataOperation {
     override func pause() {
     }
@@ -85,7 +117,7 @@ class MockStorageGetDataOperation: AmplifyOperation<Progress, Data, StorageError
     }
 }
 
-class MockStorageDownloadFileOperation: AmplifyOperation<Progress, Void, StorageError>,
+class MockStorageDownloadFileOperation: AmplifyOperation<StorageDownloadFileRequest, Progress, Void, StorageError>,
     StorageDownloadFileOperation {
     override func pause() {
     }
@@ -94,7 +126,8 @@ class MockStorageDownloadFileOperation: AmplifyOperation<Progress, Void, Storage
     }
 }
 
-class MockStoragePutOperation: AmplifyOperation<Progress, String, StorageError>, StoragePutOperation {
+class MockStoragePutOperation: AmplifyOperation<StoragePutRequest, Progress, String, StorageError>,
+StoragePutOperation {
     override func pause() {
     }
 
@@ -102,7 +135,7 @@ class MockStoragePutOperation: AmplifyOperation<Progress, String, StorageError>,
     }
 }
 
-class MockStorageRemoveOperation: AmplifyOperation<Void, String, StorageError>,
+class MockStorageRemoveOperation: AmplifyOperation<StorageRemoveRequest, Void, String, StorageError>,
 StorageRemoveOperation {
     override func pause() {
     }
@@ -111,7 +144,8 @@ StorageRemoveOperation {
     }
 }
 
-class MockStorageListOperation: AmplifyOperation<Void, StorageListResult, StorageError>, StorageListOperation {
+class MockStorageListOperation: AmplifyOperation<StorageListRequest, Void, StorageListResult, StorageError>,
+StorageListOperation {
     override func pause() {
     }
 

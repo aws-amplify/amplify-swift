@@ -24,18 +24,18 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
 
         let request = awss3StorageGetURLOperation.request
         XCTAssertNotNil(request)
-        XCTAssertEqual(request.accessLevel, defaultAccessLevel)
-        XCTAssertNil(request.targetIdentityId)
+        XCTAssertEqual(request.options.accessLevel, defaultAccessLevel)
+        XCTAssertNil(request.options.targetIdentityId)
         XCTAssertEqual(request.key, testKey)
-        XCTAssertEqual(request.expires, AWSS3StorageGetURLRequest.defaultExpireInSeconds)
+        XCTAssertEqual(request.options.expires, StorageGetURLRequest.Options.defaultExpireInSeconds)
         XCTAssertEqual(queue.size, 1)
     }
 
     func testPluginGetURLWithOptions() {
-        let options = StorageGetURLOptions(accessLevel: .private,
-                                        targetIdentityId: testIdentityId,
-                                        expires: testExpires,
-                                        pluginOptions: [:])
+        let options = StorageGetURLRequest.Options(accessLevel: .private,
+                                                   targetIdentityId: testIdentityId,
+                                                   expires: testExpires,
+                                                   pluginOptions: [:])
 
         let operation = storagePlugin.getURL(key: testKey, options: options, onEvent: nil)
 
@@ -46,11 +46,11 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         }
         let request = awss3StorageGetURLOperation.request
         XCTAssertNotNil(request)
-        XCTAssertNotEqual(request.accessLevel, defaultAccessLevel)
-        XCTAssertEqual(request.accessLevel, .private)
-        XCTAssertEqual(request.targetIdentityId, testIdentityId)
+        XCTAssertNotEqual(request.options.accessLevel, defaultAccessLevel)
+        XCTAssertEqual(request.options.accessLevel, .private)
+        XCTAssertEqual(request.options.targetIdentityId, testIdentityId)
         XCTAssertEqual(request.key, testKey)
-        XCTAssertEqual(request.expires, testExpires)
+        XCTAssertEqual(request.options.expires, testExpires)
 
         XCTAssertEqual(queue.size, 1)
     }
@@ -68,14 +68,14 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
 
         let request = awss3StorageGetDataOperation.request
         XCTAssertNotNil(request)
-        XCTAssertEqual(request.accessLevel, defaultAccessLevel)
-        XCTAssertNil(request.targetIdentityId)
+        XCTAssertEqual(request.options.accessLevel, defaultAccessLevel)
+        XCTAssertNil(request.options.targetIdentityId)
         XCTAssertEqual(request.key, testKey)
         XCTAssertEqual(queue.size, 1)
     }
 
     func testPluginGetWithOptions() {
-        let options = StorageGetDataOptions(accessLevel: .private,
+        let options = StorageGetDataRequest.Options(accessLevel: .private,
                                             targetIdentityId: testIdentityId,
                                             pluginOptions: [:])
 
@@ -88,9 +88,9 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         }
         let request = awss3StorageGetDataOperation.request
         XCTAssertNotNil(request)
-        XCTAssertNotEqual(request.accessLevel, defaultAccessLevel)
-        XCTAssertEqual(request.accessLevel, .private)
-        XCTAssertEqual(request.targetIdentityId, testIdentityId)
+        XCTAssertNotEqual(request.options.accessLevel, defaultAccessLevel)
+        XCTAssertEqual(request.options.accessLevel, .private)
+        XCTAssertEqual(request.options.targetIdentityId, testIdentityId)
         XCTAssertEqual(request.key, testKey)
         XCTAssertEqual(queue.size, 1)
     }
@@ -108,15 +108,15 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
 
         let request = awss3StorageDownloadFileOperation.request
         XCTAssertNotNil(request)
-        XCTAssertEqual(request.accessLevel, defaultAccessLevel)
-        XCTAssertNil(request.targetIdentityId)
+        XCTAssertEqual(request.options.accessLevel, defaultAccessLevel)
+        XCTAssertNil(request.options.targetIdentityId)
         XCTAssertEqual(request.key, testKey)
         XCTAssertEqual(request.local, testURL)
         XCTAssertEqual(queue.size, 1)
     }
 
     func testPluginDownloadFileWithOptions() {
-        let options = StorageDownloadFileOptions(accessLevel: .private,
+        let options = StorageDownloadFileRequest.Options(accessLevel: .private,
                                                  targetIdentityId: testIdentityId,
                                                  pluginOptions: [:])
 
@@ -129,9 +129,9 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         }
         let request = awss3StorageDownloadFileOperation.request
         XCTAssertNotNil(request)
-        XCTAssertNotEqual(request.accessLevel, defaultAccessLevel)
-        XCTAssertEqual(request.accessLevel, .private)
-        XCTAssertEqual(request.targetIdentityId, testIdentityId)
+        XCTAssertNotEqual(request.options.accessLevel, defaultAccessLevel)
+        XCTAssertEqual(request.options.accessLevel, .private)
+        XCTAssertEqual(request.options.targetIdentityId, testIdentityId)
         XCTAssertEqual(request.key, testKey)
         XCTAssertEqual(request.local, testURL)
         XCTAssertEqual(queue.size, 1)
@@ -152,12 +152,12 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         }
         let request = awss3StoragePutOperation.request
         XCTAssertNotNil(request)
-        XCTAssertEqual(request.accessLevel, defaultAccessLevel)
+        XCTAssertEqual(request.options.accessLevel, defaultAccessLevel)
         XCTAssertEqual(request.key, testKey)
-        XCTAssertNil(request.contentType)
-        XCTAssertNil(request.metadata)
-        XCTAssertNil(request.pluginOptions)
-        guard case .data(let data) = request.uploadSource else {
+        XCTAssertNil(request.options.contentType)
+        XCTAssertNil(request.options.metadata)
+        XCTAssertNil(request.options.pluginOptions)
+        guard case .data(let data) = request.source else {
             XCTFail("The request upload source should be data")
             return
         }
@@ -166,10 +166,10 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
     }
 
     func testPluginPutWithOptions() {
-        let options = StoragePutOptions(accessLevel: .private,
-                                       contentType: testContentType,
-                                       metadata: [:],
-                                       pluginOptions: [:])
+        let options = StoragePutRequest.Options(accessLevel: .private,
+                                                metadata: [:],
+                                                contentType: testContentType,
+                                                pluginOptions: [:])
 
         let operation = storagePlugin.put(key: testKey,
                                           data: testData,
@@ -183,14 +183,14 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         }
         let request = awss3StoragePutOperation.request
         XCTAssertNotNil(request)
-        XCTAssertNotEqual(request.accessLevel, defaultAccessLevel)
-        XCTAssertEqual(request.accessLevel, .private)
+        XCTAssertNotEqual(request.options.accessLevel, defaultAccessLevel)
+        XCTAssertEqual(request.options.accessLevel, .private)
         XCTAssertEqual(request.key, testKey)
-        XCTAssertNotNil(request.contentType)
-        XCTAssertEqual(request.contentType, testContentType)
-        XCTAssertNotNil(request.metadata)
-        XCTAssertNotNil(request.pluginOptions)
-        guard case .data(let data) = request.uploadSource else {
+        XCTAssertNotNil(request.options.contentType)
+        XCTAssertEqual(request.options.contentType, testContentType)
+        XCTAssertNotNil(request.options.metadata)
+        XCTAssertNotNil(request.options.pluginOptions)
+        guard case .data(let data) = request.source else {
             XCTFail("The request upload source should be data")
             return
         }
@@ -213,12 +213,12 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         }
         let request = awss3StoragePutOperation.request
         XCTAssertNotNil(request)
-        XCTAssertEqual(request.accessLevel, defaultAccessLevel)
+        XCTAssertEqual(request.options.accessLevel, defaultAccessLevel)
         XCTAssertEqual(request.key, testKey)
-        XCTAssertNil(request.contentType)
-        XCTAssertNil(request.metadata)
-        XCTAssertNil(request.pluginOptions)
-        guard case .file(let file) = request.uploadSource else {
+        XCTAssertNil(request.options.contentType)
+        XCTAssertNil(request.options.metadata)
+        XCTAssertNil(request.options.pluginOptions)
+        guard case .local(let file) = request.source else {
             XCTFail("The request upload source should be url")
             return
         }
@@ -228,9 +228,9 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
     }
 
     func testPluginPutToLocalFileWithOptions() {
-        let options = StoragePutOptions(accessLevel: .private,
-                                       contentType: testContentType,
+        let options = StoragePutRequest.Options(accessLevel: .private,
                                        metadata: [:],
+                                       contentType: testContentType,
                                        pluginOptions: [:])
 
         let operation = storagePlugin.put(key: testKey,
@@ -245,14 +245,14 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         }
         let request = awss3StoragePutOperation.request
         XCTAssertNotNil(request)
-        XCTAssertNotEqual(request.accessLevel, defaultAccessLevel)
-        XCTAssertEqual(request.accessLevel, .private)
+        XCTAssertNotEqual(request.options.accessLevel, defaultAccessLevel)
+        XCTAssertEqual(request.options.accessLevel, .private)
         XCTAssertEqual(request.key, testKey)
-        XCTAssertNotNil(request.contentType)
-        XCTAssertEqual(request.contentType, testContentType)
-        XCTAssertNotNil(request.metadata)
-        XCTAssertNotNil(request.pluginOptions)
-        guard case .file(let file) = request.uploadSource else {
+        XCTAssertNotNil(request.options.contentType)
+        XCTAssertEqual(request.options.contentType, testContentType)
+        XCTAssertNotNil(request.options.metadata)
+        XCTAssertNotNil(request.options.pluginOptions)
+        guard case .local(let file) = request.source else {
             XCTFail("The request upload source should be url")
             return
         }
@@ -273,14 +273,14 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         }
         let request = awss3StorageRemoveOperation.request
         XCTAssertNotNil(request)
-        XCTAssertEqual(request.accessLevel, defaultAccessLevel)
+        XCTAssertEqual(request.options.accessLevel, defaultAccessLevel)
         XCTAssertEqual(request.key, testKey)
-        XCTAssertNil(request.pluginOptions)
+        XCTAssertNil(request.options.pluginOptions)
         XCTAssertEqual(queue.size, 1)
     }
 
     func testPluginRemoveWithOptions() {
-        let options = StorageRemoveOptions(accessLevel: .private, pluginOptions: [:])
+        let options = StorageRemoveRequest.Options(accessLevel: .private, pluginOptions: [:])
 
         let operation = storagePlugin.remove(key: testKey, options: options, onEvent: nil)
 
@@ -291,10 +291,10 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         }
         let request = awss3StorageRemoveOperation.request
         XCTAssertNotNil(request)
-        XCTAssertNotEqual(request.accessLevel, defaultAccessLevel)
-        XCTAssertEqual(request.accessLevel, .private)
+        XCTAssertNotEqual(request.options.accessLevel, defaultAccessLevel)
+        XCTAssertEqual(request.options.accessLevel, .private)
         XCTAssertEqual(request.key, testKey)
-        XCTAssertNotNil(request.pluginOptions)
+        XCTAssertNotNil(request.options.pluginOptions)
         XCTAssertEqual(queue.size, 1)
     }
 
@@ -310,14 +310,14 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         }
         let request = awss3StorageListOperation.request
         XCTAssertNotNil(request)
-        XCTAssertEqual(request.accessLevel, defaultAccessLevel)
-        XCTAssertNil(request.path)
-        XCTAssertNil(request.pluginOptions)
+        XCTAssertEqual(request.options.accessLevel, defaultAccessLevel)
+        XCTAssertNil(request.options.path)
+        XCTAssertNil(request.options.pluginOptions)
         XCTAssertEqual(queue.size, 1)
     }
 
     func testPluginListWithOptions() {
-        let options = StorageListOptions(accessLevel: .private,
+        let options = StorageListRequest.Options(accessLevel: .private,
                                         targetIdentityId: testIdentityId,
                                         path: testPath,
                                         pluginOptions: [:])
@@ -331,11 +331,11 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         }
         let request = awss3StorageListOperation.request
         XCTAssertNotNil(request)
-        XCTAssertNotEqual(request.accessLevel, defaultAccessLevel)
-        XCTAssertEqual(request.accessLevel, .private)
-        XCTAssertNotNil(request.targetIdentityId, testIdentityId)
-        XCTAssertEqual(request.path, testPath)
-        XCTAssertNotNil(request.pluginOptions)
+        XCTAssertNotEqual(request.options.accessLevel, defaultAccessLevel)
+        XCTAssertEqual(request.options.accessLevel, .private)
+        XCTAssertNotNil(request.options.targetIdentityId, testIdentityId)
+        XCTAssertEqual(request.options.path, testPath)
+        XCTAssertNotNil(request.options.pluginOptions)
         XCTAssertEqual(queue.size, 1)
     }
 }

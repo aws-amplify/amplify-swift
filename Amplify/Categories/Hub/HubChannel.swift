@@ -9,6 +9,18 @@
 /// channels for intra-app communication. Internally, Amplify uses the Hub for dispatching notifications about events
 /// associated with different categories.
 public enum HubChannel {
+    /// Hub messages relating to Amplify Analytics
+    case analytics
+
+    /// Hub messages relating to Amplify API
+    case api
+
+    /// Hub messages relating to Amplify Hub
+    case hub
+
+    /// Hub messages relating to Amplify Logging
+    case logging
+
     /// Hub messages relating to Amplify Storage
     case storage
 
@@ -16,24 +28,52 @@ public enum HubChannel {
     case custom(String)
 
     /// Convenience property to return an array of all non-`custom` channels
-    static var amplifyChannels: [HubChannel] {
-        return [
-            .storage
-        ]
-    }
+    static var amplifyChannels: [HubChannel] = {
+        let categoryChannels = CategoryType
+            .allCases
+            .sorted { $0.displayName < $1.displayName }
+            .map { HubChannel(from: $0) }
+            .compactMap { $0 }
+
+        return categoryChannels
+    }()
 }
 
 extension HubChannel: Equatable {
     public static func == (lhs: HubChannel, rhs: HubChannel) -> Bool {
         switch (lhs, rhs) {
+        case (.analytics, .analytics):
+            return true
+        case (.api, .api):
+            return true
+        case (.hub, .hub):
+            return true
+        case (.logging, .logging):
+            return true
         case (.storage, .storage):
             return true
-
         case (.custom(let lhsValue), .custom(let rhsValue)):
             return lhsValue == rhsValue
 
         default:
             return false
+        }
+    }
+}
+
+extension HubChannel {
+    public init(from categoryType: CategoryType) {
+        switch categoryType {
+        case .analytics:
+            self = .analytics
+        case .api:
+            self = .api
+        case .hub:
+            self = .hub
+        case .logging:
+            self = .logging
+        case .storage:
+            self = .storage
         }
     }
 }

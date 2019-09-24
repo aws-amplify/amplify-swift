@@ -87,7 +87,9 @@ class DefaultHubPluginTests: XCTestCase {
             }
         }
 
-        guard try DefaultHubPluginTestHelpers.waitForListener(with: unsubscribeToken, plugin: plugin, timeout: 0.5) else {
+        guard try DefaultHubPluginTestHelpers.waitForListener(with: unsubscribeToken,
+                                                              plugin: plugin,
+                                                              timeout: 0.5) else {
             XCTFail("Token with \(unsubscribeToken.id) was not registered")
             return
         }

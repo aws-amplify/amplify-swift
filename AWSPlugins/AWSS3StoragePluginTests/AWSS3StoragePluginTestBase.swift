@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import CwlPreconditionTesting
 import Amplify
 @testable import AWSS3StoragePlugin
 

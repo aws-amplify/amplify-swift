@@ -5,15 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-public class StorageListResult {
+public struct StorageListResult {
     public init(keys: [String]) {
         self.keys = keys
     }
 
     public var keys: [String]
 
-    // TOOD
+    // TODO:
     // JS also returns
     /*
      eTag: item.ETag,

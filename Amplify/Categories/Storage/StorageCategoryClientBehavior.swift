@@ -9,13 +9,6 @@ import Foundation
 
 /// Behavior of the Storage category that clients will use
 public protocol StorageCategoryClientBehavior {
-    typealias StorageGetURLEventHandler = (AsyncEvent<Void, URL, StorageError>) -> Void
-    typealias StorageGetDataEventHandler = (AsyncEvent<Progress, Data, StorageError>) -> Void
-    typealias StorageDownloadFileEventHandler = (AsyncEvent<Progress, Void, StorageError>) -> Void
-    typealias StoragePutEventHandler = (AsyncEvent<Progress, String, StorageError>) -> Void
-    typealias StorageRemoveEventHandler = (AsyncEvent<Void, String, StorageError>) -> Void
-    typealias StorageListEventHandler = (AsyncEvent<Void, StorageListResult, StorageError>) -> Void
-
     /// Retrieve the remote URL for the object from storage.
     ///
     /// - Parameters:
@@ -24,19 +17,19 @@ public protocol StorageCategoryClientBehavior {
     ///   - onEvent: Triggered when event occurs
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     func getURL(key: String,
-                options: StorageGetURLOptions?,
-                onEvent: StorageGetURLEventHandler?) -> StorageGetURLOperation
+                options: StorageGetURLOperation.Request.Options?,
+                onEvent: StorageGetURLOperation.EventHandler?) -> StorageGetURLOperation
 
     /// Retrieve the object from storage into memory.
     ///
     /// - Parameters:
-    ///   - key: The unique identifier for the object in storage.
-    ///   - options: Parameters to specific plugin behavior
+    ///   - key: The unique identifier for the object in storage
+    ///   - options: Options to adjust the behavior of this request, including plugin-options
     ///   - onEvent: Triggered when event occurs
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     func getData(key: String,
-                 options: StorageGetDataOptions?,
-                 onEvent: StorageGetDataEventHandler?) -> StorageGetDataOperation
+                 options: StorageGetDataOperation.Request.Options?,
+                 onEvent: StorageGetDataOperation.EventHandler?) -> StorageGetDataOperation
 
     /// Download to file the object from storage.
     ///
@@ -48,8 +41,8 @@ public protocol StorageCategoryClientBehavior {
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     func downloadFile(key: String,
                       local: URL,
-                      options: StorageDownloadFileOptions?,
-                      onEvent: StorageDownloadFileEventHandler?) -> StorageDownloadFileOperation
+                      options: StorageDownloadFileOperation.Request.Options?,
+                      onEvent: StorageDownloadFileOperation.EventHandler?) -> StorageDownloadFileOperation
 
     /// Upload data to storage
     ///
@@ -61,8 +54,8 @@ public protocol StorageCategoryClientBehavior {
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     func put(key: String,
              data: Data,
-             options: StoragePutOptions?,
-             onEvent: StoragePutEventHandler?) -> StoragePutOperation
+             options: StoragePutOperation.Request.Options?,
+             onEvent: StoragePutOperation.EventHandler?) -> StoragePutOperation
 
     /// Upload local file to storage
     ///
@@ -74,8 +67,8 @@ public protocol StorageCategoryClientBehavior {
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     func put(key: String,
              local: URL,
-             options: StoragePutOptions?,
-             onEvent: StoragePutEventHandler?) -> StoragePutOperation
+             options: StoragePutOperation.Request.Options?,
+             onEvent: StoragePutOperation.EventHandler?) -> StoragePutOperation
 
     /// Delete object from storage
     ///
@@ -85,8 +78,8 @@ public protocol StorageCategoryClientBehavior {
     ///   - onEvent: Triggered when event occurs
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     func remove(key: String,
-                options: StorageRemoveOptions?,
-                onEvent: StorageRemoveEventHandler?) -> StorageRemoveOperation
+                options: StorageRemoveOperation.Request.Options?,
+                onEvent: StorageRemoveOperation.EventHandler?) -> StorageRemoveOperation
 
     /// List the object identifiers under the heiarchy specified by the path, relative to access level, from storage
     ///
@@ -94,5 +87,6 @@ public protocol StorageCategoryClientBehavior {
     ///   - options: Parameters to specific plugin behavior
     ///   - onEvent: Triggered when event occurs
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
-    func list(options: StorageListOptions?, onEvent: StorageListEventHandler?) -> StorageListOperation
+    func list(options: StorageListOperation.Request.Options?,
+              onEvent: StorageListOperation.EventHandler?) -> StorageListOperation
 }

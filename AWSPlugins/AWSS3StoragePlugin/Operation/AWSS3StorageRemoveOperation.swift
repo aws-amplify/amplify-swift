@@ -10,24 +10,20 @@ import Amplify
 import AWSS3
 import AWSMobileClient
 
-public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, StorageError>,
+public class AWSS3StorageRemoveOperation: AmplifyOperation<StorageRemoveRequest, Void, String, StorageError>,
     StorageRemoveOperation {
 
-    let request: AWSS3StorageRemoveRequest
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
-    let onEvent: ((AsyncEvent<Void, String, StorageError>) -> Void)?
 
-    init(_ request: AWSS3StorageRemoveRequest,
+    init(_ request: StorageRemoveRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         onEvent: ((AsyncEvent<Void, String, StorageError>) -> Void)?) {
+         onEvent: EventHandler?) {
 
-        self.request = request
         self.storageService = storageService
         self.authService = authService
-        self.onEvent = onEvent
-        super.init(categoryType: .storage)
+        super.init(categoryType: .storage, request: request, onEvent: onEvent)
     }
 
     override public func cancel() {
@@ -56,7 +52,7 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, Storage
             return
         }
 
-        let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
+        let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.options.accessLevel,
                                                            identityId: identityId,
                                                            key: request.key)
 
@@ -85,13 +81,11 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, Storage
 
     private func dispatch(_ result: String) {
         let asyncEvent = AsyncEvent<Void, String, StorageError>.completed(result)
-        onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }
 
     private func dispatch(_ error: StorageError) {
         let asyncEvent = AsyncEvent<Void, String, StorageError>.failed(error)
-        onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }
 }

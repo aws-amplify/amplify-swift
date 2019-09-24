@@ -12,30 +12,25 @@ import AWSMobileClient
 
 // TODO: thread safety: everything has to be locked down
 // TODO verify no retain cycle
-public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void, StorageError>,
-    StorageDownloadFileOperation {
+public class AWSS3StorageDownloadFileOperation: AmplifyOperation<StorageDownloadFileRequest, Progress,
+Void, StorageError>, StorageDownloadFileOperation {
 
-    let request: AWSS3StorageDownloadFileRequest
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
-    let onEvent: ((AsyncEvent<Progress, Void, StorageError>) -> Void)?
 
     var storageTaskReference: StorageTaskReference?
 
     /// Serial queue for synchronizing access to `storageTaskReference`.
     private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
-    init(_ request: AWSS3StorageDownloadFileRequest,
+    init(_ request: StorageDownloadFileRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         onEvent: ((AsyncEvent<Progress, CompletedType, ErrorType>) -> Void)?) {
+         onEvent: EventHandler?) {
 
-        self.request = request
         self.storageService = storageService
         self.authService = authService
-        self.onEvent = onEvent
-        super.init(categoryType: .storage)
-        // TODO pass onEvent to the Hub
+        super.init(categoryType: .storage, request: request, onEvent: onEvent)
     }
 
     override public func pause() {
@@ -81,10 +76,10 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
             return
         }
 
-        let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
+        let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.options.accessLevel,
                                                            identityId: identityId,
                                                            key: request.key,
-                                                           targetIdentityId: request.targetIdentityId)
+                                                           targetIdentityId: request.options.targetIdentityId)
 
         if isCancelled {
             finish()
@@ -120,18 +115,15 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
     private func dispatch(_ progress: Progress) {
         let asyncEvent = AsyncEvent<Progress, Void, StorageError>.inProcess(progress)
         dispatch(event: asyncEvent)
-        onEvent?(asyncEvent)
     }
 
     private func dispatch() {
         let asyncEvent = AsyncEvent<Progress, Void, StorageError>.completed(())
-        onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }
 
     private func dispatch(_ error: StorageError) {
         let asyncEvent = AsyncEvent<Progress, Void, StorageError>.failed(error)
-        onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }
 }

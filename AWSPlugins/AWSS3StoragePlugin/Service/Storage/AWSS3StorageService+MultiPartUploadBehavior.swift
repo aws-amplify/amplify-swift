@@ -14,7 +14,7 @@ public typealias MultiPartUploadTaskCreatedHandler = (AWSTask<AWSS3TransferUtili
 extension AWSS3StorageService {
 
     func multiPartUpload(serviceKey: String,
-                         uploadSource: UploadSource,
+                         uploadSource: StoragePutRequest.Source,
                          contentType: String?,
                          metadata: [String: String]?,
                          onEvent: @escaping StorageServiceMultiPartUploadEventHandler) {
@@ -41,7 +41,7 @@ extension AWSS3StorageService {
                                                  expression: expression,
                                                  completionHandler: onMultiPartUploadCompletedHandler)
                 .continueWith(block: multiPartUploadTaskCreatedHandler)
-        case .file(let fileURL):
+        case .local(let fileURL):
             transferUtility.uploadUsingMultiPart(fileURL: fileURL,
                                                  bucket: bucket,
                                                  key: serviceKey,

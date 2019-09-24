@@ -10,6 +10,7 @@ extension HubCategory: HubCategoryClientBehavior {
         plugin.dispatch(to: channel, payload: payload)
     }
 
+    // TODO: Change `filteringWith` to `filteringBy`
     public func listen(to channel: HubChannel,
                        filteringWith filter: HubFilter? = nil,
                        onEvent: @escaping HubListener) -> UnsubscribeToken {
