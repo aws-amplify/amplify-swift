@@ -34,10 +34,15 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<Void, URL, StorageErr
     }
 
     override public func cancel() {
-        cancel()
+        super.cancel()
     }
 
     override public func main() {
+        if isCancelled {
+            finish()
+            return
+        }
+
         if let error = request.validate() {
             dispatch(error)
             finish()
@@ -45,7 +50,6 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<Void, URL, StorageErr
         }
 
         let identityIdResult = authService.getIdentityId()
-
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
                 dispatch(error)
@@ -57,12 +61,17 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<Void, URL, StorageErr
 
         let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
                                                            identityId: identityId,
-                                                           targetIdentityId: request.targetIdentityId,
-                                                           key: request.key)
+                                                           key: request.key,
+                                                           targetIdentityId: request.targetIdentityId)
 
-        storageService.getPreSignedURL(serviceKey: serviceKey,
-                                       expires: request.expires ?? PluginConstants.defaultURLExpireTime,
-                                       onEvent: onEventHandler)
+        if isCancelled {
+            finish()
+            return
+        }
+
+        storageService.getPreSignedURL(serviceKey: serviceKey, expires: request.expires) { [weak self] event in
+            self?.onEventHandler(event: event)
+        }
     }
 
     private func onEventHandler(event: StorageEvent<Void, Void, URL, StorageError>) {

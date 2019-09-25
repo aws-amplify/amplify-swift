@@ -12,15 +12,15 @@ import Amplify
 struct AWSS3StorageRemoveRequest {
     let accessLevel: StorageAccessLevel
     let key: String
-    let options: Any?
+    let pluginOptions: Any?
 
     /// Creates an instance with storage request input values.
     init(accessLevel: StorageAccessLevel,
          key: String,
-         options: Any? = nil) {
+         pluginOptions: Any? = nil) {
         self.accessLevel = accessLevel
         self.key = key
-        self.options = options
+        self.pluginOptions = pluginOptions
     }
 
     /// Performs client side validation and returns a `StorageError` for any validation failures.

@@ -5,24 +5,24 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
+// StorageDownloadFileOptions specifies additional options when downloading the file.
 public struct StorageDownloadFileOptions {
 
-    public var accessLevel: StorageAccessLevel?
+    // Access level of the storage system.
+    public let accessLevel: StorageAccessLevel?
 
+    // Target user to apply the action on.
     public let targetIdentityId: String?
 
-    public var options: Any?
+    // Extra plugin specific options, only used in special circumstances when the existing options do not provide
+    // a way to utilize the underlying storage system's functionality. See plugin documentation for expected key/values
+    public let pluginOptions: Any?
 
-    // TODO: transferAcceleration should be in options most likely. and can be set globally
-    // https://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
-
-    public init(accessLevel: StorageAccessLevel? = nil,
+    public init(accessLevel: StorageAccessLevel?,
                 targetIdentityId: String? = nil,
-                options: Any? = nil) {
+                pluginOptions: Any? = nil) {
         self.accessLevel = accessLevel
         self.targetIdentityId = targetIdentityId
-        self.options = options
+        self.pluginOptions = pluginOptions
     }
 }

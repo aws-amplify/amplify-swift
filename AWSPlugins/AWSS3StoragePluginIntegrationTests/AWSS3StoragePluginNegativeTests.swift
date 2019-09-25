@@ -11,18 +11,22 @@ import Amplify
 @testable import AWSS3StoragePlugin
 import AWSS3
 class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
+
+    /// Given: Object with key `key` does not exist in storage
+    /// When: Call the get API
+    /// Then: The operation fails with StorageError.keyNotFound
     func testGetNonexistentKey() {
         let key = "testGetNonexistentKey"
         let failInvoked = expectation(description: "Failed is invoked")
         let options = StorageGetDataOptions(accessLevel: nil,
                                             targetIdentityId: nil,
-                                            options: nil)
+                                            pluginOptions: nil)
         let operation = Amplify.Storage.getData(key: key, options: options) { (event) in
             switch event {
             case .completed:
                 XCTFail("Should not have completed successfully")
             case .failed(let error):
-                guard case let .notFound(errorDescription, _) = error else {
+                guard case let .keyNotFound(errorDescription, _) = error else {
                     XCTFail("Should have been validation error")
                     return
                 }
@@ -35,16 +39,15 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: networkTimeout)
     }
 
+    /// Given: A path to file that does not exist
+    /// When: Upload the file
+    /// Then: The operation fails with StorageError.missingLocalFile
     func testPutDataFromMissingFile() {
         let key = "testPutDataFromMissingFile"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
-        var testData = key
-        for _ in 1 ... 5 {
-            testData += testData
-        }
         let fileURL = URL(fileURLWithPath: filePath)
         let failedInvoked = expectation(description: "Failed is invoked")
         let operation = Amplify.Storage.put(key: key, local: fileURL, options: nil) { (event) in
@@ -52,7 +55,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
             case .completed:
                 XCTFail("Completed event is received")
             case .failed(let error):
-                guard case let .missingFile(error) = error else {
+                guard case let .missingLocalFile(error) = error else {
                     XCTFail("Should have been service error with missing File description")
                     return
                 }
@@ -64,7 +67,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     // TODO: possibly after understanding content-type

@@ -14,19 +14,19 @@ struct AWSS3StorageDownloadFileRequest {
     let targetIdentityId: String?
     let key: String
     let local: URL
-    let options: Any?
+    let pluginOptions: Any?
 
     /// Creates an instance with storage request input values.
     public init(accessLevel: StorageAccessLevel,
                 targetIdentityId: String?,
                 key: String,
                 local: URL,
-                options: Any?) {
+                pluginOptions: Any?) {
         self.accessLevel = accessLevel
         self.targetIdentityId = targetIdentityId
         self.key = key
         self.local = local
-        self.options = options
+        self.pluginOptions = pluginOptions
     }
 
     /// Performs client side validation and returns a `StorageError` for any validation failures.

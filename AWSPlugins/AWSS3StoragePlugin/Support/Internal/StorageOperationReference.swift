@@ -8,8 +8,7 @@
 import Foundation
 import AWSS3
 
-// TODO: better naming - Reference?
-public class StorageOperationReference {
+public class StorageTaskReference {
     let task: AWSS3TransferUtilityTask?
     let multiPartUploadTask: AWSS3TransferUtilityMultiPartUploadTask?
 
@@ -26,7 +25,6 @@ public class StorageOperationReference {
     func pause() {
         task?.suspend()
         multiPartUploadTask?.suspend()
-        //task.taskIdentifier
     }
 
     func resume() {

@@ -19,7 +19,7 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
                                              uploadSource: UploadSource.data(data: testData),
                                              contentType: nil,
                                              metadata: nil,
-                                             options: nil)
+                                             pluginOptions: nil)
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StoragePutOperation(request,
                                                  storageService: mockStorageService,
@@ -49,7 +49,7 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
                                              uploadSource: UploadSource.data(data: testData),
                                              contentType: nil,
                                              metadata: nil,
-                                             options: nil)
+                                             pluginOptions: nil)
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StoragePutOperation(request,
                                                  storageService: mockStorageService,
@@ -79,14 +79,14 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
                                              uploadSource: UploadSource.file(file: url),
                                              contentType: nil,
                                              metadata: nil,
-                                             options: nil)
+                                             pluginOptions: nil)
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StoragePutOperation(request,
                                                  storageService: mockStorageService,
                                                  authService: mockAuthService) { (event) in
             switch event {
             case .failed(let error):
-                guard case .missingFile = error else {
+                guard case .missingLocalFile = error else {
                     XCTFail("Should have failed with missing file error")
                     return
                 }
@@ -105,7 +105,7 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
     func testPutOperationUploadSuccess() {
         mockAuthService.identityId = testIdentityId
         mockStorageService.storageServiceUploadEvents = [
-            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(())]
 
@@ -117,7 +117,7 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
                                              uploadSource: expectedUploadSource,
                                              contentType: testContentType,
                                              metadata: metadata,
-                                             options: nil)
+                                             pluginOptions: nil)
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
@@ -149,7 +149,7 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
     func testPutOperationUploadFail() {
         mockAuthService.identityId = testIdentityId
         mockStorageService.storageServiceUploadEvents = [
-            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.failed(StorageError.service("", ""))]
 
@@ -159,7 +159,7 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
                                              uploadSource: expectedUploadSource,
                                              contentType: nil,
                                              metadata: nil,
-                                             options: nil)
+                                             pluginOptions: nil)
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let failInvoked = expectation(description: "failed was invoked on operation")
@@ -191,7 +191,7 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
     func testPutOperationMultiPartUploadSuccess() {
         mockAuthService.identityId = testIdentityId
         mockStorageService.storageServiceMultiPartUploadEvents = [
-            StorageEvent.initiated(StorageOperationReference(AWSS3TransferUtilityTask())),
+            StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(())]
 
@@ -200,7 +200,7 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
             testLargeDataString += testLargeDataString
         }
         let testLargeData = testLargeDataString.data(using: .utf8)!
-        XCTAssertTrue(testLargeData.count > PluginConstants.multiPartUploadSizeThreshold,
+        XCTAssertTrue(testLargeData.count > AWSS3StoragePutRequest.multiPartUploadSizeThreshold,
                       "Could not create data object greater than MultiPartUploadSizeThreshold")
         let expectedUploadSource = UploadSource.data(data: testLargeData)
         let metadata = ["mykey": "Value"]
@@ -210,7 +210,7 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
                                              uploadSource: expectedUploadSource,
                                              contentType: testContentType,
                                              metadata: metadata,
-                                             options: nil)
+                                             pluginOptions: nil)
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")

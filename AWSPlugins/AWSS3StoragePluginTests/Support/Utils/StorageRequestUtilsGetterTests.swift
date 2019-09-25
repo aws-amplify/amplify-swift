@@ -24,8 +24,8 @@ class StorageRequestUtilsGetterTests: XCTestCase {
         let expected = publicAccessLevel.rawValue + "/" + testKey
         let result = StorageRequestUtils.getServiceKey(accessLevel: publicAccessLevel,
                                                        identityId: testIdentityId,
-                                                       targetIdentityId: nil,
-                                                       key: testKey)
+                                                       key: testKey,
+                                                       targetIdentityId: nil)
         XCTAssertEqual(result, expected)
     }
 
@@ -33,8 +33,8 @@ class StorageRequestUtilsGetterTests: XCTestCase {
         let expected = protectedAccessLevel.rawValue + "/" + testIdentityId + "/" + testKey
         let result = StorageRequestUtils.getServiceKey(accessLevel: protectedAccessLevel,
                                                        identityId: testIdentityId,
-                                                       targetIdentityId: nil,
-                                                       key: testKey)
+                                                       key: testKey,
+                                                       targetIdentityId: nil)
         XCTAssertEqual(result, expected)
     }
 
@@ -42,8 +42,8 @@ class StorageRequestUtilsGetterTests: XCTestCase {
         let expected = privateAccessLevel.rawValue + "/" + testIdentityId + "/" + testKey
         let result = StorageRequestUtils.getServiceKey(accessLevel: privateAccessLevel,
                                                        identityId: testIdentityId,
-                                                       targetIdentityId: nil,
-                                                       key: testKey)
+                                                       key: testKey,
+                                                       targetIdentityId: nil)
         XCTAssertEqual(result, expected)
     }
 
@@ -51,8 +51,8 @@ class StorageRequestUtilsGetterTests: XCTestCase {
         let expected = publicAccessLevel.rawValue + "/" + testKey
         let result = StorageRequestUtils.getServiceKey(accessLevel: publicAccessLevel,
                                                        identityId: testIdentityId,
-                                                       targetIdentityId: testTargetIdentityId,
-                                                       key: testKey)
+                                                       key: testKey,
+                                                       targetIdentityId: testTargetIdentityId)
         XCTAssertEqual(result, expected)
     }
 
@@ -60,8 +60,8 @@ class StorageRequestUtilsGetterTests: XCTestCase {
         let expected = protectedAccessLevel.rawValue + "/" + testTargetIdentityId + "/" + testKey
         let result = StorageRequestUtils.getServiceKey(accessLevel: protectedAccessLevel,
                                                        identityId: testIdentityId,
-                                                       targetIdentityId: testTargetIdentityId,
-                                                       key: testKey)
+                                                       key: testKey,
+                                                       targetIdentityId: testTargetIdentityId)
         XCTAssertEqual(result, expected)
     }
 
@@ -69,8 +69,8 @@ class StorageRequestUtilsGetterTests: XCTestCase {
         let expected = privateAccessLevel.rawValue + "/" + testTargetIdentityId + "/" + testKey
         let result = StorageRequestUtils.getServiceKey(accessLevel: privateAccessLevel,
                                                        identityId: testIdentityId,
-                                                       targetIdentityId: testTargetIdentityId,
-                                                       key: testKey)
+                                                       key: testKey,
+                                                       targetIdentityId: testTargetIdentityId)
         XCTAssertEqual(result, expected)
     }
 

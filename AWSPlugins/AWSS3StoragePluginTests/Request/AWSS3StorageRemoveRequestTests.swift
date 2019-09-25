@@ -12,7 +12,7 @@ class AWSS3StorageRemoveRequestTests: XCTestCase {
 
     let testTargetIdentityId = "TestTargetIdentityId"
     let testKey = "TestKey"
-    let testOptions: Any? = [:]
+    let testPluginOptions: Any? = [:]
     let testData = Data()
     let testContentType = "TestContentType"
     let testMetadata: [String: String] = [:]
@@ -20,7 +20,7 @@ class AWSS3StorageRemoveRequestTests: XCTestCase {
     func testValidateSuccess() {
         let request = AWSS3StorageRemoveRequest(accessLevel: .protected,
                                                 key: testKey,
-                                                options: testOptions)
+                                                pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -30,7 +30,7 @@ class AWSS3StorageRemoveRequestTests: XCTestCase {
     func testValidateEmptyKeyError() {
         let request = AWSS3StorageRemoveRequest(accessLevel: .protected,
                                                 key: "",
-                                                options: testOptions)
+                                                pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 

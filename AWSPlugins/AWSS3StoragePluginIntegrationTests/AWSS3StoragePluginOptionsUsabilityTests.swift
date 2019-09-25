@@ -11,7 +11,10 @@ import Amplify
 import AWSS3StoragePlugin
 import AWSS3
 class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
-    // Retrieve a URL which expires in 15 seconds.
+
+    /// Given: An object in storage
+    /// When: Call the GetURL API with 10 second expiry time
+    /// Then: Retrieve data successfully when the URL has not expired and fail to after the expiry time
     func testGetRemoteURLWithExpires() {
         let key = "testGetRemoteURLWithExpires"
         putData(key: key, dataString: key)
@@ -22,8 +25,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         let expires = 10
         let options = StorageGetURLOptions(accessLevel: nil,
                                            targetIdentityId: nil,
-                                           expires: expires,
-                                           options: nil)
+                                           expires: expires)
         let operation = Amplify.Storage.getURL(key: key, options: options) { (event) in
             switch event {
             case .completed(let result):
@@ -36,7 +38,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 15)
+        waitForExpectations(timeout: networkTimeout)
         guard let remoteURL = remoteURLOptional else {
             XCTFail("Failed to get remoteURL")
             return
@@ -64,7 +66,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             dataTaskCompleteInvoked.fulfill()
         }
         task.resume()
-        waitForExpectations(timeout: 15)
+        waitForExpectations(timeout: networkTimeout)
 
         sleep(15)
 
@@ -84,9 +86,12 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             urlExpired.fulfill()
         }
         task2.resume()
-        waitForExpectations(timeout: 15)
+        waitForExpectations(timeout: networkTimeout)
     }
 
+    /// Given: An object uploaded with metadata with key `metadataKey` and value `metadataValue`
+    /// When: Call the headObject API
+    /// Then: The expected metadata should exist on the object
     func testPutWithMetadata() {
         let key = "testputwithmetadata"
         let value = key + "Value"
@@ -94,7 +99,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         let metadataKey = "metadatakey"
         let metadataValue = metadataKey + "Value"
         let metadata = [key: value, metadataKey: metadataValue]
-        let options = StoragePutOptions(accessLevel: nil, contentType: nil, metadata: metadata, options: nil)
+        let options = StoragePutOptions(accessLevel: nil, contentType: nil, metadata: metadata)
         let completeInvoked = expectation(description: "Completed is invoked")
 
         let operation = Amplify.Storage.put(key: key, data: data, options: options) { (event) in
@@ -109,7 +114,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
 
         do {
             let pluginOptional = try Amplify.Storage.getPlugin(for: "AWSS3StoragePlugin")
