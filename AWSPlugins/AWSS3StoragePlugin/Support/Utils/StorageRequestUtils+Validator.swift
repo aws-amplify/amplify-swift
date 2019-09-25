@@ -96,9 +96,9 @@ extension StorageRequestUtils {
 
     static func validateFileExists(_ file: URL) -> StorageError? {
         if !FileManager.default.fileExists(atPath: file.path) {
-            return StorageError.validation(StorageErrorConstants.missingLocalFile.field,
-                                           StorageErrorConstants.missingLocalFile.errorDescription,
-                                           StorageErrorConstants.missingLocalFile.recoverySuggestion)
+            return StorageError.validation(StorageErrorConstants.localFileNotFound.field,
+                                           StorageErrorConstants.localFileNotFound.errorDescription,
+                                           StorageErrorConstants.localFileNotFound.recoverySuggestion)
         }
 
         return nil

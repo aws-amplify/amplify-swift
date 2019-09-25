@@ -179,7 +179,6 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         XCTAssertNotNil(data)
     }
 
-
     /// Given: `user1` user uploads some data with private access level
     /// When: `user2` lists and gets the data for `user1`
     /// Then: The list and get operations fail with validation errors

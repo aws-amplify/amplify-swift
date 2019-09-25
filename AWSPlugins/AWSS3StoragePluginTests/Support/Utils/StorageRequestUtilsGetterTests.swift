@@ -165,7 +165,7 @@ class StorageRequestUtilsGetterTests: XCTestCase {
         }
 
         XCTAssertNotNil(error)
-        XCTAssertTrue(error.errorDescription.contains(StorageErrorConstants.missingLocalFile.errorDescription))
+        XCTAssertTrue(error.errorDescription.contains(StorageErrorConstants.localFileNotFound.errorDescription))
     }
 
     func testGetSizeForDataReturnsSize() {

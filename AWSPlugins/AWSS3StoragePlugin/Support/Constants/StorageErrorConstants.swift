@@ -53,12 +53,8 @@ struct StorageErrorConstants {
         `targetIdentityId` or change the `accessLevel` to protected and specify the target user to perform the action.
         """)
 
-    static let missingLocalFile: StorageValidationErrorString = (
+    static let localFileNotFound: StorageValidationErrorString = (
         "local",
-        "The file located at the `local` URL is missing",
-        "Make sure the file exists before uploading to storage.")
-
-    static let missingLocalFileService: StorageServiceErrorString = (
         "The file located at the `local` URL is missing",
         "Make sure the file exists before uploading to storage.")
 

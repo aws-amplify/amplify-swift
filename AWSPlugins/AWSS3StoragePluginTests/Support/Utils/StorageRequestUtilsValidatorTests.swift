@@ -117,6 +117,6 @@ class StorageRequestUtilsValidatorTests: XCTestCase {
         let fileURL = URL(fileURLWithPath: "path")
         let result = StorageRequestUtils.validateFileExists(fileURL)
         XCTAssertNotNil(result)
-        XCTAssertTrue(result!.errorDescription.contains(StorageErrorConstants.missingLocalFile.errorDescription))
+        XCTAssertTrue(result!.errorDescription.contains(StorageErrorConstants.localFileNotFound.errorDescription))
     }
 }
