@@ -79,35 +79,9 @@ class APICategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testThrowsAddingSecondPluginWithNoSelector() throws {
-        let plugin1 = MockAPICategoryPlugin()
-        try Amplify.add(plugin: plugin1)
-
-        let plugin2 = MockSecondAPICategoryPlugin()
-        XCTAssertThrowsError(try Amplify.add(plugin: plugin2),
-                             "Adding a second plugin before adding a selector should throw") { error in
-                                guard case PluginError.noSelector = error else {
-                                    XCTFail("Expected PluginError.noSelector")
-                                    return
-                                }
-        }
-    }
-
-    func testDoesNotThrowAddingSecondPluginWithSelector() throws {
-        let plugin1 = MockAPICategoryPlugin()
-        try Amplify.add(plugin: plugin1)
-
-        try Amplify.API.set(pluginSelectorFactory: MockAPIPluginSelectorFactory())
-
-        let plugin2 = MockSecondAPICategoryPlugin()
-        XCTAssertNoThrow(try Amplify.add(plugin: plugin2))
-    }
-
     func testCanRegisterMultipleAPIPlugins() throws {
         let plugin1 = MockAPICategoryPlugin()
         try Amplify.add(plugin: plugin1)
-
-        try Amplify.API.set(pluginSelectorFactory: MockAPIPluginSelectorFactory())
 
         let plugin2 = MockSecondAPICategoryPlugin()
         try Amplify.add(plugin: plugin2)
@@ -147,41 +121,28 @@ class APICategoryConfigurationTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
     }
 
-    func testCanUseSelectorDerivedPluginIfMultiplePlugins() throws {
+    func testPreconditionFailureInvokingWithMultiplePlugins() throws {
         let plugin1 = MockAPICategoryPlugin()
-        let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
-        plugin1.listeners.append { message in
-            if message == "get()" {
-                methodInvokedOnDefaultPlugin.fulfill()
-            }
-        }
         try Amplify.add(plugin: plugin1)
 
-        try Amplify.API.set(pluginSelectorFactory: MockAPIPluginSelectorFactory())
-
         let plugin2 = MockSecondAPICategoryPlugin()
-        let methodShouldNotBeInvokedOnSecondPlugin =
-            expectation(description: "test method should not be invoked on second plugin")
-        methodShouldNotBeInvokedOnSecondPlugin.isInverted = true
-        plugin2.listeners.append { message in
-            if message == "get()" {
-                methodShouldNotBeInvokedOnSecondPlugin.fulfill()
-            }
-        }
         try Amplify.add(plugin: plugin2)
 
-        let apiConfig = APICategoryConfiguration(
+        let APIConfig = APICategoryConfiguration(
             plugins: [
                 "MockAPICategoryPlugin": true,
                 "MockSecondAPICategoryPlugin": true
             ]
         )
 
-        let amplifyConfig = AmplifyConfiguration(api: apiConfig)
+        let amplifyConfig = AmplifyConfiguration(api: APIConfig)
 
         try Amplify.configure(amplifyConfig)
-        Amplify.API.get()
-        waitForExpectations(timeout: 1.0)
+
+        let exception: BadInstructionException? = catchBadInstruction {
+            Amplify.API.get()
+        }
+        XCTAssertNotNil(exception)
     }
 
     func testCanUseSpecifiedPlugin() throws {
@@ -195,8 +156,6 @@ class APICategoryConfigurationTests: XCTestCase {
             }
         }
         try Amplify.add(plugin: plugin1)
-
-        try Amplify.API.set(pluginSelectorFactory: MockAPIPluginSelectorFactory())
 
         let plugin2 = MockSecondAPICategoryPlugin()
         let methodShouldBeInvokedOnSecondPlugin =

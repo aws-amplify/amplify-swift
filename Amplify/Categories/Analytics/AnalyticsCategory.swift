@@ -6,51 +6,38 @@
 //
 
 final public class AnalyticsCategory: Category {
-    enum PluginOrSelector {
-        case plugin(AnalyticsCategoryPlugin)
-        case selector(AnalyticsPluginSelector)
-    }
-
     public let categoryType = CategoryType.analytics
 
     var plugins = [PluginKey: AnalyticsCategoryPlugin]()
 
-    var pluginSelectorFactory: PluginSelectorFactory?
-
-    /// Returns either the only plugin added to the category, or a selector created from the added factory. Accessing
+    /// Returns the plugin added to the category, if only one plugin is added. Accessing
     /// this property if no plugins are added, or if more than one plugin is added without a pluginSelectorFactory,
     /// will cause a preconditionFailure.
-    var pluginOrSelector: PluginOrSelector {
+    var plugin: AnalyticsCategoryPlugin {
         guard isConfigured else {
             preconditionFailure(
                 """
-                \(categoryType.displayName) category is not configured. Call Amplify.configure() before using
+                \(categoryType.displayName) category is not configured. Call Amplify.configure() before using \
                 any methods on the category.
                 """
             )
-        }
-
-        if plugins.count == 1, let plugin = plugins.first?.value {
-            return .plugin(plugin)
         }
 
         guard !plugins.isEmpty else {
             preconditionFailure("No plugins added to \(categoryType.displayName) category.")
         }
 
-        guard let pluginSelectorFactory = pluginSelectorFactory else {
-            preconditionFailure("No plugin selector factory added to \(categoryType.displayName) category.")
-        }
-
-        guard let selector = pluginSelectorFactory.makeSelector() as? AnalyticsPluginSelector else {
+        guard plugins.count == 1 else {
             preconditionFailure(
                 """
-                \(String(describing: pluginSelectorFactory)) can't make a selector for the
-                \(categoryType.displayName) category.
-                """)
+                More than 1 plugin added to \(categoryType.displayName) category. \
+                You must invoke operations on this category by getting the plugin you want, as in:
+                #"Amplify.\(categoryType.displayName).getPlugin(for: "ThePluginKey").foo()
+                """
+            )
         }
 
-        return .selector(selector)
+        return plugins.first!.value
     }
 
     var isConfigured = false
@@ -74,25 +61,7 @@ final public class AnalyticsCategory: Category {
             throw error
         }
 
-        if plugins.isEmpty {
-            plugins[plugin.key] = plugin
-            pluginSelectorFactory?.add(plugin: plugin)
-            return
-        }
-
-        guard pluginSelectorFactory != nil else {
-            let error = PluginError.noSelector(
-                "No selector added for the \(categoryType.displayName) category",
-                """
-                A plugin has already been added to the \(categoryType.displayName) category. Add a
-                PluginSelectorFactory by calling Amplify.\(categoryType.displayName).set(selectorFactory:) before
-                attempting to add more than one plugin.
-                """)
-            throw error
-        }
-
         plugins[plugin.key] = plugin
-        pluginSelectorFactory?.add(plugin: plugin)
     }
 
     /// Returns the added plugin with the specified `key` property.
@@ -116,29 +85,6 @@ final public class AnalyticsCategory: Category {
     /// - Parameter key: The key used to `add` the plugin
     public func removePlugin(for key: PluginKey) {
         plugins.removeValue(forKey: key)
-        pluginSelectorFactory?.removePlugin(for: key)
-    }
-
-    /// Adds `pluginSelectorFactory` to the category, to allow API calls to be routed to
-    /// the correct plugin in cases where more than one plugin has been added to the
-    /// category. Callers may add a plugin selector at any time, even if no plugins have
-    /// yet been added to the category, but callers *must* add a plugin selector before
-    /// the second plugin is added. PluginSelectors are only required, and only invoked,
-    /// if more than one plugin is registered for a category.
-    public func set(pluginSelectorFactory: PluginSelectorFactory) throws {
-        guard pluginSelectorFactory.categoryType == categoryType else {
-            let error = PluginError.invalidSelectorFactory(
-                "Invalid selector factory",
-                """
-                The factory \(String(describing: pluginSelectorFactory)) cannot be cast to the necessary selector
-                factory type for the category '\(categoryType.displayName)'. Verify that the call to \(#function)
-                is using an appropriate PluginSelectorFactory class.
-                """)
-            throw error
-        }
-        self.pluginSelectorFactory = pluginSelectorFactory
-
-        plugins.values.forEach { self.pluginSelectorFactory?.add(plugin: $0) }
     }
 
 }

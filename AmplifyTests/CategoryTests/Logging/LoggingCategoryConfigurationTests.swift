@@ -79,35 +79,9 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testThrowsAddingSecondPluginWithNoSelector() throws {
-        let plugin1 = MockLoggingCategoryPlugin()
-        try Amplify.add(plugin: plugin1)
-
-        let plugin2 = MockSecondLoggingCategoryPlugin()
-        XCTAssertThrowsError(try Amplify.add(plugin: plugin2),
-                             "Adding a second plugin before adding a selector should throw") { error in
-                                guard case PluginError.noSelector = error else {
-                                    XCTFail("Expected PluginError.noSelector")
-                                    return
-                                }
-        }
-    }
-
-    func testDoesNotThrowAddingSecondPluginWithSelector() throws {
-        let plugin1 = MockLoggingCategoryPlugin()
-        try Amplify.add(plugin: plugin1)
-
-        try Amplify.Logging.set(pluginSelectorFactory: MockLoggingPluginSelectorFactory())
-
-        let plugin2 = MockSecondLoggingCategoryPlugin()
-        XCTAssertNoThrow(try Amplify.add(plugin: plugin2))
-    }
-
     func testCanRegisterMultipleLoggingPlugins() throws {
         let plugin1 = MockLoggingCategoryPlugin()
         try Amplify.add(plugin: plugin1)
-
-        try Amplify.Logging.set(pluginSelectorFactory: MockLoggingPluginSelectorFactory())
 
         let plugin2 = MockSecondLoggingCategoryPlugin()
         try Amplify.add(plugin: plugin2)
@@ -147,27 +121,11 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
     }
 
-    func testCanUseSelectorDerivedPluginIfMultiplePlugins() throws {
+    func testPreconditionFailureInvokingWithMultiplePlugins() throws {
         let plugin1 = MockLoggingCategoryPlugin()
-        let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
-        plugin1.listeners.append { message in
-            if message == "error(_:file:function:line:)" {
-                methodInvokedOnDefaultPlugin.fulfill()
-            }
-        }
         try Amplify.add(plugin: plugin1)
 
-        try Amplify.Logging.set(pluginSelectorFactory: MockLoggingPluginSelectorFactory())
-
         let plugin2 = MockSecondLoggingCategoryPlugin()
-        let methodShouldNotBeInvokedOnSecondPlugin =
-            expectation(description: "test method should not be invoked on second plugin")
-        methodShouldNotBeInvokedOnSecondPlugin.isInverted = true
-        plugin2.listeners.append { message in
-            if message == "error(_:file:function:line:)" {
-                methodShouldNotBeInvokedOnSecondPlugin.fulfill()
-            }
-        }
         try Amplify.add(plugin: plugin2)
 
         let loggingConfig = LoggingCategoryConfiguration(
@@ -180,8 +138,11 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(logging: loggingConfig)
 
         try Amplify.configure(amplifyConfig)
-        Amplify.Logging.error("test", file: #file, function: #function, line: #line)
-        waitForExpectations(timeout: 1.0)
+
+        let exception: BadInstructionException? = catchBadInstruction {
+            Amplify.Logging.error("test", file: #file, function: #function, line: #line)
+        }
+        XCTAssertNotNil(exception)
     }
 
     func testCanUseSpecifiedPlugin() throws {
@@ -195,8 +156,6 @@ class LoggingCategoryConfigurationTests: XCTestCase {
             }
         }
         try Amplify.add(plugin: plugin1)
-
-        try Amplify.Logging.set(pluginSelectorFactory: MockLoggingPluginSelectorFactory())
 
         let plugin2 = MockSecondLoggingCategoryPlugin()
         let methodShouldBeInvokedOnSecondPlugin =
