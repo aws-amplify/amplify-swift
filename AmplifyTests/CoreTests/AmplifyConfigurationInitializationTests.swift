@@ -7,6 +7,7 @@
 
 import XCTest
 @testable import Amplify
+@testable import AmplifyTestCommon
 
 /// Uses internal methods of the Amplify configuration system to ensure we are throwing expected errors in exceptional
 /// circumstances
@@ -165,6 +166,3 @@ class AmplifyConfigurationInitializationTests: XCTestCase {
     }
 
 }
-
-// Allows Strings to be "thrown" without any additional work
-extension String: Error { }

@@ -12,5 +12,3 @@ public extension AnalyticsCategoryPlugin {
         return .analytics
     }
 }
-
-public protocol AnalyticsPluginSelector: PluginSelector, AnalyticsCategoryClientBehavior { }

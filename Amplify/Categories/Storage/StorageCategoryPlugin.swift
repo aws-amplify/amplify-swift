@@ -12,5 +12,3 @@ public extension StorageCategoryPlugin {
         return .storage
     }
 }
-
-public protocol StoragePluginSelector: PluginSelector, StorageCategoryClientBehavior { }

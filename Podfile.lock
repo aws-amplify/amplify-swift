@@ -1,23 +1,23 @@
 PODS:
-  - AWSAuthCore (2.10.3):
-    - AWSCore (= 2.10.3)
-  - AWSCognitoIdentityProvider (2.10.3):
+  - AWSAuthCore (2.11.1):
+    - AWSCore (= 2.11.1)
+  - AWSCognitoIdentityProvider (2.11.1):
     - AWSCognitoIdentityProviderASF (= 1.0.1)
-    - AWSCore (= 2.10.3)
+    - AWSCore (= 2.11.1)
   - AWSCognitoIdentityProviderASF (1.0.1)
-  - AWSCore (2.10.3)
-  - AWSMobileClient (2.10.3):
-    - AWSAuthCore (= 2.10.3)
-    - AWSCognitoIdentityProvider (= 2.10.3)
-  - AWSS3 (2.10.3):
-    - AWSCore (= 2.10.3)
+  - AWSCore (2.11.1)
+  - AWSMobileClient (2.11.1):
+    - AWSAuthCore (= 2.11.1)
+    - AWSCognitoIdentityProvider (= 2.11.1)
+  - AWSS3 (2.11.1):
+    - AWSCore (= 2.11.1)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
 
 DEPENDENCIES:
-  - AWSMobileClient (~> 2.10.3)
-  - AWSS3 (~> 2.10.3)
+  - AWSMobileClient (~> 2.11.1)
+  - AWSS3 (~> 2.11.1)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
 
@@ -47,15 +47,15 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  AWSAuthCore: 2d776cbff5768148842502234fd6ba04697e4fe4
-  AWSCognitoIdentityProvider: 70cfc80901b1b66bd68ef06893cb0ec3c6213510
+  AWSAuthCore: 23545c33485f2e92acde3e7458e6ee07410e7f28
+  AWSCognitoIdentityProvider: 81fe83bd5b05151250346eedbabdb055b509d439
   AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
-  AWSCore: f9b8a30d9e8ec07d1a6dd8f0ec5fe84b6a215041
-  AWSMobileClient: 0043e0b2768b85ff92859152f5037d28d2b05131
-  AWSS3: c6f0f7a49a74384b9d0fe055c822d1fa5c633905
+  AWSCore: 00093a1ff49b5d6ce5f1e4d83fe301486fc5034d
+  AWSMobileClient: 1acbe6ae32ebe5899425ac33d89491e4608da393
+  AWSS3: 738419b8039230423e4734556983a463466a9d7a
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
 
-PODFILE CHECKSUM: 217a60fcf711209f3556605eb9c8c7533bb9082e
+PODFILE CHECKSUM: 9ed5855fdfc376234bc5c776fdf9785084f9e021
 
 COCOAPODS: 1.7.5

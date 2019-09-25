@@ -8,10 +8,10 @@
 import Foundation
 public enum StorageError {
     case accessDenied(ErrorDescription, RecoverySuggestion)
+    case authError(ErrorDescription, RecoverySuggestion)
     case httpStatusError(Int, RecoverySuggestion)
-    case identity(ErrorDescription, RecoverySuggestion)
     case keyNotFound(Key, ErrorDescription, RecoverySuggestion)
-    case missingLocalFile(ErrorDescription, RecoverySuggestion)
+    case localFileNotFound(ErrorDescription, RecoverySuggestion)
     case service(ErrorDescription, RecoverySuggestion)
     case unknown(ErrorDescription)
     case validation(Field, ErrorDescription, RecoverySuggestion)
@@ -21,9 +21,9 @@ extension StorageError: AmplifyError {
     public var errorDescription: ErrorDescription {
         switch self {
         case .accessDenied(let errorDescription, _),
-             .identity(let errorDescription, _),
+             .authError(let errorDescription, _),
              .service(let errorDescription, _),
-             .missingLocalFile(let errorDescription, _):
+             .localFileNotFound(let errorDescription, _):
             return errorDescription
         case .httpStatusError(let statusCode, _):
             return "The HTTP response status code is [\(statusCode)]."
@@ -39,8 +39,8 @@ extension StorageError: AmplifyError {
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .accessDenied(_, let recoverySuggestion),
-             .identity(_, let recoverySuggestion),
-             .missingLocalFile(_, let recoverySuggestion),
+             .authError(_, let recoverySuggestion),
+             .localFileNotFound(_, let recoverySuggestion),
              .service(_, let recoverySuggestion),
              .validation(_, _, let recoverySuggestion):
             return recoverySuggestion

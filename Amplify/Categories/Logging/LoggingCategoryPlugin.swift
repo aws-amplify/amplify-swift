@@ -13,5 +13,3 @@ public extension LoggingCategoryPlugin {
         return .logging
     }
 }
-
-public protocol LoggingPluginSelector: PluginSelector, LoggingCategoryClientBehavior { }

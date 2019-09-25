@@ -41,7 +41,7 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, Storage
         }
 
         if let error = request.validate() {
-            self.dispatch(error)
+            dispatch(error)
             finish()
             return
         }
@@ -49,7 +49,7 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, Storage
         let identityIdResult = authService.getIdentityId()
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
-                dispatch(StorageError.identity(error.errorDescription, error.recoverySuggestion))
+                dispatch(StorageError.authError(error.errorDescription, error.recoverySuggestion))
             }
 
             finish()
@@ -65,8 +65,9 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, Storage
             return
         }
 
-        storageService.delete(serviceKey: serviceKey,
-                              onEvent: onEventHandler)
+        storageService.delete(serviceKey: serviceKey) { [weak self] event in
+            self?.onEventHandler(event: event)
+        }
     }
 
     private func onEventHandler(event: StorageEvent<Void, Void, Void, StorageError>) {

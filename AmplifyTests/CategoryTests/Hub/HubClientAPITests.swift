@@ -24,42 +24,51 @@ class HubClientAPITests: XCTestCase {
     }
 
     func testDispatch() throws {
-        let plugin = MockHubCategoryPlugin()
-        try Amplify.add(plugin: plugin)
-        try Amplify.configure(mockAmplifyConfig)
-
+        let plugin = try makeAndAddMockPlugin()
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "dispatch(to:payload:)" {
+            if message == "dispatch" {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
 
-        let payload = HubPayload(event: "")
-        let channel = HubChannel.core
-
-        Amplify.Hub.dispatch(to: channel, payload: payload)
+        Amplify.Hub.dispatch(to: .storage, payload: HubPayload(event: ""))
 
         waitForExpectations(timeout: 0.5)
     }
 
     func testListen() throws {
-        XCTFail("Not yet implemented")
+        let plugin = try makeAndAddMockPlugin()
+        let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
+        plugin.listeners.append { message in
+            if message == "listen" {
+                methodWasInvokedOnPlugin.fulfill()
+            }
+        }
+
+        _ = Amplify.Hub.listen(to: .storage) { _ in }
+        waitForExpectations(timeout: 0.5)
     }
 
     func testRemove() throws {
-        XCTFail("Not yet implemented")
+        let plugin = try makeAndAddMockPlugin()
+        let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
+        plugin.listeners.append { message in
+            if message == "removeListener" {
+                methodWasInvokedOnPlugin.fulfill()
+            }
+        }
+        let unsubscribeToken = UnsubscribeToken(channel: .storage, id: UUID())
+        Amplify.Hub.removeListener(unsubscribeToken)
+        waitForExpectations(timeout: 0.5)
     }
 
-    func testProtectedChannels() throws {
-        XCTFail("Not yet implemented")
-    }
+    // MARK: - Utilities
 
-    func testCannotDispatchMessageOnProtectedChannel() throws {
-        XCTFail("Not yet implemented")
-    }
-
-    func testMessagesAreProcessedInOrder() throws {
-        XCTFail("Not yet implemented")
+    func makeAndAddMockPlugin() throws -> MockHubCategoryPlugin {
+        let plugin = MockHubCategoryPlugin()
+        try Amplify.add(plugin: plugin)
+        try Amplify.configure(mockAmplifyConfig)
+        return plugin
     }
 }

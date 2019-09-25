@@ -53,7 +53,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
                                                           authService: mockAuthService) { (event) in
             switch event {
             case .failed(let error):
-                guard case .identity = error else {
+                guard case .authError = error else {
                     XCTFail("Should have failed with identity error")
                     return
                 }

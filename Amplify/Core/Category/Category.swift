@@ -18,12 +18,4 @@ public protocol Category: class, CategoryTypeable {
     /// - Parameter key: The key used to `add` the plugin
     func removePlugin(for key: PluginKey)
 
-    /// Adds `pluginSelectorFactory` to the category, to allow API calls to be routed to
-    /// the correct plugin in cases where more than one plugin has been added to the
-    /// category. Callers may add a plugin selector at any time, even if no plugins have
-    /// yet been added to the category, but callers *must* add a plugin selector before
-    /// the second plugin is added. PluginSelectors are only required, and only invoked,
-    /// if more than one plugin is registered for a category.
-    func set(pluginSelectorFactory: PluginSelectorFactory) throws
-
 }

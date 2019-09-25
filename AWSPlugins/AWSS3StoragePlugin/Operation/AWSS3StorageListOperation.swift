@@ -50,7 +50,7 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
 
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
-                dispatch(StorageError.identity(error.errorDescription, error.recoverySuggestion))
+                dispatch(StorageError.authError(error.errorDescription, error.recoverySuggestion))
             }
 
             finish()
@@ -66,7 +66,9 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
             return
         }
 
-        storageService.list(prefix: accessLevelPrefix, path: request.path, onEvent: onEventHandler)
+        storageService.list(prefix: accessLevelPrefix, path: request.path) { [weak self] event in
+            self?.onEventHandler(event: event)
+        }
     }
 
     private func onEventHandler(event: StorageEvent<Void, Void, StorageListResult, StorageError>) {
