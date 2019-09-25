@@ -20,7 +20,10 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
     let authService: AWSAuthServiceBehavior
     let onEvent: ((AsyncEvent<Progress, Void, StorageError>) -> Void)?
 
-    var storageOperationReference: StorageOperationReference?
+    var storageTaskReference: StorageTaskReference?
+
+    /// Serial queue for synchronizing access to `storageTaskReference`.
+    private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
     init(_ request: AWSS3StorageDownloadFileRequest,
          storageService: AWSS3StorageServiceBehaviour,
@@ -35,20 +38,33 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
         // TODO pass onEvent to the Hub
     }
 
-    public func pause() {
-        storageOperationReference?.pause()
+    override public func pause() {
+        storageTaskActionQueue.async {
+            self.storageTaskReference?.pause()
+            super.pause()
+        }
     }
 
-    public func resume() {
-        storageOperationReference?.resume()
+    override public func resume() {
+        storageTaskActionQueue.async {
+            self.storageTaskReference?.resume()
+            super.resume()
+        }
     }
 
     override public func cancel() {
-        storageOperationReference?.cancel()
-        cancel()
+        storageTaskActionQueue.async {
+            self.storageTaskReference?.cancel()
+            super.cancel()
+        }
     }
 
     override public func main() {
+        if isCancelled {
+            finish()
+            return
+        }
+
         if let error = request.validate() {
             dispatch(error)
             finish()
@@ -56,7 +72,6 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
         }
 
         let identityIdResult = authService.getIdentityId()
-
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
                 dispatch(error)
@@ -68,18 +83,29 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
 
         let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
                                                            identityId: identityId,
-                                                           targetIdentityId: request.targetIdentityId,
-                                                           key: request.key)
-        storageService.download(serviceKey: serviceKey,
-                                fileURL: request.local,
-                                onEvent: onEventHandler)
+                                                           key: request.key,
+                                                           targetIdentityId: request.targetIdentityId)
+
+        if isCancelled {
+            finish()
+            return
+        }
+
+        storageService.download(serviceKey: serviceKey, fileURL: request.local) { [weak self] event in
+            self?.onEventHandler(event: event)
+        }
     }
 
-    private func onEventHandler(
-        event: StorageEvent<StorageOperationReference, Progress, Data?, StorageError>) {
+    private func onEventHandler(event: StorageEvent<StorageTaskReference, Progress, Data?, StorageError>) {
         switch event {
         case .initiated(let reference):
-            storageOperationReference = reference
+            storageTaskActionQueue.async {
+                self.storageTaskReference = reference
+                if self.isCancelled {
+                    self.storageTaskReference?.cancel()
+                    self.finish()
+                }
+            }
         case .inProcess(let progress):
             dispatch(progress)
         case .completed:

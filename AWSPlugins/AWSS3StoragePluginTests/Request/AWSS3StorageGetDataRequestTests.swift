@@ -12,13 +12,13 @@ class AWSS3StorageGetDataRequestTests: XCTestCase {
 
     let testTargetIdentityId = "TestTargetIdentityId"
     let testKey = "TestKey"
-    let testOptions: Any? = [:]
+    let testPluginOptions: Any? = [:]
 
     func testValidateSuccess() {
         let request = AWSS3StorageGetDataRequest(accessLevel: .protected,
                                                  targetIdentityId: testTargetIdentityId,
                                                  key: testKey,
-                                                 options: testOptions)
+                                                 pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -29,7 +29,7 @@ class AWSS3StorageGetDataRequestTests: XCTestCase {
         let request = AWSS3StorageGetDataRequest(accessLevel: .protected,
                                              targetIdentityId: "",
                                              key: testKey,
-                                             options: testOptions)
+                                             pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -49,9 +49,9 @@ class AWSS3StorageGetDataRequestTests: XCTestCase {
 
     func testValidateTargetIdentityIdWithPrivateAccessLevelError() {
         let request = AWSS3StorageGetDataRequest(accessLevel: .private,
-                                             targetIdentityId: testTargetIdentityId,
-                                             key: testKey,
-                                             options: testOptions)
+                                                 targetIdentityId: testTargetIdentityId,
+                                                 key: testKey,
+                                                 pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -73,7 +73,7 @@ class AWSS3StorageGetDataRequestTests: XCTestCase {
         let request = AWSS3StorageGetDataRequest(accessLevel: .protected,
                                                  targetIdentityId: testTargetIdentityId,
                                                  key: "",
-                                                 options: testOptions)
+                                                 pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 

@@ -12,13 +12,13 @@ class AWSS3StorageListRequestTests: XCTestCase {
 
     let testTargetIdentityId = "TestTargetIdentityId"
     let testPath = "TestPath"
-    let testOptions: Any? = [:]
+    let testPluginOptions: Any? = [:]
 
     func testValidateSuccess() {
         let request = AWSS3StorageListRequest(accessLevel: .protected,
                                               targetIdentityId: testTargetIdentityId,
                                               path: testPath,
-                                              options: testOptions)
+                                              pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -29,7 +29,7 @@ class AWSS3StorageListRequestTests: XCTestCase {
         let request = AWSS3StorageListRequest(accessLevel: .protected,
                                               targetIdentityId: "",
                                               path: testPath,
-                                              options: testOptions)
+                                              pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -51,7 +51,7 @@ class AWSS3StorageListRequestTests: XCTestCase {
         let request = AWSS3StorageListRequest(accessLevel: .private,
                                               targetIdentityId: testTargetIdentityId,
                                               path: testPath,
-                                              options: testOptions)
+                                              pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -73,7 +73,7 @@ class AWSS3StorageListRequestTests: XCTestCase {
         let request = AWSS3StorageListRequest(accessLevel: .protected,
                                               targetIdentityId: testTargetIdentityId,
                                               path: "",
-                                              options: testOptions)
+                                              pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 

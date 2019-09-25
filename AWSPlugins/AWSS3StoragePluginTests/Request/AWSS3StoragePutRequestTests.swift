@@ -12,7 +12,7 @@ class AWSS3StoragePutRequestTests: XCTestCase {
 
     let testTargetIdentityId = "TestTargetIdentityId"
     let testKey = "TestKey"
-    let testOptions: Any? = [:]
+    let testPluginOptions: Any? = [:]
     let testData = Data()
     let testContentType = "TestContentType"
     let testMetadata: [String: String] = [:]
@@ -23,7 +23,7 @@ class AWSS3StoragePutRequestTests: XCTestCase {
                                              uploadSource: .data(data: testData),
                                              contentType: testContentType,
                                              metadata: testMetadata,
-                                             options: testOptions)
+                                             pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -40,7 +40,7 @@ class AWSS3StoragePutRequestTests: XCTestCase {
                                              uploadSource: .file(file: fileURL),
                                              contentType: testContentType,
                                              metadata: testMetadata,
-                                             options: testOptions)
+                                             pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -53,7 +53,7 @@ class AWSS3StoragePutRequestTests: XCTestCase {
                                              uploadSource: .data(data: testData),
                                              contentType: testContentType,
                                              metadata: testMetadata,
-                                             options: testOptions)
+                                             pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -77,7 +77,7 @@ class AWSS3StoragePutRequestTests: XCTestCase {
                                              uploadSource: .data(data: testData),
                                              contentType: "",
                                              metadata: testMetadata,
-                                             options: testOptions)
+                                             pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 
@@ -102,7 +102,7 @@ class AWSS3StoragePutRequestTests: XCTestCase {
                                              uploadSource: .data(data: testData),
                                              contentType: testContentType,
                                              metadata: metadata,
-                                             options: testOptions)
+                                             pluginOptions: testPluginOptions)
 
         let storageErrorOptional = request.validate()
 

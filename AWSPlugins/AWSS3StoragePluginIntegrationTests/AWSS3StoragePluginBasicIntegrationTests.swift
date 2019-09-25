@@ -13,6 +13,9 @@ import AWSS3
 
 class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
+    /// Given: An data object
+    /// When: Upload the data
+    /// Then: The operation completes successfully
     func testPutData() {
         let key = "testPutData"
         let data = key.data(using: .utf8)!
@@ -30,9 +33,12 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
+    /// Given: A empty data object
+    /// When: Upload the data
+    /// Then: The operation completes successfully
     func testPutEmptyData() {
         let key = "testPutEmptyData"
         let data = "".data(using: .utf8)!
@@ -50,9 +56,12 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
+    /// Given: A file with contents
+    /// When: Upload the file
+    /// Then: The operation completes successfully
     func testPutDataFromFile() {
         let key = "testPutDataFromFile"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
@@ -73,9 +82,12 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
+    /// Given: A file with empty contents
+    /// When: Upload the file
+    /// Then: The operation completes successfully
     func testPutEmptyDataFromFile() {
         let key = "testPutEmptyDataFromFile"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
@@ -95,20 +107,19 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
+    /// Given: A large  data object
+    /// When: Upload the data
+    /// Then: The operation completes successfully
     func testPutLargeData() {
         let key = "testPutLargeData"
-        var testData = key
-        for _ in 1 ... 20 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
-        XCTAssertTrue(data.count > 10_000_000, "Could not create data object greater than 10MB")
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+        let operation = Amplify.Storage.put(key: key,
+                                            data: AWSS3StoragePluginTestBase.largeDataObject,
+                                            options: nil) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -120,22 +131,21 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
+    /// Given: A large file
+    /// When: Upload the file
+    /// Then: The operation completes successfully
     func testPutLargeFile() {
         let key = "testPutLargeFile"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
 
-        var testData = key
-        for _ in 1 ... 20 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
-        FileManager.default.createFile(atPath: filePath, contents: data, attributes: nil)
+        FileManager.default.createFile(atPath: filePath,
+                                       contents: AWSS3StoragePluginTestBase.largeDataObject,
+                                       attributes: nil)
 
-        XCTAssertTrue(data.count > 10_000_000, "Could not create data object greater than 10MB")
         let completeInvoked = expectation(description: "Completed is invoked")
 
         let operation = Amplify.Storage.put(key: key, local: fileURL, options: nil) { (event) in
@@ -150,16 +160,18 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
+    /// Given: An object in storage
+    /// When: Call the getData API
+    /// Then: The operation completes successfully with the data retrieved
     func testGetDataToMemory() {
         let key = "testGetDataToMemory"
         putData(key: key, data: key.data(using: .utf8)!)
         let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageGetDataOptions(accessLevel: nil,
-                                            targetIdentityId: nil,
-                                            options: nil)
+                                            targetIdentityId: nil)
 
         let operation = Amplify.Storage.getData(key: key, options: options) { (event) in
             switch event {
@@ -172,9 +184,12 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
+    /// Given: An object in storage
+    /// When: Call the downloadFile API
+    /// Then: The operation completes successfully the local file containing the data from the object
     func testDownloadFile() {
         let key = "testDownloadFile"
         let timestamp = String(Date().timeIntervalSince1970)
@@ -185,8 +200,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         removeIfExists(fileURL)
         let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageDownloadFileOptions(accessLevel: nil,
-                                                 targetIdentityId: nil,
-                                                 options: nil)
+                                                 targetIdentityId: nil)
 
         let operation = Amplify.Storage.downloadFile(key: key, local: fileURL, options: options) { (event) in
             switch event {
@@ -199,7 +213,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
 
         let fileExists = FileManager.default.fileExists(atPath: fileURL.path)
         XCTAssertTrue(fileExists)
@@ -212,12 +226,16 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         removeIfExists(fileURL)
     }
 
+    /// Given: An object in storage
+    /// When: Call the getURL API
+    /// Then: The operation completes successfully with the URL retrieved
     func testGetRemoteURL() {
         let key = "testGetRemoteURL"
         putData(key: key, dataString: key)
 
         var remoteURLOptional: URL?
         let completeInvoked = expectation(description: "Completed is invoked")
+
         let operation = Amplify.Storage.getURL(key: key, options: nil) { (event) in
             switch event {
             case .completed(let result):
@@ -230,7 +248,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 15)
+        waitForExpectations(timeout: networkTimeout)
         guard let remoteURL = remoteURLOptional else {
             XCTFail("Failed to get remoteURL")
             return
@@ -259,17 +277,19 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
         task.resume()
 
-        waitForExpectations(timeout: 15)
+        waitForExpectations(timeout: networkTimeout)
     }
 
+    /// Given: An object in storage
+    /// When: Call the list API
+    /// Then: The operation completes successfully with the key retrieved
     func testListFromPublic() {
         let key = "testListFromPublic"
         putData(key: key, dataString: key)
         let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageListOptions(accessLevel: .public,
                                         targetIdentityId: nil,
-                                        path: key,
-                                        options: nil)
+                                        path: key)
         let operation = Amplify.Storage.list(options: options) { (event) in
             switch event {
             case .completed(let result):
@@ -284,16 +304,18 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 100)
+        waitForExpectations(timeout: networkTimeout)
     }
 
+    /// Given: No object in storage for the key
+    /// When: Call the list API
+    /// Then: The operation completes successfully with empty list of keys returned
     func testListEmpty() {
         let key = "testListEmpty"
         let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageListOptions(accessLevel: .public,
                                         targetIdentityId: nil,
-                                        path: key,
-                                        options: nil)
+                                        path: key)
         let operation = Amplify.Storage.list(options: options) { (event) in
             switch event {
             case .completed(let result):
@@ -308,9 +330,12 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: networkTimeout)
     }
 
+    /// Given: No object in storage for the key
+    /// When: Call the list API
+    /// Then: The operation completes successfully with empty list of keys returned
     func testListWithPathUsingFolderNameWithForwardSlash() {
         let key = "testListWithPathUsingFolderNameWithForwardSlash"
         let folder = key + "/"
@@ -324,8 +349,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageListOptions(accessLevel: .public,
                                         targetIdentityId: nil,
-                                        path: folder,
-                                        options: nil)
+                                        path: folder)
         let operation = Amplify.Storage.list(options: options) { (event) in
             switch event {
             case .completed(let result):
@@ -344,9 +368,12 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: networkTimeout)
     }
 
+    /// Given: Objects with identifiers specified in `keys` array stored in folder named (`key1`+`key2`)
+    /// When: Call the list API using the path `key1`
+    /// Then: The operation completes successfully with list of keys returned from the folder.
     func testListWithPathUsingIncompleteFolderName() {
         let key1 = "testListWithPathUsingIncomp"
         let key2 = "leteFolderName"
@@ -361,8 +388,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageListOptions(accessLevel: .public,
                                         targetIdentityId: nil,
-                                        path: key1,
-                                        options: nil)
+                                        path: key1)
         let operation = Amplify.Storage.list(options: options) { (event) in
             switch event {
             case .completed(let result):
@@ -380,9 +406,12 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: networkTimeout)
     }
 
+    /// Given: An object in storage
+    /// When: Call the remove API
+    /// Then: The operation completes successfully with the key removed from storage
     func testRemoveKey() {
         let key = "testRemoveKey"
         putData(key: key, dataString: key)
@@ -399,9 +428,12 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(removeOperation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
+    /// Given: Object with key `key` does not exist in storage
+    /// When: Call the remove API
+    /// Then: The operation completes successfully.
     func testRemoveNonExistentKey() {
         let key = "testRemoveNonExistentKey"
 
@@ -417,9 +449,12 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(removeOperation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
+    /// Given: Object with key `key` in storage
+    /// When: Using the escape hatch and calling headObject API  using the key "public/`key`"
+    /// Then: The request completes successful
     func testEscapeHatchAndGetHeadObject() {
         let key = "testEscapeHatchAndGetHeadObject"
         putData(key: key, dataString: key)

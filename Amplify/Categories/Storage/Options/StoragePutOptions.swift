@@ -5,17 +5,21 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
+// StoragePutOptions specifies additional options when uploading an object to storage.
 public struct StoragePutOptions {
 
-    public var accessLevel: StorageAccessLevel?
+    // Access level of the storage system.
+    public let accessLevel: StorageAccessLevel?
 
-    public var metadata: [String: String]?
+    // Metadata for the object to store.
+    public let metadata: [String: String]?
 
-    public var contentType: String?
+    // The standard MIME type describing the format of the object to store.
+    public let contentType: String?
 
-    public var options: Any?
+    // Extra plugin specific options, only used in special circumstances when the existing options do not provide
+    // a way to utilize the underlying storage system's functionality. See plugin documentation for expected key/values
+    public let pluginOptions: Any?
 
     /* TODO
      tags (may be in options)
@@ -29,10 +33,10 @@ public struct StoragePutOptions {
     public init(accessLevel: StorageAccessLevel?,
                 contentType: String? = nil,
                 metadata: [String: String]? = nil,
-                options: Any? = nil) {
+                pluginOptions: Any? = nil) {
         self.accessLevel = accessLevel
         self.contentType = contentType
         self.metadata = metadata
-        self.options = options
+        self.pluginOptions = pluginOptions
     }
 }

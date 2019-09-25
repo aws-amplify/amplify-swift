@@ -18,7 +18,10 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
     let authService: AWSAuthServiceBehavior
     let onEvent: ((AsyncEvent<Progress, String, StorageError>) -> Void)?
 
-    var storageOperationReference: StorageOperationReference?
+    var storageTaskReference: StorageTaskReference?
+
+    /// Serial queue for synchronizing access to `storageTaskReference`.
+    private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
     init(_ request: AWSS3StoragePutRequest,
          storageService: AWSS3StorageServiceBehaviour,
@@ -32,30 +35,40 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
         super.init(categoryType: .storage)
     }
 
-    public func pause() {
-        storageOperationReference?.pause()
+    override public func pause() {
+        storageTaskActionQueue.async {
+            self.storageTaskReference?.pause()
+            super.pause()
+        }
     }
 
-    public func resume() {
-        storageOperationReference?.resume()
+    override public func resume() {
+        storageTaskActionQueue.async {
+            self.storageTaskReference?.resume()
+            super.resume()
+        }
     }
 
     override public func cancel() {
-        storageOperationReference?.cancel()
-        cancel()
+        storageTaskActionQueue.async {
+            self.storageTaskReference?.cancel()
+            super.cancel()
+        }
     }
 
     override public func main() {
+        if isCancelled {
+            finish()
+            return
+        }
+
         if let error = request.validate() {
-            let asyncEvent = AsyncEvent<Progress, String, StorageError>.failed(error)
-            onEvent?(asyncEvent)
-            dispatch(event: asyncEvent)
+            dispatch(error)
             finish()
             return
         }
 
         let identityIdResult = authService.getIdentityId()
-
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
                 dispatch(error)
@@ -66,7 +79,6 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
         }
 
         let uploadSizeResult = StorageRequestUtils.getSize(request.uploadSource)
-
         guard case let .success(uploadSize) = uploadSizeResult else {
             if case let .failure(error) = uploadSizeResult {
                 dispatch(error)
@@ -78,30 +90,42 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
 
         let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
                                                            identityId: identityId,
-                                                           targetIdentityId: nil,
                                                            key: request.key)
         let serviceMetadata = StorageRequestUtils.getServiceMetadata(request.metadata)
 
-        if uploadSize > PluginConstants.multiPartUploadSizeThreshold {
+        if isCancelled {
+            finish()
+            return
+        }
+
+        if uploadSize > AWSS3StoragePutRequest.multiPartUploadSizeThreshold {
             storageService.multiPartUpload(serviceKey: serviceKey,
                                            uploadSource: request.uploadSource,
                                            contentType: request.contentType,
-                                           metadata: serviceMetadata,
-                                           onEvent: onEventHandler)
+                                           metadata: serviceMetadata) { [weak self] event in
+                                               self?.onEventHandler(event: event)
+                                           }
         } else {
             storageService.upload(serviceKey: serviceKey,
                                   uploadSource: request.uploadSource,
                                   contentType: request.contentType,
-                                  metadata: serviceMetadata,
-                                  onEvent: onEventHandler)
+                                  metadata: serviceMetadata) { [weak self] event in
+                                      self?.onEventHandler(event: event)
+                                  }
         }
     }
 
     private func onEventHandler(
-        event: StorageEvent<StorageOperationReference, Progress, Void, StorageError>) {
+        event: StorageEvent<StorageTaskReference, Progress, Void, StorageError>) {
         switch event {
         case .initiated(let reference):
-            storageOperationReference = reference
+            storageTaskActionQueue.async {
+                self.storageTaskReference = reference
+                if self.isCancelled {
+                    self.storageTaskReference?.cancel()
+                    self.finish()
+                }
+            }
         case .inProcess(let progress):
             dispatch(progress)
         case .completed:

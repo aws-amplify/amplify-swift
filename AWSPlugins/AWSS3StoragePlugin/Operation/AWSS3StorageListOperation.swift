@@ -31,10 +31,15 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
     }
 
     override public func cancel() {
-        cancel()
+        super.cancel()
     }
 
     override public func main() {
+        if isCancelled {
+            finish()
+            return
+        }
+
         if let error = request.validate() {
             dispatch(error)
             finish()
@@ -56,21 +61,26 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
                                                                          identityId: identityId,
                                                                          targetIdentityId: request.targetIdentityId)
 
-        storageService.list(prefix: accessLevelPrefix, path: request.path, onEvent: onEventHandler)
+        if isCancelled {
+            finish()
+            return
+        }
+
+        storageService.list(prefix: accessLevelPrefix, path: request.path) { [weak self] event in
+            self?.onEventHandler(event: event)
+        }
     }
 
     private func onEventHandler(event: StorageEvent<Void, Void, StorageListResult, StorageError>) {
         switch event {
-        case .initiated:
-            break
-        case .inProcess:
-            break
         case .completed(let result):
             dispatch(result)
             finish()
         case .failed(let error):
             dispatch(error)
             finish()
+        default:
+            break
         }
     }
 

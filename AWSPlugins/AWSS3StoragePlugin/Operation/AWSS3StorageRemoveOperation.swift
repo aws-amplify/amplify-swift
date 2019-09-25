@@ -31,10 +31,15 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, Storage
     }
 
     override public func cancel() {
-        cancel()
+        super.cancel()
     }
 
     override public func main() {
+        if isCancelled {
+            finish()
+            return
+        }
+
         if let error = request.validate() {
             dispatch(error)
             finish()
@@ -42,7 +47,6 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, Storage
         }
 
         let identityIdResult = authService.getIdentityId()
-
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
                 dispatch(error)
@@ -54,25 +58,28 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, Storage
 
         let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
                                                            identityId: identityId,
-                                                           targetIdentityId: nil,
                                                            key: request.key)
 
-        storageService.delete(serviceKey: serviceKey,
-                              onEvent: onEventHandler)
+        if isCancelled {
+            finish()
+            return
+        }
+
+        storageService.delete(serviceKey: serviceKey) { [weak self] event in
+            self?.onEventHandler(event: event)
+        }
     }
 
     private func onEventHandler(event: StorageEvent<Void, Void, Void, StorageError>) {
         switch event {
-        case .initiated:
-            break
-        case .inProcess:
-            break
         case .completed:
             dispatch(request.key)
             finish()
         case .failed(let error):
             dispatch(error)
             finish()
+        default:
+            break
         }
     }
 

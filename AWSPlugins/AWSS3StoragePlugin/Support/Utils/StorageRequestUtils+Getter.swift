@@ -13,8 +13,8 @@ extension StorageRequestUtils {
 
     static func getServiceKey(accessLevel: StorageAccessLevel,
                               identityId: String,
-                              targetIdentityId: String?,
-                              key: String) -> String {
+                              key: String,
+                              targetIdentityId: String? = nil) -> String {
 
         return getAccessLevelPrefix(accessLevel: accessLevel,
                                     identityId: identityId,
@@ -52,7 +52,7 @@ extension StorageRequestUtils {
         switch uploadSource {
         case .file(let file):
             if let error = validateFileExists(file) {
-                return .failure(StorageError.missingFile(error.errorDescription, error.recoverySuggestion))
+                return .failure(StorageError.missingLocalFile(error.errorDescription, error.recoverySuggestion))
             }
 
             do {

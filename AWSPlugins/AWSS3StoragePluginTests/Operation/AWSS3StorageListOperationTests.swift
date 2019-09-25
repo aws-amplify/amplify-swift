@@ -17,7 +17,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
         let request = AWSS3StorageListRequest(accessLevel: .public,
                                               targetIdentityId: nil,
                                               path: "",
-                                              options: nil)
+                                              pluginOptions: nil)
 
          let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
@@ -46,7 +46,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
         let request = AWSS3StorageListRequest(accessLevel: .public,
                                               targetIdentityId: nil,
                                               path: testPath,
-                                              options: nil)
+                                              pluginOptions: nil)
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
                                                  storageService: mockStorageService,
@@ -74,7 +74,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
         let request = AWSS3StorageListRequest(accessLevel: .public,
                                               targetIdentityId: nil,
                                               path: testPath,
-                                              options: nil)
+                                              pluginOptions: nil)
         let expectedPrefix = StorageAccessLevel.public.rawValue + "/"
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
@@ -100,7 +100,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
         let request = AWSS3StorageListRequest(accessLevel: .public,
                                               targetIdentityId: nil,
                                               path: testPath,
-                                              options: nil)
+                                              pluginOptions: nil)
         let expectedPrefix = StorageAccessLevel.public.rawValue + "/"
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
@@ -126,7 +126,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
         let request = AWSS3StorageListRequest(accessLevel: .protected,
                                               targetIdentityId: testTargetIdentityId,
                                               path: testPath,
-                                              options: nil)
+                                              pluginOptions: nil)
         let expectedPrefix = StorageAccessLevel.protected.rawValue + "/" + testTargetIdentityId + "/"
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
