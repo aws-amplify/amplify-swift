@@ -56,7 +56,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
             case .completed:
                 XCTFail("Completed event is received")
             case .failed(let error):
-                guard case let .missingLocalFile(error) = error else {
+                guard case let .localFileNotFound(error) = error else {
                     XCTFail("Should have been service error with missing File description")
                     return
                 }

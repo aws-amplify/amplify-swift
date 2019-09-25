@@ -131,8 +131,8 @@ class StorageErrorHelper {
         case .serverError:
             break
         case .localFileNotFound:
-            return StorageError.missingLocalFile(StorageErrorConstants.missingLocalFileService.errorDescription,
-                                                 StorageErrorConstants.missingLocalFile.recoverySuggestion)
+            return StorageError.localFileNotFound(StorageErrorConstants.missingLocalFileService.errorDescription,
+                                                  StorageErrorConstants.missingLocalFile.recoverySuggestion)
         default:
             break
         }

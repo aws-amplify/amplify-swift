@@ -52,7 +52,7 @@ extension StorageRequestUtils {
         switch uploadSource {
         case .file(let file):
             if let error = validateFileExists(file) {
-                return .failure(StorageError.missingLocalFile(error.errorDescription, error.recoverySuggestion))
+                return .failure(StorageError.localFileNotFound(error.errorDescription, error.recoverySuggestion))
             }
 
             do {
