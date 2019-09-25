@@ -17,7 +17,7 @@ final public class AnalyticsCategory: Category {
         guard isConfigured else {
             preconditionFailure(
                 """
-                \(categoryType.displayName) category is not configured. Call Amplify.configure() before using
+                \(categoryType.displayName) category is not configured. Call Amplify.configure() before using \
                 any methods on the category.
                 """
             )
@@ -29,9 +29,11 @@ final public class AnalyticsCategory: Category {
 
         guard plugins.count == 1 else {
             preconditionFailure(
-                #"More than 1 plugin added to \(categoryType.displayName) category. "# +
-                #"You must invoke operations on this category by getting the plugin you want, as in: "# +
-                #"Amplify.\(categoryType.displayName).getPlugin(for: "ThePluginKey").foo()"#
+                """
+                More than 1 plugin added to \(categoryType.displayName) category. \
+                You must invoke operations on this category by getting the plugin you want, as in:
+                #"Amplify.\(categoryType.displayName).getPlugin(for: "ThePluginKey").foo()
+                """
             )
         }
 
