@@ -42,7 +42,7 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<Void, URL, StorageErr
             finish()
             return
         }
-        
+
         if let error = request.validate() {
             dispatch(error)
             finish()
@@ -69,9 +69,9 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<Void, URL, StorageErr
             return
         }
 
-        storageService.getPreSignedURL(serviceKey: serviceKey,
-                                       expires: request.expires,
-                                       onEvent: onEventHandler)
+        storageService.getPreSignedURL(serviceKey: serviceKey, expires: request.expires) { [weak self] event in
+            self?.onEventHandler(event: event)
+        }
     }
 
     private func onEventHandler(event: StorageEvent<Void, Void, URL, StorageError>) {

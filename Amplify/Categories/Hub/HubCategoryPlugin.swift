@@ -12,5 +12,3 @@ public extension HubCategoryPlugin {
         return .hub
     }
 }
-
-public protocol HubPluginSelector: PluginSelector, HubCategoryClientBehavior { }

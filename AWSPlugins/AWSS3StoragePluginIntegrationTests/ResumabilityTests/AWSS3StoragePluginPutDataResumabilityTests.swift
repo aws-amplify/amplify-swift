@@ -18,23 +18,27 @@ class AWSS3StoragePluginPutDataResumabilityTests: AWSS3StoragePluginTestBase {
     /// Then: The operation is stalled (no progress, completed, or failed event)
     func testPutLargeDataThenPause() {
         let key = "testPutLargeDataAndPauseThenResume"
-        var testData = key
-        for _ in 1...15 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
         let completeInvoked = expectation(description: "Completion invoked")
         completeInvoked.isInverted = true
         let failedInvoked = expectation(description: "Failed invoked")
         failedInvoked.isInverted = true
-        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+        let noProgressAfterPause = expectation(description: "Progress after pause is invoked")
+        noProgressAfterPause.isInverted = true
+        let operation = Amplify.Storage.put(key: key,
+                                            data: AWSS3StoragePluginTestBase.largeDataObject,
+                                            options: nil) { (event) in
             switch event {
             case .inProcess(let progress):
                 // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
                 if progress.fractionCompleted > 0.3 {
                     progressInvoked.fulfill()
+                }
+
+                // After pausing, progress events still trickle in, but should not exceed
+                if progress.fractionCompleted > 0.7 {
+                    noProgressAfterPause.fulfill()
                 }
             case .completed:
                 completeInvoked.fulfill()
@@ -46,9 +50,9 @@ class AWSS3StoragePluginPutDataResumabilityTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        wait(for: [progressInvoked], timeout: 15)
+        wait(for: [progressInvoked], timeout: networkTimeout)
         operation.pause()
-        wait(for: [completeInvoked, failedInvoked], timeout: 30)
+        wait(for: [completeInvoked, failedInvoked, noProgressAfterPause], timeout: 30)
     }
 
     /// Given: A large data object to upload
@@ -56,15 +60,12 @@ class AWSS3StoragePluginPutDataResumabilityTests: AWSS3StoragePluginTestBase {
     /// Then: The operation should complete successfully
     func testPutLargeDataAndPauseThenResume() {
         let key = "testPutLargeDataAndPauseThenResume"
-        var testData = key
-        for _ in 1...15 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
         let completeInvoked = expectation(description: "Completed is invoked")
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
-        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+        let operation = Amplify.Storage.put(key: key,
+                                            data: AWSS3StoragePluginTestBase.largeDataObject,
+                                            options: nil) { (event) in
             switch event {
             case .inProcess(let progress):
                 // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
@@ -81,10 +82,10 @@ class AWSS3StoragePluginPutDataResumabilityTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        wait(for: [progressInvoked], timeout: 15)
+        wait(for: [progressInvoked], timeout: networkTimeout)
         operation.pause()
         operation.resume()
-        wait(for: [completeInvoked], timeout: 60)
+        wait(for: [completeInvoked], timeout: networkTimeout)
     }
 
     /// Given: A large data object to upload
@@ -92,17 +93,15 @@ class AWSS3StoragePluginPutDataResumabilityTests: AWSS3StoragePluginTestBase {
     /// Then: The operation should complete successfully
     func testPutLargeDataAndCancel() {
         let key = "testPutLargeDataAndCancel"
-        var testData = key
-        for _ in 1...15 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
         let progressInvoked = expectation(description: "Progress invoked")
+        progressInvoked.assertForOverFulfill = false
         let completedInvoked = expectation(description: "Completion invoked")
         completedInvoked.isInverted = true
         let failedInvoked = expectation(description: "Failed invoked")
         failedInvoked.isInverted = true
-        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+        let operation = Amplify.Storage.put(key: key,
+                                            data: AWSS3StoragePluginTestBase.largeDataObject,
+                                            options: nil) { (event) in
             switch event {
             case .inProcess(let progress):
                 // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
@@ -111,7 +110,7 @@ class AWSS3StoragePluginPutDataResumabilityTests: AWSS3StoragePluginTestBase {
                 }
             case .completed:
                 completedInvoked.fulfill()
-            case .failed(let error):
+            case .failed:
                 failedInvoked.fulfill()
             default:
                 break
@@ -119,10 +118,9 @@ class AWSS3StoragePluginPutDataResumabilityTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        wait(for: [progressInvoked], timeout: 15)
+        wait(for: [progressInvoked], timeout: networkTimeout)
         operation.cancel()
-        XCTAssertTrue(operation.isCancelled)
-        wait(for: [completedInvoked, failedInvoked], timeout: 15)
+        wait(for: [completedInvoked, failedInvoked], timeout: 30)
     }
 
 }

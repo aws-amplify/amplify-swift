@@ -66,7 +66,9 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
             return
         }
 
-        storageService.list(prefix: accessLevelPrefix, path: request.path, onEvent: onEventHandler)
+        storageService.list(prefix: accessLevelPrefix, path: request.path) { [weak self] event in
+            self?.onEventHandler(event: event)
+        }
     }
 
     private func onEventHandler(event: StorageEvent<Void, Void, StorageListResult, StorageError>) {

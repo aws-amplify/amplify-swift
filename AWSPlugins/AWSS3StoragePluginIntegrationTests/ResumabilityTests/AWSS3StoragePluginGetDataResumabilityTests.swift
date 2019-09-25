@@ -18,12 +18,7 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
     /// Then: The operation is stalled (no progress, completed, or failed event)
     func testGetLargeDataAndPause() {
         let key = "testGetLargeDataAndPause"
-        var testData = key
-        for _ in 1...15 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
-        putData(key: key, data: data)
+        putData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
@@ -31,12 +26,19 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
         completeInvoked.isInverted = true
         let failedInvoked = expectation(description: "Failed invoked")
         failedInvoked.isInverted = true
+        let noProgressAfterPause = expectation(description: "Progress after pause is invoked")
+        noProgressAfterPause.isInverted = true
         let operation = Amplify.Storage.getData(key: key, options: nil) { (event) in
             switch event {
             case .inProcess(let progress):
                 // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
                 if progress.fractionCompleted > 0.3 {
                     progressInvoked.fulfill()
+                }
+
+                // After pausing, progress events still trickle in, but should not exceed
+                if progress.fractionCompleted > 0.7 {
+                    noProgressAfterPause.fulfill()
                 }
             case .completed:
                 completeInvoked.fulfill()
@@ -48,9 +50,9 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        wait(for: [progressInvoked], timeout: 15)
+        wait(for: [progressInvoked], timeout: networkTimeout)
         operation.pause()
-        wait(for: [completeInvoked, failedInvoked], timeout: 30)
+        wait(for: [completeInvoked, failedInvoked, noProgressAfterPause], timeout: 30)
     }
 
     /// Given: A large data object in storage
@@ -58,12 +60,7 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
     /// Then: The operation should complete successfully
     func testGetLargeDataAndPauseThenResume() {
         let key = "testGetLargeDataAndPauseThenResume"
-        var testData = key
-        for _ in 1...15 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
-        putData(key: key, data: data)
+        putData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
@@ -85,10 +82,10 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        wait(for: [progressInvoked], timeout: 15)
+        wait(for: [progressInvoked], timeout: networkTimeout)
         operation.pause()
         operation.resume()
-        wait(for: [completeInvoked], timeout: 60)
+        wait(for: [completeInvoked], timeout: networkTimeout)
     }
 
     /// Given: A large data object in storage
@@ -96,12 +93,7 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
     /// Then: The operation should not complete or fail.
     func testGetLargeDataAndCancel() {
         let key = "testGetLargeDataAndCancel"
-        var testData = key
-        for _ in 1...15 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
-        putData(key: key, data: data)
+        putData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
@@ -118,7 +110,7 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
                 }
             case .completed:
                 completedInvoked.fulfill()
-            case .failed(let error):
+            case .failed:
                 failedInvoked.fulfill()
             default:
                 break
@@ -126,10 +118,8 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        wait(for: [progressInvoked], timeout: 15)
+        wait(for: [progressInvoked], timeout: networkTimeout)
         operation.cancel()
-        XCTAssertTrue(operation.isCancelled)
-        wait(for: [completedInvoked, failedInvoked], timeout: 15)
+        wait(for: [completedInvoked, failedInvoked], timeout: 30)
     }
-
 }

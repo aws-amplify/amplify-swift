@@ -38,7 +38,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 15)
+        waitForExpectations(timeout: networkTimeout)
         guard let remoteURL = remoteURLOptional else {
             XCTFail("Failed to get remoteURL")
             return
@@ -51,7 +51,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
                 return
             }
 
-            guard let response = response as? HTTPURLResponse, (200...299).contains(response.statusCode) else {
+            guard let response = response as? HTTPURLResponse, (200 ... 299).contains(response.statusCode) else {
                 XCTFail("Failed to received data with bad status code")
                 return
             }
@@ -66,7 +66,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             dataTaskCompleteInvoked.fulfill()
         }
         task.resume()
-        waitForExpectations(timeout: 15)
+        waitForExpectations(timeout: networkTimeout)
 
         sleep(15)
 
@@ -86,7 +86,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             urlExpired.fulfill()
         }
         task2.resume()
-        waitForExpectations(timeout: 15)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: An object uploaded with metadata with key `metadataKey` and value `metadataValue`
@@ -114,7 +114,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
 
         do {
             let pluginOptional = try Amplify.Storage.getPlugin(for: "AWSS3StoragePlugin")

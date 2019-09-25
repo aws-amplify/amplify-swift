@@ -40,7 +40,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: A path to file that does not exist
@@ -49,10 +49,6 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
     func testPutDataFromMissingFile() {
         let key = "testPutDataFromMissingFile"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
-        var testData = key
-        for _ in 1...5 {
-            testData += testData
-        }
         let fileURL = URL(fileURLWithPath: filePath)
         let failedInvoked = expectation(description: "Failed is invoked")
         let operation = Amplify.Storage.put(key: key, local: fileURL, options: nil) { (event) in
@@ -72,7 +68,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     // TODO: possibly after understanding content-type

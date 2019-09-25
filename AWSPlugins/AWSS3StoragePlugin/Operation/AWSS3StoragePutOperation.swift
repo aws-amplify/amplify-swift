@@ -20,8 +20,8 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
 
     var storageTaskReference: StorageTaskReference?
 
-    /// Concurrent queue for synchronizing access to `storageTaskReference`.
-    private let taskQueue = DispatchQueue(label: Bundle.main.bundleIdentifier! + ".rw.task", attributes: .concurrent)
+    /// Serial queue for synchronizing access to `storageTaskReference`.
+    private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
     init(_ request: AWSS3StoragePutRequest,
          storageService: AWSS3StorageServiceBehaviour,
@@ -35,23 +35,25 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
         super.init(categoryType: .storage)
     }
 
-    public func pause() {
-        taskQueue.async(flags: .barrier) {
+    override public func pause() {
+        storageTaskActionQueue.async {
             self.storageTaskReference?.pause()
+            super.pause()
         }
     }
 
-    public func resume() {
-        taskQueue.async(flags: .barrier) {
+    override public func resume() {
+        storageTaskActionQueue.async {
             self.storageTaskReference?.resume()
+            super.resume()
         }
     }
 
     override public func cancel() {
-        taskQueue.async(flags: .barrier) {
+        storageTaskActionQueue.async {
             self.storageTaskReference?.cancel()
+            super.cancel()
         }
-        super.cancel()
     }
 
     override public func main() {
@@ -100,14 +102,16 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
             storageService.multiPartUpload(serviceKey: serviceKey,
                                            uploadSource: request.uploadSource,
                                            contentType: request.contentType,
-                                           metadata: serviceMetadata,
-                                           onEvent: onEventHandler)
+                                           metadata: serviceMetadata) { [weak self] event in
+                                               self?.onEventHandler(event: event)
+                                           }
         } else {
             storageService.upload(serviceKey: serviceKey,
                                   uploadSource: request.uploadSource,
                                   contentType: request.contentType,
-                                  metadata: serviceMetadata,
-                                  onEvent: onEventHandler)
+                                  metadata: serviceMetadata) { [weak self] event in
+                                      self?.onEventHandler(event: event)
+                                  }
         }
     }
 
@@ -115,10 +119,12 @@ public class AWSS3StoragePutOperation: AmplifyOperation<Progress, String, Storag
         event: StorageEvent<StorageTaskReference, Progress, Void, StorageError>) {
         switch event {
         case .initiated(let reference):
-            storageTaskReference = reference
-            if isCancelled {
-                storageTaskReference?.cancel()
-                finish()
+            storageTaskActionQueue.async {
+                self.storageTaskReference = reference
+                if self.isCancelled {
+                    self.storageTaskReference?.cancel()
+                    self.finish()
+                }
             }
         case .inProcess(let progress):
             dispatch(progress)

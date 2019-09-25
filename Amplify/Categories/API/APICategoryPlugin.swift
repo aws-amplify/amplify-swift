@@ -21,8 +21,6 @@ public protocol APICategoryPluginBehavior {
     func serializeResponse(_ response: APIResponse)
 }
 
-public protocol APIPluginSelector: PluginSelector, APICategoryClientBehavior { }
-
 public enum HTTPMethod: String {
     case delete = "DELETE"
     case get = "GET"

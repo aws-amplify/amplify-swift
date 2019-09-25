@@ -33,7 +33,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: A empty data object
@@ -56,7 +56,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: A file with contents
@@ -82,7 +82,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: A file with empty contents
@@ -107,7 +107,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: A large  data object
@@ -115,15 +115,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation completes successfully
     func testPutLargeData() {
         let key = "testPutLargeData"
-        var testData = key
-        for _ in 1...20 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
-        XCTAssertTrue(data.count > 10_000_000, "Could not create data object greater than 10MB")
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+        let operation = Amplify.Storage.put(key: key,
+                                            data: AWSS3StoragePluginTestBase.largeDataObject,
+                                            options: nil) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -135,7 +131,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: A large file
@@ -146,14 +142,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
 
-        var testData = key
-        for _ in 1...20 {
-            testData += testData
-        }
-        let data = testData.data(using: .utf8)!
-        FileManager.default.createFile(atPath: filePath, contents: data, attributes: nil)
+        FileManager.default.createFile(atPath: filePath,
+                                       contents: AWSS3StoragePluginTestBase.largeDataObject,
+                                       attributes: nil)
 
-        XCTAssertTrue(data.count > 10000000, "Could not create data object greater than 10MB")
         let completeInvoked = expectation(description: "Completed is invoked")
 
         let operation = Amplify.Storage.put(key: key, local: fileURL, options: nil) { (event) in
@@ -168,7 +160,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: An object in storage
@@ -192,7 +184,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: An object in storage
@@ -221,7 +213,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
 
         let fileExists = FileManager.default.fileExists(atPath: fileURL.path)
         XCTAssertTrue(fileExists)
@@ -256,7 +248,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 15)
+        waitForExpectations(timeout: networkTimeout)
         guard let remoteURL = remoteURLOptional else {
             XCTFail("Failed to get remoteURL")
             return
@@ -269,7 +261,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
                 return
             }
 
-            guard let response = response as? HTTPURLResponse, (200...299).contains(response.statusCode) else {
+            guard let response = response as? HTTPURLResponse, (200 ... 299).contains(response.statusCode) else {
                 XCTFail("Failed to received data with bad status code")
                 return
             }
@@ -285,7 +277,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
         task.resume()
 
-        waitForExpectations(timeout: 15)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: An object in storage
@@ -312,7 +304,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 100)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: No object in storage for the key
@@ -338,7 +330,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: No object in storage for the key
@@ -348,7 +340,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let key = "testListWithPathUsingFolderNameWithForwardSlash"
         let folder = key + "/"
         var keys: [String] = []
-        for fileIndex in 1...10 {
+        for fileIndex in 1 ... 10 {
             let key = folder + "file" + String(fileIndex) + ".txt"
             keys.append(key)
             putData(key: key, dataString: key)
@@ -376,7 +368,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: Objects with identifiers specified in `keys` array stored in folder named (`key1`+`key2`)
@@ -387,7 +379,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let key2 = "leteFolderName"
         let folder = key1 + key2 + "/"
         var keys: [String] = []
-        for fileIndex in 1...10 {
+        for fileIndex in 1 ... 10 {
             let key = folder + "file" + String(fileIndex) + ".txt"
             keys.append(key)
             putData(key: key, dataString: key)
@@ -414,7 +406,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: An object in storage
@@ -436,7 +428,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(removeOperation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: Object with key `key` does not exist in storage
@@ -457,7 +449,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(removeOperation)
-        waitForExpectations(timeout: 60)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     /// Given: Object with key `key` in storage

@@ -64,6 +64,7 @@ extension AWSS3StoragePlugin {
         self.authService = authService
         self.queue = queue
         self.defaultAccessLevel = defaultAccessLevel
+
     }
 
     // MARK: Private helper methods
