@@ -17,6 +17,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
     /// Then: The operation fails with StorageError.keyNotFound
     func testGetNonexistentKey() {
         let key = "testGetNonexistentKey"
+        let expectedKey = "public/" + key
         let failInvoked = expectation(description: "Failed is invoked")
         let options = StorageGetDataOptions(accessLevel: nil,
                                             targetIdentityId: nil,
@@ -26,12 +27,12 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
             case .completed:
                 XCTFail("Should not have completed successfully")
             case .failed(let error):
-                guard case let .keyNotFound(errorDescription, _) = error else {
+                guard case let .keyNotFound(key, errorDescription, _) = error else {
                     XCTFail("Should have been validation error")
                     return
                 }
 
-                XCTAssertEqual(errorDescription, StorageErrorConstants.keyNotFound.errorDescription)
+                XCTAssertEqual(key, expectedKey)
                 failInvoked.fulfill()
             default:
                 break
@@ -55,7 +56,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
             case .completed:
                 XCTFail("Completed event is received")
             case .failed(let error):
-                guard case let .missingLocalFile(error) = error else {
+                guard case let .localFileNotFound(error) = error else {
                     XCTFail("Should have been service error with missing File description")
                     return
                 }

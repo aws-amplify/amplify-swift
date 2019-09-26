@@ -62,11 +62,12 @@ class AWSS3StoragePutRequestTests: XCTestCase {
             return
         }
 
-        guard case .validation(let description, let recovery) = error else {
+        guard case .validation(let field, let description, let recovery) = error else {
             XCTFail("Error does not match validation error")
             return
         }
 
+        XCTAssertEqual(field, StorageErrorConstants.keyIsEmpty.field)
         XCTAssertEqual(description, StorageErrorConstants.keyIsEmpty.errorDescription)
         XCTAssertEqual(recovery, StorageErrorConstants.keyIsEmpty.recoverySuggestion)
     }
@@ -86,11 +87,12 @@ class AWSS3StoragePutRequestTests: XCTestCase {
             return
         }
 
-        guard case .validation(let description, let recovery) = error else {
+        guard case .validation(let field, let description, let recovery) = error else {
             XCTFail("Error does not match validation error")
             return
         }
 
+        XCTAssertEqual(field, StorageErrorConstants.contentTypeIsEmpty.field)
         XCTAssertEqual(description, StorageErrorConstants.contentTypeIsEmpty.errorDescription)
         XCTAssertEqual(recovery, StorageErrorConstants.contentTypeIsEmpty.recoverySuggestion)
     }
@@ -111,11 +113,12 @@ class AWSS3StoragePutRequestTests: XCTestCase {
             return
         }
 
-        guard case .validation(let description, let recovery) = error else {
+        guard case .validation(let field, let description, let recovery) = error else {
             XCTFail("Error does not match validation error")
             return
         }
 
+        XCTAssertEqual(field, StorageErrorConstants.metadataKeysInvalid.field)
         XCTAssertEqual(description, StorageErrorConstants.metadataKeysInvalid.errorDescription)
         XCTAssertEqual(recovery, StorageErrorConstants.metadataKeysInvalid.recoverySuggestion)
     }

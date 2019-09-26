@@ -13,14 +13,18 @@ extension StorageRequestUtils {
     // MARK: Validation methods
 
     static func validateTargetIdentityId(_ targetIdentityId: String?,
-                                         accessLevel: StorageAccessLevel) -> StorageErrorString? {
+                                         accessLevel: StorageAccessLevel) -> StorageError? {
         if let targetIdentityId = targetIdentityId {
             if targetIdentityId.isEmpty {
-                return StorageErrorConstants.identityIdIsEmpty
+                return StorageError.validation(StorageErrorConstants.identityIdIsEmpty.field,
+                                               StorageErrorConstants.identityIdIsEmpty.errorDescription,
+                                               StorageErrorConstants.identityIdIsEmpty.recoverySuggestion)
             }
 
-            if accessLevel == .private {
-                return StorageErrorConstants.privateWithTarget
+            if accessLevel != .protected {
+                return StorageError.validation(StorageErrorConstants.invalidAccessLevelWithTarget.field,
+                                               StorageErrorConstants.invalidAccessLevelWithTarget.errorDescription,
+                                               StorageErrorConstants.invalidAccessLevelWithTarget.recoverySuggestion)
             }
 
             // TODO: if it is public, it doesn't make sense to have a targetIdentityId.
@@ -29,36 +33,44 @@ extension StorageRequestUtils {
         return nil
     }
 
-    static func validateKey(_ key: String) -> StorageErrorString? {
+    static func validateKey(_ key: String) -> StorageError? {
         if key.isEmpty {
-            return StorageErrorConstants.keyIsEmpty
+            return StorageError.validation(StorageErrorConstants.keyIsEmpty.field,
+                                          StorageErrorConstants.keyIsEmpty.errorDescription,
+                                          StorageErrorConstants.keyIsEmpty.recoverySuggestion)
         }
 
         return nil
     }
 
-    static func validate(expires: Int) -> StorageErrorString? {
+    static func validate(expires: Int) -> StorageError? {
         if expires <= 0 {
-            return StorageErrorConstants.expiresIsInvalid
+            return StorageError.validation(StorageErrorConstants.expiresIsInvalid.field,
+                                           StorageErrorConstants.expiresIsInvalid.errorDescription,
+                                           StorageErrorConstants.expiresIsInvalid.recoverySuggestion)
         }
 
         return nil
     }
 
-    static func validatePath(_ path: String?) -> StorageErrorString? {
+    static func validatePath(_ path: String?) -> StorageError? {
         if let path = path {
             if path.isEmpty {
-                return StorageErrorConstants.pathIsEmpty
+                return StorageError.validation(StorageErrorConstants.pathIsEmpty.field,
+                                               StorageErrorConstants.pathIsEmpty.errorDescription,
+                                               StorageErrorConstants.pathIsEmpty.recoverySuggestion)
             }
         }
 
         return nil
     }
 
-    static func validateContentType(_ contentType: String?) -> StorageErrorString? {
+    static func validateContentType(_ contentType: String?) -> StorageError? {
         if let contentType = contentType {
             if contentType.isEmpty {
-                return StorageErrorConstants.contentTypeIsEmpty
+                return StorageError.validation(StorageErrorConstants.contentTypeIsEmpty.field,
+                                               StorageErrorConstants.contentTypeIsEmpty.errorDescription,
+                                               StorageErrorConstants.contentTypeIsEmpty.recoverySuggestion)
             }
             // TODO content type validation
         }
@@ -66,11 +78,13 @@ extension StorageRequestUtils {
         return nil
     }
 
-    static func validateMetadata(_ metadata: [String: String]?) -> StorageErrorString? {
+    static func validateMetadata(_ metadata: [String: String]?) -> StorageError? {
         if let metadata = metadata {
             for (key, _) in metadata {
                 if key != key.lowercased() {
-                    return StorageErrorConstants.metadataKeysInvalid
+                    return StorageError.validation(StorageErrorConstants.metadataKeysInvalid.field,
+                                                   StorageErrorConstants.metadataKeysInvalid.errorDescription,
+                                                   StorageErrorConstants.metadataKeysInvalid.recoverySuggestion)
                 }
                 // TODO: validate that metadata values are within a certain size.
                 // https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html#object-metadata 2KB
@@ -80,9 +94,11 @@ extension StorageRequestUtils {
         return nil
     }
 
-    static func validateFileExists(_ file: URL) -> StorageErrorString? {
+    static func validateFileExists(_ file: URL) -> StorageError? {
         if !FileManager.default.fileExists(atPath: file.path) {
-            return StorageErrorConstants.missingFile
+            return StorageError.validation(StorageErrorConstants.localFileNotFound.field,
+                                           StorageErrorConstants.localFileNotFound.errorDescription,
+                                           StorageErrorConstants.localFileNotFound.recoverySuggestion)
         }
 
         return nil

@@ -38,11 +38,12 @@ class AWSS3StorageListRequestTests: XCTestCase {
             return
         }
 
-        guard case .validation(let description, let recovery) = error else {
+        guard case .validation(let field, let description, let recovery) = error else {
             XCTFail("Error does not match validation error")
             return
         }
 
+        XCTAssertEqual(field, StorageErrorConstants.identityIdIsEmpty.field)
         XCTAssertEqual(description, StorageErrorConstants.identityIdIsEmpty.errorDescription)
         XCTAssertEqual(recovery, StorageErrorConstants.identityIdIsEmpty.recoverySuggestion)
     }
@@ -60,13 +61,14 @@ class AWSS3StorageListRequestTests: XCTestCase {
             return
         }
 
-        guard case .validation(let description, let recovery) = error else {
+        guard case .validation(let field, let description, let recovery) = error else {
             XCTFail("Error does not match validation error")
             return
         }
 
-        XCTAssertEqual(description, StorageErrorConstants.privateWithTarget.errorDescription)
-        XCTAssertEqual(recovery, StorageErrorConstants.privateWithTarget.recoverySuggestion)
+        XCTAssertEqual(field, StorageErrorConstants.invalidAccessLevelWithTarget.field)
+        XCTAssertEqual(description, StorageErrorConstants.invalidAccessLevelWithTarget.errorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.invalidAccessLevelWithTarget.recoverySuggestion)
     }
 
     func testValidateEmptyPathError() {
@@ -82,11 +84,12 @@ class AWSS3StorageListRequestTests: XCTestCase {
             return
         }
 
-        guard case .validation(let description, let recovery) = error else {
+        guard case .validation(let field, let description, let recovery) = error else {
             XCTFail("Error does not match validation error")
             return
         }
 
+        XCTAssertEqual(field, StorageErrorConstants.pathIsEmpty.field)
         XCTAssertEqual(description, StorageErrorConstants.pathIsEmpty.errorDescription)
         XCTAssertEqual(recovery, StorageErrorConstants.pathIsEmpty.recoverySuggestion)
     }

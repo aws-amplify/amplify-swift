@@ -14,7 +14,7 @@ import AWSCognitoIdentityProvider
 
 class AWSS3StoragePluginTestBase: XCTestCase {
 
-    let bucket: JSONValue = "swift6a3ad8b2b9f4402187f051de89548cc0-devo"
+    let bucket: JSONValue = "temp7d35a2c388fb428691cf1bbc12767854-dev"
     let region: JSONValue = "us-east-1"
     let networkTimeout = TimeInterval(180) // 180 seconds to wait before network timeouts
     static let largeDataObject = Data(repeating: 0xff, count: 1024 * 1024 * 6) // 6MB

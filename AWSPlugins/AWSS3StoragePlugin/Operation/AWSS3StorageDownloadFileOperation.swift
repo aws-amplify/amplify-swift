@@ -74,7 +74,7 @@ public class AWSS3StorageDownloadFileOperation: AmplifyOperation<Progress, Void,
         let identityIdResult = authService.getIdentityId()
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
-                dispatch(error)
+                dispatch(StorageError.authError(error.errorDescription, error.recoverySuggestion))
             }
 
             finish()

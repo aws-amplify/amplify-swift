@@ -7,8 +7,11 @@
 
 import Foundation
 
+public typealias ErrorName = String
 public typealias ErrorDescription = String
-
+public typealias Field = String
+public typealias Key = String
+public typealias TargetIdentityId = String
 public typealias RecoverySuggestion = String
 
 /// Amplify's philosophy is to expose friendly error messages to the customer that assist with debugging.

@@ -52,18 +52,18 @@ extension StorageRequestUtils {
         switch uploadSource {
         case .file(let file):
             if let error = validateFileExists(file) {
-                return .failure(StorageError.missingLocalFile(error.errorDescription, error.recoverySuggestion))
+                return .failure(StorageError.localFileNotFound(error.errorDescription, error.recoverySuggestion))
             }
 
             do {
                 let attributeOfItem = try FileManager.default.attributesOfItem(atPath: file.path)
                 guard let fileSize = attributeOfItem[FileAttributeKey.size] as? UInt64 else {
-                    return .failure(StorageError.unknown("file Issue", "File Issue"))
+                    return .failure(StorageError.unknown("file Issue"))
                 }
 
                 return .success(fileSize)
             } catch {
-                return .failure(StorageError.unknown("File issue", "file issue"))
+                return .failure(StorageError.unknown("File issue"))
             }
 
         case .data(let data):

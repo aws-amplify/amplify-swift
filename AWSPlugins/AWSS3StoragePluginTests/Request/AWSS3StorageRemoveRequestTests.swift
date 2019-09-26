@@ -39,11 +39,12 @@ class AWSS3StorageRemoveRequestTests: XCTestCase {
             return
         }
 
-        guard case .validation(let description, let recovery) = error else {
+        guard case .validation(let field, let description, let recovery) = error else {
             XCTFail("Error does not match validation error")
             return
         }
 
+        XCTAssertEqual(field, StorageErrorConstants.keyIsEmpty.field)
         XCTAssertEqual(description, StorageErrorConstants.keyIsEmpty.errorDescription)
         XCTAssertEqual(recovery, StorageErrorConstants.keyIsEmpty.recoverySuggestion)
     }

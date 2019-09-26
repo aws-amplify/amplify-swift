@@ -41,7 +41,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testRemoveOperationGetIdentityIdError() {
-        mockAuthService.getIdentityIdError = StorageError.identity("", "")
+        mockAuthService.getIdentityIdError = AuthError.identity("", "", "")
         let request = AWSS3StorageRemoveRequest(accessLevel: .public,
                                                 key: testKey,
                                                 pluginOptions: nil)
@@ -51,8 +51,8 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
                                                     authService: mockAuthService) { (event) in
             switch event {
             case .failed(let error):
-                guard case .identity = error else {
-                    XCTFail("Should have failed with identity error")
+                guard case .authError = error else {
+                    XCTFail("Should have failed with authError")
                     return
                 }
                 failedInvoked.fulfill()

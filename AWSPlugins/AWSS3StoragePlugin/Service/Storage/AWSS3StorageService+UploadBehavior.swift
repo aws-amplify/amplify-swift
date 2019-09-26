@@ -32,7 +32,8 @@ extension AWSS3StorageService {
         // TODO: Implement tagging functionality, got 403 on tagging using below code
         //expression.setValue("Project=blue&Classification=confidential", forRequestHeader: "x-amz-tagging")
 
-        let onUploadCompletedHandler = AWSS3StorageService.makeUploadCompletedHandler(onEvent: onEvent)
+        let onUploadCompletedHandler = AWSS3StorageService.makeUploadCompletedHandler(onEvent: onEvent,
+                                                                                      serviceKey: serviceKey)
 
         switch uploadSource {
         case .data(let data):
@@ -68,7 +69,7 @@ extension AWSS3StorageService {
             }
 
             guard let uploadTask = task.result else {
-                onEvent(StorageEvent.failed(StorageError.unknown("No ContinuationBlock data", "")))
+                onEvent(StorageEvent.failed(StorageError.unknown("No ContinuationBlock data")))
                 return nil
             }
 
@@ -88,25 +89,27 @@ extension AWSS3StorageService {
             return block
     }
 
-    private static func makeUploadCompletedHandler(onEvent: @escaping StorageServiceUploadEventHandler)
+    private static func makeUploadCompletedHandler(onEvent: @escaping StorageServiceUploadEventHandler,
+                                                   serviceKey: String)
         -> AWSS3TransferUtilityUploadCompletionHandlerBlock {
 
         let block: AWSS3TransferUtilityUploadCompletionHandlerBlock = { (task, error ) -> Void in
             guard let response = task.response else {
-                onEvent(StorageEvent.failed(StorageError.unknown("Missing HTTP Status", "")))
+                onEvent(StorageEvent.failed(StorageError.unknown("Missing HTTP Response")))
                 return
             }
 
-            guard response.statusCode == 200 else {
-                //StorageErrorHelper.mapHttpResponse(response.statusCode)
-                onEvent(StorageEvent.failed(StorageError.httpStatusError(
-                    "status code \(response.statusCode)", "Check the status code")))
+            let storageError = StorageErrorHelper.mapHttpResponseCode(statusCode: response.statusCode,
+                                                                      serviceKey: serviceKey)
+            guard storageError == nil else {
+                onEvent(StorageEvent.failed(storageError!))
                 return
             }
 
             guard error == nil else {
                 let error = error! as NSError
-                onEvent(StorageEvent.failed(StorageError.unknown("Error with code: \(error.code) ", "")))
+                let storageError = StorageErrorHelper.mapTransferUtilityError(error)
+                onEvent(StorageEvent.failed(storageError))
                 return
             }
 

@@ -39,15 +39,15 @@ struct AWSS3StoragePutRequest {
     /// Performs client side validation and returns a `StorageError` for any validation failures.
     func validate() -> StorageError? {
         if let error = StorageRequestUtils.validateKey(key) {
-            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
+            return error
         }
 
         if let error = StorageRequestUtils.validateContentType(contentType) {
-            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
+            return error
         }
 
         if let error = StorageRequestUtils.validateMetadata(metadata) {
-            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
+            return error
         }
 
         return nil

@@ -8,46 +8,62 @@
 import Foundation
 import Amplify
 
-typealias StorageErrorString = (errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion)
+typealias StorageValidationErrorString = (field: Field,
+    errorDescription: ErrorDescription,
+    recoverySuggestion: RecoverySuggestion)
+typealias StorageServiceErrorString = (errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion)
 
 struct StorageErrorConstants {
-    static let identityIdIsEmpty: StorageErrorString = (
-        "IdentityId is empty",
-         "IdentityId")
 
-    static let keyIsEmpty: StorageErrorString = (
-        "KeyIsEmpty",
-         "KeyIsEmpty")
+    static let identityIdIsEmpty: StorageValidationErrorString = (
+        "targetIdentityId",
+        "The `targetIdentityId` is specified but is empty.",
+        "Specify a non-empty identityId of the target user you wish to use.")
 
-    static let expiresIsInvalid: StorageErrorString = (
-        "ExpiresIsInvalid",
-         "ExpiresIsInvalid")
+    static let keyIsEmpty: StorageValidationErrorString = (
+        "key",
+        "The `key` is specified but is empty.",
+        "Specify a non-empty key.")
 
-    static let pathIsEmpty: StorageErrorString = (
-        "The path is empty",
-         "PathIsEmpty")
+    static let expiresIsInvalid: StorageValidationErrorString = (
+        "expire",
+        "The `expire` field is out of range.",
+        "Specify a positive expire time in seconds like 3600 for an one hour expiry time.")
 
-    static let contentTypeIsEmpty: StorageErrorString = (
-        "ContentType is empty",
-        "ContentTypeIsEmpty")
+    static let pathIsEmpty: StorageValidationErrorString = (
+        "path",
+        "The `path` is specified but is empty.",
+        "Specify a non-empty path")
 
-    static let keyNotFound: StorageErrorString = (
-        "key not found",
-        "key not found")
+    // TODO content type messaging
+    static let contentTypeIsEmpty: StorageValidationErrorString = (
+        "contentType",
+        "The `contentType` is specified but is empty.",
+        """
+        Either do not specify a contentType and it will default to TODO or specify a correct MIME type like X, Y, Z
+        representing the type of the object you are uploading. For more information, please see X
+        """)
 
-    static let privateWithTarget: StorageErrorString = (
-        "Cannot perform this action on a target for private access level",
-         "")
+    static let invalidAccessLevelWithTarget: StorageValidationErrorString = (
+        "accessLevel",
+        "An `accessLevel` specified as public or private cannot be used with `targetIdentityId`",
+        """
+        An action can only be performed on a target user by specifying the `targetIdentityId` with an accessLevel of
+        protected. Perform an action on your own user with private `accessLevel` by removing the
+        `targetIdentityId` or change the `accessLevel` to protected and specify the target user to perform the action.
+        """)
 
-    static let missingFile: StorageErrorString = (
-        "The file is missing",
-         "")
+    static let localFileNotFound: StorageValidationErrorString = (
+        "local",
+        "The file located at the `local` URL is missing",
+        "Make sure the file exists before uploading to storage.")
 
-    static let accessDenied: StorageErrorString = (
+    static let metadataKeysInvalid: StorageValidationErrorString = (
+        "metadata",
+        "The keys in `metadata` dictionary is invalid.",
+        "The values of the keys can only be lowercased.")
+
+    static let accessDenied: StorageServiceErrorString = (
         "Access denied!",
-        "")
-
-    static let metadataKeysInvalid: StorageErrorString = (
-        "Metadata keys should all be lowercased",
         "")
 }

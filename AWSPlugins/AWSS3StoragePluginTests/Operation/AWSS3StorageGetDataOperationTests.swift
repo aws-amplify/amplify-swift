@@ -40,7 +40,7 @@ class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testGetDataOperationGetIdentityIdError() {
-        mockAuthService.getIdentityIdError = StorageError.identity("", "")
+        mockAuthService.getIdentityIdError = AuthError.identity("", "", "")
         let request = AWSS3StorageGetDataRequest(accessLevel: .public,
                                                  targetIdentityId: nil,
                                                  key: testKey,
@@ -51,8 +51,8 @@ class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
                                                      authService: mockAuthService) { (event) in
             switch event {
             case .failed(let error):
-                guard case .identity = error else {
-                    XCTFail("Should have failed with identity error")
+                guard case .authError = error else {
+                    XCTFail("Should have failed with authError")
                     return
                 }
                 failedInvoked.fulfill()

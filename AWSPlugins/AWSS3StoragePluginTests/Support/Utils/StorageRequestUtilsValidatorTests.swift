@@ -24,9 +24,10 @@ class StorageRequestUtilsValidatorTests: XCTestCase {
         XCTAssertNil(result)
     }
 
-    func testValidateTargetIdentityIdWithPublicAccessLevelSuccess() {
+    func testValidateTargetIdentityIdWithPublicAccessLevelReturnsError() {
         let result = StorageRequestUtils.validateTargetIdentityId(testIdentityId, accessLevel: .public)
-        XCTAssertNil(result)
+        XCTAssertNotNil(result)
+        XCTAssertTrue(result!.errorDescription.contains(StorageErrorConstants.invalidAccessLevelWithTarget.errorDescription))
     }
 
     func testValidateTargetIdentityIdWithProtectedAccessLevelSuccess() {
@@ -34,16 +35,16 @@ class StorageRequestUtilsValidatorTests: XCTestCase {
         XCTAssertNil(result)
     }
 
-    func testValidateTargetIdentityIdWithPrivateAccessLevelSuccess() {
+    func testValidateTargetIdentityIdWithPrivateAccessLevelReturnsError() {
         let result = StorageRequestUtils.validateTargetIdentityId(testIdentityId, accessLevel: .private)
         XCTAssertNotNil(result)
-        XCTAssertEqual(result!.errorDescription, StorageErrorConstants.privateWithTarget.errorDescription)
+        XCTAssertTrue(result!.errorDescription.contains(StorageErrorConstants.invalidAccessLevelWithTarget.errorDescription))
     }
 
     func testValidateTargetIdentityIdForEmpyTargetIdReturnsError() {
         let result = StorageRequestUtils.validateTargetIdentityId("", accessLevel: .public)
         XCTAssertNotNil(result)
-        XCTAssertEqual(result!.errorDescription, StorageErrorConstants.identityIdIsEmpty.errorDescription)
+        XCTAssertTrue(result!.errorDescription.contains(StorageErrorConstants.identityIdIsEmpty.errorDescription))
     }
 
     // MARK: ValidateKey tests
@@ -56,7 +57,7 @@ class StorageRequestUtilsValidatorTests: XCTestCase {
     func testValidateKeyForEmptyKeyReturnsError() {
         let result = StorageRequestUtils.validateKey("")
         XCTAssertNotNil(result)
-        XCTAssertEqual(result!.errorDescription, StorageErrorConstants.keyIsEmpty.errorDescription)
+        XCTAssertTrue(result!.errorDescription.contains(StorageErrorConstants.keyIsEmpty.errorDescription))
     }
 
     // MARK: ValidatePath tests
@@ -69,7 +70,7 @@ class StorageRequestUtilsValidatorTests: XCTestCase {
     func testValidatePathForEmptyPathReturnsError() {
         let result = StorageRequestUtils.validatePath("")
         XCTAssertNotNil(result)
-        XCTAssertEqual(result!.errorDescription, StorageErrorConstants.pathIsEmpty.errorDescription)
+        XCTAssertTrue(result!.errorDescription.contains(StorageErrorConstants.pathIsEmpty.errorDescription))
     }
 
     // MARK: ValidateContentType tests
@@ -82,7 +83,7 @@ class StorageRequestUtilsValidatorTests: XCTestCase {
     func testValidateContentTypeForEmptyContentTypeReturnsError() {
         let result = StorageRequestUtils.validateContentType("")
         XCTAssertNotNil(result)
-        XCTAssertEqual(result!.errorDescription, StorageErrorConstants.contentTypeIsEmpty.errorDescription)
+        XCTAssertTrue(result!.errorDescription.contains(StorageErrorConstants.contentTypeIsEmpty.errorDescription))
     }
 
     // MARK: ValidateMetadata tests
@@ -97,7 +98,7 @@ class StorageRequestUtilsValidatorTests: XCTestCase {
         let metadata = ["NonLowerCasedKey": "value1"]
         let result = StorageRequestUtils.validateMetadata(metadata)
         XCTAssertNotNil(result)
-        XCTAssertEqual(result!.errorDescription, StorageErrorConstants.metadataKeysInvalid.errorDescription)
+        XCTAssertTrue(result!.errorDescription.contains(StorageErrorConstants.metadataKeysInvalid.errorDescription))
     }
 
     // MARK: ValidateFileExists tests
@@ -116,6 +117,6 @@ class StorageRequestUtilsValidatorTests: XCTestCase {
         let fileURL = URL(fileURLWithPath: "path")
         let result = StorageRequestUtils.validateFileExists(fileURL)
         XCTAssertNotNil(result)
-        XCTAssertEqual(result!.errorDescription, StorageErrorConstants.missingFile.errorDescription)
+        XCTAssertTrue(result!.errorDescription.contains(StorageErrorConstants.localFileNotFound.errorDescription))
     }
 }

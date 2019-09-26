@@ -32,11 +32,11 @@ struct AWSS3StorageDownloadFileRequest {
     /// Performs client side validation and returns a `StorageError` for any validation failures.
     func validate() -> StorageError? {
         if let error = StorageRequestUtils.validateTargetIdentityId(targetIdentityId, accessLevel: accessLevel) {
-            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
+            return error
         }
 
         if let error = StorageRequestUtils.validateKey(key) {
-            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
+            return error
         }
 
         return nil

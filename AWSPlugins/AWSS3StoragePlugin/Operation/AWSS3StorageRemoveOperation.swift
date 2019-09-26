@@ -49,7 +49,7 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<Void, String, Storage
         let identityIdResult = authService.getIdentityId()
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
-                dispatch(error)
+                dispatch(StorageError.authError(error.errorDescription, error.recoverySuggestion))
             }
 
             finish()

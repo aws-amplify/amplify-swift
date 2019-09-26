@@ -12,79 +12,64 @@ import AWSS3
 
 class StorageErrorHelper {
 
-//    static func mapHttpResponse() -> StorageErrorString? {
-//
-//    }
-
-    static func map(_ error: NSError) -> StorageErrorString {
-        // default error handling on NSError
-        let innerMessage = StorageErrorHelper.getInnerMessage(error)
-        let errorDescription = StorageErrorHelper.getErrorDescription(innerMessage: innerMessage)
-
-        let storageErrorString = (errorDescription: errorDescription, recoverySuggestion: "RecoverySuggestion")
-
-        // Ensure it is the right domain
-        guard error.domain == AWSServiceErrorDomain else {
-            return storageErrorString
+    static func mapHttpResponseCode(statusCode: Int, serviceKey: String) -> StorageError? {
+        if statusCode >= 200 && statusCode <= 299 {
+            return nil
         }
 
-        // Try to get specific erorr
+        if statusCode == 404 {
+            return StorageError.keyNotFound(serviceKey,
+                                            "Received HTTP Response status code 404 NotFound",
+                                            "Make sure the key exists before trying to download it.")
+        }
+
+        // TODO status error mapper
+        return StorageError.httpStatusError(statusCode, "TODO some status code to recovery message mapper")
+    }
+
+    static func mapServiceError(_ error: NSError) -> StorageError {
+        let defaultError = StorageErrorHelper.getDefaultError(error)
+
+        guard error.domain == AWSServiceErrorDomain else {
+            return defaultError
+        }
+
         let errorTypeOptional = AWSServiceErrorType.init(rawValue: error.code)
         guard let errorType = errorTypeOptional else {
-            return storageErrorString
+            return defaultError
         }
 
-        // Extract specific error details and map to Amplify error
-        let storageErrorOptional = StorageErrorHelper.map(errorType)
-
-        return storageErrorOptional ?? storageErrorString
+        return StorageErrorHelper.map(errorType) ?? defaultError
     }
 
-    static func mapTransferUtilityError(_ error: NSError) -> StorageErrorString {
-        // default error handling on NSError
-        let innerMessage = StorageErrorHelper.getInnerMessage(error)
-        let errorDescription = StorageErrorHelper.getErrorDescription(innerMessage: innerMessage)
-        let storageErrorString = (errorDescription: errorDescription, recoverySuggestion: "RecoverySuggestion")
+    static func mapTransferUtilityError(_ error: NSError) -> StorageError {
+        let defaultError = StorageErrorHelper.getDefaultError(error)
 
-        // Ensure it is a transferUtilityErrorDomain - maybe not needed
         guard error.domain == AWSS3TransferUtilityErrorDomain else {
-            return storageErrorString
+            return defaultError
         }
 
-        // Try to get specific error
         guard let errorType = AWSS3TransferUtilityErrorType.init(rawValue: error.code) else {
-            return storageErrorString
+            return defaultError
         }
 
-        // Extract specific error details and map to Amplify error
-        switch errorType {
-        case .clientError:
-            break
-        case .unknown:
-            break
-        case .redirection:
-            break
-        case .serverError:
-            break
-        case .localFileNotFound:
-            return StorageErrorConstants.missingFile
-        default:
-            break
-        }
-
-        return storageErrorString
+        return StorageErrorHelper.map(errorType) ?? defaultError
     }
 
-    static func getInnerMessage(_ error: NSError) -> String {
-        return error.localizedDescription // TODO: generate useful inner message
-    }
+    static func getDefaultError(_ error: NSError) -> StorageError {
+        let errorMessage = """
+                           Domain: [\(error.domain)
+                           Code: [\(error.code)
+                           LocalizedDescription: [\(error.localizedDescription)
+                           LocalizedFailureReason: [\(error.localizedFailureReason ?? "")
+                           LocalizedRecoverySuggestion: [\(error.localizedRecoverySuggestion ?? "")
+                           """
 
-    static func getErrorDescription(innerMessage: String) -> String {
-        return "The error is [" + innerMessage + "]"
+        return StorageError.unknown(errorMessage)
     }
 
     // swiftlint:disable cyclomatic_complexity
-    static func map(_ errorType: AWSServiceErrorType) -> StorageErrorString? {
+    static func map(_ errorType: AWSServiceErrorType) -> StorageError? {
         switch errorType {
         case .unknown:
             break
@@ -99,7 +84,8 @@ class StorageErrorHelper {
         case .authFailure:
             break
         case .accessDeniedException:
-            return StorageErrorConstants.accessDenied
+            return StorageError.accessDenied(StorageErrorConstants.accessDenied.errorDescription,
+                                             StorageErrorConstants.accessDenied.recoverySuggestion)
         case .unrecognizedClientException:
             break
         case .incompleteSignature:
@@ -109,7 +95,8 @@ class StorageErrorHelper {
         case .missingAuthenticationToken:
             break
         case .accessDenied:
-            return StorageErrorConstants.accessDenied
+            return StorageError.accessDenied(StorageErrorConstants.accessDenied.errorDescription,
+                                             StorageErrorConstants.accessDenied.recoverySuggestion)
         case .expiredToken:
             break
         case .invalidAccessKeyId:
@@ -119,7 +106,8 @@ class StorageErrorHelper {
         case .tokenRefreshRequired:
             break
         case .accessFailure:
-            return StorageErrorConstants.accessDenied
+            return StorageError.accessDenied(StorageErrorConstants.accessDenied.errorDescription,
+                                             StorageErrorConstants.accessDenied.recoverySuggestion)
         case .authMissingFailure:
             break
         case .throttling:
@@ -127,6 +115,26 @@ class StorageErrorHelper {
         case .throttlingException:
             break
         @unknown default:
+            break
+        }
+
+        return nil
+    }
+
+    static func map(_ errorType: AWSS3TransferUtilityErrorType) -> StorageError? {
+        switch errorType {
+        case .clientError:
+            break
+        case .unknown:
+            break
+        case .redirection:
+            break
+        case .serverError:
+            break
+        case .localFileNotFound:
+            return StorageError.localFileNotFound(StorageErrorConstants.localFileNotFound.errorDescription,
+                                                  StorageErrorConstants.localFileNotFound.recoverySuggestion)
+        default:
             break
         }
 
