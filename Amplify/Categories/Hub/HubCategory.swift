@@ -6,6 +6,7 @@
 //
 
 final public class HubCategory: Category {
+    /// Always `.hub`
     public let categoryType = CategoryType.hub
 
     var plugins = [PluginKey: HubCategoryPlugin]()

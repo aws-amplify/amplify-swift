@@ -6,6 +6,7 @@
 //
 
 extension HubCategory: HubCategoryClientBehavior {
+    /// :nodoc:
     public func dispatch(to channel: HubChannel, payload: HubPayload) {
         plugin.dispatch(to: channel, payload: payload)
     }

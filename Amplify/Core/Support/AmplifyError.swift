@@ -7,8 +7,10 @@
 
 import Foundation
 
+/// Convenience typealias to disambiguate positional parameters of AmplifyErrors
 public typealias ErrorDescription = String
 
+/// Convenience typealias to disambiguate positional parameters of AmplifyErrors
 public typealias RecoverySuggestion = String
 
 /// Amplify's philosophy is to expose friendly error messages to the customer that assist with debugging.

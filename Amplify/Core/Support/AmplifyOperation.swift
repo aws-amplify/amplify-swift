@@ -17,6 +17,8 @@ import Foundation
 /// Pausable/resumable tasks that do not require Hub dispatching should use AsynchronousOperation instead.
 open class AmplifyOperation<Request: AmplifyOperationRequest, InProcess, Completed,
 Error: AmplifyError>: AsynchronousOperation {
+
+    /// The concrete Request associated with this operation
     public typealias Request = Request
 
     // swiftlint:disable identifier_name
@@ -66,11 +68,15 @@ extension AmplifyOperation: CategoryTypeable { }
 extension AmplifyOperation: Cancellable { }
 
 public extension AmplifyOperation {
+    /// Convenience typealias defining the AsyncEvents dispatched by this operation
     typealias Event = AsyncEvent<InProcess, Completed, Error>
+
+    /// Convenience typealias for the `onEvent` callback submitted during Operation creation
     typealias EventHandler = (Event) -> Void
 
     /// Dispatches an event to the hub. Internally, creates an `AmplifyOperationContext` object from the
     /// operation's `id`, and `request`
+    /// - Parameter event: The AsyncEvent to dispatch to the hub as part of the HubPayload
     func dispatch(event: Event) {
         let channel = HubChannel(from: categoryType)
         let context = AmplifyOperationContext(operationId: id, request: request)
@@ -78,6 +84,7 @@ public extension AmplifyOperation {
         Amplify.Hub.dispatch(to: channel, payload: payload)
     }
 
+    /// Removes the listener that was registered during operation instantiation
     func removeListener() {
         guard let unsubscribeToken = unsubscribeToken else {
             return
@@ -86,7 +93,9 @@ public extension AmplifyOperation {
     }
 }
 
+/// Describes the parameters that are passed during the creation of an AmplifyOperation
 public protocol AmplifyOperationRequest {
+    /// The concrete Options type that adjusts the behavior of the request type
     associatedtype Options
 
     /// Options to adjust the behavior of this request, including plugin options
