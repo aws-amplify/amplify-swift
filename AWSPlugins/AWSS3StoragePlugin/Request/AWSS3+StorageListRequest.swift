@@ -13,11 +13,11 @@ extension StorageListRequest {
     func validate() -> StorageError? {
         if let error = StorageRequestUtils.validateTargetIdentityId(options.targetIdentityId,
                                                                     accessLevel: options.accessLevel) {
-            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
+            return error
         }
 
         if let error = StorageRequestUtils.validatePath(options.path) {
-            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
+            return error
         }
 
         return nil

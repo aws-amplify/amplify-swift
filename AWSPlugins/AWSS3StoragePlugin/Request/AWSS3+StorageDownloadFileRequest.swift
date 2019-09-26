@@ -13,7 +13,7 @@ extension StorageDownloadFileRequest {
     func validate() -> StorageError? {
         if let error = StorageRequestUtils.validateTargetIdentityId(options.targetIdentityId,
                                                                     accessLevel: options.accessLevel) {
-            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
+            return error
         }
 
         if let error = StorageRequestUtils.validateKey(key) {
