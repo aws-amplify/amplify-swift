@@ -80,7 +80,8 @@ public extension AmplifyOperation {
     func dispatch(event: Event) {
         let channel = HubChannel(from: categoryType)
         let context = AmplifyOperationContext(operationId: id, request: request)
-        let payload = HubPayload(event: id.uuidString, context: context, data: event)
+        let eventDescription = "\(type(of: self)).\(event.description)"
+        let payload = HubPayload(event: eventDescription, context: context, data: event)
         Amplify.Hub.dispatch(to: channel, payload: payload)
     }
 

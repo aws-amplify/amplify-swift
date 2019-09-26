@@ -25,3 +25,20 @@ public enum AsyncEvent<InProcess, Completed, Error: AmplifyError> {
     /// available in the AsyncEvent's `value`.
     case failed(Error)
 }
+
+extension AsyncEvent: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .unknown:
+            return "unknown"
+        case .notInProcess:
+            return "notInProcess"
+        case .inProcess(_):
+            return "inProcess"
+        case .completed(_):
+            return "completed"
+        case .failed(_):
+            return "failed"
+        }
+    }
+}
