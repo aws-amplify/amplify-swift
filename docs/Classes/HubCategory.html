@@ -699,6 +699,76 @@ If no plugin has been added for <code>key</code>, no action is taken, making thi
                 </li>
               </ul>
             </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Amplify11HubCategoryC6listen2to7onEventAA16UnsubscribeTokenVAA0A9OperationCyxq_q0_q1_G_yAA05AsyncG0Oyq_q0_q1_GctAA0aJ7RequestRzAA0A5ErrorR1_r2_lF"></a>
+                    <a name="//apple_ref/swift/Method/listen(to:onEvent:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify11HubCategoryC6listen2to7onEventAA16UnsubscribeTokenVAA0A9OperationCyxq_q0_q1_G_yAA05AsyncG0Oyq_q0_q1_GctAA0aJ7RequestRzAA0A5ErrorR1_r2_lF">listen(to:onEvent:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Convenience method to allow callers to listen to Hub events for a particular operation. Internally, the listener
+transforms the HubPayload into the Operation&rsquo;s expected AsyncEvent type, so callers may re-use their <code>onEvent</code>
+listeners</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">listen</span><span class="o">&lt;</span><span class="kt">Request</span><span class="p">:</span> <span class="kt"><a href="../Protocols/AmplifyOperationRequest.html">AmplifyOperationRequest</a></span><span class="p">,</span>
+    <span class="kt">InProcess</span><span class="p">,</span>
+    <span class="kt">Completed</span><span class="p">,</span>
+    <span class="kt">Error</span><span class="p">:</span> <span class="kt"><a href="../Protocols/AmplifyError.html">AmplifyError</a></span><span class="o">&gt;</span><span class="p">(</span><span class="n">to</span> <span class="nv">operation</span><span class="p">:</span> <span class="kt"><a href="../Classes/AmplifyOperation.html">AmplifyOperation</a></span><span class="o">&lt;</span><span class="kt">Request</span><span class="p">,</span> <span class="kt">InProcess</span><span class="p">,</span> <span class="kt">Completed</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;</span><span class="p">,</span>
+                         <span class="nv">onEvent</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt"><a href="../Classes/AmplifyOperation.html">AmplifyOperation</a></span><span class="o">&lt;</span><span class="kt">Request</span><span class="p">,</span> <span class="kt">InProcess</span><span class="p">,</span> <span class="kt">Completed</span><span class="p">,</span> <span class="kt">Error</span><span class="o">&gt;.</span><span class="kt">EventHandler</span><span class="p">)</span>
+    <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/UnsubscribeToken.html">UnsubscribeToken</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>operation</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The operation to listen to events for</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>onEvent</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The Operation-specific onEvent callback to be invoked when an AsyncEvent for that operation
+is received.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </section>
         </section>
         <section id="footer">
