@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import Amplify
 @testable import AWSS3StoragePlugin
 
 class AWSS3StoragePutRequestTests: XCTestCase {
@@ -18,12 +19,11 @@ class AWSS3StoragePutRequestTests: XCTestCase {
     let testMetadata: [String: String] = [:]
 
     func testValidateSuccessWithDataUploadSource() {
-        let request = AWSS3StoragePutRequest(accessLevel: .protected,
-                                             key: testKey,
-                                             uploadSource: .data(data: testData),
-                                             contentType: testContentType,
-                                             metadata: testMetadata,
-                                             pluginOptions: testPluginOptions)
+        let options = StoragePutRequest.Options(accessLevel: .protected,
+                                                metadata: testMetadata,
+                                                contentType: testContentType,
+                                                pluginOptions: testPluginOptions)
+        let request = StoragePutRequest(key: testKey, source: .data(testData), options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -35,12 +35,11 @@ class AWSS3StoragePutRequestTests: XCTestCase {
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: key.data(using: .utf8), attributes: nil)
-        let request = AWSS3StoragePutRequest(accessLevel: .protected,
-                                             key: testKey,
-                                             uploadSource: .file(file: fileURL),
-                                             contentType: testContentType,
-                                             metadata: testMetadata,
-                                             pluginOptions: testPluginOptions)
+        let options = StoragePutRequest.Options(accessLevel: .protected,
+                                                metadata: testMetadata,
+                                                contentType: testContentType,
+                                                pluginOptions: testPluginOptions)
+        let request = StoragePutRequest(key: testKey, source: .local(fileURL), options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -48,12 +47,11 @@ class AWSS3StoragePutRequestTests: XCTestCase {
     }
 
     func testValidateEmptyKeyError() {
-        let request = AWSS3StoragePutRequest(accessLevel: .protected,
-                                             key: "",
-                                             uploadSource: .data(data: testData),
-                                             contentType: testContentType,
-                                             metadata: testMetadata,
-                                             pluginOptions: testPluginOptions)
+        let options = StoragePutRequest.Options(accessLevel: .protected,
+                                                metadata: testMetadata,
+                                                contentType: testContentType,
+                                                pluginOptions: testPluginOptions)
+        let request = StoragePutRequest(key: "", source: .data(testData), options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -73,12 +71,11 @@ class AWSS3StoragePutRequestTests: XCTestCase {
     }
 
     func testValidateEmptyContentTypeError() {
-        let request = AWSS3StoragePutRequest(accessLevel: .protected,
-                                             key: testKey,
-                                             uploadSource: .data(data: testData),
-                                             contentType: "",
-                                             metadata: testMetadata,
-                                             pluginOptions: testPluginOptions)
+        let options = StoragePutRequest.Options(accessLevel: .protected,
+                                                metadata: testMetadata,
+                                                contentType: "",
+                                                pluginOptions: testPluginOptions)
+        let request = StoragePutRequest(key: testKey, source: .data(testData), options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -99,12 +96,11 @@ class AWSS3StoragePutRequestTests: XCTestCase {
 
     func testValidateMetadataKeyIsInvalid() {
         let metadata = ["InvalidKeyNotLowerCase": "someValue"]
-        let request = AWSS3StoragePutRequest(accessLevel: .protected,
-                                             key: testKey,
-                                             uploadSource: .data(data: testData),
-                                             contentType: testContentType,
-                                             metadata: metadata,
-                                             pluginOptions: testPluginOptions)
+        let options = StoragePutRequest.Options(accessLevel: .protected,
+                                                metadata: metadata,
+                                                contentType: testContentType,
+                                                pluginOptions: testPluginOptions)
+        let request = StoragePutRequest(key: testKey, source: .data(testData), options: options)
 
         let storageErrorOptional = request.validate()
 

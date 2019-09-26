@@ -14,12 +14,9 @@ import AWSS3
 class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
 
     func testPutOperationValidationError() {
-        let request = AWSS3StoragePutRequest(accessLevel: .protected,
-                                             key: "",
-                                             uploadSource: UploadSource.data(data: testData),
-                                             contentType: nil,
-                                             metadata: nil,
-                                             pluginOptions: nil)
+        let options = StoragePutRequest.Options(accessLevel: .protected)
+        let request = StoragePutRequest(key: "", source: .data(testData), options: options)
+
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StoragePutOperation(request,
                                                  storageService: mockStorageService,
@@ -44,12 +41,10 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
 
     func testPutOperationGetIdentityIdError() {
         mockAuthService.getIdentityIdError = AuthError.identity("", "", "")
-        let request = AWSS3StoragePutRequest(accessLevel: .protected,
-                                             key: testKey,
-                                             uploadSource: UploadSource.data(data: testData),
-                                             contentType: nil,
-                                             metadata: nil,
-                                             pluginOptions: nil)
+        
+        let options = StoragePutRequest.Options(accessLevel: .protected)
+        let request = StoragePutRequest(key: testKey, source: .data(testData), options: options)
+
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StoragePutOperation(request,
                                                  storageService: mockStorageService,
@@ -74,12 +69,9 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
 
     func testPutOperationGetSizeForMissingFileError() {
         let url = URL(fileURLWithPath: "missingFile")
-        let request = AWSS3StoragePutRequest(accessLevel: .protected,
-                                             key: testKey,
-                                             uploadSource: UploadSource.file(file: url),
-                                             contentType: nil,
-                                             metadata: nil,
-                                             pluginOptions: nil)
+        let options = StoragePutRequest.Options(accessLevel: .protected)
+        let request = StoragePutRequest(key: testKey, source: .local(url), options: options)
+
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StoragePutOperation(request,
                                                  storageService: mockStorageService,
@@ -109,15 +101,15 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(())]
 
-        let expectedUploadSource = UploadSource.data(data: testData)
+        let expectedUploadSource = StoragePutRequest.Source.data(testData)
         let metadata = ["mykey": "Value"]
         let expectedMetadata = ["x-amz-meta-mykey": "Value"]
-        let request = AWSS3StoragePutRequest(accessLevel: .protected,
-                                             key: testKey,
-                                             uploadSource: expectedUploadSource,
-                                             contentType: testContentType,
-                                             metadata: metadata,
-                                             pluginOptions: nil)
+
+        let options = StoragePutRequest.Options(accessLevel: .protected,
+                                                metadata: metadata,
+                                                contentType: testContentType)
+        let request = StoragePutRequest(key: testKey, source: expectedUploadSource, options: options)
+
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
@@ -153,13 +145,11 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
             StorageEvent.inProcess(Progress()),
             StorageEvent.failed(StorageError.service("", ""))]
 
-        let expectedUploadSource = UploadSource.data(data: testData)
-        let request = AWSS3StoragePutRequest(accessLevel: .protected,
-                                             key: testKey,
-                                             uploadSource: expectedUploadSource,
-                                             contentType: nil,
-                                             metadata: nil,
-                                             pluginOptions: nil)
+        let expectedUploadSource = StoragePutRequest.Source.data(testData)
+
+        let options = StoragePutRequest.Options(accessLevel: .protected)
+        let request = StoragePutRequest(key: testKey, source: expectedUploadSource, options: options)
+
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let failInvoked = expectation(description: "failed was invoked on operation")
@@ -200,17 +190,17 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
             testLargeDataString += testLargeDataString
         }
         let testLargeData = testLargeDataString.data(using: .utf8)!
-        XCTAssertTrue(testLargeData.count > AWSS3StoragePutRequest.multiPartUploadSizeThreshold,
+        XCTAssertTrue(testLargeData.count > StoragePutRequest.Options.multiPartUploadSizeThreshold,
                       "Could not create data object greater than MultiPartUploadSizeThreshold")
-        let expectedUploadSource = UploadSource.data(data: testLargeData)
+        let expectedUploadSource = StoragePutRequest.Source.data(testLargeData)
         let metadata = ["mykey": "Value"]
         let expectedMetadata = ["x-amz-meta-mykey": "Value"]
-        let request = AWSS3StoragePutRequest(accessLevel: .protected,
-                                             key: testKey,
-                                             uploadSource: expectedUploadSource,
-                                             contentType: testContentType,
-                                             metadata: metadata,
-                                             pluginOptions: nil)
+
+        let options = StoragePutRequest.Options(accessLevel: .protected,
+                                                metadata: metadata,
+                                                contentType: testContentType)
+        let request = StoragePutRequest(key: testKey, source: expectedUploadSource, options: options)
+
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")

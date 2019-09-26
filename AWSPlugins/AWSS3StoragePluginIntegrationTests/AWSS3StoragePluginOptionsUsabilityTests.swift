@@ -23,9 +23,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         let completeInvoked = expectation(description: "Completed is invoked")
 
         let expires = 10
-        let options = StorageGetURLOptions(accessLevel: nil,
-                                           targetIdentityId: nil,
-                                           expires: expires)
+        let options = StorageGetURLRequest.Options(expires: expires)
         let operation = Amplify.Storage.getURL(key: key, options: options) { (event) in
             switch event {
             case .completed(let result):
@@ -46,7 +44,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
 
         let dataTaskCompleteInvoked = expectation(description: "Completion of retrieving data at URL is invoked")
         let task = URLSession.shared.dataTask(with: remoteURL) { (data, response, error) in
-            guard error == nil else {
+            if let error = error {
                 XCTFail("Failed to received data from url with error \(error)")
                 return
             }
@@ -72,7 +70,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
 
         let urlExpired = expectation(description: "Retrieving expired url should have bad response")
         let task2 = URLSession.shared.dataTask(with: remoteURL) { (_, response, error) in
-            guard error == nil else {
+            if let error = error {
                 XCTFail("Failed to received data from url with error \(error)")
                 return
             }
@@ -99,7 +97,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         let metadataKey = "metadatakey"
         let metadataValue = metadataKey + "Value"
         let metadata = [key: value, metadataKey: metadataValue]
-        let options = StoragePutOptions(accessLevel: nil, contentType: nil, metadata: metadata)
+        let options = StoragePutRequest.Options(metadata: metadata)
         let completeInvoked = expectation(description: "Completed is invoked")
 
         let operation = Amplify.Storage.put(key: key, data: data, options: options) { (event) in
@@ -151,14 +149,14 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         }
     }
 
-    func testPutLargeDataWithMetadata() {
-
-    }
-
-    func testPutWithContentType() {
-
-    }
-
+//    func testPutLargeDataWithMetadata() {
+//        XCTFail("Not yet implemented")
+//    }
+//
+//    func testPutWithContentType() {
+//        XCTFail("Not yet implemented")
+//    }
+//
 //    func testPutWithTags() {
 //        XCTFail("Not yet implemented")
 //    }

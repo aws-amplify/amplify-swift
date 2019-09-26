@@ -24,21 +24,17 @@ extension AWSS3StoragePlugin {
     ///   - onEvent: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
     public func getURL(key: String,
-                       options: StorageGetURLOptions?,
-                       onEvent: StorageGetURLEventHandler?) -> StorageGetURLOperation {
-
-        let request = AWSS3StorageGetURLRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
-                                                targetIdentityId: options?.targetIdentityId,
-                                                key: key,
-                                                expires: options?.expires,
-                                                pluginOptions: options?.pluginOptions)
-
+                       options: StorageGetURLRequest.Options?,
+                       onEvent: StorageGetURLOperation.EventHandler?) -> StorageGetURLOperation {
+        let options = options ?? StorageGetURLRequest.Options()
+        let request = StorageGetURLRequest(key: key, options: options)
         let getURLOperation = AWSS3StorageGetURLOperation(request,
                                                           storageService: storageService,
                                                           authService: authService,
                                                           onEvent: onEvent)
 
         queue.addOperation(getURLOperation)
+        
         return getURLOperation
     }
 
@@ -53,20 +49,17 @@ extension AWSS3StoragePlugin {
     ///   - onEvent: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
     public func getData(key: String,
-                        options: StorageGetDataOptions?,
-                        onEvent: StorageGetDataEventHandler?) -> StorageGetDataOperation {
-
-        let request = AWSS3StorageGetDataRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
-                                                 targetIdentityId: options?.targetIdentityId,
-                                                 key: key,
-                                                 pluginOptions: options?.pluginOptions)
-
+                        options: StorageGetDataRequest.Options?,
+                        onEvent: StorageGetDataOperation.EventHandler?) -> StorageGetDataOperation {
+        let options = options ?? StorageGetDataRequest.Options()
+        let request = StorageGetDataRequest(key: key, options: options)
         let getDataOperation = AWSS3StorageGetDataOperation(request,
-                                                        storageService: storageService,
-                                                        authService: authService,
-                                                        onEvent: onEvent)
+                                                            storageService: storageService,
+                                                            authService: authService,
+                                                            onEvent: onEvent)
 
         queue.addOperation(getDataOperation)
+
         return getDataOperation
     }
 
@@ -83,21 +76,17 @@ extension AWSS3StoragePlugin {
     /// - Returns: An operation object representing the work to be done.
     public func downloadFile(key: String,
                              local: URL,
-                             options: StorageDownloadFileOptions?,
-                             onEvent: StorageDownloadFileEventHandler?) -> StorageDownloadFileOperation {
-
-        let request = AWSS3StorageDownloadFileRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
-                                                      targetIdentityId: options?.targetIdentityId,
-                                                      key: key,
-                                                      local: local,
-                                                      pluginOptions: options?.pluginOptions)
-
+                             options: StorageDownloadFileRequest.Options?,
+                             onEvent: StorageDownloadFileOperation.EventHandler?) -> StorageDownloadFileOperation {
+        let options = options ?? StorageDownloadFileRequest.Options()
+        let request = StorageDownloadFileRequest(key: key, local: local, options: options)
         let downloadFileOperation = AWSS3StorageDownloadFileOperation(request,
-                                                             storageService: storageService,
-                                                             authService: authService,
-                                                             onEvent: onEvent)
+                                                                      storageService: storageService,
+                                                                      authService: authService,
+                                                                      onEvent: onEvent)
 
         queue.addOperation(downloadFileOperation)
+
         return downloadFileOperation
     }
 
@@ -114,16 +103,10 @@ extension AWSS3StoragePlugin {
     /// - Returns: An operation object representing the work to be done.
     public func put(key: String,
                     data: Data,
-                    options: StoragePutOptions?,
-                    onEvent: StoragePutEventHandler?) -> StoragePutOperation {
-
-        let request = AWSS3StoragePutRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
-                                             key: key,
-                                             uploadSource: .data(data: data),
-                                             contentType: options?.contentType,
-                                             metadata: options?.metadata,
-                                             pluginOptions: options?.pluginOptions)
-
+                    options: StoragePutRequest.Options?,
+                    onEvent: StoragePutOperation.EventHandler?) -> StoragePutOperation {
+        let options = options ?? StoragePutRequest.Options()
+        let request = StoragePutRequest(key: key, source: .data(data), options: options)
         return put(request, onEvent: onEvent)
     }
 
@@ -140,16 +123,10 @@ extension AWSS3StoragePlugin {
     /// - Returns: An operation object representing the work to be done.
     public func put(key: String,
                     local: URL,
-                    options: StoragePutOptions?,
-                    onEvent: StoragePutEventHandler?) -> StoragePutOperation {
-
-        let request = AWSS3StoragePutRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
-                                             key: key,
-                                             uploadSource: .file(file: local),
-                                             contentType: options?.contentType,
-                                             metadata: options?.metadata,
-                                             pluginOptions: options?.pluginOptions)
-
+                    options: StoragePutRequest.Options?,
+                    onEvent: StoragePutOperation.EventHandler?) -> StoragePutOperation {
+        let options = options ?? StoragePutRequest.Options()
+        let request = StoragePutRequest(key: key, source: .local(local), options: options)
         return put(request, onEvent: onEvent)
     }
 
@@ -164,15 +141,15 @@ extension AWSS3StoragePlugin {
     ///   - onEvent: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
     public func remove(key: String,
-                       options: StorageRemoveOptions?,
-                       onEvent: StorageRemoveEventHandler?) -> StorageRemoveOperation {
-        let request = AWSS3StorageRemoveRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
-                                                key: key,
-                                                pluginOptions: options?.pluginOptions)
+                       options: StorageRemoveRequest.Options?,
+                       onEvent: StorageRemoveOperation.EventHandler?) -> StorageRemoveOperation {
+        let options = options ?? StorageRemoveRequest.Options()
+        let request = StorageRemoveRequest(key: key, options: options)
         let removeOperation = AWSS3StorageRemoveOperation(request,
                                                           storageService: storageService,
                                                           authService: authService,
                                                           onEvent: onEvent)
+
         queue.addOperation(removeOperation)
 
         return removeOperation
@@ -187,15 +164,15 @@ extension AWSS3StoragePlugin {
     ///   - options: Additional parameters to specify API behavior.
     ///   - onEvent: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
-    public func list(options: StorageListOptions?, onEvent: StorageListEventHandler?) -> StorageListOperation {
-        let request = AWSS3StorageListRequest(accessLevel: options?.accessLevel ?? defaultAccessLevel,
-                                              targetIdentityId: options?.targetIdentityId,
-                                              path: options?.path,
-                                              pluginOptions: options?.pluginOptions)
+    public func list(options: StorageListRequest.Options?,
+                     onEvent: StorageListOperation.EventHandler?) -> StorageListOperation {
+        let options = options ?? StorageListRequest.Options()
+        let request = StorageListRequest(options: options)
         let listOperation = AWSS3StorageListOperation(request,
                                                       storageService: storageService,
                                                       authService: authService,
                                                       onEvent: onEvent)
+
         queue.addOperation(listOperation)
 
         return listOperation
@@ -213,12 +190,14 @@ extension AWSS3StoragePlugin {
     ///
     /// Constructs an operation to perform the work, and adds it to the OperationQueue to perform the work
     /// asychronously.
-    private func put(_ request: AWSS3StoragePutRequest, onEvent: StoragePutEventHandler?) -> StoragePutOperation {
+    private func put(_ request: StoragePutRequest,
+                     onEvent: StoragePutOperation.EventHandler?) -> StoragePutOperation {
 
         let putOperation = AWSS3StoragePutOperation(request,
                                                     storageService: storageService,
                                                     authService: authService,
                                                     onEvent: onEvent)
+
         queue.addOperation(putOperation)
 
         return putOperation

@@ -14,25 +14,23 @@ import AWSS3
 class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
 
     func testListOperationValidationError() {
-        let request = AWSS3StorageListRequest(accessLevel: .public,
-                                              targetIdentityId: nil,
-                                              path: "",
-                                              pluginOptions: nil)
+        let options = StorageListRequest.Options(path: "")
+        let request = StorageListRequest(options: options)
 
-         let failedInvoked = expectation(description: "failed was invoked on operation")
+        let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
-                                                 storageService: mockStorageService,
-                                                 authService: mockAuthService) { (event) in
-            switch event {
-            case .failed(let error):
-                guard case .validation = error else {
-                    XCTFail("Should have failed with validation error")
-                    return
-                }
-                failedInvoked.fulfill()
-            default:
-                XCTFail("Should have received failed event")
-            }
+                                                  storageService: mockStorageService,
+                                                  authService: mockAuthService) { (event) in
+                                                    switch event {
+                                                    case .failed(let error):
+                                                        guard case .validation = error else {
+                                                            XCTFail("Should have failed with validation error")
+                                                            return
+                                                        }
+                                                        failedInvoked.fulfill()
+                                                    default:
+                                                        XCTFail("Should have received failed event")
+                                                    }
         }
 
         operation.start()
@@ -43,25 +41,25 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
 
     func testListOperationGetIdentityIdError() {
         mockAuthService.getIdentityIdError = AuthError.identity("", "", "")
-        let request = AWSS3StorageListRequest(accessLevel: .public,
-                                              targetIdentityId: nil,
-                                              path: testPath,
-                                              pluginOptions: nil)
+        
+        let options = StorageListRequest.Options(path: testPath)
+        let request = StorageListRequest(options: options)
+
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
-                                                 storageService: mockStorageService,
-                                                 authService: mockAuthService) { (event) in
-            switch event {
-            case .failed(let error):
-                guard case .authError = error else {
-                    XCTFail("Should have failed with authError")
-                    return
-                }
-                failedInvoked.fulfill()
-            default:
-                XCTFail("Should have received failed event")
-            }
-        }
+                                                  storageService: mockStorageService,
+                                                  authService: mockAuthService) { (event) in
+                                                      switch event {
+                                                      case .failed(let error):
+                                                          guard case .authError = error else {
+                                                              XCTFail("Should have failed with authError")
+                                                              return
+                                                          }
+                                                          failedInvoked.fulfill()
+                                                      default:
+                                                          XCTFail("Should have received failed event")
+                                                      }
+                                                  }
 
         operation.start()
 
@@ -71,21 +69,20 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
 
     func testListOperationListObjects() {
         mockStorageService.storageServiceListEvents = [StorageEvent.completed(StorageListResult(keys: []))]
-        let request = AWSS3StorageListRequest(accessLevel: .public,
-                                              targetIdentityId: nil,
-                                              path: testPath,
-                                              pluginOptions: nil)
+        let options = StorageListRequest.Options(path: testPath)
+        let request = StorageListRequest(options: options)
+
         let expectedPrefix = StorageAccessLevel.public.rawValue + "/"
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
-                                                 storageService: mockStorageService,
-                                                 authService: mockAuthService) { (event) in
-            switch event {
-            case .completed:
-                completeInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event invoked on operation")
-            }
+                                                  storageService: mockStorageService,
+                                                  authService: mockAuthService) { (event) in
+                                                    switch event {
+                                                    case .completed:
+                                                        completeInvoked.fulfill()
+                                                    default:
+                                                        XCTFail("Unexpected event invoked on operation")
+                                                    }
         }
 
         operation.start()
@@ -97,21 +94,20 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
 
     func testListOperationListObjectsFail() {
         mockStorageService.storageServiceListEvents = [StorageEvent.failed(StorageError.service("", ""))]
-        let request = AWSS3StorageListRequest(accessLevel: .public,
-                                              targetIdentityId: nil,
-                                              path: testPath,
-                                              pluginOptions: nil)
+        let options = StorageListRequest.Options(path: testPath)
+        let request = StorageListRequest(options: options)
+
         let expectedPrefix = StorageAccessLevel.public.rawValue + "/"
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
                                                   storageService: mockStorageService,
                                                   authService: mockAuthService) { (event) in
-            switch event {
-            case .failed:
-                failedInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event invoked on operation")
-            }
+                                                    switch event {
+                                                    case .failed:
+                                                        failedInvoked.fulfill()
+                                                    default:
+                                                        XCTFail("Unexpected event invoked on operation")
+                                                    }
         }
 
         operation.start()
@@ -123,21 +119,22 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
 
     func testListOperationListObjectsForTargetIdentityId() {
         mockStorageService.storageServiceListEvents = [StorageEvent.completed(StorageListResult(keys: []))]
-        let request = AWSS3StorageListRequest(accessLevel: .protected,
-                                              targetIdentityId: testTargetIdentityId,
-                                              path: testPath,
-                                              pluginOptions: nil)
+        let options = StorageListRequest.Options(accessLevel: .protected,
+                                                 targetIdentityId: testTargetIdentityId,
+                                                 path: testPath)
+        let request = StorageListRequest(options: options)
+
         let expectedPrefix = StorageAccessLevel.protected.rawValue + "/" + testTargetIdentityId + "/"
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
                                                   storageService: mockStorageService,
                                                   authService: mockAuthService) { (event) in
-            switch event {
-            case .completed:
-                completeInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event invoked on operation")
-            }
+                                                    switch event {
+                                                    case .completed:
+                                                        completeInvoked.fulfill()
+                                                    default:
+                                                        XCTFail("Unexpected event invoked on operation")
+                                                    }
         }
 
         operation.start()

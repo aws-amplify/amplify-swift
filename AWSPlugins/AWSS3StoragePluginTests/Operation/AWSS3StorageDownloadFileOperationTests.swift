@@ -14,11 +14,9 @@ import AWSS3
 class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
 
     func testDownloadFileOperationValidationError() {
-        let request = AWSS3StorageDownloadFileRequest(accessLevel: .public,
-                                                      targetIdentityId: nil,
-                                                      key: "",
-                                                      local: testURL,
-                                                      pluginOptions: nil)
+        let request = StorageDownloadFileRequest(key: "",
+                                                 local: testURL,
+                                                 options: StorageDownloadFileRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageDownloadFileOperation(request,
                                                           storageService: mockStorageService,
@@ -42,11 +40,9 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
 
     func testDownloadFileOperationGetIdentityIdError() {
         mockAuthService.getIdentityIdError = AuthError.identity("", "", "")
-        let request = AWSS3StorageDownloadFileRequest(accessLevel: .public,
-                                                      targetIdentityId: nil,
-                                                      key: testKey,
-                                                      local: testURL,
-                                                      pluginOptions: nil)
+        let request = StorageDownloadFileRequest(key: testKey,
+                                                 local: testURL,
+                                                 options: StorageDownloadFileRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageDownloadFileOperation(request,
                                                           storageService: mockStorageService,
@@ -75,11 +71,9 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(nil)]
         let url = URL(fileURLWithPath: "path")
-        let request = AWSS3StorageDownloadFileRequest(accessLevel: .public,
-                                                      targetIdentityId: nil,
-                                                      key: testKey,
-                                                      local: testURL,
-                                                      pluginOptions: nil)
+        let request = StorageDownloadFileRequest(key: testKey,
+                                                 local: testURL,
+                                                 options: StorageDownloadFileRequest.Options())
         let expectedServiceKey = StorageAccessLevel.public.rawValue + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
@@ -109,11 +103,9 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
             StorageEvent.inProcess(Progress()),
             StorageEvent.failed(StorageError.service("", ""))]
         let url = URL(fileURLWithPath: "path")
-        let request = AWSS3StorageDownloadFileRequest(accessLevel: .public,
-                                                      targetIdentityId: nil,
-                                                      key: testKey,
-                                                      local: testURL,
-                                                      pluginOptions: nil)
+        let request = StorageDownloadFileRequest(key: testKey,
+                                                 local: testURL,
+                                                 options: StorageDownloadFileRequest.Options())
         let expectedServiceKey = StorageAccessLevel.public.rawValue + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let failedInvoked = expectation(description: "failed was invoked on operation")
@@ -143,11 +135,11 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(nil)]
         let url = URL(fileURLWithPath: "path")
-        let request = AWSS3StorageDownloadFileRequest(accessLevel: .protected,
-                                                      targetIdentityId: testTargetIdentityId,
-                                                      key: testKey,
-                                                      local: testURL,
-                                                      pluginOptions: nil)
+        let options = StorageDownloadFileRequest.Options(accessLevel: .protected,
+                                                         targetIdentityId: testTargetIdentityId)
+        let request = StorageDownloadFileRequest(key: testKey,
+                                                 local: testURL,
+                                                 options: options)
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testTargetIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
@@ -171,5 +163,5 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: url)
     }
 
-    // TODO: missing unit tets for pause resume and cancel. do we create a mock of the StorageTaskReference?
+    // TODO: missing unit tests for pause resume and cancel. do we create a mock of the StorageTaskReference?
 }

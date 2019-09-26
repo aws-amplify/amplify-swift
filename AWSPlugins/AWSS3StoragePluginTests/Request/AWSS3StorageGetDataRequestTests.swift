@@ -6,19 +6,20 @@
 //
 
 import XCTest
+import Amplify
 @testable import AWSS3StoragePlugin
 
-class AWSS3StorageGetDataRequestTests: XCTestCase {
+class StorageGetDataRequestTests: XCTestCase {
 
     let testTargetIdentityId = "TestTargetIdentityId"
     let testKey = "TestKey"
     let testPluginOptions: Any? = [:]
 
     func testValidateSuccess() {
-        let request = AWSS3StorageGetDataRequest(accessLevel: .protected,
-                                                 targetIdentityId: testTargetIdentityId,
-                                                 key: testKey,
-                                                 pluginOptions: testPluginOptions)
+        let options = StorageGetDataRequest.Options(accessLevel: .protected,
+                                                    targetIdentityId: testTargetIdentityId,
+                                                    pluginOptions: testPluginOptions)
+        let request = StorageGetDataRequest(key: testKey, options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -26,10 +27,10 @@ class AWSS3StorageGetDataRequestTests: XCTestCase {
     }
 
     func testValidateEmptyTargetIdentityIdError() {
-        let request = AWSS3StorageGetDataRequest(accessLevel: .protected,
-                                             targetIdentityId: "",
-                                             key: testKey,
-                                             pluginOptions: testPluginOptions)
+        let options = StorageGetDataRequest.Options(accessLevel: .protected,
+                                                    targetIdentityId: "",
+                                                    pluginOptions: testPluginOptions)
+        let request = StorageGetDataRequest(key: testKey, options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -49,10 +50,10 @@ class AWSS3StorageGetDataRequestTests: XCTestCase {
     }
 
     func testValidateTargetIdentityIdWithPrivateAccessLevelError() {
-        let request = AWSS3StorageGetDataRequest(accessLevel: .private,
-                                                 targetIdentityId: testTargetIdentityId,
-                                                 key: testKey,
-                                                 pluginOptions: testPluginOptions)
+        let options = StorageGetDataRequest.Options(accessLevel: .private,
+                                                    targetIdentityId: testTargetIdentityId,
+                                                    pluginOptions: testPluginOptions)
+        let request = StorageGetDataRequest(key: testKey, options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -72,10 +73,10 @@ class AWSS3StorageGetDataRequestTests: XCTestCase {
     }
 
     func testValidateKeyIsEmptyError() {
-        let request = AWSS3StorageGetDataRequest(accessLevel: .protected,
-                                                 targetIdentityId: testTargetIdentityId,
-                                                 key: "",
-                                                 pluginOptions: testPluginOptions)
+        let options = StorageGetDataRequest.Options(accessLevel: .protected,
+                                                    targetIdentityId: testTargetIdentityId,
+                                                    pluginOptions: testPluginOptions)
+        let request = StorageGetDataRequest(key: "", options: options)
 
         let storageErrorOptional = request.validate()
 

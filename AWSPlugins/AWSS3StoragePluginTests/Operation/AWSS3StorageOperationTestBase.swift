@@ -27,28 +27,15 @@ class AWSS3StorageOperationTestBase: XCTestCase {
     let testURL = URL(fileURLWithPath: "path")
 
     override func setUp() {
-        let hubConfig = HubCategoryConfiguration(
-            plugins: ["MockHubCategoryPlugin": true]
-        )
-        hubPlugin = MockHubCategoryPlugin()
-        let mockAmplifyConfig = AmplifyConfiguration(hub: hubConfig)
+        let mockAmplifyConfig = AmplifyConfiguration()
 
         do {
-            try Amplify.add(plugin: hubPlugin)
             try Amplify.configure(mockAmplifyConfig)
         } catch let error as AmplifyError {
             XCTFail("setUp failed with error: \(error); \(error.errorDescription); \(error.recoverySuggestion)")
         } catch {
             XCTFail("setup failed with unknown error")
         }
-
-        //        let methodWasInvokedOnHubPlugin = expectation(
-        //            description: "method was invoked on hub plugin")
-        //        hubPlugin.listeners.append { message in
-        //            if message == "dispatch(to:payload:)" {
-        //                methodWasInvokedOnHubPlugin.fulfill()
-        //            }
-        //        }
 
         mockStorageService = MockAWSS3StorageService()
         mockAuthService = MockAWSAuthService()

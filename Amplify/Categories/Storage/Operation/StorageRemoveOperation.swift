@@ -5,6 +5,38 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-public protocol StorageRemoveOperation: AmplifyOperation<Void, String, StorageError> {
+public protocol StorageRemoveOperation: AmplifyOperation<StorageRemoveRequest, Void, String, StorageError> {
+}
+
+public struct StorageRemoveRequest: AmplifyOperationRequest {
+    /// The unique identifier for the object in storage
+    public let key: String
+
+    /// Options to adjust the behavior of this request, including plugin-options
+    public let options: Options
+
+    public init(key: String, options: Options) {
+        self.key = key
+        self.options = options
+    }
+}
+
+public extension StorageRemoveRequest {
+    /// Options to adjust the behavior of this request, including plugin-options
+    struct Options {
+        /// Access level of the storage system. Defaults to `public`
+        public let accessLevel: StorageAccessLevel
+
+        /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
+        /// a way to utilize the underlying storage system's functionality. See plugin documentation for expected
+        /// key/values
+        public let pluginOptions: Any?
+
+        // TODO: Is `public` the correct default?
+        public init(accessLevel: StorageAccessLevel = .public,
+                    pluginOptions: Any? = nil) {
+            self.accessLevel = accessLevel
+            self.pluginOptions = pluginOptions
+        }
+    }
 }

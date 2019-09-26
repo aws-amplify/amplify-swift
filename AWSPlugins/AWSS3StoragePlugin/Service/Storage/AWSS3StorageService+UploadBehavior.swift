@@ -14,7 +14,7 @@ public typealias UploadTaskCreatedHandler = (AWSTask<AWSS3TransferUtilityUploadT
 extension AWSS3StorageService {
 
     func upload(serviceKey: String,
-                uploadSource: UploadSource,
+                uploadSource: StoragePutRequest.Source,
                 contentType: String?,
                 metadata: [String: String]?,
                 onEvent: @escaping StorageServiceUploadEventHandler) {
@@ -44,7 +44,7 @@ extension AWSS3StorageService {
                                        expression: expression,
                                        completionHandler: onUploadCompletedHandler)
                 .continueWith(block: uploadTaskCreatedHandler)
-        case .file(let fileURL):
+        case .local(let fileURL):
             transferUtility.uploadFile(fileURL: fileURL,
                                        bucket: bucket,
                                        key: serviceKey,

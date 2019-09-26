@@ -47,7 +47,7 @@ class DefaultHubPluginTests: XCTestCase {
     /// When: I invoke listen()
     /// Then: I receive an unsubscription token
     func testDefaultPluginListen() throws {
-        let unsubscribe = plugin.listen(to: .storage, filteringWith: nil) { _ in }
+        let unsubscribe = plugin.listen(to: .storage, filteringBy: nil) { _ in }
         XCTAssertNotNil(unsubscribe)
     }
 
@@ -56,7 +56,7 @@ class DefaultHubPluginTests: XCTestCase {
     /// Then: My listener is invoked with the message
     func testDefaultPluginDispatches() throws {
         let messageReceived = expectation(description: "Message was received")
-        let token = plugin.listen(to: .storage, filteringWith: nil) { _ in
+        let token = plugin.listen(to: .storage, filteringBy: nil) { _ in
             messageReceived.fulfill()
         }
 
@@ -78,7 +78,7 @@ class DefaultHubPluginTests: XCTestCase {
         unexpectedMessageReceived.isInverted = true
 
         var messageHasBeenReceived = false
-        let unsubscribeToken = plugin.listen(to: .storage, filteringWith: nil) { _ in
+        let unsubscribeToken = plugin.listen(to: .storage, filteringBy: nil) { _ in
             if !messageHasBeenReceived {
                 messageHasBeenReceived.toggle()
                 expectedMessageReceived.fulfill()
@@ -87,7 +87,9 @@ class DefaultHubPluginTests: XCTestCase {
             }
         }
 
-        guard try DefaultHubPluginTestHelpers.waitForListener(with: unsubscribeToken, plugin: plugin, timeout: 0.5) else {
+        guard try DefaultHubPluginTestHelpers.waitForListener(with: unsubscribeToken,
+                                                              plugin: plugin,
+                                                              timeout: 0.5) else {
             XCTFail("Token with \(unsubscribeToken.id) was not registered")
             return
         }
@@ -112,7 +114,7 @@ class DefaultHubPluginTests: XCTestCase {
     func testMessagesAreDeliveredOnlyToSpecifiedChannel() {
         let messageShouldNotBeReceived = expectation(description: "Message should not be received")
         messageShouldNotBeReceived.isInverted = true
-        _ = plugin.listen(to: .storage, filteringWith: nil) { _ in
+        _ = plugin.listen(to: .storage, filteringBy: nil) { _ in
             messageShouldNotBeReceived.fulfill()
         }
         plugin.dispatch(to: .custom("DifferentChannel"), payload: HubPayload(event: "TEST_EVENT"))

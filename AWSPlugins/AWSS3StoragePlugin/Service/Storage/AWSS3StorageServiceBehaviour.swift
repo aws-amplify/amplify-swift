@@ -44,13 +44,13 @@ protocol AWSS3StorageServiceBehaviour {
                          onEvent: @escaping StorageServiceGetPreSignedURLEventHandler)
 
     func upload(serviceKey: String,
-                uploadSource: UploadSource,
+                uploadSource: StoragePutRequest.Source,
                 contentType: String?,
                 metadata: [String: String]?,
                 onEvent: @escaping StorageServiceUploadEventHandler)
 
     func multiPartUpload(serviceKey: String,
-                         uploadSource: UploadSource,
+                         uploadSource: StoragePutRequest.Source,
                          contentType: String?,
                          metadata: [String: String]?,
                          onEvent: @escaping StorageServiceMultiPartUploadEventHandler)

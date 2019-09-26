@@ -6,9 +6,10 @@
 //
 
 import XCTest
+import Amplify
 @testable import AWSS3StoragePlugin
 
-class AWSS3StorageDownloadFileRequestTests: XCTestCase {
+class StorageDownloadFileRequestTests: XCTestCase {
 
     let testTargetIdentityId = "TestTargetIdentityId"
     let testKey = "TestKey"
@@ -16,11 +17,10 @@ class AWSS3StorageDownloadFileRequestTests: XCTestCase {
     let testURL = URL(fileURLWithPath: "path")
 
     func testValidateSuccess() {
-        let request = AWSS3StorageDownloadFileRequest(accessLevel: .protected,
-                                                      targetIdentityId: testTargetIdentityId,
-                                                      key: testKey,
-                                                      local: testURL,
-                                                      pluginOptions: testPluginOptions)
+        let options = StorageDownloadFileRequest.Options(accessLevel: .protected,
+                                                         targetIdentityId: testTargetIdentityId,
+                                                         pluginOptions: testPluginOptions)
+        let request = StorageDownloadFileRequest(key: testKey, local: testURL, options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -28,11 +28,10 @@ class AWSS3StorageDownloadFileRequestTests: XCTestCase {
     }
 
     func testValidateEmptyTargetIdentityIdError() {
-        let request = AWSS3StorageDownloadFileRequest(accessLevel: .protected,
-                                                      targetIdentityId: "",
-                                                      key: testKey,
-                                                      local: testURL,
-                                                      pluginOptions: testPluginOptions)
+        let options = StorageDownloadFileRequest.Options(accessLevel: .protected,
+                                                         targetIdentityId: "",
+                                                         pluginOptions: testPluginOptions)
+        let request = StorageDownloadFileRequest(key: testKey, local: testURL, options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -52,11 +51,10 @@ class AWSS3StorageDownloadFileRequestTests: XCTestCase {
     }
 
     func testValidateTargetIdentityIdWithPrivateAccessLevelError() {
-        let request = AWSS3StorageDownloadFileRequest(accessLevel: .private,
-                                                      targetIdentityId: testTargetIdentityId,
-                                                      key: testKey,
-                                                      local: testURL,
-                                                      pluginOptions: testPluginOptions)
+        let options = StorageDownloadFileRequest.Options(accessLevel: .private,
+                                                         targetIdentityId: testTargetIdentityId,
+                                                         pluginOptions: testPluginOptions)
+        let request = StorageDownloadFileRequest(key: testKey, local: testURL, options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -76,11 +74,10 @@ class AWSS3StorageDownloadFileRequestTests: XCTestCase {
     }
 
     func testValidateKeyIsEmptyError() {
-        let request = AWSS3StorageDownloadFileRequest(accessLevel: .protected,
-                                                      targetIdentityId: testTargetIdentityId,
-                                                      key: "",
-                                                      local: testURL,
-                                                      pluginOptions: testPluginOptions)
+        let options = StorageDownloadFileRequest.Options(accessLevel: .protected,
+                                                         targetIdentityId: testTargetIdentityId,
+                                                         pluginOptions: testPluginOptions)
+        let request = StorageDownloadFileRequest(key: "", local: testURL, options: options)
 
         let storageErrorOptional = request.validate()
 

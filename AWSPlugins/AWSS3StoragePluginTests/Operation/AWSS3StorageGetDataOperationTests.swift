@@ -14,10 +14,7 @@ import AWSS3
 class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
 
     func testGetDataOperationValidationError() {
-        let request = AWSS3StorageGetDataRequest(accessLevel: .public,
-                                                 targetIdentityId: nil,
-                                                 key: "",
-                                                 pluginOptions: nil)
+        let request = StorageGetDataRequest(key: "", options: StorageGetDataRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageGetDataOperation(request,
                                                      storageService: mockStorageService,
@@ -41,10 +38,7 @@ class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
 
     func testGetDataOperationGetIdentityIdError() {
         mockAuthService.getIdentityIdError = AuthError.identity("", "", "")
-        let request = AWSS3StorageGetDataRequest(accessLevel: .public,
-                                                 targetIdentityId: nil,
-                                                 key: testKey,
-                                                 pluginOptions: nil)
+        let request = StorageGetDataRequest(key: testKey, options: StorageGetDataRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageGetDataOperation(request,
                                                      storageService: mockStorageService,
@@ -72,10 +66,7 @@ class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
             StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(Data())]
-        let request = AWSS3StorageGetDataRequest(accessLevel: .public,
-                                                 targetIdentityId: nil,
-                                                 key: testKey,
-                                                 pluginOptions: nil)
+        let request = StorageGetDataRequest(key: testKey, options: StorageGetDataRequest.Options())
         let expectedServiceKey = StorageAccessLevel.public.rawValue + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
@@ -104,10 +95,7 @@ class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
             StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.failed(StorageError.service("", ""))]
-        let request = AWSS3StorageGetDataRequest(accessLevel: .public,
-                                                 targetIdentityId: nil,
-                                                 key: testKey,
-                                                 pluginOptions: nil)
+        let request = StorageGetDataRequest(key: testKey, options: StorageGetDataRequest.Options())
         let expectedServiceKey = StorageAccessLevel.public.rawValue + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let failInvoked = expectation(description: "fail was invoked on operation")
@@ -136,10 +124,9 @@ class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
             StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(Data())]
-        let request = AWSS3StorageGetDataRequest(accessLevel: .protected,
-                                                 targetIdentityId: testTargetIdentityId,
-                                                 key: testKey,
-                                                 pluginOptions: nil)
+        let options = StorageGetDataRequest.Options(accessLevel: .protected,
+                                                    targetIdentityId: testTargetIdentityId)
+        let request = StorageGetDataRequest(key: testKey, options: options)
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testTargetIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")

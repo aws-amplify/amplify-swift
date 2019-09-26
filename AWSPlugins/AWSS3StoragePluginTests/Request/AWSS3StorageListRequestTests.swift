@@ -6,19 +6,21 @@
 //
 
 import XCTest
+import Amplify
 @testable import AWSS3StoragePlugin
 
-class AWSS3StorageListRequestTests: XCTestCase {
+class StorageListRequestTests: XCTestCase {
 
     let testTargetIdentityId = "TestTargetIdentityId"
     let testPath = "TestPath"
     let testPluginOptions: Any? = [:]
 
     func testValidateSuccess() {
-        let request = AWSS3StorageListRequest(accessLevel: .protected,
-                                              targetIdentityId: testTargetIdentityId,
-                                              path: testPath,
-                                              pluginOptions: testPluginOptions)
+        let options = StorageListRequest.Options(accessLevel: .protected,
+                                                 targetIdentityId: testTargetIdentityId,
+                                                 path: testPath,
+                                                 pluginOptions: testPluginOptions)
+        let request = StorageListRequest(options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -26,10 +28,11 @@ class AWSS3StorageListRequestTests: XCTestCase {
     }
 
     func testValidateEmptyTargetIdentityIdError() {
-        let request = AWSS3StorageListRequest(accessLevel: .protected,
-                                              targetIdentityId: "",
-                                              path: testPath,
-                                              pluginOptions: testPluginOptions)
+        let options = StorageListRequest.Options(accessLevel: .protected,
+                                                 targetIdentityId: "",
+                                                 path: testPath,
+                                                 pluginOptions: testPluginOptions)
+        let request = StorageListRequest(options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -49,10 +52,11 @@ class AWSS3StorageListRequestTests: XCTestCase {
     }
 
     func testValidateTargetIdentityIdWithPrivateAccessLevelError() {
-        let request = AWSS3StorageListRequest(accessLevel: .private,
-                                              targetIdentityId: testTargetIdentityId,
-                                              path: testPath,
-                                              pluginOptions: testPluginOptions)
+        let options = StorageListRequest.Options(accessLevel: .private,
+                                                 targetIdentityId: testTargetIdentityId,
+                                                 path: testPath,
+                                                 pluginOptions: testPluginOptions)
+        let request = StorageListRequest(options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -72,10 +76,11 @@ class AWSS3StorageListRequestTests: XCTestCase {
     }
 
     func testValidateEmptyPathError() {
-        let request = AWSS3StorageListRequest(accessLevel: .protected,
-                                              targetIdentityId: testTargetIdentityId,
-                                              path: "",
-                                              pluginOptions: testPluginOptions)
+        let options = StorageListRequest.Options(accessLevel: .protected,
+                                                 targetIdentityId: testTargetIdentityId,
+                                                 path: "",
+                                                 pluginOptions: testPluginOptions)
+        let request = StorageListRequest(options: options)
 
         let storageErrorOptional = request.validate()
 

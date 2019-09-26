@@ -6,8 +6,7 @@
 //
 
 /// The high-level status of an AsyncEvent
-public enum AsyncEvent<InProcessType, CompletedType, ErrorType: AmplifyError> {
-
+public enum AsyncEvent<InProcess, Completed, Error: AmplifyError> {
     /// The status of the AsyncEvent is unknown
     case unknown
 
@@ -16,13 +15,30 @@ public enum AsyncEvent<InProcessType, CompletedType, ErrorType: AmplifyError> {
     case notInProcess
 
     /// The AsyncEvent is running.
-    case inProcess(InProcessType)
+    case inProcess(InProcess)
 
     /// The AsyncEvent is complete. No further status updates will be emitted for this event. Any result values will
     /// be available in the AsyncEvent's `value`
-    case completed(CompletedType)
+    case completed(Completed)
 
     /// The AsyncEvent failed. No further status updates will be emitted for this event. Any result values will be
     /// available in the AsyncEvent's `value`.
-    case failed(ErrorType)
+    case failed(Error)
+}
+
+extension AsyncEvent: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .unknown:
+            return "unknown"
+        case .notInProcess:
+            return "notInProcess"
+        case .inProcess:
+            return "inProcess"
+        case .completed:
+            return "completed"
+        case .failed:
+            return "failed"
+        }
+    }
 }

@@ -12,25 +12,20 @@ import AWSMobileClient
 
 // TODO: thread safety: everything has to be locked down
 // TODO verify no retain cycle
-public class AWSS3StorageGetURLOperation: AmplifyOperation<Void, URL, StorageError>,
+public class AWSS3StorageGetURLOperation: AmplifyOperation<StorageGetURLRequest, Void, URL, StorageError>,
     StorageGetURLOperation {
 
-    let request: AWSS3StorageGetURLRequest
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
-    let onEvent: ((AsyncEvent<Void, URL, StorageError>) -> Void)?
 
-    init(_ request: AWSS3StorageGetURLRequest,
+    init(_ request: StorageGetURLRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         onEvent: ((AsyncEvent<Void, CompletedType, ErrorType>) -> Void)?) {
+         onEvent: EventHandler?) {
 
-        self.request = request
         self.storageService = storageService
         self.authService = authService
-        self.onEvent = onEvent
-        super.init(categoryType: .storage)
-        // TODO pass onEvent to the Hub
+        super.init(categoryType: .storage, request: request, onEvent: onEvent)
     }
 
     override public func cancel() {
@@ -59,17 +54,17 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<Void, URL, StorageErr
             return
         }
 
-        let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.accessLevel,
+        let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.options.accessLevel,
                                                            identityId: identityId,
                                                            key: request.key,
-                                                           targetIdentityId: request.targetIdentityId)
+                                                           targetIdentityId: request.options.targetIdentityId)
 
         if isCancelled {
             finish()
             return
         }
 
-        storageService.getPreSignedURL(serviceKey: serviceKey, expires: request.expires) { [weak self] event in
+        storageService.getPreSignedURL(serviceKey: serviceKey, expires: request.options.expires) { [weak self] event in
             self?.onEventHandler(event: event)
         }
     }
@@ -89,13 +84,11 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<Void, URL, StorageErr
 
     private func dispatch(_ result: URL) {
         let asyncEvent = AsyncEvent<Void, URL, StorageError>.completed(result)
-        onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }
 
     private func dispatch(_ error: StorageError) {
         let asyncEvent = AsyncEvent<Void, URL, StorageError>.failed(error)
-        onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }
 }

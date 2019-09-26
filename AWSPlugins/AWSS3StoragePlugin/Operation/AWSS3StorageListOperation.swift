@@ -10,24 +10,20 @@ import Amplify
 import AWSS3
 import AWSMobileClient
 
-public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult, StorageError>,
+public class AWSS3StorageListOperation: AmplifyOperation<StorageListRequest, Void, StorageListResult, StorageError>,
     StorageListOperation {
 
-    let request: AWSS3StorageListRequest
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
-    let onEvent: ((AsyncEvent<Void, StorageListResult, StorageError>) -> Void)?
 
-    init(_ request: AWSS3StorageListRequest,
+    init(_ request: StorageListRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         onEvent: ((AsyncEvent<Void, CompletedType, ErrorType>) -> Void)?) {
+         onEvent: EventHandler?) {
 
-        self.request = request
         self.storageService = storageService
-        self.onEvent = onEvent
         self.authService = authService
-        super.init(categoryType: .storage)
+        super.init(categoryType: .storage, request: request, onEvent: onEvent)
     }
 
     override public func cancel() {
@@ -57,16 +53,17 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
             return
         }
 
-        let accessLevelPrefix = StorageRequestUtils.getAccessLevelPrefix(accessLevel: request.accessLevel,
-                                                                         identityId: identityId,
-                                                                         targetIdentityId: request.targetIdentityId)
+        let accessLevelPrefix = StorageRequestUtils
+            .getAccessLevelPrefix(accessLevel: request.options.accessLevel,
+                                  identityId: identityId,
+                                  targetIdentityId: request.options.targetIdentityId)
 
         if isCancelled {
             finish()
             return
         }
 
-        storageService.list(prefix: accessLevelPrefix, path: request.path) { [weak self] event in
+        storageService.list(prefix: accessLevelPrefix, path: request.options.path) { [weak self] event in
             self?.onEventHandler(event: event)
         }
     }
@@ -87,12 +84,10 @@ public class AWSS3StorageListOperation: AmplifyOperation<Void, StorageListResult
     private func dispatch(_ result: StorageListResult) {
         let asyncEvent = AsyncEvent<Void, StorageListResult, StorageError>.completed(result)
         dispatch(event: asyncEvent)
-        onEvent?(asyncEvent)
     }
 
     private func dispatch(_ error: StorageError) {
         let asyncEvent = AsyncEvent<Void, StorageListResult, StorageError>.failed(error)
-        onEvent?(asyncEvent)
         dispatch(event: asyncEvent)
     }
 }

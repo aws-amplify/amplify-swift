@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// AWS Amplify writes console logs through Logger. You can use Logger in your apps for the same purpose.
 final public class LoggingCategory: Category {
     public let categoryType = CategoryType.logging
 

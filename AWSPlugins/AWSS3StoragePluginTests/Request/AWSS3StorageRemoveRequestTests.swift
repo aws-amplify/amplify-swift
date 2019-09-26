@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import Amplify
 @testable import AWSS3StoragePlugin
 
 class AWSS3StorageRemoveRequestTests: XCTestCase {
@@ -18,9 +19,9 @@ class AWSS3StorageRemoveRequestTests: XCTestCase {
     let testMetadata: [String: String] = [:]
 
     func testValidateSuccess() {
-        let request = AWSS3StorageRemoveRequest(accessLevel: .protected,
-                                                key: testKey,
-                                                pluginOptions: testPluginOptions)
+        let options = StorageRemoveRequest.Options(accessLevel: .protected,
+                                                   pluginOptions: testPluginOptions)
+        let request = StorageRemoveRequest(key: testKey, options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -28,9 +29,9 @@ class AWSS3StorageRemoveRequestTests: XCTestCase {
     }
 
     func testValidateEmptyKeyError() {
-        let request = AWSS3StorageRemoveRequest(accessLevel: .protected,
-                                                key: "",
-                                                pluginOptions: testPluginOptions)
+        let options = StorageRemoveRequest.Options(accessLevel: .protected,
+                                                   pluginOptions: testPluginOptions)
+        let request = StorageRemoveRequest(key: "", options: options)
 
         let storageErrorOptional = request.validate()
 

@@ -48,9 +48,10 @@ extension StorageRequestUtils {
         return serviceMetadata
     }
 
-    static func getSize(_ uploadSource: UploadSource) -> Result<UInt64, StorageError> {
+    // TODO: This should be a throwing method; we should reserve Result for async operations
+    static func getSize(_ uploadSource: StoragePutRequest.Source) -> Result<UInt64, StorageError> {
         switch uploadSource {
-        case .file(let file):
+        case .local(let file):
             if let error = validateFileExists(file) {
                 return .failure(StorageError.localFileNotFound(error.errorDescription, error.recoverySuggestion))
             }

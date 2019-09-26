@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// The Analytics category enables you to collect analytics data for your app.
 final public class AnalyticsCategory: Category {
     public let categoryType = CategoryType.analytics
 
