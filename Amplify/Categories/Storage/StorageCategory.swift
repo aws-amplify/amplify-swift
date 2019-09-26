@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// AWS Amplify Storage module provides a simple mechanism for managing user content for your app in public, protected
+/// or private storage buckets.
 final public class StorageCategory: Category {
     public let categoryType = CategoryType.storage
 

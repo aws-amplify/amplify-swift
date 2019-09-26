@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// The API category provides a solution for making HTTP requests to REST and GraphQL endpoints.
 final public class APICategory: Category {
     public let categoryType = CategoryType.api
 
