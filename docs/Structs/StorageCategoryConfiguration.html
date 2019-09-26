@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>StorageCategoryConfiguration Structure Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Struct/StorageCategoryConfiguration" class="dashAnchor"></a>
+    <a title="StorageCategoryConfiguration Structure Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Amplify 0.0.1 Docs</a> (56% documented)</p>
+        <p class="header-right"><a href="https://github.com/aws-amplify/amplify-ios/settings/keys"><img src="../img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">Amplify Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        StorageCategoryConfiguration Structure Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/APICategory.html">APICategory</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Amplify.html">Amplify</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/AmplifyOperation.html">AmplifyOperation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/AnalyticsCategory.html">AnalyticsCategory</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/AsynchronousOperation.html">AsynchronousOperation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DefaultHubCategoryPlugin.html">DefaultHubCategoryPlugin</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HubCategory.html">HubCategory</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/LoggingCategory.html">LoggingCategory</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/StorageCategory.html">StorageCategory</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/AsyncEvent.html">AsyncEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/CategoryType.html">CategoryType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/ConfigurationError.html">ConfigurationError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/HTTPMethod.html">HTTPMethod</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/HubChannel.html">HubChannel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/JSONValue.html">JSONValue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/LogLevel.html">LogLevel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/PluginError.html">PluginError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/StorageAccessLevel.html">StorageAccessLevel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/StorageError.html">StorageError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/APICategoryClientBehavior.html">APICategoryClientBehavior</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APICategoryPlugin.html">APICategoryPlugin</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APICategoryPluginBehavior.html">APICategoryPluginBehavior</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APIRequest.html">APIRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/APIResponse.html">APIResponse</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/AmplifyError.html">AmplifyError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/AmplifyOperationRequest.html">AmplifyOperationRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/AnalyticsCategoryClientBehavior.html">AnalyticsCategoryClientBehavior</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/AnalyticsCategoryPlugin.html">AnalyticsCategoryPlugin</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/AnalyticsEvent.html">AnalyticsEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols.html#/s:7Amplify16AnalyticsProfileP">AnalyticsProfile</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/Cancellable.html">Cancellable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/Category.html">Category</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/CategoryConfiguration.html">CategoryConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/CategoryTypeable.html">CategoryTypeable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/HubCategoryClientBehavior.html">HubCategoryClientBehavior</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/HubCategoryPlugin.html">HubCategoryPlugin</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/LoggingCategoryClientBehavior.html">LoggingCategoryClientBehavior</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/LoggingCategoryPlugin.html">LoggingCategoryPlugin</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/Plugin.html">Plugin</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/PluginInitializable.html">PluginInitializable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/PluginResettable.html">PluginResettable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/Resumable.html">Resumable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/StorageCategoryClientBehavior.html">StorageCategoryClientBehavior</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/StorageCategoryPlugin.html">StorageCategoryPlugin</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols.html#/s:7Amplify28StorageDownloadFileOperationP">StorageDownloadFileOperation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols.html#/s:7Amplify23StorageGetDataOperationP">StorageGetDataOperation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols.html#/s:7Amplify22StorageGetURLOperationP">StorageGetURLOperation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols.html#/s:7Amplify20StorageListOperationP">StorageListOperation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols.html#/s:7Amplify19StoragePutOperationP">StoragePutOperation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols.html#/s:7Amplify22StorageRemoveOperationP">StorageRemoveOperation</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/APICategoryConfiguration.html">APICategoryConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AmplifyConfiguration.html">AmplifyConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs.html#/s:7Amplify0A16OperationContextV">AmplifyOperationContext</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AnalyticsCategoryConfiguration.html">AnalyticsCategoryConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/BasicAPIRequest.html">BasicAPIRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/BasicAPIResponse.html">BasicAPIResponse</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/BasicAnalyticsEvent.html">BasicAnalyticsEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HubCategoryConfiguration.html">HubCategoryConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HubFilters.html">HubFilters</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HubPayload.html">HubPayload</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/LoggingCategoryConfiguration.html">LoggingCategoryConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StorageCategoryConfiguration.html">StorageCategoryConfiguration</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StorageDownloadFileRequest.html">StorageDownloadFileRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StorageDownloadFileRequest/Options.html">– Options</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StorageGetDataRequest.html">StorageGetDataRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StorageGetDataRequest/Options.html">– Options</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StorageGetURLRequest.html">StorageGetURLRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StorageGetURLRequest/Options.html">– Options</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StorageListRequest.html">StorageListRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StorageListRequest/Options.html">– Options</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StorageListResult.html">StorageListResult</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StoragePutRequest.html">StoragePutRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StoragePutRequest/Source.html">– Source</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StoragePutRequest/Options.html">– Options</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StorageRemoveRequest.html">StorageRemoveRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/StorageRemoveRequest/Options.html">– Options</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/UnsubscribeToken.html">UnsubscribeToken</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Typealiases.html">Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify16ErrorDescriptiona">ErrorDescription</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify9HubFiltera">HubFilter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify11HubListenera">HubListener</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify9PluginKeya">PluginKey</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify18RecoverySuggestiona">RecoverySuggestion</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>StorageCategoryConfiguration</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">StorageCategoryConfiguration</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/CategoryConfiguration.html">CategoryConfiguration</a></span></code></pre>
+
+                </div>
+              </div>
+            <p>Undocumented</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Amplify21CategoryConfigurationP7pluginsSDySSAA9JSONValueOGvp"></a>
+                    <a name="//apple_ref/swift/Property/plugins" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify21CategoryConfigurationP7pluginsSDySSAA9JSONValueOGvp">plugins</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">plugins</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt"><a href="../Enums/JSONValue.html">JSONValue</a></span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Amplify28StorageCategoryConfigurationV7pluginsACSDySSAA9JSONValueOG_tcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(plugins:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify28StorageCategoryConfigurationV7pluginsACSDySSAA9JSONValueOG_tcfc">init(plugins:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">plugins</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt"><a href="../Enums/JSONValue.html">JSONValue</a></span><span class="p">]</span> <span class="o">=</span> <span class="p">[:])</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2019 <a class="link" href="https://aws.amazon.com/amplify/" target="_blank" rel="external">Amazon Web Services</a>. All rights reserved. (Last updated: 2019-09-25)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.11.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
