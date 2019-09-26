@@ -33,11 +33,11 @@ extension AsyncEvent: CustomStringConvertible {
             return "unknown"
         case .notInProcess:
             return "notInProcess"
-        case .inProcess(_):
+        case .inProcess:
             return "inProcess"
-        case .completed(_):
+        case .completed:
             return "completed"
-        case .failed(_):
+        case .failed:
             return "failed"
         }
     }
