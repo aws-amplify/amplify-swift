@@ -25,7 +25,7 @@ public protocol HubCategoryClientBehavior {
     ///             the `onEvent` listener. Only messages for which the filter returns `true` will be dispatched.
     /// - Parameter onEvent: The closure to invoke with the received message
     func listen(to channel: HubChannel,
-                filteringWith filter: HubFilter?,
+                filteringBy filter: HubFilter?,
                 onEvent: @escaping HubListener) -> UnsubscribeToken
 
     /// Removes the listener identified by `token`

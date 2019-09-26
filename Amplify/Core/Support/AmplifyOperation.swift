@@ -56,7 +56,7 @@ Error: AmplifyError>: AsynchronousOperation {
             }
             onEvent(event)
         }
-        let token = Amplify.Hub.listen(to: channel, filteringWith: filterById, onEvent: listener)
+        let token = Amplify.Hub.listen(to: channel, filteringBy: filterById, onEvent: listener)
         return token
     }
 }
@@ -103,7 +103,7 @@ public protocol AmplifyOperationRequest {
     var options: Options { get }
 }
 
-extension HubCategory {
+public extension HubCategory {
 
     /// Convenience method to allow callers to listen to Hub events for a particular operation. Internally, the listener
     /// transforms the HubPayload into the Operation's expected AsyncEvent type, so callers may re-use their `onEvent`
@@ -126,7 +126,7 @@ extension HubCategory {
                 }
                 onEvent(data)
             }
-            let token = listen(to: channel, filteringWith: filter, onEvent: transformingListener)
+            let token = listen(to: channel, filteringBy: filter, onEvent: transformingListener)
             return token
     }
 }

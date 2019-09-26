@@ -49,7 +49,7 @@ final public class DefaultHubCategoryPlugin: HubCategoryPlugin {
     }
 
     public func listen(to channel: HubChannel,
-                       filteringWith filter: HubFilter? = nil,
+                       filteringBy filter: HubFilter? = nil,
                        onEvent: @escaping HubListener) -> UnsubscribeToken {
         let filteredListener = FilteredListener(for: channel, filter: filter, onEvent: onEvent)
         dispatcher.insert(filteredListener)

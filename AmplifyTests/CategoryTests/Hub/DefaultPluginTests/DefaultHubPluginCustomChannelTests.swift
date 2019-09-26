@@ -40,7 +40,7 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
     func testMessageReceivedOnCustomChannel() throws {
         let eventReceived = expectation(description: "Event received")
 
-        let listener = plugin.listen(to: .custom("CustomChannel1"), filteringWith: nil) { _ in
+        let listener = plugin.listen(to: .custom("CustomChannel1"), filteringBy: nil) { _ in
             eventReceived.fulfill()
         }
 
@@ -61,7 +61,7 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
         let eventReceived = expectation(description: "Event received")
         eventReceived.isInverted = true
 
-        let listener = plugin.listen(to: .custom("CustomChannel1"), filteringWith: nil) { _ in
+        let listener = plugin.listen(to: .custom("CustomChannel1"), filteringBy: nil) { _ in
             eventReceived.fulfill()
         }
 
@@ -82,7 +82,7 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
         let listener1Invoked = expectation(description: "Listener 1 invoked")
         let listener2Invoked = expectation(description: "Listener 2 invoked")
 
-        let listener1 = plugin.listen(to: .custom("CustomChannel1"), filteringWith: nil) { _ in
+        let listener1 = plugin.listen(to: .custom("CustomChannel1"), filteringBy: nil) { _ in
             listener1Invoked.fulfill()
         }
 
@@ -91,7 +91,7 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
             return
         }
 
-        let listener2 = plugin.listen(to: .custom("CustomChannel1"), filteringWith: nil) { _ in
+        let listener2 = plugin.listen(to: .custom("CustomChannel1"), filteringBy: nil) { _ in
             listener2Invoked.fulfill()
         }
 
