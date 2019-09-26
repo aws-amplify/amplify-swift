@@ -101,3 +101,31 @@ public protocol AmplifyOperationRequest {
     /// Options to adjust the behavior of this request, including plugin options
     var options: Options { get }
 }
+
+extension HubCategory {
+
+    /// Convenience method to allow callers to listen to Hub events for a particular operation. Internally, the listener
+    /// transforms the HubPayload into the Operation's expected AsyncEvent type, so callers may re-use their `onEvent`
+    /// listeners
+    ///
+    /// - Parameter operation: The operation to listen to events for
+    /// - Parameter onEvent: The Operation-specific onEvent callback to be invoked when an AsyncEvent for that operation
+    ///   is received.
+    func listen<Request: AmplifyOperationRequest,
+        InProcess,
+        Completed,
+        Error: AmplifyError>(to operation: AmplifyOperation<Request, InProcess, Completed, Error>,
+                             onEvent: @escaping AmplifyOperation<Request, InProcess, Completed, Error>.EventHandler)
+        -> UnsubscribeToken {
+            let channel = HubChannel(from: operation.categoryType)
+            let filter = HubFilters.hubFilter(forOperation: operation)
+            let transformingListener: HubListener = { payload in
+                guard let data = payload.data as? AmplifyOperation<Request, InProcess, Completed, Error>.Event else {
+                    return
+                }
+                onEvent(data)
+            }
+            let token = listen(to: channel, filteringWith: filter, onEvent: transformingListener)
+            return token
+    }
+}
