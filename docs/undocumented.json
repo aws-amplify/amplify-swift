@@ -86,21 +86,7 @@
     },
     {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/API/APICategory.swift",
-      "line": 8,
-      "symbol": "APICategory",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/API/APICategory.swift",
-      "line": 8,
-      "symbol": "APICategory",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/API/APICategory.swift",
-      "line": 9,
+      "line": 10,
       "symbol": "APICategory.categoryType",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
@@ -415,23 +401,9 @@
     },
     {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Analytics/AnalyticsCategory.swift",
-      "line": 8,
-      "symbol": "AnalyticsCategory",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Analytics/AnalyticsCategory.swift",
-      "line": 9,
+      "line": 10,
       "symbol": "AnalyticsCategory.categoryType",
       "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Analytics/AnalyticsCategory.swift",
-      "line": 40,
-      "symbol": "AnalyticsCategory",
-      "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
@@ -540,27 +512,6 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Hub/HubCategory.swift",
-      "line": 8,
-      "symbol": "HubCategory",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Hub/HubCategory.swift",
-      "line": 8,
-      "symbol": "HubCategory",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Hub/HubCategory.swift",
-      "line": 9,
-      "symbol": "HubCategory.categoryType",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Hub/HubCategoryConfiguration.swift",
       "line": 10,
       "symbol": "HubCategoryConfiguration",
@@ -653,21 +604,7 @@
     },
     {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Logging/LoggingCategory.swift",
-      "line": 8,
-      "symbol": "LoggingCategory",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Logging/LoggingCategory.swift",
-      "line": 8,
-      "symbol": "LoggingCategory",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Logging/LoggingCategory.swift",
-      "line": 9,
+      "line": 10,
       "symbol": "LoggingCategory.categoryType",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
@@ -1017,23 +954,9 @@
     },
     {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/StorageCategory.swift",
-      "line": 8,
-      "symbol": "StorageCategory",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/StorageCategory.swift",
-      "line": 9,
+      "line": 11,
       "symbol": "StorageCategory.categoryType",
       "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/StorageCategory.swift",
-      "line": 10,
-      "symbol": "StorageCategory",
-      "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
@@ -1100,121 +1023,9 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AmplifyError.swift",
-      "line": 10,
-      "symbol": "ErrorDescription",
-      "symbol_kind": "source.lang.swift.decl.typealias",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AmplifyError.swift",
-      "line": 12,
-      "symbol": "RecoverySuggestion",
-      "symbol_kind": "source.lang.swift.decl.typealias",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AmplifyOperation.swift",
-      "line": 20,
-      "symbol": "AmplifyOperation.Request",
-      "symbol_kind": "source.lang.swift.decl.typealias",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AmplifyOperation.swift",
-      "line": 36,
-      "symbol": "AmplifyOperation.init(categoryType:request:onEvent:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AmplifyOperation.swift",
-      "line": 69,
-      "symbol": "AmplifyOperation.Event",
-      "symbol_kind": "source.lang.swift.decl.typealias",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AmplifyOperation.swift",
-      "line": 70,
-      "symbol": "AmplifyOperation.EventHandler",
-      "symbol_kind": "source.lang.swift.decl.typealias",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AmplifyOperation.swift",
-      "line": 81,
-      "symbol": "AmplifyOperation.removeListener()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AmplifyOperation.swift",
-      "line": 89,
-      "symbol": "AmplifyOperationRequest",
-      "symbol_kind": "source.lang.swift.decl.protocol",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AmplifyOperation.swift",
-      "line": 90,
-      "symbol": "AmplifyOperationRequest.Options",
-      "symbol_kind": "source.lang.swift.decl.associatedtype",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AmplifyOperationContext.swift",
-      "line": 10,
-      "symbol": "AmplifyOperationContext",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AsychronousOperation.swift",
-      "line": 37,
-      "symbol": "AsynchronousOperation.isReady",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AsychronousOperation.swift",
       "line": 38,
-      "symbol": "AsynchronousOperation.isExecuting",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AsychronousOperation.swift",
-      "line": 39,
-      "symbol": "AsynchronousOperation.isFinished",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AsychronousOperation.swift",
-      "line": 42,
-      "symbol": "AsynchronousOperation.keyPathsForValuesAffectingValue(forKey:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AsychronousOperation.swift",
-      "line": 51,
-      "symbol": "AsynchronousOperation.start()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AsychronousOperation.swift",
-      "line": 68,
-      "symbol": "AsynchronousOperation.pause()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AsychronousOperation.swift",
-      "line": 75,
-      "symbol": "AsynchronousOperation.resume()",
+      "symbol": "AmplifyOperation.init(categoryType:request:onEvent:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
