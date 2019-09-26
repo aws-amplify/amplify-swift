@@ -40,7 +40,8 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testListOperationGetIdentityIdError() {
-        mockAuthService.getIdentityIdError = StorageError.identity("", "")
+        mockAuthService.getIdentityIdError = AuthError.identity("", "", "")
+        
         let options = StorageListRequest.Options(path: testPath)
         let request = StorageListRequest(options: options)
 
@@ -48,17 +49,17 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
         let operation = AWSS3StorageListOperation(request,
                                                   storageService: mockStorageService,
                                                   authService: mockAuthService) { (event) in
-                                                    switch event {
-                                                    case .failed(let error):
-                                                        guard case .identity = error else {
-                                                            XCTFail("Should have failed with identity error")
-                                                            return
-                                                        }
-                                                        failedInvoked.fulfill()
-                                                    default:
-                                                        XCTFail("Should have received failed event")
-                                                    }
-        }
+                                                      switch event {
+                                                      case .failed(let error):
+                                                          guard case .authError = error else {
+                                                              XCTFail("Should have failed with authError")
+                                                              return
+                                                          }
+                                                          failedInvoked.fulfill()
+                                                      default:
+                                                          XCTFail("Should have received failed event")
+                                                      }
+                                                  }
 
         operation.start()
 

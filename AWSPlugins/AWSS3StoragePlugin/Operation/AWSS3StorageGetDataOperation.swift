@@ -68,7 +68,7 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<StorageGetDataReques
 
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
-                dispatch(error)
+                dispatch(StorageError.authError(error.errorDescription, error.recoverySuggestion))
             }
 
             finish()
@@ -104,7 +104,7 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<StorageGetDataReques
             dispatch(progress)
         case .completed(let result):
             guard let data = result else {
-                dispatch(StorageError.unknown("this should never be the case here", "s"))
+                dispatch(StorageError.unknown("this should never be the case here"))
                 finish()
                 return
             }

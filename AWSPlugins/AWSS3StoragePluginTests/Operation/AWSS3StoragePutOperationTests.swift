@@ -40,7 +40,8 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testPutOperationGetIdentityIdError() {
-        mockAuthService.getIdentityIdError = StorageError.identity("", "")
+        mockAuthService.getIdentityIdError = AuthError.identity("", "", "")
+        
         let options = StoragePutRequest.Options(accessLevel: .protected)
         let request = StoragePutRequest(key: testKey, source: .data(testData), options: options)
 
@@ -50,8 +51,8 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
                                                  authService: mockAuthService) { (event) in
             switch event {
             case .failed(let error):
-                guard case .identity = error else {
-                    XCTFail("Should have failed with identity error")
+                guard case .authError = error else {
+                    XCTFail("Should have failed with authError")
                     return
                 }
                 failedInvoked.fulfill()
@@ -77,8 +78,8 @@ class AWSS3StoragePutOperationTests: AWSS3StorageOperationTestBase {
                                                  authService: mockAuthService) { (event) in
             switch event {
             case .failed(let error):
-                guard case .missingLocalFile = error else {
-                    XCTFail("Should have failed with missing file error")
+                guard case .localFileNotFound = error else {
+                    XCTFail("Should have failed local file not found error")
                     return
                 }
                 failedInvoked.fulfill()

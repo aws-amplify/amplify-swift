@@ -19,7 +19,8 @@ extension AWSS3StorageService {
         let downloadTaskCreatedHandler = AWSS3StorageService.makeDownloadTaskCreatedHandler(onEvent: onEvent)
         let expression = AWSS3TransferUtilityDownloadExpression()
         expression.progressBlock = AWSS3StorageService.makeOnDownloadProgressHandler(onEvent: onEvent)
-        let onDownloadCompletedHandler = AWSS3StorageService.makeDownloadCompletedHandler(onEvent: onEvent)
+        let onDownloadCompletedHandler = AWSS3StorageService.makeDownloadCompletedHandler(onEvent: onEvent,
+                                                                                          serviceKey: serviceKey)
 
         if let fileURL = fileURL {
             transferUtility.download(to: fileURL,
@@ -44,15 +45,14 @@ extension AWSS3StorageService {
         let block: DownloadTaskCreatedHandler = { (task: AWSTask<AWSS3TransferUtilityDownloadTask>) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
-                let innerMessage = StorageErrorHelper.getInnerMessage(error)
-                let errorDescription = StorageErrorHelper.getErrorDescription(innerMessage: innerMessage)
-                onEvent(StorageEvent.failed(StorageError.unknown(errorDescription, "Recovery Message")))
+                let storageError = StorageErrorHelper.mapTransferUtilityError(error)
+                onEvent(StorageEvent.failed(storageError))
 
                 return nil
             }
 
             guard let downloadTask = task.result else {
-                onEvent(StorageEvent.failed(StorageError.unknown("No ContinuationBlock data", "")))
+                onEvent(StorageEvent.failed(StorageError.unknown("Download started but missing task")))
                 return nil
             }
 
@@ -74,34 +74,26 @@ extension AWSS3StorageService {
     }
 
     private static func makeDownloadCompletedHandler(
-        onEvent: @escaping StorageServiceDownloadEventHandler) -> AWSS3TransferUtilityDownloadCompletionHandlerBlock {
+        onEvent: @escaping StorageServiceDownloadEventHandler,
+        serviceKey: String) -> AWSS3TransferUtilityDownloadCompletionHandlerBlock {
 
         let block: AWSS3TransferUtilityDownloadCompletionHandlerBlock = { (task, location, data, error ) in
             guard let response = task.response else {
-                onEvent(StorageEvent.failed(StorageError.unknown("Missing HTTP Status", "")))
+                onEvent(StorageEvent.failed(StorageError.unknown("Missing HTTP Response")))
                 return
             }
 
-            guard response.statusCode == 200 else {
-                // TODO HttpStatus Mapper
-                // TODO any retry logic based on status code?
-                if response.statusCode == 404 {
-                    onEvent(StorageEvent.failed(StorageError.keyNotFound(
-                        StorageErrorConstants.keyNotFound.errorDescription,
-                        StorageErrorConstants.keyNotFound.recoverySuggestion)))
-
-                } else {
-                    onEvent(StorageEvent.failed(StorageError.httpStatusError(
-                        "status code \(response.statusCode)", "Check the status code")))
-                }
-
+            let storageError = StorageErrorHelper.mapHttpResponseCode(statusCode: response.statusCode,
+                                                                      serviceKey: serviceKey)
+            guard storageError == nil else {
+                onEvent(StorageEvent.failed(storageError!))
                 return
             }
 
             guard error == nil else {
                 let error = error! as NSError
-
-                onEvent(StorageEvent.failed(StorageError.unknown("Error with code: \(error.code) ", "")))
+                let storageError = StorageErrorHelper.mapTransferUtilityError(error)
+                onEvent(StorageEvent.failed(storageError))
                 return
             }
 

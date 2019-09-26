@@ -46,7 +46,7 @@ public class AWSS3StorageListOperation: AmplifyOperation<StorageListRequest, Voi
 
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
-                dispatch(error)
+                dispatch(StorageError.authError(error.errorDescription, error.recoverySuggestion))
             }
 
             finish()

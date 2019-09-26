@@ -17,7 +17,7 @@ extension StorageDownloadFileRequest {
         }
 
         if let error = StorageRequestUtils.validateKey(key) {
-            return StorageError.validation(error.errorDescription, error.recoverySuggestion)
+            return error
         }
 
         return nil

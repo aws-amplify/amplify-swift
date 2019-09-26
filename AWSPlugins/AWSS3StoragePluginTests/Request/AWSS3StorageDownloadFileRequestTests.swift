@@ -40,11 +40,12 @@ class StorageDownloadFileRequestTests: XCTestCase {
             return
         }
 
-        guard case .validation(let description, let recovery) = error else {
+        guard case .validation(let field, let description, let recovery) = error else {
             XCTFail("Error does not match validation error")
             return
         }
 
+        XCTAssertEqual(field, StorageErrorConstants.identityIdIsEmpty.field)
         XCTAssertEqual(description, StorageErrorConstants.identityIdIsEmpty.errorDescription)
         XCTAssertEqual(recovery, StorageErrorConstants.identityIdIsEmpty.recoverySuggestion)
     }
@@ -62,13 +63,14 @@ class StorageDownloadFileRequestTests: XCTestCase {
             return
         }
 
-        guard case .validation(let description, let recovery) = error else {
+        guard case .validation(let field, let description, let recovery) = error else {
             XCTFail("Error does not match validation error")
             return
         }
 
-        XCTAssertEqual(description, StorageErrorConstants.privateWithTarget.errorDescription)
-        XCTAssertEqual(recovery, StorageErrorConstants.privateWithTarget.recoverySuggestion)
+        XCTAssertEqual(field, StorageErrorConstants.invalidAccessLevelWithTarget.field)
+        XCTAssertEqual(description, StorageErrorConstants.invalidAccessLevelWithTarget.errorDescription)
+        XCTAssertEqual(recovery, StorageErrorConstants.invalidAccessLevelWithTarget.recoverySuggestion)
     }
 
     func testValidateKeyIsEmptyError() {
@@ -84,11 +86,12 @@ class StorageDownloadFileRequestTests: XCTestCase {
             return
         }
 
-        guard case .validation(let description, let recovery) = error else {
+        guard case .validation(let field, let description, let recovery) = error else {
             XCTFail("Error does not match validation error")
             return
         }
 
+        XCTAssertEqual(field, StorageErrorConstants.keyIsEmpty.field)
         XCTAssertEqual(description, StorageErrorConstants.keyIsEmpty.errorDescription)
         XCTAssertEqual(recovery, StorageErrorConstants.keyIsEmpty.recoverySuggestion)
     }

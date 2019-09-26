@@ -22,7 +22,7 @@ class AWSAuthService: AWSAuthServiceBehavior {
         return mobileClient.getCognitoCredentialsProvider()
     }
 
-    func getIdentityId() -> Result<String, StorageError> {
+    func getIdentityId() -> Result<String, AuthError> {
         let task = mobileClient.getIdentityId()
         task.waitUntilFinished()
 
@@ -31,27 +31,34 @@ class AWSAuthService: AWSAuthServiceBehavior {
                 return .failure(map(error))
             }
 
-            return .failure(StorageError.identity(StorageErrorConstants.contentTypeIsEmpty.errorDescription,
-                                               StorageErrorConstants.contentTypeIsEmpty.recoverySuggestion))
+            return .failure(AuthError.unknown("Some error occuring retrieving the IdentityId."))
         }
 
         guard let identityId = task.result else {
-            let error = StorageError.identity(StorageErrorConstants.contentTypeIsEmpty.errorDescription,
-                                           StorageErrorConstants.contentTypeIsEmpty.recoverySuggestion)
+            let error = AuthError.unknown("Got successful response but missing IdentityId in the result.")
             return .failure(error)
         }
 
         return .success(identityId as String)
     }
 
-    private func map(_ error: AWSMobileClientError) -> StorageError {
+    private func map(_ error: AWSMobileClientError) -> AuthError {
         switch error {
         case .identityIdUnavailable(let message):
-            return StorageError.identity(message, error.localizedDescription)
+            return AuthError.identity("Identity Id is Unavailable",
+                                      message,
+                                      """
+                                      Check for network connectivity and try again.
+                                      """)
         case .guestAccessNotAllowed(let message):
-            return StorageError.identity(message, error.localizedDescription)
+            return AuthError.identity("Guest access is not allowed",
+                                      message,
+                                      """
+                                      Cognito was configured to disallow unauthenticated (guest) access.
+                                      Turn on guest access and try again.
+                                      """)
         default:
-            return StorageError.identity(error.localizedDescription, "")
+            return AuthError.unknown(error.localizedDescription)
         }
     }
 
