@@ -23,6 +23,7 @@ class StorageErrorHelper {
                                             "Make sure the key exists before trying to download it.")
         }
 
+        // TODO status error mapper
         return StorageError.httpStatusError(statusCode, "TODO some status code to recovery message mapper")
     }
 

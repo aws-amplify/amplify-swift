@@ -51,11 +51,11 @@ class AWSAuthService: AWSAuthServiceBehavior {
                                       Check for network connectivity and try again.
                                       """)
         case .guestAccessNotAllowed(let message):
-            return AuthError.identity("Guess access is not allowed",
+            return AuthError.identity("Guest access is not allowed",
                                       message,
                                       """
                                       Cognito was configured to disallow unauthenticated (guest) access.
-                                      Turn off guest access and try again.
+                                      Turn on guest access and try again.
                                       """)
         default:
             return AuthError.unknown(error.localizedDescription)
