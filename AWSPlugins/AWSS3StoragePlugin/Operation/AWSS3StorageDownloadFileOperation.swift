@@ -26,11 +26,11 @@ Void, StorageError>, StorageDownloadFileOperation {
     init(_ request: StorageDownloadFileRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         onEvent: EventListener?) {
+         listener: EventListener?) {
 
         self.storageService = storageService
         self.authService = authService
-        super.init(categoryType: .storage, request: request, onEvent: onEvent)
+        super.init(categoryType: .storage, request: request, listener: listener)
     }
 
     override public func pause() {
@@ -87,11 +87,11 @@ Void, StorageError>, StorageDownloadFileOperation {
         }
 
         storageService.download(serviceKey: serviceKey, fileURL: request.local) { [weak self] event in
-            self?.onEventListener(event: event)
+            self?.onListener(event: event)
         }
     }
 
-    private func onEventListener(event: StorageEvent<StorageTaskReference, Progress, Data?, StorageError>) {
+    private func onListener(event: StorageEvent<StorageTaskReference, Progress, Data?, StorageError>) {
         switch event {
         case .initiated(let reference):
             storageTaskActionQueue.async {

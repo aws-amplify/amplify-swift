@@ -24,11 +24,11 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<StorageGetDataReques
     init(_ request: StorageGetDataRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         onEvent: EventListener?) {
+         listener: EventListener?) {
 
         self.storageService = storageService
         self.authService = authService
-        super.init(categoryType: .storage, request: request, onEvent: onEvent)
+        super.init(categoryType: .storage, request: request, listener: listener)
     }
 
     override public func pause() {
@@ -86,11 +86,11 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<StorageGetDataReques
         }
 
         storageService.download(serviceKey: serviceKey, fileURL: nil) { [weak self] event in
-            self?.onEventListener(event: event)
+            self?.onListener(event: event)
         }
     }
 
-    private func onEventListener(event: StorageEvent<StorageTaskReference, Progress, Data?, StorageError>) {
+    private func onListener(event: StorageEvent<StorageTaskReference, Progress, Data?, StorageError>) {
         switch event {
         case .initiated(let reference):
             storageTaskActionQueue.async {
