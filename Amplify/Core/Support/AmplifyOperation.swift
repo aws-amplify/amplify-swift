@@ -15,8 +15,6 @@ import Foundation
 /// implementation of a `dispatch` method that sends a contextualized payload to the Hub.
 ///
 /// Pausable/resumable tasks that do not require Hub dispatching should use AsynchronousOperation instead.
-///
-/// Note: Subclasses should conform to `HubPayloadEventNameable` and provide
 open class AmplifyOperation<Request: AmplifyOperationRequest, InProcess, Completed,
 Error: AmplifyError>: AsynchronousOperation {
 
@@ -73,7 +71,14 @@ Error: AmplifyError>: AsynchronousOperation {
 /// All AmplifyOperations must be associated with an Amplify Category
 extension AmplifyOperation: CategoryTypeable { }
 
-/// All AmplifyOperations must declare a HubPayloadEventName
+/// All AmplifyOperations must declare a HubPayloadEventName. Subclasses should provide names by extending
+/// `HubPayload.EventName`, e.g.:
+///
+/// ```
+/// public extension HubPayload.EventName.Storage {
+///     static let put = "Storage.put"
+/// }
+/// ```
 extension AmplifyOperation: HubPayloadEventNameable { }
 
 /// Conformance to Cancellable we gain for free by subclassing AsynchronousOperation
