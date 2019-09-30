@@ -561,6 +561,27 @@
       "warning": "undocumented"
     },
     {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Hub/HubPayloadEventName.swift",
+      "line": 8,
+      "symbol": "HubPayloadEventName",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Hub/HubPayloadEventName.swift",
+      "line": 10,
+      "symbol": "HubPayloadEventNameable",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Hub/HubPayloadEventName.swift",
+      "line": 11,
+      "symbol": "HubPayloadEventNameable.eventName",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Hub/UnsubscribeToken.swift",
       "line": 18,
       "symbol": "UnsubscribeToken.init(channel:id:)",
@@ -988,6 +1009,55 @@
       "warning": "undocumented"
     },
     {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/StorageCategory+HubPayloadEventName.swift",
+      "line": 9,
+      "symbol": "HubPayload.EventName.Storage",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/StorageCategory+HubPayloadEventName.swift",
+      "line": 10,
+      "symbol": "HubPayload.EventName.Storage",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/StorageCategory+HubPayloadEventName.swift",
+      "line": 10,
+      "symbol": "HubPayload.EventName.Storage",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/StorageCategory+HubPayloadEventName.swift",
+      "line": 12,
+      "symbol": "HubPayload.EventName.Storage",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/StorageCategory+HubPayloadEventName.swift",
+      "line": 12,
+      "symbol": "HubPayload.EventName.Storage",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/StorageCategory+HubPayloadEventName.swift",
+      "line": 12,
+      "symbol": "HubPayload.EventName.Storage",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/StorageCategory+HubPayloadEventName.swift",
+      "line": 13,
+      "symbol": "HubPayload.EventName.Storage",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/StorageCategory.swift",
       "line": 11,
       "symbol": "StorageCategory.categoryType",
@@ -1087,7 +1157,7 @@
     },
     {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AmplifyOperation.swift",
-      "line": 43,
+      "line": 41,
       "symbol": "AmplifyOperation.init(categoryType:eventName:request:listener:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"

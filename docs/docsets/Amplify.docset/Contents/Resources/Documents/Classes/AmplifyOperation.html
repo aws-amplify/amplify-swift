@@ -14,7 +14,7 @@
     <a title="AmplifyOperation Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">Amplify 0.0.1 Docs</a> (62% documented)</p>
+        <p><a href="../index.html">Amplify 0.0.1 Docs</a> (61% documented)</p>
         <p class="header-right"><a href="https://github.com/aws-amplify/amplify-ios/settings/keys"><img src="../img/gh.png"/>View on GitHub</a></p>
       </div>
     </header>
@@ -151,6 +151,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/HubCategoryPlugin.html">HubCategoryPlugin</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/HubPayloadEventNameable.html">HubPayloadEventNameable</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/LoggingCategoryClientBehavior.html">LoggingCategoryClientBehavior</a>
@@ -304,6 +307,9 @@
                 <a href="../Typealiases.html#/s:7Amplify11HubListenera">HubListener</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify19HubPayloadEventNamea">HubPayloadEventName</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:7Amplify3Keya">Key</a>
               </li>
               <li class="nav-group-task">
@@ -338,8 +344,6 @@ uploading an image to cloud storage, processing it via a Predictions engine, and
 implementation of a <code>dispatch</code> method that sends a contextualized payload to the Hub.</p>
 
 <p>Pausable/resumable tasks that do not require Hub dispatching should use AsynchronousOperation instead.</p>
-
-<p>Note: Subclasses should conform to <code>HubPayloadEventNameable</code> and provide</p>
 
           </section>
           <section class="section task-group-section">
@@ -457,9 +461,9 @@ be used to identify previously-scheduled work for progress tracking or other fun
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Amplify0A9OperationC9eventNameXevp"></a>
+                    <a name="/s:7Amplify0A9OperationC9eventNameSSvp"></a>
                     <a name="//apple_ref/swift/Property/eventName" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Amplify0A9OperationC9eventNameXevp">eventName</a>
+                    <a class="token" href="#/s:7Amplify0A9OperationC9eventNameSSvp">eventName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -474,7 +478,7 @@ be used to identify previously-scheduled work for progress tracking or other fun
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">eventName</span><span class="p">:</span> <span class="kt">HubPayloadEventName</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">eventName</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:7Amplify19HubPayloadEventNamea">HubPayloadEventName</a></span></code></pre>
 
                         </div>
                       </div>
@@ -484,9 +488,9 @@ be used to identify previously-scheduled work for progress tracking or other fun
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Amplify0A9OperationCyACyxq_q0_q1_GAA12CategoryTypeO_XexyAA10AsyncEventOyq_q0_q1_GcSgtcADmcAA0aB7RequestRzAA0A5ErrorR1_r2_lufc"></a>
+                    <a name="/s:7Amplify0A9OperationC12categoryType9eventName7request8listenerACyxq_q0_q1_GAA08CategoryD0O_SSxyAA10AsyncEventOyq_q0_q1_GcSgtcfc"></a>
                     <a name="//apple_ref/swift/Method/init(categoryType:eventName:request:listener:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Amplify0A9OperationCyACyxq_q0_q1_GAA12CategoryTypeO_XexyAA10AsyncEventOyq_q0_q1_GcSgtcADmcAA0aB7RequestRzAA0A5ErrorR1_r2_lufc">init(categoryType:eventName:request:listener:)</a>
+                    <a class="token" href="#/s:7Amplify0A9OperationC12categoryType9eventName7request8listenerACyxq_q0_q1_GAA08CategoryD0O_SSxyAA10AsyncEventOyq_q0_q1_GcSgtcfc">init(categoryType:eventName:request:listener:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -502,7 +506,7 @@ be used to identify previously-scheduled work for progress tracking or other fun
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">categoryType</span><span class="p">:</span> <span class="kt"><a href="../Enums/CategoryType.html">CategoryType</a></span><span class="p">,</span>
-            <span class="nv">eventName</span><span class="p">:</span> <span class="kt">HubPayloadEventName</span><span class="p">,</span>
+            <span class="nv">eventName</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:7Amplify19HubPayloadEventNamea">HubPayloadEventName</a></span><span class="p">,</span>
             <span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Classes/AmplifyOperation.html#/s:7Amplify0A9OperationC7Requesta">Request</a></span><span class="p">,</span>
             <span class="nv">listener</span><span class="p">:</span> <span class="kt"><a href="../Classes/AmplifyOperation.html#/s:7Amplify0A9OperationC13EventListenera">EventListener</a></span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
 
