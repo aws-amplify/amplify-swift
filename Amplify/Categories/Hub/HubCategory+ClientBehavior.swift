@@ -20,9 +20,9 @@ extension HubCategory: HubCategoryClientBehavior {
     ///             the `listener` listener. Only messages for which the filter returns `true` will be dispatched.
     /// - Parameter listener: The closure to invoke with the received message
     public func listen(to channel: HubChannel,
-                       filteringBy filter: HubFilter? = nil,
+                       isIncluded filter: HubFilter? = nil,
                        listener: @escaping HubListener) -> UnsubscribeToken {
-        return plugin.listen(to: channel, filteringBy: filter, listener: listener)
+        return plugin.listen(to: channel, isIncluded: filter, listener: listener)
     }
 
     /// Removes the listener identified by `token`

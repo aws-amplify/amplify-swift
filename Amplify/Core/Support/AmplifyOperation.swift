@@ -56,7 +56,7 @@ Error: AmplifyError>: AsynchronousOperation {
             }
             onEvent(event)
         }
-        let token = Amplify.Hub.listen(to: channel, filteringBy: filterById, listener: hubListener)
+        let token = Amplify.Hub.listen(to: channel, isIncluded: filterById, listener: hubListener)
         return token
     }
 }
@@ -126,7 +126,7 @@ public extension HubCategory {
                 }
                 onEvent(data)
             }
-            let token = listen(to: channel, filteringBy: filter, listener: transformingListener)
+            let token = listen(to: channel, isIncluded: filter, listener: transformingListener)
             return token
     }
 }

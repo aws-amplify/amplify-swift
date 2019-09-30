@@ -56,7 +56,7 @@ class DefaultHubPluginConcurrencyTests: XCTestCase {
                 )
                 messageReceived.expectedFulfillmentCount = messagesExpectedPerListener
 
-                let token = plugin.listen(to: channel, filteringBy: nil) { _ in
+                let token = plugin.listen(to: channel, isIncluded: nil) { _ in
                     messageReceived.fulfill()
                 }
 
