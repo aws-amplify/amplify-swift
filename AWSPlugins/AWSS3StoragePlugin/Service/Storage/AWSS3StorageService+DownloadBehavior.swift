@@ -14,7 +14,7 @@ public typealias DownloadTaskCreatedHandler = (AWSTask<AWSS3TransferUtilityDownl
 extension AWSS3StorageService {
     func download(serviceKey: String,
                   fileURL: URL?,
-                  onEvent: @escaping StorageServiceDownloadEventHandler) {
+                  onEvent: @escaping StorageServiceDownloadEventListener) {
 
         let downloadTaskCreatedHandler = AWSS3StorageService.makeDownloadTaskCreatedHandler(onEvent: onEvent)
         let expression = AWSS3TransferUtilityDownloadExpression()
@@ -40,7 +40,7 @@ extension AWSS3StorageService {
     }
 
     private static func makeDownloadTaskCreatedHandler(
-        onEvent: @escaping StorageServiceDownloadEventHandler) -> DownloadTaskCreatedHandler {
+        onEvent: @escaping StorageServiceDownloadEventListener) -> DownloadTaskCreatedHandler {
 
         let block: DownloadTaskCreatedHandler = { (task: AWSTask<AWSS3TransferUtilityDownloadTask>) -> Any? in
             guard task.error == nil else {
@@ -64,7 +64,7 @@ extension AWSS3StorageService {
     }
 
     private static func makeOnDownloadProgressHandler(
-        onEvent: @escaping StorageServiceDownloadEventHandler) -> AWSS3TransferUtilityProgressBlock {
+        onEvent: @escaping StorageServiceDownloadEventListener) -> AWSS3TransferUtilityProgressBlock {
 
         let block: AWSS3TransferUtilityProgressBlock = {(task, progress) in
             onEvent(StorageEvent.inProcess(progress))
@@ -74,7 +74,7 @@ extension AWSS3StorageService {
     }
 
     private static func makeDownloadCompletedHandler(
-        onEvent: @escaping StorageServiceDownloadEventHandler,
+        onEvent: @escaping StorageServiceDownloadEventListener,
         serviceKey: String) -> AWSS3TransferUtilityDownloadCompletionHandlerBlock {
 
         let block: AWSS3TransferUtilityDownloadCompletionHandlerBlock = { (task, location, data, error ) in

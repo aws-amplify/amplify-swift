@@ -41,7 +41,7 @@ class AmplifyOperationHubTests: XCTestCase {
 
         let onEventWasInvoked = expectation(description: "onEvent was invoked")
 
-        let onEvent: NonListeningStorageListOperation.EventHandler = { event in
+        let onEvent: NonListeningStorageListOperation.EventListener = { event in
             onEventWasInvoked.fulfill()
         }
 
@@ -96,7 +96,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     func getURL(key: String,
                 options: StorageGetURLRequest.Options? = nil,
-                onEvent: StorageGetURLOperation.EventHandler? = nil) -> StorageGetURLOperation {
+                onEvent: StorageGetURLOperation.EventListener? = nil) -> StorageGetURLOperation {
         let options = options ?? StorageGetURLRequest.Options()
 
         let request = StorageGetURLRequest(key: key, options: options)
@@ -115,7 +115,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     func getData(key: String,
                  options: StorageGetDataRequest.Options? = nil,
-                 onEvent: StorageGetDataOperation.EventHandler? = nil) -> StorageGetDataOperation {
+                 onEvent: StorageGetDataOperation.EventListener? = nil) -> StorageGetDataOperation {
         let options = options ?? StorageGetDataRequest.Options()
 
         let request = StorageGetDataRequest(key: key, options: options)
@@ -135,7 +135,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     func downloadFile(key: String,
                       local: URL,
                       options: StorageDownloadFileRequest.Options? = nil,
-                      onEvent: StorageDownloadFileOperation.EventHandler? = nil)
+                      onEvent: StorageDownloadFileOperation.EventListener? = nil)
         -> StorageDownloadFileOperation {
             let options = options ?? StorageDownloadFileRequest.Options()
 
@@ -157,7 +157,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     func put(key: String,
              data: Data,
              options: StoragePutRequest.Options? = nil,
-             onEvent: StoragePutOperation.EventHandler? = nil) -> StoragePutOperation {
+             onEvent: StoragePutOperation.EventListener? = nil) -> StoragePutOperation {
         let options = options ?? StoragePutRequest.Options()
 
         let request = StoragePutRequest(key: key, source: .data(data), options: options)
@@ -177,7 +177,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     func put(key: String,
              local: URL,
              options: StoragePutRequest.Options? = nil,
-             onEvent: StoragePutOperation.EventHandler? = nil) -> StoragePutOperation {
+             onEvent: StoragePutOperation.EventListener? = nil) -> StoragePutOperation {
         let options = options ?? StoragePutRequest.Options()
 
         let request = StoragePutRequest(key: key, source: .local(local), options: options)
@@ -196,7 +196,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     func remove(key: String,
                 options: StorageRemoveRequest.Options? = nil,
-                onEvent: StorageRemoveOperation.EventHandler? = nil) -> StorageRemoveOperation {
+                onEvent: StorageRemoveOperation.EventListener? = nil) -> StorageRemoveOperation {
         let options = options ?? StorageRemoveRequest.Options()
 
         let request = StorageRemoveRequest(key: key, options: options)
@@ -214,7 +214,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     }
 
     func list(options: StorageListRequest.Options?,
-              onEvent: StorageListOperation.EventHandler?) -> StorageListOperation {
+              onEvent: StorageListOperation.EventListener?) -> StorageListOperation {
         let options = options ?? StorageListRequest.Options()
 
         let request = StorageListRequest(options: options)

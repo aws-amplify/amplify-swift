@@ -14,7 +14,7 @@ public typealias GetURLCompletedHandler = (AWSTask<NSURL>) -> Any?
 extension AWSS3StorageService {
     func getPreSignedURL(serviceKey: String,
                          expires: Int,
-                         onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
+                         onEvent: @escaping StorageServiceGetPreSignedURLEventListener) {
 
         let getPresignedURLRequest = AWSS3StorageService.makeAWSS3GetPreSignedURLRequest(bucket: bucket,
                                                                                          key: serviceKey,
@@ -41,7 +41,7 @@ extension AWSS3StorageService {
     }
 
     private static func makeGetPreSignedURLCompletedHandler(
-        onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) -> GetURLCompletedHandler {
+        onEvent: @escaping StorageServiceGetPreSignedURLEventListener) -> GetURLCompletedHandler {
 
         let block: GetURLCompletedHandler = { (task: AWSTask<NSURL>) -> Any? in
             guard task.error == nil else {

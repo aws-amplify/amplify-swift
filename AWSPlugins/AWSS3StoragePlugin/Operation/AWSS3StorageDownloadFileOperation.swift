@@ -26,7 +26,7 @@ Void, StorageError>, StorageDownloadFileOperation {
     init(_ request: StorageDownloadFileRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         onEvent: EventHandler?) {
+         onEvent: EventListener?) {
 
         self.storageService = storageService
         self.authService = authService
@@ -87,11 +87,11 @@ Void, StorageError>, StorageDownloadFileOperation {
         }
 
         storageService.download(serviceKey: serviceKey, fileURL: request.local) { [weak self] event in
-            self?.onEventHandler(event: event)
+            self?.onEventListener(event: event)
         }
     }
 
-    private func onEventHandler(event: StorageEvent<StorageTaskReference, Progress, Data?, StorageError>) {
+    private func onEventListener(event: StorageEvent<StorageTaskReference, Progress, Data?, StorageError>) {
         switch event {
         case .initiated(let reference):
             storageTaskActionQueue.async {

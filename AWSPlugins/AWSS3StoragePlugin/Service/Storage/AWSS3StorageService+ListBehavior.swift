@@ -12,7 +12,7 @@ import Amplify
 typealias ListCompletedHandler = (AWSTask<AWSS3ListObjectsV2Output>) -> Any?
 
 extension AWSS3StorageService {
-    func list(prefix: String, path: String?, onEvent: @escaping StorageServiceListEventHandler) {
+    func list(prefix: String, path: String?, onEvent: @escaping StorageServiceListEventListener) {
         // TODO: implementation details - use request.options.limit.
         // listObjectsV2Request.maxKeys ?
         // Figure out if we need ay batching logic
@@ -38,7 +38,7 @@ extension AWSS3StorageService {
     }
 
     private static func makeListCompletedHandler(
-        onEvent: @escaping StorageServiceListEventHandler, prefix: String) -> ListCompletedHandler {
+        onEvent: @escaping StorageServiceListEventListener, prefix: String) -> ListCompletedHandler {
 
         let block: ListCompletedHandler = { (task: AWSTask<AWSS3ListObjectsV2Output>) -> Any? in
             guard task.error == nil else {

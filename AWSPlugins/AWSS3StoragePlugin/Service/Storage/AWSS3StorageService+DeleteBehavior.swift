@@ -13,7 +13,7 @@ typealias DeleteCompletedHandler = (AWSTask<AWSS3DeleteObjectOutput>) -> Any?
 
 extension AWSS3StorageService {
 
-    func delete(serviceKey: String, onEvent: @escaping StorageServiceDeleteEventHandler) {
+    func delete(serviceKey: String, onEvent: @escaping StorageServiceDeleteEventListener) {
         let request = AWSS3StorageService.makeDeleteObjectRequest(bucket: bucket, serviceKey: serviceKey)
         let deleteCompletedHandler = AWSS3StorageService.makeDeleteCompletedHandler(onEvent: onEvent)
 
@@ -28,7 +28,7 @@ extension AWSS3StorageService {
         return request
     }
 
-    private static func makeDeleteCompletedHandler(onEvent: @escaping StorageServiceDeleteEventHandler)
+    private static func makeDeleteCompletedHandler(onEvent: @escaping StorageServiceDeleteEventListener)
         -> DeleteCompletedHandler {
 
         let block: DeleteCompletedHandler = { (task: AWSTask<AWSS3DeleteObjectOutput>) -> Any? in

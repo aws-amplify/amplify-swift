@@ -19,7 +19,7 @@ public class AWSS3StorageListOperation: AmplifyOperation<StorageListRequest, Voi
     init(_ request: StorageListRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         onEvent: EventHandler?) {
+         onEvent: EventListener?) {
 
         self.storageService = storageService
         self.authService = authService
@@ -64,11 +64,11 @@ public class AWSS3StorageListOperation: AmplifyOperation<StorageListRequest, Voi
         }
 
         storageService.list(prefix: accessLevelPrefix, path: request.options.path) { [weak self] event in
-            self?.onEventHandler(event: event)
+            self?.onEventListener(event: event)
         }
     }
 
-    private func onEventHandler(event: StorageEvent<Void, Void, StorageListResult, StorageError>) {
+    private func onEventListener(event: StorageEvent<Void, Void, StorageListResult, StorageError>) {
         switch event {
         case .completed(let result):
             dispatch(result)

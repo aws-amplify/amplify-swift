@@ -24,7 +24,7 @@ public class AWSS3StoragePutOperation: AmplifyOperation<StoragePutRequest, Progr
     init(_ request: StoragePutRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         onEvent: EventHandler?) {
+         onEvent: EventListener?) {
 
         self.storageService = storageService
         self.authService = authService
@@ -99,19 +99,19 @@ public class AWSS3StoragePutOperation: AmplifyOperation<StoragePutRequest, Progr
                                            uploadSource: request.source,
                                            contentType: request.options.contentType,
                                            metadata: serviceMetadata) { [weak self] event in
-                                               self?.onEventHandler(event: event)
+                                               self?.onEventListener(event: event)
                                            }
         } else {
             storageService.upload(serviceKey: serviceKey,
                                   uploadSource: request.source,
                                   contentType: request.options.contentType,
                                   metadata: serviceMetadata) { [weak self] event in
-                                      self?.onEventHandler(event: event)
+                                      self?.onEventListener(event: event)
                                   }
         }
     }
 
-    private func onEventHandler(
+    private func onEventListener(
         event: StorageEvent<StorageTaskReference, Progress, Void, StorageError>) {
         switch event {
         case .initiated(let reference):

@@ -25,7 +25,7 @@ extension AWSS3StoragePlugin {
     /// - Returns: An operation object representing the work to be done.
     public func getURL(key: String,
                        options: StorageGetURLRequest.Options? = nil,
-                       onEvent: StorageGetURLOperation.EventHandler? = nil) -> StorageGetURLOperation {
+                       onEvent: StorageGetURLOperation.EventListener? = nil) -> StorageGetURLOperation {
         let options = options ?? StorageGetURLRequest.Options()
         let request = StorageGetURLRequest(key: key, options: options)
         let getURLOperation = AWSS3StorageGetURLOperation(request,
@@ -50,7 +50,7 @@ extension AWSS3StoragePlugin {
     /// - Returns: An operation object representing the work to be done.
     public func getData(key: String,
                         options: StorageGetDataRequest.Options? = nil,
-                        onEvent: StorageGetDataOperation.EventHandler? = nil) -> StorageGetDataOperation {
+                        onEvent: StorageGetDataOperation.EventListener? = nil) -> StorageGetDataOperation {
         let options = options ?? StorageGetDataRequest.Options()
         let request = StorageGetDataRequest(key: key, options: options)
         let getDataOperation = AWSS3StorageGetDataOperation(request,
@@ -77,7 +77,7 @@ extension AWSS3StoragePlugin {
     public func downloadFile(key: String,
                              local: URL,
                              options: StorageDownloadFileRequest.Options? = nil,
-                             onEvent: StorageDownloadFileOperation.EventHandler? = nil)
+                             onEvent: StorageDownloadFileOperation.EventListener? = nil)
         -> StorageDownloadFileOperation {
         let options = options ?? StorageDownloadFileRequest.Options()
         let request = StorageDownloadFileRequest(key: key, local: local, options: options)
@@ -105,7 +105,7 @@ extension AWSS3StoragePlugin {
     public func put(key: String,
                     data: Data,
                     options: StoragePutRequest.Options? = nil,
-                    onEvent: StoragePutOperation.EventHandler? = nil) -> StoragePutOperation {
+                    onEvent: StoragePutOperation.EventListener? = nil) -> StoragePutOperation {
         let options = options ?? StoragePutRequest.Options()
         let request = StoragePutRequest(key: key, source: .data(data), options: options)
         return put(request, onEvent: onEvent)
@@ -125,7 +125,7 @@ extension AWSS3StoragePlugin {
     public func put(key: String,
                     local: URL,
                     options: StoragePutRequest.Options? = nil,
-                    onEvent: StoragePutOperation.EventHandler? = nil) -> StoragePutOperation {
+                    onEvent: StoragePutOperation.EventListener? = nil) -> StoragePutOperation {
         let options = options ?? StoragePutRequest.Options()
         let request = StoragePutRequest(key: key, source: .local(local), options: options)
         return put(request, onEvent: onEvent)
@@ -143,7 +143,7 @@ extension AWSS3StoragePlugin {
     /// - Returns: An operation object representing the work to be done.
     public func remove(key: String,
                        options: StorageRemoveRequest.Options? = nil,
-                       onEvent: StorageRemoveOperation.EventHandler? = nil) -> StorageRemoveOperation {
+                       onEvent: StorageRemoveOperation.EventListener? = nil) -> StorageRemoveOperation {
         let options = options ?? StorageRemoveRequest.Options()
         let request = StorageRemoveRequest(key: key, options: options)
         let removeOperation = AWSS3StorageRemoveOperation(request,
@@ -166,7 +166,7 @@ extension AWSS3StoragePlugin {
     ///   - onEvent: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
     public func list(options: StorageListRequest.Options? = nil,
-                     onEvent: StorageListOperation.EventHandler? = nil) -> StorageListOperation {
+                     onEvent: StorageListOperation.EventListener? = nil) -> StorageListOperation {
         let options = options ?? StorageListRequest.Options()
         let request = StorageListRequest(options: options)
         let listOperation = AWSS3StorageListOperation(request,
@@ -192,7 +192,7 @@ extension AWSS3StoragePlugin {
     /// Constructs an operation to perform the work, and adds it to the OperationQueue to perform the work
     /// asychronously.
     private func put(_ request: StoragePutRequest,
-                     onEvent: StoragePutOperation.EventHandler? = nil) -> StoragePutOperation {
+                     onEvent: StoragePutOperation.EventListener? = nil) -> StoragePutOperation {
 
         let putOperation = AWSS3StoragePutOperation(request,
                                                     storageService: storageService,

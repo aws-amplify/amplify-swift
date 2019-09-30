@@ -35,7 +35,7 @@ Error: AmplifyError>: AsynchronousOperation {
 
     private var unsubscribeToken: UnsubscribeToken?
 
-    public init(categoryType: CategoryType, request: Request, onEvent: EventHandler? = nil) {
+    public init(categoryType: CategoryType, request: Request, onEvent: EventListener? = nil) {
         self.categoryType = categoryType
         self.request = request
         id = UUID()
@@ -47,7 +47,7 @@ Error: AmplifyError>: AsynchronousOperation {
         }
     }
 
-    func subscribe(onEvent: @escaping EventHandler) -> UnsubscribeToken {
+    func subscribe(onEvent: @escaping EventListener) -> UnsubscribeToken {
         let channel = HubChannel(from: categoryType)
         let filterById = HubFilters.hubFilter(forOperation: self)
         let listener: HubListener = { payload in
@@ -72,7 +72,7 @@ public extension AmplifyOperation {
     typealias Event = AsyncEvent<InProcess, Completed, Error>
 
     /// Convenience typealias for the `onEvent` callback submitted during Operation creation
-    typealias EventHandler = (Event) -> Void
+    typealias EventListener = (Event) -> Void
 
     /// Dispatches an event to the hub. Internally, creates an `AmplifyOperationContext` object from the
     /// operation's `id`, and `request`
@@ -116,7 +116,7 @@ public extension HubCategory {
         InProcess,
         Completed,
         Error: AmplifyError>(to operation: AmplifyOperation<Request, InProcess, Completed, Error>,
-                             onEvent: @escaping AmplifyOperation<Request, InProcess, Completed, Error>.EventHandler)
+                             onEvent: @escaping AmplifyOperation<Request, InProcess, Completed, Error>.EventListener)
         -> UnsubscribeToken {
             let channel = HubChannel(from: operation.categoryType)
             let filter = HubFilters.hubFilter(forOperation: operation)

@@ -65,7 +65,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
     public func reset() {
     }
 
-    public func download(serviceKey: String, fileURL: URL?, onEvent: @escaping StorageServiceDownloadEventHandler) {
+    public func download(serviceKey: String, fileURL: URL?, onEvent: @escaping StorageServiceDownloadEventListener) {
         downloadCalled += 1
 
         downloadServiceKey = serviceKey
@@ -78,7 +78,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
 
     public func getPreSignedURL(serviceKey: String,
                                 expires: Int,
-                                onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
+                                onEvent: @escaping StorageServiceGetPreSignedURLEventListener) {
         getPreSignedURLCalled += 1
 
         getPreSignedURLServiceKey = serviceKey
@@ -93,7 +93,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
                        uploadSource: StoragePutRequest.Source,
                        contentType: String?,
                        metadata: [String: String]?,
-                       onEvent: @escaping StorageServiceUploadEventHandler) {
+                       onEvent: @escaping StorageServiceUploadEventListener) {
         uploadCalled += 1
 
         uploadServiceKey = serviceKey
@@ -110,7 +110,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
                                 uploadSource: StoragePutRequest.Source,
                                 contentType: String?,
                                 metadata: [String: String]?,
-                                onEvent: @escaping StorageServiceMultiPartUploadEventHandler) {
+                                onEvent: @escaping StorageServiceMultiPartUploadEventListener) {
         multiPartUploadCalled += 1
 
         multiPartUploadServiceKey = serviceKey
@@ -123,7 +123,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
         }
     }
 
-    public func list(prefix: String, path: String?, onEvent: @escaping StorageServiceListEventHandler) {
+    public func list(prefix: String, path: String?, onEvent: @escaping StorageServiceListEventListener) {
         listCalled += 1
 
         listPrefix = prefix
@@ -134,7 +134,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
         }
     }
 
-    public func delete(serviceKey: String, onEvent: @escaping StorageServiceDeleteEventHandler) {
+    public func delete(serviceKey: String, onEvent: @escaping StorageServiceDeleteEventListener) {
         deleteCalled += 1
 
         deleteServiceKey = serviceKey

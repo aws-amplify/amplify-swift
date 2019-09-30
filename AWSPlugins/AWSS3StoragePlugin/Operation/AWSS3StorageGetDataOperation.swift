@@ -24,7 +24,7 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<StorageGetDataReques
     init(_ request: StorageGetDataRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         onEvent: EventHandler?) {
+         onEvent: EventListener?) {
 
         self.storageService = storageService
         self.authService = authService
@@ -86,11 +86,11 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<StorageGetDataReques
         }
 
         storageService.download(serviceKey: serviceKey, fileURL: nil) { [weak self] event in
-            self?.onEventHandler(event: event)
+            self?.onEventListener(event: event)
         }
     }
 
-    private func onEventHandler(event: StorageEvent<StorageTaskReference, Progress, Data?, StorageError>) {
+    private func onEventListener(event: StorageEvent<StorageTaskReference, Progress, Data?, StorageError>) {
         switch event {
         case .initiated(let reference):
             storageTaskActionQueue.async {

@@ -10,24 +10,24 @@ import Amplify
 import AWSS3
 
 protocol AWSS3StorageServiceBehaviour {
-    typealias StorageServiceDownloadEventHandler = (StorageServiceDownloadEvent) -> Void
+    typealias StorageServiceDownloadEventListener = (StorageServiceDownloadEvent) -> Void
     typealias StorageServiceDownloadEvent =
         StorageEvent<StorageTaskReference, Progress, Data?, StorageError>
 
-    typealias StorageServiceGetPreSignedURLEventHandler = (StorageServiceGetPreSignedURLEvent) -> Void
+    typealias StorageServiceGetPreSignedURLEventListener = (StorageServiceGetPreSignedURLEvent) -> Void
     typealias StorageServiceGetPreSignedURLEvent = StorageEvent<Void, Void, URL, StorageError>
 
-    typealias StorageServiceDeleteEventHandler = (StorageServiceDeleteEvent) -> Void
+    typealias StorageServiceDeleteEventListener = (StorageServiceDeleteEvent) -> Void
     typealias StorageServiceDeleteEvent = StorageEvent<Void, Void, Void, StorageError>
 
-    typealias StorageServiceListEventHandler = (StorageServiceListEvent) -> Void
+    typealias StorageServiceListEventListener = (StorageServiceListEvent) -> Void
     typealias StorageServiceListEvent = StorageEvent<Void, Void, StorageListResult, StorageError>
 
-    typealias StorageServiceUploadEventHandler = (StorageServiceUploadEvent) -> Void
+    typealias StorageServiceUploadEventListener = (StorageServiceUploadEvent) -> Void
     typealias StorageServiceUploadEvent =
         StorageEvent<StorageTaskReference, Progress, Void, StorageError>
 
-    typealias StorageServiceMultiPartUploadEventHandler = (StorageServiceMultiPartUploadEvent) -> Void
+    typealias StorageServiceMultiPartUploadEventListener = (StorageServiceMultiPartUploadEvent) -> Void
     typealias StorageServiceMultiPartUploadEvent =
         StorageEvent<StorageTaskReference, Progress, Void, StorageError>
 
@@ -37,28 +37,28 @@ protocol AWSS3StorageServiceBehaviour {
 
     func download(serviceKey: String,
                   fileURL: URL?,
-                  onEvent: @escaping StorageServiceDownloadEventHandler)
+                  onEvent: @escaping StorageServiceDownloadEventListener)
 
     func getPreSignedURL(serviceKey: String,
                          expires: Int,
-                         onEvent: @escaping StorageServiceGetPreSignedURLEventHandler)
+                         onEvent: @escaping StorageServiceGetPreSignedURLEventListener)
 
     func upload(serviceKey: String,
                 uploadSource: StoragePutRequest.Source,
                 contentType: String?,
                 metadata: [String: String]?,
-                onEvent: @escaping StorageServiceUploadEventHandler)
+                onEvent: @escaping StorageServiceUploadEventListener)
 
     func multiPartUpload(serviceKey: String,
                          uploadSource: StoragePutRequest.Source,
                          contentType: String?,
                          metadata: [String: String]?,
-                         onEvent: @escaping StorageServiceMultiPartUploadEventHandler)
+                         onEvent: @escaping StorageServiceMultiPartUploadEventListener)
 
     func list(prefix: String,
               path: String?,
-              onEvent: @escaping StorageServiceListEventHandler)
+              onEvent: @escaping StorageServiceListEventListener)
 
     func delete(serviceKey: String,
-                onEvent: @escaping StorageServiceDeleteEventHandler)
+                onEvent: @escaping StorageServiceDeleteEventListener)
 }
