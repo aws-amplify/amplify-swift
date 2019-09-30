@@ -23,7 +23,10 @@ public class AWSS3StorageListOperation: AmplifyOperation<StorageListRequest, Voi
 
         self.storageService = storageService
         self.authService = authService
-        super.init(categoryType: .storage, request: request, listener: listener)
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.list,
+                   request: request,
+                   listener: listener)
     }
 
     override public func cancel() {

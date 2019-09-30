@@ -15,6 +15,8 @@ import Foundation
 /// implementation of a `dispatch` method that sends a contextualized payload to the Hub.
 ///
 /// Pausable/resumable tasks that do not require Hub dispatching should use AsynchronousOperation instead.
+///
+/// Note: Subclasses should conform to `HubPayloadEventNameable` and provide
 open class AmplifyOperation<Request: AmplifyOperationRequest, InProcess, Completed,
 Error: AmplifyError>: AsynchronousOperation {
 
@@ -33,10 +35,17 @@ Error: AmplifyError>: AsynchronousOperation {
     /// All AmplifyOperations must be associated with an Amplify Category
     public let categoryType: CategoryType
 
+    /// All AmplifyOperations must declare a HubPayloadEventName
+    public let eventName: HubPayloadEventName
+
     private var unsubscribeToken: UnsubscribeToken?
 
-    public init(categoryType: CategoryType, request: Request, listener: EventListener? = nil) {
+    public init(categoryType: CategoryType,
+                eventName: HubPayloadEventName,
+                request: Request,
+                listener: EventListener? = nil) {
         self.categoryType = categoryType
+        self.eventName = eventName
         self.request = request
         id = UUID()
 
@@ -64,6 +73,9 @@ Error: AmplifyError>: AsynchronousOperation {
 /// All AmplifyOperations must be associated with an Amplify Category
 extension AmplifyOperation: CategoryTypeable { }
 
+/// All AmplifyOperations must declare a HubPayloadEventName
+extension AmplifyOperation: HubPayloadEventNameable { }
+
 /// Conformance to Cancellable we gain for free by subclassing AsynchronousOperation
 extension AmplifyOperation: Cancellable { }
 
@@ -80,10 +92,7 @@ public extension AmplifyOperation {
     func dispatch(event: Event) {
         let channel = HubChannel(from: categoryType)
         let context = AmplifyOperationContext(operationId: id, request: request)
-        // TODO: Fix this description to be a concatenation of the category display name
-        /// and a short name of the operation type, as in "Storage.getURL" or "Storage.downloadFile".
-        let eventDescription = "\(type(of: self)).\(event.description)"
-        let payload = HubPayload(eventName: eventDescription, context: context, data: event)
+        let payload = HubPayload(eventName: eventName, context: context, data: event)
         Amplify.Hub.dispatch(to: channel, payload: payload)
     }
 
@@ -94,6 +103,7 @@ public extension AmplifyOperation {
         }
         Amplify.Hub.removeListener(unsubscribeToken)
     }
+
 }
 
 /// Describes the parameters that are passed during the creation of an AmplifyOperation

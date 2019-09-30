@@ -28,7 +28,10 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<StorageGetDataReques
 
         self.storageService = storageService
         self.authService = authService
-        super.init(categoryType: .storage, request: request, listener: listener)
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.getData,
+                   request: request,
+                   listener: listener)
     }
 
     override public func pause() {

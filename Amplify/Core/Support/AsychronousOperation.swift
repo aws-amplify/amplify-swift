@@ -35,7 +35,6 @@ open class AsynchronousOperation: Operation {
 
     // MARK: - Various `Operation` properties
 
-
     /// `true` if the operation is ready to be executed
     open override var isReady: Bool {
         return state == .notExecuting && super.isReady

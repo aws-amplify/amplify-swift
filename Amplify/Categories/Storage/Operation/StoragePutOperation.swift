@@ -8,3 +8,8 @@
 import Foundation
 
 public protocol StoragePutOperation: AmplifyOperation<StoragePutRequest, Progress, String, StorageError> {}
+
+public extension HubPayload.EventName.Storage {
+    /// eventName for HubPayloads emitted by this operation
+    static let put = "Storage.put"
+}

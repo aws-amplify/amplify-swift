@@ -25,7 +25,10 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<StorageGetURLRequest,
 
         self.storageService = storageService
         self.authService = authService
-        super.init(categoryType: .storage, request: request, listener: listener)
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.getURL,
+                   request: request,
+                   listener: listener)
     }
 
     override public func cancel() {

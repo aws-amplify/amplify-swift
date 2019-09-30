@@ -23,7 +23,10 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<StorageRemoveRequest,
 
         self.storageService = storageService
         self.authService = authService
-        super.init(categoryType: .storage, request: request, listener: listener)
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.remove,
+                   request: request,
+                   listener: listener)
     }
 
     override public func cancel() {

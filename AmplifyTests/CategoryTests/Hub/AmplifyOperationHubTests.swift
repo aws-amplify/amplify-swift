@@ -36,8 +36,7 @@ class AmplifyOperationHubTests: XCTestCase {
         let options = StorageListRequest.Options(pluginOptions: ["pluginDelay": 0.5])
         let request = StorageListRequest(options: options)
 
-        let operation = MockDispatchingStorageListOperation(categoryType: .storage,
-                                                            request: request)
+        let operation = MockDispatchingStorageListOperation(request: request)
 
         let listenerWasInvoked = expectation(description: "listener was invoked")
 
@@ -101,8 +100,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
         let request = StorageGetURLRequest(key: key, options: options)
 
-        let operation = MockDispatchingStorageGetURLOperation(categoryType: .storage,
-                                                              request: request,
+        let operation = MockDispatchingStorageGetURLOperation(request: request,
                                                               listener: listener)
 
         let delay = resolveDispatchDelay(options: options.pluginOptions)
@@ -120,8 +118,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
         let request = StorageGetDataRequest(key: key, options: options)
 
-        let operation = MockDispatchingStorageGetDataOperation(categoryType: .storage,
-                                                               request: request,
+        let operation = MockDispatchingStorageGetDataOperation(request: request,
                                                                listener: listener)
 
         let delay = resolveDispatchDelay(options: options.pluginOptions)
@@ -141,8 +138,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
             let request = StorageDownloadFileRequest(key: key, local: local, options: options)
 
-            let operation = MockDispatchingStorageDownloadFileOperation(categoryType: .storage,
-                                                                        request: request,
+            let operation = MockDispatchingStorageDownloadFileOperation(request: request,
                                                                         listener: listener)
 
             let delay = resolveDispatchDelay(options: options.pluginOptions)
@@ -162,8 +158,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
         let request = StoragePutRequest(key: key, source: .data(data), options: options)
 
-        let operation = MockDispatchingStoragePutOperation(categoryType: .storage,
-                                                           request: request,
+        let operation = MockDispatchingStoragePutOperation(request: request,
                                                            listener: listener)
 
         let delay = resolveDispatchDelay(options: options.pluginOptions)
@@ -182,8 +177,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
         let request = StoragePutRequest(key: key, source: .local(local), options: options)
 
-        let operation = MockDispatchingStoragePutOperation(categoryType: .storage,
-                                                           request: request,
+        let operation = MockDispatchingStoragePutOperation(request: request,
                                                            listener: listener)
 
         let delay = resolveDispatchDelay(options: options.pluginOptions)
@@ -201,8 +195,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
         let request = StorageRemoveRequest(key: key, options: options)
 
-        let operation = MockDispatchingStorageRemoveOperation(categoryType: .storage,
-                                                              request: request,
+        let operation = MockDispatchingStorageRemoveOperation(request: request,
                                                               listener: listener)
 
         let delay = resolveDispatchDelay(options: options.pluginOptions)
@@ -219,8 +212,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
         let request = StorageListRequest(options: options)
 
-        let operation = MockDispatchingStorageListOperation(categoryType: .storage,
-                                                            request: request,
+        let operation = MockDispatchingStorageListOperation(request: request,
                                                             listener: listener)
 
         let delay = resolveDispatchDelay(options: options.pluginOptions)
@@ -293,7 +285,7 @@ String, StorageError>, StoragePutOperation {
 class NonListeningStorageListOperation: AmplifyOperation<StorageListRequest, Void,
     StorageListResult, StorageError>,
 StorageListOperation {
-    init(request: Request) {
-        super.init(categoryType: .storage, request: request)
+    convenience init(request: Request) {
+        self.init(request: request, listener: nil)
     }
 }

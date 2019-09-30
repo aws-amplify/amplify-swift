@@ -6,3 +6,8 @@
 //
 
 public protocol StorageListOperation: AmplifyOperation<StorageListRequest, Void, StorageListResult, StorageError> {}
+
+public extension HubPayload.EventName.Storage {
+    /// eventName for HubPayloads emitted by this operation
+    static let list = "Storage.list"
+}
