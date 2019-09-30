@@ -14,7 +14,7 @@ public struct HubPayload {
     public let eventName: String
 
     /// A structure used to pass the source, or context, of the HubPayload. For HubPayloads that are
-    /// generated from AmplifyOperations, this field will be the Operation's associated RequestContext.
+    /// generated from AmplifyOperations, this field will be the Operation's associated AmplifyOperationContext.
     public let context: Any?
 
     /// A freeform structure used to pass objects or custom data. For HubPayloads that are generated from
