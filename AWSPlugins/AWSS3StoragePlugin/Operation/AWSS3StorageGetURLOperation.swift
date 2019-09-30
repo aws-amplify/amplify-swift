@@ -68,11 +68,11 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<StorageGetURLRequest,
         }
 
         storageService.getPreSignedURL(serviceKey: serviceKey, expires: request.options.expires) { [weak self] event in
-            self?.onListener(event: event)
+            self?.onServiceEvent(event: event)
         }
     }
 
-    private func onListener(event: StorageEvent<Void, Void, URL, StorageError>) {
+    private func onServiceEvent(event: StorageEvent<Void, Void, URL, StorageError>) {
         switch event {
         case .completed(let result):
             dispatch(result)

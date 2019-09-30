@@ -17,7 +17,7 @@ extension AWSS3StorageService {
                          uploadSource: StoragePutRequest.Source,
                          contentType: String?,
                          metadata: [String: String]?,
-                         onEvent: @escaping StorageServiceMultiPartUploadEventListener) {
+                         onEvent: @escaping StorageServiceMultiPartUploadEventHandler) {
 
         let multiPartUploadTaskCreatedHandler =
             AWSS3StorageService.makeMultiPartUploadTaskCreatedHandler(onEvent: onEvent)
@@ -53,7 +53,7 @@ extension AWSS3StorageService {
     }
 
     private static func makeMultiPartUploadTaskCreatedHandler(
-        onEvent: @escaping StorageServiceMultiPartUploadEventListener) -> MultiPartUploadTaskCreatedHandler {
+        onEvent: @escaping StorageServiceMultiPartUploadEventHandler) -> MultiPartUploadTaskCreatedHandler {
 
         let block: MultiPartUploadTaskCreatedHandler = {
             (task: AWSTask<AWSS3TransferUtilityMultiPartUploadTask>) -> Any? in
@@ -79,7 +79,7 @@ extension AWSS3StorageService {
     }
 
     private static func makeOnMultiPartUploadProgressHandler(
-        onEvent: @escaping StorageServiceMultiPartUploadEventListener) -> AWSS3TransferUtilityMultiPartProgressBlock {
+        onEvent: @escaping StorageServiceMultiPartUploadEventHandler) -> AWSS3TransferUtilityMultiPartProgressBlock {
         let block: AWSS3TransferUtilityMultiPartProgressBlock = {(task, progress) in
             onEvent(StorageEvent.inProcess(progress))
         }
@@ -88,7 +88,7 @@ extension AWSS3StorageService {
     }
 
     private static func makeMultiPartUploadCompletedHandler(
-        onEvent: @escaping StorageServiceMultiPartUploadEventListener)
+        onEvent: @escaping StorageServiceMultiPartUploadEventHandler)
         -> AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock {
 
         let block: AWSS3TransferUtilityMultiPartUploadCompletionHandlerBlock = { (task, error) -> Void in

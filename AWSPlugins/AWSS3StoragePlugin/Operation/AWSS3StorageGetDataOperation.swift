@@ -89,11 +89,11 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<StorageGetDataReques
         }
 
         storageService.download(serviceKey: serviceKey, fileURL: nil) { [weak self] event in
-            self?.onListener(event: event)
+            self?.onServiceEvent(event: event)
         }
     }
 
-    private func onListener(event: StorageEvent<StorageTaskReference, Progress, Data?, StorageError>) {
+    private func onServiceEvent(event: StorageEvent<StorageTaskReference, Progress, Data?, StorageError>) {
         switch event {
         case .initiated(let reference):
             storageTaskActionQueue.async {

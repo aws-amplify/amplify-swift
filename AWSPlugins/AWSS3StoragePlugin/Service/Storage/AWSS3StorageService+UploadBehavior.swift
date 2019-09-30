@@ -17,7 +17,7 @@ extension AWSS3StorageService {
                 uploadSource: StoragePutRequest.Source,
                 contentType: String?,
                 metadata: [String: String]?,
-                onEvent: @escaping StorageServiceUploadEventListener) {
+                onEvent: @escaping StorageServiceUploadEventHandler) {
 
         let uploadTaskCreatedHandler = AWSS3StorageService.makeUploadTaskCreatedHandler(onEvent: onEvent)
         let expression = AWSS3TransferUtilityUploadExpression()
@@ -56,7 +56,7 @@ extension AWSS3StorageService {
     }
 
     private static func makeUploadTaskCreatedHandler(
-        onEvent: @escaping StorageServiceUploadEventListener) -> UploadTaskCreatedHandler {
+        onEvent: @escaping StorageServiceUploadEventHandler) -> UploadTaskCreatedHandler {
 
         let block: UploadTaskCreatedHandler = { (task: AWSTask<AWSS3TransferUtilityUploadTask>) -> Any? in
             guard task.error == nil else {
@@ -81,7 +81,7 @@ extension AWSS3StorageService {
     }
 
     private static func makeOnUploadProgressHandler(
-        onEvent: @escaping StorageServiceUploadEventListener) -> AWSS3TransferUtilityProgressBlock {
+        onEvent: @escaping StorageServiceUploadEventHandler) -> AWSS3TransferUtilityProgressBlock {
             let block: AWSS3TransferUtilityProgressBlock = {(task, progress) in
                 onEvent(StorageEvent.inProcess(progress))
             }
@@ -89,7 +89,7 @@ extension AWSS3StorageService {
             return block
     }
 
-    private static func makeUploadCompletedHandler(onEvent: @escaping StorageServiceUploadEventListener,
+    private static func makeUploadCompletedHandler(onEvent: @escaping StorageServiceUploadEventHandler,
                                                    serviceKey: String)
         -> AWSS3TransferUtilityUploadCompletionHandlerBlock {
 

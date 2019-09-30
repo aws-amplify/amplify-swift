@@ -90,11 +90,11 @@ Void, StorageError>, StorageDownloadFileOperation {
         }
 
         storageService.download(serviceKey: serviceKey, fileURL: request.local) { [weak self] event in
-            self?.onListener(event: event)
+            self?.onServiceEvent(event: event)
         }
     }
 
-    private func onListener(event: StorageEvent<StorageTaskReference, Progress, Data?, StorageError>) {
+    private func onServiceEvent(event: StorageEvent<StorageTaskReference, Progress, Data?, StorageError>) {
         switch event {
         case .initiated(let reference):
             storageTaskActionQueue.async {
