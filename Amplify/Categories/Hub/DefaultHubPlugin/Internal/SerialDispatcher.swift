@@ -21,13 +21,13 @@ struct SerialDispatcher: Dispatcher {
         self.isCancelled = false
     }
 
-    func dispatch(to listeners: [FilteredListener]) {
-        for listener in listeners {
+    func dispatch(to filteredListeners: [FilteredListener]) {
+        for filteredListener in filteredListeners {
             guard !isCancelled else {
                 return
             }
 
-            guard channel == listener.channel else {
+            guard channel == filteredListener.channel else {
                 continue
             }
 
@@ -36,13 +36,13 @@ struct SerialDispatcher: Dispatcher {
                     return
                 }
 
-                if let filter = listener.filter {
+                if let filter = filteredListener.filter {
                     guard filter(self.payload) else {
                         return
                     }
                 }
 
-                listener.onEvent(self.payload)
+                filteredListener.listener(self.payload)
             }
         }
     }

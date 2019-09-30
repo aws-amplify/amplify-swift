@@ -50,13 +50,13 @@ Error: AmplifyError>: AsynchronousOperation {
     func subscribe(onEvent: @escaping EventListener) -> UnsubscribeToken {
         let channel = HubChannel(from: categoryType)
         let filterById = HubFilters.hubFilter(forOperation: self)
-        let listener: HubListener = { payload in
+        let hubListener: HubListener = { payload in
             guard let event = payload.data as? Event else {
                 return
             }
             onEvent(event)
         }
-        let token = Amplify.Hub.listen(to: channel, filteringBy: filterById, onEvent: listener)
+        let token = Amplify.Hub.listen(to: channel, filteringBy: filterById, listener: hubListener)
         return token
     }
 }
@@ -126,7 +126,7 @@ public extension HubCategory {
                 }
                 onEvent(data)
             }
-            let token = listen(to: channel, filteringBy: filter, onEvent: transformingListener)
+            let token = listen(to: channel, filteringBy: filter, listener: transformingListener)
             return token
     }
 }
