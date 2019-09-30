@@ -9,8 +9,9 @@
 public struct HubPayload {
 
     /// The name, tag, or grouping of the HubPayload. Recommended to be a small string without spaces,
-    /// such as `signIn` or `hang_up`.
-    public let event: String
+    /// such as `signIn` or `hang_up`. For AmplifyOperations, this will be a concatenation of the category display name
+    /// and a short name of the operation type, as in "Storage.getURL" or "Storage.downloadFile".
+    public let eventName: String
 
     /// A structure used to pass the source, or context, of the HubPayload. For HubPayloads that are
     /// generated from AmplifyOperations, this field will be the Operation's associated RequestContext.
@@ -20,10 +21,10 @@ public struct HubPayload {
     /// AmplifyOperations, this field will be the Operation's associated AsyncEvent.
     public let data: Any?
 
-    public init(event: String,
+    public init(eventName: String,
                 context: Any? = nil,
                 data: Any? = nil) {
-        self.event = event
+        self.eventName = eventName
         self.context = context
         self.data = data
     }

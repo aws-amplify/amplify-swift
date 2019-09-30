@@ -80,8 +80,10 @@ public extension AmplifyOperation {
     func dispatch(event: Event) {
         let channel = HubChannel(from: categoryType)
         let context = AmplifyOperationContext(operationId: id, request: request)
+        // TODO: Fix this description to be a concatenation of the category display name
+        /// and a short name of the operation type, as in "Storage.getURL" or "Storage.downloadFile".
         let eventDescription = "\(type(of: self)).\(event.description)"
-        let payload = HubPayload(event: eventDescription, context: context, data: event)
+        let payload = HubPayload(eventName: eventDescription, context: context, data: event)
         Amplify.Hub.dispatch(to: channel, payload: payload)
     }
 

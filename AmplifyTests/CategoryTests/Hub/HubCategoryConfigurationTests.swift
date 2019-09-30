@@ -222,7 +222,7 @@ class HubCategoryConfigurationTests: XCTestCase {
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
         let exception: BadInstructionException? = catchBadInstruction {
-            Amplify.Hub.dispatch(to: .storage, payload: HubPayload(event: "foo"))
+            Amplify.Hub.dispatch(to: .storage, payload: HubPayload(eventName: "foo"))
         }
         XCTAssertNotNil(exception)
     }

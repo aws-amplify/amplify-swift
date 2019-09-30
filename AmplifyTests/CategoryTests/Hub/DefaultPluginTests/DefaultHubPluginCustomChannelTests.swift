@@ -49,7 +49,7 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
             return
         }
 
-        plugin.dispatch(to: .custom("CustomChannel1"), payload: HubPayload(event: "TEST_EVENT"))
+        plugin.dispatch(to: .custom("CustomChannel1"), payload: HubPayload(eventName: "TEST_EVENT"))
 
         waitForExpectations(timeout: 0.5)
     }
@@ -70,7 +70,7 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
             return
         }
 
-        plugin.dispatch(to: .custom("CustomChannel2"), payload: HubPayload(event: "TEST_EVENT"))
+        plugin.dispatch(to: .custom("CustomChannel2"), payload: HubPayload(eventName: "TEST_EVENT"))
 
         waitForExpectations(timeout: 0.5)
     }
@@ -100,7 +100,7 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
             return
         }
 
-        plugin.dispatch(to: .custom("CustomChannel1"), payload: HubPayload(event: "TEST_EVENT"))
+        plugin.dispatch(to: .custom("CustomChannel1"), payload: HubPayload(eventName: "TEST_EVENT"))
 
         waitForExpectations(timeout: 0.5)
     }

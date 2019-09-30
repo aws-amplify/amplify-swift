@@ -65,7 +65,7 @@ class DefaultHubPluginTests: XCTestCase {
             return
         }
 
-        plugin.dispatch(to: .storage, payload: HubPayload(event: "TEST_EVENT"))
+        plugin.dispatch(to: .storage, payload: HubPayload(eventName: "TEST_EVENT"))
         waitForExpectations(timeout: 0.5)
     }
 
@@ -94,7 +94,7 @@ class DefaultHubPluginTests: XCTestCase {
             return
         }
 
-        plugin.dispatch(to: .storage, payload: HubPayload(event: "TEST_EVENT"))
+        plugin.dispatch(to: .storage, payload: HubPayload(eventName: "TEST_EVENT"))
         wait(for: [expectedMessageReceived], timeout: 0.5)
 
         plugin.removeListener(unsubscribeToken)
@@ -104,7 +104,7 @@ class DefaultHubPluginTests: XCTestCase {
                                                                                 timeout: 0.5)
         XCTAssertFalse(isStillRegistered, "Should not be registered after removeListener")
 
-        plugin.dispatch(to: .storage, payload: HubPayload(event: "TEST_EVENT"))
+        plugin.dispatch(to: .storage, payload: HubPayload(eventName: "TEST_EVENT"))
         wait(for: [unexpectedMessageReceived], timeout: 0.5)
     }
 
@@ -117,7 +117,7 @@ class DefaultHubPluginTests: XCTestCase {
         _ = plugin.listen(to: .storage, isIncluded: nil) { _ in
             messageShouldNotBeReceived.fulfill()
         }
-        plugin.dispatch(to: .custom("DifferentChannel"), payload: HubPayload(event: "TEST_EVENT"))
+        plugin.dispatch(to: .custom("DifferentChannel"), payload: HubPayload(eventName: "TEST_EVENT"))
         waitForExpectations(timeout: 0.5)
     }
 
