@@ -67,6 +67,9 @@
                 <a href="../Enums/AsyncEvent.html">AsyncEvent</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Enums/AuthError.html">AuthError</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Enums/CategoryType.html">CategoryType</a>
               </li>
               <li class="nav-group-task">
@@ -203,7 +206,7 @@
                 <a href="../Structs/AmplifyConfiguration.html">AmplifyConfiguration</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs.html#/s:7Amplify0A16OperationContextV">AmplifyOperationContext</a>
+                <a href="../Structs/AmplifyOperationContext.html">AmplifyOperationContext</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/AnalyticsCategoryConfiguration.html">AnalyticsCategoryConfiguration</a>
@@ -225,6 +228,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/HubPayload.html">HubPayload</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HubPayload/EventName.html">– EventName</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/LoggingCategoryConfiguration.html">LoggingCategoryConfiguration</a>
@@ -286,16 +292,28 @@
                 <a href="../Typealiases.html#/s:7Amplify16ErrorDescriptiona">ErrorDescription</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify9ErrorNamea">ErrorName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify5Fielda">Field</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:7Amplify9HubFiltera">HubFilter</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:7Amplify11HubListenera">HubListener</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify3Keya">Key</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:7Amplify9PluginKeya">PluginKey</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:7Amplify18RecoverySuggestiona">RecoverySuggestion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify16TargetIdentityIda">TargetIdentityId</a>
               </li>
             </ul>
           </li>
@@ -320,9 +338,37 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Amplify10HubPayloadV5eventSSvp"></a>
-                    <a name="//apple_ref/swift/Property/event" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Amplify10HubPayloadV5eventSSvp">event</a>
+                    <a name="/s:7Amplify10HubPayloadV9EventNameV"></a>
+                    <a name="//apple_ref/swift/Struct/EventName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify10HubPayloadV9EventNameV">EventName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A struct containing event names registered by Amplify Operations</p>
+
+                        <a href="../Structs/HubPayload/EventName.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">EventName</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Amplify10HubPayloadV9eventNameXevp"></a>
+                    <a name="//apple_ref/swift/Property/eventName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify10HubPayloadV9eventNameXevp">eventName</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -331,14 +377,15 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>The name, tag, or grouping of the HubPayload. Recommended to be a small string without spaces,
-such as <code>signIn</code> or <code>hang_up</code>.</p>
+such as <code>signIn</code> or <code>hang_up</code>. For AmplifyOperations, this will be a concatenation of the category display name
+and a short name of the operation type, as in <q>Storage.getURL</q> or <q>Storage.downloadFile</q>.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">event</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">eventName</span><span class="p">:</span> <span class="kt">HubPayloadEventName</span></code></pre>
 
                         </div>
                       </div>
@@ -359,7 +406,7 @@ such as <code>signIn</code> or <code>hang_up</code>.</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>A structure used to pass the source, or context, of the HubPayload. For HubPayloads that are
-generated from AmplifyOperations, this field will be the Operation&rsquo;s associated RequestContext.</p>
+generated from AmplifyOperations, this field will be the Operation&rsquo;s associated AmplifyOperationContext.</p>
 
                       </div>
                       <div class="declaration">
@@ -404,9 +451,9 @@ AmplifyOperations, this field will be the Operation&rsquo;s associated AsyncEven
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Amplify10HubPayloadV5event7context4dataACSS_ypSgAGtcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(event:context:data:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Amplify10HubPayloadV5event7context4dataACSS_ypSgAGtcfc">init(event:context:data:)</a>
+                    <a name="/s:7Amplify10HubPayloadV9eventName7context4dataACSS_ypSgAGtcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(eventName:context:data:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify10HubPayloadV9eventName7context4dataACSS_ypSgAGtcfc">init(eventName:context:data:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -421,7 +468,7 @@ AmplifyOperations, this field will be the Operation&rsquo;s associated AsyncEven
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">event</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">eventName</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
             <span class="nv">context</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
             <span class="nv">data</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
 
@@ -435,7 +482,7 @@ AmplifyOperations, this field will be the Operation&rsquo;s associated AsyncEven
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2019 <a class="link" href="https://aws.amazon.com/amplify/" target="_blank" rel="external">Amazon Web Services</a>. All rights reserved. (Last updated: 2019-09-26)</p>
+          <p>&copy; 2019 <a class="link" href="https://aws.amazon.com/amplify/" target="_blank" rel="external">Amazon Web Services</a>. All rights reserved. (Last updated: 2019-09-30)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.11.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

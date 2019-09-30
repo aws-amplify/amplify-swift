@@ -555,8 +555,8 @@
     },
     {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Hub/HubPayload.swift",
-      "line": 23,
-      "symbol": "HubPayload.init(event:context:data:)",
+      "line": 27,
+      "symbol": "HubPayload.init(eventName:context:data:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
@@ -638,6 +638,34 @@
       "warning": "undocumented"
     },
     {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Error/AuthError.swift",
+      "line": 9,
+      "symbol": "AuthError",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Error/AuthError.swift",
+      "line": 10,
+      "symbol": "AuthError.identity(_:_:_:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Error/AuthError.swift",
+      "line": 11,
+      "symbol": "AuthError.unknown(_:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Error/AuthError.swift",
+      "line": 14,
+      "symbol": "AuthError",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Error/StorageError.swift",
       "line": 9,
       "symbol": "StorageError",
@@ -646,50 +674,57 @@
     },
     {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Error/StorageError.swift",
+      "line": 10,
+      "symbol": "StorageError.accessDenied(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Error/StorageError.swift",
       "line": 11,
-      "symbol": "StorageError.httpStatusError(_:_:)",
+      "symbol": "StorageError.authError(_:_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Error/StorageError.swift",
       "line": 12,
-      "symbol": "StorageError.unknown(_:_:)",
+      "symbol": "StorageError.httpStatusError(_:_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Error/StorageError.swift",
       "line": 13,
-      "symbol": "StorageError.validation(_:_:)",
+      "symbol": "StorageError.keyNotFound(_:_:_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Error/StorageError.swift",
       "line": 14,
-      "symbol": "StorageError.identity(_:_:)",
+      "symbol": "StorageError.localFileNotFound(_:_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Error/StorageError.swift",
       "line": 15,
-      "symbol": "StorageError.keyNotFound(_:_:)",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Error/StorageError.swift",
-      "line": 16,
       "symbol": "StorageError.service(_:_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Error/StorageError.swift",
+      "line": 16,
+      "symbol": "StorageError.unknown(_:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Error/StorageError.swift",
       "line": 17,
-      "symbol": "StorageError.missingLocalFile(_:_:)",
+      "symbol": "StorageError.validation(_:_:_:)",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
@@ -698,6 +733,167 @@
       "line": 20,
       "symbol": "StorageError",
       "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StorageGetDataRequest.swift",
+      "line": 10,
+      "symbol": "StorageGetDataRequest",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StorageGetDataRequest.swift",
+      "line": 17,
+      "symbol": "StorageGetDataRequest.init(key:options:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StorageGetDataRequest.swift",
+      "line": 23,
+      "symbol": "StorageGetDataRequest",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StorageGetDataRequest.swift",
+      "line": 41,
+      "symbol": "StorageGetDataRequest.Options.init(accessLevel:targetIdentityId:pluginOptions:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StorageGetURLRequest.swift",
+      "line": 8,
+      "symbol": "StorageGetURLRequest",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StorageGetURLRequest.swift",
+      "line": 15,
+      "symbol": "StorageGetURLRequest.init(key:options:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StorageGetURLRequest.swift",
+      "line": 21,
+      "symbol": "StorageGetURLRequest",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StorageGetURLRequest.swift",
+      "line": 43,
+      "symbol": "StorageGetURLRequest.Options.init(accessLevel:targetIdentityId:expires:pluginOptions:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StorageListRequest.swift",
+      "line": 8,
+      "symbol": "StorageListRequest",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StorageListRequest.swift",
+      "line": 12,
+      "symbol": "StorageListRequest.init(options:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StorageListRequest.swift",
+      "line": 17,
+      "symbol": "StorageListRequest",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StorageListRequest.swift",
+      "line": 35,
+      "symbol": "StorageListRequest.Options.init(accessLevel:targetIdentityId:path:pluginOptions:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StoragePutRequest.swift",
+      "line": 10,
+      "symbol": "StoragePutRequest",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StoragePutRequest.swift",
+      "line": 11,
+      "symbol": "StoragePutRequest.Source",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StoragePutRequest.swift",
+      "line": 12,
+      "symbol": "StoragePutRequest.Source.data(_:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StoragePutRequest.swift",
+      "line": 13,
+      "symbol": "StoragePutRequest.Source.local(_:)",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StoragePutRequest.swift",
+      "line": 25,
+      "symbol": "StoragePutRequest.init(key:source:options:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StoragePutRequest.swift",
+      "line": 32,
+      "symbol": "StoragePutRequest",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StoragePutRequest.swift",
+      "line": 53,
+      "symbol": "StoragePutRequest.Options.init(accessLevel:targetIdentityId:metadata:contentType:pluginOptions:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StorageRemoveRequest.swift",
+      "line": 8,
+      "symbol": "StorageRemoveRequest",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StorageRemoveRequest.swift",
+      "line": 15,
+      "symbol": "StorageRemoveRequest.init(key:options:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StorageRemoveRequest.swift",
+      "line": 21,
+      "symbol": "StorageRemoveRequest",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/Request/StorageRemoveRequest.swift",
+      "line": 33,
+      "symbol": "StorageRemoveRequest.Options.init(accessLevel:pluginOptions:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
@@ -708,66 +904,10 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageDownloadFileOperation.swift",
-      "line": 13,
-      "symbol": "StorageDownloadFileRequest",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageDownloadFileOperation.swift",
-      "line": 23,
-      "symbol": "StorageDownloadFileRequest.init(key:local:options:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageDownloadFileOperation.swift",
-      "line": 30,
-      "symbol": "StorageDownloadFileRequest",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageDownloadFileOperation.swift",
-      "line": 45,
-      "symbol": "StorageDownloadFileRequest.Options.init(accessLevel:targetIdentityId:pluginOptions:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageGetDataOperation.swift",
       "line": 10,
       "symbol": "StorageGetDataOperation",
       "symbol_kind": "source.lang.swift.decl.protocol",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageGetDataOperation.swift",
-      "line": 12,
-      "symbol": "StorageGetDataRequest",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageGetDataOperation.swift",
-      "line": 19,
-      "symbol": "StorageGetDataRequest.init(key:options:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageGetDataOperation.swift",
-      "line": 25,
-      "symbol": "StorageGetDataRequest",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageGetDataOperation.swift",
-      "line": 43,
-      "symbol": "StorageGetDataRequest.Options.init(accessLevel:targetIdentityId:pluginOptions:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
@@ -778,66 +918,10 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageGetURLOperation.swift",
-      "line": 13,
-      "symbol": "StorageGetURLRequest",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageGetURLOperation.swift",
-      "line": 20,
-      "symbol": "StorageGetURLRequest.init(key:options:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageGetURLOperation.swift",
-      "line": 26,
-      "symbol": "StorageGetURLRequest",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageGetURLOperation.swift",
-      "line": 48,
-      "symbol": "StorageGetURLRequest.Options.init(accessLevel:targetIdentityId:expires:pluginOptions:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageListOperation.swift",
       "line": 8,
       "symbol": "StorageListOperation",
       "symbol_kind": "source.lang.swift.decl.protocol",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageListOperation.swift",
-      "line": 10,
-      "symbol": "StorageListRequest",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageListOperation.swift",
-      "line": 14,
-      "symbol": "StorageListRequest.init(options:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageListOperation.swift",
-      "line": 19,
-      "symbol": "StorageListRequest",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageListOperation.swift",
-      "line": 37,
-      "symbol": "StorageListRequest.Options.init(accessLevel:targetIdentityId:path:pluginOptions:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
@@ -848,55 +932,6 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StoragePutOperation.swift",
-      "line": 12,
-      "symbol": "StoragePutRequest",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StoragePutOperation.swift",
-      "line": 13,
-      "symbol": "StoragePutRequest.Source",
-      "symbol_kind": "source.lang.swift.decl.enum",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StoragePutOperation.swift",
-      "line": 14,
-      "symbol": "StoragePutRequest.Source.data(_:)",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StoragePutOperation.swift",
-      "line": 15,
-      "symbol": "StoragePutRequest.Source.local(_:)",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StoragePutOperation.swift",
-      "line": 27,
-      "symbol": "StoragePutRequest.init(key:source:options:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StoragePutOperation.swift",
-      "line": 34,
-      "symbol": "StoragePutRequest",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StoragePutOperation.swift",
-      "line": 55,
-      "symbol": "StoragePutRequest.Options.init(accessLevel:targetIdentityId:metadata:contentType:pluginOptions:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageRemoveOperation.swift",
       "line": 8,
       "symbol": "StorageRemoveOperation",
@@ -904,30 +939,30 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageRemoveOperation.swift",
-      "line": 11,
-      "symbol": "StorageRemoveRequest",
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Request/StorageDownloadFileRequest.swift",
+      "line": 10,
+      "symbol": "StorageDownloadFileRequest",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageRemoveOperation.swift",
-      "line": 18,
-      "symbol": "StorageRemoveRequest.init(key:options:)",
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Request/StorageDownloadFileRequest.swift",
+      "line": 20,
+      "symbol": "StorageDownloadFileRequest.init(key:local:options:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageRemoveOperation.swift",
-      "line": 24,
-      "symbol": "StorageRemoveRequest",
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Request/StorageDownloadFileRequest.swift",
+      "line": 27,
+      "symbol": "StorageDownloadFileRequest",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageRemoveOperation.swift",
-      "line": 36,
-      "symbol": "StorageRemoveRequest.Options.init(accessLevel:pluginOptions:)",
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Request/StorageDownloadFileRequest.swift",
+      "line": 42,
+      "symbol": "StorageDownloadFileRequest.Options.init(accessLevel:targetIdentityId:pluginOptions:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
@@ -1023,9 +1058,37 @@
       "warning": "undocumented"
     },
     {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AmplifyError.swift",
+      "line": 16,
+      "symbol": "ErrorName",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AmplifyError.swift",
+      "line": 17,
+      "symbol": "Field",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AmplifyError.swift",
+      "line": 18,
+      "symbol": "Key",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AmplifyError.swift",
+      "line": 19,
+      "symbol": "TargetIdentityId",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Core/Support/AmplifyOperation.swift",
-      "line": 38,
-      "symbol": "AmplifyOperation.init(categoryType:request:onEvent:)",
+      "line": 43,
+      "symbol": "AmplifyOperation.init(categoryType:eventName:request:listener:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },

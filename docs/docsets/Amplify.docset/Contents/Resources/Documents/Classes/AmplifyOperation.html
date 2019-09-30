@@ -67,6 +67,9 @@
                 <a href="../Enums/AsyncEvent.html">AsyncEvent</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Enums/AuthError.html">AuthError</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Enums/CategoryType.html">CategoryType</a>
               </li>
               <li class="nav-group-task">
@@ -203,7 +206,7 @@
                 <a href="../Structs/AmplifyConfiguration.html">AmplifyConfiguration</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs.html#/s:7Amplify0A16OperationContextV">AmplifyOperationContext</a>
+                <a href="../Structs/AmplifyOperationContext.html">AmplifyOperationContext</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/AnalyticsCategoryConfiguration.html">AnalyticsCategoryConfiguration</a>
@@ -225,6 +228,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/HubPayload.html">HubPayload</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HubPayload/EventName.html">– EventName</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/LoggingCategoryConfiguration.html">LoggingCategoryConfiguration</a>
@@ -286,16 +292,28 @@
                 <a href="../Typealiases.html#/s:7Amplify16ErrorDescriptiona">ErrorDescription</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify9ErrorNamea">ErrorName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify5Fielda">Field</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:7Amplify9HubFiltera">HubFilter</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:7Amplify11HubListenera">HubListener</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify3Keya">Key</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:7Amplify9PluginKeya">PluginKey</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:7Amplify18RecoverySuggestiona">RecoverySuggestion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify16TargetIdentityIda">TargetIdentityId</a>
               </li>
             </ul>
           </li>
@@ -320,6 +338,8 @@ uploading an image to cloud storage, processing it via a Predictions engine, and
 implementation of a <code>dispatch</code> method that sends a contextualized payload to the Hub.</p>
 
 <p>Pausable/resumable tasks that do not require Hub dispatching should use AsynchronousOperation instead.</p>
+
+<p>Note: Subclasses should conform to <code>HubPayloadEventNameable</code> and provide</p>
 
           </section>
           <section class="section task-group-section">
@@ -437,9 +457,36 @@ be used to identify previously-scheduled work for progress tracking or other fun
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Amplify0A9OperationC12categoryType7request7onEventACyxq_q0_q1_GAA08CategoryD0O_xyAA05AsyncG0Oyq_q0_q1_GcSgtcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(categoryType:request:onEvent:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Amplify0A9OperationC12categoryType7request7onEventACyxq_q0_q1_GAA08CategoryD0O_xyAA05AsyncG0Oyq_q0_q1_GcSgtcfc">init(categoryType:request:onEvent:)</a>
+                    <a name="/s:7Amplify0A9OperationC9eventNameXevp"></a>
+                    <a name="//apple_ref/swift/Property/eventName" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify0A9OperationC9eventNameXevp">eventName</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>All AmplifyOperations must declare a HubPayloadEventName</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">eventName</span><span class="p">:</span> <span class="kt">HubPayloadEventName</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:7Amplify0A9OperationCyACyxq_q0_q1_GAA12CategoryTypeO_XexyAA10AsyncEventOyq_q0_q1_GcSgtcADmcAA0aB7RequestRzAA0A5ErrorR1_r2_lufc"></a>
+                    <a name="//apple_ref/swift/Method/init(categoryType:eventName:request:listener:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify0A9OperationCyACyxq_q0_q1_GAA12CategoryTypeO_XexyAA10AsyncEventOyq_q0_q1_GcSgtcADmcAA0aB7RequestRzAA0A5ErrorR1_r2_lufc">init(categoryType:eventName:request:listener:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -454,7 +501,10 @@ be used to identify previously-scheduled work for progress tracking or other fun
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">categoryType</span><span class="p">:</span> <span class="kt"><a href="../Enums/CategoryType.html">CategoryType</a></span><span class="p">,</span> <span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Classes/AmplifyOperation.html#/s:7Amplify0A9OperationC7Requesta">Request</a></span><span class="p">,</span> <span class="nv">onEvent</span><span class="p">:</span> <span class="kt"><a href="../Classes/AmplifyOperation.html#/s:7Amplify0A9OperationC12EventHandlera">EventHandler</a></span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">categoryType</span><span class="p">:</span> <span class="kt"><a href="../Enums/CategoryType.html">CategoryType</a></span><span class="p">,</span>
+            <span class="nv">eventName</span><span class="p">:</span> <span class="kt">HubPayloadEventName</span><span class="p">,</span>
+            <span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Classes/AmplifyOperation.html#/s:7Amplify0A9OperationC7Requesta">Request</a></span><span class="p">,</span>
+            <span class="nv">listener</span><span class="p">:</span> <span class="kt"><a href="../Classes/AmplifyOperation.html#/s:7Amplify0A9OperationC13EventListenera">EventListener</a></span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -495,9 +545,9 @@ be used to identify previously-scheduled work for progress tracking or other fun
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Amplify0A9OperationC12EventHandlera"></a>
-                    <a name="//apple_ref/swift/Alias/EventHandler" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Amplify0A9OperationC12EventHandlera">EventHandler</a>
+                    <a name="/s:7Amplify0A9OperationC13EventListenera"></a>
+                    <a name="//apple_ref/swift/Alias/EventListener" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify0A9OperationC13EventListenera">EventListener</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -505,14 +555,14 @@ be used to identify previously-scheduled work for progress tracking or other fun
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Convenience typealias for the <code>onEvent</code> callback submitted during Operation creation</p>
+                        <p>Convenience typealias for the <code>listener</code> callback submitted during Operation creation</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">EventHandler</span> <span class="o">=</span> <span class="p">(</span><span class="kt"><a href="../Classes/AmplifyOperation.html#/s:7Amplify0A9OperationC5Eventa">Event</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">EventListener</span> <span class="o">=</span> <span class="p">(</span><span class="kt"><a href="../Classes/AmplifyOperation.html#/s:7Amplify0A9OperationC5Eventa">Event</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span></code></pre>
 
                         </div>
                       </div>
@@ -532,7 +582,7 @@ be used to identify previously-scheduled work for progress tracking or other fun
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Dispatches an event to the hub. Internally, creates an <code><a href="../Structs.html#/s:7Amplify0A16OperationContextV">AmplifyOperationContext</a></code> object from the
+                        <p>Dispatches an event to the hub. Internally, creates an <code><a href="../Structs/AmplifyOperationContext.html">AmplifyOperationContext</a></code> object from the
 operation&rsquo;s <code><a href="../Classes/AmplifyOperation.html#/s:7Amplify0A9OperationC2id10Foundation4UUIDVvp">id</a></code>, and <code><a href="../Classes/AmplifyOperation.html#/s:7Amplify0A9OperationC7requestxvp">request</a></code></p>
 
                       </div>
@@ -598,7 +648,7 @@ operation&rsquo;s <code><a href="../Classes/AmplifyOperation.html#/s:7Amplify0A9
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2019 <a class="link" href="https://aws.amazon.com/amplify/" target="_blank" rel="external">Amazon Web Services</a>. All rights reserved. (Last updated: 2019-09-26)</p>
+          <p>&copy; 2019 <a class="link" href="https://aws.amazon.com/amplify/" target="_blank" rel="external">Amazon Web Services</a>. All rights reserved. (Last updated: 2019-09-30)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.11.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

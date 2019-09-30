@@ -67,6 +67,9 @@
                 <a href="../Enums/AsyncEvent.html">AsyncEvent</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Enums/AuthError.html">AuthError</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Enums/CategoryType.html">CategoryType</a>
               </li>
               <li class="nav-group-task">
@@ -203,7 +206,7 @@
                 <a href="../Structs/AmplifyConfiguration.html">AmplifyConfiguration</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs.html#/s:7Amplify0A16OperationContextV">AmplifyOperationContext</a>
+                <a href="../Structs/AmplifyOperationContext.html">AmplifyOperationContext</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/AnalyticsCategoryConfiguration.html">AnalyticsCategoryConfiguration</a>
@@ -225,6 +228,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/HubPayload.html">HubPayload</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HubPayload/EventName.html">– EventName</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/LoggingCategoryConfiguration.html">LoggingCategoryConfiguration</a>
@@ -286,16 +292,28 @@
                 <a href="../Typealiases.html#/s:7Amplify16ErrorDescriptiona">ErrorDescription</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify9ErrorNamea">ErrorName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify5Fielda">Field</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:7Amplify9HubFiltera">HubFilter</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:7Amplify11HubListenera">HubListener</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify3Keya">Key</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:7Amplify9PluginKeya">PluginKey</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:7Amplify18RecoverySuggestiona">RecoverySuggestion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify16TargetIdentityIda">TargetIdentityId</a>
               </li>
             </ul>
           </li>
@@ -521,9 +539,9 @@ If no plugin has been added for <code>key</code>, no action is taken, making thi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Amplify29StorageCategoryClientBehaviorP6getURL3key7options7onEventAA0B15GetURLOperation_pSS_AA0bL10URLRequestV7OptionsVSgyAA05AsyncK0Oyyt10Foundation0G0VAA0B5ErrorOGcSgtF"></a>
-                    <a name="//apple_ref/swift/Method/getURL(key:options:onEvent:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Amplify29StorageCategoryClientBehaviorP6getURL3key7options7onEventAA0B15GetURLOperation_pSS_AA0bL10URLRequestV7OptionsVSgyAA05AsyncK0Oyyt10Foundation0G0VAA0B5ErrorOGcSgtF">getURL(key:options:onEvent:)</a>
+                    <a name="/s:7Amplify29StorageCategoryClientBehaviorP6getURL3key7options8listenerAA0B15GetURLOperation_pSS_AA0bK10URLRequestV7OptionsVSgyAA10AsyncEventOyyt10Foundation0G0VAA0B5ErrorOGcSgtF"></a>
+                    <a name="//apple_ref/swift/Method/getURL(key:options:listener:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify29StorageCategoryClientBehaviorP6getURL3key7options8listenerAA0B15GetURLOperation_pSS_AA0bK10URLRequestV7OptionsVSgyAA10AsyncEventOyyt10Foundation0G0VAA0B5ErrorOGcSgtF">getURL(key:options:listener:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -539,7 +557,7 @@ If no plugin has been added for <code>key</code>, no action is taken, making thi
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getURL</span><span class="p">(</span><span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
                    <span class="nv">options</span><span class="p">:</span> <span class="kt"><a href="../Structs/StorageGetURLRequest.html">StorageGetURLRequest</a></span><span class="o">.</span><span class="kt">Options</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
-                   <span class="nv">onEvent</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify22StorageGetURLOperationP">StorageGetURLOperation</a></span><span class="o">.</span><span class="kt">EventHandler</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify22StorageGetURLOperationP">StorageGetURLOperation</a></span></code></pre>
+                   <span class="nv">listener</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify22StorageGetURLOperationP">StorageGetURLOperation</a></span><span class="o">.</span><span class="kt">EventListener</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify22StorageGetURLOperationP">StorageGetURLOperation</a></span></code></pre>
 
                         </div>
                       </div>
@@ -549,9 +567,9 @@ If no plugin has been added for <code>key</code>, no action is taken, making thi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Amplify29StorageCategoryClientBehaviorP7getData3key7options7onEventAA0b3GetG9Operation_pSS_AA0blG7RequestV7OptionsVSgyAA05AsyncK0OySo10NSProgressC10Foundation0G0VAA0B5ErrorOGcSgtF"></a>
-                    <a name="//apple_ref/swift/Method/getData(key:options:onEvent:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Amplify29StorageCategoryClientBehaviorP7getData3key7options7onEventAA0b3GetG9Operation_pSS_AA0blG7RequestV7OptionsVSgyAA05AsyncK0OySo10NSProgressC10Foundation0G0VAA0B5ErrorOGcSgtF">getData(key:options:onEvent:)</a>
+                    <a name="/s:7Amplify29StorageCategoryClientBehaviorP7getData3key7options8listenerAA0b3GetG9Operation_pSS_AA0bkG7RequestV7OptionsVSgyAA10AsyncEventOySo10NSProgressC10Foundation0G0VAA0B5ErrorOGcSgtF"></a>
+                    <a name="//apple_ref/swift/Method/getData(key:options:listener:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify29StorageCategoryClientBehaviorP7getData3key7options8listenerAA0b3GetG9Operation_pSS_AA0bkG7RequestV7OptionsVSgyAA10AsyncEventOySo10NSProgressC10Foundation0G0VAA0B5ErrorOGcSgtF">getData(key:options:listener:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -567,7 +585,7 @@ If no plugin has been added for <code>key</code>, no action is taken, making thi
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getData</span><span class="p">(</span><span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
                     <span class="nv">options</span><span class="p">:</span> <span class="kt"><a href="../Structs/StorageGetDataRequest.html">StorageGetDataRequest</a></span><span class="o">.</span><span class="kt">Options</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
-                    <span class="nv">onEvent</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify23StorageGetDataOperationP">StorageGetDataOperation</a></span><span class="o">.</span><span class="kt">EventHandler</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify23StorageGetDataOperationP">StorageGetDataOperation</a></span></code></pre>
+                    <span class="nv">listener</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify23StorageGetDataOperationP">StorageGetDataOperation</a></span><span class="o">.</span><span class="kt">EventListener</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify23StorageGetDataOperationP">StorageGetDataOperation</a></span></code></pre>
 
                         </div>
                       </div>
@@ -577,9 +595,9 @@ If no plugin has been added for <code>key</code>, no action is taken, making thi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Amplify29StorageCategoryClientBehaviorP12downloadFile3key5local7options7onEventAA0b8DownloadG9Operation_pSS_10Foundation3URLVAA0bmG7RequestV7OptionsVSgyAA05AsyncL0OySo10NSProgressCytAA0B5ErrorOGcSgtF"></a>
-                    <a name="//apple_ref/swift/Method/downloadFile(key:local:options:onEvent:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Amplify29StorageCategoryClientBehaviorP12downloadFile3key5local7options7onEventAA0b8DownloadG9Operation_pSS_10Foundation3URLVAA0bmG7RequestV7OptionsVSgyAA05AsyncL0OySo10NSProgressCytAA0B5ErrorOGcSgtF">downloadFile(key:local:options:onEvent:)</a>
+                    <a name="/s:7Amplify29StorageCategoryClientBehaviorP12downloadFile3key5local7options8listenerAA0b8DownloadG9Operation_pSS_10Foundation3URLVAA0blG7RequestV7OptionsVSgyAA10AsyncEventOySo10NSProgressCytAA0B5ErrorOGcSgtF"></a>
+                    <a name="//apple_ref/swift/Method/downloadFile(key:local:options:listener:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify29StorageCategoryClientBehaviorP12downloadFile3key5local7options8listenerAA0b8DownloadG9Operation_pSS_10Foundation3URLVAA0blG7RequestV7OptionsVSgyAA10AsyncEventOySo10NSProgressCytAA0B5ErrorOGcSgtF">downloadFile(key:local:options:listener:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -596,7 +614,7 @@ If no plugin has been added for <code>key</code>, no action is taken, making thi
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">downloadFile</span><span class="p">(</span><span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
                          <span class="nv">local</span><span class="p">:</span> <span class="kt">URL</span><span class="p">,</span>
                          <span class="nv">options</span><span class="p">:</span> <span class="kt"><a href="../Structs/StorageDownloadFileRequest.html">StorageDownloadFileRequest</a></span><span class="o">.</span><span class="kt">Options</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
-                         <span class="nv">onEvent</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify28StorageDownloadFileOperationP">StorageDownloadFileOperation</a></span><span class="o">.</span><span class="kt">EventHandler</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify28StorageDownloadFileOperationP">StorageDownloadFileOperation</a></span></code></pre>
+                         <span class="nv">listener</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify28StorageDownloadFileOperationP">StorageDownloadFileOperation</a></span><span class="o">.</span><span class="kt">EventListener</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify28StorageDownloadFileOperationP">StorageDownloadFileOperation</a></span></code></pre>
 
                         </div>
                       </div>
@@ -606,9 +624,9 @@ If no plugin has been added for <code>key</code>, no action is taken, making thi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Amplify29StorageCategoryClientBehaviorP3put3key4data7options7onEventAA0B12PutOperation_pSS_10Foundation4DataVAA0bL7RequestV7OptionsVSgyAA05AsyncK0OySo10NSProgressCSSAA0B5ErrorOGcSgtF"></a>
-                    <a name="//apple_ref/swift/Method/put(key:data:options:onEvent:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Amplify29StorageCategoryClientBehaviorP3put3key4data7options7onEventAA0B12PutOperation_pSS_10Foundation4DataVAA0bL7RequestV7OptionsVSgyAA05AsyncK0OySo10NSProgressCSSAA0B5ErrorOGcSgtF">put(key:data:options:onEvent:)</a>
+                    <a name="/s:7Amplify29StorageCategoryClientBehaviorP3put3key4data7options8listenerAA0B12PutOperation_pSS_10Foundation4DataVAA0bK7RequestV7OptionsVSgyAA10AsyncEventOySo10NSProgressCSSAA0B5ErrorOGcSgtF"></a>
+                    <a name="//apple_ref/swift/Method/put(key:data:options:listener:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify29StorageCategoryClientBehaviorP3put3key4data7options8listenerAA0B12PutOperation_pSS_10Foundation4DataVAA0bK7RequestV7OptionsVSgyAA10AsyncEventOySo10NSProgressCSSAA0B5ErrorOGcSgtF">put(key:data:options:listener:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -625,7 +643,7 @@ If no plugin has been added for <code>key</code>, no action is taken, making thi
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">put</span><span class="p">(</span><span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
                 <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">,</span>
                 <span class="nv">options</span><span class="p">:</span> <span class="kt"><a href="../Structs/StoragePutRequest.html">StoragePutRequest</a></span><span class="o">.</span><span class="kt">Options</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
-                <span class="nv">onEvent</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify19StoragePutOperationP">StoragePutOperation</a></span><span class="o">.</span><span class="kt">EventHandler</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify19StoragePutOperationP">StoragePutOperation</a></span></code></pre>
+                <span class="nv">listener</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify19StoragePutOperationP">StoragePutOperation</a></span><span class="o">.</span><span class="kt">EventListener</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify19StoragePutOperationP">StoragePutOperation</a></span></code></pre>
 
                         </div>
                       </div>
@@ -635,9 +653,9 @@ If no plugin has been added for <code>key</code>, no action is taken, making thi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Amplify29StorageCategoryClientBehaviorP3put3key5local7options7onEventAA0B12PutOperation_pSS_10Foundation3URLVAA0bL7RequestV7OptionsVSgyAA05AsyncK0OySo10NSProgressCSSAA0B5ErrorOGcSgtF"></a>
-                    <a name="//apple_ref/swift/Method/put(key:local:options:onEvent:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Amplify29StorageCategoryClientBehaviorP3put3key5local7options7onEventAA0B12PutOperation_pSS_10Foundation3URLVAA0bL7RequestV7OptionsVSgyAA05AsyncK0OySo10NSProgressCSSAA0B5ErrorOGcSgtF">put(key:local:options:onEvent:)</a>
+                    <a name="/s:7Amplify29StorageCategoryClientBehaviorP3put3key5local7options8listenerAA0B12PutOperation_pSS_10Foundation3URLVAA0bK7RequestV7OptionsVSgyAA10AsyncEventOySo10NSProgressCSSAA0B5ErrorOGcSgtF"></a>
+                    <a name="//apple_ref/swift/Method/put(key:local:options:listener:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify29StorageCategoryClientBehaviorP3put3key5local7options8listenerAA0B12PutOperation_pSS_10Foundation3URLVAA0bK7RequestV7OptionsVSgyAA10AsyncEventOySo10NSProgressCSSAA0B5ErrorOGcSgtF">put(key:local:options:listener:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -654,7 +672,7 @@ If no plugin has been added for <code>key</code>, no action is taken, making thi
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">put</span><span class="p">(</span><span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
                 <span class="nv">local</span><span class="p">:</span> <span class="kt">URL</span><span class="p">,</span>
                 <span class="nv">options</span><span class="p">:</span> <span class="kt"><a href="../Structs/StoragePutRequest.html">StoragePutRequest</a></span><span class="o">.</span><span class="kt">Options</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
-                <span class="nv">onEvent</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify19StoragePutOperationP">StoragePutOperation</a></span><span class="o">.</span><span class="kt">EventHandler</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify19StoragePutOperationP">StoragePutOperation</a></span></code></pre>
+                <span class="nv">listener</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify19StoragePutOperationP">StoragePutOperation</a></span><span class="o">.</span><span class="kt">EventListener</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify19StoragePutOperationP">StoragePutOperation</a></span></code></pre>
 
                         </div>
                       </div>
@@ -664,9 +682,9 @@ If no plugin has been added for <code>key</code>, no action is taken, making thi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Amplify29StorageCategoryClientBehaviorP6remove3key7options7onEventAA0B15RemoveOperation_pSS_AA0bK7RequestV7OptionsVSgyAA05AsyncJ0OyytSSAA0B5ErrorOGcSgtF"></a>
-                    <a name="//apple_ref/swift/Method/remove(key:options:onEvent:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Amplify29StorageCategoryClientBehaviorP6remove3key7options7onEventAA0B15RemoveOperation_pSS_AA0bK7RequestV7OptionsVSgyAA05AsyncJ0OyytSSAA0B5ErrorOGcSgtF">remove(key:options:onEvent:)</a>
+                    <a name="/s:7Amplify29StorageCategoryClientBehaviorP6remove3key7options8listenerAA0B15RemoveOperation_pSS_AA0bJ7RequestV7OptionsVSgyAA10AsyncEventOyytSSAA0B5ErrorOGcSgtF"></a>
+                    <a name="//apple_ref/swift/Method/remove(key:options:listener:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify29StorageCategoryClientBehaviorP6remove3key7options8listenerAA0B15RemoveOperation_pSS_AA0bJ7RequestV7OptionsVSgyAA10AsyncEventOyytSSAA0B5ErrorOGcSgtF">remove(key:options:listener:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -682,7 +700,7 @@ If no plugin has been added for <code>key</code>, no action is taken, making thi
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">remove</span><span class="p">(</span><span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
                    <span class="nv">options</span><span class="p">:</span> <span class="kt"><a href="../Structs/StorageRemoveRequest.html">StorageRemoveRequest</a></span><span class="o">.</span><span class="kt">Options</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
-                   <span class="nv">onEvent</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify22StorageRemoveOperationP">StorageRemoveOperation</a></span><span class="o">.</span><span class="kt">EventHandler</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify22StorageRemoveOperationP">StorageRemoveOperation</a></span></code></pre>
+                   <span class="nv">listener</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify22StorageRemoveOperationP">StorageRemoveOperation</a></span><span class="o">.</span><span class="kt">EventListener</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify22StorageRemoveOperationP">StorageRemoveOperation</a></span></code></pre>
 
                         </div>
                       </div>
@@ -692,9 +710,9 @@ If no plugin has been added for <code>key</code>, no action is taken, making thi
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Amplify29StorageCategoryClientBehaviorP4list7options7onEventAA0B13ListOperation_pAA0bJ7RequestV7OptionsVSg_yAA05AsyncI0OyytAA0bJ6ResultVAA0B5ErrorOGcSgtF"></a>
-                    <a name="//apple_ref/swift/Method/list(options:onEvent:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Amplify29StorageCategoryClientBehaviorP4list7options7onEventAA0B13ListOperation_pAA0bJ7RequestV7OptionsVSg_yAA05AsyncI0OyytAA0bJ6ResultVAA0B5ErrorOGcSgtF">list(options:onEvent:)</a>
+                    <a name="/s:7Amplify29StorageCategoryClientBehaviorP4list7options8listenerAA0B13ListOperation_pAA0bI7RequestV7OptionsVSg_yAA10AsyncEventOyytAA0bI6ResultVAA0B5ErrorOGcSgtF"></a>
+                    <a name="//apple_ref/swift/Method/list(options:listener:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify29StorageCategoryClientBehaviorP4list7options8listenerAA0B13ListOperation_pAA0bI7RequestV7OptionsVSg_yAA10AsyncEventOyytAA0bI6ResultVAA0B5ErrorOGcSgtF">list(options:listener:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -709,7 +727,7 @@ If no plugin has been added for <code>key</code>, no action is taken, making thi
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">list</span><span class="p">(</span><span class="nv">options</span><span class="p">:</span> <span class="kt"><a href="../Structs/StorageListRequest.html">StorageListRequest</a></span><span class="o">.</span><span class="kt">Options</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span>
-                 <span class="nv">onEvent</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify20StorageListOperationP">StorageListOperation</a></span><span class="o">.</span><span class="kt">EventHandler</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify20StorageListOperationP">StorageListOperation</a></span></code></pre>
+                 <span class="nv">listener</span><span class="p">:</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify20StorageListOperationP">StorageListOperation</a></span><span class="o">.</span><span class="kt">EventListener</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols.html#/s:7Amplify20StorageListOperationP">StorageListOperation</a></span></code></pre>
 
                         </div>
                       </div>
@@ -721,7 +739,7 @@ If no plugin has been added for <code>key</code>, no action is taken, making thi
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2019 <a class="link" href="https://aws.amazon.com/amplify/" target="_blank" rel="external">Amazon Web Services</a>. All rights reserved. (Last updated: 2019-09-26)</p>
+          <p>&copy; 2019 <a class="link" href="https://aws.amazon.com/amplify/" target="_blank" rel="external">Amazon Web Services</a>. All rights reserved. (Last updated: 2019-09-30)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.11.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

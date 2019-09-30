@@ -67,6 +67,9 @@
                 <a href="Enums/AsyncEvent.html">AsyncEvent</a>
               </li>
               <li class="nav-group-task">
+                <a href="Enums/AuthError.html">AuthError</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Enums/CategoryType.html">CategoryType</a>
               </li>
               <li class="nav-group-task">
@@ -203,7 +206,7 @@
                 <a href="Structs/AmplifyConfiguration.html">AmplifyConfiguration</a>
               </li>
               <li class="nav-group-task">
-                <a href="Structs.html#/s:7Amplify0A16OperationContextV">AmplifyOperationContext</a>
+                <a href="Structs/AmplifyOperationContext.html">AmplifyOperationContext</a>
               </li>
               <li class="nav-group-task">
                 <a href="Structs/AnalyticsCategoryConfiguration.html">AnalyticsCategoryConfiguration</a>
@@ -225,6 +228,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Structs/HubPayload.html">HubPayload</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/HubPayload/EventName.html">– EventName</a>
               </li>
               <li class="nav-group-task">
                 <a href="Structs/LoggingCategoryConfiguration.html">LoggingCategoryConfiguration</a>
@@ -286,16 +292,28 @@
                 <a href="Typealiases.html#/s:7Amplify16ErrorDescriptiona">ErrorDescription</a>
               </li>
               <li class="nav-group-task">
+                <a href="Typealiases.html#/s:7Amplify9ErrorNamea">ErrorName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:7Amplify5Fielda">Field</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Typealiases.html#/s:7Amplify9HubFiltera">HubFilter</a>
               </li>
               <li class="nav-group-task">
                 <a href="Typealiases.html#/s:7Amplify11HubListenera">HubListener</a>
               </li>
               <li class="nav-group-task">
+                <a href="Typealiases.html#/s:7Amplify3Keya">Key</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Typealiases.html#/s:7Amplify9PluginKeya">PluginKey</a>
               </li>
               <li class="nav-group-task">
                 <a href="Typealiases.html#/s:7Amplify18RecoverySuggestiona">RecoverySuggestion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:7Amplify16TargetIdentityIda">TargetIdentityId</a>
               </li>
             </ul>
           </li>
@@ -636,38 +654,6 @@ routing an unsubscribe request to the correct HubChannel.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Amplify26StorageDownloadFileRequestV"></a>
-                    <a name="//apple_ref/swift/Struct/StorageDownloadFileRequest" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Amplify26StorageDownloadFileRequestV">StorageDownloadFileRequest</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                        <a href="Structs/StorageDownloadFileRequest.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">StorageDownloadFileRequest</span> <span class="p">:</span> <span class="kt"><a href="Protocols/AmplifyOperationRequest.html">AmplifyOperationRequest</a></span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
                     <a name="/s:7Amplify21StorageGetDataRequestV"></a>
                     <a name="//apple_ref/swift/Struct/StorageGetDataRequest" class="dashAnchor"></a>
                     <a class="token" href="#/s:7Amplify21StorageGetDataRequestV">StorageGetDataRequest</a>
@@ -828,6 +814,38 @@ routing an unsubscribe request to the correct HubChannel.</p>
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:7Amplify26StorageDownloadFileRequestV"></a>
+                    <a name="//apple_ref/swift/Struct/StorageDownloadFileRequest" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify26StorageDownloadFileRequestV">StorageDownloadFileRequest</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="Structs/StorageDownloadFileRequest.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">StorageDownloadFileRequest</span> <span class="p">:</span> <span class="kt"><a href="Protocols/AmplifyOperationRequest.html">AmplifyOperationRequest</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:7Amplify17StorageListResultV"></a>
                     <a name="//apple_ref/swift/Struct/StorageListResult" class="dashAnchor"></a>
                     <a class="token" href="#/s:7Amplify17StorageListResultV">StorageListResult</a>
@@ -937,12 +955,13 @@ routing an unsubscribe request to the correct HubChannel.</p>
                         <p>A context object passed in the HubPayload of all events dispatched to the Hub by an AmplifyOperation. This object
 can be used to filter on a particular operation.</p>
 
+                        <a href="Structs/AmplifyOperationContext.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">AmplifyOperationContext</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">AmplifyOperationContext</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="Protocols/AmplifyOperationRequest.html">AmplifyOperationRequest</a></span></code></pre>
 
                         </div>
                       </div>
@@ -954,7 +973,7 @@ can be used to filter on a particular operation.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2019 <a class="link" href="https://aws.amazon.com/amplify/" target="_blank" rel="external">Amazon Web Services</a>. All rights reserved. (Last updated: 2019-09-26)</p>
+          <p>&copy; 2019 <a class="link" href="https://aws.amazon.com/amplify/" target="_blank" rel="external">Amazon Web Services</a>. All rights reserved. (Last updated: 2019-09-30)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.11.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

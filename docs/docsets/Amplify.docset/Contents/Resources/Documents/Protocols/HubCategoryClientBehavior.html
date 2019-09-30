@@ -67,6 +67,9 @@
                 <a href="../Enums/AsyncEvent.html">AsyncEvent</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Enums/AuthError.html">AuthError</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Enums/CategoryType.html">CategoryType</a>
               </li>
               <li class="nav-group-task">
@@ -203,7 +206,7 @@
                 <a href="../Structs/AmplifyConfiguration.html">AmplifyConfiguration</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs.html#/s:7Amplify0A16OperationContextV">AmplifyOperationContext</a>
+                <a href="../Structs/AmplifyOperationContext.html">AmplifyOperationContext</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/AnalyticsCategoryConfiguration.html">AnalyticsCategoryConfiguration</a>
@@ -225,6 +228,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/HubPayload.html">HubPayload</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HubPayload/EventName.html">– EventName</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/LoggingCategoryConfiguration.html">LoggingCategoryConfiguration</a>
@@ -286,16 +292,28 @@
                 <a href="../Typealiases.html#/s:7Amplify16ErrorDescriptiona">ErrorDescription</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify9ErrorNamea">ErrorName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify5Fielda">Field</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:7Amplify9HubFiltera">HubFilter</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:7Amplify11HubListenera">HubListener</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify3Keya">Key</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:7Amplify9PluginKeya">PluginKey</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:7Amplify18RecoverySuggestiona">RecoverySuggestion</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:7Amplify16TargetIdentityIda">TargetIdentityId</a>
               </li>
             </ul>
           </li>
@@ -378,9 +396,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:7Amplify25HubCategoryClientBehaviorP6listen2to11filteringBy7onEventAA16UnsubscribeTokenVAA0B7ChannelO_SbAA0B7PayloadVcSgyAMctF"></a>
-                    <a name="//apple_ref/swift/Method/listen(to:filteringBy:onEvent:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:7Amplify25HubCategoryClientBehaviorP6listen2to11filteringBy7onEventAA16UnsubscribeTokenVAA0B7ChannelO_SbAA0B7PayloadVcSgyAMctF">listen(to:filteringBy:onEvent:)</a>
+                    <a name="/s:7Amplify25HubCategoryClientBehaviorP6listen2to10isIncluded8listenerAA16UnsubscribeTokenVAA0B7ChannelO_SbAA0B7PayloadVcSgyAMctF"></a>
+                    <a name="//apple_ref/swift/Method/listen(to:isIncluded:listener:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:7Amplify25HubCategoryClientBehaviorP6listen2to10isIncluded8listenerAA16UnsubscribeTokenVAA0B7ChannelO_SbAA0B7PayloadVcSgyAMctF">listen(to:isIncluded:listener:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -395,7 +413,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">listen</span><span class="p">(</span><span class="n">to</span> <span class="nv">channel</span><span class="p">:</span> <span class="kt"><a href="../Enums/HubChannel.html">HubChannel</a></span><span class="p">,</span> <span class="n">filteringBy</span> <span class="nv">filter</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:7Amplify9HubFiltera">HubFilter</a></span><span class="p">?,</span> <span class="nv">onEvent</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt"><a href="../Typealiases.html#/s:7Amplify11HubListenera">HubListener</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/UnsubscribeToken.html">UnsubscribeToken</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">listen</span><span class="p">(</span><span class="n">to</span> <span class="nv">channel</span><span class="p">:</span> <span class="kt"><a href="../Enums/HubChannel.html">HubChannel</a></span><span class="p">,</span> <span class="n">isIncluded</span> <span class="nv">filter</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:7Amplify9HubFiltera">HubFilter</a></span><span class="p">?,</span> <span class="nv">listener</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt"><a href="../Typealiases.html#/s:7Amplify11HubListenera">HubListener</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/UnsubscribeToken.html">UnsubscribeToken</a></span></code></pre>
 
                         </div>
                       </div>
@@ -424,14 +442,14 @@
                               <td>
                                 <div>
                                   <p>If specified, candidate messages will be passed to this closure prior to dispatching to
-        the <code>onEvent</code> listener. Only messages for which the filter returns <code>true</code> will be dispatched.</p>
+        the <code>listener</code>. Only messages for which the filter returns <code>true</code> will be dispatched.</p>
                                 </div>
                               </td>
                             </tr>
                             <tr>
                               <td>
                                 <code>
-                                <em>onEvent</em>
+                                <em>listener</em>
                                 </code>
                               </td>
                               <td>
@@ -497,7 +515,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2019 <a class="link" href="https://aws.amazon.com/amplify/" target="_blank" rel="external">Amazon Web Services</a>. All rights reserved. (Last updated: 2019-09-26)</p>
+          <p>&copy; 2019 <a class="link" href="https://aws.amazon.com/amplify/" target="_blank" rel="external">Amazon Web Services</a>. All rights reserved. (Last updated: 2019-09-30)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.11.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
