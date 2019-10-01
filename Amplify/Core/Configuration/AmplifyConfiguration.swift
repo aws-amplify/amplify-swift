@@ -51,8 +51,8 @@ extension Amplify {
 
     /// Configures Amplify with the specified configuration.
     ///
-    /// This method must be invoked after registering plugins and selectors, and before using any Amplify category.
-    /// It must not be invoked more than once.
+    /// This method must be invoked after registering plugins, and before using any Amplify category. It must not be
+    /// invoked more than once.
     ///
     /// - Parameter configuration: The AmplifyConfiguration for specified Categories
     /// - Throws:

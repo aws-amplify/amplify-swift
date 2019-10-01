@@ -9,8 +9,8 @@
 /// requests to those plugins appropriately.
 public protocol Category: class, CategoryTypeable {
 
-    // NOTE: `add(plugin:)`, `getPlugin(for key:)`, and `set(pluginSelectorFactory:` must be implemented in the actual
-    // category classes, since they operate on specific plugin types
+    // NOTE: `add(plugin:)` and `getPlugin(for key:)` must be implemented in the actual category classes, since they
+    // operate on specific plugin types
 
     /// Removes the plugin registered for `key` from the list of Plugins that implement functionality for this category.
     /// If no plugin has been added for `key`, no action is taken, making this method safe to call multiple times.
