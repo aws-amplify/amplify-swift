@@ -12,9 +12,8 @@ final public class StorageCategory: Category {
 
     var plugins = [PluginKey: StorageCategoryPlugin]()
 
-    /// Returns the plugin added to the category, if only one plugin is added. Accessing
-    /// this property if no plugins are added, or if more than one plugin is added without a pluginSelectorFactory,
-    /// will cause a preconditionFailure.
+    /// Returns the plugin added to the category, if only one plugin is added. Accessing this property if no plugins
+    /// are added, or if more than one plugin is added, will cause a preconditionFailure.
     var plugin: StorageCategoryPlugin {
         guard isConfigured else {
             preconditionFailure(
@@ -46,14 +45,11 @@ final public class StorageCategory: Category {
 
     // MARK: - Plugin handling
 
-    /// Adds `plugin` to the list of Plugins that implement functionality for this category. If a plugin has
-    /// already added to this category, callers must add a `PluginSelector` before adding a second plugin.
+    /// Adds `plugin` to the list of Plugins that implement functionality for this category.
     ///
     /// - Parameter plugin: The Plugin to add
     /// - Throws:
     ///   - PluginError.emptyKey if the plugin's `key` property is empty
-    ///   - PluginError.noSelector if the call to `add` would cause there to be more than one plugin added to this
-    ///     category.
     public func add(plugin: StorageCategoryPlugin) throws {
         let key = plugin.key
         guard !key.isEmpty else {
