@@ -918,13 +918,6 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageDownloadFileOperation.swift",
-      "line": 10,
-      "symbol": "StorageDownloadFileOperation",
-      "symbol_kind": "source.lang.swift.decl.protocol",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/Operation/StorageGetDataOperation.swift",
       "line": 10,
       "symbol": "StorageGetDataOperation",
@@ -1052,7 +1045,7 @@
     },
     {
       "file": "/Users/schmelte/src/github-repos/amplify-ios/Amplify/Categories/Storage/StorageCategory+HubPayloadEventName.swift",
-      "line": 13,
+      "line": 22,
       "symbol": "HubPayload.EventName.Storage",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
