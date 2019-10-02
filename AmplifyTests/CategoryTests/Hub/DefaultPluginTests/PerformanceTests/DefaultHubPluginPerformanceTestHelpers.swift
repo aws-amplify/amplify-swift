@@ -83,10 +83,10 @@ struct DefaultHubPluginPerformanceTestHelpers {
             switch dispatcherType {
             case is ConcurrentDispatcher.Type:
                 dispatcher = ConcurrentDispatcher(channel: channel,
-                                                  payload: HubPayload(event: "TEST_EVENT"))
+                                                  payload: HubPayload(eventName: "TEST_EVENT"))
             case is SerialDispatcher.Type:
                 dispatcher = SerialDispatcher(channel: channel,
-                                              payload: HubPayload(event: "TEST_EVENT"))
+                                              payload: HubPayload(eventName: "TEST_EVENT"))
             default:
                 fatalError("Unknown dispatcher type: \(dispatcherType)")
             }

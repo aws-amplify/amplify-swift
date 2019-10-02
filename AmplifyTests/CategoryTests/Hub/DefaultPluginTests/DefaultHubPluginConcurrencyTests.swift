@@ -56,7 +56,7 @@ class DefaultHubPluginConcurrencyTests: XCTestCase {
                 )
                 messageReceived.expectedFulfillmentCount = messagesExpectedPerListener
 
-                let token = plugin.listen(to: channel, filteringBy: nil) { _ in
+                let token = plugin.listen(to: channel, isIncluded: nil) { _ in
                     messageReceived.fulfill()
                 }
 
@@ -71,7 +71,7 @@ class DefaultHubPluginConcurrencyTests: XCTestCase {
         DispatchQueue.concurrentPerform(iterations: channels.count) { iteration in
             let channel = channels[iteration]
             for messageIteration in 0 ..< messagesExpectedPerListener {
-                let payload = HubPayload(event: "Message \(messageIteration), channel \(channel)")
+                let payload = HubPayload(eventName: "Message \(messageIteration), channel \(channel)")
                 plugin.dispatch(to: channel, payload: payload)
             }
         }

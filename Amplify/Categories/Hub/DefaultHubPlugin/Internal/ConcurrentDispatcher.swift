@@ -23,13 +23,13 @@ struct ConcurrentDispatcher: Dispatcher {
         self.isCancelled = false
     }
 
-    func dispatch(to listeners: [FilteredListener]) {
-        DispatchQueue.concurrentPerform(iterations: listeners.count) { iteration in
+    func dispatch(to filteredListeners: [FilteredListener]) {
+        DispatchQueue.concurrentPerform(iterations: filteredListeners.count) { iteration in
             guard !isCancelled else {
                 return
             }
 
-            let listener = listeners[iteration]
+            let listener = filteredListeners[iteration]
 
             guard channel == listener.channel else {
                 return
@@ -39,7 +39,7 @@ struct ConcurrentDispatcher: Dispatcher {
                 return
             }
 
-            listener.onEvent(self.payload)
+            listener.listener(self.payload)
         }
     }
 }

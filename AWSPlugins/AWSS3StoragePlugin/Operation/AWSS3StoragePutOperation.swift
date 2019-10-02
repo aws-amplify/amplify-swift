@@ -24,11 +24,14 @@ public class AWSS3StoragePutOperation: AmplifyOperation<StoragePutRequest, Progr
     init(_ request: StoragePutRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         onEvent: EventHandler?) {
+         listener: EventListener?) {
 
         self.storageService = storageService
         self.authService = authService
-        super.init(categoryType: .storage, request: request, onEvent: onEvent)
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.put,
+                   request: request,
+                   listener: listener)
     }
 
     override public func pause() {
@@ -99,19 +102,19 @@ public class AWSS3StoragePutOperation: AmplifyOperation<StoragePutRequest, Progr
                                            uploadSource: request.source,
                                            contentType: request.options.contentType,
                                            metadata: serviceMetadata) { [weak self] event in
-                                               self?.onEventHandler(event: event)
+                                               self?.onServiceEvent(event: event)
                                            }
         } else {
             storageService.upload(serviceKey: serviceKey,
                                   uploadSource: request.source,
                                   contentType: request.options.contentType,
                                   metadata: serviceMetadata) { [weak self] event in
-                                      self?.onEventHandler(event: event)
+                                      self?.onServiceEvent(event: event)
                                   }
         }
     }
 
-    private func onEventHandler(
+    private func onServiceEvent(
         event: StorageEvent<StorageTaskReference, Progress, Void, StorageError>) {
         switch event {
         case .initiated(let reference):

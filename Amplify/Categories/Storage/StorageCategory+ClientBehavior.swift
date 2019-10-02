@@ -10,45 +10,45 @@ import Foundation
 extension StorageCategory: StorageCategoryClientBehavior {
     public func getURL(key: String,
                        options: StorageGetURLRequest.Options? = nil,
-                       onEvent: StorageGetURLOperation.EventHandler?) -> StorageGetURLOperation {
-        return plugin.getURL(key: key, options: options, onEvent: onEvent)
+                       listener: StorageGetURLOperation.EventListener?) -> StorageGetURLOperation {
+        return plugin.getURL(key: key, options: options, listener: listener)
     }
 
     public func getData(key: String,
                         options: StorageGetDataRequest.Options? = nil,
-                        onEvent: StorageGetDataOperation.EventHandler?) -> StorageGetDataOperation {
-        return plugin.getData(key: key, options: options, onEvent: onEvent)
+                        listener: StorageGetDataOperation.EventListener?) -> StorageGetDataOperation {
+        return plugin.getData(key: key, options: options, listener: listener)
     }
 
     public func downloadFile(key: String,
                              local: URL,
                              options: StorageDownloadFileRequest.Options? = nil,
-                             onEvent: StorageDownloadFileOperation.EventHandler?) -> StorageDownloadFileOperation {
-        return plugin.downloadFile(key: key, local: local, options: options, onEvent: onEvent)
+                             listener: StorageDownloadFileOperation.EventListener?) -> StorageDownloadFileOperation {
+        return plugin.downloadFile(key: key, local: local, options: options, listener: listener)
     }
 
     public func put(key: String,
                     data: Data,
                     options: StoragePutRequest.Options? = nil,
-                    onEvent: StoragePutOperation.EventHandler?) -> StoragePutOperation {
-        return plugin.put(key: key, data: data, options: options, onEvent: onEvent)
+                    listener: StoragePutOperation.EventListener?) -> StoragePutOperation {
+        return plugin.put(key: key, data: data, options: options, listener: listener)
     }
 
     public func put(key: String,
                     local: URL,
                     options: StoragePutRequest.Options? = nil,
-                    onEvent: StoragePutOperation.EventHandler?) -> StoragePutOperation {
-        return plugin.put(key: key, local: local, options: options, onEvent: onEvent)
+                    listener: StoragePutOperation.EventListener?) -> StoragePutOperation {
+        return plugin.put(key: key, local: local, options: options, listener: listener)
     }
 
     public func remove(key: String,
                        options: StorageRemoveRequest.Options? = nil,
-                       onEvent: StorageRemoveOperation.EventHandler?) -> StorageRemoveOperation {
-        return plugin.remove(key: key, options: options, onEvent: onEvent)
+                       listener: StorageRemoveOperation.EventListener?) -> StorageRemoveOperation {
+        return plugin.remove(key: key, options: options, listener: listener)
     }
 
     public func list(options: StorageListRequest.Options? = nil,
-                     onEvent: StorageListOperation.EventHandler?) -> StorageListOperation {
-        return plugin.list(options: options, onEvent: onEvent)
+                     listener: StorageListOperation.EventListener?) -> StorageListOperation {
+        return plugin.list(options: options, listener: listener)
     }
 }

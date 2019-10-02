@@ -9,10 +9,10 @@ import Foundation
 
 /// A context object passed in the HubPayload of all events dispatched to the Hub by an AmplifyOperation. This object
 /// can be used to filter on a particular operation.
-public struct AmplifyOperationContext<Request> {
+public struct AmplifyOperationContext<Request: AmplifyOperationRequest> {
     /// The id of the operation
-    let operationId: UUID
+    public let operationId: UUID
 
     /// The Request used to instantiate the operation
-    let request: Request
+    public let request: Request
 }

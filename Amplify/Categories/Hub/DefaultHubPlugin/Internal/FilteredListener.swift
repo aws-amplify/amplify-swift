@@ -20,7 +20,7 @@ struct FilteredListener {
     let filter: HubFilter?
 
     /// The block to invoke with the HubPayload, if the channel matches and `filter` evaluates to true
-    let onEvent: HubListener
+    let listener: HubListener
 
     /// A HubListener block assigned to a particular channel, with an optional filter. When a message is dispatched,
     /// the Hub will first inspect the listener's channel and if it matches, invoke the filter, if any, to see if the
@@ -29,11 +29,11 @@ struct FilteredListener {
     /// - Parameters:
     ///   - channel: The HubChannel to which the listener is assigned
     ///   - filter: An optional Filter for refining messages
-    ///   - onEvent: The block to invoke with the HubPayload, if the channel matches and `filter` evaluates to true
-    init(for channel: HubChannel, filter: HubFilter?, onEvent: @escaping HubListener) {
+    ///   - listener: The block to invoke with the HubPayload, if the channel matches and `filter` evaluates to true
+    init(for channel: HubChannel, filter: HubFilter?, listener: @escaping HubListener) {
         self.id = UUID()
         self.channel = channel
         self.filter = filter
-        self.onEvent = onEvent
+        self.listener = listener
     }
 }

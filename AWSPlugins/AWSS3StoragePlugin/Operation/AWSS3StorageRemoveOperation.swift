@@ -19,11 +19,14 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<StorageRemoveRequest,
     init(_ request: StorageRemoveRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         onEvent: EventHandler?) {
+         listener: EventListener?) {
 
         self.storageService = storageService
         self.authService = authService
-        super.init(categoryType: .storage, request: request, onEvent: onEvent)
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.remove,
+                   request: request,
+                   listener: listener)
     }
 
     override public func cancel() {
@@ -62,11 +65,11 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<StorageRemoveRequest,
         }
 
         storageService.delete(serviceKey: serviceKey) { [weak self] event in
-            self?.onEventHandler(event: event)
+            self?.onServiceEvent(event: event)
         }
     }
 
-    private func onEventHandler(event: StorageEvent<Void, Void, Void, StorageError>) {
+    private func onServiceEvent(event: StorageEvent<Void, Void, Void, StorageError>) {
         switch event {
         case .completed:
             dispatch(request.key)

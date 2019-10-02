@@ -21,11 +21,14 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<StorageGetURLRequest,
     init(_ request: StorageGetURLRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         onEvent: EventHandler?) {
+         listener: EventListener?) {
 
         self.storageService = storageService
         self.authService = authService
-        super.init(categoryType: .storage, request: request, onEvent: onEvent)
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.getURL,
+                   request: request,
+                   listener: listener)
     }
 
     override public func cancel() {
@@ -65,11 +68,11 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<StorageGetURLRequest,
         }
 
         storageService.getPreSignedURL(serviceKey: serviceKey, expires: request.options.expires) { [weak self] event in
-            self?.onEventHandler(event: event)
+            self?.onServiceEvent(event: event)
         }
     }
 
-    private func onEventHandler(event: StorageEvent<Void, Void, URL, StorageError>) {
+    private func onServiceEvent(event: StorageEvent<Void, Void, URL, StorageError>) {
         switch event {
         case .completed(let result):
             dispatch(result)

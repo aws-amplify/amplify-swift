@@ -9,3 +9,8 @@ import Foundation
 
 public protocol StorageDownloadFileOperation: AmplifyOperation<StorageDownloadFileRequest, Progress, Void,
 StorageError> { }
+
+public extension HubPayload.EventName.Storage {
+    /// eventName for HubPayloads emitted by this operation
+    static let downloadFile = "Storage.downloadFile"
+}

@@ -8,3 +8,8 @@
 import Foundation
 
 public protocol StorageGetURLOperation: AmplifyOperation<StorageGetURLRequest, Void, URL, StorageError> {}
+
+public extension HubPayload.EventName.Storage {
+    /// eventName for HubPayloads emitted by this operation
+    static let getURL = "Storage.getURL"
+}

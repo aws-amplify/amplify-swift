@@ -155,6 +155,8 @@
 		FA56F72722B14BF70039754A /* AmplifyOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F72622B14BF70039754A /* AmplifyOperation.swift */; };
 		FA58924C233A684F000FD1E6 /* DownloadFileEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA589249233A6717000FD1E6 /* DownloadFileEventTests.swift */; };
 		FA607FE2233D131B00DFEA24 /* AmplifyOperationHubTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA607FE1233D131B00DFEA24 /* AmplifyOperationHubTests.swift */; };
+		FA76A2D12342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA76A2D02342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift */; };
+		FA76A2D32342B47100B91ADB /* HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA76A2D22342B47100B91ADB /* HubPayloadEventName.swift */; };
 		FA9FB7792329D4D400C04D32 /* HubFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FB7782329D4D400C04D32 /* HubFilter.swift */; };
 		FA9FB77B2329D4FB00C04D32 /* UnsubscribeToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FB77A2329D4FB00C04D32 /* UnsubscribeToken.swift */; };
 		FA9FB77D232AA0D800C04D32 /* FilteredListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FB77C232AA0D800C04D32 /* FilteredListener.swift */; };
@@ -524,6 +526,8 @@
 		FA56F72622B14BF70039754A /* AmplifyOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyOperation.swift; sourceTree = "<group>"; };
 		FA589249233A6717000FD1E6 /* DownloadFileEventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFileEventTests.swift; sourceTree = "<group>"; };
 		FA607FE1233D131B00DFEA24 /* AmplifyOperationHubTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyOperationHubTests.swift; sourceTree = "<group>"; };
+		FA76A2D02342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
+		FA76A2D22342B47100B91ADB /* HubPayloadEventName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPayloadEventName.swift; sourceTree = "<group>"; };
 		FA9FB7782329D4D400C04D32 /* HubFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubFilter.swift; sourceTree = "<group>"; };
 		FA9FB77A2329D4FB00C04D32 /* UnsubscribeToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnsubscribeToken.swift; sourceTree = "<group>"; };
 		FA9FB77C232AA0D800C04D32 /* FilteredListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteredListener.swift; sourceTree = "<group>"; };
@@ -1276,6 +1280,7 @@
 				21FFF98D230C81E6005878EA /* StorageAccessLevel.swift */,
 				FAC234FA227A053D00424678 /* StorageCategory.swift */,
 				FAC0A2B122B4402000B50912 /* StorageCategory+ClientBehavior.swift */,
+				FA76A2D02342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift */,
 				FAC234F6227A053D00424678 /* StorageCategoryClientBehavior.swift */,
 				FA09B94C2322CC04000E064D /* StorageCategoryConfiguration.swift */,
 				FAC234F8227A053D00424678 /* StorageCategoryPlugin.swift */,
@@ -1472,6 +1477,7 @@
 				FAC235A2227A5ED000424678 /* HubChannel.swift */,
 				FA9FB7782329D4D400C04D32 /* HubFilter.swift */,
 				FAC0A29A22B3DEEE00B50912 /* HubPayload.swift */,
+				FA76A2D22342B47100B91ADB /* HubPayloadEventName.swift */,
 				FA9FB77A2329D4FB00C04D32 /* UnsubscribeToken.swift */,
 			);
 			path = Hub;
@@ -2338,6 +2344,7 @@
 				FAF1B88623392F96007F1435 /* SerialDispatcher.swift in Sources */,
 				FA09B94B2322CBEB000E064D /* LoggingCategoryConfiguration.swift in Sources */,
 				FAC2353F227A055200424678 /* PluginError.swift in Sources */,
+				FA76A2D32342B47100B91ADB /* HubPayloadEventName.swift in Sources */,
 				FA09B9332321A305000E064D /* HubCategory+CategoryConfigurable.swift in Sources */,
 				FA9FB77D232AA0D800C04D32 /* FilteredListener.swift in Sources */,
 				FAC2352D227A053D00424678 /* AnalyticsCategoryPlugin.swift in Sources */,
@@ -2368,6 +2375,7 @@
 				FAC2352A227A053D00424678 /* AnalyticsCategory.swift in Sources */,
 				FAC2351A227A053D00424678 /* StorageCategory.swift in Sources */,
 				FAC23541227A055200424678 /* CategoryType.swift in Sources */,
+				FA76A2D12342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift in Sources */,
 				FAC0A29D22B3E63000B50912 /* HubDispatchDestination.swift in Sources */,
 				FAC23546227A055200424678 /* AmplifyError.swift in Sources */,
 				FA09B9492322CBD5000E064D /* HubCategoryConfiguration.swift in Sources */,

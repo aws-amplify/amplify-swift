@@ -8,3 +8,8 @@
 import Foundation
 
 public protocol StorageGetDataOperation: AmplifyOperation<StorageGetDataRequest, Progress, Data, StorageError> {}
+
+public extension HubPayload.EventName.Storage {
+    /// eventName for HubPayloads emitted by this operation
+    static let getData = "Storage.getData"
+}

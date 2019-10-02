@@ -32,20 +32,19 @@ class AmplifyOperationHubTests: XCTestCase {
     /// Given: An AmplifyOperation
     /// When: I invoke Hub.listen(to: operation)
     /// Then: I am notified of events for that operation, in the operation event listener format
-    func testOnEventViaListenToOperation() {
+    func testlistenerViaListenToOperation() {
         let options = StorageListRequest.Options(pluginOptions: ["pluginDelay": 0.5])
         let request = StorageListRequest(options: options)
 
-        let operation = MockDispatchingStorageListOperation(categoryType: .storage,
-                                                            request: request)
+        let operation = MockDispatchingStorageListOperation(request: request)
 
-        let onEventWasInvoked = expectation(description: "onEvent was invoked")
+        let listenerWasInvoked = expectation(description: "listener was invoked")
 
-        let onEvent: NonListeningStorageListOperation.EventHandler = { event in
-            onEventWasInvoked.fulfill()
+        let listener: NonListeningStorageListOperation.EventListener = { event in
+            listenerWasInvoked.fulfill()
         }
 
-        _ = Amplify.Hub.listen(to: operation, onEvent: onEvent)
+        _ = Amplify.Hub.listen(to: operation, listener: listener)
 
         operation.doMockDispatch()
 
@@ -53,12 +52,12 @@ class AmplifyOperationHubTests: XCTestCase {
     }
 
     /// Given: A configured system
-    /// When: I perform an operation with an `onEvent` listener
+    /// When: I perform an operation with an `listener` listener
     /// Then: That listener is notified when an event occurs
-    func testOnEventViaOperationInit() {
-        let onEventInvoked = expectation(description: "onEvent listener was invoked")
+    func testlistenerViaOperationInit() {
+        let listenerInvoked = expectation(description: "listener listener was invoked")
         _ = Amplify.Storage.getURL(key: "foo") { _ in
-            onEventInvoked.fulfill()
+            listenerInvoked.fulfill()
         }
         waitForExpectations(timeout: 1.0)
     }
@@ -67,9 +66,9 @@ class AmplifyOperationHubTests: XCTestCase {
     /// When: I subscribe to Hub events filtered by operation ID
     /// Then: My listener receives events for that ID
     func testListenerViaHubListen() {
-        let onEventInvoked = expectation(description: "onEvent listener was invoked")
+        let listenerInvoked = expectation(description: "listener listener was invoked")
         let operation = Amplify.Storage.getURL(key: "foo") { _ in
-            onEventInvoked.fulfill()
+            listenerInvoked.fulfill()
         }
 
         let operationId = operation.id
@@ -80,7 +79,7 @@ class AmplifyOperationHubTests: XCTestCase {
             }
 
             if context.operationId == operationId {
-                onEventInvoked.fulfill()
+                listenerInvoked.fulfill()
             }
         }
         waitForExpectations(timeout: 1.0)
@@ -96,14 +95,13 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     func getURL(key: String,
                 options: StorageGetURLRequest.Options? = nil,
-                onEvent: StorageGetURLOperation.EventHandler? = nil) -> StorageGetURLOperation {
+                listener: StorageGetURLOperation.EventListener? = nil) -> StorageGetURLOperation {
         let options = options ?? StorageGetURLRequest.Options()
 
         let request = StorageGetURLRequest(key: key, options: options)
 
-        let operation = MockDispatchingStorageGetURLOperation(categoryType: .storage,
-                                                              request: request,
-                                                              onEvent: onEvent)
+        let operation = MockDispatchingStorageGetURLOperation(request: request,
+                                                              listener: listener)
 
         let delay = resolveDispatchDelay(options: options.pluginOptions)
         queue.asyncAfter(deadline: .now() + delay) {
@@ -115,14 +113,13 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     func getData(key: String,
                  options: StorageGetDataRequest.Options? = nil,
-                 onEvent: StorageGetDataOperation.EventHandler? = nil) -> StorageGetDataOperation {
+                 listener: StorageGetDataOperation.EventListener? = nil) -> StorageGetDataOperation {
         let options = options ?? StorageGetDataRequest.Options()
 
         let request = StorageGetDataRequest(key: key, options: options)
 
-        let operation = MockDispatchingStorageGetDataOperation(categoryType: .storage,
-                                                               request: request,
-                                                               onEvent: onEvent)
+        let operation = MockDispatchingStorageGetDataOperation(request: request,
+                                                               listener: listener)
 
         let delay = resolveDispatchDelay(options: options.pluginOptions)
         queue.asyncAfter(deadline: .now() + delay) {
@@ -135,15 +132,14 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     func downloadFile(key: String,
                       local: URL,
                       options: StorageDownloadFileRequest.Options? = nil,
-                      onEvent: StorageDownloadFileOperation.EventHandler? = nil)
+                      listener: StorageDownloadFileOperation.EventListener? = nil)
         -> StorageDownloadFileOperation {
             let options = options ?? StorageDownloadFileRequest.Options()
 
             let request = StorageDownloadFileRequest(key: key, local: local, options: options)
 
-            let operation = MockDispatchingStorageDownloadFileOperation(categoryType: .storage,
-                                                                        request: request,
-                                                                        onEvent: onEvent)
+            let operation = MockDispatchingStorageDownloadFileOperation(request: request,
+                                                                        listener: listener)
 
             let delay = resolveDispatchDelay(options: options.pluginOptions)
             queue.asyncAfter(deadline: .now() + delay) {
@@ -157,14 +153,13 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     func put(key: String,
              data: Data,
              options: StoragePutRequest.Options? = nil,
-             onEvent: StoragePutOperation.EventHandler? = nil) -> StoragePutOperation {
+             listener: StoragePutOperation.EventListener? = nil) -> StoragePutOperation {
         let options = options ?? StoragePutRequest.Options()
 
         let request = StoragePutRequest(key: key, source: .data(data), options: options)
 
-        let operation = MockDispatchingStoragePutOperation(categoryType: .storage,
-                                                           request: request,
-                                                           onEvent: onEvent)
+        let operation = MockDispatchingStoragePutOperation(request: request,
+                                                           listener: listener)
 
         let delay = resolveDispatchDelay(options: options.pluginOptions)
         queue.asyncAfter(deadline: .now() + delay) {
@@ -177,14 +172,13 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     func put(key: String,
              local: URL,
              options: StoragePutRequest.Options? = nil,
-             onEvent: StoragePutOperation.EventHandler? = nil) -> StoragePutOperation {
+             listener: StoragePutOperation.EventListener? = nil) -> StoragePutOperation {
         let options = options ?? StoragePutRequest.Options()
 
         let request = StoragePutRequest(key: key, source: .local(local), options: options)
 
-        let operation = MockDispatchingStoragePutOperation(categoryType: .storage,
-                                                           request: request,
-                                                           onEvent: onEvent)
+        let operation = MockDispatchingStoragePutOperation(request: request,
+                                                           listener: listener)
 
         let delay = resolveDispatchDelay(options: options.pluginOptions)
         queue.asyncAfter(deadline: .now() + delay) {
@@ -196,14 +190,13 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     func remove(key: String,
                 options: StorageRemoveRequest.Options? = nil,
-                onEvent: StorageRemoveOperation.EventHandler? = nil) -> StorageRemoveOperation {
+                listener: StorageRemoveOperation.EventListener? = nil) -> StorageRemoveOperation {
         let options = options ?? StorageRemoveRequest.Options()
 
         let request = StorageRemoveRequest(key: key, options: options)
 
-        let operation = MockDispatchingStorageRemoveOperation(categoryType: .storage,
-                                                              request: request,
-                                                              onEvent: onEvent)
+        let operation = MockDispatchingStorageRemoveOperation(request: request,
+                                                              listener: listener)
 
         let delay = resolveDispatchDelay(options: options.pluginOptions)
         queue.asyncAfter(deadline: .now() + delay) {
@@ -214,14 +207,13 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     }
 
     func list(options: StorageListRequest.Options?,
-              onEvent: StorageListOperation.EventHandler?) -> StorageListOperation {
+              listener: StorageListOperation.EventListener?) -> StorageListOperation {
         let options = options ?? StorageListRequest.Options()
 
         let request = StorageListRequest(options: options)
 
-        let operation = MockDispatchingStorageListOperation(categoryType: .storage,
-                                                            request: request,
-                                                            onEvent: onEvent)
+        let operation = MockDispatchingStorageListOperation(request: request,
+                                                            listener: listener)
 
         let delay = resolveDispatchDelay(options: options.pluginOptions)
         queue.asyncAfter(deadline: .now() + delay) {
@@ -250,6 +242,13 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
 class MockDispatchingStorageDownloadFileOperation: AmplifyOperation<StorageDownloadFileRequest, Progress,
 Void, StorageError>, StorageDownloadFileOperation {
+    init(request: Request, listener: EventListener? = nil) {
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.downloadFile,
+                   request: request,
+                   listener: listener)
+    }
+
     func doMockDispatch() {
         super.dispatch(event: .unknown)
     }
@@ -257,6 +256,13 @@ Void, StorageError>, StorageDownloadFileOperation {
 
 class MockDispatchingStorageGetDataOperation: AmplifyOperation<StorageGetDataRequest, Progress,
 Data, StorageError>, StorageGetDataOperation {
+    init(request: Request, listener: EventListener? = nil) {
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.getData,
+                   request: request,
+                   listener: listener)
+    }
+
     func doMockDispatch() {
         super.dispatch(event: .unknown)
     }
@@ -264,6 +270,13 @@ Data, StorageError>, StorageGetDataOperation {
 
 class MockDispatchingStorageGetURLOperation: AmplifyOperation<StorageGetURLRequest, Void,
 URL, StorageError>, StorageGetURLOperation {
+    init(request: Request, listener: EventListener? = nil) {
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.getURL,
+                   request: request,
+                   listener: listener)
+    }
+
     func doMockDispatch() {
         super.dispatch(event: .unknown)
     }
@@ -271,6 +284,13 @@ URL, StorageError>, StorageGetURLOperation {
 
 class MockDispatchingStorageListOperation: AmplifyOperation<StorageListRequest, Void,
 StorageListResult, StorageError>, StorageListOperation {
+    init(request: Request, listener: EventListener? = nil) {
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.list,
+                   request: request,
+                   listener: listener)
+    }
+
     func doMockDispatch() {
         super.dispatch(event: .unknown)
     }
@@ -278,6 +298,13 @@ StorageListResult, StorageError>, StorageListOperation {
 
 class MockDispatchingStorageRemoveOperation: AmplifyOperation<StorageRemoveRequest, Void,
 String, StorageError>, StorageRemoveOperation {
+    init(request: Request, listener: EventListener? = nil) {
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.remove,
+                   request: request,
+                   listener: listener)
+    }
+
     func doMockDispatch() {
         super.dispatch(event: .unknown)
     }
@@ -285,6 +312,13 @@ String, StorageError>, StorageRemoveOperation {
 
 class MockDispatchingStoragePutOperation: AmplifyOperation<StoragePutRequest, Progress,
 String, StorageError>, StoragePutOperation {
+    init(request: Request, listener: EventListener? = nil) {
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.put,
+                   request: request,
+                   listener: listener)
+    }
+
     func doMockDispatch() {
         super.dispatch(event: .unknown)
     }
@@ -294,6 +328,8 @@ class NonListeningStorageListOperation: AmplifyOperation<StorageListRequest, Voi
     StorageListResult, StorageError>,
 StorageListOperation {
     init(request: Request) {
-        super.init(categoryType: .storage, request: request)
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.downloadFile,
+                   request: request)
     }
 }
