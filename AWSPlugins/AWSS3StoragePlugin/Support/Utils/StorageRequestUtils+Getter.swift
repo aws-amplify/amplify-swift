@@ -49,7 +49,7 @@ extension StorageRequestUtils {
     }
 
     // TODO: This should be a throwing method; we should reserve Result for async operations
-    static func getSize(_ uploadSource: StoragePutRequest.Source) -> Result<UInt64, StorageError> {
+    static func getSize(_ uploadSource: UploadSource) -> Result<UInt64, StorageError> {
         switch uploadSource {
         case .local(let file):
             if let error = validateFileExists(file) {

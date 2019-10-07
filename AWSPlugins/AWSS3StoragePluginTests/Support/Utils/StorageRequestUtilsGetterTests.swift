@@ -145,7 +145,7 @@ class StorageRequestUtilsGetterTests: XCTestCase {
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: key.data(using: .utf8), attributes: nil)
-        let uploadSource = StoragePutRequest.Source.local(fileURL)
+        let uploadSource = UploadSource.local(fileURL)
         let result = StorageRequestUtils.getSize(uploadSource)
         guard case let .success(size) = result else {
             XCTFail("Valid file should return success result")
@@ -157,7 +157,7 @@ class StorageRequestUtilsGetterTests: XCTestCase {
 
     func testGetSizeForMissingFileReturnsError() {
         let fileURL = URL(fileURLWithPath: "path")
-        let uploadSource = StoragePutRequest.Source.local(fileURL)
+        let uploadSource = UploadSource.local(fileURL)
         let result = StorageRequestUtils.getSize(uploadSource)
         guard case let .failure(error) = result else {
             XCTFail("missing file should return error result")
@@ -169,7 +169,7 @@ class StorageRequestUtilsGetterTests: XCTestCase {
     }
 
     func testGetSizeForDataReturnsSize() {
-        let uploadSource = StoragePutRequest.Source.data(Data())
+        let uploadSource = UploadSource.data(Data())
         let result = StorageRequestUtils.getSize(uploadSource)
         guard case let .success(size) = result else {
             XCTFail("Valid data should return success result")

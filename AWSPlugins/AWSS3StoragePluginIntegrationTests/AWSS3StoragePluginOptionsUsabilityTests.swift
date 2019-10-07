@@ -97,10 +97,10 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         let metadataKey = "metadatakey"
         let metadataValue = metadataKey + "Value"
         let metadata = [key: value, metadataKey: metadataValue]
-        let options = StoragePutRequest.Options(metadata: metadata)
+        let options = StoragePutDataRequest.Options(metadata: metadata)
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.put(key: key, data: data, options: options) { (event) in
+        let operation = Amplify.Storage.putData(key: key, data: data, options: options) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()

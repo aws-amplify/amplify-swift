@@ -52,10 +52,10 @@ public protocol StorageCategoryClientBehavior {
     ///   - options: Parameters to specific plugin behavior
     ///   - listener: Triggered when event occurs
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
-    func put(key: String,
-             data: Data,
-             options: StoragePutOperation.Request.Options?,
-             listener: StoragePutOperation.EventListener?) -> StoragePutOperation
+    func putData(key: String,
+                 data: Data,
+                 options: StoragePutDataOperation.Request.Options?,
+                 listener: StoragePutDataOperation.EventListener?) -> StoragePutDataOperation
 
     /// Upload local file to storage
     ///
@@ -65,10 +65,10 @@ public protocol StorageCategoryClientBehavior {
     ///   - options: Parameters to specific plugin behavior
     ///   - listener: Triggered when event occurs
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
-    func put(key: String,
-             local: URL,
-             options: StoragePutOperation.Request.Options?,
-             listener: StoragePutOperation.EventListener?) -> StoragePutOperation
+    func uploadFile(key: String,
+                    local: URL,
+                    options: StorageUploadFileOperation.Request.Options?,
+                    listener: StorageUploadFileOperation.EventListener?) -> StorageUploadFileOperation
 
     /// Delete object from storage
     ///

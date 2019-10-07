@@ -111,7 +111,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         put(key: key, data: key, accessLevel: accessLevel)
 
         // Sign out of user1 and into user2
-        AWSMobileClient.sharedInstance().signOut()
+        AWSMobileClient.default().signOut()
         signIn(username: user2)
         let user2IdentityId = getIdentityId()
         XCTAssertNotEqual(user1IdentityId, user2IdentityId)
@@ -164,7 +164,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         put(key: key, data: key, accessLevel: accessLevel)
 
         // Sign out of user1 and into user2
-        AWSMobileClient.sharedInstance().signOut()
+        AWSMobileClient.default().signOut()
         signIn(username: user2)
         let user2IdentityId = getIdentityId()
         XCTAssertNotEqual(user1IdentityId, user2IdentityId)
@@ -194,7 +194,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         put(key: key, data: key, accessLevel: accessLevel)
 
         // Sign out of user1 and into user2
-        AWSMobileClient.sharedInstance().signOut()
+        AWSMobileClient.default().signOut()
         signIn(username: user2)
         let user2IdentityId = getIdentityId()
         XCTAssertNotEqual(user1IdentityId, user2IdentityId)
@@ -327,8 +327,8 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
     func put(key: String, data: String, accessLevel: StorageAccessLevel) {
         let putExpectation = expectation(description: "Put operation should be successful")
-        let putOptions = StoragePutRequest.Options(accessLevel: accessLevel)
-        _ = Amplify.Storage.put(key: key, data: data.data(using: .utf8)!, options: putOptions) { (event) in
+        let options = StoragePutDataRequest.Options(accessLevel: accessLevel)
+        _ = Amplify.Storage.putData(key: key, data: data.data(using: .utf8)!, options: options) { (event) in
             switch event {
             case .completed:
                 putExpectation.fulfill()
@@ -379,7 +379,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
     func signUpUser(username: String) {
         let signUpExpectation = expectation(description: "successful sign up expectation.")
-        AWSMobileClient.sharedInstance().signUp(username: username, password: password) { (result, error) in
+        AWSMobileClient.default().signUp(username: username, password: password) { (result, error) in
             guard error == nil else {
                 let error = error
                 XCTFail("Failed to sign up user with error: \(error?.localizedDescription)")
@@ -398,7 +398,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     }
 
     func getIdentityId() -> String {
-        let getIdentityIdForUser2Task = AWSMobileClient.sharedInstance().getIdentityId()
+        let getIdentityIdForUser2Task = AWSMobileClient.default().getIdentityId()
         getIdentityIdForUser2Task.waitUntilFinished()
         return getIdentityIdForUser2Task.result! as String
     }

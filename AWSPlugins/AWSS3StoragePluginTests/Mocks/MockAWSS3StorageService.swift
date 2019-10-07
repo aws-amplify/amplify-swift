@@ -30,12 +30,12 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
     var getPreSignedURLExpires: Int?
 
     var uploadServiceKey: String?
-    var uploadUploadSource: StoragePutRequest.Source?
+    var uploadUploadSource: UploadSource?
     var uploadContentType: String?
     var uploadMetadata: [String: String]?
 
     var multiPartUploadServiceKey: String?
-    var multiPartUploadUploadSource: StoragePutRequest.Source?
+    var multiPartUploadUploadSource: UploadSource?
     var multiPartUploadContentType: String?
     var multiPartUploadMetadata: [String: String]?
 
@@ -90,7 +90,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
     }
 
     public func upload(serviceKey: String,
-                       uploadSource: StoragePutRequest.Source,
+                       uploadSource: UploadSource,
                        contentType: String?,
                        metadata: [String: String]?,
                        onEvent: @escaping StorageServiceUploadEventHandler) {
@@ -107,7 +107,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
     }
 
     public func multiPartUpload(serviceKey: String,
-                                uploadSource: StoragePutRequest.Source,
+                                uploadSource: UploadSource,
                                 contentType: String?,
                                 metadata: [String: String]?,
                                 onEvent: @escaping StorageServiceMultiPartUploadEventHandler) {
@@ -166,7 +166,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
 
     public func verifyUpload(serviceKey: String,
                              key: String,
-                             uploadSource: StoragePutRequest.Source,
+                             uploadSource: UploadSource,
                              contentType: String?,
                              metadata: [String: String]?) {
         XCTAssertEqual(uploadCalled, 1)
@@ -190,7 +190,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
 
     public func verifyMultiPartUpload(serviceKey: String,
                                       key: String,
-                                      uploadSource: StoragePutRequest.Source,
+                                      uploadSource: UploadSource,
                                       contentType: String?,
                                       metadata: [String: String]?) {
         XCTAssertEqual(multiPartUploadCalled, 1)

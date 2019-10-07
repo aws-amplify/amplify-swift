@@ -40,26 +40,24 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
             return MockStorageDownloadFileOperation(request: request)
     }
 
-    func put(key: String,
-             data: Data,
-             options: StoragePutRequest.Options?,
-             listener: StoragePutOperation.EventListener?) -> StoragePutOperation {
-        notify("put")
-        let options = options ?? StoragePutRequest.Options()
-        let source = StoragePutRequest.Source.data(data)
-        let request = StoragePutRequest(key: key, source: source, options: options)
-        return MockStoragePutOperation(request: request)
+    func putData(key: String,
+                 data: Data,
+                 options: StoragePutDataRequest.Options?,
+                 listener: StoragePutDataOperation.EventListener?) -> StoragePutDataOperation {
+        notify("putData")
+        let options = options ?? StoragePutDataRequest.Options()
+        let request = StoragePutDataRequest(key: key, data: data, options: options)
+        return MockStoragePutDataOperation(request: request)
     }
 
-    func put(key: String,
-             local: URL,
-             options: StoragePutRequest.Options?,
-             listener: StoragePutOperation.EventListener?) -> StoragePutOperation {
-        notify("putFile")
-        let options = options ?? StoragePutRequest.Options()
-        let source = StoragePutRequest.Source.local(local)
-        let request = StoragePutRequest(key: key, source: source, options: options)
-        return MockStoragePutOperation(request: request)
+    func uploadFile(key: String,
+                    local: URL,
+                    options: StorageUploadFileRequest.Options?,
+                    listener: StorageUploadFileOperation.EventListener?) -> StorageUploadFileOperation {
+        notify("uploadFile")
+        let options = options ?? StorageUploadFileRequest.Options()
+        let request = StorageUploadFileRequest(key: key, local: local, options: options)
+        return MockStorageUploadFileOperation(request: request)
     }
 
     func remove(key: String,
@@ -144,8 +142,8 @@ class MockStorageDownloadFileOperation: AmplifyOperation<StorageDownloadFileRequ
     }
 }
 
-class MockStoragePutOperation: AmplifyOperation<StoragePutRequest, Progress, String, StorageError>,
-StoragePutOperation {
+class MockStoragePutDataOperation: AmplifyOperation<StoragePutDataRequest, Progress, String, StorageError>,
+StoragePutDataOperation {
     override func pause() {
     }
 
@@ -154,7 +152,22 @@ StoragePutOperation {
 
     init(request: Request) {
         super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.put,
+                   eventName: HubPayload.EventName.Storage.putData,
+                   request: request)
+    }
+}
+
+class MockStorageUploadFileOperation: AmplifyOperation<StorageUploadFileRequest, Progress, String, StorageError>,
+StorageUploadFileOperation {
+    override func pause() {
+    }
+
+    override func resume() {
+    }
+
+    init(request: Request) {
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.uploadFile,
                    request: request)
     }
 }
