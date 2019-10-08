@@ -77,17 +77,6 @@ public class AWSS3StoragePutDataOperation: AmplifyOperation<StoragePutDataReques
             return
         }
 
-        let uploadSource = UploadSource.data(request.data)
-        let uploadSizeResult = StorageRequestUtils.getSize(uploadSource)
-        guard case let .success(uploadSize) = uploadSizeResult else {
-            if case let .failure(error) = uploadSizeResult {
-                dispatch(error)
-            }
-
-            finish()
-            return
-        }
-
         let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.options.accessLevel,
                                                            identityId: identityId,
                                                            key: request.key)
@@ -98,16 +87,16 @@ public class AWSS3StoragePutDataOperation: AmplifyOperation<StoragePutDataReques
             return
         }
 
-        if uploadSize > StoragePutDataRequest.Options.multiPartUploadSizeThreshold {
+        if request.data.count > StoragePutDataRequest.Options.multiPartUploadSizeThreshold {
             storageService.multiPartUpload(serviceKey: serviceKey,
-                                           uploadSource: uploadSource,
+                                           uploadSource: .data(request.data),
                                            contentType: request.options.contentType,
                                            metadata: serviceMetadata) { [weak self] event in
                                                self?.onServiceEvent(event: event)
                                            }
         } else {
             storageService.upload(serviceKey: serviceKey,
-                                  uploadSource: uploadSource,
+                                  uploadSource: .data(request.data),
                                   contentType: request.options.contentType,
                                   metadata: serviceMetadata) { [weak self] event in
                                       self?.onServiceEvent(event: event)

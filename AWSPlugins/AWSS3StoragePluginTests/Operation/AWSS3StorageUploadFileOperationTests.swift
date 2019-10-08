@@ -190,7 +190,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(())]
 
-        let largeDataObject = Data(repeating: 0xff, count: 1024 * 1024 * 6) // 6MB
+        let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * 6) // 6MB
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: largeDataObject, attributes: nil)

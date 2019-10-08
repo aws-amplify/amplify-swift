@@ -10,8 +10,6 @@ import Amplify
 import AWSS3
 import AWSMobileClient
 
-// TODO: thread safety: everything has to be locked down
-// TODO verify no retain cycle
 public class AWSS3StorageGetURLOperation: AmplifyOperation<StorageGetURLRequest, Void, URL, StorageError>,
     StorageGetURLOperation {
 

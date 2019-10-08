@@ -77,13 +77,15 @@ public class AWSS3StorageUploadFileOperation: AmplifyOperation<StorageUploadFile
             return
         }
 
-        let uploadSource = UploadSource.local(request.local)
-        let uploadSizeResult = StorageRequestUtils.getSize(uploadSource)
-        guard case let .success(uploadSize) = uploadSizeResult else {
-            if case let .failure(error) = uploadSizeResult {
-                dispatch(error)
-            }
-
+        let uploadSize: UInt64
+        do {
+            uploadSize = try StorageRequestUtils.getSize(request.local)
+        } catch let error as StorageError {
+            dispatch(error)
+            finish()
+            return
+        } catch {
+            dispatch(StorageError.unknown(error.localizedDescription))
             finish()
             return
         }
@@ -100,14 +102,14 @@ public class AWSS3StorageUploadFileOperation: AmplifyOperation<StorageUploadFile
 
         if uploadSize > StorageUploadFileRequest.Options.multiPartUploadSizeThreshold {
             storageService.multiPartUpload(serviceKey: serviceKey,
-                                           uploadSource: uploadSource,
+                                           uploadSource: .local(request.local),
                                            contentType: request.options.contentType,
                                            metadata: serviceMetadata) { [weak self] event in
                                                self?.onServiceEvent(event: event)
                                            }
         } else {
             storageService.upload(serviceKey: serviceKey,
-                                  uploadSource: uploadSource,
+                                  uploadSource: .local(request.local),
                                   contentType: request.options.contentType,
                                   metadata: serviceMetadata) { [weak self] event in
                                       self?.onServiceEvent(event: event)

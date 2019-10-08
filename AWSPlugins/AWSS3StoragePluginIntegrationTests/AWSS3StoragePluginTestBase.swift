@@ -17,7 +17,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     let bucket: JSONValue = "temp7d35a2c388fb428691cf1bbc12767854-dev"
     let region: JSONValue = "us-east-1"
     let networkTimeout = TimeInterval(180) // 180 seconds to wait before network timeouts
-    static let largeDataObject = Data(repeating: 0xff, count: 1024 * 1024 * 6) // 6MB
+    static let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * 6) // 6MB
 
     override func setUp() {
         // Set up AWSMobileClient

@@ -11,7 +11,7 @@ public struct StorageUploadFileRequest: AmplifyOperationRequest {
     /// The unique identifier for the object in storage
     public let key: String
 
-    /// The data in memory to be uploaded
+    /// The file to be uploaded
     public let local: URL
 
     /// Options to adjust the behavior of this request, including plugin-options

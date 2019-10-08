@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum UploadSource {
+enum UploadSource {
     case data(Data)
     case local(URL)
 }

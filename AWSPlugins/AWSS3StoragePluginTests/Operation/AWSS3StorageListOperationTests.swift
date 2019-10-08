@@ -41,7 +41,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
 
     func testListOperationGetIdentityIdError() {
         mockAuthService.getIdentityIdError = AuthError.identity("", "", "")
-        
+
         let options = StorageListRequest.Options(path: testPath)
         let request = StorageListRequest(options: options)
 

@@ -110,9 +110,9 @@ extension AWSS3StoragePlugin {
         let request = StoragePutDataRequest(key: key, data: data, options: options)
 
         let putDataOperation = AWSS3StoragePutDataOperation(request,
-                                                        storageService: storageService,
-                                                        authService: authService,
-                                                        listener: listener)
+                                                            storageService: storageService,
+                                                            authService: authService,
+                                                            listener: listener)
 
         queue.addOperation(putDataOperation)
 
@@ -138,9 +138,9 @@ extension AWSS3StoragePlugin {
         let request = StorageUploadFileRequest(key: key, local: local, options: options)
 
         let uploadFileOperation = AWSS3StorageUploadFileOperation(request,
-                                                               storageService: storageService,
-                                                               authService: authService,
-                                                               listener: listener)
+                                                                  storageService: storageService,
+                                                                  authService: authService,
+                                                                  listener: listener)
 
         queue.addOperation(uploadFileOperation)
 
@@ -195,7 +195,7 @@ extension AWSS3StoragePlugin {
         return listOperation
     }
 
-    /// Retrieve the escape hatch to perform low level operations on S3
+    /// Retrieve the escape hatch to perform low level operations on S3.
     ///
     /// - Returns: S3 client
     public func getEscapeHatch() -> AWSS3 {

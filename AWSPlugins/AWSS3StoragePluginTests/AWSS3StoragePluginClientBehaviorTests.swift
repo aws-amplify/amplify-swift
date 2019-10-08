@@ -9,7 +9,7 @@ import XCTest
 import Amplify
 @testable import AWSS3StoragePlugin
 
-class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
+class AWSS3StoragePluginClientBehaviorTests: AWSS3StoragePluginTests {
 
     // MARK: GetURL API Tests
 
