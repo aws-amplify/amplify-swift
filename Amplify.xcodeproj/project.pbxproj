@@ -1598,6 +1598,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2125E2062318327300B3DEB5 /* Build configuration list for PBXNativeTarget "AWSS3StoragePluginIntegrationTests" */;
 			buildPhases = (
+				21578BEC234D3C1400FF0F03 /* SwiftFormat */,
+				21578BED234D3D8F00FF0F03 /* SwiftLint */,
 				0C42BE9ACA8CC30882BBBC97 /* [CP] Check Pods Manifest.lock */,
 				2125E1FA2318327300B3DEB5 /* Sources */,
 				2125E1FB2318327300B3DEB5 /* Frameworks */,
@@ -1642,11 +1644,12 @@
 			buildConfigurationList = 21265DB92307389A004CCE39 /* Build configuration list for PBXNativeTarget "AWSS3StoragePlugin" */;
 			buildPhases = (
 				99E2D788CC661BB15F324C6A /* [CP] Check Pods Manifest.lock */,
+				215A84AD234D352000109930 /* SwiftFormat */,
+				21FFFA2B23149DE6005878EA /* SwiftLint */,
 				21265D9F2307389A004CCE39 /* Headers */,
 				21265DA02307389A004CCE39 /* Sources */,
 				21265DA12307389A004CCE39 /* Frameworks */,
 				21265DA22307389A004CCE39 /* Resources */,
-				21FFFA2B23149DE6005878EA /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -1667,7 +1670,6 @@
 				21265DA92307389A004CCE39 /* Frameworks */,
 				21265DAA2307389A004CCE39 /* Resources */,
 				F90C939885FC37A0053DFBC7 /* [CP] Embed Pods Frameworks */,
-				21FFFA2C23149E4B005878EA /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -1710,7 +1712,6 @@
 				FAC234D82279F8DA00424678 /* Frameworks */,
 				FAC234D92279F8DA00424678 /* Resources */,
 				9D7A6AE98E5582ADB1124CD3 /* [CP] Embed Pods Frameworks */,
-				21FFFA2A23149D5B005878EA /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -1748,6 +1749,8 @@
 			buildConfigurationList = FACA360D2327FBD4000E74F6 /* Build configuration list for PBXNativeTarget "AmplifyTestCommon" */;
 			buildPhases = (
 				8934CE3BAE4AA68651840D9C /* [CP] Check Pods Manifest.lock */,
+				215A84AA234D330400109930 /* SwiftFormat */,
+				215A84AB234D332D00109930 /* SwiftLint */,
 				FACA35FF2327FBD4000E74F6 /* Headers */,
 				FACA36002327FBD4000E74F6 /* Sources */,
 				FACA36012327FBD4000E74F6 /* Frameworks */,
@@ -1954,7 +1957,25 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		21FFFA2A23149D5B005878EA /* SwiftLint */ = {
+		21578BEC234D3C1400FF0F03 /* SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftFormat;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/AWSPlugins/AWSS3StoragePluginIntegrationTests\"\n";
+		};
+		21578BED234D3D8F00FF0F03 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1970,7 +1991,61 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
+		};
+		215A84AA234D330400109930 /* SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftFormat;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/AmplifyTestCommon\"\n";
+		};
+		215A84AB234D332D00109930 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
+		};
+		215A84AD234D352000109930 /* SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftFormat;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/AWSPlugins/AWSS3StoragePlugin,${SRCROOT}/AWSPlugins/AWSS3StoragePluginTests\"\n";
 		};
 		21FFFA2B23149DE6005878EA /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1988,25 +2063,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
-		};
-		21FFFA2C23149E4B005878EA /* SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftLint;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
 		};
 		360F766AA21C261B2891BADD /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2185,7 +2242,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
 		};
 		FAF8AC86233AB5CF009FBF97 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2203,7 +2260,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftformat >/dev/null; then\nswiftformat\nelse\necho \"warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat\"\nfi\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/Amplify,${SRCROOT}/AmplifyTests,${SRCROOT}/AmplifyFunctionalTests\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

@@ -7,7 +7,9 @@ target "Amplify" do
   # Comment the next line if you"re not using Swift and don"t want to use dynamic frameworks
   use_frameworks!
 
-  # Pods for Amplify
+  # Pods for Amplify  
+  pod 'SwiftFormat/CLI'
+  pod 'SwiftLint'
 
   target "AmplifyTestCommon" do
     inherit! :search_paths

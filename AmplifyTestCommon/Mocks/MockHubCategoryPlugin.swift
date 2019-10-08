@@ -29,7 +29,7 @@ class MockHubCategoryPlugin: MessageReporter, HubCategoryPlugin {
 
     func listen(to channel: HubChannel,
                 isIncluded filter: HubFilter?,
-                listener: @escaping HubListener) -> UnsubscribeToken{
+                listener: @escaping HubListener) -> UnsubscribeToken {
         notify("listen")
         return UnsubscribeToken(channel: channel, id: UUID())
     }
