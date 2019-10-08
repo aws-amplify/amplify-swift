@@ -23,6 +23,12 @@ target "Amplify" do
     pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
   end
 
+  target "AmplifyFunctionalTests" do
+    inherit! :search_paths
+    pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
+    pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+  end
+
 end
 
 target "AWSS3StoragePlugin" do
