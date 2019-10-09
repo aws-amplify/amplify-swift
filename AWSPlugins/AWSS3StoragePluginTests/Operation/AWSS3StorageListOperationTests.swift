@@ -68,7 +68,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testListOperationListObjects() {
-        mockStorageService.storageServiceListEvents = [StorageEvent.completed(StorageListResult(keys: []))]
+        mockStorageService.storageServiceListEvents = [StorageEvent.completed(StorageListResult(items: []))]
         let options = StorageListRequest.Options(path: testPath)
         let request = StorageListRequest(options: options)
 
@@ -118,7 +118,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testListOperationListObjectsForTargetIdentityId() {
-        mockStorageService.storageServiceListEvents = [StorageEvent.completed(StorageListResult(keys: []))]
+        mockStorageService.storageServiceListEvents = [StorageEvent.completed(StorageListResult(items: []))]
         let options = StorageListRequest.Options(accessLevel: .protected,
                                                  targetIdentityId: testTargetIdentityId,
                                                  path: testPath)

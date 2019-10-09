@@ -10,6 +10,9 @@ import AWSMobileClient
 import Amplify
 import AWSS3StoragePlugin
 import AWSS3
+import var CommonCrypto.CC_MD5_DIGEST_LENGTH
+import func CommonCrypto.CC_MD5
+import typealias CommonCrypto.CC_LONG
 
 class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
@@ -283,6 +286,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation completes successfully with the key retrieved
     func testListFromPublic() {
         let key = "testListFromPublic"
+        let expectedMD5Hex = MD5(string: key).map { String(format: "%02hhx", $0) }.joined()
         putData(key: key, dataString: key)
         let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageListRequest.Options(accessLevel: .public,
@@ -292,8 +296,17 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             switch event {
             case .completed(let result):
                 XCTAssertNotNil(result)
-                XCTAssertNotNil(result.keys)
-                XCTAssertEqual(result.keys.count, 1)
+                XCTAssertNotNil(result.items)
+                XCTAssertEqual(result.items.count, 1)
+                if let item = result.items.first {
+                    print(item)
+                    XCTAssertEqual(item.key, key)
+                    XCTAssertNotNil(item.eTag)
+                    XCTAssertEqual(item.eTag, expectedMD5Hex)
+                    XCTAssertNotNil(item.lastModified)
+                    XCTAssertNotNil(item.size)
+                }
+
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Failed with \(error)")
@@ -318,8 +331,8 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             switch event {
             case .completed(let result):
                 XCTAssertNotNil(result)
-                XCTAssertNotNil(result.keys)
-                XCTAssertEqual(result.keys.count, 0)
+                XCTAssertNotNil(result.items)
+                XCTAssertEqual(result.items.count, 0)
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Failed with \(error)")
@@ -352,10 +365,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             switch event {
             case .completed(let result):
                 XCTAssertNotNil(result)
-                XCTAssertNotNil(result.keys)
-                XCTAssertEqual(result.keys.count, keys.count)
-                for resultKey in result.keys {
-                    XCTAssertTrue(keys.contains(resultKey), "The key that was uploaded should match the key listed")
+                XCTAssertNotNil(result.items)
+                XCTAssertEqual(result.items.count, keys.count)
+                for item in result.items {
+                    XCTAssertTrue(keys.contains(item.key), "The key that was uploaded should match the key listed")
                 }
 
                 completeInvoked.fulfill()
@@ -391,10 +404,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             switch event {
             case .completed(let result):
                 XCTAssertNotNil(result)
-                XCTAssertNotNil(result.keys)
-                XCTAssertEqual(result.keys.count, keys.count)
-                for resultKey in result.keys {
-                    XCTAssertTrue(keys.contains(resultKey), "The key that was uploaded should match the key listed")
+                XCTAssertNotNil(result.items)
+                XCTAssertEqual(result.items.count, keys.count)
+                for item in result.items {
+                    XCTAssertTrue(keys.contains(item.key), "The key that was uploaded should match the key listed")
                 }
                 completeInvoked.fulfill()
             case .failed(let error):
@@ -497,5 +510,25 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
                 XCTFail("Failed to delete file at \(fileURL)")
             }
         }
+    }
+
+    // Copied from accepted answer here:
+    // https://stackoverflow.com/questions/32163848/how-can-i-convert-a-string-to-an-md5-hash-in-ios-using-swift
+    func MD5(string: String) -> Data {
+        let length = Int(CC_MD5_DIGEST_LENGTH)
+        let messageData = string.data(using: .utf8)!
+        var digestData = Data(count: length)
+
+        _ = digestData.withUnsafeMutableBytes { digestBytes -> UInt8 in
+            messageData.withUnsafeBytes { messageBytes -> UInt8 in
+                if let messageBytesBaseAddress = messageBytes.baseAddress,
+                    let digestBytesBlindMemory = digestBytes.bindMemory(to: UInt8.self).baseAddress {
+                    let messageLength = CC_LONG(messageData.count)
+                    CC_MD5(messageBytesBaseAddress, messageLength, digestBytesBlindMemory)
+                }
+                return 0
+            }
+        }
+        return digestData
     }
 }

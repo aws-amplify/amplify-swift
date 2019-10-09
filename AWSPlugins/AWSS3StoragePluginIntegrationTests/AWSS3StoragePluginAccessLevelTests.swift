@@ -36,8 +36,8 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             switch event {
             case .completed(let result):
                 XCTAssertNotNil(result)
-                XCTAssertNotNil(result.keys)
-                XCTAssertEqual(result.keys.count, 0)
+                XCTAssertNotNil(result.items)
+                XCTAssertEqual(result.items.count, 0)
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Failed with \(error)")
@@ -284,8 +284,9 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
     // MARK: StoragePlugin Helper functions
 
-    func list(path: String, accessLevel: StorageAccessLevel, targetIdentityId: String? = nil) -> [String]? {
-        var keys: [String]?
+    func list(path: String, accessLevel: StorageAccessLevel, targetIdentityId: String? = nil) ->
+        [StorageListResult.Item]? {
+        var items: [StorageListResult.Item]?
         let listExpectation = expectation(description: "List operation should be successful")
         let listOptions = StorageListRequest.Options(accessLevel: accessLevel,
                                             targetIdentityId: targetIdentityId,
@@ -293,7 +294,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         _ = Amplify.Storage.list(options: listOptions) { (event) in
             switch event {
             case .completed(let results):
-                keys = results.keys
+                items = results.items
                 listExpectation.fulfill()
             case .failed(let error):
                 XCTFail("Failed to list with error \(error)")
@@ -302,7 +303,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             }
         }
         waitForExpectations(timeout: networkTimeout)
-        return keys
+        return items
     }
 
     func get(key: String, accessLevel: StorageAccessLevel, targetIdentityId: String? = nil) -> Data? {
