@@ -9,7 +9,7 @@ import XCTest
 import Amplify
 @testable import AWSS3StoragePlugin
 
-class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
+class AWSS3StoragePluginClientBehaviorTests: AWSS3StoragePluginTests {
 
     // MARK: GetURL API Tests
 
@@ -137,51 +137,47 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(queue.size, 1)
     }
 
-    // MARK: Put API tests
+    // MARK: PutData API tests
 
-    func testPluginPut() {
-        let operation = storagePlugin.put(key: testKey,
-                                          data: testData,
-                                          options: nil,
-                                          listener: nil)
+    func testPluginPutData() {
+        let operation = storagePlugin.putData(key: testKey,
+                                              data: testData,
+                                              options: nil,
+                                              listener: nil)
 
         XCTAssertNotNil(operation)
-        guard let awss3StoragePutOperation = operation as? AWSS3StoragePutOperation else {
+        guard let awss3StoragePutDataOperation = operation as? AWSS3StoragePutDataOperation else {
             XCTFail("operation could not be cast as AWSS3StoragePutOperation")
             return
         }
-        let request = awss3StoragePutOperation.request
+        let request = awss3StoragePutDataOperation.request
         XCTAssertNotNil(request)
         XCTAssertEqual(request.options.accessLevel, defaultAccessLevel)
         XCTAssertEqual(request.key, testKey)
         XCTAssertNil(request.options.contentType)
         XCTAssertNil(request.options.metadata)
         XCTAssertNil(request.options.pluginOptions)
-        guard case .data(let data) = request.source else {
-            XCTFail("The request upload source should be data")
-            return
-        }
-        XCTAssertEqual(data, testData)
+        XCTAssertEqual(request.data, testData)
         XCTAssertEqual(queue.size, 1)
     }
 
-    func testPluginPutWithOptions() {
-        let options = StoragePutRequest.Options(accessLevel: .private,
-                                                metadata: [:],
-                                                contentType: testContentType,
-                                                pluginOptions: [:])
+    func testPluginPutDataWithOptions() {
+        let options = StoragePutDataRequest.Options(accessLevel: .private,
+                                                    metadata: [:],
+                                                    contentType: testContentType,
+                                                    pluginOptions: [:])
 
-        let operation = storagePlugin.put(key: testKey,
+        let operation = storagePlugin.putData(key: testKey,
                                           data: testData,
                                           options: options,
                                           listener: nil)
 
         XCTAssertNotNil(operation)
-        guard let awss3StoragePutOperation = operation as? AWSS3StoragePutOperation else {
+        guard let awss3StoragePutDataOperation = operation as? AWSS3StoragePutDataOperation else {
             XCTFail("operation could not be cast as AWSS3StoragePutOperation")
             return
         }
-        let request = awss3StoragePutOperation.request
+        let request = awss3StoragePutDataOperation.request
         XCTAssertNotNil(request)
         XCTAssertNotEqual(request.options.accessLevel, defaultAccessLevel)
         XCTAssertEqual(request.options.accessLevel, .private)
@@ -190,60 +186,52 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(request.options.contentType, testContentType)
         XCTAssertNotNil(request.options.metadata)
         XCTAssertNotNil(request.options.pluginOptions)
-        guard case .data(let data) = request.source else {
-            XCTFail("The request upload source should be data")
-            return
-        }
-        XCTAssertEqual(data, testData)
+        XCTAssertEqual(request.data, testData)
         XCTAssertEqual(queue.size, 1)
     }
 
-    // MARK: Put to local file API tests
+    // MARK: UploadFile API tests
 
-    func testPluginPutToLocalFile() {
-        let operation = storagePlugin.put(key: testKey,
-                                          local: testURL,
-                                          options: nil,
-                                          listener: nil)
+    func testPluginUploadFile() {
+        let operation = storagePlugin.uploadFile(key: testKey,
+                                                 local: testURL,
+                                                 options: nil,
+                                                 listener: nil)
 
         XCTAssertNotNil(operation)
-        guard let awss3StoragePutOperation = operation as? AWSS3StoragePutOperation else {
+        guard let awss3StorageUploadFileOperation = operation as? AWSS3StorageUploadFileOperation else {
             XCTFail("operation could not be cast as AWSS3StoragePutOperation")
             return
         }
-        let request = awss3StoragePutOperation.request
+        let request = awss3StorageUploadFileOperation.request
         XCTAssertNotNil(request)
         XCTAssertEqual(request.options.accessLevel, defaultAccessLevel)
         XCTAssertEqual(request.key, testKey)
         XCTAssertNil(request.options.contentType)
         XCTAssertNil(request.options.metadata)
         XCTAssertNil(request.options.pluginOptions)
-        guard case .local(let file) = request.source else {
-            XCTFail("The request upload source should be url")
-            return
-        }
-        XCTAssertEqual(file, testURL)
+        XCTAssertEqual(request.local, testURL)
 
         XCTAssertEqual(queue.size, 1)
     }
 
-    func testPluginPutToLocalFileWithOptions() {
-        let options = StoragePutRequest.Options(accessLevel: .private,
-                                       metadata: [:],
-                                       contentType: testContentType,
-                                       pluginOptions: [:])
+    func testPluginUploadFileWithOptions() {
+        let options = StorageUploadFileRequest.Options(accessLevel: .private,
+                                                       metadata: [:],
+                                                       contentType: testContentType,
+                                                       pluginOptions: [:])
 
-        let operation = storagePlugin.put(key: testKey,
-                                          local: testURL,
-                                          options: options,
-                                          listener: nil)
+        let operation = storagePlugin.uploadFile(key: testKey,
+                                                 local: testURL,
+                                                 options: options,
+                                                 listener: nil)
 
         XCTAssertNotNil(operation)
-        guard let awss3StoragePutOperation = operation as? AWSS3StoragePutOperation else {
+        guard let awss3StorageUploadFileOperation = operation as? AWSS3StorageUploadFileOperation else {
             XCTFail("operation could not be cast as AWSS3StoragePutOperation")
             return
         }
-        let request = awss3StoragePutOperation.request
+        let request = awss3StorageUploadFileOperation.request
         XCTAssertNotNil(request)
         XCTAssertNotEqual(request.options.accessLevel, defaultAccessLevel)
         XCTAssertEqual(request.options.accessLevel, .private)
@@ -252,11 +240,7 @@ class AWSS3StoragePluginAPIBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(request.options.contentType, testContentType)
         XCTAssertNotNil(request.options.metadata)
         XCTAssertNotNil(request.options.pluginOptions)
-        guard case .local(let file) = request.source else {
-            XCTFail("The request upload source should be url")
-            return
-        }
-        XCTAssertEqual(file, testURL)
+        XCTAssertEqual(request.local, testURL)
 
         XCTAssertEqual(queue.size, 1)
     }

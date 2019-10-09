@@ -5,7 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
+import Foundation
 
-class AWSS3StorageServiceListBehaviorTests: AWSS3StorageServiceTestBase {
+enum UploadSource {
+    case data(Data)
+    case local(URL)
 }

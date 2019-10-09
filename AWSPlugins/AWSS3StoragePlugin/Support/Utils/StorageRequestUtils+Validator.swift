@@ -12,6 +12,7 @@ extension StorageRequestUtils {
 
     // MARK: Validation methods
 
+    /// Validate `targetIdentityId` is specified only for `protected` accessLevel.
     static func validateTargetIdentityId(_ targetIdentityId: String?,
                                          accessLevel: StorageAccessLevel) -> StorageError? {
         if let targetIdentityId = targetIdentityId {
@@ -26,13 +27,12 @@ extension StorageRequestUtils {
                                                StorageErrorConstants.invalidAccessLevelWithTarget.errorDescription,
                                                StorageErrorConstants.invalidAccessLevelWithTarget.recoverySuggestion)
             }
-
-            // TODO: if it is public, it doesn't make sense to have a targetIdentityId.
         }
 
         return nil
     }
 
+    /// Validate `key` is non-empty string.
     static func validateKey(_ key: String) -> StorageError? {
         if key.isEmpty {
             return StorageError.validation(StorageErrorConstants.keyIsEmpty.field,
@@ -43,6 +43,7 @@ extension StorageRequestUtils {
         return nil
     }
 
+    /// Validate `expires` value is non-zero positive.
     static func validate(expires: Int) -> StorageError? {
         if expires <= 0 {
             return StorageError.validation(StorageErrorConstants.expiresIsInvalid.field,
@@ -53,6 +54,7 @@ extension StorageRequestUtils {
         return nil
     }
 
+    /// Validate `path` is non-empty, if specified.
     static func validatePath(_ path: String?) -> StorageError? {
         if let path = path {
             if path.isEmpty {
@@ -65,6 +67,7 @@ extension StorageRequestUtils {
         return nil
     }
 
+    // Validate `contentType` is non-empty string
     static func validateContentType(_ contentType: String?) -> StorageError? {
         if let contentType = contentType {
             if contentType.isEmpty {
@@ -72,12 +75,12 @@ extension StorageRequestUtils {
                                                StorageErrorConstants.contentTypeIsEmpty.errorDescription,
                                                StorageErrorConstants.contentTypeIsEmpty.recoverySuggestion)
             }
-            // TODO content type validation
         }
 
         return nil
     }
 
+    // Validate `metadata` dictionary contains lowercased keys
     static func validateMetadata(_ metadata: [String: String]?) -> StorageError? {
         if let metadata = metadata {
             for (key, _) in metadata {
@@ -94,6 +97,7 @@ extension StorageRequestUtils {
         return nil
     }
 
+    // Validate `file` file exists
     static func validateFileExists(_ file: URL) -> StorageError? {
         if !FileManager.default.fileExists(atPath: file.path) {
             return StorageError.validation(StorageErrorConstants.localFileNotFound.field,

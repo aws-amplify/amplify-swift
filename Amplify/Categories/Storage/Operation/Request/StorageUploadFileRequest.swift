@@ -7,29 +7,24 @@
 
 import Foundation
 
-public struct StoragePutRequest: AmplifyOperationRequest {
-    public enum Source {
-        case data(Data)
-        case local(URL)
-    }
-
+public struct StorageUploadFileRequest: AmplifyOperationRequest {
     /// The unique identifier for the object in storage
     public let key: String
 
-    /// The data in memory to be uploaded
-    public let source: Source
+    /// The file to be uploaded
+    public let local: URL
 
     /// Options to adjust the behavior of this request, including plugin-options
     public let options: Options
 
-    public init(key: String, source: Source, options: Options) {
+    public init(key: String, local: URL, options: Options) {
         self.key = key
-        self.source = source
+        self.local = local
         self.options = options
     }
 }
 
-public extension StoragePutRequest {
+public extension StorageUploadFileRequest {
     /// Options to adjust the behavior of this request, including plugin-options
     struct Options {
         /// Access level of the storage system. Defaults to `public`

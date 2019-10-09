@@ -8,7 +8,7 @@
 import Foundation
 import AWSS3
 
-public class StorageTaskReference {
+class StorageTaskReference {
     let task: AWSS3TransferUtilityTask?
     let multiPartUploadTask: AWSS3TransferUtilityMultiPartUploadTask?
 

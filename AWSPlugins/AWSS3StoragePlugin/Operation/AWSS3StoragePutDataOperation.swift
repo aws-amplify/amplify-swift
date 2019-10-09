@@ -10,8 +10,8 @@ import Amplify
 import AWSS3
 import AWSMobileClient
 
-public class AWSS3StoragePutOperation: AmplifyOperation<StoragePutRequest, Progress, String, StorageError>,
-    StoragePutOperation {
+public class AWSS3StoragePutDataOperation: AmplifyOperation<StoragePutDataRequest, Progress, String, StorageError>,
+    StoragePutDataOperation {
 
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
@@ -21,7 +21,7 @@ public class AWSS3StoragePutOperation: AmplifyOperation<StoragePutRequest, Progr
     /// Serial queue for synchronizing access to `storageTaskReference`.
     private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
-    init(_ request: StoragePutRequest,
+    init(_ request: StoragePutDataRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
          listener: EventListener?) {
@@ -29,7 +29,7 @@ public class AWSS3StoragePutOperation: AmplifyOperation<StoragePutRequest, Progr
         self.storageService = storageService
         self.authService = authService
         super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.put,
+                   eventName: HubPayload.EventName.Storage.putData,
                    request: request,
                    listener: listener)
     }
@@ -77,16 +77,6 @@ public class AWSS3StoragePutOperation: AmplifyOperation<StoragePutRequest, Progr
             return
         }
 
-        let uploadSizeResult = StorageRequestUtils.getSize(request.source)
-        guard case let .success(uploadSize) = uploadSizeResult else {
-            if case let .failure(error) = uploadSizeResult {
-                dispatch(error)
-            }
-
-            finish()
-            return
-        }
-
         let serviceKey = StorageRequestUtils.getServiceKey(accessLevel: request.options.accessLevel,
                                                            identityId: identityId,
                                                            key: request.key)
@@ -97,16 +87,16 @@ public class AWSS3StoragePutOperation: AmplifyOperation<StoragePutRequest, Progr
             return
         }
 
-        if uploadSize > StoragePutRequest.Options.multiPartUploadSizeThreshold {
+        if request.data.count > StoragePutDataRequest.Options.multiPartUploadSizeThreshold {
             storageService.multiPartUpload(serviceKey: serviceKey,
-                                           uploadSource: request.source,
+                                           uploadSource: .data(request.data),
                                            contentType: request.options.contentType,
                                            metadata: serviceMetadata) { [weak self] event in
                                                self?.onServiceEvent(event: event)
                                            }
         } else {
             storageService.upload(serviceKey: serviceKey,
-                                  uploadSource: request.source,
+                                  uploadSource: .data(request.data),
                                   contentType: request.options.contentType,
                                   metadata: serviceMetadata) { [weak self] event in
                                       self?.onServiceEvent(event: event)

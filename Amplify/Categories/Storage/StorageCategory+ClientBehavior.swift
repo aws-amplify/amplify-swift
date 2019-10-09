@@ -27,18 +27,18 @@ extension StorageCategory: StorageCategoryClientBehavior {
         return plugin.downloadFile(key: key, local: local, options: options, listener: listener)
     }
 
-    public func put(key: String,
-                    data: Data,
-                    options: StoragePutRequest.Options? = nil,
-                    listener: StoragePutOperation.EventListener?) -> StoragePutOperation {
-        return plugin.put(key: key, data: data, options: options, listener: listener)
+    public func putData(key: String,
+                        data: Data,
+                        options: StoragePutDataRequest.Options? = nil,
+                        listener: StoragePutDataOperation.EventListener?) -> StoragePutDataOperation {
+        return plugin.putData(key: key, data: data, options: options, listener: listener)
     }
 
-    public func put(key: String,
-                    local: URL,
-                    options: StoragePutRequest.Options? = nil,
-                    listener: StoragePutOperation.EventListener?) -> StoragePutOperation {
-        return plugin.put(key: key, local: local, options: options, listener: listener)
+    public func uploadFile(key: String,
+                           local: URL,
+                           options: StorageUploadFileRequest.Options? = nil,
+                           listener: StorageUploadFileOperation.EventListener?) -> StorageUploadFileOperation {
+        return plugin.uploadFile(key: key, local: local, options: options, listener: listener)
     }
 
     public func remove(key: String,

@@ -45,12 +45,12 @@ Error: AmplifyError>: AsynchronousOperation {
         self.categoryType = categoryType
         self.eventName = eventName
         self.request = request
-        id = UUID()
+        self.id = UUID()
 
         super.init()
 
         if let listener = listener {
-            unsubscribeToken = subscribe(listener: listener)
+            self.unsubscribeToken = subscribe(listener: listener)
         }
     }
 

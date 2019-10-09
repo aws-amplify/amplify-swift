@@ -48,27 +48,20 @@ extension StorageRequestUtils {
         return serviceMetadata
     }
 
-    // TODO: This should be a throwing method; we should reserve Result for async operations
-    static func getSize(_ uploadSource: StoragePutRequest.Source) -> Result<UInt64, StorageError> {
-        switch uploadSource {
-        case .local(let file):
-            if let error = validateFileExists(file) {
-                return .failure(StorageError.localFileNotFound(error.errorDescription, error.recoverySuggestion))
+    static func getSize(_ file: URL) throws -> UInt64 {
+        if let error = validateFileExists(file) {
+            throw StorageError.localFileNotFound(error.errorDescription, error.recoverySuggestion)
+        }
+
+        do {
+            let attributeOfItem = try FileManager.default.attributesOfItem(atPath: file.path)
+            guard let fileSize = attributeOfItem[FileAttributeKey.size] as? UInt64 else {
+                throw StorageError.unknown("Could not get size of file.")
             }
 
-            do {
-                let attributeOfItem = try FileManager.default.attributesOfItem(atPath: file.path)
-                guard let fileSize = attributeOfItem[FileAttributeKey.size] as? UInt64 else {
-                    return .failure(StorageError.unknown("file Issue"))
-                }
-
-                return .success(fileSize)
-            } catch {
-                return .failure(StorageError.unknown("File issue"))
-            }
-
-        case .data(let data):
-            return .success(UInt64(data.count))
+            return fileSize
+        } catch {
+            throw StorageError.unknown("Unexpected error occurred while retrieving attributes of file.")
         }
     }
 }

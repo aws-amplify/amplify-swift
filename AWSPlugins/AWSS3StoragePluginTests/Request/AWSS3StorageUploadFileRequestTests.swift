@@ -9,7 +9,7 @@ import XCTest
 import Amplify
 @testable import AWSS3StoragePlugin
 
-class AWSS3StoragePutRequestTests: XCTestCase {
+class AWSS3StorageUploadFileRequestTests: XCTestCase {
 
     let testTargetIdentityId = "TestTargetIdentityId"
     let testKey = "TestKey"
@@ -18,28 +18,15 @@ class AWSS3StoragePutRequestTests: XCTestCase {
     let testContentType = "TestContentType"
     let testMetadata: [String: String] = [:]
 
-    func testValidateSuccessWithDataUploadSource() {
-        let options = StoragePutRequest.Options(accessLevel: .protected,
-                                                metadata: testMetadata,
-                                                contentType: testContentType,
-                                                pluginOptions: testPluginOptions)
-        let request = StoragePutRequest(key: testKey, source: .data(testData), options: options)
-
-        let storageErrorOptional = request.validate()
-
-        XCTAssertNil(storageErrorOptional)
-    }
-
-    func testValidateSuccessWithFileUploadSource() {
-        let key = "testValidateSuccessWithFileUploadSource"
-        let filePath = NSTemporaryDirectory() + key + ".tmp"
+    func testValidateSuccess() {
+        let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
-        FileManager.default.createFile(atPath: filePath, contents: key.data(using: .utf8), attributes: nil)
-        let options = StoragePutRequest.Options(accessLevel: .protected,
-                                                metadata: testMetadata,
-                                                contentType: testContentType,
-                                                pluginOptions: testPluginOptions)
-        let request = StoragePutRequest(key: testKey, source: .local(fileURL), options: options)
+        FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
+        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
+                                                       metadata: testMetadata,
+                                                       contentType: testContentType,
+                                                       pluginOptions: testPluginOptions)
+        let request = StorageUploadFileRequest(key: testKey, local: fileURL, options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -47,11 +34,14 @@ class AWSS3StoragePutRequestTests: XCTestCase {
     }
 
     func testValidateEmptyKeyError() {
-        let options = StoragePutRequest.Options(accessLevel: .protected,
-                                                metadata: testMetadata,
-                                                contentType: testContentType,
-                                                pluginOptions: testPluginOptions)
-        let request = StoragePutRequest(key: "", source: .data(testData), options: options)
+        let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
+        let fileURL = URL(fileURLWithPath: filePath)
+        FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
+        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
+                                                       metadata: testMetadata,
+                                                       contentType: testContentType,
+                                                       pluginOptions: testPluginOptions)
+        let request = StorageUploadFileRequest(key: "", local: fileURL, options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -71,11 +61,14 @@ class AWSS3StoragePutRequestTests: XCTestCase {
     }
 
     func testValidateEmptyContentTypeError() {
-        let options = StoragePutRequest.Options(accessLevel: .protected,
-                                                metadata: testMetadata,
-                                                contentType: "",
-                                                pluginOptions: testPluginOptions)
-        let request = StoragePutRequest(key: testKey, source: .data(testData), options: options)
+        let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
+        let fileURL = URL(fileURLWithPath: filePath)
+        FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
+        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
+                                                       metadata: testMetadata,
+                                                       contentType: "",
+                                                       pluginOptions: testPluginOptions)
+        let request = StorageUploadFileRequest(key: testKey, local: fileURL, options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -95,12 +88,15 @@ class AWSS3StoragePutRequestTests: XCTestCase {
     }
 
     func testValidateMetadataKeyIsInvalid() {
+        let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
+        let fileURL = URL(fileURLWithPath: filePath)
+        FileManager.default.createFile(atPath: filePath, contents: testData, attributes: nil)
         let metadata = ["InvalidKeyNotLowerCase": "someValue"]
-        let options = StoragePutRequest.Options(accessLevel: .protected,
-                                                metadata: metadata,
-                                                contentType: testContentType,
-                                                pluginOptions: testPluginOptions)
-        let request = StoragePutRequest(key: testKey, source: .data(testData), options: options)
+        let options = StorageUploadFileRequest.Options(accessLevel: .protected,
+                                                       metadata: metadata,
+                                                       contentType: testContentType,
+                                                       pluginOptions: testPluginOptions)
+        let request = StorageUploadFileRequest(key: testKey, local: fileURL, options: options)
 
         let storageErrorOptional = request.validate()
 

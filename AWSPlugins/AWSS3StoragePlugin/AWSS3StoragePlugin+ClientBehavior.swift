@@ -102,13 +102,21 @@ extension AWSS3StoragePlugin {
     ///   - options: Additional parameters to specify API behavior.
     ///   - listener: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
-    public func put(key: String,
-                    data: Data,
-                    options: StoragePutRequest.Options? = nil,
-                    listener: StoragePutOperation.EventListener? = nil) -> StoragePutOperation {
-        let options = options ?? StoragePutRequest.Options()
-        let request = StoragePutRequest(key: key, source: .data(data), options: options)
-        return put(request, listener: listener)
+    public func putData(key: String,
+                        data: Data,
+                        options: StoragePutDataRequest.Options? = nil,
+                        listener: StoragePutDataOperation.EventListener? = nil) -> StoragePutDataOperation {
+        let options = options ?? StoragePutDataRequest.Options()
+        let request = StoragePutDataRequest(key: key, data: data, options: options)
+
+        let putDataOperation = AWSS3StoragePutDataOperation(request,
+                                                            storageService: storageService,
+                                                            authService: authService,
+                                                            listener: listener)
+
+        queue.addOperation(putDataOperation)
+
+        return putDataOperation
     }
 
     /// Uploads the file located at the local URL with the specified key to the S3 bucket.
@@ -122,13 +130,21 @@ extension AWSS3StoragePlugin {
     ///   - options: Additional parameters to specify API behavior.
     ///   - listener: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
-    public func put(key: String,
-                    local: URL,
-                    options: StoragePutRequest.Options? = nil,
-                    listener: StoragePutOperation.EventListener? = nil) -> StoragePutOperation {
-        let options = options ?? StoragePutRequest.Options()
-        let request = StoragePutRequest(key: key, source: .local(local), options: options)
-        return put(request, listener: listener)
+    public func uploadFile(key: String,
+                           local: URL,
+                           options: StorageUploadFileRequest.Options? = nil,
+                           listener: StorageUploadFileOperation.EventListener? = nil) -> StorageUploadFileOperation {
+        let options = options ?? StorageUploadFileRequest.Options()
+        let request = StorageUploadFileRequest(key: key, local: local, options: options)
+
+        let uploadFileOperation = AWSS3StorageUploadFileOperation(request,
+                                                                  storageService: storageService,
+                                                                  authService: authService,
+                                                                  listener: listener)
+
+        queue.addOperation(uploadFileOperation)
+
+        return uploadFileOperation
     }
 
     /// Removes the object from S3 at the specified key.
@@ -179,28 +195,10 @@ extension AWSS3StoragePlugin {
         return listOperation
     }
 
-    /// Retrieve the escape hatch to perform low level operations on S3
+    /// Retrieve the escape hatch to perform low level operations on S3.
     ///
     /// - Returns: S3 client
     public func getEscapeHatch() -> AWSS3 {
         return storageService.getEscapeHatch()
-    }
-
-    /// Private method to consolidate the call path for the Put API with the two different method signatures, uploading
-    /// from data object and uploading from file.
-    ///
-    /// Constructs an operation to perform the work, and adds it to the OperationQueue to perform the work
-    /// asychronously.
-    private func put(_ request: StoragePutRequest,
-                     listener: StoragePutOperation.EventListener? = nil) -> StoragePutOperation {
-
-        let putOperation = AWSS3StoragePutOperation(request,
-                                                    storageService: storageService,
-                                                    authService: authService,
-                                                    listener: listener)
-
-        queue.addOperation(putOperation)
-
-        return putOperation
     }
 }

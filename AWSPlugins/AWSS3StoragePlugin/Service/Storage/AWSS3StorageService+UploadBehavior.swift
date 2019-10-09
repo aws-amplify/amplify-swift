@@ -14,7 +14,7 @@ public typealias UploadTaskCreatedHandler = (AWSTask<AWSS3TransferUtilityUploadT
 extension AWSS3StorageService {
 
     func upload(serviceKey: String,
-                uploadSource: StoragePutRequest.Source,
+                uploadSource: UploadSource,
                 contentType: String?,
                 metadata: [String: String]?,
                 onEvent: @escaping StorageServiceUploadEventHandler) {

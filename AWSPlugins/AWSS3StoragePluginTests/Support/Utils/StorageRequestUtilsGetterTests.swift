@@ -140,42 +140,24 @@ class StorageRequestUtilsGetterTests: XCTestCase {
 
     // MARK: GetSize tests
 
-    func testGetSizeForFileUploadSourceReturnsSize() {
+    func testGetSizeForFileUploadSourceReturnsSize() throws {
         let key = "testGetSizeForFileUploadSourceReturnsSize"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: key.data(using: .utf8), attributes: nil)
-        let uploadSource = StoragePutRequest.Source.local(fileURL)
-        let result = StorageRequestUtils.getSize(uploadSource)
-        guard case let .success(size) = result else {
-            XCTFail("Valid file should return success result")
-            return
-        }
-
-        XCTAssertNotNil(size)
+        let result = try StorageRequestUtils.getSize(fileURL)
+        XCTAssertNotNil(result)
     }
 
     func testGetSizeForMissingFileReturnsError() {
         let fileURL = URL(fileURLWithPath: "path")
-        let uploadSource = StoragePutRequest.Source.local(fileURL)
-        let result = StorageRequestUtils.getSize(uploadSource)
-        guard case let .failure(error) = result else {
-            XCTFail("missing file should return error result")
-            return
+
+        XCTAssertThrowsError(try StorageRequestUtils.getSize(fileURL),
+                             "GetSize for missing file should throw") { error in
+            guard case StorageError.localFileNotFound = error else {
+                XCTFail("Expected StorageError.StorageError")
+                return
+            }
         }
-
-        XCTAssertNotNil(error)
-        XCTAssertTrue(error.errorDescription.contains(StorageErrorConstants.localFileNotFound.errorDescription))
-    }
-
-    func testGetSizeForDataReturnsSize() {
-        let uploadSource = StoragePutRequest.Source.data(Data())
-        let result = StorageRequestUtils.getSize(uploadSource)
-        guard case let .success(size) = result else {
-            XCTFail("Valid data should return success result")
-            return
-        }
-
-        XCTAssertNotNil(size)
     }
 }

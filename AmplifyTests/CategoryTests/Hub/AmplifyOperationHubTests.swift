@@ -150,16 +150,16 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     }
 
-    func put(key: String,
-             data: Data,
-             options: StoragePutRequest.Options? = nil,
-             listener: StoragePutOperation.EventListener? = nil) -> StoragePutOperation {
-        let options = options ?? StoragePutRequest.Options()
+    func putData(key: String,
+                 data: Data,
+                 options: StoragePutDataRequest.Options? = nil,
+                 listener: StoragePutDataOperation.EventListener? = nil) -> StoragePutDataOperation {
+        let options = options ?? StoragePutDataRequest.Options()
 
-        let request = StoragePutRequest(key: key, source: .data(data), options: options)
+        let request = StoragePutDataRequest(key: key, data: data, options: options)
 
-        let operation = MockDispatchingStoragePutOperation(request: request,
-                                                           listener: listener)
+        let operation = MockDispatchingStoragePutDataOperation(request: request,
+                                                               listener: listener)
 
         let delay = resolveDispatchDelay(options: options.pluginOptions)
         queue.asyncAfter(deadline: .now() + delay) {
@@ -169,16 +169,16 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
         return operation
     }
 
-    func put(key: String,
-             local: URL,
-             options: StoragePutRequest.Options? = nil,
-             listener: StoragePutOperation.EventListener? = nil) -> StoragePutOperation {
-        let options = options ?? StoragePutRequest.Options()
+    func uploadFile(key: String,
+                    local: URL,
+                    options: StorageUploadFileRequest.Options? = nil,
+                    listener: StorageUploadFileOperation.EventListener? = nil) -> StorageUploadFileOperation {
+        let options = options ?? StorageUploadFileRequest.Options()
 
-        let request = StoragePutRequest(key: key, source: .local(local), options: options)
+        let request = StorageUploadFileRequest(key: key, local: local, options: options)
 
-        let operation = MockDispatchingStoragePutOperation(request: request,
-                                                           listener: listener)
+        let operation = MockDispatchingStorageUploadFileOperation(request: request,
+                                                                  listener: listener)
 
         let delay = resolveDispatchDelay(options: options.pluginOptions)
         queue.asyncAfter(deadline: .now() + delay) {
@@ -310,11 +310,25 @@ String, StorageError>, StorageRemoveOperation {
     }
 }
 
-class MockDispatchingStoragePutOperation: AmplifyOperation<StoragePutRequest, Progress,
-String, StorageError>, StoragePutOperation {
+class MockDispatchingStoragePutDataOperation: AmplifyOperation<StoragePutDataRequest, Progress,
+String, StorageError>, StoragePutDataOperation {
     init(request: Request, listener: EventListener? = nil) {
         super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.put,
+                   eventName: HubPayload.EventName.Storage.putData,
+                   request: request,
+                   listener: listener)
+    }
+
+    func doMockDispatch() {
+        super.dispatch(event: .unknown)
+    }
+}
+
+class MockDispatchingStorageUploadFileOperation: AmplifyOperation<StorageUploadFileRequest, Progress,
+String, StorageError>, StorageUploadFileOperation {
+    init(request: Request, listener: EventListener? = nil) {
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.uploadFile,
                    request: request,
                    listener: listener)
     }

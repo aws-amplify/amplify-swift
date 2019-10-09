@@ -17,14 +17,14 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     let bucket: JSONValue = "temp7d35a2c388fb428691cf1bbc12767854-dev"
     let region: JSONValue = "us-east-1"
     let networkTimeout = TimeInterval(180) // 180 seconds to wait before network timeouts
-    static let largeDataObject = Data(repeating: 0xff, count: 1024 * 1024 * 6) // 6MB
+    static let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * 6) // 6MB
 
     override func setUp() {
         // Set up AWSMobileClient
         // Once https://github.com/aws-amplify/aws-sdk-ios/pull/1812 is done, we can add code like/
         // AWSInfo.configure(values we pass in), can even read from awsconfiguration.json or amplifyconfiguration.json.
         let mobileClientIsInitialized = expectation(description: "AWSMobileClient is initialized")
-        AWSMobileClient.sharedInstance().initialize { (userState, error) in
+        AWSMobileClient.default().initialize { (userState, error) in
             guard error == nil else {
                 XCTFail("Error initializing AWSMobileClient. Error: \(error!.localizedDescription)")
                 return
@@ -34,7 +34,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
                 return
             }
             if userState != UserState.signedOut {
-                AWSMobileClient.sharedInstance().signOut()
+                AWSMobileClient.default().signOut()
             }
             mobileClientIsInitialized.fulfill()
         }
@@ -82,7 +82,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     func putData(key: String, data: Data) {
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+        let operation = Amplify.Storage.putData(key: key, data: data, options: nil) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()

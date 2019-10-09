@@ -14,7 +14,7 @@ class AWSAuthService: AWSAuthServiceBehavior {
     var mobileClient: AWSMobileClientBehavior!
 
     init(mobileClient: AWSMobileClientBehavior? = nil) {
-        let mobileClient = mobileClient ?? AWSMobileClientAdapter(AWSMobileClient.sharedInstance())
+        let mobileClient = mobileClient ?? AWSMobileClientAdapter(AWSMobileClient.default())
         self.mobileClient = mobileClient
     }
 

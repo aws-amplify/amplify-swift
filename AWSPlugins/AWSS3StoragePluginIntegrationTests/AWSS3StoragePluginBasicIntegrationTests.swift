@@ -21,7 +21,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let data = key.data(using: .utf8)!
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+        let operation = Amplify.Storage.putData(key: key, data: data, options: nil) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -44,7 +44,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let data = "".data(using: .utf8)!
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.put(key: key, data: data, options: nil) { (event) in
+        let operation = Amplify.Storage.putData(key: key, data: data, options: nil) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -62,15 +62,15 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Given: A file with contents
     /// When: Upload the file
     /// Then: The operation completes successfully
-    func testPutDataFromFile() {
-        let key = "testPutDataFromFile"
+    func testUploadFile() {
+        let key = "testUploadFile"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
 
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: key.data(using: .utf8), attributes: nil)
 
         let completeInvoked = expectation(description: "Completed is invoked")
-        let operation = Amplify.Storage.put(key: key, local: fileURL, options: nil) { (event) in
+        let operation = Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -88,14 +88,14 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Given: A file with empty contents
     /// When: Upload the file
     /// Then: The operation completes successfully
-    func testPutEmptyDataFromFile() {
-        let key = "testPutEmptyDataFromFile"
+    func testUploadFileEmptyData() {
+        let key = "testUploadFileEmptyData"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: "".data(using: .utf8), attributes: nil)
 
         let completeInvoked = expectation(description: "Completed is invoked")
-        let operation = Amplify.Storage.put(key: key, local: fileURL, options: nil) { (event) in
+        let operation = Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -117,9 +117,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let key = "testPutLargeData"
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.put(key: key,
-                                            data: AWSS3StoragePluginTestBase.largeDataObject,
-                                            options: nil) { (event) in
+        let operation = Amplify.Storage.putData(key: key,
+                                                data: AWSS3StoragePluginTestBase.largeDataObject,
+                                                options: nil) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -137,8 +137,8 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Given: A large file
     /// When: Upload the file
     /// Then: The operation completes successfully
-    func testPutLargeFile() {
-        let key = "testPutLargeFile"
+    func testUploadLargeFile() {
+        let key = "testUploadLargeFile"
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
 
@@ -148,7 +148,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.put(key: key, local: fileURL, options: nil) { (event) in
+        let operation = Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()

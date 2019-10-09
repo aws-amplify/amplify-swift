@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-extension StoragePutRequest {
+extension StorageUploadFileRequest {
     /// Performs client side validation and returns a `StorageError` for any validation failures.
     func validate() -> StorageError? {
         if let error = StorageRequestUtils.validateKey(key) {
@@ -27,7 +27,7 @@ extension StoragePutRequest {
     }
 }
 
-extension StoragePutRequest.Options {
+extension StorageUploadFileRequest.Options {
     /// The minimum size before utilizing multipart upload functionality is 5MB
     static let multiPartUploadSizeThreshold = 5_000_000
 }
