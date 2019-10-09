@@ -7,7 +7,9 @@ target "Amplify" do
   # Comment the next line if you"re not using Swift and don"t want to use dynamic frameworks
   use_frameworks!
 
-  # Pods for Amplify
+  # Pods for Amplify  
+  pod 'SwiftFormat/CLI'
+  pod 'SwiftLint'
 
   target "AmplifyTestCommon" do
     inherit! :search_paths
@@ -16,6 +18,12 @@ target "Amplify" do
   end
 
   target "AmplifyTests" do
+    inherit! :search_paths
+    pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
+    pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+  end
+
+  target "AmplifyFunctionalTests" do
     inherit! :search_paths
     pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
     pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
