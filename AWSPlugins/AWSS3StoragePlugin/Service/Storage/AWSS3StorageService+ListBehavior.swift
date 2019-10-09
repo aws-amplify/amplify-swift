@@ -53,7 +53,7 @@ extension AWSS3StorageService {
                 return nil
             }
 
-            var items: [StorageListResult.Item] = Array()
+            var items = [StorageListResult.Item]()
 
             guard let contents = result.contents else {
                 onEvent(StorageEvent.completed(StorageListResult(items: items)))
@@ -84,9 +84,9 @@ extension AWSS3StorageService {
                 }
 
                 items.append(StorageListResult.Item(key: resultKey,
+                                                    size: size.intValue,
                                                     eTag: String(eTag.dropFirst().dropLast()),
-                                                    lastModified: lastModified,
-                                                    size: size.intValue))
+                                                    lastModified: lastModified))
             }
 
             onEvent(StorageEvent.completed(StorageListResult(items: items)))

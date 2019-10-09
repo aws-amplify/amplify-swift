@@ -14,27 +14,33 @@ public struct StorageListResult {
 
     // Array of Items in the Result
     public var items: [Item]
+}
+
+extension StorageListResult {
 
     public struct Item {
 
         /// The unique identifier of the object in storage.
         public let key: String
 
-        /// The entity tag is an MD5 hash of the object.
-        /// ETag reflects only changes to the contents of an object, not its metadata.
-        public let eTag: String
+        /// Size in bytes of the object
+        public let size: Int?
 
         /// The date the Object was Last Modified
-        public let lastModified: Date
+        public let lastModified: Date?
 
-        /// Size in bytes of the object
-        public let size: Int
+        /// The entity tag is an MD5 hash of the object.
+        /// ETag reflects only changes to the contents of an object, not its metadata.
+        public let eTag: String?
 
-        public init(key: String, eTag: String, lastModified: Date, size: Int) {
+        public init(key: String,
+                    size: Int? = nil,
+                    eTag: String? = nil,
+                    lastModified: Date? = nil) {
             self.key = key
+            self.size = size
             self.eTag = eTag
             self.lastModified = lastModified
-            self.size = size
         }
     }
 }
