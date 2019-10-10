@@ -33,14 +33,19 @@ extension StorageListResult {
         /// ETag reflects only changes to the contents of an object, not its metadata.
         public let eTag: String?
 
+        /// Additional results specific to the plugin.
+        public let pluginResults: Any?
+
         public init(key: String,
                     size: Int? = nil,
                     eTag: String? = nil,
-                    lastModified: Date? = nil) {
+                    lastModified: Date? = nil,
+                    pluginResults: Any? = nil) {
             self.key = key
             self.size = size
             self.eTag = eTag
             self.lastModified = lastModified
+            self.pluginResults  = pluginResults
         }
     }
 }
