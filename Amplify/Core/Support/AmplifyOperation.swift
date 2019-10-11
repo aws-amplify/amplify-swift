@@ -38,6 +38,41 @@ Error: AmplifyError>: AsynchronousOperation {
 
     private var unsubscribeToken: UnsubscribeToken?
 
+    /// Creates an AmplifyOperation for the specified reequest.
+    ///
+    /// ## Events
+    /// An AmplifyOperation will dispatch messages to the Hub as it completes its work. The HubPayload for these
+    /// messages will have the following structure:
+    /// - **`eventName`**: The event name defined by the operation , such as "Storage.getURL" or "Storage.downloadFile".
+    ///   See `HubPayload.EventName` for a list of pre-defined event names.
+    /// - **`context`**: An `AmplifyOperationContext` whose `operationId` will be the ID of this operation, and whose
+    ///   `request` will be the Request used to create the operation.
+    /// - **`data`**: The `AsyncEvent` that will be dispatched to an event listener. Event types for the listener are
+    ///   derived from the request.
+    ///
+    /// A caller may specify a listener during a call to an
+    /// Amplify category API:
+    /// ```swift
+    /// Amplify.Storage.list { event in print(event) }
+    /// ```
+    ///
+    /// Or after the fact, by passing the operation to the Hub:
+    /// ```swift
+    /// Amplify.Hub.listen(to: operation) { event in print(event) }
+    /// ```
+    ///
+    /// In either of these cases, Amplify creates a HubListener for the operation by:
+    /// 1. Filtering messages by the operation's ID
+    /// 1. Extracting the HubPayload's `data` element and casts it to the expected `AsyncEvent` type for the listener
+    /// 1. Automatically unsubscribing the listener (by calling `Amplify.Hub.removeListener`) when the listener receives
+    ///    a `.completed` or `.failed` `AsyncEvent`
+    ///
+    /// Callers can remove the listener at any time by calling `operation.removeListener()`.
+    ///
+    /// - Parameter categoryType: The categoryType of this operation
+    /// - Parameter eventName: The event name of this operation, used in HubPayload messages dispatched by the operation
+    /// - Parameter request: The request used to generate this operation
+    /// - Parameter listener: The optional listener for the AsyncEvents associated with the operation
     public init(categoryType: CategoryType,
                 eventName: HubPayloadEventName,
                 request: Request,
@@ -57,14 +92,31 @@ Error: AmplifyError>: AsynchronousOperation {
     func subscribe(listener: @escaping EventListener) -> UnsubscribeToken {
         let channel = HubChannel(from: categoryType)
         let filterById = HubFilters.hubFilter(forOperation: self)
+
+        var token: UnsubscribeToken?
         let hubListener: HubListener = { payload in
             guard let event = payload.data as? Event else {
                 return
             }
             listener(event)
+
+            // Automatically unsubscribe for terminal events
+            guard let token = token else {
+                return
+            }
+
+            switch event {
+            case .completed, .failed:
+                Amplify.Hub.removeListener(token)
+            default:
+                break
+            }
         }
-        let token = Amplify.Hub.listen(to: channel, isIncluded: filterById, listener: hubListener)
-        return token
+
+        token = Amplify.Hub.listen(to: channel, isIncluded: filterById, listener: hubListener)
+
+        // We know that `token` is assigned by `Amplify.Hub.listen` so it's safe to force-unwrap
+        return token!
     }
 }
 
@@ -134,15 +186,6 @@ public extension HubCategory {
         Error: AmplifyError>(to operation: AmplifyOperation<Request, InProcess, Completed, Error>,
                              listener: @escaping AmplifyOperation<Request, InProcess, Completed, Error>.EventListener)
         -> UnsubscribeToken {
-            let channel = HubChannel(from: operation.categoryType)
-            let filter = HubFilters.hubFilter(forOperation: operation)
-            let transformingListener: HubListener = { payload in
-                guard let data = payload.data as? AmplifyOperation<Request, InProcess, Completed, Error>.Event else {
-                    return
-                }
-                listener(data)
-            }
-            let token = listen(to: channel, isIncluded: filter, listener: transformingListener)
-            return token
+            return operation.subscribe(listener: listener)
     }
 }
