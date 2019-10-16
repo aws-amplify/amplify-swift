@@ -53,17 +53,43 @@ extension AWSS3StorageService {
                 return nil
             }
 
-            var list: [String] = Array()
-            if let contents = result.contents {
-                for content in contents {
-                    if let fullKey = content.key {
-                        let resultKey = String(fullKey.dropFirst(prefix.count))
-                        list.append(resultKey)
-                    }
-                }
+            var items = [StorageListResult.Item]()
+
+            guard let contents = result.contents else {
+                onEvent(StorageEvent.completed(StorageListResult(items: items)))
+                return nil
             }
 
-            onEvent(StorageEvent.completed(StorageListResult(keys: list)))
+            for content in contents {
+                guard let fullKey = content.key else {
+                    onEvent(StorageEvent.failed(StorageError.unknown("Missing key in response")))
+                    return nil
+                }
+
+                let resultKey = String(fullKey.dropFirst(prefix.count))
+
+                guard let eTag = content.eTag else {
+                    onEvent(StorageEvent.failed(StorageError.unknown("Missing eTag in response")))
+                    return nil
+                }
+
+                guard let lastModified = content.lastModified else {
+                    onEvent(StorageEvent.failed(StorageError.unknown("Missing lastModified in response")))
+                    return nil
+                }
+
+                guard let size = content.size else {
+                    onEvent(StorageEvent.failed(StorageError.unknown("Missing size in response")))
+                    return nil
+                }
+
+                items.append(StorageListResult.Item(key: resultKey,
+                                                    size: size.intValue,
+                                                    eTag: String(eTag.dropFirst().dropLast()),
+                                                    lastModified: lastModified))
+            }
+
+            onEvent(StorageEvent.completed(StorageListResult(items: items)))
 
             return nil
         }
