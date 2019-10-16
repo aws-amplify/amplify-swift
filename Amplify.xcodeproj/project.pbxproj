@@ -153,6 +153,8 @@
 		FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA31529F233D645A00DE78E7 /* StorageRemoveRequest.swift */; };
 		FA317108232AE8DF009BC140 /* SerialDispatcherPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA317107232AE8DF009BC140 /* SerialDispatcherPerformanceTests.swift */; };
 		FA31710A232AEAEC009BC140 /* DefaultHubPluginTestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA317109232AEAEC009BC140 /* DefaultHubPluginTestHelpers.swift */; };
+		FA47B8362350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA47B8352350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift */; };
+		FA47B8382350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA47B8372350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift */; };
 		FA4E730A232828EA003B8EEB /* Amplify+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E7309232828EA003B8EEB /* Amplify+Reset.swift */; };
 		FA4E730C23282917003B8EEB /* Amplify+Resolve.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E730B23282917003B8EEB /* Amplify+Resolve.swift */; };
 		FA4E730E232829F1003B8EEB /* Plugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E730D232829F1003B8EEB /* Plugin+Reset.swift */; };
@@ -534,6 +536,8 @@
 		FA31529F233D645A00DE78E7 /* StorageRemoveRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageRemoveRequest.swift; sourceTree = "<group>"; };
 		FA317107232AE8DF009BC140 /* SerialDispatcherPerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialDispatcherPerformanceTests.swift; sourceTree = "<group>"; };
 		FA317109232AEAEC009BC140 /* DefaultHubPluginTestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHubPluginTestHelpers.swift; sourceTree = "<group>"; };
+		FA47B8352350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUnsubscribeOperationTests.swift; sourceTree = "<group>"; };
+		FA47B8372350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUnsubscribeHubListenToOperationTests.swift; sourceTree = "<group>"; };
 		FA4E7309232828EA003B8EEB /* Amplify+Reset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Amplify+Reset.swift"; sourceTree = "<group>"; };
 		FA4E730B23282917003B8EEB /* Amplify+Resolve.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Amplify+Resolve.swift"; sourceTree = "<group>"; };
 		FA4E730D232829F1003B8EEB /* Plugin+Reset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Plugin+Reset.swift"; sourceTree = "<group>"; };
@@ -1555,6 +1559,8 @@
 		FACF52052329652600646E10 /* DefaultPluginTests */ = {
 			isa = PBXGroup;
 			children = (
+				FA47B8372350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift */,
+				FA47B8352350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift */,
 				FAC235A0227A5D8C00424678 /* DefaultHubPluginConcurrencyTests.swift */,
 				FA9FB781232AA26500C04D32 /* DefaultHubPluginCustomChannelTests.swift */,
 				FA317109232AEAEC009BC140 /* DefaultHubPluginTestHelpers.swift */,
@@ -2671,9 +2677,11 @@
 				FAC23564227A056600424678 /* StorageCategoryClientAPITests.swift in Sources */,
 				FA607FE2233D131B00DFEA24 /* AmplifyOperationHubTests.swift in Sources */,
 				FAC2356A227A056600424678 /* LoggingCategoryConfigurationTests.swift in Sources */,
+				FA47B8362350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift in Sources */,
 				FAC6792B2329AA7B004DDFE8 /* SynchronizedQueueTests.swift in Sources */,
 				FA31710A232AEAEC009BC140 /* DefaultHubPluginTestHelpers.swift in Sources */,
 				FAC2356E227A056600424678 /* AnalyticsCategoryClientAPITests.swift in Sources */,
+				FA47B8382350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift in Sources */,
 				FAC23574227A056B00424678 /* ConfigurationTests.swift in Sources */,
 				FA09B9432321CB0C000E064D /* JSONValueTests.swift in Sources */,
 				FAC235A1227A5D8C00424678 /* DefaultHubPluginConcurrencyTests.swift in Sources */,

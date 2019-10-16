@@ -291,8 +291,8 @@ StorageListResult, StorageError>, StorageListOperation {
                    listener: listener)
     }
 
-    func doMockDispatch() {
-        super.dispatch(event: .unknown)
+    func doMockDispatch(event: Event = .unknown) {
+        super.dispatch(event: event)
     }
 }
 
