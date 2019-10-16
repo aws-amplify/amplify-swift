@@ -19,6 +19,9 @@ extension CategoryTypeable {
             return amplifyConfiguration.analytics
         case .api:
             return amplifyConfiguration.api
+        case .dataStore:
+            // TODO implement
+            return nil
         case .hub:
             return amplifyConfiguration.hub
         case .logging:

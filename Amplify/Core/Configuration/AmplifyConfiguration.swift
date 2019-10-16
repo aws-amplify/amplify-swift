@@ -78,6 +78,9 @@ extension Amplify {
                 try Analytics.configure(using: configuration)
             case .api:
                 try API.configure(using: configuration)
+            case .dataStore:
+                // TODO link to DataStore configuration
+                break
             case .hub:
                 try Hub.configure(using: configuration)
             case .logging:

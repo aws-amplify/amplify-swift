@@ -6,10 +6,13 @@ AWS_SDK_VERSION = "2.11.1"
 target "Amplify" do
   # Comment the next line if you"re not using Swift and don"t want to use dynamic frameworks
   use_frameworks!
+  
+  # Pods for Amplify/DataStore
+  pod "SQLite.swift", "~> 0.12.0"
 
-  # Pods for Amplify  
-  pod 'SwiftFormat/CLI'
-  pod 'SwiftLint'
+  # Tools for Amplify
+  pod "SwiftFormat/CLI"
+  pod "SwiftLint"
 
   target "AmplifyTestCommon" do
     inherit! :search_paths
@@ -19,6 +22,7 @@ target "Amplify" do
 
   target "AmplifyTests" do
     inherit! :search_paths
+    pod "SQLite.swift", "~> 0.12.0"
     pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
     pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
   end

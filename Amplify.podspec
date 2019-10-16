@@ -23,4 +23,9 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.source_files = 'Amplify/**/*.swift'
 
+  s.subspec 'DataStore' do |data_store|
+    data_store.source_files = 'Amplify/DataStore/**/*.swift'
+    data_store.dependency 'SQLite.swift'
+  end
+
 end
