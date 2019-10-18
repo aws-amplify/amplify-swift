@@ -74,4 +74,12 @@ target "AmplifyTestApp" do
     pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
     pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
   end
+
+  target "AWSPinpointAnalyticsPluginIntegrationTests" do
+    inherit! :search_paths
+    pod "AWSPinpoint", "~> #{AWS_SDK_VERSION}"
+    pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
+    pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
+    pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+  end
 end
