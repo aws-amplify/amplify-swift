@@ -12,6 +12,12 @@
 		2109222A2359498A00CEC295 /* AWSPinpointAnalyticsPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210922292359498A00CEC295 /* AWSPinpointAnalyticsPlugin.swift */; };
 		21092239235951A000CEC295 /* AWSPinpointAnalyticsPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21092238235951A000CEC295 /* AWSPinpointAnalyticsPluginIntegrationTests.swift */; };
 		2109223B235951A000CEC295 /* AWSPinpointAnalyticsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21578CA5235946F400FF0F03 /* AWSPinpointAnalyticsPlugin.framework */; };
+		210922502359634C00CEC295 /* AnalyticsProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210922492359634B00CEC295 /* AnalyticsProfile.swift */; };
+		210922512359634C00CEC295 /* AnalyticsScreenEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2109224A2359634C00CEC295 /* AnalyticsScreenEvent.swift */; };
+		210922522359634C00CEC295 /* AnalyticsPropertyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2109224B2359634C00CEC295 /* AnalyticsPropertyValue.swift */; };
+		210922552359634C00CEC295 /* AnalyticsRevenueEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2109224E2359634C00CEC295 /* AnalyticsRevenueEvent.swift */; };
+		210922572359693900CEC295 /* BasicAnalyticsEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210922562359693800CEC295 /* BasicAnalyticsEvent.swift */; };
+		2109225A23596BCD00CEC295 /* AnalyticsCategoryClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2109225923596BCD00CEC295 /* AnalyticsCategoryClientBehavior.swift */; };
 		210DBC122332B3C0009B9E51 /* StorageDownloadFileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC112332B3C0009B9E51 /* StorageDownloadFileOperation.swift */; };
 		210DBC142332B3C6009B9E51 /* StorageGetURLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC132332B3C6009B9E51 /* StorageGetURLOperation.swift */; };
 		210DBC162332B3CB009B9E51 /* StorageGetDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC152332B3CB009B9E51 /* StorageGetDataOperation.swift */; };
@@ -202,7 +208,7 @@
 		FAC23523227A053D00424678 /* LoggingCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23505227A053D00424678 /* LoggingCategoryPlugin.swift */; };
 		FAC23525227A053D00424678 /* LogLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23507227A053D00424678 /* LogLevel.swift */; };
 		FAC23527227A053D00424678 /* LoggingCategoryClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23509227A053D00424678 /* LoggingCategoryClientBehavior.swift */; };
-		FAC23528227A053D00424678 /* AnalyticsCategoryClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2350B227A053D00424678 /* AnalyticsCategoryClientBehavior.swift */; };
+		FAC23528227A053D00424678 /* AnalyticsCategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2350B227A053D00424678 /* AnalyticsCategory+ClientBehavior.swift */; };
 		FAC2352A227A053D00424678 /* AnalyticsCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2350D227A053D00424678 /* AnalyticsCategory.swift */; };
 		FAC2352B227A053D00424678 /* AnalyticsEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2350E227A053D00424678 /* AnalyticsEvent.swift */; };
 		FAC2352D227A053D00424678 /* AnalyticsCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23510227A053D00424678 /* AnalyticsCategoryPlugin.swift */; };
@@ -417,6 +423,12 @@
 		21092236235951A000CEC295 /* AWSPinpointAnalyticsPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPinpointAnalyticsPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21092238235951A000CEC295 /* AWSPinpointAnalyticsPluginIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginIntegrationTests.swift; sourceTree = "<group>"; };
 		2109223A235951A000CEC295 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		210922492359634B00CEC295 /* AnalyticsProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsProfile.swift; sourceTree = "<group>"; };
+		2109224A2359634C00CEC295 /* AnalyticsScreenEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsScreenEvent.swift; sourceTree = "<group>"; };
+		2109224B2359634C00CEC295 /* AnalyticsPropertyValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsPropertyValue.swift; sourceTree = "<group>"; };
+		2109224E2359634C00CEC295 /* AnalyticsRevenueEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsRevenueEvent.swift; sourceTree = "<group>"; };
+		210922562359693800CEC295 /* BasicAnalyticsEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicAnalyticsEvent.swift; sourceTree = "<group>"; };
+		2109225923596BCD00CEC295 /* AnalyticsCategoryClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsCategoryClientBehavior.swift; sourceTree = "<group>"; };
 		210DBC112332B3C0009B9E51 /* StorageDownloadFileOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageDownloadFileOperation.swift; sourceTree = "<group>"; };
 		210DBC132332B3C6009B9E51 /* StorageGetURLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageGetURLOperation.swift; sourceTree = "<group>"; };
 		210DBC152332B3CB009B9E51 /* StorageGetDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageGetDataOperation.swift; sourceTree = "<group>"; };
@@ -649,7 +661,7 @@
 		FAC23505227A053D00424678 /* LoggingCategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggingCategoryPlugin.swift; sourceTree = "<group>"; };
 		FAC23507227A053D00424678 /* LogLevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogLevel.swift; sourceTree = "<group>"; };
 		FAC23509227A053D00424678 /* LoggingCategoryClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggingCategoryClientBehavior.swift; sourceTree = "<group>"; };
-		FAC2350B227A053D00424678 /* AnalyticsCategoryClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsCategoryClientBehavior.swift; sourceTree = "<group>"; };
+		FAC2350B227A053D00424678 /* AnalyticsCategory+ClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AnalyticsCategory+ClientBehavior.swift"; sourceTree = "<group>"; };
 		FAC2350D227A053D00424678 /* AnalyticsCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsCategory.swift; sourceTree = "<group>"; };
 		FAC2350E227A053D00424678 /* AnalyticsEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsEvent.swift; sourceTree = "<group>"; };
 		FAC23510227A053D00424678 /* AnalyticsCategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsCategoryPlugin.swift; sourceTree = "<group>"; };
@@ -823,13 +835,6 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		2109222D23594BD500CEC295 /* Request */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Request;
-			sourceTree = "<group>";
-		};
 		21092237235951A000CEC295 /* AWSPinpointAnalyticsPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -845,6 +850,17 @@
 				2109223A235951A000CEC295 /* Info.plist */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		21092258235969D000CEC295 /* Event */ = {
+			isa = PBXGroup;
+			children = (
+				FAC2350E227A053D00424678 /* AnalyticsEvent.swift */,
+				2109224E2359634C00CEC295 /* AnalyticsRevenueEvent.swift */,
+				2109224A2359634C00CEC295 /* AnalyticsScreenEvent.swift */,
+				210922562359693800CEC295 /* BasicAnalyticsEvent.swift */,
+			);
+			path = Event;
 			sourceTree = "<group>";
 		};
 		210FCC882328DABC0017EA4B /* Constants */ = {
@@ -1521,12 +1537,14 @@
 			isa = PBXGroup;
 			children = (
 				FAC2350D227A053D00424678 /* AnalyticsCategory.swift */,
-				FAC2350B227A053D00424678 /* AnalyticsCategoryClientBehavior.swift */,
+				FAC2350B227A053D00424678 /* AnalyticsCategory+ClientBehavior.swift */,
+				2109225923596BCD00CEC295 /* AnalyticsCategoryClientBehavior.swift */,
 				FA09B9442322C9E8000E064D /* AnalyticsCategoryConfiguration.swift */,
 				FAC23510227A053D00424678 /* AnalyticsCategoryPlugin.swift */,
-				FAC2350E227A053D00424678 /* AnalyticsEvent.swift */,
+				210922492359634B00CEC295 /* AnalyticsProfile.swift */,
+				2109224B2359634C00CEC295 /* AnalyticsPropertyValue.swift */,
+				21092258235969D000CEC295 /* Event */,
 				FA09B9342321A310000E064D /* Internal */,
-				2109222D23594BD500CEC295 /* Request */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -3100,13 +3118,14 @@
 				FAC23525227A053D00424678 /* LogLevel.swift in Sources */,
 				FA56F72322B14B420039754A /* Cancellable.swift in Sources */,
 				FAF1B88423392F7C007F1435 /* ConcurrentDispatcher.swift in Sources */,
-				FAC23528227A053D00424678 /* AnalyticsCategoryClientBehavior.swift in Sources */,
+				FAC23528227A053D00424678 /* AnalyticsCategory+ClientBehavior.swift in Sources */,
 				FAC679292329A5D1004DDFE8 /* SynchronizedQueue.swift in Sources */,
 				FACF520723298BF100646E10 /* SynchronizedDictionary.swift in Sources */,
 				FAC2353D227A055200424678 /* CategoryConfiguration.swift in Sources */,
 				FAC23595227A4B9800424678 /* HubCategoryPlugin.swift in Sources */,
 				FAF1B88623392F96007F1435 /* SerialDispatcher.swift in Sources */,
 				FA09B94B2322CBEB000E064D /* LoggingCategoryConfiguration.swift in Sources */,
+				210922572359693900CEC295 /* BasicAnalyticsEvent.swift in Sources */,
 				FAC2353F227A055200424678 /* PluginError.swift in Sources */,
 				FA76A2D32342B47100B91ADB /* HubPayloadEventName.swift in Sources */,
 				FA09B9332321A305000E064D /* HubCategory+CategoryConfigurable.swift in Sources */,
@@ -3123,22 +3142,27 @@
 				FAC23591227A4AF000424678 /* HubCategoryClientBehavior.swift in Sources */,
 				210DBC122332B3C0009B9E51 /* StorageDownloadFileOperation.swift in Sources */,
 				21FFF98E230C81E6005878EA /* StorageAccessLevel.swift in Sources */,
+				210922522359634C00CEC295 /* AnalyticsPropertyValue.swift in Sources */,
 				210DBC472332F0C5009B9E51 /* StorageError.swift in Sources */,
 				FA9FB77B2329D4FB00C04D32 /* UnsubscribeToken.swift in Sources */,
 				FA31529E233D645800DE78E7 /* StoragePutDataRequest.swift in Sources */,
+				2109225A23596BCD00CEC295 /* AnalyticsCategoryClientBehavior.swift in Sources */,
 				FA09B92F2321A2DE000E064D /* APICategory+CategoryConfigurable.swift in Sources */,
 				FA9FB7792329D4D400C04D32 /* HubFilter.swift in Sources */,
 				FAC23520227A053D00424678 /* APIResponse.swift in Sources */,
+				210922512359634C00CEC295 /* AnalyticsScreenEvent.swift in Sources */,
 				FAC2354B227A055A00424678 /* Amplify.swift in Sources */,
 				FA09B92D2321A27F000E064D /* CategoryConfigurable.swift in Sources */,
 				FA09B93B2321A36F000E064D /* StorageCategory+CategoryConfigurable.swift in Sources */,
 				210DBC142332B3C6009B9E51 /* StorageGetURLOperation.swift in Sources */,
+				210922552359634C00CEC295 /* AnalyticsRevenueEvent.swift in Sources */,
 				FA09B94D2322CC05000E064D /* StorageCategoryConfiguration.swift in Sources */,
 				FA31529C233D645400DE78E7 /* StorageListRequest.swift in Sources */,
 				21FFF988230B7B2C005878EA /* AsychronousOperation.swift in Sources */,
 				FAC2352A227A053D00424678 /* AnalyticsCategory.swift in Sources */,
 				FAC2351A227A053D00424678 /* StorageCategory.swift in Sources */,
 				FAC23541227A055200424678 /* CategoryType.swift in Sources */,
+				210922502359634C00CEC295 /* AnalyticsProfile.swift in Sources */,
 				FA76A2D12342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift in Sources */,
 				FAC0A29D22B3E63000B50912 /* HubDispatchDestination.swift in Sources */,
 				FAC23546227A055200424678 /* AmplifyError.swift in Sources */,
