@@ -22,7 +22,7 @@ extension AnalyticsCategory: AnalyticsCategoryClientBehavior {
         plugin.registerGlobalProperties(properties)
     }
 
-    public func unregisterGlobalProperties(_ keys: Set<String>?) {
+    public func unregisterGlobalProperties(_ keys: Set<String>? = nil) {
         plugin.unregisterGlobalProperties(keys)
     }
 
