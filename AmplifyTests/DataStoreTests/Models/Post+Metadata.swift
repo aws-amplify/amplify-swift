@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 
-// MARK:- coding keys
+// MARK: - CodingKeys
 
 extension Post {
     public enum CodingKeys: String, CodingKey, CaseIterable {
@@ -22,14 +22,14 @@ extension Post {
     }
 }
 
-// MARK:- model metadata
+// MARK: - ModelMetadata
 
 extension Post: ModelMetadata {
     public static let primaryKey: ModelKey = CodingKeys.id
     public static let properties: ModelProperties = CodingKeys.allCases
 }
 
-// MARK:- property metadata
+// MARK: - ModelProperty
 
 extension Post.CodingKeys: ModelProperty {
     public var metadata: PropertyMetadata {

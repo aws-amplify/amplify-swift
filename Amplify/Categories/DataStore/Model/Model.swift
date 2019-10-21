@@ -7,16 +7,25 @@
 
 import Foundation
 
-/*
- All persistent models should confirm to the Model protocol.
- */
+
+/// All persistent models should conform to the Model protocol.
 public protocol Model: Codable {
     static var primaryKey: ModelKey { get }
 }
 
+/// Alias of Model identifier (i.e. primary key)
+public typealias Identifier = String
+
 public typealias ModelKey = CodingKey & ModelProperty
 
-extension Model where Self: Codable {
+// MARK: - Model subscript
+
+/// Implement dynamic access to properties of a `Model`.
+///
+/// ```swift
+/// let id = model["id"]
+/// ```
+extension Model {
     public subscript(_ key: String) -> Any? {
         let mirror = Mirror(reflecting: self)
         let property = mirror.children.first { $0.label == key }

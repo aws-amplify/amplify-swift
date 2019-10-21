@@ -12,7 +12,22 @@ final public class DataStoreCategory: Category {
     /// Always .dataStore
     public let categoryType: CategoryType = .dataStore
 
+//    private var pluginHolder: CategoryPluginHolder {
+//        CategoryPluginHolder(categoryType: categoryType)
+//    }
+//
+//    var plugin: DataStoreCategoryPlugin {
+//        // swiftlint:disable force_cast
+//        pluginHolder.plugin as! DataStoreCategoryPlugin
+//        // swiftlint:enable force_cast
+//    }
+//
+//    func add(plugin: DataStoreCategoryPlugin) throws {
+//        try pluginHolder.add(plugin: plugin)
+//    }
+
     public func removePlugin(for key: PluginKey) {
-        // TODO implement this
+//        pluginHolder.removePlugin(for: key)
     }
+
 }

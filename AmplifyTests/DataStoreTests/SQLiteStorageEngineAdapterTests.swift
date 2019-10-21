@@ -10,16 +10,16 @@ import XCTest
 
 @testable import Amplify
 
-class SQLiteStorageAdapterTests: XCTestCase {
+class SQLiteStorageEngineAdapterTests: XCTestCase {
 
-    var storageAdapter: SQLiteStorageAdapter!
+    var storageAdapter: SQLiteStorageEngineAdapter!
 
     override func setUp() {
         super.setUp()
 
         let connection = try? Connection(.inMemory)
         XCTAssertNotNil(connection)
-        storageAdapter = SQLiteStorageAdapter(connection: connection!)
+        storageAdapter = SQLiteStorageEngineAdapter(connection: connection!)
         XCTAssertNotNil(storageAdapter)
     }
 
@@ -61,9 +61,6 @@ class SQLiteStorageAdapterTests: XCTestCase {
     /// it should create an `insert into` statement from a model with foreign key
     func testCreateInsertStatementFromModel() {
         let statement = storageAdapter.getInsertStatement(for: Comment.self)
-        print("----------")
-        print(statement)
-        print("----------")
         let expectedStatement = """
         insert into Comment ("id", "content", "createdAt", "postId")
         values (?, ?, ?, ?)
@@ -80,25 +77,55 @@ class SQLiteStorageAdapterTests: XCTestCase {
         XCTAssertEqual(statement, expectedStatement)
     }
 
+    // MARK: - Utilities
+
+    func testModelDependencySortOrder() {
+        let models: [PersistentModel.Type] = [Comment.self, Post.self]
+        let sorted = models.sortByDependencyOrder()
+
+        XCTAssert(models.count == sorted.count)
+        XCTAssert(models[0].name == sorted[1].name)
+        XCTAssert(models[1].name == sorted[0].name)
+    }
+
     // MARK: - Operations
 
     /// it should create a table, insert a row and select it
-    func testDataBaseState() {
-        // swiftlint:disable force_try
-        try! storageAdapter.setUp(models: [Post.self])
+    func testInsertPost() {
+        do {
+            try storageAdapter.setUp(models: [Post.self])
+        } catch {
+            XCTFail(String(describing: error))
+            return
+        }
+
+        let expectation = self.expectation(description: "it should save and select a Post from the database")
 
         // insert a post
         let post = Post(title: "title", content: "content")
-        try! storageAdapter.save(post)
+        storageAdapter.save(post) { saveResult in
+            switch saveResult {
+            case .result:
+                storageAdapter.query(Post.self) { queryResult in
+                    switch queryResult {
+                    case .result(let posts):
+                        XCTAssert(posts.count == 1)
+                        XCTAssert(posts.first!.id == post.id)
+                        XCTAssert(posts.first!.title == post.title)
+                        XCTAssert(posts.first!.content == post.content)
+                        expectation.fulfill()
+                    case .error(let error):
+                        XCTFail(String(describing: error))
+                        expectation.fulfill()
+                    }
+                }
+            case .error(let error):
+                XCTFail(String(describing: error))
+                expectation.fulfill()
+            }
+        }
 
-        // select the posts
-        let posts: [Post] = try! storageAdapter.select(from: Post.self)
-        // swiftlint:enable force_try
-
-        XCTAssert(posts.count == 1)
-        XCTAssert(posts.first!.id == post.id)
-        XCTAssert(posts.first!.title == post.title)
-        XCTAssert(posts.first!.content == post.content)
+        wait(for: [expectation], timeout: 5)
     }
 
 }

@@ -7,16 +7,22 @@
 
 import Foundation
 
-public typealias DataStoreResult<T> = (_ result: T, _ error: Error?) -> Void
-
 public protocol DataStoreCategoryBehavior {
 
-    func save<M: PersistentModel>(model: M, result: DataStoreResult<M>?)
+    func save<M: PersistentModel>(_ model: M, completion: DataStoreCallback<M>)
 
-    func query<M: PersistentModel>(byId id: String, result: DataStoreResult<M?>)
+    func query<M: PersistentModel>(_ modelType: M.Type,
+                                   byId id: String,
+                                   completion: DataStoreCallback<M?>)
 
-    func delete<M: PersistentModel>(model: M, result: DataStoreResult<Bool>?)
+    func query<M: PersistentModel>(_ modelType: M.Type,
+                                   completion: DataStoreCallback<[M]>)
 
-    func delete(modelType: PersistentModel.Type, withId id: String, result: DataStoreResult<Bool>?)
+    func delete<M: PersistentModel>(_ model: M,
+                                    completion: DataStoreCallback<Bool>)
+
+    func delete<M: PersistentModel>(_ modelType: M.Type,
+                                    withId id: String,
+                                    completion: DataStoreCallback<Void>?)
 
 }
