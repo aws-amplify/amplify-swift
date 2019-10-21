@@ -13,9 +13,7 @@
 		21092239235951A000CEC295 /* AWSPinpointAnalyticsPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21092238235951A000CEC295 /* AWSPinpointAnalyticsPluginIntegrationTests.swift */; };
 		2109223B235951A000CEC295 /* AWSPinpointAnalyticsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21578CA5235946F400FF0F03 /* AWSPinpointAnalyticsPlugin.framework */; };
 		210922502359634C00CEC295 /* AnalyticsProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210922492359634B00CEC295 /* AnalyticsProfile.swift */; };
-		210922512359634C00CEC295 /* AnalyticsScreenEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2109224A2359634C00CEC295 /* AnalyticsScreenEvent.swift */; };
 		210922522359634C00CEC295 /* AnalyticsPropertyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2109224B2359634C00CEC295 /* AnalyticsPropertyValue.swift */; };
-		210922552359634C00CEC295 /* AnalyticsRevenueEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2109224E2359634C00CEC295 /* AnalyticsRevenueEvent.swift */; };
 		210922572359693900CEC295 /* BasicAnalyticsEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210922562359693800CEC295 /* BasicAnalyticsEvent.swift */; };
 		2109225A23596BCD00CEC295 /* AnalyticsCategoryClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2109225923596BCD00CEC295 /* AnalyticsCategoryClientBehavior.swift */; };
 		210DBC122332B3C0009B9E51 /* StorageDownloadFileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC112332B3C0009B9E51 /* StorageDownloadFileOperation.swift */; };
@@ -424,9 +422,7 @@
 		21092238235951A000CEC295 /* AWSPinpointAnalyticsPluginIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginIntegrationTests.swift; sourceTree = "<group>"; };
 		2109223A235951A000CEC295 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		210922492359634B00CEC295 /* AnalyticsProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsProfile.swift; sourceTree = "<group>"; };
-		2109224A2359634C00CEC295 /* AnalyticsScreenEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsScreenEvent.swift; sourceTree = "<group>"; };
 		2109224B2359634C00CEC295 /* AnalyticsPropertyValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsPropertyValue.swift; sourceTree = "<group>"; };
-		2109224E2359634C00CEC295 /* AnalyticsRevenueEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsRevenueEvent.swift; sourceTree = "<group>"; };
 		210922562359693800CEC295 /* BasicAnalyticsEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicAnalyticsEvent.swift; sourceTree = "<group>"; };
 		2109225923596BCD00CEC295 /* AnalyticsCategoryClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsCategoryClientBehavior.swift; sourceTree = "<group>"; };
 		210DBC112332B3C0009B9E51 /* StorageDownloadFileOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageDownloadFileOperation.swift; sourceTree = "<group>"; };
@@ -856,8 +852,6 @@
 			isa = PBXGroup;
 			children = (
 				FAC2350E227A053D00424678 /* AnalyticsEvent.swift */,
-				2109224E2359634C00CEC295 /* AnalyticsRevenueEvent.swift */,
-				2109224A2359634C00CEC295 /* AnalyticsScreenEvent.swift */,
 				210922562359693800CEC295 /* BasicAnalyticsEvent.swift */,
 			);
 			path = Event;
@@ -3150,12 +3144,10 @@
 				FA09B92F2321A2DE000E064D /* APICategory+CategoryConfigurable.swift in Sources */,
 				FA9FB7792329D4D400C04D32 /* HubFilter.swift in Sources */,
 				FAC23520227A053D00424678 /* APIResponse.swift in Sources */,
-				210922512359634C00CEC295 /* AnalyticsScreenEvent.swift in Sources */,
 				FAC2354B227A055A00424678 /* Amplify.swift in Sources */,
 				FA09B92D2321A27F000E064D /* CategoryConfigurable.swift in Sources */,
 				FA09B93B2321A36F000E064D /* StorageCategory+CategoryConfigurable.swift in Sources */,
 				210DBC142332B3C6009B9E51 /* StorageGetURLOperation.swift in Sources */,
-				210922552359634C00CEC295 /* AnalyticsRevenueEvent.swift in Sources */,
 				FA09B94D2322CC05000E064D /* StorageCategoryConfiguration.swift in Sources */,
 				FA31529C233D645400DE78E7 /* StorageListRequest.swift in Sources */,
 				21FFF988230B7B2C005878EA /* AsychronousOperation.swift in Sources */,

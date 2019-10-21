@@ -10,7 +10,7 @@ import Foundation
 public protocol AnalyticsEvent {
 
     /// Name of the event
-    var eventName: String { get }
+    var name: String { get }
 
     // Properties of the event
     var properties: [String: AnalyticsPropertyValue]? { get }

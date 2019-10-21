@@ -15,18 +15,18 @@ public protocol AnalyticsCategoryClientBehavior {
     ///
     /// - Parameter identityId: The unique identifier for the user
     /// - Parameter analyticsUserProfile: User specific data (e.g. plan, accountType, email, age, location, etc)
-    func identifyUser(_ identityId: String, analyticsUserProfile: AnalyticsUserProfile?)
+    func identifyUser(_ identityId: String, withProfile suserProfile: AnalyticsUserProfile?)
 
     /// Record the actions your users perform. Every action triggers what we call an “event”,
     /// which can also have associated properties.
     ///
     /// - Parameter analyticsEvent: the event data. The way it is recorded depends on the service being used.
-    func record(_ analyticsEvent: AnalyticsEvent)
+    func record(event: AnalyticsEvent)
 
     /// Utility to create an event from a string.
     ///
     /// - Parameter eventName: The name of the event.
-    func record(_ eventName: String)
+    func record(eventWithName eventName: String)
 
     /// Register properties that will be recorded by all the subsequent `recordEvent` call.
     /// Properties registered here can be overridden by the ones with the same

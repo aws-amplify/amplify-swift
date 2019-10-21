@@ -8,13 +8,9 @@
 import Foundation
 
 /// Analytics properties can store values of common types
-public enum AnalyticsPropertyValue {
+public protocol AnalyticsPropertyValue {}
 
-    case string(String)
-
-    case int(Int)
-
-    case double(Double)
-
-    case boolean(Bool)
-}
+extension String: AnalyticsPropertyValue {}
+extension Int: AnalyticsPropertyValue {}
+extension Double: AnalyticsPropertyValue {}
+extension Bool: AnalyticsPropertyValue {}

@@ -48,14 +48,14 @@ class AnalyticsCategoryClientAPITests: XCTestCase {
     }
 
     func testRecordWithString() throws {
-        let expectedMessage = "record(test)"
+        let expectedMessage = "record(eventWithName:test)"
         let methodInvoked = expectation(description: "Expected method was invoked on plugin")
         plugin.listeners.append { message in
             if message == expectedMessage {
                 methodInvoked.fulfill()
             }
         }
-        analytics.record("test")
+        analytics.record(eventWithName: "test")
         waitForExpectations(timeout: 1.0)
     }
 
@@ -68,7 +68,7 @@ class AnalyticsCategoryClientAPITests: XCTestCase {
                 methodInvoked.fulfill()
             }
         }
-        analytics.record(event)
+        analytics.record(event: event)
         waitForExpectations(timeout: 1.0)
     }
 

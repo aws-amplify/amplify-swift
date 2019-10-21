@@ -6,16 +6,16 @@
 //
 
 extension AnalyticsCategory: AnalyticsCategoryClientBehavior {
-    public func identifyUser(_ identityId: String, analyticsUserProfile: AnalyticsUserProfile? = nil) {
-        plugin.identifyUser(identityId, analyticsUserProfile: analyticsUserProfile)
+    public func identifyUser(_ identityId: String, withProfile userProfile: AnalyticsUserProfile? = nil) {
+        plugin.identifyUser(identityId, withProfile: userProfile)
     }
 
-    public func record(_ analyticsEvent: AnalyticsEvent) {
-        plugin.record(analyticsEvent)
+    public func record(event: AnalyticsEvent) {
+        plugin.record(event: event)
     }
 
-    public func record(_ eventName: String) {
-        plugin.record(eventName)
+    public func record(eventWithName eventName: String) {
+        plugin.record(eventWithName: eventName)
     }
 
     public func registerGlobalProperties(_ properties: [String: AnalyticsPropertyValue]) {

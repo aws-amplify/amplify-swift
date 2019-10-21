@@ -10,14 +10,14 @@ import Foundation
 public struct BasicAnalyticsEvent: AnalyticsEvent {
 
     /// The name of the event
-    public var eventName: String
+    public var name: String
 
     /// Properties of the event
     public var properties: [String: AnalyticsPropertyValue]?
 
-    public init(_ eventName: String,
+    public init(_ name: String,
                 properties: [String: AnalyticsPropertyValue]? = nil) {
-        self.eventName = eventName
+        self.name = name
         self.properties = properties
     }
 }
