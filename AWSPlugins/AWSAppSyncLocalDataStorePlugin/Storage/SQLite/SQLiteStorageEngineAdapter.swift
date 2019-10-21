@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 import SQLite
 
@@ -25,7 +26,6 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             preconditionFailure("Could not create the database. The `.documentDirectory` is invalid")
         }
         let path = documentsPath
-            .appendingPathComponent("amplify-datastore", isDirectory: true)
             .appendingPathComponent("\(databaseName).db")
             .absoluteString
         let connection = try Connection(path)
@@ -67,7 +67,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             // (some columns might be auto-generated after DB insert/update)
             completion(.result(model))
         } catch {
-            completion(.from(error: error))
+            completion(.failure(causedBy: error))
         }
 
     }
@@ -92,7 +92,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             }
             completion(.result(result))
         } catch {
-            completion(.from(error: error))
+            completion(.failure(causedBy: error))
         }
     }
 

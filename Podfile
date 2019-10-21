@@ -6,9 +6,6 @@ AWS_SDK_VERSION = "2.11.1"
 target "Amplify" do
   # Comment the next line if you"re not using Swift and don"t want to use dynamic frameworks
   use_frameworks!
-  
-  # Pods for Amplify/DataStore
-  pod "SQLite.swift", "~> 0.12.0"
 
   # Tools for Amplify
   pod "SwiftFormat/CLI"
@@ -33,6 +30,16 @@ target "Amplify" do
     pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
   end
 
+end
+
+target "AWSAppSyncLocalDataStorePlugin" do
+  use_frameworks!
+
+  pod "SQLite.swift", "~> 0.12.0"
+
+  target "AWSAppSyncLocalDataStorePluginTests" do
+    inherit! :search_paths
+  end
 end
 
 target "AWSS3StoragePlugin" do

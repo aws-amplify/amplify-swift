@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 /// All persistent models should conform to the Model protocol.
 public protocol Model: Codable {
     static var primaryKey: ModelKey { get }

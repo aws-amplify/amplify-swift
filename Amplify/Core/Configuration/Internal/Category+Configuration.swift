@@ -20,8 +20,7 @@ extension CategoryTypeable {
         case .api:
             return amplifyConfiguration.api
         case .dataStore:
-            // TODO implement
-            return nil
+            return amplifyConfiguration.dataStore
         case .hub:
             return amplifyConfiguration.hub
         case .logging:

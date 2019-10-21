@@ -12,6 +12,7 @@ public struct AmplifyConfiguration: Codable {
     enum CodingKeys: String, CodingKey {
         case analytics = "Analytics"
         case api = "API"
+        case dataStore = "DataStore"
         case hub = "Hub"
         case logging = "Logging"
         case storage = "Storage"
@@ -22,6 +23,9 @@ public struct AmplifyConfiguration: Codable {
 
     /// Configurations for the Amplify API category
     let api: APICategoryConfiguration?
+
+    /// Configurations for the Amplify API category
+    let dataStore: DataStoreCategoryConfiguration?
 
     /// Configurations for the Amplify Hub category
     let hub: HubCategoryConfiguration?
@@ -34,11 +38,13 @@ public struct AmplifyConfiguration: Codable {
 
     public init(analytics: AnalyticsCategoryConfiguration? = nil,
                 api: APICategoryConfiguration? = nil,
+                dataStore: DataStoreCategoryConfiguration? = nil,
                 hub: HubCategoryConfiguration? = nil,
                 logging: LoggingCategoryConfiguration? = nil,
                 storage: StorageCategoryConfiguration? = nil) {
         self.analytics = analytics
         self.api = api
+        self.dataStore = dataStore
         self.hub = hub
         self.logging = logging
         self.storage = storage
@@ -79,8 +85,7 @@ extension Amplify {
             case .api:
                 try API.configure(using: configuration)
             case .dataStore:
-                // TODO link to DataStore configuration
-                break
+                try DataStore.configure(using: configuration)
             case .hub:
                 try Hub.configure(using: configuration)
             case .logging:

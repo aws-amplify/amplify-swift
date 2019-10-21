@@ -37,7 +37,7 @@ public class Amplify {
         } else if let plugin = plugin as? APICategoryPlugin {
             try API.add(plugin: plugin)
         } else if let plugin = plugin as? DataStoreCategoryPlugin {
-//            try DataStore.add(plugin: plugin)
+            try DataStore.add(plugin: plugin)
         } else if let plugin = plugin as? HubCategoryPlugin {
             try Hub.add(plugin: plugin)
         } else if let plugin = plugin as? LoggingCategoryPlugin {
