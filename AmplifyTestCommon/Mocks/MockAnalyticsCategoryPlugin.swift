@@ -29,15 +29,27 @@ class MockAnalyticsCategoryPlugin: MessageReporter, AnalyticsCategoryPlugin {
         notify()
     }
 
-    func record(_ type: String) {
-        notify("record(\(type))")
+    func identifyUser(_ identityId: String, withProfile analyticsUserProfile: AnalyticsUserProfile?) {
+        notify("identifyUser(\(identityId))")
     }
 
-    func record(_ event: AnalyticsEvent) {
+    func record(eventWithName eventName: String) {
+        notify("record(eventWithName:\(eventName))")
+    }
+
+    func record(event: AnalyticsEvent) {
         notify("record(event:\(event.name))")
     }
 
-    func update(analyticsProfile: AnalyticsProfile) {
+    func registerGlobalProperties(_ properties: [String: AnalyticsPropertyValue]) {
+        notify("registerGlobalProperties")
+    }
+
+    func unregisterGlobalProperties(_ keys: Set<String>?) {
+        notify()
+    }
+
+    func flushEvents() {
         notify()
     }
 }

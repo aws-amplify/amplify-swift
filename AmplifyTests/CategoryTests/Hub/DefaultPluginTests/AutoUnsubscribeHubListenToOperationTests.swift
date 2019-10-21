@@ -61,7 +61,7 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
             return
         }
 
-        operation.doMockDispatch(event: .completed(StorageListResult(keys: [])))
+        operation.doMockDispatch(event: .completed(StorageListResult(items: [])))
         wait(for: [listenerWasInvokedForCompleted], timeout: 0.1)
 
         operation.doMockDispatch(event: .inProcess(()))
@@ -105,7 +105,7 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
         wait(for: [listenerWasInvokedForFailed], timeout: 0.1)
 
         operation.doMockDispatch(event: .inProcess(()))
-        operation.doMockDispatch(event: .completed(StorageListResult(keys: [])))
+        operation.doMockDispatch(event: .completed(StorageListResult(items: [])))
         wait(for: [listenerWasInvokedForInProcess, listenerWasInvokedForCompleted], timeout: 0.1)
     }
 
@@ -141,7 +141,7 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
             return
         }
 
-        operation.doMockDispatch(event: .completed(StorageListResult(keys: [])))
+        operation.doMockDispatch(event: .completed(StorageListResult(items: [])))
         operation.doMockDispatch(event: .inProcess(()))
         wait(for: [listenerWasInvokedForInProcess, listenerWasInvokedForCompleted], timeout: 0.1)
 
@@ -185,7 +185,7 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
         operation.doMockDispatch(event: .failed(StorageError.accessDenied("", "")))
         wait(for: [listenerWasInvokedForInProcess, listenerWasInvokedForFailed], timeout: 0.1)
 
-        operation.doMockDispatch(event: .completed(StorageListResult(keys: [])))
+        operation.doMockDispatch(event: .completed(StorageListResult(items: [])))
         wait(for: [listenerWasInvokedForCompleted], timeout: 0.1)
     }
 
