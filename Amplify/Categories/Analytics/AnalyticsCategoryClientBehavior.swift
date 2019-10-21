@@ -14,13 +14,13 @@ public protocol AnalyticsCategoryClientBehavior {
     /// an unique User ID and any optional traits you know about them like their email, name, etc.
     ///
     /// - Parameter identityId: The unique identifier for the user
-    /// - Parameter analyticsUserProfile: User specific data (e.g. plan, accountType, email, age, location, etc)
-    func identifyUser(_ identityId: String, withProfile suserProfile: AnalyticsUserProfile?)
+    /// - Parameter userProfile: User specific data (e.g. plan, accountType, email, age, location, etc)
+    func identifyUser(_ identityId: String, withProfile userProfile: AnalyticsUserProfile?)
 
     /// Record the actions your users perform. Every action triggers what we call an “event”,
     /// which can also have associated properties.
     ///
-    /// - Parameter analyticsEvent: the event data. The way it is recorded depends on the service being used.
+    /// - Parameter event: the event data. The way it is recorded depends on the service being used.
     func record(event: AnalyticsEvent)
 
     /// Utility to create an event from a string.
