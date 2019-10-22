@@ -6,8 +6,7 @@
 //
 
 import Amplify
-import AWSS3
-import AWSMobileClient
+import Foundation
 
 // The AWSS3StoragePlugin which conforms to the Amplify plugin protocols and implements the Storage Plugin APIs for S3.
 final public class AWSS3StoragePlugin: StorageCategoryPlugin {

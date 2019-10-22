@@ -168,6 +168,12 @@
 		FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA31529F233D645A00DE78E7 /* StorageRemoveRequest.swift */; };
 		FA317108232AE8DF009BC140 /* SerialDispatcherPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA317107232AE8DF009BC140 /* SerialDispatcherPerformanceTests.swift */; };
 		FA31710A232AEAEC009BC140 /* DefaultHubPluginTestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA317109232AEAEC009BC140 /* DefaultHubPluginTestHelpers.swift */; };
+		FA32756E235FAF0500692B3A /* AWSAPICategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA32756D235FAF0500692B3A /* AWSAPICategoryPlugin.swift */; };
+		FA327570235FAFE700692B3A /* AWSAPICategoryPlugin+RESTBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA32756F235FAFE700692B3A /* AWSAPICategoryPlugin+RESTBehavior.swift */; };
+		FA327572235FB03C00692B3A /* AWSAPICategoryPlugin+Configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327571235FB03C00692B3A /* AWSAPICategoryPlugin+Configure.swift */; };
+		FA327576235FB13700692B3A /* AWSAPICategoryPlugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327575235FB13700692B3A /* AWSAPICategoryPlugin+Reset.swift */; };
+		FA327578235FB33A00692B3A /* AWSAPICategoryPlugin+GraphQLBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327577235FB33A00692B3A /* AWSAPICategoryPlugin+GraphQLBehavior.swift */; };
+		FA32757A235FB36C00692B3A /* AWSAPICategoryPlugin+InterceptorBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327579235FB36C00692B3A /* AWSAPICategoryPlugin+InterceptorBehavior.swift */; };
 		FA47B8362350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA47B8352350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift */; };
 		FA47B8382350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA47B8372350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift */; };
 		FA4E730A232828EA003B8EEB /* Amplify+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E7309232828EA003B8EEB /* Amplify+Reset.swift */; };
@@ -349,6 +355,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = FAC234D12279F8DA00424678;
 			remoteInfo = Amplify;
+		};
+		FA32757B235FB4F600692B3A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FAC234D12279F8DA00424678;
+			remoteInfo = Amplify;
+		};
+		FA32757D235FB50500692B3A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FACA36032327FBD4000E74F6;
+			remoteInfo = AmplifyTestCommon;
+		};
+		FA32757F235FB51900692B3A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FACA36032327FBD4000E74F6;
+			remoteInfo = AmplifyTestCommon;
 		};
 		FA7348AF235F6DF1004951A9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -702,6 +729,12 @@
 		FA31529F233D645A00DE78E7 /* StorageRemoveRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageRemoveRequest.swift; sourceTree = "<group>"; };
 		FA317107232AE8DF009BC140 /* SerialDispatcherPerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialDispatcherPerformanceTests.swift; sourceTree = "<group>"; };
 		FA317109232AEAEC009BC140 /* DefaultHubPluginTestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHubPluginTestHelpers.swift; sourceTree = "<group>"; };
+		FA32756D235FAF0500692B3A /* AWSAPICategoryPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPlugin.swift; sourceTree = "<group>"; };
+		FA32756F235FAFE700692B3A /* AWSAPICategoryPlugin+RESTBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAPICategoryPlugin+RESTBehavior.swift"; sourceTree = "<group>"; };
+		FA327571235FB03C00692B3A /* AWSAPICategoryPlugin+Configure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAPICategoryPlugin+Configure.swift"; sourceTree = "<group>"; };
+		FA327575235FB13700692B3A /* AWSAPICategoryPlugin+Reset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAPICategoryPlugin+Reset.swift"; sourceTree = "<group>"; };
+		FA327577235FB33A00692B3A /* AWSAPICategoryPlugin+GraphQLBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAPICategoryPlugin+GraphQLBehavior.swift"; sourceTree = "<group>"; };
+		FA327579235FB36C00692B3A /* AWSAPICategoryPlugin+InterceptorBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAPICategoryPlugin+InterceptorBehavior.swift"; sourceTree = "<group>"; };
 		FA47B8352350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUnsubscribeOperationTests.swift; sourceTree = "<group>"; };
 		FA47B8372350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUnsubscribeHubListenToOperationTests.swift; sourceTree = "<group>"; };
 		FA4E7309232828EA003B8EEB /* Amplify+Reset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Amplify+Reset.swift"; sourceTree = "<group>"; };
@@ -1608,6 +1641,12 @@
 			isa = PBXGroup;
 			children = (
 				FA7348A7235F6DF1004951A9 /* AWSAPICategoryPlugin.h */,
+				FA32756D235FAF0500692B3A /* AWSAPICategoryPlugin.swift */,
+				FA327571235FB03C00692B3A /* AWSAPICategoryPlugin+Configure.swift */,
+				FA327577235FB33A00692B3A /* AWSAPICategoryPlugin+GraphQLBehavior.swift */,
+				FA327579235FB36C00692B3A /* AWSAPICategoryPlugin+InterceptorBehavior.swift */,
+				FA327575235FB13700692B3A /* AWSAPICategoryPlugin+Reset.swift */,
+				FA32756F235FAFE700692B3A /* AWSAPICategoryPlugin+RESTBehavior.swift */,
 				FA7348A8235F6DF1004951A9 /* Info.plist */,
 			);
 			path = AWSAPICategoryPlugin;
@@ -2222,6 +2261,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				FA32757C235FB4F600692B3A /* PBXTargetDependency */,
 			);
 			name = AWSAPICategoryPlugin;
 			productName = AWSAPICategoryPlugin;
@@ -2241,6 +2281,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				FA32757E235FB50500692B3A /* PBXTargetDependency */,
 				FA7348B0235F6DF1004951A9 /* PBXTargetDependency */,
 				FA7348B2235F6DF1004951A9 /* PBXTargetDependency */,
 			);
@@ -2262,6 +2303,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				FA327580235FB51900692B3A /* PBXTargetDependency */,
 				FA7348CD235F6E20004951A9 /* PBXTargetDependency */,
 				FA7348D2235F6E30004951A9 /* PBXTargetDependency */,
 			);
@@ -2397,6 +2439,7 @@
 					};
 					FA7348A4235F6DF1004951A9 = {
 						CreatedOnToolsVersion = 11.0;
+						LastSwiftMigration = 1110;
 					};
 					FA7348AC235F6DF1004951A9 = {
 						CreatedOnToolsVersion = 11.0;
@@ -3537,6 +3580,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA327578235FB33A00692B3A /* AWSAPICategoryPlugin+GraphQLBehavior.swift in Sources */,
+				FA32756E235FAF0500692B3A /* AWSAPICategoryPlugin.swift in Sources */,
+				FA327572235FB03C00692B3A /* AWSAPICategoryPlugin+Configure.swift in Sources */,
+				FA327576235FB13700692B3A /* AWSAPICategoryPlugin+Reset.swift in Sources */,
+				FA327570235FAFE700692B3A /* AWSAPICategoryPlugin+RESTBehavior.swift in Sources */,
+				FA32757A235FB36C00692B3A /* AWSAPICategoryPlugin+InterceptorBehavior.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3772,6 +3821,21 @@
 			target = FAC234D12279F8DA00424678 /* Amplify */;
 			targetProxy = 21578CBC235948CE00FF0F03 /* PBXContainerItemProxy */;
 		};
+		FA32757C235FB4F600692B3A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FAC234D12279F8DA00424678 /* Amplify */;
+			targetProxy = FA32757B235FB4F600692B3A /* PBXContainerItemProxy */;
+		};
+		FA32757E235FB50500692B3A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FACA36032327FBD4000E74F6 /* AmplifyTestCommon */;
+			targetProxy = FA32757D235FB50500692B3A /* PBXContainerItemProxy */;
+		};
+		FA327580235FB51900692B3A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FACA36032327FBD4000E74F6 /* AmplifyTestCommon */;
+			targetProxy = FA32757F235FB51900692B3A /* PBXContainerItemProxy */;
+		};
 		FA7348B0235F6DF1004951A9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = FA7348A4235F6DF1004951A9 /* AWSAPICategoryPlugin */;
@@ -3957,6 +4021,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3DC2B7D365B42B3A832601FA /* Pods-AmplifyTestApp.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
@@ -3977,6 +4042,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7D0D6B9DC4C64E1EA75D21B3 /* Pods-AmplifyTestApp.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
@@ -4201,6 +4267,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 40A966226A014DB2AE173E70 /* Pods-AWSPlugins-AWSAPICategoryPlugin.debug.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -4223,6 +4290,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -4232,6 +4300,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7FC218BC0D378A7C23917420 /* Pods-AWSPlugins-AWSAPICategoryPlugin.release.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -4263,6 +4332,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4DCC1382CE9452BE8D34084D /* Pods-AWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = AWSAPICategoryPluginTests/Info.plist;
@@ -4283,6 +4353,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5711DE48D8DB04B90039E300 /* Pods-AWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = AWSAPICategoryPluginTests/Info.plist;
@@ -4303,6 +4374,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 632DACCC8D900B2861C1B3D4 /* Pods-AmplifyTestApp-AWSAPICategoryPluginIntegrationTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = AWSAPICategoryPluginIntegrationTests/Info.plist;
@@ -4324,6 +4396,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1FAD62E6F74B2436ABC72FEF /* Pods-AmplifyTestApp-AWSAPICategoryPluginIntegrationTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = AWSAPICategoryPluginIntegrationTests/Info.plist;
