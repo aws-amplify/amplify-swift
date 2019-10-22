@@ -5,9 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
+import Foundation
 
-class AWSPinpointAnalyticsPluginIntegrationTests: AWSPinpointAnalyticsPluginTestBase {
-    func testExample() {
+public class RepeatingTimer {
+    public init() {
+        // TODO: to be implemented
     }
 }

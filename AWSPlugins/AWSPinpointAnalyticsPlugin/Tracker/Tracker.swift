@@ -5,9 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
+import Foundation
 
-class AWSPinpointAnalyticsPluginIntegrationTests: AWSPinpointAnalyticsPluginTestBase {
-    func testExample() {
-    }
+protocol Tracker {
 }
