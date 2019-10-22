@@ -20,5 +20,5 @@ public protocol APICategoryGraphQLBehavior {
                              operationType: GraphQLOperationType,
                              document: String,
                              classToCast: T.Type,
-                             callback: () -> Void) -> GraphQLOperation
+                             listener: GraphQLOperation.EventListener?) -> GraphQLOperation
 }

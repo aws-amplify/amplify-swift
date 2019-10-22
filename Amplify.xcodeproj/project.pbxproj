@@ -185,7 +185,7 @@
 		FA6BC86D235F5AE30001A882 /* APICategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC86C235F5AE30001A882 /* APICategory+HubPayloadEventName.swift */; };
 		FA6BC86F235F5B680001A882 /* GraphQLOperationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC86E235F5B680001A882 /* GraphQLOperationType.swift */; };
 		FA6BC872235F5BD60001A882 /* GraphQLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC871235F5BD60001A882 /* GraphQLOperation.swift */; };
-		FA6BC875235F5C270001A882 /* APIGraphQLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC874235F5C270001A882 /* APIGraphQLRequest.swift */; };
+		FA6BC875235F5C270001A882 /* GraphQLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC874235F5C270001A882 /* GraphQLRequest.swift */; };
 		FA6BC87B235F5D240001A882 /* APICategoryGraphQLBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC87A235F5D240001A882 /* APICategoryGraphQLBehavior.swift */; };
 		FA6BC87D235F5D490001A882 /* APICategoryRESTBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC87C235F5D490001A882 /* APICategoryRESTBehavior.swift */; };
 		FA6BC87F235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC87E235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift */; };
@@ -208,7 +208,6 @@
 		FAC0A29B22B3DEEE00B50912 /* HubPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A29A22B3DEEE00B50912 /* HubPayload.swift */; };
 		FAC0A29D22B3E63000B50912 /* HubDispatchDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A29C22B3E63000B50912 /* HubDispatchDestination.swift */; };
 		FAC0A2A122B3E81000B50912 /* HubMessageQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2A022B3E81000B50912 /* HubMessageQueue.swift */; };
-		FAC0A2A922B43FB300B50912 /* APICategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2A822B43FB300B50912 /* APICategory+ClientBehavior.swift */; };
 		FAC0A2AD22B43FE700B50912 /* HubCategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2AC22B43FE700B50912 /* HubCategory+ClientBehavior.swift */; };
 		FAC0A2AF22B4400100B50912 /* LoggingCategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2AE22B4400100B50912 /* LoggingCategory+ClientBehavior.swift */; };
 		FAC0A2B222B4402000B50912 /* StorageCategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2B122B4402000B50912 /* StorageCategory+ClientBehavior.swift */; };
@@ -256,6 +255,9 @@
 		FAC23599227A598B00424678 /* DefaultHubPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23598227A598B00424678 /* DefaultHubPluginTests.swift */; };
 		FAC235A1227A5D8C00424678 /* DefaultHubPluginConcurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC235A0227A5D8C00424678 /* DefaultHubPluginConcurrencyTests.swift */; };
 		FAC235A3227A5ED000424678 /* HubChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC235A2227A5ED000424678 /* HubChannel.swift */; };
+		FAC428A0235F7F980000F221 /* APICategory+RESTBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC4289F235F7F980000F221 /* APICategory+RESTBehavior.swift */; };
+		FAC428A2235F80000000F221 /* APICategory+GraphQLBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A1235F80000000F221 /* APICategory+GraphQLBehavior.swift */; };
+		FAC428A4235F802A0000F221 /* APICategory+InterceptorBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A3235F802A0000F221 /* APICategory+InterceptorBehavior.swift */; };
 		FAC679292329A5D1004DDFE8 /* SynchronizedQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC679282329A5D1004DDFE8 /* SynchronizedQueue.swift */; };
 		FAC6792B2329AA7B004DDFE8 /* SynchronizedQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC6792A2329AA7B004DDFE8 /* SynchronizedQueueTests.swift */; };
 		FAC6792D2329B267004DDFE8 /* AtomicValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC6792C2329B267004DDFE8 /* AtomicValue.swift */; };
@@ -715,7 +717,7 @@
 		FA6BC86C235F5AE30001A882 /* APICategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		FA6BC86E235F5B680001A882 /* GraphQLOperationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLOperationType.swift; sourceTree = "<group>"; };
 		FA6BC871235F5BD60001A882 /* GraphQLOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLOperation.swift; sourceTree = "<group>"; };
-		FA6BC874235F5C270001A882 /* APIGraphQLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIGraphQLRequest.swift; sourceTree = "<group>"; };
+		FA6BC874235F5C270001A882 /* GraphQLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequest.swift; sourceTree = "<group>"; };
 		FA6BC87A235F5D240001A882 /* APICategoryGraphQLBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APICategoryGraphQLBehavior.swift; sourceTree = "<group>"; };
 		FA6BC87C235F5D490001A882 /* APICategoryRESTBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICategoryRESTBehavior.swift; sourceTree = "<group>"; };
 		FA6BC87E235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICategoryInterceptorBehavior.swift; sourceTree = "<group>"; };
@@ -740,7 +742,6 @@
 		FAC0A29A22B3DEEE00B50912 /* HubPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPayload.swift; sourceTree = "<group>"; };
 		FAC0A29C22B3E63000B50912 /* HubDispatchDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubDispatchDestination.swift; sourceTree = "<group>"; };
 		FAC0A2A022B3E81000B50912 /* HubMessageQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubMessageQueue.swift; sourceTree = "<group>"; };
-		FAC0A2A822B43FB300B50912 /* APICategory+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+ClientBehavior.swift"; sourceTree = "<group>"; };
 		FAC0A2AC22B43FE700B50912 /* HubCategory+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HubCategory+ClientBehavior.swift"; sourceTree = "<group>"; };
 		FAC0A2AE22B4400100B50912 /* LoggingCategory+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoggingCategory+ClientBehavior.swift"; sourceTree = "<group>"; };
 		FAC0A2B122B4402000B50912 /* StorageCategory+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageCategory+ClientBehavior.swift"; sourceTree = "<group>"; };
@@ -797,6 +798,9 @@
 		FAC23598227A598B00424678 /* DefaultHubPluginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHubPluginTests.swift; sourceTree = "<group>"; };
 		FAC235A0227A5D8C00424678 /* DefaultHubPluginConcurrencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHubPluginConcurrencyTests.swift; sourceTree = "<group>"; };
 		FAC235A2227A5ED000424678 /* HubChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubChannel.swift; sourceTree = "<group>"; };
+		FAC4289F235F7F980000F221 /* APICategory+RESTBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+RESTBehavior.swift"; sourceTree = "<group>"; };
+		FAC428A1235F80000000F221 /* APICategory+GraphQLBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+GraphQLBehavior.swift"; sourceTree = "<group>"; };
+		FAC428A3235F802A0000F221 /* APICategory+InterceptorBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+InterceptorBehavior.swift"; sourceTree = "<group>"; };
 		FAC679282329A5D1004DDFE8 /* SynchronizedQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedQueue.swift; sourceTree = "<group>"; };
 		FAC6792A2329AA7B004DDFE8 /* SynchronizedQueueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedQueueTests.swift; sourceTree = "<group>"; };
 		FAC6792C2329B267004DDFE8 /* AtomicValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicValue.swift; sourceTree = "<group>"; };
@@ -1575,7 +1579,7 @@
 		FA6BC876235F5C370001A882 /* Request */ = {
 			isa = PBXGroup;
 			children = (
-				FA6BC874235F5C270001A882 /* APIGraphQLRequest.swift */,
+				FA6BC874235F5C270001A882 /* GraphQLRequest.swift */,
 			);
 			path = Request;
 			sourceTree = "<group>";
@@ -1583,7 +1587,9 @@
 		FA6BC879235F5CDB0001A882 /* ClientBehavior */ = {
 			isa = PBXGroup;
 			children = (
-				FAC0A2A822B43FB300B50912 /* APICategory+ClientBehavior.swift */,
+				FAC428A1235F80000000F221 /* APICategory+GraphQLBehavior.swift */,
+				FAC428A3235F802A0000F221 /* APICategory+InterceptorBehavior.swift */,
+				FAC4289F235F7F980000F221 /* APICategory+RESTBehavior.swift */,
 				FAC234FC227A053D00424678 /* APICategoryClientBehavior.swift */,
 				FA6BC87A235F5D240001A882 /* APICategoryGraphQLBehavior.swift */,
 				FA6BC87E235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift */,
@@ -3551,6 +3557,7 @@
 				FAC0A29B22B3DEEE00B50912 /* HubPayload.swift in Sources */,
 				FAC2352B227A053D00424678 /* AnalyticsEvent.swift in Sources */,
 				FAC23544227A055200424678 /* ConfigurationError.swift in Sources */,
+				FAC428A4235F802A0000F221 /* APICategory+InterceptorBehavior.swift in Sources */,
 				FAC0A2A122B3E81000B50912 /* HubMessageQueue.swift in Sources */,
 				FAC23547227A055200424678 /* Plugin.swift in Sources */,
 				FA9FB780232AA11A00C04D32 /* HubChannelDispatcher.swift in Sources */,
@@ -3566,11 +3573,11 @@
 				FAC2351E227A053D00424678 /* APICategory.swift in Sources */,
 				FAC2351B227A053D00424678 /* APICategoryClientBehavior.swift in Sources */,
 				FA09B9412321BB78000E064D /* JSONValue.swift in Sources */,
-				FA6BC875235F5C270001A882 /* APIGraphQLRequest.swift in Sources */,
+				FA6BC875235F5C270001A882 /* GraphQLRequest.swift in Sources */,
 				2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */,
 				FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */,
 				FAC0A29822B3DE4800B50912 /* HubPublisher.swift in Sources */,
-				FAC0A2A922B43FB300B50912 /* APICategory+ClientBehavior.swift in Sources */,
+				FAC428A0235F7F980000F221 /* APICategory+RESTBehavior.swift in Sources */,
 				FAC23548227A055200424678 /* Category.swift in Sources */,
 				FACA35ED2326BB54000E74F6 /* AmplifyConfigurationInitialization.swift in Sources */,
 				FA09B9382321A359000E064D /* LoggingCategory+CategoryConfigurable.swift in Sources */,
@@ -3607,6 +3614,7 @@
 				210922522359634C00CEC295 /* AnalyticsPropertyValue.swift in Sources */,
 				210DBC472332F0C5009B9E51 /* StorageError.swift in Sources */,
 				FA9FB77B2329D4FB00C04D32 /* UnsubscribeToken.swift in Sources */,
+				FAC428A2235F80000000F221 /* APICategory+GraphQLBehavior.swift in Sources */,
 				FA31529E233D645800DE78E7 /* StoragePutDataRequest.swift in Sources */,
 				2109225A23596BCD00CEC295 /* AnalyticsCategoryClientBehavior.swift in Sources */,
 				FA09B92F2321A2DE000E064D /* APICategory+CategoryConfigurable.swift in Sources */,
