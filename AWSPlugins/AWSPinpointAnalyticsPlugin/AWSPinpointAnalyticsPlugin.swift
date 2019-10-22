@@ -8,5 +8,5 @@
 import Foundation
 
 final public class AWSPinpointAnalyticsPlugin {
-    
+
 }
