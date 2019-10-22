@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import Amplify
+import Amplify
 
 class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     var key: String {
@@ -13,35 +13,35 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     }
 
     func configure(using configuration: Any) throws {
-        notify()
+        notify("configure")
     }
 
     func delete() {
-        notify()
+        notify("delete")
     }
 
     func get() {
-        notify()
+        notify("get")
     }
 
     func head() {
-        notify()
+        notify("head")
     }
 
     func options() {
-        notify()
+        notify("options")
     }
 
     func patch() {
-        notify()
+        notify("patch")
     }
 
     func post() {
-        notify()
+        notify("post")
     }
 
     func put() {
-        notify()
+        notify("put")
     }
 
     func reset(onComplete: @escaping (() -> Void)) {
@@ -49,44 +49,39 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         onComplete()
     }
 
-    func prepareRequestBody(_ request: APIRequest) throws -> APIRequest {
-        notify()
-        return BasicAPIRequest(
-            apiName: "test",
-            resourcePath: "test",
-            options: [:],
-            method: HTTPMethod.get,
-            rawRequest: nil
-        )
+    func graphql<T>(apiName: String,
+                    operationType: GraphQLOperationType,
+                    document: String,
+                    classToCast: T.Type,
+                    callback: () -> Void) -> GraphQLOperation where T: Decodable, T: Encodable {
+        notify("graphql")
+        let request = GraphQLRequest(key: "foo", options: GraphQLRequest.Options())
+        let operation = MockGraphQLOperation(request: request)
+        return operation
     }
 
-    func authorizeRequest(_ request: APIRequest) throws -> APIRequest {
-        notify()
-        return BasicAPIRequest(
-            apiName: "test",
-            resourcePath: "test",
-            options: [:],
-            method: HTTPMethod.get,
-            rawRequest: nil
-        )
+    func addInterceptor() {
+        notify("addInterceptor")
     }
-
-    func invoke(_ request: APIRequest) {
-        notify()
-    }
-
-    func validateResponse(_ response: APIResponse) {
-        notify()
-    }
-
-    func serializeResponse(_ response: APIResponse) {
-        notify()
-    }
-
 }
 
 class MockSecondAPICategoryPlugin: MockAPICategoryPlugin {
     override var key: String {
         return "MockSecondAPICategoryPlugin"
+    }
+}
+
+class MockGraphQLOperation: AmplifyOperation<GraphQLRequest, Void, Codable, StorageError>,
+GraphQLOperation {
+    override func pause() {
+    }
+
+    override func resume() {
+    }
+
+    init(request: Request) {
+        super.init(categoryType: .storage,
+                   eventName: HubPayload.EventName.Storage.getURL,
+                   request: request)
     }
 }

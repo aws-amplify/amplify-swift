@@ -105,7 +105,7 @@ class APICategoryConfigurationTests: XCTestCase {
         let plugin = MockAPICategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin.listeners.append { message in
-            if message == "get()" {
+            if message == "get" {
                 methodInvokedOnDefaultPlugin.fulfill()
             }
         }
@@ -151,7 +151,7 @@ class APICategoryConfigurationTests: XCTestCase {
             expectation(description: "test method should not be invoked on default plugin")
         methodShouldNotBeInvokedOnDefaultPlugin.isInverted = true
         plugin1.listeners.append { message in
-            if message == "get()" {
+            if message == "get" {
                 methodShouldNotBeInvokedOnDefaultPlugin.fulfill()
             }
         }
@@ -161,7 +161,7 @@ class APICategoryConfigurationTests: XCTestCase {
         let methodShouldBeInvokedOnSecondPlugin =
             expectation(description: "test method should be invoked on second plugin")
         plugin2.listeners.append { message in
-            if message == "get()" {
+            if message == "get" {
                 methodShouldBeInvokedOnSecondPlugin.fulfill()
             }
         }
@@ -190,7 +190,7 @@ class APICategoryConfigurationTests: XCTestCase {
 
         var invocationCount = 0
         plugin.listeners.append { message in
-            if message == "configure(using:)" {
+            if message == "configure" {
                 invocationCount += 1
                 switch invocationCount {
                 case 1: configureShouldBeInvokedFromCategory.fulfill()
