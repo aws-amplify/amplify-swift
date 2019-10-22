@@ -38,6 +38,16 @@
                ReferencedContainer = "container:Amplify.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FA7348AC235F6DF1004951A9"
+               BuildableName = "AWSAPICategoryPluginTests.xctest"
+               BlueprintName = "AWSAPICategoryPluginTests"
+               ReferencedContainer = "container:Amplify.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

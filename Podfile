@@ -7,58 +7,68 @@ target "Amplify" do
   # Comment the next line if you"re not using Swift and don"t want to use dynamic frameworks
   use_frameworks!
 
-  # Pods for Amplify  
   pod 'SwiftFormat/CLI'
   pod 'SwiftLint'
 
-  target "AmplifyTestCommon" do
-    inherit! :search_paths
+  abstract_target "AmplifyTestConfigs" do
     pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
     pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
-  end
 
-  target "AmplifyTests" do
-    inherit! :search_paths
-    pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
-    pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
-  end
+    target "AmplifyTestCommon" do
+    end
 
-  target "AmplifyFunctionalTests" do
-    inherit! :search_paths
-    pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
-    pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
-  end
+    target "AmplifyTests" do
+    end
 
+    target "AmplifyFunctionalTests" do
+    end
+
+  end
 end
 
-target "AWSS3StoragePlugin" do
+abstract_target "AWSPlugins" do
   use_frameworks!
 
-  pod "AWSS3", "~> #{AWS_SDK_VERSION}"
   pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
 
-  target "AWSS3StoragePluginTests" do
-    inherit! :search_paths
-    pod "AWSS3", "~> #{AWS_SDK_VERSION}"
-    pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
-    pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
-    pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+  pod 'SwiftFormat/CLI'
+  pod 'SwiftLint'
+
+  target "AWSAPICategoryPlugin" do
+    inherit! :complete
+
+    target "AWSAPICategoryPluginTests" do
+      inherit! :complete
+      pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
+      pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+    end
+
   end
 
-end
+  target "AWSPinpointAnalyticsPlugin" do
+    inherit! :complete
 
-target "AWSPinpointAnalyticsPlugin" do
-  use_frameworks!
-
-  pod "AWSPinpoint", "~> #{AWS_SDK_VERSION}"
-  pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
-
-  target "AWSPinpointAnalyticsPluginTests" do
-    inherit! :search_paths
     pod "AWSPinpoint", "~> #{AWS_SDK_VERSION}"
-    pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
-    pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
-    pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+
+    target "AWSPinpointAnalyticsPluginTests" do
+      inherit! :complete
+      pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
+      pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+    end
+
+  end
+
+  target "AWSS3StoragePlugin" do
+    inherit! :complete
+
+    pod "AWSS3", "~> #{AWS_SDK_VERSION}"
+
+    target "AWSS3StoragePluginTests" do
+      inherit! :complete
+      pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
+      pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+    end
+
   end
 
 end
@@ -66,20 +76,22 @@ end
 target "AmplifyTestApp" do
   use_frameworks!
   pod "AWSS3", "~> #{AWS_SDK_VERSION}"
+  pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
+  pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
+  pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
 
-  target "AWSS3StoragePluginIntegrationTests" do
-    inherit! :search_paths
-    pod "AWSS3", "~> #{AWS_SDK_VERSION}"
-    pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
-    pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
-    pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+  target "AWSAPICategoryPluginIntegrationTests" do
+    inherit! :complete
   end
 
   target "AWSPinpointAnalyticsPluginIntegrationTests" do
-    inherit! :search_paths
+    inherit! :complete
     pod "AWSPinpoint", "~> #{AWS_SDK_VERSION}"
-    pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
-    pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
-    pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
   end
+
+  target "AWSS3StoragePluginIntegrationTests" do
+    inherit! :complete
+    pod "AWSS3", "~> #{AWS_SDK_VERSION}"
+  end
+
 end

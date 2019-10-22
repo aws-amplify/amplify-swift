@@ -5,29 +5,39 @@
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
+      <BuildActionEntries>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "21092235235951A000CEC295"
+               BuildableName = "AWSPinpointAnalyticsPluginIntegrationTests.xctest"
+               BlueprintName = "AWSPinpointAnalyticsPluginIntegrationTests"
+               ReferencedContainer = "container:Amplify.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
    </BuildAction>
    <TestAction
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
-      enableThreadSanitizer = "YES"
-      onlyGenerateCoverageForSpecifiedTargets = "YES">
+      enableThreadSanitizer = "YES">
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2125E1FD2318327300B3DEB5"
-               BuildableName = "AWSS3StoragePluginIntegrationTests.xctest"
-               BlueprintName = "AWSS3StoragePluginIntegrationTests"
+               BlueprintIdentifier = "21092235235951A000CEC295"
+               BuildableName = "AWSPinpointAnalyticsPluginIntegrationTests.xctest"
+               BlueprintName = "AWSPinpointAnalyticsPluginIntegrationTests"
                ReferencedContainer = "container:Amplify.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "AWSS3StoragePluginAccessLevelTests/testSetUpOnce()">
-               </Test>
-            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>
@@ -48,6 +58,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "21092235235951A000CEC295"
+            BuildableName = "AWSPinpointAnalyticsPluginIntegrationTests.xctest"
+            BlueprintName = "AWSPinpointAnalyticsPluginIntegrationTests"
+            ReferencedContainer = "container:Amplify.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
