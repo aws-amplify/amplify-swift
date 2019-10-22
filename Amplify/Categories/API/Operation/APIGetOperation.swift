@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public protocol APIGetOperation: AmplifyOperation<APIGetRequest, Void, Codable, StorageError> { }
+public protocol APIGetOperation: AmplifyOperation<APIGetRequest, Void, Codable, APIError> { }
 
 public extension HubPayload.EventName.API {
     /// eventName for HubPayloads emitted by this operation

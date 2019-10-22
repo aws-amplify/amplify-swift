@@ -7,10 +7,11 @@
 
 import Amplify
 
-public extension AWSAPICategoryPlugin {
-
-    func configure(using configuration: Any) throws {
-        // TBD
-    }
+final public class AWSAPIGetOperation: AmplifyOperation<APIGetRequest,
+    Void,
+    Codable,
+    APIError
+    >,
+APIGetOperation {
 
 }

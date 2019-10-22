@@ -1,9 +1,19 @@
 {
-    "UserAgent": "aws-amplify-cli/2.0",
-    "Version": "1.0",
-    "Storage": {
-        "plugins": {
-            "MockStorageCategoryPlugin": { }
+  "UserAgent": "aws-amplify-cli/2.0",
+  "Version": "1.0",
+  "API": {
+    "plugins": {
+      "AWSAPIPlugin": {
+        "friendly-name-1": {
+          "Endpoint": "http://api-gw-endpoint-1",
+          "Region": "us-east-1"
         }
+      }
     }
+  },
+  "Storage": {
+    "plugins": {
+      "MockStorageCategoryPlugin": {}
+    }
+  }
 }

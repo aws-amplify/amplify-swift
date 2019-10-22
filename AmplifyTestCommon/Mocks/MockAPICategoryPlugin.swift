@@ -72,7 +72,7 @@ GraphQLOperation {
     }
 }
 
-class MockAPIGetOperation: AmplifyOperation<APIGetRequest, Void, Codable, StorageError>, APIGetOperation {
+class MockAPIGetOperation: AmplifyOperation<APIGetRequest, Void, Codable, APIError>, APIGetOperation {
     override func pause() {
     }
 

@@ -9,8 +9,18 @@ import Amplify
 
 public extension AWSAPICategoryPlugin {
 
-    func get(apiName: String, path: String, listener: ((AsyncEvent<Void, Codable, StorageError>) -> Void)?) -> APIGetOperation {
-        fatalError("Not yet implemented")
+    func get(apiName: String,
+             path: String,
+             listener: APIGetOperation.EventListener?) -> APIGetOperation {
+        let options = APIGetRequest.Options()
+        let request = APIGetRequest(apiName: apiName,
+                                    path: path,
+                                    options: options)
+        let operation = AWSAPIGetOperation(categoryType: .api,
+                                           eventName: HubPayload.EventName.API.get,
+                                           request: request,
+                                           listener: listener)
+        return operation
     }
 
 }
