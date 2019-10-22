@@ -5,26 +5,19 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 /// Behavior of the API category related to REST operations
 public protocol APICategoryRESTBehavior {
-    /// Perform an HTTP DELETE operation
-    func delete()
 
     /// Perform an HTTP GET operation
-    func get()
+    ///
+    /// - Parameter apiName: The name of the API to perform the request against
+    /// - Parameter path: The path to the resource being requested
+    /// - Parameter options: Options to adjust the behavior of this request, including plugin-options
+    /// - Returns: An operation that can be observed for its value
+    func get(apiName: String,
+             path: String,
+             listener: APIGetOperation.EventListener?) -> APIGetOperation
 
-    /// Perform an HTTP HEAD operation
-    func head()
-
-    /// Perform an HTTP OPTIONS operation
-    func options()
-
-    /// Perform an HTTP PATCH operation
-    func patch()
-
-    /// Perform an HTTP POST operation
-    func post()
-
-    /// Perform an HTTP PUT operation
-    func put()
 }

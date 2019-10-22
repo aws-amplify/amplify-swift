@@ -16,47 +16,33 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         notify("configure")
     }
 
-    func delete() {
-        notify("delete")
-    }
-
-    func get() {
-        notify("get")
-    }
-
-    func head() {
-        notify("head")
-    }
-
-    func options() {
-        notify("options")
-    }
-
-    func patch() {
-        notify("patch")
-    }
-
-    func post() {
-        notify("post")
-    }
-
-    func put() {
-        notify("put")
-    }
-
     func reset(onComplete: @escaping (() -> Void)) {
         notify("reset")
         onComplete()
     }
 
-    func graphql<T>(apiName: String,
-                    operationType: GraphQLOperationType,
-                    document: String,
-                    classToCast: T.Type,
-                    callback: () -> Void) -> GraphQLOperation where T: Decodable, T: Encodable {
+    func graphql(apiName: String,
+                 operationType: GraphQLOperationType,
+                 document: String,
+                 listener: GraphQLOperation.EventListener?) -> GraphQLOperation {
         notify("graphql")
-        let request = GraphQLRequest(key: "foo", options: GraphQLRequest.Options())
+        let options = GraphQLRequest.Options()
+        let request = GraphQLRequest(apiName: apiName,
+                                     operationType: operationType,
+                                     document: document,
+                                     options: options)
         let operation = MockGraphQLOperation(request: request)
+        return operation
+    }
+
+    func get(apiName: String,
+             path: String,
+             listener: APIGetOperation.EventListener?) -> APIGetOperation {
+        notify("get")
+        let request = APIGetRequest(apiName: apiName,
+                                    path: path,
+                                    options: APIGetRequest.Options())
+        let operation = MockAPIGetOperation(request: request)
         return operation
     }
 
@@ -80,8 +66,22 @@ GraphQLOperation {
     }
 
     init(request: Request) {
-        super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.getURL,
+        super.init(categoryType: .api,
+                   eventName: HubPayload.EventName.API.graphql,
+                   request: request)
+    }
+}
+
+class MockAPIGetOperation: AmplifyOperation<APIGetRequest, Void, Codable, StorageError>, APIGetOperation {
+    override func pause() {
+    }
+
+    override func resume() {
+    }
+
+    init(request: Request) {
+        super.init(categoryType: .api,
+                   eventName: HubPayload.EventName.API.get,
                    request: request)
     }
 }

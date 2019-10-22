@@ -36,8 +36,7 @@ class APICategoryClientGraphQLTests: XCTestCase {
 
         _ = Amplify.API.graphql(apiName: "foo",
                                 operationType: .query,
-                                document: "foo",
-                                classToCast: Int.self) { }
+                                document: "foo") { _ in }
 
         waitForExpectations(timeout: 0.5)
     }

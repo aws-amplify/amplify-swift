@@ -7,15 +7,13 @@
 
 extension APICategory: APICategoryGraphQLBehavior {
 
-    public func graphql<T>(apiName: String,
-                           operationType: GraphQLOperationType,
-                           document: String,
-                           classToCast: T.Type,
-                           listener: GraphQLOperation.EventListener?) -> GraphQLOperation where T: Codable {
+    public func graphql(apiName: String,
+                        operationType: GraphQLOperationType,
+                        document: String,
+                        listener: GraphQLOperation.EventListener?) -> GraphQLOperation {
         plugin.graphql(apiName: apiName,
                        operationType: operationType,
                        document: document,
-                       classToCast: classToCast,
                        listener: listener)
     }
 

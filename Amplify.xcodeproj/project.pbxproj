@@ -239,7 +239,7 @@
 		FAC2354B227A055A00424678 /* Amplify.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2354A227A055A00424678 /* Amplify.swift */; };
 		FAC23564227A056600424678 /* StorageCategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23552227A056600424678 /* StorageCategoryClientAPITests.swift */; };
 		FAC23566227A056600424678 /* StorageCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23554227A056600424678 /* StorageCategoryConfigurationTests.swift */; };
-		FAC23567227A056600424678 /* APICategoryClientRestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23556227A056600424678 /* APICategoryClientRestTests.swift */; };
+		FAC23567227A056600424678 /* APICategoryClientRESTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23556227A056600424678 /* APICategoryClientRESTTests.swift */; };
 		FAC23569227A056600424678 /* APICategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23558227A056600424678 /* APICategoryConfigurationTests.swift */; };
 		FAC2356A227A056600424678 /* LoggingCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2355A227A056600424678 /* LoggingCategoryConfigurationTests.swift */; };
 		FAC2356C227A056600424678 /* LoggingCategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2355C227A056600424678 /* LoggingCategoryClientAPITests.swift */; };
@@ -258,6 +258,8 @@
 		FAC428A0235F7F980000F221 /* APICategory+RESTBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC4289F235F7F980000F221 /* APICategory+RESTBehavior.swift */; };
 		FAC428A2235F80000000F221 /* APICategory+GraphQLBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A1235F80000000F221 /* APICategory+GraphQLBehavior.swift */; };
 		FAC428A4235F802A0000F221 /* APICategory+InterceptorBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A3235F802A0000F221 /* APICategory+InterceptorBehavior.swift */; };
+		FAC428A6235F83770000F221 /* APIGetOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A5235F83770000F221 /* APIGetOperation.swift */; };
+		FAC428A8235F83A00000F221 /* APIGetRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A7235F83A00000F221 /* APIGetRequest.swift */; };
 		FAC679292329A5D1004DDFE8 /* SynchronizedQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC679282329A5D1004DDFE8 /* SynchronizedQueue.swift */; };
 		FAC6792B2329AA7B004DDFE8 /* SynchronizedQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC6792A2329AA7B004DDFE8 /* SynchronizedQueueTests.swift */; };
 		FAC6792D2329B267004DDFE8 /* AtomicValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC6792C2329B267004DDFE8 /* AtomicValue.swift */; };
@@ -778,7 +780,7 @@
 		FAC23552227A056600424678 /* StorageCategoryClientAPITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageCategoryClientAPITests.swift; sourceTree = "<group>"; };
 		FAC23553227A056600424678 /* MockStorageCategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockStorageCategoryPlugin.swift; sourceTree = "<group>"; };
 		FAC23554227A056600424678 /* StorageCategoryConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageCategoryConfigurationTests.swift; sourceTree = "<group>"; };
-		FAC23556227A056600424678 /* APICategoryClientRestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APICategoryClientRestTests.swift; sourceTree = "<group>"; };
+		FAC23556227A056600424678 /* APICategoryClientRESTTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APICategoryClientRESTTests.swift; sourceTree = "<group>"; };
 		FAC23557227A056600424678 /* MockAPICategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAPICategoryPlugin.swift; sourceTree = "<group>"; };
 		FAC23558227A056600424678 /* APICategoryConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APICategoryConfigurationTests.swift; sourceTree = "<group>"; };
 		FAC2355A227A056600424678 /* LoggingCategoryConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggingCategoryConfigurationTests.swift; sourceTree = "<group>"; };
@@ -801,6 +803,8 @@
 		FAC4289F235F7F980000F221 /* APICategory+RESTBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+RESTBehavior.swift"; sourceTree = "<group>"; };
 		FAC428A1235F80000000F221 /* APICategory+GraphQLBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+GraphQLBehavior.swift"; sourceTree = "<group>"; };
 		FAC428A3235F802A0000F221 /* APICategory+InterceptorBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+InterceptorBehavior.swift"; sourceTree = "<group>"; };
+		FAC428A5235F83770000F221 /* APIGetOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIGetOperation.swift; sourceTree = "<group>"; };
+		FAC428A7235F83A00000F221 /* APIGetRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIGetRequest.swift; sourceTree = "<group>"; };
 		FAC679282329A5D1004DDFE8 /* SynchronizedQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedQueue.swift; sourceTree = "<group>"; };
 		FAC6792A2329AA7B004DDFE8 /* SynchronizedQueueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedQueueTests.swift; sourceTree = "<group>"; };
 		FAC6792C2329B267004DDFE8 /* AtomicValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicValue.swift; sourceTree = "<group>"; };
@@ -1571,6 +1575,7 @@
 		FA6BC873235F5BE80001A882 /* Operation */ = {
 			isa = PBXGroup;
 			children = (
+				FAC428A5235F83770000F221 /* APIGetOperation.swift */,
 				FA6BC871235F5BD60001A882 /* GraphQLOperation.swift */,
 			);
 			path = Operation;
@@ -1579,6 +1584,7 @@
 		FA6BC876235F5C370001A882 /* Request */ = {
 			isa = PBXGroup;
 			children = (
+				FAC428A7235F83A00000F221 /* APIGetRequest.swift */,
 				FA6BC874235F5C270001A882 /* GraphQLRequest.swift */,
 			);
 			path = Request;
@@ -1828,7 +1834,7 @@
 		FAC23555227A056600424678 /* API */ = {
 			isa = PBXGroup;
 			children = (
-				FAC23556227A056600424678 /* APICategoryClientRestTests.swift */,
+				FAC23556227A056600424678 /* APICategoryClientRESTTests.swift */,
 				FA6BC868235F52740001A882 /* APICategoryClientGraphQLTests.swift */,
 				FAC23558227A056600424678 /* APICategoryConfigurationTests.swift */,
 			);
@@ -3579,6 +3585,7 @@
 				FAC0A29822B3DE4800B50912 /* HubPublisher.swift in Sources */,
 				FAC428A0235F7F980000F221 /* APICategory+RESTBehavior.swift in Sources */,
 				FAC23548227A055200424678 /* Category.swift in Sources */,
+				FAC428A8235F83A00000F221 /* APIGetRequest.swift in Sources */,
 				FACA35ED2326BB54000E74F6 /* AmplifyConfigurationInitialization.swift in Sources */,
 				FA09B9382321A359000E064D /* LoggingCategory+CategoryConfigurable.swift in Sources */,
 				FAC23525227A053D00424678 /* LogLevel.swift in Sources */,
@@ -3607,6 +3614,7 @@
 				FA315295233D634900DE78E7 /* StorageDownloadFileRequest.swift in Sources */,
 				FA6BC86F235F5B680001A882 /* GraphQLOperationType.swift in Sources */,
 				FA56F72722B14BF70039754A /* AmplifyOperation.swift in Sources */,
+				FAC428A6235F83770000F221 /* APIGetOperation.swift in Sources */,
 				FA6BC86D235F5AE30001A882 /* APICategory+HubPayloadEventName.swift in Sources */,
 				FAC23591227A4AF000424678 /* HubCategoryClientBehavior.swift in Sources */,
 				210DBC122332B3C0009B9E51 /* StorageDownloadFileOperation.swift in Sources */,
@@ -3670,7 +3678,7 @@
 				FA6BC869235F52740001A882 /* APICategoryClientGraphQLTests.swift in Sources */,
 				FA317108232AE8DF009BC140 /* SerialDispatcherPerformanceTests.swift in Sources */,
 				FA9FB782232AA26500C04D32 /* DefaultHubPluginCustomChannelTests.swift in Sources */,
-				FAC23567227A056600424678 /* APICategoryClientRestTests.swift in Sources */,
+				FAC23567227A056600424678 /* APICategoryClientRESTTests.swift in Sources */,
 				FACA35EB2326B217000E74F6 /* AmplifyConfigurationInitializationTests.swift in Sources */,
 				FAF1B8882339633C007F1435 /* ConcurrentDispatcherPerformanceTests.swift in Sources */,
 				FAC23599227A598B00424678 /* DefaultHubPluginTests.swift in Sources */,

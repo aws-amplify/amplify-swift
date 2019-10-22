@@ -12,7 +12,7 @@ import XCTest
 
 @testable import AmplifyTestCommon
 
-class APICategoryClientRestTests: XCTestCase {
+class APICategoryClientRESTTests: XCTestCase {
     var mockAmplifyConfig: AmplifyConfiguration!
 
     override func setUp() {
@@ -34,7 +34,7 @@ class APICategoryClientRestTests: XCTestCase {
             }
         }
 
-        Amplify.API.get()
+        _ = Amplify.API.get(apiName: "foo", path: "/foo") { _ in }
 
         waitForExpectations(timeout: 0.5)
     }

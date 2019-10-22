@@ -10,15 +10,13 @@ public protocol APICategoryGraphQLBehavior {
     /// Perform a GraphQL operation against a previously configured API. This operation
     /// will be asynchronous, with the callback accessible both locally and via the Hub.
     ///
-    /// - Parameter apiName: name of API being invoked, as specified in `amplifyconfiguration.json`
-    /// - Parameter operationType: the GraphQL operation type
+    /// - Parameter apiName: The name of API being invoked, as specified in `amplifyconfiguration.json`
+    /// - Parameter operationType: The GraphQL operation type
     /// - Parameter document: valid GraphQL string
-    /// - Parameter classToCast: class to which the result will be cast
-    /// - Parameter callback: callback to attach
-    /// - Returns: GraphQLQuery query object being enqueued
-    func graphql<T: Codable>(apiName: String,
-                             operationType: GraphQLOperationType,
-                             document: String,
-                             classToCast: T.Type,
-                             listener: GraphQLOperation.EventListener?) -> GraphQLOperation
+    /// - Parameter listener: The event listener for the operation
+    /// - Returns: The GraphQLOperation being enqueued
+    func graphql(apiName: String,
+                 operationType: GraphQLOperationType,
+                 document: String,
+                 listener: GraphQLOperation.EventListener?) -> GraphQLOperation
 }

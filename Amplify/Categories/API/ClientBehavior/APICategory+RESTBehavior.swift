@@ -7,33 +7,12 @@
 
 extension APICategory: APICategoryRESTBehavior {
 
-    public func delete() {
-        plugin.delete()
-    }
-
-    public func get() {
-        plugin.get()
-    }
-
-    public func head() {
-        plugin.head()
-    }
-
-    public func options() {
-        plugin.options()
-    }
-
-    public func patch() {
-        plugin.patch()
-    }
-
-    public func post() {
-        plugin.post()
-    }
-
-    public func put() {
-        plugin.put()
+    public func get(apiName: String,
+                    path: String,
+                    listener: APIGetOperation.EventListener?) -> APIGetOperation {
+        return plugin.get(apiName: apiName,
+                          path: path,
+                          listener: listener)
     }
 
 }
-
