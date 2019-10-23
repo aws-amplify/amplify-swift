@@ -122,7 +122,17 @@ extension MockAWSPinpoint {
             XCTAssertNil(actualEndpointProfile.location)
         }
 
-        //XCTAssertEqual(actualEndpointProfile.user, )
+        if endpointProfile.user != nil {
+            guard let actualUser = actualEndpointProfile.user else {
+                XCTFail("actual User is nil")
+                return
+            }
+
+            let expectedUer = endpointProfile.user
+            XCTAssertEqual(actualUser.userId, expectedUer?.userId)
+        } else {
+            XCTAssertNil(actualEndpointProfile.user)
+        }
     }
 
     public func verifyAddAttribute(_ theValue: [Any], forKey theKey: String) {
