@@ -24,49 +24,45 @@ target "Amplify" do
     end
 
   end
-end
 
-abstract_target "AWSPlugins" do
-  use_frameworks!
-
-  pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
-
-  pod 'SwiftFormat/CLI'
-  pod 'SwiftLint'
-
-  target "AWSAPICategoryPlugin" do
+  target "AWSPluginsCore" do
     inherit! :complete
+    use_frameworks!
 
-    target "AWSAPICategoryPluginTests" do
+    pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
+
+    target "AWSAPICategoryPlugin" do
       inherit! :complete
-      pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
-      pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
     end
 
-  end
-
-  target "AWSPinpointAnalyticsPlugin" do
-    inherit! :complete
-
-    pod "AWSPinpoint", "~> #{AWS_SDK_VERSION}"
-
-    target "AWSPinpointAnalyticsPluginTests" do
+    target "AWSPinpointAnalyticsPlugin" do
       inherit! :complete
-      pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
-      pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+
+      pod "AWSPinpoint", "~> #{AWS_SDK_VERSION}"
     end
 
-  end
-
-  target "AWSS3StoragePlugin" do
-    inherit! :complete
-
-    pod "AWSS3", "~> #{AWS_SDK_VERSION}"
-
-    target "AWSS3StoragePluginTests" do
+    target "AWSS3StoragePlugin" do
       inherit! :complete
+
+      pod "AWSS3", "~> #{AWS_SDK_VERSION}"
+    end
+
+    abstract_target "AWSPluginsTestConfigs" do
       pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
       pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+
+      target "AWSPluginsTestCommon" do
+      end
+
+      target "AWSAPICategoryPluginTests" do
+      end
+
+      target "AWSPinpointAnalyticsPluginTests" do
+      end
+
+      target "AWSS3StoragePluginTests" do
+      end
+
     end
 
   end
