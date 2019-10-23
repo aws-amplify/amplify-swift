@@ -128,8 +128,8 @@ extension MockAWSPinpoint {
                 return
             }
 
-            let expectedUer = endpointProfile.user
-            XCTAssertEqual(actualUser.userId, expectedUer?.userId)
+            let expectedUser = endpointProfile.user
+            XCTAssertEqual(actualUser.userId, expectedUser?.userId)
         } else {
             XCTAssertNil(actualEndpointProfile.user)
         }
