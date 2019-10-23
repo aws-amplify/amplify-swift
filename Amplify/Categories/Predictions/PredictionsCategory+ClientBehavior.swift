@@ -14,12 +14,17 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
                         language: LanguageType,
                         targetLanguage: LanguageType,
                         options: Any?) -> PredictionsConvertOperation {
-        fatalError("Incomplete implementation")
+        plugin.convert(textToTranslate: textToTranslate,
+                       language: language,
+                       targetLanguage: targetLanguage,
+                       options: options)
     }
 
     public func identify(type: IdentifyType,
                          image: CGImage,
                          options: Any?) -> PredictionsIdentifyOperation {
-        fatalError("Incomplete implementation")
+        plugin.identify(type: type,
+                        image: image,
+                        options: options)
     }
 }
