@@ -9,12 +9,6 @@ import Amplify
 import Foundation
 import SQLite
 
-/// Helper function that can be used as a shortcut to access the user's document
-/// directory on the underlying OS.
-private func getDocumentPath() -> URL? {
-    return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-}
-
 /// [SQLite](https://sqlite.org) `StorageEngineAdapter` implementation. This class provides
 /// an integration layer between the AppSyncLocal `StorageEngine` and SQLite for local storage.
 final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
@@ -45,7 +39,8 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         // database setup statement
         let statement = """
         pragma auto_vacuum = full;
-        pragma encoding = "UTF-8";
+        pragma encoding = "utf-8";
+        pragma foreign_keys = on;
         \(createTableStatements)
         """
 
@@ -77,19 +72,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         do {
             let statement = getSelectStatement(for: modelType)
             let rows = try connection.prepare(statement).run()
-
-            var result: [M] = []
-            for row in rows {
-                var values: [String: Any] = [:]
-                for (index, property) in M.properties.enumerated() {
-                    // TODO is it safe to rely on key order?
-                    // is there a name -> value map in the result set?
-                    let binding: Binding? = index < row.count ? row[index] : nil
-                    values[property.metadata.name] = property.value(from: binding)
-                }
-                let model = try modelType.from(dictionary: values)
-                result.append(model)
-            }
+            let result: [M] = try rows.toModel()
             completion(.result(result))
         } catch {
             completion(.failure(causedBy: error))
@@ -107,7 +90,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
         for (index, property) in properties.enumerated() {
             let metadata = property.metadata
-            statement += "  \(metadata.sqlName) \(metadata.sqlType.rawValue)"
+            statement += "  \"\(metadata.sqlName)\" \(metadata.sqlType.rawValue)"
             if metadata.isPrimaryKey {
                 statement += " primary key"
             }
@@ -121,7 +104,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
 
         for foreignKey in foreignKeys {
-            statement += "  foreign key(\(foreignKey.metadata.sqlName)) "
+            statement += "  foreign key(\"\(foreignKey.metadata.sqlName)\") "
             guard let connectedModel = foreignKey.metadata.connectedModel else {
                 preconditionFailure(
                     """
@@ -132,7 +115,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             }
 
             let connectedId = connectedModel.properties.first { $0.metadata.isPrimaryKey }!
-            statement += "references \(connectedModel.name)(\(connectedId.metadata.sqlName))"
+            statement += "references \(connectedModel.name)(\"\(connectedId.metadata.sqlName)\")"
         }
 
         statement += "\n);"
@@ -141,7 +124,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     internal func getInsertStatement(for modelType: PersistentModel.Type) -> String {
         let properties = modelType.properties.columns()
-        let columns = properties.map { $0.metadata.sqlName }
+        let columns = properties.map { $0.metadata.columnName() }
         var statement = "insert into \(modelType.name) "
         statement += "(\(columns.joined(separator: ", ")))\n"
 
@@ -160,8 +143,64 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     internal func getSelectStatement(for modelType: PersistentModel.Type) -> String {
         let properties = modelType.properties.columns()
-        let columns = properties.map { $0.metadata.sqlName }
-        return "select \(columns.joined(separator: ", ")) from \(modelType.name)"
+        let tableName = modelType.name
+        var columns = properties.map { prop -> String in
+            return prop.metadata.columnName(forNamespace: "root") + " " + prop.metadata.columnAlias()
+        }
+
+        // eager load many-to-one relationships (simple inner join)
+        var joinStatements: [String] = []
+        for foreignKey in modelType.properties.foreignKeys() {
+            let connectedModelType = foreignKey.metadata.connectedModel!
+            let connectedTableName = connectedModelType.name
+
+            // columns
+            let alias = foreignKey.metadata.name
+            let connectedColumn = connectedModelType.primaryKey.metadata.columnName(forNamespace: alias)
+            let foreignKeyName = foreignKey.metadata.columnName(forNamespace: "root")
+
+            // append columns from relationships
+            columns += connectedModelType.properties.columns().map { prop -> String in
+                let metadata = prop.metadata
+                return metadata.columnName(forNamespace: alias) + " " + metadata.columnAlias(forNamespace: alias)
+            }
+
+            joinStatements.append("""
+            inner join \(connectedTableName) as \(alias)
+              on \(connectedColumn) = \(foreignKeyName)
+            """)
+        }
+
+        return """
+        select
+          \(joinedAsSelectedColumns(columns))
+        from \(tableName) as root
+        \(joinStatements.joined(separator: "\n"))
+        """
     }
 
+}
+
+// MARK: - Private Helpers
+
+/// Helper function that can be used as a shortcut to access the user's document
+/// directory on the underlying OS. This is used to create the SQLite database file.
+///
+/// - Returns: the path to the user document directory.
+private func getDocumentPath() -> URL? {
+    return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+}
+
+/// Join a list of table columns joined and formatted for readability.
+///
+/// - Parameter columns the list of column names
+/// - Parameter perLine max numbers of columns per line
+/// - Returns: a list of columns that can be used in `select` SQL statements
+internal func joinedAsSelectedColumns(_ columns: [String], perLine: Int = 3) -> String {
+    return columns.enumerated().reduce("") { partial, entry in
+        let spacer = entry.offset == 0 || entry.offset % perLine == 0 ? "\n  " : " "
+        let isFirstOrLast = entry.offset == 0 || entry.offset >= columns.count
+        let separator = isFirstOrLast ? "" : ",\(spacer)"
+        return partial + separator + entry.element
+    }
 }

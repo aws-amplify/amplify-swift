@@ -25,10 +25,15 @@ enum SQLDataType: String {
     case real
 }
 
+extension String {
+    public func quoted() -> String {
+        return "\"\(self)\""
+    }
+}
+
 extension PropertyMetadata: SQLPropertyMetadata {
     var sqlName: String {
-        let columnName = isForeignKey ? name + "Id" : name
-        return "\"\(columnName)\""
+        return isForeignKey ? name + "Id" : name
     }
 
     var sqlType: SQLDataType {
@@ -54,6 +59,22 @@ extension PropertyMetadata: SQLPropertyMetadata {
         default:
             return false
         }
+    }
+
+    func columnName(forNamespace namespace: String? = nil) -> String {
+        var column = sqlName.quoted()
+        if let namespace = namespace {
+            column = namespace.quoted() + "." + column
+        }
+        return column
+    }
+
+    func columnAlias(forNamespace namespace: String? = nil) -> String {
+        var column = sqlName
+        if let namespace = namespace {
+            column = "\(namespace).\(column)"
+        }
+        return "as \(column.quoted())"
     }
 
 }

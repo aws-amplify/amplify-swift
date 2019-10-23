@@ -74,7 +74,18 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
     /// it should create a simple `select from` statement from a model
     func testCreateSimpleSelectStatementFromModel() {
         let statement = storageAdapter.getSelectStatement(for: Comment.self)
-        let expectedStatement = #"select "id", "content", "createdAt", "postId" from Comment"#
+        // swiftlint:disable line_length
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."postId" as "postId", "post"."id" as "post.id", "post"."title" as "post.title",
+          "post"."content" as "post.content", "post"."createdAt" as "post.createdAt", "post"."updatedAt" as "post.updatedAt",
+          "post"."draft" as "post.draft"
+        from Comment as root
+        inner join Post as post
+          on "post"."id" = "root"."postId"
+        """
+        // swiftlint:enable line_length
         XCTAssertEqual(statement, expectedStatement)
     }
 
