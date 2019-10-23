@@ -190,6 +190,13 @@
 		B490D33C235FD73900370012 /* AWSS3StorageListOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF9AF230CA9D9005878EA /* AWSS3StorageListOperation.swift */; };
 		B490D33D235FD73900370012 /* PluginConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210FCC712326E5D20017EA4B /* PluginConstants.swift */; };
 		B490D33E235FD73900370012 /* AWSS3PreSignedURLBuilderAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF9D0230DF05C005878EA /* AWSS3PreSignedURLBuilderAdapter.swift */; };
+		B490D34C235FDB0E00370012 /* AWSPredictionsPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B490D349235FDB0E00370012 /* AWSPredictionsPlugin.swift */; };
+		B490D357235FDB5400370012 /* AWSPredictionsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B490D345235FD73900370012 /* AWSPredictionsPlugin.framework */; };
+		B490D366235FDBBD00370012 /* AWSPredictionsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B490D345235FD73900370012 /* AWSPredictionsPlugin.framework */; };
+		B490D36F235FDC8800370012 /* AWSPredictionsPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B490D36D235FDC8800370012 /* AWSPredictionsPluginTests.swift */; };
+		B490D370235FDC8800370012 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B490D36E235FDC8800370012 /* Info.plist */; };
+		B490D376235FDCF100370012 /* AWSPredictionsPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B490D374235FDCF100370012 /* AWSPredictionsPluginIntegrationTests.swift */; };
+		B490D377235FDCF100370012 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B490D375235FDCF100370012 /* Info.plist */; };
 		D8A9C0F6CDAAFEEFA4EC39F7 /* Pods_AWSPinpointAnalyticsPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA480AEAF7B56792E4A3919B /* Pods_AWSPinpointAnalyticsPluginTests.framework */; };
 		DA8076A12E27D05D777F4F11 /* Pods_AWSS3StoragePlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A4AE82D161DB4E9B6EC9281 /* Pods_AWSS3StoragePlugin.framework */; platformFilter = ios; };
 		E15DCBD5ACE43D85DD9BE916 /* Pods_AWSPinpointAnalyticsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D65DD7B2268F672C994593E /* Pods_AWSPinpointAnalyticsPlugin.framework */; };
@@ -385,6 +392,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = FAC234D12279F8DA00424678;
 			remoteInfo = Amplify;
+		};
+		B490D358235FDB5400370012 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B490D308235FD73900370012;
+			remoteInfo = AWSPredictionsPlugin;
+		};
+		B490D367235FDBBD00370012 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B490D308235FD73900370012;
+			remoteInfo = AWSPredictionsPlugin;
 		};
 		FAB9D812233C04CD00928AA9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -645,6 +666,14 @@
 		B490D304235FD62B00370012 /* PredictionsCategory+ClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PredictionsCategory+ClientBehavior.swift"; sourceTree = "<group>"; };
 		B490D345235FD73900370012 /* AWSPredictionsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSPredictionsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B490D346235FD73A00370012 /* AWSS3StoragePlugin copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "AWSS3StoragePlugin copy-Info.plist"; path = "/Users/royji/workplace/iOS/amplify-ios/AWSS3StoragePlugin copy-Info.plist"; sourceTree = "<absolute>"; };
+		B490D349235FDB0E00370012 /* AWSPredictionsPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPredictionsPlugin.swift; sourceTree = "<group>"; };
+		B490D34B235FDB0E00370012 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B490D352235FDB5400370012 /* AWSPredictionsPluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPredictionsPluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B490D361235FDBBD00370012 /* AWSPredictionsPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPredictionsPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B490D36D235FDC8800370012 /* AWSPredictionsPluginTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPredictionsPluginTests.swift; sourceTree = "<group>"; };
+		B490D36E235FDC8800370012 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B490D374235FDCF100370012 /* AWSPredictionsPluginIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPredictionsPluginIntegrationTests.swift; sourceTree = "<group>"; };
+		B490D375235FDCF100370012 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BDD362469B9E22FC083FE7E6 /* Pods-AWSPinpointAnalyticsPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPluginIntegrationTests/Pods-AWSPinpointAnalyticsPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C0B511C8A95808A43B4D835A /* Pods-AmplifyFunctionalTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyFunctionalTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyFunctionalTests/Pods-AmplifyFunctionalTests.release.xcconfig"; sourceTree = "<group>"; };
 		CDC7F1C368154B364CB74742 /* Pods_AmplifyTestApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyTestApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -844,6 +873,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B490D34F235FDB5400370012 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B490D357235FDB5400370012 /* AWSPredictionsPlugin.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B490D35E235FDBBD00370012 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B490D366235FDBBD00370012 /* AWSPredictionsPlugin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1167,6 +1212,9 @@
 		21FFF9B9230DBEF8005878EA /* AWSPlugins */ = {
 			isa = PBXGroup;
 			children = (
+				B490D348235FDB0E00370012 /* AWSPredictionsPlugin */,
+				B490D36C235FDC8800370012 /* AWSPredictionsPluginTests */,
+				B490D373235FDCF100370012 /* AWSPredictionsPluginIntegrationTests */,
 				21578CA6235946F400FF0F03 /* AWSPinpointAnalyticsPlugin */,
 				21578CB1235946F400FF0F03 /* AWSPinpointAnalyticsPluginTests */,
 				21092237235951A000CEC295 /* AWSPinpointAnalyticsPluginIntegrationTests */,
@@ -1351,6 +1399,48 @@
 			path = Predictions;
 			sourceTree = "<group>";
 		};
+		B490D347235FDA9B00370012 /* Predictions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Predictions;
+			sourceTree = "<group>";
+		};
+		B490D348235FDB0E00370012 /* AWSPredictionsPlugin */ = {
+			isa = PBXGroup;
+			children = (
+				B490D349235FDB0E00370012 /* AWSPredictionsPlugin.swift */,
+				B490D34A235FDB0E00370012 /* Resources */,
+			);
+			path = AWSPredictionsPlugin;
+			sourceTree = "<group>";
+		};
+		B490D34A235FDB0E00370012 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B490D34B235FDB0E00370012 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B490D36C235FDC8800370012 /* AWSPredictionsPluginTests */ = {
+			isa = PBXGroup;
+			children = (
+				B490D36D235FDC8800370012 /* AWSPredictionsPluginTests.swift */,
+				B490D36E235FDC8800370012 /* Info.plist */,
+			);
+			path = AWSPredictionsPluginTests;
+			sourceTree = "<group>";
+		};
+		B490D373235FDCF100370012 /* AWSPredictionsPluginIntegrationTests */ = {
+			isa = PBXGroup;
+			children = (
+				B490D374235FDCF100370012 /* AWSPredictionsPluginIntegrationTests.swift */,
+				B490D375235FDCF100370012 /* Info.plist */,
+			);
+			path = AWSPredictionsPluginIntegrationTests;
+			sourceTree = "<group>";
+		};
 		C4DBE378379CBB2C3F4536BE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1523,6 +1613,8 @@
 				21578CAD235946F400FF0F03 /* AWSPinpointAnalyticsPluginTests.xctest */,
 				21092236235951A000CEC295 /* AWSPinpointAnalyticsPluginIntegrationTests.xctest */,
 				B490D345235FD73900370012 /* AWSPredictionsPlugin.framework */,
+				B490D352235FDB5400370012 /* AWSPredictionsPluginTests.xctest */,
+				B490D361235FDBBD00370012 /* AWSPredictionsPluginIntegrationTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1655,6 +1747,7 @@
 				FAC23584227A442000424678 /* Hub */,
 				FAC23559227A056600424678 /* Logging */,
 				FAC23551227A056600424678 /* Storage */,
+				B490D347235FDA9B00370012 /* Predictions */,
 			);
 			path = CategoryTests;
 			sourceTree = "<group>";
@@ -2064,6 +2157,42 @@
 			productReference = B490D345235FD73900370012 /* AWSPredictionsPlugin.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		B490D351235FDB5400370012 /* AWSPredictionsPluginTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B490D35A235FDB5400370012 /* Build configuration list for PBXNativeTarget "AWSPredictionsPluginTests" */;
+			buildPhases = (
+				B490D34E235FDB5400370012 /* Sources */,
+				B490D34F235FDB5400370012 /* Frameworks */,
+				B490D350235FDB5400370012 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B490D359235FDB5400370012 /* PBXTargetDependency */,
+			);
+			name = AWSPredictionsPluginTests;
+			productName = AWSPredictionsPluginTests;
+			productReference = B490D352235FDB5400370012 /* AWSPredictionsPluginTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		B490D360235FDBBD00370012 /* AWSPredictionsPluginIntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B490D369235FDBBD00370012 /* Build configuration list for PBXNativeTarget "AWSPredictionsPluginIntegrationTests" */;
+			buildPhases = (
+				B490D35D235FDBBD00370012 /* Sources */,
+				B490D35E235FDBBD00370012 /* Frameworks */,
+				B490D35F235FDBBD00370012 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B490D368235FDBBD00370012 /* PBXTargetDependency */,
+			);
+			name = AWSPredictionsPluginIntegrationTests;
+			productName = AWSPredictionsPluginIntegrationTests;
+			productReference = B490D361235FDBBD00370012 /* AWSPredictionsPluginIntegrationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		FAC234D12279F8DA00424678 /* Amplify */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FAC234E62279F8DA00424678 /* Build configuration list for PBXNativeTarget "Amplify" */;
@@ -2189,6 +2318,12 @@
 					21578CAC235946F400FF0F03 = {
 						CreatedOnToolsVersion = 11.1;
 					};
+					B490D351235FDB5400370012 = {
+						CreatedOnToolsVersion = 11.1;
+					};
+					B490D360235FDBBD00370012 = {
+						CreatedOnToolsVersion = 11.1;
+					};
 					FAC234D12279F8DA00424678 = {
 						CreatedOnToolsVersion = 10.2.1;
 					};
@@ -2229,6 +2364,8 @@
 				2125E1FD2318327300B3DEB5 /* AWSS3StoragePluginIntegrationTests */,
 				2125E2502319EC3000B3DEB5 /* AmplifyTestApp */,
 				B490D308235FD73900370012 /* AWSPredictionsPlugin */,
+				B490D351235FDB5400370012 /* AWSPredictionsPluginTests */,
+				B490D360235FDBBD00370012 /* AWSPredictionsPluginIntegrationTests */,
 			);
 		};
 /* End PBXProject section */
@@ -2293,6 +2430,22 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B490D350235FDB5400370012 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B490D370235FDC8800370012 /* Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B490D35F235FDBBD00370012 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B490D377235FDCF100370012 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3244,6 +3397,7 @@
 				B490D310235FD73900370012 /* AWSS3Behavior.swift in Sources */,
 				B490D311235FD73900370012 /* AWSMobileClientBehavior.swift in Sources */,
 				B490D312235FD73900370012 /* AWSS3StorageService+MultiPartUploadBehavior.swift in Sources */,
+				B490D34C235FDB0E00370012 /* AWSPredictionsPlugin.swift in Sources */,
 				B490D313235FD73900370012 /* AWSS3StorageService+DownloadBehavior.swift in Sources */,
 				B490D314235FD73900370012 /* UploadSource.swift in Sources */,
 				B490D315235FD73900370012 /* AWSS3TransferUtilityBehavior.swift in Sources */,
@@ -3288,6 +3442,22 @@
 				B490D33C235FD73900370012 /* AWSS3StorageListOperation.swift in Sources */,
 				B490D33D235FD73900370012 /* PluginConstants.swift in Sources */,
 				B490D33E235FD73900370012 /* AWSS3PreSignedURLBuilderAdapter.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B490D34E235FDB5400370012 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B490D36F235FDC8800370012 /* AWSPredictionsPluginTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B490D35D235FDBBD00370012 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B490D376235FDCF100370012 /* AWSPredictionsPluginIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3503,6 +3673,16 @@
 			isa = PBXTargetDependency;
 			target = FAC234D12279F8DA00424678 /* Amplify */;
 			targetProxy = B490D30A235FD73900370012 /* PBXContainerItemProxy */;
+		};
+		B490D359235FDB5400370012 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B490D308235FD73900370012 /* AWSPredictionsPlugin */;
+			targetProxy = B490D358235FDB5400370012 /* PBXContainerItemProxy */;
+		};
+		B490D368235FDBBD00370012 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B490D308235FD73900370012 /* AWSPredictionsPlugin */;
+			targetProxy = B490D367235FDBBD00370012 /* PBXContainerItemProxy */;
 		};
 		FAB9D813233C04CD00928AA9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -3957,6 +4137,78 @@
 			};
 			name = Release;
 		};
+		B490D35B235FDB5400370012 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = AWSPlugins/AWSPredictionsPluginTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSPredictionsPluginTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B490D35C235FDB5400370012 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = AWSPlugins/AWSPredictionsPluginTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSPredictionsPluginTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		B490D36A235FDBBD00370012 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = AWSPlugins/AWSPredictionsPluginIntegrationTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSPredictionsPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B490D36B235FDBBD00370012 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = AWSPlugins/AWSPredictionsPluginIntegrationTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSPredictionsPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		FAC234E42279F8DA00424678 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4342,6 +4594,24 @@
 			buildConfigurations = (
 				B490D343235FD73900370012 /* Debug */,
 				B490D344235FD73900370012 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B490D35A235FDB5400370012 /* Build configuration list for PBXNativeTarget "AWSPredictionsPluginTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B490D35B235FDB5400370012 /* Debug */,
+				B490D35C235FDB5400370012 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B490D369235FDBBD00370012 /* Build configuration list for PBXNativeTarget "AWSPredictionsPluginIntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B490D36A235FDBBD00370012 /* Debug */,
+				B490D36B235FDBBD00370012 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
