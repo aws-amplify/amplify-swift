@@ -31,11 +31,11 @@ public extension AWSAPICategoryPlugin {
             )
         }
 
-        let config = try AWSAPICategoryPluginConfig(jsonValue: jsonValue)
+        let pluginConfig = try AWSAPICategoryPluginConfig(jsonValue: jsonValue)
 
         let authService = AWSAuthService()
 
-        configure(authService: authService)
+        configure(authService: authService, pluginConfig: pluginConfig)
     }
 
 }
@@ -53,19 +53,14 @@ extension AWSAPICategoryPlugin {
     ///   - authService: The authentication service object.
     ///   - defaultAccessLevel: The access level to be used for all API calls by default.
     ///   - queue: The queue which operations are stored and dispatched for asychronous processing.
-    func configure(authService: AWSAuthServiceBehavior) {
+    func configure(authService: AWSAuthServiceBehavior,
+                   pluginConfig: AWSAPICategoryPluginConfig) {
         self.authService = authService
+        self.pluginConfig = pluginConfig
     }
 
 }
 
-/*
- "Prod": [
-     "Endpoint": "https://example.apiforintegrationtests.com",
-     "Region": "us-east-1"
- ]
-
- */
 public struct AWSAPICategoryPluginConfig {
     let endpoints: [String: EndpointConfig]
 
@@ -87,7 +82,7 @@ public struct AWSAPICategoryPluginConfig {
         }
 
         let endpoints = try AWSAPICategoryPluginConfig.endpointsFromConfig(config: config)
-        try self.init(endpoints: endpoints)
+        self.init(endpoints: endpoints)
     }
 
     private static func endpointsFromConfig(config: [String: JSONValue]) throws -> [String: EndpointConfig] {

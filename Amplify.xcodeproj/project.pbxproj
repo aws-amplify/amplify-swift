@@ -276,6 +276,8 @@
 		FAC428A4235F802A0000F221 /* APICategory+InterceptorBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A3235F802A0000F221 /* APICategory+InterceptorBehavior.swift */; };
 		FAC428A6235F83770000F221 /* APIGetOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A5235F83770000F221 /* APIGetOperation.swift */; };
 		FAC428A8235F83A00000F221 /* APIGetRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A7235F83A00000F221 /* APIGetRequest.swift */; };
+		FAC62B7B2361167D0032CDF6 /* HTTPTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC62B7A2361167D0032CDF6 /* HTTPTransport.swift */; };
+		FAC62B7E236119B80032CDF6 /* HTTPTransportTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC62B7D236119B80032CDF6 /* HTTPTransportTask.swift */; };
 		FAC679292329A5D1004DDFE8 /* SynchronizedQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC679282329A5D1004DDFE8 /* SynchronizedQueue.swift */; };
 		FAC6792B2329AA7B004DDFE8 /* SynchronizedQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC6792A2329AA7B004DDFE8 /* SynchronizedQueueTests.swift */; };
 		FAC6792D2329B267004DDFE8 /* AtomicValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC6792C2329B267004DDFE8 /* AtomicValue.swift */; };
@@ -379,13 +381,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 2125E2502319EC3000B3DEB5;
 			remoteInfo = AmplifyTestApp;
-		};
-		FA131ABD2360FE070008381C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = FA131AA92360FE070008381C;
-			remoteInfo = AWSPluginsCore;
 		};
 		FA131ACD2360FEBB0008381C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -505,13 +500,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 2125E2502319EC3000B3DEB5;
 			remoteInfo = AmplifyTestApp;
-		};
-		FA7348B8235F6DF2004951A9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = FA7348A4235F6DF1004951A9;
-			remoteInfo = AWSAPICategoryPlugin;
 		};
 		FA7348CC235F6E20004951A9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1048,6 +1036,8 @@
 		FAC428A3235F802A0000F221 /* APICategory+InterceptorBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+InterceptorBehavior.swift"; sourceTree = "<group>"; };
 		FAC428A5235F83770000F221 /* APIGetOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIGetOperation.swift; sourceTree = "<group>"; };
 		FAC428A7235F83A00000F221 /* APIGetRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIGetRequest.swift; sourceTree = "<group>"; };
+		FAC62B7A2361167D0032CDF6 /* HTTPTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPTransport.swift; sourceTree = "<group>"; };
+		FAC62B7D236119B80032CDF6 /* HTTPTransportTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPTransportTask.swift; sourceTree = "<group>"; };
 		FAC679282329A5D1004DDFE8 /* SynchronizedQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedQueue.swift; sourceTree = "<group>"; };
 		FAC6792A2329AA7B004DDFE8 /* SynchronizedQueueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedQueueTests.swift; sourceTree = "<group>"; };
 		FAC6792C2329B267004DDFE8 /* AtomicValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicValue.swift; sourceTree = "<group>"; };
@@ -2037,8 +2027,9 @@
 				FA327579235FB36C00692B3A /* AWSAPICategoryPlugin+InterceptorBehavior.swift */,
 				FA327575235FB13700692B3A /* AWSAPICategoryPlugin+Reset.swift */,
 				FA32756F235FAFE700692B3A /* AWSAPICategoryPlugin+RESTBehavior.swift */,
-				FA327587235FBC7200692B3A /* Operation */,
+				FAC62B7C236116820032CDF6 /* HTTPTransport */,
 				FA7348A8235F6DF1004951A9 /* Info.plist */,
+				FA327587235FBC7200692B3A /* Operation */,
 			);
 			path = AWSAPICategoryPlugin;
 			sourceTree = "<group>";
@@ -2395,6 +2386,15 @@
 			path = Plugin;
 			sourceTree = "<group>";
 		};
+		FAC62B7C236116820032CDF6 /* HTTPTransport */ = {
+			isa = PBXGroup;
+			children = (
+				FAC62B7A2361167D0032CDF6 /* HTTPTransport.swift */,
+				FAC62B7D236119B80032CDF6 /* HTTPTransportTask.swift */,
+			);
+			path = HTTPTransport;
+			sourceTree = "<group>";
+		};
 		FACA35F32327FB14000E74F6 /* AmplifyFunctionalTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -2564,8 +2564,6 @@
 			);
 			dependencies = (
 				FACA360A2327FBD4000E74F6 /* PBXTargetDependency */,
-				FA7348B9235F6DF2004951A9 /* PBXTargetDependency */,
-				FA131ABE2360FE070008381C /* PBXTargetDependency */,
 			);
 			name = AmplifyTestApp;
 			productName = AmplifyTestApp;
@@ -4353,7 +4351,9 @@
 			files = (
 				FA327578235FB33A00692B3A /* AWSAPICategoryPlugin+GraphQLBehavior.swift in Sources */,
 				FA32756E235FAF0500692B3A /* AWSAPICategoryPlugin.swift in Sources */,
+				FAC62B7E236119B80032CDF6 /* HTTPTransportTask.swift in Sources */,
 				FA327586235FBB8B00692B3A /* AWSAPIGetOperation.swift in Sources */,
+				FAC62B7B2361167D0032CDF6 /* HTTPTransport.swift in Sources */,
 				FA327572235FB03C00692B3A /* AWSAPICategoryPlugin+Configure.swift in Sources */,
 				FA327576235FB13700692B3A /* AWSAPICategoryPlugin+Reset.swift in Sources */,
 				FA327570235FAFE700692B3A /* AWSAPICategoryPlugin+RESTBehavior.swift in Sources */,
@@ -4604,11 +4604,6 @@
 			target = 2125E2502319EC3000B3DEB5 /* AmplifyTestApp */;
 			targetProxy = FA131AB62360FE070008381C /* PBXContainerItemProxy */;
 		};
-		FA131ABE2360FE070008381C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = FA131AA92360FE070008381C /* AWSPluginsCore */;
-			targetProxy = FA131ABD2360FE070008381C /* PBXContainerItemProxy */;
-		};
 		FA131ACE2360FEBB0008381C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = FAC234D12279F8DA00424678 /* Amplify */;
@@ -4693,11 +4688,6 @@
 			isa = PBXTargetDependency;
 			target = 2125E2502319EC3000B3DEB5 /* AmplifyTestApp */;
 			targetProxy = FA7348B1235F6DF1004951A9 /* PBXContainerItemProxy */;
-		};
-		FA7348B9235F6DF2004951A9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = FA7348A4235F6DF1004951A9 /* AWSAPICategoryPlugin */;
-			targetProxy = FA7348B8235F6DF2004951A9 /* PBXContainerItemProxy */;
 		};
 		FA7348CD235F6E20004951A9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

@@ -9,12 +9,14 @@ import Amplify
 
 final public class AWSAPIGetOperation: AmplifyOperation<APIGetRequest,
     Void,
-    Codable,
+    Data,
     APIError
     >,
 APIGetOperation {
 
     static let timeout = TimeInterval(120)
+
+    var task: HTTPTransportTask?
 
     init(request: APIGetRequest,
          httpTransport: HTTPTransport,
@@ -33,15 +35,19 @@ APIGetOperation {
     }
 }
 
-extension AWSAPIGetOperation: HTTPTransportTaskDelegate {
-    func task(_ httpTransportTask: HTTPTransportTask, didReceiveData data: Data) {
-        let event = Event.completed(data)
-        dispatch(event: event)
-    }
+/// Maps APIOperations to HTTPTransportTasks, providing convenience methods for accessing them
+struct OperationTaskMapper {
 }
 
-extension AWSAPICategoryPlugin {
-    func getURL(for request: APIGetRequest) {
-
-    }
-}
+//extension AWSAPICategoryPlugin: HTTPTransportTaskDelegate {
+//    func task(_ httpTransportTask: HTTPTransportTask, didReceiveData data: Data) {
+//        let event = Event.completed(data)
+//        dispatch(event: event)
+//    }
+//}
+//
+//extension AWSAPICategoryPlugin {
+//    func getURL(for request: APIGetRequest) {
+//
+//    }
+//}

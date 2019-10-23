@@ -17,7 +17,7 @@ class AWSAPIPluginRESTClientBehaviorTests: XCTestCase {
 
     func testGetReturnsOperation() {
         setUpPlugin()
-        
+
         let operation = Amplify.API.get(apiName: "foo", path: "/path", listener: nil)
 
         XCTAssertNotNil(operation)
@@ -79,7 +79,6 @@ class AWSAPIPluginRESTClientBehaviorTests: XCTestCase {
 
 }
 
-
 class MockHTTPTransport: HTTPTransport {
     let response: HTTPURLResponse
 
@@ -89,5 +88,9 @@ class MockHTTPTransport: HTTPTransport {
 
     func get(urlRequest: URLRequest) {
 
+    }
+
+    func reset() {
+        // Do nothing
     }
 }

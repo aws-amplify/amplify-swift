@@ -12,7 +12,7 @@ final public class AWSAPICategoryPlugin: APICategoryPlugin {
 
     /// A holder for API configurations. This will be populated during the
     /// configuration phase, and is clearable by `reset()`.
-    var apiConfigurations: [String: JSONValue]!
+    var pluginConfig: AWSAPICategoryPluginConfig!
 
     /// The provider for Auth services required to access protected APIs. This will be
     /// populated during the configuration phase, and is clearable by `reset()`.
@@ -37,24 +37,12 @@ final public class AWSAPICategoryPlugin: APICategoryPlugin {
 
 }
 
-class AWSAPIOperation {
-
-}
-
-protocol HTTPTransport {
-    func reset()
-}
-
-protocol HTTPTransportTask {
-    var taskIdentifier: Int { get }
-}
-
-protocol HTTPTransportTaskDelegate: class {
-    func task(_ httpTransportTask: HTTPTransportTask, didReceiveData data: Data)
-}
-
 final class NSURLSessionHTTPTransport: HTTPTransport {
+    func task(for request: APIGetRequest) -> HTTPTransportTask {
+        fatalError("Not yet implemented")
+    }
+
     func reset() {
-        // TODO: invalidateAndCancel()
+        fatalError("Not yet implemented")
     }
 }

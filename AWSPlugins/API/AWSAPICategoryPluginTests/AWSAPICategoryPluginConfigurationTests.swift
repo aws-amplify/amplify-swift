@@ -22,12 +22,16 @@ class AWSAPICategoryPluginConfigurationTests: XCTestCase {
 
     func testConfigureSuccess() throws {
         let apiPlugin = AWSAPICategoryPlugin()
-        let apiPluginConfig = [String: JSONValue]()
+        let apiPluginConfig: JSONValue = [
+            "Test": [
+                "Endpoint": "http://www.example.com"
+            ]
+        ]
 
         do {
             try apiPlugin.configure(using: apiPluginConfig)
         } catch {
-            XCTFail("Failed to configure storage plugin")
+            XCTFail("Failed to configure storage plugin: \(error)")
         }
     }
 
