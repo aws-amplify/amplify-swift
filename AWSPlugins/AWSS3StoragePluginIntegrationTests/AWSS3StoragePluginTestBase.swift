@@ -38,7 +38,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
             }
             mobileClientIsInitialized.fulfill()
         }
-        wait(for: [mobileClientIsInitialized], timeout: 100)
+        wait(for: [mobileClientIsInitialized], timeout: networkTimeout)
         print("AWSMobileClient Initialized")
 
         // Set up Amplify storage configuration
@@ -52,10 +52,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
             ]
         )
 
-        // TODO: Set up Amplify Hub configuration, and others like logging, auth
         let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
-        //TODO: let amplifyConfig = AmplifyConfiguration(analytics: nil, api: nil, hub: hubConfig,
-        //logging: nil, storage: storageConfig)
 
         // Set up Amplify
         do {

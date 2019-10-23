@@ -177,7 +177,7 @@
 		FA327582235FBA2000692B3A /* AWSAPIPlugin+RESTClientBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327581235FBA2000692B3A /* AWSAPIPlugin+RESTClientBehaviorTests.swift */; };
 		FA327584235FBA4B00692B3A /* AWSAPICategoryPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327583235FBA4B00692B3A /* AWSAPICategoryPluginTestBase.swift */; };
 		FA327586235FBB8B00692B3A /* AWSAPIGetOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327585235FBB8B00692B3A /* AWSAPIGetOperation.swift */; };
-		FA327589235FBF0800692B3A /* AWSAPICategoryPluginGetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327588235FBF0800692B3A /* AWSAPICategoryPluginGetTests.swift */; };
+		FA32758A23608F3A00692B3A /* AWSAPICategoryPluginGetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327588235FBF0800692B3A /* AWSAPICategoryPluginGetTests.swift */; };
 		FA47B8362350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA47B8352350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift */; };
 		FA47B8382350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA47B8372350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift */; };
 		FA4E730A232828EA003B8EEB /* Amplify+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E7309232828EA003B8EEB /* Amplify+Reset.swift */; };
@@ -3616,7 +3616,6 @@
 			files = (
 				FA327584235FBA4B00692B3A /* AWSAPICategoryPluginTestBase.swift in Sources */,
 				FA327582235FBA2000692B3A /* AWSAPIPlugin+RESTClientBehaviorTests.swift in Sources */,
-				FA327589235FBF0800692B3A /* AWSAPICategoryPluginGetTests.swift in Sources */,
 				FA7348B5235F6DF2004951A9 /* AWSAPICategoryPluginConfigurationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3625,6 +3624,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA32758A23608F3A00692B3A /* AWSAPICategoryPluginGetTests.swift in Sources */,
 				FA7348C9235F6E20004951A9 /* AWSAPICategoryPluginIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
