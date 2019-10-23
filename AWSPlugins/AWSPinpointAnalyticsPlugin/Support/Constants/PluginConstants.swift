@@ -13,4 +13,8 @@ struct PluginConstants {
     static let defaultAutoFlushEventsInterval = 10
     static let defaultTrackAppSession = true
     static let defaultAutoSessionTrackingInterval = 5
+
+    static let emailKey = "email"
+    static let nameKey = "name"
+    static let planKey = "plan"
 }

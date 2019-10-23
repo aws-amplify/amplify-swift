@@ -108,6 +108,20 @@
 		21442278234BE99C009357F7 /* AWSS3StorageUploadFileRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21442277234BE99B009357F7 /* AWSS3StorageUploadFileRequestTests.swift */; };
 		21578CAE235946F400FF0F03 /* AWSPinpointAnalyticsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21578CA5235946F400FF0F03 /* AWSPinpointAnalyticsPlugin.framework */; };
 		21578CB3235946F400FF0F03 /* AWSPinpointAnalyticsPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21578CB2235946F400FF0F03 /* AWSPinpointAnalyticsPluginTestBase.swift */; };
+		216879E7235EEABF004A056E /* AWSPinpointAnalyticsPluginClientBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216879E6235EEABF004A056E /* AWSPinpointAnalyticsPluginClientBehaviorTests.swift */; };
+		216879EA235F803E004A056E /* AnalyticsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216879E9235F803E004A056E /* AnalyticsError.swift */; };
+		216879EC235F8D0F004A056E /* AWSPinpointAnalyticsPlugin+HubCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216879EB235F8D0F004A056E /* AWSPinpointAnalyticsPlugin+HubCategory.swift */; };
+		216879F1235FAE2F004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216879F0235FAE2F004A056E /* AnalyticsCategory+HubPayloadEventName.swift */; };
+		216879F32360C5FB004A056E /* MockAWSPinpoint+TargetingClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216879F22360C5FB004A056E /* MockAWSPinpoint+TargetingClientBehavior.swift */; };
+		216879F52360C61C004A056E /* MockAWSPinpoint+AnalyticsClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216879F42360C61C004A056E /* MockAWSPinpoint+AnalyticsClientBehavior.swift */; };
+		216879FA2361093C004A056E /* AnalyticsErrorHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216879F92361093C004A056E /* AnalyticsErrorHelper.swift */; };
+		216D6F02235EBE6500D6233E /* AWSPinpointTargetingClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D6F01235EBE6500D6233E /* AWSPinpointTargetingClientBehavior.swift */; };
+		216D6F04235ECE6700D6233E /* AWSPinpointAnalyticsClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D6F03235ECE6700D6233E /* AWSPinpointAnalyticsClientBehavior.swift */; };
+		216D6F06235ECEC000D6233E /* AWSPinpointAdapter+AnalyticsClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D6F05235ECEC000D6233E /* AWSPinpointAdapter+AnalyticsClientBehavior.swift */; };
+		216D6F08235ECF3B00D6233E /* AWSPinpointAdapter+TargetingClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D6F07235ECF3B00D6233E /* AWSPinpointAdapter+TargetingClientBehavior.swift */; };
+		216D6F0B235ED41700D6233E /* AWSPinpointAnalyticsPlugin+AWSPinpointEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D6F0A235ED41700D6233E /* AWSPinpointAnalyticsPlugin+AWSPinpointEvent.swift */; };
+		216D6F0D235ED6AF00D6233E /* AWSPinpointAnalyticsPlugin+AWSPinpointEndpointProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D6F0C235ED6AF00D6233E /* AWSPinpointAnalyticsPlugin+AWSPinpointEndpointProfile.swift */; };
+		216D6F0F235EDCBD00D6233E /* AWSPinpointAnalyticsPlugin+AWSPinpointEndpointProfileLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D6F0E235EDCBD00D6233E /* AWSPinpointAnalyticsPlugin+AWSPinpointEndpointProfileLocation.swift */; };
 		2196FB5B23397BCB00F8EEB5 /* AWSS3StoragePluginGetDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2196FB5A23397BCB00F8EEB5 /* AWSS3StoragePluginGetDataResumabilityTests.swift */; };
 		2196FB5D23397BDF00F8EEB5 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2196FB5C23397BDF00F8EEB5 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift */; };
 		2196FB5F23397C0600F8EEB5 /* AWSS3StoragePluginPutDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2196FB5E23397C0600F8EEB5 /* AWSS3StoragePluginPutDataResumabilityTests.swift */; };
@@ -548,6 +562,20 @@
 		21578CAD235946F400FF0F03 /* AWSPinpointAnalyticsPluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPinpointAnalyticsPluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21578CB2235946F400FF0F03 /* AWSPinpointAnalyticsPluginTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginTestBase.swift; sourceTree = "<group>"; };
 		21578CB4235946F400FF0F03 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		216879E6235EEABF004A056E /* AWSPinpointAnalyticsPluginClientBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginClientBehaviorTests.swift; sourceTree = "<group>"; };
+		216879E9235F803E004A056E /* AnalyticsError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsError.swift; sourceTree = "<group>"; };
+		216879EB235F8D0F004A056E /* AWSPinpointAnalyticsPlugin+HubCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSPinpointAnalyticsPlugin+HubCategory.swift"; sourceTree = "<group>"; };
+		216879F0235FAE2F004A056E /* AnalyticsCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnalyticsCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
+		216879F22360C5FB004A056E /* MockAWSPinpoint+TargetingClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockAWSPinpoint+TargetingClientBehavior.swift"; sourceTree = "<group>"; };
+		216879F42360C61C004A056E /* MockAWSPinpoint+AnalyticsClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockAWSPinpoint+AnalyticsClientBehavior.swift"; sourceTree = "<group>"; };
+		216879F92361093C004A056E /* AnalyticsErrorHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsErrorHelper.swift; sourceTree = "<group>"; };
+		216D6F01235EBE6500D6233E /* AWSPinpointTargetingClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSPinpointTargetingClientBehavior.swift; sourceTree = "<group>"; };
+		216D6F03235ECE6700D6233E /* AWSPinpointAnalyticsClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsClientBehavior.swift; sourceTree = "<group>"; };
+		216D6F05235ECEC000D6233E /* AWSPinpointAdapter+AnalyticsClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSPinpointAdapter+AnalyticsClientBehavior.swift"; sourceTree = "<group>"; };
+		216D6F07235ECF3B00D6233E /* AWSPinpointAdapter+TargetingClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSPinpointAdapter+TargetingClientBehavior.swift"; sourceTree = "<group>"; };
+		216D6F0A235ED41700D6233E /* AWSPinpointAnalyticsPlugin+AWSPinpointEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSPinpointAnalyticsPlugin+AWSPinpointEvent.swift"; sourceTree = "<group>"; };
+		216D6F0C235ED6AF00D6233E /* AWSPinpointAnalyticsPlugin+AWSPinpointEndpointProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSPinpointAnalyticsPlugin+AWSPinpointEndpointProfile.swift"; sourceTree = "<group>"; };
+		216D6F0E235EDCBD00D6233E /* AWSPinpointAnalyticsPlugin+AWSPinpointEndpointProfileLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSPinpointAnalyticsPlugin+AWSPinpointEndpointProfileLocation.swift"; sourceTree = "<group>"; };
 		2196FB5A23397BCB00F8EEB5 /* AWSS3StoragePluginGetDataResumabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginGetDataResumabilityTests.swift; sourceTree = "<group>"; };
 		2196FB5C23397BDF00F8EEB5 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginDownloadFileResumabilityTests.swift; sourceTree = "<group>"; };
 		2196FB5E23397C0600F8EEB5 /* AWSS3StoragePluginPutDataResumabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginPutDataResumabilityTests.swift; sourceTree = "<group>"; };
@@ -907,6 +935,8 @@
 			isa = PBXGroup;
 			children = (
 				2109225E2359841D00CEC295 /* Constants */,
+				216D6F09235ED3E300D6233E /* Extensions */,
+				216879F823610929004A056E /* Utils */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -942,7 +972,11 @@
 			isa = PBXGroup;
 			children = (
 				210922782359AB9800CEC295 /* AWSPinpointAdapter.swift */,
+				216D6F05235ECEC000D6233E /* AWSPinpointAdapter+AnalyticsClientBehavior.swift */,
+				216D6F07235ECF3B00D6233E /* AWSPinpointAdapter+TargetingClientBehavior.swift */,
+				216D6F03235ECE6700D6233E /* AWSPinpointAnalyticsClientBehavior.swift */,
 				210922762359AB8F00CEC295 /* AWSPinpointBehavior.swift */,
+				216D6F01235EBE6500D6233E /* AWSPinpointTargetingClientBehavior.swift */,
 			);
 			path = Dependency;
 			sourceTree = "<group>";
@@ -1153,6 +1187,7 @@
 		21578CB1235946F400FF0F03 /* AWSPinpointAnalyticsPluginTests */ = {
 			isa = PBXGroup;
 			children = (
+				216879E6235EEABF004A056E /* AWSPinpointAnalyticsPluginClientBehaviorTests.swift */,
 				21092267235989F200CEC295 /* AWSPinpointAnalyticsPluginConfigureTests.swift */,
 				21FEB65E235E718D001862AD /* AWSPinpointAnalyticsPluginResetTests.swift */,
 				21578CB2235946F400FF0F03 /* AWSPinpointAnalyticsPluginTestBase.swift */,
@@ -1162,6 +1197,33 @@
 				21FEB661235E814A001862AD /* Tracker */,
 			);
 			path = AWSPinpointAnalyticsPluginTests;
+			sourceTree = "<group>";
+		};
+		216879E8235F8025004A056E /* Error */ = {
+			isa = PBXGroup;
+			children = (
+				216879E9235F803E004A056E /* AnalyticsError.swift */,
+			);
+			path = Error;
+			sourceTree = "<group>";
+		};
+		216879F823610929004A056E /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				216879F92361093C004A056E /* AnalyticsErrorHelper.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		216D6F09235ED3E300D6233E /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				216D6F0C235ED6AF00D6233E /* AWSPinpointAnalyticsPlugin+AWSPinpointEndpointProfile.swift */,
+				216D6F0E235EDCBD00D6233E /* AWSPinpointAnalyticsPlugin+AWSPinpointEndpointProfileLocation.swift */,
+				216D6F0A235ED41700D6233E /* AWSPinpointAnalyticsPlugin+AWSPinpointEvent.swift */,
+				216879EB235F8D0F004A056E /* AWSPinpointAnalyticsPlugin+HubCategory.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		2196FB6223397C2A00F8EEB5 /* ResumabilityTests */ = {
@@ -1188,8 +1250,10 @@
 			children = (
 				21FEB651235E6094001862AD /* MockAppSessionTracker.swift */,
 				21FEB64D235E6079001862AD /* MockAWSAuthService.swift */,
-				21FEB64F235E6088001862AD /* MockFlushEventsTracker.swift */,
 				21FEB657235E6716001862AD /* MockAWSPinpoint.swift */,
+				216879F42360C61C004A056E /* MockAWSPinpoint+AnalyticsClientBehavior.swift */,
+				216879F22360C5FB004A056E /* MockAWSPinpoint+TargetingClientBehavior.swift */,
+				21FEB64F235E6088001862AD /* MockFlushEventsTracker.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -1678,11 +1742,13 @@
 			children = (
 				FAC2350D227A053D00424678 /* AnalyticsCategory.swift */,
 				FAC2350B227A053D00424678 /* AnalyticsCategory+ClientBehavior.swift */,
+				216879F0235FAE2F004A056E /* AnalyticsCategory+HubPayloadEventName.swift */,
 				2109225923596BCD00CEC295 /* AnalyticsCategoryClientBehavior.swift */,
 				FA09B9442322C9E8000E064D /* AnalyticsCategoryConfiguration.swift */,
 				FAC23510227A053D00424678 /* AnalyticsCategoryPlugin.swift */,
 				210922492359634B00CEC295 /* AnalyticsProfile.swift */,
 				2109224B2359634C00CEC295 /* AnalyticsPropertyValue.swift */,
+				216879E8235F8025004A056E /* Error */,
 				21092258235969D000CEC295 /* Event */,
 				FA09B9342321A310000E064D /* Internal */,
 			);
@@ -3222,14 +3288,23 @@
 				2109222A2359498A00CEC295 /* AWSPinpointAnalyticsPlugin.swift in Sources */,
 				21092262235984B300CEC295 /* AWSPinpointAnalyticsPlugin+Configure.swift in Sources */,
 				210922772359AB8F00CEC295 /* AWSPinpointBehavior.swift in Sources */,
+				216879FA2361093C004A056E /* AnalyticsErrorHelper.swift in Sources */,
+				216D6F08235ECF3B00D6233E /* AWSPinpointAdapter+TargetingClientBehavior.swift in Sources */,
 				210922792359AB9800CEC295 /* AWSPinpointAdapter.swift in Sources */,
 				2109226C2359A54900CEC295 /* FlushEventsTracker.swift in Sources */,
+				216D6F02235EBE6500D6233E /* AWSPinpointTargetingClientBehavior.swift in Sources */,
 				2109227C2359AD1300CEC295 /* AWSAuthService.swift in Sources */,
+				216D6F0F235EDCBD00D6233E /* AWSPinpointAnalyticsPlugin+AWSPinpointEndpointProfileLocation.swift in Sources */,
 				2109226E2359A56400CEC295 /* AppSessionTracker.swift in Sources */,
+				216D6F0B235ED41700D6233E /* AWSPinpointAnalyticsPlugin+AWSPinpointEvent.swift in Sources */,
 				210922662359880000CEC295 /* AWSPinpointAnalyticsPlugin+Reset.swift in Sources */,
+				216879EC235F8D0F004A056E /* AWSPinpointAnalyticsPlugin+HubCategory.swift in Sources */,
 				2109225C2359838800CEC295 /* AWSPinpointAnalyticsPlugin+ClientBehavior.swift in Sources */,
+				216D6F06235ECEC000D6233E /* AWSPinpointAdapter+AnalyticsClientBehavior.swift in Sources */,
 				21FEB647235E5012001862AD /* AWSPinpointAnalyticsPluginConfiguration.swift in Sources */,
+				216D6F04235ECE6700D6233E /* AWSPinpointAnalyticsClientBehavior.swift in Sources */,
 				21FEB656235E6375001862AD /* Tracker.swift in Sources */,
+				216D6F0D235ED6AF00D6233E /* AWSPinpointAnalyticsPlugin+AWSPinpointEndpointProfile.swift in Sources */,
 				210922642359857600CEC295 /* PluginErrorConstants.swift in Sources */,
 				210922602359842C00CEC295 /* PluginConstants.swift in Sources */,
 			);
@@ -3240,11 +3315,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				21FEB652235E6094001862AD /* MockAppSessionTracker.swift in Sources */,
+				216879E7235EEABF004A056E /* AWSPinpointAnalyticsPluginClientBehaviorTests.swift in Sources */,
 				21FEB654235E60D5001862AD /* MockAWSAuthService.swift in Sources */,
 				21FEB658235E6716001862AD /* MockAWSPinpoint.swift in Sources */,
 				21FEB650235E6088001862AD /* MockFlushEventsTracker.swift in Sources */,
 				21FEB65D235E70FE001862AD /* AWSPinpointAnalyticsPluginConfigurationTests.swift in Sources */,
 				21578CB3235946F400FF0F03 /* AWSPinpointAnalyticsPluginTestBase.swift in Sources */,
+				216879F32360C5FB004A056E /* MockAWSPinpoint+TargetingClientBehavior.swift in Sources */,
+				216879F52360C61C004A056E /* MockAWSPinpoint+AnalyticsClientBehavior.swift in Sources */,
 				21FEB65F235E718D001862AD /* AWSPinpointAnalyticsPluginResetTests.swift in Sources */,
 				21092268235989F200CEC295 /* AWSPinpointAnalyticsPluginConfigureTests.swift in Sources */,
 			);
@@ -3255,6 +3333,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FAC0A29B22B3DEEE00B50912 /* HubPayload.swift in Sources */,
+				216879EA235F803E004A056E /* AnalyticsError.swift in Sources */,
 				FAC2352B227A053D00424678 /* AnalyticsEvent.swift in Sources */,
 				FAC23544227A055200424678 /* ConfigurationError.swift in Sources */,
 				FAC0A2A122B3E81000B50912 /* HubMessageQueue.swift in Sources */,
@@ -3288,6 +3367,7 @@
 				FA09B94B2322CBEB000E064D /* LoggingCategoryConfiguration.swift in Sources */,
 				210922572359693900CEC295 /* BasicAnalyticsEvent.swift in Sources */,
 				FAC2353F227A055200424678 /* PluginError.swift in Sources */,
+				216879F1235FAE2F004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */,
 				FA76A2D32342B47100B91ADB /* HubPayloadEventName.swift in Sources */,
 				FA09B9332321A305000E064D /* HubCategory+CategoryConfigurable.swift in Sources */,
 				FA9FB77D232AA0D800C04D32 /* FilteredListener.swift in Sources */,

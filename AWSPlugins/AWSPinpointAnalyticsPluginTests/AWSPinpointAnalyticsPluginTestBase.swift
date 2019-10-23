@@ -6,12 +6,14 @@
 //
 
 import XCTest
+@testable import Amplify
+@testable import AmplifyTestCommon
 @testable import AWSPinpointAnalyticsPlugin
 
 class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
 
     var analyticsPlugin: AWSPinpointAnalyticsPlugin!
-    var pinpoint: MockAWSPinpoint!
+    var mockPinpoint: MockAWSPinpoint!
     var authService: MockAWSAuthService!
     var flushEventsTracker: MockFlushEventsTracker!
     var appSessionTracker: MockAppSessionTracker!
@@ -22,10 +24,18 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
     let testTrackAppSession = true
     let testAutoSessionTrackingInterval = 10
 
+    var plugin: HubCategoryPlugin {
+        guard let plugin = try? Amplify.Hub.getPlugin(for: "DefaultHubCategoryPlugin"),
+            plugin.key == "DefaultHubCategoryPlugin" else {
+                fatalError("Could not access DefaultHubCategoryPlugin")
+        }
+        return plugin
+    }
+
     override func setUp() {
         analyticsPlugin = AWSPinpointAnalyticsPlugin()
 
-        pinpoint = MockAWSPinpoint()
+        mockPinpoint = MockAWSPinpoint()
         authService = MockAWSAuthService()
         flushEventsTracker =
             MockFlushEventsTracker(autoFlushEventsInterval: PluginConstants.defaultAutoFlushEventsInterval)
@@ -33,9 +43,22 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
             MockAppSessionTracker(trackAppSessions: PluginConstants.defaultTrackAppSession,
                                   autoSessionTrackingInterval: PluginConstants.defaultAutoSessionTrackingInterval)
 
-        analyticsPlugin.configure(pinpoint: pinpoint,
+        analyticsPlugin.configure(pinpoint: mockPinpoint,
                                   authService: authService,
                                   flushEventsTracker: flushEventsTracker,
                                   appSessionTracker: appSessionTracker)
+
+        Amplify.reset()
+        let config = AmplifyConfiguration()
+        do {
+            try Amplify.configure(config)
+        } catch {
+            XCTFail("Error setting up Amplify: \(error)")
+        }
+    }
+
+    override func tearDown() {
+        Amplify.reset()
+        analyticsPlugin.reset { }
     }
 }
