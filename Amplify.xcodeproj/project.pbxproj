@@ -178,6 +178,7 @@
 		FA327584235FBA4B00692B3A /* AWSAPICategoryPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327583235FBA4B00692B3A /* AWSAPICategoryPluginTestBase.swift */; };
 		FA327586235FBB8B00692B3A /* AWSAPIGetOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327585235FBB8B00692B3A /* AWSAPIGetOperation.swift */; };
 		FA32758A23608F3A00692B3A /* AWSAPICategoryPluginGetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327588235FBF0800692B3A /* AWSAPICategoryPluginGetTests.swift */; };
+		FA473E872360B76300239011 /* AWSAPICategoryPluginConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7348B4235F6DF2004951A9 /* AWSAPICategoryPluginConfigurationTests.swift */; };
 		FA47B8362350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA47B8352350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift */; };
 		FA47B8382350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA47B8372350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift */; };
 		FA4E730A232828EA003B8EEB /* Amplify+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E7309232828EA003B8EEB /* Amplify+Reset.swift */; };
@@ -200,11 +201,9 @@
 		FA6BC87D235F5D490001A882 /* APICategoryRESTBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC87C235F5D490001A882 /* APICategoryRESTBehavior.swift */; };
 		FA6BC87F235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC87E235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift */; };
 		FA7348AE235F6DF1004951A9 /* AWSAPICategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA7348A5235F6DF1004951A9 /* AWSAPICategoryPlugin.framework */; };
-		FA7348B5235F6DF2004951A9 /* AWSAPICategoryPluginConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7348B4235F6DF2004951A9 /* AWSAPICategoryPluginConfigurationTests.swift */; };
 		FA7348B7235F6DF2004951A9 /* AWSAPICategoryPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = FA7348A7235F6DF1004951A9 /* AWSAPICategoryPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FA7348BA235F6DF2004951A9 /* AWSAPICategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA7348A5235F6DF1004951A9 /* AWSAPICategoryPlugin.framework */; };
 		FA7348BB235F6DF2004951A9 /* AWSAPICategoryPlugin.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA7348A5235F6DF1004951A9 /* AWSAPICategoryPlugin.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FA7348C9235F6E20004951A9 /* AWSAPICategoryPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7348C8235F6E20004951A9 /* AWSAPICategoryPluginIntegrationTests.swift */; };
 		FA7348CB235F6E20004951A9 /* AWSAPICategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA7348A5235F6DF1004951A9 /* AWSAPICategoryPlugin.framework */; };
 		FA76A2D12342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA76A2D02342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift */; };
 		FA76A2D32342B47100B91ADB /* HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA76A2D22342B47100B91ADB /* HubPayloadEventName.swift */; };
@@ -771,7 +770,6 @@
 		FA7348B4235F6DF2004951A9 /* AWSAPICategoryPluginConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginConfigurationTests.swift; sourceTree = "<group>"; };
 		FA7348B6235F6DF2004951A9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA7348C6235F6E20004951A9 /* AWSAPICategoryPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPICategoryPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		FA7348C8235F6E20004951A9 /* AWSAPICategoryPluginIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginIntegrationTests.swift; sourceTree = "<group>"; };
 		FA7348CA235F6E20004951A9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA76A2D02342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		FA76A2D22342B47100B91ADB /* HubPayloadEventName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPayloadEventName.swift; sourceTree = "<group>"; };
@@ -1683,7 +1681,6 @@
 		FA7348C7235F6E20004951A9 /* AWSAPICategoryPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
-				FA7348C8235F6E20004951A9 /* AWSAPICategoryPluginIntegrationTests.swift */,
 				FA327588235FBF0800692B3A /* AWSAPICategoryPluginGetTests.swift */,
 				FA7348CA235F6E20004951A9 /* Info.plist */,
 			);
@@ -3615,8 +3612,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA327584235FBA4B00692B3A /* AWSAPICategoryPluginTestBase.swift in Sources */,
+				FA473E872360B76300239011 /* AWSAPICategoryPluginConfigurationTests.swift in Sources */,
 				FA327582235FBA2000692B3A /* AWSAPIPlugin+RESTClientBehaviorTests.swift in Sources */,
-				FA7348B5235F6DF2004951A9 /* AWSAPICategoryPluginConfigurationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3625,7 +3622,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA32758A23608F3A00692B3A /* AWSAPICategoryPluginGetTests.swift in Sources */,
-				FA7348C9235F6E20004951A9 /* AWSAPICategoryPluginIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

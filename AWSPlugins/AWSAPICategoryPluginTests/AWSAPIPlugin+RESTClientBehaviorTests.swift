@@ -5,15 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import XCTest
+
 @testable import AWSAPICategoryPlugin
 
 class AWSAPIPluginRESTClientBehaviorTests: AWSAPICategoryPluginTestBase {
 
-    func testPluginGet() {
-        let operation = apiPlugin.get(apiName: "foo",
-                                      path: "/path",
-                                      listener: nil)
+    func testGetReturnsOperation() {
+        let operation = Amplify.API.get(apiName: "foo", path: "/path", listener: nil)
 
         XCTAssertNotNil(operation)
 

@@ -6,17 +6,22 @@
 //
 
 import XCTest
-import Amplify
 
+@testable import Amplify
 @testable import AWSAPICategoryPlugin
 
-class AWSAPICategoryPluginConfigurationTests: AWSAPICategoryPluginTestBase {
+class AWSAPICategoryPluginConfigurationTests: XCTestCase {
+    override func setUp() {
+        Amplify.reset()
+    }
 
     func testPluginKey() {
+        let apiPlugin = AWSAPICategoryPlugin()
         XCTAssertEqual(apiPlugin.key, "AWSAPICategoryPlugin")
     }
 
     func testConfigureSuccess() throws {
+        let apiPlugin = AWSAPICategoryPlugin()
         let apiPluginConfig = [String: JSONValue]()
 
         do {
