@@ -27,6 +27,9 @@ public enum CategoryType: String {
 
     /// Upload and download files from the cloud
     case storage
+
+    /// Prediction 
+    case predictions
 }
 
 extension CategoryType: CaseIterable {}
@@ -44,6 +47,8 @@ public extension CategoryType {
             return "Logging"
         case .storage:
             return "Storage"
+        case .predictions:
+            return "Predictions"
         }
     }
 }

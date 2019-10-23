@@ -48,6 +48,11 @@ extension Amplify {
                 DispatchQueue.global().async {
                     Storage.reset { group.leave() }
                 }
+            case .predictions:
+                group.enter()
+                DispatchQueue.global().async {
+                    // TODO: Add reset for predictions here
+                }
             }
         }
 

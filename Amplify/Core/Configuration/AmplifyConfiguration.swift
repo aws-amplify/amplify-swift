@@ -84,6 +84,8 @@ extension Amplify {
                 try Logging.configure(using: configuration)
             case .storage:
                 try Storage.configure(using: configuration)
+            case .predictions:
+                fatalError("In complete implementation")
             }
         }
 

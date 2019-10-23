@@ -6,11 +6,30 @@
 //
 
 import Foundation
+import CoreGraphics
 
 /// Behavior of the Predictions category that clients will use
 public protocol PredictionsCategoryClientBehavior {
-    
-    func identify()
 
-    func infer()
+    // translate
+    func convert(textToTranslate: String,
+                 language: LanguageType,
+                 targetLanguage: LanguageType,
+                 options: Any?) -> PredictionsConvertOperation
+
+    func identify(type: IdentifyType,
+                  image: CGImage,
+                  options: Any?) -> PredictionsIdentifyOperation
+}
+
+public enum LanguageType: String {
+    case english = "en"
+    case italian = "it"
+}
+
+public enum IdentifyType {
+    case detectCelebrity
+    case detectLabels
+    case detectEntities
+    case detectText
 }

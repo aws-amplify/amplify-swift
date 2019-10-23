@@ -7,7 +7,7 @@
 
 final public class PredictionsCategory: Category {
 
-    public let categoryType = CategoryType.storage
+    public let categoryType = CategoryType.predictions
 
     public func removePlugin(for key: PluginKey) {
 
