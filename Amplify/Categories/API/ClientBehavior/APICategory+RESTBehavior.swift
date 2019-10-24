@@ -9,7 +9,7 @@ extension APICategory: APICategoryRESTBehavior {
 
     public func get(apiName: String,
                     path: String,
-                    listener: APIGetOperation.EventListener?) -> APIGetOperation {
+                    listener: APIOperation.EventListener?) -> APIOperation {
         return plugin.get(apiName: apiName,
                           path: path,
                           listener: listener)

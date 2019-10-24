@@ -18,6 +18,6 @@ public protocol PluginResettable {
     ///
     /// This method is intended only for use by the Amplify system, and should not be
     /// invoked by host applications.
-    func reset(onComplete: @escaping (() -> Void))
+    func reset(onComplete: @escaping BasicClosure)
 
 }

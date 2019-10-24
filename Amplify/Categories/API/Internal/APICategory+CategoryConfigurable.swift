@@ -33,7 +33,7 @@ extension APICategory: CategoryConfigurable {
         try configure(using: configuration)
     }
 
-    func reset(onComplete: @escaping (() -> Void)) {
+    func reset(onComplete: @escaping BasicClosure) {
         let group = DispatchGroup()
 
         for plugin in plugins.values {

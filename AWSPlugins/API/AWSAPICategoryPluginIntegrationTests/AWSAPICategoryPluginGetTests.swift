@@ -9,8 +9,6 @@ import XCTest
 
 import AWSMobileClient
 import AWSAPICategoryPlugin
-
-// @testable only so we can access `Amplify.reset()`
 @testable import Amplify
 
 class AWSAPICategoryPluginGetTests: XCTestCase {

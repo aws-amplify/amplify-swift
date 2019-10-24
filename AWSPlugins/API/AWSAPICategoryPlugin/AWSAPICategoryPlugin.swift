@@ -10,6 +10,10 @@ import AWSPluginsCore
 
 final public class AWSAPICategoryPlugin: APICategoryPlugin {
 
+    public var key: PluginKey {
+        return "AWSAPICategoryPlugin"
+    }
+
     /// A holder for API configurations. This will be populated during the
     /// configuration phase, and is clearable by `reset()`.
     var pluginConfig: AWSAPICategoryPluginConfig!
@@ -22,27 +26,21 @@ final public class AWSAPICategoryPlugin: APICategoryPlugin {
     /// during initialization, and is clearable by `reset()`.
     var httpTransport: HTTPTransport!
 
-    public var key: PluginKey {
-        return "AWSAPICategoryPlugin"
-    }
-
-    public convenience init() {
-        let defaultHTTPTransport = NSURLSessionHTTPTransport()
-        self.init(httpTransport: defaultHTTPTransport)
-    }
+    /// Maps APIOperations to HTTPTransportTasks
+    var mapper: OperationTaskMapper
 
     init(httpTransport: HTTPTransport) {
         self.httpTransport = httpTransport
+        self.mapper = OperationTaskMapper()
     }
 
 }
 
-final class NSURLSessionHTTPTransport: HTTPTransport {
-    func task(for request: APIGetRequest) -> HTTPTransportTask {
-        fatalError("Not yet implemented")
+public extension AWSAPICategoryPlugin {
+
+    convenience init() {
+        let defaultHTTPTransport = URLSessionHTTPTransport()
+        self.init(httpTransport: defaultHTTPTransport)
     }
 
-    func reset() {
-        fatalError("Not yet implemented")
-    }
 }

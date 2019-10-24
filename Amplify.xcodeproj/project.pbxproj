@@ -183,7 +183,7 @@
 		FA327578235FB33A00692B3A /* AWSAPICategoryPlugin+GraphQLBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327577235FB33A00692B3A /* AWSAPICategoryPlugin+GraphQLBehavior.swift */; };
 		FA32757A235FB36C00692B3A /* AWSAPICategoryPlugin+InterceptorBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327579235FB36C00692B3A /* AWSAPICategoryPlugin+InterceptorBehavior.swift */; };
 		FA327582235FBA2000692B3A /* AWSAPIPlugin+RESTClientBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327581235FBA2000692B3A /* AWSAPIPlugin+RESTClientBehaviorTests.swift */; };
-		FA327586235FBB8B00692B3A /* AWSAPIGetOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327585235FBB8B00692B3A /* AWSAPIGetOperation.swift */; };
+		FA327586235FBB8B00692B3A /* AWSAPIOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327585235FBB8B00692B3A /* AWSAPIOperation.swift */; };
 		FA32758A23608F3A00692B3A /* AWSAPICategoryPluginGetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA327588235FBF0800692B3A /* AWSAPICategoryPluginGetTests.swift */; };
 		FA473E872360B76300239011 /* AWSAPICategoryPluginConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7348B4235F6DF2004951A9 /* AWSAPICategoryPluginConfigurationTests.swift */; };
 		FA47B8362350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA47B8352350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift */; };
@@ -274,7 +274,7 @@
 		FAC428A0235F7F980000F221 /* APICategory+RESTBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC4289F235F7F980000F221 /* APICategory+RESTBehavior.swift */; };
 		FAC428A2235F80000000F221 /* APICategory+GraphQLBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A1235F80000000F221 /* APICategory+GraphQLBehavior.swift */; };
 		FAC428A4235F802A0000F221 /* APICategory+InterceptorBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A3235F802A0000F221 /* APICategory+InterceptorBehavior.swift */; };
-		FAC428A6235F83770000F221 /* APIGetOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A5235F83770000F221 /* APIGetOperation.swift */; };
+		FAC428A6235F83770000F221 /* APIOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A5235F83770000F221 /* APIOperation.swift */; };
 		FAC428A8235F83A00000F221 /* APIGetRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A7235F83A00000F221 /* APIGetRequest.swift */; };
 		FAC62B7B2361167D0032CDF6 /* HTTPTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC62B7A2361167D0032CDF6 /* HTTPTransport.swift */; };
 		FAC62B7E236119B80032CDF6 /* HTTPTransportTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC62B7D236119B80032CDF6 /* HTTPTransportTask.swift */; };
@@ -298,6 +298,9 @@
 		FACF52042329633500646E10 /* TestExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACF52032329633500646E10 /* TestExtensions.swift */; };
 		FACF520723298BF100646E10 /* SynchronizedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACF520623298BF100646E10 /* SynchronizedDictionary.swift */; };
 		FACF520923298C1200646E10 /* SynchronizedDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACF520823298C1200646E10 /* SynchronizedDictionaryTests.swift */; };
+		FADB3A64236124ED006D6FE9 /* OperationTaskMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADB3A62236124D4006D6FE9 /* OperationTaskMapper.swift */; };
+		FADB3A66236125D9006D6FE9 /* URLSessionHTTPTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADB3A65236125D9006D6FE9 /* URLSessionHTTPTransport.swift */; };
+		FADB3A6823612940006D6FE9 /* BasicClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADB3A6723612940006D6FE9 /* BasicClosure.swift */; };
 		FAF1B88423392F7C007F1435 /* ConcurrentDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B88323392F7C007F1435 /* ConcurrentDispatcher.swift */; };
 		FAF1B88623392F96007F1435 /* SerialDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B88523392F96007F1435 /* SerialDispatcher.swift */; };
 		FAF1B8882339633C007F1435 /* ConcurrentDispatcherPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B8872339633C007F1435 /* ConcurrentDispatcherPerformanceTests.swift */; };
@@ -932,7 +935,7 @@
 		FA327577235FB33A00692B3A /* AWSAPICategoryPlugin+GraphQLBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAPICategoryPlugin+GraphQLBehavior.swift"; sourceTree = "<group>"; };
 		FA327579235FB36C00692B3A /* AWSAPICategoryPlugin+InterceptorBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAPICategoryPlugin+InterceptorBehavior.swift"; sourceTree = "<group>"; };
 		FA327581235FBA2000692B3A /* AWSAPIPlugin+RESTClientBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAPIPlugin+RESTClientBehaviorTests.swift"; sourceTree = "<group>"; };
-		FA327585235FBB8B00692B3A /* AWSAPIGetOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPIGetOperation.swift; sourceTree = "<group>"; };
+		FA327585235FBB8B00692B3A /* AWSAPIOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPIOperation.swift; sourceTree = "<group>"; };
 		FA327588235FBF0800692B3A /* AWSAPICategoryPluginGetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginGetTests.swift; sourceTree = "<group>"; };
 		FA47B8352350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUnsubscribeOperationTests.swift; sourceTree = "<group>"; };
 		FA47B8372350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUnsubscribeHubListenToOperationTests.swift; sourceTree = "<group>"; };
@@ -1034,7 +1037,7 @@
 		FAC4289F235F7F980000F221 /* APICategory+RESTBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+RESTBehavior.swift"; sourceTree = "<group>"; };
 		FAC428A1235F80000000F221 /* APICategory+GraphQLBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+GraphQLBehavior.swift"; sourceTree = "<group>"; };
 		FAC428A3235F802A0000F221 /* APICategory+InterceptorBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+InterceptorBehavior.swift"; sourceTree = "<group>"; };
-		FAC428A5235F83770000F221 /* APIGetOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIGetOperation.swift; sourceTree = "<group>"; };
+		FAC428A5235F83770000F221 /* APIOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIOperation.swift; sourceTree = "<group>"; };
 		FAC428A7235F83A00000F221 /* APIGetRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIGetRequest.swift; sourceTree = "<group>"; };
 		FAC62B7A2361167D0032CDF6 /* HTTPTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPTransport.swift; sourceTree = "<group>"; };
 		FAC62B7D236119B80032CDF6 /* HTTPTransportTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPTransportTask.swift; sourceTree = "<group>"; };
@@ -1053,6 +1056,9 @@
 		FACF52032329633500646E10 /* TestExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestExtensions.swift; sourceTree = "<group>"; };
 		FACF520623298BF100646E10 /* SynchronizedDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedDictionary.swift; sourceTree = "<group>"; };
 		FACF520823298C1200646E10 /* SynchronizedDictionaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedDictionaryTests.swift; sourceTree = "<group>"; };
+		FADB3A62236124D4006D6FE9 /* OperationTaskMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationTaskMapper.swift; sourceTree = "<group>"; };
+		FADB3A65236125D9006D6FE9 /* URLSessionHTTPTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPTransport.swift; sourceTree = "<group>"; };
+		FADB3A6723612940006D6FE9 /* BasicClosure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicClosure.swift; sourceTree = "<group>"; };
 		FAF1B88323392F7C007F1435 /* ConcurrentDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentDispatcher.swift; sourceTree = "<group>"; };
 		FAF1B88523392F96007F1435 /* SerialDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialDispatcher.swift; sourceTree = "<group>"; };
 		FAF1B8872339633C007F1435 /* ConcurrentDispatcherPerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentDispatcherPerformanceTests.swift; sourceTree = "<group>"; };
@@ -1902,7 +1908,7 @@
 		FA327587235FBC7200692B3A /* Operation */ = {
 			isa = PBXGroup;
 			children = (
-				FA327585235FBB8B00692B3A /* AWSAPIGetOperation.swift */,
+				FA327585235FBB8B00692B3A /* AWSAPIOperation.swift */,
 			);
 			path = Operation;
 			sourceTree = "<group>";
@@ -1962,6 +1968,7 @@
 				FAB9D810233BF5F600928AA9 /* AmplifyOperationContext.swift */,
 				21FFF986230B7A5D005878EA /* AsychronousOperation.swift */,
 				FA56F71D22B144F80039754A /* AsyncEvent.swift */,
+				FADB3A6723612940006D6FE9 /* BasicClosure.swift */,
 				FA56F72222B14B420039754A /* Cancellable.swift */,
 				FA09B9402321BB78000E064D /* JSONValue.swift */,
 				FA56F72422B14B6A0039754A /* Resumable.swift */,
@@ -1988,7 +1995,7 @@
 		FA6BC873235F5BE80001A882 /* Operation */ = {
 			isa = PBXGroup;
 			children = (
-				FAC428A5235F83770000F221 /* APIGetOperation.swift */,
+				FAC428A5235F83770000F221 /* APIOperation.swift */,
 				FA6BC871235F5BD60001A882 /* GraphQLOperation.swift */,
 			);
 			path = Operation;
@@ -2391,6 +2398,8 @@
 			children = (
 				FAC62B7A2361167D0032CDF6 /* HTTPTransport.swift */,
 				FAC62B7D236119B80032CDF6 /* HTTPTransportTask.swift */,
+				FADB3A62236124D4006D6FE9 /* OperationTaskMapper.swift */,
+				FADB3A65236125D9006D6FE9 /* URLSessionHTTPTransport.swift */,
 			);
 			path = HTTPTransport;
 			sourceTree = "<group>";
@@ -4352,9 +4361,11 @@
 				FA327578235FB33A00692B3A /* AWSAPICategoryPlugin+GraphQLBehavior.swift in Sources */,
 				FA32756E235FAF0500692B3A /* AWSAPICategoryPlugin.swift in Sources */,
 				FAC62B7E236119B80032CDF6 /* HTTPTransportTask.swift in Sources */,
-				FA327586235FBB8B00692B3A /* AWSAPIGetOperation.swift in Sources */,
+				FA327586235FBB8B00692B3A /* AWSAPIOperation.swift in Sources */,
 				FAC62B7B2361167D0032CDF6 /* HTTPTransport.swift in Sources */,
+				FADB3A64236124ED006D6FE9 /* OperationTaskMapper.swift in Sources */,
 				FA327572235FB03C00692B3A /* AWSAPICategoryPlugin+Configure.swift in Sources */,
+				FADB3A66236125D9006D6FE9 /* URLSessionHTTPTransport.swift in Sources */,
 				FA327576235FB13700692B3A /* AWSAPICategoryPlugin+Reset.swift in Sources */,
 				FA327570235FAFE700692B3A /* AWSAPICategoryPlugin+RESTBehavior.swift in Sources */,
 				FA32757A235FB36C00692B3A /* AWSAPICategoryPlugin+InterceptorBehavior.swift in Sources */,
@@ -4425,6 +4436,7 @@
 				FAC2353F227A055200424678 /* PluginError.swift in Sources */,
 				FA76A2D32342B47100B91ADB /* HubPayloadEventName.swift in Sources */,
 				FA09B9332321A305000E064D /* HubCategory+CategoryConfigurable.swift in Sources */,
+				FADB3A6823612940006D6FE9 /* BasicClosure.swift in Sources */,
 				FA9FB77D232AA0D800C04D32 /* FilteredListener.swift in Sources */,
 				FAC2352D227A053D00424678 /* AnalyticsCategoryPlugin.swift in Sources */,
 				FA56F71E22B144F80039754A /* AsyncEvent.swift in Sources */,
@@ -4436,7 +4448,7 @@
 				FA315295233D634900DE78E7 /* StorageDownloadFileRequest.swift in Sources */,
 				FA6BC86F235F5B680001A882 /* GraphQLOperationType.swift in Sources */,
 				FA56F72722B14BF70039754A /* AmplifyOperation.swift in Sources */,
-				FAC428A6235F83770000F221 /* APIGetOperation.swift in Sources */,
+				FAC428A6235F83770000F221 /* APIOperation.swift in Sources */,
 				FA6BC86D235F5AE30001A882 /* APICategory+HubPayloadEventName.swift in Sources */,
 				FAC23591227A4AF000424678 /* HubCategoryClientBehavior.swift in Sources */,
 				210DBC122332B3C0009B9E51 /* StorageDownloadFileOperation.swift in Sources */,

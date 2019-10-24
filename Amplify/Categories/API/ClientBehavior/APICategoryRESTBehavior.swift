@@ -18,6 +18,6 @@ public protocol APICategoryRESTBehavior {
     /// - Returns: An operation that can be observed for its value
     func get(apiName: String,
              path: String,
-             listener: APIGetOperation.EventListener?) -> APIGetOperation
+             listener: APIOperation.EventListener?) -> APIOperation
 
 }

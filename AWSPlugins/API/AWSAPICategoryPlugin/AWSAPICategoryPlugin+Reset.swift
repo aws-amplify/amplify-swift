@@ -8,7 +8,7 @@
 import Amplify
 
 public extension AWSAPICategoryPlugin {
-    func reset(onComplete: @escaping (() -> Void)) {
+    func reset(onComplete: @escaping BasicClosure) {
         httpTransport = nil
         onComplete()
     }

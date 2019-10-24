@@ -16,7 +16,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         notify("configure")
     }
 
-    func reset(onComplete: @escaping (() -> Void)) {
+    func reset(onComplete: @escaping BasicClosure) {
         notify("reset")
         onComplete()
     }
@@ -37,7 +37,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     func get(apiName: String,
              path: String,
-             listener: APIGetOperation.EventListener?) -> APIGetOperation {
+             listener: APIOperation.EventListener?) -> APIOperation {
         notify("get")
         let request = APIGetRequest(apiName: apiName,
                                     path: path,
@@ -72,7 +72,7 @@ GraphQLOperation {
     }
 }
 
-class MockAPIGetOperation: AmplifyOperation<APIGetRequest, Void, Data, APIError>, APIGetOperation {
+class MockAPIGetOperation: AmplifyOperation<APIGetRequest, Void, Data, APIError>, APIOperation {
     override func pause() {
     }
 
