@@ -67,6 +67,7 @@ target "AWSPredictionsPlugin" do
   use_frameworks!
 
   pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
+  pod "AWSTranslate", "~> #{AWS_SDK_VERSION}"
 
   target "AWSPredictionsPluginTests" do
     inherit! :search_paths
