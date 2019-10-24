@@ -12,6 +12,7 @@ import AWSTranslate
 protocol AWSTranslateServiceBehaviour {
 
     typealias TranslateServiceTranslateTextEventHandler = (TranslateServiceTranslateTextEvent) -> Void
+    
     typealias TranslateServiceTranslateTextEvent = PredictionsEvent<String, PredictionsError>
 
     func reset()

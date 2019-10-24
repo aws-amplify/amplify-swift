@@ -16,8 +16,7 @@ extension AWSPredictionsPlugin {
                         targetLanguage: LanguageType,
                         options: Any?) -> PredictionsConvertOperation {
 
-            let request = PredictionsConvertOperation()
-
+            fatalError("")
     }
 
     public func identify(type: IdentifyType,
