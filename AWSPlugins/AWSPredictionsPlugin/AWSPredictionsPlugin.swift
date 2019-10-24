@@ -6,20 +6,23 @@
 //
 
 import Amplify
+import Foundation
 
 final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
 
+    /// A queue that regulates the execution of operations.
+    var queue: OperationQueue!
+
+    /// An instance of the S3 storage service
+    var translateService: AWSTranslateServiceBehaviour!
+
+    var authService: AWSAuthServiceBehavior!
+
     /// The unique key of the plugin within the predictions category.
     public var key: PluginKey {
-        return "PredKey"
-    }
-
-    public func configure(using configuration: Any) throws {
-
+        return PluginConstants.awsPredictionsPluginKey
     }
 
     public init() {
-
     }
-
 }

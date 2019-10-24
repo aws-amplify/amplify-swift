@@ -8,7 +8,6 @@
 import Foundation
 import CoreGraphics
 import Amplify
-import AWSTranslate
 
 extension AWSPredictionsPlugin {
 
@@ -16,9 +15,9 @@ extension AWSPredictionsPlugin {
                         language: LanguageType,
                         targetLanguage: LanguageType,
                         options: Any?) -> PredictionsConvertOperation {
-        let translate = AWSTranslate.default()
-        
-        fatalError("Not implemented")
+
+            let request = PredictionsConvertOperation()
+
     }
 
     public func identify(type: IdentifyType,
