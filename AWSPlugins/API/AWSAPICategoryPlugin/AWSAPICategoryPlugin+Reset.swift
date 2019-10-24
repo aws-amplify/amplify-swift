@@ -14,10 +14,10 @@ public extension AWSAPICategoryPlugin {
         mapper = OperationTaskMapper()
 
         let waitForReset = DispatchSemaphore(value: 0)
-        httpTransport.reset { waitForReset.signal() }
+        session.reset { waitForReset.signal() }
         _ = waitForReset.wait()
 
-        httpTransport = nil
+        session = nil
 
         pluginConfig = nil
 

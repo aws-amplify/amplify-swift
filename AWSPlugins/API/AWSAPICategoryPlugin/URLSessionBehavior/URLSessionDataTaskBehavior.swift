@@ -10,13 +10,8 @@ import Amplify
 /// Encapsulates the behavior required for a single HTTP operation, including
 /// identifying, pausing/resuming, and cancelling. Behind the scenes, this will be
 /// backed by a URLSessionTask.
-protocol HTTPTransportTask: Cancellable, Resumable {
+public protocol URLSessionDataTaskBehavior: Cancellable, Resumable {
     /// Uniquely identifies this task in the local system. This identifier is not
     /// guaranteed to be globally unique
-    var taskIdentifier: Int { get }
-}
-
-/// Defines behaviors used during fulfillment of HTTPTransportTasks.
-protocol HTTPTransportTaskDelegate: class {
-    func task(_ httpTransportTask: HTTPTransportTask, didReceiveData data: Data)
+    var taskBehaviorIdentifier: Int { get }
 }

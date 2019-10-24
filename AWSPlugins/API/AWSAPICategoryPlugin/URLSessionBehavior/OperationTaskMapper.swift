@@ -8,41 +8,41 @@
 import Foundation
 import Amplify
 
-/// Maps APIOperations to HTTPTransportTasks, providing convenience methods for accessing them
+/// Maps AWSAPIOperations to URLSessionTaskBehaviors, providing convenience methods for accessing them
 struct OperationTaskMapper {
     private static let concurrencyQueue = DispatchQueue(label: "com.amazonaws.OperationTaskMapper.concurrency")
 
-    private var operations = [UUID: APIOperation]()
-    private var tasks = [Int: HTTPTransportTask]()
+    private var operations = [UUID: AWSAPIOperation]()
+    private var tasks = [Int: URLSessionDataTaskBehavior]()
     private var operationIdsByTaskId = [Int: UUID]()
     private var taskIdsByOperationId = [UUID: Int]()
 
-    mutating func addPair(operation: APIOperation, task: HTTPTransportTask) {
+    mutating func addPair(operation: AWSAPIOperation, task: URLSessionDataTaskBehavior) {
         OperationTaskMapper.concurrencyQueue.sync {
             operations[operation.id] = operation
-            tasks[task.taskIdentifier] = task
-            taskIdsByOperationId[operation.id] = task.taskIdentifier
-            operationIdsByTaskId[task.taskIdentifier] = operation.id
+            tasks[task.taskBehaviorIdentifier] = task
+            taskIdsByOperationId[operation.id] = task.taskBehaviorIdentifier
+            operationIdsByTaskId[task.taskBehaviorIdentifier] = operation.id
         }
     }
 
-    mutating func removePair(for operation: APIOperation) {
+    mutating func removePair(for operation: AWSAPIOperation) {
         OperationTaskMapper.concurrencyQueue.sync {
             let taskId = taskIdsByOperationId[operation.id]
             removePair(operationId: operation.id, taskId: taskId)
         }
     }
 
-    mutating func removePair(for task: HTTPTransportTask) {
+    mutating func removePair(for task: URLSessionDataTaskBehavior) {
         OperationTaskMapper.concurrencyQueue.sync {
-            let operationId = operationIdsByTaskId[task.taskIdentifier]
-            removePair(operationId: operationId, taskId: task.taskIdentifier)
+            let operationId = operationIdsByTaskId[task.taskBehaviorIdentifier]
+            removePair(operationId: operationId, taskId: task.taskBehaviorIdentifier)
         }
     }
 
-    func operation(for task: HTTPTransportTask) -> APIOperation? {
+    func operation(for task: URLSessionDataTaskBehavior) -> AWSAPIOperation? {
         return OperationTaskMapper.concurrencyQueue.sync {
-            guard let operationId = operationIdsByTaskId[task.taskIdentifier] else {
+            guard let operationId = operationIdsByTaskId[task.taskBehaviorIdentifier] else {
                 return nil
             }
 
@@ -50,7 +50,7 @@ struct OperationTaskMapper {
         }
     }
 
-    func task(for operation: APIOperation) -> HTTPTransportTask? {
+    func task(for operation: AWSAPIOperation) -> URLSessionDataTaskBehavior? {
         return OperationTaskMapper.concurrencyQueue.sync {
             guard let taskId = taskIdsByOperationId[operation.id] else {
                 return nil

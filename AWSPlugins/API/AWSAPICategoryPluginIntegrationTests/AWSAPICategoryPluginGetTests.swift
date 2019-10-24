@@ -15,7 +15,7 @@ class AWSAPICategoryPluginGetTests: XCTestCase {
     static let networkTimeout = TimeInterval(180)
 
     override static func setUp() {
-//        initializeMobileClient()
+        //        initializeMobileClient()
     }
 
     override func setUp() {
@@ -25,10 +25,10 @@ class AWSAPICategoryPluginGetTests: XCTestCase {
 
         let apiConfig = APICategoryConfiguration(plugins: [
             "AWSAPICategoryPlugin": [
-              "Prod": [
-                "Endpoint": "https://rqdxvfh3ue.execute-api.us-east-1.amazonaws.com/Prod",
-                "Region": "us-east-1"
-              ]
+                "Prod": [
+                    "Endpoint": "https://rqdxvfh3ue.execute-api.us-east-1.amazonaws.com/Prod",
+                    "Region": "us-east-1"
+                ]
             ]
         ])
 
@@ -50,10 +50,14 @@ class AWSAPICategoryPluginGetTests: XCTestCase {
         _ = Amplify.API.get(apiName: "Prod", path: "/simplesuccess") { event in
             switch event {
             case .completed(let data):
-                if let string = String(data: data, encoding: .utf8) {
-                    XCTAssertEqual(string, "TODO: FIX THIS ASSERTION")
+                // The endpoint echoes the request back, so we don't need to assert the whole thing
+                if let jsonValue = try? JSONDecoder().decode(JSONValue.self, from: data),
+                    case .object(let response) = jsonValue,
+                    case .object(let context) = response["context"],
+                    case .string(let resourcePath) = context["resource-path"] {
+                    XCTAssertEqual(resourcePath, "/simplesuccess")
                 } else {
-                    XCTFail("Could not convert data to string: \(data)")
+                    XCTFail("Could not access response object's [context][resource-path]: \(data)")
                 }
                 getCompleted.fulfill()
             case .failed(let error):

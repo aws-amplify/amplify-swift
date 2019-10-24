@@ -43,7 +43,7 @@ public extension AWSAPICategoryPlugin {
 
         let request = URLRequest(url: url)
 
-        let task = httpTransport.task(for: request)
+        let task = session.dataTaskBehavior(with: request)
 
         mapper.addPair(operation: operation, task: task)
 
@@ -86,11 +86,4 @@ public extension AWSAPICategoryPlugin {
         return url
     }
 
-}
-
-extension AWSAPICategoryPlugin: HTTPTransportTaskDelegate {
-    func task(_ httpTransportTask: HTTPTransportTask, didReceiveData data: Data) {
-        let operation = mapper.operation(for: httpTransportTask)
-        operation?.dispatch(event: .completed(data))
-    }
 }

@@ -15,7 +15,8 @@ final public class AWSAPIOperation: AmplifyOperation<APIGetRequest,
     >,
 APIOperation {
 
-    static let timeout = TimeInterval(120)
+    // Data received by the operation
+    var data = Data()
 
     init(request: APIGetRequest,
          eventName: String,
@@ -27,4 +28,29 @@ APIOperation {
 
     }
 
+    func didReceive(_ data: Data) {
+        self.data.append(data)
+    }
+
+    func didComplete(with error: Error?) {
+        if let error = error {
+            let apiError = APIError.operationError(
+                "The operation for this request failed.",
+                """
+                The operation for the request shown below failed with the following message: \
+                \(error.localizedDescription).
+
+                Inspect this error's `.error` property for more information.
+
+                Request:
+                \(request)
+                """,
+                error)
+
+            dispatch(event: .failed(apiError))
+            return
+        }
+
+        dispatch(event: .completed(data))
+    }
 }

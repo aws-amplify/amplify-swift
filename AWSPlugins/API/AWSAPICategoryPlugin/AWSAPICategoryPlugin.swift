@@ -24,24 +24,24 @@ final public class AWSAPICategoryPlugin: NSObject, APICategoryPlugin {
 
     /// The provider for network connections and operations. This will be populated
     /// during initialization, and is clearable by `reset()`.
-    var httpTransport: HTTPTransport!
+    var session: URLSessionBehavior!
 
-    /// Maps APIOperations to HTTPTransportTasks
+    /// Maps APIOperations to URLSessionTaskBehavior
     var mapper: OperationTaskMapper
 
-    init(httpTransport: HTTPTransport) {
-        self.httpTransport = httpTransport
+    public init(sessionFactory: URLSessionBehaviorFactory) {
         self.mapper = OperationTaskMapper()
         super.init()
-
-        self.httpTransport.delegate = self
+        self.session = sessionFactory.makeSession(withDelegate: self)
     }
 
     override public init() {
         self.mapper = OperationTaskMapper()
         super.init()
 
-        self.httpTransport = URLSessionHTTPTransport(delegate: self)
+        let configuration = URLSessionConfiguration.default
+        let factory = URLSessionFactory(configuration: configuration, delegateQueue: nil)
+        self.session = factory.makeSession(withDelegate: self)
     }
 
 }
