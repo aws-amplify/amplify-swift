@@ -60,6 +60,13 @@ struct OperationTaskMapper {
         }
     }
 
+    func reset() {
+        OperationTaskMapper.concurrencyQueue.sync {
+            operations.values.forEach { $0.cancel() }
+            tasks.values.forEach { $0.cancel() }
+        }
+    }
+
     /// Not inherently thread safe--this must be called from `concurrencyQueue`
     private mutating func removePair(operationId: UUID?, taskId: Int?) {
         OperationTaskMapper.concurrencyQueue.sync {

@@ -48,7 +48,19 @@ class AWSAPICategoryPluginGetTests: XCTestCase {
     func testSimpleGet() {
         let getCompleted = expectation(description: "get request completed")
         _ = Amplify.API.get(apiName: "Prod", path: "/simplesuccess") { event in
-            getCompleted.fulfill()
+            switch event {
+            case .completed(let data):
+                if let string = String(data: data, encoding: .utf8) {
+                    XCTAssertEqual(string, "TODO: FIX THIS ASSERTION")
+                } else {
+                    XCTFail("Could not convert data to string: \(data)")
+                }
+                getCompleted.fulfill()
+            case .failed(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
         }
 
         wait(for: [getCompleted], timeout: AWSAPICategoryPluginGetTests.networkTimeout)

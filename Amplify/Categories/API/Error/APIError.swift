@@ -7,6 +7,7 @@
 
 public enum APIError {
     case unknown(ErrorDescription, RecoverySuggestion)
+    case invalidURL(ErrorDescription, RecoverySuggestion)
 }
 
 extension APIError: AmplifyError {
@@ -14,12 +15,16 @@ extension APIError: AmplifyError {
         switch self {
         case .unknown(let errorDescription, _):
             return errorDescription
+        case .invalidURL(let errorDescription, _):
+            return errorDescription
         }
     }
 
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .unknown(_, let recoverySuggestion):
+            return recoverySuggestion
+        case .invalidURL(_, let recoverySuggestion):
             return recoverySuggestion
         }
     }

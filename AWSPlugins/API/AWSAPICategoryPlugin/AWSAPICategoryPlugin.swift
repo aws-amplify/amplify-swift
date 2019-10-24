@@ -8,7 +8,7 @@
 import Amplify
 import AWSPluginsCore
 
-final public class AWSAPICategoryPlugin: APICategoryPlugin {
+final public class AWSAPICategoryPlugin: NSObject, APICategoryPlugin {
 
     public var key: PluginKey {
         return "AWSAPICategoryPlugin"
@@ -32,15 +32,16 @@ final public class AWSAPICategoryPlugin: APICategoryPlugin {
     init(httpTransport: HTTPTransport) {
         self.httpTransport = httpTransport
         self.mapper = OperationTaskMapper()
+        super.init()
+
+        self.httpTransport.delegate = self
     }
 
-}
+    override public init() {
+        self.mapper = OperationTaskMapper()
+        super.init()
 
-public extension AWSAPICategoryPlugin {
-
-    convenience init() {
-        let defaultHTTPTransport = URLSessionHTTPTransport()
-        self.init(httpTransport: defaultHTTPTransport)
+        self.httpTransport = URLSessionHTTPTransport(delegate: self)
     }
 
 }

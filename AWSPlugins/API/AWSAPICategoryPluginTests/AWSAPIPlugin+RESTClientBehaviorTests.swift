@@ -17,10 +17,14 @@ class AWSAPIPluginRESTClientBehaviorTests: XCTestCase {
         Amplify.reset()
     }
 
+    override func tearDown() {
+        Amplify.reset()
+    }
+
     func testGetReturnsOperation() {
         setUpPlugin()
 
-        let operation = Amplify.API.get(apiName: "foo", path: "/path", listener: nil)
+        let operation = Amplify.API.get(apiName: "Valid", path: "/path", listener: nil)
 
         XCTAssertNotNil(operation)
 
@@ -30,6 +34,43 @@ class AWSAPIPluginRESTClientBehaviorTests: XCTestCase {
         }
 
         XCTAssertNotNil(operation.request)
+    }
+
+    func testGetFailsWithBadAPIName() {
+        let sentData = Data([0x00, 0x01, 0x02, 0x03])
+
+        var mockTask: MockHTTPTransportTask?
+        mockTask = MockHTTPTransportTask(onResume: {
+            guard let mockTask = mockTask else {
+                return
+            }
+            mockTask.mockTransport?.delegate?.task(mockTask, didReceiveData: sentData)
+        })
+
+        guard let task = mockTask else {
+            XCTFail("mockTask unexpectedly nil")
+            return
+        }
+
+        let mockHTTPTransport = MockHTTPTransport(onTaskForRequest: { _ in task })
+        Amplify.reset()
+        setUpPlugin(with: mockHTTPTransport)
+
+        let callbackInvoked = expectation(description: "Callback was invoked")
+        _ = Amplify.API.get(apiName: "INVALID_API_NAME", path: "/path") { event in
+            switch event {
+            case .completed(let data):
+                XCTFail("Unexpected completed event: \(data)")
+            case .failed:
+                // Expected failure
+                break
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+            callbackInvoked.fulfill()
+        }
+
+        wait(for: [callbackInvoked], timeout: 1.0)
     }
 
     /// - Given: A configured plugin
@@ -43,7 +84,7 @@ class AWSAPIPluginRESTClientBehaviorTests: XCTestCase {
             guard let mockTask = mockTask else {
                 return
             }
-            mockTask.delegate?.task(mockTask, didReceiveData: sentData)
+            mockTask.mockTransport?.delegate?.task(mockTask, didReceiveData: sentData)
         })
 
         guard let task = mockTask else {
@@ -55,10 +96,12 @@ class AWSAPIPluginRESTClientBehaviorTests: XCTestCase {
         setUpPlugin(with: mockHTTPTransport)
 
         let callbackInvoked = expectation(description: "Callback was invoked")
-        _ = Amplify.API.get(apiName: "foo", path: "/path") { event in
+        _ = Amplify.API.get(apiName: "Valid", path: "/path") { event in
             switch event {
             case .completed(let data):
                 XCTAssertEqual(data, sentData)
+            case .failed(let error):
+                XCTFail("Unexpected failure: \(error)")
             default:
                 XCTFail("Unexpected event: \(event)")
             }
@@ -81,7 +124,7 @@ class AWSAPIPluginRESTClientBehaviorTests: XCTestCase {
 
         let apiConfig = APICategoryConfiguration(plugins: [
             "AWSAPICategoryPlugin": [
-                "Prod": [
+                "Valid": [
                     "Endpoint": "https://example.apiforintegrationtests.com"
                 ]
             ]
@@ -93,6 +136,7 @@ class AWSAPIPluginRESTClientBehaviorTests: XCTestCase {
             try Amplify.add(plugin: apiPlugin)
             try Amplify.configure(amplifyConfig)
         } catch {
+            continueAfterFailure = false
             XCTFail("Error during setup: \(error)")
         }
     }
@@ -100,30 +144,39 @@ class AWSAPIPluginRESTClientBehaviorTests: XCTestCase {
 }
 
 class MockHTTPTransport: HTTPTransport {
-    var onTaskForRequest: (APIGetRequest) -> HTTPTransportTask
-    var onReset: BasicClosure?
+    weak var delegate: HTTPTransportTaskDelegate?
 
-    init(onTaskForRequest: @escaping (APIGetRequest) -> HTTPTransportTask,
-         onReset: BasicClosure? = nil) {
+    var onTaskForRequest: (URLRequest) -> HTTPTransportTask
+    var onReset: ((BasicClosure?) -> Void)?
+
+    init(onTaskForRequest: @escaping (URLRequest) -> HTTPTransportTask,
+         onReset: ((BasicClosure?) -> Void)? = nil) {
         self.onTaskForRequest = onTaskForRequest
         self.onReset = onReset
     }
 
-    func task(for request: APIGetRequest) -> HTTPTransportTask {
-        return onTaskForRequest(request)
+    func task(for request: URLRequest) -> HTTPTransportTask {
+        let task = onTaskForRequest(request)
+        if let mockTask = task as? MockHTTPTransportTask {
+            mockTask.mockTransport = self
+        }
+        return task
     }
 
-    func reset() {
-        onReset?()
+    func reset(onComplete: BasicClosure?) {
+        onReset?(onComplete)
     }
 }
 
 class MockHTTPTransportTask: HTTPTransportTask {
     static var counter = AtomicValue(initialValue: 0)
 
-    let taskIdentifier: Int
+    /// Mimics a URLSessionTask's Session context, for dispatching events to the
+    /// session delegate. Rather than use the transport as a broker, the tests should
+    /// directly invoke the appropriate methods on the mockTransport's `delegate`
+    weak var mockTransport: MockHTTPTransport?
 
-    weak var delegate: HTTPTransportTaskDelegate?
+    let taskIdentifier: Int
 
     var onCancel: BasicClosure?
     var onPause: BasicClosure?
