@@ -11,6 +11,9 @@ public enum APIError {
     /// An unknown error
     case unknown(ErrorDescription, RecoverySuggestion)
 
+    /// The configuration for a particular API was invalid
+    case invalidConfiguration(ErrorDescription, RecoverySuggestion)
+
     /// The URL in a request was invalid or missing
     case invalidURL(ErrorDescription, RecoverySuggestion)
 
@@ -18,12 +21,16 @@ public enum APIError {
     /// description and recovery suggestion, an `operationError` will also contain the
     /// underlying error propagated by the system.
     case operationError(ErrorDescription, RecoverySuggestion, Error)
+
 }
 
 extension APIError: AmplifyError {
     public var errorDescription: ErrorDescription {
         switch self {
         case .unknown(let errorDescription, _):
+            return errorDescription
+
+        case .invalidConfiguration(let errorDescription, _):
             return errorDescription
 
         case .invalidURL(let errorDescription, _):
@@ -37,6 +44,9 @@ extension APIError: AmplifyError {
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .unknown(_, let recoverySuggestion):
+            return recoverySuggestion
+
+        case .invalidConfiguration(_, let recoverySuggestion):
             return recoverySuggestion
 
         case .invalidURL(_, let recoverySuggestion):

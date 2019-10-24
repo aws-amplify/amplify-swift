@@ -46,7 +46,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         return operation
     }
 
-    func addInterceptor() {
+    func add(interceptor: URLRequestInterceptor, for apiName: String) {
         notify("addInterceptor")
     }
 }

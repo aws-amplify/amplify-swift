@@ -23,11 +23,19 @@ class AWSAPICategoryPluginGetTests: XCTestCase {
 
         let plugin = AWSAPICategoryPlugin()
 
+        // TODO: Move this to a test credentials file before final merge
         let apiConfig = APICategoryConfiguration(plugins: [
             "AWSAPICategoryPlugin": [
-                "Prod": [
+                "none": [
                     "Endpoint": "https://rqdxvfh3ue.execute-api.us-east-1.amazonaws.com/Prod",
-                    "Region": "us-east-1"
+                    "Region": "us-east-1",
+                    "AuthorizationType": "NONE"
+                ],
+                "apiKey": [
+                    "Endpoint": "https://rqdxvfh3ue.execute-api.us-east-1.amazonaws.com/Prod",
+                    "Region": "us-east-1",
+                    "AuthorizationType": "API_KEY",
+                    "ApiKey": "KjbPeqbh9F7hc2n2UVkpfD8WKF1kkYX3ydrkyHq6"
                 ]
             ]
         ])
@@ -47,7 +55,7 @@ class AWSAPICategoryPluginGetTests: XCTestCase {
 
     func testSimpleGet() {
         let getCompleted = expectation(description: "get request completed")
-        _ = Amplify.API.get(apiName: "Prod", path: "/simplesuccess") { event in
+        _ = Amplify.API.get(apiName: "none", path: "/simplesuccess") { event in
             switch event {
             case .completed(let data):
                 // The endpoint echoes the request back, so we don't need to assert the whole thing
@@ -56,6 +64,31 @@ class AWSAPICategoryPluginGetTests: XCTestCase {
                     case .object(let context) = response["context"],
                     case .string(let resourcePath) = context["resource-path"] {
                     XCTAssertEqual(resourcePath, "/simplesuccess")
+                } else {
+                    XCTFail("Could not access response object's [context][resource-path]: \(data)")
+                }
+                getCompleted.fulfill()
+            case .failed(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+
+        wait(for: [getCompleted], timeout: AWSAPICategoryPluginGetTests.networkTimeout)
+    }
+
+    func testAPIKeyGet() {
+        let getCompleted = expectation(description: "get request completed")
+        _ = Amplify.API.get(apiName: "apiKey", path: "/simplesuccessapikey") { event in
+            switch event {
+            case .completed(let data):
+                // The endpoint echoes the request back, so we don't need to assert the whole thing
+                if let jsonValue = try? JSONDecoder().decode(JSONValue.self, from: data),
+                    case .object(let response) = jsonValue,
+                    case .object(let context) = response["context"],
+                    case .string(let resourcePath) = context["resource-path"] {
+                    XCTAssertEqual(resourcePath, "/simplesuccessapikey")
                 } else {
                     XCTFail("Could not access response object's [context][resource-path]: \(data)")
                 }

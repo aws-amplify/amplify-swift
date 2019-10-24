@@ -24,7 +24,9 @@ class AWSAPICategoryPluginConfigurationTests: XCTestCase {
         let apiPlugin = AWSAPICategoryPlugin()
         let apiPluginConfig: JSONValue = [
             "Test": [
-                "Endpoint": "http://www.example.com"
+                "Endpoint": "http://www.example.com",
+                "AuthorizationType": "API_KEY",
+                "ApiKey": "SpecialApiKey33"
             ]
         ]
 

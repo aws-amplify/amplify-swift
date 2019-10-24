@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 /// A URLRequestInterceptor accepts a request and returns a request. It is invoked
 /// during the "prepare" phase of an API operation.
 ///
@@ -15,12 +17,10 @@
 ///
 /// URLRequestInterceptors are invoked in the order in which they are added to the
 /// plugin.
-public protocol APICategoryInterceptorBehavior {
+public protocol URLRequestInterceptor {
 
-    /// Adds a URLRequestInterceptor to the chain of interceptors invoked during the
-    /// "prepare" phase of an API operation. The Operation's URLRequest will be passed
-    /// to each interceptor in turn, and each interceptor will have the option to
-    /// return a modified request to the next member of the chain.
-    /// - Parameter inteceptor: The `URLRequestInterceptor`
-    func add(interceptor: URLRequestInterceptor, for apiName: String)
+    /// Inspect and optionally modify the request, returning either the original
+    /// unmodified request or a modified copy.
+    /// - Parameter request: The URLRequest
+    func intercept(_ request: URLRequest) -> URLRequest
 }

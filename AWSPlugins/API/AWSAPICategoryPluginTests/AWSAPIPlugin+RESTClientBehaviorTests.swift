@@ -144,7 +144,9 @@ class AWSAPIPluginRESTClientBehaviorTests: XCTestCase {
         let apiConfig = APICategoryConfiguration(plugins: [
             "AWSAPICategoryPlugin": [
                 "Valid": [
-                    "Endpoint": "https://example.apiforintegrationtests.com"
+                    "Endpoint": "http://www.example.com",
+                    "AuthorizationType": "API_KEY",
+                    "ApiKey": "SpecialApiKey33"
                 ]
             ]
         ])

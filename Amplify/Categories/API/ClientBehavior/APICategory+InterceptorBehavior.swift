@@ -7,8 +7,8 @@
 
 extension APICategory: APICategoryInterceptorBehavior {
 
-    public func addInterceptor() {
-        plugin.addInterceptor()
+    public func add(interceptor: URLRequestInterceptor, for apiName: String) {
+        plugin.add(interceptor: interceptor, for: apiName)
     }
 
 }

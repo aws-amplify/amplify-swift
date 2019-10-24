@@ -13,6 +13,7 @@ public extension AWSAPICategoryPlugin {
              path: String,
              listener: APIOperation.EventListener?) -> APIOperation {
 
+
         let apiGetRequest = APIGetRequest(apiName: apiName,
                                           path: path,
                                           options: APIGetRequest.Options())
@@ -21,27 +22,21 @@ public extension AWSAPICategoryPlugin {
                                         eventName: HubPayload.EventName.API.get,
                                         listener: listener)
 
-        let url: URL
+        let request: URLRequest
         do {
-            url = try urlForAPIName(apiName, path: path)
+            request = try makeRequestForAPIName(apiName, path: path)
+        } catch let error as APIError {
+            operation.dispatch(event: APIOperation.Event.failed(error))
+            return operation
+        } catch let error as AmplifyError {
+            let apiError = APIError.unknown(error.errorDescription, error.recoverySuggestion)
+            operation.dispatch(event: APIOperation.Event.failed(apiError))
+            return operation
         } catch {
-            if let apiError = error as? APIError {
-                operation.dispatch(event: APIOperation.Event.failed(apiError))
-            } else {
-                // Should never happen, if we properly return APIErrors from `urlForAPIName`
-                let apiError = APIError.unknown(
-                    "Unable to get a URL for \(apiName)",
-                    """
-                    Review your API plugin configuration and ensure \(apiName) has a valid URL for the 'Endpoint' \
-                    field.
-                    """
-                )
-                operation.dispatch(event: APIOperation.Event.failed(apiError))
-            }
+            let apiError = APIError.unknown(error.localizedDescription, "")
+            operation.dispatch(event: APIOperation.Event.failed(apiError))
             return operation
         }
-
-        let request = URLRequest(url: url)
 
         let task = session.dataTaskBehavior(with: request)
 
@@ -50,6 +45,26 @@ public extension AWSAPICategoryPlugin {
         task.resume()
 
         return operation
+    }
+
+    private func makeRequestForAPIName(_ apiName: String, path: String) throws -> URLRequest {
+        guard let endpointConfig = pluginConfig.endpoints[apiName] else {
+            let error = APIError.invalidConfiguration(
+                "Unable to get an endpoint configuration for \(apiName)",
+                """
+                Review your API plugin configuration and ensure \(apiName) has a valid configuration.
+                """
+            )
+            throw error
+        }
+
+        let url = try urlForAPIName(apiName, path: path)
+
+        let baseRequest = URLRequest(url: url)
+
+        let finalRequest = endpointConfig.interceptors.reduce(baseRequest) { $1.intercept($0) }
+
+        return finalRequest
     }
 
     private func urlForAPIName(_ apiName: String, path: String) throws -> URL {
