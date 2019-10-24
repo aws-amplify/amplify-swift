@@ -18,7 +18,7 @@ final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
 
     }
 
-    init() {
+    public init() {
 
     }
 
