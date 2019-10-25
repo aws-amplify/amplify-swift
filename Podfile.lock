@@ -16,7 +16,7 @@ PODS:
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
-  - SwiftFormat/CLI (0.40.12)
+  - SwiftFormat/CLI (0.40.13)
   - SwiftLint (0.35.0)
 
 DEPENDENCIES:
@@ -66,9 +66,9 @@ SPEC CHECKSUMS:
   AWSS3: 738419b8039230423e4734556983a463466a9d7a
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
-  SwiftFormat: 73667bbb741386b0febf0bd1a1b8c502aa9d1c98
+  SwiftFormat: d548b3585a6dbe64390177b386e95375b8c300b6
   SwiftLint: 5553187048b900c91aa03552807681bb6b027846
 
-PODFILE CHECKSUM: d5340f69d95747c145fa624204b6d8ddba54225e
+PODFILE CHECKSUM: 69013d36d1b2a108ccea47f132326ab4230a7a40
 
 COCOAPODS: 1.7.5

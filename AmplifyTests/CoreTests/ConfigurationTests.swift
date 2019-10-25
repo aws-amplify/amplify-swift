@@ -21,7 +21,7 @@ class ConfigurationTests: XCTestCase {
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
         let exception: BadInstructionException? = catchBadInstruction {
-            Amplify.API.get()
+            _ = Amplify.API.get(apiName: "foo", path: "/foo") { _ in }
         }
         XCTAssertNotNil(exception)
     }
@@ -32,7 +32,7 @@ class ConfigurationTests: XCTestCase {
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
         let exception: BadInstructionException? = catchBadInstruction {
-            Amplify.API.get()
+            _ = Amplify.API.get(apiName: "foo", path: "/foo") { _ in }
         }
         XCTAssertNotNil(exception)
     }
