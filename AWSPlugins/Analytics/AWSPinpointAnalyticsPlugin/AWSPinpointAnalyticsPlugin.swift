@@ -7,6 +7,7 @@
 
 import Foundation
 import Amplify
+import AWSPluginsCore
 import AWSPinpoint
 
 /// The AWSPinpointAnalyticsPlugin implements the Analytics APIs for Pinpoint

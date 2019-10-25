@@ -7,6 +7,7 @@
 
 import Foundation
 import Amplify
+import AWSPluginsCore
 import AWSPinpoint
 
 extension AWSPinpointAnalyticsPlugin {

@@ -94,7 +94,6 @@
 		21687A0723636A59004A056E /* AWSPinpointAnalyticsPluginConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A0623636A59004A056E /* AWSPinpointAnalyticsPluginConfiguration.swift */; };
 		21687A0B23636A63004A056E /* AWSPinpointBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A0923636A63004A056E /* AWSPinpointBehavior.swift */; };
 		21687A0C23636A63004A056E /* AWSPinpointAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A0A23636A63004A056E /* AWSPinpointAdapter.swift */; };
-		21687A1023636A71004A056E /* AWSAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A0F23636A71004A056E /* AWSAuthService.swift */; };
 		21687A1523636A89004A056E /* PluginConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A1323636A89004A056E /* PluginConstants.swift */; };
 		21687A1623636A89004A056E /* PluginErrorConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A1423636A89004A056E /* PluginErrorConstants.swift */; };
 		21687A1B23636A90004A056E /* AppSessionTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A1823636A8F004A056E /* AppSessionTracker.swift */; };
@@ -760,7 +759,6 @@
 		21687A0623636A59004A056E /* AWSPinpointAnalyticsPluginConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginConfiguration.swift; sourceTree = "<group>"; };
 		21687A0923636A63004A056E /* AWSPinpointBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPinpointBehavior.swift; sourceTree = "<group>"; };
 		21687A0A23636A63004A056E /* AWSPinpointAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPinpointAdapter.swift; sourceTree = "<group>"; };
-		21687A0F23636A71004A056E /* AWSAuthService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthService.swift; sourceTree = "<group>"; };
 		21687A1323636A89004A056E /* PluginConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginConstants.swift; sourceTree = "<group>"; };
 		21687A1423636A89004A056E /* PluginErrorConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginErrorConstants.swift; sourceTree = "<group>"; };
 		21687A1823636A8F004A056E /* AppSessionTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSessionTracker.swift; sourceTree = "<group>"; };
@@ -1514,7 +1512,6 @@
 				21687A0523636A59004A056E /* Configuration */,
 				21687A0823636A63004A056E /* Dependency */,
 				2109222C23594A9000CEC295 /* Resources */,
-				21687A0D23636A71004A056E /* Service */,
 				21687A1123636A89004A056E /* Support */,
 				21687A1723636A8F004A056E /* Tracker */,
 			);
@@ -1550,22 +1547,6 @@
 				21687A0A23636A63004A056E /* AWSPinpointAdapter.swift */,
 			);
 			path = Dependency;
-			sourceTree = "<group>";
-		};
-		21687A0D23636A71004A056E /* Service */ = {
-			isa = PBXGroup;
-			children = (
-				21687A0E23636A71004A056E /* Auth */,
-			);
-			path = Service;
-			sourceTree = "<group>";
-		};
-		21687A0E23636A71004A056E /* Auth */ = {
-			isa = PBXGroup;
-			children = (
-				21687A0F23636A71004A056E /* AWSAuthService.swift */,
-			);
-			path = Auth;
 			sourceTree = "<group>";
 		};
 		21687A1123636A89004A056E /* Support */ = {
@@ -4547,7 +4528,6 @@
 				21687A0723636A59004A056E /* AWSPinpointAnalyticsPluginConfiguration.swift in Sources */,
 				21687A0223636A4E004A056E /* AWSPinpointAnalyticsPlugin+ClientBehavior.swift in Sources */,
 				21687A1523636A89004A056E /* PluginConstants.swift in Sources */,
-				21687A1023636A71004A056E /* AWSAuthService.swift in Sources */,
 				21687A0C23636A63004A056E /* AWSPinpointAdapter.swift in Sources */,
 				21687A0323636A4E004A056E /* AWSPinpointAnalyticsPlugin+Reset.swift in Sources */,
 			);
@@ -5399,6 +5379,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSPluginsCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -5425,6 +5406,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSPluginsCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;

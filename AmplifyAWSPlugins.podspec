@@ -23,26 +23,22 @@ Pod::Spec.new do |s|
   s.requires_arc = true 
 
   AWS_SDK_VERSION = "2.11.1"
-
-  subspec "AWSPluginsCore" do |ss|
-    ss.source_files = 'AWSPlugins/Core/AWSPluginsCore/**/*.swift'
-    ss.dependency 'AWSMobileClient', AWS_SDK_VERSION
-  end
-
-  subspec "AWSAPICategoryPlugin" do |ss|
+  AMPLIFY_VERSION = "0.0.1"
+  
+  s.subspec "AWSAPICategoryPlugin" do |ss|
     ss.source_files = 'AWSPlugins/API/AWSAPICategoryPlugin/**/*.swift'
-    ss.dependency 'AmplifyAWSPlugins/Core'
+    ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
   end
 
-  subspec "AWSPinpointAnalyticsPlugin" do |ss|
+  s.subspec "AWSPinpointAnalyticsPlugin" do |ss|
     ss.source_files = 'AWSPlugins/Analytics/AWSPinpointAnalyticsPlugin/**/*.swift'
-    ss.dependency 'AmplifyAWSPlugins/Core'
+    ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'AWSPinpoint', AWS_SDK_VERSION
   end
 
-  subspec "AWSS3StoragePlugin" do |ss|
+  s.subspec "AWSS3StoragePlugin" do |ss|
     ss.source_files = 'AWSPlugins/Storage/AWSS3StoragePlugin/**/*.swift'
-    ss.dependency 'AmplifyAWSPlugins/Core'
+    ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'AWSS3', AWS_SDK_VERSION
   end
 
