@@ -1,0 +1,70 @@
+//
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import XCTest
+@testable import Amplify
+import AWSPinpointAnalyticsPlugin
+import AWSMobileClient
+
+class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
+
+    let appId: JSONValue = "56e6f06fd4f244c6b202bc327bd3b4e6"
+    let region: JSONValue = "us-east-1"
+    let targetingRegion: JSONValue = "us-east-1"
+
+    override func setUp() {
+        let mobileClientIsInitialized = expectation(description: "AWSMobileClient is initialized")
+        AWSMobileClient.default().initialize { (userState, error) in
+            guard error == nil else {
+                XCTFail("Error initializing AWSMobileClient. Error: \(error!.localizedDescription)")
+                return
+            }
+            guard let userState = userState else {
+                XCTFail("userState is unexpectedly empty initializing AWSMobileClient")
+                return
+            }
+            if userState != UserState.signedOut {
+                AWSMobileClient.default().signOut()
+            }
+            mobileClientIsInitialized.fulfill()
+        }
+        wait(for: [mobileClientIsInitialized], timeout: 100)
+        print("AWSMobileClient Initialized")
+
+        let analyticsConfig = AnalyticsCategoryConfiguration(
+            plugins: [
+                "AWSPinpointAnalyticsPlugin": [
+                    "PinpointAnalytics": [
+                        "AppId": appId,
+                        "Region": region
+                    ],
+                    "PinpointTargeting": [
+                        "Region": targetingRegion
+                    ],
+                    "AutoFlushEventsInterval": 10,
+                    "TrackAppSessions": true,
+                    "AutoSessionTrackingInterval": 2
+            ]
+        ])
+
+        let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig)
+
+        do {
+            try Amplify.add(plugin: AWSPinpointAnalyticsPlugin())
+            try Amplify.configure(amplifyConfig)
+        } catch {
+            XCTFail("Failed to initialize and configure Amplify")
+        }
+
+        print("Amplify initialized")
+    }
+
+    override func tearDown() {
+        print("Amplify reset")
+        Amplify.reset()
+    }
+}
