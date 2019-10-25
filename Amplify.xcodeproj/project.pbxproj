@@ -92,8 +92,6 @@
 		21687A0323636A4E004A056E /* AWSPinpointAnalyticsPlugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A0023636A4D004A056E /* AWSPinpointAnalyticsPlugin+Reset.swift */; };
 		21687A0423636A4E004A056E /* AWSPinpointAnalyticsPlugin+Configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A0123636A4D004A056E /* AWSPinpointAnalyticsPlugin+Configure.swift */; };
 		21687A0723636A59004A056E /* AWSPinpointAnalyticsPluginConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A0623636A59004A056E /* AWSPinpointAnalyticsPluginConfiguration.swift */; };
-		21687A0B23636A63004A056E /* AWSPinpointBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A0923636A63004A056E /* AWSPinpointBehavior.swift */; };
-		21687A0C23636A63004A056E /* AWSPinpointAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A0A23636A63004A056E /* AWSPinpointAdapter.swift */; };
 		21687A1523636A89004A056E /* PluginConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A1323636A89004A056E /* PluginConstants.swift */; };
 		21687A1623636A89004A056E /* PluginErrorConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A1423636A89004A056E /* PluginErrorConstants.swift */; };
 		21687A1B23636A90004A056E /* AppSessionTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A1823636A8F004A056E /* AppSessionTracker.swift */; };
@@ -773,8 +771,6 @@
 		21687A0023636A4D004A056E /* AWSPinpointAnalyticsPlugin+Reset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSPinpointAnalyticsPlugin+Reset.swift"; sourceTree = "<group>"; };
 		21687A0123636A4D004A056E /* AWSPinpointAnalyticsPlugin+Configure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSPinpointAnalyticsPlugin+Configure.swift"; sourceTree = "<group>"; };
 		21687A0623636A59004A056E /* AWSPinpointAnalyticsPluginConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginConfiguration.swift; sourceTree = "<group>"; };
-		21687A0923636A63004A056E /* AWSPinpointBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPinpointBehavior.swift; sourceTree = "<group>"; };
-		21687A0A23636A63004A056E /* AWSPinpointAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPinpointAdapter.swift; sourceTree = "<group>"; };
 		21687A1323636A89004A056E /* PluginConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginConstants.swift; sourceTree = "<group>"; };
 		21687A1423636A89004A056E /* PluginErrorConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginErrorConstants.swift; sourceTree = "<group>"; };
 		21687A1823636A8F004A056E /* AppSessionTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSessionTracker.swift; sourceTree = "<group>"; };
@@ -4607,7 +4603,6 @@
 				21687A542363725E004A056E /* AWSPinpointAnalyticsPlugin+AWSPinpointEvent.swift in Sources */,
 				21687A0223636A4E004A056E /* AWSPinpointAnalyticsPlugin+ClientBehavior.swift in Sources */,
 				21687A1523636A89004A056E /* PluginConstants.swift in Sources */,
-				21687A0C23636A63004A056E /* AWSPinpointAdapter.swift in Sources */,
 				21687A5923637272004A056E /* AnalyticsErrorHelper.swift in Sources */,
 				21687A0323636A4E004A056E /* AWSPinpointAnalyticsPlugin+Reset.swift in Sources */,
 			);
