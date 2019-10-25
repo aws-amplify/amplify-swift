@@ -13,7 +13,7 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
     public func convert(textToTranslate: String,
                         language: LanguageType,
                         targetLanguage: LanguageType,
-                        options: Any?) -> PredictionsConvertOperation {
+                        options: Any?) -> PredictionsTranslateTextOperation {
         plugin.convert(textToTranslate: textToTranslate,
                        language: language,
                        targetLanguage: targetLanguage,

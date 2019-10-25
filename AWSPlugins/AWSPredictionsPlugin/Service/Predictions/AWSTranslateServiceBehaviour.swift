@@ -11,14 +11,15 @@ import AWSTranslate
 
 protocol AWSTranslateServiceBehaviour {
 
-    typealias TranslateServiceTranslateTextEventHandler = (TranslateServiceTranslateTextEvent) -> Void
-    
-    typealias TranslateServiceTranslateTextEvent = PredictionsEvent<String, PredictionsError>
+    typealias TranslateTextServiceEventHandler = (TranslateTextServiceEvent) -> Void
+    typealias TranslateTextServiceEvent = PredictionsEvent<TranslateTextResult, PredictionsError>
 
     func reset()
 
     func getEscapeHatch() -> AWSTranslate
 
     func translateText(text: String,
-                       onEvent: @escaping TranslateServiceTranslateTextEventHandler)
+                       language: LanguageType,
+                       targetLanguage: LanguageType,
+                       onEvent: @escaping TranslateTextServiceEventHandler)
 }

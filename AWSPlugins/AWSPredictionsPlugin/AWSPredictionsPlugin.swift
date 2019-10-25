@@ -10,6 +10,7 @@ import Foundation
 
 final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
 
+
     /// A queue that regulates the execution of operations.
     var queue: OperationQueue!
 

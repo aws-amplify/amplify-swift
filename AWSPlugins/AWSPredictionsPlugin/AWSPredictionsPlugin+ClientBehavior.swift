@@ -14,9 +14,15 @@ extension AWSPredictionsPlugin {
     public func convert(textToTranslate: String,
                         language: LanguageType,
                         targetLanguage: LanguageType,
-                        options: Any?) -> PredictionsConvertOperation {
+                        listener: PredictionsTranslateTextOperation.EventListener? = nil,
+                        options: PredictionsTranslateTextRequest.Options) -> PredictionsTranslateTextOperation {
 
-            fatalError("")
+        let options = options ?? PredictionsTranslateTextRequest.Options()
+        let request = PredictionsTranslateTextRequest(textToTranslate: textToTranslate, targetLanguage: targetLanguage, language: language, options: options)
+        let convertOperation = AWSTranslateOperation(request, translateService: translateService, authService: authService, listener: listener)
+        queue.addOperation(convertOperation)
+        
+        return convertOperation
     }
 
     public func identify(type: IdentifyType,

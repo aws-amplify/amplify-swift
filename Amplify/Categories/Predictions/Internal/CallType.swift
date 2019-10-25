@@ -7,4 +7,8 @@
 
 import Foundation
 
-public protocol PredictionsIdentifyOperation: AmplifyOperation<PredictionsIdentifyLabelsRequest, Void, Void, PredictionsError> { }
+public enum CallType {
+    case offline
+    case cloud
+    case auto
+}

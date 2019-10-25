@@ -7,18 +7,24 @@
 
 import Foundation
 import Amplify
+import AWSMobileClient
 
-public class AWSTranslateOperation: AmplifyOperation<PredictionsConvertRequest, Void, Void, PredictionsError>,
-PredictionsConvertOperation {
+public class AWSTranslateOperation: AmplifyOperation<PredictionsTranslateTextRequest, Void, TranslateTextResult, PredictionsError>,
+PredictionsTranslateTextOperation {
 
-    let translateService: AWSTranslateService
+    let translateService: AWSTranslateServiceBehaviour
+    let authService: AWSAuthServiceBehavior
 
-    init(_ request: PredictionsConvertRequest,
-         translateService: AWSTranslateService) {
+    init(_ request: PredictionsTranslateTextRequest,
+         translateService: AWSTranslateServiceBehaviour,
+         authService: AWSAuthService,
+         listener: @escaping EventListener) {
         self.translateService = translateService
+        self.authService = authService
         super.init(categoryType: .predictions,
-                   eventName: HubPayload.EventName.Storage.downloadFile,
-                   request: request)
+                   eventName: HubPayload.EventName.Predictions.translate,
+                   request: request,
+                   listener: listener)
     }
 
     override public func cancel() {
@@ -30,25 +36,41 @@ PredictionsConvertOperation {
             finish()
             return
         }
+        
+        if let error = request.validate() {
+                 dispatch(error)
+                 finish()
+                 return
+        }
 
-
-        translateService.translateText(text: request.textToTranslate) { [weak self] event in
+        let identityIdResult = authService.getIdentityId()
+        translateService.translateText(text: request.textToTranslate, language: request.language, targetLanguage: request.targetLanguage) { [weak self] event in
             self?.onServiceEvent(event: event)
 
         }
     }
 
-    private func onServiceEvent(event: PredictionsEvent<String, PredictionsError>) {
+    private func onServiceEvent(event: PredictionsEvent<TranslateTextResult, PredictionsError>) {
         switch event {
         case .completed(let result):
-
+            dispatch(result)
             finish()
         case .failed(let error):
-
+            dispatch(error)
             finish()
         default:
             break
         }
+    }
+    private func dispatch(_ result: TranslateTextResult) {
+        let asyncEvent = AsyncEvent<Void, TranslateTextResult, PredictionsError>.completed(result)
+        dispatch(event: asyncEvent)
+        
+    }
+    
+    private func dispatch(_ error: PredictionsError) {
+        let asyncEvent = AsyncEvent<Void, TranslateTextResult, PredictionsError>.failed(error)
+        dispatch(event: asyncEvent)
     }
 
 }

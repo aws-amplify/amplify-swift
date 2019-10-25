@@ -11,6 +11,7 @@ import Amplify
 
 class AWSTranslateService: AWSTranslateServiceBehaviour {
 
+
     var identifier: String!
     var translateBehavior: AWSTranslateBehavior!
 
@@ -49,8 +50,7 @@ class AWSTranslateService: AWSTranslateServiceBehaviour {
         return translateBehavior.getTranslate()
     }
 
-    func translateText(text: String,
-                       onEvent: @escaping TranslateServiceTranslateTextEventHandler) {
-
+    func translateText(text: String, language: LanguageType, targetLanguage: LanguageType, onEvent: @escaping AWSTranslateService.TranslateTextServiceEventHandler) {
+        
     }
 }

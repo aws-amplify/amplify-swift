@@ -7,4 +7,7 @@
 
 import Foundation
 
-public protocol PredictionsIdentifyOperation: AmplifyOperation<PredictionsIdentifyLabelsRequest, Void, Void, PredictionsError> { }
+
+public extension HubPayload.EventName {
+    struct Predictions { }
+}

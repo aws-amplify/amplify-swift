@@ -7,4 +7,7 @@
 
 import Foundation
 
-public protocol PredictionsConvertOperation: AmplifyOperation<PredictionsConvertRequest, Void, Void, PredictionsError> { }
+public struct TranslateTextResult: ConvertResult {
+ let text: String
+ let targetLanguage: LanguageType
+}

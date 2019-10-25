@@ -41,18 +41,12 @@ struct PluginErrorConstants {
 
     static let invalidRegion: PluginErrorString = (
         "The region is invalid",
-        "Make sure the region is of the AWS regions, like 'us-east-1', etc...")
+        "Make sure the region is one of the AWS regions, like 'us-east-1', etc...")
 
-    static let invalidDefaultAccessLevel: PluginErrorString = (
-        "The default access level specified is invalid",
-        "Specify an override with one of the valid access level values such as 'public', 'protected', or 'private'.")
 
     static let serviceConfigurationInitializationError: PluginErrorString = (
         "Could not initialize service configuration",
         "This should not happen")
 
-    static let transferUtilityInitializationError: PluginErrorString = (
-        "Could not initialize transfer utility",
-        "This should not happen")
 
 }
