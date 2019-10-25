@@ -43,17 +43,17 @@ extension AnalyticsUserProfile {
     /// Location specific data
     public struct Location {
 
-        var latitude: Double?
+        public var latitude: Double?
 
-        var longitude: Double?
+        public var longitude: Double?
 
-        var postalCode: String?
+        public var postalCode: String?
 
-        var city: String?
+        public var city: String?
 
-        var region: String?
+        public var region: String?
 
-        var country: String?
+        public var country: String?
 
         public init(latitude: Double? = nil,
                     longitude: Double? = nil,
