@@ -17,8 +17,8 @@ PredictionsTranslateTextOperation {
 
     init(_ request: PredictionsTranslateTextRequest,
          translateService: AWSTranslateServiceBehaviour,
-         authService: AWSAuthService,
-         listener: @escaping EventListener) {
+         authService: AWSAuthServiceBehavior,
+         listener: EventListener?) {
         self.translateService = translateService
         self.authService = authService
         super.init(categoryType: .predictions,

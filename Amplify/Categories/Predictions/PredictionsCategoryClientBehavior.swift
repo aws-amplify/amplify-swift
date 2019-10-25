@@ -15,7 +15,8 @@ public protocol PredictionsCategoryClientBehavior {
     func convert(textToTranslate: String,
                  language: LanguageType,
                  targetLanguage: LanguageType,
-                 options: Any?) -> PredictionsTranslateTextOperation
+                 listener: PredictionsTranslateTextOperation.EventListener?,
+                 options: PredictionsTranslateTextRequest.Options) -> PredictionsTranslateTextOperation
 
     func identify(type: IdentifyType,
                   image: CGImage,
