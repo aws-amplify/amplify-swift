@@ -13,6 +13,8 @@ import XCTest
 
 class SQLiteStorageEngineAdapterTests: XCTestCase {
 
+    private let models: [Model.Type] = [Post.self, Comment.self]
+
     var storageAdapter: SQLiteStorageEngineAdapter!
 
     override func setUp() {
@@ -22,6 +24,9 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
         XCTAssertNotNil(connection)
         storageAdapter = SQLiteStorageEngineAdapter(connection: connection!)
         XCTAssertNotNil(storageAdapter)
+
+        // Register the models for fast lookup
+        models.forEach(registerModel(type:))
     }
 
     // MARK: - Create Statements
@@ -32,11 +37,11 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
         let expectedStatement = """
         create table if not exists Post (
           "id" text primary key not null,
-          "title" text not null,
           "content" text not null,
           "createdAt" text not null,
-          "updatedAt" text,
-          "draft" integer not null
+          "draft" integer not null,
+          "title" text not null,
+          "updatedAt" text
         );
         """
         XCTAssertEqual(statement, expectedStatement)
@@ -59,8 +64,18 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
 
     // MARK: - Insert Statements
 
-    /// it should create an `insert into` statement from a model with foreign key
+    /// it should create an `insert into` statement from a model
     func testCreateInsertStatementFromModel() {
+        let statement = storageAdapter.getInsertStatement(for: Post.self)
+        let expectedStatement = """
+        insert into Post ("id", "content", "createdAt", "draft", "title", "updatedAt")
+        values (?, ?, ?, ?, ?, ?)
+        """
+        XCTAssertEqual(statement, expectedStatement)
+    }
+
+    /// it should create an `insert into` statement from a model with foreign key
+    func testCreateInsertStatementFromModelWithForeignKey() {
         let statement = storageAdapter.getInsertStatement(for: Comment.self)
         let expectedStatement = """
         insert into Comment ("id", "content", "createdAt", "postId")
@@ -78,9 +93,9 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
-          "root"."postId" as "postId", "post"."id" as "post.id", "post"."title" as "post.title",
-          "post"."content" as "post.content", "post"."createdAt" as "post.createdAt", "post"."updatedAt" as "post.updatedAt",
-          "post"."draft" as "post.draft"
+          "root"."postId" as "postId", "post"."id" as "post.id", "post"."content" as "post.content",
+          "post"."createdAt" as "post.createdAt", "post"."draft" as "post.draft", "post"."title" as "post.title",
+          "post"."updatedAt" as "post.updatedAt"
         from Comment as root
         inner join Post as post
           on "post"."id" = "root"."postId"
@@ -92,12 +107,12 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
     // MARK: - Utilities
 
     func testModelDependencySortOrder() {
-        let models: [PersistentModel.Type] = [Comment.self, Post.self]
+        let models: [Model.Type] = [Comment.self, Post.self]
         let sorted = models.sortByDependencyOrder()
 
         XCTAssert(models.count == sorted.count)
-        XCTAssert(models[0].name == sorted[1].name)
-        XCTAssert(models[1].name == sorted[0].name)
+        XCTAssert(models[0].schema.name == sorted[1].schema.name)
+        XCTAssert(models[1].schema.name == sorted[0].schema.name)
     }
 
     // MARK: - Operations
@@ -105,7 +120,7 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
     /// it should create a table, insert a row and select it
     func testInsertPost() {
         do {
-            try storageAdapter.setUp(models: [Post.self])
+            try storageAdapter.setUp(models: models)
         } catch {
             XCTFail(String(describing: error))
             return

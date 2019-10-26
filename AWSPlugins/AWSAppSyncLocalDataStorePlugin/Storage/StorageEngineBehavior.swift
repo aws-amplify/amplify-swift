@@ -10,10 +10,10 @@ import Foundation
 
 public protocol StorageEngineBehavior {
 
-    func setUp(models: [PersistentModel.Type]) throws
+    func setUp(models: [Model.Type]) throws
 
-    func save<M: PersistentModel>(_ model: M, completion: DataStoreCallback<M>)
+    func save<M: Model>(_ model: M, completion: DataStoreCallback<M>)
 
-    func query<M: PersistentModel>(_ modelType: M.Type, completion: DataStoreCallback<[M]>)
+    func query<M: Model>(_ modelType: M.Type, completion: DataStoreCallback<[M]>)
 
 }

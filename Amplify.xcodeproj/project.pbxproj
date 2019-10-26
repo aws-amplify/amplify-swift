@@ -131,36 +131,31 @@
 		9A7FF1D19CF0F11F96312DA4 /* Pods_AmplifyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 176E334A02509BD4CE8866A6 /* Pods_AmplifyTests.framework */; };
 		9F1570B537834ED7F87E6CE2 /* Pods_AWSS3StoragePluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED44BE0096B074979532239 /* Pods_AWSS3StoragePluginTests.framework */; };
 		B92E036E23602776006CEB8D /* Statement+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E036C23602736006CEB8D /* Statement+Model.swift */; };
+		B92E037023604C3C006CEB8D /* ModelSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E036F23604C3C006CEB8D /* ModelSchema.swift */; };
+		B92E037523605652006CEB8D /* Comment+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03712360559D006CEB8D /* Comment+Schema.swift */; };
+		B92E03772360F15A006CEB8D /* ModelSchema+Definition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03762360F15A006CEB8D /* ModelSchema+Definition.swift */; };
+		B92E037B23618564006CEB8D /* ModelRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E037A23618564006CEB8D /* ModelRegistry.swift */; };
+		B92E037F2361A098006CEB8D /* ModelSchema+SQLite.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E037C2361A042006CEB8D /* ModelSchema+SQLite.swift */; };
+		B92E03822362203C006CEB8D /* Post+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E038023621F91006CEB8D /* Post+Schema.swift */; };
+		B92E038423622AE9006CEB8D /* Model+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E038323622AE9006CEB8D /* Model+Schema.swift */; };
+		B92E038D23637684006CEB8D /* Model+SQLite.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E038B236375C2006CEB8D /* Model+SQLite.swift */; };
 		B9DD3F0D23552CA300D62C65 /* DataStoreCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F0C23552CA300D62C65 /* DataStoreCategory.swift */; };
 		B9DD3F0F2355362F00D62C65 /* DataStoreCategoryBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F0E2355362F00D62C65 /* DataStoreCategoryBehavior.swift */; };
 		B9DD3F1223553D0800D62C65 /* DataStoreCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F1123553D0800D62C65 /* DataStoreCategoryPlugin.swift */; };
-		B9DD3F1F23553DD500D62C65 /* Model+Metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F1323553DD400D62C65 /* Model+Metadata.swift */; };
-		B9DD3F2023553DD500D62C65 /* Model+Authorizable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F1423553DD400D62C65 /* Model+Authorizable.swift */; };
 		B9DD3F2123553DD500D62C65 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F1523553DD400D62C65 /* Model.swift */; };
 		B9DD3F2223553DD500D62C65 /* Model+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F1623553DD400D62C65 /* Model+Codable.swift */; };
-		B9DD3F2323553DD500D62C65 /* Connectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F1723553DD400D62C65 /* Connectable.swift */; };
-		B9DD3F2423553DD500D62C65 /* Authorizable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F1823553DD400D62C65 /* Authorizable.swift */; };
-		B9DD3F2523553DD500D62C65 /* ModelProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F1923553DD400D62C65 /* ModelProperty.swift */; };
-		B9DD3F2623553DD500D62C65 /* Searchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F1A23553DD400D62C65 /* Searchable.swift */; };
-		B9DD3F2723553DD500D62C65 /* Versionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F1B23553DD400D62C65 /* Versionable.swift */; };
-		B9DD3F2923553DD500D62C65 /* Model+Indexable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F1D23553DD500D62C65 /* Model+Indexable.swift */; };
-		B9DD3F2A23553DD500D62C65 /* Indexable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F1E23553DD500D62C65 /* Indexable.swift */; };
 		B9DD3F462356B98E00D62C65 /* DataStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F452356B98E00D62C65 /* DataStoreError.swift */; };
-		B9DD3F562359A59000D62C65 /* Model+Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F552359A59000D62C65 /* Model+Collection.swift */; };
 		B9DD3F58235D1C0B00D62C65 /* DataStoreCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F57235D1C0B00D62C65 /* DataStoreCallback.swift */; };
 		B9DD3F67235D759900D62C65 /* AWSAppSyncLocalDataStorePlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9DD3F5E235D759700D62C65 /* AWSAppSyncLocalDataStorePlugin.framework */; };
 		B9DD3F73235D759B00D62C65 /* AWSAppSyncLocalDataStorePlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9DD3F5E235D759700D62C65 /* AWSAppSyncLocalDataStorePlugin.framework */; };
 		B9DD3F74235D759B00D62C65 /* AWSAppSyncLocalDataStorePlugin.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B9DD3F5E235D759700D62C65 /* AWSAppSyncLocalDataStorePlugin.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B9DD3F7C235D794F00D62C65 /* SQLiteStorageEngineAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F352355BC8400D62C65 /* SQLiteStorageEngineAdapterTests.swift */; };
-		B9DD3F7F235D79E500D62C65 /* Model+SQLite.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F432356B18D00D62C65 /* Model+SQLite.swift */; };
 		B9DD3F80235D79EA00D62C65 /* StorageEngineAdapter+SQLite.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F2E2355401800D62C65 /* StorageEngineAdapter+SQLite.swift */; };
 		B9DD3F81235D79F100D62C65 /* StorageEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F49235822A600D62C65 /* StorageEngine.swift */; };
 		B9DD3F82235D79F100D62C65 /* StorageEngineAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F2C23553E6300D62C65 /* StorageEngineAdapter.swift */; };
 		B9DD3F83235D79F100D62C65 /* StorageEngineBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F4F235827EC00D62C65 /* StorageEngineBehavior.swift */; };
 		B9DD3F84235D7A0300D62C65 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F3C2355C03900D62C65 /* Comment.swift */; };
-		B9DD3F85235D7A0300D62C65 /* Comment+Metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F3F2355C34200D62C65 /* Comment+Metadata.swift */; };
 		B9DD3F86235D7A0300D62C65 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F382355BF6000D62C65 /* Post.swift */; };
-		B9DD3F87235D7A0300D62C65 /* Post+Metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3F412355C35000D62C65 /* Post+Metadata.swift */; };
 		B9DD3F88235D7A0300D62C65 /* schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = B9DD3F3A2355BFA200D62C65 /* schema.graphql */; };
 		B9DD3FB3235D89F000D62C65 /* AppSyncLocalPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3FB1235D89D500D62C65 /* AppSyncLocalPlugin.swift */; };
 		B9DD3FBF235D92DA00D62C65 /* DataStoreCategory+Behavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DD3FBE235D92DA00D62C65 /* DataStoreCategory+Behavior.swift */; };
@@ -581,33 +576,28 @@
 		A758B7EC0289740B40CF0BE8 /* Pods_AmplifyTestCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyTestCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB74666B4E8B096CB3305EAE /* Pods-AmplifyAppExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAppExample.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAppExample/Pods-AmplifyAppExample.release.xcconfig"; sourceTree = "<group>"; };
 		B92E036C23602736006CEB8D /* Statement+Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Statement+Model.swift"; sourceTree = "<group>"; };
+		B92E036F23604C3C006CEB8D /* ModelSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSchema.swift; sourceTree = "<group>"; };
+		B92E03712360559D006CEB8D /* Comment+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Comment+Schema.swift"; sourceTree = "<group>"; };
+		B92E03762360F15A006CEB8D /* ModelSchema+Definition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelSchema+Definition.swift"; sourceTree = "<group>"; };
+		B92E037A23618564006CEB8D /* ModelRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelRegistry.swift; sourceTree = "<group>"; };
+		B92E037C2361A042006CEB8D /* ModelSchema+SQLite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelSchema+SQLite.swift"; sourceTree = "<group>"; };
+		B92E038023621F91006CEB8D /* Post+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Post+Schema.swift"; sourceTree = "<group>"; };
+		B92E038323622AE9006CEB8D /* Model+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+Schema.swift"; sourceTree = "<group>"; };
+		B92E038B236375C2006CEB8D /* Model+SQLite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+SQLite.swift"; sourceTree = "<group>"; };
 		B9DD3F0C23552CA300D62C65 /* DataStoreCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreCategory.swift; sourceTree = "<group>"; };
 		B9DD3F0E2355362F00D62C65 /* DataStoreCategoryBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreCategoryBehavior.swift; sourceTree = "<group>"; };
 		B9DD3F1123553D0800D62C65 /* DataStoreCategoryPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreCategoryPlugin.swift; sourceTree = "<group>"; };
-		B9DD3F1323553DD400D62C65 /* Model+Metadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Model+Metadata.swift"; sourceTree = "<group>"; };
-		B9DD3F1423553DD400D62C65 /* Model+Authorizable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Model+Authorizable.swift"; sourceTree = "<group>"; };
 		B9DD3F1523553DD400D62C65 /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		B9DD3F1623553DD400D62C65 /* Model+Codable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Model+Codable.swift"; sourceTree = "<group>"; };
-		B9DD3F1723553DD400D62C65 /* Connectable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Connectable.swift; sourceTree = "<group>"; };
-		B9DD3F1823553DD400D62C65 /* Authorizable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Authorizable.swift; sourceTree = "<group>"; };
-		B9DD3F1923553DD400D62C65 /* ModelProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelProperty.swift; sourceTree = "<group>"; };
-		B9DD3F1A23553DD400D62C65 /* Searchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Searchable.swift; sourceTree = "<group>"; };
-		B9DD3F1B23553DD400D62C65 /* Versionable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Versionable.swift; sourceTree = "<group>"; };
-		B9DD3F1D23553DD500D62C65 /* Model+Indexable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Model+Indexable.swift"; sourceTree = "<group>"; };
-		B9DD3F1E23553DD500D62C65 /* Indexable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Indexable.swift; sourceTree = "<group>"; };
 		B9DD3F2C23553E6300D62C65 /* StorageEngineAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEngineAdapter.swift; sourceTree = "<group>"; };
 		B9DD3F2E2355401800D62C65 /* StorageEngineAdapter+SQLite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageEngineAdapter+SQLite.swift"; sourceTree = "<group>"; };
 		B9DD3F352355BC8400D62C65 /* SQLiteStorageEngineAdapterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteStorageEngineAdapterTests.swift; sourceTree = "<group>"; };
 		B9DD3F382355BF6000D62C65 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		B9DD3F3A2355BFA200D62C65 /* schema.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
 		B9DD3F3C2355C03900D62C65 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
-		B9DD3F3F2355C34200D62C65 /* Comment+Metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Comment+Metadata.swift"; sourceTree = "<group>"; };
-		B9DD3F412355C35000D62C65 /* Post+Metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Post+Metadata.swift"; sourceTree = "<group>"; };
-		B9DD3F432356B18D00D62C65 /* Model+SQLite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+SQLite.swift"; sourceTree = "<group>"; };
 		B9DD3F452356B98E00D62C65 /* DataStoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreError.swift; sourceTree = "<group>"; };
 		B9DD3F49235822A600D62C65 /* StorageEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEngine.swift; sourceTree = "<group>"; };
 		B9DD3F4F235827EC00D62C65 /* StorageEngineBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEngineBehavior.swift; sourceTree = "<group>"; };
-		B9DD3F552359A59000D62C65 /* Model+Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+Collection.swift"; sourceTree = "<group>"; };
 		B9DD3F57235D1C0B00D62C65 /* DataStoreCallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreCallback.swift; sourceTree = "<group>"; };
 		B9DD3F5E235D759700D62C65 /* AWSAppSyncLocalDataStorePlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSAppSyncLocalDataStorePlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9DD3F61235D759800D62C65 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1250,18 +1240,12 @@
 		B9DD3F102355365000D62C65 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				B9DD3F1823553DD400D62C65 /* Authorizable.swift */,
-				B9DD3F1723553DD400D62C65 /* Connectable.swift */,
-				B9DD3F1E23553DD500D62C65 /* Indexable.swift */,
 				B9DD3F1523553DD400D62C65 /* Model.swift */,
-				B9DD3F1423553DD400D62C65 /* Model+Authorizable.swift */,
 				B9DD3F1623553DD400D62C65 /* Model+Codable.swift */,
-				B9DD3F552359A59000D62C65 /* Model+Collection.swift */,
-				B9DD3F1D23553DD500D62C65 /* Model+Indexable.swift */,
-				B9DD3F1323553DD400D62C65 /* Model+Metadata.swift */,
-				B9DD3F1923553DD400D62C65 /* ModelProperty.swift */,
-				B9DD3F1A23553DD400D62C65 /* Searchable.swift */,
-				B9DD3F1B23553DD400D62C65 /* Versionable.swift */,
+				B92E038323622AE9006CEB8D /* Model+Schema.swift */,
+				B92E037A23618564006CEB8D /* ModelRegistry.swift */,
+				B92E036F23604C3C006CEB8D /* ModelSchema.swift */,
+				B92E03762360F15A006CEB8D /* ModelSchema+Definition.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1270,9 +1254,9 @@
 			isa = PBXGroup;
 			children = (
 				B9DD3F3C2355C03900D62C65 /* Comment.swift */,
-				B9DD3F3F2355C34200D62C65 /* Comment+Metadata.swift */,
+				B92E03712360559D006CEB8D /* Comment+Schema.swift */,
 				B9DD3F382355BF6000D62C65 /* Post.swift */,
-				B9DD3F412355C35000D62C65 /* Post+Metadata.swift */,
+				B92E038023621F91006CEB8D /* Post+Schema.swift */,
 				B9DD3F3A2355BFA200D62C65 /* schema.graphql */,
 			);
 			path = Models;
@@ -1281,7 +1265,8 @@
 		B9DD3F482358216B00D62C65 /* SQLite */ = {
 			isa = PBXGroup;
 			children = (
-				B9DD3F432356B18D00D62C65 /* Model+SQLite.swift */,
+				B92E038B236375C2006CEB8D /* Model+SQLite.swift */,
+				B92E037C2361A042006CEB8D /* ModelSchema+SQLite.swift */,
 				B92E036C23602736006CEB8D /* Statement+Model.swift */,
 				B9DD3F2E2355401800D62C65 /* StorageEngineAdapter+SQLite.swift */,
 			);
@@ -2979,10 +2964,11 @@
 			files = (
 				B9DD3F80235D79EA00D62C65 /* StorageEngineAdapter+SQLite.swift in Sources */,
 				B9DD3FB3235D89F000D62C65 /* AppSyncLocalPlugin.swift in Sources */,
+				B92E037F2361A098006CEB8D /* ModelSchema+SQLite.swift in Sources */,
+				B92E038D23637684006CEB8D /* Model+SQLite.swift in Sources */,
 				B9DD3F82235D79F100D62C65 /* StorageEngineAdapter.swift in Sources */,
 				B9DD3F81235D79F100D62C65 /* StorageEngine.swift in Sources */,
 				B9DD3F83235D79F100D62C65 /* StorageEngineBehavior.swift in Sources */,
-				B9DD3F7F235D79E500D62C65 /* Model+SQLite.swift in Sources */,
 				B92E036E23602776006CEB8D /* Statement+Model.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2992,9 +2978,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				B9DD3F7C235D794F00D62C65 /* SQLiteStorageEngineAdapterTests.swift in Sources */,
-				B9DD3F85235D7A0300D62C65 /* Comment+Metadata.swift in Sources */,
-				B9DD3F87235D7A0300D62C65 /* Post+Metadata.swift in Sources */,
+				B92E037523605652006CEB8D /* Comment+Schema.swift in Sources */,
 				B9DD3F84235D7A0300D62C65 /* Comment.swift in Sources */,
+				B92E03822362203C006CEB8D /* Post+Schema.swift in Sources */,
 				B9DD3F86235D7A0300D62C65 /* Post.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3008,26 +2994,25 @@
 				B9DD3FBF235D92DA00D62C65 /* DataStoreCategory+Behavior.swift in Sources */,
 				FAC23544227A055200424678 /* ConfigurationError.swift in Sources */,
 				FAC0A2A122B3E81000B50912 /* HubMessageQueue.swift in Sources */,
-				B9DD3F2723553DD500D62C65 /* Versionable.swift in Sources */,
 				FAC23547227A055200424678 /* Plugin.swift in Sources */,
 				FA9FB780232AA11A00C04D32 /* HubChannelDispatcher.swift in Sources */,
 				B9DD3F1223553D0800D62C65 /* DataStoreCategoryPlugin.swift in Sources */,
 				FA315298233D644F00DE78E7 /* StorageGetDataRequest.swift in Sources */,
+				B92E038423622AE9006CEB8D /* Model+Schema.swift in Sources */,
 				FA4E730A232828EA003B8EEB /* Amplify+Reset.swift in Sources */,
 				FAC23542227A055200424678 /* Foundation+Utils.swift in Sources */,
 				FAC0A2AF22B4400100B50912 /* LoggingCategory+ClientBehavior.swift in Sources */,
 				FAC23545227A055200424678 /* AmplifyConfiguration.swift in Sources */,
 				21FFF994230C96CB005878EA /* StoragePutDataOperation.swift in Sources */,
+				B92E037023604C3C006CEB8D /* ModelSchema.swift in Sources */,
 				FAC2351E227A053D00424678 /* APICategory.swift in Sources */,
 				FAC2351B227A053D00424678 /* APICategoryClientBehavior.swift in Sources */,
 				B9DD3F462356B98E00D62C65 /* DataStoreError.swift in Sources */,
 				FA09B9412321BB78000E064D /* JSONValue.swift in Sources */,
-				B9DD3F2323553DD500D62C65 /* Connectable.swift in Sources */,
 				2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */,
 				FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */,
 				FAC0A29822B3DE4800B50912 /* HubPublisher.swift in Sources */,
 				FAC0A2A922B43FB300B50912 /* APICategory+ClientBehavior.swift in Sources */,
-				B9DD3F2423553DD500D62C65 /* Authorizable.swift in Sources */,
 				FAC23548227A055200424678 /* Category.swift in Sources */,
 				FACA35ED2326BB54000E74F6 /* AmplifyConfigurationInitialization.swift in Sources */,
 				FA09B9382321A359000E064D /* LoggingCategory+CategoryConfigurable.swift in Sources */,
@@ -3064,20 +3049,16 @@
 				FA9FB77B2329D4FB00C04D32 /* UnsubscribeToken.swift in Sources */,
 				FA31529E233D645800DE78E7 /* StoragePutDataRequest.swift in Sources */,
 				FA09B92F2321A2DE000E064D /* APICategory+CategoryConfigurable.swift in Sources */,
-				B9DD3F2523553DD500D62C65 /* ModelProperty.swift in Sources */,
 				B9DD3FC1235DA46400D62C65 /* DataStoreCategory+Configurable.swift in Sources */,
 				FA9FB7792329D4D400C04D32 /* HubFilter.swift in Sources */,
 				FAC23520227A053D00424678 /* APIResponse.swift in Sources */,
 				B9DD3F2223553DD500D62C65 /* Model+Codable.swift in Sources */,
-				B9DD3F2A23553DD500D62C65 /* Indexable.swift in Sources */,
 				FAC2354B227A055A00424678 /* Amplify.swift in Sources */,
 				FA09B92D2321A27F000E064D /* CategoryConfigurable.swift in Sources */,
-				B9DD3F562359A59000D62C65 /* Model+Collection.swift in Sources */,
 				FA09B93B2321A36F000E064D /* StorageCategory+CategoryConfigurable.swift in Sources */,
 				210DBC142332B3C6009B9E51 /* StorageGetURLOperation.swift in Sources */,
 				FA09B94D2322CC05000E064D /* StorageCategoryConfiguration.swift in Sources */,
 				FA31529C233D645400DE78E7 /* StorageListRequest.swift in Sources */,
-				B9DD3F1F23553DD500D62C65 /* Model+Metadata.swift in Sources */,
 				21FFF988230B7B2C005878EA /* AsychronousOperation.swift in Sources */,
 				FAC2352A227A053D00424678 /* AnalyticsCategory.swift in Sources */,
 				FAC2351A227A053D00424678 /* StorageCategory.swift in Sources */,
@@ -3089,11 +3070,9 @@
 				21D1CE8C2334233F0003BAA8 /* AuthError.swift in Sources */,
 				FAC0A2B222B4402000B50912 /* StorageCategory+ClientBehavior.swift in Sources */,
 				B9DD3F0D23552CA300D62C65 /* DataStoreCategory.swift in Sources */,
-				B9DD3F2923553DD500D62C65 /* Model+Indexable.swift in Sources */,
 				FA4E730C23282917003B8EEB /* Amplify+Resolve.swift in Sources */,
 				FAB9D811233BF5F600928AA9 /* AmplifyOperationContext.swift in Sources */,
 				FA56F72522B14B6A0039754A /* Resumable.swift in Sources */,
-				B9DD3F2623553DD500D62C65 /* Searchable.swift in Sources */,
 				21FFF997230C96CB005878EA /* StorageRemoveOperation.swift in Sources */,
 				FAC2351C227A053D00424678 /* APICategoryPlugin.swift in Sources */,
 				210DBC162332B3CB009B9E51 /* StorageGetDataOperation.swift in Sources */,
@@ -3103,13 +3082,14 @@
 				FAC23518227A053D00424678 /* StorageCategoryPlugin.swift in Sources */,
 				FA31529A233D645200DE78E7 /* StorageGetURLRequest.swift in Sources */,
 				FAC0A2AD22B43FE700B50912 /* HubCategory+ClientBehavior.swift in Sources */,
-				B9DD3F2023553DD500D62C65 /* Model+Authorizable.swift in Sources */,
 				B9DD3F2123553DD500D62C65 /* Model.swift in Sources */,
 				FAC23523227A053D00424678 /* LoggingCategoryPlugin.swift in Sources */,
+				B92E03772360F15A006CEB8D /* ModelSchema+Definition.swift in Sources */,
 				FAC23527227A053D00424678 /* LoggingCategoryClientBehavior.swift in Sources */,
 				FA09B92B2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift in Sources */,
 				FAC23521227A053D00424678 /* APIRequest.swift in Sources */,
 				2144226E234BDE23009357F7 /* StorageUploadFileOperation.swift in Sources */,
+				B92E037B23618564006CEB8D /* ModelRegistry.swift in Sources */,
 				21FFF9A2230C9731005878EA /* StorageListResult.swift in Sources */,
 				FAC23522227A053D00424678 /* LoggingCategory.swift in Sources */,
 				FAC2358F227A4A6E00424678 /* HubCategory.swift in Sources */,

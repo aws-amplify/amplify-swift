@@ -14,16 +14,15 @@ final public class AppSyncLocalPlugin: DataStoreCategoryPlugin {
 
     let storageEngine: StorageEngine
 
-    // temporary, tied this up with configuration along with local db config,
-    // sync endpoint, etc
-    let models: [PersistentModel.Type]
+    // TODO temporary, replace with with configuration
+    let models: [Model.Type]
 
-    public init(storageEngine: StorageEngine, models: [PersistentModel.Type]) {
+    public init(storageEngine: StorageEngine, models: [Model.Type]) {
         self.storageEngine = storageEngine
         self.models = models
     }
 
-    public convenience init(models: [PersistentModel.Type]) throws {
+    public convenience init(models: [Model.Type]) throws {
         let engine = try StorageEngine(adapter: SQLiteStorageEngineAdapter())
         self.init(storageEngine: engine, models: models)
     }
@@ -32,30 +31,30 @@ final public class AppSyncLocalPlugin: DataStoreCategoryPlugin {
         try storageEngine.setUp(models: models)
     }
 
-    public func save<M: PersistentModel>(_ model: M,
-                                         completion: (DataStoreResult<M>) -> Void) {
+    public func save<M: Model>(_ model: M,
+                               completion: (DataStoreResult<M>) -> Void) {
         storageEngine.save(model, completion: completion)
     }
 
-    public func query<M: PersistentModel>(_ modelType: M.Type,
-                                          byId id: String,
-                                          completion: (DataStoreResult<M?>) -> Void) {
+    public func query<M: Model>(_ modelType: M.Type,
+                                byId id: String,
+                                completion: (DataStoreResult<M?>) -> Void) {
         // TODO implement
     }
 
-    public func query<M: PersistentModel>(_ modelType: M.Type,
-                                          completion: (DataStoreResult<[M]>) -> Void) {
+    public func query<M: Model>(_ modelType: M.Type,
+                                completion: (DataStoreResult<[M]>) -> Void) {
         storageEngine.query(modelType, completion: completion)
     }
 
-    public func delete<M: PersistentModel>(_ model: M,
-                                           completion: (DataStoreResult<Bool>) -> Void) {
+    public func delete<M: Model>(_ model: M,
+                                 completion: (DataStoreResult<Bool>) -> Void) {
 //        self.delete(type(of: model), withId: model.id, completion: completion)
     }
 
-    public func delete<M: PersistentModel>(_ modelType: M.Type,
-                                           withId id: String,
-                                           completion: DataStoreCallback<Void>?) {
+    public func delete<M: Model>(_ modelType: M.Type,
+                                 withId id: String,
+                                 completion: DataStoreCallback<Void>?) {
         // TODO implement
     }
 

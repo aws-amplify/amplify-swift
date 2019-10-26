@@ -9,24 +9,58 @@ import Amplify
 import Foundation
 import SQLite
 
-extension Statement {
+typealias ModelValues = [String: Any]
 
-    public func toModel<M: PersistentModel>() throws -> [M] {
-        var models: [M] = []
+/// Struct used to hold the values extracted from a executed `Statement`.
+///
+/// This type allows the results to be decoded into the actual models with a single call
+/// instead of decoding each row individually. This keeps serialization of
+/// large result sets efficient.
+struct StatementResult<M: Model>: Decodable {
+
+    let models: [M]
+
+    public static func from(dictionary: ModelValues) throws -> Self {
+        let data = try JSONSerialization.data(withJSONObject: dictionary)
+        return try JSONDecoder().decode(Self.self, from: data)
+    }
+}
+
+/// Conforming to this protocol means that the `Statement` can be converted to an array of `Model`.
+protocol StatementModelConvertible {
+
+    /// Converts all the rows in the current executed `Statement` to the given `Model` type.
+    ///
+    /// - Parameter modelType the target `Model` type
+    /// - Returns: an array of `Model` of the specified type
+    func convert<M: Model>(to modelType: M.Type) throws -> [M]
+
+}
+
+/// Extend `Statement` with the model conversion capabilities defined by `StatementModelConvertible`.
+extension Statement: StatementModelConvertible {
+
+    public func convert<M: Model>(to modelType: M.Type) throws -> [M] {
+        var rows: [ModelValues] = []
         for row in self {
-            let modelDictionary = try convertRowToDictionary(M.self, row: row, columns: columnNames)
-            let model: M = try M.from(dictionary: modelDictionary)
-            models.append(model)
+            let modelDictionary = try mapEach(row: row, to: modelType)
+            rows.append(modelDictionary)
         }
-        return models
+        let values: ModelValues = ["models": rows]
+        let result: StatementResult<M> = try StatementResult.from(dictionary: values)
+        return result.models
     }
 
-    private func convertRowToDictionary(_ modelType: PersistentModel.Type,
-                                        row: Element,
-                                        columns: [String],
-                                        property: String? = nil) throws -> [String: Any] {
-        var values: [String: Any] = [:]
-        let propertyPrefix = property != nil ? "\(property!)." : nil
+    internal func mapEach(row: Element,
+                          to modelType: Model.Type,
+                          fieldName: String? = nil) throws -> ModelValues {
+        // hold the extracted values
+        var values: ModelValues = [:]
+
+        let columns = columnNames
+        let propertyPrefix = fieldName != nil ? "\(fieldName!)." : nil
+        let schema = modelType.schema
+
         for (index, column) in columns.enumerated()
             where propertyPrefix == nil || column.starts(with: propertyPrefix!) {
 
@@ -35,25 +69,30 @@ extension Statement {
                 : column
             if name.firstIndex(of: ".") != nil {
                 let propertyName = String(name.split(separator: ".").first!)
-                guard let connectedProperty = modelType.properties.by(name: propertyName) else {
-                    preconditionFailure("Property \(propertyName) not found on \(modelType.name)")
+                guard let connectedField = schema.field(withName: propertyName) else {
+                    preconditionFailure("""
+                    Field `\(propertyName)` not found on `\(schema.name)`.
+                    The property was found on the result set but was not defined in the
+                    `\(schema.name)` schema.
+                    """)
                 }
-                guard let connectedModelType = connectedProperty.metadata.connectedModel else {
-                    preconditionFailure("yyy")
+                guard let connectedModelType = connectedField.connectedModel else {
+                    preconditionFailure("""
+                    Property `\(propertyName)` must have a valid associated Model.
+                    Make sure your properties that represent relationship between two model
+                    must be properly annotated with `.connected`.
+                    """)
                 }
-                let connectedModel = try convertRowToDictionary(connectedModelType,
-                                                                row: row,
-                                                                columns: columns,
-                                                                property: propertyName)
+                let connectedModel = try mapEach(row: row,
+                                                 to: connectedModelType,
+                                                 fieldName: propertyName)
                 values[propertyName] = connectedModel
-            } else if modelType.properties.by(name: name) != nil {
-                values[name] = row[index]
+            } else if let field = schema.field(withName: name) {
+                values[name] = field.value(from: row[index])
+            } else {
+                // TODO log ignored column
             }
         }
-//        print("==============")
-//        print(values)
-//        print("==============")
-//        let model = try modelType.from(dictionary: values)
         return values
     }
 

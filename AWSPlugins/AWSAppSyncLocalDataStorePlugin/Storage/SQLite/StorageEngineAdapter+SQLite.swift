@@ -19,9 +19,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         guard let documentsPath = getDocumentPath() else {
             preconditionFailure("Could not create the database. The `.documentDirectory` is invalid")
         }
-        let path = documentsPath
-            .appendingPathComponent("\(databaseName).db")
-            .absoluteString
+        let path = documentsPath.appendingPathComponent("\(databaseName).db").absoluteString
         let connection = try Connection(path)
         self.init(connection: connection)
     }
@@ -30,7 +28,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         self.connection = connection
     }
 
-    public func setUp(models: [PersistentModel.Type]) throws {
+    public func setUp(models: [Model.Type]) throws {
         let createTableStatements = models
             .sortByDependencyOrder()
             .map(getCreateTableStatement(for:))
@@ -51,10 +49,10 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
-    public func save<M: PersistentModel>(_ model: M, completion: DataStoreCallback<M>) {
+    public func save<M: Model>(_ model: M, completion: DataStoreCallback<M>) {
         let modelType = type(of: model)
         let sql = getInsertStatement(for: modelType)
-        let values = model.sqlValues(for: modelType.properties.columns())
+        let values = model.sqlValues(for: modelType.schema.allFields.columns())
 
         do {
             _ = try connection.prepare(sql).run(values)
@@ -64,15 +62,20 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         } catch {
             completion(.failure(causedBy: error))
         }
-
     }
 
-    public func query<M: PersistentModel>(_ modelType: M.Type,
-                                          completion: DataStoreCallback<[M]>) {
+    public func query<M: Model>(_ modelType: M.Type,
+                                completion: DataStoreCallback<[M]>) {
         do {
             let statement = getSelectStatement(for: modelType)
+            let queryStart = CFAbsoluteTimeGetCurrent()
             let rows = try connection.prepare(statement).run()
-            let result: [M] = try rows.toModel()
+            print("==> Query Done")
+            print(CFAbsoluteTimeGetCurrent() - queryStart)
+            let serializeStart = CFAbsoluteTimeGetCurrent()
+            let result: [M] = try rows.convert(to: M.self)
+            print("==> Serialize Done")
+            print(CFAbsoluteTimeGetCurrent() - serializeStart)
             completion(.result(result))
         } catch {
             completion(.failure(causedBy: error))
@@ -81,51 +84,50 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     // MARK: - Internal
 
-    internal func getCreateTableStatement(for modelType: PersistentModel.Type) -> String {
-        let name = modelType.name
+    internal func getCreateTableStatement(for modelType: Model.Type) -> String {
+        let schema = modelType.schema
+        let name = schema.name
         var statement = "create table if not exists \(name) (\n"
 
-        let properties = modelType.properties.columns()
-        let foreignKeys = modelType.properties.foreignKeys()
+        let columns = schema.allFields.columns()
+        let foreignKeys = schema.allFields.foreignKeys()
 
-        for (index, property) in properties.enumerated() {
-            let metadata = property.metadata
-            statement += "  \"\(metadata.sqlName)\" \(metadata.sqlType.rawValue)"
-            if metadata.isPrimaryKey {
+        for (index, column) in columns.enumerated() {
+            statement += "  \"\(column.sqlName)\" \(column.sqlType.rawValue)"
+            if column.isPrimaryKey {
                 statement += " primary key"
             }
-            if !metadata.optional {
+            if column.isRequired {
                 statement += " not null"
             }
 
-            if index < properties.endIndex - 1 || !foreignKeys.isEmpty {
+            if index < columns.endIndex - 1 || !foreignKeys.isEmpty {
                 statement += ",\n"
             }
         }
 
         for foreignKey in foreignKeys {
-            statement += "  foreign key(\"\(foreignKey.metadata.sqlName)\") "
-            guard let connectedModel = foreignKey.metadata.connectedModel else {
-                preconditionFailure(
-                    """
-                    Model properties that are foreign keys must be connected to another Model.
-                    Check the "ModelProperty" section of your "\(name)+Metadata.swift" file.
-                    """
-                )
+            statement += "  foreign key(\"\(foreignKey.sqlName)\") "
+            guard let connectedModel = foreignKey.connectedModel else {
+                preconditionFailure("""
+                Model fields that are foreign keys must be connected to another Model.
+                Check the `ModelSchema` section of your "\(name)+Schema.swift" file.
+                """)
             }
 
-            let connectedId = connectedModel.properties.first { $0.metadata.isPrimaryKey }!
-            statement += "references \(connectedModel.name)(\"\(connectedId.metadata.sqlName)\")"
+            let connectedId = connectedModel.schema.primaryKey
+            statement += "references \(connectedModel.schema.name)(\"\(connectedId.sqlName)\")"
         }
 
         statement += "\n);"
         return statement
     }
 
-    internal func getInsertStatement(for modelType: PersistentModel.Type) -> String {
-        let properties = modelType.properties.columns()
-        let columns = properties.map { $0.metadata.columnName() }
-        var statement = "insert into \(modelType.name) "
+    internal func getInsertStatement(for modelType: Model.Type) -> String {
+        let schema = modelType.schema
+        let fields = schema.allFields.columns()
+        let columns = fields.map { $0.columnName() }
+        var statement = "insert into \(schema.name) "
         statement += "(\(columns.joined(separator: ", ")))\n"
 
         let valuePlaceholders = Array(repeating: "?", count: columns.count).joined(separator: ", ")
@@ -141,28 +143,29 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         return statement
     }
 
-    internal func getSelectStatement(for modelType: PersistentModel.Type) -> String {
-        let properties = modelType.properties.columns()
-        let tableName = modelType.name
-        var columns = properties.map { prop -> String in
-            return prop.metadata.columnName(forNamespace: "root") + " " + prop.metadata.columnAlias()
+    internal func getSelectStatement(for modelType: Model.Type) -> String {
+        let schema = modelType.schema
+        let fields = schema.allFields.columns()
+        let tableName = schema.name
+        var columns = fields.map { field -> String in
+            return field.columnName(forNamespace: "root") + " " + field.columnAlias()
         }
 
         // eager load many-to-one relationships (simple inner join)
         var joinStatements: [String] = []
-        for foreignKey in modelType.properties.foreignKeys() {
-            let connectedModelType = foreignKey.metadata.connectedModel!
-            let connectedTableName = connectedModelType.name
+        for foreignKey in schema.allFields.foreignKeys() {
+            let connectedModelType = foreignKey.connectedModel!
+            let connectedSchema = connectedModelType.schema
+            let connectedTableName = connectedModelType.schema.name
 
             // columns
-            let alias = foreignKey.metadata.name
-            let connectedColumn = connectedModelType.primaryKey.metadata.columnName(forNamespace: alias)
-            let foreignKeyName = foreignKey.metadata.columnName(forNamespace: "root")
+            let alias = foreignKey.name
+            let connectedColumn = connectedSchema.primaryKey.columnName(forNamespace: alias)
+            let foreignKeyName = foreignKey.columnName(forNamespace: "root")
 
             // append columns from relationships
-            columns += connectedModelType.properties.columns().map { prop -> String in
-                let metadata = prop.metadata
-                return metadata.columnName(forNamespace: alias) + " " + metadata.columnAlias(forNamespace: alias)
+            columns += connectedSchema.allFields.columns().map { field -> String in
+                return field.columnName(forNamespace: alias) + " " + field.columnAlias(forNamespace: alias)
             }
 
             joinStatements.append("""

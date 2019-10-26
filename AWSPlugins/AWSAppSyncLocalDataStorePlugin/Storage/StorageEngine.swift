@@ -22,16 +22,17 @@ final public class StorageEngine: StorageEngineBehavior {
         try self.init(adapter: SQLiteStorageEngineAdapter(databaseName: databaseName ?? "app"))
     }
 
-    public func setUp(models: [PersistentModel.Type]) throws {
+    public func setUp(models: [Model.Type]) throws {
+        models.forEach(registerModel(type:))
         try adapter.setUp(models: models)
     }
 
-    public func save<M: PersistentModel>(_ model: M, completion: DataStoreCallback<M>) {
+    public func save<M: Model>(_ model: M, completion: DataStoreCallback<M>) {
         adapter.save(model, completion: completion)
     }
 
-    public func query<M: PersistentModel>(_ modelType: M.Type,
-                                          completion: DataStoreCallback<[M]>) {
+    public func query<M: Model>(_ modelType: M.Type,
+                                completion: DataStoreCallback<[M]>) {
         return adapter.query(modelType, completion: completion)
     }
 
