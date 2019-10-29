@@ -8,13 +8,13 @@
 import Amplify
 import Foundation
 
-final public class AppSyncLocalPlugin: DataStoreCategoryPlugin {
+final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
 
-    public var key: PluginKey = "AppSyncLocalPlugin"
+    public var key: PluginKey = "AWSDataStoreCategoryPlugin"
 
     let storageEngine: StorageEngine
 
-    // TODO temporary, replace with with configuration
+    // TODO temporary, replace with configuration
     let models: [Model.Type]
 
     public init(storageEngine: StorageEngine, models: [Model.Type]) {

@@ -9,7 +9,7 @@ import SQLite
 import XCTest
 
 @testable import Amplify
-@testable import AWSAppSyncLocalDataStorePlugin
+@testable import AWSDataStoreCategoryPlugin
 
 class SQLiteStorageEngineAdapterTests: XCTestCase {
 
@@ -89,7 +89,6 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
     /// it should create a simple `select from` statement from a model
     func testCreateSimpleSelectStatementFromModel() {
         let statement = storageAdapter.getSelectStatement(for: Comment.self)
-        // swiftlint:disable line_length
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
@@ -100,7 +99,6 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
         inner join Post as post
           on "post"."id" = "root"."postId"
         """
-        // swiftlint:enable line_length
         XCTAssertEqual(statement, expectedStatement)
     }
 

@@ -1,7 +1,7 @@
 # Uncomment the next line to define a global platform for your project
 platform :ios, "11.0"
 
-AWS_SDK_VERSION = "2.11.1"
+AWS_SDK_VERSION = "2.12.0"
 
 target "Amplify" do
   # Comment the next line if you"re not using Swift and don"t want to use dynamic frameworks
@@ -35,6 +35,12 @@ target "Amplify" do
       inherit! :complete
     end
 
+    target "AWSDataStoreCategoryPlugin" do
+      inherit! :complete
+      
+      pod "SQLite.swift", "~> 0.12.0"
+    end
+
     target "AWSPinpointAnalyticsPlugin" do
       inherit! :complete
 
@@ -55,6 +61,9 @@ target "Amplify" do
       end
 
       target "AWSAPICategoryPluginTests" do
+      end
+
+      target "AWSDataStoreCategoryPluginTests" do
       end
 
       target "AWSPinpointAnalyticsPluginTests" do

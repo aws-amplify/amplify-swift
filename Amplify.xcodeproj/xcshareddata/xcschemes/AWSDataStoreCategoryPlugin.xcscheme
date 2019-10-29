@@ -14,23 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B9DD3F5D235D759700D62C65"
-               BuildableName = "AWSAppSyncLocalDataStorePlugin.framework"
-               BlueprintName = "AWSAppSyncLocalDataStorePlugin"
-               ReferencedContainer = "container:Amplify.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B9DD3F65235D759800D62C65"
-               BuildableName = "AWSAppSyncLocalDataStorePluginTests.xctest"
-               BlueprintName = "AWSAppSyncLocalDataStorePluginTests"
+               BlueprintIdentifier = "B92E03BF2367CFF2006CEB8D"
+               BuildableName = "AWSDataStoreCategoryPlugin.framework"
+               BlueprintName = "AWSDataStoreCategoryPlugin"
                ReferencedContainer = "container:Amplify.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B9DD3F65235D759800D62C65"
-               BuildableName = "AWSAppSyncLocalDataStorePluginTests.xctest"
-               BlueprintName = "AWSAppSyncLocalDataStorePluginTests"
+               BlueprintIdentifier = "B92E03C72367CFF3006CEB8D"
+               BuildableName = "AWSDataStoreCategoryPluginTests.xctest"
+               BlueprintName = "AWSDataStoreCategoryPluginTests"
                ReferencedContainer = "container:Amplify.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -74,9 +60,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B9DD3F5D235D759700D62C65"
-            BuildableName = "AWSAppSyncLocalDataStorePlugin.framework"
-            BlueprintName = "AWSAppSyncLocalDataStorePlugin"
+            BlueprintIdentifier = "B92E03BF2367CFF2006CEB8D"
+            BuildableName = "AWSDataStoreCategoryPlugin.framework"
+            BlueprintName = "AWSDataStoreCategoryPlugin"
             ReferencedContainer = "container:Amplify.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
