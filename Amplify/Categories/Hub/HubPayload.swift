@@ -8,7 +8,7 @@
 /// The payload of a Hub message
 public struct HubPayload {
 
-    /// A struct containing event names registered by Amplify Operations
+    /// Event names registered by Amplify Operations
     public struct EventName {}
 
     /// The name, tag, or grouping of the HubPayload. Recommended to be a small string without spaces,

@@ -34,15 +34,28 @@ class AnalyticsCategoryClientAPITests: XCTestCase {
 
     }
 
-    func testRecordWithString() throws {
-        let expectedMessage = "record(test)"
+    func testIdentifyUser() throws {
+        let expectedMessage = "identifyUser(test)"
         let methodInvoked = expectation(description: "Expected method was invoked on plugin")
         plugin.listeners.append { message in
             if message == expectedMessage {
                 methodInvoked.fulfill()
             }
         }
-        analytics.record("test")
+
+        analytics.identifyUser("test")
+        waitForExpectations(timeout: 1.0)
+    }
+
+    func testRecordWithString() throws {
+        let expectedMessage = "record(eventWithName:test)"
+        let methodInvoked = expectation(description: "Expected method was invoked on plugin")
+        plugin.listeners.append { message in
+            if message == expectedMessage {
+                methodInvoked.fulfill()
+            }
+        }
+        analytics.record(eventWithName: "test")
         waitForExpectations(timeout: 1.0)
     }
 
@@ -55,20 +68,43 @@ class AnalyticsCategoryClientAPITests: XCTestCase {
                 methodInvoked.fulfill()
             }
         }
-        analytics.record(event)
+        analytics.record(event: event)
         waitForExpectations(timeout: 1.0)
     }
 
-    func testRecordWithAttributes() throws {
-        let event = BasicAnalyticsEvent("test")
-        let expectedMessage = "record(event:test)"
+    func testRegisterGlobalProperties() throws {
+        let expectedMessage = "registerGlobalProperties"
         let methodInvoked = expectation(description: "Expected method was invoked on plugin")
         plugin.listeners.append { message in
             if message == expectedMessage {
                 methodInvoked.fulfill()
             }
         }
-        analytics.record(event)
+        analytics.registerGlobalProperties([:])
+        waitForExpectations(timeout: 1.0)
+    }
+
+    func testUnregisterGlobalProperties() throws {
+        let expectedMessage = "unregisterGlobalProperties(_:)"
+        let methodInvoked = expectation(description: "Expected method was invoked on plugin")
+        plugin.listeners.append { message in
+            if message == expectedMessage {
+                methodInvoked.fulfill()
+            }
+        }
+        analytics.unregisterGlobalProperties()
+        waitForExpectations(timeout: 1.0)
+    }
+
+    func testFlushEvents() {
+        let expectedMessage = "flushEvents()"
+        let methodInvoked = expectation(description: "Expected method was invoked on plugin")
+        plugin.listeners.append { message in
+            if message == expectedMessage {
+                methodInvoked.fulfill()
+            }
+        }
+        analytics.flushEvents()
         waitForExpectations(timeout: 1.0)
     }
 
@@ -95,21 +131,4 @@ class AnalyticsCategoryClientAPITests: XCTestCase {
         analytics.enable()
         waitForExpectations(timeout: 1.0)
     }
-
-    func testUpdate() {
-        let expectedMessage = "update(analyticsProfile:)"
-        let methodInvoked = expectation(description: "Expected method was invoked on plugin")
-        plugin.listeners.append { message in
-            if message == expectedMessage {
-                methodInvoked.fulfill()
-            }
-        }
-
-        let mockAnalyticsProfile = "test"
-        analytics.update(analyticsProfile: mockAnalyticsProfile)
-        waitForExpectations(timeout: 1.0)
-    }
-
 }
-
-extension String: AnalyticsProfile { }

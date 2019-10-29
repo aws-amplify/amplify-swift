@@ -105,7 +105,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         let plugin = MockAnalyticsCategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin.listeners.append { message in
-            if message == "record(test)" {
+            if message == "record(eventWithName:test)" {
                 methodInvokedOnDefaultPlugin.fulfill()
             }
         }
@@ -117,7 +117,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        Amplify.Analytics.record("test")
+        Amplify.Analytics.record(eventWithName: "test")
 
         waitForExpectations(timeout: 1.0)
     }
@@ -141,7 +141,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
 
         let exception: BadInstructionException? = catchBadInstruction {
-            Amplify.Analytics.record("test")
+            Amplify.Analytics.record(eventWithName: "test")
         }
         XCTAssertNotNil(exception)
     }
@@ -152,7 +152,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
             expectation(description: "test method should not be invoked on default plugin")
         methodShouldNotBeInvokedOnDefaultPlugin.isInverted = true
         plugin1.listeners.append { message in
-            if message == "record(test)" {
+            if message == "record(eventWithName:test)" {
                 methodShouldNotBeInvokedOnDefaultPlugin.fulfill()
             }
         }
@@ -162,7 +162,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         let methodShouldBeInvokedOnSecondPlugin =
             expectation(description: "test method should be invoked on second plugin")
         plugin2.listeners.append { message in
-            if message == "record(test)" {
+            if message == "record(eventWithName:test)" {
                 methodShouldBeInvokedOnSecondPlugin.fulfill()
             }
         }
@@ -178,7 +178,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig)
 
         try Amplify.configure(amplifyConfig)
-        try Amplify.Analytics.getPlugin(for: "MockSecondAnalyticsCategoryPlugin").record("test")
+        try Amplify.Analytics.getPlugin(for: "MockSecondAnalyticsCategoryPlugin").record(eventWithName: "test")
         waitForExpectations(timeout: 1.0)
     }
 
@@ -219,7 +219,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
         let exception: BadInstructionException? = catchBadInstruction {
-            Amplify.Analytics.record("test")
+            Amplify.Analytics.record(eventWithName: "test")
         }
         XCTAssertNotNil(exception)
     }

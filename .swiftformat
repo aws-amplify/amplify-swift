@@ -56,7 +56,7 @@
 --disable trailingCommas
   --commas inline
 
---disable trailingSpace
+--enable trailingSpace
   --trimwhitespace always
 
 --disable unusedArguments
