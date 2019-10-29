@@ -50,7 +50,25 @@ class AWSTranslateService: AWSTranslateServiceBehaviour {
         return translateBehavior.getTranslate()
     }
 
-    func translateText(text: String, language: LanguageType, targetLanguage: LanguageType, onEvent: @escaping AWSTranslateService.TranslateTextServiceEventHandler) {
+    func translateText(text: String,
+                       language: LanguageType,
+                       targetLanguage: LanguageType,
+                       onEvent: @escaping AWSTranslateService.TranslateTextServiceEventHandler) {
+        let request = AWSTranslateTranslateTextRequest()
+        request?.sourceLanguageCode = "en"
+        request?.targetLanguageCode = "it"
+        request?.text = text
+        self.translateBehavior.translateText(request: request!).continueWith { (task) -> Any? in
+            if let result = task.result?.translatedText {
+                print (result)
+                onEvent(.completed(TranslateTextResult(text:(task.result?.translatedText!)!, targetLanguage: .italian)))
+            } else {
+                print (task.error)
+            }
+
+
+            return nil
+        }
         
     }
 }

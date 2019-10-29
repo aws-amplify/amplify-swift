@@ -36,7 +36,7 @@ PredictionsTranslateTextOperation {
             finish()
             return
         }
-        
+
         if let error = request.validate() {
                  dispatch(error)
                  finish()

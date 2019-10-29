@@ -15,6 +15,7 @@ public struct AmplifyConfiguration: Codable {
         case hub = "Hub"
         case logging = "Logging"
         case storage = "Storage"
+        case predictions = "Predictions"
     }
 
     /// Configurations for the Amplify Analytics category
@@ -32,16 +33,20 @@ public struct AmplifyConfiguration: Codable {
     /// Configurations for the Amplify Storage category
     let storage: StorageCategoryConfiguration?
 
+    let predictions: PredictionsCategoryConfiguration?
+
     public init(analytics: AnalyticsCategoryConfiguration? = nil,
                 api: APICategoryConfiguration? = nil,
                 hub: HubCategoryConfiguration? = nil,
                 logging: LoggingCategoryConfiguration? = nil,
-                storage: StorageCategoryConfiguration? = nil) {
+                storage: StorageCategoryConfiguration? = nil,
+                predictions: PredictionsCategoryConfiguration? = nil) {
         self.analytics = analytics
         self.api = api
         self.hub = hub
         self.logging = logging
         self.storage = storage
+        self.predictions = predictions
     }
 }
 
@@ -85,7 +90,7 @@ extension Amplify {
             case .storage:
                 try Storage.configure(using: configuration)
             case .predictions:
-                fatalError("In complete implementation")
+                try Predictions.configure(using: configuration)
             }
         }
 
