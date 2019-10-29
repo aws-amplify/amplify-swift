@@ -7,6 +7,8 @@
 
 import Foundation
 
+public typealias QueryCriteriaBuilder = () -> QueryCondition
+
 public protocol DataStoreCategoryBehavior {
 
     func save<M: Model>(_ model: M, completion: DataStoreCallback<M>)
@@ -16,6 +18,7 @@ public protocol DataStoreCategoryBehavior {
                          completion: DataStoreCallback<M?>)
 
     func query<M: Model>(_ modelType: M.Type,
+                         withCriteria criteria: QueryCriteriaBuilder?,
                          completion: DataStoreCallback<[M]>)
 
     func delete<M: Model>(_ model: M,

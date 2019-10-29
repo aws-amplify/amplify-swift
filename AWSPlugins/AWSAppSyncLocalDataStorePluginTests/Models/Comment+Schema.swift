@@ -11,7 +11,7 @@ import Foundation
 extension Comment {
 
     // MARK: - CodingKeys
-    public enum CodingKeys: String, CodingKey, CaseIterable {
+    public enum CodingKeys: String, ModelKey {
         case id
         case content
         case createdAt

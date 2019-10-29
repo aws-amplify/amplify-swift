@@ -21,10 +21,8 @@ extension Model where Self: Codable {
         return try JSONDecoder().decode(Self.self, from: data)
     }
 
-    public func toJSON() -> String {
-        guard let json = try? JSONEncoder().encode(self) else {
-            return "{}"
-        }
+    public func toJSON() throws -> String {
+        let json = try JSONEncoder().encode(self)
         return String(data: json, encoding: .utf8)!
     }
 }

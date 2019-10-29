@@ -32,18 +32,21 @@ final public class AppSyncLocalPlugin: DataStoreCategoryPlugin {
     }
 
     public func save<M: Model>(_ model: M,
-                               completion: (DataStoreResult<M>) -> Void) {
+                               completion: DataStoreCallback<M>) {
         storageEngine.save(model, completion: completion)
     }
 
     public func query<M: Model>(_ modelType: M.Type,
                                 byId id: String,
-                                completion: (DataStoreResult<M?>) -> Void) {
-        // TODO implement
+                                completion: DataStoreCallback<M?>) {
+//        query(modelType,
+//              withCriteria: { QueryCondition() },
+//              completion: completion)
     }
 
     public func query<M: Model>(_ modelType: M.Type,
-                                completion: (DataStoreResult<[M]>) -> Void) {
+                                withCriteria criteria: QueryCriteriaBuilder?,
+                                completion: DataStoreCallback<[M]>) {
         storageEngine.query(modelType, completion: completion)
     }
 

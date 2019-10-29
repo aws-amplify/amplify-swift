@@ -35,3 +35,18 @@ extension Model {
     }
 
 }
+
+public protocol PersistentValue {}
+
+extension Bool: PersistentValue {}
+extension Date: PersistentValue {}
+extension Decimal: PersistentValue {}
+extension Int: PersistentValue {}
+extension String: PersistentValue {}
+
+extension PersistentValue where Self == Date {
+
+    static func now() -> Date {
+        return Date()
+    }
+}

@@ -9,6 +9,29 @@ import Amplify
 import Foundation
 import SQLite
 
+extension PersistentValue {
+    
+    internal func asBinding() -> Binding? {
+        let value = self
+
+        if let value = value as? Date {
+            return value.datatypeValue
+        }
+
+        if let value = value as? Bool {
+            return value.datatypeValue
+        }
+
+        // if value conforms to binding, resolve it
+        if let value = value as? Binding {
+            return value
+        }
+
+        // TODO fallback, should revisit this strategy
+        return nil
+    }
+}
+
 extension Model {
 
     internal func sqlValues(for fields: [ModelField]?) -> [Binding?] {
@@ -17,31 +40,16 @@ extension Model {
         let values: [Binding?] = modelFields.map { field in
             let value = self[field.name]
 
-            if value == nil {
-                return nil
-            }
-
-            if let value = value as? Date {
-                return value.datatypeValue
-            }
-
-            if let value = value as? Bool {
-                return value.datatypeValue
-            }
-
             // if value is a connected model, get its primary key
             if let value = value as? Model, field.isForeignKey {
                 let connectedModel: Model.Type = type(of: value)
                 return value[connectedModel.schema.primaryKey.name] as? String
+            } else if let value = value as? PersistentValue {
+                return value.asBinding()
+            } else {
+                // TODO what's the fallback?
+                return nil
             }
-
-            // if value conforms to binding, resolve it
-            if let value = value as? Binding {
-                return value
-            }
-
-            // TODO fallback, should revisit this strategy
-            return nil
         }
         return values
     }

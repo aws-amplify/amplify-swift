@@ -14,6 +14,7 @@ import SQLite
 final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     internal var connection: Connection!
+    internal let queryTranslator: SQLiteQueryTranslator
 
     public convenience init(databaseName: String = "database") throws {
         guard let documentsPath = getDocumentPath() else {
@@ -26,6 +27,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     internal init(connection: Connection) {
         self.connection = connection
+        self.queryTranslator = SQLiteQueryTranslator()
     }
 
     public func setUp(models: [Model.Type]) throws {
@@ -51,11 +53,10 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     public func save<M: Model>(_ model: M, completion: DataStoreCallback<M>) {
         let modelType = type(of: model)
-        let sql = getInsertStatement(for: modelType)
-        let values = model.sqlValues(for: modelType.schema.allFields.columns())
+        let query = queryTranslator.translateToInsert(from: model)
 
         do {
-            _ = try connection.prepare(sql).run(values)
+            _ = try connection.prepare(query.string).run(query.arguments)
             // TODO serialize result and create a new instance of the model
             // (some columns might be auto-generated after DB insert/update)
             completion(.result(model))
@@ -67,15 +68,9 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     public func query<M: Model>(_ modelType: M.Type,
                                 completion: DataStoreCallback<[M]>) {
         do {
-            let statement = getSelectStatement(for: modelType)
-            let queryStart = CFAbsoluteTimeGetCurrent()
-            let rows = try connection.prepare(statement).run()
-            print("==> Query Done")
-            print(CFAbsoluteTimeGetCurrent() - queryStart)
-            let serializeStart = CFAbsoluteTimeGetCurrent()
+            let query = queryTranslator.translateToQuery(from: modelType)
+            let rows = try connection.prepare(query.string).run(query.arguments)
             let result: [M] = try rows.convert(to: M.self)
-            print("==> Serialize Done")
-            print(CFAbsoluteTimeGetCurrent() - serializeStart)
             completion(.result(result))
         } catch {
             completion(.failure(causedBy: error))
@@ -192,18 +187,4 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 /// - Returns: the path to the user document directory.
 private func getDocumentPath() -> URL? {
     return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-}
-
-/// Join a list of table columns joined and formatted for readability.
-///
-/// - Parameter columns the list of column names
-/// - Parameter perLine max numbers of columns per line
-/// - Returns: a list of columns that can be used in `select` SQL statements
-internal func joinedAsSelectedColumns(_ columns: [String], perLine: Int = 3) -> String {
-    return columns.enumerated().reduce("") { partial, entry in
-        let spacer = entry.offset == 0 || entry.offset % perLine == 0 ? "\n  " : " "
-        let isFirstOrLast = entry.offset == 0 || entry.offset >= columns.count
-        let separator = isFirstOrLast ? "" : ",\(spacer)"
-        return partial + separator + entry.element
-    }
 }

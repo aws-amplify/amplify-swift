@@ -20,8 +20,9 @@ extension DataStoreCategory: DataStoreCategoryBehavior {
     }
 
     public func query<M: Model>(_ modelType: M.Type,
+                                withCriteria criteria: QueryCriteriaBuilder?,
                                 completion: DataStoreCallback<[M]>) {
-        plugin.query(modelType, completion: completion)
+        plugin.query(modelType, withCriteria: criteria, completion: completion)
     }
 
     public func delete<M: Model>(_ model: M,
