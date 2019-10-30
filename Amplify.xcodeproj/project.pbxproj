@@ -191,7 +191,6 @@
 		B92E03B92367CE7A006CEB8D /* Model+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03AB2367CE7A006CEB8D /* Model+Schema.swift */; };
 		B92E03BA2367CE7A006CEB8D /* Model+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */; };
 		B92E03C92367CFF3006CEB8D /* AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B92E03C02367CFF2006CEB8D /* AWSDataStoreCategoryPlugin.framework */; };
-		B92E03D22367CFF3006CEB8D /* AWSDataStoreCategoryPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = B92E03C22367CFF2006CEB8D /* AWSDataStoreCategoryPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B92E03D52367CFF3006CEB8D /* AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B92E03C02367CFF2006CEB8D /* AWSDataStoreCategoryPlugin.framework */; };
 		B92E03D62367CFF3006CEB8D /* AWSDataStoreCategoryPlugin.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B92E03C02367CFF2006CEB8D /* AWSDataStoreCategoryPlugin.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B92E03E72367D2A4006CEB8D /* StorageEngineBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03DE2367D2A4006CEB8D /* StorageEngineBehavior.swift */; };
@@ -208,6 +207,8 @@
 		B92E040723680E36006CEB8D /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03F32367D2BB006CEB8D /* Comment.swift */; };
 		B92E040823680E36006CEB8D /* Post+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03F42367D2BB006CEB8D /* Post+Schema.swift */; };
 		B92E040923680E36006CEB8D /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03F52367D2BB006CEB8D /* Post.swift */; };
+		B92E04112368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E04102368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests.swift */; };
+		B92E04132368FE5B006CEB8D /* AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B92E03C02367CFF2006CEB8D /* AWSDataStoreCategoryPlugin.framework */; };
 		C5C50BA1A2A489CE4977238C /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSS3StoragePluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A6F9B0E5C7D07F29BE4BEE9 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSS3StoragePluginTests.framework */; };
 		E9E4AB6175A0B21B46C875CE /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34A4D98AFFD4B65AEAE350EC /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework */; };
 		F5956702DE6E253A8CDA9B0C /* Pods_AmplifyTestApp_AWSPinpointAnalyticsPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7DF8E593856CA184D7C5F69 /* Pods_AmplifyTestApp_AWSPinpointAnalyticsPluginIntegrationTests.framework */; };
@@ -491,6 +492,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = FAC234D12279F8DA00424678;
 			remoteInfo = Amplify;
+		};
+		B92E04142368FE5B006CEB8D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B92E03BF2367CFF2006CEB8D;
+			remoteInfo = AWSDataStoreCategoryPlugin;
+		};
+		B92E04192368FE96006CEB8D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2125E2502319EC3000B3DEB5;
+			remoteInfo = AmplifyTestApp;
 		};
 		FA131AB42360FE070008381C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1035,7 +1050,6 @@
 		B92E03AB2367CE7A006CEB8D /* Model+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Model+Schema.swift"; sourceTree = "<group>"; };
 		B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Model+Codable.swift"; sourceTree = "<group>"; };
 		B92E03C02367CFF2006CEB8D /* AWSDataStoreCategoryPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSDataStoreCategoryPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B92E03C22367CFF2006CEB8D /* AWSDataStoreCategoryPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AWSDataStoreCategoryPlugin.h; sourceTree = "<group>"; };
 		B92E03C32367CFF2006CEB8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B92E03C82367CFF3006CEB8D /* AWSDataStoreCategoryPluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSDataStoreCategoryPluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B92E03D12367CFF3006CEB8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1053,6 +1067,9 @@
 		B92E03F32367D2BB006CEB8D /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		B92E03F42367D2BB006CEB8D /* Post+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post+Schema.swift"; sourceTree = "<group>"; };
 		B92E03F52367D2BB006CEB8D /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		B92E040E2368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSDataStoreCategoryPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B92E04102368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreCategoryPluginIntegrationTests.swift; sourceTree = "<group>"; };
+		B92E04122368FE5B006CEB8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BAFD88194E245D6B82399825 /* Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		BB548811E9281F8547D83681 /* Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		BCF5BF94BA714000C1C44713 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1362,6 +1379,14 @@
 			files = (
 				B92E03C92367CFF3006CEB8D /* AWSDataStoreCategoryPlugin.framework in Frameworks */,
 				FC9671570FB0BA0BC31F4019 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSDataStoreCategoryPluginTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B92E040B2368FE5B006CEB8D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B92E04132368FE5B006CEB8D /* AWSDataStoreCategoryPlugin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2127,6 +2152,7 @@
 			isa = PBXGroup;
 			children = (
 				B92E03C12367CFF2006CEB8D /* AWSDataStoreCategoryPlugin */,
+				B92E040F2368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests */,
 				B92E03CE2367CFF3006CEB8D /* AWSDataStoreCategoryPluginTests */,
 			);
 			path = DataStore;
@@ -2150,7 +2176,6 @@
 			children = (
 				B92E03DD2367D2A4006CEB8D /* Storage */,
 				B92E03E62367D2A4006CEB8D /* AWSDataStoreCategoryPlugin.swift */,
-				B92E03C22367CFF2006CEB8D /* AWSDataStoreCategoryPlugin.h */,
 				B92E03C32367CFF2006CEB8D /* Info.plist */,
 			);
 			path = AWSDataStoreCategoryPlugin;
@@ -2169,10 +2194,10 @@
 		B92E03DD2367D2A4006CEB8D /* Storage */ = {
 			isa = PBXGroup;
 			children = (
+				B92E03E12367D2A4006CEB8D /* SQLite */,
 				B92E03DE2367D2A4006CEB8D /* StorageEngineBehavior.swift */,
 				B92E03DF2367D2A4006CEB8D /* StorageEngineAdapter.swift */,
 				B92E03E02367D2A4006CEB8D /* StorageEngine.swift */,
-				B92E03E12367D2A4006CEB8D /* SQLite */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -2198,6 +2223,15 @@
 				B92E03F52367D2BB006CEB8D /* Post.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		B92E040F2368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests */ = {
+			isa = PBXGroup;
+			children = (
+				B92E04102368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests.swift */,
+				B92E04122368FE5B006CEB8D /* Info.plist */,
+			);
+			path = AWSDataStoreCategoryPluginIntegrationTests;
 			sourceTree = "<group>";
 		};
 		B9DD3F0B23552C4E00D62C65 /* DataStore */ = {
@@ -2607,6 +2641,7 @@
 				FA131ADE23610B6A0008381C /* AWSPluginsTestCommon.framework */,
 				B92E03C02367CFF2006CEB8D /* AWSDataStoreCategoryPlugin.framework */,
 				B92E03C82367CFF3006CEB8D /* AWSDataStoreCategoryPluginTests.xctest */,
+				B92E040E2368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2968,7 +3003,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B92E03D22367CFF3006CEB8D /* AWSDataStoreCategoryPlugin.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3224,6 +3258,25 @@
 			name = AWSDataStoreCategoryPluginTests;
 			productName = AWSDataStoreCategoryPluginTests;
 			productReference = B92E03C82367CFF3006CEB8D /* AWSDataStoreCategoryPluginTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		B92E040D2368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B92E04162368FE5C006CEB8D /* Build configuration list for PBXNativeTarget "AWSDataStoreCategoryPluginIntegrationTests" */;
+			buildPhases = (
+				B92E040A2368FE5B006CEB8D /* Sources */,
+				B92E040B2368FE5B006CEB8D /* Frameworks */,
+				B92E040C2368FE5B006CEB8D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B92E04152368FE5B006CEB8D /* PBXTargetDependency */,
+				B92E041A2368FE96006CEB8D /* PBXTargetDependency */,
+			);
+			name = AWSDataStoreCategoryPluginIntegrationTests;
+			productName = AWSDataStoreCategoryPluginIntegrationTests;
+			productReference = B92E040E2368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		FA131AA92360FE070008381C /* AWSPluginsCore */ = {
@@ -3496,6 +3549,10 @@
 						CreatedOnToolsVersion = 11.0;
 						TestTargetID = 2125E2502319EC3000B3DEB5;
 					};
+					B92E040D2368FE5B006CEB8D = {
+						CreatedOnToolsVersion = 11.0;
+						TestTargetID = 2125E2502319EC3000B3DEB5;
+					};
 					FA131AA92360FE070008381C = {
 						CreatedOnToolsVersion = 11.1;
 					};
@@ -3556,6 +3613,7 @@
 				FA7348AC235F6DF1004951A9 /* AWSAPICategoryPluginTests */,
 				FA7348C5235F6E20004951A9 /* AWSAPICategoryPluginIntegrationTests */,
 				B92E03BF2367CFF2006CEB8D /* AWSDataStoreCategoryPlugin */,
+				B92E040D2368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests */,
 				B92E03C72367CFF3006CEB8D /* AWSDataStoreCategoryPluginTests */,
 				21578CA4235946F400FF0F03 /* AWSPinpointAnalyticsPlugin */,
 				21578CAC235946F400FF0F03 /* AWSPinpointAnalyticsPluginTests */,
@@ -3636,6 +3694,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				B92E040623680E36006CEB8D /* schema.graphql in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B92E040C2368FE5B006CEB8D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5096,6 +5161,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B92E040A2368FE5B006CEB8D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B92E04112368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FA131AA62360FE070008381C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -5434,6 +5507,16 @@
 			isa = PBXTargetDependency;
 			target = FAC234D12279F8DA00424678 /* Amplify */;
 			targetProxy = B92E03FE2367D6F3006CEB8D /* PBXContainerItemProxy */;
+		};
+		B92E04152368FE5B006CEB8D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B92E03BF2367CFF2006CEB8D /* AWSDataStoreCategoryPlugin */;
+			targetProxy = B92E04142368FE5B006CEB8D /* PBXContainerItemProxy */;
+		};
+		B92E041A2368FE96006CEB8D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2125E2502319EC3000B3DEB5 /* AmplifyTestApp */;
+			targetProxy = B92E04192368FE96006CEB8D /* PBXContainerItemProxy */;
 		};
 		FA131AB52360FE070008381C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -6044,6 +6127,46 @@
 					"@loader_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSDataStoreCategoryPluginTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AmplifyTestApp.app/AmplifyTestApp";
+			};
+			name = Release;
+		};
+		B92E04172368FE5C006CEB8D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				INFOPLIST_FILE = AWSPlugins/DataStore/AWSDataStoreCategoryPluginIntegrationTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSDataStoreCategoryPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AmplifyTestApp.app/AmplifyTestApp";
+			};
+			name = Debug;
+		};
+		B92E04182368FE5C006CEB8D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				INFOPLIST_FILE = AWSPlugins/DataStore/AWSDataStoreCategoryPluginIntegrationTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSDataStoreCategoryPluginIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6740,6 +6863,15 @@
 			buildConfigurations = (
 				B92E03DB2367CFF3006CEB8D /* Debug */,
 				B92E03DC2367CFF3006CEB8D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B92E04162368FE5C006CEB8D /* Build configuration list for PBXNativeTarget "AWSDataStoreCategoryPluginIntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B92E04172368FE5C006CEB8D /* Debug */,
+				B92E04182368FE5C006CEB8D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

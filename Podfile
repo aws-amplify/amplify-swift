@@ -89,6 +89,10 @@ target "AmplifyTestApp" do
     inherit! :complete
   end
 
+  target "AWSDataStoreCategoryPluginIntegrationTests" do
+    inherit! :complete
+  end
+
   target "AWSPinpointAnalyticsPluginIntegrationTests" do
     inherit! :complete
     pod "AWSPinpoint", "~> #{AWS_SDK_VERSION}"
