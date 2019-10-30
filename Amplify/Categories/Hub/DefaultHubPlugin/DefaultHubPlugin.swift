@@ -39,7 +39,7 @@ final public class DefaultHubCategoryPlugin: HubCategoryPlugin {
     }
 
     /// Removes listeners and empties the message queue
-    public func reset(onComplete: @escaping (() -> Void)) {
+    public func reset(onComplete: @escaping BasicClosure) {
         dispatcher.destroy()
         onComplete()
     }

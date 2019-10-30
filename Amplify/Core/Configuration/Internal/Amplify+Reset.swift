@@ -33,6 +33,9 @@ extension Amplify {
                 DispatchQueue.global().async {
                     API.reset { group.leave() }
                 }
+            case .dataStore:
+                // TODO reset DataStore
+                break
             case .hub:
                 group.enter()
                 DispatchQueue.global().async {

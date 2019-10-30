@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 public enum AuthError {
     case identity(ErrorName, ErrorDescription, RecoverySuggestion)
     case unknown(ErrorDescription)

@@ -16,7 +16,7 @@ class MockLoggingCategoryPlugin: MessageReporter, LoggingCategoryPlugin {
         notify()
     }
 
-    func reset(onComplete: @escaping (() -> Void)) {
+    func reset(onComplete: @escaping BasicClosure) {
         notify("reset")
         onComplete()
     }
