@@ -8,8 +8,8 @@
 import Foundation
 
 public struct TranslateTextResult: ConvertResult {
-    let text: String
-    let targetLanguage: LanguageType
+    public let text: String
+    public let targetLanguage: LanguageType
 
     public init(text: String, targetLanguage: LanguageType) {
         self.text = text

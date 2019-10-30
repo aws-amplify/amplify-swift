@@ -34,3 +34,4 @@ public enum IdentifyType {
     case detectEntities
     case detectText
 }
+

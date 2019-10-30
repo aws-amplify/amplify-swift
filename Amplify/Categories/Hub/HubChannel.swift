@@ -55,6 +55,8 @@ extension HubChannel: Equatable {
             return true
         case (.storage, .storage):
             return true
+        case (.predictions, .predictions):
+            return true
         case (.custom(let lhsValue), .custom(let rhsValue)):
             return lhsValue == rhsValue
 
