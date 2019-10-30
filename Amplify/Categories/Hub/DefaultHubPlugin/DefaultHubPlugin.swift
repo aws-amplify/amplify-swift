@@ -7,7 +7,7 @@
 
 /// The default Hub plugin provided with the Amplify Framework
 ///
-/// **No guaranteed delivery time**
+/// **No guaranteed delivery order**
 ///
 /// DefaultHubCategoryPlugin distributes messages in order to listeners, but makes no guarantees about the order in
 /// which a listener is called.
@@ -39,7 +39,7 @@ final public class DefaultHubCategoryPlugin: HubCategoryPlugin {
     }
 
     /// Removes listeners and empties the message queue
-    public func reset(onComplete: @escaping (() -> Void)) {
+    public func reset(onComplete: @escaping BasicClosure) {
         dispatcher.destroy()
         onComplete()
     }

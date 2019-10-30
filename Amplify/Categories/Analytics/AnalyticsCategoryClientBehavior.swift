@@ -5,57 +5,54 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 /// Behavior of the Analytics category that clients will use
 public protocol AnalyticsCategoryClientBehavior {
 
-    /// Stop sending analytics events. The exact behavior of this API is dependent upon the plugin, but at a minimum,
-    /// the plugin must continue to accept analytics `record` events, to be sent when the client issues `enable`.
-    func disable()
+    /// Allows you to tie a user to their actions and record traits about them. It includes
+    /// an unique User ID and any optional traits you know about them like their email, name, etc.
+    ///
+    /// - Parameter identityId: The unique identifier for the user
+    /// - Parameter userProfile: User specific data (e.g. plan, accountType, email, age, location, etc)
+    func identifyUser(_ identityId: String, withProfile userProfile: AnalyticsUserProfile?)
 
-    /// Begin (or resume) sending analytics events.
+    /// Record the actions your users perform. Every action triggers what we call an “event”,
+    /// which can also have associated properties.
+    ///
+    /// - Parameter event: the event data. The way it is recorded depends on the service being used.
+    func record(event: AnalyticsEvent)
+
+    /// Utility to create an event from a string.
+    ///
+    /// - Parameter eventName: The name of the event.
+    func record(eventWithName eventName: String)
+
+    /// Register properties that will be recorded by all the subsequent `recordEvent` call.
+    /// Properties registered here can be overridden by the ones with the same
+    /// name when calling `record`. Examples of global properties would be `selectedPlan`, `campaignSource`
+    ///
+    /// - Parameter properties: The dictionary of property name to property values
+    func registerGlobalProperties(_ properties: [String: AnalyticsPropertyValue])
+
+    /// Registered global properties can be unregistered though this method. In case no keys are provided, *all*
+    /// registered global properties will be unregistered.
+    ///
+    /// - Parameter keys: a set of property names to unregister
+    func unregisterGlobalProperties(_ keys: Set<String>?)
+
+    /// Attempts to submit the locally stored events to the underlying service. Implementations do not guarantee that
+    /// all the stored data will be sent in one request. Some analytics services have hard limits on how much data
+    /// you can send at once.
+    func flushEvents()
+
+    /// Enable the analytics data collection. Useful to implement flows that require users to *opt-in*.
     func enable()
 
-    /// A convenience method to allow clients to record an AnalyticsEvent by specifying only the name. Internally, this
-    /// method creates a `BasicAnalyticsEvent` with the specified `name` and no attributes or metrics.
+    /// Disable the analytics data collection. Useful to implement flows that allow users to *opt-out*.
     ///
-    /// - Parameter name: The name of the event
-    func record(_ name: String)
-
-    /// Records an AnalyticsEvent. This method is synchronous, but this protocol does not provide a guarantee of
-    /// delivery. Instead, a successful return from this method means that the plugin has accepted the event and will
-    /// deliver it according to the rules of that plugin.
-    ///
-    /// - Parameter event: The AnalyticsEvent to record
-    func record(_ event: AnalyticsEvent)
-
-    /// Updates the metrics backend with the analytics profile associated with the current user on the current app
-    /// installation. The exact meaning of an "AnalyticsProfile" varies by plugin. For example, in AWSPinpoint, an
-    /// AnalyticsProfile maps exactly to an "Endpoint"--a union of user and device that uniquely identifies the user's
-    /// installation of your app on their specific device.
-    func update(analyticsProfile: AnalyticsProfile)
-}
-
-public protocol AnalyticsProfile { }
-
-extension AnalyticsCategory: AnalyticsCategoryClientBehavior {
-    public func disable() {
-        plugin.disable()
-    }
-
-    public func enable() {
-        plugin.enable()
-    }
-
-    public func record(_ name: String) {
-        plugin.record(name)
-    }
-
-    public func record(_ event: AnalyticsEvent) {
-        plugin.record(event)
-    }
-
-    public func update(analyticsProfile: AnalyticsProfile) {
-        plugin.update(analyticsProfile: analyticsProfile)
-    }
-
+    /// Some countries (e.g. countries in the EU) and/or audience (e.g. children) have specific rules
+    /// regarding user data collection, therefore implementation of this category must always offer the
+    /// possibility of disabling the data collection.
+    func disable()
 }
