@@ -1,0 +1,16 @@
+type Post @model {
+    id: ID!
+    title: String!
+    content: String!
+    createdAt: AWSDate!
+    updatedAt: AWSDate
+    draft: Boolean
+    comments: [Comment] @connected(name: "PostComment")
+}
+
+type Comment @model {
+    id: ID!
+    content: String!
+    createdAt: AWSDate!
+    post: Post @connected(name: "PostComment")
+}

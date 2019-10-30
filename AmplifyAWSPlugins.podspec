@@ -22,21 +22,27 @@ Pod::Spec.new do |s|
   
   s.requires_arc = true 
 
-  AWS_SDK_VERSION = "2.11.1"
-  AMPLIFY_VERSION = "0.0.1"
+  AWS_SDK_VERSION = '~> 2.12.0'
+  AMPLIFY_VERSION = '0.0.1'
   
-  s.subspec "AWSAPICategoryPlugin" do |ss|
+  s.subspec 'AWSAPICategoryPlugin' do |ss|
     ss.source_files = 'AWSPlugins/API/AWSAPICategoryPlugin/**/*.swift'
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
   end
 
-  s.subspec "AWSPinpointAnalyticsPlugin" do |ss|
+  s.subspec 'AWSDataStoreCategoryPlugin' do |ss|
+    ss.source_files = 'AWSPlugins/DataStore/AWSDataStoreCategoryPlugin/**/*.swift'
+    ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
+    ss.dependency 'SQLite.swift', '~> 0.12.0'
+  end
+
+  s.subspec 'AWSPinpointAnalyticsPlugin' do |ss|
     ss.source_files = 'AWSPlugins/Analytics/AWSPinpointAnalyticsPlugin/**/*.swift'
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'AWSPinpoint', AWS_SDK_VERSION
   end
 
-  s.subspec "AWSS3StoragePlugin" do |ss|
+  s.subspec 'AWSS3StoragePlugin' do |ss|
     ss.source_files = 'AWSPlugins/Storage/AWSS3StoragePlugin/**/*.swift'
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'AWSS3', AWS_SDK_VERSION
