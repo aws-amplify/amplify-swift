@@ -25,5 +25,9 @@ extension CoreMLPredictionsPlugin {
                          options: Any?) -> PredictionsIdentifyOperation {
         fatalError("Not implemented")
     }
+
+    func interpret(text: String, options: Any?) -> PredictionsInterpretOperation {
+        fatalError("Not implemented")
+    }
 }
 
