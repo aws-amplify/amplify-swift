@@ -1,7 +1,7 @@
 # Uncomment the next line to define a global platform for your project
 platform :ios, "11.0"
 
-AWS_SDK_VERSION = "2.12.1"
+AWS_SDK_VERSION = "2.12.0"
 
 target "Amplify" do
   # Comment the next line if you"re not using Swift and don"t want to use dynamic frameworks
@@ -47,16 +47,20 @@ target "Amplify" do
       pod "AWSPinpoint", "~> #{AWS_SDK_VERSION}"
     end
 
+    target "AWSS3StoragePlugin" do
+      inherit! :complete
+
+      pod "AWSS3", "~> #{AWS_SDK_VERSION}"
+    end
+
     target "AWSPredictionsPlugin" do
       inherit! :complete
 
       pod "AWSTranslate", "~> #{AWS_SDK_VERSION}"
     end
 
-    target "AWSS3StoragePlugin" do
+    target "CoreMLPredictionsPlugin" do
       inherit! :complete
-
-      pod "AWSS3", "~> #{AWS_SDK_VERSION}"
     end
 
     abstract_target "AWSPluginsTestConfigs" do
@@ -76,6 +80,12 @@ target "Amplify" do
       end
 
       target "AWSS3StoragePluginTests" do
+      end
+
+      target "AWSPredictionsPluginTests" do
+      end
+
+      target "CoreMLPredictionsPluginTests" do
       end
 
     end
@@ -107,6 +117,15 @@ target "AmplifyTestApp" do
   target "AWSS3StoragePluginIntegrationTests" do
     inherit! :complete
     pod "AWSS3", "~> #{AWS_SDK_VERSION}"
+  end
+
+  target "AWSPredictionsPluginIntegrationTests" do
+    inherit! :complete
+    pod "AWSTranslate", "~> #{AWS_SDK_VERSION}"
+  end
+
+  target "CoreMLPredictionsPluginIntegrationTests" do
+    inherit! :complete
   end
 
 end

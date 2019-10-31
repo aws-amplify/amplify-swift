@@ -24,7 +24,7 @@ Pod::Spec.new do |s|
   s.source_files = 'Amplify/**/*.swift'
 
   s.subspec 'AppSyncLocal' do |subspec|
-    subspec.source_files = 'AWSPlugins/AWSAppSyncLocalDataStorePlugin/**/*.swift'
+    subspec.source_files = 'AmplifyPlugins/AWSAppSyncLocalDataStorePlugin/**/*.swift'
     subspec.dependency 'SQLite.swift'
   end
 
