@@ -6,15 +6,30 @@
 //
 
 extension APICategory: APICategoryGraphQLBehavior {
-
-    public func graphql(apiName: String,
-                        operationType: GraphQLOperationType,
-                        document: String,
-                        listener: GraphQLOperation.EventListener?) -> GraphQLOperation {
-        plugin.graphql(apiName: apiName,
-                       operationType: operationType,
-                       document: document,
-                       listener: listener)
+    public func mutate<R>(apiName: String,
+                          document: String,
+                          variables: [String: Any]? = nil,
+                          responseType: R,
+                          listener: ((AsyncEvent<Void, GraphQLResponse<R.SerializedObject>, GraphQLError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R.SerializedObject>, GraphQLError> where R: ResponseType {
+            plugin.mutate(apiName: apiName,
+                          document: document,
+                          variables: variables,
+                          responseType: responseType,
+                          listener: listener)
     }
 
+    public func query<R: ResponseType>(apiName: String,
+                                       document: String,
+                                       variables: [String: Any]? = nil,
+                                       responseType: R,
+                                       listener: ((AsyncEvent<Void, GraphQLResponse<R.SerializedObject>, GraphQLError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R.SerializedObject>, GraphQLError> {
+
+            plugin.query(apiName: apiName,
+                         document: document,
+                         variables: variables,
+                         responseType: responseType,
+                         listener: listener)
+    }
 }

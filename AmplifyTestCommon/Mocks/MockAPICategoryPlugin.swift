@@ -8,6 +8,7 @@
 import Amplify
 
 class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
+
     var key: String {
         return "MockAPICategoryPlugin"
     }
@@ -21,17 +22,39 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         onComplete()
     }
 
-    func graphql(apiName: String,
-                 operationType: GraphQLOperationType,
-                 document: String,
-                 listener: GraphQLOperation.EventListener?) -> GraphQLOperation {
+    func mutate<R>(apiName: String,
+                   document: String,
+                   variables: [String: Any]?,
+                   responseType: R,
+                   listener: ((AsyncEvent<Void, GraphQLResponse<R.SerializedObject>, GraphQLError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R.SerializedObject>, GraphQLError> where R: ResponseType {
+
         notify("graphql")
         let options = GraphQLRequest.Options()
         let request = GraphQLRequest(apiName: apiName,
-                                     operationType: operationType,
+                                     operationType: .mutation,
                                      document: document,
+                                     variables: variables,
                                      options: options)
-        let operation = MockGraphQLOperation(request: request)
+        let operation = MockGraphQLOperation(request: request, responseType: responseType)
+        return operation
+    }
+
+    func query<R>(apiName: String,
+                  document: String,
+                  variables: [String: Any]?,
+                  responseType: R,
+                  listener: ((AsyncEvent<Void, GraphQLResponse<R.SerializedObject>, GraphQLError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R.SerializedObject>, GraphQLError> where R: ResponseType {
+
+        notify("graphql")
+        let options = GraphQLRequest.Options()
+        let request = GraphQLRequest(apiName: apiName,
+                                     operationType: .query,
+                                     document: document,
+                                     variables: variables,
+                                     options: options)
+        let operation = MockGraphQLOperation(request: request, responseType: responseType)
         return operation
     }
 
@@ -39,10 +62,25 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
              path: String,
              listener: APIOperation.EventListener?) -> APIOperation {
         notify("get")
-        let request = APIGetRequest(apiName: apiName,
-                                    path: path,
-                                    options: APIGetRequest.Options())
+        let request = APIRequest(apiName: apiName,
+                                 operationType: .get,
+                                 path: path,
+                                 options: APIRequest.Options())
         let operation = MockAPIGetOperation(request: request)
+        return operation
+    }
+
+    func post(apiName: String,
+              path: String,
+              body: String?,
+              listener: ((AsyncEvent<Void, Data, APIError>) -> Void)?) -> APIOperation {
+        notify("post")
+        let request = APIRequest(apiName: apiName,
+                                 operationType: .post,
+                                 path: path,
+                                 body: body,
+                                 options: APIRequest.Options())
+        let operation = MockAPIPostOperation(request: request)
         return operation
     }
 
@@ -57,22 +95,25 @@ class MockSecondAPICategoryPlugin: MockAPICategoryPlugin {
     }
 }
 
-class MockGraphQLOperation: AmplifyOperation<GraphQLRequest, Void, Codable, StorageError>,
-GraphQLOperation {
+class MockResponseType: ResponseType {
+    typealias SerializedObject = Data
+}
+
+class MockGraphQLOperation<R>: AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R.SerializedObject>, GraphQLError> where R: ResponseType {
     override func pause() {
     }
 
     override func resume() {
     }
 
-    init(request: Request) {
+    init(request: Request, responseType: R) {
         super.init(categoryType: .api,
-                   eventName: HubPayload.EventName.API.graphql,
+                   eventName: HubPayload.EventName.API.mutate,
                    request: request)
     }
 }
 
-class MockAPIGetOperation: AmplifyOperation<APIGetRequest, Void, Data, APIError>, APIOperation {
+class MockAPIGetOperation: AmplifyOperation<APIRequest, Void, Data, APIError>, APIOperation {
     override func pause() {
     }
 
@@ -82,6 +123,20 @@ class MockAPIGetOperation: AmplifyOperation<APIGetRequest, Void, Data, APIError>
     init(request: Request) {
         super.init(categoryType: .api,
                    eventName: HubPayload.EventName.API.get,
+                   request: request)
+    }
+}
+
+class MockAPIPostOperation: AmplifyOperation<APIRequest, Void, Data, APIError>, APIOperation {
+    override func pause() {
+    }
+
+    override func resume() {
+    }
+
+    init(request: Request) {
+        super.init(categoryType: .api,
+                   eventName: HubPayload.EventName.API.post,
                    request: request)
     }
 }

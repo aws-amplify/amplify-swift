@@ -79,6 +79,10 @@
 		21265DB22307389A004CCE39 /* AWSS3StoragePluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21265DB12307389A004CCE39 /* AWSS3StoragePluginTestBase.swift */; };
 		21265E262309D620004CCE39 /* AWSS3StoragePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21265E252309D620004CCE39 /* AWSS3StoragePlugin.swift */; };
 		212B679F498BE4D8EC6BD6A7 /* Pods_AmplifyTestApp_AWSAPICategoryPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903F5DCAC3A8DC19FE8D20E4 /* Pods_AmplifyTestApp_AWSAPICategoryPluginIntegrationTests.framework */; };
+		2142E86F2368FFE500C3E44C /* AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2142E86E2368FFE500C3E44C /* AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.swift */; };
+		2142E872236906E100C3E44C /* AWSAPICategoryPluginBaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2142E871236906E100C3E44C /* AWSAPICategoryPluginBaseTests.swift */; };
+		2142E87423690FCD00C3E44C /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2142E87323690FCD00C3E44C /* Todo.swift */; };
+		2142E8762369102100C3E44C /* ResponseType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2142E8752369102100C3E44C /* ResponseType.swift */; };
 		2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2144226B234BDD9B009357F7 /* StorageUploadFileRequest.swift */; };
 		2144226E234BDE23009357F7 /* StorageUploadFileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2144226D234BDE23009357F7 /* StorageUploadFileOperation.swift */; };
 		21442270234BE330009357F7 /* UploadSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2144226F234BE330009357F7 /* UploadSource.swift */; };
@@ -124,6 +128,17 @@
 		21687A5B236372F3004A056E /* AWSPinpointAnalyticsPluginClientBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A5A236372F3004A056E /* AWSPinpointAnalyticsPluginClientBehaviorTests.swift */; };
 		21687A5E2363731B004A056E /* MockAWSPinpoint+AnalyticsClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A5C2363731B004A056E /* MockAWSPinpoint+AnalyticsClientBehavior.swift */; };
 		21687A5F2363731B004A056E /* MockAWSPinpoint+TargetingClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A5D2363731B004A056E /* MockAWSPinpoint+TargetingClientBehavior.swift */; };
+		21687A6923639AE4004A056E /* APIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A6823639AE4004A056E /* APIRequest.swift */; };
+		21687ACA2367809D004A056E /* AWSGraphQLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687AC92367809D004A056E /* AWSGraphQLOperation.swift */; };
+		21687ACC236781A6004A056E /* GraphQLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687ACB236781A5004A056E /* GraphQLError.swift */; };
+		218B197E236AA10B0086BF26 /* IntegrationTestConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218B197D236AA10B0086BF26 /* IntegrationTestConfiguration.swift */; };
+		218B1980236AA8E00086BF26 /* TaskOperationBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218B197F236AA8E00086BF26 /* TaskOperationBehavior.swift */; };
+		218B1984236AA95E0086BF26 /* AWSGraphQLOperation+TaskOperationBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218B1983236AA95E0086BF26 /* AWSGraphQLOperation+TaskOperationBehavior.swift */; };
+		218B1986236AAB180086BF26 /* AWSAPIOperation+TaskOperationBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218B1985236AAB180086BF26 /* AWSAPIOperation+TaskOperationBehavior.swift */; };
+		218B1988236AC30A0086BF26 /* GraphQLResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218B1987236AC30A0086BF26 /* GraphQLResponse.swift */; };
+		218B198D236B62CE0086BF26 /* APIOperationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218B198C236B62CE0086BF26 /* APIOperationType.swift */; };
+		218B198F236B72A40086BF26 /* AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218B198E236B72A40086BF26 /* AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests.swift */; };
+		218B1991236B72F90086BF26 /* BlogPostComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218B1990236B72F90086BF26 /* BlogPostComment.swift */; };
 		2196FB5B23397BCB00F8EEB5 /* AWSS3StoragePluginGetDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2196FB5A23397BCB00F8EEB5 /* AWSS3StoragePluginGetDataResumabilityTests.swift */; };
 		2196FB5D23397BDF00F8EEB5 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2196FB5C23397BDF00F8EEB5 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift */; };
 		2196FB5F23397C0600F8EEB5 /* AWSS3StoragePluginPutDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2196FB5E23397C0600F8EEB5 /* AWSS3StoragePluginPutDataResumabilityTests.swift */; };
@@ -328,7 +343,6 @@
 		FAC428A2235F80000000F221 /* APICategory+GraphQLBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A1235F80000000F221 /* APICategory+GraphQLBehavior.swift */; };
 		FAC428A4235F802A0000F221 /* APICategory+InterceptorBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A3235F802A0000F221 /* APICategory+InterceptorBehavior.swift */; };
 		FAC428A6235F83770000F221 /* APIOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A5235F83770000F221 /* APIOperation.swift */; };
-		FAC428A8235F83A00000F221 /* APIGetRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC428A7235F83A00000F221 /* APIGetRequest.swift */; };
 		FAC62B7B2361167D0032CDF6 /* URLSessionBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC62B7A2361167D0032CDF6 /* URLSessionBehavior.swift */; };
 		FAC62B7E236119B80032CDF6 /* URLSessionDataTaskBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC62B7D236119B80032CDF6 /* URLSessionDataTaskBehavior.swift */; };
 		FAC679292329A5D1004DDFE8 /* SynchronizedQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC679282329A5D1004DDFE8 /* SynchronizedQueue.swift */; };
@@ -754,6 +768,10 @@
 		21265DB12307389A004CCE39 /* AWSS3StoragePluginTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginTestBase.swift; sourceTree = "<group>"; };
 		21265DB32307389A004CCE39 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21265E252309D620004CCE39 /* AWSS3StoragePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePlugin.swift; sourceTree = "<group>"; };
+		2142E86E2368FFE500C3E44C /* AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.swift; sourceTree = "<group>"; };
+		2142E871236906E100C3E44C /* AWSAPICategoryPluginBaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginBaseTests.swift; sourceTree = "<group>"; };
+		2142E87323690FCD00C3E44C /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
+		2142E8752369102100C3E44C /* ResponseType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseType.swift; sourceTree = "<group>"; };
 		2144226B234BDD9B009357F7 /* StorageUploadFileRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageUploadFileRequest.swift; sourceTree = "<group>"; };
 		2144226D234BDE23009357F7 /* StorageUploadFileOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageUploadFileOperation.swift; sourceTree = "<group>"; };
 		2144226F234BE330009357F7 /* UploadSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSource.swift; sourceTree = "<group>"; };
@@ -803,6 +821,17 @@
 		21687A5A236372F3004A056E /* AWSPinpointAnalyticsPluginClientBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginClientBehaviorTests.swift; sourceTree = "<group>"; };
 		21687A5C2363731B004A056E /* MockAWSPinpoint+AnalyticsClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MockAWSPinpoint+AnalyticsClientBehavior.swift"; sourceTree = "<group>"; };
 		21687A5D2363731B004A056E /* MockAWSPinpoint+TargetingClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MockAWSPinpoint+TargetingClientBehavior.swift"; sourceTree = "<group>"; };
+		21687A6823639AE4004A056E /* APIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequest.swift; sourceTree = "<group>"; };
+		21687AC92367809D004A056E /* AWSGraphQLOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSGraphQLOperation.swift; sourceTree = "<group>"; };
+		21687ACB236781A5004A056E /* GraphQLError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLError.swift; sourceTree = "<group>"; };
+		218B197D236AA10B0086BF26 /* IntegrationTestConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegrationTestConfiguration.swift; sourceTree = "<group>"; };
+		218B197F236AA8E00086BF26 /* TaskOperationBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskOperationBehavior.swift; sourceTree = "<group>"; };
+		218B1983236AA95E0086BF26 /* AWSGraphQLOperation+TaskOperationBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSGraphQLOperation+TaskOperationBehavior.swift"; sourceTree = "<group>"; };
+		218B1985236AAB180086BF26 /* AWSAPIOperation+TaskOperationBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAPIOperation+TaskOperationBehavior.swift"; sourceTree = "<group>"; };
+		218B1987236AC30A0086BF26 /* GraphQLResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLResponse.swift; sourceTree = "<group>"; };
+		218B198C236B62CE0086BF26 /* APIOperationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIOperationType.swift; sourceTree = "<group>"; };
+		218B198E236B72A40086BF26 /* AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests.swift; sourceTree = "<group>"; };
+		218B1990236B72F90086BF26 /* BlogPostComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlogPostComment.swift; sourceTree = "<group>"; };
 		2196FB5A23397BCB00F8EEB5 /* AWSS3StoragePluginGetDataResumabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginGetDataResumabilityTests.swift; sourceTree = "<group>"; };
 		2196FB5C23397BDF00F8EEB5 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginDownloadFileResumabilityTests.swift; sourceTree = "<group>"; };
 		2196FB5E23397C0600F8EEB5 /* AWSS3StoragePluginPutDataResumabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginPutDataResumabilityTests.swift; sourceTree = "<group>"; };
@@ -1143,7 +1172,6 @@
 		FAC428A1235F80000000F221 /* APICategory+GraphQLBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+GraphQLBehavior.swift"; sourceTree = "<group>"; };
 		FAC428A3235F802A0000F221 /* APICategory+InterceptorBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+InterceptorBehavior.swift"; sourceTree = "<group>"; };
 		FAC428A5235F83770000F221 /* APIOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIOperation.swift; sourceTree = "<group>"; };
-		FAC428A7235F83A00000F221 /* APIGetRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIGetRequest.swift; sourceTree = "<group>"; };
 		FAC62B7A2361167D0032CDF6 /* URLSessionBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionBehavior.swift; sourceTree = "<group>"; };
 		FAC62B7D236119B80032CDF6 /* URLSessionDataTaskBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionDataTaskBehavior.swift; sourceTree = "<group>"; };
 		FAC679282329A5D1004DDFE8 /* SynchronizedQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedQueue.swift; sourceTree = "<group>"; };
@@ -1530,6 +1558,15 @@
 			path = AWSS3StoragePluginTests;
 			sourceTree = "<group>";
 		};
+		2142E8702368FFFB00C3E44C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				218B1990236B72F90086BF26 /* BlogPostComment.swift */,
+				2142E87323690FCD00C3E44C /* Todo.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		21578CA6235946F400FF0F03 /* AWSPinpointAnalyticsPlugin */ = {
 			isa = PBXGroup;
 			children = (
@@ -1664,6 +1701,15 @@
 				21687A5823637272004A056E /* AnalyticsErrorHelper.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		218B1989236AC3150086BF26 /* Response */ = {
+			isa = PBXGroup;
+			children = (
+				218B1987236AC30A0086BF26 /* GraphQLResponse.swift */,
+				2142E8752369102100C3E44C /* ResponseType.swift */,
+			);
+			path = Response;
 			sourceTree = "<group>";
 		};
 		2196FB6223397C2A00F8EEB5 /* ResumabilityTests */ = {
@@ -2140,6 +2186,10 @@
 			isa = PBXGroup;
 			children = (
 				FA327585235FBB8B00692B3A /* AWSAPIOperation.swift */,
+				218B1985236AAB180086BF26 /* AWSAPIOperation+TaskOperationBehavior.swift */,
+				21687AC92367809D004A056E /* AWSGraphQLOperation.swift */,
+				218B1983236AA95E0086BF26 /* AWSGraphQLOperation+TaskOperationBehavior.swift */,
+				218B197F236AA8E00086BF26 /* TaskOperationBehavior.swift */,
 			);
 			path = Operation;
 			sourceTree = "<group>";
@@ -2220,6 +2270,7 @@
 			isa = PBXGroup;
 			children = (
 				FA6BC86A235F57920001A882 /* APIError.swift */,
+				21687ACB236781A5004A056E /* GraphQLError.swift */,
 			);
 			path = Error;
 			sourceTree = "<group>";
@@ -2236,7 +2287,9 @@
 		FA6BC876235F5C370001A882 /* Request */ = {
 			isa = PBXGroup;
 			children = (
-				FAC428A7235F83A00000F221 /* APIGetRequest.swift */,
+				218B198C236B62CE0086BF26 /* APIOperationType.swift */,
+				21687A6823639AE4004A056E /* APIRequest.swift */,
+				FA6BC86E235F5B680001A882 /* GraphQLOperationType.swift */,
 				FA6BC874235F5C270001A882 /* GraphQLRequest.swift */,
 			);
 			path = Request;
@@ -2290,8 +2343,13 @@
 		FA7348C7235F6E20004951A9 /* AWSAPICategoryPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				2142E871236906E100C3E44C /* AWSAPICategoryPluginBaseTests.swift */,
+				218B198E236B72A40086BF26 /* AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests.swift */,
 				FA327588235FBF0800692B3A /* AWSAPICategoryPluginGetTests.swift */,
+				2142E86E2368FFE500C3E44C /* AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.swift */,
 				FA7348CA235F6E20004951A9 /* Info.plist */,
+				218B197D236AA10B0086BF26 /* IntegrationTestConfiguration.swift */,
+				2142E8702368FFFB00C3E44C /* Models */,
 			);
 			path = AWSAPICategoryPluginIntegrationTests;
 			sourceTree = "<group>";
@@ -2437,17 +2495,17 @@
 		FAC234FB227A053D00424678 /* API */ = {
 			isa = PBXGroup;
 			children = (
+				FAC234FF227A053D00424678 /* APICategory.swift */,
+				FA6BC86C235F5AE30001A882 /* APICategory+HubPayloadEventName.swift */,
+				FA09B9462322CBA7000E064D /* APICategoryConfiguration.swift */,
+				FAC234FD227A053D00424678 /* APICategoryPlugin.swift */,
 				FA6BC879235F5CDB0001A882 /* ClientBehavior */,
 				FA6BC870235F5BA00001A882 /* Error */,
 				FAA9FC3C23620CED0012638A /* Interceptor */,
 				FA09B9352321A32D000E064D /* Internal */,
 				FA6BC873235F5BE80001A882 /* Operation */,
 				FA6BC876235F5C370001A882 /* Request */,
-				FAC234FF227A053D00424678 /* APICategory.swift */,
-				FA6BC86C235F5AE30001A882 /* APICategory+HubPayloadEventName.swift */,
-				FA09B9462322CBA7000E064D /* APICategoryConfiguration.swift */,
-				FAC234FD227A053D00424678 /* APICategoryPlugin.swift */,
-				FA6BC86E235F5B680001A882 /* GraphQLOperationType.swift */,
+				218B1989236AC3150086BF26 /* Response */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -4667,21 +4725,25 @@
 			files = (
 				FA327578235FB33A00692B3A /* AWSAPICategoryPlugin+GraphQLBehavior.swift in Sources */,
 				FAA9FC2D2361EADD0012638A /* URLSession+URLSessionBehavior.swift in Sources */,
+				218B1986236AAB180086BF26 /* AWSAPIOperation+TaskOperationBehavior.swift in Sources */,
 				FA32756E235FAF0500692B3A /* AWSAPICategoryPlugin.swift in Sources */,
 				FAA9FC2B2361E8F90012638A /* URLSessionBehaviorDelegate.swift in Sources */,
 				FAC62B7E236119B80032CDF6 /* URLSessionDataTaskBehavior.swift in Sources */,
 				FAA9FC2F2361EB0A0012638A /* URLSessionTask+URLSessionTaskBehavior.swift in Sources */,
 				FAAB804523624BEF00B182CF /* APIKeyURLRequestInterceptor.swift in Sources */,
 				FAA9FC332361F63E0012638A /* URLSessionFactory.swift in Sources */,
+				218B1984236AA95E0086BF26 /* AWSGraphQLOperation+TaskOperationBehavior.swift in Sources */,
 				FA327586235FBB8B00692B3A /* AWSAPIOperation.swift in Sources */,
 				FAC62B7B2361167D0032CDF6 /* URLSessionBehavior.swift in Sources */,
 				FADB3A64236124ED006D6FE9 /* OperationTaskMapper.swift in Sources */,
+				21687ACA2367809D004A056E /* AWSGraphQLOperation.swift in Sources */,
 				FA327572235FB03C00692B3A /* AWSAPICategoryPlugin+Configure.swift in Sources */,
 				FA327576235FB13700692B3A /* AWSAPICategoryPlugin+Reset.swift in Sources */,
 				FAA9FC352361F9270012638A /* AWSAPICategoryPlugin+URLSessionDelegate.swift in Sources */,
 				FA327570235FAFE700692B3A /* AWSAPICategoryPlugin+RESTBehavior.swift in Sources */,
 				FA32757A235FB36C00692B3A /* AWSAPICategoryPlugin+InterceptorBehavior.swift in Sources */,
 				FAA9FC37236203AF0012638A /* AWSAPICategoryPlugin+URLSessionBehaviorDelegate.swift in Sources */,
+				218B1980236AA8E00086BF26 /* TaskOperationBehavior.swift in Sources */,
 				FAAB80582362526D00B182CF /* AWSAPICategoryPluginError.swift in Sources */,
 				FAAB803F2362153E00B182CF /* AWSAPICategoryPluginConfig.swift in Sources */,
 			);
@@ -4701,6 +4763,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA32758A23608F3A00692B3A /* AWSAPICategoryPluginGetTests.swift in Sources */,
+				2142E86F2368FFE500C3E44C /* AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.swift in Sources */,
+				218B1991236B72F90086BF26 /* BlogPostComment.swift in Sources */,
+				218B198F236B72A40086BF26 /* AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests.swift in Sources */,
+				218B197E236AA10B0086BF26 /* IntegrationTestConfiguration.swift in Sources */,
+				2142E872236906E100C3E44C /* AWSAPICategoryPluginBaseTests.swift in Sources */,
+				2142E87423690FCD00C3E44C /* Todo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4717,6 +4785,7 @@
 				FA9FB780232AA11A00C04D32 /* HubChannelDispatcher.swift in Sources */,
 				FA315298233D644F00DE78E7 /* StorageGetDataRequest.swift in Sources */,
 				FA4E730A232828EA003B8EEB /* Amplify+Reset.swift in Sources */,
+				218B198D236B62CE0086BF26 /* APIOperationType.swift in Sources */,
 				FA6BC87B235F5D240001A882 /* APICategoryGraphQLBehavior.swift in Sources */,
 				FA6BC86B235F57920001A882 /* APIError.swift in Sources */,
 				216879FE23636A0A004A056E /* RepeatingTimer.swift in Sources */,
@@ -4735,12 +4804,12 @@
 				FAC0A29822B3DE4800B50912 /* HubPublisher.swift in Sources */,
 				FAC428A0235F7F980000F221 /* APICategory+RESTBehavior.swift in Sources */,
 				FAC23548227A055200424678 /* Category.swift in Sources */,
-				FAC428A8235F83A00000F221 /* APIGetRequest.swift in Sources */,
 				FACA35ED2326BB54000E74F6 /* AmplifyConfigurationInitialization.swift in Sources */,
 				FAA9FC3B23620CE50012638A /* URLRequestInterceptor.swift in Sources */,
 				FA09B9382321A359000E064D /* LoggingCategory+CategoryConfigurable.swift in Sources */,
 				FAC23525227A053D00424678 /* LogLevel.swift in Sources */,
 				FA56F72322B14B420039754A /* Cancellable.swift in Sources */,
+				2142E8762369102100C3E44C /* ResponseType.swift in Sources */,
 				FA6BC872235F5BD60001A882 /* GraphQLOperation.swift in Sources */,
 				FAF1B88423392F7C007F1435 /* ConcurrentDispatcher.swift in Sources */,
 				21687A41236371E1004A056E /* AnalyticsError.swift in Sources */,
@@ -4795,11 +4864,14 @@
 				FA76A2D12342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift in Sources */,
 				FAC0A29D22B3E63000B50912 /* HubDispatchDestination.swift in Sources */,
 				FAC23546227A055200424678 /* AmplifyError.swift in Sources */,
+				21687ACC236781A6004A056E /* GraphQLError.swift in Sources */,
 				FA09B9492322CBD5000E064D /* HubCategoryConfiguration.swift in Sources */,
 				21D1CE8C2334233F0003BAA8 /* AuthError.swift in Sources */,
 				FAC0A2B222B4402000B50912 /* StorageCategory+ClientBehavior.swift in Sources */,
+				21687A6923639AE4004A056E /* APIRequest.swift in Sources */,
 				FA4E730C23282917003B8EEB /* Amplify+Resolve.swift in Sources */,
 				FAB9D811233BF5F600928AA9 /* AmplifyOperationContext.swift in Sources */,
+				218B1988236AC30A0086BF26 /* GraphQLResponse.swift in Sources */,
 				FA56F72522B14B6A0039754A /* Resumable.swift in Sources */,
 				21FFF997230C96CB005878EA /* StorageRemoveOperation.swift in Sources */,
 				FAC2351C227A053D00424678 /* APICategoryPlugin.swift in Sources */,

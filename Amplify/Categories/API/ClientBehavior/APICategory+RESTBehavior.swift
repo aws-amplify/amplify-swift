@@ -15,4 +15,10 @@ extension APICategory: APICategoryRESTBehavior {
                           listener: listener)
     }
 
+    public func post(apiName: String,
+                     path: String,
+                     body: String?,
+                     listener: APIOperation.EventListener?) -> APIOperation {
+        return plugin.post(apiName: apiName, path: path, body: body, listener: listener)
+    }
 }

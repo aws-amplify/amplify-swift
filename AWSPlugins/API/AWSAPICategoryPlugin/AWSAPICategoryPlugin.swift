@@ -9,6 +9,7 @@ import Amplify
 import AWSPluginsCore
 
 final public class AWSAPICategoryPlugin: NSObject, APICategoryPlugin {
+
     public var key: PluginKey {
         return "AWSAPICategoryPlugin"
     }
@@ -28,10 +29,14 @@ final public class AWSAPICategoryPlugin: NSObject, APICategoryPlugin {
     /// Maps APIOperations to URLSessionTaskBehavior
     var mapper: OperationTaskMapper
 
+    /// A queue that regulates the execution of operations.
+    var queue: OperationQueue!
+
     public init(sessionFactory: URLSessionBehaviorFactory) {
         self.mapper = OperationTaskMapper()
         super.init()
         self.session = sessionFactory.makeSession(withDelegate: self)
+        self.queue = OperationQueue()
     }
 
     override public init() {
@@ -41,6 +46,6 @@ final public class AWSAPICategoryPlugin: NSObject, APICategoryPlugin {
         let configuration = URLSessionConfiguration.default
         let factory = URLSessionFactory(configuration: configuration, delegateQueue: nil)
         self.session = factory.makeSession(withDelegate: self)
+        self.queue = OperationQueue()
     }
-
 }

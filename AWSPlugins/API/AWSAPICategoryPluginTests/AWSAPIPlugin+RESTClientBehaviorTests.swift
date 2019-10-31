@@ -239,5 +239,4 @@ class MockURLSessionTask: URLSessionDataTaskBehavior {
     func resume() {
         onResume?()
     }
-
 }

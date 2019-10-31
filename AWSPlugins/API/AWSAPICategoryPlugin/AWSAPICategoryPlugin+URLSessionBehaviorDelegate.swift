@@ -12,13 +12,17 @@ extension AWSAPICategoryPlugin: URLSessionBehaviorDelegate {
                                    dataTaskBehavior: URLSessionDataTaskBehavior,
                                    didCompleteWithError error: Error?) {
         let operation = mapper.operation(for: dataTaskBehavior)
-        operation?.didComplete(with: error)
+        if let operation = operation {
+            operation.complete(with: error)
+        }
     }
 
     public func urlSessionBehavior(_ session: URLSessionBehavior,
                                    dataTaskBehavior: URLSessionDataTaskBehavior,
                                    didReceive data: Data) {
         let operation = mapper.operation(for: dataTaskBehavior)
-        operation?.didReceive(data)
+        if let operation = operation {
+            operation.updateProgress(data)
+        }
     }
 }
