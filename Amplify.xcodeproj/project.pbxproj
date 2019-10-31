@@ -1860,7 +1860,7 @@
 			path = Error;
 			sourceTree = "<group>";
 		};
-		21FFF9B9230DBEF8005878EA /* AWSPlugins */ = {
+		21FFF9B9230DBEF8005878EA /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
 				FA473EB52360E38700239011 /* Analytics */,
@@ -1869,7 +1869,7 @@
 				B92E039D2367CE2D006CEB8D /* DataStore */,
 				FA473EB62360E39300239011 /* Storage */,
 			);
-			path = AWSPlugins;
+			path = Plugins;
 			sourceTree = "<group>";
 		};
 		21FFF9BA230DD304005878EA /* Operation */ = {
@@ -2611,7 +2611,7 @@
 				FAC234DF2279F8DA00424678 /* AmplifyTests */,
 				FACA36052327FBD4000E74F6 /* AmplifyTestCommon */,
 				FACA35F32327FB14000E74F6 /* AmplifyFunctionalTests */,
-				21FFF9B9230DBEF8005878EA /* AWSPlugins */,
+				21FFF9B9230DBEF8005878EA /* Plugins */,
 				2125E2522319EC3100B3DEB5 /* AmplifyTestApp */,
 				FAC234D32279F8DA00424678 /* Products */,
 				3687F9047D3AA33BCC710C97 /* Pods */,
