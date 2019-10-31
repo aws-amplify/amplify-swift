@@ -58,17 +58,17 @@ class AWSTranslateService: AWSTranslateServiceBehaviour {
         request?.sourceLanguageCode = "en"
         request?.targetLanguageCode = "it"
         request?.text = text
-        self.translateBehavior.translateText(request: request!).continueWith { (task) -> Any? in
+        translateBehavior.translateText(request: request!).continueWith { (task) -> Any? in
             if let result = task.result?.translatedText {
-                print (result)
-                onEvent(.completed(TranslateTextResult(text:(task.result?.translatedText!)!, targetLanguage: .italian)))
+                print(result)
+                onEvent(.completed(TranslateTextResult(text: (task.result?.translatedText!)!, targetLanguage: .italian)))
             } else {
-                print (task.error)
+                print(task.error)
             }
 
 
             return nil
         }
-        
+
     }
 }

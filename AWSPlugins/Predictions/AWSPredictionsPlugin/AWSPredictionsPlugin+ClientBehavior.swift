@@ -10,7 +10,7 @@ import CoreGraphics
 import Amplify
 
 extension AWSPredictionsPlugin {
-    
+
     public func convert(textToTranslate: String,
                         language: LanguageType,
                         targetLanguage: LanguageType,

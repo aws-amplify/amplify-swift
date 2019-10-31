@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B490D308235FD73900370012"
+               BlueprintIdentifier = "B49403F9236A2F8800BC7C15"
                BuildableName = "AWSPredictionsPlugin.framework"
                BlueprintName = "AWSPredictionsPlugin"
                ReferencedContainer = "container:Amplify.xcodeproj">
@@ -50,7 +50,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B490D308235FD73900370012"
+            BlueprintIdentifier = "B49403F9236A2F8800BC7C15"
             BuildableName = "AWSPredictionsPlugin.framework"
             BlueprintName = "AWSPredictionsPlugin"
             ReferencedContainer = "container:Amplify.xcodeproj">

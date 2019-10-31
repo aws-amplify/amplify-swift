@@ -13,9 +13,9 @@ public struct PredictionsTranslateTextRequest: AmplifyOperationRequest, Predicti
     public let options: Options
 
     public let textToTranslate: String
-    
+
     public let targetLanguage: LanguageType
-    
+
     public let language: LanguageType
 
     public init(textToTranslate: String,
@@ -30,7 +30,7 @@ public struct PredictionsTranslateTextRequest: AmplifyOperationRequest, Predicti
 }
 
 public extension PredictionsTranslateTextRequest {
-    
+
     struct Options {
         public let callType: CallType
         public init(callType: CallType = .auto) {

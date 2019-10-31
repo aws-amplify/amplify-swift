@@ -31,7 +31,7 @@ public enum CategoryType: String {
     /// Upload and download files from the cloud
     case storage
 
-    /// Prediction 
+    /// Prediction
     case predictions
 }
 

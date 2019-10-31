@@ -65,9 +65,9 @@ PredictionsTranslateTextOperation {
     private func dispatch(_ result: TranslateTextResult) {
         let asyncEvent = AsyncEvent<Void, TranslateTextResult, PredictionsError>.completed(result)
         dispatch(event: asyncEvent)
-        
+
     }
-    
+
     private func dispatch(_ error: PredictionsError) {
         let asyncEvent = AsyncEvent<Void, TranslateTextResult, PredictionsError>.failed(error)
         dispatch(event: asyncEvent)

@@ -14,11 +14,11 @@
 /// `Logging.debug()`) without first registering plugins via `Amplify.add(plugin:)` and configuring Amplify via
 /// `Amplify.configure()`. Such access will cause a preconditionFailure.
 public class Amplify {
-    
+
     /// If `true`, `configure()` has already been invoked, and subsequent calls to `configure` will throw a
     /// ConfigurationError.amplifyAlreadyConfigured error.
     static var isConfigured = false
-    
+
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset
     public static internal(set) var Analytics = AnalyticsCategory()
     public static internal(set) var API = APICategory()
@@ -27,7 +27,7 @@ public class Amplify {
     public static internal(set) var Logging = LoggingCategory()
     public static internal(set) var Storage = StorageCategory()
     public static internal(set) var Predictions = PredictionsCategory()
-    
+
     /// Adds `plugin` to the Analytics category
     ///
     /// - Parameter plugin: The AnalyticsCategoryPlugin to add
@@ -53,5 +53,5 @@ public class Amplify {
                 "Verify that the library version is correct and supports the plugin's category.")
         }
     }
-    
+
 }

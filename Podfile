@@ -1,7 +1,7 @@
 # Uncomment the next line to define a global platform for your project
 platform :ios, "11.0"
 
-AWS_SDK_VERSION = "2.12.0"
+AWS_SDK_VERSION = "2.12.1"
 
 target "Amplify" do
   # Comment the next line if you"re not using Swift and don"t want to use dynamic frameworks
@@ -45,6 +45,12 @@ target "Amplify" do
       inherit! :complete
 
       pod "AWSPinpoint", "~> #{AWS_SDK_VERSION}"
+    end
+
+    target "AWSPredictionsPlugin" do
+      inherit! :complete
+
+      pod "AWSTranslate", "~> #{AWS_SDK_VERSION}"
     end
 
     target "AWSS3StoragePlugin" do
