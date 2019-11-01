@@ -2508,6 +2508,13 @@
 			path = Error;
 			sourceTree = "<group>";
 		};
+		B4D38541236C9BF40014653D /* Predictions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Predictions;
+			sourceTree = "<group>";
+		};
 		B92E039D2367CE2D006CEB8D /* DataStore */ = {
 			isa = PBXGroup;
 			children = (
@@ -3152,6 +3159,7 @@
 				FAC23555227A056600424678 /* API */,
 				FAC23584227A442000424678 /* Hub */,
 				FAC23559227A056600424678 /* Logging */,
+				B4D38541236C9BF40014653D /* Predictions */,
 				FAC23551227A056600424678 /* Storage */,
 			);
 			path = CategoryTests;

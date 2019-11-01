@@ -11,6 +11,7 @@ import CoreGraphics
 /// Behavior of the Predictions category that clients will use
 public protocol PredictionsCategoryClientBehavior {
 
+    //TOOD: Update the api names after final review
     // translate
     func convert(textToTranslate: String,
                  language: LanguageType,
@@ -23,6 +24,7 @@ public protocol PredictionsCategoryClientBehavior {
                   options: Any?) -> PredictionsIdentifyOperation
 }
 
+// TODO: Move these enums to a separate file
 public enum LanguageType: String {
     case english = "en"
     case italian = "it"
@@ -34,4 +36,3 @@ public enum IdentifyType {
     case detectEntities
     case detectText
 }
-
