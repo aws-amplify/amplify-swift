@@ -139,6 +139,7 @@
 		218B198D236B62CE0086BF26 /* APIOperationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218B198C236B62CE0086BF26 /* APIOperationType.swift */; };
 		218B198F236B72A40086BF26 /* AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218B198E236B72A40086BF26 /* AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests.swift */; };
 		218B1991236B72F90086BF26 /* BlogPostComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218B1990236B72F90086BF26 /* BlogPostComment.swift */; };
+		218B1993236BE9760086BF26 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218B1992236BE9760086BF26 /* Common.swift */; };
 		2196FB5B23397BCB00F8EEB5 /* AWSS3StoragePluginGetDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2196FB5A23397BCB00F8EEB5 /* AWSS3StoragePluginGetDataResumabilityTests.swift */; };
 		2196FB5D23397BDF00F8EEB5 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2196FB5C23397BDF00F8EEB5 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift */; };
 		2196FB5F23397C0600F8EEB5 /* AWSS3StoragePluginPutDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2196FB5E23397C0600F8EEB5 /* AWSS3StoragePluginPutDataResumabilityTests.swift */; };
@@ -832,6 +833,7 @@
 		218B198C236B62CE0086BF26 /* APIOperationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIOperationType.swift; sourceTree = "<group>"; };
 		218B198E236B72A40086BF26 /* AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests.swift; sourceTree = "<group>"; };
 		218B1990236B72F90086BF26 /* BlogPostComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlogPostComment.swift; sourceTree = "<group>"; };
+		218B1992236BE9760086BF26 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		2196FB5A23397BCB00F8EEB5 /* AWSS3StoragePluginGetDataResumabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginGetDataResumabilityTests.swift; sourceTree = "<group>"; };
 		2196FB5C23397BDF00F8EEB5 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginDownloadFileResumabilityTests.swift; sourceTree = "<group>"; };
 		2196FB5E23397C0600F8EEB5 /* AWSS3StoragePluginPutDataResumabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginPutDataResumabilityTests.swift; sourceTree = "<group>"; };
@@ -1562,6 +1564,7 @@
 			isa = PBXGroup;
 			children = (
 				218B1990236B72F90086BF26 /* BlogPostComment.swift */,
+				218B1992236BE9760086BF26 /* Common.swift */,
 				2142E87323690FCD00C3E44C /* Todo.swift */,
 			);
 			path = Models;
@@ -4762,6 +4765,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				218B1993236BE9760086BF26 /* Common.swift in Sources */,
 				FA32758A23608F3A00692B3A /* AWSAPICategoryPluginGetTests.swift in Sources */,
 				2142E86F2368FFE500C3E44C /* AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.swift in Sources */,
 				218B1991236B72F90086BF26 /* BlogPostComment.swift in Sources */,

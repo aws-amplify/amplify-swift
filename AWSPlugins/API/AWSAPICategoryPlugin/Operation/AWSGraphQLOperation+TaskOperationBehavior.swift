@@ -92,7 +92,7 @@ extension AWSGraphQLOperation: TaskOperationBehavior {
         }
 
         // 5. Make sure the data is an object (meaning, the keys are the query names)
-        guard case .object(var dataDict) = dataObject else {
+        guard case .object(let dataDict) = dataObject else {
             dispatch(event: .failed(GraphQLError.unknown("Failed to case data object to dict",
                                                          "Service issue")))
             finish()
@@ -122,6 +122,7 @@ extension AWSGraphQLOperation: TaskOperationBehavior {
                 let response = GraphQLResponse(data: dataResponse, errors: errors)
                 dispatch(event: .completed(response))
                 finish()
+
             } catch let decodingError as DecodingError {
                 let error = APIErrorMapper.handleDecodingError(error: decodingError)
                 dispatch(event: .failed(error))

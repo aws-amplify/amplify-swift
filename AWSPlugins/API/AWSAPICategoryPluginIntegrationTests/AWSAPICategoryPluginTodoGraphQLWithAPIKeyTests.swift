@@ -382,7 +382,6 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
 
     }
 
-    // Query with
     // MARK: Common functionality
 
     func createTodo(id: String, name: String, description: String) -> Todo? {

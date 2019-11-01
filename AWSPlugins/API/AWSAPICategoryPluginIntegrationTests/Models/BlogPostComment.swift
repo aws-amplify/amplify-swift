@@ -11,29 +11,31 @@ import Amplify
 struct Blog: Decodable {
     let id: String
     let name: String
-    let posts: PostConnection
-}
-
-struct PostConnection: Decodable {
-    let items: [Post]
-    let nextToken: String
-}
-
-struct Posts: Decodable {
-    let posts: [Post]
+    let posts: PostConnection?
 }
 
 struct Post: Decodable {
     let id: String
     let title: String
+    let blog: Blog?
+    let comments: CommentConnection?
 }
 
 struct Comment: Decodable {
     let id: String
     let content: String?
-    let post: Post
+    let post: Post?
 }
 
+struct PostConnection: Decodable {
+    let items: [Post]?
+    let nextToken: String?
+}
+
+struct CommentConnection: Decodable {
+    let items: [Comment]?
+    let nextToken: String?
+}
 
 class CreateBlogMutation {
     static let document = """
@@ -72,6 +74,88 @@ class CreateBlogMutation {
     }
 }
 
+class CreatePostMutation {
+    static let document = """
+        mutation CreatePost($input: CreatePostInput!) {\n
+            createPost(input: $input) {\n
+                __typename\n
+                id\n
+                title\n
+                blog {\n
+                    __typename\n
+                    id\n
+                    name\n
+                    posts {\n
+                        __typename\n
+                        nextToken\n
+                    }\n
+                }\n
+                comments {\n
+                    __typename\n
+                    items {\n
+                        __typename\n
+                        id\n
+                        content\n
+                    }\n
+                    nextToken\n
+                }\n
+            }\n
+        }
+        """
+
+    static func variables(postBlogId: String, title: String) -> [String: Any] {
+        var input: [String: Any] = [:]
+        input.updateValue(postBlogId, forKey: "postBlogId")
+        input.updateValue(title, forKey: "title")
+        return ["input": input]
+    }
+
+    static let responseType = CreatePostResponse()
+
+    class CreatePostResponse: ResponseType {
+        typealias SerializedObject = Post
+    }
+
+}
+
+class CreateCommentMutation {
+    static let document = """
+        mutation CreateComment($input: CreateCommentInput!) {\n
+            createComment(input: $input) {\n
+                __typename\n
+                id\n
+                content\n
+                post {\n
+                    __typename\n
+                    id\n
+                    title\n
+                    blog {\n
+                        __typename\n
+                        id\n
+                        name\n
+                    }\n
+                    comments {\n
+                        __typename\n
+                        nextToken\n
+                    }\n
+                }\n
+            }\n
+        }
+        """
+
+    static func variables(commentPostId: String, content: String) -> [String: Any] {
+        var input: [String: Any] = [:]
+        input.updateValue(commentPostId, forKey: "commentPostId")
+        input.updateValue(content, forKey: "content")
+        return ["input": input]
+    }
+
+    static let responseType = CreateCommentResponse()
+
+    class CreateCommentResponse: ResponseType {
+        typealias SerializedObject = Comment
+    }
+}
 
 class GetBlogQuery {
     static let document = """
@@ -86,10 +170,20 @@ class GetBlogQuery {
                         __typename\n
                         id\n
                         title\n
+                        comments {\n
+                            __typename\n
+                            items {\n
+                                __typename\n
+                                id\n
+                                content\n
+                            }\n
+                            nextToken\n
+                        }\n
                     }\n
-                nextToken\n
+                    nextToken\n
                 }\n
-        }\n}
+            }\n
+        }
         """
 
     static func variables(id: String) -> [String: Any] {

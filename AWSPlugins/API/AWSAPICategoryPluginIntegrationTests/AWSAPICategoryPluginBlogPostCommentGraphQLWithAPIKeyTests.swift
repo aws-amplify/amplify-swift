@@ -13,38 +13,31 @@ import AWSAPICategoryPlugin
 
 class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTests {
 
-
-    /// Given: A valid graphql endpoint with invalid APIKey
+    /// Given: A valid graphql endpoint with invalid API Key
     /// When: Call mutate API
     /// Then: The operation completes successfully with no data and error containing Authentication error
-    func testAuthError() {
-        // use IntegrationTestConfiguration.blogPostCommonGraphQLWithAPIKey
-    }
-
-    /// Given: A CreateTodo mutation request
-    /// When: Call mutate API
-    /// Then: The operation creates a Todo successfully, Todo object is returned, and empty errors array
-    func testCreateBlogMutation() {
+    func testCreateBlogMutationWithInvalidAPIKey() {
         let completeInvoked = expectation(description: "request completed")
-
         let expectedId = UUID().uuidString
-        let expectedName = "testCreateBlogMutationName"
-        let operation = Amplify.API.mutate(apiName: IntegrationTestConfiguration.blogPostCommonGraphQLWithAPIKey,
+        let testMethodName = String("\(#function)".dropLast(2))
+        let operation = Amplify.API.mutate(apiName: IntegrationTestConfiguration.blogPostGraphQLWithInvalidAPIKey,
                                            document: CreateBlogMutation.document,
                                            variables: CreateBlogMutation.variables(id: expectedId,
-                                                                                   name: expectedName),
+                                                                                   name: testMethodName),
                                            responseType: CreateBlogMutation.responseType) { (event) in
             switch event {
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
-                XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let blog = graphQLResponse.data else {
-                    XCTFail("Missing blog")
-                    return
-                }
+                XCTAssertTrue(!graphQLResponse.errors.isEmpty)
+                XCTAssertNil(graphQLResponse.data)
+                XCTAssertEqual(graphQLResponse.errors.count, 1)
 
-                XCTAssertEqual(blog.id, expectedId)
-                XCTAssertEqual(blog.name, expectedName)
+                if case .object(let errorObject) = graphQLResponse.errors[0] {
+                    XCTAssertEqual(errorObject["errorType"], "UnauthorizedException")
+                    XCTAssertEqual(errorObject["message"], "You are not authorized to make this call.")
+                } else {
+                    XCTFail("Could not get error object")
+                }
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -56,18 +49,82 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
         waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
     }
 
-    /// Given:
-    /// When: Call query API for that Blog
-    /// Then: The query operation returns successfully with the Todo object and empty errors
-    func testGetBlogQuery() {
-        let uuid = "5d501004-748a-49f0-8cde-c6896cd7c0ee"
+    /// Given: Create a blog
+    /// When: Call GetBlog query API for that blog, with responseType String
+    /// Then: The successful query operation returns graphQLResponse.data as JSONValue, and no errors, and decodes to Blog
+    func testGetBlogQueryAsStringAndDecode() {
+        let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let name = testMethodName + "Name"
 
+        guard let blog = createBlog(id: uuid, name: name) else {
+            XCTFail("Failed to set up test")
+            return
+        }
+
         let completeInvoked = expectation(description: "request completed")
-        let queryOperation = Amplify.API.query(apiName: IntegrationTestConfiguration.blogPostCommonGraphQLWithAPIKey,
+        let queryOperation = Amplify.API.query(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
                                                document: GetBlogQuery.document,
-                                               variables: GetBlogQuery.variables(id: uuid),
+                                               variables: GetBlogQuery.variables(id: blog.id),
+                                               responseType: JSONValueResponse()) { (event) in
+            switch event {
+            case .completed(let graphQLResponse):
+                XCTAssertNotNil(graphQLResponse)
+                XCTAssertTrue(graphQLResponse.errors.isEmpty)
+                guard let blogJsonValue = graphQLResponse.data else {
+                    XCTFail("Missing blog as JSONValue")
+                    return
+                }
+                do {
+                    let serializedBlog = try JSONEncoder().encode(blogJsonValue)
+                    let blog = try JSONDecoder().decode(Blog.self, from: serializedBlog)
+                    XCTAssertNotNil(blog)
+                    XCTAssertEqual(blog.id, uuid)
+                    XCTAssertEqual(blog.name, name)
+                    XCTAssertTrue(blog.posts!.items.isEmpty)
+                    XCTAssertNil(blog.posts!.nextToken)
+                } catch {
+                    XCTFail("Failed to deserialize blog as JSONValue into Blog type")
+                }
+
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+        XCTAssertNotNil(queryOperation)
+        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+    }
+
+    /// Given: Create a blog, a post on that blog, a comment on that post.
+    /// When: Call GetBlog query API for the blog
+    /// Then: The query operation returns successfully with no errors and the Blog contains the Post and the Comment
+    func testGetBlogQueryWithPostAndComment() {
+        let uuid = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let name = testMethodName + "Name"
+        let title = testMethodName + "Title"
+        let content = testMethodName + "Content"
+
+        guard let blog = createBlog(id: uuid, name: name) else {
+            XCTFail("Failed to set up test")
+            return
+        }
+        guard let post = createPost(postBlogId: blog.id, title: title) else {
+            XCTFail("Failed to set up test")
+            return
+        }
+        guard let comment = createComment(commentPostId: post.id, content: content) else {
+            XCTFail("Failed to set up test")
+            return
+        }
+
+        let completeInvoked = expectation(description: "request completed")
+        let queryOperation = Amplify.API.query(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
+                                               document: GetBlogQuery.document,
+                                               variables: GetBlogQuery.variables(id: blog.id),
                                                responseType: GetBlogQuery.responseType) { (event) in
             switch event {
             case .completed(let graphQLResponse):
@@ -80,8 +137,10 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
 
                 XCTAssertEqual(blog.id, uuid)
                 XCTAssertEqual(blog.name, name)
-                print(blog.posts)
-
+                XCTAssertEqual(blog.posts!.items!.first!.id, post.id)
+                XCTAssertEqual(blog.posts!.items!.first!.title, post.title)
+                XCTAssertEqual(blog.posts!.items!.first!.comments?.items?.first?.id, comment.id)
+                XCTAssertEqual(blog.posts!.items!.first!.comments?.items?.first?.content, comment.content)
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -91,6 +150,83 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
         }
         XCTAssertNotNil(queryOperation)
         waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+    }
+
+    // MARK: Common functionality
+
+    func createBlog(id: String, name: String) -> Blog? {
+        var blog: Blog?
+        let completeInvoked = expectation(description: "request completed")
+        let operation = Amplify.API.mutate(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
+                                           document: CreateBlogMutation.document,
+                                           variables: CreateBlogMutation.variables(id: id,
+                                                                                   name: name),
+                                           responseType: CreateBlogMutation.responseType) { (event) in
+            switch event {
+            case .completed(let graphQLResponse):
+                XCTAssertNotNil(graphQLResponse)
+                XCTAssertTrue(graphQLResponse.errors.isEmpty)
+                blog = graphQLResponse.data
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        return blog
+    }
+
+    func createPost(postBlogId: String, title: String) -> Post? {
+        var post: Post?
+        let completeInvoked = expectation(description: "request completed")
+        let operation = Amplify.API.mutate(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
+                                           document: CreatePostMutation.document,
+                                           variables: CreatePostMutation.variables(postBlogId: postBlogId,
+                                                                                   title: title),
+                                           responseType: CreatePostMutation.responseType) { (event) in
+            switch event {
+            case .completed(let graphQLResponse):
+                XCTAssertNotNil(graphQLResponse)
+                XCTAssertTrue(graphQLResponse.errors.isEmpty)
+                post = graphQLResponse.data
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        return post
+    }
+
+    func createComment(commentPostId: String, content: String) -> Comment? {
+        var comment: Comment?
+        let completeInvoked = expectation(description: "request completed")
+        let operation = Amplify.API.mutate(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
+                                           document: CreateCommentMutation.document,
+                                           variables: CreateCommentMutation.variables(commentPostId: commentPostId,
+                                                                                   content: content),
+                                           responseType: CreateCommentMutation.responseType) { (event) in
+            switch event {
+            case .completed(let graphQLResponse):
+                XCTAssertNotNil(graphQLResponse)
+                XCTAssertTrue(graphQLResponse.errors.isEmpty)
+                comment = graphQLResponse.data
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        return comment
     }
 
 }

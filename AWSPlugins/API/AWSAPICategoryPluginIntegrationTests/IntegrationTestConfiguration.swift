@@ -66,8 +66,8 @@ class IntegrationTestConfiguration {
 
      note: for depth we have specified 3
      */
-    static let blogPostCommonGraphQLWithAPIKey = "blogPostCommentGraphQLWithAPIKey"
-    static let blogPostCommonGraphQLWithInvalidAPIKey = "blogPostCommentGraphQLWithInvalidAPIKey"
+    static let blogPostGraphQLWithAPIKey = "blogPostCommentGraphQLWithAPIKey"
+    static let blogPostGraphQLWithInvalidAPIKey = "blogPostCommentGraphQLWithInvalidAPIKey"
 
     // TODO: Move this to a test credentials file before final merge
     static let apiConfig = APICategoryConfiguration(plugins: [
@@ -89,13 +89,13 @@ class IntegrationTestConfiguration {
                 "AuthorizationType": "API_KEY",
                 "ApiKey": "da2-kjsu57qbwvbmzh4bphn7mpujny"
             ],
-            IntegrationTestConfiguration.blogPostCommonGraphQLWithAPIKey: [
+            IntegrationTestConfiguration.blogPostGraphQLWithAPIKey: [
                 "Endpoint": "https://dtoaraxmjjdbjfmoqwowubiyua.appsync-api.us-east-1.amazonaws.com/graphql",
                 "Region": "us-east-1",
                 "AuthorizationType": "API_KEY",
                 "ApiKey": "da2-4th2pofe7ne4xdm3va23hvovfa"
             ],
-            IntegrationTestConfiguration.blogPostCommonGraphQLWithInvalidAPIKey: [
+            IntegrationTestConfiguration.blogPostGraphQLWithInvalidAPIKey: [
                 "Endpoint": "https://dtoaraxmjjdbjfmoqwowubiyua.appsync-api.us-east-1.amazonaws.com/graphql",
                 "Region": "us-east-1",
                 "AuthorizationType": "API_KEY",
