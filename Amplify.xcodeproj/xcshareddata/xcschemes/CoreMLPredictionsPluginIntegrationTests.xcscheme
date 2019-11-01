@@ -16,9 +16,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B4386A08236B92AD000DC3DB"
-               BuildableName = "CoreMLPredictionsPluginTests.xctest"
-               BlueprintName = "CoreMLPredictionsPluginTests"
+               BlueprintIdentifier = "B4386A17236B92C0000DC3DB"
+               BuildableName = "CoreMLPredictionsPluginIntegrationTests.xctest"
+               BlueprintName = "CoreMLPredictionsPluginIntegrationTests"
                ReferencedContainer = "container:Amplify.xcodeproj">
             </BuildableReference>
          </TestableReference>
