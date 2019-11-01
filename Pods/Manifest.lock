@@ -13,6 +13,8 @@ PODS:
     - AWSCore (= 2.12.1)
   - AWSS3 (2.12.1):
     - AWSCore (= 2.12.1)
+  - AWSTranslate (2.12.1):
+    - AWSCore (= 2.12.1)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
@@ -26,6 +28,7 @@ DEPENDENCIES:
   - AWSMobileClient (~> 2.12.0)
   - AWSPinpoint (~> 2.12.0)
   - AWSS3 (~> 2.12.0)
+  - AWSTranslate (~> 2.12.0)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
   - SQLite.swift (~> 0.12.0)
@@ -41,6 +44,7 @@ SPEC REPOS:
     - AWSMobileClient
     - AWSPinpoint
     - AWSS3
+    - AWSTranslate
     - SQLite.swift
     - SwiftFormat
     - SwiftLint
@@ -69,12 +73,13 @@ SPEC CHECKSUMS:
   AWSMobileClient: b178cd21ba500030e727c6afcc00dda438b1fecd
   AWSPinpoint: 356f198cb499a1cdbd486717be8d12978b98d0de
   AWSS3: 640fad8279e2c5b02d803a82ff5dd6ee75d65c39
+  AWSTranslate: b476a09a7fbaf5b67464dcac561acc40a4c176f8
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SQLite.swift: d2b4642190917051ce6bd1d49aab565fe794eea3
   SwiftFormat: 21c9c3c748d5fcece493d8610eee23df15393458
   SwiftLint: fc9859e4e1752340664851f667bb1898b9c90114
 
-PODFILE CHECKSUM: 9698cd6eeb2eeca56084e1b1a13cda40258e1d10
+PODFILE CHECKSUM: 16c9e44b89bef352c1bb5a1407ce07ec8a6253a6
 
 COCOAPODS: 1.8.4

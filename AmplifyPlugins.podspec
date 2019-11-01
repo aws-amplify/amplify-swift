@@ -42,6 +42,12 @@ Pod::Spec.new do |s|
     ss.dependency 'AWSPinpoint', AWS_SDK_VERSION
   end
 
+  s.subspec 'AWSPredictionsPlugin' do |ss|
+    ss.source_files = 'AmplifyPlugins/Predictions/AWSPredictionsPlugin/**/*.swift'
+    ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
+    ss.dependency 'AWSTranslate', AWS_SDK_VERSION
+  end
+
   s.subspec 'AWSS3StoragePlugin' do |ss|
     ss.source_files = 'AmplifyPlugins/Storage/AWSS3StoragePlugin/**/*.swift'
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION

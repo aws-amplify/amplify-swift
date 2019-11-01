@@ -68,6 +68,26 @@
                ReferencedContainer = "container:Amplify.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B43869F5236B9104000DC3DB"
+               BuildableName = "AWSPredictionsPluginIntegrationTests.xctest"
+               BlueprintName = "AWSPredictionsPluginIntegrationTests"
+               ReferencedContainer = "container:Amplify.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B4386A17236B92C0000DC3DB"
+               BuildableName = "CoreMLPredictionsPluginIntegrationTests.xctest"
+               BlueprintName = "CoreMLPredictionsPluginIntegrationTests"
+               ReferencedContainer = "container:Amplify.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
