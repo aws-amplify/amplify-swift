@@ -11,6 +11,7 @@ import AWSMobileClient
 import AWSAPICategoryPlugin
 @testable import Amplify
 
+// These test cover the more complex scenarios, compared to the Todo graphQL endpoint
 class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTests {
 
     /// Given: A valid graphql endpoint with invalid API Key
@@ -52,7 +53,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
     /// Given: Create a blog
     /// When: Call GetBlog query API for that blog, with responseType String
     /// Then: The successful query operation returns graphQLResponse.data as JSONValue, and no errors, and decodes to Blog
-    func testGetBlogQueryAsStringAndDecode() {
+    func testGetBlogQueryAsJSONValueAndDecode() {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let name = testMethodName + "Name"

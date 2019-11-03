@@ -13,12 +13,11 @@ final public class AWSGraphQLOperation<R: ResponseType>: AmplifyOperation<GraphQ
     GraphQLResponse<R.SerializedObject>,
     GraphQLError> {
 
-    // Data received by the operation
-    var data = Data()
-
+    var graphQLResponseData = Data()
     let session: URLSessionBehavior
-    var mapper: OperationTaskMapper
-    let pluginConfig: AWSAPICategoryPluginConfig
+    let mapper: OperationTaskMapper
+    let pluginConfig: AWSAPICategoryPluginConfiguration
+    let responseType: R
 
     init(request: GraphQLRequest,
          eventName: String,
@@ -26,8 +25,9 @@ final public class AWSGraphQLOperation<R: ResponseType>: AmplifyOperation<GraphQ
          listener: AWSGraphQLOperation.EventListener?,
          session: URLSessionBehavior,
          mapper: OperationTaskMapper,
-         pluginConfig: AWSAPICategoryPluginConfig) {
+         pluginConfig: AWSAPICategoryPluginConfiguration) {
 
+        self.responseType = responseType
         self.session = session
         self.mapper = mapper
         self.pluginConfig = pluginConfig
@@ -44,12 +44,14 @@ final public class AWSGraphQLOperation<R: ResponseType>: AmplifyOperation<GraphQ
             return
         }
 
+        // Validate the request
         if let error = request.validate() {
             dispatch(event: .failed(error))
             finish()
             return
         }
 
+        // Retrieve endpoint configuration
         guard let endpointConfig = pluginConfig.endpoints[request.apiName] else {
             let error = GraphQLError.invalidConfiguration(
                 "Unable to get an endpoint configuration for \(request.apiName)",
@@ -62,9 +64,9 @@ final public class AWSGraphQLOperation<R: ResponseType>: AmplifyOperation<GraphQ
             return
         }
 
+        // Prepare request payload
         let queryDocument = GraphQLRequestUtils.getQueryDocument(document: request.document,
                                                                  variables: request.variables)
-
         let requestPayload: Data
         do {
             requestPayload = try JSONSerialization.data(withJSONObject: queryDocument)
@@ -76,70 +78,31 @@ final public class AWSGraphQLOperation<R: ResponseType>: AmplifyOperation<GraphQ
             return
         }
 
+        // Create request
         let urlRequest = GraphQLRequestUtils.constructRequest(with: endpointConfig.baseURL,
                                                               requestPayload: requestPayload)
 
-        let finalRequest = endpointConfig.interceptors.reduce(urlRequest) { $1.intercept($0) }
+        // Intercept request
+        let finalRequest = endpointConfig.interceptors.reduce(urlRequest) { (request, interceptor) -> URLRequest in
+            do {
+                return try interceptor.intercept(request)
+            } catch {
+                dispatch(event: .failed(GraphQLError.operationError("Failed to intercept request fully..",
+                                                                    "Something wrong with the interceptor",
+                                                                    error)))
+                cancel()
+                return request
+            }
+        }
 
+        if isCancelled {
+            finish()
+            return
+        }
+
+        // Perform task of request
         let task = session.dataTaskBehavior(with: finalRequest)
-
         mapper.addPair(operation: self, task: task)
         task.resume()
-    }
-}
-
-class GraphQLRequestUtils {
-
-    // Get the graphQL request payload from the query document and variables
-    static func getQueryDocument(document: String, variables: [String: Any]?) -> [String: Any] {
-        var queryDocument = ["query": document] as [String: Any]
-        if let variables = variables {
-            queryDocument["variables"] = variables
-        }
-
-        return queryDocument
-    }
-
-    // Construct a graphQL specific HTTP POST request with the request payload
-    static func constructRequest(with baseUrl: URL, requestPayload: Data) -> URLRequest {
-        var baseRequest = URLRequest(url: baseUrl)
-        let headers = ["content-type": "application/json"]
-        baseRequest.allHTTPHeaderFields = headers
-        baseRequest.httpMethod = "POST"
-        baseRequest.httpBody = requestPayload
-
-        return baseRequest
-    }
-}
-
-// GraphQLRequestUtils+Validation
-extension GraphQLRequestUtils {
-
-    static func validateDocument(_ document: String) -> GraphQLError? {
-        // TODO: implement
-        return nil
-    }
-
-    static func validateVariables(_ variables: [String: Any]?) -> GraphQLError? {
-        if let variables = variables {
-            // TODO: implement
-        }
-
-        return nil
-    }
-}
-
-extension GraphQLRequest {
-    // Performs client side validation and returns a `GraphQLError` for any validation failures
-    func validate() -> GraphQLError? {
-        if let error = GraphQLRequestUtils.validateDocument(document) {
-            return error
-        }
-
-        if let error = GraphQLRequestUtils.validateVariables(variables) {
-            return error
-        }
-
-        return nil
     }
 }

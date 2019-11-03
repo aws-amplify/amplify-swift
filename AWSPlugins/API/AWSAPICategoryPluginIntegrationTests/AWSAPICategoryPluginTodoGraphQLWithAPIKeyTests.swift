@@ -10,6 +10,7 @@ import AWSMobileClient
 import AWSAPICategoryPlugin
 @testable import Amplify
 
+// These test show the basic functionality of mutate/query/subscribe methods
 class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTests {
 
     /// Given: A CreateTodo mutation request

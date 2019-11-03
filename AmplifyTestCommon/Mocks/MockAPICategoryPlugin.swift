@@ -29,7 +29,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
                    listener: ((AsyncEvent<Void, GraphQLResponse<R.SerializedObject>, GraphQLError>) -> Void)?) ->
         AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R.SerializedObject>, GraphQLError> where R: ResponseType {
 
-        notify("graphql")
+        notify("mutate")
         let options = GraphQLRequest.Options()
         let request = GraphQLRequest(apiName: apiName,
                                      operationType: .mutation,
@@ -47,7 +47,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
                   listener: ((AsyncEvent<Void, GraphQLResponse<R.SerializedObject>, GraphQLError>) -> Void)?) ->
         AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R.SerializedObject>, GraphQLError> where R: ResponseType {
 
-        notify("graphql")
+        notify("query")
         let options = GraphQLRequest.Options()
         let request = GraphQLRequest(apiName: apiName,
                                      operationType: .query,

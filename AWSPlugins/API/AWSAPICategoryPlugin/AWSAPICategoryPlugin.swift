@@ -16,7 +16,7 @@ final public class AWSAPICategoryPlugin: NSObject, APICategoryPlugin {
 
     /// A holder for API configurations. This will be populated during the
     /// configuration phase, and is clearable by `reset()`.
-    var pluginConfig: AWSAPICategoryPluginConfig!
+    var pluginConfig: AWSAPICategoryPluginConfiguration!
 
     /// The provider for Auth services required to access protected APIs. This will be
     /// populated during the configuration phase, and is clearable by `reset()`.

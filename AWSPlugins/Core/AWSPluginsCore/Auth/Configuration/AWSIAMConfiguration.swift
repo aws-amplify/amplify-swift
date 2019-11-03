@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public struct OIDCConfiguration {
-
+public struct AWSIAMConfiguration {
+    public init() {
+    }
 }

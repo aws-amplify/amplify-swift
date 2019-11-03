@@ -8,67 +8,32 @@
 import Amplify
 import Foundation
 import AWSPluginsCore
+import AWSCore
 
-public struct AWSAPICategoryPluginConfig {
-    let endpoints: [String: EndpointConfig]
-
-    init(endpoints: [String: EndpointConfig]) {
-        self.endpoints = endpoints
-    }
-
-    init(jsonValue: JSONValue) throws {
-        guard case .object(let config) = jsonValue else {
-            throw PluginError.pluginConfigurationError(
-                "Could not cast incoming configuration to a JSONValue `.object`",
-                """
-                The specified configuration is not convertible to a JSONValue. Review the configuration and ensure it \
-                contains the expected values, and does not use any types that aren't convertible to a corresponding \
-                JSONValue:
-                \(jsonValue)
-                """
-            )
-        }
-
-        let endpoints = try AWSAPICategoryPluginConfig.endpointsFromConfig(config: config)
-        self.init(endpoints: endpoints)
-    }
-
-    private static func endpointsFromConfig(config: [String: JSONValue]) throws -> [String: EndpointConfig] {
-        var endpoints = [String: EndpointConfig]()
-
-        for (key, jsonValue) in config {
-            let name = key
-            let endpointConfig = try EndpointConfig(name: name, jsonValue: jsonValue)
-            endpoints[name] = endpointConfig
-        }
-
-        return endpoints
-    }
-}
-
-public extension AWSAPICategoryPluginConfig {
+public extension AWSAPICategoryPluginConfiguration {
     struct EndpointConfig {
         let name: String
         let baseURL: URL
-        let region: String?
+        let region: AWSRegionType?
         let authorizationType: AWSAuthorizationType
         let authorizationConfiguration: AWSAuthorizationConfiguration
         var interceptors = [URLRequestInterceptor]()
 
         public init(name: String,
                     baseURL: URL,
-                    region: String?,
+                    region: AWSRegionType?,
                     authorizationType: AWSAuthorizationType,
-                    authorizationConfiguration: AWSAuthorizationConfiguration) {
+                    authorizationConfiguration: AWSAuthorizationConfiguration,
+                    authService: AWSAuthService) {
             self.name = name
             self.baseURL = baseURL
             self.region = region
             self.authorizationType = authorizationType
             self.authorizationConfiguration = authorizationConfiguration
-            addInterceptors()
+            addInterceptors(authService: authService)
         }
 
-        public init(name: String, jsonValue: JSONValue) throws {
+        public init(name: String, jsonValue: JSONValue, authService: AWSAuthService) throws {
             self.name = name
 
             guard case .object(let endpointJSON) = jsonValue else {
@@ -87,7 +52,7 @@ public extension AWSAPICategoryPluginConfig {
             self.authorizationConfiguration = try EndpointConfig.authorizationConfiguration(from: endpointJSON)
             self.baseURL = try EndpointConfig.baseURL(from: endpointJSON)
             self.region = try EndpointConfig.region(from: endpointJSON)
-            addInterceptors()
+            addInterceptors(authService: authService)
         }
 
         public mutating func addInterceptor(interceptor: URLRequestInterceptor) {
@@ -95,7 +60,7 @@ public extension AWSAPICategoryPluginConfig {
         }
 
         /// Adds auto-discovered interceptors. Currently only works for authorization interceptors
-        private mutating func addInterceptors() {
+        private mutating func addInterceptors(authService: AWSAuthService) {
             switch authorizationConfiguration {
             case .none:
                 // No interceptors needed
@@ -103,6 +68,17 @@ public extension AWSAPICategoryPluginConfig {
             case .apiKey(let apiKeyConfig):
                 let provider = BasicAPIKeyProvider(apiKey: apiKeyConfig.apiKey)
                 let interceptor = APIKeyURLRequestInterceptor(apiKeyProvider: provider)
+                addInterceptor(interceptor: interceptor)
+            case .awsIAM:
+                guard let region = region else {
+                    fatalError("Region not set for IAM")
+                }
+                let provider = BasicIAMCredentialsProvider(authService: authService)
+                let interceptor = IAMURLRequestInterceptor(iamCredentialsProvider: provider, region: region)
+                addInterceptor(interceptor: interceptor)
+            case .amazonCognitoUserPools:
+                let provider = BasicUserPoolTokenProvider(authService: authService)
+                let interceptor = UserPoolURLRequestInterceptor(userPoolTokenProvider: provider)
                 addInterceptor(interceptor: interceptor)
             default:
                 fatalError("No other types configured")
@@ -137,11 +113,16 @@ public extension AWSAPICategoryPluginConfig {
             return baseURL
         }
 
-        private static func region(from endpointJSON: [String: JSONValue]) throws -> String? {
-            let region: String?
+        private static func region(from endpointJSON: [String: JSONValue]) throws -> AWSRegionType? {
+            let region: AWSRegionType?
 
             if case .string(let endpointRegion) = endpointJSON["Region"] {
-                region = endpointRegion
+                let regionType = endpointRegion.aws_regionTypeValue()
+                guard regionType != AWSRegionType.Unknown else {
+                    return nil
+                }
+
+                region = regionType
             } else {
                 region = nil
             }
@@ -216,17 +197,17 @@ public extension AWSAPICategoryPluginConfig {
 
         private static func awsIAMAuthorizationConfiguration(from endpointJSON: [String: JSONValue])
             throws -> AWSAuthorizationConfiguration {
-                fatalError("Not yet implemented")
+                return .awsIAM(AWSIAMConfiguration())
         }
 
         private static func oidcAuthorizationConfiguration(from endpointJSON: [String: JSONValue])
             throws -> AWSAuthorizationConfiguration {
-                fatalError("Not yet implemented")
+                return .openIDConnect(OIDCConfiguration())
         }
 
         private static func userPoolsAuthorizationConfiguration(from endpointJSON: [String: JSONValue])
             throws -> AWSAuthorizationConfiguration {
-                fatalError("Not yet implemented")
+                return .amazonCognitoUserPools(CognitoUserPoolsConfiguration())
         }
 
     }

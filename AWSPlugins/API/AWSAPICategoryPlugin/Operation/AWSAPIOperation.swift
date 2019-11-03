@@ -20,14 +20,14 @@ APIOperation {
 
     let session: URLSessionBehavior
     var mapper: OperationTaskMapper
-    let pluginConfig: AWSAPICategoryPluginConfig
+    let pluginConfig: AWSAPICategoryPluginConfiguration
 
     init(request: APIRequest,
          eventName: String,
          listener: AWSAPIOperation.EventListener?,
          session: URLSessionBehavior,
          mapper: OperationTaskMapper,
-         pluginConfig: AWSAPICategoryPluginConfig) {
+         pluginConfig: AWSAPICategoryPluginConfiguration) {
 
         self.session = session
         self.mapper = mapper
@@ -105,7 +105,15 @@ APIOperation {
             break
         }
 
-        let finalRequest = endpointConfig.interceptors.reduce(baseRequest) { $1.intercept($0) }
+        let finalRequest = try endpointConfig.interceptors.reduce(baseRequest) { (request, interceptor) -> URLRequest in
+            do {
+                return try interceptor.intercept(request)
+            } catch {
+                throw GraphQLError.operationError("Failed to intercept request fully..",
+                                                  "Something wrong with the interceptor",
+                                                  error)
+            }
+        }
 
         return finalRequest
     }

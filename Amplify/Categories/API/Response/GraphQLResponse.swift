@@ -11,10 +11,10 @@ import Foundation
 public class GraphQLResponse<ResponseType: Decodable> {
 
     /// GraphQL response data deserialized to ResponseType
-    var data: ResponseType?
+    public var data: ResponseType?
 
     /// GraphQL response errors deserialized to JSON
-    var errors: [JSONValue]
+    public var errors: [JSONValue]
 
     public init(data: ResponseType?, errors: [JSONValue]) {
         self.data = data

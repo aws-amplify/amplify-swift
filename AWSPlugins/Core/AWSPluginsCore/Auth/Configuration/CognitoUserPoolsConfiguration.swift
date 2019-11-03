@@ -6,5 +6,6 @@
 //
 
 public struct CognitoUserPoolsConfiguration {
-
+    public init() {
+    }
 }

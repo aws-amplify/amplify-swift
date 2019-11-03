@@ -8,11 +8,9 @@
 import Foundation
 
 public enum AWSAuthorizationConfiguration {
-
     case none
     case apiKey(APIKeyConfiguration)
     case awsIAM(AWSIAMConfiguration)
     case openIDConnect(OIDCConfiguration)
     case amazonCognitoUserPools(CognitoUserPoolsConfiguration)
-
 }
