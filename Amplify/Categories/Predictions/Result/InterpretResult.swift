@@ -10,4 +10,3 @@ import Foundation
 public struct InterpretResult {
 
 }
-

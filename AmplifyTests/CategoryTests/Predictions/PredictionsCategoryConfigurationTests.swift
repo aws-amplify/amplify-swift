@@ -17,11 +17,27 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         Amplify.reset()
     }
 
+    /// Test if we can add a new prediction plugin
+    ///
+    /// - Given: UnConfigured Amplify framework
+    /// - When:
+    ///    - I add a new Prediction plugin to Amplify
+    /// - Then:
+    ///    - Plugin should be added  without throwing any error
+    ///
     func testCanAddPlugin() throws {
         let plugin = MockPredictionsCategoryPlugin()
         XCTAssertNoThrow(try Amplify.add(plugin: plugin))
     }
 
+    /// Test if Prediction plugin can be configured
+    ///
+    /// - Given: UnConfigured Amplify framework
+    /// - When:
+    ///    - I add a new Prediction plugin and add configuration for the plugin
+    /// - Then:
+    ///    - Prediction plugin should be configured correctly
+    ///
     func testCanConfigurePlugin() throws {
         let plugin = MockPredictionsCategoryPlugin()
         try Amplify.add(plugin: plugin)
@@ -38,6 +54,14 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.Predictions.getPlugin(for: "MockPredictionsCategoryPlugin"))
     }
 
+    /// Test if resetting Prediction category works
+    ///
+    /// - Given: Amplify framework configured with Prediction plugin
+    /// - When:
+    ///    - I call Amplify.reset()
+    /// - Then:
+    ///    - The plugin should invoke the reset method.
+    ///
     func testCanResetPlugin() throws {
         let plugin = MockPredictionsCategoryPlugin()
         let resetWasInvoked = expectation(description: "reset() was invoked")
@@ -59,6 +83,14 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
     }
 
+    /// Test whether calling reset removes the plugin added
+    ///
+    /// - Given: Amplify framework configured with Prediction plugin
+    /// - When:
+    ///    - I call Amplify.reset
+    /// - Then:
+    ///    - Predicitons plugin should no longer work
+    ///
     func testResetRemovesAddedPlugin() throws {
         let plugin = MockPredictionsCategoryPlugin()
         try Amplify.add(plugin: plugin)
@@ -80,6 +112,14 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         }
     }
 
+    /// Test if we can register multiple plugins
+    ///
+    /// - Given: UnConfigured Amplify framework
+    /// - When:
+    ///    - I configure Amplify with multiple plugins for Predictions
+    /// - Then:
+    ///    - I should be able to access individual plugins I added.
+    ///
     func testCanRegisterMultiplePlugins() throws {
         let plugin1 = MockPredictionsCategoryPlugin()
         try Amplify.add(plugin: plugin1)
@@ -102,6 +142,14 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.Predictions.getPlugin(for: "MockSecondPredictionsCategoryPlugin"))
     }
 
+    /// Test if the default plugin works
+    ///
+    /// - Given: Amplify configured with Prediction plugin
+    /// - When:
+    ///    - I invoke a API from prediction with default invocation
+    /// - Then:
+    ///    - API should complete without error
+    ///
     func testCanUseDefaultPluginIfOnlyOnePlugin() throws {
         let plugin = MockPredictionsCategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
@@ -125,6 +173,14 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
     }
 
+    /// Test if I can pick a specific plugin
+    ///
+    /// - Given: Amplify configured with multiple Prediction plugins
+    /// - When:
+    ///    - I coose one plugin and call one of the Prediction API
+    /// - Then:
+    ///    - API should complete without error for one plugin
+    ///
     func testCanUseSpecifiedPlugin() throws {
         let plugin1 = MockPredictionsCategoryPlugin()
         let methodShouldNotBeInvokedOnDefaultPlugin =
@@ -166,6 +222,14 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
     }
 
+    /// Test if we get error when trying default plugin when multiple plugin added.
+    ///
+    /// - Given: Amplify configured with multiple prediction plugin
+    /// - When:
+    ///    - I try to invoke an API with default plugin
+    /// - Then:
+    ///    - Should throw an exception
+    ///
     func testPreconditionFailureInvokingWithMultiplePlugins() throws {
         let plugin1 = MockPredictionsCategoryPlugin()
         try Amplify.add(plugin: plugin1)
@@ -194,6 +258,14 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(exception)
     }
 
+    /// Test if configuration Prediction plugin directly works
+    ///
+    /// - Given: Amplify with Prediction plugin configured
+    /// - When:
+    ///    - I try to add a new configuration to the same plugin
+    /// - Then:
+    ///    - Should work without any error.
+    ///
     func testCanConfigurePluginDirectly() throws {
         let plugin = MockPredictionsCategoryPlugin()
         let configureShouldBeInvokedFromCategory =
@@ -225,6 +297,14 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
     }
 
+    /// Test if unconfigured plugin throws an error
+    ///
+    /// - Given: An unconfigured Amplify framework with Prediction plugin added
+    /// - When:
+    ///    - Invoke an API in prediction
+    /// - Then:
+    ///    - I should get an exception
+    ///
     func testPreconditionFailureInvokingBeforeConfig() throws {
         let plugin = MockPredictionsCategoryPlugin()
         try Amplify.add(plugin: plugin)
@@ -242,6 +322,14 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
 
     // MARK: - Test internal config behavior guarantees
 
+    /// Test if configuring twice throws an exception
+    ///
+    /// - Given: Amplify with Prediction plugin configured
+    /// - When:
+    ///    - I try to configure Prediction again
+    /// - Then:
+    ///    - Should throw an exception
+    ///
     func testThrowsConfiguringTwice() throws {
         let plugin = MockPredictionsCategoryPlugin()
         try Amplify.add(plugin: plugin)
@@ -259,6 +347,14 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         }
     }
 
+    /// Test if configuring after reset works
+    ///
+    /// - Given: Amplify framework with Predictons configured
+    /// - When:
+    ///    - I reset Amplify and then configure again
+    /// - Then:
+    ///    - Should not throw any error
+    ///
     func testCanConfigureAfterReset() throws {
         let plugin = MockPredictionsCategoryPlugin()
         try Amplify.add(plugin: plugin)

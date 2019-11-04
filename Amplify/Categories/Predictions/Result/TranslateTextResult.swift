@@ -8,7 +8,11 @@
 import Foundation
 
 public struct TranslateTextResult: ConvertResult {
+
+    /// Translated text
     public let text: String
+
+    /// Language to which the text was translated.
     public let targetLanguage: LanguageType
 
     public init(text: String, targetLanguage: LanguageType) {

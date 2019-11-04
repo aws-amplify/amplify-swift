@@ -7,8 +7,12 @@
 
 import Foundation
 
+/// CallType of the operation
 public enum CallType {
+
+    /// `offline` operation doesnot make network call
     case offline
-    case cloud
+
+    /// `auto` operation make use of online and offline calls.
     case auto
 }

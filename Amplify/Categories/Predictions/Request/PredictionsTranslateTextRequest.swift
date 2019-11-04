@@ -9,14 +9,17 @@ import Foundation
 
 public struct PredictionsTranslateTextRequest: AmplifyOperationRequest, PredictionsConvertRequest {
 
-    /// Options to adjust the behavior of this request, including plugin options
-    public let options: Options
-
+    /// The text to translate.
     public let textToTranslate: String
 
+    /// The language to translate
     public let targetLanguage: LanguageType
 
+    /// Source language of the text given.
     public let language: LanguageType
+
+    /// Options to adjust the behavior of this request, including plugin options
+    public let options: Options
 
     public init(textToTranslate: String,
                 targetLanguage: LanguageType,
@@ -32,9 +35,19 @@ public struct PredictionsTranslateTextRequest: AmplifyOperationRequest, Predicti
 public extension PredictionsTranslateTextRequest {
 
     struct Options {
+
+        /// The calltype for the operation. The default value will be `auto`.
         public let callType: CallType
-        public init(callType: CallType = .auto) {
+
+        /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
+        /// a way to utilize the underlying storage system's functionality. See plugin documentation for expected
+        /// key/values
+        public let pluginOptions: Any?
+
+        public init(callType: CallType = .auto,
+                    pluginOptions: Any? = nil) {
             self.callType = callType
+            self.pluginOptions = pluginOptions
         }
     }
 }
