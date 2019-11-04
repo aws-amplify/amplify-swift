@@ -28,6 +28,9 @@ public enum CategoryType: String {
     /// Log Amplify and app messages
     case logging
 
+    /// Prediction
+    case predictions
+
     /// Upload and download files from the cloud
     case storage
 }
@@ -47,6 +50,8 @@ public extension CategoryType {
             return "Hub"
         case .logging:
             return "Logging"
+        case .predictions:
+            return "Predictions"
         case .storage:
             return "Storage"
         }

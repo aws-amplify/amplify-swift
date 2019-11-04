@@ -25,6 +25,8 @@ extension CategoryTypeable {
             return amplifyConfiguration.hub
         case .logging:
             return amplifyConfiguration.logging
+        case .predictions:
+            return amplifyConfiguration.predictions
         case .storage:
             return amplifyConfiguration.storage
         }
