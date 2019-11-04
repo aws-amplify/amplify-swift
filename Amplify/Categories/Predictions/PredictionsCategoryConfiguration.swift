@@ -14,4 +14,3 @@ public struct PredictionsCategoryConfiguration: CategoryConfiguration {
         self.plugins = plugins
     }
 }
-

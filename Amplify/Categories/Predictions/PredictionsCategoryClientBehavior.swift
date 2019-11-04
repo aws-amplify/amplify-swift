@@ -14,14 +14,10 @@ public protocol PredictionsCategoryClientBehavior {
     //TOOD: Update the api names after final review
     // translate
     func convert(textToTranslate: String,
-                 language: LanguageType,
-                 targetLanguage: LanguageType,
+                 language: LanguageType?,
+                 targetLanguage: LanguageType?,
                  listener: PredictionsTranslateTextOperation.EventListener?,
-                 options: PredictionsTranslateTextRequest.Options) -> PredictionsTranslateTextOperation
-
-    func identify(type: IdentifyType,
-                  image: CGImage,
-                  options: Any?) -> PredictionsIdentifyOperation
+                 options: PredictionsTranslateTextRequest.Options?) -> PredictionsTranslateTextOperation
 }
 
 // TODO: Move these enums to a separate file

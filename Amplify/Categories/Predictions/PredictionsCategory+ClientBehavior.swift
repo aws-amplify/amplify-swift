@@ -11,22 +11,14 @@ import CoreImage
 extension PredictionsCategory: PredictionsCategoryClientBehavior {
 
     public func convert(textToTranslate: String,
-                        language: LanguageType,
-                        targetLanguage: LanguageType,
+                        language: LanguageType?,
+                        targetLanguage: LanguageType?,
                         listener: PredictionsTranslateTextOperation.EventListener?,
-                        options: PredictionsTranslateTextRequest.Options) -> PredictionsTranslateTextOperation {
+                        options: PredictionsTranslateTextRequest.Options?) -> PredictionsTranslateTextOperation {
         plugin.convert(textToTranslate: textToTranslate,
                        language: language,
                        targetLanguage: targetLanguage,
                        listener: listener,
                        options: options)
-    }
-
-    public func identify(type: IdentifyType,
-                         image: CGImage,
-                         options: Any?) -> PredictionsIdentifyOperation {
-        plugin.identify(type: type,
-                        image: image,
-                        options: options)
     }
 }

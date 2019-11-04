@@ -25,8 +25,8 @@ public class Amplify {
     public static internal(set) var DataStore = DataStoreCategory()
     public static internal(set) var Hub = HubCategory()
     public static internal(set) var Logging = LoggingCategory()
-    public static internal(set) var Storage = StorageCategory()
     public static internal(set) var Predictions = PredictionsCategory()
+    public static internal(set) var Storage = StorageCategory()
 
     /// Adds `plugin` to the Analytics category
     ///
@@ -43,10 +43,10 @@ public class Amplify {
             try Hub.add(plugin: plugin)
         } else if let plugin = plugin as? LoggingCategoryPlugin {
             try Logging.add(plugin: plugin)
+        }  else if let plugin = plugin as? PredictionsCategoryPlugin {
+            try Predictions.add(plugin: plugin)
         } else if let plugin = plugin as? StorageCategoryPlugin {
             try Storage.add(plugin: plugin)
-        } else if let plugin = plugin as? PredictionsCategoryPlugin {
-            try Predictions.add(plugin: plugin)
         } else {
             throw PluginError.pluginConfigurationError(
                 "Plugin category does not exist.",
