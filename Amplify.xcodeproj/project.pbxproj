@@ -2453,17 +2453,17 @@
 		B4D38515236C97350014653D /* Predictions */ = {
 			isa = PBXGroup;
 			children = (
+				B4D3852B236C97350014653D /* Error */,
+				B4D38520236C97350014653D /* Internal */,
+				B4D38516236C97350014653D /* Operation */,
+				B4D38525236C97350014653D /* Request */,
+				B4D3851B236C97350014653D /* Result */,
 				B4D3851F236C97350014653D /* PredictionsCategory.swift */,
 				B4D38524236C97350014653D /* PredictionsCategory+ClientBehavior.swift */,
 				B4D3852A236C97350014653D /* PredictionsCategory+HubPayloadEventName.swift */,
 				B4D3851A236C97350014653D /* PredictionsCategoryClientBehavior.swift */,
 				B4D38523236C97350014653D /* PredictionsCategoryConfiguration.swift */,
 				B4D3852D236C97350014653D /* PredictionsCategoryPlugin.swift */,
-				B4D3852B236C97350014653D /* Error */,
-				B4D38520236C97350014653D /* Internal */,
-				B4D38516236C97350014653D /* Operation */,
-				B4D38525236C97350014653D /* Request */,
-				B4D3851B236C97350014653D /* Result */,
 			);
 			path = Predictions;
 			sourceTree = "<group>";
