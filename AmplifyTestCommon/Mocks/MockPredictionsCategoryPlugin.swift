@@ -31,10 +31,10 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
     
     func identify(type: IdentifyType,
                   image: CGImage,
-                  options: PredictionsIdentifyRequest.IdentifyOptions?,
+                  options: PredictionsIdentifyRequest.Options?,
                   listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation {
         notify("identifyLabels")
-        let request = PredictionsIdentifyRequest(image: image, identifyType: type, options: options ?? PredictionsIdentifyRequest.IdentifyOptions())
+        let request = PredictionsIdentifyRequest(image: image, identifyType: type, options: options ?? PredictionsIdentifyRequest.Options())
         return MockPredictionsIdentifyOperation(request: request)
     }
 

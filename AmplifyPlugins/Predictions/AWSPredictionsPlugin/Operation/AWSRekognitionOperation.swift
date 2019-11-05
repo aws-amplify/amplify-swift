@@ -27,15 +27,9 @@ PredictionsIdentifyOperation {
                    listener: listener)
     }
 
-    override public func cancel() {
-        super.cancel()
-    }
 
     override public func main() {
-        if isCancelled {
-            finish()
-            return
-        }
+
 
         if let error = request.validate() {
                  dispatch(error)
@@ -45,7 +39,7 @@ PredictionsIdentifyOperation {
 
         let identityIdResult = authService.getIdentityId()
 
-        switch (request.identifyType) {
+        switch request.identifyType {
         case .detectCelebrity:
             break
         case .detectText:
@@ -64,24 +58,12 @@ PredictionsIdentifyOperation {
     private func onServiceEvent(event: PredictionsEvent<IdentifyResult, PredictionsError>) {
         switch event {
         case .completed(let result):
-            dispatch(result)
-            finish()
+            dispatch(event: .completed(result))
         case .failed(let error):
-            dispatch(error)
-            finish()
-        default:
-            break
+            dispatch(event: .failed(error))
+            
         }
     }
-    private func dispatch(_ result: IdentifyResult) {
-        let asyncEvent = AsyncEvent<Void, IdentifyResult, PredictionsError>.completed(result)
-        dispatch(event: asyncEvent)
 
-    }
-
-    private func dispatch(_ error: PredictionsError) {
-        let asyncEvent = AsyncEvent<Void, IdentifyResult, PredictionsError>.failed(error)
-        dispatch(event: asyncEvent)
-    }
 
 }
