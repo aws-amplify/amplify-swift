@@ -8,8 +8,10 @@
 import Foundation
 import Amplify
 import AWSMobileClient
+import AWSPluginsCore
 
-public class AWSRekognitionOperation: AmplifyOperation<PredictionsIdentifyRequest, Void, IdentifyResult, PredictionsError>,
+public class AWSRekognitionOperation: AmplifyOperation<PredictionsIdentifyRequest,
+    Void, IdentifyResult, PredictionsError>,
 PredictionsIdentifyOperation {
 
     let rekognitionService: AWSRekognitionServiceBehaviour
@@ -27,17 +29,13 @@ PredictionsIdentifyOperation {
                    listener: listener)
     }
 
-
     override public func main() {
-
 
         if let error = request.validate() {
             dispatch(event: .failed(error))
             finish()
             return
         }
-
-        let identityIdResult = authService.getIdentityId()
 
         switch request.identifyType {
         case .detectCelebrity:
@@ -61,9 +59,7 @@ PredictionsIdentifyOperation {
             dispatch(event: .completed(result))
         case .failed(let error):
             dispatch(event: .failed(error))
-            
+
         }
     }
-
-
 }

@@ -61,11 +61,13 @@ class AWSTranslateService: AWSTranslateServiceBehaviour {
         translateBehavior.translateText(request: request!).continueWith { (task) -> Any? in
             if let result = task.result?.translatedText {
                 print(result)
-                onEvent(.completed(TranslateTextResult(text: (task.result?.translatedText!)!, targetLanguage: .italian)))
+                onEvent(
+                    .completed(
+                        TranslateTextResult(text: (task.result?.translatedText!)!,
+                                            targetLanguage: .italian)))
             } else {
-                print(task.error)
+                print(task.error as Any)
             }
-
 
             return nil
         }

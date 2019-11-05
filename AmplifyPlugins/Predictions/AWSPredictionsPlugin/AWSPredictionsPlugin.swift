@@ -7,6 +7,7 @@
 
 import Amplify
 import Foundation
+import AWSPluginsCore
 
 final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
 
@@ -19,6 +20,8 @@ final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
     var rekognitionService: AWSRekognitionServiceBehaviour!
 
     var authService: AWSAuthServiceBehavior!
+
+    var config: AWSPredictionsPluginConfiguration!
 
     /// The unique key of the plugin within the predictions category.
     public var key: PluginKey {

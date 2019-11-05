@@ -20,8 +20,6 @@ class AWSRekognitionAdapter: AWSRekognitionBehavior {
         return awsRekognition.detectLabels(request)
     }
 
-
-
     func getRekognition() -> AWSRekognition {
         return awsRekognition
     }

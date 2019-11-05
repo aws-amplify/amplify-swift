@@ -11,7 +11,6 @@ import Amplify
 
 class AWSRekognitionService: AWSRekognitionServiceBehaviour {
 
-
     var identifier: String!
     var rekognitionBehavior: AWSRekognitionBehavior!
 
@@ -56,56 +55,30 @@ class AWSRekognitionService: AWSRekognitionServiceBehaviour {
         let request = AWSRekognitionDetectLabelsRequest()
         let rekognitionImage = AWSRekognitionImage()
 
-        var data = image.dataProvider?.data as Data?
+        let data = image.dataProvider?.data as Data?
 
         rekognitionImage?.bytes = data
 
         request?.image = rekognitionImage
 
         rekognitionBehavior.detectLabels(request: request!).continueWith { (task) -> Any? in
-            if let result = task.result?.labels {
-                print(result)
-                //create result object from response
-                var labels = [Label]()
-                for label in result {
-
-                    var parents = [Parent]()
-                    if let unwrappedParents = label.parents {
-                        for parent in unwrappedParents {
-                            if let name = parent.name {
-                                parents.append(Parent(name: name))
-                            }
-                        }
-                    }
-
-                    let metadata = LabelMetadata(confidence: Double(truncating: label.confidence ?? 0.0), parents: parents)
-
-                    var boundingBoxes = [BoundingBox]()
-                    if let instances = label.instances {
-                        for instance in instances {
-                            guard let height = instance.boundingBox?.height,
-                                let left = instance.boundingBox?.left,
-                                let top = instance.boundingBox?.top,
-                                let width = instance.boundingBox?.width else {
-                                    continue
-                            }
-                            let boundingBox = BoundingBox(
-                                height: Double(truncating: height),
-                                left: Double(truncating: left),
-                                top: Double(truncating: top),
-                                width: Double(truncating: width))
-                            boundingBoxes.append(boundingBox)
-                        }
-                    }
-                    let newLabel = Label(name: label.name!, metadata: metadata, boundingBoxes: boundingBoxes)
-                    labels.append(newLabel)
-
-                }
-                onEvent(.completed(IdentifyLabelsResult(labels: labels)))
-            } else {
-                print(task.error!)
+            guard task.error == nil else {
+                // onEvent error
+                return nil
             }
 
+            guard let result = task.result else {
+                // onEvent Error
+                return nil
+            }
+
+            guard let labels = result.labels else {
+                // missing labels, success or error?
+                return nil
+            }
+
+            var newLabels = IdentifyLabelsResultUtils.process(labels)
+            onEvent(.completed(IdentifyLabelsResult(labels: newLabels)))
             return nil
         }
 

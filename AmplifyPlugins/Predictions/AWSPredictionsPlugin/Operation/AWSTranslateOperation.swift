@@ -8,8 +8,10 @@
 import Foundation
 import Amplify
 import AWSMobileClient
+import AWSPluginsCore
 
-public class AWSTranslateOperation: AmplifyOperation<PredictionsTranslateTextRequest, Void, TranslateTextResult, PredictionsError>,
+public class AWSTranslateOperation: AmplifyOperation<PredictionsTranslateTextRequest,
+    Void, TranslateTextResult, PredictionsError>,
 PredictionsTranslateTextOperation {
 
     let translateService: AWSTranslateServiceBehaviour
@@ -38,13 +40,15 @@ PredictionsTranslateTextOperation {
         }
 
         if let error = request.validate() {
-                 dispatch(error)
-                 finish()
-                 return
+            dispatch(event: .failed(error))
+            finish()
+            return
         }
 
-        let identityIdResult = authService.getIdentityId()
-        translateService.translateText(text: request.textToTranslate, language: request.language, targetLanguage: request.targetLanguage) { [weak self] event in
+        translateService.translateText(
+        text: request.textToTranslate,
+        language: request.language,
+        targetLanguage: request.targetLanguage) { [weak self] event in
             self?.onServiceEvent(event: event)
 
         }
@@ -53,24 +57,13 @@ PredictionsTranslateTextOperation {
     private func onServiceEvent(event: PredictionsEvent<TranslateTextResult, PredictionsError>) {
         switch event {
         case .completed(let result):
-            dispatch(result)
+            dispatch(event: .completed(result))
             finish()
         case .failed(let error):
-            dispatch(error)
+            dispatch(event: .failed(error))
             finish()
-        default:
-            break
+
         }
-    }
-    private func dispatch(_ result: TranslateTextResult) {
-        let asyncEvent = AsyncEvent<Void, TranslateTextResult, PredictionsError>.completed(result)
-        dispatch(event: asyncEvent)
-
-    }
-
-    private func dispatch(_ error: PredictionsError) {
-        let asyncEvent = AsyncEvent<Void, TranslateTextResult, PredictionsError>.failed(error)
-        dispatch(event: asyncEvent)
     }
 
 }
