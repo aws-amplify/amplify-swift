@@ -21,25 +21,19 @@ class GraphQLResponseUtils {
         }
 
         // Return nil data and any errors when there is no data to process
-        guard let responseData = result.data else {
+        guard let responseDataJson = result.data else {
             let responseType: R.SerializedObject? = nil
             return GraphQLResponse(data: responseType, errors: result.errors)
         }
 
-        if responseData.isEmpty {
+        if responseDataJson.isEmpty {
             let responseType: R.SerializedObject? = nil
             return GraphQLResponse(data: responseType, errors: result.errors)
         }
 
-        // Process the first value and try to convert it the specified response type
-        if responseData.count == 1 {
-            let json = responseData.first!.value
-            let responseData = try convert(json: json, responseType: responseType)
-            return GraphQLResponse(data: responseData, errors: result.errors)
-        }
-
-        throw GraphQLError.unknown("More than one query is not yet supported",
-                                   "Reduce the query document to single query")
+        // Convert it the specified response type
+        let responseData = try convert(json: responseDataJson, responseType: responseType)
+        return GraphQLResponse(data: responseData, errors: result.errors)
     }
 
     // MARK: Helper methods for `process(graphQLResponse:Data,responseType:R)`
@@ -104,11 +98,7 @@ class GraphQLResponseUtils {
     }
 
     // Convert the JSON to an instance of the response type
-    static func convert<R: ResponseType>(json: JSONValue, responseType: R) throws -> R.SerializedObject? {
-        if case .null = json {
-            return nil
-        }
-
+    static func convert<R: ResponseType>(json: [String: JSONValue], responseType: R) throws -> R.SerializedObject? {
         do {
             let serializedJson = try JSONEncoder().encode(json)
             return try JSONDecoder().decode(R.SerializedObject.self, from: serializedJson)

@@ -32,8 +32,12 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
                 XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let todo = graphQLResponse.data else {
-                    XCTFail("Missing todo")
+                guard let data = graphQLResponse.data else {
+                    XCTFail("Missing data")
+                    return
+                }
+                guard let todo = data.createTodo else {
+                    XCTFail("Missing Todo")
                     return
                 }
 
@@ -70,7 +74,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
                 XCTAssertTrue(!graphQLResponse.errors.isEmpty)
-                XCTAssertNil(graphQLResponse.data)
+                XCTAssertNil(graphQLResponse.data?.createTodo)
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -91,17 +95,18 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
         let expectedDescription = "testCreateTodoMutationDescription"
+
         let operation = Amplify.API.mutate(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
                                            document: CreateTodoMutation.document,
                                            variables: CreateTodoMutation.variables(id: expectedId,
                                                                                    name: expectedName,
                                                                                    description: expectedDescription),
-                                           responseType: ListTodosQuery.responseType) { (event) in
+                                           responseType: InvalidCreateTodoResponse()) { (event) in
             switch event {
             case .completed(let graphQLResponse):
                 XCTFail("Unexpected .completed event: \(graphQLResponse)")
             case .failed(let error):
-                print(error.errorDescription)
+                // TODO: check error is some decoding issue
                 failureInvoked.fulfill()
             default:
                 XCTFail("Unexpected event: \(event)")
@@ -133,8 +138,13 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
                 XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let todo = graphQLResponse.data else {
-                    XCTFail("Missing todo")
+                guard let data = graphQLResponse.data else {
+                    XCTFail("Missing data")
+                    return
+                }
+
+                guard let todo = data.getTodo else {
+                    XCTFail("missing todo")
                     return
                 }
 
@@ -169,7 +179,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
                 XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                XCTAssertNil(graphQLResponse.data)
+                XCTAssertNil(graphQLResponse.data?.getTodo)
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -207,8 +217,13 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
                 XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let todo = graphQLResponse.data else {
+                guard let data = graphQLResponse.data else {
                     XCTFail("Missing updateTodo")
+                    return
+                }
+
+                guard let todo = data.updateTodo else {
+                    XCTFail("missing updateTodo")
                     return
                 }
 
@@ -249,15 +264,19 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
                 XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let deletedTodo = graphQLResponse.data else {
-                    XCTFail("Missing deletedTodo")
+                guard let data = graphQLResponse.data else {
+                    XCTFail("Missing data")
+                    return
+                }
+                guard let deleteTodo = data.deleteTodo else {
+                    XCTFail("Missing deleteTodo")
                     return
                 }
 
-                XCTAssertEqual(deletedTodo.id, todo.id)
-                XCTAssertEqual(deletedTodo.name, name)
-                XCTAssertEqual(deletedTodo.description, description)
-                XCTAssertEqual(deletedTodo.typename, String(describing: Todo.self))
+                XCTAssertEqual(deleteTodo.id, todo.id)
+                XCTAssertEqual(deleteTodo.name, name)
+                XCTAssertEqual(deleteTodo.description, description)
+                XCTAssertEqual(deleteTodo.typename, String(describing: Todo.self))
                 deleteCompleteInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -277,7 +296,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
                 XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                XCTAssertNil(graphQLResponse.data)
+                XCTAssertNil(graphQLResponse.data?.getTodo)
                 queryCompleteInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -311,7 +330,11 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
                 XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let listTodos = graphQLResponse.data else {
+                guard let data = graphQLResponse.data else {
+                    XCTFail("Missing data")
+                    return
+                }
+                guard let listTodos = data.listTodos else {
                     XCTFail("Missing listTodos")
                     return
                 }
@@ -343,7 +366,11 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
                 XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let listTodos = graphQLResponse.data else {
+                guard let data = graphQLResponse.data else {
+                    XCTFail("Missing data")
+                    return
+                }
+                guard let listTodos = data.listTodos else {
                     XCTFail("Missing listTodos")
                     return
                 }
@@ -399,7 +426,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
                 XCTAssertNotNil(graphQLResponse.data)
-                todo = graphQLResponse.data
+                todo = graphQLResponse.data?.createTodo
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")

@@ -70,7 +70,11 @@ class CreateBlogMutation {
     static let responseType = CreateBlogMutationResponse()
 
     class CreateBlogMutationResponse: ResponseType {
-        typealias SerializedObject = Blog
+        typealias SerializedObject = Data
+    }
+
+    class Data: Decodable {
+        var createBlog: Blog?
     }
 }
 
@@ -113,9 +117,12 @@ class CreatePostMutation {
     static let responseType = CreatePostResponse()
 
     class CreatePostResponse: ResponseType {
-        typealias SerializedObject = Post
+        typealias SerializedObject = Data
     }
 
+    class Data: Decodable {
+        var createPost: Post?
+    }
 }
 
 class CreateCommentMutation {
@@ -153,7 +160,11 @@ class CreateCommentMutation {
     static let responseType = CreateCommentResponse()
 
     class CreateCommentResponse: ResponseType {
-        typealias SerializedObject = Comment
+        typealias SerializedObject = Data
+    }
+
+    class Data: Decodable {
+        var createComment: Comment?
     }
 }
 
@@ -194,6 +205,10 @@ class GetBlogQuery {
     static let responseType = GetBlogQueryResponse()
 
     class GetBlogQueryResponse: ResponseType {
-        typealias SerializedObject = Blog
+        typealias SerializedObject = Data
+    }
+
+    class Data: Decodable {
+        var getBlog: Blog?
     }
 }

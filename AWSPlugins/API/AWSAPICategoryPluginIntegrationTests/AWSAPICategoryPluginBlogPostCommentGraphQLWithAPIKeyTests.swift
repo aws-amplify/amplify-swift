@@ -78,7 +78,11 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
                 }
                 do {
                     let serializedBlog = try JSONEncoder().encode(blogJsonValue)
-                    let blog = try JSONDecoder().decode(Blog.self, from: serializedBlog)
+                    let blogObject = try JSONDecoder().decode(GetBlogQuery.GetBlogQueryResponse.SerializedObject.self, from: serializedBlog)
+                    guard let blog = blogObject.getBlog else {
+                        XCTFail("Failed to deserlize to blog")
+                        return
+                    }
                     XCTAssertNotNil(blog)
                     XCTAssertEqual(blog.id, uuid)
                     XCTAssertEqual(blog.name, name)
@@ -131,7 +135,11 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
                 XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let blog = graphQLResponse.data else {
+                guard let data = graphQLResponse.data else {
+                    XCTFail("Missing data")
+                    return
+                }
+                guard let blog = data.getBlog else {
                     XCTFail("Missing blog")
                     return
                 }
@@ -167,7 +175,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
                 XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                blog = graphQLResponse.data
+                blog = graphQLResponse.data?.createBlog
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -192,7 +200,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
                 XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                post = graphQLResponse.data
+                post = graphQLResponse.data?.createPost
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -217,7 +225,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
                 XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                comment = graphQLResponse.data
+                comment = graphQLResponse.data?.createComment
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")

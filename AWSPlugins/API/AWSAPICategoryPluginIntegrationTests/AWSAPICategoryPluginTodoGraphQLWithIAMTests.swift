@@ -77,8 +77,12 @@ class AWSAPICategoryPluginTodoGraphQLWithIAMTests: AWSAPICategoryPluginBaseTests
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
                 XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let todo = graphQLResponse.data else {
-                    XCTFail("Missing todo")
+                guard let data = graphQLResponse.data else {
+                    XCTFail("Missing data")
+                    return
+                }
+                guard let todo = data.createTodo else {
+                    XCTFail("Missing Todo")
                     return
                 }
 
