@@ -28,6 +28,15 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
         return MockPredictionsTranslateTextOperation(request: request)
 
     }
+    
+    func identify(type: IdentifyType,
+                  image: CGImage,
+                  options: PredictionsIdentifyRequest.IdentifyOptions?,
+                  listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation {
+        notify("identifyLabels")
+        let request = PredictionsIdentifyRequest(image: image, identifyType: type, options: options ?? PredictionsIdentifyRequest.IdentifyOptions())
+        return MockPredictionsIdentifyOperation(request: request)
+    }
 
     func reset(onComplete: @escaping BasicClosure) {
         notify("reset")
@@ -59,6 +68,25 @@ PredictionsError>, PredictionsTranslateTextOperation {
     init(request: Request) {
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.translate,
+                   request: request)
+    }
+
+}
+
+class MockPredictionsIdentifyOperation: AmplifyOperation<PredictionsIdentifyRequest,
+Void,
+IdentifyResult,
+PredictionsError>, PredictionsIdentifyOperation {
+
+    override func pause() {
+    }
+
+    override func resume() {
+    }
+
+    init(request: Request) {
+        super.init(categoryType: .predictions,
+                   eventName: HubPayload.EventName.Predictions.identifyLabels,
                    request: request)
     }
 

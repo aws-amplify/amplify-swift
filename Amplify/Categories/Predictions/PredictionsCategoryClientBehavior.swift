@@ -24,6 +24,11 @@ public protocol PredictionsCategoryClientBehavior {
                  targetLanguage: LanguageType?,
                  listener: PredictionsTranslateTextOperation.EventListener?,
                  options: PredictionsTranslateTextRequest.Options?) -> PredictionsTranslateTextOperation
+
+    func identify(type: IdentifyType,
+                   image: CGImage,
+                   options: PredictionsIdentifyRequest.Options,
+                   listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation
 }
 
 // TODO: Move these enums to a separate file

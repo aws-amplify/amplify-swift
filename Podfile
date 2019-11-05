@@ -57,6 +57,7 @@ target "Amplify" do
       inherit! :complete
 
       pod "AWSTranslate", "~> #{AWS_SDK_VERSION}"
+      pod "AWSRekognition", "~> #{AWS_SDK_VERSION}"
     end
 
     target "CoreMLPredictionsPlugin" do
