@@ -9,12 +9,53 @@ import Amplify
 import Foundation
 import SQLite
 
+/// Implements a SQLite query translator that turn persistence operations into `insert`, `update`,
+/// `delete` and `select` SQL statements based on `Model` types.
 class SQLiteQueryTranslator: QueryTranslator {
 
     typealias Value = Binding?
 
+    func translateToCreateTable(from modelType: Model.Type) -> Query<Binding?> {
+        let schema = modelType.schema
+        let name = schema.name
+        var statement = "create table if not exists \(name) (\n"
+
+        let columns = schema.allFields.columns()
+        let foreignKeys = schema.allFields.foreignKeys()
+
+        for (index, column) in columns.enumerated() {
+            statement += "  \"\(column.sqlName)\" \(column.sqlType.rawValue)"
+            if column.isPrimaryKey {
+                statement += " primary key"
+            }
+            if column.isRequired {
+                statement += " not null"
+            }
+
+            if index < columns.endIndex - 1 || !foreignKeys.isEmpty {
+                statement += ",\n"
+            }
+        }
+
+        for foreignKey in foreignKeys {
+            statement += "  foreign key(\"\(foreignKey.sqlName)\") "
+            guard let connectedModel = foreignKey.connectedModel else {
+                preconditionFailure("""
+                Model fields that are foreign keys must be connected to another Model.
+                Check the `ModelSchema` section of your "\(name)+Schema.swift" file.
+                """)
+            }
+
+            let connectedId = connectedModel.schema.primaryKey
+            statement += "references \(connectedModel.schema.name)(\"\(connectedId.sqlName)\")"
+        }
+
+        statement += "\n);"
+        return Query(statement)
+    }
+
     func translateToDelete(from model: Model) -> Query<Binding?> {
-        preconditionFailure("Not implemented for SQLite")
+        preconditionFailure("Not implemented for SQLite yet")
     }
 
     func translateToInsert(from model: Model) -> Query<Binding?> {
@@ -37,7 +78,7 @@ class SQLiteQueryTranslator: QueryTranslator {
     }
 
     func translateToQuery(from modelType: Model.Type,
-                          condition: QueryCondition? = nil) -> Query<Binding?> {
+                          predicate: QueryPredicate? = nil) -> Query<Binding?> {
         let schema = modelType.schema
         let fields = schema.allFields.columns()
         let tableName = schema.name
@@ -75,8 +116,8 @@ class SQLiteQueryTranslator: QueryTranslator {
         \(joinStatements.joined(separator: "\n"))
         """
 
-        if let condition = condition {
-            let conditionQuery = translateQueryCondition(from: modelType, conditions: condition)
+        if let predicate = predicate {
+            let conditionQuery = translateQueryPredicate(from: modelType, predicate: predicate)
             return Query("""
             \(sql)
             where 1 = 1
@@ -87,23 +128,40 @@ class SQLiteQueryTranslator: QueryTranslator {
         return Query(sql)
     }
 
-    internal func translateQueryCondition(from modelType: Model.Type,
-                                          conditions: QueryCondition) -> Query<Binding?> {
-        var statements: [String] = []
-        var values: [Binding?] = []
-        var currentCondition: QueryCondition? = conditions
-
-        while let condition = currentCondition {
-            let predicate = condition.predicate
-            let column = predicate.columnFor(field: condition.field)
-            let operation = predicate.operation
-
-            statements.insert("and \(column) \(operation)", at: 0)
-            values.insert(contentsOf: predicate.bindings, at: 0)
-
-            currentCondition = condition.previous
+    internal func translateQueryPredicate(from modelType: Model.Type,
+                                          predicate: QueryPredicate) -> Query<Binding?> {
+        var sql: [String] = []
+        var bindings: [Binding?] = []
+        var groupType: QueryPredicateGroupType = .and
+        let indentPrefix = "  "
+        var indentSize = 1
+        var groupOpened = false
+        func translate(_ pred: QueryPredicate) {
+            let indent = String(repeating: indentPrefix, count: indentSize)
+            if let operation = pred as? QueryPredicateOperation {
+                let logicalOperator = groupOpened ? "" : "\(groupType.rawValue) "
+                let column = operation.operator.columnFor(field: operation.field)
+                sql.append("\(indent)\(logicalOperator)\(column) \(operation.operator.sqlOperation)")
+                bindings.append(contentsOf: operation.operator.bindings)
+                groupOpened = false
+            } else if let group = pred as? QueryPredicateGroup {
+                var shouldClose = false
+                groupOpened = group.type != groupType
+                if groupOpened {
+                    sql.append("\(indent)\(groupType.rawValue) (")
+                    groupType = group.type
+                    indentSize += 1
+                    shouldClose = true
+                }
+                group.predicates.forEach { translate($0) }
+                if shouldClose {
+                    indentSize -= 1
+                    sql.append("\(indent))")
+                }
+            }
         }
-        return Query(statements.joined(separator: "\n  "), arguments: values)
+        translate(predicate)
+        return Query(sql.joined(separator: "\n"), arguments: bindings)
     }
 }
 

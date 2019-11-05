@@ -9,14 +9,14 @@ import Amplify
 import Foundation
 import SQLite
 
-extension QueryPredicate {
+extension QueryOperator {
 
-    var operation: String {
+    var sqlOperation: String {
         switch self {
-        case .notEqual:
-            return "<> ?"
-        case .equals:
-            return "= ?"
+        case .notEqual(let value):
+            return value == nil ? "is not null" : "<> ?"
+        case .equals(let value):
+            return value == nil ? "is null" : "= ?"
         case .lessOrEqual:
             return "<= ?"
         case .lessThan:
@@ -25,22 +25,15 @@ extension QueryPredicate {
             return ">= ?"
         case .greaterThan:
             return "> ?"
-        case .contains:
-            return "like ?"
         case .between:
             return "between ? and ?"
-        case .beginsWith:
+        case .beginsWith, .contains:
             return "like ?"
         }
     }
 
     func columnFor(field: String) -> String {
-        switch self {
-        case .contains, .beginsWith:
-            return "upper(\(field.quoted()))"
-        default:
-            return field.quoted()
-        }
+        return field.quoted()
     }
 
     var bindings: [Binding?] {
@@ -48,7 +41,7 @@ extension QueryPredicate {
         case let .between(start, end):
             return [start.asBinding(), end.asBinding()]
         case .notEqual(let value), .equals(let value):
-            return [value?.asBinding()]
+            return value == nil ? [] : [value?.asBinding()]
         case .lessOrEqual(let value),
              .lessThan(let value),
              .greaterOrEqual(let value),

@@ -33,104 +33,87 @@ import Foundation
 /// })
 /// ```
 ///
-public protocol ModelKey: CodingKey, CaseIterable {
-
-    // MARK: - Functions
-
-    func beginsWith(_ value: String) -> QueryCondition
-    func contains(_ value: String) -> QueryCondition
-    func eq(_ value: PersistentValue?) -> QueryCondition
-    func ge(_ value: PersistentValue) -> QueryCondition
-    func gt(_ value: PersistentValue) -> QueryCondition
-    func le(_ value: PersistentValue) -> QueryCondition
-    func lt(_ value: PersistentValue) -> QueryCondition
-    func ne(_ value: PersistentValue?) -> QueryCondition
-
-    // MARK: - Operators
-
-    static func ~= (key: Self, value: String) -> QueryCondition
-    static func == (key: Self, value: PersistentValue?) -> QueryCondition
-    static func >= (key: Self, value: PersistentValue) -> QueryCondition
-    static func > (key: Self, value: PersistentValue) -> QueryCondition
-    static func <= (key: Self, value: PersistentValue) -> QueryCondition
-    static func < (key: Self, value: PersistentValue) -> QueryCondition
-    static func != (key: Self, value: PersistentValue?) -> QueryCondition
-}
+public protocol ModelKey: CodingKey, CaseIterable, QueryFieldOperation {}
 
 extension CodingKey where Self: ModelKey {
 
     // MARK: - beginsWith
-    public func beginsWith(_ value: String) -> QueryCondition {
-        return QueryCondition(field: stringValue, predicate: .beginsWith(value))
+    public func beginsWith(_ value: String) -> QueryPredicateOperation {
+        return field(stringValue).beginsWith(value)
+    }
+
+    // MARK: - between
+    public func between(start: Persistable, end: Persistable) -> QueryPredicateOperation {
+        return field(stringValue).between(start: start, end: end)
     }
 
     // MARK: - contains
 
-    public func contains(_ value: String) -> QueryCondition {
-        return QueryCondition(field: stringValue, predicate: .contains(value))
+    public func contains(_ value: String) -> QueryPredicateOperation {
+        return field(stringValue).contains(value)
     }
 
-    public static func ~= (key: Self, value: String) -> QueryCondition {
+    public static func ~= (key: Self, value: String) -> QueryPredicateOperation {
         return key.contains(value)
     }
 
     // MARK: - eq
 
-    public func eq(_ value: PersistentValue?) -> QueryCondition {
-        return QueryCondition(field: stringValue, predicate: .equals(value))
+    public func eq(_ value: Persistable?) -> QueryPredicateOperation {
+        return field(stringValue).eq(value)
     }
 
-    public static func == (key: Self, value: PersistentValue?) -> QueryCondition {
+    public static func == (key: Self, value: Persistable?) -> QueryPredicateOperation {
         return key.eq(value)
     }
 
     // MARK: - ge
 
-    public func ge(_ value: PersistentValue) -> QueryCondition {
-        return QueryCondition(field: stringValue, predicate: .greaterOrEqual(value))
+    public func ge(_ value: Persistable) -> QueryPredicateOperation {
+        return field(stringValue).ge(value)
     }
 
-    public static func >= (key: Self, value: PersistentValue) -> QueryCondition {
+    public static func >= (key: Self, value: Persistable) -> QueryPredicateOperation {
         return key.ge(value)
     }
 
     // MARK: - gt
 
-    public func gt(_ value: PersistentValue) -> QueryCondition {
-        return QueryCondition(field: stringValue, predicate: .greaterThan(value))
+    public func gt(_ value: Persistable) -> QueryPredicateOperation {
+        return field(stringValue).gt(value)
     }
 
-    public static func > (key: Self, value: PersistentValue) -> QueryCondition {
+    public static func > (key: Self, value: Persistable) -> QueryPredicateOperation {
         return key.gt(value)
     }
 
     // MARK: - le
 
-    public func le(_ value: PersistentValue) -> QueryCondition {
-        return QueryCondition(field: stringValue, predicate: .lessOrEqual(value))
+    public func le(_ value: Persistable) -> QueryPredicateOperation {
+        return field(stringValue).le(value)
     }
 
-    public static func <= (key: Self, value: PersistentValue) -> QueryCondition {
+    public static func <= (key: Self, value: Persistable) -> QueryPredicateOperation {
         return key.le(value)
     }
 
     // MARK: - lt
 
-    public func lt(_ value: PersistentValue) -> QueryCondition {
-        return QueryCondition(field: stringValue, predicate: .lessThan(value))
+    public func lt(_ value: Persistable) -> QueryPredicateOperation {
+        return field(stringValue).lt(value)
     }
 
-    public static func < (key: Self, value: PersistentValue) -> QueryCondition {
+    public static func < (key: Self, value: Persistable) -> QueryPredicateOperation {
         return key.lt(value)
     }
 
     // MARK: - ne
 
-    public func ne(_ value: PersistentValue?) -> QueryCondition {
-        return QueryCondition(field: stringValue, predicate: .notEqual(value))
+    public func ne(_ value: Persistable?) -> QueryPredicateOperation {
+        return field(stringValue).ne(value)
     }
 
-    public static func != (key: Self, value: PersistentValue?) -> QueryCondition {
+    public static func != (key: Self, value: Persistable?) -> QueryPredicateOperation {
         return key.ne(value)
     }
 
