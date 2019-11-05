@@ -32,9 +32,9 @@ PredictionsIdentifyOperation {
 
 
         if let error = request.validate() {
-                 dispatch(error)
-                 finish()
-                 return
+            dispatch(event: .failed(error))
+            finish()
+            return
         }
 
         let identityIdResult = authService.getIdentityId()
