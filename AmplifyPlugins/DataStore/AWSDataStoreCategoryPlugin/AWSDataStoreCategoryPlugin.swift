@@ -42,7 +42,11 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
         query(modelType, where: { field("id") == id }) {
             switch $0 {
             case .result(let models):
-                completion(.result(models.first))
+                if models.count > 1 {
+                    completion(.error(.nonUniqueResult(model: modelType.schema.name)))
+                } else {
+                    completion(.result(models.first))
+                }
             case .error(let error):
                 completion(.failure(causedBy: error))
             }

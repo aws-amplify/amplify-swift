@@ -9,8 +9,8 @@ import Amplify
 import Foundation
 import SQLite
 
-/// Extend types that conform to `Persistable` in order to provide conversion to SQLite's `Binding`
-/// types. This is necessary so `Model` properties' values to a SQLite compatible type.
+/// Extended types that conform to `Persistable` in order to provide conversion to SQLite's `Binding`
+/// types. This is necessary so `Model` properties' map values to a SQLite compatible types.
 extension Persistable {
 
     /// Convert the internal `Persistable` type to a `Binding` compatible value.

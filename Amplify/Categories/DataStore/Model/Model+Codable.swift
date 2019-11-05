@@ -13,7 +13,7 @@ extension Model where Self: Codable {
     /// De-serialize a JSON string into an instance of the concrete type that conforms
     /// to the `Model` protocol.
     ///
-    /// - Parameter json a valid JSON object as `String`
+    /// - Parameter json: a valid JSON object as `String`
     /// - Returns: an instance of the concrete type conforming to `Model`
     /// - Throws: `DecodingError.dataCorrupted` in case data is not a valid JSON or any
     /// other decoding specific error that `JSONDecorder.decode()` might throw.
@@ -25,7 +25,7 @@ extension Model where Self: Codable {
     /// De-serialize a `Dictionary` into an instance of the concrete type that conforms
     /// to the `Model` protocol.
     ///
-    /// - Parameter dictionary containing keys and values that match the target type
+    /// - Parameter dictionary: containing keys and values that match the target type
     /// - Returns: an instance of the concrete type conforming to `Model`
     /// - Throws: `DecodingError.dataCorrupted` in case data is not a valid JSON or any
     /// other decoding specific error that `JSONDecorder.decode()` might throw.

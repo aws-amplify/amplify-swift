@@ -32,20 +32,20 @@ class SQLiteQueryTranslator: QueryTranslator {
                 statement += " not null"
             }
 
-            if index < columns.endIndex - 1 || !foreignKeys.isEmpty {
+            let isNotLastColumn = index < columns.endIndex - 1
+            if isNotLastColumn {
                 statement += ",\n"
             }
         }
 
+        let hasForeignKeys = !foreignKeys.isEmpty
+        if hasForeignKeys {
+            statement += ",\n"
+        }
+
         for foreignKey in foreignKeys {
             statement += "  foreign key(\"\(foreignKey.sqlName)\") "
-            guard let connectedModel = foreignKey.connectedModel else {
-                preconditionFailure("""
-                Model fields that are foreign keys must be connected to another Model.
-                Check the `ModelSchema` section of your "\(name)+Schema.swift" file.
-                """)
-            }
-
+            let connectedModel = foreignKey.requiredConnectedModel
             let connectedId = connectedModel.schema.primaryKey
             statement += "references \(connectedModel.schema.name)(\"\(connectedId.sqlName)\")"
         }
@@ -89,7 +89,7 @@ class SQLiteQueryTranslator: QueryTranslator {
         // eager load many-to-one relationships (simple inner join)
         var joinStatements: [String] = []
         for foreignKey in schema.allFields.foreignKeys() {
-            let connectedModelType = foreignKey.connectedModel!
+            let connectedModelType = foreignKey.requiredConnectedModel
             let connectedSchema = connectedModelType.schema
             let connectedTableName = connectedModelType.schema.name
 

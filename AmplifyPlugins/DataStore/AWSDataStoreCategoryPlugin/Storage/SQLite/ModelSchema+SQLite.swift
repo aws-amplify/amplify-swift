@@ -77,6 +77,23 @@ extension ModelField: SQLColumn {
         }
     }
 
+    /// This calls `connectedModel` but enforces that the field must represent a relationship.
+    /// In case the field type is not a `Model.Type` is calls `preconditionFailure`. Consumers
+    /// should fix their models in order to recover from it, since connected models are required
+    /// to be of `Model.Type`.
+    ///
+    /// **Note:** as a maintainer, make sure you use this computed property only when context
+    /// allows (i.e. the field is a valid relatioship, such as foreign keys).
+    var requiredConnectedModel: Model.Type {
+        guard let modelType = connectedModel else {
+            preconditionFailure("""
+            Model fields that are foreign keys must be connected to another Model.
+            Check the `ModelSchema` section of your "\(name)+Schema.swift" file.
+            """)
+        }
+        return modelType
+    }
+
     /// Get the name of the `ModelField` as a SQL column name. Columns can be optionally namespaced
     /// and are always wrapped in quotes so reserved words are escaped.
     ///
@@ -100,7 +117,7 @@ extension ModelField: SQLColumn {
     /// `post` property, the nested `id` field could be aliased as `post.id`.
     ///
     /// - Parameter namespace: the optional alias namespace
-    /// - Returns: the column alias prefixed by `as `. Example: if the `Model` field is named "id"
+    /// - Returns: the column alias prefixed by `as`. Example: if the `Model` field is named "id"
     /// the call `field.columnAlias(forNamespace: "post")` would return `as "post.id"`.
     func columnAlias(forNamespace namespace: String? = nil) -> String {
         var column = sqlName
