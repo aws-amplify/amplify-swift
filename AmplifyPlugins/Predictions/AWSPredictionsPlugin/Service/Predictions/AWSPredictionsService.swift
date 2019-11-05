@@ -6,14 +6,15 @@
 //
 
 import Foundation
-import AWSTranslate
 import Amplify
+import AWSRekognition
+import AWSTranslate
 
-class AWSTranslateService: AWSTranslateServiceBehaviour {
-
+class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateServiceBehaviour {
 
     var identifier: String!
-    var translateBehavior: AWSTranslateBehavior!
+    var awsTranslate: AWSTranslateBehavior!
+    var awsRekognition: AWSRekognitionBehavior!
 
     convenience init(region: AWSRegionType,
                      cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
@@ -29,48 +30,44 @@ class AWSTranslateService: AWSTranslateServiceBehaviour {
 
         AWSTranslate.register(with: serviceConfiguration, forKey: identifier)
         let awsTranslate = AWSTranslate(forKey: identifier)
-
         let awsTranslateAdapter = AWSTranslateAdapter(awsTranslate)
-        self.init(awsTranslate: awsTranslateAdapter, identifier: identifier)
+        AWSRekognition.register(with: serviceConfiguration, forKey: identifier)
+        let awsRekognition = AWSRekognition(forKey: identifier)
+
+        let awsRekognitionAdapter = AWSRekognitionAdapter(awsRekognition)
+
+        self.init(awsTranslate: awsTranslateAdapter,
+                  awsRekognition: awsRekognitionAdapter,
+                  identifier: identifier)
     }
 
     init(awsTranslate: AWSTranslateBehavior,
+         awsRekognition: AWSRekognitionBehavior,
          identifier: String) {
-        self.translateBehavior = awsTranslate
+        self.awsTranslate = awsTranslate
+        self.awsRekognition = awsRekognition
         self.identifier = identifier
     }
 
     func reset() {
         AWSTranslate.remove(forKey: identifier)
-        translateBehavior = nil
+        awsTranslate = nil
+        identifier = nil
+
+        AWSRekognition.remove(forKey: identifier)
+        awsRekognition = nil
         identifier = nil
     }
 
-    func getEscapeHatch() -> AWSTranslate {
-        return translateBehavior.getTranslate()
-    }
-
-    func translateText(text: String,
-                       language: LanguageType,
-                       targetLanguage: LanguageType,
-                       onEvent: @escaping AWSTranslateService.TranslateTextServiceEventHandler) {
-        let request = AWSTranslateTranslateTextRequest()
-        request?.sourceLanguageCode = "en"
-        request?.targetLanguageCode = "it"
-        request?.text = text
-        translateBehavior.translateText(request: request!).continueWith { (task) -> Any? in
-            if let result = task.result?.translatedText {
-                print(result)
-                onEvent(
-                    .completed(
-                        TranslateTextResult(text: (task.result?.translatedText!)!,
-                                            targetLanguage: .italian)))
-            } else {
-                print(task.error as Any)
-            }
-
+    func getEscapeHatch(key: String) -> AWSService? {
+        switch key {
+        case "Rekognition":
+            return awsRekognition.getRekognition()
+        case "Translate":
+            return awsTranslate.getTranslate()
+        default:
             return nil
         }
-
     }
+
 }

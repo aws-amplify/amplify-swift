@@ -12,14 +12,11 @@ import AWSPluginsCore
 extension AWSPredictionsPlugin {
 
     public func reset(onComplete: @escaping BasicClosure) {
-        if rekognitionService != nil {
-            rekognitionService.reset()
-            rekognitionService = nil
+        if predictionsService != nil {
+            predictionsService.reset()
+            predictionsService = nil
         }
-        if translateService != nil {
-            translateService.reset()
-            translateService = nil
-        }
+
         if authService != nil {
             authService.reset()
             authService = nil

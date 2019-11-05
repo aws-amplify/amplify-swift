@@ -14,14 +14,14 @@ public class AWSRekognitionOperation: AmplifyOperation<PredictionsIdentifyReques
     Void, IdentifyResult, PredictionsError>,
 PredictionsIdentifyOperation {
 
-    let rekognitionService: AWSRekognitionServiceBehaviour
+    let predictionsService: AWSPredictionsService
     let authService: AWSAuthServiceBehavior
 
     init(_ request: PredictionsIdentifyRequest,
-         rekognitionService: AWSRekognitionServiceBehaviour,
+         predictionsService: AWSPredictionsService,
          authService: AWSAuthServiceBehavior,
          listener: EventListener?) {
-        self.rekognitionService = rekognitionService
+        self.predictionsService = predictionsService
         self.authService = authService
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.identifyLabels,
@@ -43,7 +43,7 @@ PredictionsIdentifyOperation {
         case .detectText:
             break
         case .detectLabels:
-            rekognitionService.detectLabels(
+            predictionsService.detectLabels(
             image: request.image) { [weak self] event in
                 self?.onServiceEvent(event: event)
             }

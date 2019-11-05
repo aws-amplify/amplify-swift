@@ -22,7 +22,7 @@ extension AWSPredictionsPlugin {
                                                       language: language ?? .english,
                                                       options: options ?? PredictionsTranslateTextRequest.Options())
         let convertOperation = AWSTranslateOperation(request,
-                                                     translateService: translateService,
+                                                     predictionsService: predictionsService,
                                                      authService: authService,
                                                      listener: listener)
         queue.addOperation(convertOperation)
@@ -31,13 +31,13 @@ extension AWSPredictionsPlugin {
 
     public func identify(type: IdentifyType,
                          image: CGImage,
-                         options: PredictionsIdentifyRequest.Options,
+                         options: PredictionsIdentifyRequest.Options?,
                          listener: PredictionsIdentifyOperation.EventListener? = nil) -> PredictionsIdentifyOperation {
         let options = options
 
-        let request = PredictionsIdentifyRequest(image: image, identifyType: type, options: options)
+        let request = PredictionsIdentifyRequest(image: image, identifyType: type, options: options ?? PredictionsIdentifyRequest.Options())
         let operation = AWSRekognitionOperation(
-            request, rekognitionService: rekognitionService,
+            request, predictionsService: predictionsService,
             authService: authService,
             listener: listener)
 
