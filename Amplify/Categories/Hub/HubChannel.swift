@@ -24,6 +24,9 @@ public enum HubChannel {
     /// Hub messages relating to Amplify Logging
     case logging
 
+    /// Hub messages relating to Amplify Predictions
+    case predictions
+
     /// Hub messages relating to Amplify Storage
     case storage
 
@@ -55,6 +58,8 @@ extension HubChannel: Equatable {
             return true
         case (.logging, .logging):
             return true
+        case (.predictions, .predictions):
+            return true
         case (.storage, .storage):
             return true
         case (.custom(let lhsValue), .custom(let rhsValue)):
@@ -79,6 +84,8 @@ extension HubChannel {
             self = .hub
         case .logging:
             self = .logging
+        case .predictions:
+            self = .predictions
         case .storage:
             self = .storage
         }

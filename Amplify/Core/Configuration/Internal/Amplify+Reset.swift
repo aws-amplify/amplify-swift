@@ -51,6 +51,11 @@ extension Amplify {
                 DispatchQueue.global().async {
                     Storage.reset { group.leave() }
                 }
+            case .predictions:
+                group.enter()
+                DispatchQueue.global().async {
+                    Predictions.reset { group.leave() }
+                }
             }
         }
 
@@ -60,6 +65,7 @@ extension Amplify {
         API = APICategory()
         Hub = HubCategory()
         Logging = LoggingCategory()
+        Predictions = PredictionsCategory()
         Storage = StorageCategory()
 
         isConfigured = false

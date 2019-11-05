@@ -7,8 +7,8 @@ target "Amplify" do
   # Comment the next line if you"re not using Swift and don"t want to use dynamic frameworks
   use_frameworks!
 
-  pod 'SwiftFormat/CLI'
-  pod 'SwiftLint'
+  pod "SwiftFormat/CLI"
+  pod "SwiftLint"
 
   abstract_target "AmplifyTestConfigs" do
     pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
@@ -53,6 +53,17 @@ target "Amplify" do
       pod "AWSS3", "~> #{AWS_SDK_VERSION}"
     end
 
+    target "AWSPredictionsPlugin" do
+      inherit! :complete
+
+      pod "AWSTranslate", "~> #{AWS_SDK_VERSION}"
+      pod "AWSRekognition", "~> #{AWS_SDK_VERSION}"
+    end
+
+    target "CoreMLPredictionsPlugin" do
+      inherit! :complete
+    end
+
     abstract_target "AWSPluginsTestConfigs" do
       pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
       pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
@@ -70,6 +81,12 @@ target "Amplify" do
       end
 
       target "AWSS3StoragePluginTests" do
+      end
+
+      target "AWSPredictionsPluginTests" do
+      end
+
+      target "CoreMLPredictionsPluginTests" do
       end
 
     end
@@ -101,6 +118,15 @@ target "AmplifyTestApp" do
   target "AWSS3StoragePluginIntegrationTests" do
     inherit! :complete
     pod "AWSS3", "~> #{AWS_SDK_VERSION}"
+  end
+
+  target "AWSPredictionsPluginIntegrationTests" do
+    inherit! :complete
+    pod "AWSTranslate", "~> #{AWS_SDK_VERSION}"
+  end
+
+  target "CoreMLPredictionsPluginIntegrationTests" do
+    inherit! :complete
   end
 
 end

@@ -13,7 +13,7 @@ public struct Schema {
 
     /// The `ModelSchema` instances indexed by their names (i.e. the type name)
     let models: [String: ModelSchema]
-    
+
     /// The current version of the schema
     let version: Int
 

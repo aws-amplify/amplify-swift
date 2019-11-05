@@ -10,7 +10,7 @@ import Foundation
 import SQLite
 
 extension String {
-    
+
     /// Utility for wrapping the string in double quotes.
     func quoted() -> String {
         return "\"\(self)\""
