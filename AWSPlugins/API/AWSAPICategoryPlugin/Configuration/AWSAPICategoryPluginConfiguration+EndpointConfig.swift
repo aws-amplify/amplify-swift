@@ -11,7 +11,7 @@ import AWSPluginsCore
 import AWSCore
 
 public extension AWSAPICategoryPluginConfiguration {
-    struct EndpointConfig {
+    class EndpointConfig {
         let name: String
         let baseURL: URL
         let region: AWSRegionType?
@@ -19,22 +19,7 @@ public extension AWSAPICategoryPluginConfiguration {
         let authorizationConfiguration: AWSAuthorizationConfiguration
         var interceptors = [URLRequestInterceptor]()
 
-        public init(name: String,
-                    baseURL: URL,
-                    region: AWSRegionType?,
-                    authorizationType: AWSAuthorizationType,
-                    authorizationConfiguration: AWSAuthorizationConfiguration,
-                    authService: AWSAuthService) {
-            self.name = name
-            self.baseURL = baseURL
-            self.region = region
-            self.authorizationType = authorizationType
-            self.authorizationConfiguration = authorizationConfiguration
-            addInterceptors(authService: authService)
-        }
-
-        public init(name: String, jsonValue: JSONValue, authService: AWSAuthService) throws {
-            self.name = name
+        convenience public init(name: String, jsonValue: JSONValue, authService: AWSAuthServiceBehavior? = nil) throws {
 
             guard case .object(let endpointJSON) = jsonValue else {
                 throw PluginError.pluginConfigurationError(
@@ -48,19 +33,36 @@ public extension AWSAPICategoryPluginConfiguration {
                 )
             }
 
-            self.authorizationType = try EndpointConfig.authorizationType(from: endpointJSON)
-            self.authorizationConfiguration = try EndpointConfig.authorizationConfiguration(from: endpointJSON)
-            self.baseURL = try EndpointConfig.baseURL(from: endpointJSON)
-            self.region = try EndpointConfig.region(from: endpointJSON)
+            self.init(name: name,
+                      baseURL: try EndpointConfig.baseURL(from: endpointJSON),
+                      region: try EndpointConfig.region(from: endpointJSON),
+                      authorizationType: try EndpointConfig.authorizationType(from: endpointJSON),
+                      authorizationConfiguration: try EndpointConfig.authorizationConfiguration(from: endpointJSON),
+                      authService: authService)
+        }
+
+        public init(name: String,
+                    baseURL: URL,
+                    region: AWSRegionType?,
+                    authorizationType: AWSAuthorizationType,
+                    authorizationConfiguration: AWSAuthorizationConfiguration,
+                    authService: AWSAuthServiceBehavior? = nil) {
+            self.name = name
+            self.baseURL = baseURL
+            self.region = region
+            self.authorizationType = authorizationType
+            self.authorizationConfiguration = authorizationConfiguration
             addInterceptors(authService: authService)
         }
 
-        public mutating func addInterceptor(interceptor: URLRequestInterceptor) {
+        public func addInterceptor(interceptor: URLRequestInterceptor) {
             interceptors.append(interceptor)
         }
 
+        // MARK: Private
+
         /// Adds auto-discovered interceptors. Currently only works for authorization interceptors
-        private mutating func addInterceptors(authService: AWSAuthService) {
+        private func addInterceptors(authService: AWSAuthServiceBehavior? = nil) {
             switch authorizationConfiguration {
             case .none:
                 // No interceptors needed
@@ -73,13 +75,21 @@ public extension AWSAPICategoryPluginConfiguration {
                 guard let region = region else {
                     fatalError("Region not set for IAM")
                 }
+                guard let authService = authService else {
+                    fatalError("AuthService not set for IAM")
+                }
                 let provider = BasicIAMCredentialsProvider(authService: authService)
                 let interceptor = IAMURLRequestInterceptor(iamCredentialsProvider: provider, region: region)
                 addInterceptor(interceptor: interceptor)
             case .amazonCognitoUserPools:
+                guard let authService = authService else {
+                    fatalError("AuthService not set for cognito user pools")
+                }
                 let provider = BasicUserPoolTokenProvider(authService: authService)
                 let interceptor = UserPoolURLRequestInterceptor(userPoolTokenProvider: provider)
                 addInterceptor(interceptor: interceptor)
+            case .openIDConnect:
+                break
             default:
                 fatalError("No other types configured")
             }

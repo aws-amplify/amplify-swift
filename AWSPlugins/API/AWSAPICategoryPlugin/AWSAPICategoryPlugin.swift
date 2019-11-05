@@ -10,8 +10,9 @@ import AWSPluginsCore
 
 final public class AWSAPICategoryPlugin: NSObject, APICategoryPlugin {
 
+    /// The unique key of the plugin within the API category.
     public var key: PluginKey {
-        return "AWSAPICategoryPlugin"
+        return PluginConstants.awsAPICategoryPluginKey
     }
 
     /// A holder for API configurations. This will be populated during the

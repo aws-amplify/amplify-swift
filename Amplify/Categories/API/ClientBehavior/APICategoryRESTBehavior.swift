@@ -31,4 +31,10 @@ public protocol APICategoryRESTBehavior {
               path: String,
               body: String?,
               listener: APIOperation.EventListener?) -> APIOperation
+
+//    func put() -> APIOperation
+//
+//    func patch() -> APIOperation
+//
+//    func delete() -> APIOperation
 }

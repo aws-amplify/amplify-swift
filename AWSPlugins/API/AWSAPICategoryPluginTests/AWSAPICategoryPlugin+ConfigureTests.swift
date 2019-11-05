@@ -10,13 +10,9 @@ import XCTest
 @testable import Amplify
 @testable import AWSAPICategoryPlugin
 
-class AWSAPICategoryPluginConfigurationTests: XCTestCase {
-    override func setUp() {
-        Amplify.reset()
-    }
+class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
 
     func testPluginKey() {
-        let apiPlugin = AWSAPICategoryPlugin()
         XCTAssertEqual(apiPlugin.key, "AWSAPICategoryPlugin")
     }
 
@@ -27,6 +23,10 @@ class AWSAPICategoryPluginConfigurationTests: XCTestCase {
                 "Endpoint": "http://www.example.com",
                 "AuthorizationType": "API_KEY",
                 "ApiKey": "SpecialApiKey33"
+            ],
+            "Test2": [
+                "Endpoint": "http://www.example.com",
+                "AuthorizationType": "AMAZON_COGNITO_USER_POOLS"
             ]
         ]
 

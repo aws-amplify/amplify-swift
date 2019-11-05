@@ -11,7 +11,9 @@ import Amplify
 extension GraphQLRequestUtils {
 
     static func validateDocument(_ document: String) -> GraphQLError? {
-        // TODO: implement
+        if document.isEmpty {
+            return GraphQLError.unknown("document is empty", "provide a valid document")
+        }
         return nil
     }
 
@@ -23,4 +25,3 @@ extension GraphQLRequestUtils {
         return nil
     }
 }
-

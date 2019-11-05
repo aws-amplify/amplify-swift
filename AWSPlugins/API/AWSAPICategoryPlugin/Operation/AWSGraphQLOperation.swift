@@ -100,7 +100,7 @@ final public class AWSGraphQLOperation<R: ResponseType>: AmplifyOperation<GraphQ
             return
         }
 
-        // Perform task of request
+        // Begin network task
         let task = session.dataTaskBehavior(with: finalRequest)
         mapper.addPair(operation: self, task: task)
         task.resume()

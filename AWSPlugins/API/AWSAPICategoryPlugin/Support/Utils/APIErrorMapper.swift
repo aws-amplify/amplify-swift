@@ -11,27 +11,26 @@ import Amplify
 class APIErrorMapper {
     static func handleDecodingError(error: DecodingError) -> GraphQLError {
         switch error {
-        case .dataCorrupted(let context):
+        case .dataCorrupted(_):
             let errorMessage = "dataCorrupted"
             let apiError = GraphQLError.operationError(errorMessage, "", error)
             return apiError
 
-        case .typeMismatch(let type, let context):
+        case .typeMismatch(let type, _):
             let errorMessage = "typeMisMatch type: \(type)"
             let apiError = GraphQLError.operationError(errorMessage, "", error)
             return apiError
 
-        case .valueNotFound(let type, let context):
+        case .valueNotFound(let type, _):
             let errorMessage = "valueNotFound"
             let apiError = GraphQLError.operationError(errorMessage, "", error)
             return apiError
-        case .keyNotFound(let key, let context):
+        case .keyNotFound(let key, _):
             let errorMessage = "keyNotFound key \(key)"
             let apiError = GraphQLError.operationError(errorMessage, "", error)
             return apiError
         @unknown default:
-            print("failed to decode \(error)")
-            let apiError = GraphQLError.operationError("", "", error)
+            let apiError = GraphQLError.operationError("Failed to decode", "", error)
             return apiError
         }
     }

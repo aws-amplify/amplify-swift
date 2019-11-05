@@ -6,14 +6,6 @@
 //
 
 import Foundation
-//
-// Copyright 2018-2019 Amazon.com,
-// Inc. or its affiliates. All Rights Reserved.
-//
-// SPDX-License-Identifier: Apache-2.0
-//
-
-import Foundation
 import Amplify
 
 extension AWSAPIOperation: TaskOperationBehavior {
@@ -41,10 +33,12 @@ extension AWSAPIOperation: TaskOperationBehavior {
                 error)
 
             dispatch(event: .failed(apiError))
+            finish()
             return
         }
 
         dispatch(event: .completed(data))
+        finish()
     }
 
     func updateProgress(_ data: Data) {

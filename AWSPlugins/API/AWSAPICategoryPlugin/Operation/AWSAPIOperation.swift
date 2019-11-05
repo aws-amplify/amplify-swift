@@ -46,109 +46,70 @@ APIOperation {
             finish()
             return
         }
-        let urlRequest: URLRequest
-        do {
-            urlRequest = try makeRequestForAPIName(request.apiName,
-                                                   operationType: request.operationType,
-                                                   path: request.path)
-            let task = session.dataTaskBehavior(with: urlRequest)
-            mapper.addPair(operation: self, task: task)
 
-            task.resume()
-        } catch let error as APIError {
-            dispatch(event: APIOperation.Event.failed(error))
+        // Validate the request
+        if let error = request.validate() {
+            dispatch(event: .failed(error))
             finish()
-        } catch let error as AmplifyError {
-            let apiError = APIError.unknown(error.errorDescription, error.recoverySuggestion)
-            dispatch(event: APIOperation.Event.failed(apiError))
-            finish()
-        } catch {
-            let apiError = APIError.unknown(error.localizedDescription, "")
-            dispatch(event: APIOperation.Event.failed(apiError))
-            finish()
+            return
         }
-    }
 
-    func makeRequestForAPIName(_ apiName: String,
-                               operationType: APIOperationType,
-                               body: String? = nil,
-                               path: String) throws -> URLRequest {
-        guard let endpointConfig = pluginConfig.endpoints[apiName] else {
+        // Retrieve endpoint configuration
+        guard let endpointConfig = pluginConfig.endpoints[request.apiName] else {
             let error = APIError.invalidConfiguration(
-                "Unable to get an endpoint configuration for \(apiName)",
+                "Unable to get an endpoint configuration for \(request.apiName)",
                 """
-                Review your API plugin configuration and ensure \(apiName) has a valid configuration.
+                Review your API plugin configuration and ensure \(request.apiName) has a valid configuration.
                 """
             )
-            throw error
+            dispatch(event: .failed(error))
+            finish()
+            return
         }
 
-        let url = try urlForAPIName(apiName, path: path)
-
-        let headers = ["content-type": "application/json"]
-        var baseRequest = URLRequest(url: url)
-
-        switch operationType {
-        case .get:
-            break
-        case .put:
-            break
-        case .post:
-            baseRequest.httpMethod = "POST"
-            baseRequest.allHTTPHeaderFields = headers
-            if let body = body {
-                baseRequest.httpBody = body.data(using: .utf8)
-            }
-        case .patch:
-            break
-        case .delete:
-            break
+        // Prepare request payload, if any
+        var requestPayload: Data?
+        if let body = request.body {
+            requestPayload = body.data(using: .utf8)
         }
 
-        let finalRequest = try endpointConfig.interceptors.reduce(baseRequest) { (request, interceptor) -> URLRequest in
+        // Construct URL with path
+        let url: URL
+        do {
+            url = try APIRequestUtils.constructURL(endpointConfig.baseURL, path: request.path)
+        } catch let error as APIError {
+            dispatch(event: .failed(error))
+            finish()
+            return
+        } catch {
+            let apiError = APIError.operationError("Failed to construct URL", "", error)
+            dispatch(event: .failed(apiError))
+            finish()
+            return
+        }
+
+        // Construct Request
+        let urlRequest = APIRequestUtils.constructRequest(with: url,
+                                                          operationType: request.operationType,
+                                                          requestPayload: requestPayload)
+
+        // Intercept request
+        let finalRequest = endpointConfig.interceptors.reduce(urlRequest) { (request, interceptor) -> URLRequest in
             do {
                 return try interceptor.intercept(request)
             } catch {
-                throw GraphQLError.operationError("Failed to intercept request fully..",
-                                                  "Something wrong with the interceptor",
-                                                  error)
+                dispatch(event: .failed(APIError.operationError("Failed to intercept request fully..",
+                                                                    "Something wrong with the interceptor",
+                                                                    error)))
+                cancel()
+                return request
             }
         }
 
-        return finalRequest
-    }
+        // Begin network task
+        let task = session.dataTaskBehavior(with: finalRequest)
+        mapper.addPair(operation: self, task: task)
 
-    func urlForAPIName(_ apiName: String, path: String) throws -> URL {
-        guard let baseURL = pluginConfig.endpoints[apiName]?.baseURL else {
-            throw APIError.invalidURL(
-                "No URL for \(apiName)",
-                "Review your API plugin configuration and ensure \(apiName) has a valid URL for the 'Endpoint' field."
-            )
-        }
-
-        guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
-            throw APIError.invalidURL(
-                "Invalid URL for \(apiName)",
-                "Review your API plugin configuration and ensure \(apiName) has a valid URL for the 'Endpoint' field."
-            )
-        }
-
-        if components.path.isEmpty {
-            components.path = path
-        } else {
-            components.path.append(path)
-        }
-
-        guard let url = components.url else {
-            throw APIError.invalidURL(
-                "Invalid URL for \(apiName)",
-                """
-                Review your API plugin configuration and ensure \(apiName) has a valid URL for the 'Endpoint' field, \
-                and make sure to pass a valid path in your request. The value passed was '\(path)'.
-                """
-            )
-        }
-
-        return url
+        task.resume()
     }
 }

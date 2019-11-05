@@ -12,14 +12,57 @@ import XCTest
 @testable import AWSPluginsTestCommon
 @testable import AmplifyTestCommon
 
-class AWSAPIPluginRESTClientBehaviorTests: XCTestCase {
-    override func setUp() {
-        Amplify.reset()
+class AWSAPICategoryPluginRESTClientBehaviorTests: AWSAPICategoryPluginTestBase {
+
+    // MARK: Get API tests
+
+    func testGet() {
+        let operation = apiPlugin.get(apiName: apiName, path: testPath, listener: nil)
+
+        XCTAssertNotNil(operation)
+
+        guard let getOperation = operation as? AWSAPIOperation else {
+            XCTFail("operation could not be cast to AWSAPIOperation")
+            return
+        }
+
+        let request = getOperation.request
+        XCTAssertNotNil(request)
+        XCTAssertEqual(request.apiName, apiName)
+        XCTAssertEqual(request.path, testPath)
+        XCTAssertNil(request.body)
+        XCTAssertEqual(request.operationType, APIOperationType.get)
+        XCTAssertNotNil(request.options)
+        XCTAssertNotNil(request.path)
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    // MARK: Post API tests
+
+    func testPost() {
+        let operation = apiPlugin.post(apiName: apiName, path: testPath, body: testBody, listener: nil)
+
+        XCTAssertNotNil(operation)
+
+        guard let postOperation = operation as? AWSAPIOperation else {
+            XCTFail("operation could not be cast to AWSAPIOperation")
+            return
+        }
+
+        let request = postOperation.request
+        XCTAssertNotNil(request)
+        XCTAssertEqual(request.apiName, apiName)
+        XCTAssertEqual(request.path, testPath)
+        XCTAssertEqual(request.body, testBody)
+        XCTAssertEqual(request.operationType, APIOperationType.post)
+        XCTAssertNotNil(request.options)
+        XCTAssertNotNil(request.path)
     }
+
+    // MARK: Put API tests
+
+    // MARK: Patch API tests
+
+    // MARK: Delete API tests
 
     func testGetReturnsOperation() {
         setUpPlugin()
@@ -162,81 +205,4 @@ class AWSAPIPluginRESTClientBehaviorTests: XCTestCase {
         }
     }
 
-}
-
-struct MockSessionFactory: URLSessionBehaviorFactory {
-    let session: MockURLSession
-
-    init(returning session: MockURLSession) {
-        self.session = session
-    }
-
-    func makeSession(withDelegate delegate: URLSessionBehaviorDelegate?) -> URLSessionBehavior {
-        session.sessionBehaviorDelegate = delegate
-        return session
-    }
-}
-
-class MockURLSession: URLSessionBehavior {
-    weak var sessionBehaviorDelegate: URLSessionBehaviorDelegate?
-
-    static let defaultOnReset: ((BasicClosure?) -> Void) = { $0?() }
-
-    var onTaskForRequest: (URLRequest) -> URLSessionDataTaskBehavior
-    var onReset: ((BasicClosure?) -> Void)?
-
-    init(onTaskForRequest: @escaping (URLRequest) -> URLSessionDataTaskBehavior,
-         onReset: ((BasicClosure?) -> Void)? = MockURLSession.defaultOnReset) {
-        self.onTaskForRequest = onTaskForRequest
-        self.onReset = onReset
-    }
-
-    func dataTaskBehavior(with request: URLRequest) -> URLSessionDataTaskBehavior {
-        let task = onTaskForRequest(request)
-        if let mockTask = task as? MockURLSessionTask {
-            mockTask.mockSession = self
-        }
-        return task
-    }
-
-    func reset(onComplete: BasicClosure?) {
-        onReset?(onComplete)
-    }
-}
-
-class MockURLSessionTask: URLSessionDataTaskBehavior {
-    static var counter = AtomicValue(initialValue: 0)
-
-    /// Mimics a URLSessionTask's Session context, for dispatching events to the
-    /// session delegate. Rather than use the mock session as a broker, the tests
-    /// should directly invoke the appropriate methods on the mockSession's
-    /// `delegate`
-    weak var mockSession: MockURLSession?
-
-    let taskBehaviorIdentifier: Int
-
-    var onCancel: BasicClosure?
-    var onPause: BasicClosure?
-    var onResume: BasicClosure?
-
-    init(onCancel: BasicClosure? = nil,
-         onPause: BasicClosure? = nil,
-         onResume: BasicClosure? = nil) {
-        self.onCancel = onCancel
-        self.onPause = onPause
-        self.onResume = onResume
-        self.taskBehaviorIdentifier = MockURLSessionTask.counter.increment()
-    }
-
-    func cancel() {
-        onCancel?()
-    }
-
-    func pause() {
-        onPause?()
-    }
-
-    func resume() {
-        onResume?()
-    }
 }

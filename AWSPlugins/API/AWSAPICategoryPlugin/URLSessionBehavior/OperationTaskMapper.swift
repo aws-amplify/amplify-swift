@@ -13,10 +13,10 @@ import Amplify
 class OperationTaskMapper {
     private static let concurrencyQueue = DispatchQueue(label: "com.amazonaws.OperationTaskMapper.concurrency")
 
-    private var operations = [UUID: TaskOperationBehavior]()
-    private var tasks = [Int: URLSessionDataTaskBehavior]()
-    private var operationIdsByTaskId = [Int: UUID]()
-    private var taskIdsByOperationId = [UUID: Int]()
+    var operations = [UUID: TaskOperationBehavior]()
+    var tasks = [Int: URLSessionDataTaskBehavior]()
+    var operationIdsByTaskId = [Int: UUID]()
+    var taskIdsByOperationId = [UUID: Int]()
 
     func addPair(operation: TaskOperationBehavior, task: URLSessionDataTaskBehavior) {
         OperationTaskMapper.concurrencyQueue.sync {

@@ -25,9 +25,12 @@ struct UserPoolURLRequestInterceptor: URLRequestInterceptor {
             throw APIError.unknown("Could not get mutable request", "")
         }
 
-        mutableRequest.setValue(NSDate().aws_stringValue(AWSDateISO8601DateFormat2), forHTTPHeaderField: "X-Amz-Date")
-        mutableRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        mutableRequest.setValue("aws-sdk-ios/2.15.0 Amplify", forHTTPHeaderField: "User-Agent")
+        mutableRequest.setValue(NSDate().aws_stringValue(AWSDateISO8601DateFormat2),
+                                forHTTPHeaderField: URLRequestContants.Header.xAmzDate)
+        mutableRequest.setValue(URLRequestContants.ContentType.applicationJson,
+                                forHTTPHeaderField: URLRequestContants.Header.contentType)
+        mutableRequest.setValue(URLRequestContants.UserAgent.amplify,
+                                forHTTPHeaderField: URLRequestContants.Header.userAgent)
 
         let tokenResult = userPoolTokenProvider.getToken()
         guard case let .success(token) = tokenResult else {

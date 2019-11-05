@@ -9,8 +9,12 @@ import Amplify
 
 public extension AWSAPICategoryPlugin {
     func add(interceptor: URLRequestInterceptor, for apiName: String) {
-        // Need to get the EndpointConfig for this apiName, then invoke
-        // endpointConfig.addInterceptor(interceptor)
-        fatalError("Not yet implemented")
+        let endpointOptional = pluginConfig.endpoints[apiName]
+
+        guard let endpoint = endpointOptional else {
+            fatalError("Failed to get endpoint configuration for apiName: \(apiName)")
+        }
+
+        endpoint.addInterceptor(interceptor: interceptor)
     }
 }

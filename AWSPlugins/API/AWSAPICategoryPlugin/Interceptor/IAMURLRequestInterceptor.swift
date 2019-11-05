@@ -14,14 +14,6 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
     let iamCredentialsProvider: IAMCredentialsProvider
     let region: AWSRegionType
 
-    static let appSyncServiceName = "appsync"
-    static let xAmzDateHeader = "X-Amz-Date"
-    static let contentTypeHeader = "Content-Type"
-    static let applicationJsonContentType = "application/json"
-
-    static let AmplifyUserAgent = "amplify-ios/0.0.1 Amplify"
-    static let userAgentHeader = "User-Agent"
-
     init(iamCredentialsProvider: IAMCredentialsProvider, region: AWSRegionType) {
         self.iamCredentialsProvider = iamCredentialsProvider
         self.region = region
@@ -34,14 +26,14 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
         }
 
         mutableRequest.setValue(NSDate().aws_stringValue(AWSDateISO8601DateFormat2),
-                                forHTTPHeaderField: IAMURLRequestInterceptor.xAmzDateHeader)
-        mutableRequest.setValue(IAMURLRequestInterceptor.applicationJsonContentType,
-                                forHTTPHeaderField: IAMURLRequestInterceptor.contentTypeHeader)
-        mutableRequest.setValue(IAMURLRequestInterceptor.AmplifyUserAgent,
-                                forHTTPHeaderField: IAMURLRequestInterceptor.userAgentHeader)
+                                forHTTPHeaderField: URLRequestContants.Header.xAmzDate)
+        mutableRequest.setValue(URLRequestContants.ContentType.applicationJson,
+                                forHTTPHeaderField: URLRequestContants.Header.contentType)
+        mutableRequest.setValue(URLRequestContants.UserAgent.amplify,
+                                forHTTPHeaderField: URLRequestContants.Header.userAgent)
 
         let endpoint = AWSEndpoint(region: region,
-                                   serviceName: IAMURLRequestInterceptor.appSyncServiceName,
+                                   serviceName: URLRequestContants.appSyncServiceName,
                                    url: mutableRequest.url)
         let signer: AWSSignatureV4Signer = AWSSignatureV4Signer(
             credentialsProvider: iamCredentialsProvider.getCredentialsProvider(),
