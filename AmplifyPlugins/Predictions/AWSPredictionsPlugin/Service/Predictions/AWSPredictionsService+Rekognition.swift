@@ -25,7 +25,8 @@ extension AWSPredictionsService {
         awsRekognition.detectLabels(request: request!).continueWith { (task) -> Any? in
             guard task.error == nil else {
 
-                onEvent(.failed(.networkError("Call to Rekognition failed", "Please try again")))
+                onEvent(.failed(
+                    .networkError(task.error?.localizedDescription ?? "Call to rekognition failed.", task.error?.localizedDescription ?? "Please try again")))
                 return nil
             }
 
