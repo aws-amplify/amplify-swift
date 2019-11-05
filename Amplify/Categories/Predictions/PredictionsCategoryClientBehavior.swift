@@ -24,6 +24,16 @@ public protocol PredictionsCategoryClientBehavior {
                  targetLanguage: LanguageType?,
                  listener: PredictionsTranslateTextOperation.EventListener?,
                  options: PredictionsTranslateTextRequest.Options?) -> PredictionsTranslateTextOperation
+
+    /// Translate the text to the language specified.
+    /// - Parameter type: The type of image detection you want to perform
+    /// - Parameter image: The image you are sending
+    /// - Parameter options: Parameters to specific plugin behavior
+    /// - Parameter listener: Triggered when the event occurs
+    func identify(type: IdentifyType,
+                   image: CGImage,
+                   options: PredictionsIdentifyRequest.Options,
+                   listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation
 }
 
 // TODO: Move these enums to a separate file

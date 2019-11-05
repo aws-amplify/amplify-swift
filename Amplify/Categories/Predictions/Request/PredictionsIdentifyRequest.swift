@@ -6,7 +6,40 @@
 //
 
 import Foundation
+import CoreGraphics
 
-public protocol PredictionsIdentifyRequest: AmplifyOperationRequest {
+public struct PredictionsIdentifyRequest: AmplifyOperationRequest {
+
+    public let image: CGImage
+    public let identifyType: IdentifyType
+    public let options: Options
+
+    public init(image: CGImage, identifyType: IdentifyType, options: Options) {
+        self.image = image
+        self.identifyType = identifyType
+        self.options = options
+    }
+
 
 }
+
+public extension PredictionsIdentifyRequest {
+    struct Options {
+         /// The calltype for the operation. The default value will be `auto`.
+        let callType: CallType
+         /// if image needs to be uploaded to S3 before rekognition is called set to true. the default value will be `false`.
+        let uploadToRemote: Bool
+        /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
+        /// a way to utilize the underlying storage system's functionality. See plugin documentation for expected
+        /// key/values
+        let pluginOptions: Any?
+
+        public init(callType: CallType = .auto, uploadToRemote: Bool = false, pluginOptions: Any? = nil) {
+        self.callType = callType
+        self.pluginOptions = pluginOptions
+        self.uploadToRemote = uploadToRemote
+
+        }
+    }
+}
+
