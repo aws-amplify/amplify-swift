@@ -1,7 +1,7 @@
 # Uncomment the next line to define a global platform for your project
 platform :ios, "11.0"
 
-AWS_SDK_VERSION = "2.11.1"
+AWS_SDK_VERSION = "2.12.0"
 
 target "Amplify" do
   # Comment the next line if you"re not using Swift and don"t want to use dynamic frameworks
@@ -35,6 +35,12 @@ target "Amplify" do
       inherit! :complete
     end
 
+    target "AWSDataStoreCategoryPlugin" do
+      inherit! :complete
+      
+      pod "SQLite.swift", "~> 0.12.0"
+    end
+
     target "AWSPinpointAnalyticsPlugin" do
       inherit! :complete
 
@@ -47,6 +53,17 @@ target "Amplify" do
       pod "AWSS3", "~> #{AWS_SDK_VERSION}"
     end
 
+    target "AWSPredictionsPlugin" do
+      inherit! :complete
+
+      pod "AWSTranslate", "~> #{AWS_SDK_VERSION}"
+      pod "AWSRekognition", "~> #{AWS_SDK_VERSION}"
+    end
+
+    target "CoreMLPredictionsPlugin" do
+      inherit! :complete
+    end
+
     abstract_target "AWSPluginsTestConfigs" do
       pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
       pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
@@ -57,10 +74,19 @@ target "Amplify" do
       target "AWSAPICategoryPluginTests" do
       end
 
+      target "AWSDataStoreCategoryPluginTests" do
+      end
+
       target "AWSPinpointAnalyticsPluginTests" do
       end
 
       target "AWSS3StoragePluginTests" do
+      end
+
+      target "AWSPredictionsPluginTests" do
+      end
+
+      target "CoreMLPredictionsPluginTests" do
       end
 
     end
@@ -80,6 +106,10 @@ target "AmplifyTestApp" do
     inherit! :complete
   end
 
+  target "AWSDataStoreCategoryPluginIntegrationTests" do
+    inherit! :complete
+  end
+
   target "AWSPinpointAnalyticsPluginIntegrationTests" do
     inherit! :complete
     pod "AWSPinpoint", "~> #{AWS_SDK_VERSION}"
@@ -88,6 +118,15 @@ target "AmplifyTestApp" do
   target "AWSS3StoragePluginIntegrationTests" do
     inherit! :complete
     pod "AWSS3", "~> #{AWS_SDK_VERSION}"
+  end
+
+  target "AWSPredictionsPluginIntegrationTests" do
+    inherit! :complete
+    pod "AWSTranslate", "~> #{AWS_SDK_VERSION}"
+  end
+
+  target "CoreMLPredictionsPluginIntegrationTests" do
+    inherit! :complete
   end
 
 end

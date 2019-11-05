@@ -19,11 +19,17 @@ public enum CategoryType: String {
     /// Retrieve data from a remote service
     case api
 
+    /// Persist data
+    case dataStore
+
     /// Listen for or dispatch Amplify events
     case hub
 
     /// Log Amplify and app messages
     case logging
+
+    /// Prediction
+    case predictions
 
     /// Upload and download files from the cloud
     case storage
@@ -38,10 +44,14 @@ public extension CategoryType {
             return "Analytics"
         case .api:
             return "API"
+        case .dataStore:
+            return "DataStore"
         case .hub:
             return "Hub"
         case .logging:
             return "Logging"
+        case .predictions:
+            return "Predictions"
         case .storage:
             return "Storage"
         }

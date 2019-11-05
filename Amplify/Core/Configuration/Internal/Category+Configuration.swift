@@ -19,10 +19,14 @@ extension CategoryTypeable {
             return amplifyConfiguration.analytics
         case .api:
             return amplifyConfiguration.api
+        case .dataStore:
+            return amplifyConfiguration.dataStore
         case .hub:
             return amplifyConfiguration.hub
         case .logging:
             return amplifyConfiguration.logging
+        case .predictions:
+            return amplifyConfiguration.predictions
         case .storage:
             return amplifyConfiguration.storage
         }

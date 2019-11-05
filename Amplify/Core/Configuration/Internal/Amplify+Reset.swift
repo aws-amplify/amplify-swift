@@ -33,6 +33,9 @@ extension Amplify {
                 DispatchQueue.global().async {
                     API.reset { group.leave() }
                 }
+            case .dataStore:
+                // TODO reset DataStore
+                break
             case .hub:
                 group.enter()
                 DispatchQueue.global().async {
@@ -48,6 +51,11 @@ extension Amplify {
                 DispatchQueue.global().async {
                     Storage.reset { group.leave() }
                 }
+            case .predictions:
+                group.enter()
+                DispatchQueue.global().async {
+                    Predictions.reset { group.leave() }
+                }
             }
         }
 
@@ -57,6 +65,7 @@ extension Amplify {
         API = APICategory()
         Hub = HubCategory()
         Logging = LoggingCategory()
+        Predictions = PredictionsCategory()
         Storage = StorageCategory()
 
         isConfigured = false

@@ -52,9 +52,39 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FA6A135D2360F5010097F905"
+               BlueprintIdentifier = "FA131AB12360FE070008381C"
                BuildableName = "AWSPluginsCoreTests.xctest"
                BlueprintName = "AWSPluginsCoreTests"
+               ReferencedContainer = "container:Amplify.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B92E03C72367CFF3006CEB8D"
+               BuildableName = "AWSDataStoreCategoryPluginTests.xctest"
+               BlueprintName = "AWSDataStoreCategoryPluginTests"
+               ReferencedContainer = "container:Amplify.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B43869F5236B9104000DC3DB"
+               BuildableName = "AWSPredictionsPluginIntegrationTests.xctest"
+               BlueprintName = "AWSPredictionsPluginIntegrationTests"
+               ReferencedContainer = "container:Amplify.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B4386A17236B92C0000DC3DB"
+               BuildableName = "CoreMLPredictionsPluginIntegrationTests.xctest"
+               BlueprintName = "CoreMLPredictionsPluginIntegrationTests"
                ReferencedContainer = "container:Amplify.xcodeproj">
             </BuildableReference>
          </TestableReference>
