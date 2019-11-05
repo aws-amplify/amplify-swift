@@ -20,8 +20,24 @@ public struct PredictionsIdentifyRequest: AmplifyOperationRequest {
     }
 
     public struct IdentifyOptions {
-        var callType: CallType = .auto
-        var uploadToS3: Bool = false
+        /// The calltype for the operation. The default value will be `auto`.
+        var callType: CallType
+        
+        /// if image needs to be uploaded to S3 before rekognition is called set to true. the default value will be `false`.
+        var uploadToS3: Bool
+        
+        /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
+        /// a way to utilize the underlying storage system's functionality. See plugin documentation for expected
+        /// key/values
+        public let pluginOptions: Any?
+
+        public init(callType: CallType = .auto,
+                    uploadToS3: Bool = false,
+                    pluginOptions: Any? = nil) {
+            self.callType = callType
+            self.pluginOptions = pluginOptions
+            self.uploadToS3 = uploadToS3
+        }
     }
 
 }
