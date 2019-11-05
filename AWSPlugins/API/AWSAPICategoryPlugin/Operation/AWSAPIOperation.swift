@@ -109,7 +109,6 @@ APIOperation {
         // Begin network task
         let task = session.dataTaskBehavior(with: finalRequest)
         mapper.addPair(operation: self, task: task)
-
         task.resume()
     }
 }

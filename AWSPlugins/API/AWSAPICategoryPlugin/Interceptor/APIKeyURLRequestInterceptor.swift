@@ -10,7 +10,6 @@ import AWSPluginsCore
 import Foundation
 
 struct APIKeyURLRequestInterceptor: URLRequestInterceptor {
-    static let apiKeyHeaderName = "x-api-key"
 
     let apiKeyProvider: APIKeyProvider
 
@@ -22,7 +21,7 @@ struct APIKeyURLRequestInterceptor: URLRequestInterceptor {
         var modifiedRequest = request
         let apiKey = apiKeyProvider.getAPIKey()
         modifiedRequest.addValue(apiKey,
-                                 forHTTPHeaderField: APIKeyURLRequestInterceptor.apiKeyHeaderName)
+                                 forHTTPHeaderField: URLRequestContants.Header.xApiKey)
         return modifiedRequest
     }
 

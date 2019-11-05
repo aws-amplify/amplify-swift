@@ -14,6 +14,7 @@ struct URLRequestContants {
         static let xAmzDate = "X-Amz-Date"
         static let contentType = "Content-Type"
         static let userAgent = "User-Agent"
+        static let xApiKey = "x-api-key"
     }
 
     struct ContentType {

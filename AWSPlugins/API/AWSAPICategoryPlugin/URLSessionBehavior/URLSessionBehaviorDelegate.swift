@@ -11,7 +11,7 @@ import Foundation
 public protocol URLSessionBehaviorDelegate: class {
     func urlSessionBehavior(_ session: URLSessionBehavior,
                             dataTaskBehavior: URLSessionDataTaskBehavior,
-                            didCompleteWithError error: Error?)
+                            didCompleteWithErbror error: Error?)
 
     func urlSessionBehavior(_ session: URLSessionBehavior,
                             dataTaskBehavior: URLSessionDataTaskBehavior,

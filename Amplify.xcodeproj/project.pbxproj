@@ -105,6 +105,7 @@
 		214208BA2370F42200FA140C /* APIRequestUtils+Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214208B92370F42200FA140C /* APIRequestUtils+Validator.swift */; };
 		214208BC2370F44000FA140C /* APIRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214208BB2370F44000FA140C /* APIRequest+Validate.swift */; };
 		214208BE2370F61C00FA140C /* APIRequestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214208BD2370F61C00FA140C /* APIRequestUtils.swift */; };
+		214208C023714FE200FA140C /* APIRequestValidateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214208BF23714FE200FA140C /* APIRequestValidateTests.swift */; };
 		2142E86F2368FFE500C3E44C /* AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2142E86E2368FFE500C3E44C /* AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.swift */; };
 		2142E872236906E100C3E44C /* AWSAPICategoryPluginBaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2142E871236906E100C3E44C /* AWSAPICategoryPluginBaseTests.swift */; };
 		2142E87423690FCD00C3E44C /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2142E87323690FCD00C3E44C /* Todo.swift */; };
@@ -327,7 +328,6 @@
 		FAAB804F2362519600B182CF /* AWSIAMConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAB804E2362519500B182CF /* AWSIAMConfiguration.swift */; };
 		FAAB8052236251AD00B182CF /* OIDCConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAB8051236251AD00B182CF /* OIDCConfiguration.swift */; };
 		FAAB8055236251BC00B182CF /* CognitoUserPoolsConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAB8054236251BC00B182CF /* CognitoUserPoolsConfiguration.swift */; };
-		FAAB80582362526D00B182CF /* AWSAPICategoryPluginError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAB80572362526D00B182CF /* AWSAPICategoryPluginError.swift */; };
 		FAB9D811233BF5F600928AA9 /* AmplifyOperationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB9D810233BF5F600928AA9 /* AmplifyOperationContext.swift */; };
 		FAC0A29822B3DE4800B50912 /* HubPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A29722B3DE4800B50912 /* HubPublisher.swift */; };
 		FAC0A29B22B3DEEE00B50912 /* HubPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A29A22B3DEEE00B50912 /* HubPayload.swift */; };
@@ -835,6 +835,7 @@
 		214208B92370F42200FA140C /* APIRequestUtils+Validator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIRequestUtils+Validator.swift"; sourceTree = "<group>"; };
 		214208BB2370F44000FA140C /* APIRequest+Validate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIRequest+Validate.swift"; sourceTree = "<group>"; };
 		214208BD2370F61C00FA140C /* APIRequestUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequestUtils.swift; sourceTree = "<group>"; };
+		214208BF23714FE200FA140C /* APIRequestValidateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequestValidateTests.swift; sourceTree = "<group>"; };
 		2142E86E2368FFE500C3E44C /* AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.swift; sourceTree = "<group>"; };
 		2142E871236906E100C3E44C /* AWSAPICategoryPluginBaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginBaseTests.swift; sourceTree = "<group>"; };
 		2142E87323690FCD00C3E44C /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
@@ -1188,7 +1189,6 @@
 		FAAB804E2362519500B182CF /* AWSIAMConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSIAMConfiguration.swift; sourceTree = "<group>"; };
 		FAAB8051236251AD00B182CF /* OIDCConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OIDCConfiguration.swift; sourceTree = "<group>"; };
 		FAAB8054236251BC00B182CF /* CognitoUserPoolsConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CognitoUserPoolsConfiguration.swift; sourceTree = "<group>"; };
-		FAAB80572362526D00B182CF /* AWSAPICategoryPluginError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginError.swift; sourceTree = "<group>"; };
 		FAB9D810233BF5F600928AA9 /* AmplifyOperationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyOperationContext.swift; sourceTree = "<group>"; };
 		FAC0A29722B3DE4800B50912 /* HubPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPublisher.swift; sourceTree = "<group>"; };
 		FAC0A29A22B3DEEE00B50912 /* HubPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPayload.swift; sourceTree = "<group>"; };
@@ -1679,6 +1679,7 @@
 			isa = PBXGroup;
 			children = (
 				214208972370A88E00FA140C /* GraphQLRequestValidateTests.swift */,
+				214208BF23714FE200FA140C /* APIRequestValidateTests.swift */,
 			);
 			path = Request;
 			sourceTree = "<group>";
@@ -1880,14 +1881,6 @@
 				21687A5823637272004A056E /* AnalyticsErrorHelper.swift */,
 			);
 			path = Utils;
-			sourceTree = "<group>";
-		};
-		216F354F236E7C20008A2E57 /* Error */ = {
-			isa = PBXGroup;
-			children = (
-				FAAB80572362526D00B182CF /* AWSAPICategoryPluginError.swift */,
-			);
-			path = Error;
 			sourceTree = "<group>";
 		};
 		216F3550236E8B1A008A2E57 /* Resources */ = {
@@ -2590,7 +2583,6 @@
 				FAA9FC36236203AF0012638A /* AWSAPICategoryPlugin+URLSessionBehaviorDelegate.swift */,
 				FAA9FC342361F9270012638A /* AWSAPICategoryPlugin+URLSessionDelegate.swift */,
 				FAAB803E2362152D00B182CF /* Configuration */,
-				216F354F236E7C20008A2E57 /* Error */,
 				FAAB804723624BFF00B182CF /* Interceptor */,
 				FA327587235FBC7200692B3A /* Operation */,
 				216F3551236E8E68008A2E57 /* Request */,
@@ -5045,7 +5037,6 @@
 				216F354E236E6F6F008A2E57 /* AWSAPICategoryPluginConfiguration+EndpointConfig.swift in Sources */,
 				214208A32370D52100FA140C /* URLRequestConstants.swift in Sources */,
 				214208BA2370F42200FA140C /* APIRequestUtils+Validator.swift in Sources */,
-				FAAB80582362526D00B182CF /* AWSAPICategoryPluginError.swift in Sources */,
 				214208882370A6A800FA140C /* PluginConstants.swift in Sources */,
 				FAAB803F2362153E00B182CF /* AWSAPICategoryPluginConfiguration.swift in Sources */,
 				214208BE2370F61C00FA140C /* APIRequestUtils.swift in Sources */,
@@ -5058,6 +5049,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				214208C023714FE200FA140C /* APIRequestValidateTests.swift in Sources */,
 				FA473E872360B76300239011 /* AWSAPICategoryPlugin+ConfigureTests.swift in Sources */,
 				2142088C2370A76C00FA140C /* AWSAPICategoryPluginConfigurationEndpointConfigTests.swift in Sources */,
 				214208AF2370D78500FA140C /* AWSAPICategoryPluginTestBase.swift in Sources */,

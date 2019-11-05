@@ -7,6 +7,7 @@
 
 import Foundation
 import Amplify
+
 extension APIRequest {
     // Performs client side validation and returns a `APIError` for any validation failures
     func validate() -> APIError? {
