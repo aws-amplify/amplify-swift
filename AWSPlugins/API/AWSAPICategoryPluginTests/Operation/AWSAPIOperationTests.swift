@@ -42,6 +42,7 @@ class AWSAPIOperationTests: XCTestCase {
     // TODO: Move over to operation test
 
     func testGetReturnsOperation() {
+        Amplify.reset()
         setUpPlugin()
 
         let operation = Amplify.API.get(apiName: "Valid", path: "/path", listener: nil)
