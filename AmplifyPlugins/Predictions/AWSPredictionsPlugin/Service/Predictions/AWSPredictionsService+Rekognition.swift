@@ -18,16 +18,17 @@ extension AWSPredictionsService {
 
         let data = image.dataProvider?.data as Data?
 
-        rekognitionImage?.bytes = data
+        rekognitionImage?.bytes = data?.base64EncodedData(options: NSData.Base64EncodingOptions.endLineWithLineFeed)
 
         request?.image = rekognitionImage
 
         awsRekognition.detectLabels(request: request!).continueWith { (task) -> Any? in
             guard task.error == nil else {
-
+                let error = task.error! as NSError
+                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
                 onEvent(.failed(
-                    .networkError(
-                        task.error!.localizedDescription, task.error!.localizedDescription)))
+                    .networkError(predictionsErrorString.errorDescription,
+                                  predictionsErrorString.recoverySuggestion)))
                 return nil
             }
 
