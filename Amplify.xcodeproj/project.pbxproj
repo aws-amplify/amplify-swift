@@ -216,10 +216,20 @@
 		B4386A03236B9138000DC3DB /* AWSPredictionsPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4386A01236B9138000DC3DB /* AWSPredictionsPluginIntegrationTests.swift */; };
 		B4386A0E236B92AD000DC3DB /* CoreMLPredictionsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4694765236B1FED001A155D /* CoreMLPredictionsPlugin.framework */; };
 		B4386A26236B92EE000DC3DB /* CoreMLPredictionsPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4386A23236B92EE000DC3DB /* CoreMLPredictionsPluginTests.swift */; };
-		B4386A27236B92EE000DC3DB /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B4386A24236B92EE000DC3DB /* Info.plist */; };
-		B4386A28236B92EE000DC3DB /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B4386A24236B92EE000DC3DB /* Info.plist */; };
 		B4386A2C236B92FD000DC3DB /* CoreMLPredictionsPluginIntegrationTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4386A2A236B92FD000DC3DB /* CoreMLPredictionsPluginIntegrationTest.swift */; };
 		B4386A2D236B92FD000DC3DB /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B4386A2B236B92FD000DC3DB /* Info.plist */; };
+		B4644C7E237270FB00EEE7CE /* CoreMLPredictionsPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C7223726EC400EEE7CE /* CoreMLPredictionsPlugin.swift */; };
+		B4644C7F237270FD00EEE7CE /* CoreMLPredictionsPlugin+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C7823726FF400EEE7CE /* CoreMLPredictionsPlugin+ClientBehavior.swift */; };
+		B4644C802372710C00EEE7CE /* CoreMLPredictionsPlugin+Configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C7A2372700800EEE7CE /* CoreMLPredictionsPlugin+Configure.swift */; };
+		B4644C812372711000EEE7CE /* CoreMLPredictionsPlugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C7C237270CB00EEE7CE /* CoreMLPredictionsPlugin+Reset.swift */; };
+		B4644C822372711700EEE7CE /* PluginConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C7623726F7F00EEE7CE /* PluginConstants.swift */; };
+		B4644C87237274E700EEE7CE /* CoreMLInterpretTextOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C85237274A400EEE7CE /* CoreMLInterpretTextOperation.swift */; };
+		B4644C8D237277AF00EEE7CE /* CoreMLNaturalLanguageBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C892372767600EEE7CE /* CoreMLNaturalLanguageBehavior.swift */; };
+		B4644C8E237277B300EEE7CE /* CoreMLNaturalLanguageAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C8B2372769100EEE7CE /* CoreMLNaturalLanguageAdaptor.swift */; };
+		B466055D2373770000F6B385 /* CoreMLVisionBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B466055C2373770000F6B385 /* CoreMLVisionBehavior.swift */; };
+		B466055F2373774400F6B385 /* CoreMLVisionAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B466055E2373774400F6B385 /* CoreMLVisionAdaptor.swift */; };
+		B46605632373848D00F6B385 /* CoreMLNaturalLanguageAdaptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46605622373848D00F6B385 /* CoreMLNaturalLanguageAdaptorTests.swift */; };
+		B46605642373849200F6B385 /* CoreMLVisionAdaptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46605602373844900F6B385 /* CoreMLVisionAdaptorTests.swift */; };
 		B4BD6B3323708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BD6B3223708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift */; };
 		B4BD6B3523708C1200A1F0A7 /* PredictionsCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BD6B3423708C1200A1F0A7 /* PredictionsCategoryConfigurationTests.swift */; };
 		B4BD6B3723708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BD6B3623708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift */; };
@@ -1211,6 +1221,18 @@
 		B4386A24236B92EE000DC3DB /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B4386A2A236B92FD000DC3DB /* CoreMLPredictionsPluginIntegrationTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPluginIntegrationTest.swift; sourceTree = "<group>"; };
 		B4386A2B236B92FD000DC3DB /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B4644C7223726EC400EEE7CE /* CoreMLPredictionsPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPlugin.swift; sourceTree = "<group>"; };
+		B4644C7623726F7F00EEE7CE /* PluginConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginConstants.swift; sourceTree = "<group>"; };
+		B4644C7823726FF400EEE7CE /* CoreMLPredictionsPlugin+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreMLPredictionsPlugin+ClientBehavior.swift"; sourceTree = "<group>"; };
+		B4644C7A2372700800EEE7CE /* CoreMLPredictionsPlugin+Configure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreMLPredictionsPlugin+Configure.swift"; sourceTree = "<group>"; };
+		B4644C7C237270CB00EEE7CE /* CoreMLPredictionsPlugin+Reset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreMLPredictionsPlugin+Reset.swift"; sourceTree = "<group>"; };
+		B4644C85237274A400EEE7CE /* CoreMLInterpretTextOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLInterpretTextOperation.swift; sourceTree = "<group>"; };
+		B4644C892372767600EEE7CE /* CoreMLNaturalLanguageBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLNaturalLanguageBehavior.swift; sourceTree = "<group>"; };
+		B4644C8B2372769100EEE7CE /* CoreMLNaturalLanguageAdaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLNaturalLanguageAdaptor.swift; sourceTree = "<group>"; };
+		B466055C2373770000F6B385 /* CoreMLVisionBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLVisionBehavior.swift; sourceTree = "<group>"; };
+		B466055E2373774400F6B385 /* CoreMLVisionAdaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLVisionAdaptor.swift; sourceTree = "<group>"; };
+		B46605602373844900F6B385 /* CoreMLVisionAdaptorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLVisionAdaptorTests.swift; sourceTree = "<group>"; };
+		B46605622373848D00F6B385 /* CoreMLNaturalLanguageAdaptorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLNaturalLanguageAdaptorTests.swift; sourceTree = "<group>"; };
 		B4694765236B1FED001A155D /* CoreMLPredictionsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CoreMLPredictionsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4694779236B22F1001A155D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B4940434236A2F8800BC7C15 /* AWSPredictionsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSPredictionsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2546,6 +2568,7 @@
 		B4386A22236B92EE000DC3DB /* CoreMLPredictionsPluginTests */ = {
 			isa = PBXGroup;
 			children = (
+				B4644C8F23727D7300EEE7CE /* Dependency */,
 				B4386A23236B92EE000DC3DB /* CoreMLPredictionsPluginTests.swift */,
 				B4386A24236B92EE000DC3DB /* Info.plist */,
 			);
@@ -2561,10 +2584,61 @@
 			path = CoreMLPredictionsPluginIntegrationTests;
 			sourceTree = "<group>";
 		};
+		B4644C7423726F6500EEE7CE /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				B4644C7523726F6C00EEE7CE /* Constants */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		B4644C7523726F6C00EEE7CE /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				B4644C7623726F7F00EEE7CE /* PluginConstants.swift */,
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
+		B4644C84237271FB00EEE7CE /* Operation */ = {
+			isa = PBXGroup;
+			children = (
+				B4644C85237274A400EEE7CE /* CoreMLInterpretTextOperation.swift */,
+			);
+			path = Operation;
+			sourceTree = "<group>";
+		};
+		B4644C882372765500EEE7CE /* Dependency */ = {
+			isa = PBXGroup;
+			children = (
+				B4644C8B2372769100EEE7CE /* CoreMLNaturalLanguageAdaptor.swift */,
+				B4644C892372767600EEE7CE /* CoreMLNaturalLanguageBehavior.swift */,
+				B466055E2373774400F6B385 /* CoreMLVisionAdaptor.swift */,
+				B466055C2373770000F6B385 /* CoreMLVisionBehavior.swift */,
+			);
+			path = Dependency;
+			sourceTree = "<group>";
+		};
+		B4644C8F23727D7300EEE7CE /* Dependency */ = {
+			isa = PBXGroup;
+			children = (
+				B46605622373848D00F6B385 /* CoreMLNaturalLanguageAdaptorTests.swift */,
+				B46605602373844900F6B385 /* CoreMLVisionAdaptorTests.swift */,
+			);
+			path = Dependency;
+			sourceTree = "<group>";
+		};
 		B4694776236B22F1001A155D /* CoreMLPredictionsPlugin */ = {
 			isa = PBXGroup;
 			children = (
+				B4644C7223726EC400EEE7CE /* CoreMLPredictionsPlugin.swift */,
+				B4644C7823726FF400EEE7CE /* CoreMLPredictionsPlugin+ClientBehavior.swift */,
+				B4644C7A2372700800EEE7CE /* CoreMLPredictionsPlugin+Configure.swift */,
+				B4644C7C237270CB00EEE7CE /* CoreMLPredictionsPlugin+Reset.swift */,
+				B4644C882372765500EEE7CE /* Dependency */,
+				B4644C84237271FB00EEE7CE /* Operation */,
 				B4694778236B22F1001A155D /* Resources */,
+				B4644C7423726F6500EEE7CE /* Support */,
 			);
 			path = CoreMLPredictionsPlugin;
 			sourceTree = "<group>";
@@ -4427,7 +4501,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B4386A27236B92EE000DC3DB /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4435,7 +4508,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B4386A28236B92EE000DC3DB /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6388,7 +6460,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B46605642373849200F6B385 /* CoreMLVisionAdaptorTests.swift in Sources */,
 				B4386A26236B92EE000DC3DB /* CoreMLPredictionsPluginTests.swift in Sources */,
+				B46605632373848D00F6B385 /* CoreMLNaturalLanguageAdaptorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6404,6 +6478,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4644C87237274E700EEE7CE /* CoreMLInterpretTextOperation.swift in Sources */,
+				B466055D2373770000F6B385 /* CoreMLVisionBehavior.swift in Sources */,
+				B4644C7F237270FD00EEE7CE /* CoreMLPredictionsPlugin+ClientBehavior.swift in Sources */,
+				B4644C8D237277AF00EEE7CE /* CoreMLNaturalLanguageBehavior.swift in Sources */,
+				B4644C812372711000EEE7CE /* CoreMLPredictionsPlugin+Reset.swift in Sources */,
+				B466055F2373774400F6B385 /* CoreMLVisionAdaptor.swift in Sources */,
+				B4644C7E237270FB00EEE7CE /* CoreMLPredictionsPlugin.swift in Sources */,
+				B4644C822372711700EEE7CE /* PluginConstants.swift in Sources */,
+				B4644C802372710C00EEE7CE /* CoreMLPredictionsPlugin+Configure.swift in Sources */,
+				B4644C8E237277B300EEE7CE /* CoreMLNaturalLanguageAdaptor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7489,8 +7573,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6F8D367581F19D64597623F9 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-CoreMLPredictionsPluginTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = CoreMLPredictionsPluginTests/Info.plist;
+				INFOPLIST_FILE = AmplifyPlugins/Predictions/CoreMLPredictionsPluginTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -7508,8 +7593,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FE19AE082A70778C6F19B605 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-CoreMLPredictionsPluginTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = CoreMLPredictionsPluginTests/Info.plist;
+				INFOPLIST_FILE = AmplifyPlugins/Predictions/CoreMLPredictionsPluginTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -7528,7 +7614,7 @@
 			baseConfigurationReference = EF6FDEE067E1B4DE95448A54 /* Pods-AmplifyTestApp-CoreMLPredictionsPluginIntegrationTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = CoreMLPredictionsPluginIntegrationTest/Info.plist;
+				INFOPLIST_FILE = AmplifyPlugins/Predictions/CoreMLPredictionsPluginIntegrationTest/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -7548,7 +7634,7 @@
 			baseConfigurationReference = 3849521147E79A1C960F0FA7 /* Pods-AmplifyTestApp-CoreMLPredictionsPluginIntegrationTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = CoreMLPredictionsPluginIntegrationTest/Info.plist;
+				INFOPLIST_FILE = AmplifyPlugins/Predictions/CoreMLPredictionsPluginIntegrationTest/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

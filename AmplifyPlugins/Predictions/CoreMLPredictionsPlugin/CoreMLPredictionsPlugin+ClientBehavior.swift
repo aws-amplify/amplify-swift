@@ -6,37 +6,29 @@
 //
 
 import Foundation
-import CoreImage
+import CoreGraphics
+import Amplify
 
-extension PredictionsCategory: PredictionsCategoryClientBehavior {
+extension CoreMLPredictionsPlugin {
 
     public func convert(textToTranslate: String,
                         language: LanguageType?,
                         targetLanguage: LanguageType?,
                         listener: PredictionsTranslateTextOperation.EventListener?,
                         options: PredictionsTranslateTextRequest.Options?) -> PredictionsTranslateTextOperation {
-        plugin.convert(textToTranslate: textToTranslate,
-                       language: language,
-                       targetLanguage: targetLanguage,
-                       listener: listener,
-                       options: options)
+        fatalError("Incomplete implementation")
     }
 
     public func identify(type: IdentifyType,
                          image: CGImage,
-                         options: PredictionsIdentifyRequest.Options?,
+                         options: PredictionsIdentifyRequest.Options,
                          listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation {
-        plugin.identify(type: type,
-                        image: image,
-                        options: options,
-                        listener: listener)
+        fatalError("Incomplete implementation")
     }
 
     public func interpret(text: String,
                           options: PredictionsInterpretRequest.Options?,
                           listener: PredictionsInterpretOperation.EventListener?) -> PredictionsInterpretOperation {
-        plugin.interpret(text: text,
-                         options: options,
-                         listener: listener)
+        fatalError("Incomplete implementation")
     }
 }
