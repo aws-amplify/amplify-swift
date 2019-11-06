@@ -27,8 +27,6 @@ public extension PredictionsIdentifyRequest {
     struct Options {
          /// The calltype for the operation. The default value will be `auto`.
         let callType: CallType
-         /// if image needs to be uploaded to S3 before rekognition is called set to true. the default value will be `false`.
-        let uploadToRemote: Bool
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
         /// a way to utilize the underlying storage system's functionality. See plugin documentation for expected
         /// key/values
@@ -37,7 +35,6 @@ public extension PredictionsIdentifyRequest {
         public init(callType: CallType = .auto, uploadToRemote: Bool = false, pluginOptions: Any? = nil) {
         self.callType = callType
         self.pluginOptions = pluginOptions
-        self.uploadToRemote = uploadToRemote
 
         }
     }

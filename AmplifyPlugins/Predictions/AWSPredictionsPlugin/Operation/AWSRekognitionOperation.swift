@@ -8,18 +8,20 @@
 import Foundation
 import Amplify
 import AWSMobileClient
+import AWSPluginsCore
 
-public class AWSRekognitionOperation: AmplifyOperation<PredictionsIdentifyRequest, Void, IdentifyResult, PredictionsError>,
+public class AWSRekognitionOperation: AmplifyOperation<PredictionsIdentifyRequest,
+    Void, IdentifyResult, PredictionsError>,
 PredictionsIdentifyOperation {
 
-    let rekognitionService: AWSRekognitionServiceBehaviour
+    let predictionsService: AWSPredictionsService
     let authService: AWSAuthServiceBehavior
 
     init(_ request: PredictionsIdentifyRequest,
-         rekognitionService: AWSRekognitionServiceBehaviour,
+         predictionsService: AWSPredictionsService,
          authService: AWSAuthServiceBehavior,
          listener: EventListener?) {
-        self.rekognitionService = rekognitionService
+        self.predictionsService = predictionsService
         self.authService = authService
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.identifyLabels,
@@ -27,17 +29,13 @@ PredictionsIdentifyOperation {
                    listener: listener)
     }
 
-
     override public func main() {
 
-
         if let error = request.validate() {
-                 dispatch(error)
-                 finish()
-                 return
+            dispatch(event: .failed(error))
+            finish()
+            return
         }
-
-        let identityIdResult = authService.getIdentityId()
 
         switch request.identifyType {
         case .detectCelebrity:
@@ -45,7 +43,7 @@ PredictionsIdentifyOperation {
         case .detectText:
             break
         case .detectLabels:
-            rekognitionService.detectLabels(
+            predictionsService.detectLabels(
             image: request.image) { [weak self] event in
                 self?.onServiceEvent(event: event)
             }
@@ -61,9 +59,7 @@ PredictionsIdentifyOperation {
             dispatch(event: .completed(result))
         case .failed(let error):
             dispatch(event: .failed(error))
-            
+
         }
     }
-
-
 }
