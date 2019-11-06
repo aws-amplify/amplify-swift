@@ -61,7 +61,7 @@ PredictionsIdentifyOperation {
             dispatch(event: .completed(result))
         case .failed(let error):
             dispatch(event: .failed(error))
-            
+
         }
     }
 

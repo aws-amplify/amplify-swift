@@ -7,6 +7,7 @@
 
 import Amplify
 import Foundation
+import AWSCore
 
 final public class AWSGraphQLOperation<R: ResponseType>: AmplifyOperation<GraphQLRequest,
     Void,
@@ -18,6 +19,9 @@ final public class AWSGraphQLOperation<R: ResponseType>: AmplifyOperation<GraphQ
     let mapper: OperationTaskMapper
     let pluginConfig: AWSAPICategoryPluginConfiguration
     let responseType: R
+    var subscriptionConnectionFactory: SubscriptionConnectionFactory?
+    var connection: SubscriptionConnection?
+    var subscriptionItem: SubscriptionItem?
 
     init(request: GraphQLRequest,
          eventName: String,
@@ -64,6 +68,18 @@ final public class AWSGraphQLOperation<R: ResponseType>: AmplifyOperation<GraphQ
             return
         }
 
+        if request.operationType == .subscription {
+            switch endpointConfig.authorizationConfiguration {
+            case .apiKey(let apiKeyConfiguration):
+                subscribe(url: endpointConfig.baseURL,
+                          apiKey: apiKeyConfiguration.apiKey,
+                          document: request.document,
+                          variables: request.variables)
+            default:
+                break
+            }
+            return
+        }
         // Prepare request payload
         let queryDocument = GraphQLRequestUtils.getQueryDocument(document: request.document,
                                                                  variables: request.variables)
@@ -104,5 +120,47 @@ final public class AWSGraphQLOperation<R: ResponseType>: AmplifyOperation<GraphQ
         let task = session.dataTaskBehavior(with: finalRequest)
         mapper.addPair(operation: self, task: task)
         task.resume()
+    }
+
+    func subscribe(url: URL, apiKey: String, document: String, variables: [String: Any]?) {
+
+        let authType = AWSAppSyncAuthType.apiKey
+        let retryStrategy = AWSAppSyncRetryStrategy.aggressive
+        let serviceRegion: AWSRegionType = .USEast1
+        let apikeyProvider = BasicAWSAPIKeyAuthProvider(key: apiKey)
+        subscriptionConnectionFactory = SubscriptionConnectionFactory(url: url,
+                                                                          authType: authType,
+                                                                          retryStrategy: retryStrategy,
+                                                                          region: serviceRegion,
+                                                                          apiKeyProvider: apikeyProvider,
+                                                                          cognitoUserPoolProvider: nil,
+                                                                          oidcAuthProvider: nil,
+                                                                          iamAuthProvider: nil)
+
+        connection = subscriptionConnectionFactory?.connection(connectionType: .appSyncRealtime)
+        subscriptionItem = connection?.subscribe(requestString: document,
+                                                 variables: variables,
+                                                 eventHandler: { (event, item) in
+            print("event, item")
+            switch event {
+            case .connection(let connectionEvent):
+                print("Got connectionEvent \(connectionEvent)")
+            case .data(let data):
+                print("Got data \(data)")
+            case .failed(let error):
+                print("Got error \(error)")
+            }
+        })
+    }
+}
+class BasicAWSAPIKeyAuthProvider: AWSAPIKeyAuthProvider {
+    var apiKey: String
+
+    init(key: String) {
+        self.apiKey = key
+    }
+
+    func getAPIKey() -> String {
+        return apiKey
     }
 }

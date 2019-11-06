@@ -131,6 +131,8 @@ class IntegrationTestConfiguration {
      */
     static let taskPrivateNoteGraphQLWithUserPool = "taskPrivateNoteGraphQLWithUserPool"
 
+    static let todoGraphQLWithAPIKeyWithGogi = "todoGraphQLWithAPIKeyWithGogi"
+
     // TODO: Move this to a test credentials file before final merge
     static let apiConfig = APICategoryConfiguration(plugins: [
         "AWSAPICategoryPlugin": [
@@ -177,7 +179,13 @@ class IntegrationTestConfiguration {
                 "Endpoint": "https://qaobhulmjzg2fjpxh45rpef5i4.appsync-api.us-east-1.amazonaws.com/graphql",
                 "Region": "us-east-1",
                 "AuthorizationType": "AMAZON_COGNITO_USER_POOLS"
-            ]
+            ],
+            IntegrationTestConfiguration.todoGraphQLWithAPIKeyWithGogi: [
+                "Endpoint": "https://akeljq43xfcvpj4hh55fafcrm4.appsync-api.us-west-2.amazonaws.com/graphql",
+                "Region": "us-west-2",
+                "AuthorizationType": "API_KEY",
+                "ApiKey": "da2-6m3mowpbavh55kscoikywhqova"
+            ],
         ]
     ])
 }

@@ -218,3 +218,26 @@ class InvalidCreateTodoResponse: ResponseType {
         var createTodo: ListTodo?
     }
 }
+
+class OnCreateTodoSubscription {
+    static let document = """
+        subscription OnCreateTodo {\n
+            onCreateTodo {\n
+                __typename\n
+                id\n
+                name\n
+                description\n
+            }\n
+        }
+        """
+
+    static let responseType = OnCreateTodoResponse()
+
+    class OnCreateTodoResponse: ResponseType {
+        typealias SerializedObject = Data
+    }
+
+    class Data: Decodable {
+        var onCreateTodo: Todo?
+    }
+}

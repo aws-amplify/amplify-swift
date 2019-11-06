@@ -51,10 +51,10 @@
 //        let item = QueueItem(result: result, date: Date())
 //        syncQueue.sync {
 //            if isDelivering && messagesQueue.isEmpty {
-//                AppSyncLog.debug("Immediately delivering subscription message")
+//                print("Immediately delivering subscription message")
 //                deliver(item, transaction: transaction)
 //            } else {
-//                AppSyncLog.debug("Appending subscription message to queue")
+//                print("Appending subscription message to queue")
 //                messagesQueue.append(item)
 //            }
 //        }

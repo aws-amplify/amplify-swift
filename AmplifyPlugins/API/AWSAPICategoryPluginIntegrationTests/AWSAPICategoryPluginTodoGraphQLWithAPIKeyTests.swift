@@ -391,6 +391,37 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
     /// When: Call mutate API on CreateTodo
     /// Then: The subscription handler is called and Todo object is returned
     func testOnCreateTodoSubscription() {
+        let completeInvoked = expectation(description: "request completed")
+
+        let operation = Amplify.API.subscribe(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKeyWithGogi,
+                                              document: OnCreateTodoSubscription.document,
+                                              variables: nil,
+                                              responseType: OnCreateTodoSubscription.responseType) { (event) in
+            switch event {
+            case .completed(let graphQLResponse):
+                print(graphQLResponse)
+                //completeInvoked.fulfill()
+            case .failed(let error):
+
+                print("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+        XCTAssertNotNil(operation)
+
+        sleep(5)
+
+        let uuid = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let name = testMethodName + "Name"
+        let description = testMethodName + "Description"
+        createTodo(id: uuid, name: testMethodName, description: description, apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKeyWithGogi)
+
+        guard let todo = createTodo(id: uuid, name: name, description: description) else {
+            XCTFail("Failed to set up test")
+            return
+        }
     }
 
     /// Given: A subscription is created for UpdateTodo's
@@ -412,11 +443,14 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
 
     // MARK: Common functionality
 
-    func createTodo(id: String, name: String, description: String) -> Todo? {
+    func createTodo(id: String,
+                    name: String,
+                    description: String,
+                    apiName: String? = IntegrationTestConfiguration.todoGraphQLWithAPIKey) -> Todo? {
         let completeInvoked = expectation(description: "Completd is invoked")
         var todo: Todo?
 
-        _ = Amplify.API.mutate(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        _ = Amplify.API.mutate(apiName: apiName!,
                                            document: CreateTodoMutation.document,
                                            variables: CreateTodoMutation.variables(id: id,
                                                                                    name: name,

@@ -23,6 +23,7 @@ PODS:
   - SQLite.swift (0.12.2):
     - SQLite.swift/standard (= 0.12.2)
   - SQLite.swift/standard (0.12.2)
+  - Starscream (3.0.6)
   - SwiftFormat/CLI (0.40.14)
   - SwiftLint (0.36.0)
 
@@ -35,6 +36,7 @@ DEPENDENCIES:
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
   - SQLite.swift (~> 0.12.0)
+  - Starscream (~> 3.0.2)
   - SwiftFormat/CLI
   - SwiftLint
 
@@ -52,6 +54,8 @@ SPEC REPOS:
     - SQLite.swift
     - SwiftFormat
     - SwiftLint
+  https://github.com/cocoapods/specs.git:
+    - Starscream
 
 EXTERNAL SOURCES:
   CwlCatchException:
@@ -82,9 +86,10 @@ SPEC CHECKSUMS:
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SQLite.swift: d2b4642190917051ce6bd1d49aab565fe794eea3
+  Starscream: ef3ece99d765eeccb67de105bfa143f929026cf5
   SwiftFormat: 21c9c3c748d5fcece493d8610eee23df15393458
   SwiftLint: fc9859e4e1752340664851f667bb1898b9c90114
 
-PODFILE CHECKSUM: de4d47c3dbecebb6b7bd0e51102ad41749d6cbd0
+PODFILE CHECKSUM: 7431c88294f2d3fd79cd9f3ee55b88668faa8280
 
 COCOAPODS: 1.7.5

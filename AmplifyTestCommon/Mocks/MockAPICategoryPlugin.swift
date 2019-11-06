@@ -40,6 +40,24 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         return operation
     }
 
+    func subscribe<R>(apiName: String,
+                      document: String,
+                      variables: [String: Any]?,
+                      responseType: R,
+                      listener: ((AsyncEvent<Void, GraphQLResponse<R.SerializedObject>, GraphQLError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R.SerializedObject>, GraphQLError> where R: ResponseType {
+
+        notify("mutate")
+        let options = GraphQLRequest.Options()
+        let request = GraphQLRequest(apiName: apiName,
+                                     operationType: .mutation,
+                                     document: document,
+                                     variables: variables,
+                                     options: options)
+        let operation = MockGraphQLOperation(request: request, responseType: responseType)
+        return operation
+    }
+
     func query<R>(apiName: String,
                   document: String,
                   variables: [String: Any]?,

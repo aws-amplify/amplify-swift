@@ -174,6 +174,44 @@
 		21420A9F237222A900FA140C /* AWSMobileClientAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420A8C237222A900FA140C /* AWSMobileClientAdapter.swift */; };
 		21420AA0237222A900FA140C /* AWSAuthorizationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420A8D237222A900FA140C /* AWSAuthorizationType.swift */; };
 		21420AA1237222A900FA140C /* AWSMobileClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420A8E237222A900FA140C /* AWSMobileClientBehavior.swift */; };
+		21420AD1237236D000FA140C /* SubscriptionConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AA4237236CF00FA140C /* SubscriptionConnection.swift */; };
+		21420AD2237236D000FA140C /* RetryableConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AA5237236CF00FA140C /* RetryableConnection.swift */; };
+		21420AD3237236D000FA140C /* SubscriptionConnectionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AA7237236CF00FA140C /* SubscriptionConnectionFactory.swift */; };
+		21420AD4237236D000FA140C /* OIDCBasedConnectionPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AA8237236CF00FA140C /* OIDCBasedConnectionPool.swift */; };
+		21420AD5237236D000FA140C /* ConnectionPoolHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AA9237236CF00FA140C /* ConnectionPoolHelper.swift */; };
+		21420AD6237236D000FA140C /* IAMBasedConnectionPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AAA237236CF00FA140C /* IAMBasedConnectionPool.swift */; };
+		21420AD7237236D000FA140C /* APIKeyBasedConnectionPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AAB237236CF00FA140C /* APIKeyBasedConnectionPool.swift */; };
+		21420AD8237236D000FA140C /* UserPoolsBasedConnectionPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AAC237236CF00FA140C /* UserPoolsBasedConnectionPool.swift */; };
+		21420AD9237236D000FA140C /* AppSyncSubscriptionConnection+DataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AAE237236CF00FA140C /* AppSyncSubscriptionConnection+DataHandler.swift */; };
+		21420ADA237236D000FA140C /* AppSyncSubscriptionConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AAF237236CF00FA140C /* AppSyncSubscriptionConnection.swift */; };
+		21420ADB237236D000FA140C /* AppSyncSubscriptionConnection+Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AB0237236CF00FA140C /* AppSyncSubscriptionConnection+Connection.swift */; };
+		21420ADC237236D000FA140C /* AppSyncSubscriptionConnection+ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AB1237236CF00FA140C /* AppSyncSubscriptionConnection+ErrorHandler.swift */; };
+		21420ADD237236D000FA140C /* SubscriptionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AB2237236CF00FA140C /* SubscriptionItem.swift */; };
+		21420ADE237236D000FA140C /* AppSyncJSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AB4237236CF00FA140C /* AppSyncJSONValue.swift */; };
+		21420ADF237236D000FA140C /* AppSyncResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AB6237236CF00FA140C /* AppSyncResponse.swift */; };
+		21420AE0237236D000FA140C /* InterceptableConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AB7237236CF00FA140C /* InterceptableConnection.swift */; };
+		21420AE1237236D000FA140C /* ConnectionProviderError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AB8237236CF00FA140C /* ConnectionProviderError.swift */; };
+		21420AE2237236D000FA140C /* AppSyncMessage+Encodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AB9237236CF00FA140C /* AppSyncMessage+Encodable.swift */; };
+		21420AE3237236D000FA140C /* AppSyncMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420ABA237236CF00FA140C /* AppSyncMessage.swift */; };
+		21420AE4237236D000FA140C /* AppSyncConnectionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420ABB237236CF00FA140C /* AppSyncConnectionRequest.swift */; };
+		21420AE5237236D000FA140C /* RealtimeConnectionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420ABD237236CF00FA140C /* RealtimeConnectionProvider.swift */; };
+		21420AE6237236D000FA140C /* RealtimeConnectionProvider+Websocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420ABE237236CF00FA140C /* RealtimeConnectionProvider+Websocket.swift */; };
+		21420AE7237236D000FA140C /* RealtimeConnectionProviderResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420ABF237236CF00FA140C /* RealtimeConnectionProviderResponse.swift */; };
+		21420AE8237236D000FA140C /* RealtimeConnectionProvider+MessageInterceptable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AC0237236CF00FA140C /* RealtimeConnectionProvider+MessageInterceptable.swift */; };
+		21420AE9237236D000FA140C /* RealtimeConnectionProvider+ConnectionInterceptable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AC1237236CF00FA140C /* RealtimeConnectionProvider+ConnectionInterceptable.swift */; };
+		21420AEA237236D000FA140C /* ConnectionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AC2237236CF00FA140C /* ConnectionProvider.swift */; };
+		21420AEB237236D000FA140C /* RealtimeGatewayURLInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AC4237236CF00FA140C /* RealtimeGatewayURLInterceptor.swift */; };
+		21420AEC237236D000FA140C /* AppSyncWebsocketProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AC6237236D000FA140C /* AppSyncWebsocketProvider.swift */; };
+		21420AED237236D000FA140C /* StarscreamAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AC8237236D000FA140C /* StarscreamAdapter.swift */; };
+		21420AEE237236D000FA140C /* StarscreamAdapter+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AC9237236D000FA140C /* StarscreamAdapter+Delegate.swift */; };
+		21420AEF237236D000FA140C /* IAMAuthInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420ACB237236D000FA140C /* IAMAuthInterceptor.swift */; };
+		21420AF0237236D000FA140C /* AppSyncJSONHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420ACC237236D000FA140C /* AppSyncJSONHelper.swift */; };
+		21420AF1237236D100FA140C /* CognitoUserPoolsAuthInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420ACD237236D000FA140C /* CognitoUserPoolsAuthInterceptor.swift */; };
+		21420AF2237236D100FA140C /* APIKeyAuthInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420ACE237236D000FA140C /* APIKeyAuthInterceptor.swift */; };
+		21420AF3237236D100FA140C /* SubscriptionConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AD0237236D000FA140C /* SubscriptionConstants.swift */; };
+		21420AF523728E1D00FA140C /* AWSAppSyncAuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AF423728E1D00FA140C /* AWSAppSyncAuthProvider.swift */; };
+		21420AF723728E6800FA140C /* AWSAppSyncRetryStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AF623728E6800FA140C /* AWSAppSyncRetryStrategy.swift */; };
+		21420AF923728EA700FA140C /* AWSAppSyncAuthType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420AF823728EA700FA140C /* AWSAppSyncAuthType.swift */; };
 		2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2144226B234BDD9B009357F7 /* StorageUploadFileRequest.swift */; };
 		2144226E234BDE23009357F7 /* StorageUploadFileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2144226D234BDE23009357F7 /* StorageUploadFileOperation.swift */; };
 		21442270234BE330009357F7 /* UploadSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2144226F234BE330009357F7 /* UploadSource.swift */; };
@@ -1105,6 +1143,44 @@
 		21420A8C237222A900FA140C /* AWSMobileClientAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSMobileClientAdapter.swift; sourceTree = "<group>"; };
 		21420A8D237222A900FA140C /* AWSAuthorizationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthorizationType.swift; sourceTree = "<group>"; };
 		21420A8E237222A900FA140C /* AWSMobileClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSMobileClientBehavior.swift; sourceTree = "<group>"; };
+		21420AA4237236CF00FA140C /* SubscriptionConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionConnection.swift; sourceTree = "<group>"; };
+		21420AA5237236CF00FA140C /* RetryableConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetryableConnection.swift; sourceTree = "<group>"; };
+		21420AA7237236CF00FA140C /* SubscriptionConnectionFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionConnectionFactory.swift; sourceTree = "<group>"; };
+		21420AA8237236CF00FA140C /* OIDCBasedConnectionPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OIDCBasedConnectionPool.swift; sourceTree = "<group>"; };
+		21420AA9237236CF00FA140C /* ConnectionPoolHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionPoolHelper.swift; sourceTree = "<group>"; };
+		21420AAA237236CF00FA140C /* IAMBasedConnectionPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAMBasedConnectionPool.swift; sourceTree = "<group>"; };
+		21420AAB237236CF00FA140C /* APIKeyBasedConnectionPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKeyBasedConnectionPool.swift; sourceTree = "<group>"; };
+		21420AAC237236CF00FA140C /* UserPoolsBasedConnectionPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserPoolsBasedConnectionPool.swift; sourceTree = "<group>"; };
+		21420AAE237236CF00FA140C /* AppSyncSubscriptionConnection+DataHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppSyncSubscriptionConnection+DataHandler.swift"; sourceTree = "<group>"; };
+		21420AAF237236CF00FA140C /* AppSyncSubscriptionConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncSubscriptionConnection.swift; sourceTree = "<group>"; };
+		21420AB0237236CF00FA140C /* AppSyncSubscriptionConnection+Connection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppSyncSubscriptionConnection+Connection.swift"; sourceTree = "<group>"; };
+		21420AB1237236CF00FA140C /* AppSyncSubscriptionConnection+ErrorHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppSyncSubscriptionConnection+ErrorHandler.swift"; sourceTree = "<group>"; };
+		21420AB2237236CF00FA140C /* SubscriptionItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionItem.swift; sourceTree = "<group>"; };
+		21420AB4237236CF00FA140C /* AppSyncJSONValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncJSONValue.swift; sourceTree = "<group>"; };
+		21420AB6237236CF00FA140C /* AppSyncResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncResponse.swift; sourceTree = "<group>"; };
+		21420AB7237236CF00FA140C /* InterceptableConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterceptableConnection.swift; sourceTree = "<group>"; };
+		21420AB8237236CF00FA140C /* ConnectionProviderError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionProviderError.swift; sourceTree = "<group>"; };
+		21420AB9237236CF00FA140C /* AppSyncMessage+Encodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppSyncMessage+Encodable.swift"; sourceTree = "<group>"; };
+		21420ABA237236CF00FA140C /* AppSyncMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncMessage.swift; sourceTree = "<group>"; };
+		21420ABB237236CF00FA140C /* AppSyncConnectionRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncConnectionRequest.swift; sourceTree = "<group>"; };
+		21420ABD237236CF00FA140C /* RealtimeConnectionProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealtimeConnectionProvider.swift; sourceTree = "<group>"; };
+		21420ABE237236CF00FA140C /* RealtimeConnectionProvider+Websocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RealtimeConnectionProvider+Websocket.swift"; sourceTree = "<group>"; };
+		21420ABF237236CF00FA140C /* RealtimeConnectionProviderResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealtimeConnectionProviderResponse.swift; sourceTree = "<group>"; };
+		21420AC0237236CF00FA140C /* RealtimeConnectionProvider+MessageInterceptable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RealtimeConnectionProvider+MessageInterceptable.swift"; sourceTree = "<group>"; };
+		21420AC1237236CF00FA140C /* RealtimeConnectionProvider+ConnectionInterceptable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RealtimeConnectionProvider+ConnectionInterceptable.swift"; sourceTree = "<group>"; };
+		21420AC2237236CF00FA140C /* ConnectionProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionProvider.swift; sourceTree = "<group>"; };
+		21420AC4237236CF00FA140C /* RealtimeGatewayURLInterceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealtimeGatewayURLInterceptor.swift; sourceTree = "<group>"; };
+		21420AC6237236D000FA140C /* AppSyncWebsocketProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncWebsocketProvider.swift; sourceTree = "<group>"; };
+		21420AC8237236D000FA140C /* StarscreamAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarscreamAdapter.swift; sourceTree = "<group>"; };
+		21420AC9237236D000FA140C /* StarscreamAdapter+Delegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StarscreamAdapter+Delegate.swift"; sourceTree = "<group>"; };
+		21420ACB237236D000FA140C /* IAMAuthInterceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAMAuthInterceptor.swift; sourceTree = "<group>"; };
+		21420ACC237236D000FA140C /* AppSyncJSONHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncJSONHelper.swift; sourceTree = "<group>"; };
+		21420ACD237236D000FA140C /* CognitoUserPoolsAuthInterceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CognitoUserPoolsAuthInterceptor.swift; sourceTree = "<group>"; };
+		21420ACE237236D000FA140C /* APIKeyAuthInterceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKeyAuthInterceptor.swift; sourceTree = "<group>"; };
+		21420AD0237236D000FA140C /* SubscriptionConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionConstants.swift; sourceTree = "<group>"; };
+		21420AF423728E1D00FA140C /* AWSAppSyncAuthProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAppSyncAuthProvider.swift; sourceTree = "<group>"; };
+		21420AF623728E6800FA140C /* AWSAppSyncRetryStrategy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAppSyncRetryStrategy.swift; sourceTree = "<group>"; };
+		21420AF823728EA700FA140C /* AWSAppSyncAuthType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAppSyncAuthType.swift; sourceTree = "<group>"; };
 		2144226B234BDD9B009357F7 /* StorageUploadFileRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageUploadFileRequest.swift; sourceTree = "<group>"; };
 		2144226D234BDE23009357F7 /* StorageUploadFileOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageUploadFileOperation.swift; sourceTree = "<group>"; };
 		2144226F234BE330009357F7 /* UploadSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadSource.swift; sourceTree = "<group>"; };
@@ -2263,6 +2339,139 @@
 			path = Provider;
 			sourceTree = "<group>";
 		};
+		21420AA2237236BA00FA140C /* Subscription */ = {
+			isa = PBXGroup;
+			children = (
+				21420AF823728EA700FA140C /* AWSAppSyncAuthType.swift */,
+				21420AF623728E6800FA140C /* AWSAppSyncRetryStrategy.swift */,
+				21420AF423728E1D00FA140C /* AWSAppSyncAuthProvider.swift */,
+				21420ACA237236D000FA140C /* AuthInterceptor */,
+				21420AA3237236CF00FA140C /* Connection */,
+				21420AC3237236CF00FA140C /* ConnectionInterceptor */,
+				21420AB5237236CF00FA140C /* ConnectionProvider */,
+				21420ACF237236D000FA140C /* Constants */,
+				21420AB3237236CF00FA140C /* JSONHandling */,
+				21420AC5237236D000FA140C /* Websocket */,
+			);
+			path = Subscription;
+			sourceTree = "<group>";
+		};
+		21420AA3237236CF00FA140C /* Connection */ = {
+			isa = PBXGroup;
+			children = (
+				21420AA4237236CF00FA140C /* SubscriptionConnection.swift */,
+				21420AA5237236CF00FA140C /* RetryableConnection.swift */,
+				21420AA6237236CF00FA140C /* ConnectionPool */,
+				21420AAD237236CF00FA140C /* AppSyncConnection */,
+				21420AB2237236CF00FA140C /* SubscriptionItem.swift */,
+			);
+			path = Connection;
+			sourceTree = "<group>";
+		};
+		21420AA6237236CF00FA140C /* ConnectionPool */ = {
+			isa = PBXGroup;
+			children = (
+				21420AA7237236CF00FA140C /* SubscriptionConnectionFactory.swift */,
+				21420AA8237236CF00FA140C /* OIDCBasedConnectionPool.swift */,
+				21420AA9237236CF00FA140C /* ConnectionPoolHelper.swift */,
+				21420AAA237236CF00FA140C /* IAMBasedConnectionPool.swift */,
+				21420AAB237236CF00FA140C /* APIKeyBasedConnectionPool.swift */,
+				21420AAC237236CF00FA140C /* UserPoolsBasedConnectionPool.swift */,
+			);
+			path = ConnectionPool;
+			sourceTree = "<group>";
+		};
+		21420AAD237236CF00FA140C /* AppSyncConnection */ = {
+			isa = PBXGroup;
+			children = (
+				21420AAE237236CF00FA140C /* AppSyncSubscriptionConnection+DataHandler.swift */,
+				21420AAF237236CF00FA140C /* AppSyncSubscriptionConnection.swift */,
+				21420AB0237236CF00FA140C /* AppSyncSubscriptionConnection+Connection.swift */,
+				21420AB1237236CF00FA140C /* AppSyncSubscriptionConnection+ErrorHandler.swift */,
+			);
+			path = AppSyncConnection;
+			sourceTree = "<group>";
+		};
+		21420AB3237236CF00FA140C /* JSONHandling */ = {
+			isa = PBXGroup;
+			children = (
+				21420AB4237236CF00FA140C /* AppSyncJSONValue.swift */,
+			);
+			path = JSONHandling;
+			sourceTree = "<group>";
+		};
+		21420AB5237236CF00FA140C /* ConnectionProvider */ = {
+			isa = PBXGroup;
+			children = (
+				21420AB6237236CF00FA140C /* AppSyncResponse.swift */,
+				21420AB7237236CF00FA140C /* InterceptableConnection.swift */,
+				21420AB8237236CF00FA140C /* ConnectionProviderError.swift */,
+				21420AB9237236CF00FA140C /* AppSyncMessage+Encodable.swift */,
+				21420ABA237236CF00FA140C /* AppSyncMessage.swift */,
+				21420ABB237236CF00FA140C /* AppSyncConnectionRequest.swift */,
+				21420ABC237236CF00FA140C /* AppsyncRealtimeConnection */,
+				21420AC2237236CF00FA140C /* ConnectionProvider.swift */,
+			);
+			path = ConnectionProvider;
+			sourceTree = "<group>";
+		};
+		21420ABC237236CF00FA140C /* AppsyncRealtimeConnection */ = {
+			isa = PBXGroup;
+			children = (
+				21420ABD237236CF00FA140C /* RealtimeConnectionProvider.swift */,
+				21420ABE237236CF00FA140C /* RealtimeConnectionProvider+Websocket.swift */,
+				21420ABF237236CF00FA140C /* RealtimeConnectionProviderResponse.swift */,
+				21420AC0237236CF00FA140C /* RealtimeConnectionProvider+MessageInterceptable.swift */,
+				21420AC1237236CF00FA140C /* RealtimeConnectionProvider+ConnectionInterceptable.swift */,
+			);
+			path = AppsyncRealtimeConnection;
+			sourceTree = "<group>";
+		};
+		21420AC3237236CF00FA140C /* ConnectionInterceptor */ = {
+			isa = PBXGroup;
+			children = (
+				21420AC4237236CF00FA140C /* RealtimeGatewayURLInterceptor.swift */,
+			);
+			path = ConnectionInterceptor;
+			sourceTree = "<group>";
+		};
+		21420AC5237236D000FA140C /* Websocket */ = {
+			isa = PBXGroup;
+			children = (
+				21420AC6237236D000FA140C /* AppSyncWebsocketProvider.swift */,
+				21420AC7237236D000FA140C /* Starscream */,
+			);
+			path = Websocket;
+			sourceTree = "<group>";
+		};
+		21420AC7237236D000FA140C /* Starscream */ = {
+			isa = PBXGroup;
+			children = (
+				21420AC8237236D000FA140C /* StarscreamAdapter.swift */,
+				21420AC9237236D000FA140C /* StarscreamAdapter+Delegate.swift */,
+			);
+			path = Starscream;
+			sourceTree = "<group>";
+		};
+		21420ACA237236D000FA140C /* AuthInterceptor */ = {
+			isa = PBXGroup;
+			children = (
+				21420ACB237236D000FA140C /* IAMAuthInterceptor.swift */,
+				21420ACC237236D000FA140C /* AppSyncJSONHelper.swift */,
+				21420ACD237236D000FA140C /* CognitoUserPoolsAuthInterceptor.swift */,
+				21420ACE237236D000FA140C /* APIKeyAuthInterceptor.swift */,
+			);
+			path = AuthInterceptor;
+			sourceTree = "<group>";
+		};
+		21420ACF237236D000FA140C /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				21420AD0237236D000FA140C /* SubscriptionConstants.swift */,
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
 		21578CA6235946F400FF0F03 /* AWSPinpointAnalyticsPlugin */ = {
 			isa = PBXGroup;
 			children = (
@@ -3372,6 +3581,7 @@
 				214209A02372211F00FA140C /* Interceptor */,
 				214209C22372212100FA140C /* Operation */,
 				214209A52372211F00FA140C /* Request */,
+				21420AA2237236BA00FA140C /* Subscription */,
 				214209B22372211F00FA140C /* Support */,
 				214209A82372211F00FA140C /* URLSessionBehavior */,
 			);
@@ -6796,36 +7006,74 @@
 				214209F12372212200FA140C /* AWSAPICategoryPluginConfiguration.swift in Sources */,
 				214209E02372212200FA140C /* APIErrorMapper.swift in Sources */,
 				214209D92372212200FA140C /* URLSessionBehavior.swift in Sources */,
+				21420AE9237236D000FA140C /* RealtimeConnectionProvider+ConnectionInterceptable.swift in Sources */,
+				21420AD1237236D000FA140C /* SubscriptionConnection.swift in Sources */,
 				214209D12372212200FA140C /* APIKeyURLRequestInterceptor.swift in Sources */,
 				214209D62372212200FA140C /* URLSessionFactory.swift in Sources */,
+				21420AF2237236D100FA140C /* APIKeyAuthInterceptor.swift in Sources */,
+				21420AD6237236D000FA140C /* IAMBasedConnectionPool.swift in Sources */,
+				21420ADE237236D000FA140C /* AppSyncJSONValue.swift in Sources */,
+				21420AF0237236D000FA140C /* AppSyncJSONHelper.swift in Sources */,
 				214209DC2372212200FA140C /* URLSessionBehaviorDelegate.swift in Sources */,
 				214209E22372212200FA140C /* GraphQLRequestUtils.swift in Sources */,
 				214209F02372212200FA140C /* AWSAPICategoryPlugin.swift in Sources */,
+				21420AD9237236D000FA140C /* AppSyncSubscriptionConnection+DataHandler.swift in Sources */,
 				214209D22372212200FA140C /* AWSAPICategoryPluginError.swift in Sources */,
+				21420AD5237236D000FA140C /* ConnectionPoolHelper.swift in Sources */,
 				214209EF2372212200FA140C /* AWSGraphQLOperation+TaskOperationBehavior.swift in Sources */,
+				21420AE4237236D000FA140C /* AppSyncConnectionRequest.swift in Sources */,
+				21420AD8237236D000FA140C /* UserPoolsBasedConnectionPool.swift in Sources */,
+				21420AE5237236D000FA140C /* RealtimeConnectionProvider.swift in Sources */,
 				214209D02372212200FA140C /* UserPoolRequestInterceptor.swift in Sources */,
+				21420ADC237236D000FA140C /* AppSyncSubscriptionConnection+ErrorHandler.swift in Sources */,
 				214209E92372212200FA140C /* AWSAPICategoryPlugin+URLSessionDelegate.swift in Sources */,
 				214209E32372212200FA140C /* GraphQLResponseUtils.swift in Sources */,
+				21420AE6237236D000FA140C /* RealtimeConnectionProvider+Websocket.swift in Sources */,
 				214209EB2372212200FA140C /* AWSGraphQLOperation.swift in Sources */,
+				21420AE3237236D000FA140C /* AppSyncMessage.swift in Sources */,
+				21420AF523728E1D00FA140C /* AWSAppSyncAuthProvider.swift in Sources */,
+				21420AF1237236D100FA140C /* CognitoUserPoolsAuthInterceptor.swift in Sources */,
+				21420AE0237236D000FA140C /* InterceptableConnection.swift in Sources */,
 				214209D52372212200FA140C /* GraphQLRequest+Validate.swift in Sources */,
+				21420AF3237236D100FA140C /* SubscriptionConstants.swift in Sources */,
 				214209E52372212200FA140C /* APIRequestUtils.swift in Sources */,
+				21420AEB237236D000FA140C /* RealtimeGatewayURLInterceptor.swift in Sources */,
+				21420AF723728E6800FA140C /* AWSAppSyncRetryStrategy.swift in Sources */,
+				21420AD3237236D000FA140C /* SubscriptionConnectionFactory.swift in Sources */,
+				21420AD2237236D000FA140C /* RetryableConnection.swift in Sources */,
 				214209D32372212200FA140C /* IAMURLRequestInterceptor.swift in Sources */,
+				21420AED237236D000FA140C /* StarscreamAdapter.swift in Sources */,
+				21420AEF237236D000FA140C /* IAMAuthInterceptor.swift in Sources */,
 				214209D42372212200FA140C /* APIRequest+Validate.swift in Sources */,
 				214209EE2372212200FA140C /* AWSAPIOperation.swift in Sources */,
 				214209DE2372212200FA140C /* URLRequestConstants.swift in Sources */,
+				21420AD4237236D000FA140C /* OIDCBasedConnectionPool.swift in Sources */,
+				21420AE8237236D000FA140C /* RealtimeConnectionProvider+MessageInterceptable.swift in Sources */,
 				214209E42372212200FA140C /* GraphQLRequestUtils+Validator.swift in Sources */,
 				214209E12372212200FA140C /* APIRequestUtils+Validator.swift in Sources */,
+				21420AEC237236D000FA140C /* AppSyncWebsocketProvider.swift in Sources */,
 				214209F42372212200FA140C /* AWSAPICategoryPlugin+InterceptorBehavior.swift in Sources */,
+				21420ADF237236D000FA140C /* AppSyncResponse.swift in Sources */,
 				214209E62372212200FA140C /* AWSAPICategoryPlugin+RESTBehavior.swift in Sources */,
 				214209E72372212200FA140C /* AWSAPICategoryPlugin+GraphQLBehavior.swift in Sources */,
+				21420AE2237236D000FA140C /* AppSyncMessage+Encodable.swift in Sources */,
 				214209DA2372212200FA140C /* URLSessionTask+URLSessionTaskBehavior.swift in Sources */,
+				21420AF923728EA700FA140C /* AWSAppSyncAuthType.swift in Sources */,
 				214209F22372212200FA140C /* AWSAPICategoryPluginConfiguration+EndpointConfig.swift in Sources */,
 				214209ED2372212200FA140C /* AWSAPIOperation+TaskOperationBehavior.swift in Sources */,
+				21420AD7237236D000FA140C /* APIKeyBasedConnectionPool.swift in Sources */,
+				21420AEE237236D000FA140C /* StarscreamAdapter+Delegate.swift in Sources */,
 				214209DF2372212200FA140C /* PluginConstants.swift in Sources */,
+				21420ADD237236D000FA140C /* SubscriptionItem.swift in Sources */,
 				214209DB2372212200FA140C /* OperationTaskMapper.swift in Sources */,
+				21420AE7237236D000FA140C /* RealtimeConnectionProviderResponse.swift in Sources */,
+				21420AE1237236D000FA140C /* ConnectionProviderError.swift in Sources */,
+				21420AEA237236D000FA140C /* ConnectionProvider.swift in Sources */,
 				214209F62372212200FA140C /* AWSAPICategoryPlugin+Reset.swift in Sources */,
+				21420ADB237236D000FA140C /* AppSyncSubscriptionConnection+Connection.swift in Sources */,
 				214209D82372212200FA140C /* URLSessionDataTaskBehavior.swift in Sources */,
 				214209EC2372212200FA140C /* TaskOperationBehavior.swift in Sources */,
+				21420ADA237236D000FA140C /* AppSyncSubscriptionConnection.swift in Sources */,
 				214209F52372212200FA140C /* AWSAPICategoryPlugin+Configure.swift in Sources */,
 				214209D72372212200FA140C /* URLSession+URLSessionBehavior.swift in Sources */,
 			);

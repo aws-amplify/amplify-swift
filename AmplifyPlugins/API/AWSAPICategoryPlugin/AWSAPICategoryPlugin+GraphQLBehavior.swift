@@ -55,6 +55,23 @@ public extension AWSAPICategoryPlugin {
                        listener: listener)
     }
 
+
+    func subscribe<R: ResponseType>(apiName: String,
+                                    document: String,
+                                    variables: [String: Any]?,
+                                    responseType: R,
+                                    listener: ((AsyncEvent<Void, GraphQLResponse<R.SerializedObject>, GraphQLError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R.SerializedObject>, GraphQLError> {
+
+        return graphql(apiName: apiName,
+                       operationType: .subscription,
+                       eventName: HubPayload.EventName.API.subscribe,
+                       document: document,
+                       variables: variables,
+                       responseType: responseType,
+                       listener: listener)
+    }
+
     /// Used by `query` and `mutate` to consolidate creating a `GraphQLRequest` containing a snapshot of the request
     /// and `AWSGraphQlOperation` to perform the execution of the request
     private func graphql<R: ResponseType>(apiName: String,

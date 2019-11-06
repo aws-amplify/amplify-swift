@@ -32,4 +32,18 @@ extension APICategory: APICategoryGraphQLBehavior {
                          responseType: responseType,
                          listener: listener)
     }
+
+    public func subscribe<R: ResponseType>(apiName: String,
+                                           document: String,
+                                           variables: [String: Any]? = nil,
+                                           responseType: R,
+                                           listener: ((AsyncEvent<Void, GraphQLResponse<R.SerializedObject>, GraphQLError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R.SerializedObject>, GraphQLError> {
+
+            plugin.subscribe(apiName: apiName,
+                             document: document,
+                             variables: variables,
+                             responseType: responseType,
+                             listener: listener)
+    }
 }
