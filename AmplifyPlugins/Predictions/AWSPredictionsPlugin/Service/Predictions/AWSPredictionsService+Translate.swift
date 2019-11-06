@@ -15,11 +15,11 @@ extension AWSPredictionsService {
                        language: LanguageType,
                        targetLanguage: LanguageType,
                        onEvent: @escaping AWSPredictionsService.TranslateTextServiceEventHandler) {
-        let request = AWSTranslateTranslateTextRequest()
-        request!.sourceLanguageCode = language.rawValue
-        request!.targetLanguageCode = targetLanguage.rawValue
-        request!.text = text
-        awsTranslate.translateText(request: request!).continueWith { (task) -> Any? in
+        let request: AWSTranslateTranslateTextRequest = AWSTranslateTranslateTextRequest()
+        request.sourceLanguageCode = language.rawValue
+        request.targetLanguageCode = targetLanguage.rawValue
+        request.text = text
+        awsTranslate.translateText(request: request).continueWith { (task) -> Any? in
 
             guard task.error == nil else {
 

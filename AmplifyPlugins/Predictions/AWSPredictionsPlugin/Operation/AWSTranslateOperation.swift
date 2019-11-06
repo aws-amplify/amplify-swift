@@ -45,11 +45,10 @@ PredictionsTranslateTextOperation {
             return
         }
 
-        predictionsService.translateText(
-        text: request.textToTranslate,
-        language: request.language,
-        targetLanguage: request.targetLanguage) { [weak self] event in
-            self?.onServiceEvent(event: event)
+        predictionsService.translateText(text: request.textToTranslate,
+                                         language: request.language,
+                                         targetLanguage: request.targetLanguage) { [weak self] event in
+                                            self?.onServiceEvent(event: event)
 
         }
     }

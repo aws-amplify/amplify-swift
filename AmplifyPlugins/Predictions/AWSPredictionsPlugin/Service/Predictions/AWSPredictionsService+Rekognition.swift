@@ -13,16 +13,16 @@ extension AWSPredictionsService {
     func detectLabels(image: CGImage,
                       onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
 
-        let request = AWSRekognitionDetectLabelsRequest()
+        let request: AWSRekognitionDetectLabelsRequest = AWSRekognitionDetectLabelsRequest()
         let rekognitionImage = AWSRekognitionImage()
 
         let data = image.dataProvider?.data as Data?
 
         rekognitionImage?.bytes = data?.base64EncodedData(options: NSData.Base64EncodingOptions.endLineWithLineFeed)
 
-        request?.image = rekognitionImage
+        request.image = rekognitionImage
 
-        awsRekognition.detectLabels(request: request!).continueWith { (task) -> Any? in
+        awsRekognition.detectLabels(request: request).continueWith { (task) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
                 let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)

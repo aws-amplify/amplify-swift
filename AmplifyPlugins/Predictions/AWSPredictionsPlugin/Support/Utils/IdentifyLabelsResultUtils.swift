@@ -19,12 +19,12 @@ class IdentifyLabelsResultUtils {
                 continue
             }
 
-            let parents = processParent(rekognitionLabel.parents)
+            let parents = processParents(rekognitionLabel.parents)
 
             let metadata = LabelMetadata(confidence: Double(
                 truncating: rekognitionLabel.confidence ?? 0.0), parents: parents)
 
-            let boundingBoxes = processBoundingBoxes(rekognitionLabel.instances)
+            let boundingBoxes = processInstances(rekognitionLabel.instances)
 
             let label = Label(name: name, metadata: metadata, boundingBoxes: boundingBoxes)
 
@@ -33,7 +33,7 @@ class IdentifyLabelsResultUtils {
         return labels
     }
 
-    static func processParent(_ rekognitionParents: [AWSRekognitionParent]?) -> [Parent] {
+    static func processParents(_ rekognitionParents: [AWSRekognitionParent]?) -> [Parent] {
         var parents = [Parent]()
         guard let rekognitionParents = rekognitionParents else {
             return parents
@@ -47,7 +47,7 @@ class IdentifyLabelsResultUtils {
         return parents
     }
 
-    static func processBoundingBoxes(_ rekognitionInstances: [AWSRekognitionInstance]?) -> [BoundingBox] {
+    static func processInstances(_ rekognitionInstances: [AWSRekognitionInstance]?) -> [BoundingBox] {
         var boundingBoxes = [BoundingBox]()
         guard let rekognitionInstances = rekognitionInstances else {
             return boundingBoxes
