@@ -13,6 +13,7 @@ public enum PredictionsError {
     /// Access denied while executing the operation
     case accessDenied(ErrorDescription, RecoverySuggestion)
     case networkError(ErrorDescription, RecoverySuggestion)
+    case unknownError(ErrorDescription, RecoverySuggestion)
 }
 
 extension PredictionsError: AmplifyError {

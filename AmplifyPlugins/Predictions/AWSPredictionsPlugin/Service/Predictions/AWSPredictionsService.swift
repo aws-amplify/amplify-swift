@@ -15,6 +15,9 @@ class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateService
     var identifier: String!
     var awsTranslate: AWSTranslateBehavior!
     var awsRekognition: AWSRekognitionBehavior!
+    var awsPolly: AWSPollyBehavior!
+    var awsTranscribe: AWSTranscribeBehavior!
+    var awsComprehend: AWSComprehendBehavior!
 
     convenience init(region: AWSRegionType,
                      cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
@@ -59,14 +62,18 @@ class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateService
         identifier = nil
     }
 
-    func getEscapeHatch(key: String) -> AWSService? {
+    func getEscapeHatch(key: PredictionsAWSServices) -> AWSService {
         switch key {
-        case "Rekognition":
+        case .rekognition:
             return awsRekognition.getRekognition()
-        case "Translate":
+        case .translate:
             return awsTranslate.getTranslate()
-        default:
-            return nil
+        case .polly:
+            return awsPolly.getPolly()
+        case .transcribe:
+            return awsTranscribe.getTranscribe()
+        case .comprehend:
+            return awsComprehend.getComprehend()
         }
     }
 

@@ -26,17 +26,22 @@ extension AWSPredictionsService {
             guard task.error == nil else {
 
                 onEvent(.failed(
-                    .networkError(task.error?.localizedDescription ?? "Call to rekognition failed.", task.error?.localizedDescription ?? "Please try again")))
+                    .networkError(
+                        task.error!.localizedDescription, task.error!.localizedDescription)))
                 return nil
             }
 
             guard let result = task.result else {
-                onEvent(.failed(.networkError("No result was found.", "Please make sure the image integrity is maintained before sending")))
+                onEvent(.failed(
+                    .unknownError("No result was found. An unknown error occurred",
+                                  "Please try again.")))
                 return nil
             }
 
             guard let labels = result.labels else {
-                onEvent(.failed(.networkError("No result was found.", "Please make sure the image integrity is maintained before sending")))
+                onEvent(.failed(
+                    .networkError("No result was found.",
+                                  "Please make sure the image integrity is maintained before sending")))
                 return nil
             }
 

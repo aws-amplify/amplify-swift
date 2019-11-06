@@ -16,19 +16,19 @@ extension AWSPredictionsService {
                        targetLanguage: LanguageType,
                        onEvent: @escaping AWSPredictionsService.TranslateTextServiceEventHandler) {
         let request = AWSTranslateTranslateTextRequest()
-        request?.sourceLanguageCode = language.rawValue
-        request?.targetLanguageCode = targetLanguage.rawValue
-        request?.text = text
+        request!.sourceLanguageCode = language.rawValue
+        request!.targetLanguageCode = targetLanguage.rawValue
+        request!.text = text
         awsTranslate.translateText(request: request!).continueWith { (task) -> Any? in
 
             guard task.error == nil else {
 
-                onEvent(.failed(.networkError("Call to Translate failed", "Please try again")))
+                onEvent(.failed(.networkError(task.error!.localizedDescription, task.error!.localizedDescription)))
                 return nil
             }
 
             guard let result = task.result else {
-                onEvent(.failed(.networkError("No result was found.", "Please make sure a text string was sent over")))
+                onEvent(.failed(.unknownError("No result was found. An unknown error occurred.", "Please try again.")))
                 return nil
             }
 
