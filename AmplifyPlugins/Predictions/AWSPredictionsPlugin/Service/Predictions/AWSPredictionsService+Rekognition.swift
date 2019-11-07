@@ -16,12 +16,7 @@ extension AWSPredictionsService {
         let request: AWSRekognitionDetectLabelsRequest = AWSRekognitionDetectLabelsRequest()
         let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
 
-        //let data = image.dataProvider?.data as Data?
-       // let uiimage = UIImage(cgImage: image)
-        let imageToSend:Data = image.jpegData(compressionQuality: 0.2)!
-
-       // rekognitionImage?.bytes = data?.base64EncodedData()
-        rekognitionImage.bytes = imageToSend
+        rekognitionImage.bytes = image.jpegData(compressionQuality: 0.2)!
         request.image = rekognitionImage
 
         awsRekognition.detectLabels(request: request).continueWith { (task) -> Any? in
