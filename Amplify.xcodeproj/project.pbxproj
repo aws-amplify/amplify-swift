@@ -328,7 +328,7 @@
 		FA4E730A232828EA003B8EEB /* Amplify+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E7309232828EA003B8EEB /* Amplify+Reset.swift */; };
 		FA4E730C23282917003B8EEB /* Amplify+Resolve.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E730B23282917003B8EEB /* Amplify+Resolve.swift */; };
 		FA4E730E232829F1003B8EEB /* Plugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E730D232829F1003B8EEB /* Plugin+Reset.swift */; };
-		FA4E731623294B6E003B8EEB /* DefaultHubPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E731523294B6E003B8EEB /* DefaultHubPlugin.swift */; };
+		FA4E731623294B6E003B8EEB /* AWSHubPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E731523294B6E003B8EEB /* AWSHubPlugin.swift */; };
 		FA56F71E22B144F80039754A /* AsyncEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F71D22B144F80039754A /* AsyncEvent.swift */; };
 		FA56F72322B14B420039754A /* Cancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F72222B14B420039754A /* Cancellable.swift */; };
 		FA56F72522B14B6A0039754A /* Resumable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F72422B14B6A0039754A /* Resumable.swift */; };
@@ -375,10 +375,7 @@
 		FAAB8055236251BC00B182CF /* CognitoUserPoolsConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAB8054236251BC00B182CF /* CognitoUserPoolsConfiguration.swift */; };
 		FAAB80582362526D00B182CF /* AWSAPICategoryPluginError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAB80572362526D00B182CF /* AWSAPICategoryPluginError.swift */; };
 		FAB9D811233BF5F600928AA9 /* AmplifyOperationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB9D810233BF5F600928AA9 /* AmplifyOperationContext.swift */; };
-		FAC0A29822B3DE4800B50912 /* HubPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A29722B3DE4800B50912 /* HubPublisher.swift */; };
 		FAC0A29B22B3DEEE00B50912 /* HubPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A29A22B3DEEE00B50912 /* HubPayload.swift */; };
-		FAC0A29D22B3E63000B50912 /* HubDispatchDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A29C22B3E63000B50912 /* HubDispatchDestination.swift */; };
-		FAC0A2A122B3E81000B50912 /* HubMessageQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2A022B3E81000B50912 /* HubMessageQueue.swift */; };
 		FAC0A2AD22B43FE700B50912 /* HubCategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2AC22B43FE700B50912 /* HubCategory+ClientBehavior.swift */; };
 		FAC0A2AF22B4400100B50912 /* LoggingCategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2AE22B4400100B50912 /* LoggingCategory+ClientBehavior.swift */; };
 		FAC0A2B222B4402000B50912 /* StorageCategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2B122B4402000B50912 /* StorageCategory+ClientBehavior.swift */; };
@@ -1367,7 +1364,7 @@
 		FA4E7309232828EA003B8EEB /* Amplify+Reset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Amplify+Reset.swift"; sourceTree = "<group>"; };
 		FA4E730B23282917003B8EEB /* Amplify+Resolve.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Amplify+Resolve.swift"; sourceTree = "<group>"; };
 		FA4E730D232829F1003B8EEB /* Plugin+Reset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Plugin+Reset.swift"; sourceTree = "<group>"; };
-		FA4E731523294B6E003B8EEB /* DefaultHubPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHubPlugin.swift; sourceTree = "<group>"; };
+		FA4E731523294B6E003B8EEB /* AWSHubPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSHubPlugin.swift; sourceTree = "<group>"; };
 		FA56F71D22B144F80039754A /* AsyncEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncEvent.swift; sourceTree = "<group>"; };
 		FA56F72222B14B420039754A /* Cancellable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cancellable.swift; sourceTree = "<group>"; };
 		FA56F72422B14B6A0039754A /* Resumable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resumable.swift; sourceTree = "<group>"; };
@@ -1417,10 +1414,7 @@
 		FAAB8054236251BC00B182CF /* CognitoUserPoolsConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CognitoUserPoolsConfiguration.swift; sourceTree = "<group>"; };
 		FAAB80572362526D00B182CF /* AWSAPICategoryPluginError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginError.swift; sourceTree = "<group>"; };
 		FAB9D810233BF5F600928AA9 /* AmplifyOperationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyOperationContext.swift; sourceTree = "<group>"; };
-		FAC0A29722B3DE4800B50912 /* HubPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPublisher.swift; sourceTree = "<group>"; };
 		FAC0A29A22B3DEEE00B50912 /* HubPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPayload.swift; sourceTree = "<group>"; };
-		FAC0A29C22B3E63000B50912 /* HubDispatchDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubDispatchDestination.swift; sourceTree = "<group>"; };
-		FAC0A2A022B3E81000B50912 /* HubMessageQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubMessageQueue.swift; sourceTree = "<group>"; };
 		FAC0A2AC22B43FE700B50912 /* HubCategory+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HubCategory+ClientBehavior.swift"; sourceTree = "<group>"; };
 		FAC0A2AE22B4400100B50912 /* LoggingCategory+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoggingCategory+ClientBehavior.swift"; sourceTree = "<group>"; };
 		FAC0A2B122B4402000B50912 /* StorageCategory+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageCategory+ClientBehavior.swift"; sourceTree = "<group>"; };
@@ -2995,13 +2989,13 @@
 			path = Internal;
 			sourceTree = "<group>";
 		};
-		FA4E731723294B78003B8EEB /* DefaultHubPlugin */ = {
+		FA4E731723294B78003B8EEB /* AWSHubPlugin */ = {
 			isa = PBXGroup;
 			children = (
-				FA4E731523294B6E003B8EEB /* DefaultHubPlugin.swift */,
+				FA4E731523294B6E003B8EEB /* AWSHubPlugin.swift */,
 				FA9FB77E232AA0DF00C04D32 /* Internal */,
 			);
-			path = DefaultHubPlugin;
+			path = AWSHubPlugin;
 			sourceTree = "<group>";
 		};
 		FA56F72122B14AEB0039754A /* Support */ = {
@@ -3149,9 +3143,6 @@
 			isa = PBXGroup;
 			children = (
 				FA09B9322321A305000E064D /* HubCategory+CategoryConfigurable.swift */,
-				FAC0A29C22B3E63000B50912 /* HubDispatchDestination.swift */,
-				FAC0A2A022B3E81000B50912 /* HubMessageQueue.swift */,
-				FAC0A29722B3DE4800B50912 /* HubPublisher.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -3210,6 +3201,7 @@
 				FAC2354A227A055A00424678 /* Amplify.swift */,
 				FAC234EE227A053D00424678 /* Categories */,
 				FAC2352E227A055200424678 /* Core */,
+				FADDA7BC2374CA4A00836431 /* DefaultPlugins */,
 				FAC2357C227A05B100424678 /* Resources */,
 			);
 			path = Amplify;
@@ -3450,7 +3442,6 @@
 			isa = PBXGroup;
 			children = (
 				FAC0A29922B3DE4F00B50912 /* Internal */,
-				FA4E731723294B78003B8EEB /* DefaultHubPlugin */,
 				FAC2358E227A4A6E00424678 /* HubCategory.swift */,
 				FAC0A2AC22B43FE700B50912 /* HubCategory+ClientBehavior.swift */,
 				FAC23590227A4AF000424678 /* HubCategoryClientBehavior.swift */,
@@ -3531,6 +3522,14 @@
 				FAF1B889233971A3007F1435 /* PerformanceTests */,
 			);
 			path = DefaultPluginTests;
+			sourceTree = "<group>";
+		};
+		FADDA7BC2374CA4A00836431 /* DefaultPlugins */ = {
+			isa = PBXGroup;
+			children = (
+				FA4E731723294B78003B8EEB /* AWSHubPlugin */,
+			);
+			path = DefaultPlugins;
 			sourceTree = "<group>";
 		};
 		FAF1B889233971A3007F1435 /* PerformanceTests */ = {
@@ -6568,7 +6567,6 @@
 				FAC2352B227A053D00424678 /* AnalyticsEvent.swift in Sources */,
 				FAC23544227A055200424678 /* ConfigurationError.swift in Sources */,
 				FAC428A4235F802A0000F221 /* APICategory+InterceptorBehavior.swift in Sources */,
-				FAC0A2A122B3E81000B50912 /* HubMessageQueue.swift in Sources */,
 				FAC23547227A055200424678 /* Plugin.swift in Sources */,
 				FA9FB780232AA11A00C04D32 /* HubChannelDispatcher.swift in Sources */,
 				FA315298233D644F00DE78E7 /* StorageGetDataRequest.swift in Sources */,
@@ -6592,7 +6590,6 @@
 				B4D38534236C97360014653D /* TranslateTextResult.swift in Sources */,
 				FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */,
 				21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */,
-				FAC0A29822B3DE4800B50912 /* HubPublisher.swift in Sources */,
 				FAC428A0235F7F980000F221 /* APICategory+RESTBehavior.swift in Sources */,
 				FAC23548227A055200424678 /* Category.swift in Sources */,
 				FAC428A8235F83A00000F221 /* APIGetRequest.swift in Sources */,
@@ -6623,7 +6620,7 @@
 				FA9FB77D232AA0D800C04D32 /* FilteredListener.swift in Sources */,
 				FAC2352D227A053D00424678 /* AnalyticsCategoryPlugin.swift in Sources */,
 				FA56F71E22B144F80039754A /* AsyncEvent.swift in Sources */,
-				FA4E731623294B6E003B8EEB /* DefaultHubPlugin.swift in Sources */,
+				FA4E731623294B6E003B8EEB /* AWSHubPlugin.swift in Sources */,
 				FAC23543227A055200424678 /* Category+Configuration.swift in Sources */,
 				FA09B9452322C9E8000E064D /* AnalyticsCategoryConfiguration.swift in Sources */,
 				B4D3852F236C97360014653D /* PredictionsTranslateTextOperation.swift in Sources */,
@@ -6674,7 +6671,6 @@
 				FAC23541227A055200424678 /* CategoryType.swift in Sources */,
 				210922502359634C00CEC295 /* AnalyticsProfile.swift in Sources */,
 				FA76A2D12342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift in Sources */,
-				FAC0A29D22B3E63000B50912 /* HubDispatchDestination.swift in Sources */,
 				FAC23546227A055200424678 /* AmplifyError.swift in Sources */,
 				FA09B9492322CBD5000E064D /* HubCategoryConfiguration.swift in Sources */,
 				21D1CE8C2334233F0003BAA8 /* AuthError.swift in Sources */,

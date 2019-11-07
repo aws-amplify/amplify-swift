@@ -13,9 +13,9 @@ import XCTest
 class DefaultHubPluginCustomChannelTests: XCTestCase {
 
     var plugin: HubCategoryPlugin {
-        guard let plugin = try? Amplify.Hub.getPlugin(for: "DefaultHubCategoryPlugin"),
-            plugin.key == "DefaultHubCategoryPlugin" else {
-                fatalError("Could not access DefaultHubCategoryPlugin")
+        guard let plugin = try? Amplify.Hub.getPlugin(for: "AWSHubPlugin"),
+            plugin.key == "AWSHubPlugin" else {
+                fatalError("Could not access AWSHubPlugin")
         }
         return plugin
     }
