@@ -29,6 +29,13 @@ extension CoreMLPredictionsPlugin {
     public func interpret(text: String,
                           options: PredictionsInterpretRequest.Options?,
                           listener: PredictionsInterpretOperation.EventListener?) -> PredictionsInterpretOperation {
-        fatalError("Incomplete implementation")
+        let options = options ?? PredictionsInterpretRequest.Options()
+        let request = PredictionsInterpretRequest(textToInterpret: text, options: options)
+        let interpretOperation = CoreMLInterpretTextOperation(request,
+                                                              coreMLNaturalLanguage: coreMLNaturalLanguage,
+                                                              listener: listener)
+        queue.addOperation(interpretOperation)
+        return interpretOperation
     }
+
 }

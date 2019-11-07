@@ -11,8 +11,6 @@ import Foundation
 
 class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin {
 
-
-
     func configure(using configuration: Any) throws {
         notify()
     }
@@ -38,6 +36,15 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
         notify("identifyLabels")
         let request = PredictionsIdentifyRequest(image: image, identifyType: type, options: options ?? PredictionsIdentifyRequest.Options())
         return MockPredictionsIdentifyOperation(request: request)
+    }
+
+    func interpret(text: String,
+                   options: PredictionsInterpretRequest.Options?,
+                   listener: PredictionsInterpretOperation.EventListener?) -> PredictionsInterpretOperation {
+        notify("interpret")
+        let request = PredictionsInterpretRequest(textToInterpret: text,
+                                                  options: options ?? PredictionsInterpretRequest.Options())
+        return MockPredictionsInterpretOperation(request: request)
     }
 
     func reset(onComplete: @escaping BasicClosure) {
@@ -89,6 +96,25 @@ PredictionsError>, PredictionsIdentifyOperation {
     init(request: Request) {
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.identifyLabels,
+                   request: request)
+    }
+
+}
+
+class MockPredictionsInterpretOperation: AmplifyOperation<PredictionsInterpretRequest,
+Void,
+InterpretResult,
+PredictionsError>, PredictionsInterpretOperation {
+
+    override func pause() {
+    }
+
+    override func resume() {
+    }
+
+    init(request: Request) {
+        super.init(categoryType: .predictions,
+                   eventName: HubPayload.EventName.Predictions.interpret,
                    request: request)
     }
 

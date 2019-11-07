@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import NaturalLanguage
+@testable import Amplify
 @testable import CoreMLPredictionsPlugin
 
 class CoreMLNaturalLanguageAdaptorTests: XCTestCase {

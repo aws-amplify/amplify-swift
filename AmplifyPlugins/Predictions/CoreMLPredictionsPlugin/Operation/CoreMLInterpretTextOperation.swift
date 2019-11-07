@@ -13,12 +13,21 @@ public class CoreMLInterpretTextOperation: AmplifyOperation<PredictionsInterpret
     InterpretResult,
 PredictionsError>, PredictionsInterpretOperation {
 
+    let coreMLNaturalLanguage: CoreMLNaturalLanguageBehavior
+
     init(_ request: PredictionsInterpretRequest,
+         coreMLNaturalLanguage: CoreMLNaturalLanguageBehavior,
          listener: EventListener?) {
+
+        self.coreMLNaturalLanguage = coreMLNaturalLanguage
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.interpret,
                    request: request,
                    listener: listener)
+    }
+
+    override public func cancel() {
+        super.cancel()
     }
 
     override public func main() {
@@ -26,6 +35,7 @@ PredictionsError>, PredictionsInterpretOperation {
             finish()
             return
         }
+        let dominantLanguage = coreMLNaturalLanguage.detectDominantLanguage(for: request.textToInterpret)
 
     }
 }

@@ -10,5 +10,5 @@ import Vision
 @testable import CoreMLPredictionsPlugin
 
 class CoreMLVisionAdaptorTests: XCTestCase {
-    
+
 }

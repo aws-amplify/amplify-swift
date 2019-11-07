@@ -61,15 +61,15 @@ public enum IdentifyType {
 }
 
 public struct InterpretTextResult {
-    let keyPhrases: [KeyPhraseResult]
-    let sentiment: SentimentResult
+    let keyPhrases: [KeyPhrase]
+    let sentiment: Sentiment
     let entities: [EntityDetectionResult]
-    let language: LanguageDetectResult
+    let language: LanguageDetectionResult
     let syntax: [SyntaxToken]
 }
 
 // Sentiment Analysis
-public struct SentimentResult {
+public struct Sentiment {
     let predominantSentiment: String
     let sentimentScores: [String: Float]?
 }
@@ -92,8 +92,9 @@ public struct EntityDetectionResult {
     }
 }
 
+
 // Language Detection
-public struct LanguageDetectResult {
+public struct LanguageDetectionResult {
     let languageCode: LanguageType
     let score: Float?
 }
@@ -127,7 +128,7 @@ public struct PartOfSpeech {
 }
 
 // Key Phrase Detection
-public struct KeyPhraseResult {
+public struct KeyPhrase {
     let score: Float?
     let text: String
     let range: Range<String.Index>
