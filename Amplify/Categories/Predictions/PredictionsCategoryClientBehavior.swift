@@ -31,9 +31,9 @@ public protocol PredictionsCategoryClientBehavior {
     /// - Parameter options: Parameters to specific plugin behavior
     /// - Parameter listener: Triggered when the event occurs
     func identify(type: IdentifyType,
-                   image: CGImage,
-                   options: PredictionsIdentifyRequest.Options,
-                   listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation
+                  image: CGImage,
+                  options: PredictionsIdentifyRequest.Options?,
+                  listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation
 }
 
 // TODO: Move these enums to a separate file

@@ -9,7 +9,7 @@
 ///
 /// **No guaranteed delivery order**
 ///
-/// DefaultHubCategoryPlugin distributes messages in order to listeners, but makes no guarantees about the order in
+/// AWSHubPlugin distributes messages in order to listeners, but makes no guarantees about the order in
 /// which a listener is called.
 /// This plugin does not guarantee synchronization between message delivery and listener management. In other words, the
 /// following sequence is not guaranteed to succeed:
@@ -19,10 +19,10 @@
 ///
 /// Instead, messages and listener states are guaranteed to be independently self-consistent. Callers can use
 /// `hasListener(withToken:)` to check that a listener has been registered.
-final public class DefaultHubCategoryPlugin: HubCategoryPlugin {
-    /// Convenience property. Each instance of `DefaultHubCategoryPlugin` has the same key
+final public class AWSHubPlugin: HubCategoryPlugin {
+    /// Convenience property. Each instance of `AWSHubPlugin` has the same key
     public static var key: String {
-        return "DefaultHubCategoryPlugin"
+        return "AWSHubPlugin"
     }
 
     private let dispatcher = HubChannelDispatcher()

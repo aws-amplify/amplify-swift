@@ -45,15 +45,15 @@ struct DefaultHubPluginTestHelpers {
     /// - Parameter token: the token identifying the listener to wait for
     /// - Parameter plugin: the plugin on which the listener will be checked
     /// - Parameter timeout: the maximum length of time to wait for the listener to be registered
-    /// - Throws: if the plugin cannot be cast to `DefaultHubCategoryPlugin`
+    /// - Throws: if the plugin cannot be cast to `AWSHubPlugin`
     static func waitForListener(with token: UnsubscribeToken,
                                 plugin: HubCategoryPlugin,
                                 timeout: TimeInterval,
                                 file: StaticString = #file,
                                 line: UInt = #line) throws -> Bool {
 
-        guard let plugin = plugin as? DefaultHubCategoryPlugin else {
-            throw "Could not cast plugin as DefaultHubCategoryPlugin (\(file) L\(line))"
+        guard let plugin = plugin as? AWSHubPlugin else {
+            throw "Could not cast plugin as AWSHubPlugin (\(file) L\(line))"
         }
 
         var hasListener = false
