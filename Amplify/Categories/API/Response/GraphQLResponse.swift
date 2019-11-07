@@ -7,17 +7,18 @@
 
 import Foundation
 
-/// Successful GraphQL response containing optional `data` and list of `errors`
-public class GraphQLResponse<ResponseType: Decodable> {
+/// A response from a GraphQL API
+public enum GraphQLResponse<ResponseType: Decodable> {
 
-    /// GraphQL response data deserialized to ResponseType
-    public var data: ResponseType?
+    /// A successful response. The associated value will be the payload of the response
+    case success(ResponseType)
 
-    /// GraphQL response errors deserialized to JSON
-    public var errors: [JSONValue]
+    /// An error resposne. The associated value will be an array of JSONValues that contain service-specific error
+    /// messages. https://graphql.github.io/graphql-spec/June2018/#sec-Errors
+    case error([JSONValue])
 
-    public init(data: ResponseType?, errors: [JSONValue]) {
-        self.data = data
-        self.errors = errors
-    }
+    /// A partially-successful response. The `ResponseType` associated value will contain as much of the payload as the
+    /// service was able to fulfill, and the errors will be an array of JSONValues that contain service-specific error
+    /// messages.
+    case partial(ResponseType, [JSONValue])
 }

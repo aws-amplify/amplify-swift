@@ -36,7 +36,7 @@ class APICategoryClientGraphQLTests: XCTestCase {
 
         _ = Amplify.API.query(apiName: "foo",
                               document: "foo",
-                              responseType: GetFoo()) { _ in }
+                              responseType: JSONValue.self) { _ in }
 
         waitForExpectations(timeout: 0.5)
     }
@@ -51,8 +51,8 @@ class APICategoryClientGraphQLTests: XCTestCase {
         }
 
         _ = Amplify.API.mutate(apiName: "foo",
-                              document: "foo",
-                              responseType: GetFoo()) { _ in }
+                               document: "foo",
+                               responseType: JSONValue.self) { _ in }
 
         waitForExpectations(timeout: 0.5)
     }
@@ -66,10 +66,4 @@ class APICategoryClientGraphQLTests: XCTestCase {
         return plugin
     }
 
-}
-
-class GetFoo: ResponseType {
-    typealias SerializedObject = Foo
-    struct Foo: Decodable {
-    }
 }

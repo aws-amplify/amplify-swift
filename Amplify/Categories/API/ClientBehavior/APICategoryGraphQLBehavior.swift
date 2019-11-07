@@ -14,15 +14,15 @@ public protocol APICategoryGraphQLBehavior {
     /// - Parameter apiName: The name of API being invoked, as specified in `amplifyconfiguration.json`
     /// - Parameter document: GraphQL query document string
     /// - Parameter variables: GraphQL variables to replace dynamic values in the GraphQL query document
-    /// - Parameter responseType: Instance with the type to deserialize the GraphQL response data to
+    /// - Parameter responseType: Instance with the type to deserialize the GraphQL success response data to
     /// - Parameter listener: The event listener for the operation
     /// - Returns: The GraphQLOperation being enqueued
-    func query<R: ResponseType>(apiName: String,
-                                document: String,
-                                variables: [String: Any]?,
-                                responseType: R,
-                                listener: ((AsyncEvent<Void, GraphQLResponse<R.SerializedObject>, GraphQLError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R.SerializedObject>, GraphQLError>
+    func query<R: Decodable>(apiName: String,
+                             document: String,
+                             variables: [String: Any]?,
+                             responseType: R.Type,
+                             listener: ((AsyncEvent<Void, GraphQLResponse<R>, GraphQLError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, GraphQLError>
 
     /// Perform a GraphQL mutate operation against a previously configured API. This operation
     /// will be asynchronous, with the callback accessible both locally and via the Hub.
@@ -30,13 +30,13 @@ public protocol APICategoryGraphQLBehavior {
     /// - Parameter apiName: The name of API being invoked, as specified in `amplifyconfiguration.json`
     /// - Parameter document: GraphQL query document string
     /// - Parameter variables: GraphQL variables to replace dynamic values in the GraphQL query document
-    /// - Parameter responseType: Instance with the type to deserialize the GraphQL response data to
+    /// - Parameter responseType: Instance with the type to deserialize the GraphQL success response data to
     /// - Parameter listener: The event listener for the operation
     /// - Returns: The GraphQLOperation being enqueued
-    func mutate<R: ResponseType>(apiName: String,
-                                 document: String,
-                                 variables: [String: Any]?,
-                                 responseType: R,
-                                 listener: ((AsyncEvent<Void, GraphQLResponse<R.SerializedObject>, GraphQLError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R.SerializedObject>, GraphQLError>
+    func mutate<R: Decodable>(apiName: String,
+                              document: String,
+                              variables: [String: Any]?,
+                              responseType: R.Type,
+                              listener: ((AsyncEvent<Void, GraphQLResponse<R>, GraphQLError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, GraphQLError>
 }

@@ -6,12 +6,12 @@
 //
 
 extension APICategory: APICategoryGraphQLBehavior {
-    public func mutate<R>(apiName: String,
-                          document: String,
-                          variables: [String: Any]? = nil,
-                          responseType: R,
-                          listener: ((AsyncEvent<Void, GraphQLResponse<R.SerializedObject>, GraphQLError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R.SerializedObject>, GraphQLError> where R: ResponseType {
+    public func mutate<R: Decodable>(apiName: String,
+                                     document: String,
+                                     variables: [String: Any]? = nil,
+                                     responseType: R.Type,
+                                     listener: ((AsyncEvent<Void, GraphQLResponse<R>, GraphQLError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, GraphQLError> {
             plugin.mutate(apiName: apiName,
                           document: document,
                           variables: variables,
@@ -19,12 +19,12 @@ extension APICategory: APICategoryGraphQLBehavior {
                           listener: listener)
     }
 
-    public func query<R: ResponseType>(apiName: String,
-                                       document: String,
-                                       variables: [String: Any]? = nil,
-                                       responseType: R,
-                                       listener: ((AsyncEvent<Void, GraphQLResponse<R.SerializedObject>, GraphQLError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R.SerializedObject>, GraphQLError> {
+    public func query<R: Decodable>(apiName: String,
+                                    document: String,
+                                    variables: [String: Any]? = nil,
+                                    responseType: R.Type,
+                                    listener: ((AsyncEvent<Void, GraphQLResponse<R>, GraphQLError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, GraphQLError> {
 
             plugin.query(apiName: apiName,
                          document: document,
