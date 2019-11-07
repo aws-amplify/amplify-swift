@@ -48,7 +48,7 @@ DEPENDENCIES:
   - SwiftLint
 
 SPEC REPOS:
-  trunk:
+  https://cdn.cocoapods.org/:
     - AWSAuthCore
     - AWSCognitoIdentityProvider
     - AWSCognitoIdentityProviderASF
@@ -102,4 +102,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 2948f3378ac781c20447c0fcd46e55bc7ca1f942
 
-COCOAPODS: 1.8.3
+COCOAPODS: 1.8.4
