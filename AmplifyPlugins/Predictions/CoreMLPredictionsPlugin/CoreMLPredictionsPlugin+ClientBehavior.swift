@@ -21,7 +21,7 @@ extension CoreMLPredictionsPlugin {
 
     public func identify(type: IdentifyType,
                          image: CGImage,
-                         options: PredictionsIdentifyRequest.Options,
+                         options: PredictionsIdentifyRequest.Options?,
                          listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation {
         fatalError("Incomplete implementation")
     }

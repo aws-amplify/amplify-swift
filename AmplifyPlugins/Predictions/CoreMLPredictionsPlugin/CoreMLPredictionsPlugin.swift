@@ -10,6 +10,7 @@ import Amplify
 
 final public class CoreMLPredictionsPlugin: PredictionsCategoryPlugin {
 
+
      /// A queue that regulates the execution of operations.
        var queue: OperationQueue!
 

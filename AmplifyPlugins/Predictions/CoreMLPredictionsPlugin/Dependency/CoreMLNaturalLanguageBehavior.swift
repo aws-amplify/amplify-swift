@@ -25,7 +25,7 @@ protocol CoreMLNaturalLanguageBehavior {
     /// Get entities for the text
     ///
     /// - Parameter text: Input text
-    func getEntities(for text: String) -> [EntityResult]
+    func getEntities(for text: String) -> [EntityDetectionResult]
 
     /// Get the sentiment score of the given paragraph.
     ///

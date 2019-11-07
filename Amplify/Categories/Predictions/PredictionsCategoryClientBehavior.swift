@@ -63,7 +63,7 @@ public enum IdentifyType {
 public struct InterpretTextResult {
     let keyPhrases: [KeyPhraseResult]
     let sentiment: SentimentResult
-    let entities: [EntityResult]
+    let entities: [EntityDetectionResult]
     let language: LanguageDetectResult
     let syntax: [SyntaxToken]
 }
@@ -75,11 +75,21 @@ public struct SentimentResult {
 }
 
 // Entity Detection
-public struct EntityResult {
-    let score: Float?
+public struct EntityDetectionResult {
     let type: EntityType
     let targetText: String
+    let score: Float?
     let range: Range<String.Index>
+
+    public init(type: EntityType,
+                targetText: String,
+                score: Float?,
+                range: Range<String.Index>) {
+        self.type = type
+        self.targetText = targetText
+        self.score = score
+        self.range = range
+    }
 }
 
 // Language Detection
@@ -94,11 +104,26 @@ public struct SyntaxToken {
     let text: String
     let range: Range<String.Index>
     let partOfSpeech: PartOfSpeech
+
+    public init(tokenId: Int,
+                text: String,
+                range: Range<String.Index>,
+                partOfSpeech: PartOfSpeech) {
+        self.tokenId = tokenId
+        self.text = text
+        self.range = range
+        self.partOfSpeech = partOfSpeech
+    }
 }
 
 public struct PartOfSpeech {
     let tag: SpeechType
     let score: Float?
+
+    public init(tag: SpeechType, score: Float?) {
+        self.tag = tag
+        self.score = score
+    }
 }
 
 // Key Phrase Detection

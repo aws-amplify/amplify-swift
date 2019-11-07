@@ -43,8 +43,8 @@ struct CoreMLNaturalLanguageAdaptor: CoreMLNaturalLanguageBehavior {
         return syntaxList
     }
 
-    func getEntities(for text: String) -> [EntityResult] {
-        var result: [EntityResult] = []
+    func getEntities(for text: String) -> [EntityDetectionResult] {
+        var result: [EntityDetectionResult] = []
         let tagger = NLTagger(tagSchemes: [.nameType])
         tagger.string = text
         let options: NLTagger.Options = [.omitPunctuation, .omitWhitespace, .joinNames]
@@ -55,10 +55,10 @@ struct CoreMLNaturalLanguageAdaptor: CoreMLNaturalLanguageBehavior {
                              options: options) { tag, tokenRange in
 
                                 if let tag = tag, tags.contains(tag) {
-                                    let entity = EntityResult(score: nil,
-                                                              type: tag.getEntityType(),
-                                                              targetText: String(text[tokenRange]),
-                                                              range: tokenRange)
+                                    let entity = EntityDetectionResult(type: tag.getEntityType(),
+                                                                       targetText: String(text[tokenRange]),
+                                                                       score: nil,
+                                                                       range: tokenRange)
                                     result.append(entity)
                                 }
                                 return true
