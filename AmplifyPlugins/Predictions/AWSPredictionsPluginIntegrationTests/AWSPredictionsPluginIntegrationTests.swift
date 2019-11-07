@@ -1,8 +1,9 @@
 //
-// Copyright 2018-2019 Amazon.com,
-// Inc. or its affiliates. All Rights Reserved.
+//  AWSPredictionsPluginIntegrationTests.swift
+//  AWSPredictionsPluginIntegrationTests
 //
-// SPDX-License-Identifier: Apache-2.0
+//  Created by Roy, Jithin on 11/7/19.
+//  Copyright © 2019 Amazon Web Services. All rights reserved.
 //
 
 import XCTest
@@ -11,6 +12,11 @@ class AWSPredictionsPluginIntegrationTests: XCTestCase {
 
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
+
+        // In UI tests it is usually best to stop immediately when a failure occurs.
+        continueAfterFailure = false
+
+        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
     }
 
     override func tearDown() {
@@ -18,15 +24,20 @@ class AWSPredictionsPluginIntegrationTests: XCTestCase {
     }
 
     func testExample() {
-        // This is an example of a functional test case.
+        // UI tests must launch the application that they test.
+        let app = XCUIApplication()
+        app.launch()
+
+        // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        measure {
-            // Put the code you want to measure the time of here.
+    func testLaunchPerformance() {
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, *) {
+            // This measures how long it takes to launch your application.
+            measure(metrics: [XCTOSSignpostMetric.applicationLaunch]) {
+                XCUIApplication().launch()
+            }
         }
     }
-
 }

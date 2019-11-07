@@ -59,6 +59,13 @@
 		B478F5C42374BFCF00C4F92B /* CoreMLVisionAdaptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F5BD2374BFCF00C4F92B /* CoreMLVisionAdaptorTests.swift */; };
 		B478F5C52374BFCF00C4F92B /* CoreMLPredictionsPluginClientBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F5BE2374BFCF00C4F92B /* CoreMLPredictionsPluginClientBehaviorTests.swift */; };
 		B478F5C62374BFCF00C4F92B /* CoreMLPredictionsPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F5BF2374BFCF00C4F92B /* CoreMLPredictionsPluginTestBase.swift */; };
+		B478F5D02374C8F300C4F92B /* AWSPredictionsPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F5CF2374C8F300C4F92B /* AWSPredictionsPluginIntegrationTests.swift */; };
+		B478F5DC2374C91700C4F92B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F5DB2374C91700C4F92B /* AppDelegate.swift */; };
+		B478F5DE2374C91700C4F92B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F5DD2374C91700C4F92B /* SceneDelegate.swift */; };
+		B478F5E02374C91700C4F92B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F5DF2374C91700C4F92B /* ViewController.swift */; };
+		B478F5E32374C91700C4F92B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B478F5E12374C91700C4F92B /* Main.storyboard */; };
+		B478F5E52374C91900C4F92B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B478F5E42374C91900C4F92B /* Assets.xcassets */; };
+		B478F5E82374C91900C4F92B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B478F5E62374C91900C4F92B /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +82,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = B478F50A2374BD7D00C4F92B;
 			remoteInfo = CoreMLPredictionsPlugin;
+		};
+		B478F5ED2374C91F00C4F92B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B478F4922374AE7100C4F92B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B478F5D82374C91600C4F92B;
+			remoteInfo = PredictionsHostApp;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -141,6 +155,17 @@
 		B478F5BD2374BFCF00C4F92B /* CoreMLVisionAdaptorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLVisionAdaptorTests.swift; sourceTree = "<group>"; };
 		B478F5BE2374BFCF00C4F92B /* CoreMLPredictionsPluginClientBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPluginClientBehaviorTests.swift; sourceTree = "<group>"; };
 		B478F5BF2374BFCF00C4F92B /* CoreMLPredictionsPluginTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPluginTestBase.swift; sourceTree = "<group>"; };
+		B478F5CD2374C8F300C4F92B /* AWSPredictionsPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPredictionsPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B478F5CF2374C8F300C4F92B /* AWSPredictionsPluginIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSPredictionsPluginIntegrationTests.swift; sourceTree = "<group>"; };
+		B478F5D92374C91600C4F92B /* PredictionsHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PredictionsHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B478F5DB2374C91700C4F92B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		B478F5DD2374C91700C4F92B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		B478F5DF2374C91700C4F92B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B478F5E22374C91700C4F92B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B478F5E42374C91900C4F92B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B478F5E72374C91900C4F92B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		B478F5E92374C91900C4F92B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B478F5F02374C94100C4F92B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C7D7D02F41A2157CBDE96C8E /* Pods-CoreMLPredictionsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoreMLPredictionsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-CoreMLPredictionsPluginTests/Pods-CoreMLPredictionsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F6262564CE9EBD04522349F4 /* Pods-AWSPredictionsPlugin2.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPredictionsPlugin2.release.xcconfig"; path = "Target Support Files/Pods-AWSPredictionsPlugin2/Pods-AWSPredictionsPlugin2.release.xcconfig"; sourceTree = "<group>"; };
 		FF57E180FD98DE4A65E9BF1F /* Pods_CoreMLPredictionsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CoreMLPredictionsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -181,6 +206,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B478F5CA2374C8F300C4F92B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B478F5D62374C91600C4F92B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -216,6 +255,8 @@
 				B478F59C2374BF1F00C4F92B /* AWSPredictionsPluginTests */,
 				B478F5322374BDCD00C4F92B /* CoreMLPredictionsPlugin */,
 				B478F5B52374BFCF00C4F92B /* CoreMLPredictionsPluginTests */,
+				B478F5CE2374C8F300C4F92B /* AWSPredictionsPluginIntegrationTests */,
+				B478F5DA2374C91700C4F92B /* PredictionsHostApp */,
 				78615F3AFB3CBDEA44471AB8 /* Frameworks */,
 				32C23881F0ED8B3D0530E28D /* Pods */,
 				B478F49C2374AE7100C4F92B /* Products */,
@@ -229,6 +270,8 @@
 				B478F5302374BD7D00C4F92B /* CoreMLPredictionsPlugin.framework */,
 				B478F59B2374BF1F00C4F92B /* AWSPredictionsPluginTests.xctest */,
 				B478F5AA2374BF6900C4F92B /* CoreMLPredictionsPluginTests.xctest */,
+				B478F5CD2374C8F300C4F92B /* AWSPredictionsPluginIntegrationTests.xctest */,
+				B478F5D92374C91600C4F92B /* PredictionsHostApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -463,6 +506,37 @@
 			path = DependencyTests;
 			sourceTree = "<group>";
 		};
+		B478F5CE2374C8F300C4F92B /* AWSPredictionsPluginIntegrationTests */ = {
+			isa = PBXGroup;
+			children = (
+				B478F5EF2374C94100C4F92B /* Resources */,
+				B478F5CF2374C8F300C4F92B /* AWSPredictionsPluginIntegrationTests.swift */,
+			);
+			path = AWSPredictionsPluginIntegrationTests;
+			sourceTree = "<group>";
+		};
+		B478F5DA2374C91700C4F92B /* PredictionsHostApp */ = {
+			isa = PBXGroup;
+			children = (
+				B478F5DB2374C91700C4F92B /* AppDelegate.swift */,
+				B478F5DD2374C91700C4F92B /* SceneDelegate.swift */,
+				B478F5DF2374C91700C4F92B /* ViewController.swift */,
+				B478F5E12374C91700C4F92B /* Main.storyboard */,
+				B478F5E42374C91900C4F92B /* Assets.xcassets */,
+				B478F5E62374C91900C4F92B /* LaunchScreen.storyboard */,
+				B478F5E92374C91900C4F92B /* Info.plist */,
+			);
+			path = PredictionsHostApp;
+			sourceTree = "<group>";
+		};
+		B478F5EF2374C94100C4F92B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B478F5F02374C94100C4F92B /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -561,6 +635,41 @@
 			productReference = B478F5AA2374BF6900C4F92B /* CoreMLPredictionsPluginTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		B478F5CC2374C8F300C4F92B /* AWSPredictionsPluginIntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B478F5D22374C8F300C4F92B /* Build configuration list for PBXNativeTarget "AWSPredictionsPluginIntegrationTests" */;
+			buildPhases = (
+				B478F5C92374C8F300C4F92B /* Sources */,
+				B478F5CA2374C8F300C4F92B /* Frameworks */,
+				B478F5CB2374C8F300C4F92B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B478F5EE2374C91F00C4F92B /* PBXTargetDependency */,
+			);
+			name = AWSPredictionsPluginIntegrationTests;
+			productName = AWSPredictionsPluginIntegrationTests;
+			productReference = B478F5CD2374C8F300C4F92B /* AWSPredictionsPluginIntegrationTests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		B478F5D82374C91600C4F92B /* PredictionsHostApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B478F5EA2374C91900C4F92B /* Build configuration list for PBXNativeTarget "PredictionsHostApp" */;
+			buildPhases = (
+				B478F5D52374C91600C4F92B /* Sources */,
+				B478F5D62374C91600C4F92B /* Frameworks */,
+				B478F5D72374C91600C4F92B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PredictionsHostApp;
+			productName = PredictionsHostApp;
+			productReference = B478F5D92374C91600C4F92B /* PredictionsHostApp.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -578,6 +687,13 @@
 						CreatedOnToolsVersion = 11.1;
 					};
 					B478F5A92374BF6900C4F92B = {
+						CreatedOnToolsVersion = 11.1;
+					};
+					B478F5CC2374C8F300C4F92B = {
+						CreatedOnToolsVersion = 11.1;
+						TestTargetID = B478F5D82374C91600C4F92B;
+					};
+					B478F5D82374C91600C4F92B = {
 						CreatedOnToolsVersion = 11.1;
 					};
 				};
@@ -599,6 +715,8 @@
 				B478F50A2374BD7D00C4F92B /* CoreMLPredictionsPlugin */,
 				B478F59A2374BF1F00C4F92B /* AWSPredictionsPluginTests */,
 				B478F5A92374BF6900C4F92B /* CoreMLPredictionsPluginTests */,
+				B478F5CC2374C8F300C4F92B /* AWSPredictionsPluginIntegrationTests */,
+				B478F5D82374C91600C4F92B /* PredictionsHostApp */,
 			);
 		};
 /* End PBXProject section */
@@ -629,6 +747,23 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B478F5CB2374C8F300C4F92B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B478F5D72374C91600C4F92B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B478F5E82374C91900C4F92B /* LaunchScreen.storyboard in Resources */,
+				B478F5E52374C91900C4F92B /* Assets.xcassets in Resources */,
+				B478F5E32374C91700C4F92B /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -831,6 +966,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B478F5C92374C8F300C4F92B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B478F5D02374C8F300C4F92B /* AWSPredictionsPluginIntegrationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B478F5D52374C91600C4F92B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B478F5E02374C91700C4F92B /* ViewController.swift in Sources */,
+				B478F5DC2374C91700C4F92B /* AppDelegate.swift in Sources */,
+				B478F5DE2374C91700C4F92B /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -844,7 +997,31 @@
 			target = B478F50A2374BD7D00C4F92B /* CoreMLPredictionsPlugin */;
 			targetProxy = B478F5B02374BF6900C4F92B /* PBXContainerItemProxy */;
 		};
+		B478F5EE2374C91F00C4F92B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B478F5D82374C91600C4F92B /* PredictionsHostApp */;
+			targetProxy = B478F5ED2374C91F00C4F92B /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		B478F5E12374C91700C4F92B /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B478F5E22374C91700C4F92B /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		B478F5E62374C91900C4F92B /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B478F5E72374C91900C4F92B /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		B478F4A12374AE7100C4F92B /* Debug */ = {
@@ -1137,6 +1314,76 @@
 			};
 			name = Release;
 		};
+		B478F5D32374C8F300C4F92B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = AWSPredictionsPluginTests/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSPredictionsPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PredictionsHostApp;
+			};
+			name = Debug;
+		};
+		B478F5D42374C8F300C4F92B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = AWSPredictionsPluginTests/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSPredictionsPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PredictionsHostApp;
+			};
+			name = Release;
+		};
+		B478F5EB2374C91900C4F92B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = PredictionsHostApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.PredictionsHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B478F5EC2374C91900C4F92B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = PredictionsHostApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.PredictionsHostApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1181,6 +1428,24 @@
 			buildConfigurations = (
 				B478F5B32374BF6900C4F92B /* Debug */,
 				B478F5B42374BF6900C4F92B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B478F5D22374C8F300C4F92B /* Build configuration list for PBXNativeTarget "AWSPredictionsPluginIntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B478F5D32374C8F300C4F92B /* Debug */,
+				B478F5D42374C8F300C4F92B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B478F5EA2374C91900C4F92B /* Build configuration list for PBXNativeTarget "PredictionsHostApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B478F5EB2374C91900C4F92B /* Debug */,
+				B478F5EC2374C91900C4F92B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
