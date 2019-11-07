@@ -10,11 +10,11 @@ import CoreGraphics
 
 public struct PredictionsIdentifyRequest: AmplifyOperationRequest {
 
-    public let image: CGImage
+    public let image: UIImage
     public let identifyType: IdentifyType
     public let options: Options
 
-    public init(image: CGImage, identifyType: IdentifyType, options: Options) {
+    public init(image: UIImage, identifyType: IdentifyType, options: Options) {
         self.image = image
         self.identifyType = identifyType
         self.options = options

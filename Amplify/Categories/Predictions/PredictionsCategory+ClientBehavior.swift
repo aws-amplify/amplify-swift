@@ -23,7 +23,7 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
     }
 
     public func identify(type: IdentifyType,
-                         image: CGImage,
+                         image: UIImage,
                          options: PredictionsIdentifyRequest.Options?,
                          listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation {
         plugin.identify(type: type,

@@ -38,18 +38,18 @@ PredictionsTranslateTextOperation {
             finish()
             return
         }
-
+        
         if let error = request.validate() {
             dispatch(event: .failed(error))
             finish()
             return
         }
-
+        
         predictionsService.translateText(text: request.textToTranslate,
                                          language: request.language,
                                          targetLanguage: request.targetLanguage) { [weak self] event in
                                             self?.onServiceEvent(event: event)
-
+                                            
         }
     }
 

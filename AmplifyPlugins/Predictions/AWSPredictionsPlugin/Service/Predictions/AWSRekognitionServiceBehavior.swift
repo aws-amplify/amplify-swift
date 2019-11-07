@@ -14,7 +14,7 @@ protocol AWSRekognitionServiceBehaviour {
     typealias RekognitionServiceEventHandler = (RekognitionServiceEvent) -> Void
     typealias RekognitionServiceEvent = PredictionsEvent<IdentifyResult, PredictionsError>
 
-    func detectLabels(image: CGImage,
+    func detectLabels(image: UIImage,
                       onEvent: @escaping RekognitionServiceEventHandler)
 
 }

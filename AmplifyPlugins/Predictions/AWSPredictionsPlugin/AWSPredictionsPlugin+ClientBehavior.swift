@@ -30,7 +30,7 @@ extension AWSPredictionsPlugin {
     }
 
     public func identify(type: IdentifyType,
-                         image: CGImage,
+                         image: UIImage,
                          options: PredictionsIdentifyRequest.Options?,
                          listener: PredictionsIdentifyOperation.EventListener? = nil) -> PredictionsIdentifyOperation {
         let options = options

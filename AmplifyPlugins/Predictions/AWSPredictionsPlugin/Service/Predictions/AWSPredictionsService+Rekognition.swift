@@ -10,16 +10,18 @@ import Amplify
 import AWSRekognition
 
 extension AWSPredictionsService {
-    func detectLabels(image: CGImage,
+    func detectLabels(image: UIImage,
                       onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
 
         let request: AWSRekognitionDetectLabelsRequest = AWSRekognitionDetectLabelsRequest()
-        let rekognitionImage = AWSRekognitionImage()
+        let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
 
-        let data = image.dataProvider?.data as Data?
+        //let data = image.dataProvider?.data as Data?
+       // let uiimage = UIImage(cgImage: image)
+        let imageToSend:Data = image.jpegData(compressionQuality: 0.2)!
 
-        rekognitionImage?.bytes = data?.base64EncodedData(options: NSData.Base64EncodingOptions.endLineWithLineFeed)
-
+       // rekognitionImage?.bytes = data?.base64EncodedData()
+        rekognitionImage.bytes = imageToSend
         request.image = rekognitionImage
 
         awsRekognition.detectLabels(request: request).continueWith { (task) -> Any? in
