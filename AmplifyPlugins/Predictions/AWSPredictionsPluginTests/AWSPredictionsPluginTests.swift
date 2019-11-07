@@ -1,8 +1,9 @@
 //
-// Copyright 2018-2019 Amazon.com,
-// Inc. or its affiliates. All Rights Reserved.
+//  AWSPredictionsPluginTests.swift
+//  AWSPredictionsPluginTests
 //
-// SPDX-License-Identifier: Apache-2.0
+//  Created by Roy, Jithin on 11/7/19.
+//  Copyright © 2019 Amazon Web Services. All rights reserved.
 //
 
 import XCTest
