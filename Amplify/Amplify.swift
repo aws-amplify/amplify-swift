@@ -43,7 +43,7 @@ public class Amplify {
             try Hub.add(plugin: plugin)
         } else if let plugin = plugin as? LoggingCategoryPlugin {
             try Logging.add(plugin: plugin)
-        }  else if let plugin = plugin as? PredictionsCategoryPlugin {
+        } else if let plugin = plugin as? PredictionsCategoryPlugin {
             try Predictions.add(plugin: plugin)
         } else if let plugin = plugin as? StorageCategoryPlugin {
             try Storage.add(plugin: plugin)

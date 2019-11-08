@@ -10,7 +10,7 @@ import Foundation
 extension HubCategory: CategoryConfigurable {
 
     /// Configures the HubCategory using the incoming CategoryConfiguration. If the incoming configuration does not
-    /// specify a Hub plugin, then we will inject the DefaultHubCategoryPlugin.
+    /// specify a Hub plugin, then we will inject the AWSHubPlugin.
     func configure(using configuration: CategoryConfiguration) throws {
         guard !isConfigured else {
             let error = ConfigurationError.amplifyAlreadyConfigured(
@@ -56,8 +56,8 @@ extension HubCategory: CategoryConfigurable {
     }
 
     func configureDefaultPlugin(using configuration: CategoryConfiguration?) throws {
-        let pluginConfiguration = configuration?.plugins[DefaultHubCategoryPlugin.key] ?? [:]
-        let defaultPlugin = DefaultHubCategoryPlugin()
+        let pluginConfiguration = configuration?.plugins[AWSHubPlugin.key] ?? [:]
+        let defaultPlugin = AWSHubPlugin()
         try add(plugin: defaultPlugin)
         try defaultPlugin.configure(using: pluginConfiguration)
     }
