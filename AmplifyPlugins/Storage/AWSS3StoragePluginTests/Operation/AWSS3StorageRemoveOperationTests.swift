@@ -9,7 +9,6 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
-@testable import AWSPluginsTestCommon
 @testable import AWSS3StoragePlugin
 
 class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {

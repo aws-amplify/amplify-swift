@@ -7,110 +7,110 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		154FC574D929065E75929963 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0E48BF7B088D619A5DB365B /* Pods_HostApp.framework */; };
-		1BF4D6C4EC6C10F424C37CE8 /* Pods_AWSS3StoragePlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 123E1B1394B63D968F9E5F82 /* Pods_AWSS3StoragePlugin.framework */; };
-		644923A638057BB4E2C8057C /* Pods_HostApp_AWSS3StoragePluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB17C6718B17C110B5A0EABD /* Pods_HostApp_AWSS3StoragePluginTests.framework */; };
-		688E7EABF655326E00118744 /* Pods_HostApp_AWSS3StoragePluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FEEA49B0B54601935AE662C4 /* Pods_HostApp_AWSS3StoragePluginIntegrationTests.framework */; };
+		04AA4806658BD63D5A625547 /* Pods_HostApp_AWSS3StoragePluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61FF711366B52C765968FF69 /* Pods_HostApp_AWSS3StoragePluginTests.framework */; };
+		162EFDD55E53D5A773D62CF6 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4E592238332FBE98A8EFCC /* Pods_HostApp.framework */; };
+		7B5DC4E4B3295AC0060AFF83 /* Pods_HostApp_AWSS3StoragePluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C561D4445CE5E5EC9AE1F82A /* Pods_HostApp_AWSS3StoragePluginIntegrationTests.framework */; };
+		81E7E9D6821EF0A560A93627 /* Pods_AWSS3StoragePlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B046927AA82214FE8EBAD505 /* Pods_AWSS3StoragePlugin.framework */; };
 		B478F64E2374DCE700C4F92B /* AWSS3StoragePlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSS3StoragePlugin.framework */; };
-		B478F82F23750BAD00C4F92B /* AWSS3StoragePutDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F7FA23750BAC00C4F92B /* AWSS3StoragePutDataOperation.swift */; };
-		B478F83023750BAD00C4F92B /* AWSS3StorageUploadFileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F7FB23750BAC00C4F92B /* AWSS3StorageUploadFileOperation.swift */; };
-		B478F83123750BAD00C4F92B /* AWSS3StorageGetURLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F7FC23750BAC00C4F92B /* AWSS3StorageGetURLOperation.swift */; };
-		B478F83223750BAD00C4F92B /* AWSS3StorageDownloadFileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F7FD23750BAC00C4F92B /* AWSS3StorageDownloadFileOperation.swift */; };
-		B478F83323750BAD00C4F92B /* AWSS3StorageGetDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F7FE23750BAC00C4F92B /* AWSS3StorageGetDataOperation.swift */; };
-		B478F83423750BAD00C4F92B /* AWSS3StorageRemoveOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F7FF23750BAC00C4F92B /* AWSS3StorageRemoveOperation.swift */; };
-		B478F83523750BAD00C4F92B /* AWSS3StorageListOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F80023750BAC00C4F92B /* AWSS3StorageListOperation.swift */; };
-		B478F83623750BAD00C4F92B /* AWSS3StoragePlugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F80123750BAC00C4F92B /* AWSS3StoragePlugin+Reset.swift */; };
-		B478F83823750BAD00C4F92B /* AWSS3TransferUtilityBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F80523750BAC00C4F92B /* AWSS3TransferUtilityBehavior.swift */; };
-		B478F83923750BAD00C4F92B /* AWSS3Adapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F80623750BAC00C4F92B /* AWSS3Adapter.swift */; };
-		B478F83A23750BAD00C4F92B /* AWSS3Behavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F80723750BAC00C4F92B /* AWSS3Behavior.swift */; };
-		B478F83B23750BAD00C4F92B /* AWSS3PreSignedURLBuilderBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F80823750BAC00C4F92B /* AWSS3PreSignedURLBuilderBehavior.swift */; };
-		B478F83C23750BAD00C4F92B /* AWSS3PreSignedURLBuilderAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F80923750BAC00C4F92B /* AWSS3PreSignedURLBuilderAdapter.swift */; };
-		B478F83D23750BAD00C4F92B /* AWSS3TransferUtilityAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F80A23750BAC00C4F92B /* AWSS3TransferUtilityAdapter.swift */; };
-		B478F83E23750BAD00C4F92B /* AWSS3StoragePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F80B23750BAC00C4F92B /* AWSS3StoragePlugin.swift */; };
-		B478F83F23750BAD00C4F92B /* StorageErrorConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F80E23750BAC00C4F92B /* StorageErrorConstants.swift */; };
-		B478F84023750BAD00C4F92B /* PluginConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F80F23750BAD00C4F92B /* PluginConstants.swift */; };
-		B478F84123750BAD00C4F92B /* PluginErrorConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F81023750BAD00C4F92B /* PluginErrorConstants.swift */; };
-		B478F84223750BAD00C4F92B /* UploadSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F81223750BAD00C4F92B /* UploadSource.swift */; };
-		B478F84323750BAD00C4F92B /* StorageOperationReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F81323750BAD00C4F92B /* StorageOperationReference.swift */; };
-		B478F84423750BAD00C4F92B /* StorageEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F81423750BAD00C4F92B /* StorageEvent.swift */; };
-		B478F84523750BAD00C4F92B /* StorageRequestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F81623750BAD00C4F92B /* StorageRequestUtils.swift */; };
-		B478F84623750BAD00C4F92B /* StorageErrorHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F81723750BAD00C4F92B /* StorageErrorHelper.swift */; };
-		B478F84723750BAD00C4F92B /* StorageRequestUtils+Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F81823750BAD00C4F92B /* StorageRequestUtils+Validator.swift */; };
-		B478F84823750BAD00C4F92B /* StorageRequestUtils+Getter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F81923750BAD00C4F92B /* StorageRequestUtils+Getter.swift */; };
-		B478F84923750BAD00C4F92B /* AWSS3StoragePlugin+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F81A23750BAD00C4F92B /* AWSS3StoragePlugin+ClientBehavior.swift */; };
-		B478F84A23750BAD00C4F92B /* AWSS3StoragePlugin+Configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F81B23750BAD00C4F92B /* AWSS3StoragePlugin+Configure.swift */; };
-		B478F84B23750BAD00C4F92B /* StorageDownloadFileRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F81D23750BAD00C4F92B /* StorageDownloadFileRequest+Validate.swift */; };
-		B478F84C23750BAD00C4F92B /* StorageUploadFileRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F81E23750BAD00C4F92B /* StorageUploadFileRequest+Validate.swift */; };
-		B478F84D23750BAD00C4F92B /* StoragePutDataRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F81F23750BAD00C4F92B /* StoragePutDataRequest+Validate.swift */; };
-		B478F84E23750BAD00C4F92B /* StorageListRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F82023750BAD00C4F92B /* StorageListRequest+Validate.swift */; };
-		B478F84F23750BAD00C4F92B /* StorageGetDataRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F82123750BAD00C4F92B /* StorageGetDataRequest+Validate.swift */; };
-		B478F85023750BAD00C4F92B /* StorageRemoveRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F82223750BAD00C4F92B /* StorageRemoveRequest+Validate.swift */; };
-		B478F85123750BAD00C4F92B /* StorageGetURLRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F82323750BAD00C4F92B /* StorageGetURLRequest+Validate.swift */; };
-		B478F85223750BAD00C4F92B /* AWSS3StorageService+UploadBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F82623750BAD00C4F92B /* AWSS3StorageService+UploadBehavior.swift */; };
-		B478F85323750BAD00C4F92B /* AWSS3StorageService+DeleteBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F82723750BAD00C4F92B /* AWSS3StorageService+DeleteBehavior.swift */; };
-		B478F85423750BAD00C4F92B /* AWSS3StorageService+EscapeHatchBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F82823750BAD00C4F92B /* AWSS3StorageService+EscapeHatchBehavior.swift */; };
-		B478F85523750BAD00C4F92B /* AWSS3StorageService+GetPreSignedURLBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F82923750BAD00C4F92B /* AWSS3StorageService+GetPreSignedURLBehavior.swift */; };
-		B478F85623750BAD00C4F92B /* AWSS3StorageServiceBehaviour.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F82A23750BAD00C4F92B /* AWSS3StorageServiceBehaviour.swift */; };
-		B478F85723750BAD00C4F92B /* AWSS3StorageService+MultiPartUploadBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F82B23750BAD00C4F92B /* AWSS3StorageService+MultiPartUploadBehavior.swift */; };
-		B478F85823750BAD00C4F92B /* AWSS3StorageService+DownloadBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F82C23750BAD00C4F92B /* AWSS3StorageService+DownloadBehavior.swift */; };
-		B478F85923750BAD00C4F92B /* AWSS3StorageService+ListBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F82D23750BAD00C4F92B /* AWSS3StorageService+ListBehavior.swift */; };
-		B478F85A23750BAD00C4F92B /* AWSS3StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F82E23750BAD00C4F92B /* AWSS3StorageService.swift */; };
-		B478F88B23750BB500C4F92B /* MockAWSS3TransferUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F85D23750BB500C4F92B /* MockAWSS3TransferUtility.swift */; };
-		B478F88C23750BB500C4F92B /* MockAWSS3.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F85E23750BB500C4F92B /* MockAWSS3.swift */; };
-		B478F88D23750BB500C4F92B /* MockOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F85F23750BB500C4F92B /* MockOperationQueue.swift */; };
-		B478F88E23750BB500C4F92B /* MockAWSS3StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F86023750BB500C4F92B /* MockAWSS3StorageService.swift */; };
-		B478F88F23750BB500C4F92B /* MockAWSS3PreSignedURLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F86123750BB500C4F92B /* MockAWSS3PreSignedURLBuilder.swift */; };
-		B478F89023750BB500C4F92B /* AWSS3StorageRemoveOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F86323750BB500C4F92B /* AWSS3StorageRemoveOperationTests.swift */; };
-		B478F89123750BB500C4F92B /* AWSS3StorageUploadFileOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F86423750BB500C4F92B /* AWSS3StorageUploadFileOperationTests.swift */; };
-		B478F89223750BB500C4F92B /* AWSS3StorageGetURLOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F86523750BB500C4F92B /* AWSS3StorageGetURLOperationTests.swift */; };
-		B478F89323750BB500C4F92B /* AWSS3StorageGetDataOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F86623750BB500C4F92B /* AWSS3StorageGetDataOperationTests.swift */; };
-		B478F89423750BB500C4F92B /* AWSS3StorageDownloadFileOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F86723750BB500C4F92B /* AWSS3StorageDownloadFileOperationTests.swift */; };
-		B478F89523750BB500C4F92B /* DownloadFileEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F86923750BB500C4F92B /* DownloadFileEventTests.swift */; };
-		B478F89623750BB500C4F92B /* AWSS3StorageOperationTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F86A23750BB500C4F92B /* AWSS3StorageOperationTestBase.swift */; };
-		B478F89723750BB500C4F92B /* AWSS3StorageListOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F86B23750BB500C4F92B /* AWSS3StorageListOperationTests.swift */; };
-		B478F89823750BB500C4F92B /* AWSS3StoragePutDataOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F86C23750BB500C4F92B /* AWSS3StoragePutDataOperationTests.swift */; };
-		B478F89923750BB500C4F92B /* AWSS3StoragePluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F86D23750BB500C4F92B /* AWSS3StoragePluginTestBase.swift */; };
-		B478F89B23750BB500C4F92B /* AWSS3StoragePluginResetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F87023750BB500C4F92B /* AWSS3StoragePluginResetTests.swift */; };
-		B478F89C23750BB500C4F92B /* AWSS3StoragePluginConfigureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F87123750BB500C4F92B /* AWSS3StoragePluginConfigureTests.swift */; };
-		B478F89D23750BB500C4F92B /* AWSS3StoragePluginClientBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F87223750BB500C4F92B /* AWSS3StoragePluginClientBehaviorTests.swift */; };
-		B478F89E23750BB500C4F92B /* StorageRequestUtilsValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F87523750BB500C4F92B /* StorageRequestUtilsValidatorTests.swift */; };
-		B478F89F23750BB500C4F92B /* StorageRequestUtilsGetterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F87623750BB500C4F92B /* StorageRequestUtilsGetterTests.swift */; };
-		B478F8A023750BB500C4F92B /* StorageRequestUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F87723750BB500C4F92B /* StorageRequestUtilsTests.swift */; };
-		B478F8A123750BB500C4F92B /* AWSS3StorageGetURLRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F87923750BB500C4F92B /* AWSS3StorageGetURLRequestTests.swift */; };
-		B478F8A223750BB500C4F92B /* AWSS3StorageRemoveRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F87A23750BB500C4F92B /* AWSS3StorageRemoveRequestTests.swift */; };
-		B478F8A323750BB500C4F92B /* AWSS3StorageUploadFileRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F87B23750BB500C4F92B /* AWSS3StorageUploadFileRequestTests.swift */; };
-		B478F8A423750BB500C4F92B /* AWSS3StorageGetDataRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F87C23750BB500C4F92B /* AWSS3StorageGetDataRequestTests.swift */; };
-		B478F8A523750BB500C4F92B /* AWSS3StorageDownloadFileRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F87D23750BB500C4F92B /* AWSS3StorageDownloadFileRequestTests.swift */; };
-		B478F8A623750BB500C4F92B /* AWSS3StoragePutDataRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F87E23750BB500C4F92B /* AWSS3StoragePutDataRequestTests.swift */; };
-		B478F8A723750BB500C4F92B /* AWSS3StorageListRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F87F23750BB500C4F92B /* AWSS3StorageListRequestTests.swift */; };
-		B478F8A823750BB500C4F92B /* AWSS3StorageServiceConfigureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F88223750BB500C4F92B /* AWSS3StorageServiceConfigureTests.swift */; };
-		B478F8A923750BB500C4F92B /* AWSS3StorageServiceGetPreSignedURLBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F88323750BB500C4F92B /* AWSS3StorageServiceGetPreSignedURLBehaviorTests.swift */; };
-		B478F8AA23750BB500C4F92B /* AWSS3StorageServiceDeleteBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F88423750BB500C4F92B /* AWSS3StorageServiceDeleteBehaviorTests.swift */; };
-		B478F8AB23750BB500C4F92B /* AWSS3StorageServiceUploadBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F88523750BB500C4F92B /* AWSS3StorageServiceUploadBehaviorTests.swift */; };
-		B478F8AC23750BB500C4F92B /* AWSS3StorageServiceListBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F88623750BB500C4F92B /* AWSS3StorageServiceListBehaviorTests.swift */; };
-		B478F8AD23750BB500C4F92B /* AWSS3StorageServiceDownloadBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F88723750BB500C4F92B /* AWSS3StorageServiceDownloadBehaviorTests.swift */; };
-		B478F8AE23750BB500C4F92B /* AWSS3StorageServiceTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F88823750BB500C4F92B /* AWSS3StorageServiceTestBase.swift */; };
-		B478F8AF23750BB500C4F92B /* AWSS3StorageServiceEscapeHatchBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F88923750BB500C4F92B /* AWSS3StorageServiceEscapeHatchBehaviorTests.swift */; };
-		B478F8B023750BB500C4F92B /* AWSS3StorageServiceMultiPartUploadBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F88A23750BB500C4F92B /* AWSS3StorageServiceMultiPartUploadBehaviorTests.swift */; };
-		B478F8C023750BBC00C4F92B /* AWSS3StoragePluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F8B223750BBC00C4F92B /* AWSS3StoragePluginTestBase.swift */; };
-		B478F8C223750BBC00C4F92B /* AWSS3StoragePluginConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F8B523750BBC00C4F92B /* AWSS3StoragePluginConfigurationTests.swift */; };
-		B478F8C323750BBC00C4F92B /* AWSS3StoragePluginOptionsUsabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F8B623750BBC00C4F92B /* AWSS3StoragePluginOptionsUsabilityTests.swift */; };
-		B478F8C423750BBC00C4F92B /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B478F8B723750BBC00C4F92B /* README.md */; };
-		B478F8C523750BBC00C4F92B /* AWSS3StoragePluginNegativeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F8B823750BBC00C4F92B /* AWSS3StoragePluginNegativeTests.swift */; };
-		B478F8C623750BBC00C4F92B /* AWSS3StoragePluginBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F8B923750BBC00C4F92B /* AWSS3StoragePluginBasicIntegrationTests.swift */; };
-		B478F8C723750BBC00C4F92B /* AWSS3StoragePluginAccessLevelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F8BA23750BBC00C4F92B /* AWSS3StoragePluginAccessLevelTests.swift */; };
-		B478F8C823750BBC00C4F92B /* AWSS3StoragePluginPutDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F8BC23750BBC00C4F92B /* AWSS3StoragePluginPutDataResumabilityTests.swift */; };
-		B478F8C923750BBC00C4F92B /* AWSS3StoragePluginDownloadFileResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F8BD23750BBC00C4F92B /* AWSS3StoragePluginDownloadFileResumabilityTests.swift */; };
-		B478F8CA23750BBC00C4F92B /* AWSS3StoragePluginUploadFileResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F8BE23750BBC00C4F92B /* AWSS3StoragePluginUploadFileResumabilityTests.swift */; };
-		B478F8CB23750BBC00C4F92B /* AWSS3StoragePluginGetDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F8BF23750BBC00C4F92B /* AWSS3StoragePluginGetDataResumabilityTests.swift */; };
-		B478F8DF23750E9900C4F92B /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = B478F8D223750E9900C4F92B /* amplifyconfiguration.json */; };
-		B478F8E023750E9900C4F92B /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = B478F8D323750E9900C4F92B /* awsconfiguration.json */; };
-		B478F8E123750E9900C4F92B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B478F8D523750E9900C4F92B /* Assets.xcassets */; };
-		B478F8E223750E9900C4F92B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B478F8D623750E9900C4F92B /* LaunchScreen.storyboard */; };
-		B478F8E323750E9900C4F92B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B478F8D823750E9900C4F92B /* Main.storyboard */; };
-		B478F8E523750E9900C4F92B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F8DC23750E9900C4F92B /* ViewController.swift */; };
-		B478F8E623750E9900C4F92B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F8DD23750E9900C4F92B /* AppDelegate.swift */; };
-		B478F8E723750E9900C4F92B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F8DE23750E9900C4F92B /* SceneDelegate.swift */; };
+		B478F6DE2374E0CF00C4F92B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F6D12374E0CE00C4F92B /* ViewController.swift */; };
+		B478F6DF2374E0CF00C4F92B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F6D22374E0CE00C4F92B /* AppDelegate.swift */; };
+		B478F6E02374E0CF00C4F92B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F6D32374E0CE00C4F92B /* SceneDelegate.swift */; };
+		B478F6E12374E0CF00C4F92B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B478F6D52374E0CF00C4F92B /* Assets.xcassets */; };
+		B478F6E22374E0CF00C4F92B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B478F6D62374E0CF00C4F92B /* LaunchScreen.storyboard */; };
+		B478F6E32374E0CF00C4F92B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B478F6D82374E0CF00C4F92B /* Main.storyboard */; };
+		B478F6E52374E0CF00C4F92B /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = B478F6DC2374E0CF00C4F92B /* amplifyconfiguration.json */; };
+		B478F6E62374E0CF00C4F92B /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = B478F6DD2374E0CF00C4F92B /* awsconfiguration.json */; };
+		B4FEB67E2375DA0600818CD2 /* AWSS3StoragePutDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6492375DA0600818CD2 /* AWSS3StoragePutDataOperation.swift */; };
+		B4FEB67F2375DA0600818CD2 /* AWSS3StorageUploadFileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB64A2375DA0600818CD2 /* AWSS3StorageUploadFileOperation.swift */; };
+		B4FEB6802375DA0600818CD2 /* AWSS3StorageGetURLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB64B2375DA0600818CD2 /* AWSS3StorageGetURLOperation.swift */; };
+		B4FEB6812375DA0600818CD2 /* AWSS3StorageDownloadFileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB64C2375DA0600818CD2 /* AWSS3StorageDownloadFileOperation.swift */; };
+		B4FEB6822375DA0600818CD2 /* AWSS3StorageGetDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB64D2375DA0600818CD2 /* AWSS3StorageGetDataOperation.swift */; };
+		B4FEB6832375DA0600818CD2 /* AWSS3StorageRemoveOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB64E2375DA0600818CD2 /* AWSS3StorageRemoveOperation.swift */; };
+		B4FEB6842375DA0600818CD2 /* AWSS3StorageListOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB64F2375DA0600818CD2 /* AWSS3StorageListOperation.swift */; };
+		B4FEB6852375DA0600818CD2 /* AWSS3StoragePlugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6502375DA0600818CD2 /* AWSS3StoragePlugin+Reset.swift */; };
+		B4FEB6872375DA0600818CD2 /* AWSS3TransferUtilityBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6542375DA0600818CD2 /* AWSS3TransferUtilityBehavior.swift */; };
+		B4FEB6882375DA0600818CD2 /* AWSS3Adapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6552375DA0600818CD2 /* AWSS3Adapter.swift */; };
+		B4FEB6892375DA0600818CD2 /* AWSS3Behavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6562375DA0600818CD2 /* AWSS3Behavior.swift */; };
+		B4FEB68A2375DA0600818CD2 /* AWSS3PreSignedURLBuilderBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6572375DA0600818CD2 /* AWSS3PreSignedURLBuilderBehavior.swift */; };
+		B4FEB68B2375DA0600818CD2 /* AWSS3PreSignedURLBuilderAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6582375DA0600818CD2 /* AWSS3PreSignedURLBuilderAdapter.swift */; };
+		B4FEB68C2375DA0600818CD2 /* AWSS3TransferUtilityAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6592375DA0600818CD2 /* AWSS3TransferUtilityAdapter.swift */; };
+		B4FEB68D2375DA0600818CD2 /* AWSS3StoragePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB65A2375DA0600818CD2 /* AWSS3StoragePlugin.swift */; };
+		B4FEB68E2375DA0600818CD2 /* StorageErrorConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB65D2375DA0600818CD2 /* StorageErrorConstants.swift */; };
+		B4FEB68F2375DA0600818CD2 /* PluginConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB65E2375DA0600818CD2 /* PluginConstants.swift */; };
+		B4FEB6902375DA0600818CD2 /* PluginErrorConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB65F2375DA0600818CD2 /* PluginErrorConstants.swift */; };
+		B4FEB6912375DA0600818CD2 /* UploadSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6612375DA0600818CD2 /* UploadSource.swift */; };
+		B4FEB6922375DA0600818CD2 /* StorageOperationReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6622375DA0600818CD2 /* StorageOperationReference.swift */; };
+		B4FEB6932375DA0600818CD2 /* StorageEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6632375DA0600818CD2 /* StorageEvent.swift */; };
+		B4FEB6942375DA0600818CD2 /* StorageRequestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6652375DA0600818CD2 /* StorageRequestUtils.swift */; };
+		B4FEB6952375DA0600818CD2 /* StorageErrorHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6662375DA0600818CD2 /* StorageErrorHelper.swift */; };
+		B4FEB6962375DA0600818CD2 /* StorageRequestUtils+Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6672375DA0600818CD2 /* StorageRequestUtils+Validator.swift */; };
+		B4FEB6972375DA0600818CD2 /* StorageRequestUtils+Getter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6682375DA0600818CD2 /* StorageRequestUtils+Getter.swift */; };
+		B4FEB6982375DA0600818CD2 /* AWSS3StoragePlugin+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6692375DA0600818CD2 /* AWSS3StoragePlugin+ClientBehavior.swift */; };
+		B4FEB6992375DA0600818CD2 /* AWSS3StoragePlugin+Configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB66A2375DA0600818CD2 /* AWSS3StoragePlugin+Configure.swift */; };
+		B4FEB69A2375DA0600818CD2 /* StorageDownloadFileRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB66C2375DA0600818CD2 /* StorageDownloadFileRequest+Validate.swift */; };
+		B4FEB69B2375DA0600818CD2 /* StorageUploadFileRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB66D2375DA0600818CD2 /* StorageUploadFileRequest+Validate.swift */; };
+		B4FEB69C2375DA0600818CD2 /* StoragePutDataRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB66E2375DA0600818CD2 /* StoragePutDataRequest+Validate.swift */; };
+		B4FEB69D2375DA0600818CD2 /* StorageListRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB66F2375DA0600818CD2 /* StorageListRequest+Validate.swift */; };
+		B4FEB69E2375DA0600818CD2 /* StorageGetDataRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6702375DA0600818CD2 /* StorageGetDataRequest+Validate.swift */; };
+		B4FEB69F2375DA0600818CD2 /* StorageRemoveRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6712375DA0600818CD2 /* StorageRemoveRequest+Validate.swift */; };
+		B4FEB6A02375DA0600818CD2 /* StorageGetURLRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6722375DA0600818CD2 /* StorageGetURLRequest+Validate.swift */; };
+		B4FEB6A12375DA0600818CD2 /* AWSS3StorageService+UploadBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6752375DA0600818CD2 /* AWSS3StorageService+UploadBehavior.swift */; };
+		B4FEB6A22375DA0600818CD2 /* AWSS3StorageService+DeleteBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6762375DA0600818CD2 /* AWSS3StorageService+DeleteBehavior.swift */; };
+		B4FEB6A32375DA0600818CD2 /* AWSS3StorageService+EscapeHatchBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6772375DA0600818CD2 /* AWSS3StorageService+EscapeHatchBehavior.swift */; };
+		B4FEB6A42375DA0600818CD2 /* AWSS3StorageService+GetPreSignedURLBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6782375DA0600818CD2 /* AWSS3StorageService+GetPreSignedURLBehavior.swift */; };
+		B4FEB6A52375DA0600818CD2 /* AWSS3StorageServiceBehaviour.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6792375DA0600818CD2 /* AWSS3StorageServiceBehaviour.swift */; };
+		B4FEB6A62375DA0600818CD2 /* AWSS3StorageService+MultiPartUploadBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB67A2375DA0600818CD2 /* AWSS3StorageService+MultiPartUploadBehavior.swift */; };
+		B4FEB6A72375DA0600818CD2 /* AWSS3StorageService+DownloadBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB67B2375DA0600818CD2 /* AWSS3StorageService+DownloadBehavior.swift */; };
+		B4FEB6A82375DA0600818CD2 /* AWSS3StorageService+ListBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB67C2375DA0600818CD2 /* AWSS3StorageService+ListBehavior.swift */; };
+		B4FEB6A92375DA0600818CD2 /* AWSS3StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB67D2375DA0600818CD2 /* AWSS3StorageService.swift */; };
+		B4FEB6DA2375DA1500818CD2 /* MockAWSS3TransferUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6AC2375DA1500818CD2 /* MockAWSS3TransferUtility.swift */; };
+		B4FEB6DB2375DA1500818CD2 /* MockAWSS3.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6AD2375DA1500818CD2 /* MockAWSS3.swift */; };
+		B4FEB6DC2375DA1500818CD2 /* MockOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6AE2375DA1500818CD2 /* MockOperationQueue.swift */; };
+		B4FEB6DD2375DA1500818CD2 /* MockAWSS3StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6AF2375DA1500818CD2 /* MockAWSS3StorageService.swift */; };
+		B4FEB6DE2375DA1500818CD2 /* MockAWSS3PreSignedURLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6B02375DA1500818CD2 /* MockAWSS3PreSignedURLBuilder.swift */; };
+		B4FEB6DF2375DA1500818CD2 /* AWSS3StorageRemoveOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6B22375DA1500818CD2 /* AWSS3StorageRemoveOperationTests.swift */; };
+		B4FEB6E02375DA1500818CD2 /* AWSS3StorageUploadFileOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6B32375DA1500818CD2 /* AWSS3StorageUploadFileOperationTests.swift */; };
+		B4FEB6E12375DA1500818CD2 /* AWSS3StorageGetURLOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6B42375DA1500818CD2 /* AWSS3StorageGetURLOperationTests.swift */; };
+		B4FEB6E22375DA1500818CD2 /* AWSS3StorageGetDataOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6B52375DA1500818CD2 /* AWSS3StorageGetDataOperationTests.swift */; };
+		B4FEB6E32375DA1500818CD2 /* AWSS3StorageDownloadFileOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6B62375DA1500818CD2 /* AWSS3StorageDownloadFileOperationTests.swift */; };
+		B4FEB6E42375DA1500818CD2 /* DownloadFileEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6B82375DA1500818CD2 /* DownloadFileEventTests.swift */; };
+		B4FEB6E52375DA1500818CD2 /* AWSS3StorageOperationTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6B92375DA1500818CD2 /* AWSS3StorageOperationTestBase.swift */; };
+		B4FEB6E62375DA1500818CD2 /* AWSS3StorageListOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6BA2375DA1500818CD2 /* AWSS3StorageListOperationTests.swift */; };
+		B4FEB6E72375DA1500818CD2 /* AWSS3StoragePutDataOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6BB2375DA1500818CD2 /* AWSS3StoragePutDataOperationTests.swift */; };
+		B4FEB6E82375DA1500818CD2 /* AWSS3StoragePluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6BC2375DA1500818CD2 /* AWSS3StoragePluginTestBase.swift */; };
+		B4FEB6EA2375DA1500818CD2 /* AWSS3StoragePluginResetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6BF2375DA1500818CD2 /* AWSS3StoragePluginResetTests.swift */; };
+		B4FEB6EB2375DA1500818CD2 /* AWSS3StoragePluginConfigureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6C02375DA1500818CD2 /* AWSS3StoragePluginConfigureTests.swift */; };
+		B4FEB6EC2375DA1500818CD2 /* AWSS3StoragePluginClientBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6C12375DA1500818CD2 /* AWSS3StoragePluginClientBehaviorTests.swift */; };
+		B4FEB6ED2375DA1500818CD2 /* StorageRequestUtilsValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6C42375DA1500818CD2 /* StorageRequestUtilsValidatorTests.swift */; };
+		B4FEB6EE2375DA1500818CD2 /* StorageRequestUtilsGetterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6C52375DA1500818CD2 /* StorageRequestUtilsGetterTests.swift */; };
+		B4FEB6EF2375DA1500818CD2 /* StorageRequestUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6C62375DA1500818CD2 /* StorageRequestUtilsTests.swift */; };
+		B4FEB6F02375DA1600818CD2 /* AWSS3StorageGetURLRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6C82375DA1500818CD2 /* AWSS3StorageGetURLRequestTests.swift */; };
+		B4FEB6F12375DA1600818CD2 /* AWSS3StorageRemoveRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6C92375DA1500818CD2 /* AWSS3StorageRemoveRequestTests.swift */; };
+		B4FEB6F22375DA1600818CD2 /* AWSS3StorageUploadFileRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6CA2375DA1500818CD2 /* AWSS3StorageUploadFileRequestTests.swift */; };
+		B4FEB6F32375DA1600818CD2 /* AWSS3StorageGetDataRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6CB2375DA1500818CD2 /* AWSS3StorageGetDataRequestTests.swift */; };
+		B4FEB6F42375DA1600818CD2 /* AWSS3StorageDownloadFileRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6CC2375DA1500818CD2 /* AWSS3StorageDownloadFileRequestTests.swift */; };
+		B4FEB6F52375DA1600818CD2 /* AWSS3StoragePutDataRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6CD2375DA1500818CD2 /* AWSS3StoragePutDataRequestTests.swift */; };
+		B4FEB6F62375DA1600818CD2 /* AWSS3StorageListRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6CE2375DA1500818CD2 /* AWSS3StorageListRequestTests.swift */; };
+		B4FEB6F72375DA1600818CD2 /* AWSS3StorageServiceConfigureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6D12375DA1500818CD2 /* AWSS3StorageServiceConfigureTests.swift */; };
+		B4FEB6F82375DA1600818CD2 /* AWSS3StorageServiceGetPreSignedURLBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6D22375DA1500818CD2 /* AWSS3StorageServiceGetPreSignedURLBehaviorTests.swift */; };
+		B4FEB6F92375DA1600818CD2 /* AWSS3StorageServiceDeleteBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6D32375DA1500818CD2 /* AWSS3StorageServiceDeleteBehaviorTests.swift */; };
+		B4FEB6FA2375DA1600818CD2 /* AWSS3StorageServiceUploadBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6D42375DA1500818CD2 /* AWSS3StorageServiceUploadBehaviorTests.swift */; };
+		B4FEB6FB2375DA1600818CD2 /* AWSS3StorageServiceListBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6D52375DA1500818CD2 /* AWSS3StorageServiceListBehaviorTests.swift */; };
+		B4FEB6FC2375DA1600818CD2 /* AWSS3StorageServiceDownloadBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6D62375DA1500818CD2 /* AWSS3StorageServiceDownloadBehaviorTests.swift */; };
+		B4FEB6FD2375DA1600818CD2 /* AWSS3StorageServiceTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6D72375DA1500818CD2 /* AWSS3StorageServiceTestBase.swift */; };
+		B4FEB6FE2375DA1600818CD2 /* AWSS3StorageServiceEscapeHatchBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6D82375DA1500818CD2 /* AWSS3StorageServiceEscapeHatchBehaviorTests.swift */; };
+		B4FEB6FF2375DA1600818CD2 /* AWSS3StorageServiceMultiPartUploadBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6D92375DA1500818CD2 /* AWSS3StorageServiceMultiPartUploadBehaviorTests.swift */; };
+		B4FEB70F2375DA2200818CD2 /* AWSS3StoragePluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB7012375DA2200818CD2 /* AWSS3StoragePluginTestBase.swift */; };
+		B4FEB7112375DA2200818CD2 /* AWSS3StoragePluginConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB7042375DA2200818CD2 /* AWSS3StoragePluginConfigurationTests.swift */; };
+		B4FEB7122375DA2200818CD2 /* AWSS3StoragePluginOptionsUsabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB7052375DA2200818CD2 /* AWSS3StoragePluginOptionsUsabilityTests.swift */; };
+		B4FEB7132375DA2200818CD2 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B4FEB7062375DA2200818CD2 /* README.md */; };
+		B4FEB7142375DA2200818CD2 /* AWSS3StoragePluginNegativeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB7072375DA2200818CD2 /* AWSS3StoragePluginNegativeTests.swift */; };
+		B4FEB7152375DA2200818CD2 /* AWSS3StoragePluginBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB7082375DA2200818CD2 /* AWSS3StoragePluginBasicIntegrationTests.swift */; };
+		B4FEB7162375DA2200818CD2 /* AWSS3StoragePluginAccessLevelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB7092375DA2200818CD2 /* AWSS3StoragePluginAccessLevelTests.swift */; };
+		B4FEB7172375DA2200818CD2 /* AWSS3StoragePluginPutDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB70B2375DA2200818CD2 /* AWSS3StoragePluginPutDataResumabilityTests.swift */; };
+		B4FEB7182375DA2200818CD2 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB70C2375DA2200818CD2 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift */; };
+		B4FEB7192375DA2200818CD2 /* AWSS3StoragePluginUploadFileResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB70D2375DA2200818CD2 /* AWSS3StoragePluginUploadFileResumabilityTests.swift */; };
+		B4FEB71A2375DA2200818CD2 /* AWSS3StoragePluginGetDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB70E2375DA2200818CD2 /* AWSS3StoragePluginGetDataResumabilityTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -121,144 +121,150 @@
 			remoteGlobalIDString = B478F5FA2374DBF400C4F92B;
 			remoteInfo = PredictionsPlugin;
 		};
-		B478F8CC23750D4200C4F92B /* PBXContainerItemProxy */ = {
+		B478F7752375044100C4F92B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = B478F7E323750B6800C4F92B;
+			remoteGlobalIDString = B478F6BB2374E0B500C4F92B;
 			remoteInfo = HostApp;
 		};
-		B478F8CE23750D9D00C4F92B /* PBXContainerItemProxy */ = {
+		B478F77F2375048100C4F92B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = B478F5FA2374DBF400C4F92B;
-			remoteInfo = AWSS3StoragePlugin;
+			remoteInfo = AWSPinpointAnalyticsPlugin;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		123E1B1394B63D968F9E5F82 /* Pods_AWSS3StoragePlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSS3StoragePlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		13F3E3E35BF8069E98751CA4 /* Pods-HostApp-AWSS3StoragePluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSS3StoragePluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSS3StoragePluginIntegrationTests/Pods-HostApp-AWSS3StoragePluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
-		159DB4476A53282BB714F89D /* Pods-HostApp-AWSS3StoragePluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSS3StoragePluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSS3StoragePluginIntegrationTests/Pods-HostApp-AWSS3StoragePluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
-		1D23E6EAB90506EC32673F32 /* Pods-AWSS3StoragePluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		38E4161F590595FD4C0FC557 /* Pods-HostApp-AWSS3StoragePluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSS3StoragePluginTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSS3StoragePluginTests/Pods-HostApp-AWSS3StoragePluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		4656F6396CCD6ED24126B92B /* Pods-AWSS3StoragePlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePlugin/Pods-AWSS3StoragePlugin.release.xcconfig"; sourceTree = "<group>"; };
-		5A00DCFCD81CA06B2CF20DCB /* Pods-HostApp-AWSS3StoragePluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSS3StoragePluginTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSS3StoragePluginTests/Pods-HostApp-AWSS3StoragePluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		8A0CE78CE6C06AFA92E179C5 /* Pods-AWSS3StoragePluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePluginTests/Pods-AWSS3StoragePluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		9CEEE03EB990FBB81B00E277 /* Pods-HostApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.debug.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.debug.xcconfig"; sourceTree = "<group>"; };
+		0E13BFF24658D710D2D705F9 /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
+		14F5159505C3EAB270C550C8 /* Pods-HostApp-AWSS3StoragePluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSS3StoragePluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSS3StoragePluginIntegrationTests/Pods-HostApp-AWSS3StoragePluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
+		1CC23DFF3F8AB7DF86A7A4C2 /* Pods-HostApp-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSPinpointAnalyticsPluginTests/Pods-HostApp-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
+		27E93DA4BD82FC2FD4DF47FF /* Pods-HostApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.debug.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.debug.xcconfig"; sourceTree = "<group>"; };
+		2C4E592238332FBE98A8EFCC /* Pods_HostApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		32FA30478A2D1E3534061E95 /* Pods-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPlugin/Pods-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
+		55C25A32F11C14B88865E2C4 /* Pods-HostApp-AWSS3StoragePluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSS3StoragePluginTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSS3StoragePluginTests/Pods-HostApp-AWSS3StoragePluginTests.release.xcconfig"; sourceTree = "<group>"; };
+		57D186E0D4EB50090BFC4EF4 /* Pods-HostApp-AWSPinpointAnalyticsPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSPinpointAnalyticsPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSPinpointAnalyticsPluginIntegrationTests/Pods-HostApp-AWSPinpointAnalyticsPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
+		5AC7393AE2A0B932F0F38F7F /* Pods-HostApp-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSPinpointAnalyticsPluginTests/Pods-HostApp-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
+		61FF711366B52C765968FF69 /* Pods_HostApp_AWSS3StoragePluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSS3StoragePluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6747524CAA6E8CCA1012AF7D /* Pods-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPluginTests/Pods-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
+		71097652C68FE3406618F5FE /* Pods-AWSS3StoragePlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePlugin/Pods-AWSS3StoragePlugin.release.xcconfig"; sourceTree = "<group>"; };
+		74736155E8B4D97236D354DA /* Pods-HostApp-AWSPinpointAnalyticsPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSPinpointAnalyticsPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSPinpointAnalyticsPluginIntegrationTests/Pods-HostApp-AWSPinpointAnalyticsPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
+		822E6B6F97F866C25560BB16 /* Pods-HostApp-AWSS3StoragePluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSS3StoragePluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSS3StoragePluginIntegrationTests/Pods-HostApp-AWSS3StoragePluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
+		8AA99C287F643A1663FFC249 /* Pods-AWSPinpointAnalyticsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPlugin/Pods-AWSPinpointAnalyticsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
+		B046927AA82214FE8EBAD505 /* Pods_AWSS3StoragePlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSS3StoragePlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B478F5FB2374DBF400C4F92B /* AWSS3StoragePlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSS3StoragePlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B478F6492374DCE700C4F92B /* AWSS3StoragePluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSS3StoragePluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B478F6582374DD0D00C4F92B /* AWSS3StoragePluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSS3StoragePluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B478F7E423750B6800C4F92B /* HostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		B478F7FA23750BAC00C4F92B /* AWSS3StoragePutDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePutDataOperation.swift; sourceTree = "<group>"; };
-		B478F7FB23750BAC00C4F92B /* AWSS3StorageUploadFileOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageUploadFileOperation.swift; sourceTree = "<group>"; };
-		B478F7FC23750BAC00C4F92B /* AWSS3StorageGetURLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetURLOperation.swift; sourceTree = "<group>"; };
-		B478F7FD23750BAC00C4F92B /* AWSS3StorageDownloadFileOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageDownloadFileOperation.swift; sourceTree = "<group>"; };
-		B478F7FE23750BAC00C4F92B /* AWSS3StorageGetDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetDataOperation.swift; sourceTree = "<group>"; };
-		B478F7FF23750BAC00C4F92B /* AWSS3StorageRemoveOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageRemoveOperation.swift; sourceTree = "<group>"; };
-		B478F80023750BAC00C4F92B /* AWSS3StorageListOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageListOperation.swift; sourceTree = "<group>"; };
-		B478F80123750BAC00C4F92B /* AWSS3StoragePlugin+Reset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StoragePlugin+Reset.swift"; sourceTree = "<group>"; };
-		B478F80323750BAC00C4F92B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B478F80523750BAC00C4F92B /* AWSS3TransferUtilityBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3TransferUtilityBehavior.swift; sourceTree = "<group>"; };
-		B478F80623750BAC00C4F92B /* AWSS3Adapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3Adapter.swift; sourceTree = "<group>"; };
-		B478F80723750BAC00C4F92B /* AWSS3Behavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3Behavior.swift; sourceTree = "<group>"; };
-		B478F80823750BAC00C4F92B /* AWSS3PreSignedURLBuilderBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3PreSignedURLBuilderBehavior.swift; sourceTree = "<group>"; };
-		B478F80923750BAC00C4F92B /* AWSS3PreSignedURLBuilderAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3PreSignedURLBuilderAdapter.swift; sourceTree = "<group>"; };
-		B478F80A23750BAC00C4F92B /* AWSS3TransferUtilityAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3TransferUtilityAdapter.swift; sourceTree = "<group>"; };
-		B478F80B23750BAC00C4F92B /* AWSS3StoragePlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePlugin.swift; sourceTree = "<group>"; };
-		B478F80E23750BAC00C4F92B /* StorageErrorConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageErrorConstants.swift; sourceTree = "<group>"; };
-		B478F80F23750BAD00C4F92B /* PluginConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginConstants.swift; sourceTree = "<group>"; };
-		B478F81023750BAD00C4F92B /* PluginErrorConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginErrorConstants.swift; sourceTree = "<group>"; };
-		B478F81223750BAD00C4F92B /* UploadSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadSource.swift; sourceTree = "<group>"; };
-		B478F81323750BAD00C4F92B /* StorageOperationReference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageOperationReference.swift; sourceTree = "<group>"; };
-		B478F81423750BAD00C4F92B /* StorageEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageEvent.swift; sourceTree = "<group>"; };
-		B478F81623750BAD00C4F92B /* StorageRequestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageRequestUtils.swift; sourceTree = "<group>"; };
-		B478F81723750BAD00C4F92B /* StorageErrorHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageErrorHelper.swift; sourceTree = "<group>"; };
-		B478F81823750BAD00C4F92B /* StorageRequestUtils+Validator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageRequestUtils+Validator.swift"; sourceTree = "<group>"; };
-		B478F81923750BAD00C4F92B /* StorageRequestUtils+Getter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageRequestUtils+Getter.swift"; sourceTree = "<group>"; };
-		B478F81A23750BAD00C4F92B /* AWSS3StoragePlugin+ClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StoragePlugin+ClientBehavior.swift"; sourceTree = "<group>"; };
-		B478F81B23750BAD00C4F92B /* AWSS3StoragePlugin+Configure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StoragePlugin+Configure.swift"; sourceTree = "<group>"; };
-		B478F81D23750BAD00C4F92B /* StorageDownloadFileRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageDownloadFileRequest+Validate.swift"; sourceTree = "<group>"; };
-		B478F81E23750BAD00C4F92B /* StorageUploadFileRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageUploadFileRequest+Validate.swift"; sourceTree = "<group>"; };
-		B478F81F23750BAD00C4F92B /* StoragePutDataRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StoragePutDataRequest+Validate.swift"; sourceTree = "<group>"; };
-		B478F82023750BAD00C4F92B /* StorageListRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageListRequest+Validate.swift"; sourceTree = "<group>"; };
-		B478F82123750BAD00C4F92B /* StorageGetDataRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageGetDataRequest+Validate.swift"; sourceTree = "<group>"; };
-		B478F82223750BAD00C4F92B /* StorageRemoveRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageRemoveRequest+Validate.swift"; sourceTree = "<group>"; };
-		B478F82323750BAD00C4F92B /* StorageGetURLRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageGetURLRequest+Validate.swift"; sourceTree = "<group>"; };
-		B478F82623750BAD00C4F92B /* AWSS3StorageService+UploadBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+UploadBehavior.swift"; sourceTree = "<group>"; };
-		B478F82723750BAD00C4F92B /* AWSS3StorageService+DeleteBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+DeleteBehavior.swift"; sourceTree = "<group>"; };
-		B478F82823750BAD00C4F92B /* AWSS3StorageService+EscapeHatchBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+EscapeHatchBehavior.swift"; sourceTree = "<group>"; };
-		B478F82923750BAD00C4F92B /* AWSS3StorageService+GetPreSignedURLBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+GetPreSignedURLBehavior.swift"; sourceTree = "<group>"; };
-		B478F82A23750BAD00C4F92B /* AWSS3StorageServiceBehaviour.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceBehaviour.swift; sourceTree = "<group>"; };
-		B478F82B23750BAD00C4F92B /* AWSS3StorageService+MultiPartUploadBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+MultiPartUploadBehavior.swift"; sourceTree = "<group>"; };
-		B478F82C23750BAD00C4F92B /* AWSS3StorageService+DownloadBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+DownloadBehavior.swift"; sourceTree = "<group>"; };
-		B478F82D23750BAD00C4F92B /* AWSS3StorageService+ListBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+ListBehavior.swift"; sourceTree = "<group>"; };
-		B478F82E23750BAD00C4F92B /* AWSS3StorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageService.swift; sourceTree = "<group>"; };
-		B478F85D23750BB500C4F92B /* MockAWSS3TransferUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAWSS3TransferUtility.swift; sourceTree = "<group>"; };
-		B478F85E23750BB500C4F92B /* MockAWSS3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAWSS3.swift; sourceTree = "<group>"; };
-		B478F85F23750BB500C4F92B /* MockOperationQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockOperationQueue.swift; sourceTree = "<group>"; };
-		B478F86023750BB500C4F92B /* MockAWSS3StorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAWSS3StorageService.swift; sourceTree = "<group>"; };
-		B478F86123750BB500C4F92B /* MockAWSS3PreSignedURLBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAWSS3PreSignedURLBuilder.swift; sourceTree = "<group>"; };
-		B478F86323750BB500C4F92B /* AWSS3StorageRemoveOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageRemoveOperationTests.swift; sourceTree = "<group>"; };
-		B478F86423750BB500C4F92B /* AWSS3StorageUploadFileOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageUploadFileOperationTests.swift; sourceTree = "<group>"; };
-		B478F86523750BB500C4F92B /* AWSS3StorageGetURLOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetURLOperationTests.swift; sourceTree = "<group>"; };
-		B478F86623750BB500C4F92B /* AWSS3StorageGetDataOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetDataOperationTests.swift; sourceTree = "<group>"; };
-		B478F86723750BB500C4F92B /* AWSS3StorageDownloadFileOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageDownloadFileOperationTests.swift; sourceTree = "<group>"; };
-		B478F86923750BB500C4F92B /* DownloadFileEventTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadFileEventTests.swift; sourceTree = "<group>"; };
-		B478F86A23750BB500C4F92B /* AWSS3StorageOperationTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageOperationTestBase.swift; sourceTree = "<group>"; };
-		B478F86B23750BB500C4F92B /* AWSS3StorageListOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageListOperationTests.swift; sourceTree = "<group>"; };
-		B478F86C23750BB500C4F92B /* AWSS3StoragePutDataOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePutDataOperationTests.swift; sourceTree = "<group>"; };
-		B478F86D23750BB500C4F92B /* AWSS3StoragePluginTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginTestBase.swift; sourceTree = "<group>"; };
-		B478F86F23750BB500C4F92B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B478F87023750BB500C4F92B /* AWSS3StoragePluginResetTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginResetTests.swift; sourceTree = "<group>"; };
-		B478F87123750BB500C4F92B /* AWSS3StoragePluginConfigureTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginConfigureTests.swift; sourceTree = "<group>"; };
-		B478F87223750BB500C4F92B /* AWSS3StoragePluginClientBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginClientBehaviorTests.swift; sourceTree = "<group>"; };
-		B478F87523750BB500C4F92B /* StorageRequestUtilsValidatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageRequestUtilsValidatorTests.swift; sourceTree = "<group>"; };
-		B478F87623750BB500C4F92B /* StorageRequestUtilsGetterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageRequestUtilsGetterTests.swift; sourceTree = "<group>"; };
-		B478F87723750BB500C4F92B /* StorageRequestUtilsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageRequestUtilsTests.swift; sourceTree = "<group>"; };
-		B478F87923750BB500C4F92B /* AWSS3StorageGetURLRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetURLRequestTests.swift; sourceTree = "<group>"; };
-		B478F87A23750BB500C4F92B /* AWSS3StorageRemoveRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageRemoveRequestTests.swift; sourceTree = "<group>"; };
-		B478F87B23750BB500C4F92B /* AWSS3StorageUploadFileRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageUploadFileRequestTests.swift; sourceTree = "<group>"; };
-		B478F87C23750BB500C4F92B /* AWSS3StorageGetDataRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetDataRequestTests.swift; sourceTree = "<group>"; };
-		B478F87D23750BB500C4F92B /* AWSS3StorageDownloadFileRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageDownloadFileRequestTests.swift; sourceTree = "<group>"; };
-		B478F87E23750BB500C4F92B /* AWSS3StoragePutDataRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePutDataRequestTests.swift; sourceTree = "<group>"; };
-		B478F87F23750BB500C4F92B /* AWSS3StorageListRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageListRequestTests.swift; sourceTree = "<group>"; };
-		B478F88223750BB500C4F92B /* AWSS3StorageServiceConfigureTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceConfigureTests.swift; sourceTree = "<group>"; };
-		B478F88323750BB500C4F92B /* AWSS3StorageServiceGetPreSignedURLBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceGetPreSignedURLBehaviorTests.swift; sourceTree = "<group>"; };
-		B478F88423750BB500C4F92B /* AWSS3StorageServiceDeleteBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceDeleteBehaviorTests.swift; sourceTree = "<group>"; };
-		B478F88523750BB500C4F92B /* AWSS3StorageServiceUploadBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceUploadBehaviorTests.swift; sourceTree = "<group>"; };
-		B478F88623750BB500C4F92B /* AWSS3StorageServiceListBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceListBehaviorTests.swift; sourceTree = "<group>"; };
-		B478F88723750BB500C4F92B /* AWSS3StorageServiceDownloadBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceDownloadBehaviorTests.swift; sourceTree = "<group>"; };
-		B478F88823750BB500C4F92B /* AWSS3StorageServiceTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceTestBase.swift; sourceTree = "<group>"; };
-		B478F88923750BB500C4F92B /* AWSS3StorageServiceEscapeHatchBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceEscapeHatchBehaviorTests.swift; sourceTree = "<group>"; };
-		B478F88A23750BB500C4F92B /* AWSS3StorageServiceMultiPartUploadBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceMultiPartUploadBehaviorTests.swift; sourceTree = "<group>"; };
-		B478F8B223750BBC00C4F92B /* AWSS3StoragePluginTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginTestBase.swift; sourceTree = "<group>"; };
-		B478F8B423750BBC00C4F92B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B478F8B523750BBC00C4F92B /* AWSS3StoragePluginConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginConfigurationTests.swift; sourceTree = "<group>"; };
-		B478F8B623750BBC00C4F92B /* AWSS3StoragePluginOptionsUsabilityTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginOptionsUsabilityTests.swift; sourceTree = "<group>"; };
-		B478F8B723750BBC00C4F92B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		B478F8B823750BBC00C4F92B /* AWSS3StoragePluginNegativeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginNegativeTests.swift; sourceTree = "<group>"; };
-		B478F8B923750BBC00C4F92B /* AWSS3StoragePluginBasicIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginBasicIntegrationTests.swift; sourceTree = "<group>"; };
-		B478F8BA23750BBC00C4F92B /* AWSS3StoragePluginAccessLevelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginAccessLevelTests.swift; sourceTree = "<group>"; };
-		B478F8BC23750BBC00C4F92B /* AWSS3StoragePluginPutDataResumabilityTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginPutDataResumabilityTests.swift; sourceTree = "<group>"; };
-		B478F8BD23750BBC00C4F92B /* AWSS3StoragePluginDownloadFileResumabilityTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginDownloadFileResumabilityTests.swift; sourceTree = "<group>"; };
-		B478F8BE23750BBC00C4F92B /* AWSS3StoragePluginUploadFileResumabilityTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginUploadFileResumabilityTests.swift; sourceTree = "<group>"; };
-		B478F8BF23750BBC00C4F92B /* AWSS3StoragePluginGetDataResumabilityTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginGetDataResumabilityTests.swift; sourceTree = "<group>"; };
-		B478F8D223750E9900C4F92B /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
-		B478F8D323750E9900C4F92B /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
-		B478F8D523750E9900C4F92B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		B478F8D723750E9900C4F92B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		B478F8D923750E9900C4F92B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		B478F8DA23750E9900C4F92B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B478F8DC23750E9900C4F92B /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		B478F8DD23750E9900C4F92B /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B478F8DE23750E9900C4F92B /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		C1CE3EA730554AAEF7CD52C2 /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
-		DB17C6718B17C110B5A0EABD /* Pods_HostApp_AWSS3StoragePluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSS3StoragePluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E0E48BF7B088D619A5DB365B /* Pods_HostApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		EB6AC069957704CDFA056601 /* Pods-AWSS3StoragePlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePlugin/Pods-AWSS3StoragePlugin.debug.xcconfig"; sourceTree = "<group>"; };
-		FEEA49B0B54601935AE662C4 /* Pods_HostApp_AWSS3StoragePluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSS3StoragePluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B478F6BC2374E0B500C4F92B /* HostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B478F6D12374E0CE00C4F92B /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B478F6D22374E0CE00C4F92B /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		B478F6D32374E0CE00C4F92B /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		B478F6D52374E0CF00C4F92B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B478F6D72374E0CF00C4F92B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		B478F6D92374E0CF00C4F92B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B478F6DA2374E0CF00C4F92B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B478F6DC2374E0CF00C4F92B /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
+		B478F6DD2374E0CF00C4F92B /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
+		B4FEB6492375DA0600818CD2 /* AWSS3StoragePutDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePutDataOperation.swift; sourceTree = "<group>"; };
+		B4FEB64A2375DA0600818CD2 /* AWSS3StorageUploadFileOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageUploadFileOperation.swift; sourceTree = "<group>"; };
+		B4FEB64B2375DA0600818CD2 /* AWSS3StorageGetURLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetURLOperation.swift; sourceTree = "<group>"; };
+		B4FEB64C2375DA0600818CD2 /* AWSS3StorageDownloadFileOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageDownloadFileOperation.swift; sourceTree = "<group>"; };
+		B4FEB64D2375DA0600818CD2 /* AWSS3StorageGetDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetDataOperation.swift; sourceTree = "<group>"; };
+		B4FEB64E2375DA0600818CD2 /* AWSS3StorageRemoveOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageRemoveOperation.swift; sourceTree = "<group>"; };
+		B4FEB64F2375DA0600818CD2 /* AWSS3StorageListOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageListOperation.swift; sourceTree = "<group>"; };
+		B4FEB6502375DA0600818CD2 /* AWSS3StoragePlugin+Reset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StoragePlugin+Reset.swift"; sourceTree = "<group>"; };
+		B4FEB6522375DA0600818CD2 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B4FEB6542375DA0600818CD2 /* AWSS3TransferUtilityBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3TransferUtilityBehavior.swift; sourceTree = "<group>"; };
+		B4FEB6552375DA0600818CD2 /* AWSS3Adapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3Adapter.swift; sourceTree = "<group>"; };
+		B4FEB6562375DA0600818CD2 /* AWSS3Behavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3Behavior.swift; sourceTree = "<group>"; };
+		B4FEB6572375DA0600818CD2 /* AWSS3PreSignedURLBuilderBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3PreSignedURLBuilderBehavior.swift; sourceTree = "<group>"; };
+		B4FEB6582375DA0600818CD2 /* AWSS3PreSignedURLBuilderAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3PreSignedURLBuilderAdapter.swift; sourceTree = "<group>"; };
+		B4FEB6592375DA0600818CD2 /* AWSS3TransferUtilityAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3TransferUtilityAdapter.swift; sourceTree = "<group>"; };
+		B4FEB65A2375DA0600818CD2 /* AWSS3StoragePlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePlugin.swift; sourceTree = "<group>"; };
+		B4FEB65D2375DA0600818CD2 /* StorageErrorConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageErrorConstants.swift; sourceTree = "<group>"; };
+		B4FEB65E2375DA0600818CD2 /* PluginConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginConstants.swift; sourceTree = "<group>"; };
+		B4FEB65F2375DA0600818CD2 /* PluginErrorConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginErrorConstants.swift; sourceTree = "<group>"; };
+		B4FEB6612375DA0600818CD2 /* UploadSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadSource.swift; sourceTree = "<group>"; };
+		B4FEB6622375DA0600818CD2 /* StorageOperationReference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageOperationReference.swift; sourceTree = "<group>"; };
+		B4FEB6632375DA0600818CD2 /* StorageEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageEvent.swift; sourceTree = "<group>"; };
+		B4FEB6652375DA0600818CD2 /* StorageRequestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageRequestUtils.swift; sourceTree = "<group>"; };
+		B4FEB6662375DA0600818CD2 /* StorageErrorHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageErrorHelper.swift; sourceTree = "<group>"; };
+		B4FEB6672375DA0600818CD2 /* StorageRequestUtils+Validator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageRequestUtils+Validator.swift"; sourceTree = "<group>"; };
+		B4FEB6682375DA0600818CD2 /* StorageRequestUtils+Getter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageRequestUtils+Getter.swift"; sourceTree = "<group>"; };
+		B4FEB6692375DA0600818CD2 /* AWSS3StoragePlugin+ClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StoragePlugin+ClientBehavior.swift"; sourceTree = "<group>"; };
+		B4FEB66A2375DA0600818CD2 /* AWSS3StoragePlugin+Configure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StoragePlugin+Configure.swift"; sourceTree = "<group>"; };
+		B4FEB66C2375DA0600818CD2 /* StorageDownloadFileRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageDownloadFileRequest+Validate.swift"; sourceTree = "<group>"; };
+		B4FEB66D2375DA0600818CD2 /* StorageUploadFileRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageUploadFileRequest+Validate.swift"; sourceTree = "<group>"; };
+		B4FEB66E2375DA0600818CD2 /* StoragePutDataRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StoragePutDataRequest+Validate.swift"; sourceTree = "<group>"; };
+		B4FEB66F2375DA0600818CD2 /* StorageListRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageListRequest+Validate.swift"; sourceTree = "<group>"; };
+		B4FEB6702375DA0600818CD2 /* StorageGetDataRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageGetDataRequest+Validate.swift"; sourceTree = "<group>"; };
+		B4FEB6712375DA0600818CD2 /* StorageRemoveRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageRemoveRequest+Validate.swift"; sourceTree = "<group>"; };
+		B4FEB6722375DA0600818CD2 /* StorageGetURLRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageGetURLRequest+Validate.swift"; sourceTree = "<group>"; };
+		B4FEB6752375DA0600818CD2 /* AWSS3StorageService+UploadBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+UploadBehavior.swift"; sourceTree = "<group>"; };
+		B4FEB6762375DA0600818CD2 /* AWSS3StorageService+DeleteBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+DeleteBehavior.swift"; sourceTree = "<group>"; };
+		B4FEB6772375DA0600818CD2 /* AWSS3StorageService+EscapeHatchBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+EscapeHatchBehavior.swift"; sourceTree = "<group>"; };
+		B4FEB6782375DA0600818CD2 /* AWSS3StorageService+GetPreSignedURLBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+GetPreSignedURLBehavior.swift"; sourceTree = "<group>"; };
+		B4FEB6792375DA0600818CD2 /* AWSS3StorageServiceBehaviour.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceBehaviour.swift; sourceTree = "<group>"; };
+		B4FEB67A2375DA0600818CD2 /* AWSS3StorageService+MultiPartUploadBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+MultiPartUploadBehavior.swift"; sourceTree = "<group>"; };
+		B4FEB67B2375DA0600818CD2 /* AWSS3StorageService+DownloadBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+DownloadBehavior.swift"; sourceTree = "<group>"; };
+		B4FEB67C2375DA0600818CD2 /* AWSS3StorageService+ListBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSS3StorageService+ListBehavior.swift"; sourceTree = "<group>"; };
+		B4FEB67D2375DA0600818CD2 /* AWSS3StorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageService.swift; sourceTree = "<group>"; };
+		B4FEB6AC2375DA1500818CD2 /* MockAWSS3TransferUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAWSS3TransferUtility.swift; sourceTree = "<group>"; };
+		B4FEB6AD2375DA1500818CD2 /* MockAWSS3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAWSS3.swift; sourceTree = "<group>"; };
+		B4FEB6AE2375DA1500818CD2 /* MockOperationQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockOperationQueue.swift; sourceTree = "<group>"; };
+		B4FEB6AF2375DA1500818CD2 /* MockAWSS3StorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAWSS3StorageService.swift; sourceTree = "<group>"; };
+		B4FEB6B02375DA1500818CD2 /* MockAWSS3PreSignedURLBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAWSS3PreSignedURLBuilder.swift; sourceTree = "<group>"; };
+		B4FEB6B22375DA1500818CD2 /* AWSS3StorageRemoveOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageRemoveOperationTests.swift; sourceTree = "<group>"; };
+		B4FEB6B32375DA1500818CD2 /* AWSS3StorageUploadFileOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageUploadFileOperationTests.swift; sourceTree = "<group>"; };
+		B4FEB6B42375DA1500818CD2 /* AWSS3StorageGetURLOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetURLOperationTests.swift; sourceTree = "<group>"; };
+		B4FEB6B52375DA1500818CD2 /* AWSS3StorageGetDataOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetDataOperationTests.swift; sourceTree = "<group>"; };
+		B4FEB6B62375DA1500818CD2 /* AWSS3StorageDownloadFileOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageDownloadFileOperationTests.swift; sourceTree = "<group>"; };
+		B4FEB6B82375DA1500818CD2 /* DownloadFileEventTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadFileEventTests.swift; sourceTree = "<group>"; };
+		B4FEB6B92375DA1500818CD2 /* AWSS3StorageOperationTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageOperationTestBase.swift; sourceTree = "<group>"; };
+		B4FEB6BA2375DA1500818CD2 /* AWSS3StorageListOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageListOperationTests.swift; sourceTree = "<group>"; };
+		B4FEB6BB2375DA1500818CD2 /* AWSS3StoragePutDataOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePutDataOperationTests.swift; sourceTree = "<group>"; };
+		B4FEB6BC2375DA1500818CD2 /* AWSS3StoragePluginTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginTestBase.swift; sourceTree = "<group>"; };
+		B4FEB6BE2375DA1500818CD2 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B4FEB6BF2375DA1500818CD2 /* AWSS3StoragePluginResetTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginResetTests.swift; sourceTree = "<group>"; };
+		B4FEB6C02375DA1500818CD2 /* AWSS3StoragePluginConfigureTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginConfigureTests.swift; sourceTree = "<group>"; };
+		B4FEB6C12375DA1500818CD2 /* AWSS3StoragePluginClientBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginClientBehaviorTests.swift; sourceTree = "<group>"; };
+		B4FEB6C42375DA1500818CD2 /* StorageRequestUtilsValidatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageRequestUtilsValidatorTests.swift; sourceTree = "<group>"; };
+		B4FEB6C52375DA1500818CD2 /* StorageRequestUtilsGetterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageRequestUtilsGetterTests.swift; sourceTree = "<group>"; };
+		B4FEB6C62375DA1500818CD2 /* StorageRequestUtilsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageRequestUtilsTests.swift; sourceTree = "<group>"; };
+		B4FEB6C82375DA1500818CD2 /* AWSS3StorageGetURLRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetURLRequestTests.swift; sourceTree = "<group>"; };
+		B4FEB6C92375DA1500818CD2 /* AWSS3StorageRemoveRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageRemoveRequestTests.swift; sourceTree = "<group>"; };
+		B4FEB6CA2375DA1500818CD2 /* AWSS3StorageUploadFileRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageUploadFileRequestTests.swift; sourceTree = "<group>"; };
+		B4FEB6CB2375DA1500818CD2 /* AWSS3StorageGetDataRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetDataRequestTests.swift; sourceTree = "<group>"; };
+		B4FEB6CC2375DA1500818CD2 /* AWSS3StorageDownloadFileRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageDownloadFileRequestTests.swift; sourceTree = "<group>"; };
+		B4FEB6CD2375DA1500818CD2 /* AWSS3StoragePutDataRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePutDataRequestTests.swift; sourceTree = "<group>"; };
+		B4FEB6CE2375DA1500818CD2 /* AWSS3StorageListRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageListRequestTests.swift; sourceTree = "<group>"; };
+		B4FEB6D12375DA1500818CD2 /* AWSS3StorageServiceConfigureTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceConfigureTests.swift; sourceTree = "<group>"; };
+		B4FEB6D22375DA1500818CD2 /* AWSS3StorageServiceGetPreSignedURLBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceGetPreSignedURLBehaviorTests.swift; sourceTree = "<group>"; };
+		B4FEB6D32375DA1500818CD2 /* AWSS3StorageServiceDeleteBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceDeleteBehaviorTests.swift; sourceTree = "<group>"; };
+		B4FEB6D42375DA1500818CD2 /* AWSS3StorageServiceUploadBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceUploadBehaviorTests.swift; sourceTree = "<group>"; };
+		B4FEB6D52375DA1500818CD2 /* AWSS3StorageServiceListBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceListBehaviorTests.swift; sourceTree = "<group>"; };
+		B4FEB6D62375DA1500818CD2 /* AWSS3StorageServiceDownloadBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceDownloadBehaviorTests.swift; sourceTree = "<group>"; };
+		B4FEB6D72375DA1500818CD2 /* AWSS3StorageServiceTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceTestBase.swift; sourceTree = "<group>"; };
+		B4FEB6D82375DA1500818CD2 /* AWSS3StorageServiceEscapeHatchBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceEscapeHatchBehaviorTests.swift; sourceTree = "<group>"; };
+		B4FEB6D92375DA1500818CD2 /* AWSS3StorageServiceMultiPartUploadBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageServiceMultiPartUploadBehaviorTests.swift; sourceTree = "<group>"; };
+		B4FEB7012375DA2200818CD2 /* AWSS3StoragePluginTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginTestBase.swift; sourceTree = "<group>"; };
+		B4FEB7032375DA2200818CD2 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B4FEB7042375DA2200818CD2 /* AWSS3StoragePluginConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginConfigurationTests.swift; sourceTree = "<group>"; };
+		B4FEB7052375DA2200818CD2 /* AWSS3StoragePluginOptionsUsabilityTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginOptionsUsabilityTests.swift; sourceTree = "<group>"; };
+		B4FEB7062375DA2200818CD2 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		B4FEB7072375DA2200818CD2 /* AWSS3StoragePluginNegativeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginNegativeTests.swift; sourceTree = "<group>"; };
+		B4FEB7082375DA2200818CD2 /* AWSS3StoragePluginBasicIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginBasicIntegrationTests.swift; sourceTree = "<group>"; };
+		B4FEB7092375DA2200818CD2 /* AWSS3StoragePluginAccessLevelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginAccessLevelTests.swift; sourceTree = "<group>"; };
+		B4FEB70B2375DA2200818CD2 /* AWSS3StoragePluginPutDataResumabilityTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginPutDataResumabilityTests.swift; sourceTree = "<group>"; };
+		B4FEB70C2375DA2200818CD2 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginDownloadFileResumabilityTests.swift; sourceTree = "<group>"; };
+		B4FEB70D2375DA2200818CD2 /* AWSS3StoragePluginUploadFileResumabilityTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginUploadFileResumabilityTests.swift; sourceTree = "<group>"; };
+		B4FEB70E2375DA2200818CD2 /* AWSS3StoragePluginGetDataResumabilityTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginGetDataResumabilityTests.swift; sourceTree = "<group>"; };
+		B818ED25ED231DC55ED919CA /* Pods-HostApp-AWSS3StoragePluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSS3StoragePluginTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSS3StoragePluginTests/Pods-HostApp-AWSS3StoragePluginTests.debug.xcconfig"; sourceTree = "<group>"; };
+		C561D4445CE5E5EC9AE1F82A /* Pods_HostApp_AWSS3StoragePluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSS3StoragePluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA768EE32D4775E2865AD120 /* Pods-AWSS3StoragePlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePlugin/Pods-AWSS3StoragePlugin.debug.xcconfig"; sourceTree = "<group>"; };
+		F2499EEE6F1A16D91ABBEC87 /* Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPluginTests/Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -266,7 +272,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1BF4D6C4EC6C10F424C37CE8 /* Pods_AWSS3StoragePlugin.framework in Frameworks */,
+				81E7E9D6821EF0A560A93627 /* Pods_AWSS3StoragePlugin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -275,7 +281,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B478F64E2374DCE700C4F92B /* AWSS3StoragePlugin.framework in Frameworks */,
-				644923A638057BB4E2C8057C /* Pods_HostApp_AWSS3StoragePluginTests.framework in Frameworks */,
+				04AA4806658BD63D5A625547 /* Pods_HostApp_AWSS3StoragePluginTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -283,58 +289,64 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				688E7EABF655326E00118744 /* Pods_HostApp_AWSS3StoragePluginIntegrationTests.framework in Frameworks */,
+				7B5DC4E4B3295AC0060AFF83 /* Pods_HostApp_AWSS3StoragePluginIntegrationTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B478F7E123750B6800C4F92B /* Frameworks */ = {
+		B478F6B92374E0B500C4F92B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				154FC574D929065E75929963 /* Pods_HostApp.framework in Frameworks */,
+				162EFDD55E53D5A773D62CF6 /* Pods_HostApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		9CA31E0105130BB4220ED1A0 /* Pods */ = {
+		58AE86B816C1A3D8125AD432 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				EB6AC069957704CDFA056601 /* Pods-AWSS3StoragePlugin.debug.xcconfig */,
-				4656F6396CCD6ED24126B92B /* Pods-AWSS3StoragePlugin.release.xcconfig */,
-				8A0CE78CE6C06AFA92E179C5 /* Pods-AWSS3StoragePluginTests.debug.xcconfig */,
-				1D23E6EAB90506EC32673F32 /* Pods-AWSS3StoragePluginTests.release.xcconfig */,
-				9CEEE03EB990FBB81B00E277 /* Pods-HostApp.debug.xcconfig */,
-				C1CE3EA730554AAEF7CD52C2 /* Pods-HostApp.release.xcconfig */,
-				13F3E3E35BF8069E98751CA4 /* Pods-HostApp-AWSS3StoragePluginIntegrationTests.debug.xcconfig */,
-				159DB4476A53282BB714F89D /* Pods-HostApp-AWSS3StoragePluginIntegrationTests.release.xcconfig */,
-				38E4161F590595FD4C0FC557 /* Pods-HostApp-AWSS3StoragePluginTests.debug.xcconfig */,
-				5A00DCFCD81CA06B2CF20DCB /* Pods-HostApp-AWSS3StoragePluginTests.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		B1D3EB3F92DEE435E06574FF /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				123E1B1394B63D968F9E5F82 /* Pods_AWSS3StoragePlugin.framework */,
-				E0E48BF7B088D619A5DB365B /* Pods_HostApp.framework */,
-				FEEA49B0B54601935AE662C4 /* Pods_HostApp_AWSS3StoragePluginIntegrationTests.framework */,
-				DB17C6718B17C110B5A0EABD /* Pods_HostApp_AWSS3StoragePluginTests.framework */,
+				2C4E592238332FBE98A8EFCC /* Pods_HostApp.framework */,
+				B046927AA82214FE8EBAD505 /* Pods_AWSS3StoragePlugin.framework */,
+				C561D4445CE5E5EC9AE1F82A /* Pods_HostApp_AWSS3StoragePluginIntegrationTests.framework */,
+				61FF711366B52C765968FF69 /* Pods_HostApp_AWSS3StoragePluginTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		88863618836AAA9F232BBC70 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				8AA99C287F643A1663FFC249 /* Pods-AWSPinpointAnalyticsPlugin.debug.xcconfig */,
+				32FA30478A2D1E3534061E95 /* Pods-AWSPinpointAnalyticsPlugin.release.xcconfig */,
+				F2499EEE6F1A16D91ABBEC87 /* Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig */,
+				6747524CAA6E8CCA1012AF7D /* Pods-AWSPinpointAnalyticsPluginTests.release.xcconfig */,
+				27E93DA4BD82FC2FD4DF47FF /* Pods-HostApp.debug.xcconfig */,
+				0E13BFF24658D710D2D705F9 /* Pods-HostApp.release.xcconfig */,
+				74736155E8B4D97236D354DA /* Pods-HostApp-AWSPinpointAnalyticsPluginIntegrationTests.debug.xcconfig */,
+				57D186E0D4EB50090BFC4EF4 /* Pods-HostApp-AWSPinpointAnalyticsPluginIntegrationTests.release.xcconfig */,
+				1CC23DFF3F8AB7DF86A7A4C2 /* Pods-HostApp-AWSPinpointAnalyticsPluginTests.debug.xcconfig */,
+				5AC7393AE2A0B932F0F38F7F /* Pods-HostApp-AWSPinpointAnalyticsPluginTests.release.xcconfig */,
+				CA768EE32D4775E2865AD120 /* Pods-AWSS3StoragePlugin.debug.xcconfig */,
+				71097652C68FE3406618F5FE /* Pods-AWSS3StoragePlugin.release.xcconfig */,
+				14F5159505C3EAB270C550C8 /* Pods-HostApp-AWSS3StoragePluginIntegrationTests.debug.xcconfig */,
+				822E6B6F97F866C25560BB16 /* Pods-HostApp-AWSS3StoragePluginIntegrationTests.release.xcconfig */,
+				B818ED25ED231DC55ED919CA /* Pods-HostApp-AWSS3StoragePluginTests.debug.xcconfig */,
+				55C25A32F11C14B88865E2C4 /* Pods-HostApp-AWSS3StoragePluginTests.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		B478F5F12374DBF400C4F92B = {
 			isa = PBXGroup;
 			children = (
-				B478F8D023750E9900C4F92B /* HostApp */,
-				B478F7F823750BAC00C4F92B /* AWSS3StoragePlugin */,
-				B478F8B123750BBC00C4F92B /* AWSS3StoragePluginIntegrationTests */,
-				B478F85B23750BB500C4F92B /* AWSS3StoragePluginTests */,
-				B1D3EB3F92DEE435E06574FF /* Frameworks */,
-				9CA31E0105130BB4220ED1A0 /* Pods */,
+				B4FEB7002375DA2200818CD2 /* AWSS3StoragePluginIntegrationTests */,
+				B4FEB6AA2375DA1500818CD2 /* AWSS3StoragePluginTests */,
+				B4FEB6472375DA0600818CD2 /* AWSS3StoragePlugin */,
+				58AE86B816C1A3D8125AD432 /* Frameworks */,
+				B478F6BD2374E0B500C4F92B /* HostApp */,
+				88863618836AAA9F232BBC70 /* Pods */,
 				B478F5FC2374DBF400C4F92B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -345,332 +357,332 @@
 				B478F5FB2374DBF400C4F92B /* AWSS3StoragePlugin.framework */,
 				B478F6492374DCE700C4F92B /* AWSS3StoragePluginTests.xctest */,
 				B478F6582374DD0D00C4F92B /* AWSS3StoragePluginIntegrationTests.xctest */,
-				B478F7E423750B6800C4F92B /* HostApp.app */,
+				B478F6BC2374E0B500C4F92B /* HostApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B478F7F823750BAC00C4F92B /* AWSS3StoragePlugin */ = {
+		B478F6BD2374E0B500C4F92B /* HostApp */ = {
 			isa = PBXGroup;
 			children = (
-				B478F7F923750BAC00C4F92B /* Operation */,
-				B478F80123750BAC00C4F92B /* AWSS3StoragePlugin+Reset.swift */,
-				B478F80223750BAC00C4F92B /* Resources */,
-				B478F80423750BAC00C4F92B /* Dependency */,
-				B478F80B23750BAC00C4F92B /* AWSS3StoragePlugin.swift */,
-				B478F80C23750BAC00C4F92B /* Support */,
-				B478F81A23750BAD00C4F92B /* AWSS3StoragePlugin+ClientBehavior.swift */,
-				B478F81B23750BAD00C4F92B /* AWSS3StoragePlugin+Configure.swift */,
-				B478F81C23750BAD00C4F92B /* Request */,
-				B478F82423750BAD00C4F92B /* Service */,
-			);
-			path = AWSS3StoragePlugin;
-			sourceTree = "<group>";
-		};
-		B478F7F923750BAC00C4F92B /* Operation */ = {
-			isa = PBXGroup;
-			children = (
-				B478F7FA23750BAC00C4F92B /* AWSS3StoragePutDataOperation.swift */,
-				B478F7FB23750BAC00C4F92B /* AWSS3StorageUploadFileOperation.swift */,
-				B478F7FC23750BAC00C4F92B /* AWSS3StorageGetURLOperation.swift */,
-				B478F7FD23750BAC00C4F92B /* AWSS3StorageDownloadFileOperation.swift */,
-				B478F7FE23750BAC00C4F92B /* AWSS3StorageGetDataOperation.swift */,
-				B478F7FF23750BAC00C4F92B /* AWSS3StorageRemoveOperation.swift */,
-				B478F80023750BAC00C4F92B /* AWSS3StorageListOperation.swift */,
-			);
-			path = Operation;
-			sourceTree = "<group>";
-		};
-		B478F80223750BAC00C4F92B /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				B478F80323750BAC00C4F92B /* Info.plist */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
-		B478F80423750BAC00C4F92B /* Dependency */ = {
-			isa = PBXGroup;
-			children = (
-				B478F80523750BAC00C4F92B /* AWSS3TransferUtilityBehavior.swift */,
-				B478F80623750BAC00C4F92B /* AWSS3Adapter.swift */,
-				B478F80723750BAC00C4F92B /* AWSS3Behavior.swift */,
-				B478F80823750BAC00C4F92B /* AWSS3PreSignedURLBuilderBehavior.swift */,
-				B478F80923750BAC00C4F92B /* AWSS3PreSignedURLBuilderAdapter.swift */,
-				B478F80A23750BAC00C4F92B /* AWSS3TransferUtilityAdapter.swift */,
-			);
-			path = Dependency;
-			sourceTree = "<group>";
-		};
-		B478F80C23750BAC00C4F92B /* Support */ = {
-			isa = PBXGroup;
-			children = (
-				B478F80D23750BAC00C4F92B /* Constants */,
-				B478F81123750BAD00C4F92B /* Internal */,
-				B478F81523750BAD00C4F92B /* Utils */,
-			);
-			path = Support;
-			sourceTree = "<group>";
-		};
-		B478F80D23750BAC00C4F92B /* Constants */ = {
-			isa = PBXGroup;
-			children = (
-				B478F80E23750BAC00C4F92B /* StorageErrorConstants.swift */,
-				B478F80F23750BAD00C4F92B /* PluginConstants.swift */,
-				B478F81023750BAD00C4F92B /* PluginErrorConstants.swift */,
-			);
-			path = Constants;
-			sourceTree = "<group>";
-		};
-		B478F81123750BAD00C4F92B /* Internal */ = {
-			isa = PBXGroup;
-			children = (
-				B478F81223750BAD00C4F92B /* UploadSource.swift */,
-				B478F81323750BAD00C4F92B /* StorageOperationReference.swift */,
-				B478F81423750BAD00C4F92B /* StorageEvent.swift */,
-			);
-			path = Internal;
-			sourceTree = "<group>";
-		};
-		B478F81523750BAD00C4F92B /* Utils */ = {
-			isa = PBXGroup;
-			children = (
-				B478F81623750BAD00C4F92B /* StorageRequestUtils.swift */,
-				B478F81723750BAD00C4F92B /* StorageErrorHelper.swift */,
-				B478F81823750BAD00C4F92B /* StorageRequestUtils+Validator.swift */,
-				B478F81923750BAD00C4F92B /* StorageRequestUtils+Getter.swift */,
-			);
-			path = Utils;
-			sourceTree = "<group>";
-		};
-		B478F81C23750BAD00C4F92B /* Request */ = {
-			isa = PBXGroup;
-			children = (
-				B478F81D23750BAD00C4F92B /* StorageDownloadFileRequest+Validate.swift */,
-				B478F81E23750BAD00C4F92B /* StorageUploadFileRequest+Validate.swift */,
-				B478F81F23750BAD00C4F92B /* StoragePutDataRequest+Validate.swift */,
-				B478F82023750BAD00C4F92B /* StorageListRequest+Validate.swift */,
-				B478F82123750BAD00C4F92B /* StorageGetDataRequest+Validate.swift */,
-				B478F82223750BAD00C4F92B /* StorageRemoveRequest+Validate.swift */,
-				B478F82323750BAD00C4F92B /* StorageGetURLRequest+Validate.swift */,
-			);
-			path = Request;
-			sourceTree = "<group>";
-		};
-		B478F82423750BAD00C4F92B /* Service */ = {
-			isa = PBXGroup;
-			children = (
-				B478F82523750BAD00C4F92B /* Storage */,
-			);
-			path = Service;
-			sourceTree = "<group>";
-		};
-		B478F82523750BAD00C4F92B /* Storage */ = {
-			isa = PBXGroup;
-			children = (
-				B478F82623750BAD00C4F92B /* AWSS3StorageService+UploadBehavior.swift */,
-				B478F82723750BAD00C4F92B /* AWSS3StorageService+DeleteBehavior.swift */,
-				B478F82823750BAD00C4F92B /* AWSS3StorageService+EscapeHatchBehavior.swift */,
-				B478F82923750BAD00C4F92B /* AWSS3StorageService+GetPreSignedURLBehavior.swift */,
-				B478F82A23750BAD00C4F92B /* AWSS3StorageServiceBehaviour.swift */,
-				B478F82B23750BAD00C4F92B /* AWSS3StorageService+MultiPartUploadBehavior.swift */,
-				B478F82C23750BAD00C4F92B /* AWSS3StorageService+DownloadBehavior.swift */,
-				B478F82D23750BAD00C4F92B /* AWSS3StorageService+ListBehavior.swift */,
-				B478F82E23750BAD00C4F92B /* AWSS3StorageService.swift */,
-			);
-			path = Storage;
-			sourceTree = "<group>";
-		};
-		B478F85B23750BB500C4F92B /* AWSS3StoragePluginTests */ = {
-			isa = PBXGroup;
-			children = (
-				B478F85C23750BB500C4F92B /* Mocks */,
-				B478F86223750BB500C4F92B /* Operation */,
-				B478F86D23750BB500C4F92B /* AWSS3StoragePluginTestBase.swift */,
-				B478F86E23750BB500C4F92B /* Resources */,
-				B478F87023750BB500C4F92B /* AWSS3StoragePluginResetTests.swift */,
-				B478F87123750BB500C4F92B /* AWSS3StoragePluginConfigureTests.swift */,
-				B478F87223750BB500C4F92B /* AWSS3StoragePluginClientBehaviorTests.swift */,
-				B478F87323750BB500C4F92B /* Support */,
-				B478F87823750BB500C4F92B /* Request */,
-				B478F88023750BB500C4F92B /* Service */,
-			);
-			path = AWSS3StoragePluginTests;
-			sourceTree = "<group>";
-		};
-		B478F85C23750BB500C4F92B /* Mocks */ = {
-			isa = PBXGroup;
-			children = (
-				B478F85D23750BB500C4F92B /* MockAWSS3TransferUtility.swift */,
-				B478F85E23750BB500C4F92B /* MockAWSS3.swift */,
-				B478F85F23750BB500C4F92B /* MockOperationQueue.swift */,
-				B478F86023750BB500C4F92B /* MockAWSS3StorageService.swift */,
-				B478F86123750BB500C4F92B /* MockAWSS3PreSignedURLBuilder.swift */,
-			);
-			path = Mocks;
-			sourceTree = "<group>";
-		};
-		B478F86223750BB500C4F92B /* Operation */ = {
-			isa = PBXGroup;
-			children = (
-				B478F86323750BB500C4F92B /* AWSS3StorageRemoveOperationTests.swift */,
-				B478F86423750BB500C4F92B /* AWSS3StorageUploadFileOperationTests.swift */,
-				B478F86523750BB500C4F92B /* AWSS3StorageGetURLOperationTests.swift */,
-				B478F86623750BB500C4F92B /* AWSS3StorageGetDataOperationTests.swift */,
-				B478F86723750BB500C4F92B /* AWSS3StorageDownloadFileOperationTests.swift */,
-				B478F86823750BB500C4F92B /* AWSS3StorageOperationEventTests */,
-				B478F86A23750BB500C4F92B /* AWSS3StorageOperationTestBase.swift */,
-				B478F86B23750BB500C4F92B /* AWSS3StorageListOperationTests.swift */,
-				B478F86C23750BB500C4F92B /* AWSS3StoragePutDataOperationTests.swift */,
-			);
-			path = Operation;
-			sourceTree = "<group>";
-		};
-		B478F86823750BB500C4F92B /* AWSS3StorageOperationEventTests */ = {
-			isa = PBXGroup;
-			children = (
-				B478F86923750BB500C4F92B /* DownloadFileEventTests.swift */,
-			);
-			path = AWSS3StorageOperationEventTests;
-			sourceTree = "<group>";
-		};
-		B478F86E23750BB500C4F92B /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				B478F86F23750BB500C4F92B /* Info.plist */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
-		B478F87323750BB500C4F92B /* Support */ = {
-			isa = PBXGroup;
-			children = (
-				B478F87423750BB500C4F92B /* Utils */,
-			);
-			path = Support;
-			sourceTree = "<group>";
-		};
-		B478F87423750BB500C4F92B /* Utils */ = {
-			isa = PBXGroup;
-			children = (
-				B478F87523750BB500C4F92B /* StorageRequestUtilsValidatorTests.swift */,
-				B478F87623750BB500C4F92B /* StorageRequestUtilsGetterTests.swift */,
-				B478F87723750BB500C4F92B /* StorageRequestUtilsTests.swift */,
-			);
-			path = Utils;
-			sourceTree = "<group>";
-		};
-		B478F87823750BB500C4F92B /* Request */ = {
-			isa = PBXGroup;
-			children = (
-				B478F87923750BB500C4F92B /* AWSS3StorageGetURLRequestTests.swift */,
-				B478F87A23750BB500C4F92B /* AWSS3StorageRemoveRequestTests.swift */,
-				B478F87B23750BB500C4F92B /* AWSS3StorageUploadFileRequestTests.swift */,
-				B478F87C23750BB500C4F92B /* AWSS3StorageGetDataRequestTests.swift */,
-				B478F87D23750BB500C4F92B /* AWSS3StorageDownloadFileRequestTests.swift */,
-				B478F87E23750BB500C4F92B /* AWSS3StoragePutDataRequestTests.swift */,
-				B478F87F23750BB500C4F92B /* AWSS3StorageListRequestTests.swift */,
-			);
-			path = Request;
-			sourceTree = "<group>";
-		};
-		B478F88023750BB500C4F92B /* Service */ = {
-			isa = PBXGroup;
-			children = (
-				B478F88123750BB500C4F92B /* Storage */,
-			);
-			path = Service;
-			sourceTree = "<group>";
-		};
-		B478F88123750BB500C4F92B /* Storage */ = {
-			isa = PBXGroup;
-			children = (
-				B478F88223750BB500C4F92B /* AWSS3StorageServiceConfigureTests.swift */,
-				B478F88323750BB500C4F92B /* AWSS3StorageServiceGetPreSignedURLBehaviorTests.swift */,
-				B478F88423750BB500C4F92B /* AWSS3StorageServiceDeleteBehaviorTests.swift */,
-				B478F88523750BB500C4F92B /* AWSS3StorageServiceUploadBehaviorTests.swift */,
-				B478F88623750BB500C4F92B /* AWSS3StorageServiceListBehaviorTests.swift */,
-				B478F88723750BB500C4F92B /* AWSS3StorageServiceDownloadBehaviorTests.swift */,
-				B478F88823750BB500C4F92B /* AWSS3StorageServiceTestBase.swift */,
-				B478F88923750BB500C4F92B /* AWSS3StorageServiceEscapeHatchBehaviorTests.swift */,
-				B478F88A23750BB500C4F92B /* AWSS3StorageServiceMultiPartUploadBehaviorTests.swift */,
-			);
-			path = Storage;
-			sourceTree = "<group>";
-		};
-		B478F8B123750BBC00C4F92B /* AWSS3StoragePluginIntegrationTests */ = {
-			isa = PBXGroup;
-			children = (
-				B478F8B223750BBC00C4F92B /* AWSS3StoragePluginTestBase.swift */,
-				B478F8B323750BBC00C4F92B /* Resources */,
-				B478F8B523750BBC00C4F92B /* AWSS3StoragePluginConfigurationTests.swift */,
-				B478F8B623750BBC00C4F92B /* AWSS3StoragePluginOptionsUsabilityTests.swift */,
-				B478F8B723750BBC00C4F92B /* README.md */,
-				B478F8B823750BBC00C4F92B /* AWSS3StoragePluginNegativeTests.swift */,
-				B478F8B923750BBC00C4F92B /* AWSS3StoragePluginBasicIntegrationTests.swift */,
-				B478F8BA23750BBC00C4F92B /* AWSS3StoragePluginAccessLevelTests.swift */,
-				B478F8BB23750BBC00C4F92B /* ResumabilityTests */,
-			);
-			path = AWSS3StoragePluginIntegrationTests;
-			sourceTree = "<group>";
-		};
-		B478F8B323750BBC00C4F92B /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				B478F8B423750BBC00C4F92B /* Info.plist */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
-		B478F8BB23750BBC00C4F92B /* ResumabilityTests */ = {
-			isa = PBXGroup;
-			children = (
-				B478F8BC23750BBC00C4F92B /* AWSS3StoragePluginPutDataResumabilityTests.swift */,
-				B478F8BD23750BBC00C4F92B /* AWSS3StoragePluginDownloadFileResumabilityTests.swift */,
-				B478F8BE23750BBC00C4F92B /* AWSS3StoragePluginUploadFileResumabilityTests.swift */,
-				B478F8BF23750BBC00C4F92B /* AWSS3StoragePluginGetDataResumabilityTests.swift */,
-			);
-			path = ResumabilityTests;
-			sourceTree = "<group>";
-		};
-		B478F8D023750E9900C4F92B /* HostApp */ = {
-			isa = PBXGroup;
-			children = (
-				B478F8D123750E9900C4F92B /* Configuration */,
-				B478F8D423750E9900C4F92B /* Resources */,
-				B478F8DB23750E9900C4F92B /* Source */,
+				B478F6DB2374E0CF00C4F92B /* Configuration */,
+				B478F6D42374E0CF00C4F92B /* Resources */,
+				B478F6D02374E0CE00C4F92B /* Source */,
 			);
 			path = HostApp;
 			sourceTree = "<group>";
 		};
-		B478F8D123750E9900C4F92B /* Configuration */ = {
+		B478F6D02374E0CE00C4F92B /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				B478F8D223750E9900C4F92B /* amplifyconfiguration.json */,
-				B478F8D323750E9900C4F92B /* awsconfiguration.json */,
+				B478F6D12374E0CE00C4F92B /* ViewController.swift */,
+				B478F6D22374E0CE00C4F92B /* AppDelegate.swift */,
+				B478F6D32374E0CE00C4F92B /* SceneDelegate.swift */,
 			);
-			path = Configuration;
+			path = Source;
 			sourceTree = "<group>";
 		};
-		B478F8D423750E9900C4F92B /* Resources */ = {
+		B478F6D42374E0CF00C4F92B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				B478F8D523750E9900C4F92B /* Assets.xcassets */,
-				B478F8D623750E9900C4F92B /* LaunchScreen.storyboard */,
-				B478F8D823750E9900C4F92B /* Main.storyboard */,
-				B478F8DA23750E9900C4F92B /* Info.plist */,
+				B478F6D52374E0CF00C4F92B /* Assets.xcassets */,
+				B478F6D62374E0CF00C4F92B /* LaunchScreen.storyboard */,
+				B478F6D82374E0CF00C4F92B /* Main.storyboard */,
+				B478F6DA2374E0CF00C4F92B /* Info.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		B478F8DB23750E9900C4F92B /* Source */ = {
+		B478F6DB2374E0CF00C4F92B /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
-				B478F8DC23750E9900C4F92B /* ViewController.swift */,
-				B478F8DD23750E9900C4F92B /* AppDelegate.swift */,
-				B478F8DE23750E9900C4F92B /* SceneDelegate.swift */,
+				B478F6DC2374E0CF00C4F92B /* amplifyconfiguration.json */,
+				B478F6DD2374E0CF00C4F92B /* awsconfiguration.json */,
 			);
-			path = Source;
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		B4FEB6472375DA0600818CD2 /* AWSS3StoragePlugin */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6482375DA0600818CD2 /* Operation */,
+				B4FEB6502375DA0600818CD2 /* AWSS3StoragePlugin+Reset.swift */,
+				B4FEB6512375DA0600818CD2 /* Resources */,
+				B4FEB6532375DA0600818CD2 /* Dependency */,
+				B4FEB65A2375DA0600818CD2 /* AWSS3StoragePlugin.swift */,
+				B4FEB65B2375DA0600818CD2 /* Support */,
+				B4FEB6692375DA0600818CD2 /* AWSS3StoragePlugin+ClientBehavior.swift */,
+				B4FEB66A2375DA0600818CD2 /* AWSS3StoragePlugin+Configure.swift */,
+				B4FEB66B2375DA0600818CD2 /* Request */,
+				B4FEB6732375DA0600818CD2 /* Service */,
+			);
+			path = AWSS3StoragePlugin;
+			sourceTree = "<group>";
+		};
+		B4FEB6482375DA0600818CD2 /* Operation */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6492375DA0600818CD2 /* AWSS3StoragePutDataOperation.swift */,
+				B4FEB64A2375DA0600818CD2 /* AWSS3StorageUploadFileOperation.swift */,
+				B4FEB64B2375DA0600818CD2 /* AWSS3StorageGetURLOperation.swift */,
+				B4FEB64C2375DA0600818CD2 /* AWSS3StorageDownloadFileOperation.swift */,
+				B4FEB64D2375DA0600818CD2 /* AWSS3StorageGetDataOperation.swift */,
+				B4FEB64E2375DA0600818CD2 /* AWSS3StorageRemoveOperation.swift */,
+				B4FEB64F2375DA0600818CD2 /* AWSS3StorageListOperation.swift */,
+			);
+			path = Operation;
+			sourceTree = "<group>";
+		};
+		B4FEB6512375DA0600818CD2 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6522375DA0600818CD2 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B4FEB6532375DA0600818CD2 /* Dependency */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6542375DA0600818CD2 /* AWSS3TransferUtilityBehavior.swift */,
+				B4FEB6552375DA0600818CD2 /* AWSS3Adapter.swift */,
+				B4FEB6562375DA0600818CD2 /* AWSS3Behavior.swift */,
+				B4FEB6572375DA0600818CD2 /* AWSS3PreSignedURLBuilderBehavior.swift */,
+				B4FEB6582375DA0600818CD2 /* AWSS3PreSignedURLBuilderAdapter.swift */,
+				B4FEB6592375DA0600818CD2 /* AWSS3TransferUtilityAdapter.swift */,
+			);
+			path = Dependency;
+			sourceTree = "<group>";
+		};
+		B4FEB65B2375DA0600818CD2 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB65C2375DA0600818CD2 /* Constants */,
+				B4FEB6602375DA0600818CD2 /* Internal */,
+				B4FEB6642375DA0600818CD2 /* Utils */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		B4FEB65C2375DA0600818CD2 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB65D2375DA0600818CD2 /* StorageErrorConstants.swift */,
+				B4FEB65E2375DA0600818CD2 /* PluginConstants.swift */,
+				B4FEB65F2375DA0600818CD2 /* PluginErrorConstants.swift */,
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
+		B4FEB6602375DA0600818CD2 /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6612375DA0600818CD2 /* UploadSource.swift */,
+				B4FEB6622375DA0600818CD2 /* StorageOperationReference.swift */,
+				B4FEB6632375DA0600818CD2 /* StorageEvent.swift */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
+		B4FEB6642375DA0600818CD2 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6652375DA0600818CD2 /* StorageRequestUtils.swift */,
+				B4FEB6662375DA0600818CD2 /* StorageErrorHelper.swift */,
+				B4FEB6672375DA0600818CD2 /* StorageRequestUtils+Validator.swift */,
+				B4FEB6682375DA0600818CD2 /* StorageRequestUtils+Getter.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		B4FEB66B2375DA0600818CD2 /* Request */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB66C2375DA0600818CD2 /* StorageDownloadFileRequest+Validate.swift */,
+				B4FEB66D2375DA0600818CD2 /* StorageUploadFileRequest+Validate.swift */,
+				B4FEB66E2375DA0600818CD2 /* StoragePutDataRequest+Validate.swift */,
+				B4FEB66F2375DA0600818CD2 /* StorageListRequest+Validate.swift */,
+				B4FEB6702375DA0600818CD2 /* StorageGetDataRequest+Validate.swift */,
+				B4FEB6712375DA0600818CD2 /* StorageRemoveRequest+Validate.swift */,
+				B4FEB6722375DA0600818CD2 /* StorageGetURLRequest+Validate.swift */,
+			);
+			path = Request;
+			sourceTree = "<group>";
+		};
+		B4FEB6732375DA0600818CD2 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6742375DA0600818CD2 /* Storage */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		B4FEB6742375DA0600818CD2 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6752375DA0600818CD2 /* AWSS3StorageService+UploadBehavior.swift */,
+				B4FEB6762375DA0600818CD2 /* AWSS3StorageService+DeleteBehavior.swift */,
+				B4FEB6772375DA0600818CD2 /* AWSS3StorageService+EscapeHatchBehavior.swift */,
+				B4FEB6782375DA0600818CD2 /* AWSS3StorageService+GetPreSignedURLBehavior.swift */,
+				B4FEB6792375DA0600818CD2 /* AWSS3StorageServiceBehaviour.swift */,
+				B4FEB67A2375DA0600818CD2 /* AWSS3StorageService+MultiPartUploadBehavior.swift */,
+				B4FEB67B2375DA0600818CD2 /* AWSS3StorageService+DownloadBehavior.swift */,
+				B4FEB67C2375DA0600818CD2 /* AWSS3StorageService+ListBehavior.swift */,
+				B4FEB67D2375DA0600818CD2 /* AWSS3StorageService.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		B4FEB6AA2375DA1500818CD2 /* AWSS3StoragePluginTests */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6AB2375DA1500818CD2 /* Mocks */,
+				B4FEB6B12375DA1500818CD2 /* Operation */,
+				B4FEB6BC2375DA1500818CD2 /* AWSS3StoragePluginTestBase.swift */,
+				B4FEB6BD2375DA1500818CD2 /* Resources */,
+				B4FEB6BF2375DA1500818CD2 /* AWSS3StoragePluginResetTests.swift */,
+				B4FEB6C02375DA1500818CD2 /* AWSS3StoragePluginConfigureTests.swift */,
+				B4FEB6C12375DA1500818CD2 /* AWSS3StoragePluginClientBehaviorTests.swift */,
+				B4FEB6C22375DA1500818CD2 /* Support */,
+				B4FEB6C72375DA1500818CD2 /* Request */,
+				B4FEB6CF2375DA1500818CD2 /* Service */,
+			);
+			path = AWSS3StoragePluginTests;
+			sourceTree = "<group>";
+		};
+		B4FEB6AB2375DA1500818CD2 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6AC2375DA1500818CD2 /* MockAWSS3TransferUtility.swift */,
+				B4FEB6AD2375DA1500818CD2 /* MockAWSS3.swift */,
+				B4FEB6AE2375DA1500818CD2 /* MockOperationQueue.swift */,
+				B4FEB6AF2375DA1500818CD2 /* MockAWSS3StorageService.swift */,
+				B4FEB6B02375DA1500818CD2 /* MockAWSS3PreSignedURLBuilder.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
+		B4FEB6B12375DA1500818CD2 /* Operation */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6B22375DA1500818CD2 /* AWSS3StorageRemoveOperationTests.swift */,
+				B4FEB6B32375DA1500818CD2 /* AWSS3StorageUploadFileOperationTests.swift */,
+				B4FEB6B42375DA1500818CD2 /* AWSS3StorageGetURLOperationTests.swift */,
+				B4FEB6B52375DA1500818CD2 /* AWSS3StorageGetDataOperationTests.swift */,
+				B4FEB6B62375DA1500818CD2 /* AWSS3StorageDownloadFileOperationTests.swift */,
+				B4FEB6B72375DA1500818CD2 /* AWSS3StorageOperationEventTests */,
+				B4FEB6B92375DA1500818CD2 /* AWSS3StorageOperationTestBase.swift */,
+				B4FEB6BA2375DA1500818CD2 /* AWSS3StorageListOperationTests.swift */,
+				B4FEB6BB2375DA1500818CD2 /* AWSS3StoragePutDataOperationTests.swift */,
+			);
+			path = Operation;
+			sourceTree = "<group>";
+		};
+		B4FEB6B72375DA1500818CD2 /* AWSS3StorageOperationEventTests */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6B82375DA1500818CD2 /* DownloadFileEventTests.swift */,
+			);
+			path = AWSS3StorageOperationEventTests;
+			sourceTree = "<group>";
+		};
+		B4FEB6BD2375DA1500818CD2 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6BE2375DA1500818CD2 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B4FEB6C22375DA1500818CD2 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6C32375DA1500818CD2 /* Utils */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		B4FEB6C32375DA1500818CD2 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6C42375DA1500818CD2 /* StorageRequestUtilsValidatorTests.swift */,
+				B4FEB6C52375DA1500818CD2 /* StorageRequestUtilsGetterTests.swift */,
+				B4FEB6C62375DA1500818CD2 /* StorageRequestUtilsTests.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		B4FEB6C72375DA1500818CD2 /* Request */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6C82375DA1500818CD2 /* AWSS3StorageGetURLRequestTests.swift */,
+				B4FEB6C92375DA1500818CD2 /* AWSS3StorageRemoveRequestTests.swift */,
+				B4FEB6CA2375DA1500818CD2 /* AWSS3StorageUploadFileRequestTests.swift */,
+				B4FEB6CB2375DA1500818CD2 /* AWSS3StorageGetDataRequestTests.swift */,
+				B4FEB6CC2375DA1500818CD2 /* AWSS3StorageDownloadFileRequestTests.swift */,
+				B4FEB6CD2375DA1500818CD2 /* AWSS3StoragePutDataRequestTests.swift */,
+				B4FEB6CE2375DA1500818CD2 /* AWSS3StorageListRequestTests.swift */,
+			);
+			path = Request;
+			sourceTree = "<group>";
+		};
+		B4FEB6CF2375DA1500818CD2 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6D02375DA1500818CD2 /* Storage */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		B4FEB6D02375DA1500818CD2 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB6D12375DA1500818CD2 /* AWSS3StorageServiceConfigureTests.swift */,
+				B4FEB6D22375DA1500818CD2 /* AWSS3StorageServiceGetPreSignedURLBehaviorTests.swift */,
+				B4FEB6D32375DA1500818CD2 /* AWSS3StorageServiceDeleteBehaviorTests.swift */,
+				B4FEB6D42375DA1500818CD2 /* AWSS3StorageServiceUploadBehaviorTests.swift */,
+				B4FEB6D52375DA1500818CD2 /* AWSS3StorageServiceListBehaviorTests.swift */,
+				B4FEB6D62375DA1500818CD2 /* AWSS3StorageServiceDownloadBehaviorTests.swift */,
+				B4FEB6D72375DA1500818CD2 /* AWSS3StorageServiceTestBase.swift */,
+				B4FEB6D82375DA1500818CD2 /* AWSS3StorageServiceEscapeHatchBehaviorTests.swift */,
+				B4FEB6D92375DA1500818CD2 /* AWSS3StorageServiceMultiPartUploadBehaviorTests.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		B4FEB7002375DA2200818CD2 /* AWSS3StoragePluginIntegrationTests */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB7012375DA2200818CD2 /* AWSS3StoragePluginTestBase.swift */,
+				B4FEB7022375DA2200818CD2 /* Resources */,
+				B4FEB7042375DA2200818CD2 /* AWSS3StoragePluginConfigurationTests.swift */,
+				B4FEB7052375DA2200818CD2 /* AWSS3StoragePluginOptionsUsabilityTests.swift */,
+				B4FEB7062375DA2200818CD2 /* README.md */,
+				B4FEB7072375DA2200818CD2 /* AWSS3StoragePluginNegativeTests.swift */,
+				B4FEB7082375DA2200818CD2 /* AWSS3StoragePluginBasicIntegrationTests.swift */,
+				B4FEB7092375DA2200818CD2 /* AWSS3StoragePluginAccessLevelTests.swift */,
+				B4FEB70A2375DA2200818CD2 /* ResumabilityTests */,
+			);
+			path = AWSS3StoragePluginIntegrationTests;
+			sourceTree = "<group>";
+		};
+		B4FEB7022375DA2200818CD2 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB7032375DA2200818CD2 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B4FEB70A2375DA2200818CD2 /* ResumabilityTests */ = {
+			isa = PBXGroup;
+			children = (
+				B4FEB70B2375DA2200818CD2 /* AWSS3StoragePluginPutDataResumabilityTests.swift */,
+				B4FEB70C2375DA2200818CD2 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift */,
+				B4FEB70D2375DA2200818CD2 /* AWSS3StoragePluginUploadFileResumabilityTests.swift */,
+				B4FEB70E2375DA2200818CD2 /* AWSS3StoragePluginGetDataResumabilityTests.swift */,
+			);
+			path = ResumabilityTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -690,7 +702,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B478F6032374DBF400C4F92B /* Build configuration list for PBXNativeTarget "AWSS3StoragePlugin" */;
 			buildPhases = (
-				13985352B26BD5BB674522AD /* [CP] Check Pods Manifest.lock */,
+				DE75EF23119BC9907BA8D9A9 /* [CP] Check Pods Manifest.lock */,
 				B478F5F62374DBF400C4F92B /* Headers */,
 				B478F5F72374DBF400C4F92B /* Sources */,
 				B478F5F82374DBF400C4F92B /* Frameworks */,
@@ -711,13 +723,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B478F6532374DCE700C4F92B /* Build configuration list for PBXNativeTarget "AWSS3StoragePluginTests" */;
 			buildPhases = (
-				D27B9EE4ACC1A5D1116BECF1 /* [CP] Check Pods Manifest.lock */,
+				FF6A04A34E9D33E452FBAAE7 /* [CP] Check Pods Manifest.lock */,
 				B478F6452374DCE700C4F92B /* Sources */,
 				B478F6462374DCE700C4F92B /* Frameworks */,
 				B478F6472374DCE700C4F92B /* Resources */,
 				B478F6622374DE0100C4F92B /* Swift Lint */,
 				B478F6642374DE2B00C4F92B /* Swift Format */,
-				F5D0CE65244AF1937C93F10C /* [CP] Embed Pods Frameworks */,
+				9C7CF358813B6E67D5E8EB6E /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -733,34 +745,34 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B478F65F2374DD0D00C4F92B /* Build configuration list for PBXNativeTarget "AWSS3StoragePluginIntegrationTests" */;
 			buildPhases = (
-				D704C9CDC49AD26DBF4B53D3 /* [CP] Check Pods Manifest.lock */,
+				33B6A0041F706CB5D20DA581 /* [CP] Check Pods Manifest.lock */,
 				B478F6542374DD0D00C4F92B /* Sources */,
 				B478F6552374DD0D00C4F92B /* Frameworks */,
 				B478F6562374DD0D00C4F92B /* Resources */,
 				B478F6632374DE1200C4F92B /* Swift Lint */,
 				B478F6652374DE3700C4F92B /* Swift Format */,
-				B8F97D260B7641C168374F6F /* [CP] Embed Pods Frameworks */,
+				40279E4DF7857DB70CA07B3F /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				B478F8CF23750D9D00C4F92B /* PBXTargetDependency */,
-				B478F8CD23750D4200C4F92B /* PBXTargetDependency */,
+				B478F7802375048100C4F92B /* PBXTargetDependency */,
+				B478F7762375044100C4F92B /* PBXTargetDependency */,
 			);
 			name = AWSS3StoragePluginIntegrationTests;
 			productName = IntegrationTest;
 			productReference = B478F6582374DD0D00C4F92B /* AWSS3StoragePluginIntegrationTests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
-		B478F7E323750B6800C4F92B /* HostApp */ = {
+		B478F6BB2374E0B500C4F92B /* HostApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B478F7F723750B6900C4F92B /* Build configuration list for PBXNativeTarget "HostApp" */;
+			buildConfigurationList = B478F6CF2374E0B600C4F92B /* Build configuration list for PBXNativeTarget "HostApp" */;
 			buildPhases = (
-				9BF38F6AA9BAE47813DB3AF9 /* [CP] Check Pods Manifest.lock */,
-				B478F7E023750B6800C4F92B /* Sources */,
-				B478F7E123750B6800C4F92B /* Frameworks */,
-				B478F7E223750B6800C4F92B /* Resources */,
-				C585DBFAC502F31A0DD72623 /* [CP] Embed Pods Frameworks */,
+				3876F7212C861C13EC23C0F0 /* [CP] Check Pods Manifest.lock */,
+				B478F6B82374E0B500C4F92B /* Sources */,
+				B478F6B92374E0B500C4F92B /* Frameworks */,
+				B478F6BA2374E0B500C4F92B /* Resources */,
+				1662582BC8B1BF34AFD50347 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -768,7 +780,7 @@
 			);
 			name = HostApp;
 			productName = HostApp;
-			productReference = B478F7E423750B6800C4F92B /* HostApp.app */;
+			productReference = B478F6BC2374E0B500C4F92B /* HostApp.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -789,9 +801,9 @@
 					};
 					B478F6572374DD0D00C4F92B = {
 						CreatedOnToolsVersion = 11.1;
-						TestTargetID = B478F7E323750B6800C4F92B;
+						TestTargetID = B478F6BB2374E0B500C4F92B;
 					};
-					B478F7E323750B6800C4F92B = {
+					B478F6BB2374E0B500C4F92B = {
 						CreatedOnToolsVersion = 11.1;
 					};
 				};
@@ -812,7 +824,7 @@
 				B478F5FA2374DBF400C4F92B /* AWSS3StoragePlugin */,
 				B478F6482374DCE700C4F92B /* AWSS3StoragePluginTests */,
 				B478F6572374DD0D00C4F92B /* AWSS3StoragePluginIntegrationTests */,
-				B478F7E323750B6800C4F92B /* HostApp */,
+				B478F6BB2374E0B500C4F92B /* HostApp */,
 			);
 		};
 /* End PBXProject section */
@@ -836,26 +848,43 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B478F8C423750BBC00C4F92B /* README.md in Resources */,
+				B4FEB7132375DA2200818CD2 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B478F7E223750B6800C4F92B /* Resources */ = {
+		B478F6BA2374E0B500C4F92B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B478F8E023750E9900C4F92B /* awsconfiguration.json in Resources */,
-				B478F8E323750E9900C4F92B /* Main.storyboard in Resources */,
-				B478F8E223750E9900C4F92B /* LaunchScreen.storyboard in Resources */,
-				B478F8E123750E9900C4F92B /* Assets.xcassets in Resources */,
-				B478F8DF23750E9900C4F92B /* amplifyconfiguration.json in Resources */,
+				B478F6E32374E0CF00C4F92B /* Main.storyboard in Resources */,
+				B478F6E62374E0CF00C4F92B /* awsconfiguration.json in Resources */,
+				B478F6E52374E0CF00C4F92B /* amplifyconfiguration.json in Resources */,
+				B478F6E12374E0CF00C4F92B /* Assets.xcassets in Resources */,
+				B478F6E22374E0CF00C4F92B /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		13985352B26BD5BB674522AD /* [CP] Check Pods Manifest.lock */ = {
+		1662582BC8B1BF34AFD50347 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		33B6A0041F706CB5D20DA581 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -870,14 +899,14 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-AWSS3StoragePlugin-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-HostApp-AWSS3StoragePluginIntegrationTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		9BF38F6AA9BAE47813DB3AF9 /* [CP] Check Pods Manifest.lock */ = {
+		3876F7212C861C13EC23C0F0 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -897,6 +926,40 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		40279E4DF7857DB70CA07B3F /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSS3StoragePluginIntegrationTests/Pods-HostApp-AWSS3StoragePluginIntegrationTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSS3StoragePluginIntegrationTests/Pods-HostApp-AWSS3StoragePluginIntegrationTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSS3StoragePluginIntegrationTests/Pods-HostApp-AWSS3StoragePluginIntegrationTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9C7CF358813B6E67D5E8EB6E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSS3StoragePluginTests/Pods-HostApp-AWSS3StoragePluginTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSS3StoragePluginTests/Pods-HostApp-AWSS3StoragePluginTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSS3StoragePluginTests/Pods-HostApp-AWSS3StoragePluginTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		B478F6602374DDAE00C4F92B /* Swift Format */ = {
@@ -969,7 +1032,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/Changeme\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
 		};
 		B478F6642374DE2B00C4F92B /* Swift Format */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1005,43 +1068,31 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/CHANGEME\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
 		};
-		B8F97D260B7641C168374F6F /* [CP] Embed Pods Frameworks */ = {
+		DE75EF23119BC9907BA8D9A9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSS3StoragePluginIntegrationTests/Pods-HostApp-AWSS3StoragePluginIntegrationTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSS3StoragePluginIntegrationTests/Pods-HostApp-AWSS3StoragePluginIntegrationTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AWSS3StoragePlugin-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSS3StoragePluginIntegrationTests/Pods-HostApp-AWSS3StoragePluginIntegrationTests-frameworks.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C585DBFAC502F31A0DD72623 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D27B9EE4ACC1A5D1116BECF1 /* [CP] Check Pods Manifest.lock */ = {
+		FF6A04A34E9D33E452FBAAE7 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1063,45 +1114,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		D704C9CDC49AD26DBF4B53D3 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-HostApp-AWSS3StoragePluginIntegrationTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F5D0CE65244AF1937C93F10C /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSS3StoragePluginTests/Pods-HostApp-AWSS3StoragePluginTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSS3StoragePluginTests/Pods-HostApp-AWSS3StoragePluginTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSS3StoragePluginTests/Pods-HostApp-AWSS3StoragePluginTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -1109,49 +1121,49 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B478F85023750BAD00C4F92B /* StorageRemoveRequest+Validate.swift in Sources */,
-				B478F83523750BAD00C4F92B /* AWSS3StorageListOperation.swift in Sources */,
-				B478F83823750BAD00C4F92B /* AWSS3TransferUtilityBehavior.swift in Sources */,
-				B478F83F23750BAD00C4F92B /* StorageErrorConstants.swift in Sources */,
-				B478F85423750BAD00C4F92B /* AWSS3StorageService+EscapeHatchBehavior.swift in Sources */,
-				B478F83123750BAD00C4F92B /* AWSS3StorageGetURLOperation.swift in Sources */,
-				B478F83D23750BAD00C4F92B /* AWSS3TransferUtilityAdapter.swift in Sources */,
-				B478F84923750BAD00C4F92B /* AWSS3StoragePlugin+ClientBehavior.swift in Sources */,
-				B478F83E23750BAD00C4F92B /* AWSS3StoragePlugin.swift in Sources */,
-				B478F85923750BAD00C4F92B /* AWSS3StorageService+ListBehavior.swift in Sources */,
-				B478F83923750BAD00C4F92B /* AWSS3Adapter.swift in Sources */,
-				B478F83223750BAD00C4F92B /* AWSS3StorageDownloadFileOperation.swift in Sources */,
-				B478F84623750BAD00C4F92B /* StorageErrorHelper.swift in Sources */,
-				B478F84823750BAD00C4F92B /* StorageRequestUtils+Getter.swift in Sources */,
-				B478F85723750BAD00C4F92B /* AWSS3StorageService+MultiPartUploadBehavior.swift in Sources */,
-				B478F83B23750BAD00C4F92B /* AWSS3PreSignedURLBuilderBehavior.swift in Sources */,
-				B478F84F23750BAD00C4F92B /* StorageGetDataRequest+Validate.swift in Sources */,
-				B478F83323750BAD00C4F92B /* AWSS3StorageGetDataOperation.swift in Sources */,
-				B478F83623750BAD00C4F92B /* AWSS3StoragePlugin+Reset.swift in Sources */,
-				B478F83423750BAD00C4F92B /* AWSS3StorageRemoveOperation.swift in Sources */,
-				B478F84D23750BAD00C4F92B /* StoragePutDataRequest+Validate.swift in Sources */,
-				B478F84A23750BAD00C4F92B /* AWSS3StoragePlugin+Configure.swift in Sources */,
-				B478F85523750BAD00C4F92B /* AWSS3StorageService+GetPreSignedURLBehavior.swift in Sources */,
-				B478F83023750BAD00C4F92B /* AWSS3StorageUploadFileOperation.swift in Sources */,
-				B478F85123750BAD00C4F92B /* StorageGetURLRequest+Validate.swift in Sources */,
-				B478F84723750BAD00C4F92B /* StorageRequestUtils+Validator.swift in Sources */,
-				B478F83C23750BAD00C4F92B /* AWSS3PreSignedURLBuilderAdapter.swift in Sources */,
-				B478F84E23750BAD00C4F92B /* StorageListRequest+Validate.swift in Sources */,
-				B478F84023750BAD00C4F92B /* PluginConstants.swift in Sources */,
-				B478F84223750BAD00C4F92B /* UploadSource.swift in Sources */,
-				B478F85A23750BAD00C4F92B /* AWSS3StorageService.swift in Sources */,
-				B478F84123750BAD00C4F92B /* PluginErrorConstants.swift in Sources */,
-				B478F84523750BAD00C4F92B /* StorageRequestUtils.swift in Sources */,
-				B478F85323750BAD00C4F92B /* AWSS3StorageService+DeleteBehavior.swift in Sources */,
-				B478F84B23750BAD00C4F92B /* StorageDownloadFileRequest+Validate.swift in Sources */,
-				B478F84423750BAD00C4F92B /* StorageEvent.swift in Sources */,
-				B478F82F23750BAD00C4F92B /* AWSS3StoragePutDataOperation.swift in Sources */,
-				B478F83A23750BAD00C4F92B /* AWSS3Behavior.swift in Sources */,
-				B478F85623750BAD00C4F92B /* AWSS3StorageServiceBehaviour.swift in Sources */,
-				B478F85223750BAD00C4F92B /* AWSS3StorageService+UploadBehavior.swift in Sources */,
-				B478F85823750BAD00C4F92B /* AWSS3StorageService+DownloadBehavior.swift in Sources */,
-				B478F84323750BAD00C4F92B /* StorageOperationReference.swift in Sources */,
-				B478F84C23750BAD00C4F92B /* StorageUploadFileRequest+Validate.swift in Sources */,
+				B4FEB69F2375DA0600818CD2 /* StorageRemoveRequest+Validate.swift in Sources */,
+				B4FEB6842375DA0600818CD2 /* AWSS3StorageListOperation.swift in Sources */,
+				B4FEB6872375DA0600818CD2 /* AWSS3TransferUtilityBehavior.swift in Sources */,
+				B4FEB68E2375DA0600818CD2 /* StorageErrorConstants.swift in Sources */,
+				B4FEB6A32375DA0600818CD2 /* AWSS3StorageService+EscapeHatchBehavior.swift in Sources */,
+				B4FEB6802375DA0600818CD2 /* AWSS3StorageGetURLOperation.swift in Sources */,
+				B4FEB68C2375DA0600818CD2 /* AWSS3TransferUtilityAdapter.swift in Sources */,
+				B4FEB6982375DA0600818CD2 /* AWSS3StoragePlugin+ClientBehavior.swift in Sources */,
+				B4FEB68D2375DA0600818CD2 /* AWSS3StoragePlugin.swift in Sources */,
+				B4FEB6A82375DA0600818CD2 /* AWSS3StorageService+ListBehavior.swift in Sources */,
+				B4FEB6882375DA0600818CD2 /* AWSS3Adapter.swift in Sources */,
+				B4FEB6812375DA0600818CD2 /* AWSS3StorageDownloadFileOperation.swift in Sources */,
+				B4FEB6952375DA0600818CD2 /* StorageErrorHelper.swift in Sources */,
+				B4FEB6972375DA0600818CD2 /* StorageRequestUtils+Getter.swift in Sources */,
+				B4FEB6A62375DA0600818CD2 /* AWSS3StorageService+MultiPartUploadBehavior.swift in Sources */,
+				B4FEB68A2375DA0600818CD2 /* AWSS3PreSignedURLBuilderBehavior.swift in Sources */,
+				B4FEB69E2375DA0600818CD2 /* StorageGetDataRequest+Validate.swift in Sources */,
+				B4FEB6822375DA0600818CD2 /* AWSS3StorageGetDataOperation.swift in Sources */,
+				B4FEB6852375DA0600818CD2 /* AWSS3StoragePlugin+Reset.swift in Sources */,
+				B4FEB6832375DA0600818CD2 /* AWSS3StorageRemoveOperation.swift in Sources */,
+				B4FEB69C2375DA0600818CD2 /* StoragePutDataRequest+Validate.swift in Sources */,
+				B4FEB6992375DA0600818CD2 /* AWSS3StoragePlugin+Configure.swift in Sources */,
+				B4FEB6A42375DA0600818CD2 /* AWSS3StorageService+GetPreSignedURLBehavior.swift in Sources */,
+				B4FEB67F2375DA0600818CD2 /* AWSS3StorageUploadFileOperation.swift in Sources */,
+				B4FEB6A02375DA0600818CD2 /* StorageGetURLRequest+Validate.swift in Sources */,
+				B4FEB6962375DA0600818CD2 /* StorageRequestUtils+Validator.swift in Sources */,
+				B4FEB68B2375DA0600818CD2 /* AWSS3PreSignedURLBuilderAdapter.swift in Sources */,
+				B4FEB69D2375DA0600818CD2 /* StorageListRequest+Validate.swift in Sources */,
+				B4FEB68F2375DA0600818CD2 /* PluginConstants.swift in Sources */,
+				B4FEB6912375DA0600818CD2 /* UploadSource.swift in Sources */,
+				B4FEB6A92375DA0600818CD2 /* AWSS3StorageService.swift in Sources */,
+				B4FEB6902375DA0600818CD2 /* PluginErrorConstants.swift in Sources */,
+				B4FEB6942375DA0600818CD2 /* StorageRequestUtils.swift in Sources */,
+				B4FEB6A22375DA0600818CD2 /* AWSS3StorageService+DeleteBehavior.swift in Sources */,
+				B4FEB69A2375DA0600818CD2 /* StorageDownloadFileRequest+Validate.swift in Sources */,
+				B4FEB6932375DA0600818CD2 /* StorageEvent.swift in Sources */,
+				B4FEB67E2375DA0600818CD2 /* AWSS3StoragePutDataOperation.swift in Sources */,
+				B4FEB6892375DA0600818CD2 /* AWSS3Behavior.swift in Sources */,
+				B4FEB6A52375DA0600818CD2 /* AWSS3StorageServiceBehaviour.swift in Sources */,
+				B4FEB6A12375DA0600818CD2 /* AWSS3StorageService+UploadBehavior.swift in Sources */,
+				B4FEB6A72375DA0600818CD2 /* AWSS3StorageService+DownloadBehavior.swift in Sources */,
+				B4FEB6922375DA0600818CD2 /* StorageOperationReference.swift in Sources */,
+				B4FEB69B2375DA0600818CD2 /* StorageUploadFileRequest+Validate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1159,43 +1171,43 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B478F88B23750BB500C4F92B /* MockAWSS3TransferUtility.swift in Sources */,
-				B478F89C23750BB500C4F92B /* AWSS3StoragePluginConfigureTests.swift in Sources */,
-				B478F8A623750BB500C4F92B /* AWSS3StoragePutDataRequestTests.swift in Sources */,
-				B478F8A823750BB500C4F92B /* AWSS3StorageServiceConfigureTests.swift in Sources */,
-				B478F89823750BB500C4F92B /* AWSS3StoragePutDataOperationTests.swift in Sources */,
-				B478F88E23750BB500C4F92B /* MockAWSS3StorageService.swift in Sources */,
-				B478F8AB23750BB500C4F92B /* AWSS3StorageServiceUploadBehaviorTests.swift in Sources */,
-				B478F88C23750BB500C4F92B /* MockAWSS3.swift in Sources */,
-				B478F89D23750BB500C4F92B /* AWSS3StoragePluginClientBehaviorTests.swift in Sources */,
-				B478F8AA23750BB500C4F92B /* AWSS3StorageServiceDeleteBehaviorTests.swift in Sources */,
-				B478F89923750BB500C4F92B /* AWSS3StoragePluginTestBase.swift in Sources */,
-				B478F89E23750BB500C4F92B /* StorageRequestUtilsValidatorTests.swift in Sources */,
-				B478F89023750BB500C4F92B /* AWSS3StorageRemoveOperationTests.swift in Sources */,
-				B478F8B023750BB500C4F92B /* AWSS3StorageServiceMultiPartUploadBehaviorTests.swift in Sources */,
-				B478F88D23750BB500C4F92B /* MockOperationQueue.swift in Sources */,
-				B478F8A323750BB500C4F92B /* AWSS3StorageUploadFileRequestTests.swift in Sources */,
-				B478F89123750BB500C4F92B /* AWSS3StorageUploadFileOperationTests.swift in Sources */,
-				B478F89B23750BB500C4F92B /* AWSS3StoragePluginResetTests.swift in Sources */,
-				B478F8A423750BB500C4F92B /* AWSS3StorageGetDataRequestTests.swift in Sources */,
-				B478F8A923750BB500C4F92B /* AWSS3StorageServiceGetPreSignedURLBehaviorTests.swift in Sources */,
-				B478F8AE23750BB500C4F92B /* AWSS3StorageServiceTestBase.swift in Sources */,
-				B478F8A723750BB500C4F92B /* AWSS3StorageListRequestTests.swift in Sources */,
-				B478F89723750BB500C4F92B /* AWSS3StorageListOperationTests.swift in Sources */,
-				B478F89523750BB500C4F92B /* DownloadFileEventTests.swift in Sources */,
-				B478F8A223750BB500C4F92B /* AWSS3StorageRemoveRequestTests.swift in Sources */,
-				B478F8AD23750BB500C4F92B /* AWSS3StorageServiceDownloadBehaviorTests.swift in Sources */,
-				B478F89223750BB500C4F92B /* AWSS3StorageGetURLOperationTests.swift in Sources */,
-				B478F89623750BB500C4F92B /* AWSS3StorageOperationTestBase.swift in Sources */,
-				B478F8AF23750BB500C4F92B /* AWSS3StorageServiceEscapeHatchBehaviorTests.swift in Sources */,
-				B478F89F23750BB500C4F92B /* StorageRequestUtilsGetterTests.swift in Sources */,
-				B478F89423750BB500C4F92B /* AWSS3StorageDownloadFileOperationTests.swift in Sources */,
-				B478F88F23750BB500C4F92B /* MockAWSS3PreSignedURLBuilder.swift in Sources */,
-				B478F8AC23750BB500C4F92B /* AWSS3StorageServiceListBehaviorTests.swift in Sources */,
-				B478F8A023750BB500C4F92B /* StorageRequestUtilsTests.swift in Sources */,
-				B478F8A523750BB500C4F92B /* AWSS3StorageDownloadFileRequestTests.swift in Sources */,
-				B478F8A123750BB500C4F92B /* AWSS3StorageGetURLRequestTests.swift in Sources */,
-				B478F89323750BB500C4F92B /* AWSS3StorageGetDataOperationTests.swift in Sources */,
+				B4FEB6DA2375DA1500818CD2 /* MockAWSS3TransferUtility.swift in Sources */,
+				B4FEB6EB2375DA1500818CD2 /* AWSS3StoragePluginConfigureTests.swift in Sources */,
+				B4FEB6F52375DA1600818CD2 /* AWSS3StoragePutDataRequestTests.swift in Sources */,
+				B4FEB6F72375DA1600818CD2 /* AWSS3StorageServiceConfigureTests.swift in Sources */,
+				B4FEB6E72375DA1500818CD2 /* AWSS3StoragePutDataOperationTests.swift in Sources */,
+				B4FEB6DD2375DA1500818CD2 /* MockAWSS3StorageService.swift in Sources */,
+				B4FEB6FA2375DA1600818CD2 /* AWSS3StorageServiceUploadBehaviorTests.swift in Sources */,
+				B4FEB6DB2375DA1500818CD2 /* MockAWSS3.swift in Sources */,
+				B4FEB6EC2375DA1500818CD2 /* AWSS3StoragePluginClientBehaviorTests.swift in Sources */,
+				B4FEB6F92375DA1600818CD2 /* AWSS3StorageServiceDeleteBehaviorTests.swift in Sources */,
+				B4FEB6E82375DA1500818CD2 /* AWSS3StoragePluginTestBase.swift in Sources */,
+				B4FEB6ED2375DA1500818CD2 /* StorageRequestUtilsValidatorTests.swift in Sources */,
+				B4FEB6DF2375DA1500818CD2 /* AWSS3StorageRemoveOperationTests.swift in Sources */,
+				B4FEB6FF2375DA1600818CD2 /* AWSS3StorageServiceMultiPartUploadBehaviorTests.swift in Sources */,
+				B4FEB6DC2375DA1500818CD2 /* MockOperationQueue.swift in Sources */,
+				B4FEB6F22375DA1600818CD2 /* AWSS3StorageUploadFileRequestTests.swift in Sources */,
+				B4FEB6E02375DA1500818CD2 /* AWSS3StorageUploadFileOperationTests.swift in Sources */,
+				B4FEB6EA2375DA1500818CD2 /* AWSS3StoragePluginResetTests.swift in Sources */,
+				B4FEB6F32375DA1600818CD2 /* AWSS3StorageGetDataRequestTests.swift in Sources */,
+				B4FEB6F82375DA1600818CD2 /* AWSS3StorageServiceGetPreSignedURLBehaviorTests.swift in Sources */,
+				B4FEB6FD2375DA1600818CD2 /* AWSS3StorageServiceTestBase.swift in Sources */,
+				B4FEB6F62375DA1600818CD2 /* AWSS3StorageListRequestTests.swift in Sources */,
+				B4FEB6E62375DA1500818CD2 /* AWSS3StorageListOperationTests.swift in Sources */,
+				B4FEB6E42375DA1500818CD2 /* DownloadFileEventTests.swift in Sources */,
+				B4FEB6F12375DA1600818CD2 /* AWSS3StorageRemoveRequestTests.swift in Sources */,
+				B4FEB6FC2375DA1600818CD2 /* AWSS3StorageServiceDownloadBehaviorTests.swift in Sources */,
+				B4FEB6E12375DA1500818CD2 /* AWSS3StorageGetURLOperationTests.swift in Sources */,
+				B4FEB6E52375DA1500818CD2 /* AWSS3StorageOperationTestBase.swift in Sources */,
+				B4FEB6FE2375DA1600818CD2 /* AWSS3StorageServiceEscapeHatchBehaviorTests.swift in Sources */,
+				B4FEB6EE2375DA1500818CD2 /* StorageRequestUtilsGetterTests.swift in Sources */,
+				B4FEB6E32375DA1500818CD2 /* AWSS3StorageDownloadFileOperationTests.swift in Sources */,
+				B4FEB6DE2375DA1500818CD2 /* MockAWSS3PreSignedURLBuilder.swift in Sources */,
+				B4FEB6FB2375DA1600818CD2 /* AWSS3StorageServiceListBehaviorTests.swift in Sources */,
+				B4FEB6EF2375DA1500818CD2 /* StorageRequestUtilsTests.swift in Sources */,
+				B4FEB6F42375DA1600818CD2 /* AWSS3StorageDownloadFileRequestTests.swift in Sources */,
+				B4FEB6F02375DA1600818CD2 /* AWSS3StorageGetURLRequestTests.swift in Sources */,
+				B4FEB6E22375DA1500818CD2 /* AWSS3StorageGetDataOperationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1203,26 +1215,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B478F8CA23750BBC00C4F92B /* AWSS3StoragePluginUploadFileResumabilityTests.swift in Sources */,
-				B478F8C323750BBC00C4F92B /* AWSS3StoragePluginOptionsUsabilityTests.swift in Sources */,
-				B478F8C023750BBC00C4F92B /* AWSS3StoragePluginTestBase.swift in Sources */,
-				B478F8C923750BBC00C4F92B /* AWSS3StoragePluginDownloadFileResumabilityTests.swift in Sources */,
-				B478F8C223750BBC00C4F92B /* AWSS3StoragePluginConfigurationTests.swift in Sources */,
-				B478F8C723750BBC00C4F92B /* AWSS3StoragePluginAccessLevelTests.swift in Sources */,
-				B478F8C623750BBC00C4F92B /* AWSS3StoragePluginBasicIntegrationTests.swift in Sources */,
-				B478F8CB23750BBC00C4F92B /* AWSS3StoragePluginGetDataResumabilityTests.swift in Sources */,
-				B478F8C523750BBC00C4F92B /* AWSS3StoragePluginNegativeTests.swift in Sources */,
-				B478F8C823750BBC00C4F92B /* AWSS3StoragePluginPutDataResumabilityTests.swift in Sources */,
+				B4FEB7192375DA2200818CD2 /* AWSS3StoragePluginUploadFileResumabilityTests.swift in Sources */,
+				B4FEB7122375DA2200818CD2 /* AWSS3StoragePluginOptionsUsabilityTests.swift in Sources */,
+				B4FEB70F2375DA2200818CD2 /* AWSS3StoragePluginTestBase.swift in Sources */,
+				B4FEB7182375DA2200818CD2 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift in Sources */,
+				B4FEB7112375DA2200818CD2 /* AWSS3StoragePluginConfigurationTests.swift in Sources */,
+				B4FEB7162375DA2200818CD2 /* AWSS3StoragePluginAccessLevelTests.swift in Sources */,
+				B4FEB7152375DA2200818CD2 /* AWSS3StoragePluginBasicIntegrationTests.swift in Sources */,
+				B4FEB71A2375DA2200818CD2 /* AWSS3StoragePluginGetDataResumabilityTests.swift in Sources */,
+				B4FEB7142375DA2200818CD2 /* AWSS3StoragePluginNegativeTests.swift in Sources */,
+				B4FEB7172375DA2200818CD2 /* AWSS3StoragePluginPutDataResumabilityTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B478F7E023750B6800C4F92B /* Sources */ = {
+		B478F6B82374E0B500C4F92B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B478F8E623750E9900C4F92B /* AppDelegate.swift in Sources */,
-				B478F8E523750E9900C4F92B /* ViewController.swift in Sources */,
-				B478F8E723750E9900C4F92B /* SceneDelegate.swift in Sources */,
+				B478F6DF2374E0CF00C4F92B /* AppDelegate.swift in Sources */,
+				B478F6DE2374E0CF00C4F92B /* ViewController.swift in Sources */,
+				B478F6E02374E0CF00C4F92B /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1234,31 +1246,31 @@
 			target = B478F5FA2374DBF400C4F92B /* AWSS3StoragePlugin */;
 			targetProxy = B478F64F2374DCE700C4F92B /* PBXContainerItemProxy */;
 		};
-		B478F8CD23750D4200C4F92B /* PBXTargetDependency */ = {
+		B478F7762375044100C4F92B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B478F7E323750B6800C4F92B /* HostApp */;
-			targetProxy = B478F8CC23750D4200C4F92B /* PBXContainerItemProxy */;
+			target = B478F6BB2374E0B500C4F92B /* HostApp */;
+			targetProxy = B478F7752375044100C4F92B /* PBXContainerItemProxy */;
 		};
-		B478F8CF23750D9D00C4F92B /* PBXTargetDependency */ = {
+		B478F7802375048100C4F92B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B478F5FA2374DBF400C4F92B /* AWSS3StoragePlugin */;
-			targetProxy = B478F8CE23750D9D00C4F92B /* PBXContainerItemProxy */;
+			targetProxy = B478F77F2375048100C4F92B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		B478F8D623750E9900C4F92B /* LaunchScreen.storyboard */ = {
+		B478F6D62374E0CF00C4F92B /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				B478F8D723750E9900C4F92B /* Base */,
+				B478F6D72374E0CF00C4F92B /* Base */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
-		B478F8D823750E9900C4F92B /* Main.storyboard */ = {
+		B478F6D82374E0CF00C4F92B /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				B478F8D923750E9900C4F92B /* Base */,
+				B478F6D92374E0CF00C4F92B /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -1388,7 +1400,7 @@
 		};
 		B478F6042374DBF400C4F92B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EB6AC069957704CDFA056601 /* Pods-AWSS3StoragePlugin.debug.xcconfig */;
+			baseConfigurationReference = CA768EE32D4775E2865AD120 /* Pods-AWSS3StoragePlugin.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -1413,7 +1425,7 @@
 		};
 		B478F6052374DBF400C4F92B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4656F6396CCD6ED24126B92B /* Pods-AWSS3StoragePlugin.release.xcconfig */;
+			baseConfigurationReference = 71097652C68FE3406618F5FE /* Pods-AWSS3StoragePlugin.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -1438,7 +1450,7 @@
 		};
 		B478F6512374DCE700C4F92B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 38E4161F590595FD4C0FC557 /* Pods-HostApp-AWSS3StoragePluginTests.debug.xcconfig */;
+			baseConfigurationReference = B818ED25ED231DC55ED919CA /* Pods-HostApp-AWSS3StoragePluginTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1448,7 +1460,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.amazonaws.$(PRODUCT_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.amazonaws.$(PRODUCT_NAME)/";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1457,7 +1469,7 @@
 		};
 		B478F6522374DCE700C4F92B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5A00DCFCD81CA06B2CF20DCB /* Pods-HostApp-AWSS3StoragePluginTests.release.xcconfig */;
+			baseConfigurationReference = 55C25A32F11C14B88865E2C4 /* Pods-HostApp-AWSS3StoragePluginTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1467,7 +1479,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.amazonaws.$(PRODUCT_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.amazonaws.$(PRODUCT_NAME)/";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1476,7 +1488,7 @@
 		};
 		B478F65D2374DD0D00C4F92B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 13F3E3E35BF8069E98751CA4 /* Pods-HostApp-AWSS3StoragePluginIntegrationTests.debug.xcconfig */;
+			baseConfigurationReference = 14F5159505C3EAB270C550C8 /* Pods-HostApp-AWSS3StoragePluginIntegrationTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1496,7 +1508,7 @@
 		};
 		B478F65E2374DD0D00C4F92B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 159DB4476A53282BB714F89D /* Pods-HostApp-AWSS3StoragePluginIntegrationTests.release.xcconfig */;
+			baseConfigurationReference = 822E6B6F97F866C25560BB16 /* Pods-HostApp-AWSS3StoragePluginIntegrationTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1514,9 +1526,9 @@
 			};
 			name = Release;
 		};
-		B478F7F523750B6900C4F92B /* Debug */ = {
+		B478F6CD2374E0B600C4F92B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9CEEE03EB990FBB81B00E277 /* Pods-HostApp.debug.xcconfig */;
+			baseConfigurationReference = 27E93DA4BD82FC2FD4DF47FF /* Pods-HostApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -1532,9 +1544,9 @@
 			};
 			name = Debug;
 		};
-		B478F7F623750B6900C4F92B /* Release */ = {
+		B478F6CE2374E0B600C4F92B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C1CE3EA730554AAEF7CD52C2 /* Pods-HostApp.release.xcconfig */;
+			baseConfigurationReference = 0E13BFF24658D710D2D705F9 /* Pods-HostApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -1589,11 +1601,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B478F7F723750B6900C4F92B /* Build configuration list for PBXNativeTarget "HostApp" */ = {
+		B478F6CF2374E0B600C4F92B /* Build configuration list for PBXNativeTarget "HostApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B478F7F523750B6900C4F92B /* Debug */,
-				B478F7F623750B6900C4F92B /* Release */,
+				B478F6CD2374E0B600C4F92B /* Debug */,
+				B478F6CE2374E0B600C4F92B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
