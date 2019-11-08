@@ -5,9 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
-// Key Phrase Detection
 public struct KeyPhrase {
     let score: Float?
     let text: String

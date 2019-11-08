@@ -48,7 +48,7 @@ struct CoreMLNaturalLanguageAdaptor: CoreMLNaturalLanguageBehavior {
         let tagger = NLTagger(tagSchemes: [.nameType])
         tagger.string = text
         let options: NLTagger.Options = [NLTagger.Options.omitPunctuation, .omitWhitespace, .joinNames]
-        let tags: [NLTag] = [NLTag.personalName, .placeName, .organizationName]
+        let tags = [NLTag.personalName, .placeName, .organizationName]
         tagger.enumerateTags(in: text.startIndex ..< text.endIndex,
                              unit: .word,
                              scheme: .nameType,
