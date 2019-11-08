@@ -31,9 +31,9 @@ public extension AWSAPICategoryPlugin {
             )
         }
 
-        let pluginConfig = try AWSAPICategoryPluginConfig(jsonValue: jsonValue)
-
         let authService = AWSAuthService()
+
+        let pluginConfig = try AWSAPICategoryPluginConfiguration(jsonValue: jsonValue, authService: authService)
 
         configure(authService: authService, pluginConfig: pluginConfig)
     }
@@ -54,7 +54,7 @@ extension AWSAPICategoryPlugin {
     ///   - defaultAccessLevel: The access level to be used for all API calls by default.
     ///   - queue: The queue which operations are stored and dispatched for asychronous processing.
     func configure(authService: AWSAuthServiceBehavior,
-                   pluginConfig: AWSAPICategoryPluginConfig) {
+                   pluginConfig: AWSAPICategoryPluginConfiguration) {
         self.authService = authService
         self.pluginConfig = pluginConfig
     }

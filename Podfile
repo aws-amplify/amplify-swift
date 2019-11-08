@@ -58,6 +58,9 @@ target "Amplify" do
 
       pod "AWSTranslate", "~> #{AWS_SDK_VERSION}"
       pod "AWSRekognition", "~> #{AWS_SDK_VERSION}"
+      pod "AWSPolly", "~> #{AWS_SDK_VERSION}"
+      pod "AWSComprehend", "~> #{AWS_SDK_VERSION}"
+      pod "AWSTranscribe", "~> #{AWS_SDK_VERSION}"
     end
 
     target "CoreMLPredictionsPlugin" do

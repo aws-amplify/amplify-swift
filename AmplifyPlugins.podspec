@@ -47,6 +47,10 @@ Pod::Spec.new do |s|
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'AWSTranslate', AWS_SDK_VERSION
     ss.dependency 'AWSRekognition', AWS_SDK_VERSION
+    ss.dependency 'AWSPolly', AWS_SDK_VERSION
+    ss.dependency 'AWSTranscribe', AWS_SDK_VERSION
+    ss.dependency 'AWSComprehend', AWS_SDK_VERSION
+
   end
 
   s.subspec 'AWSS3StoragePlugin' do |ss|

@@ -6,27 +6,24 @@
 //
 
 import Foundation
+import AWSPluginsCore
 
 extension AWSPredictionsPlugin {
 
     public func configure(using configuration: Any) throws {
         let authService = AWSAuthService()
         let cognitoCredentialsProvider = authService.getCognitoCredentialsProvider()
-        let translateService = try AWSTranslateService(region: .USEast1,
+        let predictionsService = try AWSPredictionsService(region: .USEast1,
                                                        cognitoCredentialsProvider: cognitoCredentialsProvider,
                                                        identifier: key)
-        let rekognitionService = try AWSRekognitionService(region: .USEast1,
-                                                           cognitoCredentialsProvider: cognitoCredentialsProvider,
-                                                           identifier: key)
-        configure(translateService: translateService, rekognitionService: rekognitionService, authService: authService)
+
+        configure(predictionsService: predictionsService, authService: authService)
     }
 
-    func configure(translateService: AWSTranslateServiceBehaviour,
-                   rekognitionService: AWSRekognitionServiceBehaviour,
+    func configure(predictionsService: AWSPredictionsService,
                    authService: AWSAuthServiceBehavior,
                    queue: OperationQueue = OperationQueue()) {
-        self.translateService = translateService
-        self.rekognitionService = rekognitionService
+        self.predictionsService = predictionsService
         self.authService = authService
         self.queue = queue
     }

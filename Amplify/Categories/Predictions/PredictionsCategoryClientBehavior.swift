@@ -31,21 +31,27 @@ public protocol PredictionsCategoryClientBehavior {
     /// - Parameter options: Parameters to specific plugin behavior
     /// - Parameter listener: Triggered when the event occurs
     func identify(type: IdentifyType,
-                   image: CGImage,
-                   options: PredictionsIdentifyRequest.Options,
-                   listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation
+                  image: CGImage,
+                  options: PredictionsIdentifyRequest.Options?,
+                  listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation
+
+    /// Interpret the text and return  sentiment analysis, entity detection, language detection,
+    /// syntax detection, key phrases detection
+    /// - Parameter text: Text to interpret
+    /// - Parameter options:Parameters to specific plugin behavior
+    /// - Parameter options:Parameters to specific plugin behavior
+    func interpret(text: String,
+                   options: PredictionsInterpretRequest.Options?,
+                   listener: PredictionsInterpretOperation.EventListener?) -> PredictionsInterpretOperation
 }
 
-// TODO: Move these enums to a separate file
-/// Language type supported
-public enum LanguageType: String {
-    case english = "en"
-    case italian = "it"
-}
 
-public enum IdentifyType {
-    case detectCelebrity
-    case detectLabels
-    case detectEntities
-    case detectText
-}
+
+
+
+
+
+
+
+
+

@@ -6,9 +6,26 @@
 //
 
 import Foundation
+import Amplify
+import AWSPluginsCore
 
 extension AWSPredictionsPlugin {
 
-    public func reset(onComplete: @escaping (() -> Void)) {
+    public func reset(onComplete: @escaping BasicClosure) {
+        if predictionsService != nil {
+            predictionsService.reset()
+            predictionsService = nil
+        }
+
+        if authService != nil {
+            authService.reset()
+            authService = nil
+        }
+
+        if queue != nil {
+            queue = nil
+        }
+
+        onComplete()
     }
 }

@@ -27,4 +27,8 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
     func getIdentityId() -> AWSTask<NSString> {
         return awsMobileClient.getIdentityId()
     }
+
+    func getTokens(completionHandler: @escaping (Tokens?, Error?) -> Void) {
+        awsMobileClient.getTokens(completionHandler)
+    }
 }

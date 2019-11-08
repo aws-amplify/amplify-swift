@@ -14,10 +14,25 @@ public protocol APICategoryRESTBehavior {
     ///
     /// - Parameter apiName: The name of the API to perform the request against
     /// - Parameter path: The path to the resource being requested
-    /// - Parameter options: Options to adjust the behavior of this request, including plugin-options
     /// - Returns: An operation that can be observed for its value
     func get(apiName: String,
              path: String,
-             listener: APIOperation.EventListener?) -> APIOperation
+             listener: RESTOperation.EventListener?) -> RESTOperation
 
+    /// Perform an HTTP POST operation
+    ///
+    /// - Parameter apiName: The name of the API to perform the request against
+    /// - Parameter path: The path to the resource being requested
+    /// - Parameter body: The content body of the request
+    /// - Returns: An operation that can be observed for its value
+    func post(apiName: String,
+              path: String,
+              body: Data?,
+              listener: RESTOperation.EventListener?) -> RESTOperation
+
+//    func put() -> APIOperation
+//
+//    func patch() -> APIOperation
+//
+//    func delete() -> APIOperation
 }
