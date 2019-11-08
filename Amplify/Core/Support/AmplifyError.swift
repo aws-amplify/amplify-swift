@@ -27,4 +27,6 @@ public protocol AmplifyError: LocalizedError {
 
     /// A localized message describing how one might recover from the failure.
     var recoverySuggestion: RecoverySuggestion { get }
+
+    var underlyingError: Error? { get }
 }
