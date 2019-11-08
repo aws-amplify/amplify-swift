@@ -219,7 +219,7 @@
 		B4386A2C236B92FD000DC3DB /* CoreMLPredictionsPluginIntegrationTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4386A2A236B92FD000DC3DB /* CoreMLPredictionsPluginIntegrationTest.swift */; };
 		B438D1F7237485BA009E2DD0 /* CoreMLPredictionsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4694765236B1FED001A155D /* CoreMLPredictionsPlugin.framework */; };
 		B438D1F8237485BA009E2DD0 /* CoreMLPredictionsPlugin.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B4694765236B1FED001A155D /* CoreMLPredictionsPlugin.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		B438D20623748EBC009E2DD0 /* PluginErrorConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B438D20423748E7B009E2DD0 /* PluginErrorConstants.swift */; };
+		B438D20623748EBC009E2DD0 /* CoreMLPluginErrorString.swift in Sources */ = {isa = PBXBuildFile; fileRef = B438D20423748E7B009E2DD0 /* CoreMLPluginErrorString.swift */; };
 		B438D20923749046009E2DD0 /* CoreMLPredictionsPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B438D20723749032009E2DD0 /* CoreMLPredictionsPluginTestBase.swift */; };
 		B438D20D23749124009E2DD0 /* MockCoreMLNaturalLanguageAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B438D20B237490F8009E2DD0 /* MockCoreMLNaturalLanguageAdaptor.swift */; };
 		B438D2132374921A009E2DD0 /* MockOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = B438D2122374921A009E2DD0 /* MockOperationQueue.swift */; };
@@ -227,7 +227,6 @@
 		B4644C7F237270FD00EEE7CE /* CoreMLPredictionsPlugin+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C7823726FF400EEE7CE /* CoreMLPredictionsPlugin+ClientBehavior.swift */; };
 		B4644C802372710C00EEE7CE /* CoreMLPredictionsPlugin+Configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C7A2372700800EEE7CE /* CoreMLPredictionsPlugin+Configure.swift */; };
 		B4644C812372711000EEE7CE /* CoreMLPredictionsPlugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C7C237270CB00EEE7CE /* CoreMLPredictionsPlugin+Reset.swift */; };
-		B4644C822372711700EEE7CE /* PluginConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C7623726F7F00EEE7CE /* PluginConstants.swift */; };
 		B4644C87237274E700EEE7CE /* CoreMLInterpretTextOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C85237274A400EEE7CE /* CoreMLInterpretTextOperation.swift */; };
 		B4644C8D237277AF00EEE7CE /* CoreMLNaturalLanguageBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C892372767600EEE7CE /* CoreMLNaturalLanguageBehavior.swift */; };
 		B4644C8E237277B300EEE7CE /* CoreMLNaturalLanguageAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C8B2372769100EEE7CE /* CoreMLNaturalLanguageAdaptor.swift */; };
@@ -1268,12 +1267,11 @@
 		B438D1FF23748AEC009E2DD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B438D20123748C45009E2DD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B438D20323748C8A009E2DD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B438D20423748E7B009E2DD0 /* PluginErrorConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginErrorConstants.swift; sourceTree = "<group>"; };
+		B438D20423748E7B009E2DD0 /* CoreMLPluginErrorString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLPluginErrorString.swift; sourceTree = "<group>"; };
 		B438D20723749032009E2DD0 /* CoreMLPredictionsPluginTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPluginTestBase.swift; sourceTree = "<group>"; };
 		B438D20B237490F8009E2DD0 /* MockCoreMLNaturalLanguageAdaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCoreMLNaturalLanguageAdaptor.swift; sourceTree = "<group>"; };
 		B438D2122374921A009E2DD0 /* MockOperationQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOperationQueue.swift; sourceTree = "<group>"; };
 		B4644C7223726EC400EEE7CE /* CoreMLPredictionsPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPlugin.swift; sourceTree = "<group>"; };
-		B4644C7623726F7F00EEE7CE /* PluginConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginConstants.swift; sourceTree = "<group>"; };
 		B4644C7823726FF400EEE7CE /* CoreMLPredictionsPlugin+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreMLPredictionsPlugin+ClientBehavior.swift"; sourceTree = "<group>"; };
 		B4644C7A2372700800EEE7CE /* CoreMLPredictionsPlugin+Configure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreMLPredictionsPlugin+Configure.swift"; sourceTree = "<group>"; };
 		B4644C7C237270CB00EEE7CE /* CoreMLPredictionsPlugin+Reset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreMLPredictionsPlugin+Reset.swift"; sourceTree = "<group>"; };
@@ -2700,8 +2698,7 @@
 		B4644C7523726F6C00EEE7CE /* Constants */ = {
 			isa = PBXGroup;
 			children = (
-				B4644C7623726F7F00EEE7CE /* PluginConstants.swift */,
-				B438D20423748E7B009E2DD0 /* PluginErrorConstants.swift */,
+				B438D20423748E7B009E2DD0 /* CoreMLPluginErrorString.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -6608,14 +6605,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				B4644C87237274E700EEE7CE /* CoreMLInterpretTextOperation.swift in Sources */,
-				B438D20623748EBC009E2DD0 /* PluginErrorConstants.swift in Sources */,
+				B438D20623748EBC009E2DD0 /* CoreMLPluginErrorString.swift in Sources */,
 				B466055D2373770000F6B385 /* CoreMLVisionBehavior.swift in Sources */,
 				B4644C7F237270FD00EEE7CE /* CoreMLPredictionsPlugin+ClientBehavior.swift in Sources */,
 				B4644C8D237277AF00EEE7CE /* CoreMLNaturalLanguageBehavior.swift in Sources */,
 				B4644C812372711000EEE7CE /* CoreMLPredictionsPlugin+Reset.swift in Sources */,
 				B466055F2373774400F6B385 /* CoreMLVisionAdaptor.swift in Sources */,
 				B4644C7E237270FB00EEE7CE /* CoreMLPredictionsPlugin.swift in Sources */,
-				B4644C822372711700EEE7CE /* PluginConstants.swift in Sources */,
 				B4644C802372710C00EEE7CE /* CoreMLPredictionsPlugin+Configure.swift in Sources */,
 				B4644C8E237277B300EEE7CE /* CoreMLNaturalLanguageAdaptor.swift in Sources */,
 			);

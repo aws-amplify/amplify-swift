@@ -10,7 +10,7 @@ import Amplify
 
 typealias PluginErrorString = (errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion)
 
-struct CoreMLPluginErrorConstants {
+struct CoreMLPluginErrorString {
     static let decodeConfigurationError: PluginErrorString = (
         "Unable to decode configuration",
         "Make sure the plugin configuration is JSONValue")

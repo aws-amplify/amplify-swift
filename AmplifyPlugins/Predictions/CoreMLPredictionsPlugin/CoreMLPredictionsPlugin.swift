@@ -11,6 +11,8 @@ import Amplify
 /// Predictions plugin that uses CoreML service to get results.
 final public class CoreMLPredictionsPlugin: PredictionsCategoryPlugin {
 
+    let coreMLPredictionsPluginKey = "CoreMLPredictionsPlugin"
+
     var coreMLNaturalLanguage: CoreMLNaturalLanguageBehavior!
 
     /// A queue that regulates the execution of operations.
@@ -18,7 +20,7 @@ final public class CoreMLPredictionsPlugin: PredictionsCategoryPlugin {
 
     /// The unique key of the plugin within the predictions category.
     public var key: PluginKey {
-        return CoreMLPluginConstants.coreMLPredictionsPluginKey
+        return coreMLPredictionsPluginKey
     }
 
     public init() {
