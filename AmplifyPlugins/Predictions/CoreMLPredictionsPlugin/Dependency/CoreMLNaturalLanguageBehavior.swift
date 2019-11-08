@@ -12,7 +12,7 @@ protocol CoreMLNaturalLanguageBehavior {
 
     /// Detect dominant language using coreml
     ///
-    /// Will return nil if CoreML couldnot be able to infer the language
+    /// Will return nil if CoreML is not be able to infer the language
     ///
     /// - Parameter text: Input text
     func detectDominantLanguage(for text: String) -> LanguageType?
@@ -32,5 +32,5 @@ protocol CoreMLNaturalLanguageBehavior {
     /// The value maps the value given here `NLTagSchemeSentimentScore`
     ///
     /// - Parameter text: Input text
-    func getSentinment(for text: String) -> Double
+    func getSentiment(for text: String) -> Double
 }

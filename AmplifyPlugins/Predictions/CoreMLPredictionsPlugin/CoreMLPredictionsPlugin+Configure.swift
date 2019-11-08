@@ -12,9 +12,9 @@ extension CoreMLPredictionsPlugin {
 
     public func configure(using configuration: Any) throws {
         guard configuration is JSONValue else {
-            let errorDesciption = CoreMLPluginErrorConstants.decodeConfigurationError.errorDescription
+            let errorDescription = CoreMLPluginErrorConstants.decodeConfigurationError.errorDescription
             let recoverySuggestion = CoreMLPluginErrorConstants.decodeConfigurationError.recoverySuggestion
-            throw PluginError.pluginConfigurationError(errorDesciption, recoverySuggestion)
+            throw PluginError.pluginConfigurationError(errorDescription, recoverySuggestion)
         }
         configure(naturalLanguageBehavior: CoreMLNaturalLanguageAdaptor())
     }

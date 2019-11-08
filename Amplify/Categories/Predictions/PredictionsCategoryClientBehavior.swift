@@ -48,6 +48,7 @@ public protocol PredictionsCategoryClientBehavior {
 // TODO: Move these enums to a separate file
 /// Language type supported
 public enum LanguageType: String {
+    // TODO: Add the whole list
     case english = "en"
     case italian = "it"
     case undetermined
@@ -58,14 +59,6 @@ public enum IdentifyType {
     case detectLabels
     case detectEntities
     case detectText
-}
-
-public struct InterpretTextResult {
-    let keyPhrases: [KeyPhrase]
-    let sentiment: Sentiment
-    let entities: [EntityDetectionResult]
-    let language: LanguageDetectionResult
-    let syntax: [SyntaxToken]
 }
 
 // Sentiment Analysis

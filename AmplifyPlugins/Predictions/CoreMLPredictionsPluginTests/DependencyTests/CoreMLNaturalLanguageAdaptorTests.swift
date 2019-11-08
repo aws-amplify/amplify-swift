@@ -117,7 +117,7 @@ class CoreMLNaturalLanguageAdaptorTests: XCTestCase {
     ///
     func testSentiment() {
         let text = "I am feeling very happy"
-        let score = coreMLNaturalLanguageAdapter.getSentinment(for: text)
+        let score = coreMLNaturalLanguageAdapter.getSentiment(for: text)
         XCTAssertTrue(score <= 1.0, "Sentiment score should be in range [1.0,-1.0]. \(score)")
         XCTAssertTrue(score >= -1.0, "Sentiment score should be in range [1.0,-1.0]. \(score)")
     }

@@ -12,10 +12,8 @@ extension CoreMLPredictionsPlugin {
 
     public func reset(onComplete: @escaping BasicClosure) {
 
-        if queue != nil {
-            queue = nil
-        }
-
+        queue = nil
+        coreMLNaturalLanguage = nil
         onComplete()
     }
 }

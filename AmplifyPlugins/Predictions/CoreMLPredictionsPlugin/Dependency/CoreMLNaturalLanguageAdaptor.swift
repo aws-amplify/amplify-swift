@@ -22,7 +22,7 @@ struct CoreMLNaturalLanguageAdaptor: CoreMLNaturalLanguageBehavior {
         var tokenId = 0
         let tagger = NLTagger(tagSchemes: [.lexicalClass])
         tagger.string = text
-        let options: NLTagger.Options = [.omitPunctuation, .omitWhitespace]
+        let options: NLTagger.Options = [NLTagger.Options.omitPunctuation, .omitWhitespace]
         tagger.enumerateTags(in: text.startIndex ..< text.endIndex,
                              unit: .word,
                              scheme: .lexicalClass,
@@ -44,11 +44,11 @@ struct CoreMLNaturalLanguageAdaptor: CoreMLNaturalLanguageBehavior {
     }
 
     func getEntities(for text: String) -> [EntityDetectionResult] {
-        var result: [EntityDetectionResult] = []
+        var result = [EntityDetectionResult]()
         let tagger = NLTagger(tagSchemes: [.nameType])
         tagger.string = text
-        let options: NLTagger.Options = [.omitPunctuation, .omitWhitespace, .joinNames]
-        let tags: [NLTag] = [.personalName, .placeName, .organizationName]
+        let options: NLTagger.Options = [NLTagger.Options.omitPunctuation, .omitWhitespace, .joinNames]
+        let tags: [NLTag] = [NLTag.personalName, .placeName, .organizationName]
         tagger.enumerateTags(in: text.startIndex ..< text.endIndex,
                              unit: .word,
                              scheme: .nameType,
@@ -66,7 +66,7 @@ struct CoreMLNaturalLanguageAdaptor: CoreMLNaturalLanguageBehavior {
         return result
     }
 
-    func getSentinment(for text: String) -> Double {
+    func getSentiment(for text: String) -> Double {
         if #available(iOS 13, *) {
             let tagger = NLTagger(tagSchemes: [.sentimentScore])
             tagger.string = text
@@ -83,44 +83,46 @@ extension NLTag {
 
     /// Convert the CoreML NLTag to SpeechType
     func getSpeechType() -> SpeechType {
-        if self == .noun {
+        switch self {
+        case .noun:
             return .noun
-        }
-        if self == .adjective {
+        case .adjective:
             return .adjective
-        }
-        if self == .determiner {
+        case .determiner:
             return .determiner
-        }
-        if self == .preposition {
+        case .preposition:
             return .preposition
-        }
-        if self == .verb {
+        case .verb:
             return .verb
+        default:
+            // TODO: Add the rest here
+            return .other
         }
-        // TODO: Add the rest here
-        return .other
     }
 
     func getEntityType() -> EntityType {
-        if self == .placeName {
+        switch self {
+        case .placeName:
             return .location
+        default:
+            // TODO: Add other entities
+            return .other
         }
-        // TODO: Add other entities
-        return .other
     }
 }
 
 extension NLLanguage {
 
     func getLanguageType() -> LanguageType {
-        if self == NLLanguage.english {
+        switch self {
+        case .english:
             return .english
-        }
-        if self == NLLanguage.italian {
+        case .italian:
             return .italian
+        default:
+            // TODO: Add other entities
+            return .undetermined
         }
-        return .undetermined
     }
 
 }

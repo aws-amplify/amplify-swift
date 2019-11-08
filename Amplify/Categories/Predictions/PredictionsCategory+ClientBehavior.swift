@@ -14,7 +14,7 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
                         language: LanguageType?,
                         targetLanguage: LanguageType?,
                         listener: PredictionsTranslateTextOperation.EventListener?,
-                        options: PredictionsTranslateTextRequest.Options?) -> PredictionsTranslateTextOperation {
+                        options: PredictionsTranslateTextRequest.Options? = nil) -> PredictionsTranslateTextOperation {
         plugin.convert(textToTranslate: textToTranslate,
                        language: language,
                        targetLanguage: targetLanguage,
@@ -24,7 +24,7 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
 
     public func identify(type: IdentifyType,
                          image: CGImage,
-                         options: PredictionsIdentifyRequest.Options?,
+                         options: PredictionsIdentifyRequest.Options? = nil,
                          listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation {
         plugin.identify(type: type,
                         image: image,
@@ -33,7 +33,7 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
     }
 
     public func interpret(text: String,
-                          options: PredictionsInterpretRequest.Options?,
+                          options: PredictionsInterpretRequest.Options? = nil,
                           listener: PredictionsInterpretOperation.EventListener?) -> PredictionsInterpretOperation {
         plugin.interpret(text: text,
                          options: options,

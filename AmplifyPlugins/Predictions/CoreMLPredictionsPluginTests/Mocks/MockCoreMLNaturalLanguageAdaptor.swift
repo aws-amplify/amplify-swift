@@ -23,9 +23,7 @@ struct MockCoreMLNaturalLanguageAdaptor: CoreMLNaturalLanguageBehavior {
         return []
     }
 
-    func getSentinment(for text: String) -> Double {
+    func getSentiment(for text: String) -> Double {
         return 1.0
     }
-
-
 }
