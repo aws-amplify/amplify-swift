@@ -8,20 +8,20 @@
 import Amplify
 import Foundation
 
-final public class AWSGraphQLOperation<R: ResponseType>: AmplifyOperation<GraphQLRequest,
+final public class AWSGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRequest,
     Void,
-    GraphQLResponse<R.SerializedObject>,
+    GraphQLResponse<R>,
     GraphQLError> {
 
     var graphQLResponseData = Data()
     let session: URLSessionBehavior
     let mapper: OperationTaskMapper
     let pluginConfig: AWSAPICategoryPluginConfiguration
-    let responseType: R
+    let responseType: R.Type
 
     init(request: GraphQLRequest,
          eventName: String,
-         responseType: R,
+         responseType: R.Type,
          listener: AWSGraphQLOperation.EventListener?,
          session: URLSessionBehavior,
          mapper: OperationTaskMapper,

@@ -42,8 +42,10 @@ extension AWSGraphQLOperation: TaskOperationBehavior {
         }
 
         do {
-            let graphQLResponse = try GraphQLResponseUtils.process(graphQLResponse: graphQLResponseData,
-                                                                   responseType: responseType)
+            let graphQLServiceResponse = try GraphQLResponseDecoder.deserialize(graphQLResponse: graphQLResponseData)
+
+            let graphQLResponse = try GraphQLResponseDecoder.decode(graphQLServiceResponse: graphQLServiceResponse,
+                                                                    responseType: responseType)
 
             dispatch(event: .completed(graphQLResponse))
             finish()

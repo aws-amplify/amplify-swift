@@ -17,12 +17,12 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
         let operation = apiPlugin.query(apiName: apiName,
                                         document: testDocument,
                                         variables: testVariables,
-                                        responseType: JSONValueResponse(),
+                                        responseType: JSONValue.self,
                                         listener: nil)
 
         XCTAssertNotNil(operation)
 
-        guard let queryOperation = operation as? AWSGraphQLOperation<JSONValueResponse> else {
+        guard let queryOperation = operation as? AWSGraphQLOperation<JSONValue> else {
             XCTFail("operation could not be cast to AWSGraphQLOperation")
             return
         }
@@ -42,12 +42,12 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
         let operation = apiPlugin.mutate(apiName: apiName,
                                          document: testDocument,
                                          variables: testVariables,
-                                         responseType: JSONValueResponse(),
+                                         responseType: JSONValue.self,
                                          listener: nil)
 
         XCTAssertNotNil(operation)
 
-        guard let mutateOperation = operation as? AWSGraphQLOperation<JSONValueResponse> else {
+        guard let mutateOperation = operation as? AWSGraphQLOperation<JSONValue> else {
             XCTFail("operation could not be cast to AWSGraphQLOperation")
             return
         }
@@ -64,6 +64,6 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
     // MARK: Subscribe API Tests
 
     func testSubscribe() {
-
+        XCTFail("Not yet implemented")
     }
 }

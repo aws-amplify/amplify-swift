@@ -22,40 +22,40 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         onComplete()
     }
 
-    func mutate<R>(apiName: String,
-                   document: String,
-                   variables: [String: Any]?,
-                   responseType: R,
-                   listener: ((AsyncEvent<Void, GraphQLResponse<R.SerializedObject>, GraphQLError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R.SerializedObject>, GraphQLError> where R: ResponseType {
+    func mutate<R: Decodable>(apiName: String,
+                              document: String,
+                              variables: [String: Any]?,
+                              responseType: R.Type,
+                              listener: ((AsyncEvent<Void, GraphQLResponse<R>, GraphQLError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, GraphQLError> {
 
-        notify("mutate")
-        let options = GraphQLRequest.Options()
-        let request = GraphQLRequest(apiName: apiName,
-                                     operationType: .mutation,
-                                     document: document,
-                                     variables: variables,
-                                     options: options)
-        let operation = MockGraphQLOperation(request: request, responseType: responseType)
-        return operation
+            notify("mutate")
+            let options = GraphQLRequest.Options()
+            let request = GraphQLRequest(apiName: apiName,
+                                         operationType: .mutation,
+                                         document: document,
+                                         variables: variables,
+                                         options: options)
+            let operation = MockGraphQLOperation(request: request, responseType: responseType)
+            return operation
     }
 
-    func query<R>(apiName: String,
-                  document: String,
-                  variables: [String: Any]?,
-                  responseType: R,
-                  listener: ((AsyncEvent<Void, GraphQLResponse<R.SerializedObject>, GraphQLError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R.SerializedObject>, GraphQLError> where R: ResponseType {
+    func query<R: Decodable>(apiName: String,
+                             document: String,
+                             variables: [String: Any]?,
+                             responseType: R.Type,
+                             listener: ((AsyncEvent<Void, GraphQLResponse<R>, GraphQLError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, GraphQLError> {
 
-        notify("query")
-        let options = GraphQLRequest.Options()
-        let request = GraphQLRequest(apiName: apiName,
-                                     operationType: .query,
-                                     document: document,
-                                     variables: variables,
-                                     options: options)
-        let operation = MockGraphQLOperation(request: request, responseType: responseType)
-        return operation
+            notify("query")
+            let options = GraphQLRequest.Options()
+            let request = GraphQLRequest(apiName: apiName,
+                                         operationType: .query,
+                                         document: document,
+                                         variables: variables,
+                                         options: options)
+            let operation = MockGraphQLOperation(request: request, responseType: responseType)
+            return operation
     }
 
     func get(apiName: String,
@@ -95,18 +95,15 @@ class MockSecondAPICategoryPlugin: MockAPICategoryPlugin {
     }
 }
 
-class MockResponseType: ResponseType {
-    typealias SerializedObject = Data
-}
-
-class MockGraphQLOperation<R>: AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R.SerializedObject>, GraphQLError> where R: ResponseType {
+class MockGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, GraphQLError> {
     override func pause() {
     }
 
     override func resume() {
     }
 
-    init(request: Request, responseType: R) {
+    init(request: Request,
+         responseType: R.Type) {
         super.init(categoryType: .api,
                    eventName: HubPayload.EventName.API.mutate,
                    request: request)

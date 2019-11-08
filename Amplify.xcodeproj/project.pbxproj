@@ -101,10 +101,10 @@
 		214209DC2372212200FA140C /* URLSessionBehaviorDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209AF2372211F00FA140C /* URLSessionBehaviorDelegate.swift */; };
 		214209DE2372212200FA140C /* URLRequestConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209B42372211F00FA140C /* URLRequestConstants.swift */; };
 		214209DF2372212200FA140C /* PluginConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209B52372211F00FA140C /* PluginConstants.swift */; };
-		214209E02372212200FA140C /* APIErrorMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209B72372211F00FA140C /* APIErrorMapper.swift */; };
+		214209E02372212200FA140C /* GraphQLError+DecodingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209B72372211F00FA140C /* GraphQLError+DecodingError.swift */; };
 		214209E12372212200FA140C /* APIRequestUtils+Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209B82372211F00FA140C /* APIRequestUtils+Validator.swift */; };
 		214209E22372212200FA140C /* GraphQLRequestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209B92372211F00FA140C /* GraphQLRequestUtils.swift */; };
-		214209E32372212200FA140C /* GraphQLResponseUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209BA2372211F00FA140C /* GraphQLResponseUtils.swift */; };
+		214209E32372212200FA140C /* GraphQLResponseDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209BA2372211F00FA140C /* GraphQLResponseDecoder.swift */; };
 		214209E42372212200FA140C /* GraphQLRequestUtils+Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209BB2372211F00FA140C /* GraphQLRequestUtils+Validator.swift */; };
 		214209E52372212200FA140C /* APIRequestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209BC2372211F00FA140C /* APIRequestUtils.swift */; };
 		214209E62372212200FA140C /* AWSAPICategoryPlugin+RESTBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209BD2372211F00FA140C /* AWSAPICategoryPlugin+RESTBehavior.swift */; };
@@ -505,6 +505,8 @@
 		FACF520923298C1200646E10 /* SynchronizedDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACF520823298C1200646E10 /* SynchronizedDictionaryTests.swift */; };
 		FAD2A1892374D5DC0005CD6B /* GraphQLResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD2A1882374D5DC0005CD6B /* GraphQLResponse.swift */; };
 		FADB3A6823612940006D6FE9 /* BasicClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADB3A6723612940006D6FE9 /* BasicClosure.swift */; };
+		FADCFECB2374E33700C1F9E8 /* AWSAppSyncGraphQLResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADCFECA2374E33700C1F9E8 /* AWSAppSyncGraphQLResponse.swift */; };
+		FADCFECD2374E87B00C1F9E8 /* GraphQLResponseDecoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADCFECC2374E87B00C1F9E8 /* GraphQLResponseDecoderTests.swift */; };
 		FAF1B88423392F7C007F1435 /* ConcurrentDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B88323392F7C007F1435 /* ConcurrentDispatcher.swift */; };
 		FAF1B88623392F96007F1435 /* SerialDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B88523392F96007F1435 /* SerialDispatcher.swift */; };
 		FAF1B8882339633C007F1435 /* ConcurrentDispatcherPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B8872339633C007F1435 /* ConcurrentDispatcherPerformanceTests.swift */; };
@@ -1029,10 +1031,10 @@
 		214209AF2372211F00FA140C /* URLSessionBehaviorDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSessionBehaviorDelegate.swift; sourceTree = "<group>"; };
 		214209B42372211F00FA140C /* URLRequestConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLRequestConstants.swift; sourceTree = "<group>"; };
 		214209B52372211F00FA140C /* PluginConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginConstants.swift; sourceTree = "<group>"; };
-		214209B72372211F00FA140C /* APIErrorMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIErrorMapper.swift; sourceTree = "<group>"; };
+		214209B72372211F00FA140C /* GraphQLError+DecodingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GraphQLError+DecodingError.swift"; sourceTree = "<group>"; };
 		214209B82372211F00FA140C /* APIRequestUtils+Validator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "APIRequestUtils+Validator.swift"; sourceTree = "<group>"; };
 		214209B92372211F00FA140C /* GraphQLRequestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLRequestUtils.swift; sourceTree = "<group>"; };
-		214209BA2372211F00FA140C /* GraphQLResponseUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLResponseUtils.swift; sourceTree = "<group>"; };
+		214209BA2372211F00FA140C /* GraphQLResponseDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLResponseDecoder.swift; sourceTree = "<group>"; };
 		214209BB2372211F00FA140C /* GraphQLRequestUtils+Validator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GraphQLRequestUtils+Validator.swift"; sourceTree = "<group>"; };
 		214209BC2372211F00FA140C /* APIRequestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIRequestUtils.swift; sourceTree = "<group>"; };
 		214209BD2372211F00FA140C /* AWSAPICategoryPlugin+RESTBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSAPICategoryPlugin+RESTBehavior.swift"; sourceTree = "<group>"; };
@@ -1601,6 +1603,8 @@
 		FACF520823298C1200646E10 /* SynchronizedDictionaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedDictionaryTests.swift; sourceTree = "<group>"; };
 		FAD2A1882374D5DC0005CD6B /* GraphQLResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLResponse.swift; sourceTree = "<group>"; };
 		FADB3A6723612940006D6FE9 /* BasicClosure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicClosure.swift; sourceTree = "<group>"; };
+		FADCFECA2374E33700C1F9E8 /* AWSAppSyncGraphQLResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAppSyncGraphQLResponse.swift; sourceTree = "<group>"; };
+		FADCFECC2374E87B00C1F9E8 /* GraphQLResponseDecoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLResponseDecoderTests.swift; sourceTree = "<group>"; };
 		FAF1B88323392F7C007F1435 /* ConcurrentDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentDispatcher.swift; sourceTree = "<group>"; };
 		FAF1B88523392F96007F1435 /* SerialDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialDispatcher.swift; sourceTree = "<group>"; };
 		FAF1B8872339633C007F1435 /* ConcurrentDispatcherPerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentDispatcherPerformanceTests.swift; sourceTree = "<group>"; };
@@ -2101,12 +2105,13 @@
 		214209B62372211F00FA140C /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				214209B72372211F00FA140C /* APIErrorMapper.swift */,
-				214209B82372211F00FA140C /* APIRequestUtils+Validator.swift */,
-				214209B92372211F00FA140C /* GraphQLRequestUtils.swift */,
-				214209BA2372211F00FA140C /* GraphQLResponseUtils.swift */,
-				214209BB2372211F00FA140C /* GraphQLRequestUtils+Validator.swift */,
 				214209BC2372211F00FA140C /* APIRequestUtils.swift */,
+				214209B82372211F00FA140C /* APIRequestUtils+Validator.swift */,
+				FADCFECA2374E33700C1F9E8 /* AWSAppSyncGraphQLResponse.swift */,
+				214209B72372211F00FA140C /* GraphQLError+DecodingError.swift */,
+				214209B92372211F00FA140C /* GraphQLRequestUtils.swift */,
+				214209BB2372211F00FA140C /* GraphQLRequestUtils+Validator.swift */,
+				214209BA2372211F00FA140C /* GraphQLResponseDecoder.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -3393,6 +3398,7 @@
 				21420A1E2372216400FA140C /* AWSAPICategoryPlugin+URLSessionDelegateTests.swift */,
 				21420A232372216500FA140C /* AWSAPICategoryPluginTestBase.swift */,
 				21420A322372216600FA140C /* Configuration */,
+				FADCFECC2374E87B00C1F9E8 /* GraphQLResponseDecoderTests.swift */,
 				21420A362372216700FA140C /* Info.plist */,
 				21420A2E2372216600FA140C /* Interceptor */,
 				21420A242372216500FA140C /* Mocks */,
@@ -6815,7 +6821,7 @@
 			files = (
 				214209E82372212200FA140C /* AWSAPICategoryPlugin+URLSessionBehaviorDelegate.swift in Sources */,
 				214209F12372212200FA140C /* AWSAPICategoryPluginConfiguration.swift in Sources */,
-				214209E02372212200FA140C /* APIErrorMapper.swift in Sources */,
+				214209E02372212200FA140C /* GraphQLError+DecodingError.swift in Sources */,
 				214209D92372212200FA140C /* URLSessionBehavior.swift in Sources */,
 				214209D12372212200FA140C /* APIKeyURLRequestInterceptor.swift in Sources */,
 				214209D62372212200FA140C /* URLSessionFactory.swift in Sources */,
@@ -6824,9 +6830,10 @@
 				214209F02372212200FA140C /* AWSAPICategoryPlugin.swift in Sources */,
 				214209D22372212200FA140C /* AWSAPICategoryPluginError.swift in Sources */,
 				214209EF2372212200FA140C /* AWSGraphQLOperation+TaskOperationBehavior.swift in Sources */,
+				FADCFECB2374E33700C1F9E8 /* AWSAppSyncGraphQLResponse.swift in Sources */,
 				214209D02372212200FA140C /* UserPoolRequestInterceptor.swift in Sources */,
 				214209E92372212200FA140C /* AWSAPICategoryPlugin+URLSessionDelegate.swift in Sources */,
-				214209E32372212200FA140C /* GraphQLResponseUtils.swift in Sources */,
+				214209E32372212200FA140C /* GraphQLResponseDecoder.swift in Sources */,
 				214209EB2372212200FA140C /* AWSGraphQLOperation.swift in Sources */,
 				214209D52372212200FA140C /* GraphQLRequest+Validate.swift in Sources */,
 				214209E52372212200FA140C /* APIRequestUtils.swift in Sources */,
@@ -6872,6 +6879,7 @@
 				21420A3B2372216700FA140C /* GraphQLRequestUtils+GetterTests.swift in Sources */,
 				21420A4A2372216700FA140C /* AWSGraphQLOperationTests.swift in Sources */,
 				21420A392372216700FA140C /* GraphQLResponseUtilsTests.swift in Sources */,
+				FADCFECD2374E87B00C1F9E8 /* GraphQLResponseDecoderTests.swift in Sources */,
 				21420A3E2372216700FA140C /* AWSAPICategoryPlugin+URLSessionDelegateTests.swift in Sources */,
 				21420A442372216700FA140C /* MockSessionFactory.swift in Sources */,
 				21420A4F2372216700FA140C /* AWSAPICategoryPluginConfigurationTests.swift in Sources */,
