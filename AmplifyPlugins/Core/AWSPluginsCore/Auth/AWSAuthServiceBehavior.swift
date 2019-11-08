@@ -13,6 +13,8 @@ public protocol AWSAuthServiceBehavior {
 
     func getIdentityId() -> Result<String, AuthError>
 
+    func getToken() -> Result<String, AuthError>
+
     func reset()
 
 }

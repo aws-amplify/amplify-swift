@@ -35,7 +35,7 @@ class APICategoryClientInterceptorTests: XCTestCase {
         }
 
         let interceptor = MockURLRequestInterceptor()
-        _ = Amplify.API.add(interceptor: interceptor, for: "apiName")
+        _ = try Amplify.API.add(interceptor: interceptor, for: "apiName")
 
         waitForExpectations(timeout: 0.5)
     }

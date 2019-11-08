@@ -10,9 +10,10 @@ import Amplify
 import AWSPluginsCore
 
 public class MockAWSAuthService: AWSAuthServiceBehavior {
-
     var getIdentityIdError: AuthError?
+    var getTokenError: AuthError?
     var identityId: String?
+    var token: String?
 
     public func configure() {
     }
@@ -31,5 +32,13 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
         }
 
         return .success(identityId ?? "IdentityId")
+    }
+
+    public func getToken() -> Result<String, AuthError> {
+        if let error = getTokenError {
+            return .failure(error)
+        }
+
+        return .success(token ?? "token")
     }
 }

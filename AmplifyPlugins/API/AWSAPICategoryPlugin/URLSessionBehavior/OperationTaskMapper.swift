@@ -8,51 +8,56 @@
 import Foundation
 import Amplify
 
-/// Maps AWSAPIOperations to URLSessionTaskBehaviors, providing convenience methods for accessing them
-struct OperationTaskMapper {
+/// Maps operations, which conform to `APIOperation`, to URLSessionTaskBehaviors and
+/// provides convenience methods for accessing them
+class OperationTaskMapper {
     private static let concurrencyQueue = DispatchQueue(label: "com.amazonaws.OperationTaskMapper.concurrency")
 
-    private var operations = [UUID: AWSAPIOperation]()
-    private var tasks = [Int: URLSessionDataTaskBehavior]()
-    private var operationIdsByTaskId = [Int: UUID]()
-    private var taskIdsByOperationId = [UUID: Int]()
+    var operations = [UUID: APIOperation]()
+    var tasks = [Int: URLSessionDataTaskBehavior]()
+    var operationIdsByTaskId = [Int: UUID]()
+    var taskIdsByOperationId = [UUID: Int]()
 
-    mutating func addPair(operation: AWSAPIOperation, task: URLSessionDataTaskBehavior) {
+    func addPair(operation: APIOperation, task: URLSessionDataTaskBehavior) {
         OperationTaskMapper.concurrencyQueue.sync {
-            operations[operation.id] = operation
+            operations[operation.getOperationId()] = operation
             tasks[task.taskBehaviorIdentifier] = task
-            taskIdsByOperationId[operation.id] = task.taskBehaviorIdentifier
-            operationIdsByTaskId[task.taskBehaviorIdentifier] = operation.id
+            taskIdsByOperationId[operation.getOperationId()] = task.taskBehaviorIdentifier
+            operationIdsByTaskId[task.taskBehaviorIdentifier] = operation.getOperationId()
         }
     }
 
-    mutating func removePair(for operation: AWSAPIOperation) {
+    func removePair(for operation: APIOperation) {
         OperationTaskMapper.concurrencyQueue.sync {
-            let taskId = taskIdsByOperationId[operation.id]
-            removePair(operationId: operation.id, taskId: taskId)
+            let taskId = taskIdsByOperationId[operation.getOperationId()]
+            removePair(operationId: operation.getOperationId(), taskId: taskId)
         }
     }
 
-    mutating func removePair(for task: URLSessionDataTaskBehavior) {
+    func removePair(for task: URLSessionDataTaskBehavior) {
         OperationTaskMapper.concurrencyQueue.sync {
             let operationId = operationIdsByTaskId[task.taskBehaviorIdentifier]
             removePair(operationId: operationId, taskId: task.taskBehaviorIdentifier)
         }
     }
 
-    func operation(for task: URLSessionDataTaskBehavior) -> AWSAPIOperation? {
+    func operation(for task: URLSessionDataTaskBehavior) -> APIOperation? {
         return OperationTaskMapper.concurrencyQueue.sync {
             guard let operationId = operationIdsByTaskId[task.taskBehaviorIdentifier] else {
                 return nil
             }
 
-            return operations[operationId]
+            if let operation = operations[operationId] {
+                return operation
+            }
+
+            return nil
         }
     }
 
-    func task(for operation: AWSAPIOperation) -> URLSessionDataTaskBehavior? {
+    func task(for operation: APIOperation) -> URLSessionDataTaskBehavior? {
         return OperationTaskMapper.concurrencyQueue.sync {
-            guard let taskId = taskIdsByOperationId[operation.id] else {
+            guard let taskId = taskIdsByOperationId[operation.getOperationId()] else {
                 return nil
             }
 
@@ -62,13 +67,13 @@ struct OperationTaskMapper {
 
     func reset() {
         OperationTaskMapper.concurrencyQueue.sync {
-            operations.values.forEach { $0.cancel() }
+            operations.values.forEach { $0.cancelOperation() }
             tasks.values.forEach { $0.cancel() }
         }
     }
 
     /// Not inherently thread safe--this must be called from `concurrencyQueue`
-    private mutating func removePair(operationId: UUID?, taskId: Int?) {
+    private func removePair(operationId: UUID?, taskId: Int?) {
         OperationTaskMapper.concurrencyQueue.sync {
             if let operationId = operationId {
                 operations[operationId] = nil
