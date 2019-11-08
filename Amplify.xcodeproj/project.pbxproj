@@ -235,6 +235,7 @@
 		B466055F2373774400F6B385 /* CoreMLVisionAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B466055E2373774400F6B385 /* CoreMLVisionAdaptor.swift */; };
 		B46605632373848D00F6B385 /* CoreMLNaturalLanguageAdaptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46605622373848D00F6B385 /* CoreMLNaturalLanguageAdaptorTests.swift */; };
 		B46605642373849200F6B385 /* CoreMLVisionAdaptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46605602373844900F6B385 /* CoreMLVisionAdaptorTests.swift */; };
+		B478F8EE2375BD1D00C4F92B /* LanguageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F8ED2375BD1D00C4F92B /* LanguageType.swift */; };
 		B4BD6B3323708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BD6B3223708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift */; };
 		B4BD6B3523708C1200A1F0A7 /* PredictionsCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BD6B3423708C1200A1F0A7 /* PredictionsCategoryConfigurationTests.swift */; };
 		B4BD6B3723708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BD6B3623708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift */; };
@@ -257,6 +258,15 @@
 		B4D3853E236C97360014653D /* PredictionsCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D3852A236C97350014653D /* PredictionsCategory+HubPayloadEventName.swift */; };
 		B4D3853F236C97360014653D /* PredictionsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D3852C236C97350014653D /* PredictionsError.swift */; };
 		B4D38540236C97360014653D /* PredictionsCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D3852D236C97350014653D /* PredictionsCategoryPlugin.swift */; };
+		B4FEB6362375BF9500818CD2 /* IdentityType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6352375BF9500818CD2 /* IdentityType.swift */; };
+		B4FEB6382375BFA900818CD2 /* Sentiment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6372375BFA900818CD2 /* Sentiment.swift */; };
+		B4FEB63A2375BFCA00818CD2 /* EntityDetectionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6392375BFCA00818CD2 /* EntityDetectionResult.swift */; };
+		B4FEB63C2375BFEF00818CD2 /* LanguageDetectionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB63B2375BFEF00818CD2 /* LanguageDetectionResult.swift */; };
+		B4FEB63E2375BFFA00818CD2 /* SyntaxToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB63D2375BFFA00818CD2 /* SyntaxToken.swift */; };
+		B4FEB6402375C00300818CD2 /* PartOfSpeech.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB63F2375C00300818CD2 /* PartOfSpeech.swift */; };
+		B4FEB6422375C01400818CD2 /* KeyPhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6412375C01400818CD2 /* KeyPhrase.swift */; };
+		B4FEB6442375C02300818CD2 /* EntityType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6432375C02300818CD2 /* EntityType.swift */; };
+		B4FEB6462375C02D00818CD2 /* SpeechType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6452375C02D00818CD2 /* SpeechType.swift */; };
 		B8E8D759314BE9D6BD462E87 /* Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B868B395CBEDBAE5565C25D5 /* Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework */; };
 		B92E03AD2367CE7A006CEB8D /* DataStoreCategory+Behavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E039E2367CE79006CEB8D /* DataStoreCategory+Behavior.swift */; };
 		B92E03AE2367CE7A006CEB8D /* DataStoreCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E039F2367CE79006CEB8D /* DataStoreCategoryPlugin.swift */; };
@@ -1276,6 +1286,7 @@
 		B46605622373848D00F6B385 /* CoreMLNaturalLanguageAdaptorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLNaturalLanguageAdaptorTests.swift; sourceTree = "<group>"; };
 		B4694765236B1FED001A155D /* CoreMLPredictionsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CoreMLPredictionsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4694779236B22F1001A155D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B478F8ED2375BD1D00C4F92B /* LanguageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageType.swift; sourceTree = "<group>"; };
 		B4940434236A2F8800BC7C15 /* AWSPredictionsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSPredictionsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B494043B236A306200BC7C15 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B4BD6B3223708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsCategoryClientAPITests.swift; sourceTree = "<group>"; };
@@ -1300,6 +1311,15 @@
 		B4D3852A236C97350014653D /* PredictionsCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PredictionsCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		B4D3852C236C97350014653D /* PredictionsError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsError.swift; sourceTree = "<group>"; };
 		B4D3852D236C97350014653D /* PredictionsCategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsCategoryPlugin.swift; sourceTree = "<group>"; };
+		B4FEB6352375BF9500818CD2 /* IdentityType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityType.swift; sourceTree = "<group>"; };
+		B4FEB6372375BFA900818CD2 /* Sentiment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sentiment.swift; sourceTree = "<group>"; };
+		B4FEB6392375BFCA00818CD2 /* EntityDetectionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityDetectionResult.swift; sourceTree = "<group>"; };
+		B4FEB63B2375BFEF00818CD2 /* LanguageDetectionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageDetectionResult.swift; sourceTree = "<group>"; };
+		B4FEB63D2375BFFA00818CD2 /* SyntaxToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxToken.swift; sourceTree = "<group>"; };
+		B4FEB63F2375C00300818CD2 /* PartOfSpeech.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartOfSpeech.swift; sourceTree = "<group>"; };
+		B4FEB6412375C01400818CD2 /* KeyPhrase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyPhrase.swift; sourceTree = "<group>"; };
+		B4FEB6432375C02300818CD2 /* EntityType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityType.swift; sourceTree = "<group>"; };
+		B4FEB6452375C02D00818CD2 /* SpeechType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechType.swift; sourceTree = "<group>"; };
 		B671BDC60D796AB1C118F365 /* Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon/Pods-Amplify-AmplifyTestConfigs-AmplifyTestCommon.release.xcconfig"; sourceTree = "<group>"; };
 		B6F4EFBF6DBF29A324CC0A27 /* Pods-AWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		B76E437D96EC314E3CAB3A10 /* Pods-AmplifyTestApp-AWSPinpointAnalyticsPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyTestApp-AWSPinpointAnalyticsPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyTestApp-AWSPinpointAnalyticsPluginIntegrationTests/Pods-AmplifyTestApp-AWSPinpointAnalyticsPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -2737,6 +2757,23 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		B478F8EC2375BD0500C4F92B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B478F8ED2375BD1D00C4F92B /* LanguageType.swift */,
+				B4FEB6352375BF9500818CD2 /* IdentityType.swift */,
+				B4FEB6372375BFA900818CD2 /* Sentiment.swift */,
+				B4FEB6392375BFCA00818CD2 /* EntityDetectionResult.swift */,
+				B4FEB63B2375BFEF00818CD2 /* LanguageDetectionResult.swift */,
+				B4FEB63D2375BFFA00818CD2 /* SyntaxToken.swift */,
+				B4FEB63F2375C00300818CD2 /* PartOfSpeech.swift */,
+				B4FEB6412375C01400818CD2 /* KeyPhrase.swift */,
+				B4FEB6432375C02300818CD2 /* EntityType.swift */,
+				B4FEB6452375C02D00818CD2 /* SpeechType.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		B49403D5236A2F6100BC7C15 /* Predictions */ = {
 			isa = PBXGroup;
 			children = (
@@ -2779,6 +2816,7 @@
 		B4D38515236C97350014653D /* Predictions */ = {
 			isa = PBXGroup;
 			children = (
+				B478F8EC2375BD0500C4F92B /* Models */,
 				B4D3852B236C97350014653D /* Error */,
 				B4D38520236C97350014653D /* Internal */,
 				B4D38516236C97350014653D /* Operation */,
@@ -6741,6 +6779,7 @@
 				B92E03B22367CE7A006CEB8D /* DataStoreCategoryConfiguration.swift in Sources */,
 				B92E03B82367CE7A006CEB8D /* ModelSchema+Definition.swift in Sources */,
 				B4D3853C236C97360014653D /* PredictionsTranslateTextRequest.swift in Sources */,
+				B4FEB63C2375BFEF00818CD2 /* LanguageDetectionResult.swift in Sources */,
 				FAC2352B227A053D00424678 /* AnalyticsEvent.swift in Sources */,
 				FAC23544227A055200424678 /* ConfigurationError.swift in Sources */,
 				FAC428A4235F802A0000F221 /* APICategory+InterceptorBehavior.swift in Sources */,
@@ -6748,6 +6787,7 @@
 				FAC23547227A055200424678 /* Plugin.swift in Sources */,
 				FA9FB780232AA11A00C04D32 /* HubChannelDispatcher.swift in Sources */,
 				FA315298233D644F00DE78E7 /* StorageGetDataRequest.swift in Sources */,
+				B4FEB6362375BF9500818CD2 /* IdentityType.swift in Sources */,
 				FA4E730A232828EA003B8EEB /* Amplify+Reset.swift in Sources */,
 				FA6BC87B235F5D240001A882 /* APICategoryGraphQLBehavior.swift in Sources */,
 				FA6BC86B235F57920001A882 /* APIError.swift in Sources */,
@@ -6764,8 +6804,10 @@
 				FA09B9412321BB78000E064D /* JSONValue.swift in Sources */,
 				FA6BC875235F5C270001A882 /* GraphQLRequest.swift in Sources */,
 				B4D3853A236C97360014653D /* PredictionsInterpretRequest.swift in Sources */,
+				B478F8EE2375BD1D00C4F92B /* LanguageType.swift in Sources */,
 				2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */,
 				B4D38534236C97360014653D /* TranslateTextResult.swift in Sources */,
+				B4FEB6442375C02300818CD2 /* EntityType.swift in Sources */,
 				FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */,
 				21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */,
 				FAC0A29822B3DE4800B50912 /* HubPublisher.swift in Sources */,
@@ -6805,6 +6847,7 @@
 				B4D3852F236C97360014653D /* PredictionsTranslateTextOperation.swift in Sources */,
 				FA09B9472322CBA7000E064D /* APICategoryConfiguration.swift in Sources */,
 				21FFF995230C96CB005878EA /* StorageListOperation.swift in Sources */,
+				B4FEB6402375C00300818CD2 /* PartOfSpeech.swift in Sources */,
 				FA315295233D634900DE78E7 /* StorageDownloadFileRequest.swift in Sources */,
 				FA6BC86F235F5B680001A882 /* GraphQLOperationType.swift in Sources */,
 				FA56F72722B14BF70039754A /* AmplifyOperation.swift in Sources */,
@@ -6818,6 +6861,7 @@
 				210DBC472332F0C5009B9E51 /* StorageError.swift in Sources */,
 				FA9FB77B2329D4FB00C04D32 /* UnsubscribeToken.swift in Sources */,
 				B4D38531236C97360014653D /* PredictionsCategoryClientBehavior.swift in Sources */,
+				B4FEB63E2375BFFA00818CD2 /* SyntaxToken.swift in Sources */,
 				95DAA9522371CB3B0028544F /* IdentifyLabelsResult.swift in Sources */,
 				FAC428A2235F80000000F221 /* APICategory+GraphQLBehavior.swift in Sources */,
 				B4BD6B392370932300A1F0A7 /* PredictionsIdentifyRequest.swift in Sources */,
@@ -6826,6 +6870,7 @@
 				B4D38538236C97360014653D /* PredictionsCategoryConfiguration.swift in Sources */,
 				2109225A23596BCD00CEC295 /* AnalyticsCategoryClientBehavior.swift in Sources */,
 				FA09B92F2321A2DE000E064D /* APICategory+CategoryConfigurable.swift in Sources */,
+				B4FEB6422375C01400818CD2 /* KeyPhrase.swift in Sources */,
 				B4D3853E236C97360014653D /* PredictionsCategory+HubPayloadEventName.swift in Sources */,
 				FA9FB7792329D4D400C04D32 /* HubFilter.swift in Sources */,
 				B4D3853B236C97360014653D /* PredictionsConvertRequest.swift in Sources */,
@@ -6838,6 +6883,7 @@
 				210DBC142332B3C6009B9E51 /* StorageGetURLOperation.swift in Sources */,
 				FA09B94D2322CC05000E064D /* StorageCategoryConfiguration.swift in Sources */,
 				B92E03AF2367CE7A006CEB8D /* DataStoreCategoryBehavior.swift in Sources */,
+				B4FEB6462375C02D00818CD2 /* SpeechType.swift in Sources */,
 				FA31529C233D645400DE78E7 /* StorageListRequest.swift in Sources */,
 				B92E03B62367CE7A006CEB8D /* ModelSchema.swift in Sources */,
 				21FFF988230B7B2C005878EA /* AsychronousOperation.swift in Sources */,
@@ -6866,10 +6912,12 @@
 				210DBC162332B3CB009B9E51 /* StorageGetDataOperation.swift in Sources */,
 				FAC235A3227A5ED000424678 /* HubChannel.swift in Sources */,
 				FAC23516227A053D00424678 /* StorageCategoryClientBehavior.swift in Sources */,
+				B4FEB6382375BFA900818CD2 /* Sentiment.swift in Sources */,
 				FA4E730E232829F1003B8EEB /* Plugin+Reset.swift in Sources */,
 				FAC23518227A053D00424678 /* StorageCategoryPlugin.swift in Sources */,
 				B438D2132374921A009E2DD0 /* MockOperationQueue.swift in Sources */,
 				FA31529A233D645200DE78E7 /* StorageGetURLRequest.swift in Sources */,
+				B4FEB63A2375BFCA00818CD2 /* EntityDetectionResult.swift in Sources */,
 				FAC0A2AD22B43FE700B50912 /* HubCategory+ClientBehavior.swift in Sources */,
 				B4D38533236C97360014653D /* InterpretResult.swift in Sources */,
 				FAC23523227A053D00424678 /* LoggingCategoryPlugin.swift in Sources */,

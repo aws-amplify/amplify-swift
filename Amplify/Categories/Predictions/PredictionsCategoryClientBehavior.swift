@@ -45,118 +45,13 @@ public protocol PredictionsCategoryClientBehavior {
                    listener: PredictionsInterpretOperation.EventListener?) -> PredictionsInterpretOperation
 }
 
-// TODO: Move these enums to a separate file
-/// Language type supported
-public enum LanguageType: String {
-    // TODO: Add the whole list
-    case english = "en"
-    case italian = "it"
-    case undetermined
-}
-
-public enum IdentifyType {
-    case detectCelebrity
-    case detectLabels
-    case detectEntities
-    case detectText
-}
-
-// Sentiment Analysis
-public struct Sentiment {
-    let predominantSentiment: String
-    let sentimentScores: [String: Float]?
-}
-
-// Entity Detection
-public struct EntityDetectionResult {
-    let type: EntityType
-    let targetText: String
-    let score: Float?
-    let range: Range<String.Index>
-
-    public init(type: EntityType,
-                targetText: String,
-                score: Float?,
-                range: Range<String.Index>) {
-        self.type = type
-        self.targetText = targetText
-        self.score = score
-        self.range = range
-    }
-}
 
 
-// Language Detection
-public struct LanguageDetectionResult {
-    let languageCode: LanguageType
-    let score: Float?
-}
 
-// Syntax Detection
-public struct SyntaxToken {
-    let tokenId: Int
-    let text: String
-    let range: Range<String.Index>
-    let partOfSpeech: PartOfSpeech
 
-    public init(tokenId: Int,
-                text: String,
-                range: Range<String.Index>,
-                partOfSpeech: PartOfSpeech) {
-        self.tokenId = tokenId
-        self.text = text
-        self.range = range
-        self.partOfSpeech = partOfSpeech
-    }
-}
 
-public struct PartOfSpeech {
-    let tag: SpeechType
-    let score: Float?
 
-    public init(tag: SpeechType, score: Float?) {
-        self.tag = tag
-        self.score = score
-    }
-}
 
-// Key Phrase Detection
-public struct KeyPhrase {
-    let score: Float?
-    let text: String
-    let range: Range<String.Index>
-}
 
-public enum EntityType: String {
-    case person
-    case location
-    case organization
-    case commercialItem
-    case event
-    case date
-    case quantity
-    case title
-    case other
-}
 
-public enum SpeechType: String {
-    case adjective
-    case adposition
-    case adverb
-    case auxiliary
-    case conjunction
-    case coordinatingConjunction
-    case determiner
-    case interjection
-    case noun
-    case numeral
-    case other
-    case particle
-    case pronoun
-    case properNoun
-    case punctuation
-    case preposition
-    case subordinatingConjunction
-    case symbol
-    case verb
-}
+
