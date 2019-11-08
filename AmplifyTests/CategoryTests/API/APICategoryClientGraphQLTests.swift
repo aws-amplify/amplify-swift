@@ -25,18 +25,34 @@ class APICategoryClientGraphQLTests: XCTestCase {
         mockAmplifyConfig = AmplifyConfiguration(api: apiConfig)
     }
 
-    func testGraphQL() throws {
+    func testQuery() throws {
         let plugin = try makeAndAddMockPlugin()
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "graphql" {
+            if message == "query" {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
 
-        _ = Amplify.API.graphql(apiName: "foo",
-                                operationType: .query,
-                                document: "foo") { _ in }
+        _ = Amplify.API.query(apiName: "foo",
+                              document: "foo",
+                              responseType: JSONValue.self) { _ in }
+
+        waitForExpectations(timeout: 0.5)
+    }
+
+    func testMutate() throws {
+        let plugin = try makeAndAddMockPlugin()
+        let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
+        plugin.listeners.append { message in
+            if message == "mutate" {
+                methodWasInvokedOnPlugin.fulfill()
+            }
+        }
+
+        _ = Amplify.API.mutate(apiName: "foo",
+                               document: "foo",
+                               responseType: JSONValue.self) { _ in }
 
         waitForExpectations(timeout: 0.5)
     }

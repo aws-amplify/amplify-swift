@@ -19,8 +19,9 @@ import Foundation
 /// plugin.
 public protocol URLRequestInterceptor {
 
+    // TODO: turn async https://github.com/aws-amplify/amplify-ios/issues/73
     /// Inspect and optionally modify the request, returning either the original
     /// unmodified request or a modified copy.
     /// - Parameter request: The URLRequest
-    func intercept(_ request: URLRequest) -> URLRequest
+    func intercept(_ request: URLRequest) throws -> URLRequest
 }

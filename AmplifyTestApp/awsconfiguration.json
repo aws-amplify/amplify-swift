@@ -7,9 +7,17 @@
     "CredentialsProvider": {
         "CognitoIdentity": {
             "Default": {
-                "PoolId": "1234",
-                "Region": "us-east-1"
+                "PoolId": "",
+                "Region": ""
             }
+        }
+    },
+    "CognitoUserPool": {
+        "Default": {
+            "PoolId": ",
+            "AppClientId": "",
+            "AppClientSecret": "",
+            "Region": ""
         }
     }
 }
