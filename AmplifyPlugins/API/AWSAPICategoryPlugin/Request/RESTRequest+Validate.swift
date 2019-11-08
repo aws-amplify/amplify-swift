@@ -8,11 +8,11 @@
 import Foundation
 import Amplify
 
-extension APIRequest {
+extension RESTRequest {
     // Performs client side validation and returns a `APIError` for any validation failures
     func validate() -> APIError? {
 
-        if let error = APIRequestUtils.validateApiName(apiName) {
+        if let error = RESTRequestUtils.validateApiName(apiName) {
             return error
         }
 

@@ -8,6 +8,4 @@
 import XCTest
 
 class UserPoolRequestInterceptor: XCTestCase {
-    func testExample() {
-    }
 }

@@ -11,18 +11,12 @@ extension AWSAPICategoryPlugin: URLSessionBehaviorDelegate {
     public func urlSessionBehavior(_ session: URLSessionBehavior,
                                    dataTaskBehavior: URLSessionDataTaskBehavior,
                                    didCompleteWithError error: Error?) {
-        let operation = mapper.operation(for: dataTaskBehavior)
-        if let operation = operation {
-            operation.complete(with: error)
-        }
+        mapper.operation(for: dataTaskBehavior)?.complete(with: error)
     }
 
     public func urlSessionBehavior(_ session: URLSessionBehavior,
                                    dataTaskBehavior: URLSessionDataTaskBehavior,
                                    didReceive data: Data) {
-        let operation = mapper.operation(for: dataTaskBehavior)
-        if let operation = operation {
-            operation.updateProgress(data)
-        }
+        mapper.operation(for: dataTaskBehavior)?.updateProgress(data)
     }
 }

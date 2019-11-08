@@ -20,22 +20,22 @@ class AWSGraphQLOperationTests: XCTestCase {
     }
 
     func testGraphQLOperationSuccess() {
-
+        XCTFail("Not yet implemented.")
     }
 
     func testGraphQLOperationValidationError() {
-
+        XCTFail("Not yet implemented.")
     }
 
     func testGraphQLOperationEndpointConfigurationError() {
-
+        XCTFail("Not yet implemented.")
     }
 
     func testGraphQLOperationJSONSerializationError() {
-
+        XCTFail("Not yet implemented.")
     }
 
     func testGraphQLOperationInterceptorError() {
-
+        XCTFail("Not yet implemented.")
     }
 }

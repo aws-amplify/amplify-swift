@@ -17,7 +17,7 @@ class GraphQLRequestValidateTests: XCTestCase {
     let testApiName = "testApiName"
     let testDocument = "testDocument"
 
-    func testAPIRequestValidate() {
+    func testRESTRequestValidate() {
         let graphQLRequest = GraphQLRequest(apiName: testApiName,
                                             operationType: .mutation,
                                             document: testDocument,

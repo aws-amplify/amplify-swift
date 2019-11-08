@@ -11,7 +11,7 @@ import XCTest
 @testable import AWSPluginsTestCommon
 @testable import AWSAPICategoryPlugin
 
-class AWSAPIOperationTests: XCTestCase {
+class AWSRESTOperationTests: XCTestCase {
 
     override func setUp() {
     }
@@ -19,24 +19,24 @@ class AWSAPIOperationTests: XCTestCase {
     override func tearDown() {
     }
 
-    func testAPIOperationSuccess() {
-
+    func testRESTOperationSuccess() {
+        XCTFail("Not yet implemented.")
     }
 
-    func testAPIOperationValidationError() {
-
+    func testRESTOperationValidationError() {
+        XCTFail("Not yet implemented.")
     }
 
-    func testAPIOperationEndpointConfigurationError() {
-
+    func testRESTOperationEndpointConfigurationError() {
+        XCTFail("Not yet implemented.")
     }
 
-    func testAPIOperationConstructURLFailure() {
-
+    func testRESTOperationConstructURLFailure() {
+        XCTFail("Not yet implemented.")
     }
 
-    func testAPIOperationInterceptorError() {
-
+    func testRESTOperationInterceptorError() {
+        XCTFail("Not yet implemented.")
     }
 
     // TODO: Move over to operation test
@@ -49,7 +49,7 @@ class AWSAPIOperationTests: XCTestCase {
 
         XCTAssertNotNil(operation)
 
-        guard operation is AWSAPIOperation else {
+        guard operation is AWSRESTOperation else {
             XCTFail("operation could not be cast as AWSAPIGetOperation")
             return
         }

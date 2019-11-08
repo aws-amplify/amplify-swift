@@ -12,7 +12,7 @@ final public class AWSAPICategoryPlugin: NSObject, APICategoryPlugin {
 
     /// The unique key of the plugin within the API category.
     public var key: PluginKey {
-        return PluginConstants.awsAPICategoryPluginKey
+        return "AWSAPICategoryPlugin"
     }
 
     /// A holder for API configurations. This will be populated during the

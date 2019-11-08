@@ -10,7 +10,7 @@ import Amplify
 
 // TODO: Extract context and fill out better error handling
 
-extension GraphQLError {
+extension APIError {
     init(error: DecodingError) {
         switch error {
         case .dataCorrupted:
@@ -18,15 +18,15 @@ extension GraphQLError {
             self = .operationError(errorMessage, "", error)
         case .typeMismatch(let type, _):
             let errorMessage = "typeMisMatch type: \(type)"
-            self = GraphQLError.operationError(errorMessage, "", error)
+            self = APIError.operationError(errorMessage, "", error)
         case .valueNotFound:
             let errorMessage = "valueNotFound"
-            self = GraphQLError.operationError(errorMessage, "", error)
+            self = APIError.operationError(errorMessage, "", error)
         case .keyNotFound(let key, _):
             let errorMessage = "keyNotFound key \(key)"
-            self = GraphQLError.operationError(errorMessage, "", error)
+            self = APIError.operationError(errorMessage, "", error)
         @unknown default:
-            self = GraphQLError.operationError("Failed to decode", "", error)
+            self = APIError.operationError("Failed to decode", "", error)
         }
     }
 }

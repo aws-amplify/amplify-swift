@@ -16,6 +16,12 @@ public struct AWSAPICategoryPluginConfiguration {
         self.endpoints = endpoints
     }
 
+    // TODO:
+    /* from Tim:
+     One of the intents of the AWSAuthorizationConfiguration is to obviate the need for config objects to directly
+     know about auth service. Let's talk about this to see if we can remove the dependency. Perhaps we can create a
+     configuration factory with the auth service, that can then be used to instantiate configurations when needed.
+     */
     init(jsonValue: JSONValue, authService: AWSAuthService) throws {
         guard case .object(let config) = jsonValue else {
             throw PluginError.pluginConfigurationError(

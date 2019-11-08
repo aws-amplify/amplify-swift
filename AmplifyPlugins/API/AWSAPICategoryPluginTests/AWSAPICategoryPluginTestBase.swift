@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import Foundation
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPICategoryPlugin
@@ -25,29 +26,25 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
     let testDocument = "query { getTodo { id name description }}"
     let testVariables = ["id": 123]
 
-    let testBody = "testBody"
+    let testBody = Data()
     let testPath = "testPath"
-
-    var plugin: HubCategoryPlugin {
-        guard let plugin = try? Amplify.Hub.getPlugin(for: "DefaultHubCategoryPlugin"),
-            plugin.key == "DefaultHubCategoryPlugin" else {
-                fatalError("Could not access DefaultHubCategoryPlugin")
-        }
-        return plugin
-    }
 
     override func setUp() {
         apiPlugin = AWSAPICategoryPlugin()
         authService = MockAWSAuthService()
-        let endpointConfig = [apiName: AWSAPICategoryPluginConfiguration.EndpointConfig(
-            name: apiName,
-            baseURL: baseURL,
-            region: region,
-            authorizationType: AWSAuthorizationType.none,
-            authorizationConfiguration: AWSAuthorizationConfiguration.none)]
-        pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig)
-        apiPlugin.configure(authService: authService,
-                            pluginConfig: pluginConfig)
+        do {
+            let endpointConfig = [apiName: try AWSAPICategoryPluginConfiguration.EndpointConfig(
+                name: apiName,
+                baseURL: baseURL,
+                region: region,
+                authorizationType: AWSAuthorizationType.none,
+                authorizationConfiguration: AWSAuthorizationConfiguration.none)]
+            pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig)
+            apiPlugin.configure(authService: authService,
+                                pluginConfig: pluginConfig)
+        } catch {
+            XCTFail("Failed to create endpoint config")
+        }
 
         Amplify.reset()
         let config = AmplifyConfiguration()

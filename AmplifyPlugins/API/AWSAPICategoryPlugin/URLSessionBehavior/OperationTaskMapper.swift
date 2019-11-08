@@ -8,17 +8,17 @@
 import Foundation
 import Amplify
 
-/// Maps operations, which conform to `TaskOperationBehavior`, to URLSessionTaskBehaviors and
-/// providing convenience methods for accessing them
+/// Maps operations, which conform to `APIOperation`, to URLSessionTaskBehaviors and
+/// provides convenience methods for accessing them
 class OperationTaskMapper {
     private static let concurrencyQueue = DispatchQueue(label: "com.amazonaws.OperationTaskMapper.concurrency")
 
-    var operations = [UUID: TaskOperationBehavior]()
+    var operations = [UUID: APIOperation]()
     var tasks = [Int: URLSessionDataTaskBehavior]()
     var operationIdsByTaskId = [Int: UUID]()
     var taskIdsByOperationId = [UUID: Int]()
 
-    func addPair(operation: TaskOperationBehavior, task: URLSessionDataTaskBehavior) {
+    func addPair(operation: APIOperation, task: URLSessionDataTaskBehavior) {
         OperationTaskMapper.concurrencyQueue.sync {
             operations[operation.getOperationId()] = operation
             tasks[task.taskBehaviorIdentifier] = task
@@ -27,7 +27,7 @@ class OperationTaskMapper {
         }
     }
 
-    func removePair(for operation: TaskOperationBehavior) {
+    func removePair(for operation: APIOperation) {
         OperationTaskMapper.concurrencyQueue.sync {
             let taskId = taskIdsByOperationId[operation.getOperationId()]
             removePair(operationId: operation.getOperationId(), taskId: taskId)
@@ -41,7 +41,7 @@ class OperationTaskMapper {
         }
     }
 
-    func operation(for task: URLSessionDataTaskBehavior) -> TaskOperationBehavior? {
+    func operation(for task: URLSessionDataTaskBehavior) -> APIOperation? {
         return OperationTaskMapper.concurrencyQueue.sync {
             guard let operationId = operationIdsByTaskId[task.taskBehaviorIdentifier] else {
                 return nil
@@ -55,7 +55,7 @@ class OperationTaskMapper {
         }
     }
 
-    func task(for operation: TaskOperationBehavior) -> URLSessionDataTaskBehavior? {
+    func task(for operation: APIOperation) -> URLSessionDataTaskBehavior? {
         return OperationTaskMapper.concurrencyQueue.sync {
             guard let taskId = taskIdsByOperationId[operation.getOperationId()] else {
                 return nil

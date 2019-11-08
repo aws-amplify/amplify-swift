@@ -8,8 +8,7 @@
 import Foundation
 
 /// Methods to interact with the underlying operation triggered on task callbacks
-/// TODO: Possible renaming/refactoring
-protocol TaskOperationBehavior {
+protocol APIOperation {
 
     /// Get the operation's unique identifier
     func getOperationId() -> UUID

@@ -89,7 +89,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
 
     /// Given: A CreateTodo mutation request with incorrect repsonse type (ListTodo instead of Todo)
     /// When: Call mutate API
-    /// Then: The mutation operation fails with GraphQLError
+    /// Then: The mutation operation fails with APIError
     func testCreateTodoMutationWithInvalidResponseType() {
         let failureInvoked = expectation(description: "request failed")
 

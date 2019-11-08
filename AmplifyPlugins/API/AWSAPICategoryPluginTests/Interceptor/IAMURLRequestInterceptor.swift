@@ -8,6 +8,4 @@
 import XCTest
 
 class IAMURLRequestInterceptor: XCTestCase {
-    func testExample() {
-    }
 }

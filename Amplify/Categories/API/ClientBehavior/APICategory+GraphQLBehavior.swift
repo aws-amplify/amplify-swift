@@ -10,8 +10,8 @@ extension APICategory: APICategoryGraphQLBehavior {
                                      document: String,
                                      variables: [String: Any]? = nil,
                                      responseType: R.Type,
-                                     listener: ((AsyncEvent<Void, GraphQLResponse<R>, GraphQLError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, GraphQLError> {
+                                     listener: ((AsyncEvent<Void, GraphQLResponse<R>, APIError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, APIError> {
             plugin.mutate(apiName: apiName,
                           document: document,
                           variables: variables,
@@ -23,8 +23,8 @@ extension APICategory: APICategoryGraphQLBehavior {
                                     document: String,
                                     variables: [String: Any]? = nil,
                                     responseType: R.Type,
-                                    listener: ((AsyncEvent<Void, GraphQLResponse<R>, GraphQLError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, GraphQLError> {
+                                    listener: ((AsyncEvent<Void, GraphQLResponse<R>, APIError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, APIError> {
 
             plugin.query(apiName: apiName,
                          document: document,

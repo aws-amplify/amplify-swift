@@ -10,8 +10,10 @@ import XCTest
 class AWSAPICategoryPluginConfigurationTests: XCTestCase {
 
     func testConfigureSuccess() throws {
+        XCTFail("Not yet implemented.")
     }
 
     func testConfigureThrowsErrorForMissingX() throws {
+        XCTFail("Not yet implemented.")
     }
 }

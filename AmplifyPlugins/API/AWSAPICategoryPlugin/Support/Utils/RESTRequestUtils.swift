@@ -8,8 +8,10 @@
 import Foundation
 import Amplify
 
-class APIRequestUtils {
+final class RESTRequestUtils {
+    private init() {
 
+    }
     // TODO: path could be optional
     // Construct a URL given the url and path
     static func constructURL(_ baseURL: URL, path: String) throws -> URL {
@@ -23,6 +25,12 @@ class APIRequestUtils {
             )
         }
 
+        // TODO: fix this:
+        /*
+         This code will not do anything for the case of a base URL like
+         baseURL = http://foo.com/bar;
+         path = "/baz" where the expectation is that the final URL is http://foo.com/bar/baz
+         */
         if components.path.isEmpty {
             components.path = path
         } else {
@@ -42,29 +50,27 @@ class APIRequestUtils {
         return url
     }
 
-    // Construct a request specific to the `APIOperationType`
+    // Construct a request specific to the `RESTOperationType`
     static func constructRequest(with url: URL,
-                                 operationType: APIOperationType,
+                                 operationType: RESTOperationType,
                                  requestPayload: Data?) -> URLRequest {
 
         var baseRequest = URLRequest(url: url)
         let headers = ["content-type": "application/json"]
         baseRequest.allHTTPHeaderFields = headers
 
+        baseRequest.httpMethod = operationType.rawValue
         switch operationType {
         case .get:
-            baseRequest.httpMethod = "GET"
+            break
         case .put:
-            baseRequest.httpMethod = "PUT"
+            break
         case .post:
-            baseRequest.httpMethod = "POST"
-            if let requestPayload = requestPayload {
-                baseRequest.httpBody = requestPayload
-            }
+            baseRequest.httpBody = requestPayload
         case .patch:
-            baseRequest.httpMethod = "PATCH"
+            break
         case .delete:
-            baseRequest.httpMethod = "DELETE"
+            break
         }
 
         return baseRequest

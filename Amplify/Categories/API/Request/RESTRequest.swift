@@ -7,23 +7,23 @@
 
 import Foundation
 
-public struct APIRequest: AmplifyOperationRequest {
+public struct RESTRequest: AmplifyOperationRequest {
     /// The name of the API to perform the request against
     public let apiName: String
 
-    public let operationType: APIOperationType
+    public let operationType: RESTOperationType
 
     public let path: String
 
-    public let body: String?
+    public let body: Data?
 
     /// Options to adjust the behavior of this request, including plugin-options
     public let options: Options
 
     public init(apiName: String,
-                operationType: APIOperationType,
+                operationType: RESTOperationType,
                 path: String,
-                body: String? = nil,
+                body: Data? = nil,
                 options: Options) {
         self.apiName = apiName
         self.operationType = operationType
@@ -33,7 +33,7 @@ public struct APIRequest: AmplifyOperationRequest {
     }
 }
 
-public extension APIRequest {
+public extension RESTRequest {
     struct Options {
         public init() { }
     }

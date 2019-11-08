@@ -15,7 +15,7 @@ struct GraphQLResponseDecoder {
 
         switch (graphQLServiceResponse.data, graphQLServiceResponse.errors) {
         case (nil, nil):
-            throw GraphQLError.unknown("both cannot be nil", "service error")
+            throw APIError.unknown("both cannot be nil", "service error")
 
         case (.some(let data), .none):
             let responseData = try decode(graphQLData: data, into: responseType)
@@ -32,7 +32,7 @@ struct GraphQLResponseDecoder {
 
     static func deserialize(graphQLResponse: Data) throws -> AWSAppSyncGraphQLResponse {
         let jsonObject = try deserializeObject(graphQLResponse: graphQLResponse)
-        let errors = try getGraphQLErrors(from: jsonObject)
+        let errors = try getAPIErrors(from: jsonObject)
         let data = try getGraphQLData(from: jsonObject)
 
         return AWSAppSyncGraphQLResponse(data: data, errors: errors)
@@ -46,26 +46,26 @@ struct GraphQLResponseDecoder {
         do {
             json = try JSONDecoder().decode(JSONValue.self, from: graphQLResponse)
         } catch {
-            throw GraphQLError.operationError("Could not deserialize response data",
+            throw APIError.operationError("Could not deserialize response data",
                                               "Service issue",
                                               error)
         }
 
         guard case .object(let jsonObject) = json else {
-            throw GraphQLError.unknown("Deserialized response data is not an object",
+            throw APIError.unknown("Deserialized response data is not an object",
                                        "Service issue")
         }
 
         return jsonObject
     }
 
-    private static func getGraphQLErrors(from jsonObject: [String: JSONValue]) throws -> [JSONValue]? {
+    private static func getAPIErrors(from jsonObject: [String: JSONValue]) throws -> [JSONValue]? {
         guard let errors = jsonObject["errors"] else {
             return nil
         }
 
         guard case .array(let errorArray) = errors else {
-            throw GraphQLError.unknown("Deserialized response error is not an array",
+            throw APIError.unknown("Deserialized response error is not an array",
                                        "Service issue")
         }
 
@@ -78,7 +78,7 @@ struct GraphQLResponseDecoder {
         }
 
         guard case .object(let dataObject) = data else {
-            throw GraphQLError.unknown("Failed to case data object to dict",
+            throw APIError.unknown("Failed to case data object to dict",
                                        "Service issue")
         }
 
@@ -91,9 +91,9 @@ struct GraphQLResponseDecoder {
             let serializedJSON = try JSONEncoder().encode(graphQLData)
             return try JSONDecoder().decode(responseType, from: serializedJSON)
         } catch let decodingError as DecodingError {
-            throw GraphQLError(error: decodingError)
+            throw APIError(error: decodingError)
         } catch {
-            throw GraphQLError.operationError("", "", error)
+            throw APIError.operationError("", "", error)
         }
     }
 }

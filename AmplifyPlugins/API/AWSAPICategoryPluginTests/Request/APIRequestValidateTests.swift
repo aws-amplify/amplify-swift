@@ -9,18 +9,18 @@ import XCTest
 import Amplify
 @testable import AWSAPICategoryPlugin
 
-class APIRequestValidateTests: XCTestCase {
+class RESTRequestValidateTests: XCTestCase {
 
     let testApiName = "testApiName"
 
-    func testAPIRequestValidate() {
-        let apiRequest = APIRequest(apiName: testApiName,
+    func testRESTRequestValidate() {
+        let request = RESTRequest(apiName: testApiName,
                                     operationType: .get,
                                     path: "",
-                                    body: "",
-                                    options: APIRequest.Options())
+                                    body: Data(),
+                                    options: RESTRequest.Options())
 
-        let result = apiRequest.validate()
+        let result = request.validate()
 
         XCTAssertNil(result)
     }

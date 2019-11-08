@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-extension APIRequestUtils {
+extension RESTRequestUtils {
 
     static func validateApiName(_ apiName: String) -> APIError? {
         if apiName.isEmpty {

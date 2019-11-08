@@ -12,19 +12,19 @@ public extension AWSAPICategoryPlugin {
 
     func get(apiName: String,
              path: String,
-             listener: APIOperation.EventListener?) -> APIOperation {
+             listener: RESTOperation.EventListener?) -> RESTOperation {
 
-        let apiGetRequest = APIRequest(apiName: apiName,
+        let request = RESTRequest(apiName: apiName,
                                        operationType: .get,
                                        path: path,
-                                       options: APIRequest.Options())
+                                       options: RESTRequest.Options())
 
-        let operation = AWSAPIOperation(request: apiGetRequest,
+        let operation = AWSRESTOperation(request: request,
                                         eventName: HubPayload.EventName.API.get,
-                                        listener: listener,
                                         session: session,
                                         mapper: mapper,
-                                        pluginConfig: pluginConfig)
+                                        pluginConfig: pluginConfig,
+                                        listener: listener)
         queue.addOperation(operation)
 
         return operation
@@ -32,20 +32,20 @@ public extension AWSAPICategoryPlugin {
 
     func post(apiName: String,
               path: String,
-              body: String?,
-              listener: ((AsyncEvent<Void, Data, APIError>) -> Void)?) -> APIOperation {
-        let apiPostRequest = APIRequest(apiName: apiName,
+              body: Data?,
+              listener: ((AsyncEvent<Void, Data, APIError>) -> Void)?) -> RESTOperation {
+        let request = RESTRequest(apiName: apiName,
                                         operationType: .post,
                                         path: path,
                                         body: body,
-                                        options: APIRequest.Options())
+                                        options: RESTRequest.Options())
 
-        let operation = AWSAPIOperation(request: apiPostRequest,
+        let operation = AWSRESTOperation(request: request,
                                         eventName: HubPayload.EventName.API.post,
-                                        listener: listener,
                                         session: session,
                                         mapper: mapper,
-                                        pluginConfig: pluginConfig)
+                                        pluginConfig: pluginConfig,
+                                        listener: listener)
 
         queue.addOperation(operation)
 

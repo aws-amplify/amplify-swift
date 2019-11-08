@@ -10,14 +10,14 @@ import Amplify
 
 extension GraphQLRequestUtils {
 
-    static func validateDocument(_ document: String) -> GraphQLError? {
+    static func validateDocument(_ document: String) -> APIError? {
         if document.isEmpty {
-            return GraphQLError.unknown("document is empty", "provide a valid document")
+            return APIError.unknown("document is empty", "provide a valid document")
         }
         return nil
     }
 
-    static func validateVariables(_ variables: [String: Any]?) -> GraphQLError? {
+    static func validateVariables(_ variables: [String: Any]?) -> APIError? {
         if let variables = variables {
             // TODO: implement
         }

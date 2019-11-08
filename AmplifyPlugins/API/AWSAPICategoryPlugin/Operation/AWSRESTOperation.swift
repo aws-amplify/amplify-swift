@@ -8,12 +8,12 @@
 import Amplify
 import Foundation
 
-final public class AWSAPIOperation: AmplifyOperation<APIRequest,
+final public class AWSRESTOperation: AmplifyOperation<RESTRequest,
     Void,
     Data,
     APIError
     >,
-APIOperation {
+RESTOperation {
 
     // Data received by the operation
     var data = Data()
@@ -22,12 +22,14 @@ APIOperation {
     var mapper: OperationTaskMapper
     let pluginConfig: AWSAPICategoryPluginConfiguration
 
-    init(request: APIRequest,
+    // TODO: fix possible inconsistent request.operationType and eventName passed in, by removing eventName
+    // and retrieveing it from request.operationType.mapToEventName() for example.
+    init(request: RESTRequest,
          eventName: String,
-         listener: AWSAPIOperation.EventListener?,
          session: URLSessionBehavior,
          mapper: OperationTaskMapper,
-         pluginConfig: AWSAPICategoryPluginConfiguration) {
+         pluginConfig: AWSAPICategoryPluginConfiguration,
+         listener: AWSRESTOperation.EventListener?) {
 
         self.session = session
         self.mapper = mapper
@@ -67,16 +69,10 @@ APIOperation {
             return
         }
 
-        // Prepare request payload, if any
-        var requestPayload: Data?
-        if let body = request.body {
-            requestPayload = body.data(using: .utf8)
-        }
-
         // Construct URL with path
         let url: URL
         do {
-            url = try APIRequestUtils.constructURL(endpointConfig.baseURL, path: request.path)
+            url = try RESTRequestUtils.constructURL(endpointConfig.baseURL, path: request.path)
         } catch let error as APIError {
             dispatch(event: .failed(error))
             finish()
@@ -89,18 +85,18 @@ APIOperation {
         }
 
         // Construct Request
-        let urlRequest = APIRequestUtils.constructRequest(with: url,
-                                                          operationType: request.operationType,
-                                                          requestPayload: requestPayload)
+        let urlRequest = RESTRequestUtils.constructRequest(with: url,
+                                                           operationType: request.operationType,
+                                                           requestPayload: request.body)
 
         // Intercept request
         let finalRequest = endpointConfig.interceptors.reduce(urlRequest) { (request, interceptor) -> URLRequest in
             do {
                 return try interceptor.intercept(request)
             } catch {
-                dispatch(event: .failed(APIError.operationError("Failed to intercept request fully..",
-                                                                    "Something wrong with the interceptor",
-                                                                    error)))
+                dispatch(event: .failed(APIError.operationError("Failed to intercept request fully.",
+                                                                "Something wrong with the interceptor",
+                                                                error)))
                 cancel()
                 return request
             }

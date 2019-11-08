@@ -7,5 +7,5 @@
 
 import XCTest
 
-class GraphQLRequestUtilsValidatorTests: XCTestCase {
+class RESTRequestUtilsTests: XCTestCase {
 }

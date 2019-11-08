@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-extension AWSAPIOperation: TaskOperationBehavior {
+extension AWSRESTOperation: APIOperation {
     func getOperationId() -> UUID {
         return id
     }

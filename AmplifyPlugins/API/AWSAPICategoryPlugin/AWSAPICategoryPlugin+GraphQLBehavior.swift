@@ -20,8 +20,8 @@ public extension AWSAPICategoryPlugin {
                              document: String,
                              variables: [String: Any]?,
                              responseType: R.Type,
-                             listener: ((AsyncEvent<Void, GraphQLResponse<R>, GraphQLError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, GraphQLError> {
+                             listener: ((AsyncEvent<Void, GraphQLResponse<R>, APIError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, APIError> {
 
             return graphql(apiName: apiName,
                            operationType: .query,
@@ -43,8 +43,8 @@ public extension AWSAPICategoryPlugin {
                               document: String,
                               variables: [String: Any]?,
                               responseType: R.Type,
-                              listener: ((AsyncEvent<Void, GraphQLResponse<R>, GraphQLError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, GraphQLError> {
+                              listener: ((AsyncEvent<Void, GraphQLResponse<R>, APIError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, APIError> {
 
             return graphql(apiName: apiName,
                            operationType: .mutation,
@@ -63,8 +63,8 @@ public extension AWSAPICategoryPlugin {
                                        document: String,
                                        variables: [String: Any]?,
                                        responseType: R.Type,
-                                       listener: ((AsyncEvent<Void, GraphQLResponse<R>, GraphQLError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, GraphQLError> {
+                                       listener: ((AsyncEvent<Void, GraphQLResponse<R>, APIError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, APIError> {
 
             let graphQLQueryRequest = GraphQLRequest(apiName: apiName,
                                                      operationType: operationType,
@@ -75,10 +75,10 @@ public extension AWSAPICategoryPlugin {
             let operation = AWSGraphQLOperation(request: graphQLQueryRequest,
                                                 eventName: eventName,
                                                 responseType: responseType,
-                                                listener: listener,
                                                 session: session,
                                                 mapper: mapper,
-                                                pluginConfig: pluginConfig)
+                                                pluginConfig: pluginConfig,
+                                                listener: listener)
             queue.addOperation(operation)
             return operation
     }

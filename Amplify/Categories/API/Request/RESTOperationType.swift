@@ -8,10 +8,10 @@
 import Foundation
 
 /// The type of API operation
-public enum APIOperationType {
-    case get
-    case put
-    case post
-    case patch
-    case delete
+public enum RESTOperationType: String {
+    case get = "GET"
+    case put = "PUT"
+    case post = "POST"
+    case patch = "PATCH"
+    case delete = "DELETE"
 }

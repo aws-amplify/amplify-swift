@@ -26,8 +26,8 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
                               document: String,
                               variables: [String: Any]?,
                               responseType: R.Type,
-                              listener: ((AsyncEvent<Void, GraphQLResponse<R>, GraphQLError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, GraphQLError> {
+                              listener: ((AsyncEvent<Void, GraphQLResponse<R>, APIError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, APIError> {
 
             notify("mutate")
             let options = GraphQLRequest.Options()
@@ -44,8 +44,8 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
                              document: String,
                              variables: [String: Any]?,
                              responseType: R.Type,
-                             listener: ((AsyncEvent<Void, GraphQLResponse<R>, GraphQLError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, GraphQLError> {
+                             listener: ((AsyncEvent<Void, GraphQLResponse<R>, APIError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, APIError> {
 
             notify("query")
             let options = GraphQLRequest.Options()
@@ -60,26 +60,26 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     func get(apiName: String,
              path: String,
-             listener: APIOperation.EventListener?) -> APIOperation {
+             listener: RESTOperation.EventListener?) -> RESTOperation {
         notify("get")
-        let request = APIRequest(apiName: apiName,
+        let request = RESTRequest(apiName: apiName,
                                  operationType: .get,
                                  path: path,
-                                 options: APIRequest.Options())
+                                 options: RESTRequest.Options())
         let operation = MockAPIGetOperation(request: request)
         return operation
     }
 
     func post(apiName: String,
               path: String,
-              body: String?,
-              listener: ((AsyncEvent<Void, Data, APIError>) -> Void)?) -> APIOperation {
+              body: Data?,
+              listener: ((AsyncEvent<Void, Data, APIError>) -> Void)?) -> RESTOperation {
         notify("post")
-        let request = APIRequest(apiName: apiName,
+        let request = RESTRequest(apiName: apiName,
                                  operationType: .post,
                                  path: path,
                                  body: body,
-                                 options: APIRequest.Options())
+                                 options: RESTRequest.Options())
         let operation = MockAPIPostOperation(request: request)
         return operation
     }
@@ -95,7 +95,7 @@ class MockSecondAPICategoryPlugin: MockAPICategoryPlugin {
     }
 }
 
-class MockGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, GraphQLError> {
+class MockGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, APIError> {
     override func pause() {
     }
 
@@ -110,7 +110,7 @@ class MockGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRequest, Void,
     }
 }
 
-class MockAPIGetOperation: AmplifyOperation<APIRequest, Void, Data, APIError>, APIOperation {
+class MockAPIGetOperation: AmplifyOperation<RESTRequest, Void, Data, APIError>, RESTOperation {
     override func pause() {
     }
 
@@ -124,7 +124,7 @@ class MockAPIGetOperation: AmplifyOperation<APIRequest, Void, Data, APIError>, A
     }
 }
 
-class MockAPIPostOperation: AmplifyOperation<APIRequest, Void, Data, APIError>, APIOperation {
+class MockAPIPostOperation: AmplifyOperation<RESTRequest, Void, Data, APIError>, RESTOperation {
     override func pause() {
     }
 

@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-extension AWSGraphQLOperation: TaskOperationBehavior {
+extension AWSGraphQLOperation: APIOperation {
     func getOperationId() -> UUID {
         return id
     }
@@ -23,7 +23,7 @@ extension AWSGraphQLOperation: TaskOperationBehavior {
 
     func complete(with error: Error?) {
         if let error = error {
-            let apiError = GraphQLError.operationError(
+            let apiError = APIError.operationError(
                 "The operation for this request failed.",
                 """
                 The operation for the request shown below failed with the following message: \
@@ -49,12 +49,12 @@ extension AWSGraphQLOperation: TaskOperationBehavior {
 
             dispatch(event: .completed(graphQLResponse))
             finish()
-        } catch let error as GraphQLError {
+        } catch let error as APIError {
             dispatch(event: .failed(error))
             finish()
         } catch {
-            let graphQLError = GraphQLError.operationError("failed to process graphqlResponseData", "", error)
-            dispatch(event: .failed(graphQLError))
+            let apiError = APIError.operationError("failed to process graphqlResponseData", "", error)
+            dispatch(event: .failed(apiError))
             finish()
         }
     }

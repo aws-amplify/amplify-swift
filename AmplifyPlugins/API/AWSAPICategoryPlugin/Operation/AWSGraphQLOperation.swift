@@ -11,7 +11,7 @@ import Foundation
 final public class AWSGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRequest,
     Void,
     GraphQLResponse<R>,
-    GraphQLError> {
+    APIError> {
 
     var graphQLResponseData = Data()
     let session: URLSessionBehavior
@@ -19,13 +19,15 @@ final public class AWSGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRe
     let pluginConfig: AWSAPICategoryPluginConfiguration
     let responseType: R.Type
 
+    // TODO: fix possible inconsistent request.operationType and eventName passed in, by removing eventName
+    // and retrieveing it from request.operationType.mapToEventName() for example.
     init(request: GraphQLRequest,
          eventName: String,
          responseType: R.Type,
-         listener: AWSGraphQLOperation.EventListener?,
          session: URLSessionBehavior,
          mapper: OperationTaskMapper,
-         pluginConfig: AWSAPICategoryPluginConfiguration) {
+         pluginConfig: AWSAPICategoryPluginConfiguration,
+         listener: AWSGraphQLOperation.EventListener?) {
 
         self.responseType = responseType
         self.session = session
@@ -53,7 +55,7 @@ final public class AWSGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRe
 
         // Retrieve endpoint configuration
         guard let endpointConfig = pluginConfig.endpoints[request.apiName] else {
-            let error = GraphQLError.invalidConfiguration(
+            let error = APIError.invalidConfiguration(
                 "Unable to get an endpoint configuration for \(request.apiName)",
                 """
                 Review your API plugin configuration and ensure \(request.apiName) has a valid configuration.
@@ -71,7 +73,7 @@ final public class AWSGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRe
         do {
             requestPayload = try JSONSerialization.data(withJSONObject: queryDocument)
         } catch {
-            dispatch(event: .failed(GraphQLError.operationError("Failed to serialize query document",
+            dispatch(event: .failed(APIError.operationError("Failed to serialize query document",
                                                                 "fix the document or variables",
                                                                 error)))
             finish()
@@ -87,7 +89,7 @@ final public class AWSGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRe
             do {
                 return try interceptor.intercept(request)
             } catch {
-                dispatch(event: .failed(GraphQLError.operationError("Failed to intercept request fully..",
+                dispatch(event: .failed(APIError.operationError("Failed to intercept request fully..",
                                                                     "Something wrong with the interceptor",
                                                                     error)))
                 cancel()

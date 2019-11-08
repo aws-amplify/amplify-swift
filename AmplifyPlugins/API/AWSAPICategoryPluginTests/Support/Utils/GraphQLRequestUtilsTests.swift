@@ -5,8 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
+import XCTest
 
-struct PluginConstants {
-    static let awsAPICategoryPluginKey = "AWSAPICategoryPlugin"
+class GraphQLRequestUtilsTests: XCTestCase {
 }

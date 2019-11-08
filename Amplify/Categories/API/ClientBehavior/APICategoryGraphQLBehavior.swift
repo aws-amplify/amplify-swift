@@ -21,8 +21,8 @@ public protocol APICategoryGraphQLBehavior {
                              document: String,
                              variables: [String: Any]?,
                              responseType: R.Type,
-                             listener: ((AsyncEvent<Void, GraphQLResponse<R>, GraphQLError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, GraphQLError>
+                             listener: ((AsyncEvent<Void, GraphQLResponse<R>, APIError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, APIError>
 
     /// Perform a GraphQL mutate operation against a previously configured API. This operation
     /// will be asynchronous, with the callback accessible both locally and via the Hub.
@@ -37,6 +37,6 @@ public protocol APICategoryGraphQLBehavior {
                               document: String,
                               variables: [String: Any]?,
                               responseType: R.Type,
-                              listener: ((AsyncEvent<Void, GraphQLResponse<R>, GraphQLError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, GraphQLError>
+                              listener: ((AsyncEvent<Void, GraphQLResponse<R>, APIError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, APIError>
 }

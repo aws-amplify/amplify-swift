@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public protocol GraphQLOperation: AmplifyOperation<GraphQLRequest, Void, Decodable, GraphQLError> { }
+public protocol GraphQLOperation: AmplifyOperation<GraphQLRequest, Void, Decodable, APIError> { }
 
 public extension HubPayload.EventName.API {
     /// eventName for HubPayloads emitted by this operation

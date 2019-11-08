@@ -21,7 +21,7 @@ class AWSAPICategoryPluginRESTClientBehaviorTests: AWSAPICategoryPluginTestBase 
 
         XCTAssertNotNil(operation)
 
-        guard let getOperation = operation as? AWSAPIOperation else {
+        guard let getOperation = operation as? AWSRESTOperation else {
             XCTFail("operation could not be cast to AWSAPIOperation")
             return
         }
@@ -31,7 +31,7 @@ class AWSAPICategoryPluginRESTClientBehaviorTests: AWSAPICategoryPluginTestBase 
         XCTAssertEqual(request.apiName, apiName)
         XCTAssertEqual(request.path, testPath)
         XCTAssertNil(request.body)
-        XCTAssertEqual(request.operationType, APIOperationType.get)
+        XCTAssertEqual(request.operationType, RESTOperationType.get)
         XCTAssertNotNil(request.options)
         XCTAssertNotNil(request.path)
     }
@@ -43,7 +43,7 @@ class AWSAPICategoryPluginRESTClientBehaviorTests: AWSAPICategoryPluginTestBase 
 
         XCTAssertNotNil(operation)
 
-        guard let postOperation = operation as? AWSAPIOperation else {
+        guard let postOperation = operation as? AWSRESTOperation else {
             XCTFail("operation could not be cast to AWSAPIOperation")
             return
         }
@@ -53,7 +53,7 @@ class AWSAPICategoryPluginRESTClientBehaviorTests: AWSAPICategoryPluginTestBase 
         XCTAssertEqual(request.apiName, apiName)
         XCTAssertEqual(request.path, testPath)
         XCTAssertEqual(request.body, testBody)
-        XCTAssertEqual(request.operationType, APIOperationType.post)
+        XCTAssertEqual(request.operationType, RESTOperationType.post)
         XCTAssertNotNil(request.options)
         XCTAssertNotNil(request.path)
     }
