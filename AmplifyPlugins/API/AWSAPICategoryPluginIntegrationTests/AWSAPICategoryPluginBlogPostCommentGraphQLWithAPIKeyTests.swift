@@ -25,15 +25,16 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
                                            document: CreateBlogMutation.document,
                                            variables: CreateBlogMutation.variables(id: expectedId,
                                                                                    name: testMethodName),
-                                           responseType: CreateBlogMutation.responseType) { (event) in
+                                           responseType: CreateBlogMutation.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
-                XCTAssertNotNil(graphQLResponse)
-                XCTAssertTrue(!graphQLResponse.errors.isEmpty)
-                XCTAssertNil(graphQLResponse.data)
-                XCTAssertEqual(graphQLResponse.errors.count, 1)
+                guard case let .error(errors) = graphQLResponse else {
+                    XCTFail("Missing error response")
+                    return
+                }
+                XCTAssertEqual(errors.count, 1)
 
-                if case .object(let errorObject) = graphQLResponse.errors[0] {
+                if case .object(let errorObject) = errors[0] {
                     XCTAssertEqual(errorObject["errorType"], "UnauthorizedException")
                     XCTAssertEqual(errorObject["message"], "You are not authorized to make this call.")
                 } else {
@@ -67,18 +68,17 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
         let queryOperation = Amplify.API.query(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
                                                document: GetBlogQuery.document,
                                                variables: GetBlogQuery.variables(id: blog.id),
-                                               responseType: JSONValueResponse()) { (event) in
+                                               responseType: JSONValue.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
-                XCTAssertNotNil(graphQLResponse)
-                XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let blogJsonValue = graphQLResponse.data else {
-                    XCTFail("Missing blog as JSONValue")
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
                     return
                 }
+
                 do {
-                    let serializedBlog = try JSONEncoder().encode(blogJsonValue)
-                    let blogObject = try JSONDecoder().decode(GetBlogQuery.GetBlogQueryResponse.SerializedObject.self, from: serializedBlog)
+                    let serializedBlog = try JSONEncoder().encode(data)
+                    let blogObject = try JSONDecoder().decode(GetBlogQuery.Data.self, from: serializedBlog)
                     guard let blog = blogObject.getBlog else {
                         XCTFail("Failed to deserlize to blog")
                         return
@@ -130,15 +130,14 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
         let queryOperation = Amplify.API.query(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
                                                document: GetBlogQuery.document,
                                                variables: GetBlogQuery.variables(id: blog.id),
-                                               responseType: GetBlogQuery.responseType) { (event) in
+                                               responseType: GetBlogQuery.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
-                XCTAssertNotNil(graphQLResponse)
-                XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let data = graphQLResponse.data else {
-                    XCTFail("Missing data")
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
                     return
                 }
+
                 guard let blog = data.getBlog else {
                     XCTFail("Missing blog")
                     return
@@ -170,12 +169,18 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
                                            document: CreateBlogMutation.document,
                                            variables: CreateBlogMutation.variables(id: id,
                                                                                    name: name),
-                                           responseType: CreateBlogMutation.responseType) { (event) in
+                                           responseType: CreateBlogMutation.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
-                XCTAssertNotNil(graphQLResponse)
-                XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                blog = graphQLResponse.data?.createBlog
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
+                    return
+                }
+                guard let createBlog = data.createBlog else {
+                    XCTFail("Missing blog")
+                    return
+                }
+                blog = createBlog
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -195,12 +200,18 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
                                            document: CreatePostMutation.document,
                                            variables: CreatePostMutation.variables(postBlogId: postBlogId,
                                                                                    title: title),
-                                           responseType: CreatePostMutation.responseType) { (event) in
+                                           responseType: CreatePostMutation.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
-                XCTAssertNotNil(graphQLResponse)
-                XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                post = graphQLResponse.data?.createPost
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
+                    return
+                }
+                guard let createPost = data.createPost else {
+                    XCTFail("Missing post")
+                    return
+                }
+                post = createPost
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -220,12 +231,19 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
                                            document: CreateCommentMutation.document,
                                            variables: CreateCommentMutation.variables(commentPostId: commentPostId,
                                                                                    content: content),
-                                           responseType: CreateCommentMutation.responseType) { (event) in
+                                           responseType: CreateCommentMutation.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
-                XCTAssertNotNil(graphQLResponse)
-                XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                comment = graphQLResponse.data?.createComment
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
+                    return
+                }
+                guard let createComment = data.createComment else {
+                    XCTFail("Missing comment")
+                    return
+                }
+
+                comment = createComment
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")

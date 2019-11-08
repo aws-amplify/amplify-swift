@@ -64,12 +64,6 @@ class CreateTodoMutation {
         return ["input": input]
     }
 
-    static let responseType = CreateTodoResponse()
-
-    class CreateTodoResponse: ResponseType {
-        typealias SerializedObject = Data
-    }
-
     class Data: Decodable {
         var createTodo: Todo?
     }
@@ -98,12 +92,6 @@ class UpdateTodoMutation {
         return ["input": input]
     }
 
-    static let responseType = UpdateTodoResponse()
-
-    class UpdateTodoResponse: ResponseType {
-        typealias SerializedObject = Data
-    }
-
     class Data: Decodable {
         var updateTodo: Todo?
     }
@@ -129,12 +117,6 @@ class DeleteTodoMutation {
         return ["input": input]
     }
 
-    static let responseType = DeleteTodoResponse()
-
-    class DeleteTodoResponse: ResponseType {
-        typealias SerializedObject = Data
-    }
-
     class Data: Decodable {
         var deleteTodo: Todo?
     }
@@ -153,12 +135,6 @@ class GetTodoQuery {
 
     static func variables(id: String) -> [String: Any] {
        return ["id": id]
-    }
-
-    static let responseType = GetTodoResponse()
-
-    class GetTodoResponse: ResponseType {
-       typealias SerializedObject = Data
     }
 
     class Data: Decodable {
@@ -201,20 +177,7 @@ class ListTodosQuery {
         return input
     }
 
-    static let responseType = ListTodoResponse()
-
-    class ListTodoResponse: ResponseType {
-       typealias SerializedObject = Data
-    }
-
     class Data: Decodable {
         var listTodos: ListTodo?
-    }
-}
-
-class InvalidCreateTodoResponse: ResponseType {
-    typealias SerializedObject = Data
-    class Data: Decodable {
-        var createTodo: ListTodo?
     }
 }

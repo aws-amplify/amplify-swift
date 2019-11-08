@@ -122,7 +122,6 @@
 		214209F42372212200FA140C /* AWSAPICategoryPlugin+InterceptorBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209CD2372212200FA140C /* AWSAPICategoryPlugin+InterceptorBehavior.swift */; };
 		214209F52372212200FA140C /* AWSAPICategoryPlugin+Configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209CE2372212200FA140C /* AWSAPICategoryPlugin+Configure.swift */; };
 		214209F62372212200FA140C /* AWSAPICategoryPlugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209CF2372212200FA140C /* AWSAPICategoryPlugin+Reset.swift */; };
-		21420A082372215400FA140C /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209F82372215300FA140C /* Common.swift */; };
 		21420A092372215400FA140C /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209F92372215300FA140C /* Todo.swift */; };
 		21420A0A2372215400FA140C /* BlogPostComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209FA2372215300FA140C /* BlogPostComment.swift */; };
 		21420A0B2372215400FA140C /* AWSAPICategoryPluginTaskPrivateNoteGraphQLWithUserPoolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214209FB2372215300FA140C /* AWSAPICategoryPluginTaskPrivateNoteGraphQLWithUserPoolTests.swift */; };
@@ -1053,7 +1052,6 @@
 		214209CD2372212200FA140C /* AWSAPICategoryPlugin+InterceptorBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSAPICategoryPlugin+InterceptorBehavior.swift"; sourceTree = "<group>"; };
 		214209CE2372212200FA140C /* AWSAPICategoryPlugin+Configure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSAPICategoryPlugin+Configure.swift"; sourceTree = "<group>"; };
 		214209CF2372212200FA140C /* AWSAPICategoryPlugin+Reset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSAPICategoryPlugin+Reset.swift"; sourceTree = "<group>"; };
-		214209F82372215300FA140C /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		214209F92372215300FA140C /* Todo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
 		214209FA2372215300FA140C /* BlogPostComment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlogPostComment.swift; sourceTree = "<group>"; };
 		214209FB2372215300FA140C /* AWSAPICategoryPluginTaskPrivateNoteGraphQLWithUserPoolTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginTaskPrivateNoteGraphQLWithUserPoolTests.swift; sourceTree = "<group>"; };
@@ -2140,7 +2138,6 @@
 		214209F72372215300FA140C /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				214209F82372215300FA140C /* Common.swift */,
 				214209F92372215300FA140C /* Todo.swift */,
 				214209FA2372215300FA140C /* BlogPostComment.swift */,
 			);
@@ -6897,7 +6894,6 @@
 			files = (
 				21420A112372215500FA140C /* AWSAPICategoryPluginBaseTests.swift in Sources */,
 				21420A0F2372215400FA140C /* AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.swift in Sources */,
-				21420A082372215400FA140C /* Common.swift in Sources */,
 				21420A0D2372215400FA140C /* AWSAPICategoryPluginTodoGraphQLWithIAMTests.swift in Sources */,
 				21420A0A2372215400FA140C /* BlogPostComment.swift in Sources */,
 				21420A122372215500FA140C /* AWSAPICategoryPluginGetTests.swift in Sources */,

@@ -67,12 +67,6 @@ class CreateBlogMutation {
         return ["input": input]
     }
 
-    static let responseType = CreateBlogMutationResponse()
-
-    class CreateBlogMutationResponse: ResponseType {
-        typealias SerializedObject = Data
-    }
-
     class Data: Decodable {
         var createBlog: Blog?
     }
@@ -114,12 +108,6 @@ class CreatePostMutation {
         return ["input": input]
     }
 
-    static let responseType = CreatePostResponse()
-
-    class CreatePostResponse: ResponseType {
-        typealias SerializedObject = Data
-    }
-
     class Data: Decodable {
         var createPost: Post?
     }
@@ -155,12 +143,6 @@ class CreateCommentMutation {
         input.updateValue(commentPostId, forKey: "commentPostId")
         input.updateValue(content, forKey: "content")
         return ["input": input]
-    }
-
-    static let responseType = CreateCommentResponse()
-
-    class CreateCommentResponse: ResponseType {
-        typealias SerializedObject = Data
     }
 
     class Data: Decodable {
@@ -199,13 +181,6 @@ class GetBlogQuery {
 
     static func variables(id: String) -> [String: Any] {
         return ["id": id]
-    }
-
-
-    static let responseType = GetBlogQueryResponse()
-
-    class GetBlogQueryResponse: ResponseType {
-        typealias SerializedObject = Data
     }
 
     class Data: Decodable {

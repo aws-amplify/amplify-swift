@@ -27,13 +27,11 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                                            variables: CreateTodoMutation.variables(id: expectedId,
                                                                                    name: expectedName,
                                                                                    description: expectedDescription),
-                                           responseType: CreateTodoMutation.responseType) { (event) in
+                                           responseType: CreateTodoMutation.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
-                XCTAssertNotNil(graphQLResponse)
-                XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let data = graphQLResponse.data else {
-                    XCTFail("Missing data")
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
                     return
                 }
                 guard let todo = data.createTodo else {
@@ -69,12 +67,13 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                                            variables: CreateTodoMutation.variables(id: uuid,
                                                                                    name: "",
                                                                                    description: description),
-                                           responseType: CreateTodoMutation.responseType) { (event) in
+                                           responseType: CreateTodoMutation.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
-                XCTAssertNotNil(graphQLResponse)
-                XCTAssertTrue(!graphQLResponse.errors.isEmpty)
-                XCTAssertNil(graphQLResponse.data?.createTodo)
+                guard case let .error(error) = graphQLResponse else {
+                    XCTFail("Missing error response")
+                    return
+                }
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -101,7 +100,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                                            variables: CreateTodoMutation.variables(id: expectedId,
                                                                                    name: expectedName,
                                                                                    description: expectedDescription),
-                                           responseType: InvalidCreateTodoResponse()) { (event) in
+                                           responseType: ListTodosQuery.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
                 XCTFail("Unexpected .completed event: \(graphQLResponse)")
@@ -133,18 +132,15 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let queryOperation = Amplify.API.query(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
                                                document: GetTodoQuery.document,
                                                variables: GetTodoQuery.variables(id: todo.id),
-                                               responseType: GetTodoQuery.responseType) { (event) in
+                                               responseType: GetTodoQuery.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
-                XCTAssertNotNil(graphQLResponse)
-                XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let data = graphQLResponse.data else {
-                    XCTFail("Missing data")
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
                     return
                 }
-
                 guard let todo = data.getTodo else {
-                    XCTFail("missing todo")
+                    XCTFail("Missing Todo")
                     return
                 }
 
@@ -174,12 +170,15 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let operation = Amplify.API.query(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
                                           document: GetTodoQuery.document,
                                           variables: GetTodoQuery.variables(id: uuid),
-                                          responseType: GetTodoQuery.responseType) { (event) in
+                                          responseType: GetTodoQuery.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
-                XCTAssertNotNil(graphQLResponse)
-                XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                XCTAssertNil(graphQLResponse.data?.getTodo)
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
+                    return
+                }
+
+                XCTAssertNil(data.getTodo)
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -212,18 +211,15 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                                            variables: UpdateTodoMutation.variables(id: todo.id,
                                                                                    name: expectedName,
                                                                                    description: expectedDescription),
-                                           responseType: UpdateTodoMutation.responseType) { (event) in
+                                           responseType: UpdateTodoMutation.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
-                XCTAssertNotNil(graphQLResponse)
-                XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let data = graphQLResponse.data else {
-                    XCTFail("Missing updateTodo")
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
                     return
                 }
-
                 guard let todo = data.updateTodo else {
-                    XCTFail("missing updateTodo")
+                    XCTFail("Missing Todo")
                     return
                 }
 
@@ -259,13 +255,11 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let deleteOperation = Amplify.API.mutate(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
                                            document: DeleteTodoMutation.document,
                                            variables: DeleteTodoMutation.variables(id: todo.id),
-                                           responseType: DeleteTodoMutation.responseType) { (event) in
+                                           responseType: DeleteTodoMutation.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
-                XCTAssertNotNil(graphQLResponse)
-                XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let data = graphQLResponse.data else {
-                    XCTFail("Missing data")
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
                     return
                 }
                 guard let deleteTodo = data.deleteTodo else {
@@ -291,12 +285,17 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let queryOperation = Amplify.API.query(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
                                                document: GetTodoQuery.document,
                                                variables: GetTodoQuery.variables(id: todo.id),
-                                               responseType: GetTodoQuery.responseType) { (event) in
+                                               responseType: GetTodoQuery.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
-                XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                XCTAssertNil(graphQLResponse.data?.getTodo)
+
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
+                    return
+                }
+
+                XCTAssertNil(data.getTodo)
                 queryCompleteInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -325,13 +324,11 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let operation = Amplify.API.query(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
                                           document: ListTodosQuery.document,
                                           variables: nil,
-                                          responseType: ListTodosQuery.responseType) { (event) in
+                                          responseType: ListTodosQuery.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
-                XCTAssertNotNil(graphQLResponse)
-                XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let data = graphQLResponse.data else {
-                    XCTFail("Missing data")
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
                     return
                 }
                 guard let listTodos = data.listTodos else {
@@ -361,13 +358,11 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let operation = Amplify.API.query(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
                                           document: ListTodosQuery.document,
                                           variables: variables,
-                                          responseType: ListTodosQuery.responseType) { (event) in
+                                          responseType: ListTodosQuery.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
-                XCTAssertNotNil(graphQLResponse)
-                XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let data = graphQLResponse.data else {
-                    XCTFail("Missing data")
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
                     return
                 }
                 guard let listTodos = data.listTodos else {
@@ -421,12 +416,19 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                                            variables: CreateTodoMutation.variables(id: id,
                                                                                    name: name,
                                                                                    description: description),
-                                           responseType: CreateTodoMutation.responseType) { (event) in
+                                           responseType: CreateTodoMutation.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
-                XCTAssertNotNil(graphQLResponse)
-                XCTAssertNotNil(graphQLResponse.data)
-                todo = graphQLResponse.data?.createTodo
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
+                    return
+                }
+                guard let createTodo = data.createTodo else {
+                    XCTFail("Missing createTodo")
+                    return
+                }
+
+                todo = createTodo
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")

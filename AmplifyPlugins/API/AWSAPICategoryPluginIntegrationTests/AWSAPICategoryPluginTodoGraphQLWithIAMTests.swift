@@ -72,13 +72,11 @@ class AWSAPICategoryPluginTodoGraphQLWithIAMTests: AWSAPICategoryPluginBaseTests
                                            variables: CreateTodoMutation.variables(id: expectedId,
                                                                                    name: expectedName,
                                                                                    description: expectedDescription),
-                                           responseType: CreateTodoMutation.responseType) { (event) in
+                                           responseType: CreateTodoMutation.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
-                XCTAssertNotNil(graphQLResponse)
-                XCTAssertTrue(graphQLResponse.errors.isEmpty)
-                guard let data = graphQLResponse.data else {
-                    XCTFail("Missing data")
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
                     return
                 }
                 guard let todo = data.createTodo else {
@@ -116,7 +114,7 @@ class AWSAPICategoryPluginTodoGraphQLWithIAMTests: AWSAPICategoryPluginBaseTests
                                            variables: CreateTodoMutation.variables(id: expectedId,
                                                                                    name: expectedName,
                                                                                    description: expectedDescription),
-                                           responseType: CreateTodoMutation.responseType) { (event) in
+                                           responseType: CreateTodoMutation.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
                 XCTFail("Unexpected .completed event: \(graphQLResponse)")
