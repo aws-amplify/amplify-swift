@@ -128,35 +128,35 @@ public struct KeyPhrase {
 }
 
 public enum EntityType: String {
-    case person = "PERSON"
-    case location = "LOCATION"
-    case organization = "ORGANIZATION"
-    case commercialItem = "COMMERCIAL_ITEM"
-    case event = "EVENT"
-    case date = "DATE"
-    case quantity = "QUANTITY"
-    case title = "TITLE"
-    case other = "OTHER"
+    case person
+    case location
+    case organization
+    case commercialItem
+    case event
+    case date
+    case quantity
+    case title
+    case other
 }
 
 public enum SpeechType: String {
-    case adjective = "adj"
-    case adposition = "adp"
-    case adverb = "adv"
-    case auxiliary = "aux"
-    case conjunction = "conj"
-    case coordinatingconjunction = "cconj"
-    case determiner = "det"
-    case interjection = "intj"
+    case adjective
+    case adposition
+    case adverb
+    case auxiliary
+    case conjunction
+    case coordinatingConjunction
+    case determiner
+    case interjection
     case noun
-    case numeral = "num"
-    case other = "o"
-    case particle = "part"
-    case pronoun = "pron"
-    case propernoun = "propn"
-    case punctuation = "punct"
+    case numeral
+    case other
+    case particle
+    case pronoun
+    case properNoun
+    case punctuation
     case preposition
-    case subordinatingconjunction = "sconj"
-    case symbol = "sym"
+    case subordinatingConjunction
+    case symbol
     case verb
 }
