@@ -8,7 +8,7 @@
 import Foundation
 
 public struct IdentifyLabelsResult: IdentifyResult {
-    var labels: [Label]
+    public var labels: [Label]
 
     public init(labels: [Label]) {
         self.labels = labels

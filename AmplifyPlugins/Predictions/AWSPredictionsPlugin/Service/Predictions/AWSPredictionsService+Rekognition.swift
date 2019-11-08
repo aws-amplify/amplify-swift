@@ -43,9 +43,47 @@ extension AWSPredictionsService {
                 return nil
             }
 
-            let newLabels = IdentifyLabelsResultUtils.process(labels)
+            let newLabels = IdentifyResultsUtils.processLabels(labels)
             onEvent(.completed(IdentifyLabelsResult(labels: newLabels)))
             return nil
         }
+    }
+
+    func detectCelebs(image: UIImage, onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
+        let request: AWSRekognitionRecognizeCelebritiesRequest = AWSRekognitionRecognizeCelebritiesRequest()
+        let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
+
+        rekognitionImage.bytes = image.jpegData(compressionQuality: 0.2)!
+        request.image = rekognitionImage
+
+        awsRekognition.detectCelebs(request: request).continueWith { (task) -> Any? in
+            guard task.error == nil else {
+                let error = task.error! as NSError
+                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                onEvent(.failed(
+                    .networkError(predictionsErrorString.errorDescription,
+                                  predictionsErrorString.recoverySuggestion)))
+                return nil
+            }
+
+            guard let result = task.result else {
+                onEvent(.failed(
+                    .unknownError("No result was found. An unknown error occurred",
+                                  "Please try again.")))
+                return nil
+            }
+
+            guard let celebs = result.celebrityFaces else {
+                onEvent(.failed(
+                    .networkError("No result was found.",
+                                  "Please make sure the image integrity is maintained before sending")))
+                return nil
+            }
+
+            let newCelebs = IdentifyResultsUtils.processCelebs(celebs)
+            onEvent(.completed(IdentifyCelebsResult(celebrities: newCelebs)))
+            return nil
+        }
+
     }
 }

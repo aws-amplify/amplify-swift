@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import CoreGraphics
+import UIKit
 
 /// Behavior of the Predictions category that clients will use
 public protocol PredictionsCategoryClientBehavior {
@@ -44,7 +44,7 @@ public enum LanguageType: String {
 }
 
 public enum IdentifyType {
-    case detectCelebrity
+    case detectCelebrities
     case detectLabels
     case detectEntities
     case detectText

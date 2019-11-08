@@ -20,6 +20,10 @@ class AWSRekognitionAdapter: AWSRekognitionBehavior {
         return awsRekognition.detectLabels(request)
     }
 
+    func detectCelebs(request: AWSRekognitionRecognizeCelebritiesRequest) -> AWSTask<AWSRekognitionRecognizeCelebritiesResponse> {
+        return awsRekognition.recognizeCelebrities(request)
+    }
+
     func getRekognition() -> AWSRekognition {
         return awsRekognition
     }

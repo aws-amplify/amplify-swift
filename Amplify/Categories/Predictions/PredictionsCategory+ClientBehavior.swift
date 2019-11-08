@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import CoreImage
+import UIKit
 
 extension PredictionsCategory: PredictionsCategoryClientBehavior {
 

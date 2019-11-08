@@ -12,5 +12,7 @@ protocol AWSRekognitionBehavior {
 
     func detectLabels(request: AWSRekognitionDetectLabelsRequest) -> AWSTask<AWSRekognitionDetectLabelsResponse>
 
+    func detectCelebs(request: AWSRekognitionRecognizeCelebritiesRequest) -> AWSTask<AWSRekognitionRecognizeCelebritiesResponse>
+
     func getRekognition() -> AWSRekognition
 }
