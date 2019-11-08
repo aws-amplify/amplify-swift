@@ -5,18 +5,16 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
-public enum AuthError {
-    case identity(ErrorName, ErrorDescription, RecoverySuggestion, Error? = nil)
-    case unknown(ErrorDescription, Error? = nil)
+public enum LoggingError {
+    case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
+    case unknown(ErrorDescription, Error?)
 }
 
-extension AuthError: AmplifyError {
+extension LoggingError: AmplifyError {
     public var errorDescription: ErrorDescription {
         switch self {
-        case .identity(let errorName, let errorDescription, _, _):
-            return "Could not get IdentityId due to [\(errorName)] with message: \(errorDescription)"
+        case .configuration(let errorDescription, _, _):
+            return errorDescription
         case .unknown(let errorDescription, _):
             return "Unexpected error occurred with message: \(errorDescription)"
         }
@@ -24,7 +22,7 @@ extension AuthError: AmplifyError {
 
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
-        case .identity(_, _, let recoverySuggestion, _):
+        case .configuration(_, let recoverySuggestion, _):
             return recoverySuggestion
         case .unknown:
             return """
@@ -37,7 +35,7 @@ extension AuthError: AmplifyError {
 
     public var underlyingError: Error? {
         switch self {
-        case .identity(_, _, _, let underlyingError),
+        case .configuration(_, _, let underlyingError),
              .unknown(_, let underlyingError):
             return underlyingError
         }

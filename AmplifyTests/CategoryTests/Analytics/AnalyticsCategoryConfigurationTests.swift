@@ -72,7 +72,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         Amplify.reset()
         XCTAssertThrowsError(try Amplify.Analytics.getPlugin(for: "MockAnalyticsCategoryPlugin"),
                              "Getting a plugin after reset() should throw") { error in
-                                guard case PluginError.noSuchPlugin = error else {
+                                guard case AnalyticsError.configuration = error else {
                                     XCTFail("Expected PluginError.noSuchPlugin")
                                     return
                                 }

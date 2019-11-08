@@ -27,7 +27,7 @@ final public class AnalyticsCategory: Category {
             preconditionFailure("No plugins added to \(categoryType.displayName) category.")
         }
 
-        guard plugins.count == 1 else {
+        guard plugins.count == 1, let plugin = plugins.first?.value else {
             preconditionFailure(
                 """
                 More than 1 plugin added to \(categoryType.displayName) category. \
@@ -37,7 +37,7 @@ final public class AnalyticsCategory: Category {
             )
         }
 
-        return plugins.first!.value
+        return plugin
     }
 
     var isConfigured = false
@@ -47,13 +47,12 @@ final public class AnalyticsCategory: Category {
     /// Adds `plugin` to the list of Plugins that implement functionality for this category.
     ///
     /// - Parameter plugin: The Plugin to add
-    /// - Throws:
-    ///   - PluginError.emptyKey if the plugin's `key` property is empty
     public func add(plugin: AnalyticsCategoryPlugin) throws {
         let key = plugin.key
         guard !key.isEmpty else {
             let pluginDescription = String(describing: plugin)
-            let error = PluginError.emptyKey("Plugin \(pluginDescription) has an empty `key`.",
+            let error = AnalyticsError.configuration(
+                "Plugin \(pluginDescription) has an empty `key`.",
                 "Set the `key` property for \(String(describing: plugin))")
             throw error
         }
@@ -65,11 +64,11 @@ final public class AnalyticsCategory: Category {
     ///
     /// - Parameter key: The PluginKey (String) of the plugin to retrieve
     /// - Returns: The wrapped plugin
-    /// - Throws: PluginError.noSuchPlugin if no plugin exists for `key`
     public func getPlugin(for key: PluginKey) throws -> AnalyticsCategoryPlugin {
         guard let plugin = plugins[key] else {
             let keys = plugins.keys.joined(separator: ", ")
-            let error = PluginError.noSuchPlugin("No plugin has been added for '\(key)'.",
+            let error = AnalyticsError.configuration(
+                "No plugin has been added for '\(key)'.",
                 "Either add a plugin for '\(key)', or use one of the known keys: \(keys)")
             throw error
         }

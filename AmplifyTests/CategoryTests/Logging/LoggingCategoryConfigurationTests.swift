@@ -72,7 +72,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         Amplify.reset()
         XCTAssertThrowsError(try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin"),
                              "Getting a plugin after reset() should throw") { error in
-                                guard case PluginError.noSuchPlugin = error else {
+                                guard case LoggingError.configuration = error else {
                                     XCTFail("Expected PluginError.noSuchPlugin")
                                     return
                                 }

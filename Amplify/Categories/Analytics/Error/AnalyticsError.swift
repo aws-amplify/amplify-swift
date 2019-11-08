@@ -8,12 +8,15 @@
 import Foundation
 
 public enum AnalyticsError {
-    case unknown(ErrorDescription)
+    case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
+    case unknown(ErrorDescription, Error? = nil)
 }
 
 extension AnalyticsError: AmplifyError {
     public var errorDescription: ErrorDescription {
         switch self {
+        case .configuration(let errorDescription, _, _):
+            return errorDescription
         case .unknown(let errorDescription):
             return "Unexpected error occurred with message: \(errorDescription)"
         }
@@ -21,12 +24,23 @@ extension AnalyticsError: AmplifyError {
 
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
+        case .configuration(_, let recoverySuggestion, _):
+            return recoverySuggestion
         case .unknown:
             return """
-                This should never happen. There is a possibility that there is bug if this error persists.
-                Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any
-                existing issues that match your scenario, and file an issue with the details of the bug if there isn't.
-                """
+            This should never happen. There is a possibility that there is bug if this error persists.
+            Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any
+            existing issues that match your scenario, and file an issue with the details of the bug if there isn't.
+            """
+        }
+    }
+
+    public var underlyingError: Error? {
+        switch self {
+        case .configuration(_, _, let error):
+            return error
+        case .unknown(_, let error):
+            return error
         }
     }
 }

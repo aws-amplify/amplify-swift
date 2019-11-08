@@ -13,7 +13,6 @@ public extension AWSAPICategoryPlugin {
              path: String,
              listener: APIOperation.EventListener?) -> APIOperation {
 
-
         let apiGetRequest = APIGetRequest(apiName: apiName,
                                           path: path,
                                           options: APIGetRequest.Options())
@@ -33,7 +32,7 @@ public extension AWSAPICategoryPlugin {
             operation.dispatch(event: APIOperation.Event.failed(apiError))
             return operation
         } catch {
-            let apiError = APIError.unknown(error.localizedDescription, "")
+            let apiError = APIError.unknown(error.localizedDescription, "", error)
             operation.dispatch(event: APIOperation.Event.failed(apiError))
             return operation
         }

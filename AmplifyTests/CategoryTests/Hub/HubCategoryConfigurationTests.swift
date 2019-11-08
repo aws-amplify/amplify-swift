@@ -73,7 +73,7 @@ class HubCategoryConfigurationTests: XCTestCase {
         Amplify.reset()
         XCTAssertThrowsError(try Amplify.Hub.getPlugin(for: "MockHubCategoryPlugin"),
                              "Getting a plugin after reset() should throw") { error in
-                                guard case PluginError.noSuchPlugin = error else {
+                                guard case HubError.configuration = error else {
                                     XCTFail("Expected PluginError.noSuchPlugin")
                                     return
                                 }

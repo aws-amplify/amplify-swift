@@ -46,7 +46,8 @@ extension AmplifyConfiguration {
                 Could not load data from the file at `\(url.path)`. Inspect the file to ensure it is present.
                 The system reported the following error:
                 \(error.localizedDescription)
-                """
+                """,
+                error
             )
         }
 
@@ -69,7 +70,8 @@ extension AmplifyConfiguration {
                 `amplifyconfiguration.json` was found, but could not be converted to an AmplifyConfiguration object
                 using the default JSONDecoder. The system reported the following error:
                 \(error.localizedDescription)
-                """
+                """,
+                error
             )
         }
     }

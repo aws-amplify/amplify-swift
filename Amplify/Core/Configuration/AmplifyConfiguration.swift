@@ -67,9 +67,6 @@ extension Amplify {
     /// invoked more than once.
     ///
     /// - Parameter configuration: The AmplifyConfiguration for specified Categories
-    /// - Throws:
-    ///   - ConfigurationError.amplifyAlreadyConfigured: If `configure` has already been invoked
-    ///   - PluginError.noSuchPlugin: If one of the configurations specifies a plugin key that has not been added
     public static func configure(_ configuration: AmplifyConfiguration? = nil) throws {
         guard !isConfigured else {
             let error = ConfigurationError.amplifyAlreadyConfigured(
