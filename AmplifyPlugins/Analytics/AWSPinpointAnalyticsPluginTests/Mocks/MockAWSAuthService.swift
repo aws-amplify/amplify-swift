@@ -8,6 +8,7 @@
 import Foundation
 import AWSMobileClient
 import Amplify
+import AWSPluginsCore
 
 @testable import AWSPinpointAnalyticsPlugin
 
