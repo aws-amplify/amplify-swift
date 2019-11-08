@@ -9,6 +9,7 @@ import Foundation
 
 
 public struct AWSPredictionsPluginConfiguration {
-    //TODO: hold an instance of AWSPredictionsPluginConfiguration on plugin to hold parsed values on configure() to consolidate the defaults, and use in convert()/identify() methods
+    //TODO: hold an instance of AWSPredictionsPluginConfiguration on plugin to hold parsed values on configure() to
+    //consolidate the defaults, and use in convert()/identify() methods
     //TODO: set up configure instance
 }

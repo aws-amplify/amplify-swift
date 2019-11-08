@@ -1,0 +1,49 @@
+platform :ios, '12.0'
+use_frameworks!
+
+AWS_SDK_VERSION = "2.12.0"
+
+pod 'SwiftFormat/CLI'
+pod 'SwiftLint'
+
+target 'AWSPredictionsPlugin' do
+	pod 'Amplify', :path => '../../'
+  pod 'AWSPluginsCore', :path => '../../'
+  pod "AWSTranslate", "~> #{AWS_SDK_VERSION}"
+  pod "AWSRekognition", "~> #{AWS_SDK_VERSION}"
+  pod "AWSPolly", "~> #{AWS_SDK_VERSION}"
+  pod "AWSComprehend", "~> #{AWS_SDK_VERSION}"
+  pod "AWSTranscribe", "~> #{AWS_SDK_VERSION}"
+end
+
+target "AWSPredictionsPluginTests" do
+  pod 'Amplify', :path => '../../'
+  pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
+  pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+end
+
+target 'CoreMLPredictionsPlugin' do
+  pod 'Amplify', :path => '../../'
+  pod 'AWSPluginsCore', :path => '../../'
+end
+
+target "CoreMLPredictionsPluginTests" do
+  pod 'Amplify', :path => '../../'
+  pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
+  pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+end
+
+target "HostApp" do
+  use_frameworks!
+  pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
+  pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+
+  target "AWSPredictionsPluginIntegrationTests" do
+    inherit! :complete
+  end
+
+  target "CoreMLPredictionsPluginIntegrationTests" do
+    inherit! :complete
+  end
+end
+
