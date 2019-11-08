@@ -67,15 +67,12 @@ struct CoreMLNaturalLanguageAdaptor: CoreMLNaturalLanguageBehavior {
     }
 
     func getSentiment(for text: String) -> Double {
-        if #available(iOS 13, *) {
-            let tagger = NLTagger(tagSchemes: [.sentimentScore])
-            tagger.string = text
+        let tagger = NLTagger(tagSchemes: [.sentimentScore])
+        tagger.string = text
 
-            let (sentiment, _) = tagger.tag(at: text.startIndex, unit: .paragraph, scheme: .sentimentScore)
-            let score = Double(sentiment?.rawValue ?? "0") ?? 0
-            return score
-        }
-        return 0.0
+        let (sentiment, _) = tagger.tag(at: text.startIndex, unit: .paragraph, scheme: .sentimentScore)
+        let score = Double(sentiment?.rawValue ?? "0") ?? 0
+        return score
     }
 }
 
