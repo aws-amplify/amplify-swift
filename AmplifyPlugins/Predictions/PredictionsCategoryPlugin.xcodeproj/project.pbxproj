@@ -73,6 +73,20 @@
 			remoteGlobalIDString = B478F5FA2374DBF400C4F92B;
 			remoteInfo = PredictionsPlugin;
 		};
+		B478F8E82375112C00C4F92B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B478F68C2374DFC300C4F92B;
+			remoteInfo = HostApp;
+		};
+		B478F8EA2375112E00C4F92B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B478F68C2374DFC300C4F92B;
+			remoteInfo = HostApp;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -582,6 +596,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				B478F8EB2375112E00C4F92B /* PBXTargetDependency */,
 			);
 			name = AWSPredictionsPluginIntegrationTests;
 			productName = IntegrationTest;
@@ -646,6 +661,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				B478F8E92375112C00C4F92B /* PBXTargetDependency */,
 			);
 			name = CoreMLPredictionsPluginIntegrationTests;
 			productName = IntegrationTest;
@@ -689,6 +705,10 @@
 					};
 					B478F6572374DD0D00C4F92B = {
 						CreatedOnToolsVersion = 11.1;
+						TestTargetID = B478F68C2374DFC300C4F92B;
+					};
+					B478F67E2374DF6500C4F92B = {
+						TestTargetID = B478F68C2374DFC300C4F92B;
 					};
 					B478F68C2374DFC300C4F92B = {
 						CreatedOnToolsVersion = 11.1;
@@ -1332,6 +1352,16 @@
 			target = B478F5FA2374DBF400C4F92B /* AWSPredictionsPlugin */;
 			targetProxy = B478F6732374DF5B00C4F92B /* PBXContainerItemProxy */;
 		};
+		B478F8E92375112C00C4F92B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B478F68C2374DFC300C4F92B /* HostApp */;
+			targetProxy = B478F8E82375112C00C4F92B /* PBXContainerItemProxy */;
+		};
+		B478F8EB2375112E00C4F92B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B478F68C2374DFC300C4F92B /* HostApp */;
+			targetProxy = B478F8EA2375112E00C4F92B /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -1577,6 +1607,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = HostApp;
 			};
 			name = Debug;
 		};
@@ -1595,6 +1626,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = HostApp;
 			};
 			name = Release;
 		};
@@ -1701,6 +1733,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = HostApp;
 			};
 			name = Debug;
 		};
@@ -1719,6 +1752,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = HostApp;
 			};
 			name = Release;
 		};
