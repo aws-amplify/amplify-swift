@@ -17,7 +17,7 @@ extension String {
     }
 }
 
-/// SQLite supportted data types.
+/// SQLite supported data types.
 enum SQLDataType: String {
     case text
     case integer

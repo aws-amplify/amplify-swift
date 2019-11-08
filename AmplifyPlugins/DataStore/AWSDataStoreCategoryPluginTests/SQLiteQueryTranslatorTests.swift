@@ -151,7 +151,7 @@ class SQLiteQueryTranslatorTests: XCTestCase {
                         bindings: [3, 5])
         assertPredicate(post.title.beginsWith("gelato"),
                         matches: "\"title\" like ?",
-                        bindings: ["%gelato"])
+                        bindings: ["gelato%"])
         assertPredicate(post.title ~= "gelato",
                         matches: "\"title\" like ?",
                         bindings: ["%gelato%"])
@@ -187,7 +187,7 @@ class SQLiteQueryTranslatorTests: XCTestCase {
         XCTAssertEqual(query.arguments[2] as? Int, 2)
         XCTAssertEqual(query.arguments[3] as? Int, 4)
         XCTAssertEqual(query.arguments[4] as? String, "%gelato%")
-        XCTAssertEqual(query.arguments[5] as? String, "%ice cream")
+        XCTAssertEqual(query.arguments[5] as? String, "ice cream%")
     }
 
 }

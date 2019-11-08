@@ -13,6 +13,9 @@ public protocol Model: Codable {
     /// A reference to the `ModelSchema` associated with this model.
     static var schema: ModelSchema { get }
 
+    /// The Model identifier (aka primary key)
+    var id: Identifier { get }
+
 }
 
 /// Alias of Model identifier (i.e. primary key)
@@ -42,7 +45,7 @@ extension Model {
 /// Types that conform to the `Persistable` protocol represent values that can be
 /// persisted in a database.
 ///
-/// Core Types tat confirm to this protocol:
+/// Core Types that conform to this protocol:
 /// - `Bool`
 /// - `Date`
 /// - `Double`

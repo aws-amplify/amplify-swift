@@ -50,7 +50,7 @@ extension QueryOperator {
         case .contains(let value):
             return ["%\(value)%"]
         case .beginsWith(let value):
-            return ["%\(value)"]
+            return ["\(value)%"]
         }
     }
 }

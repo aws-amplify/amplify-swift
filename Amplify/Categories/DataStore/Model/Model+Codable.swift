@@ -18,7 +18,13 @@ extension Model where Self: Codable {
     /// - Throws: `DecodingError.dataCorrupted` in case data is not a valid JSON or any
     /// other decoding specific error that `JSONDecorder.decode()` might throw.
     public static func from(json: String) throws -> Self {
-        let data = json.data(using: .utf8)!
+        guard let data = json.data(using: .utf8) else {
+            // TODO
+            throw DataStoreError.decodingError(
+                "Invalid JSON string. Could not convert the passed JSON string into a UTF-8 Data object",
+                "Check if your JSON doesn't contain any invalid UTF-8 character."
+            )
+        }
         return try JSONDecoder().decode(Self.self, from: data)
     }
 
@@ -28,7 +34,7 @@ extension Model where Self: Codable {
     /// - Parameter dictionary: containing keys and values that match the target type
     /// - Returns: an instance of the concrete type conforming to `Model`
     /// - Throws: `DecodingError.dataCorrupted` in case data is not a valid JSON or any
-    /// other decoding specific error that `JSONDecorder.decode()` might throw.
+    /// other decoding specific error that `JSONDecoder.decode()` might throw.
     public static func from(dictionary: [String: Any]) throws -> Self {
         let data = try JSONSerialization.data(withJSONObject: dictionary)
         return try JSONDecoder().decode(Self.self, from: data)
@@ -38,7 +44,13 @@ extension Model where Self: Codable {
     /// - Returns: the JSON representation of the `Model`
     /// - seealso: https://developer.apple.com/documentation/foundation/jsonencoder/2895034-encode
     public func toJSON() throws -> String {
-        let json = try JSONEncoder().encode(self)
-        return String(data: json, encoding: .utf8)!
+        let data = try JSONEncoder().encode(self)
+        guard let json = String(data: data, encoding: .utf8) else {
+            throw DataStoreError.decodingError(
+                "Invalid UTF-8 Data object. Could not convert the encoded Model into a valid UTF-8 JSON string",
+                "Check if your Model doesn't contain any value with invalid UTF-8 characters."
+            )
+        }
+        return json
     }
 }

@@ -10,6 +10,7 @@ import Foundation
 // MARK: - Enum
 
 public enum DataStoreError: Error {
+    case decodingError(_ errorDescription: ErrorDescription, _ recoverySuggestion: RecoverySuggestion)
     case invalidDatabase
     case invalidOperation(causedBy: Error?)
     case nonUniqueResult(model: String)
@@ -21,8 +22,10 @@ extension DataStoreError: AmplifyError {
 
     public var errorDescription: ErrorDescription {
         switch self {
+        case .decodingError(let errorDescription, _):
+            return errorDescription
         case .invalidDatabase:
-            return ""
+            return "Could not provision a database"
         case .invalidOperation(let causedBy):
             return causedBy?.localizedDescription ?? ""
         case .nonUniqueResult(let model):
@@ -32,6 +35,8 @@ extension DataStoreError: AmplifyError {
 
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
+        case .decodingError(_, let recoverySuggestion):
+            return recoverySuggestion
         case .invalidDatabase:
             return ""
         case .invalidOperation(let causedBy):
