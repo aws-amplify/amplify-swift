@@ -46,9 +46,23 @@ extension AWSPredictionsPlugin {
 
     }
 
+    /// Interpret the input text and returns sentiment analysis, entity detection, language detection,
+    /// syntax detection, key phrases detection.
+    ///
+    /// - Parameter text: input text
+    /// - Parameter options: Option for the plugin
+    /// - Parameter listener: Listener to which events are send
     public func interpret(text: String,
                           options: PredictionsInterpretRequest.Options?,
                           listener: PredictionsInterpretOperation.EventListener?) -> PredictionsInterpretOperation {
-        fatalError("Incomplete implementation")
+
+        let request = PredictionsInterpretRequest(textToInterpret: text,
+                                                  options: options ?? PredictionsInterpretRequest.Options())
+        let operation = AWSComprehendOperation(request,
+                                               predictionsService: predictionsService,
+                                               authService: authService,
+                                               listener: listener)
+        queue.addOperation(operation)
+        return operation
     }
 }

@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 import AWSRekognition
 
-extension AWSPredictionsService {
+extension AWSPredictionsService: AWSRekognitionServiceBehaviour {
     func detectLabels(image: CGImage,
                       onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
 
