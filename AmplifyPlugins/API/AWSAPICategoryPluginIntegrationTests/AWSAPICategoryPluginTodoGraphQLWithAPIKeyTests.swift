@@ -70,10 +70,12 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                                            responseType: CreateTodoMutation.Data.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
-                guard case let .error(error) = graphQLResponse else {
-                    XCTFail("Missing error response")
+                guard case let .partial(data, error) = graphQLResponse else {
+                    XCTFail("Missing partial response")
                     return
                 }
+                XCTAssertNil(data.createTodo)
+                XCTAssertNotNil(error)
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -100,7 +102,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                                            variables: CreateTodoMutation.variables(id: expectedId,
                                                                                    name: expectedName,
                                                                                    description: expectedDescription),
-                                           responseType: ListTodosQuery.Data.self) { (event) in
+                                           responseType: MalformedCreateTodoData.self) { (event) in
             switch event {
             case .completed(let graphQLResponse):
                 XCTFail("Unexpected .completed event: \(graphQLResponse)")

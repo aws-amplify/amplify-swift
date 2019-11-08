@@ -14,9 +14,9 @@ public protocol APICategoryGraphQLBehavior {
     /// - Parameter apiName: The name of API being invoked, as specified in `amplifyconfiguration.json`
     /// - Parameter document: GraphQL query document string
     /// - Parameter variables: GraphQL variables to replace dynamic values in the GraphQL query document
-    /// - Parameter responseType: Instance with the type to deserialize the GraphQL success response data to
+    /// - Parameter responseType: The type to deserialize response data to
     /// - Parameter listener: The event listener for the operation
-    /// - Returns: The GraphQLOperation being enqueued
+    /// - Returns: The AmplifyOperation being enqueued
     func query<R: Decodable>(apiName: String,
                              document: String,
                              variables: [String: Any]?,
@@ -30,9 +30,9 @@ public protocol APICategoryGraphQLBehavior {
     /// - Parameter apiName: The name of API being invoked, as specified in `amplifyconfiguration.json`
     /// - Parameter document: GraphQL query document string
     /// - Parameter variables: GraphQL variables to replace dynamic values in the GraphQL query document
-    /// - Parameter responseType: Instance with the type to deserialize the GraphQL success response data to
+    /// - Parameter responseType: The type to deserialize response data to
     /// - Parameter listener: The event listener for the operation
-    /// - Returns: The GraphQLOperation being enqueued
+    /// - Returns: The AmplifyOperation being enqueued
     func mutate<R: Decodable>(apiName: String,
                               document: String,
                               variables: [String: Any]?,

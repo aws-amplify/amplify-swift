@@ -69,6 +69,14 @@ class CreateTodoMutation {
     }
 }
 
+class MalformedCreateTodoData: Decodable {
+    var createTodo: MalformedTodo?
+
+    class MalformedTodo: Decodable {
+        let id: String
+        let name2: String
+    }
+}
 class UpdateTodoMutation {
     static let document = """
         mutation UpdateTodo($input: UpdateTodoInput!) {\n
