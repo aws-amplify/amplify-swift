@@ -7,6 +7,7 @@
 
 import Foundation
 
+// TODO: remove this https://github.com/aws-amplify/amplify-ios/issues/75
 struct URLRequestContants {
     static let appSyncServiceName = "appsync"
 
