@@ -6,12 +6,10 @@
 //
 
 import Amplify
-import CoreImage
+import UIKit
 import Foundation
 
 class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin {
-
-
 
     func configure(using configuration: Any) throws {
         notify()
@@ -32,11 +30,15 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
     }
 
     func identify(type: IdentifyType,
-                  image: CGImage,
+                  image: UIImage,
                   options: PredictionsIdentifyRequest.Options?,
                   listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation {
         notify("identifyLabels")
-        let request = PredictionsIdentifyRequest(image: image, identifyType: type, options: options ?? PredictionsIdentifyRequest.Options())
+        
+        let request = PredictionsIdentifyRequest(
+            image: image,
+            identifyType: type,
+            options: options ?? PredictionsIdentifyRequest.Options())
         return MockPredictionsIdentifyOperation(request: request)
     }
 

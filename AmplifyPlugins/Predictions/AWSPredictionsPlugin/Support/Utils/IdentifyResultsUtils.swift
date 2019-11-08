@@ -75,7 +75,7 @@ class IdentifyResultsUtils {
         for rekognitionCeleb in rekognitionCelebs {
 
             guard let name = rekognitionCeleb.name,
-                let id = rekognitionCeleb.identifier,
+                let identifier = rekognitionCeleb.identifier,
                 let face = rekognitionCeleb.face,
                 let stringUrls = rekognitionCeleb.urls else {
                 continue
@@ -96,7 +96,7 @@ class IdentifyResultsUtils {
                 roll: Double(truncating: roll),
                 yaw: Double(truncating: yaw))
 
-            let metadata = CelebMetadata(name: name, id: id, urls: urls, pose: pose)
+            let metadata = CelebMetadata(name: name, identifier: identifier, urls: urls, pose: pose)
 
             guard let height = face.boundingBox?.height,
                 let left = face.boundingBox?.left,

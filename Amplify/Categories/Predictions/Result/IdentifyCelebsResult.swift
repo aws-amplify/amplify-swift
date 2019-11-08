@@ -41,13 +41,13 @@ public struct Landmark {
 
 public struct CelebMetadata {
     var name: String
-    var id: String
+    var identifier: String
     var urls: [URL]
     var pose: Pose
 
-    public init(name: String, id: String, urls: [URL], pose: Pose) {
+    public init(name: String, identifier: String, urls: [URL], pose: Pose) {
         self.name = name
-        self.id = id
+        self.identifier = identifier
         self.urls = urls
         self.pose = pose
     }
