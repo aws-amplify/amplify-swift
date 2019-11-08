@@ -45,4 +45,10 @@ extension AWSPredictionsPlugin {
         return operation
 
     }
+
+    public func interpret(text: String,
+                          options: PredictionsInterpretRequest.Options?,
+                          listener: PredictionsInterpretOperation.EventListener?) -> PredictionsInterpretOperation {
+        fatalError("Incomplete implementation")
+    }
 }
