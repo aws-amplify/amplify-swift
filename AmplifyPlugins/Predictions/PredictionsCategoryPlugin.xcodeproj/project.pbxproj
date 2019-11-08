@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		15DFD0478E06BBC82ED4DE95 /* Pods_HostApp_AWSPredictionsPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2081890CC41AB7C7454636FB /* Pods_HostApp_AWSPredictionsPluginIntegrationTests.framework */; };
 		232E34E125BD81B43BB9963F /* Pods_AWSPredictionsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2381F40F185058153088D743 /* Pods_AWSPredictionsPlugin.framework */; };
-		56F376BBCBACD7D7F776C8B6 /* Pods_AWSPredictionsPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90161B508A56884A441A9F65 /* Pods_AWSPredictionsPluginTests.framework */; };
 		74CDD46AAA51DB803E7D00BF /* Pods_CoreMLPredictionsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0665C25066DA256C37E2F951 /* Pods_CoreMLPredictionsPlugin.framework */; };
 		7C205560200472F9DCBBD7E2 /* Pods_HostApp_CoreMLPredictionsPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0DAAE7DF5495F6DE92F7E15 /* Pods_HostApp_CoreMLPredictionsPluginIntegrationTests.framework */; };
 		A54C2F5EE55421C229DD65CD /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85D4620E45EBA05AC83EF99D /* Pods_HostApp.framework */; };
@@ -55,7 +54,8 @@
 		B478F7CF2375062E00C4F92B /* AWSPredictionsPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F7CD2375062E00C4F92B /* AWSPredictionsPluginTests.swift */; };
 		B478F7D82375063D00C4F92B /* CoreMLPredictionsPluginIntegrationTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F7D62375063D00C4F92B /* CoreMLPredictionsPluginIntegrationTest.swift */; };
 		B478F7DE2375064400C4F92B /* CoreMLPredictionsPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F7DB2375064400C4F92B /* CoreMLPredictionsPluginTests.swift */; };
-		BABFD729292A1DEF9E5E1B1D /* Pods_CoreMLPredictionsPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58E1F08694325A6FFA0359DA /* Pods_CoreMLPredictionsPluginTests.framework */; };
+		D432BCA8697EDA48BB605DA8 /* Pods_HostApp_AWSPredictionsPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E04A7C1995F7FD1ABC3831B /* Pods_HostApp_AWSPredictionsPluginTests.framework */; };
+		DB76524284F4CBA1E0804C2B /* Pods_HostApp_CoreMLPredictionsPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25555FEA808A4F903C517405 /* Pods_HostApp_CoreMLPredictionsPluginTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,16 +91,18 @@
 
 /* Begin PBXFileReference section */
 		0665C25066DA256C37E2F951 /* Pods_CoreMLPredictionsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CoreMLPredictionsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0BF47728F4196554C2866132 /* Pods-HostApp-CoreMLPredictionsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-CoreMLPredictionsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-CoreMLPredictionsPluginTests/Pods-HostApp-CoreMLPredictionsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
+		1E04A7C1995F7FD1ABC3831B /* Pods_HostApp_AWSPredictionsPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSPredictionsPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2081890CC41AB7C7454636FB /* Pods_HostApp_AWSPredictionsPluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSPredictionsPluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2381F40F185058153088D743 /* Pods_AWSPredictionsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSPredictionsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		25555FEA808A4F903C517405 /* Pods_HostApp_CoreMLPredictionsPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_CoreMLPredictionsPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		33F7F03393844E9A16FCBF04 /* Pods-AWSPredictionsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPredictionsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSPredictionsPlugin/Pods-AWSPredictionsPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		37784C935C98E42494CF6108 /* Pods-HostApp-AWSPredictionsPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSPredictionsPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSPredictionsPluginIntegrationTests/Pods-HostApp-AWSPredictionsPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
+		4BDAB71A891442DBE60E4000 /* Pods-HostApp-CoreMLPredictionsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-CoreMLPredictionsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-CoreMLPredictionsPluginTests/Pods-HostApp-CoreMLPredictionsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		555979DDE9F87CAC32F08556 /* Pods-CoreMLPredictionsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoreMLPredictionsPlugin.release.xcconfig"; path = "Target Support Files/Pods-CoreMLPredictionsPlugin/Pods-CoreMLPredictionsPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		58E1F08694325A6FFA0359DA /* Pods_CoreMLPredictionsPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CoreMLPredictionsPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		69723D5D29DF549A50C9644B /* Pods-HostApp-CoreMLPredictionsPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-CoreMLPredictionsPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-CoreMLPredictionsPluginIntegrationTests/Pods-HostApp-CoreMLPredictionsPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		76518DDA6304D4872B2AC216 /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
 		85D4620E45EBA05AC83EF99D /* Pods_HostApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		90161B508A56884A441A9F65 /* Pods_AWSPredictionsPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSPredictionsPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D641B3534D2B17D4720921A /* Pods-HostApp-CoreMLPredictionsPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-CoreMLPredictionsPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-CoreMLPredictionsPluginIntegrationTests/Pods-HostApp-CoreMLPredictionsPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		9DF157BEADB426098FC5AA8C /* Pods-AWSPredictionsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPredictionsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSPredictionsPlugin/Pods-AWSPredictionsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		AE9BC9BF5E7E9728E854E8F8 /* Pods-HostApp-AWSPredictionsPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSPredictionsPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSPredictionsPluginIntegrationTests/Pods-HostApp-AWSPredictionsPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -159,8 +161,10 @@
 		B478F7D72375063D00C4F92B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B478F7DB2375064400C4F92B /* CoreMLPredictionsPluginTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPluginTests.swift; sourceTree = "<group>"; };
 		B478F7DD2375064400C4F92B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C80CE3D2B1E7EE5749AB9B16 /* Pods-HostApp-AWSPredictionsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSPredictionsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSPredictionsPluginTests/Pods-HostApp-AWSPredictionsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		CF132CBD61DB1BCD0B4F8E8D /* Pods-AWSPredictionsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPredictionsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPredictionsPluginTests/Pods-AWSPredictionsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		DAC8D3637B23BFEF456533D6 /* Pods-CoreMLPredictionsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoreMLPredictionsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-CoreMLPredictionsPluginTests/Pods-CoreMLPredictionsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
+		E42BD21561C2DE866ED58303 /* Pods-HostApp-AWSPredictionsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSPredictionsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSPredictionsPluginTests/Pods-HostApp-AWSPredictionsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		F0DAAE7DF5495F6DE92F7E15 /* Pods_HostApp_CoreMLPredictionsPluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_CoreMLPredictionsPluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3A4D316FA982CF18EC74334 /* Pods-HostApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.debug.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.debug.xcconfig"; sourceTree = "<group>"; };
 		FA19C59AD570523D98521F67 /* Pods-CoreMLPredictionsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CoreMLPredictionsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-CoreMLPredictionsPluginTests/Pods-CoreMLPredictionsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -181,7 +185,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B478F64E2374DCE700C4F92B /* AWSPredictionsPlugin.framework in Frameworks */,
-				56F376BBCBACD7D7F776C8B6 /* Pods_AWSPredictionsPluginTests.framework in Frameworks */,
+				D432BCA8697EDA48BB605DA8 /* Pods_HostApp_AWSPredictionsPluginTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,7 +210,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B478F6762374DF5B00C4F92B /* AWSPredictionsPlugin.framework in Frameworks */,
-				BABFD729292A1DEF9E5E1B1D /* Pods_CoreMLPredictionsPluginTests.framework in Frameworks */,
+				DB76524284F4CBA1E0804C2B /* Pods_HostApp_CoreMLPredictionsPluginTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,12 +237,12 @@
 			isa = PBXGroup;
 			children = (
 				2381F40F185058153088D743 /* Pods_AWSPredictionsPlugin.framework */,
-				90161B508A56884A441A9F65 /* Pods_AWSPredictionsPluginTests.framework */,
 				0665C25066DA256C37E2F951 /* Pods_CoreMLPredictionsPlugin.framework */,
-				58E1F08694325A6FFA0359DA /* Pods_CoreMLPredictionsPluginTests.framework */,
 				85D4620E45EBA05AC83EF99D /* Pods_HostApp.framework */,
 				2081890CC41AB7C7454636FB /* Pods_HostApp_AWSPredictionsPluginIntegrationTests.framework */,
 				F0DAAE7DF5495F6DE92F7E15 /* Pods_HostApp_CoreMLPredictionsPluginIntegrationTests.framework */,
+				1E04A7C1995F7FD1ABC3831B /* Pods_HostApp_AWSPredictionsPluginTests.framework */,
+				25555FEA808A4F903C517405 /* Pods_HostApp_CoreMLPredictionsPluginTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -514,6 +518,10 @@
 				AE9BC9BF5E7E9728E854E8F8 /* Pods-HostApp-AWSPredictionsPluginIntegrationTests.release.xcconfig */,
 				9D641B3534D2B17D4720921A /* Pods-HostApp-CoreMLPredictionsPluginIntegrationTests.debug.xcconfig */,
 				69723D5D29DF549A50C9644B /* Pods-HostApp-CoreMLPredictionsPluginIntegrationTests.release.xcconfig */,
+				C80CE3D2B1E7EE5749AB9B16 /* Pods-HostApp-AWSPredictionsPluginTests.debug.xcconfig */,
+				E42BD21561C2DE866ED58303 /* Pods-HostApp-AWSPredictionsPluginTests.release.xcconfig */,
+				4BDAB71A891442DBE60E4000 /* Pods-HostApp-CoreMLPredictionsPluginTests.debug.xcconfig */,
+				0BF47728F4196554C2866132 /* Pods-HostApp-CoreMLPredictionsPluginTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -856,7 +864,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-AWSPredictionsPluginTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-HostApp-AWSPredictionsPluginTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -878,7 +886,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CoreMLPredictionsPluginTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-HostApp-CoreMLPredictionsPluginTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1224,15 +1232,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CoreMLPredictionsPluginTests/Pods-CoreMLPredictionsPluginTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp-CoreMLPredictionsPluginTests/Pods-HostApp-CoreMLPredictionsPluginTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CoreMLPredictionsPluginTests/Pods-CoreMLPredictionsPluginTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp-CoreMLPredictionsPluginTests/Pods-HostApp-CoreMLPredictionsPluginTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CoreMLPredictionsPluginTests/Pods-CoreMLPredictionsPluginTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp-CoreMLPredictionsPluginTests/Pods-HostApp-CoreMLPredictionsPluginTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F05F6873CF4FFCED441F4539 /* [CP] Embed Pods Frameworks */ = {
@@ -1241,15 +1249,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AWSPredictionsPluginTests/Pods-AWSPredictionsPluginTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSPredictionsPluginTests/Pods-HostApp-AWSPredictionsPluginTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AWSPredictionsPluginTests/Pods-AWSPredictionsPluginTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSPredictionsPluginTests/Pods-HostApp-AWSPredictionsPluginTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AWSPredictionsPluginTests/Pods-AWSPredictionsPluginTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSPredictionsPluginTests/Pods-HostApp-AWSPredictionsPluginTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1556,7 +1564,7 @@
 		};
 		B478F6512374DCE700C4F92B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CF132CBD61DB1BCD0B4F8E8D /* Pods-AWSPredictionsPluginTests.debug.xcconfig */;
+			baseConfigurationReference = C80CE3D2B1E7EE5749AB9B16 /* Pods-HostApp-AWSPredictionsPluginTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1575,7 +1583,7 @@
 		};
 		B478F6522374DCE700C4F92B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FE51434D0E1DB2D8D9116A1B /* Pods-AWSPredictionsPluginTests.release.xcconfig */;
+			baseConfigurationReference = E42BD21561C2DE866ED58303 /* Pods-HostApp-AWSPredictionsPluginTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1682,7 +1690,7 @@
 		};
 		B478F67B2374DF5B00C4F92B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FA19C59AD570523D98521F67 /* Pods-CoreMLPredictionsPluginTests.debug.xcconfig */;
+			baseConfigurationReference = 4BDAB71A891442DBE60E4000 /* Pods-HostApp-CoreMLPredictionsPluginTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1701,7 +1709,7 @@
 		};
 		B478F67C2374DF5B00C4F92B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DAC8D3637B23BFEF456533D6 /* Pods-CoreMLPredictionsPluginTests.release.xcconfig */;
+			baseConfigurationReference = 0BF47728F4196554C2866132 /* Pods-HostApp-CoreMLPredictionsPluginTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
