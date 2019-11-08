@@ -34,7 +34,7 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
                   options: PredictionsIdentifyRequest.Options?,
                   listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation {
         notify("identifyLabels")
-        
+
         let request = PredictionsIdentifyRequest(
             image: image,
             identifyType: type,
