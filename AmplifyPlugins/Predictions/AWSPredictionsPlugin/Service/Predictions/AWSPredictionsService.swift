@@ -53,12 +53,13 @@ class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateService
     }
 
     func reset() {
+
         AWSTranslate.remove(forKey: identifier)
         awsTranslate = nil
-        identifier = nil
 
         AWSRekognition.remove(forKey: identifier)
         awsRekognition = nil
+
         identifier = nil
     }
 

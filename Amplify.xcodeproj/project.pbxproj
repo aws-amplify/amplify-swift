@@ -211,6 +211,8 @@
 		95DAA9CC237613DE0028544F /* IdentifyResultsUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAA9CA237613BA0028544F /* IdentifyResultsUtils.swift */; };
 		95DAA9CE2376141D0028544F /* IdentifyCelebsResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAA9CD2376141D0028544F /* IdentifyCelebsResult.swift */; };
 		95DAA9D123761C1D0028544F /* AWSPredictionsPlugin+IdentifyBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAA9CF2376184C0028544F /* AWSPredictionsPlugin+IdentifyBasicIntegrationTests.swift */; };
+		95DAA9DC2377984F0028544F /* AWSPredictionsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4940434236A2F8800BC7C15 /* AWSPredictionsPlugin.framework */; };
+		95DAA9DD237798800028544F /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 2125E2102318D73B00B3DEB5 /* awsconfiguration.json */; };
 		9A3B32F36FF8D89FC92F0D9F /* Pods_Amplify_AWSPluginsCore_AWSAPICategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2FED6A85E17143587BD3B0F /* Pods_Amplify_AWSPluginsCore_AWSAPICategoryPlugin.framework */; };
 		A48EE22C734F0E24ADFD91F0 /* Pods_Amplify_AWSPluginsCore_AWSPinpointAnalyticsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C4BE8CCCE9E123B2B267666 /* Pods_Amplify_AWSPluginsCore_AWSPinpointAnalyticsPlugin.framework */; };
 		B43869E7236B8D72000DC3DB /* AWSPredictionsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4940434236A2F8800BC7C15 /* AWSPredictionsPlugin.framework */; };
@@ -218,7 +220,6 @@
 		B4386A03236B9138000DC3DB /* AWSPredictionsPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4386A01236B9138000DC3DB /* AWSPredictionsPluginTestBase.swift */; };
 		B4386A0E236B92AD000DC3DB /* CoreMLPredictionsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4694765236B1FED001A155D /* CoreMLPredictionsPlugin.framework */; };
 		B4386A26236B92EE000DC3DB /* CoreMLPredictionsPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4386A23236B92EE000DC3DB /* CoreMLPredictionsPluginTests.swift */; };
-		B4386A27236B92EE000DC3DB /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B4386A24236B92EE000DC3DB /* Info.plist */; };
 		B4386A28236B92EE000DC3DB /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B4386A24236B92EE000DC3DB /* Info.plist */; };
 		B4386A2C236B92FD000DC3DB /* CoreMLPredictionsPluginIntegrationTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4386A2A236B92FD000DC3DB /* CoreMLPredictionsPluginIntegrationTest.swift */; };
 		B4386A2D236B92FD000DC3DB /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B4386A2B236B92FD000DC3DB /* Info.plist */; };
@@ -1616,6 +1617,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95DAA9DC2377984F0028544F /* AWSPredictionsPlugin.framework in Frameworks */,
 				6127B967CDAE66CC63BBE661 /* Pods_AmplifyTestApp_AWSPredictionsPluginIntegrationTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2550,6 +2552,14 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		95DAA9DB237795B20028544F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B4386A02236B9138000DC3DB /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		B43869ED236B8DA0000DC3DB /* AWSPredictionsPluginTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -2564,7 +2574,7 @@
 			children = (
 				B4386A01236B9138000DC3DB /* AWSPredictionsPluginTestBase.swift */,
 				95DAA9CF2376184C0028544F /* AWSPredictionsPlugin+IdentifyBasicIntegrationTests.swift */,
-				B4386A02236B9138000DC3DB /* Info.plist */,
+				95DAA9DB237795B20028544F /* Resources */,
 			);
 			path = AWSPredictionsPluginIntegrationTests;
 			sourceTree = "<group>";
@@ -4457,7 +4467,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B4386A27236B92EE000DC3DB /* Info.plist in Resources */,
+				95DAA9DD237798800028544F /* awsconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7506,6 +7516,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSPredictionsPluginIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = AmplifyTestApp;
@@ -7526,6 +7537,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSPredictionsPluginIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = AmplifyTestApp;

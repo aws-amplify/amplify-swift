@@ -13,17 +13,19 @@ import AWSPredictionsPlugin
 import AWSRekognition
 import XCTest
 
-class AWSPredictionsPluginIdentifyBasicIntegrationTest: AWSPredictionsPluginTestBase {
-    
+class AWSPredictionsPluginIdentifyIntegrationTest: AWSPredictionsPluginTestBase {
+
     /// Given: An Image
     /// When: Image is sent to Rekognition
     /// Then: The operation completes successfully
     func testIdentifyLabels() {
-     
+
         guard let image = UIImage(named: "testImage") else { return }
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Predictions.identify(type: .detectLabels, image: image, options: PredictionsIdentifyRequest.Options()) { (event) in
+        let operation = Amplify.Predictions.identify(type: .detectLabels,
+                                                     image: image,
+                                                     options: PredictionsIdentifyRequest.Options()) { (event) in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -37,5 +39,5 @@ class AWSPredictionsPluginIdentifyBasicIntegrationTest: AWSPredictionsPluginTest
         XCTAssertNotNil(operation)
         waitForExpectations(timeout: networkTimeout)
     }
-    
+
 }
