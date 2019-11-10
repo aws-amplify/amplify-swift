@@ -39,4 +39,11 @@ public protocol APICategoryGraphQLBehavior {
                               responseType: R.Type,
                               listener: ((AsyncEvent<Void, GraphQLResponse<R>, APIError>) -> Void)?) ->
         AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, APIError>
+
+    func subscribe<R: Decodable>(apiName: String,
+                                 document: String,
+                                 variables: [String: Any]?,
+                                 responseType: R.Type,
+                                 listener: ((AsyncEvent<SubscriptionEvent<GraphQLResponse<R>>, Void, APIError>) -> Void)?) ->
+    AmplifyOperation<GraphQLRequest, SubscriptionEvent<GraphQLResponse<R>>, Void, APIError>
 }

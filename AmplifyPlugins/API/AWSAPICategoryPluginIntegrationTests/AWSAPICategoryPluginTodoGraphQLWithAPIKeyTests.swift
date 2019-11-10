@@ -309,6 +309,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
     }
 
+    // TODO: first time run fails, hm
     /// Given: A successful Todo created
     /// When: Call query API with ListTodo mutation for all Todos
     /// Then: The operation completes successfully with list of Todos returned
@@ -388,6 +389,58 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
     /// When: Call mutate API on CreateTodo
     /// Then: The subscription handler is called and Todo object is returned
     func testOnCreateTodoSubscription() {
+        let connectedInvoked = expectation(description: "Connection established")
+        let progressInvoked = expectation(description: "progress invoked")
+        progressInvoked.expectedFulfillmentCount = 2
+        let operation = Amplify.API.subscribe(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+                                              document: OnCreateTodoSubscription.document,
+                                              variables: nil,
+                                              responseType: OnCreateTodoSubscription.Data.self) { (event) in
+            switch event {
+            case .inProcess(let graphQLResponse):
+                print(graphQLResponse)
+                switch graphQLResponse {
+                case .connection(let state):
+                    switch state {
+                    case .connected:
+                        connectedInvoked.fulfill()
+                    case .connecting:
+                        break
+                    case .disconnected:
+                        break
+                    }
+
+                case .data(let graphQLResponse):
+                    progressInvoked.fulfill()
+                case .failed(let error):
+                    XCTFail("Unexpected error on progress \(error)")
+                }
+            case .failed(let error):
+                print("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+        XCTAssertNotNil(operation)
+        wait(for: [connectedInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        let uuid = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let name = testMethodName + "Name"
+        let description = testMethodName + "Description"
+
+        guard createTodo(id: uuid, name: name, description: description) != nil else {
+            XCTFail("Failed to create todo")
+            return
+        }
+
+        let uuid2 = UUID().uuidString
+        guard createTodo(id: uuid2, name: name, description: description) != nil else {
+            XCTFail("Failed to create todo")
+            return
+        }
+
+        wait(for: [progressInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        operation.cancel()
     }
 
     /// Given: A subscription is created for UpdateTodo's
@@ -438,7 +491,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                 XCTFail("Unexpected event: \(event)")
             }
         }
-        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        wait(for: [completeInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
         return todo
     }
 }

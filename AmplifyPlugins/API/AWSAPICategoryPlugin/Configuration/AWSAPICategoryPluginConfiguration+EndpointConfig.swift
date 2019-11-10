@@ -11,6 +11,8 @@ import AWSPluginsCore
 import AWSCore
 
 public extension AWSAPICategoryPluginConfiguration {
+
+    /// Contains per endpoint configuration
     struct EndpointConfig {
         let name: String
         let baseURL: URL
@@ -18,6 +20,8 @@ public extension AWSAPICategoryPluginConfiguration {
         let authorizationType: AWSAuthorizationType
         let authorizationConfiguration: AWSAuthorizationConfiguration
         var interceptors = [URLRequestInterceptor]()
+
+        // TODO: store subscriptionConnectionFactory here?
 
         public init(name: String, jsonValue: JSONValue, authService: AWSAuthServiceBehavior? = nil) throws {
 
@@ -33,6 +37,7 @@ public extension AWSAPICategoryPluginConfiguration {
                 )
             }
 
+            // TODO: init
             try self.init(name: name,
                           baseURL: try EndpointConfig.getBaseURL(from: endpointJSON),
                           region: try EndpointConfig.getRegion(from: endpointJSON),
@@ -71,17 +76,13 @@ public extension AWSAPICategoryPluginConfiguration {
                 let provider = BasicAPIKeyProvider(apiKey: apiKeyConfig.apiKey)
                 let interceptor = APIKeyURLRequestInterceptor(apiKeyProvider: provider)
                 addInterceptor(interceptor: interceptor)
-            case .awsIAM:
-                guard let region = region else {
-                    throw PluginError.pluginConfigurationError("Region is not set for IAM",
-                                                               "Set the region")
-                }
+            case .awsIAM(let iamConfig):
                 guard let authService = authService else {
                     throw PluginError.pluginConfigurationError("AuthService is not set for IAM",
                                                                "")
                 }
                 let provider = BasicIAMCredentialsProvider(authService: authService)
-                let interceptor = IAMURLRequestInterceptor(iamCredentialsProvider: provider, region: region)
+                let interceptor = IAMURLRequestInterceptor(iamCredentialsProvider: provider, region: iamConfig.region)
                 addInterceptor(interceptor: interceptor)
             case .amazonCognitoUserPools:
                 guard let authService = authService else {
@@ -208,7 +209,12 @@ public extension AWSAPICategoryPluginConfiguration {
 
         static func awsIAMAuthorizationConfiguration(from endpointJSON: [String: JSONValue])
             throws -> AWSAuthorizationConfiguration {
-                return .awsIAM(AWSIAMConfiguration())
+                let regionOptional = try EndpointConfig.getRegion(from: endpointJSON)
+                guard let region = regionOptional else {
+                    throw PluginError.pluginConfigurationError("Region is not set for IAM",
+                                                               "Set the region")
+                }
+                return .awsIAM(AWSIAMConfiguration(region: region))
         }
 
         static func oidcAuthorizationConfiguration(from endpointJSON: [String: JSONValue])

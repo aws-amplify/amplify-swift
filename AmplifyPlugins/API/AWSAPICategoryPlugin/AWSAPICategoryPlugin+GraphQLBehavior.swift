@@ -55,6 +55,29 @@ public extension AWSAPICategoryPlugin {
                            listener: listener)
     }
 
+    func subscribe<R: Decodable>(apiName: String,
+                                 document: String,
+                                 variables: [String: Any]?,
+                                 responseType: R.Type,
+                                 listener: ((AsyncEvent<SubscriptionEvent<GraphQLResponse<R>>, Void, APIError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, SubscriptionEvent<GraphQLResponse<R>>, Void, APIError> {
+
+            let graphQLQueryRequest = GraphQLRequest(apiName: apiName,
+                                                     operationType: .subscription,
+                                                     document: document,
+                                                     variables: variables,
+                                                     options: GraphQLRequest.Options())
+
+            let operation = AWSSubscriptionGraphQLOperation(request: graphQLQueryRequest,
+                                                            responseType: responseType,
+                                                            pluginConfig: pluginConfig,
+                                                            subscriptionConnectionFactory: subscriptionConnectionFactory,
+                                                            authService: authService,
+                                                            listener: listener)
+            queue.addOperation(operation)
+            return operation
+    }
+
     /// Used by `query` and `mutate` to consolidate creating a `GraphQLRequest` containing a snapshot of the request
     /// and `AWSGraphQlOperation` to perform the execution of the request
     private func graphql<R: Decodable>(apiName: String,

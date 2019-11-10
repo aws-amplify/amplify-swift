@@ -35,6 +35,8 @@ public extension AWSAPICategoryPlugin {
 
         let pluginConfig = try AWSAPICategoryPluginConfiguration(jsonValue: jsonValue, authService: authService)
 
+        // only endpoints which are mutate/query/subscription
+
         configure(authService: authService, pluginConfig: pluginConfig)
     }
 
