@@ -33,5 +33,5 @@ protocol WebsocketProvider {
 enum WebsocketEvent {
     case connect
     case disconnect(error: Error?)
-    case data(Data)
+    case data(WebsocketProviderResponse)
 }

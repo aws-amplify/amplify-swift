@@ -12,22 +12,37 @@ extension StarscreamWebsocketProvider: Starscream.WebSocketDelegate {
 
     func websocketDidConnect(socket: WebSocketClient) {
         print("WebsocketDidConnect")
-        onEvent(.connect)
+        listener?(.connect)
     }
 
     func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {
         print("WebsocketDidDisconnect - \(error?.localizedDescription ?? "No error")")
-        onEvent(.disconnect(error: error))
+        listener?(.disconnect(error: error))
     }
 
     func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {
         print("WebsocketDidReceiveMessage - \(text)")
         let data = text.data(using: .utf8) ?? Data()
-        onEvent(.data(data))
+
+        do {
+            let response = try JSONDecoder().decode(WebsocketProviderResponse.self, from: data)
+            listener?(.data(response))
+        } catch {
+            print(error)
+            //listener?(.error(nil, ConnectionProviderError.jsonParse(nil, error)))
+            // we used to send error on listener, now what?
+        }
     }
 
     func websocketDidReceiveData(socket: WebSocketClient, data: Data) {
         print("WebsocketDidReceiveData - \(data)")
-        onEvent(.data(data))
+        do {
+            let response = try JSONDecoder().decode(WebsocketProviderResponse.self, from: data)
+            listener?(.data(response))
+        } catch {
+            print(error)
+            //listener?(.error(nil, ConnectionProviderError.jsonParse(nil, error)))
+            // we used to send error on listener, now what?
+        }
     }
 }

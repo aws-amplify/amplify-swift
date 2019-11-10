@@ -236,7 +236,7 @@
 		21D79FCB237600DB0057D00D /* AppSyncConnectionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FA2237600DB0057D00D /* AppSyncConnectionRequest.swift */; };
 		21D79FCC237600DB0057D00D /* AppSyncConnectionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FA4237600DB0057D00D /* AppSyncConnectionProvider.swift */; };
 		21D79FCD237600DB0057D00D /* AppSyncConnectionProvider+WebsocketDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FA5237600DB0057D00D /* AppSyncConnectionProvider+WebsocketDelegate.swift */; };
-		21D79FCE237600DB0057D00D /* RealtimeConnectionProviderResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FA6237600DB0057D00D /* RealtimeConnectionProviderResponse.swift */; };
+		21D79FCE237600DB0057D00D /* WebsocketProviderResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FA6237600DB0057D00D /* WebsocketProviderResponse.swift */; };
 		21D79FCF237600DB0057D00D /* AppSyncConnectionProvider+MessageInterceptable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FA7237600DB0057D00D /* AppSyncConnectionProvider+MessageInterceptable.swift */; };
 		21D79FD1237600DB0057D00D /* ConnectionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FA9237600DB0057D00D /* ConnectionProvider.swift */; };
 		21D79FD2237600DB0057D00D /* AppSyncSubscriptionInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FAB237600DB0057D00D /* AppSyncSubscriptionInterceptor.swift */; };
@@ -1257,7 +1257,7 @@
 		21D79FA2237600DB0057D00D /* AppSyncConnectionRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncConnectionRequest.swift; sourceTree = "<group>"; };
 		21D79FA4237600DB0057D00D /* AppSyncConnectionProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncConnectionProvider.swift; sourceTree = "<group>"; };
 		21D79FA5237600DB0057D00D /* AppSyncConnectionProvider+WebsocketDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppSyncConnectionProvider+WebsocketDelegate.swift"; sourceTree = "<group>"; };
-		21D79FA6237600DB0057D00D /* RealtimeConnectionProviderResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealtimeConnectionProviderResponse.swift; sourceTree = "<group>"; };
+		21D79FA6237600DB0057D00D /* WebsocketProviderResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebsocketProviderResponse.swift; sourceTree = "<group>"; };
 		21D79FA7237600DB0057D00D /* AppSyncConnectionProvider+MessageInterceptable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppSyncConnectionProvider+MessageInterceptable.swift"; sourceTree = "<group>"; };
 		21D79FA9237600DB0057D00D /* ConnectionProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionProvider.swift; sourceTree = "<group>"; };
 		21D79FAB237600DB0057D00D /* AppSyncSubscriptionInterceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncSubscriptionInterceptor.swift; sourceTree = "<group>"; };
@@ -2543,11 +2543,9 @@
 			isa = PBXGroup;
 			children = (
 				21D79FA2237600DB0057D00D /* AppSyncConnectionRequest.swift */,
-				21D79F9D237600DB0057D00D /* AppSyncResponse.swift */,
 				FADCFECA2374E33700C1F9E8 /* AWSAppSyncGraphQLResponse.swift */,
 				21D79F97237600DB0057D00D /* AWSAppSyncRetryStrategy.swift */,
 				21D79F9F237600DB0057D00D /* ConnectionProviderError.swift */,
-				21D79FA6237600DB0057D00D /* RealtimeConnectionProviderResponse.swift */,
 				21D79F96237600DB0057D00D /* SubscriptionItem.swift */,
 			);
 			path = Internal;
@@ -2567,10 +2565,11 @@
 		21D79F82237600DA0057D00D /* Websocket */ = {
 			isa = PBXGroup;
 			children = (
-				21D79F83237600DA0057D00D /* WebsocketProvider.swift */,
 				21D79F85237600DA0057D00D /* StarscreamWebsocketProvider.swift */,
 				21D79FEC237813EF0057D00D /* StarscreamWebsocketProvider+ConnectionInterceptable.swift */,
 				21D79F86237600DA0057D00D /* StarscreamWebsocketProvider+WebsocketDelegate.swift */,
+				21D79F83237600DA0057D00D /* WebsocketProvider.swift */,
+				21D79FA6237600DB0057D00D /* WebsocketProviderResponse.swift */,
 			);
 			path = Websocket;
 			sourceTree = "<group>";
@@ -2601,6 +2600,7 @@
 				21D79FA0237600DB0057D00D /* AppSyncMessage+Encodable.swift */,
 				21D79FA3237600DB0057D00D /* AppsyncRealtimeConnection */,
 				21D79FA9237600DB0057D00D /* ConnectionProvider.swift */,
+				21D79F9D237600DB0057D00D /* AppSyncResponse.swift */,
 			);
 			path = ConnectionProvider;
 			sourceTree = "<group>";
@@ -7217,7 +7217,7 @@
 				21D79FD6237600DB0057D00D /* APIKeyAuthInterceptor.swift in Sources */,
 				214209EE2372212200FA140C /* AWSRESTOperation.swift in Sources */,
 				21D79FC1237600DB0057D00D /* SubscriptionItem.swift in Sources */,
-				21D79FCE237600DB0057D00D /* RealtimeConnectionProviderResponse.swift in Sources */,
+				21D79FCE237600DB0057D00D /* WebsocketProviderResponse.swift in Sources */,
 				21D79FD1237600DB0057D00D /* ConnectionProvider.swift in Sources */,
 				214209DE2372212200FA140C /* URLRequestConstants.swift in Sources */,
 				21D79FB2237600DB0057D00D /* WebsocketProvider.swift in Sources */,

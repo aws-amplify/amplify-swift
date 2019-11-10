@@ -402,10 +402,10 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                 switch graphQLResponse {
                 case .connection(let state):
                     switch state {
-                    case .connected:
-                        connectedInvoked.fulfill()
                     case .connecting:
                         break
+                    case .connected:
+                        connectedInvoked.fulfill()
                     case .disconnected:
                         break
                     }

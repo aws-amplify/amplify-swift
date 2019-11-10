@@ -8,7 +8,7 @@ import Foundation
 
 protocol ConnectionProvider: class {
 
-    func connect(identifier: String)
+    func connect()
 
     func write(_ message: AppSyncMessage)
 
@@ -21,7 +21,7 @@ typealias ConnectionProviderCallback = (ConnectionProviderEvent) -> Void
 
 enum ConnectionProviderEvent {
 
-    case connection(String?, ConnectionState)
+    case connection(ConnectionState)
 
     case data(AppSyncResponse)
 

@@ -40,14 +40,18 @@ class AppSyncSubscriptionConnection: SubscriptionConnection, RetryableConnection
                 return
             }
 
-            switch event {
-            case .connection(let identifier, let state):
-                self.handleConnectionEvent(identifier: identifier, connectionState: state)
-            case .data(let response):
-                self.handleDataEvent(response: response)
-            case .error(let identifier, let error):
-                self.handleError(identifier: identifier, error: error)
-            }
+            self.onConnectionProviderEvent(event: event)
+        }
+    }
+
+    private func onConnectionProviderEvent(event: ConnectionProviderEvent) {
+        switch event {
+        case .connection(let state):
+            handleConnectionEvent(connectionState: state)
+        case .data(let response):
+            handleDataEvent(response: response)
+        case .error(let identifier, let error):
+            handleError(identifier: identifier, error: error)
         }
     }
 
@@ -58,7 +62,7 @@ class AppSyncSubscriptionConnection: SubscriptionConnection, RetryableConnection
                                                 variables: variables,
                                                 eventHandler: eventHandler)
         subscriptionItems[subscriptionItem.identifier] = subscriptionItem
-        connectionProvider.connect(identifier: subscriptionItem.identifier)
+        connectionProvider.connect()
 
         return subscriptionItem
     }

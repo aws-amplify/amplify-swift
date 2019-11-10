@@ -8,35 +8,45 @@ import Foundation
 
 extension AppSyncSubscriptionConnection {
 
-    func handleConnectionEvent(identifier: String?, connectionState: ConnectionState) {
-        guard let identifier = identifier, let subscriptionItem = subscriptionItems[identifier] else {
-            return
-        }
+    func handleConnectionEvent(connectionState: ConnectionState) {
+//        guard let identifier = identifier, let subscriptionItem = subscriptionItems[identifier] else {
+//            return
+//        }
+
+        // we have a connection event like "notConnect, inProgress, connect"
+        // we have to apply this to all subscribers.
+
         print("Connection state - \(connectionState)")
 
         switch connectionState {
-        case .notConnected:
-            if subscriptionItem.subscriptionState == .inProgress {
-                // we should retry
-                let connectionError = ConnectionProviderError.connection
-                handleError(identifier: identifier, error: connectionError)
-            }
         case .inProgress:
-            subscriptionItem.setState(subscriptionState: .inProgress)
+            subscriptionItems.forEach { (identifier, subscriptionItem) in
+                if subscriptionItem.subscriptionState == .notSubscribed {
+                    subscriptionItem.setState(subscriptionState: .inProgress)
+                }
+            }
         case .connected:
-            print("Start subscription")
-            startSubscription(subscriptionItem: subscriptionItem)
+            subscriptionItems.forEach { (identifier, subscriptionItem) in
+                if subscriptionItem.subscriptionState == .notSubscribed {
+                    subscriptionItem.setState(subscriptionState: .inProgress)
+                }
+                print("Start subscription for identifier: \(subscriptionItem.identifier)")
+                startSubscription(subscriptionItem: subscriptionItem)
+            }
+
+        case .notConnected:
+            subscriptionItems.forEach { (identifier, subscriptionItem) in
+                if subscriptionItem.subscriptionState == .inProgress {
+                    // we should retry connecting, if all fails, then send an error on subscriber
+                    let connectionError = ConnectionProviderError.connection
+                    handleError(identifier: identifier, error: connectionError)
+                }
+            }
         }
     }
 
     // MARK: -
     private func startSubscription(subscriptionItem: SubscriptionItem) {
-        guard subscriptionItem.subscriptionState == .notSubscribed else {
-            return
-        }
-
-        subscriptionItem.setState(subscriptionState: .inProgress)
-
         let payload: AppSyncMessage.Payload
         do {
             payload = try convertToPayload(for: subscriptionItem.requestString,
@@ -117,7 +127,7 @@ extension AppSyncSubscriptionConnection {
         if retryAdvice.shouldRetry, let retryInterval = retryAdvice.retryInterval {
             print("Retrying subscription \(subscriptionItem.identifier) after \(retryInterval)")
             DispatchQueue.global().asyncAfter(deadline: .now() + retryInterval) {
-                self.connectionProvider.connect(identifier: subscriptionItem.identifier)
+                self.connectionProvider.connect()
             }
 
         } else {

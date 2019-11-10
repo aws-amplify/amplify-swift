@@ -32,39 +32,73 @@ class AppSyncConnectionProvider: ConnectionProvider {
     init(url: URL, websocketProvider: WebsocketProvider) {
         self.url = url
         self.websocketProvider = websocketProvider
+
+        websocketProvider.setListener { [weak self] (websocketEvent) in
+            guard let self = self else {
+                return
+            }
+
+            self.onWebsocketEvent(event: websocketEvent)
+        }
+    }
+
+    private func onWebsocketEvent(event: WebsocketEvent) {
+        switch event {
+        case .connect:
+            // Call the ack to finish the connection handshake
+            // Inform the callback when ack gives back a response.
+            print("WebsocketDidConnect, sending init message...")
+            let message = AppSyncMessage(type: .connectionInit("connection_init"))
+            write(message)
+
+        case .disconnect(let error):
+            serialConnectionQueue.async {[weak self] in
+                guard let self = self else {
+                    return
+                }
+                self.status = .notConnected
+
+                guard error == nil else {
+                    self.listener?(.error(nil, ConnectionProviderError.connection))
+                    return
+                }
+
+                self.listener?(.connection(self.status))
+            }
+
+        case .data(let websocketResponse):
+            handleResponse(websocketResponse)
+        }
     }
 
     // MARK: - ConnectionProvider methods
 
-    func connect(identifier: String) {
+    func connect() {
         serialConnectionQueue.async { [weak self] in
             guard let self = self else {
                 return
             }
 
-            if self.status == .notConnected {
+            switch self.status {
+            case .connected:
+                self.listener?(.connection(self.status))
+            case .inProgress:
+                self.listener?(.connection(self.status))
+            case .notConnected:
                 self.status = .inProgress
-
                 DispatchQueue.global().async {
                     self.websocketProvider.connect()
                 }
+                self.listener?(.connection(self.status))
             }
-
-            self.listener?(.connection(identifier, self.status))
         }
     }
 
     func write(_ message: AppSyncMessage) {
-        let signedMessage = interceptMessage(message, for: url)
-        let jsonEncoder = JSONEncoder()
+        let jsonData: Data
         do {
-            let jsonData = try jsonEncoder.encode(signedMessage)
-            guard let jsonString = String(data: jsonData, encoding: .utf8) else {
-                let error = ConnectionProviderError.jsonParse(message.id, nil)
-                listener?(.error(message.id, error))
-                return
-            }
-            websocketProvider.write(message: jsonString)
+            let signedMessage = interceptMessage(message, for: url)
+            jsonData = try JSONEncoder().encode(signedMessage)
         } catch {
             print(error)
             switch message.messageType {
@@ -80,7 +114,15 @@ class AppSyncConnectionProvider: ConnectionProvider {
                 let error = ConnectionProviderError.jsonParse(message.id, error)
                 listener?(.error(message.id, error))
             }
+            return
         }
+
+        guard let jsonString = String(data: jsonData, encoding: .utf8) else {
+            let error = ConnectionProviderError.jsonParse(message.id, nil)
+            listener?(.error(message.id, error))
+            return
+        }
+        websocketProvider.write(message: jsonString)
     }
 
     func disconnect() {

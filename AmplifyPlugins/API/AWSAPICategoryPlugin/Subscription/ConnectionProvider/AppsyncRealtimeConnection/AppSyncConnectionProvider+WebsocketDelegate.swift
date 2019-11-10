@@ -6,47 +6,10 @@
 
 import Foundation
 
-extension AppSyncConnectionProvider: WebsocketDelegate {
-
-    func websocketDidConnect(provider: WebsocketProvider) {
-
-        // for all subscriptionItems, call connect.
-
-        // Call the ack to finish the connection handshake
-        // Inform the callback when ack gives back a response.
-        print("WebsocketDidConnect, sending init message...")
-        let message = AppSyncMessage(type: .connectionInit("connection_init"))
-        write(message)
-    }
-
-    func websocketDidDisconnect(provider: WebsocketProvider, error: Error?) {
-        serialConnectionQueue.async {[weak self] in
-            guard let self = self else {
-                return
-            }
-            self.status = .notConnected
-
-            guard error == nil else {
-                self.listener?(.error(nil, ConnectionProviderError.connection))
-                return
-            }
-
-            self.listener?(.connection(nil, self.status))
-        }
-    }
-
-    func websocketDidReceiveData(provider: WebsocketProvider, data: Data) {
-        do {
-            let response = try JSONDecoder().decode(RealtimeConnectionProviderResponse.self, from: data)
-            handleResponse(response)
-        } catch {
-            print(error)
-            listener?(.error(nil, ConnectionProviderError.jsonParse(nil, error)))
-        }
-    }
+extension AppSyncConnectionProvider {
 
     // MARK: - Handle websocket response
-    func handleResponse(_ response: RealtimeConnectionProviderResponse) {
+    func handleResponse(_ response: WebsocketProviderResponse) {
         switch response.responseType {
         case .connectionAck:
 
@@ -61,7 +24,7 @@ extension AppSyncConnectionProvider: WebsocketDelegate {
                     return
                 }
                 self.status = .connected
-                self.listener?(.connection(response.id, self.status))
+                self.listener?(.connection(self.status))
             }
         case .error:
             /// If we get an error in connection inprogress state, return back as connection error.
@@ -71,15 +34,15 @@ extension AppSyncConnectionProvider: WebsocketDelegate {
                         return
                     }
                     self.status = .notConnected
-                    self.listener?(.error(response.id, ConnectionProviderError.connection))
+                    self.listener?(.error(response.identifier, ConnectionProviderError.connection))
                 }
                 return
             }
 
             /// Return back as generic error if there is no identifier.
-            guard let identifier = response.id else {
+            guard let identifier = response.identifier else {
                 let genericError = ConnectionProviderError.other
-                listener?(.error(response.id, genericError))
+                listener?(.error(response.identifier, genericError))
                 return
             }
 
@@ -87,12 +50,12 @@ extension AppSyncConnectionProvider: WebsocketDelegate {
             if let errorType = response.payload?["errorType"],
                 errorType == "MaxSubscriptionsReachedException" {
                 let limitExceedError = ConnectionProviderError.limitExceeded(identifier)
-                listener?(.error(response.id, limitExceedError))
+                listener?(.error(response.identifier, limitExceedError))
                 return
             }
 
             let subscriptionError = ConnectionProviderError.subscription(identifier, response.payload)
-            listener?(.error(response.id, subscriptionError))
+            listener?(.error(response.identifier, subscriptionError))
             return
 
         case .subscriptionAck, .unsubscriptionAck, .data:
@@ -105,17 +68,17 @@ extension AppSyncConnectionProvider: WebsocketDelegate {
     }
 }
 
-extension RealtimeConnectionProviderResponse {
+extension WebsocketProviderResponse {
 
     func toAppSyncResponse() -> AppSyncResponse? {
         guard let appSyncType = self.responseType.toAppSyncResponseType() else {
             return nil
         }
-        return AppSyncResponse(id: id, payload: payload, type: appSyncType)
+        return AppSyncResponse(id: identifier, payload: payload, type: appSyncType)
     }
 }
 
-extension RealtimeConnectionProviderResponseType {
+extension WebsocketProviderResponseType {
 
     func toAppSyncResponseType() -> AppSyncResponseType? {
         switch self {

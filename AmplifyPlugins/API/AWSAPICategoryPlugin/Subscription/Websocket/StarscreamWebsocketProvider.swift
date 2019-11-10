@@ -12,7 +12,6 @@ class StarscreamWebsocketProvider: WebsocketProvider {
     let url: URL
     let protocols: [String]
     let request: AppSyncConnectionRequest
-    let onEvent: WebsocketEventHandler
 
     var connectionInterceptors: [ConnectionInterceptor] = []
     var socket: WebSocket?
