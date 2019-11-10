@@ -5,17 +5,18 @@
 //
 
 import Foundation
+import Amplify
 
 struct AppSyncResponse {
 
     let id: String?
 
-    let payload: [String: AppSyncJSONValue]?
+    let payload: [String: JSONValue]?
 
     let responseType: AppSyncResponseType
 
     init(id: String? = nil,
-         payload: [String: AppSyncJSONValue]? = nil,
+         payload: [String: JSONValue]? = nil,
          type: AppSyncResponseType) {
         self.id = id
         self.responseType = type

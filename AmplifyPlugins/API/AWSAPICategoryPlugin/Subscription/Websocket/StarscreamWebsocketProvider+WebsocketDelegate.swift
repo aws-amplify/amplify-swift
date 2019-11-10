@@ -8,26 +8,26 @@ import Foundation
 import Starscream
 
 /// Extension to handle delegate callback from Starscream
-extension StarscreamAdapter: Starscream.WebSocketDelegate {
+extension StarscreamWebsocketProvider: Starscream.WebSocketDelegate {
 
     func websocketDidConnect(socket: WebSocketClient) {
         print("WebsocketDidConnect")
-        delegate?.websocketDidConnect(provider: self)
+        onEvent(.connect)
     }
 
     func websocketDidDisconnect(socket: WebSocketClient, error: Error?) {
         print("WebsocketDidDisconnect - \(error?.localizedDescription ?? "No error")")
-        delegate?.websocketDidDisconnect(provider: self, error: error)
+        onEvent(.disconnect(error: error))
     }
 
     func websocketDidReceiveMessage(socket: WebSocketClient, text: String) {
         print("WebsocketDidReceiveMessage - \(text)")
         let data = text.data(using: .utf8) ?? Data()
-        delegate?.websocketDidReceiveData(provider: self, data: data)
+        onEvent(.data(data))
     }
 
     func websocketDidReceiveData(socket: WebSocketClient, data: Data) {
         print("WebsocketDidReceiveData - \(data)")
-        delegate?.websocketDidReceiveData(provider: self, data: data)
+        onEvent(.data(data))
     }
 }

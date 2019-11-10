@@ -1,13 +1,13 @@
 //
-// Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// Licensed under the Amazon Software License
-// http://aws.amazon.com/asl/
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
 
-extension RealtimeConnectionProvider: ConnectionInterceptable {
-
+extension StarscreamWebsocketProvider: ConnectionInterceptable {
     func addInterceptor(_ interceptor: ConnectionInterceptor) {
         connectionInterceptors.append(interceptor)
     }

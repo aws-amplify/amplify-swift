@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import Amplify
 
 struct RealtimeConnectionProviderResponse {
 
@@ -12,12 +13,12 @@ struct RealtimeConnectionProviderResponse {
     ///
     let id: String?
 
-    let payload: [String: AppSyncJSONValue]?
+    let payload: [String: JSONValue]?
 
     let responseType: RealtimeConnectionProviderResponseType
 
     init(id: String? = nil,
-         payload: [String: AppSyncJSONValue]? = nil,
+         payload: [String: JSONValue]? = nil,
          type: RealtimeConnectionProviderResponseType) {
         self.id = id
         self.responseType = type

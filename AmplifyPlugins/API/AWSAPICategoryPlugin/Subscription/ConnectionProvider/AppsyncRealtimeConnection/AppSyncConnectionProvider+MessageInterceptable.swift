@@ -6,7 +6,7 @@
 
 import Foundation
 
-extension RealtimeConnectionProvider: MessageInterceptable {
+extension AppSyncConnectionProvider: MessageInterceptable {
 
     func addInterceptor(_ interceptor: MessageInterceptor) {
         messageInterceptors.append(interceptor)

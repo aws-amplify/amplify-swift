@@ -7,13 +7,15 @@
 import Foundation
 
 /// Protocol to be implemented by different websocket providers
-protocol AppSyncWebsocketProvider {
+protocol WebsocketProvider {
+
+    typealias WebsocketEventHandler = (WebsocketEvent) -> Void
 
     /// Initiates a connection to the given url.
     ///
     /// This is an async call. After the connection is succesfully established, the delegate
     /// will receive the callback on `websocketDidConnect(:)`
-    func connect(url: URL, protocols: [String], delegate: AppSyncWebsocketDelegate?)
+    func connect()
 
     /// Disconnects the websocket.
     func disconnect()
@@ -24,14 +26,12 @@ protocol AppSyncWebsocketProvider {
 
     /// Returns `true` if the websocket is connected
     var isConnected: Bool { get }
+
+    func setListener(_ callback: @escaping WebsocketEventHandler)
 }
 
-/// Delegate method to get callbacks on websocket provider connection
-protocol AppSyncWebsocketDelegate: class {
-
-    func websocketDidConnect(provider: AppSyncWebsocketProvider)
-
-    func websocketDidDisconnect(provider: AppSyncWebsocketProvider, error: Error?)
-
-    func websocketDidReceiveData(provider: AppSyncWebsocketProvider, data: Data)
+enum WebsocketEvent {
+    case connect
+    case disconnect(error: Error?)
+    case data(Data)
 }

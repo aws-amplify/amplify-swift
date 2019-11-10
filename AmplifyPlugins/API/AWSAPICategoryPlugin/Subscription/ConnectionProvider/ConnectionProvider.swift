@@ -8,24 +8,24 @@ import Foundation
 
 protocol ConnectionProvider: class {
 
-    func connect()
+    func connect(identifier: String)
 
     func write(_ message: AppSyncMessage)
 
     func disconnect()
 
-    func addListener(_ callback: @escaping ConnectionProviderCallback)
+    func setListener(_ callback: @escaping ConnectionProviderCallback)
 }
 
 typealias ConnectionProviderCallback = (ConnectionProviderEvent) -> Void
 
 enum ConnectionProviderEvent {
 
-    case connection(ConnectionState)
+    case connection(String?, ConnectionState)
 
     case data(AppSyncResponse)
 
-    case error(Error)
+    case error(String?, Error)
 }
 
 /// Connection states

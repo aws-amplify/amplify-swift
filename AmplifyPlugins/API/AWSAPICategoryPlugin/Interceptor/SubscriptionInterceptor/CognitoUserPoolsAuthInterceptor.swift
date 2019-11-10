@@ -7,7 +7,7 @@
 import Foundation
 import AWSPluginsCore
 
-class CognitoUserPoolsAuthInterceptor: MessageInterceptor, ConnectionInterceptor {
+class CognitoUserPoolsAuthInterceptor: AuthInterceptor {
 
     let authProvider: AuthTokenProvider
 

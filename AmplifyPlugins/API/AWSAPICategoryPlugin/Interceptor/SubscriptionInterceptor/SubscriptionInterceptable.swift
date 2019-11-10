@@ -33,3 +33,5 @@ protocol MessageInterceptor {
 
     func interceptMessage(_ message: AppSyncMessage, for endpoint: URL) -> AppSyncMessage
 }
+
+protocol AuthInterceptor: MessageInterceptor, ConnectionInterceptor {}

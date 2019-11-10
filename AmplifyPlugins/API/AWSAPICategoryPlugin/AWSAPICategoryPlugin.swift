@@ -51,6 +51,6 @@ final public class AWSAPICategoryPlugin: NSObject, APICategoryPlugin {
         let factory = URLSessionFactory(configuration: configuration, delegateQueue: nil)
         self.session = factory.makeSession(withDelegate: self)
         self.queue = OperationQueue()
-        self.subscriptionConnectionFactory = BasicSubscriptionConnectionFactory()
+        self.subscriptionConnectionFactory = AWSSubscriptionConnectionFactory()
     }
 }

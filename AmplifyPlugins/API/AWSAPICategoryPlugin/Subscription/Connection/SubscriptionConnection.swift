@@ -14,7 +14,7 @@ protocol SubscriptionConnection {
     /// - Parameter eventHandler: event handler
     func subscribe(requestString: String,
                    variables: [String: Any]?,
-                   eventHandler: @escaping SubscriptionEventHandler) -> SubscriptionItem
+                   eventHandler: @escaping SubscriptionEventHandler<Data>) -> SubscriptionItem
 
     /// Unsubscribe from the subscription
     /// - Parameter item: item to be unsubscribed

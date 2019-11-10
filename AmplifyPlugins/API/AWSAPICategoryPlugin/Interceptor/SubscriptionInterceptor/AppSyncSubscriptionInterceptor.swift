@@ -7,7 +7,7 @@
 import Foundation
 
 /// Connection interceptor for real time connection provider
-class RealtimeGatewayURLInterceptor: ConnectionInterceptor {
+class AppSyncSubscriptionInterceptor: ConnectionInterceptor {
 
     func interceptConnection(_ request: AppSyncConnectionRequest,
                              for endpoint: URL) -> AppSyncConnectionRequest {

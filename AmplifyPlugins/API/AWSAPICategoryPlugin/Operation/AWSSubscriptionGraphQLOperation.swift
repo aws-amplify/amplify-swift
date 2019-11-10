@@ -72,13 +72,15 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperati
             return
         }
 
-        guard let connection = subscriptionConnectionFactory.connection(endpointConfiguration: endpointConfig,
-                                                                        authService: authService) else {
-            let error = APIError.invalidConfiguration("Unable to get connection for api \(request.apiName)", "")
+        let connection: SubscriptionConnection
+        do {
+            connection = try subscriptionConnectionFactory.getOrCreateConnection(for: endpointConfig,
+                                                                                 authService: authService)
+        } catch {
+            let error = APIError.operationError("Unable to get connection for api \(request.apiName)", "", error)
             dispatch(event: .failed(error))
             finish()
             return
-
         }
 
         subscriptionItem = connection.subscribe(requestString: request.document,
@@ -86,9 +88,8 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperati
                                                  eventHandler: { (event, subscriptionItem) in
             print("event, item")
             switch event {
-            case .connection(let subscriptionConnectionEvent):
-                let state = SubscriptionConnectionState(subscriptionConnectionEvent: subscriptionConnectionEvent)
-                let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(state)
+            case .connection(let subscriptionConnectionState):
+                let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(subscriptionConnectionState)
                 self.dispatch(event: .inProcess(subscriptionEvent))
             case .data(let graphQLResponseData):
                 do {
@@ -106,18 +107,5 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperati
 
         })
 
-    }
-}
-
-extension SubscriptionConnectionState {
-    init(subscriptionConnectionEvent: SubscriptionConnectionEvent) {
-        switch subscriptionConnectionEvent {
-        case .connecting:
-            self = .connecting
-        case .connected:
-            self = .connected
-        case .disconnected:
-            self = .disconnected
-        }
     }
 }
