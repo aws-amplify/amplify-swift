@@ -22,6 +22,11 @@
                BlueprintName = "AWSAPICategoryPluginIntegrationTests"
                ReferencedContainer = "container:Amplify.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "AWSAPICategoryPluginTodoGraphQLWithUserPoolTests/testSetUpOnce()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

@@ -46,6 +46,35 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         return .success(identityId as String)
     }
 
+    public func getToken() -> Result<String, AuthError> {
+        var jwtToken: String?
+        var authError: AuthError?
+
+        let semaphore = DispatchSemaphore(value: 0)
+        mobileClient.getTokens { (tokens, error) in
+            if let error = error {
+                authError = AuthError.unknown("failed to get token with error \(error.localizedDescription)")
+            } else if let token = tokens {
+                jwtToken = token.idToken?.tokenString
+            }
+
+            semaphore.signal()
+        }
+        semaphore.wait()
+        guard authError == nil else {
+            if let error = authError {
+                return .failure(error)
+            }
+
+            return .failure(AuthError.unknown("not sure what happened trying to get failure for retrieving token"))
+        }
+        guard let token = jwtToken else {
+            return .failure(AuthError.unknown("not sure what happened getting the jwtToken"))
+        }
+
+        return .success(token)
+    }
+
     /// Used for testing only. Invoking this method outside of a testing scope has undefined behavior.
     public func reset() {
         mobileClient = nil
