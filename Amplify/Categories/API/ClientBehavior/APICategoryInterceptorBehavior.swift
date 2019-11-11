@@ -22,5 +22,5 @@ public protocol APICategoryInterceptorBehavior {
     /// to each interceptor in turn, and each interceptor will have the option to
     /// return a modified request to the next member of the chain.
     /// - Parameter inteceptor: The `URLRequestInterceptor`
-    func add(interceptor: URLRequestInterceptor, for apiName: String)
+    func add(interceptor: URLRequestInterceptor, for apiName: String) throws
 }

@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 /// Language type supported
 public enum LanguageType: String {
     // TODO: Add the whole list

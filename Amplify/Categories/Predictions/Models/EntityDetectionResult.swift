@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 // Entity Detection
 public struct EntityDetectionResult {
     let type: EntityType

@@ -5,9 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
-// Syntax Detection
 public struct SyntaxToken {
     let tokenId: Int
     let text: String
