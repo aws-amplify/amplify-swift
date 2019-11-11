@@ -31,7 +31,7 @@ public protocol PredictionsCategoryClientBehavior {
     /// - Parameter options: Parameters to specific plugin behavior
     /// - Parameter listener: Triggered when the event occurs
     func identify(type: IdentifyType,
-                  image: UIImage,
+                  image: URL,
                   options: PredictionsIdentifyRequest.Options?,
                   listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation
 }

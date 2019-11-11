@@ -10,16 +10,15 @@ import UIKit
 
 public struct PredictionsIdentifyRequest: AmplifyOperationRequest {
 
-    public let image: UIImage
+    public let image: URL
     public let identifyType: IdentifyType
     public let options: Options
 
-    public init(image: UIImage, identifyType: IdentifyType, options: Options) {
+    public init(image: URL, identifyType: IdentifyType, options: Options) {
         self.image = image
         self.identifyType = identifyType
         self.options = options
     }
-
 
 }
 
@@ -39,4 +38,3 @@ public extension PredictionsIdentifyRequest {
         }
     }
 }
-
