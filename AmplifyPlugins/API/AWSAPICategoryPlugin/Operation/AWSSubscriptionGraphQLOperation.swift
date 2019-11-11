@@ -75,10 +75,9 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperati
         }
 
         // Retrieve the subscription connection
-        let connection: SubscriptionConnection
         do {
-            connection = try subscriptionConnectionFactory.getOrCreateConnection(for: endpointConfig,
-                                                                                 authService: authService)
+            subscriptionConnection = try subscriptionConnectionFactory.getOrCreateConnection(for: endpointConfig,
+                                                                                             authService: authService)
         } catch {
             let error = APIError.operationError("Unable to get connection for api \(request.apiName)", "", error)
             dispatch(event: .failed(error))
@@ -87,9 +86,9 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperati
         }
 
         // Create subscription
-        subscriptionItem = connection.subscribe(requestString: request.document,
-                                                variables: request.variables,
-                                                eventHandler: { [weak self] (event, _) in
+        subscriptionItem = subscriptionConnection?.subscribe(requestString: request.document,
+                                                             variables: request.variables,
+                                                             eventHandler: { [weak self] (event, _) in
             self?.onSubscriptionEvent(event: event)
         })
 

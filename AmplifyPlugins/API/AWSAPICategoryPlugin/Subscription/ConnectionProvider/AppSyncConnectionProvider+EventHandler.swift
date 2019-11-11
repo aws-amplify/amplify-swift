@@ -20,7 +20,7 @@ extension AppSyncConnectionProvider {
                 }
 
                 self.state = .connecting
-                self.listener?(.connection(.connecting))
+                self.dispatch(.connection(.connecting))
 
                 // Connection provider will internally send connection init message.
                 self.sendConnectionInitMessage()
@@ -40,7 +40,7 @@ extension AppSyncConnectionProvider {
                 } else {
                     self.state = .disconnected(error: nil)
                 }
-                self.listener?(.connection(self.state))
+                self.dispatch(.connection(self.state))
             }
         case .data(let websocketResponse):
             handleResponse(websocketResponse)
@@ -62,7 +62,7 @@ extension AppSyncConnectionProvider {
                         }
 
                         self.state = .connected
-                        self.listener?(.connection(self.state))
+                        self.dispatch(.connection(self.state))
                     }
                 case .connected, .disconnected:
                     break
@@ -79,7 +79,7 @@ extension AppSyncConnectionProvider {
 
                     // TODO: Deserialize payload here to get error?
                     self.state = .disconnected(error: ConnectionProviderError.responseError)
-                    self.listener?(.connection(self.state))
+                    self.dispatch(.connection(self.state))
                 }
                 return
             case .connected, .disconnected:
@@ -89,7 +89,7 @@ extension AppSyncConnectionProvider {
             /// Return back as generic error if there is no identifier.
             guard let identifier = response.identifier else {
                 let genericError = ConnectionProviderError.other
-                listener?(.unknownError(genericError))
+                dispatch(.unknownError(genericError))
                 return
             }
 
@@ -97,29 +97,29 @@ extension AppSyncConnectionProvider {
             if let errorType = response.payload?["errorType"],
                 errorType == "MaxSubscriptionsReachedException" {
                 let limitExceedError = ConnectionProviderError.limitExceeded(identifier)
-                listener?(.subscriptionError(identifier, limitExceedError))
+                dispatch(identifier, event: .subscriptionError(identifier, limitExceedError))
                 return
             }
 
             // Default to subscription error
             let subscriptionError = ConnectionProviderError.subscription(identifier, response.payload)
-            listener?(.subscriptionError(identifier, subscriptionError))
+            dispatch(identifier, event: .subscriptionError(identifier, subscriptionError))
             return
 
         case .subscriptionAck:
             if let identifier = response.identifier {
-                listener?(.subscriptionConnected(identifier: identifier))
+                dispatch(identifier, event: .subscriptionConnected)
             }
         case .unsubscriptionAck:
             if let identifier = response.identifier {
-                listener?(.subscriptionDisconnected(identifier: identifier))
+                dispatch(identifier, event: .subscriptionDisconnected)
             }
         case .data:
             if let identifier = response.identifier, let payload = response.payload {
-                listener?(.data(identifier: identifier, payload: payload))
+                dispatch(identifier, event: .data(payload: payload))
             }
         case .keepAlive:
-            listener?(.keepAlive)
+            dispatch(.keepAlive)
         }
     }
 }

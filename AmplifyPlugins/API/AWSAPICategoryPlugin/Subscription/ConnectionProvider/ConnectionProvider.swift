@@ -16,51 +16,15 @@ protocol ConnectionProvider: class {
 
     func disconnect()
 
-    func subscribe(_ subscriptionItem: SubscriptionItem)
+    func subscribe(_ identifier: String,
+                   requestString: String,
+                   variables: [String: Any]?)
 
     func unsubscribe(_ identifier: String)
 
     var isConnected: Bool { get }
 
-    func setListener(_ callback: @escaping ConnectionProviderCallback)
-}
+    func addListener(_ identifier: String, callback: @escaping ConnectionProviderCallback)
 
-enum ConnectionProviderEvent {
-
-    case connection(ConnectionState)
-
-    // Keep alive ping from the service
-    case keepAlive
-
-    // Subscription has been connected to the connection
-    case subscriptionConnected(identifier: String)
-
-    // Subscription has been disconnected from the connection
-    case subscriptionDisconnected(identifier: String)
-
-    // Data received on the connection
-    case data(identifier: String, payload: [String: JSONValue])
-
-    // Subscription related error
-    case subscriptionError(String, ConnectionProviderError)
-
-    // Unknown error
-    case unknownError(ConnectionProviderError)
-}
-
-// Synchronized to the state of the underlying websocket connection
-enum ConnectionState {
-    // The websocket connection was created
-    case connecting
-
-    // The websocket connection has been established
-    case connected
-
-    // The websocket connection has been disconnected
-    case disconnected(error: ConnectionProviderError?)
-}
-
-enum SubscriptionState {
-    case connected(identifier: String)
-    case disconnected(identifier: String, error: ConnectionProviderError?)
+    func removeListener(_ identifier: String)
 }

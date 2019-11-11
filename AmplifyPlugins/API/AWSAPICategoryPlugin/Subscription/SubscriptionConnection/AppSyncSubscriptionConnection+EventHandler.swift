@@ -14,14 +14,14 @@ extension AppSyncSubscriptionConnection {
         switch event {
         case .connection(let connectionState):
             handleConnectionState(connectionState: connectionState)
-        case .data(let identifier, let payload):
+        case .data(let payload):
             handleDataEvent(identifier: identifier, payload: payload)
-        case .subscriptionConnected(let identifier):
+        case .subscriptionConnected:
             guard let subscriptionItem = subscriptionItems[identifier] else {
                 return
             }
             subscriptionItem.setState(.connected)
-        case .subscriptionDisconnected(let identifier):
+        case .subscriptionDisconnected:
             guard let subscriptionItem = subscriptionItems[identifier] else {
                 return
             }
@@ -44,29 +44,10 @@ extension AppSyncSubscriptionConnection {
         case .connecting:
             break
         case .connected:
-            subscriptionItems.forEach { (identifier, subscriptionItem) in
-                switch subscriptionItem.subscriptionConnectionState {
-                case .disconnected:
-                    print("Start subscription for identifier: \(subscriptionItem.identifier)")
-                    subscriptionItem.setState(.connecting)
-                    connectionProvider.subscribe(subscriptionItem)
-                case .connecting, .connected:
-                    break
-                }
-            }
+            break
         case .disconnected(let error):
             if let error = error {
                 tryReconnectOnError(error: error)
-            }
-
-            // Move all subscriptionItems to disconnected but keep them in memory.
-            subscriptionItems.forEach { (_, subscriptionItem) in
-                switch subscriptionItem.subscriptionConnectionState {
-                case .connecting, .connected:
-                    subscriptionItem.setState(.disconnected)
-                case .disconnected:
-                    break
-                }
             }
         }
     }

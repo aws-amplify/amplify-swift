@@ -5,19 +5,16 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 import Foundation
+import Amplify
 
 /// Connection to make subscriptions
 protocol SubscriptionConnection {
 
-    /// Subscribe to the subscription request
-    /// - Parameter variables: variables for the subscription
-    /// - Parameter requestString: query for the subscription
-    /// - Parameter eventHandler: event handler
-    func subscribe(requestString: String,
-                   variables: [String: Any]?,
-                   eventHandler: @escaping SubscriptionEventHandler<Data>) -> SubscriptionItem
+    func subscribe<R: Decodable>(request: GraphQLRequest,
+                                 responseType: R.Type,
+                                 listener: @escaping SubscriptionEventHandler<R>) -> SubscriptionOperation<R>
 
     /// Unsubscribe from the subscription
     /// - Parameter item: item to be unsubscribed
-    func unsubscribe(item: SubscriptionItem)
+    func unsubscribe(_ identifier: String)
 }

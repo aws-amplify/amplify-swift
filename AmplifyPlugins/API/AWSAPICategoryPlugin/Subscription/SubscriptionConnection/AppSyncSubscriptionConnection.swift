@@ -6,17 +6,20 @@
 //
 
 import Foundation
+import Amplify
 
 class AppSyncSubscriptionConnection: SubscriptionConnection, RetryableConnection {
 
-    /// Provides a way to connect, disconnect, and send messages to the service.
-    let connectionProvider: ConnectionProvider
+    let identifier = UUID().uuidString
 
-    /// Map of all subscription created on this connection
-    var subscriptionItems: [String: SubscriptionItem] = [:]
+    /// Provides a way to connect and subscribe to the connection
+    let connectionProvider: ConnectionProvider
 
     /// Retry logic to handle connection failuress
     var retryHandler: ConnectionRetryHandler?
+
+    // Queue containing all subscriptions connected to the websocket connection
+    let queue: OperationQueue = OperationQueue()
 
     convenience init(url: URL, interceptor: AuthInterceptor) {
         let connectionProvider = AppSyncConnectionProvider(for: url, interceptor: interceptor)
@@ -27,7 +30,7 @@ class AppSyncSubscriptionConnection: SubscriptionConnection, RetryableConnection
     init(connectionProvider: ConnectionProvider) {
         self.connectionProvider = connectionProvider
 
-        connectionProvider.setListener { [weak self] (event) in
+        connectionProvider.addListener(identifier) { [weak self] (event) in
             guard let self = self else {
                 return
             }
@@ -36,22 +39,16 @@ class AppSyncSubscriptionConnection: SubscriptionConnection, RetryableConnection
         }
     }
 
-    func subscribe(requestString: String,
-                   variables: [String: Any]?,
-                   eventHandler: @escaping SubscriptionEventHandler<Data>) -> SubscriptionItem {
+    func subscribe<R: Decodable>(request: GraphQLRequest,
+                                 responseType: R.Type,
+                                 listener: @escaping SubscriptionEventListener<R>) -> SubscriptionOperation<R> {
 
-        let subscriptionItem = SubscriptionItem(requestString: requestString,
-                                                variables: variables,
-                                                eventHandler: eventHandler)
-        subscriptionItems[subscriptionItem.identifier] = subscriptionItem
-
-        if connectionProvider.isConnected {
-            connectionProvider.subscribe(subscriptionItem)
-        } else {
-            connectionProvider.connect()
-        }
-
-        return subscriptionItem
+        let operation = SubscriptionOperation(request: request,
+                                              responseType: responseType,
+                                              connectionProvider: connectionProvider,
+                                              listener: listener)
+        queue.addOperation(operation)
+        return operation
     }
 
     func unsubscribe(item: SubscriptionItem) {

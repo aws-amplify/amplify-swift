@@ -10,7 +10,7 @@ import AWSCore
 import AWSPluginsCore
 import Amplify
 
-class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
+class AppSyncSubscriptionConnectionFactory: SubscriptionConnectionFactory {
 
     let retryStrategy: AWSAppSyncRetryStrategy
     var apiToSubscriptionConnections: [String: SubscriptionConnection] = [:]

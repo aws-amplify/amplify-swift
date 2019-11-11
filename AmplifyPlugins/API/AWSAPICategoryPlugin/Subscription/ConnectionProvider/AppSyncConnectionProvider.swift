@@ -16,7 +16,8 @@ class AppSyncConnectionProvider: ConnectionProvider {
     let websocketProvider: WebsocketProvider
 
     var state: ConnectionState = .disconnected(error: nil)
-    var listener: ConnectionProviderCallback?
+
+    var listeners: [String: ConnectionProviderCallback] = [:]
     var messageInterceptors: [MessageInterceptor] = []
 
     /// Serial queue for maintaining the connection state in sync with the websocket connection
@@ -50,7 +51,7 @@ class AppSyncConnectionProvider: ConnectionProvider {
         case .disconnected:
             websocketProvider.connect()
         case .connecting, .connected:
-            listener?(.connection(state))
+            dispatch(.connection(state))
         }
     }
 
@@ -61,29 +62,32 @@ class AppSyncConnectionProvider: ConnectionProvider {
         case .connecting, .connected:
             websocketProvider.disconnect()
         case .disconnected:
-            listener?(.connection(state))
+            dispatch(.connection(state))
         }
     }
 
-    func subscribe(_ subscriptionItem: SubscriptionItem) {
+    func subscribe(_ identifier: String,
+                   requestString: String,
+                   variables: [String: Any]?) {
         print("subscribe, sending start subscription message...")
         let payload: AppSyncMessage.Payload
         do {
-            payload = try convertToPayload(for: subscriptionItem.requestString,
-                                           variables: subscriptionItem.variables)
+            payload = try convertToPayload(for: requestString,
+                                           variables: variables)
         } catch {
-            subscriptionItem.subscriptionEventHandler(.failed(error), subscriptionItem)
+            let error = ConnectionProviderError.jsonParse(identifier, error)
+            dispatch(identifier, event: .subscriptionError(identifier, error))
             return
         }
 
-        let message = AppSyncMessage(id: subscriptionItem.identifier,
+        let message = AppSyncMessage(id: identifier,
                                      payload: payload,
                                      type: .subscribe("start"))
         do {
             try write(message)
         } catch {
             let error = ConnectionProviderError.jsonParse(message.id, error)
-            listener?(.subscriptionError(subscriptionItem.identifier, error))
+            dispatch(identifier, event: .subscriptionError(identifier, error))
         }
     }
 
@@ -94,7 +98,7 @@ class AppSyncConnectionProvider: ConnectionProvider {
             try write(message)
         } catch {
             let error = ConnectionProviderError.jsonParse(message.id, error)
-            listener?(.subscriptionError(identifier, error))
+            dispatch(identifier, event: .subscriptionError(identifier, error))
         }
     }
 
@@ -106,8 +110,26 @@ class AppSyncConnectionProvider: ConnectionProvider {
         return false
     }
 
-    func setListener(_ callback: @escaping ConnectionProviderCallback) {
-        listener = callback
+    func addListener(_ identifier: String, callback: @escaping ConnectionProviderCallback) {
+        listeners[identifier] = callback
+    }
+
+    func removeListener(_ identifier: String) {
+        listeners[identifier] = nil
+    }
+
+    // MARK: - Helpers
+
+    func dispatch(_ event: ConnectionProviderEvent) {
+        listeners.forEach { (_, callback) in
+            callback(event)
+        }
+    }
+
+    func dispatch(_ identifier: String, event: ConnectionProviderEvent) {
+        if let callback = listeners[identifier] {
+            callback(event)
+        }
     }
 
     // MARK: - Private
@@ -126,7 +148,7 @@ class AppSyncConnectionProvider: ConnectionProvider {
                         return
                     }
                     self.state = .disconnected(error: ConnectionProviderError.connection(nil))
-                    self.listener?(.connection(self.state))
+                    self.dispatch(.connection(self.state))
                 }
             }
         case .disconnected, .connected:
