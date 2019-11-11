@@ -61,20 +61,15 @@ extension AWSPredictionsService {
         let request: AWSRekognitionRecognizeCelebritiesRequest = AWSRekognitionRecognizeCelebritiesRequest()
         let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
 
-        let imageArray = image.absoluteString.components(separatedBy: "/")
-        let imageKey = imageArray.last!
-        guard let fileURL = FileManager().urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(imageKey),
-            // get the data from the resulting url
-            let imageData = try? Data(contentsOf: fileURL),
-            // initialise your image object with the image data
-            let uiimage = UIImage(data: imageData) else {
+        guard let imageData = try? Data(contentsOf: image) else {
+           
             onEvent(.failed(
             .networkError("Something was wrong with the image file, make sure it exists.",
                           "Try choosing an image and sending it again.")))
             return
         }
 
-        rekognitionImage.bytes = uiimage.jpegData(compressionQuality: 0.2)!
+        rekognitionImage.bytes = imageData
         request.image = rekognitionImage
 
         awsRekognition.detectCelebs(request: request).continueWith { (task) -> Any? in
