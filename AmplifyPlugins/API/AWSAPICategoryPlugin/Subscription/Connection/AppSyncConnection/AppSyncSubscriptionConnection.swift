@@ -8,11 +8,11 @@ import Foundation
 
 enum SubscriptionState {
 
-    case notSubscribed
+    case connecting
 
-    case inProgress
+    case connected
 
-    case subscribed
+    case disconnected
 }
 
 class AppSyncSubscriptionConnection: SubscriptionConnection, RetryableConnection {
@@ -44,20 +44,10 @@ class AppSyncSubscriptionConnection: SubscriptionConnection, RetryableConnection
         }
     }
 
-    private func onConnectionProviderEvent(event: ConnectionProviderEvent) {
-        switch event {
-        case .connection(let state):
-            handleConnectionEvent(connectionState: state)
-        case .data(let response):
-            handleDataEvent(response: response)
-        case .error(let identifier, let error):
-            handleError(identifier: identifier, error: error)
-        }
-    }
-
     func subscribe(requestString: String,
                    variables: [String: Any]?,
                    eventHandler: @escaping SubscriptionEventHandler<Data>) -> SubscriptionItem {
+
         let subscriptionItem = SubscriptionItem(requestString: requestString,
                                                 variables: variables,
                                                 eventHandler: eventHandler)
@@ -69,9 +59,7 @@ class AppSyncSubscriptionConnection: SubscriptionConnection, RetryableConnection
 
     func unsubscribe(item: SubscriptionItem) {
         print("Unsubscribe - \(item.identifier)")
-        let message = AppSyncMessage(id: item.identifier, type: .unsubscribe("stop"))
-        connectionProvider.write(message)
-
+        connectionProvider.sendUnsubscribeMessage(identifier: item.identifier)
         // TODO: find where the message comes back, and remove the mapping to subscriptionItem.
         //ie. subscriptionItems[item.identifier] = nil
     }

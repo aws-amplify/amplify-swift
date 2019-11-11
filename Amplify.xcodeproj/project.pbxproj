@@ -224,18 +224,17 @@
 		21D79FB6237600DB0057D00D /* RetryableConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79F89237600DA0057D00D /* RetryableConnection.swift */; };
 		21D79FB7237600DB0057D00D /* SubscriptionConnectionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79F8B237600DA0057D00D /* SubscriptionConnectionFactory.swift */; };
 		21D79FBE237600DB0057D00D /* AppSyncSubscriptionConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79F93237600DB0057D00D /* AppSyncSubscriptionConnection.swift */; };
-		21D79FBF237600DB0057D00D /* AppSyncSubscriptionConnection+Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79F94237600DB0057D00D /* AppSyncSubscriptionConnection+Connection.swift */; };
+		21D79FBF237600DB0057D00D /* AppSyncSubscriptionConnection+EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79F94237600DB0057D00D /* AppSyncSubscriptionConnection+EventHandler.swift */; };
 		21D79FC1237600DB0057D00D /* SubscriptionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79F96237600DB0057D00D /* SubscriptionItem.swift */; };
 		21D79FC2237600DB0057D00D /* AWSAppSyncRetryStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79F97237600DB0057D00D /* AWSAppSyncRetryStrategy.swift */; };
 		21D79FC4237600DB0057D00D /* SubscriptionConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79F9A237600DB0057D00D /* SubscriptionConstants.swift */; };
-		21D79FC6237600DB0057D00D /* AppSyncResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79F9D237600DB0057D00D /* AppSyncResponse.swift */; };
 		21D79FC7237600DB0057D00D /* SubscriptionInterceptable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79F9E237600DB0057D00D /* SubscriptionInterceptable.swift */; };
 		21D79FC8237600DB0057D00D /* ConnectionProviderError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79F9F237600DB0057D00D /* ConnectionProviderError.swift */; };
 		21D79FC9237600DB0057D00D /* AppSyncMessage+Encodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FA0237600DB0057D00D /* AppSyncMessage+Encodable.swift */; };
 		21D79FCA237600DB0057D00D /* AppSyncMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FA1237600DB0057D00D /* AppSyncMessage.swift */; };
 		21D79FCB237600DB0057D00D /* AppSyncConnectionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FA2237600DB0057D00D /* AppSyncConnectionRequest.swift */; };
 		21D79FCC237600DB0057D00D /* AppSyncConnectionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FA4237600DB0057D00D /* AppSyncConnectionProvider.swift */; };
-		21D79FCD237600DB0057D00D /* AppSyncConnectionProvider+WebsocketDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FA5237600DB0057D00D /* AppSyncConnectionProvider+WebsocketDelegate.swift */; };
+		21D79FCD237600DB0057D00D /* AppSyncConnectionProvider+EventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FA5237600DB0057D00D /* AppSyncConnectionProvider+EventHandler.swift */; };
 		21D79FCE237600DB0057D00D /* WebsocketProviderResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FA6237600DB0057D00D /* WebsocketProviderResponse.swift */; };
 		21D79FCF237600DB0057D00D /* AppSyncConnectionProvider+MessageInterceptable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FA7237600DB0057D00D /* AppSyncConnectionProvider+MessageInterceptable.swift */; };
 		21D79FD1237600DB0057D00D /* ConnectionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FA9237600DB0057D00D /* ConnectionProvider.swift */; };
@@ -1245,18 +1244,17 @@
 		21D79F89237600DA0057D00D /* RetryableConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetryableConnection.swift; sourceTree = "<group>"; };
 		21D79F8B237600DA0057D00D /* SubscriptionConnectionFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionConnectionFactory.swift; sourceTree = "<group>"; };
 		21D79F93237600DB0057D00D /* AppSyncSubscriptionConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncSubscriptionConnection.swift; sourceTree = "<group>"; };
-		21D79F94237600DB0057D00D /* AppSyncSubscriptionConnection+Connection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppSyncSubscriptionConnection+Connection.swift"; sourceTree = "<group>"; };
+		21D79F94237600DB0057D00D /* AppSyncSubscriptionConnection+EventHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppSyncSubscriptionConnection+EventHandler.swift"; sourceTree = "<group>"; };
 		21D79F96237600DB0057D00D /* SubscriptionItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionItem.swift; sourceTree = "<group>"; };
 		21D79F97237600DB0057D00D /* AWSAppSyncRetryStrategy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAppSyncRetryStrategy.swift; sourceTree = "<group>"; };
 		21D79F9A237600DB0057D00D /* SubscriptionConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionConstants.swift; sourceTree = "<group>"; };
-		21D79F9D237600DB0057D00D /* AppSyncResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncResponse.swift; sourceTree = "<group>"; };
 		21D79F9E237600DB0057D00D /* SubscriptionInterceptable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionInterceptable.swift; sourceTree = "<group>"; };
 		21D79F9F237600DB0057D00D /* ConnectionProviderError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionProviderError.swift; sourceTree = "<group>"; };
 		21D79FA0237600DB0057D00D /* AppSyncMessage+Encodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppSyncMessage+Encodable.swift"; sourceTree = "<group>"; };
 		21D79FA1237600DB0057D00D /* AppSyncMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncMessage.swift; sourceTree = "<group>"; };
 		21D79FA2237600DB0057D00D /* AppSyncConnectionRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncConnectionRequest.swift; sourceTree = "<group>"; };
 		21D79FA4237600DB0057D00D /* AppSyncConnectionProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncConnectionProvider.swift; sourceTree = "<group>"; };
-		21D79FA5237600DB0057D00D /* AppSyncConnectionProvider+WebsocketDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppSyncConnectionProvider+WebsocketDelegate.swift"; sourceTree = "<group>"; };
+		21D79FA5237600DB0057D00D /* AppSyncConnectionProvider+EventHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppSyncConnectionProvider+EventHandler.swift"; sourceTree = "<group>"; };
 		21D79FA6237600DB0057D00D /* WebsocketProviderResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebsocketProviderResponse.swift; sourceTree = "<group>"; };
 		21D79FA7237600DB0057D00D /* AppSyncConnectionProvider+MessageInterceptable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppSyncConnectionProvider+MessageInterceptable.swift"; sourceTree = "<group>"; };
 		21D79FA9237600DB0057D00D /* ConnectionProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionProvider.swift; sourceTree = "<group>"; };
@@ -2588,7 +2586,7 @@
 			isa = PBXGroup;
 			children = (
 				21D79F93237600DB0057D00D /* AppSyncSubscriptionConnection.swift */,
-				21D79F94237600DB0057D00D /* AppSyncSubscriptionConnection+Connection.swift */,
+				21D79F94237600DB0057D00D /* AppSyncSubscriptionConnection+EventHandler.swift */,
 			);
 			path = AppSyncConnection;
 			sourceTree = "<group>";
@@ -2596,23 +2594,14 @@
 		21D79F9C237600DB0057D00D /* ConnectionProvider */ = {
 			isa = PBXGroup;
 			children = (
+				21D79FA4237600DB0057D00D /* AppSyncConnectionProvider.swift */,
+				21D79FA5237600DB0057D00D /* AppSyncConnectionProvider+EventHandler.swift */,
+				21D79FA7237600DB0057D00D /* AppSyncConnectionProvider+MessageInterceptable.swift */,
 				21D79FA1237600DB0057D00D /* AppSyncMessage.swift */,
 				21D79FA0237600DB0057D00D /* AppSyncMessage+Encodable.swift */,
-				21D79FA3237600DB0057D00D /* AppsyncRealtimeConnection */,
 				21D79FA9237600DB0057D00D /* ConnectionProvider.swift */,
-				21D79F9D237600DB0057D00D /* AppSyncResponse.swift */,
 			);
 			path = ConnectionProvider;
-			sourceTree = "<group>";
-		};
-		21D79FA3237600DB0057D00D /* AppsyncRealtimeConnection */ = {
-			isa = PBXGroup;
-			children = (
-				21D79FA4237600DB0057D00D /* AppSyncConnectionProvider.swift */,
-				21D79FA7237600DB0057D00D /* AppSyncConnectionProvider+MessageInterceptable.swift */,
-				21D79FA5237600DB0057D00D /* AppSyncConnectionProvider+WebsocketDelegate.swift */,
-			);
-			path = AppsyncRealtimeConnection;
 			sourceTree = "<group>";
 		};
 		21D79FAC237600DB0057D00D /* SubscriptionInterceptor */ = {
@@ -7200,7 +7189,7 @@
 				21D79FCC237600DB0057D00D /* AppSyncConnectionProvider.swift in Sources */,
 				21D79FC7237600DB0057D00D /* SubscriptionInterceptable.swift in Sources */,
 				FADCFECB2374E33700C1F9E8 /* AWSAppSyncGraphQLResponse.swift in Sources */,
-				21D79FBF237600DB0057D00D /* AppSyncSubscriptionConnection+Connection.swift in Sources */,
+				21D79FBF237600DB0057D00D /* AppSyncSubscriptionConnection+EventHandler.swift in Sources */,
 				21D79FD2237600DB0057D00D /* AppSyncSubscriptionInterceptor.swift in Sources */,
 				214209D02372212200FA140C /* UserPoolRequestInterceptor.swift in Sources */,
 				21D79FCB237600DB0057D00D /* AppSyncConnectionRequest.swift in Sources */,
@@ -7227,7 +7216,7 @@
 				214209E62372212200FA140C /* AWSAPICategoryPlugin+RESTBehavior.swift in Sources */,
 				214209E72372212200FA140C /* AWSAPICategoryPlugin+GraphQLBehavior.swift in Sources */,
 				214209DA2372212200FA140C /* URLSessionTask+URLSessionTaskBehavior.swift in Sources */,
-				21D79FCD237600DB0057D00D /* AppSyncConnectionProvider+WebsocketDelegate.swift in Sources */,
+				21D79FCD237600DB0057D00D /* AppSyncConnectionProvider+EventHandler.swift in Sources */,
 				214209F22372212200FA140C /* AWSAPICategoryPluginConfiguration+EndpointConfig.swift in Sources */,
 				214209ED2372212200FA140C /* AWSAPIOperation+APIOperation.swift in Sources */,
 				21D79FB5237600DB0057D00D /* SubscriptionConnection.swift in Sources */,
@@ -7241,7 +7230,6 @@
 				214209F52372212200FA140C /* AWSAPICategoryPlugin+Configure.swift in Sources */,
 				21D79FB4237600DB0057D00D /* StarscreamWebsocketProvider+WebsocketDelegate.swift in Sources */,
 				214209D72372212200FA140C /* URLSession+URLSessionBehavior.swift in Sources */,
-				21D79FC6237600DB0057D00D /* AppSyncResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

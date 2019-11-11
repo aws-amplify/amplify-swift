@@ -23,33 +23,26 @@ class SubscriptionItem {
     let requestString: String
 
     /// State of the subscription
-    var subscriptionState: SubscriptionState
+    var subscriptionConnectionState: SubscriptionConnectionState
 
     // Subscription related events will be send to this handler.
     let subscriptionEventHandler: SubscriptionEventHandler<Data>
 
     init(requestString: String,
          variables: [String: Any]?,
-         subscriptionState: SubscriptionState = .notSubscribed,
+         subscriptionConnectionState: SubscriptionConnectionState = .disconnected,
          eventHandler: @escaping SubscriptionEventHandler<Data>) {
 
         self.identifier = UUID().uuidString
         self.variables = variables
         self.requestString = requestString
-        self.subscriptionState = subscriptionState
+        self.subscriptionConnectionState = subscriptionConnectionState
         self.subscriptionEventHandler = eventHandler
     }
 
-    func setState(subscriptionState: SubscriptionState) {
-        self.subscriptionState = subscriptionState
-        switch subscriptionState {
-        case .notSubscribed:
-            subscriptionEventHandler(.connection(.disconnected), self)
-        case .inProgress:
-            subscriptionEventHandler(.connection(.connecting), self)
-        case .subscribed:
-            subscriptionEventHandler(.connection(.connected), self)
-        }
+    func setState(_ subscriptionConnectionState: SubscriptionConnectionState) {
+        self.subscriptionConnectionState = subscriptionConnectionState
+        subscriptionEventHandler(.connection(self.subscriptionConnectionState), self)
     }
 
     func dispatch(data: Data) {
