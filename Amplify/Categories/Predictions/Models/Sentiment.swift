@@ -9,6 +9,20 @@ import Foundation
 
 // Sentiment Analysis
 public struct Sentiment {
-    let predominantSentiment: String
-    let sentimentScores: [String: Float]?
+    let predominantSentiment: SentimentType
+    let sentimentScores: [SentimentType: Double]?
+
+    public init(predominantSentiment: SentimentType,
+                sentimentScores: [SentimentType: Double]?) {
+        self.predominantSentiment = predominantSentiment
+        self.sentimentScores = sentimentScores
+    }
+}
+
+public enum SentimentType {
+    case unknown
+    case positive
+    case negative
+    case neutral
+    case mixed
 }

@@ -28,8 +28,8 @@ class AWSPredictionsService {
 
         guard let serviceConfiguration = serviceConfigurationOptional else {
             throw PluginError.pluginConfigurationError(
-                PluginErrorConstants.serviceConfigurationInitializationError.errorDescription,
-                PluginErrorConstants.serviceConfigurationInitializationError.recoverySuggestion)
+                PluginErrorMessage.serviceConfigurationInitializationError.errorDescription,
+                PluginErrorMessage.serviceConfigurationInitializationError.recoverySuggestion)
         }
 
         AWSTranslate.register(with: serviceConfiguration, forKey: identifier)

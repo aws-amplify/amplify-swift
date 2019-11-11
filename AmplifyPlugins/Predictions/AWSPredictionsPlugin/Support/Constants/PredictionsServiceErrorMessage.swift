@@ -8,13 +8,10 @@
 import Foundation
 import Amplify
 
-typealias PredictionsValidationErrorString = (field: Field,
-    errorDescription: ErrorDescription,
-    recoverySuggestion: RecoverySuggestion)
 typealias PredictionsServiceErrorString = (errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion)
 
-struct PredictionsErrorConstants {
+struct PredictionsServiceErrorMessage {
     static let accessDenied: PredictionsServiceErrorString = (
-           "Access denied!",
-           "")
+        "Access denied!",
+        "")
 }

@@ -17,4 +17,3 @@ protocol AWSComprehendServiceBehavior {
     func comprehend(text: String,
                     onEvent: @escaping ComprehendServiceEventHandler)
 }
-

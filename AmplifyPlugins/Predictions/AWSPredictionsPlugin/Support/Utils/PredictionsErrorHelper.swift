@@ -54,12 +54,12 @@ class PredictionsErrorHelper {
 
     static func getDefaultError(_ error: NSError) -> PredictionsError {
         let errorMessage = """
-                           Domain: [\(error.domain)
-                           Code: [\(error.code)
-                           LocalizedDescription: [\(error.localizedDescription)
-                           LocalizedFailureReason: [\(error.localizedFailureReason ?? "")
-                           LocalizedRecoverySuggestion: [\(error.localizedRecoverySuggestion ?? "")
-                           """
+        Domain: [\(error.domain)
+        Code: [\(error.code)
+        LocalizedDescription: [\(error.localizedDescription)
+        LocalizedFailureReason: [\(error.localizedFailureReason ?? "")
+        LocalizedRecoverySuggestion: [\(error.localizedRecoverySuggestion ?? "")
+        """
 
         return PredictionsError.unknownError(errorMessage, "")
     }
@@ -80,8 +80,8 @@ class PredictionsErrorHelper {
         case .authFailure:
             break
         case .accessDeniedException:
-            return PredictionsError.accessDenied(PredictionsErrorConstants.accessDenied.errorDescription,
-                                             PredictionsErrorConstants.accessDenied.recoverySuggestion)
+            return PredictionsError.accessDenied(PredictionsServiceErrorMessage.accessDenied.errorDescription,
+                                                 PredictionsServiceErrorMessage.accessDenied.recoverySuggestion)
         case .unrecognizedClientException:
             break
         case .incompleteSignature:
@@ -91,8 +91,8 @@ class PredictionsErrorHelper {
         case .missingAuthenticationToken:
             break
         case .accessDenied:
-            return PredictionsError.accessDenied(PredictionsErrorConstants.accessDenied.errorDescription,
-                                             PredictionsErrorConstants.accessDenied.recoverySuggestion)
+            return PredictionsError.accessDenied(PredictionsServiceErrorMessage.accessDenied.errorDescription,
+                                                 PredictionsServiceErrorMessage.accessDenied.recoverySuggestion)
         case .expiredToken:
             break
         case .invalidAccessKeyId:
@@ -102,8 +102,8 @@ class PredictionsErrorHelper {
         case .tokenRefreshRequired:
             break
         case .accessFailure:
-            return PredictionsError.accessDenied(PredictionsErrorConstants.accessDenied.errorDescription,
-                                             PredictionsErrorConstants.accessDenied.recoverySuggestion)
+            return PredictionsError.accessDenied(PredictionsServiceErrorMessage.accessDenied.errorDescription,
+                                                 PredictionsServiceErrorMessage.accessDenied.recoverySuggestion)
         case .authMissingFailure:
             break
         case .throttling:

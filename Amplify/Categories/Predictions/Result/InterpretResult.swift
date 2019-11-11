@@ -9,9 +9,13 @@ import Foundation
 
 public struct InterpretResult {
 
-    var keyPhrases: [KeyPhrase]?
-    var sentiment: Sentiment?
-    var entities: [EntityDetectionResult]?
-    var language: LanguageDetectionResult?
-    var syntax: [SyntaxToken]?
+    public var keyPhrases: [KeyPhrase]?
+    public var sentiment: Sentiment?
+    public var entities: [EntityDetectionResult]?
+    public var language: LanguageDetectionResult?
+    public var syntax: [SyntaxToken]?
+
+    public  init() {
+
+    }
 }
