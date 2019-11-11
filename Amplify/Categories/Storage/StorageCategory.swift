@@ -48,13 +48,11 @@ final public class StorageCategory: Category {
     /// Adds `plugin` to the list of Plugins that implement functionality for this category.
     ///
     /// - Parameter plugin: The Plugin to add
-    /// - Throws:
-    ///   - PluginError.emptyKey if the plugin's `key` property is empty
     public func add(plugin: StorageCategoryPlugin) throws {
         let key = plugin.key
         guard !key.isEmpty else {
             let pluginDescription = String(describing: plugin)
-            let error = PluginError.emptyKey("Plugin \(pluginDescription) has an empty `key`.",
+            let error = StorageError.configuration("Plugin \(pluginDescription) has an empty `key`.",
                 "Set the `key` property for \(String(describing: plugin))")
             throw error
         }
@@ -66,11 +64,10 @@ final public class StorageCategory: Category {
     ///
     /// - Parameter key: The PluginKey (String) of the plugin to retrieve
     /// - Returns: The wrapped plugin
-    /// - Throws: PluginError.noSuchPlugin if no plugin exists for `key`
     public func getPlugin(for key: PluginKey) throws -> StorageCategoryPlugin {
         guard let plugin = plugins[key] else {
             let keys = plugins.keys.joined(separator: ", ")
-            let error = PluginError.noSuchPlugin("No plugin has been added for '\(key)'.",
+            let error = StorageError.configuration("No plugin has been added for '\(key)'.",
                 "Either add a plugin for '\(key)', or use one of the known keys: \(keys)")
             throw error
         }

@@ -50,7 +50,7 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
 
     func testConfigureThrowsErrorForMissingConfiguration() {
         XCTAssertThrowsError(try storagePlugin.configure(using: "")) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let StorageError.configuration(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
@@ -63,7 +63,7 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
         let storagePluginConfig = JSONValue.init(stringLiteral: "notADictionaryLiteral")
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let StorageError.configuration(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
@@ -78,12 +78,22 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
             dictionaryLiteral: (PluginConstants.region, region))
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let StorageError.configuration(_, _, underlyingError) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
 
-            XCTAssertEqual(errorDescription, PluginErrorConstants.missingBucket.errorDescription)
+            guard let resolvedUnderlyingError = underlyingError else {
+                XCTFail("No underlying error in error: \(error)")
+                return
+            }
+
+            guard let amplifyError = resolvedUnderlyingError as? AmplifyError else {
+                XCTFail("Underlying error is not an AmplifyError: \(resolvedUnderlyingError)")
+                return
+            }
+
+            XCTAssertEqual(amplifyError.errorDescription, PluginErrorConstants.missingBucket.errorDescription)
         }
     }
 
@@ -94,12 +104,22 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
             dictionaryLiteral: (PluginConstants.bucket, ""), (PluginConstants.region, region))
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let StorageError.configuration(_, _, underlyingError) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
 
-            XCTAssertEqual(errorDescription, PluginErrorConstants.emptyBucket.errorDescription)
+            guard let resolvedUnderlyingError = underlyingError else {
+                XCTFail("No underlying error in error: \(error)")
+                return
+            }
+
+            guard let amplifyError = resolvedUnderlyingError as? AmplifyError else {
+                XCTFail("Underlying error is not an AmplifyError: \(resolvedUnderlyingError)")
+                return
+            }
+
+            XCTAssertEqual(amplifyError.errorDescription, PluginErrorConstants.emptyBucket.errorDescription)
         }
     }
 
@@ -110,12 +130,22 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
             dictionaryLiteral: (PluginConstants.bucket, bucket), (PluginConstants.region, region))
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let StorageError.configuration(_, _, underlyingError) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
 
-            XCTAssertEqual(errorDescription, PluginErrorConstants.invalidBucket.errorDescription)
+            guard let resolvedUnderlyingError = underlyingError else {
+                XCTFail("No underlying error in error: \(error)")
+                return
+            }
+
+            guard let amplifyError = resolvedUnderlyingError as? AmplifyError else {
+                XCTFail("Underlying error is not an AmplifyError: \(resolvedUnderlyingError)")
+                return
+            }
+
+            XCTAssertEqual(amplifyError.errorDescription, PluginErrorConstants.invalidBucket.errorDescription)
         }
     }
 
@@ -126,12 +156,22 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
             dictionaryLiteral: (PluginConstants.bucket, bucket))
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let StorageError.configuration(_, _, underlyingError) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
 
-            XCTAssertEqual(errorDescription, PluginErrorConstants.missingRegion.errorDescription)
+            guard let resolvedUnderlyingError = underlyingError else {
+                XCTFail("No underlying error in error: \(error)")
+                return
+            }
+
+            guard let amplifyError = resolvedUnderlyingError as? AmplifyError else {
+                XCTFail("Underlying error is not an AmplifyError: \(resolvedUnderlyingError)")
+                return
+            }
+
+            XCTAssertEqual(amplifyError.errorDescription, PluginErrorConstants.missingRegion.errorDescription)
         }
     }
 
@@ -142,12 +182,22 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
             dictionaryLiteral: (PluginConstants.bucket, bucket), (PluginConstants.region, region))
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let StorageError.configuration(_, _, underlyingError) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
 
-            XCTAssertEqual(errorDescription, PluginErrorConstants.emptyRegion.errorDescription)
+            guard let resolvedUnderlyingError = underlyingError else {
+                XCTFail("No underlying error in error: \(error)")
+                return
+            }
+
+            guard let amplifyError = resolvedUnderlyingError as? AmplifyError else {
+                XCTFail("Underlying error is not an AmplifyError: \(resolvedUnderlyingError)")
+                return
+            }
+
+            XCTAssertEqual(amplifyError.errorDescription, PluginErrorConstants.emptyRegion.errorDescription)
         }
     }
 
@@ -158,12 +208,22 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
             dictionaryLiteral: (PluginConstants.bucket, bucket), (PluginConstants.region, region))
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let StorageError.configuration(_, _, underlyingError) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
 
-            XCTAssertEqual(errorDescription, PluginErrorConstants.invalidRegion.errorDescription)
+            guard let resolvedUnderlyingError = underlyingError else {
+                XCTFail("No underlying error in error: \(error)")
+                return
+            }
+
+            guard let amplifyError = resolvedUnderlyingError as? AmplifyError else {
+                XCTFail("Underlying error is not an AmplifyError: \(resolvedUnderlyingError)")
+                return
+            }
+
+            XCTAssertEqual(amplifyError.errorDescription, PluginErrorConstants.invalidRegion.errorDescription)
         }
     }
 
@@ -174,12 +234,22 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
             dictionaryLiteral: (PluginConstants.bucket, bucket), (PluginConstants.region, region))
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let StorageError.configuration(_, _, underlyingError) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
 
-            XCTAssertEqual(errorDescription, PluginErrorConstants.invalidRegion.errorDescription)
+            guard let resolvedUnderlyingError = underlyingError else {
+                XCTFail("No underlying error in error: \(error)")
+                return
+            }
+
+            guard let amplifyError = resolvedUnderlyingError as? AmplifyError else {
+                XCTFail("Underlying error is not an AmplifyError: \(resolvedUnderlyingError)")
+                return
+            }
+
+            XCTAssertEqual(amplifyError.errorDescription, PluginErrorConstants.invalidRegion.errorDescription)
         }
     }
 
@@ -193,12 +263,22 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
             (PluginConstants.defaultAccessLevel, accessLevel))
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let StorageError.configuration(_, _, underlyingError) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
 
-            XCTAssertEqual(errorDescription, PluginErrorConstants.invalidDefaultAccessLevel.errorDescription)
+            guard let resolvedUnderlyingError = underlyingError else {
+                XCTFail("No underlying error in error: \(error)")
+                return
+            }
+
+            guard let amplifyError = resolvedUnderlyingError as? AmplifyError else {
+                XCTFail("Underlying error is not an AmplifyError: \(resolvedUnderlyingError)")
+                return
+            }
+
+            XCTAssertEqual(amplifyError.errorDescription, PluginErrorConstants.invalidDefaultAccessLevel.errorDescription)
         }
     }
 
@@ -212,12 +292,22 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
             (PluginConstants.defaultAccessLevel, accessLevel))
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let StorageError.configuration(_, _, underlyingError) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
 
-            XCTAssertEqual(errorDescription, PluginErrorConstants.invalidDefaultAccessLevel.errorDescription)
+            guard let resolvedUnderlyingError = underlyingError else {
+                XCTFail("No underlying error in error: \(error)")
+                return
+            }
+
+            guard let amplifyError = resolvedUnderlyingError as? AmplifyError else {
+                XCTFail("Underlying error is not an AmplifyError: \(resolvedUnderlyingError)")
+                return
+            }
+
+            XCTAssertEqual(amplifyError.errorDescription, PluginErrorConstants.invalidDefaultAccessLevel.errorDescription)
         }
     }
 
@@ -232,12 +322,22 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
             (PluginConstants.defaultAccessLevel, accessLevel))
 
         XCTAssertThrowsError(try storagePlugin.configure(using: storagePluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let StorageError.configuration(_, _, underlyingError) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
 
-            XCTAssertEqual(errorDescription, PluginErrorConstants.invalidDefaultAccessLevel.errorDescription)
+            guard let resolvedUnderlyingError = underlyingError else {
+                XCTFail("No underlying error in error: \(error)")
+                return
+            }
+
+            guard let amplifyError = resolvedUnderlyingError as? AmplifyError else {
+                XCTFail("Underlying error is not an AmplifyError: \(resolvedUnderlyingError)")
+                return
+            }
+
+            XCTAssertEqual(amplifyError.errorDescription, PluginErrorConstants.invalidDefaultAccessLevel.errorDescription)
         }
     }
 }

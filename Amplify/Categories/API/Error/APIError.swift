@@ -9,31 +9,29 @@
 public enum APIError {
 
     /// An unknown error
-    case unknown(ErrorDescription, RecoverySuggestion)
+    case unknown(ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// The configuration for a particular API was invalid
-    case invalidConfiguration(ErrorDescription, RecoverySuggestion)
+    case invalidConfiguration(ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// The URL in a request was invalid or missing
-    case invalidURL(ErrorDescription, RecoverySuggestion)
+    case invalidURL(ErrorDescription, RecoverySuggestion, Error? = nil)
 
-    /// An in-process operation encountered a processing error. In addition to the
-    /// description and recovery suggestion, an `operationError` will also contain the
-    /// underlying error propagated by the system.
-    case operationError(ErrorDescription, RecoverySuggestion, Error)
+    /// An in-process operation encountered a processing error
+    case operationError(ErrorDescription, RecoverySuggestion, Error? = nil)
 
 }
 
 extension APIError: AmplifyError {
     public var errorDescription: ErrorDescription {
         switch self {
-        case .unknown(let errorDescription, _):
+        case .unknown(let errorDescription, _, _):
             return errorDescription
 
-        case .invalidConfiguration(let errorDescription, _):
+        case .invalidConfiguration(let errorDescription, _, _):
             return errorDescription
 
-        case .invalidURL(let errorDescription, _):
+        case .invalidURL(let errorDescription, _, _):
             return errorDescription
 
         case .operationError(let errorDescription, _, _):
@@ -43,17 +41,30 @@ extension APIError: AmplifyError {
 
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
-        case .unknown(_, let recoverySuggestion):
+        case .unknown(_, let recoverySuggestion, _):
             return recoverySuggestion
 
-        case .invalidConfiguration(_, let recoverySuggestion):
+        case .invalidConfiguration(_, let recoverySuggestion, _):
             return recoverySuggestion
 
-        case .invalidURL(_, let recoverySuggestion):
+        case .invalidURL(_, let recoverySuggestion, _):
             return recoverySuggestion
 
         case .operationError(_, let recoverySuggestion, _):
             return recoverySuggestion
+        }
+    }
+
+    public var underlyingError: Error? {
+        switch self {
+        case .unknown(_, _, let error):
+            return error
+        case .invalidConfiguration(_, _, let error):
+            return error
+        case .invalidURL(_, _, let error):
+            return error
+        case .operationError(_, _, let error):
+            return error
         }
     }
 }

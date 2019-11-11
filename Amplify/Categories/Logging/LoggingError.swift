@@ -5,19 +5,17 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
-public enum AnalyticsError {
+public enum LoggingError {
     case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
-    case unknown(ErrorDescription, Error? = nil)
+    case unknown(ErrorDescription, Error?)
 }
 
-extension AnalyticsError: AmplifyError {
+extension LoggingError: AmplifyError {
     public var errorDescription: ErrorDescription {
         switch self {
         case .configuration(let errorDescription, _, _):
             return errorDescription
-        case .unknown(let errorDescription):
+        case .unknown(let errorDescription, _):
             return "Unexpected error occurred with message: \(errorDescription)"
         }
     }
@@ -37,10 +35,9 @@ extension AnalyticsError: AmplifyError {
 
     public var underlyingError: Error? {
         switch self {
-        case .configuration(_, _, let error):
-            return error
-        case .unknown(_, let error):
-            return error
+        case .configuration(_, _, let underlyingError),
+             .unknown(_, let underlyingError):
+            return underlyingError
         }
     }
 }
