@@ -16,9 +16,9 @@ public struct IdentifyLabelsResult: IdentifyResult {
 }
 
 public struct Label {
-    var boundingBoxes: [BoundingBox]
-    var metadata: LabelMetadata
-    var name: String
+    public var boundingBoxes: [BoundingBox]
+    public var metadata: LabelMetadata
+    public var name: String
 
     public init(name: String, metadata: LabelMetadata, boundingBoxes: [BoundingBox]) {
         self.name = name
@@ -28,7 +28,7 @@ public struct Label {
 }
 
 public struct Parent {
-    var name: String
+    public var name: String
 
     public init(name: String) {
         self.name = name
@@ -36,8 +36,8 @@ public struct Parent {
 }
 
 public struct LabelMetadata {
-    var confidence: Double
-    var parents: [Parent]
+   public var confidence: Double
+   public var parents: [Parent]
 
     public init(confidence: Double, parents: [Parent]) {
         self.confidence = confidence
@@ -46,10 +46,10 @@ public struct LabelMetadata {
 }
 
 public struct BoundingBox {
-    var height: Double
-    var left: Double
-    var top: Double
-    var width: Double
+    public var height: Double
+    public var left: Double
+    public var top: Double
+    public var width: Double
 
     public init(height: Double, left: Double, top: Double, width: Double) {
         self.height = height
