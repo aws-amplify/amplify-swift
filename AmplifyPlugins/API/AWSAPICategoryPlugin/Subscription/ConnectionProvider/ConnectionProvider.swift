@@ -1,11 +1,14 @@
 //
-// Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// Licensed under the Amazon Software License
-// http://aws.amazon.com/asl/
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
 import Amplify
+
+typealias ConnectionProviderCallback = (ConnectionProviderEvent) -> Void
 
 protocol ConnectionProvider: class {
 
@@ -13,16 +16,14 @@ protocol ConnectionProvider: class {
 
     func disconnect()
 
-    func sendConnectionInitMessage()
+    func subscribe(_ subscriptionItem: SubscriptionItem)
 
-    func sendStartSubscriptionMessage(subscriptionItem: SubscriptionItem)
+    func unsubscribe(_ identifier: String)
 
-    func sendUnsubscribeMessage(identifier: String)
+    var isConnected: Bool { get }
 
     func setListener(_ callback: @escaping ConnectionProviderCallback)
 }
-
-typealias ConnectionProviderCallback = (ConnectionProviderEvent) -> Void
 
 enum ConnectionProviderEvent {
 
@@ -57,4 +58,9 @@ enum ConnectionState {
 
     // The websocket connection has been disconnected
     case disconnected(error: ConnectionProviderError?)
+}
+
+enum SubscriptionState {
+    case connected(identifier: String)
+    case disconnected(identifier: String, error: ConnectionProviderError?)
 }

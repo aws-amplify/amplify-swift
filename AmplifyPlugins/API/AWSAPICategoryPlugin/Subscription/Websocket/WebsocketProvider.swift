@@ -1,7 +1,8 @@
 //
-// Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// Licensed under the Amazon Software License
-// http://aws.amazon.com/asl/
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
@@ -22,7 +23,7 @@ protocol WebsocketProvider {
 
     /// Write message to the websocket provider
     /// - Parameter message: Message to write
-    func write(message: String)
+    func write(_ message: String)
 
     /// Returns `true` if the websocket is connected
     var isConnected: Bool { get }
@@ -32,6 +33,10 @@ protocol WebsocketProvider {
 
 enum WebsocketEvent {
     case connect
+
     case disconnect(error: Error?)
+
     case data(WebsocketProviderResponse)
+
+    case error(Error)
 }

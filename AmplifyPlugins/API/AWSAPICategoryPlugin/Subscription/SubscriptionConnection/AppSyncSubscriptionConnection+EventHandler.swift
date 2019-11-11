@@ -1,7 +1,8 @@
 //
-// Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// Licensed under the Amazon Software License
-// http://aws.amazon.com/asl/
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
@@ -25,6 +26,7 @@ extension AppSyncSubscriptionConnection {
                 return
             }
             subscriptionItem.setState(.disconnected)
+            subscriptionItems[subscriptionItem.identifier] = nil
         case .keepAlive:
             break
         case .subscriptionError(let identifier, let error):
@@ -40,44 +42,32 @@ extension AppSyncSubscriptionConnection {
 
         switch connectionState {
         case .connecting:
-            // Transition any subscribers to inProgress if they are not subscribed.
-            subscriptionItems.forEach { (identifier, subscriptionItem) in
-                if subscriptionItem.subscriptionConnectionState == .disconnected {
-                    subscriptionItem.setState(.connecting)
-                }
-            }
-            connectionProvider.sendConnectionInitMessage()
+            break
         case .connected:
-            // Connection is ready so start the subscription for any not connected subscribers
             subscriptionItems.forEach { (identifier, subscriptionItem) in
-                switch subscriptionItem.subscriptionConnectionState  {
-                case .disconnected, .connecting:
+                switch subscriptionItem.subscriptionConnectionState {
+                case .disconnected:
                     print("Start subscription for identifier: \(subscriptionItem.identifier)")
-                    connectionProvider.sendStartSubscriptionMessage(subscriptionItem: subscriptionItem)
-                case .connected:
+                    subscriptionItem.setState(.connecting)
+                    connectionProvider.subscribe(subscriptionItem)
+                case .connecting, .connected:
                     break
                 }
             }
         case .disconnected(let error):
-            // what do we do when we see a disconnected
-            subscriptionItems.forEach { (identifier, subscriptionItem) in
+            if let error = error {
+                tryReconnectOnError(error: error)
+            }
+
+            // Move all subscriptionItems to disconnected but keep them in memory.
+            subscriptionItems.forEach { (_, subscriptionItem) in
                 switch subscriptionItem.subscriptionConnectionState {
                 case .connecting, .connected:
-                    // Do we have to send unsubscribe message or just set state?
                     subscriptionItem.setState(.disconnected)
-                    // connectionProvider.sendUnsubscribeMessage(identifier: identifier)
                 case .disconnected:
                     break
                 }
             }
-
-            // if there is an error and has not exhausted all retry (TODO), then try to disconnect
-            if let error = error {
-                // try reconnecting
-                handleConnectionError(error: error)
-                // if all fails, then inform the subscriptions to disconnect
-            }
-
         }
     }
 
@@ -98,7 +88,7 @@ extension AppSyncSubscriptionConnection {
         }
     }
 
-    // MARK: handle error
+    // MARK: Error Handling
 
     func handleSubscriptionError(identifier: String, error: Error) {
         print("Handle Subscription Error \(error)")
@@ -107,11 +97,14 @@ extension AppSyncSubscriptionConnection {
         }
         subscriptionItem.setState(.disconnected)
         subscriptionItem.dispatch(error: error)
+        subscriptionItems[identifier] = nil
     }
 
-    func handleConnectionError(error: ConnectionProviderError) {
+    ///
+    func tryReconnectOnError(error: ConnectionProviderError) {
         guard let retryHandler = retryHandler else {
-            // no retry handler, just dispatch the error to who?
+            // dispatch the error on one of the subscriptionItems
+            // or all of them?
             print("1.no retry handler, dispatch to who?")
             return
         }

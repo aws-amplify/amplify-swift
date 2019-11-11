@@ -1,7 +1,8 @@
 //
-// Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// Licensed under the Amazon Software License
-// http://aws.amazon.com/asl/
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
@@ -28,9 +29,7 @@ extension StarscreamWebsocketProvider: Starscream.WebSocketDelegate {
             let response = try JSONDecoder().decode(WebsocketProviderResponse.self, from: data)
             listener?(.data(response))
         } catch {
-            print(error)
-            //listener?(.error(nil, ConnectionProviderError.jsonParse(nil, error)))
-            // we used to send error on listener, now what?
+            listener?(.error(error))
         }
     }
 
@@ -40,9 +39,7 @@ extension StarscreamWebsocketProvider: Starscream.WebSocketDelegate {
             let response = try JSONDecoder().decode(WebsocketProviderResponse.self, from: data)
             listener?(.data(response))
         } catch {
-            print(error)
-            //listener?(.error(nil, ConnectionProviderError.jsonParse(nil, error)))
-            // we used to send error on listener, now what?
+            listener?(.error(error))
         }
     }
 }

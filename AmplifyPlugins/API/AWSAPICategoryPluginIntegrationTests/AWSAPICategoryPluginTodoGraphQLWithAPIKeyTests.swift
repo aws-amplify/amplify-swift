@@ -441,6 +441,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
 
         wait(for: [progressInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
         operation.cancel()
+        XCTAssertTrue(operation.isCancelled)
     }
 
     /// Given: A subscription is created for UpdateTodo's

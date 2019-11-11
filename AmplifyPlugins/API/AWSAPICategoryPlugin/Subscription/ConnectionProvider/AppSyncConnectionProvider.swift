@@ -1,7 +1,8 @@
 //
-// Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// Licensed under the Amazon Software License
-// http://aws.amazon.com/asl/
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
@@ -14,13 +15,11 @@ class AppSyncConnectionProvider: ConnectionProvider {
     let url: URL
     let websocketProvider: WebsocketProvider
 
-    var status: ConnectionState = .disconnected(error: nil)
+    var state: ConnectionState = .disconnected(error: nil)
     var listener: ConnectionProviderCallback?
     var messageInterceptors: [MessageInterceptor] = []
 
-    /// Serial queue for websocket connection.
-    ///
-    /// Each connection request will be send to this queue. Connection request are handled one at a time.
+    /// Serial queue for maintaining the connection state in sync with the websocket connection
     let serialConnectionQueue = DispatchQueue(label: "com.amazonaws.AppSyncRealTimeConnectionProvider.serialQueue")
 
     convenience init(for url: URL, interceptor: AuthInterceptor) {
@@ -44,56 +43,30 @@ class AppSyncConnectionProvider: ConnectionProvider {
 
     // MARK: - ConnectionProvider methods
 
-    /// Connect to the underlying websocket only when no other subscriber has initiated the connection, otherwise
-    /// signal the subscriber that it is already connected, in progress, etc.
+    /// Begins websocket handshake if it is disconnected.
+    /// Signals listener when already connected or connecting
     func connect() {
-        serialConnectionQueue.async { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            switch self.status {
-            case .disconnected:
-                DispatchQueue.global().async {
-                    self.websocketProvider.connect()
-                }
-            case .connecting, .connected:
-                self.listener?(.connection(self.status))
-            }
+        switch state {
+        case .disconnected:
+            websocketProvider.connect()
+        case .connecting, .connected:
+            listener?(.connection(state))
         }
     }
 
+    /// Begins websocket disconnect if it is connected or connecting.
+    /// Signals listener if it is disconnected already.
     func disconnect() {
-        websocketProvider.disconnect()
-    }
-
-    // Send Connection Init message to ack connection only when is disconnected
-    func sendConnectionInitMessage() {
-        switch status {
-        case .connecting:
-            // Call the ack to finish the connection handshake
-            // Inform the callback when ack gives back a response.
-            print("sendConnectionInitMessage, sending init message...")
-            let message = AppSyncMessage(type: .connectionInit("connection_init"))
-            do {
-                try write(message)
-            } catch {
-                serialConnectionQueue.async {[weak self] in
-                    guard let self = self else {
-                        return
-                    }
-                    let error = ConnectionProviderError.connection(nil)
-                    self.status = .disconnected(error: error)
-                    self.listener?(.connection(self.status))
-                }
-            }
-        case .disconnected, .connected:
-            break
+        switch state {
+        case .connecting, .connected:
+            websocketProvider.disconnect()
+        case .disconnected:
+            listener?(.connection(state))
         }
     }
 
-    func sendStartSubscriptionMessage(subscriptionItem: SubscriptionItem) {
-        print("sendStartSubscriptionMessage, sending start subscription message...")
+    func subscribe(_ subscriptionItem: SubscriptionItem) {
+        print("subscribe, sending start subscription message...")
         let payload: AppSyncMessage.Payload
         do {
             payload = try convertToPayload(for: subscriptionItem.requestString,
@@ -114,7 +87,7 @@ class AppSyncConnectionProvider: ConnectionProvider {
         }
     }
 
-    func sendUnsubscribeMessage(identifier: String) {
+    func unsubscribe(_ identifier: String) {
         print("sendStartSubscriptionMessage, sending start subscription message...")
         let message = AppSyncMessage(id: identifier, type: .unsubscribe("stop"))
         do {
@@ -125,8 +98,49 @@ class AppSyncConnectionProvider: ConnectionProvider {
         }
     }
 
+    var isConnected: Bool {
+        if case .connected = state {
+            return true
+        }
+
+        return false
+    }
+
     func setListener(_ callback: @escaping ConnectionProviderCallback) {
         listener = callback
+    }
+
+    // MARK: - Private
+
+    /// Send Connection Init message to finish the connection handshake
+    func sendConnectionInitMessage() {
+        switch state {
+        case .connecting:
+            print("sendConnectionInitMessage, sending init message...")
+            let message = AppSyncMessage(type: .connectionInit("connection_init"))
+            do {
+                try write(message)
+            } catch {
+                serialConnectionQueue.async {[weak self] in
+                    guard let self = self else {
+                        return
+                    }
+                    self.state = .disconnected(error: ConnectionProviderError.connection(nil))
+                    self.listener?(.connection(self.state))
+                }
+            }
+        case .disconnected, .connected:
+            break
+        }
+    }
+
+    private func write(_ appSyncMessage: AppSyncMessage) throws {
+        do {
+            let message = try encode(appSyncMessage: appSyncMessage)
+            websocketProvider.write(message)
+        } catch {
+            throw error
+        }
     }
 
     // MARK: - Helpers
@@ -148,19 +162,16 @@ class AppSyncConnectionProvider: ConnectionProvider {
         return payload
     }
 
-    private func write(_ message: AppSyncMessage) throws {
-        let messageString: String
+    private func encode(appSyncMessage: AppSyncMessage) throws -> String {
         do {
-            let signedMessage = interceptMessage(message, for: url)
+            let signedMessage = interceptMessage(appSyncMessage, for: url)
             let jsonData = try JSONEncoder().encode(signedMessage)
-            if let jsonString = String(data: jsonData, encoding: .utf8) {
-                messageString = jsonString
-            } else {
-                throw ConnectionProviderError.jsonParse(message.id, nil)
+            guard let jsonString = String(data: jsonData, encoding: .utf8) else {
+                throw ConnectionProviderError.jsonParse(appSyncMessage.id, nil)
             }
-            websocketProvider.write(message: messageString)
+            return jsonString
         } catch {
-            throw error
+            throw ConnectionProviderError.jsonParse(appSyncMessage.id, error)
         }
     }
 }

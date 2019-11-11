@@ -1,7 +1,8 @@
 //
-// Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// Licensed under the Amazon Software License
-// http://aws.amazon.com/asl/
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
@@ -18,8 +19,14 @@ extension AppSyncConnectionProvider {
                     return
                 }
 
-                self.status = .connecting
+                self.state = .connecting
                 self.listener?(.connection(.connecting))
+
+                // Connection provider will internally send connection init message.
+                self.sendConnectionInitMessage()
+                // TODO: Fire off a timer here to mark the beginning of connecting.
+                // When timer fires, and connecting never moves to connected
+                // then call sendConnectionInitMessage() to resend it.
             }
         case .disconnect(let error):
             serialConnectionQueue.async {[weak self] in
@@ -29,14 +36,16 @@ extension AppSyncConnectionProvider {
 
                 if let error = error {
                     let connectionProviderError = ConnectionProviderError.connection(error)
-                    self.status = .disconnected(error: connectionProviderError)
+                    self.state = .disconnected(error: connectionProviderError)
                 } else {
-                    self.status = .disconnected(error: nil)
+                    self.state = .disconnected(error: nil)
                 }
-                self.listener?(.connection(self.status))
+                self.listener?(.connection(self.state))
             }
         case .data(let websocketResponse):
             handleResponse(websocketResponse)
+        case .error(let error):
+            print("Got error bac")
         }
     }
 
@@ -45,24 +54,22 @@ extension AppSyncConnectionProvider {
     func handleResponse(_ response: WebsocketProviderResponse) {
         switch response.responseType {
         case .connectionAck:
-
-            serialConnectionQueue.async {[weak self] in
-                guard let self = self else {
-                    return
-                }
-
-                // Only transition to `connected` from `connecting`, otherwise disconnect was trigger in parallel
-                switch self.status {
+            switch state {
                 case .connecting:
-                    self.status = .connected
-                    self.listener?(.connection(self.status))
+                    serialConnectionQueue.async {[weak self] in
+                        guard let self = self else {
+                            return
+                        }
+
+                        self.state = .connected
+                        self.listener?(.connection(self.state))
+                    }
                 case .connected, .disconnected:
                     break
-                }
-
             }
+
         case .error:
-            switch status {
+            switch state {
             case .connecting:
                 /// If we get an error while trying to connect, return it back as connection error.
                 serialConnectionQueue.async {[weak self] in
@@ -71,8 +78,8 @@ extension AppSyncConnectionProvider {
                     }
 
                     // TODO: Deserialize payload here to get error?
-                    self.status = .disconnected(error: ConnectionProviderError.responseError)
-                    self.listener?(.connection(self.status))
+                    self.state = .disconnected(error: ConnectionProviderError.responseError)
+                    self.listener?(.connection(self.state))
                 }
                 return
             case .connected, .disconnected:

@@ -1,29 +1,21 @@
 //
-// Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// Licensed under the Amazon Software License
-// http://aws.amazon.com/asl/
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
-
-enum SubscriptionState {
-
-    case connecting
-
-    case connected
-
-    case disconnected
-}
 
 class AppSyncSubscriptionConnection: SubscriptionConnection, RetryableConnection {
 
     /// Provides a way to connect, disconnect, and send messages to the service.
     let connectionProvider: ConnectionProvider
 
-    /// Map of all subscriptions on this connection
+    /// Map of all subscription created on this connection
     var subscriptionItems: [String: SubscriptionItem] = [:]
 
-    /// Retry logic to handle
+    /// Retry logic to handle connection failuress
     var retryHandler: ConnectionRetryHandler?
 
     convenience init(url: URL, interceptor: AuthInterceptor) {
@@ -52,16 +44,19 @@ class AppSyncSubscriptionConnection: SubscriptionConnection, RetryableConnection
                                                 variables: variables,
                                                 eventHandler: eventHandler)
         subscriptionItems[subscriptionItem.identifier] = subscriptionItem
-        connectionProvider.connect()
+
+        if connectionProvider.isConnected {
+            connectionProvider.subscribe(subscriptionItem)
+        } else {
+            connectionProvider.connect()
+        }
 
         return subscriptionItem
     }
 
     func unsubscribe(item: SubscriptionItem) {
         print("Unsubscribe - \(item.identifier)")
-        connectionProvider.sendUnsubscribeMessage(identifier: item.identifier)
-        // TODO: find where the message comes back, and remove the mapping to subscriptionItem.
-        //ie. subscriptionItems[item.identifier] = nil
+        connectionProvider.unsubscribe(item.identifier)
     }
 
     func addRetryHandler(handler: ConnectionRetryHandler) {

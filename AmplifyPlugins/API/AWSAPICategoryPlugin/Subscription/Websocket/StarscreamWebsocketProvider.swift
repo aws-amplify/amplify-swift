@@ -1,7 +1,8 @@
 //
-// Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// Licensed under the Amazon Software License
-// http://aws.amazon.com/asl/
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
@@ -41,7 +42,7 @@ class StarscreamWebsocketProvider: WebsocketProvider {
         socket?.disconnect()
     }
 
-    func write(message: String) {
+    func write(_ message: String) {
         print("Websocket write - \(message)")
         socket?.write(string: message)
     }

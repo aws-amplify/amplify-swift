@@ -20,6 +20,7 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperati
     let subscriptionConnectionFactory: SubscriptionConnectionFactory
     let authService: AWSAuthServiceBehavior
 
+    var subscriptionConnection: SubscriptionConnection?
     var subscriptionItem: SubscriptionItem?
 
     init(request: GraphQLRequest,
@@ -41,8 +42,9 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperati
     }
 
     override public func cancel() {
-        // TODO: cancel the subscription. keep the connection alive?
-        //subscriptionItem.
+        if let subscriptionItem = subscriptionItem, let subscriptionConnection = subscriptionConnection {
+            subscriptionConnection.unsubscribe(item: subscriptionItem)
+        }
         super.cancel()
     }
 
@@ -72,6 +74,7 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperati
             return
         }
 
+        // Retrieve the subscription connection
         let connection: SubscriptionConnection
         do {
             connection = try subscriptionConnectionFactory.getOrCreateConnection(for: endpointConfig,
@@ -83,29 +86,33 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperati
             return
         }
 
+        // Create subscription
         subscriptionItem = connection.subscribe(requestString: request.document,
-                                                 variables: request.variables,
-                                                 eventHandler: { (event, subscriptionItem) in
-            print("event, item")
-            switch event {
-            case .connection(let subscriptionConnectionState):
-                let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(subscriptionConnectionState)
-                self.dispatch(event: .inProcess(subscriptionEvent))
-            case .data(let graphQLResponseData):
-                do {
-                    let graphQLServiceResponse = try GraphQLResponseDecoder.deserialize(graphQLResponse: graphQLResponseData)
-                    let graphQLResponse = try GraphQLResponseDecoder.decode(
-                        graphQLServiceResponse: graphQLServiceResponse, responseType: self.responseType)
-                    self.dispatch(event: .inProcess(.data(graphQLResponse)))
-                } catch {
-                    self.dispatch(event: .failed(APIError.operationError("Failed to deserialize", "", error)))
-                }
-
-            case .failed(let error):
-                print("Got error \(error)")
-            }
-
+                                                variables: request.variables,
+                                                eventHandler: { [weak self] (event, _) in
+            self?.onSubscriptionEvent(event: event)
         })
 
+    }
+
+    private func onSubscriptionEvent(event: SubscriptionEvent<Data>) {
+        switch event {
+        case .connection(let subscriptionConnectionState):
+            let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(subscriptionConnectionState)
+            dispatch(event: .inProcess(subscriptionEvent))
+        case .data(let graphQLResponseData):
+            do {
+                let graphQLServiceResponse = try GraphQLResponseDecoder.deserialize(graphQLResponse: graphQLResponseData)
+                let graphQLResponse = try GraphQLResponseDecoder.decode(
+                    graphQLServiceResponse: graphQLServiceResponse, responseType: responseType)
+                dispatch(event: .inProcess(.data(graphQLResponse)))
+            } catch {
+                dispatch(event: .failed(APIError.operationError("Failed to deserialize", "", error)))
+            }
+        case .failed(let error):
+            dispatch(event: .failed(APIError.operationError("failed event", "", error)))
+            finish()
+            return
+        }
     }
 }
