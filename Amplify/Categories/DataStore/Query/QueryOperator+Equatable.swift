@@ -15,15 +15,15 @@ extension QueryOperator: Equatable {
             return one == other
         case let (.equals(one), .equals(other)),
              let (.notEqual(one), .notEqual(other)):
-            return PersistableHelper.isEqual(one, to: other)
+            return PersistableHelper.isEqual(one, other)
         case let (.greaterOrEqual(one), .greaterOrEqual(other)),
              let (.greaterThan(one), .greaterThan(other)),
              let (.lessOrEqual(one), .lessOrEqual(other)),
              let (.lessThan(one), .lessThan(other)):
-            return PersistableHelper.isEqual(one, to: other)
+            return PersistableHelper.isEqual(one, other)
         case let (.between(oneStart, oneEnd), .between(otherStart, otherEnd)):
-            return PersistableHelper.isEqual(oneStart, to: otherStart)
-                && PersistableHelper.isEqual(oneEnd, to: otherEnd)
+            return PersistableHelper.isEqual(oneStart, otherStart)
+                && PersistableHelper.isEqual(oneEnd, otherEnd)
         default:
             return false
         }

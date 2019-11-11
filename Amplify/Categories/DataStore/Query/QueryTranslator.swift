@@ -5,13 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 /// Classes conforming to this protocol are responsible for translating `ModelSchema` and `QueryPredicate`
 /// types to platform-specific query language.
 ///
 /// **Note**: It is OK for implementations to call `preconditionFailure` if a specific operation is
-/// not supported. Consumers of concrete types of this protocol must be aware of the supportted features.
+/// not supported. Consumers of concrete types of this protocol must be aware of the supported features.
 public protocol QueryTranslator {
 
     associatedtype Value

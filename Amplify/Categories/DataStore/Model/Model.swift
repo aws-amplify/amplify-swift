@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - Model
+
 /// All persistent models should conform to the Model protocol.
 public protocol Model: Codable {
 
@@ -42,6 +44,8 @@ extension Model {
 
 }
 
+// MARK: - Persistable
+
 /// Types that conform to the `Persistable` protocol represent values that can be
 /// persisted in a database.
 ///
@@ -64,29 +68,30 @@ struct PersistableHelper {
     /// Polymorphic utility that allows two persistable references to be checked
     /// for equality regardless of their concrete type.
     ///
+    /// - Note: Maintainers need to keep this utility updated when news types that conform
+    /// to `Persistable` are added.
+    ///
     /// - Parameters:
-    ///   - one: a reference to a Persistable object
-    ///   - other: another reference
+    ///   - lhs: a reference to a Persistable object
+    ///   - rhs: another reference
     /// - Returns: `true` in case both values are equal or `false` otherwise
-    public static func isEqual(_ one: Persistable?, to other: Persistable?) -> Bool {
-        if one == nil && other == nil {
+    public static func isEqual(_ lhs: Persistable?, _ rhs: Persistable?) -> Bool {
+        if lhs == nil && rhs == nil {
             return true
         }
-        if let one = one as? Bool, let other = other as? Bool {
-            return one == other
+        switch (lhs, rhs) {
+        case let (lhs, rhs) as (Bool, Bool):
+            return lhs == rhs
+        case let (lhs, rhs) as (Date, Date):
+            return lhs == rhs
+        case let (lhs, rhs) as (Double, Double):
+            return lhs == rhs
+        case let (lhs, rhs) as (Int, Int):
+            return lhs == rhs
+        case let (lhs, rhs) as (String, String):
+            return lhs == rhs
+        default:
+            return false
         }
-        if let one = one as? Date, let other = other as? Date {
-            return one == other
-        }
-        if let one = one as? Double, let other = other as? Double {
-            return one == other
-        }
-        if let one = one as? Int, let other = other as? Int {
-            return one == other
-        }
-        if let one = one as? String, let other = other as? String {
-            return one == other
-        }
-        return false
     }
 }

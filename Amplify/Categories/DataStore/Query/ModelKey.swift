@@ -7,11 +7,11 @@
 
 import Foundation
 
-/// The `ModelKey` protocol is used to decorate Swift standard's CodingKey enum with
-/// query functions and operatiors that are used to build query conditions.
+/// The `ModelKey` protocol is used to decorate Swift standard's `CodingKey` enum with
+/// query functions and operators that are used to build query conditions.
 ///
 /// ```
-/// let post = Post.CodingKeys.self
+/// let post = Post.keys
 ///
 /// Amplify.DataStore.query(Post.self, withCriteria: {
 ///     post.title.contains("[Amplify]")
@@ -25,7 +25,7 @@ import Foundation
 /// with Swift operators as well:
 ///
 /// ```
-/// let post = Post.CodingKeys.self
+/// let post = Post.keys
 ///
 /// Amplify.DataStore.query(Post.self, withCriteria: {
 ///     post.title ~= "[Amplify]" &&
