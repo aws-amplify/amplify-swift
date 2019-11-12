@@ -33,6 +33,8 @@ target "Amplify" do
 
     target "AWSAPICategoryPlugin" do
       inherit! :complete
+
+      pod "Starscream", "~> 3.0.2"
     end
 
     target "AWSDataStoreCategoryPlugin" do
@@ -102,11 +104,13 @@ target "AmplifyTestApp" do
   use_frameworks!
   pod "AWSS3", "~> #{AWS_SDK_VERSION}"
   pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
+  pod "Starscream", "~> 3.0.2"
   pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
   pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
 
   target "AWSAPICategoryPluginIntegrationTests" do
     inherit! :complete
+    pod "Starscream", "~> 3.0.2"
   end
 
   target "AWSDataStoreCategoryPluginIntegrationTests" do

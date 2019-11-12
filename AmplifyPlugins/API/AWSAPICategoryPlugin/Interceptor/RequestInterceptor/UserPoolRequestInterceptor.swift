@@ -13,9 +13,9 @@ import AWSMobileClient
 
 struct UserPoolURLRequestInterceptor: URLRequestInterceptor {
 
-    let userPoolTokenProvider: UserPoolTokenProvider
+    let userPoolTokenProvider: AuthTokenProvider
 
-    init(userPoolTokenProvider: UserPoolTokenProvider) {
+    init(userPoolTokenProvider: AuthTokenProvider) {
         self.userPoolTokenProvider = userPoolTokenProvider
     }
 
