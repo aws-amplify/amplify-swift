@@ -80,7 +80,7 @@ extension AWSS3StorageService {
 
     private static func makeOnMultiPartUploadProgressHandler(
         onEvent: @escaping StorageServiceMultiPartUploadEventHandler) -> AWSS3TransferUtilityMultiPartProgressBlock {
-        let block: AWSS3TransferUtilityMultiPartProgressBlock = {(task, progress) in
+        let block: AWSS3TransferUtilityMultiPartProgressBlock = {task, progress in
             onEvent(StorageEvent.inProcess(progress))
         }
 

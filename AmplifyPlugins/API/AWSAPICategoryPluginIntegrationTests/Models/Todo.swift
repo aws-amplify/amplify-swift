@@ -28,7 +28,7 @@ struct Todo: Decodable {
 struct ListTodo: Decodable {
     let typename: String
     let items: [Todo]
-    let nextToken: String
+    let nextToken: String?
 
     enum CodingKeys: String, CodingKey {
         case typename = "__typename"
@@ -187,5 +187,23 @@ class ListTodosQuery {
 
     class Data: Decodable {
         var listTodos: ListTodo?
+    }
+}
+
+
+class OnCreateTodoSubscription {
+    static let document = """
+        subscription OnCreateTodo {\n
+            onCreateTodo {\n
+                __typename\n
+                id\n
+                name\n
+                description\n
+            }\n
+        }
+        """
+
+    class Data: Decodable {
+        var onCreateTodo: Todo?
     }
 }

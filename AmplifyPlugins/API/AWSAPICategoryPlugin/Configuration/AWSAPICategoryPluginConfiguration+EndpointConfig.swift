@@ -11,12 +11,16 @@ import AWSPluginsCore
 import AWSCore
 
 public extension AWSAPICategoryPluginConfiguration {
+
     struct EndpointConfig {
         let name: String
         let baseURL: URL
         let region: AWSRegionType?
         let authorizationType: AWSAuthorizationType
         let authorizationConfiguration: AWSAuthorizationConfiguration
+        // TODO: Refactor into an "Intercepting connection configuration" or similar --
+        // EndpointConfig shouldn't be holding onto interceptors; it should just be a data holder.
+        // https://github.com/aws-amplify/amplify-ios/issues/73
         var interceptors = [URLRequestInterceptor]()
 
         public init(name: String, jsonValue: JSONValue, authService: AWSAuthServiceBehavior? = nil) throws {
@@ -71,17 +75,13 @@ public extension AWSAPICategoryPluginConfiguration {
                 let provider = BasicAPIKeyProvider(apiKey: apiKeyConfig.apiKey)
                 let interceptor = APIKeyURLRequestInterceptor(apiKeyProvider: provider)
                 addInterceptor(interceptor: interceptor)
-            case .awsIAM:
-                guard let region = region else {
-                    throw PluginError.pluginConfigurationError("Region is not set for IAM",
-                                                               "Set the region")
-                }
+            case .awsIAM(let iamConfig):
                 guard let authService = authService else {
                     throw PluginError.pluginConfigurationError("AuthService is not set for IAM",
                                                                "")
                 }
                 let provider = BasicIAMCredentialsProvider(authService: authService)
-                let interceptor = IAMURLRequestInterceptor(iamCredentialsProvider: provider, region: region)
+                let interceptor = IAMURLRequestInterceptor(iamCredentialsProvider: provider, region: iamConfig.region)
                 addInterceptor(interceptor: interceptor)
             case .amazonCognitoUserPools:
                 guard let authService = authService else {
@@ -169,6 +169,8 @@ public extension AWSAPICategoryPluginConfiguration {
             return authorizationType
         }
 
+        // TODO: Refactor auth configuration creation into separate files--this file is for endpoint configs
+        // https://github.com/aws-amplify/amplify-ios/issues/73
         private static func getAuthorizationConfiguration(from endpointJSON: [String: JSONValue])
             throws -> AWSAuthorizationConfiguration {
             let authType = try getAuthorizationType(from: endpointJSON)
@@ -208,7 +210,12 @@ public extension AWSAPICategoryPluginConfiguration {
 
         static func awsIAMAuthorizationConfiguration(from endpointJSON: [String: JSONValue])
             throws -> AWSAuthorizationConfiguration {
-                return .awsIAM(AWSIAMConfiguration())
+                let regionOptional = try EndpointConfig.getRegion(from: endpointJSON)
+                guard let region = regionOptional else {
+                    throw PluginError.pluginConfigurationError("Region is not set for IAM",
+                                                               "Set the region")
+                }
+                return .awsIAM(AWSIAMConfiguration(region: region))
         }
 
         static func oidcAuthorizationConfiguration(from endpointJSON: [String: JSONValue])

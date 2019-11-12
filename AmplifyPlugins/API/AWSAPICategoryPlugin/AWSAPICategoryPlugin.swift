@@ -30,8 +30,13 @@ final public class AWSAPICategoryPlugin: NSObject, APICategoryPlugin {
     /// Maps APIOperations to URLSessionTaskBehavior
     var mapper: OperationTaskMapper
 
-    /// A queue that regulates the execution of operations.
+    /// A queue that regulates the execution of operations. This will be instantiated during initalization phase,
+    /// and is clearable by `reset()`. This is implicitly unwrapped to be destroyed when resetting.
     var queue: OperationQueue!
+
+    /// Creating and retrieving connections for subscriptions. This will be instantiated during the configuration phase,
+    /// and is clearable by `reset()`. This is implicitly unwrapped to be destroyed when resetting.
+    var subscriptionConnectionFactory: SubscriptionConnectionFactory!
 
     public init(sessionFactory: URLSessionBehaviorFactory) {
         self.mapper = OperationTaskMapper()

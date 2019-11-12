@@ -123,7 +123,7 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
 
         let amplifyOperation = Amplify.Storage.list(listener: nil)
 
-        _ = Amplify.Hub.listen(to: amplifyOperation) { event in
+        let token = Amplify.Hub.listen(to: amplifyOperation) { event in
             switch event {
             case .inProcess:
                 listenerWasInvokedForInProcess.fulfill()
@@ -134,6 +134,16 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
             default:
                 break
             }
+        }
+
+        guard let plugin = try? Amplify.Hub.getPlugin(for: "AWSHubPlugin") as? AWSHubPlugin else {
+            XCTFail("Can't get plugin as AWSHubPlugin")
+            return
+        }
+
+        guard try DefaultHubPluginTestHelpers.waitForListener(with: token, plugin: plugin, timeout: 1.0) else {
+            XCTFail("Listener not registered")
+            return
         }
 
         guard let operation = amplifyOperation as? MockDispatchingStorageListOperation else {

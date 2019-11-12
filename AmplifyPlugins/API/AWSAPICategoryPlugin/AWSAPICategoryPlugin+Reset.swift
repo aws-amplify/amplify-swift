@@ -24,6 +24,8 @@ public extension AWSAPICategoryPlugin {
 
         authService = nil
 
+        subscriptionConnectionFactory = nil
+
         onComplete()
     }
 }

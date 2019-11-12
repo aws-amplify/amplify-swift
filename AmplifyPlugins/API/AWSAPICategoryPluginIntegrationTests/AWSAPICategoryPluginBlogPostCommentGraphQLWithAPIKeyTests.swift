@@ -25,7 +25,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
                                            document: CreateBlogMutation.document,
                                            variables: CreateBlogMutation.variables(id: expectedId,
                                                                                    name: testMethodName),
-                                           responseType: CreateBlogMutation.Data.self) { (event) in
+                                           responseType: CreateBlogMutation.Data.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .error(errors) = graphQLResponse else {
@@ -68,7 +68,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
         let queryOperation = Amplify.API.query(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
                                                document: GetBlogQuery.document,
                                                variables: GetBlogQuery.variables(id: blog.id),
-                                               responseType: JSONValue.self) { (event) in
+                                               responseType: JSONValue.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -130,7 +130,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
         let queryOperation = Amplify.API.query(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
                                                document: GetBlogQuery.document,
                                                variables: GetBlogQuery.variables(id: blog.id),
-                                               responseType: GetBlogQuery.Data.self) { (event) in
+                                               responseType: GetBlogQuery.Data.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -169,7 +169,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
                                            document: CreateBlogMutation.document,
                                            variables: CreateBlogMutation.variables(id: id,
                                                                                    name: name),
-                                           responseType: CreateBlogMutation.Data.self) { (event) in
+                                           responseType: CreateBlogMutation.Data.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -200,7 +200,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
                                            document: CreatePostMutation.document,
                                            variables: CreatePostMutation.variables(postBlogId: postBlogId,
                                                                                    title: title),
-                                           responseType: CreatePostMutation.Data.self) { (event) in
+                                           responseType: CreatePostMutation.Data.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -231,7 +231,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
                                            document: CreateCommentMutation.document,
                                            variables: CreateCommentMutation.variables(commentPostId: commentPostId,
                                                                                    content: content),
-                                           responseType: CreateCommentMutation.Data.self) { (event) in
+                                           responseType: CreateCommentMutation.Data.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
