@@ -21,24 +21,19 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
                     let networkError = PredictionsError.networkError(languageError.localizedDescription,
                                                                      languageError.localizedDescription)
                     onEvent(.failed(networkError))
-                } else {
-                    let errorDescription = PredictionsServiceErrorMessage.noLaungageFound.errorDescription
-                    let recoverySuggestion = PredictionsServiceErrorMessage.noLaungageFound.recoverySuggestion
-                    let unknownError = PredictionsError.unknownError(errorDescription, recoverySuggestion)
-                    onEvent(.failed(unknownError))
                 }
                 return
             }
 
-            var featuresResult = self.interpretTextFeatures(text, for: dominantLanguageType)
+            var featuresResultBuilder = self.analyzeText(text, for: dominantLanguageType)
             let languageDetected = LanguageDetectionResult(languageCode: dominantLanguageType, score: score)
-            featuresResult.language = languageDetected
-            onEvent(.completed(featuresResult))
+            featuresResultBuilder.addLanguage(language: languageDetected)
+            onEvent(.completed(featuresResultBuilder.build()))
         }
     }
 
-    func fetchPredominantLanguage(_ text: String,
-                                  completionHandler: @escaping (LanguageType?, Double?, Error?) -> Void) {
+    private func fetchPredominantLanguage(_ text: String,
+                                          completionHandler: @escaping (LanguageType?, Double?, Error?) -> Void) {
         let detectLanguage: AWSComprehendDetectDominantLanguageRequest = AWSComprehendDetectDominantLanguageRequest()
         detectLanguage.text = text
 
@@ -49,7 +44,10 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             }
 
             guard let result = task.result else {
-                completionHandler(nil, nil, nil)
+                let errorDescription = PredictionsServiceErrorMessage.noLanguageFound.errorDescription
+                let recoverySuggestion = PredictionsServiceErrorMessage.noLanguageFound.recoverySuggestion
+                let unknownError = PredictionsError.unknownError(errorDescription, recoverySuggestion)
+                completionHandler(nil, nil, unknownError)
                 return nil
             }
 
@@ -64,7 +62,10 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
                 return item1Score.doubleValue > item2Score.doubleValue
             }
             guard let dominantLanguageCode = dominantLanguageOptional?.languageCode else {
-                completionHandler(nil, nil, nil)
+                let errorDescription = PredictionsServiceErrorMessage.predominantLanguageNotDetermined.errorDescription
+                let recoverySuggestion = PredictionsServiceErrorMessage.predominantLanguageNotDetermined.recoverySuggestion
+                let unknownError = PredictionsError.unknownError(errorDescription, recoverySuggestion)
+                completionHandler(nil, nil, unknownError)
                 return nil
             }
             let locale = Locale(identifier: dominantLanguageCode)
@@ -78,7 +79,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
     /// Use the text and language code to fetch features
     /// - Parameter text: Input text
     /// - Parameter languageCode: Dominant language code
-    func interpretTextFeatures(_ text: String, for languageCode: LanguageType) -> InterpretResult {
+    private func analyzeText(_ text: String, for languageCode: LanguageType) -> InterpretResultBuilder {
 
         var sentimentResult: Sentiment?
         var entitiesResult: [EntityDetectionResult]?
@@ -88,8 +89,8 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
         // Use dispatch group to group the parallel comprehend calls.
         let dispatchGroup = DispatchGroup()
 
-        let comprehendLanguageCode = languageCodeToComprehendLanguage(languageCode)
-        let syntaxLanguageCode = languageCodeToSyntaxLanguage(languageCode)
+        let comprehendLanguageCode = languageCode.toComprehendLanguage()
+        let syntaxLanguageCode = languageCode.toSyntaxLanguage()
         dispatchGroup.enter()
         fetchSentimentResult(text, languageCode: comprehendLanguageCode) { (sentiment) in
             sentimentResult = sentiment
@@ -107,24 +108,24 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             keyPhrasesResult = keyPhrases
             dispatchGroup.leave()
         }
-        dispatchGroup.enter()
 
+        dispatchGroup.enter()
         fetchSyntax(text, languageCode: syntaxLanguageCode) { (syntaxTokens) in
             syntaxTokenResult = syntaxTokens
             dispatchGroup.leave()
         }
         dispatchGroup.wait()
-        var interpretResult = InterpretResult()
-        interpretResult.entities = entitiesResult
-        interpretResult.keyPhrases = keyPhrasesResult
-        interpretResult.sentiment = sentimentResult
-        interpretResult.syntax = syntaxTokenResult
-        return interpretResult
+        var interpretResultBuilder = InterpretResultBuilder()
+        interpretResultBuilder.addEntities(entities: entitiesResult)
+        interpretResultBuilder.addSyntax(syntax: syntaxTokenResult)
+        interpretResultBuilder.addSentiment(sentiment: sentimentResult)
+        interpretResultBuilder.addKeyPhrases(keyPhrases: keyPhrasesResult)
+        return interpretResultBuilder
     }
 
-    func fetchSyntax(_ text: String,
-                     languageCode: AWSComprehendSyntaxLanguageCode,
-                     completionHandler: @escaping ([SyntaxToken]?) -> Void) {
+    private func fetchSyntax(_ text: String,
+                             languageCode: AWSComprehendSyntaxLanguageCode,
+                             completionHandler: @escaping ([SyntaxToken]?) -> Void) {
 
         let syntaxRequest: AWSComprehendDetectSyntaxRequest = AWSComprehendDetectSyntaxRequest()
         syntaxRequest.languageCode  = languageCode
@@ -159,9 +160,9 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
         }
     }
 
-    func fetchKeyPhrases(_ text: String,
-                         languageCode: AWSComprehendLanguageCode,
-                         completionHandler: @escaping ([KeyPhrase]?) -> Void) {
+    private func fetchKeyPhrases(_ text: String,
+                                 languageCode: AWSComprehendLanguageCode,
+                                 completionHandler: @escaping ([KeyPhrase]?) -> Void) {
 
         let keyPhrasesRequest: AWSComprehendDetectKeyPhrasesRequest = AWSComprehendDetectKeyPhrasesRequest()
         keyPhrasesRequest.languageCode = languageCode
@@ -188,9 +189,9 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
         }
     }
 
-    func fetchSentimentResult(_ text: String,
-                              languageCode: AWSComprehendLanguageCode,
-                              completionHandler: @escaping (Sentiment?) -> Void) {
+    private func fetchSentimentResult(_ text: String,
+                                      languageCode: AWSComprehendLanguageCode,
+                                      completionHandler: @escaping (Sentiment?) -> Void) {
 
         let sentimentRequest: AWSComprehendDetectSentimentRequest = AWSComprehendDetectSentimentRequest()
         sentimentRequest.languageCode = languageCode
@@ -203,7 +204,10 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             let predominantSentiment = result.sentiment.toAmplifySentimentType()
             var score = [SentimentType: Double]()
             if let sentimentScore = result.sentimentScore {
-                score = [SentimentType.positive: sentimentScore.positive?.doubleValue ?? 0.0]
+                score = [SentimentType.positive: sentimentScore.positive?.doubleValue ?? 0.0,
+                         .negative: sentimentScore.negative?.doubleValue ?? 0.0,
+                         .mixed: sentimentScore.mixed?.doubleValue ?? 0.0,
+                         .neutral: sentimentScore.neutral?.doubleValue ?? 0.0]
             }
             completionHandler(Sentiment(predominantSentiment: predominantSentiment,
                                         sentimentScores: score))
@@ -212,9 +216,9 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
 
     }
 
-    func detectEntities(_ text: String,
-                        languageCode: AWSComprehendLanguageCode,
-                        completionHandler: @escaping ([EntityDetectionResult]?) -> Void) {
+    private func detectEntities(_ text: String,
+                                languageCode: AWSComprehendLanguageCode,
+                                completionHandler: @escaping ([EntityDetectionResult]?) -> Void) {
 
         let entitiesRequest: AWSComprehendDetectEntitiesRequest = AWSComprehendDetectEntitiesRequest()
         entitiesRequest.languageCode = languageCode
@@ -242,98 +246,6 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             return nil
         }
 
-    }
-
-    func languageCodeToComprehendLanguage(_ code: LanguageType) -> AWSComprehendLanguageCode {
-        // TODO: Fill the right language codes below
-        switch code {
-        case .english:
-            return .en
-        case .italian:
-            return .it
-        case .undetermined:
-            return .unknown
-        }
-    }
-
-    func languageCodeToSyntaxLanguage(_ code: LanguageType) -> AWSComprehendSyntaxLanguageCode {
-        // TODO: Fill the right language codes below
-        switch code {
-        case .english:
-            return .en
-        case .italian:
-            return .it
-        case .undetermined:
-            return .unknown
-        }
-    }
-}
-
-extension AWSComprehendSentimentType {
-
-    func toAmplifySentimentType() -> SentimentType {
-        switch self {
-        case .positive:
-            return .positive
-        case .neutral:
-            return .neutral
-        case .negative:
-            return .negative
-        case .mixed:
-            return .mixed
-        case .unknown:
-            return .unknown
-        @unknown default:
-            return .unknown
-        }
-    }
-}
-
-extension AWSComprehendPartOfSpeechTagType {
-
-    func getSpeechType() -> SpeechType {
-        switch self {
-        case .unknown:
-            return .unknown
-        case .adj:
-            return .adjective
-        case .adp:
-            return .adposition
-        case .conj:
-            return .conjunction
-        case .cconj:
-            return .coordinatingConjunction
-        case .det:
-            return .determiner
-        case .intj:
-            return .interjection
-        case .noun:
-            return .noun
-        case .num:
-            return .numeral
-        case .O:
-            return .other
-        case .part:
-            return .particle
-        case .pron:
-            return .pronoun
-        case .propn:
-            return .properNoun
-        case .punct:
-            return .punctuation
-        case .sconj:
-            return .subordinatingConjunction
-        case .sym:
-            return .symbol
-        case .verb:
-            return .verb
-        case .adv:
-            return .adverb
-        case .aux:
-            return .auxiliary
-        @unknown default:
-            return .unknown
-        }
     }
 
 }

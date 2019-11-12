@@ -15,8 +15,8 @@ public class AWSComprehendOperation: AmplifyOperation<PredictionsInterpretReques
     PredictionsError>,
 PredictionsInterpretOperation {
 
-    let predictionsService: AWSPredictionsService
-    let authService: AWSAuthServiceBehavior
+    weak var predictionsService: AWSPredictionsService?
+    weak var authService: AWSAuthServiceBehavior?
 
     init(_ request: PredictionsInterpretRequest,
          predictionsService: AWSPredictionsService,
@@ -40,13 +40,6 @@ PredictionsInterpretOperation {
             finish()
             return
         }
-
-        //        if let error = request.validate() {
-        //            dispatch(event: .failed(error))
-        //            finish()
-        //            return
-        //        }
-
     }
 
     private func onServiceEvent(event: PredictionsEvent<InterpretResult, PredictionsError>) {

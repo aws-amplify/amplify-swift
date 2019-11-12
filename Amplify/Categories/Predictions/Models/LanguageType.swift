@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Language type supported
+/// Language type supported by Predictions category
 public enum LanguageType: String {
     // TODO: Add the whole list
     case english = "en"
@@ -18,11 +18,13 @@ public enum LanguageType: String {
 extension LanguageType {
 
     public init(locale: Locale) {
-        if locale.languageCode == "en" {
+
+        switch locale.languageCode {
+        case "en":
             self = .english
-        } else if locale.languageCode == "it" {
+        case "it":
             self = .italian
-        } else {
+        default:
             self = .undetermined
         }
     }

@@ -15,7 +15,11 @@ struct PredictionsServiceErrorMessage {
         "Access denied!",
         "")
 
-    static let noLaungageFound: PredictionsServiceErrorString = (
+    static let noLanguageFound: PredictionsServiceErrorString = (
         "No result was found for language. An unknown error occurred.",
+        "Please try with different input")
+
+    static let predominantLanguageNotDetermined: PredictionsServiceErrorString = (
+        "Could not determine the predominant language in the text",
         "Please try with different input")
 }

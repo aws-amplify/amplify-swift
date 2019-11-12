@@ -75,7 +75,7 @@ class AWSPredictionsService {
         identifier = nil
     }
 
-    func getEscapeHatch(key: PredictionsAWSServices) -> AWSService {
+    func getEscapeHatch(key: PredictionsAWSService) -> AWSService {
         switch key {
         case .rekognition:
             return awsRekognition.getRekognition()

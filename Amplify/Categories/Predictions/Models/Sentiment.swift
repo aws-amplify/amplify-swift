@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-// Sentiment Analysis
+/// Sentiment Analysis result for Predictions category
 public struct Sentiment {
     let predominantSentiment: SentimentType
     let sentimentScores: [SentimentType: Double]?

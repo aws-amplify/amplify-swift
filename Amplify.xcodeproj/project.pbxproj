@@ -305,6 +305,9 @@
 		B438D20923749046009E2DD0 /* CoreMLPredictionsPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B438D20723749032009E2DD0 /* CoreMLPredictionsPluginTestBase.swift */; };
 		B438D20D23749124009E2DD0 /* MockCoreMLNaturalLanguageAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B438D20B237490F8009E2DD0 /* MockCoreMLNaturalLanguageAdaptor.swift */; };
 		B438D2132374921A009E2DD0 /* MockOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = B438D2122374921A009E2DD0 /* MockOperationQueue.swift */; };
+		B452FDEF237A4B68002DF0D3 /* LanguageTypeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B452FDEE237A4B68002DF0D3 /* LanguageTypeExtension.swift */; };
+		B452FDF1237A4C23002DF0D3 /* AWSComprehendSentimentTypeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B452FDF0237A4C23002DF0D3 /* AWSComprehendSentimentTypeExtension.swift */; };
+		B452FDF3237A4C76002DF0D3 /* AWSComprehendPartOfSpeechTagTypeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B452FDF2237A4C76002DF0D3 /* AWSComprehendPartOfSpeechTagTypeExtension.swift */; };
 		B4644C7E237270FB00EEE7CE /* CoreMLPredictionsPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C7223726EC400EEE7CE /* CoreMLPredictionsPlugin.swift */; };
 		B4644C7F237270FD00EEE7CE /* CoreMLPredictionsPlugin+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C7823726FF400EEE7CE /* CoreMLPredictionsPlugin+ClientBehavior.swift */; };
 		B4644C802372710C00EEE7CE /* CoreMLPredictionsPlugin+Configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4644C7A2372700800EEE7CE /* CoreMLPredictionsPlugin+Configure.swift */; };
@@ -1404,6 +1407,9 @@
 		B438D20723749032009E2DD0 /* CoreMLPredictionsPluginTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPluginTestBase.swift; sourceTree = "<group>"; };
 		B438D20B237490F8009E2DD0 /* MockCoreMLNaturalLanguageAdaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCoreMLNaturalLanguageAdaptor.swift; sourceTree = "<group>"; };
 		B438D2122374921A009E2DD0 /* MockOperationQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOperationQueue.swift; sourceTree = "<group>"; };
+		B452FDEE237A4B68002DF0D3 /* LanguageTypeExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageTypeExtension.swift; sourceTree = "<group>"; };
+		B452FDF0237A4C23002DF0D3 /* AWSComprehendSentimentTypeExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSComprehendSentimentTypeExtension.swift; sourceTree = "<group>"; };
+		B452FDF2237A4C76002DF0D3 /* AWSComprehendPartOfSpeechTagTypeExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSComprehendPartOfSpeechTagTypeExtension.swift; sourceTree = "<group>"; };
 		B4644C7223726EC400EEE7CE /* CoreMLPredictionsPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPlugin.swift; sourceTree = "<group>"; };
 		B4644C7823726FF400EEE7CE /* CoreMLPredictionsPlugin+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreMLPredictionsPlugin+ClientBehavior.swift"; sourceTree = "<group>"; };
 		B4644C7A2372700800EEE7CE /* CoreMLPredictionsPlugin+Configure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreMLPredictionsPlugin+Configure.swift"; sourceTree = "<group>"; };
@@ -2882,8 +2888,11 @@
 		95DAA9792371CC850028544F /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				95DAA97A2371CC850028544F /* PredictionsEvent.swift */,
 				95DAA9B6237311EF0028544F /* File.swift */,
+				B452FDEE237A4B68002DF0D3 /* LanguageTypeExtension.swift */,
+				95DAA97A2371CC850028544F /* PredictionsEvent.swift */,
+				B452FDF0237A4C23002DF0D3 /* AWSComprehendSentimentTypeExtension.swift */,
+				B452FDF2237A4C76002DF0D3 /* AWSComprehendPartOfSpeechTagTypeExtension.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -6940,12 +6949,14 @@
 				95DAA9C223731CB60028544F /* PredictionsErrorHelper.swift in Sources */,
 				B499B19F2379BC8000314889 /* AWSComprehendServiceBehavior.swift in Sources */,
 				95DAA9B7237311EF0028544F /* File.swift in Sources */,
+				B452FDF1237A4C23002DF0D3 /* AWSComprehendSentimentTypeExtension.swift in Sources */,
 				95DAA9BC237314D30028544F /* AWSComprehendBehavior.swift in Sources */,
 				B499B19C2379BC6E00314889 /* AWSTranslateServiceBehavior.swift in Sources */,
 				95DAA9852371CC860028544F /* AWSPredictionsPlugin.swift in Sources */,
 				95DAA9AA2372320D0028544F /* AWSPredictionsPluginConfiguration.swift in Sources */,
 				95DAA9902371CC860028544F /* AWSPredictionsPlugin+ClientBehavior.swift in Sources */,
 				95DAA9982371CC860028544F /* AWSRekognitionBehavior.swift in Sources */,
+				B452FDF3237A4C76002DF0D3 /* AWSComprehendPartOfSpeechTagTypeExtension.swift in Sources */,
 				95DAA98E2371CC860028544F /* AWSPredictionsPlugin+Reset.swift in Sources */,
 				95DAA9962371CC860028544F /* AWSRekognitionAdapater.swift in Sources */,
 				95DAA9B0237237150028544F /* AWSPredictionsService+Translate.swift in Sources */,
@@ -6955,6 +6966,7 @@
 				95DAA9932371CC860028544F /* PredictionsEvent.swift in Sources */,
 				95DAA98B2371CC860028544F /* AWSRekognitionServiceBehavior.swift in Sources */,
 				B499B19A2379BC2F00314889 /* PluginErrorMessage.swift in Sources */,
+				B452FDEF237A4B68002DF0D3 /* LanguageTypeExtension.swift in Sources */,
 				B499B1992379BC2F00314889 /* PredictionsServiceErrorMessage.swift in Sources */,
 				95DAA9B9237312CA0028544F /* AWSPollyBehavior.swift in Sources */,
 				B499B1A22379BCA800314889 /* AWSComprehendOperation.swift in Sources */,

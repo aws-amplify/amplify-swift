@@ -46,8 +46,7 @@ extension AWSPredictionsPlugin {
 
     }
 
-    /// Interpret the input text and returns sentiment analysis, entity detection, language detection,
-    /// syntax detection, key phrases detection.
+    /// Interprets the input text and detects sentiment, language, syntax, and key phrases
     ///
     /// - Parameter text: input text
     /// - Parameter options: Option for the plugin

@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum PredictionsAWSServices {
+enum PredictionsAWSService {
     case rekognition
     case translate
     case transcribe

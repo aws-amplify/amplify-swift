@@ -8,7 +8,7 @@
 import AWSCore
 import Amplify
 
-public protocol AWSAuthServiceBehavior {
+public protocol AWSAuthServiceBehavior: class {
     func getCognitoCredentialsProvider() -> AWSCognitoCredentialsProvider
 
     func getIdentityId() -> Result<String, AuthError>

@@ -9,13 +9,42 @@ import Foundation
 
 public struct InterpretResult {
 
-    public var keyPhrases: [KeyPhrase]?
-    public var sentiment: Sentiment?
-    public var entities: [EntityDetectionResult]?
-    public var language: LanguageDetectionResult?
-    public var syntax: [SyntaxToken]?
+    var keyPhrases: [KeyPhrase]?
+    var sentiment: Sentiment?
+    var entities: [EntityDetectionResult]?
+    var language: LanguageDetectionResult?
+    var syntax: [SyntaxToken]?
+}
 
-    public  init() {
+public struct InterpretResultBuilder {
 
+    var result: InterpretResult
+
+    public init() {
+        self.result = InterpretResult()
+    }
+
+    public func build() -> InterpretResult {
+        return result
+    }
+
+    mutating public  func addKeyPhrases(keyPhrases: [KeyPhrase]?) {
+        result.keyPhrases = keyPhrases
+    }
+
+    mutating public func addSentiment(sentiment: Sentiment?) {
+        result.sentiment = sentiment
+    }
+
+    mutating public func addEntities(entities: [EntityDetectionResult]?) {
+        result.entities = entities
+    }
+
+    mutating public func addLanguage(language: LanguageDetectionResult?) {
+        result.language = language
+    }
+
+    mutating public func addSyntax(syntax: [SyntaxToken]?) {
+        result.syntax = syntax
     }
 }
