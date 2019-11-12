@@ -71,7 +71,7 @@ class AppSyncConnectionProvider: ConnectionProvider {
             payload = try convertToPayload(for: subscriptionItem.requestString,
                                            variables: subscriptionItem.variables)
         } catch {
-            subscriptionItem.subscriptionEventHandler(.failed(error), subscriptionItem)
+            subscriptionItem.onEvent(.failed(.pluginError(ConnectionProviderError.jsonParse(nil, error))))
             return
         }
 
@@ -79,7 +79,8 @@ class AppSyncConnectionProvider: ConnectionProvider {
                                      payload: payload,
                                      type: .subscribe)
         do {
-            try write(message)
+            let signedMessage = interceptMessage(message, for: url)
+            try write(signedMessage)
         } catch {
             let error = ConnectionProviderError.jsonParse(message.id, error)
             listener?(.subscriptionError(subscriptionItem.identifier, error))
@@ -197,8 +198,7 @@ class AppSyncConnectionProvider: ConnectionProvider {
 
     private func encode(appSyncMessage: AppSyncMessage) throws -> String {
         do {
-            let signedMessage = interceptMessage(appSyncMessage, for: url)
-            let jsonData = try JSONEncoder().encode(signedMessage)
+            let jsonData = try JSONEncoder().encode(appSyncMessage)
             guard let jsonString = String(data: jsonData, encoding: .utf8) else {
                 throw ConnectionProviderError.jsonParse(appSyncMessage.id, nil)
             }

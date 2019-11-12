@@ -38,11 +38,11 @@ class AppSyncSubscriptionConnection: SubscriptionConnection, RetryableConnection
 
     func subscribe(requestString: String,
                    variables: [String: Any]?,
-                   eventHandler: @escaping SubscriptionEventHandler<Data>) -> SubscriptionItem {
+                   onEvent: @escaping SubscriptionEventHandler<Data>) -> SubscriptionItem {
 
         let subscriptionItem = SubscriptionItem(requestString: requestString,
                                                 variables: variables,
-                                                eventHandler: eventHandler)
+                                                onEvent: onEvent)
         subscriptionItems[subscriptionItem.identifier] = subscriptionItem
 
         if connectionProvider.isConnected {

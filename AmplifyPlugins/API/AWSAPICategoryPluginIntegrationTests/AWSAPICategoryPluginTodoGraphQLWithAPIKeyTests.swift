@@ -412,8 +412,6 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
 
                 case .data(let graphQLResponse):
                     progressInvoked.fulfill()
-                case .failed(let error):
-                    XCTFail("Unexpected error on progress \(error)")
                 }
             case .failed(let error):
                 print("Unexpected .failed event: \(error)")

@@ -83,8 +83,9 @@ extension AppSyncConnectionProvider {
             }
 
             guard let identifier = response.identifier else {
-                let genericError = ConnectionProviderError.other
-                listener?(.unknownError(genericError))
+                let error = ConnectionProviderError.unknown(
+                    "Response contained error without subscription identifier")
+                listener?(.error(error))
                 return
             }
 

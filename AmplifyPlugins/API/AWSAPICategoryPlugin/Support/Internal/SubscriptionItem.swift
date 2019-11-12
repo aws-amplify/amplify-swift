@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 
 /// Event handler for subscription.
-typealias SubscriptionEventHandler<T> = (SubscriptionEvent<T>, SubscriptionItem) -> Void
+typealias SubscriptionEventHandler<T> = (AsyncEvent<SubscriptionEvent<T>, Void, APIError>) -> Void
 
 /// Item that holds the subscription. This contains the raw query and variables.
 class SubscriptionItem {
@@ -27,30 +27,30 @@ class SubscriptionItem {
     var subscriptionConnectionState: SubscriptionConnectionState
 
     // Subscription related events will be send to this handler.
-    let subscriptionEventHandler: SubscriptionEventHandler<Data>
+    let onEvent: SubscriptionEventHandler<Data>
 
     init(requestString: String,
          variables: [String: Any]?,
          subscriptionConnectionState: SubscriptionConnectionState = .disconnected,
-         eventHandler: @escaping SubscriptionEventHandler<Data>) {
+         onEvent: @escaping SubscriptionEventHandler<Data>) {
 
         self.identifier = UUID().uuidString
         self.variables = variables
         self.requestString = requestString
         self.subscriptionConnectionState = subscriptionConnectionState
-        self.subscriptionEventHandler = eventHandler
+        self.onEvent = onEvent
     }
 
     func setState(_ subscriptionConnectionState: SubscriptionConnectionState) {
         self.subscriptionConnectionState = subscriptionConnectionState
-        subscriptionEventHandler(.connection(self.subscriptionConnectionState), self)
+        onEvent(.inProcess(.connection(self.subscriptionConnectionState)))
     }
 
     func dispatch(data: Data) {
-        subscriptionEventHandler(.data(data), self)
+        onEvent(.inProcess(.data(data)))
     }
 
-    func dispatch(error: Error) {
-        subscriptionEventHandler(.failed(error), self)
+    func dispatch(error: APIError) {
+        onEvent(.failed(error))
     }
 }

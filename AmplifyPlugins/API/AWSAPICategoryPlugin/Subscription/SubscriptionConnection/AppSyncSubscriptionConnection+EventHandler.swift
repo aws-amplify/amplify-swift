@@ -31,8 +31,8 @@ extension AppSyncSubscriptionConnection {
             break
         case .subscriptionError(let identifier, let error):
             handleSubscriptionError(identifier: identifier, error: error)
-        case .unknownError(let error):
-            break
+        case .error(let error):
+            print("Connection received error unmappable to any specific subscriber \(error)")
         }
 
     }
@@ -84,19 +84,19 @@ extension AppSyncSubscriptionConnection {
         } catch {
             print(error)
             let jsonParserError = ConnectionProviderError.jsonParse(identifier, error)
-            subscriptionItem.dispatch(error: jsonParserError)
+            subscriptionItem.dispatch(error: APIError.pluginError(jsonParserError))
         }
     }
 
     // MARK: Error Handling
 
-    func handleSubscriptionError(identifier: String, error: Error) {
+    func handleSubscriptionError(identifier: String, error: ConnectionProviderError) {
         print("Handle Subscription Error \(error)")
         guard let subscriptionItem = subscriptionItems[identifier] else {
             return
         }
         subscriptionItem.setState(.disconnected)
-        subscriptionItem.dispatch(error: error)
+        subscriptionItem.dispatch(error: APIError.pluginError(error))
         subscriptionItems[identifier] = nil
     }
 

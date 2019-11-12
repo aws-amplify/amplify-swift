@@ -12,10 +12,10 @@ protocol SubscriptionConnection {
     /// Subscribe to the subscription request
     /// - Parameter variables: variables for the subscription
     /// - Parameter requestString: query for the subscription
-    /// - Parameter eventHandler: event handler
+    /// - Parameter onEvent: event handler
     func subscribe(requestString: String,
                    variables: [String: Any]?,
-                   eventHandler: @escaping SubscriptionEventHandler<Data>) -> SubscriptionItem
+                   onEvent: @escaping SubscriptionEventHandler<Data>) -> SubscriptionItem
 
     /// Unsubscribe from the subscription
     /// - Parameter item: item to be unsubscribed

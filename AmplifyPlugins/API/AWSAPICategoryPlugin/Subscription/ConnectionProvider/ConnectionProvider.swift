@@ -41,11 +41,11 @@ enum ConnectionProviderEvent {
     /// Data received on the connection
     case data(identifier: String, payload: [String: JSONValue])
 
-    /// Subscription related error
+    /// Subscription related error event
     case subscriptionError(String, ConnectionProviderError)
 
-    /// Unknown error
-    case unknownError(ConnectionProviderError)
+    /// Error event
+    case error(ConnectionProviderError)
 }
 
 /// Synchronized to the state of the underlying websocket connection

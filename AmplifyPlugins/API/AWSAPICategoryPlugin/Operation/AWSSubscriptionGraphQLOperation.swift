@@ -89,30 +89,36 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperati
         // Create subscription
         subscriptionItem = connection.subscribe(requestString: request.document,
                                                 variables: request.variables,
-                                                eventHandler: { [weak self] event, _ in
+                                                onEvent: { [weak self] event in
             self?.onSubscriptionEvent(event: event)
         })
 
     }
 
-    private func onSubscriptionEvent(event: SubscriptionEvent<Data>) {
+    private func onSubscriptionEvent(event: AsyncEvent<SubscriptionEvent<Data>, Void, APIError>) {
         switch event {
-        case .connection(let subscriptionConnectionState):
-            let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(subscriptionConnectionState)
-            dispatch(event: .inProcess(subscriptionEvent))
-        case .data(let graphQLResponseData):
-            do {
-                let graphQLServiceResponse = try GraphQLResponseDecoder.deserialize(graphQLResponse: graphQLResponseData)
-                let graphQLResponse = try GraphQLResponseDecoder.decode(
-                    graphQLServiceResponse: graphQLServiceResponse, responseType: responseType)
-                dispatch(event: .inProcess(.data(graphQLResponse)))
-            } catch {
-                dispatch(event: .failed(APIError.operationError("Failed to deserialize", "", error)))
+        case .inProcess(let subscriptionEvent):
+            switch subscriptionEvent {
+            case .connection(let subscriptionConnectionState):
+                let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(subscriptionConnectionState)
+                dispatch(event: .inProcess(subscriptionEvent))
+            case .data(let graphQLResponseData):
+                do {
+                    let graphQLServiceResponse = try GraphQLResponseDecoder.deserialize(
+                        graphQLResponse: graphQLResponseData)
+                    let graphQLResponse = try GraphQLResponseDecoder.decode(
+                        graphQLServiceResponse: graphQLServiceResponse, responseType: responseType)
+                    dispatch(event: .inProcess(.data(graphQLResponse)))
+                } catch {
+                    dispatch(event: .failed(APIError.operationError("Failed to deserialize", "", error)))
+                }
             }
         case .failed(let error):
-            dispatch(event: .failed(APIError.operationError("failed event", "", error)))
+            dispatch(event: .failed(error))
             finish()
-            return
+        default:
+            dispatch(event: .failed(APIError.unknown("Unknown subscription event", "", nil)))
+            finish()
         }
     }
 }
