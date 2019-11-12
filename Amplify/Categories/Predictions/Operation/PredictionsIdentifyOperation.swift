@@ -15,4 +15,3 @@ PredictionsError> { }
 public extension HubPayload.EventName.Predictions {
     static let identifyLabels = "Predictions.identifyLabels"
 }
-

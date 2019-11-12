@@ -20,7 +20,6 @@ public struct PredictionsIdentifyRequest: AmplifyOperationRequest {
         self.options = options
     }
 
-
 }
 
 public extension PredictionsIdentifyRequest {
@@ -39,4 +38,3 @@ public extension PredictionsIdentifyRequest {
         }
     }
 }
-

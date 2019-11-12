@@ -72,7 +72,7 @@ class APICategoryConfigurationTests: XCTestCase {
         Amplify.reset()
         XCTAssertThrowsError(try Amplify.API.getPlugin(for: "MockAPICategoryPlugin"),
                              "Getting a plugin after reset() should throw") { error in
-                                guard case PluginError.noSuchPlugin = error else {
+                                guard case APIError.invalidConfiguration = error else {
                                     XCTFail("Expected PluginError.noSuchPlugin")
                                     return
                                 }

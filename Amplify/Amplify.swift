@@ -31,23 +31,23 @@ public class Amplify {
     /// Adds `plugin` to the Analytics category
     ///
     /// - Parameter plugin: The AnalyticsCategoryPlugin to add
-    /// - Throws: PluginError.emptyKey if `plugin.key` is empty
     public static func add<P: Plugin>(plugin: P) throws {
-        if let plugin = plugin as? AnalyticsCategoryPlugin {
+        switch plugin {
+        case let plugin as AnalyticsCategoryPlugin:
             try Analytics.add(plugin: plugin)
-        } else if let plugin = plugin as? APICategoryPlugin {
+        case let plugin as APICategoryPlugin:
             try API.add(plugin: plugin)
-        } else if let plugin = plugin as? DataStoreCategoryPlugin {
+        case let plugin as DataStoreCategoryPlugin:
             try DataStore.add(plugin: plugin)
-        } else if let plugin = plugin as? HubCategoryPlugin {
+        case let plugin as HubCategoryPlugin:
             try Hub.add(plugin: plugin)
-        } else if let plugin = plugin as? LoggingCategoryPlugin {
+        case let plugin as LoggingCategoryPlugin:
             try Logging.add(plugin: plugin)
-        } else if let plugin = plugin as? PredictionsCategoryPlugin {
+        case let plugin as PredictionsCategoryPlugin:
             try Predictions.add(plugin: plugin)
-        } else if let plugin = plugin as? StorageCategoryPlugin {
+        case let plugin as StorageCategoryPlugin:
             try Storage.add(plugin: plugin)
-        } else {
+        default:
             throw PluginError.pluginConfigurationError(
                 "Plugin category does not exist.",
                 "Verify that the library version is correct and supports the plugin's category.")
