@@ -9,21 +9,24 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 
-public class AWSTranslateOperation: AmplifyOperation<PredictionsTranslateTextRequest,
-    Void, TranslateTextResult, PredictionsError>,
-PredictionsTranslateTextOperation {
+public class AWSComprehendOperation: AmplifyOperation<PredictionsInterpretRequest,
+    Void,
+    InterpretResult,
+    PredictionsError>,
+PredictionsInterpretOperation {
 
-    let predictionsService: AWSPredictionsService
-    let authService: AWSAuthServiceBehavior
+    weak var predictionsService: AWSPredictionsService?
+    weak var authService: AWSAuthServiceBehavior?
 
-    init(_ request: PredictionsTranslateTextRequest,
+    init(_ request: PredictionsInterpretRequest,
          predictionsService: AWSPredictionsService,
          authService: AWSAuthServiceBehavior,
          listener: EventListener?) {
+
         self.predictionsService = predictionsService
         self.authService = authService
         super.init(categoryType: .predictions,
-                   eventName: HubPayload.EventName.Predictions.translate,
+                   eventName: HubPayload.EventName.Predictions.interpret,
                    request: request,
                    listener: listener)
     }
@@ -37,22 +40,9 @@ PredictionsTranslateTextOperation {
             finish()
             return
         }
-
-        if let error = request.validate() {
-            dispatch(event: .failed(error))
-            finish()
-            return
-        }
-
-        predictionsService.translateText(text: request.textToTranslate,
-                                         language: request.language,
-                                         targetLanguage: request.targetLanguage) { [weak self] event in
-                                            self?.onServiceEvent(event: event)
-
-        }
     }
 
-    private func onServiceEvent(event: PredictionsEvent<TranslateTextResult, PredictionsError>) {
+    private func onServiceEvent(event: PredictionsEvent<InterpretResult, PredictionsError>) {
         switch event {
         case .completed(let result):
             dispatch(event: .completed(result))
@@ -60,7 +50,6 @@ PredictionsTranslateTextOperation {
         case .failed(let error):
             dispatch(event: .failed(error))
             finish()
-
         }
     }
 

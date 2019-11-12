@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 import AWSRekognition
 
-protocol AWSRekognitionServiceBehaviour {
+protocol AWSRekognitionServiceBehavior {
 
     typealias RekognitionServiceEventHandler = (RekognitionServiceEvent) -> Void
     typealias RekognitionServiceEvent = PredictionsEvent<IdentifyResult, PredictionsError>

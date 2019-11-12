@@ -9,8 +9,9 @@ import Foundation
 import Amplify
 import AWSRekognition
 import AWSTranslate
+import AWSComprehend
 
-class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateServiceBehaviour {
+class AWSPredictionsService {
 
     var identifier: String!
     var awsTranslate: AWSTranslateBehavior!
@@ -27,42 +28,54 @@ class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateService
 
         guard let serviceConfiguration = serviceConfigurationOptional else {
             throw PluginError.pluginConfigurationError(
-                PluginErrorConstants.serviceConfigurationInitializationError.errorDescription,
-                PluginErrorConstants.serviceConfigurationInitializationError.recoverySuggestion)
+                PluginErrorMessage.serviceConfigurationInitializationError.errorDescription,
+                PluginErrorMessage.serviceConfigurationInitializationError.recoverySuggestion)
         }
 
         AWSTranslate.register(with: serviceConfiguration, forKey: identifier)
         let awsTranslate = AWSTranslate(forKey: identifier)
         let awsTranslateAdapter = AWSTranslateAdapter(awsTranslate)
+
         AWSRekognition.register(with: serviceConfiguration, forKey: identifier)
         let awsRekognition = AWSRekognition(forKey: identifier)
-
         let awsRekognitionAdapter = AWSRekognitionAdapter(awsRekognition)
 
-        self.init(awsTranslate: awsTranslateAdapter,
+        AWSComprehend.register(with: serviceConfiguration, forKey: identifier)
+        let awsComprehend = AWSComprehend(forKey: identifier)
+        let awsComprehendAdapter = AWSComprehendAdapter(awsComprehend)
+
+        self.init(identifier: identifier,
+                  awsTranslate: awsTranslateAdapter,
                   awsRekognition: awsRekognitionAdapter,
-                  identifier: identifier)
+                  awsComprehend: awsComprehendAdapter)
     }
 
-    init(awsTranslate: AWSTranslateBehavior,
+    init(identifier: String,
+         awsTranslate: AWSTranslateBehavior,
          awsRekognition: AWSRekognitionBehavior,
-         identifier: String) {
+         awsComprehend: AWSComprehendBehavior) {
+
+        self.identifier = identifier
+
         self.awsTranslate = awsTranslate
         self.awsRekognition = awsRekognition
-        self.identifier = identifier
+        self.awsComprehend = awsComprehend
     }
 
     func reset() {
+
         AWSTranslate.remove(forKey: identifier)
         awsTranslate = nil
-        identifier = nil
 
         AWSRekognition.remove(forKey: identifier)
         awsRekognition = nil
+
+        AWSComprehend.remove(forKey: identifier)
+        awsComprehend = nil
         identifier = nil
     }
 
-    func getEscapeHatch(key: PredictionsAWSServices) -> AWSService {
+    func getEscapeHatch(key: PredictionsAWSService) -> AWSService {
         switch key {
         case .rekognition:
             return awsRekognition.getRekognition()

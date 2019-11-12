@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 import AWSTranslate
 
-protocol AWSTranslateServiceBehaviour {
+protocol AWSTranslateServiceBehavior {
 
     typealias TranslateTextServiceEventHandler = (TranslateTextServiceEvent) -> Void
     typealias TranslateTextServiceEvent = PredictionsEvent<TranslateTextResult, PredictionsError>
