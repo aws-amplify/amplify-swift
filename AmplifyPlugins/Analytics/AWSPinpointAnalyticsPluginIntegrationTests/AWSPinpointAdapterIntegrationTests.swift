@@ -17,7 +17,7 @@ class AWSPinpointAdapterIntegrationTests: XCTestCase {
 
     override func setUp() {
         let mobileClientIsInitialized = expectation(description: "AWSMobileClient is initialized")
-        AWSMobileClient.default().initialize { (userState, error) in
+        AWSMobileClient.default().initialize { userState, error in
             guard error == nil else {
                 XCTFail("Error initializing AWSMobileClient. Error: \(error!.localizedDescription)")
                 return

@@ -311,12 +311,12 @@
 		B478F72B2375014D00C4F92B /* Dependency */ = {
 			isa = PBXGroup;
 			children = (
-				B478F72C2375014D00C4F92B /* AWSPinpointTargetingClientBehavior.swift */,
-				B478F72D2375014D00C4F92B /* AWSPinpointAdapter+AnalyticsClientBehavior.swift */,
-				B478F72E2375014D00C4F92B /* AWSPinpointBehavior.swift */,
-				B478F72F2375014D00C4F92B /* AWSPinpointAnalyticsClientBehavior.swift */,
-				B478F7302375014D00C4F92B /* AWSPinpointAdapter+TargetingClientBehavior.swift */,
 				B478F7312375014D00C4F92B /* AWSPinpointAdapter.swift */,
+				B478F72D2375014D00C4F92B /* AWSPinpointAdapter+AnalyticsClientBehavior.swift */,
+				B478F7302375014D00C4F92B /* AWSPinpointAdapter+TargetingClientBehavior.swift */,
+				B478F72F2375014D00C4F92B /* AWSPinpointAnalyticsClientBehavior.swift */,
+				B478F72E2375014D00C4F92B /* AWSPinpointBehavior.swift */,
+				B478F72C2375014D00C4F92B /* AWSPinpointTargetingClientBehavior.swift */,
 			);
 			path = Dependency;
 			sourceTree = "<group>";
@@ -325,8 +325,8 @@
 			isa = PBXGroup;
 			children = (
 				B478F7332375014D00C4F92B /* AppSessionTracker.swift */,
-				B478F7342375014D00C4F92B /* Tracker.swift */,
 				B478F7352375014D00C4F92B /* FlushEventsTracker.swift */,
+				B478F7342375014D00C4F92B /* Tracker.swift */,
 			);
 			path = Tracker;
 			sourceTree = "<group>";
@@ -335,8 +335,8 @@
 			isa = PBXGroup;
 			children = (
 				B478F7382375014D00C4F92B /* Constants */,
-				B478F73B2375014D00C4F92B /* Utils */,
 				B478F73D2375014D00C4F92B /* Extensions */,
+				B478F73B2375014D00C4F92B /* Utils */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -361,10 +361,10 @@
 		B478F73D2375014D00C4F92B /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				B478F73E2375014D00C4F92B /* AWSPinpointAnalyticsPlugin+HubCategory.swift */,
-				B478F73F2375014D00C4F92B /* AWSPinpointAnalyticsPlugin+AWSPinpointEvent.swift */,
 				B478F7402375014D00C4F92B /* AWSPinpointAnalyticsPlugin+AWSPinpointEndpointProfile.swift */,
 				B478F7412375014D00C4F92B /* AWSPinpointAnalyticsPlugin+AWSPinpointEndpointProfileLocation.swift */,
+				B478F73F2375014D00C4F92B /* AWSPinpointAnalyticsPlugin+AWSPinpointEvent.swift */,
+				B478F73E2375014D00C4F92B /* AWSPinpointAnalyticsPlugin+HubCategory.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -372,13 +372,13 @@
 		B478F759237503B700C4F92B /* AWSPinpointAnalyticsPluginTests */ = {
 			isa = PBXGroup;
 			children = (
-				B478F75A237503B700C4F92B /* Mocks */,
-				B478F761237503B700C4F92B /* Configuration */,
+				B478F768237503B700C4F92B /* AWSPinpointAnalyticsPluginClientBehaviorTests.swift */,
 				B478F763237503B700C4F92B /* AWSPinpointAnalyticsPluginConfigureTests.swift */,
 				B478F764237503B700C4F92B /* AWSPinpointAnalyticsPluginResetTests.swift */,
-				B478F765237503B700C4F92B /* Resources */,
 				B478F767237503B700C4F92B /* AWSPinpointAnalyticsPluginTestBase.swift */,
-				B478F768237503B700C4F92B /* AWSPinpointAnalyticsPluginClientBehaviorTests.swift */,
+				B478F761237503B700C4F92B /* Configuration */,
+				B478F75A237503B700C4F92B /* Mocks */,
+				B478F765237503B700C4F92B /* Resources */,
 			);
 			path = AWSPinpointAnalyticsPluginTests;
 			sourceTree = "<group>";
@@ -386,12 +386,12 @@
 		B478F75A237503B700C4F92B /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				B478F75F237503B700C4F92B /* MockAppSessionTracker.swift */,
+				B478F75E237503B700C4F92B /* MockAWSAuthService.swift */,
+				B478F75D237503B700C4F92B /* MockAWSPinpoint.swift */,
+				B478F760237503B700C4F92B /* MockAWSPinpoint+AnalyticsClientBehavior.swift */,
 				B478F75B237503B700C4F92B /* MockAWSPinpoint+TargetingClientBehavior.swift */,
 				B478F75C237503B700C4F92B /* MockFlushEventsTracker.swift */,
-				B478F75D237503B700C4F92B /* MockAWSPinpoint.swift */,
-				B478F75E237503B700C4F92B /* MockAWSAuthService.swift */,
-				B478F75F237503B700C4F92B /* MockAppSessionTracker.swift */,
-				B478F760237503B700C4F92B /* MockAWSPinpoint+AnalyticsClientBehavior.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -416,8 +416,8 @@
 			isa = PBXGroup;
 			children = (
 				B478F7782375046300C4F92B /* AWSPinpointAdapterIntegrationTests.swift */,
-				B478F7792375046300C4F92B /* Resources */,
 				B478F77B2375046300C4F92B /* AWSPinpointAnalyticsPluginTestBase.swift */,
+				B478F7792375046300C4F92B /* Resources */,
 			);
 			path = AWSPinpointAnalyticsPluginIntegrationTests;
 			sourceTree = "<group>";

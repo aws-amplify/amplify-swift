@@ -73,7 +73,6 @@
 		B4FEB6E12375DA1500818CD2 /* AWSS3StorageGetURLOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6B42375DA1500818CD2 /* AWSS3StorageGetURLOperationTests.swift */; };
 		B4FEB6E22375DA1500818CD2 /* AWSS3StorageGetDataOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6B52375DA1500818CD2 /* AWSS3StorageGetDataOperationTests.swift */; };
 		B4FEB6E32375DA1500818CD2 /* AWSS3StorageDownloadFileOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6B62375DA1500818CD2 /* AWSS3StorageDownloadFileOperationTests.swift */; };
-		B4FEB6E42375DA1500818CD2 /* DownloadFileEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6B82375DA1500818CD2 /* DownloadFileEventTests.swift */; };
 		B4FEB6E52375DA1500818CD2 /* AWSS3StorageOperationTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6B92375DA1500818CD2 /* AWSS3StorageOperationTestBase.swift */; };
 		B4FEB6E62375DA1500818CD2 /* AWSS3StorageListOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6BA2375DA1500818CD2 /* AWSS3StorageListOperationTests.swift */; };
 		B4FEB6E72375DA1500818CD2 /* AWSS3StoragePutDataOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6BB2375DA1500818CD2 /* AWSS3StoragePutDataOperationTests.swift */; };
@@ -221,7 +220,6 @@
 		B4FEB6B42375DA1500818CD2 /* AWSS3StorageGetURLOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetURLOperationTests.swift; sourceTree = "<group>"; };
 		B4FEB6B52375DA1500818CD2 /* AWSS3StorageGetDataOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageGetDataOperationTests.swift; sourceTree = "<group>"; };
 		B4FEB6B62375DA1500818CD2 /* AWSS3StorageDownloadFileOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageDownloadFileOperationTests.swift; sourceTree = "<group>"; };
-		B4FEB6B82375DA1500818CD2 /* DownloadFileEventTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadFileEventTests.swift; sourceTree = "<group>"; };
 		B4FEB6B92375DA1500818CD2 /* AWSS3StorageOperationTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageOperationTestBase.swift; sourceTree = "<group>"; };
 		B4FEB6BA2375DA1500818CD2 /* AWSS3StorageListOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StorageListOperationTests.swift; sourceTree = "<group>"; };
 		B4FEB6BB2375DA1500818CD2 /* AWSS3StoragePutDataOperationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePutDataOperationTests.swift; sourceTree = "<group>"; };
@@ -341,9 +339,9 @@
 		B478F5F12374DBF400C4F92B = {
 			isa = PBXGroup;
 			children = (
+				B4FEB6472375DA0600818CD2 /* AWSS3StoragePlugin */,
 				B4FEB7002375DA2200818CD2 /* AWSS3StoragePluginIntegrationTests */,
 				B4FEB6AA2375DA1500818CD2 /* AWSS3StoragePluginTests */,
-				B4FEB6472375DA0600818CD2 /* AWSS3StoragePlugin */,
 				58AE86B816C1A3D8125AD432 /* Frameworks */,
 				B478F6BD2374E0B500C4F92B /* HostApp */,
 				88863618836AAA9F232BBC70 /* Pods */,
@@ -405,16 +403,16 @@
 		B4FEB6472375DA0600818CD2 /* AWSS3StoragePlugin */ = {
 			isa = PBXGroup;
 			children = (
-				B4FEB6482375DA0600818CD2 /* Operation */,
-				B4FEB6502375DA0600818CD2 /* AWSS3StoragePlugin+Reset.swift */,
-				B4FEB6512375DA0600818CD2 /* Resources */,
-				B4FEB6532375DA0600818CD2 /* Dependency */,
 				B4FEB65A2375DA0600818CD2 /* AWSS3StoragePlugin.swift */,
-				B4FEB65B2375DA0600818CD2 /* Support */,
 				B4FEB6692375DA0600818CD2 /* AWSS3StoragePlugin+ClientBehavior.swift */,
 				B4FEB66A2375DA0600818CD2 /* AWSS3StoragePlugin+Configure.swift */,
+				B4FEB6502375DA0600818CD2 /* AWSS3StoragePlugin+Reset.swift */,
+				B4FEB6532375DA0600818CD2 /* Dependency */,
+				B4FEB6482375DA0600818CD2 /* Operation */,
 				B4FEB66B2375DA0600818CD2 /* Request */,
+				B4FEB6512375DA0600818CD2 /* Resources */,
 				B4FEB6732375DA0600818CD2 /* Service */,
+				B4FEB65B2375DA0600818CD2 /* Support */,
 			);
 			path = AWSS3StoragePlugin;
 			sourceTree = "<group>";
@@ -422,13 +420,13 @@
 		B4FEB6482375DA0600818CD2 /* Operation */ = {
 			isa = PBXGroup;
 			children = (
-				B4FEB6492375DA0600818CD2 /* AWSS3StoragePutDataOperation.swift */,
-				B4FEB64A2375DA0600818CD2 /* AWSS3StorageUploadFileOperation.swift */,
-				B4FEB64B2375DA0600818CD2 /* AWSS3StorageGetURLOperation.swift */,
 				B4FEB64C2375DA0600818CD2 /* AWSS3StorageDownloadFileOperation.swift */,
 				B4FEB64D2375DA0600818CD2 /* AWSS3StorageGetDataOperation.swift */,
-				B4FEB64E2375DA0600818CD2 /* AWSS3StorageRemoveOperation.swift */,
+				B4FEB64B2375DA0600818CD2 /* AWSS3StorageGetURLOperation.swift */,
 				B4FEB64F2375DA0600818CD2 /* AWSS3StorageListOperation.swift */,
+				B4FEB6492375DA0600818CD2 /* AWSS3StoragePutDataOperation.swift */,
+				B4FEB64E2375DA0600818CD2 /* AWSS3StorageRemoveOperation.swift */,
+				B4FEB64A2375DA0600818CD2 /* AWSS3StorageUploadFileOperation.swift */,
 			);
 			path = Operation;
 			sourceTree = "<group>";
@@ -444,12 +442,12 @@
 		B4FEB6532375DA0600818CD2 /* Dependency */ = {
 			isa = PBXGroup;
 			children = (
-				B4FEB6542375DA0600818CD2 /* AWSS3TransferUtilityBehavior.swift */,
 				B4FEB6552375DA0600818CD2 /* AWSS3Adapter.swift */,
 				B4FEB6562375DA0600818CD2 /* AWSS3Behavior.swift */,
-				B4FEB6572375DA0600818CD2 /* AWSS3PreSignedURLBuilderBehavior.swift */,
 				B4FEB6582375DA0600818CD2 /* AWSS3PreSignedURLBuilderAdapter.swift */,
+				B4FEB6572375DA0600818CD2 /* AWSS3PreSignedURLBuilderBehavior.swift */,
 				B4FEB6592375DA0600818CD2 /* AWSS3TransferUtilityAdapter.swift */,
+				B4FEB6542375DA0600818CD2 /* AWSS3TransferUtilityBehavior.swift */,
 			);
 			path = Dependency;
 			sourceTree = "<group>";
@@ -467,9 +465,9 @@
 		B4FEB65C2375DA0600818CD2 /* Constants */ = {
 			isa = PBXGroup;
 			children = (
-				B4FEB65D2375DA0600818CD2 /* StorageErrorConstants.swift */,
 				B4FEB65E2375DA0600818CD2 /* PluginConstants.swift */,
 				B4FEB65F2375DA0600818CD2 /* PluginErrorConstants.swift */,
+				B4FEB65D2375DA0600818CD2 /* StorageErrorConstants.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -477,9 +475,9 @@
 		B4FEB6602375DA0600818CD2 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				B4FEB6612375DA0600818CD2 /* UploadSource.swift */,
-				B4FEB6622375DA0600818CD2 /* StorageOperationReference.swift */,
 				B4FEB6632375DA0600818CD2 /* StorageEvent.swift */,
+				B4FEB6622375DA0600818CD2 /* StorageOperationReference.swift */,
+				B4FEB6612375DA0600818CD2 /* UploadSource.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -487,10 +485,10 @@
 		B4FEB6642375DA0600818CD2 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				B4FEB6652375DA0600818CD2 /* StorageRequestUtils.swift */,
 				B4FEB6662375DA0600818CD2 /* StorageErrorHelper.swift */,
-				B4FEB6672375DA0600818CD2 /* StorageRequestUtils+Validator.swift */,
+				B4FEB6652375DA0600818CD2 /* StorageRequestUtils.swift */,
 				B4FEB6682375DA0600818CD2 /* StorageRequestUtils+Getter.swift */,
+				B4FEB6672375DA0600818CD2 /* StorageRequestUtils+Validator.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -499,12 +497,12 @@
 			isa = PBXGroup;
 			children = (
 				B4FEB66C2375DA0600818CD2 /* StorageDownloadFileRequest+Validate.swift */,
-				B4FEB66D2375DA0600818CD2 /* StorageUploadFileRequest+Validate.swift */,
-				B4FEB66E2375DA0600818CD2 /* StoragePutDataRequest+Validate.swift */,
-				B4FEB66F2375DA0600818CD2 /* StorageListRequest+Validate.swift */,
 				B4FEB6702375DA0600818CD2 /* StorageGetDataRequest+Validate.swift */,
-				B4FEB6712375DA0600818CD2 /* StorageRemoveRequest+Validate.swift */,
 				B4FEB6722375DA0600818CD2 /* StorageGetURLRequest+Validate.swift */,
+				B4FEB66F2375DA0600818CD2 /* StorageListRequest+Validate.swift */,
+				B4FEB66E2375DA0600818CD2 /* StoragePutDataRequest+Validate.swift */,
+				B4FEB6712375DA0600818CD2 /* StorageRemoveRequest+Validate.swift */,
+				B4FEB66D2375DA0600818CD2 /* StorageUploadFileRequest+Validate.swift */,
 			);
 			path = Request;
 			sourceTree = "<group>";
@@ -520,15 +518,15 @@
 		B4FEB6742375DA0600818CD2 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
-				B4FEB6752375DA0600818CD2 /* AWSS3StorageService+UploadBehavior.swift */,
+				B4FEB67D2375DA0600818CD2 /* AWSS3StorageService.swift */,
 				B4FEB6762375DA0600818CD2 /* AWSS3StorageService+DeleteBehavior.swift */,
+				B4FEB67B2375DA0600818CD2 /* AWSS3StorageService+DownloadBehavior.swift */,
 				B4FEB6772375DA0600818CD2 /* AWSS3StorageService+EscapeHatchBehavior.swift */,
 				B4FEB6782375DA0600818CD2 /* AWSS3StorageService+GetPreSignedURLBehavior.swift */,
-				B4FEB6792375DA0600818CD2 /* AWSS3StorageServiceBehaviour.swift */,
-				B4FEB67A2375DA0600818CD2 /* AWSS3StorageService+MultiPartUploadBehavior.swift */,
-				B4FEB67B2375DA0600818CD2 /* AWSS3StorageService+DownloadBehavior.swift */,
 				B4FEB67C2375DA0600818CD2 /* AWSS3StorageService+ListBehavior.swift */,
-				B4FEB67D2375DA0600818CD2 /* AWSS3StorageService.swift */,
+				B4FEB67A2375DA0600818CD2 /* AWSS3StorageService+MultiPartUploadBehavior.swift */,
+				B4FEB6752375DA0600818CD2 /* AWSS3StorageService+UploadBehavior.swift */,
+				B4FEB6792375DA0600818CD2 /* AWSS3StorageServiceBehaviour.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -536,16 +534,16 @@
 		B4FEB6AA2375DA1500818CD2 /* AWSS3StoragePluginTests */ = {
 			isa = PBXGroup;
 			children = (
+				B4FEB6C12375DA1500818CD2 /* AWSS3StoragePluginClientBehaviorTests.swift */,
+				B4FEB6C02375DA1500818CD2 /* AWSS3StoragePluginConfigureTests.swift */,
+				B4FEB6BF2375DA1500818CD2 /* AWSS3StoragePluginResetTests.swift */,
+				B4FEB6BC2375DA1500818CD2 /* AWSS3StoragePluginTestBase.swift */,
 				B4FEB6AB2375DA1500818CD2 /* Mocks */,
 				B4FEB6B12375DA1500818CD2 /* Operation */,
-				B4FEB6BC2375DA1500818CD2 /* AWSS3StoragePluginTestBase.swift */,
-				B4FEB6BD2375DA1500818CD2 /* Resources */,
-				B4FEB6BF2375DA1500818CD2 /* AWSS3StoragePluginResetTests.swift */,
-				B4FEB6C02375DA1500818CD2 /* AWSS3StoragePluginConfigureTests.swift */,
-				B4FEB6C12375DA1500818CD2 /* AWSS3StoragePluginClientBehaviorTests.swift */,
-				B4FEB6C22375DA1500818CD2 /* Support */,
 				B4FEB6C72375DA1500818CD2 /* Request */,
+				B4FEB6BD2375DA1500818CD2 /* Resources */,
 				B4FEB6CF2375DA1500818CD2 /* Service */,
+				B4FEB6C22375DA1500818CD2 /* Support */,
 			);
 			path = AWSS3StoragePluginTests;
 			sourceTree = "<group>";
@@ -553,11 +551,11 @@
 		B4FEB6AB2375DA1500818CD2 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
-				B4FEB6AC2375DA1500818CD2 /* MockAWSS3TransferUtility.swift */,
 				B4FEB6AD2375DA1500818CD2 /* MockAWSS3.swift */,
-				B4FEB6AE2375DA1500818CD2 /* MockOperationQueue.swift */,
-				B4FEB6AF2375DA1500818CD2 /* MockAWSS3StorageService.swift */,
 				B4FEB6B02375DA1500818CD2 /* MockAWSS3PreSignedURLBuilder.swift */,
+				B4FEB6AF2375DA1500818CD2 /* MockAWSS3StorageService.swift */,
+				B4FEB6AC2375DA1500818CD2 /* MockAWSS3TransferUtility.swift */,
+				B4FEB6AE2375DA1500818CD2 /* MockOperationQueue.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -565,25 +563,16 @@
 		B4FEB6B12375DA1500818CD2 /* Operation */ = {
 			isa = PBXGroup;
 			children = (
+				B4FEB6B62375DA1500818CD2 /* AWSS3StorageDownloadFileOperationTests.swift */,
+				B4FEB6B52375DA1500818CD2 /* AWSS3StorageGetDataOperationTests.swift */,
+				B4FEB6B42375DA1500818CD2 /* AWSS3StorageGetURLOperationTests.swift */,
+				B4FEB6BA2375DA1500818CD2 /* AWSS3StorageListOperationTests.swift */,
+				B4FEB6B92375DA1500818CD2 /* AWSS3StorageOperationTestBase.swift */,
+				B4FEB6BB2375DA1500818CD2 /* AWSS3StoragePutDataOperationTests.swift */,
 				B4FEB6B22375DA1500818CD2 /* AWSS3StorageRemoveOperationTests.swift */,
 				B4FEB6B32375DA1500818CD2 /* AWSS3StorageUploadFileOperationTests.swift */,
-				B4FEB6B42375DA1500818CD2 /* AWSS3StorageGetURLOperationTests.swift */,
-				B4FEB6B52375DA1500818CD2 /* AWSS3StorageGetDataOperationTests.swift */,
-				B4FEB6B62375DA1500818CD2 /* AWSS3StorageDownloadFileOperationTests.swift */,
-				B4FEB6B72375DA1500818CD2 /* AWSS3StorageOperationEventTests */,
-				B4FEB6B92375DA1500818CD2 /* AWSS3StorageOperationTestBase.swift */,
-				B4FEB6BA2375DA1500818CD2 /* AWSS3StorageListOperationTests.swift */,
-				B4FEB6BB2375DA1500818CD2 /* AWSS3StoragePutDataOperationTests.swift */,
 			);
 			path = Operation;
-			sourceTree = "<group>";
-		};
-		B4FEB6B72375DA1500818CD2 /* AWSS3StorageOperationEventTests */ = {
-			isa = PBXGroup;
-			children = (
-				B4FEB6B82375DA1500818CD2 /* DownloadFileEventTests.swift */,
-			);
-			path = AWSS3StorageOperationEventTests;
 			sourceTree = "<group>";
 		};
 		B4FEB6BD2375DA1500818CD2 /* Resources */ = {
@@ -605,9 +594,9 @@
 		B4FEB6C32375DA1500818CD2 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				B4FEB6C42375DA1500818CD2 /* StorageRequestUtilsValidatorTests.swift */,
 				B4FEB6C52375DA1500818CD2 /* StorageRequestUtilsGetterTests.swift */,
 				B4FEB6C62375DA1500818CD2 /* StorageRequestUtilsTests.swift */,
+				B4FEB6C42375DA1500818CD2 /* StorageRequestUtilsValidatorTests.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -615,13 +604,13 @@
 		B4FEB6C72375DA1500818CD2 /* Request */ = {
 			isa = PBXGroup;
 			children = (
+				B4FEB6CC2375DA1500818CD2 /* AWSS3StorageDownloadFileRequestTests.swift */,
+				B4FEB6CB2375DA1500818CD2 /* AWSS3StorageGetDataRequestTests.swift */,
 				B4FEB6C82375DA1500818CD2 /* AWSS3StorageGetURLRequestTests.swift */,
+				B4FEB6CE2375DA1500818CD2 /* AWSS3StorageListRequestTests.swift */,
+				B4FEB6CD2375DA1500818CD2 /* AWSS3StoragePutDataRequestTests.swift */,
 				B4FEB6C92375DA1500818CD2 /* AWSS3StorageRemoveRequestTests.swift */,
 				B4FEB6CA2375DA1500818CD2 /* AWSS3StorageUploadFileRequestTests.swift */,
-				B4FEB6CB2375DA1500818CD2 /* AWSS3StorageGetDataRequestTests.swift */,
-				B4FEB6CC2375DA1500818CD2 /* AWSS3StorageDownloadFileRequestTests.swift */,
-				B4FEB6CD2375DA1500818CD2 /* AWSS3StoragePutDataRequestTests.swift */,
-				B4FEB6CE2375DA1500818CD2 /* AWSS3StorageListRequestTests.swift */,
 			);
 			path = Request;
 			sourceTree = "<group>";
@@ -638,14 +627,14 @@
 			isa = PBXGroup;
 			children = (
 				B4FEB6D12375DA1500818CD2 /* AWSS3StorageServiceConfigureTests.swift */,
-				B4FEB6D22375DA1500818CD2 /* AWSS3StorageServiceGetPreSignedURLBehaviorTests.swift */,
 				B4FEB6D32375DA1500818CD2 /* AWSS3StorageServiceDeleteBehaviorTests.swift */,
-				B4FEB6D42375DA1500818CD2 /* AWSS3StorageServiceUploadBehaviorTests.swift */,
-				B4FEB6D52375DA1500818CD2 /* AWSS3StorageServiceListBehaviorTests.swift */,
 				B4FEB6D62375DA1500818CD2 /* AWSS3StorageServiceDownloadBehaviorTests.swift */,
-				B4FEB6D72375DA1500818CD2 /* AWSS3StorageServiceTestBase.swift */,
 				B4FEB6D82375DA1500818CD2 /* AWSS3StorageServiceEscapeHatchBehaviorTests.swift */,
+				B4FEB6D22375DA1500818CD2 /* AWSS3StorageServiceGetPreSignedURLBehaviorTests.swift */,
+				B4FEB6D52375DA1500818CD2 /* AWSS3StorageServiceListBehaviorTests.swift */,
 				B4FEB6D92375DA1500818CD2 /* AWSS3StorageServiceMultiPartUploadBehaviorTests.swift */,
+				B4FEB6D72375DA1500818CD2 /* AWSS3StorageServiceTestBase.swift */,
+				B4FEB6D42375DA1500818CD2 /* AWSS3StorageServiceUploadBehaviorTests.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -653,14 +642,14 @@
 		B4FEB7002375DA2200818CD2 /* AWSS3StoragePluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
-				B4FEB7012375DA2200818CD2 /* AWSS3StoragePluginTestBase.swift */,
-				B4FEB7022375DA2200818CD2 /* Resources */,
-				B4FEB7042375DA2200818CD2 /* AWSS3StoragePluginConfigurationTests.swift */,
-				B4FEB7052375DA2200818CD2 /* AWSS3StoragePluginOptionsUsabilityTests.swift */,
-				B4FEB7062375DA2200818CD2 /* README.md */,
-				B4FEB7072375DA2200818CD2 /* AWSS3StoragePluginNegativeTests.swift */,
-				B4FEB7082375DA2200818CD2 /* AWSS3StoragePluginBasicIntegrationTests.swift */,
 				B4FEB7092375DA2200818CD2 /* AWSS3StoragePluginAccessLevelTests.swift */,
+				B4FEB7082375DA2200818CD2 /* AWSS3StoragePluginBasicIntegrationTests.swift */,
+				B4FEB7042375DA2200818CD2 /* AWSS3StoragePluginConfigurationTests.swift */,
+				B4FEB7072375DA2200818CD2 /* AWSS3StoragePluginNegativeTests.swift */,
+				B4FEB7052375DA2200818CD2 /* AWSS3StoragePluginOptionsUsabilityTests.swift */,
+				B4FEB7012375DA2200818CD2 /* AWSS3StoragePluginTestBase.swift */,
+				B4FEB7062375DA2200818CD2 /* README.md */,
+				B4FEB7022375DA2200818CD2 /* Resources */,
 				B4FEB70A2375DA2200818CD2 /* ResumabilityTests */,
 			);
 			path = AWSS3StoragePluginIntegrationTests;
@@ -677,10 +666,10 @@
 		B4FEB70A2375DA2200818CD2 /* ResumabilityTests */ = {
 			isa = PBXGroup;
 			children = (
-				B4FEB70B2375DA2200818CD2 /* AWSS3StoragePluginPutDataResumabilityTests.swift */,
 				B4FEB70C2375DA2200818CD2 /* AWSS3StoragePluginDownloadFileResumabilityTests.swift */,
-				B4FEB70D2375DA2200818CD2 /* AWSS3StoragePluginUploadFileResumabilityTests.swift */,
 				B4FEB70E2375DA2200818CD2 /* AWSS3StoragePluginGetDataResumabilityTests.swift */,
+				B4FEB70B2375DA2200818CD2 /* AWSS3StoragePluginPutDataResumabilityTests.swift */,
+				B4FEB70D2375DA2200818CD2 /* AWSS3StoragePluginUploadFileResumabilityTests.swift */,
 			);
 			path = ResumabilityTests;
 			sourceTree = "<group>";
@@ -1194,7 +1183,6 @@
 				B4FEB6FD2375DA1600818CD2 /* AWSS3StorageServiceTestBase.swift in Sources */,
 				B4FEB6F62375DA1600818CD2 /* AWSS3StorageListRequestTests.swift in Sources */,
 				B4FEB6E62375DA1500818CD2 /* AWSS3StorageListOperationTests.swift in Sources */,
-				B4FEB6E42375DA1500818CD2 /* DownloadFileEventTests.swift in Sources */,
 				B4FEB6F12375DA1600818CD2 /* AWSS3StorageRemoveRequestTests.swift in Sources */,
 				B4FEB6FC2375DA1600818CD2 /* AWSS3StorageServiceDownloadBehaviorTests.swift in Sources */,
 				B4FEB6E12375DA1500818CD2 /* AWSS3StorageGetURLOperationTests.swift in Sources */,

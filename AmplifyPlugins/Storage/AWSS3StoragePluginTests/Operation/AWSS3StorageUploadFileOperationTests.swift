@@ -21,7 +21,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageUploadFileOperation(request,
                                                         storageService: mockStorageService,
-                                                        authService: mockAuthService) { (event) in
+                                                        authService: mockAuthService) { event in
             switch event {
             case .failed(let error):
                 guard case .validation = error else {
@@ -48,7 +48,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageUploadFileOperation(request,
                                                         storageService: mockStorageService,
-                                                        authService: mockAuthService) { (event) in
+                                                        authService: mockAuthService) { event in
             switch event {
             case .failed(let error):
                 guard case .authError = error else {
@@ -75,7 +75,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageUploadFileOperation(request,
                                                         storageService: mockStorageService,
-                                                        authService: mockAuthService) { (event) in
+                                                        authService: mockAuthService) { event in
             switch event {
             case .failed(let error):
                 guard case .localFileNotFound = error else {
@@ -118,7 +118,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageUploadFileOperation(request,
                                                         storageService: mockStorageService,
-                                                        authService: mockAuthService) { (event) in
+                                                        authService: mockAuthService) { event in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -161,7 +161,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let failInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageUploadFileOperation(request,
                                                         storageService: mockStorageService,
-                                                        authService: mockAuthService) { (event) in
+                                                        authService: mockAuthService) { event in
             switch event {
             case .failed:
                 failInvoked.fulfill()
@@ -211,7 +211,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageUploadFileOperation(request,
                                                         storageService: mockStorageService,
-                                                        authService: mockAuthService) { (event) in
+                                                        authService: mockAuthService) { event in
             switch event {
             case .completed:
                 completeInvoked.fulfill()

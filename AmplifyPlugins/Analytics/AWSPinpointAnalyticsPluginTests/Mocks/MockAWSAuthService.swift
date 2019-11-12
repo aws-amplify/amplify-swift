@@ -36,4 +36,8 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
 
         return .success(identityId ?? "IdentityId")
     }
+
+    public func getToken() -> Result<String, AuthError> {
+        return .success("")
+    }
 }
