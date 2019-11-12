@@ -16,12 +16,18 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
 
         // We have to find the dominant language first and then invoke features.
         fetchPredominantLanguage(text) { (languageType, score, error) in
+            if let languageError = error {
+                let networkError = PredictionsError.networkError(languageError.localizedDescription,
+                                                                 languageError.localizedDescription)
+                onEvent(.failed(networkError))
+                return
+            }
+
             guard let dominantLanguageType  = languageType else {
-                if let languageError = error {
-                    let networkError = PredictionsError.networkError(languageError.localizedDescription,
-                                                                     languageError.localizedDescription)
-                    onEvent(.failed(networkError))
-                }
+                let errorDescription = PredictionsServiceErrorMessage.noLanguageFound.errorDescription
+                let recoverySuggestion = PredictionsServiceErrorMessage.noLanguageFound.recoverySuggestion
+                let unknownError = PredictionsError.unknownError(errorDescription, recoverySuggestion)
+                onEvent(.failed(unknownError))
                 return
             }
 
