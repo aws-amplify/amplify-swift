@@ -110,6 +110,9 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperati
                         graphQLServiceResponse: graphQLServiceResponse, responseType: responseType)
                     dispatch(event: .inProcess(.data(graphQLResponse)))
                 } catch {
+                    // TODO: Verify with the team that terminating a subscription after failing to decode/cast one
+                    // payload is the right thing to do. Another option would be to propagate a GraphQL error, but
+                    // leave the subscription alive.
                     dispatch(event: .failed(APIError.operationError("Failed to deserialize", "", error)))
                 }
             }

@@ -30,7 +30,7 @@ final public class AWSAPICategoryPlugin: NSObject, APICategoryPlugin {
     /// Maps APIOperations to URLSessionTaskBehavior
     var mapper: OperationTaskMapper
 
-    /// A queue that regulates the execution of operations. This will be instantiated during the configuration phase,
+    /// A queue that regulates the execution of operations. This will be instantiated during initalization phase,
     /// and is clearable by `reset()`. This is implicitly unwrapped to be destroyed when resetting.
     var queue: OperationQueue!
 
