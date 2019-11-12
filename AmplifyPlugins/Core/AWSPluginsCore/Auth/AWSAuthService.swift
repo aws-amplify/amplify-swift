@@ -51,7 +51,7 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         var authError: AuthError?
 
         let semaphore = DispatchSemaphore(value: 0)
-        mobileClient.getTokens { (tokens, error) in
+        mobileClient.getTokens { tokens, error in
             if let error = error {
                 authError = AuthError.unknown("failed to get token with error \(error.localizedDescription)")
             } else if let token = tokens {

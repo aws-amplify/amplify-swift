@@ -33,6 +33,9 @@ final public class AWSAPICategoryPlugin: NSObject, APICategoryPlugin {
     /// A queue that regulates the execution of operations.
     var queue: OperationQueue!
 
+    /// Creating and retrieving connections for subscriptions.
+    var subscriptionConnectionFactory: SubscriptionConnectionFactory!
+
     public init(sessionFactory: URLSessionBehaviorFactory) {
         self.mapper = OperationTaskMapper()
         super.init()

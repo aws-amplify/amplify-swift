@@ -4,8 +4,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+import AWSCore
 
 public struct AWSIAMConfiguration {
-    public init() {
+    public let region: AWSRegionType
+
+    public init(region: AWSRegionType) {
+        self.region = region
     }
 }

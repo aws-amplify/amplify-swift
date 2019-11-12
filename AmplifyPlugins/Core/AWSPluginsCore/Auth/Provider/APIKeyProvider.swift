@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// For using API Key based authorization, this protocol needs to be implemented and passed to configuration object.
 public protocol APIKeyProvider {
     func getAPIKey() -> String
 }

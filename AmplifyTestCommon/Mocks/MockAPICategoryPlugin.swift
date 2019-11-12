@@ -58,6 +58,24 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
             return operation
     }
 
+
+    func subscribe<R>(apiName: String,
+                      document: String,
+                      variables: [String: Any]?,
+                      responseType: R.Type, listener: ((AsyncEvent<SubscriptionEvent<GraphQLResponse<R>>, Void, APIError>) -> Void)?) ->
+        AmplifyOperation<GraphQLRequest, SubscriptionEvent<GraphQLResponse<R>>, Void, APIError> where R: Decodable {
+
+            notify("subscribe")
+            let options = GraphQLRequest.Options()
+            let request = GraphQLRequest(apiName: apiName,
+                                         operationType: .subscription,
+                                         document: document,
+                                         variables: variables,
+                                         options: options)
+            let operation = MockSubscriptionGraphQLOperation(request: request, responseType: responseType)
+            return operation
+    }
+
     func get(apiName: String,
              path: String,
              listener: RESTOperation.EventListener?) -> RESTOperation {
@@ -109,6 +127,26 @@ class MockGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRequest, Void,
                    request: request)
     }
 }
+
+class MockSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRequest,
+SubscriptionEvent<GraphQLResponse<R>>,
+Void,
+APIError> {
+
+    override func pause() {
+    }
+
+    override func resume() {
+    }
+
+    init(request: Request,
+         responseType: R.Type) {
+        super.init(categoryType: .api,
+                   eventName: HubPayload.EventName.API.subscribe,
+                   request: request)
+    }
+}
+
 
 class MockAPIGetOperation: AmplifyOperation<RESTRequest, Void, Data, APIError>, RESTOperation {
     override func pause() {

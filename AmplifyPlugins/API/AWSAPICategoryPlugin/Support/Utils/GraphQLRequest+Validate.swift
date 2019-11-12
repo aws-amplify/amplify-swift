@@ -22,4 +22,3 @@ extension GraphQLRequest {
         return nil
     }
 }
-
