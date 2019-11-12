@@ -28,23 +28,33 @@ public struct InterpretResultBuilder {
         return result
     }
 
-    mutating public func addKeyPhrases(keyPhrases: [KeyPhrase]?) {
+    @discardableResult
+    mutating public func with(keyPhrases: [KeyPhrase]?) -> InterpretResultBuilder {
         result.keyPhrases = keyPhrases
+        return self
     }
 
-    mutating public func addSentiment(sentiment: Sentiment?) {
+    @discardableResult
+    mutating public func with(sentiment: Sentiment?) -> InterpretResultBuilder {
         result.sentiment = sentiment
+        return self
     }
 
-    mutating public func addEntities(entities: [EntityDetectionResult]?) {
+    @discardableResult
+    mutating public func with(entities: [EntityDetectionResult]?) -> InterpretResultBuilder {
         result.entities = entities
+        return self
     }
 
-    mutating public func addLanguage(language: LanguageDetectionResult?) {
+    @discardableResult
+    mutating public func with(language: LanguageDetectionResult?) -> InterpretResultBuilder {
         result.language = language
+        return self
     }
 
-    mutating public func addSyntax(syntax: [SyntaxToken]?) {
+    @discardableResult
+    mutating public func with(syntax: [SyntaxToken]?) -> InterpretResultBuilder {
         result.syntax = syntax
+        return self
     }
 }

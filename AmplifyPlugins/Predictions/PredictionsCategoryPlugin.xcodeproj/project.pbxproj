@@ -590,10 +590,10 @@
 		B4DFA67A237B58900013E17B /* Dependency */ = {
 			isa = PBXGroup;
 			children = (
-				B4DFA67B237B58900013E17B /* CoreMLVisionBehavior.swift */,
-				B4DFA67C237B58900013E17B /* CoreMLNaturalLanguageBehavior.swift */,
 				B4DFA67D237B58900013E17B /* CoreMLNaturalLanguageAdaptor.swift */,
+				B4DFA67C237B58900013E17B /* CoreMLNaturalLanguageBehavior.swift */,
 				B4DFA67E237B58900013E17B /* CoreMLVisionAdaptor.swift */,
+				B4DFA67B237B58900013E17B /* CoreMLVisionBehavior.swift */,
 			);
 			path = Dependency;
 			sourceTree = "<group>";
@@ -647,6 +647,9 @@
 		B4DFA694237B59450013E17B /* TestImages */ = {
 			isa = PBXGroup;
 			children = (
+				B49D145E237BC84700856777 /* people.jpg */,
+				B49D1460237BC84700856777 /* screenshotWithText.png */,
+				B49D145F237BC84700856777 /* vehicles.jpg */,
 			);
 			path = TestImages;
 			sourceTree = "<group>";
@@ -956,6 +959,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B49D1463237BC84700856777 /* screenshotWithText.png in Resources */,
+				B49D1462237BC84700856777 /* vehicles.jpg in Resources */,
+				B49D1461237BC84700856777 /* people.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

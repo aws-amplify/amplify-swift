@@ -8,6 +8,6 @@
 public protocol IdentifiedText {
     var text: String { get }
     var boundingBox: BoundingBox { get }
-    var polygon: Polygon { get }
+    var polygon: Polygon? { get }
     var page: Int? { get }
 }

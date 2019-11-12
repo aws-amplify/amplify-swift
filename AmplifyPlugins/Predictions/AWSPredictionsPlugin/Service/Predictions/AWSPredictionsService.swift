@@ -65,21 +65,21 @@ class AWSPredictionsService {
         let awsComprehend = AWSComprehend(forKey: identifier)
         let awsComprehendAdapter = AWSComprehendAdapter(awsComprehend)
 
-        self.init(awsTranslate: awsTranslateAdapter,
+        self.init(identifier: identifier,
+                  awsTranslate: awsTranslateAdapter,
                   awsRekognition: awsRekognitionAdapter,
                   awsTextract: awsTextractAdapter,
                   awsComprehend: awsComprehendAdapter,
-                  config: config,
-                  identifier: identifier)
+                  config: config)
 
     }
 
-    init(awsTranslate: AWSTranslateBehavior,
+    init(identifier: String,
+         awsTranslate: AWSTranslateBehavior,
          awsRekognition: AWSRekognitionBehavior,
          awsTextract: AWSTextractBehavior,
          awsComprehend: AWSComprehendBehavior,
-         config: AWSPredictionsPluginConfiguration,
-         identifier: String) {
+         config: AWSPredictionsPluginConfiguration) {
         self.awsTranslate = awsTranslate
         self.awsRekognition = awsRekognition
         self.awsTextract = awsTextract
