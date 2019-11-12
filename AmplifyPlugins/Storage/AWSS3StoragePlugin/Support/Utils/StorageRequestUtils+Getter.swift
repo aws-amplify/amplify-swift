@@ -61,7 +61,7 @@ extension StorageRequestUtils {
 
             return fileSize
         } catch {
-            throw StorageError.unknown("Unexpected error occurred while retrieving attributes of file.")
+            throw StorageError.unknown("Unexpected error occurred while retrieving attributes of file.", error)
         }
     }
 }

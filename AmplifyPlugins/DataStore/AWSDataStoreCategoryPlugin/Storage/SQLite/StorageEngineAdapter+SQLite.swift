@@ -45,7 +45,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         do {
             try connection.execute(statement)
         } catch {
-            throw DataStoreError.invalidDatabase
+            throw DataStoreError.invalidDatabase(error)
         }
     }
 

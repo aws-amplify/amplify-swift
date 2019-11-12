@@ -8,37 +8,41 @@
 /// Errors associated with configuring and inspecting Amplify Plugins
 public enum PluginError {
 
-    /// The plugin's `key` property is empty
-    case emptyKey(ErrorDescription, RecoverySuggestion)
-
     /// A plugin is being added to the wrong category
-    case mismatchedPlugin(ErrorDescription, RecoverySuggestion)
+    case mismatchedPlugin(ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// The plugin specified by `getPlugin(key)` does not exist
-    case noSuchPlugin(ErrorDescription, RecoverySuggestion)
+    case noSuchPlugin(ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// The plugin encountered an error during configuration
-    case pluginConfigurationError(ErrorDescription, RecoverySuggestion)
+    case pluginConfigurationError(ErrorDescription, RecoverySuggestion, Error? = nil)
 }
 
 extension PluginError: AmplifyError {
     public var errorDescription: ErrorDescription {
         switch self {
-        case .emptyKey(let description, _),
-             .mismatchedPlugin(let description, _),
-             .noSuchPlugin(let description, _),
-             .pluginConfigurationError(let description, _):
+        case .mismatchedPlugin(let description, _, _),
+             .noSuchPlugin(let description, _, _),
+             .pluginConfigurationError(let description, _, _):
             return description
         }
     }
 
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
-        case .emptyKey(_, let recoverySuggestion),
-             .mismatchedPlugin(_, let recoverySuggestion),
-             .noSuchPlugin(_, let recoverySuggestion),
-             .pluginConfigurationError(_, let recoverySuggestion):
+        case .mismatchedPlugin(_, let recoverySuggestion, _),
+             .noSuchPlugin(_, let recoverySuggestion, _),
+             .pluginConfigurationError(_, let recoverySuggestion, _):
             return recoverySuggestion
+        }
+    }
+
+    public var underlyingError: Error? {
+        switch self {
+        case .mismatchedPlugin(_, _, let underlyingError),
+             .noSuchPlugin(_, _, let underlyingError),
+             .pluginConfigurationError(_, _, let underlyingError):
+            return underlyingError
         }
     }
 }

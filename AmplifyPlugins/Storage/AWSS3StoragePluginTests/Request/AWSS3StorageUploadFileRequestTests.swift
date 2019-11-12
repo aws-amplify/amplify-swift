@@ -50,7 +50,7 @@ class AWSS3StorageUploadFileRequestTests: XCTestCase {
             return
         }
 
-        guard case .validation(let field, let description, let recovery) = error else {
+        guard case .validation(let field, let description, let recovery, _) = error else {
             XCTFail("Error does not match validation error")
             return
         }
@@ -77,7 +77,7 @@ class AWSS3StorageUploadFileRequestTests: XCTestCase {
             return
         }
 
-        guard case .validation(let field, let description, let recovery) = error else {
+        guard case .validation(let field, let description, let recovery, _) = error else {
             XCTFail("Error does not match validation error")
             return
         }
@@ -105,7 +105,7 @@ class AWSS3StorageUploadFileRequestTests: XCTestCase {
             return
         }
 
-        guard case .validation(let field, let description, let recovery) = error else {
+        guard case .validation(let field, let description, let recovery, _) = error else {
             XCTFail("Error does not match validation error")
             return
         }

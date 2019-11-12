@@ -8,11 +8,11 @@
 import Foundation
 import Amplify
 
-public protocol UserPoolTokenProvider {
+public protocol AuthTokenProvider {
     func getToken() -> Result<String, AuthError>
 }
 
-public struct BasicUserPoolTokenProvider: UserPoolTokenProvider {
+public struct BasicUserPoolTokenProvider: AuthTokenProvider {
 
     let authService: AWSAuthServiceBehavior
 

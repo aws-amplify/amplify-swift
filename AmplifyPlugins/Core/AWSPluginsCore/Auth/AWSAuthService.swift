@@ -51,7 +51,7 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         var authError: AuthError?
 
         let semaphore = DispatchSemaphore(value: 0)
-        mobileClient.getTokens { (tokens, error) in
+        mobileClient.getTokens { tokens, error in
             if let error = error {
                 authError = AuthError.unknown("failed to get token with error \(error.localizedDescription)")
             } else if let token = tokens {
@@ -87,14 +87,16 @@ public class AWSAuthService: AWSAuthServiceBehavior {
                                       message,
                                       """
                                       Check for network connectivity and try again.
-                                      """)
+                                      """,
+                                      error)
         case .guestAccessNotAllowed(let message):
             return AuthError.identity("Guest access is not allowed",
                                       message,
                                       """
                                       Cognito was configured to disallow unauthenticated (guest) access.
                                       Turn on guest access and try again.
-                                      """)
+                                      """,
+                                      error)
         default:
             return AuthError.unknown(error.localizedDescription)
         }

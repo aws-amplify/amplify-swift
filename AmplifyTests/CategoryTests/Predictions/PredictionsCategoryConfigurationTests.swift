@@ -105,7 +105,7 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         Amplify.reset()
         XCTAssertThrowsError(try Amplify.Predictions.getPlugin(for: "MockPredictionsCategoryPlugin"),
                              "Getting a plugin after reset() should throw") { error in
-                                guard case PluginError.noSuchPlugin = error else {
+                                guard case PredictionsError.configuration = error else {
                                     XCTFail("Expected PluginError.noSuchPlugin")
                                     return
                                 }

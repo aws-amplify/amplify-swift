@@ -70,7 +70,7 @@ public class AWSS3StorageUploadFileOperation: AmplifyOperation<StorageUploadFile
         let identityIdResult = authService.getIdentityId()
         guard case let .success(identityId) = identityIdResult else {
             if case let .failure(error) = identityIdResult {
-                dispatch(StorageError.authError(error.errorDescription, error.recoverySuggestion))
+                dispatch(StorageError.authError(error.errorDescription, error.recoverySuggestion, error))
             }
 
             finish()
@@ -85,7 +85,7 @@ public class AWSS3StorageUploadFileOperation: AmplifyOperation<StorageUploadFile
             finish()
             return
         } catch {
-            dispatch(StorageError.unknown(error.localizedDescription))
+            dispatch(StorageError.unknown(error.localizedDescription, error))
             finish()
             return
         }

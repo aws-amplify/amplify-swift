@@ -66,7 +66,7 @@ class AWSAPICategoryPluginGetTests: AWSAPICategoryPluginBaseTests {
     func testSimplePost() {
         let getCompleted = expectation(description: "post request completed")
 
-        Amplify.API.post(apiName: "none", path: "/simplesuccess", body: "testing") { (event) in
+        Amplify.API.post(apiName: "none", path: "/simplesuccess", body: Data()) { event in
             switch event {
             case .completed(let data):
                 // The endpoint echoes the request back
