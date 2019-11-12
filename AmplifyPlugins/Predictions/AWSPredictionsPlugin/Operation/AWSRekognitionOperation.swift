@@ -38,7 +38,7 @@ PredictionsIdentifyOperation {
         }
 
         switch request.identifyType {
-        case .detectCelebrities:
+        case .detectCelebrity:
             predictionsService.detectCelebs(image: request.image) { [weak self] event in
                 self?.onServiceEvent(event: event)
 

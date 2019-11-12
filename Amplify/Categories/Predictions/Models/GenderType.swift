@@ -5,9 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public enum IdentifyType {
-    case detectCelebrity
-    case detectLabels
-    case detectEntities
-    case detectText
+import Foundation
+
+public enum GenderType {
+    case male
+    case female
+    case unknown
 }

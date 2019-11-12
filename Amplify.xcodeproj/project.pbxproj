@@ -301,14 +301,24 @@
 		95DAA9DD237798800028544F /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 2125E2102318D73B00B3DEB5 /* awsconfiguration.json */; };
 		95DAA9E82379E1860028544F /* IdentifyEntitiesFromCollectionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAA9E72379E1860028544F /* IdentifyEntitiesFromCollectionResult.swift */; };
 		95DAA9EA237A22CD0028544F /* IdentifyEntitiesResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAA9E9237A22CD0028544F /* IdentifyEntitiesResult.swift */; };
+		95DAA9EC237A389F0028544F /* FormatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAA9EB237A389F0028544F /* FormatType.swift */; };
+		95DAA9EE237A39710028544F /* Landmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAA9ED237A39710028544F /* Landmark.swift */; };
+		95DAA9F0237A39860028544F /* Pose.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAA9EF237A39860028544F /* Pose.swift */; };
+		95DAA9F2237A39A20028544F /* Celebrity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAA9F1237A39A20028544F /* Celebrity.swift */; };
+		95DAA9F4237A39BF0028544F /* CollectionEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAA9F3237A39BF0028544F /* CollectionEntity.swift */; };
+		95DAA9F6237A39D80028544F /* GenderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAA9F5237A39D80028544F /* GenderType.swift */; };
+		95DAA9F8237A39EC0028544F /* EmotionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAA9F7237A39EC0028544F /* EmotionType.swift */; };
+		95DAA9FA237A3A010028544F /* Emotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAA9F9237A3A010028544F /* Emotion.swift */; };
+		95DAA9FC237A3A1C0028544F /* Attribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAA9FB237A3A1C0028544F /* Attribute.swift */; };
+		95DAA9FE237A3A350028544F /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAA9FD237A3A350028544F /* Entity.swift */; };
+		95DAAA00237A3A5B0028544F /* AgeRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAA9FF237A3A5B0028544F /* AgeRange.swift */; };
+		95DAAA01237A3AF20028544F /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B4386A02236B9138000DC3DB /* Info.plist */; };
+		95DAAA04237A3B5B0028544F /* AWSPredictionsPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAA02237A3B0F0028544F /* AWSPredictionsPluginTestBase.swift */; };
 		9A3B32F36FF8D89FC92F0D9F /* Pods_Amplify_AWSPluginsCore_AWSAPICategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2FED6A85E17143587BD3B0F /* Pods_Amplify_AWSPluginsCore_AWSAPICategoryPlugin.framework */; };
 		A48EE22C734F0E24ADFD91F0 /* Pods_Amplify_AWSPluginsCore_AWSPinpointAnalyticsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C4BE8CCCE9E123B2B267666 /* Pods_Amplify_AWSPluginsCore_AWSPinpointAnalyticsPlugin.framework */; };
 		B43869E7236B8D72000DC3DB /* AWSPredictionsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4940434236A2F8800BC7C15 /* AWSPredictionsPlugin.framework */; };
 		B43869F0236B8DA0000DC3DB /* AWSPredictionsPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43869EE236B8DA0000DC3DB /* AWSPredictionsPluginTests.swift */; };
-		B4386A03236B9138000DC3DB /* AWSPredictionsPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4386A01236B9138000DC3DB /* AWSPredictionsPluginTestBase.swift */; };
 		B4386A0E236B92AD000DC3DB /* CoreMLPredictionsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4694765236B1FED001A155D /* CoreMLPredictionsPlugin.framework */; };
-		B4386A26236B92EE000DC3DB /* CoreMLPredictionsPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4386A23236B92EE000DC3DB /* CoreMLPredictionsPluginTests.swift */; };
-		B4386A28236B92EE000DC3DB /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B4386A24236B92EE000DC3DB /* Info.plist */; };
 		B4386A26236B92EE000DC3DB /* CoreMLPredictionsPluginClientBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4386A23236B92EE000DC3DB /* CoreMLPredictionsPluginClientBehaviorTests.swift */; };
 		B4386A2C236B92FD000DC3DB /* CoreMLPredictionsPluginIntegrationTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4386A2A236B92FD000DC3DB /* CoreMLPredictionsPluginIntegrationTest.swift */; };
 		B438D1F7237485BA009E2DD0 /* CoreMLPredictionsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B4694765236B1FED001A155D /* CoreMLPredictionsPlugin.framework */; };
@@ -351,7 +361,7 @@
 		B4D3853E236C97360014653D /* PredictionsCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D3852A236C97350014653D /* PredictionsCategory+HubPayloadEventName.swift */; };
 		B4D3853F236C97360014653D /* PredictionsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D3852C236C97350014653D /* PredictionsError.swift */; };
 		B4D38540236C97360014653D /* PredictionsCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D3852D236C97350014653D /* PredictionsCategoryPlugin.swift */; };
-		B4FEB6362375BF9500818CD2 /* IdentityType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6352375BF9500818CD2 /* IdentityType.swift */; };
+		B4FEB6362375BF9500818CD2 /* IdentifyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6352375BF9500818CD2 /* IdentifyType.swift */; };
 		B4FEB6382375BFA900818CD2 /* Sentiment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6372375BFA900818CD2 /* Sentiment.swift */; };
 		B4FEB63A2375BFCA00818CD2 /* EntityDetectionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB6392375BFCA00818CD2 /* EntityDetectionResult.swift */; };
 		B4FEB63C2375BFEF00818CD2 /* LanguageDetectionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB63B2375BFEF00818CD2 /* LanguageDetectionResult.swift */; };
@@ -1409,6 +1419,18 @@
 		95DAA9CF2376184C0028544F /* AWSPredictionsPlugin+IdentifyBasicIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSPredictionsPlugin+IdentifyBasicIntegrationTests.swift"; sourceTree = "<group>"; };
 		95DAA9E72379E1860028544F /* IdentifyEntitiesFromCollectionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifyEntitiesFromCollectionResult.swift; sourceTree = "<group>"; };
 		95DAA9E9237A22CD0028544F /* IdentifyEntitiesResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifyEntitiesResult.swift; sourceTree = "<group>"; };
+		95DAA9EB237A389F0028544F /* FormatType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatType.swift; sourceTree = "<group>"; };
+		95DAA9ED237A39710028544F /* Landmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Landmark.swift; sourceTree = "<group>"; };
+		95DAA9EF237A39860028544F /* Pose.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pose.swift; sourceTree = "<group>"; };
+		95DAA9F1237A39A20028544F /* Celebrity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Celebrity.swift; sourceTree = "<group>"; };
+		95DAA9F3237A39BF0028544F /* CollectionEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionEntity.swift; sourceTree = "<group>"; };
+		95DAA9F5237A39D80028544F /* GenderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderType.swift; sourceTree = "<group>"; };
+		95DAA9F7237A39EC0028544F /* EmotionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmotionType.swift; sourceTree = "<group>"; };
+		95DAA9F9237A3A010028544F /* Emotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Emotion.swift; sourceTree = "<group>"; };
+		95DAA9FB237A3A1C0028544F /* Attribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attribute.swift; sourceTree = "<group>"; };
+		95DAA9FD237A3A350028544F /* Entity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
+		95DAA9FF237A3A5B0028544F /* AgeRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgeRange.swift; sourceTree = "<group>"; };
+		95DAAA02237A3B0F0028544F /* AWSPredictionsPluginTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPredictionsPluginTestBase.swift; sourceTree = "<group>"; };
 		976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9883B94C1A1C9D551AC012AE /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSDataStoreCategoryPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSDataStoreCategoryPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99CFDB8E55EADE7A74938E6C /* Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1427,14 +1449,11 @@
 		B43869E2236B8D72000DC3DB /* AWSPredictionsPluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPredictionsPluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B43869EE236B8DA0000DC3DB /* AWSPredictionsPluginTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPredictionsPluginTests.swift; sourceTree = "<group>"; };
 		B43869F6236B9104000DC3DB /* AWSPredictionsPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPredictionsPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B4386A01236B9138000DC3DB /* AWSPredictionsPluginTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPredictionsPluginTestBase.swift; sourceTree = "<group>"; };
 		B4386A02236B9138000DC3DB /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B4386A01236B9138000DC3DB /* AWSPredictionsPluginIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPredictionsPluginIntegrationTests.swift; sourceTree = "<group>"; };
 		B4386A09236B92AD000DC3DB /* CoreMLPredictionsPluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoreMLPredictionsPluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4386A18236B92C0000DC3DB /* CoreMLPredictionsPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoreMLPredictionsPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4386A23236B92EE000DC3DB /* CoreMLPredictionsPluginClientBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPluginClientBehaviorTests.swift; sourceTree = "<group>"; };
 		B4386A2A236B92FD000DC3DB /* CoreMLPredictionsPluginIntegrationTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPluginIntegrationTest.swift; sourceTree = "<group>"; };
-		B438D1FD23748ABA009E2DD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B438D1FF23748AEC009E2DD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B438D20123748C45009E2DD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B438D20323748C8A009E2DD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1480,7 +1499,7 @@
 		B4D3852A236C97350014653D /* PredictionsCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PredictionsCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		B4D3852C236C97350014653D /* PredictionsError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsError.swift; sourceTree = "<group>"; };
 		B4D3852D236C97350014653D /* PredictionsCategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsCategoryPlugin.swift; sourceTree = "<group>"; };
-		B4FEB6352375BF9500818CD2 /* IdentityType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityType.swift; sourceTree = "<group>"; };
+		B4FEB6352375BF9500818CD2 /* IdentifyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifyType.swift; sourceTree = "<group>"; };
 		B4FEB6372375BFA900818CD2 /* Sentiment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sentiment.swift; sourceTree = "<group>"; };
 		B4FEB6392375BFCA00818CD2 /* EntityDetectionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityDetectionResult.swift; sourceTree = "<group>"; };
 		B4FEB63B2375BFEF00818CD2 /* LanguageDetectionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageDetectionResult.swift; sourceTree = "<group>"; };
@@ -2980,11 +2999,9 @@
 		B4386A00236B9138000DC3DB /* AWSPredictionsPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
-				B4386A01236B9138000DC3DB /* AWSPredictionsPluginTestBase.swift */,
+				95DAAA02237A3B0F0028544F /* AWSPredictionsPluginTestBase.swift */,
 				95DAA9CF2376184C0028544F /* AWSPredictionsPlugin+IdentifyBasicIntegrationTests.swift */,
 				95DAA9DB237795B20028544F /* Resources */,
-				B438D1FC23748ABA009E2DD0 /* Resources */,
-				B4386A01236B9138000DC3DB /* AWSPredictionsPluginIntegrationTests.swift */,
 			);
 			path = AWSPredictionsPluginIntegrationTests;
 			sourceTree = "<group>";
@@ -3008,14 +3025,6 @@
 				B438D20023748C45009E2DD0 /* Resources */,
 			);
 			path = CoreMLPredictionsPluginIntegrationTests;
-			sourceTree = "<group>";
-		};
-		B438D1FC23748ABA009E2DD0 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				B438D1FD23748ABA009E2DD0 /* Info.plist */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		B438D1FE23748AEC009E2DD0 /* Resources */ = {
@@ -3122,7 +3131,7 @@
 			isa = PBXGroup;
 			children = (
 				B478F8ED2375BD1D00C4F92B /* LanguageType.swift */,
-				B4FEB6352375BF9500818CD2 /* IdentityType.swift */,
+				B4FEB6352375BF9500818CD2 /* IdentifyType.swift */,
 				B4FEB6372375BFA900818CD2 /* Sentiment.swift */,
 				B4FEB6392375BFCA00818CD2 /* EntityDetectionResult.swift */,
 				B4FEB63B2375BFEF00818CD2 /* LanguageDetectionResult.swift */,
@@ -3131,6 +3140,17 @@
 				B4FEB6412375C01400818CD2 /* KeyPhrase.swift */,
 				B4FEB6432375C02300818CD2 /* EntityType.swift */,
 				B4FEB6452375C02D00818CD2 /* SpeechType.swift */,
+				95DAA9EB237A389F0028544F /* FormatType.swift */,
+				95DAA9ED237A39710028544F /* Landmark.swift */,
+				95DAA9EF237A39860028544F /* Pose.swift */,
+				95DAA9F1237A39A20028544F /* Celebrity.swift */,
+				95DAA9F3237A39BF0028544F /* CollectionEntity.swift */,
+				95DAA9F5237A39D80028544F /* GenderType.swift */,
+				95DAA9F7237A39EC0028544F /* EmotionType.swift */,
+				95DAA9F9237A3A010028544F /* Emotion.swift */,
+				95DAA9FB237A3A1C0028544F /* Attribute.swift */,
+				95DAA9FD237A3A350028544F /* Entity.swift */,
+				95DAA9FF237A3A5B0028544F /* AgeRange.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -4986,9 +5006,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-
-            95DAA9DD237798800028544F /* awsconfiguration.json in Resources */,
-
+				95DAAA01237A3AF20028544F /* Info.plist in Resources */,
+				95DAA9DD237798800028544F /* awsconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6938,7 +6957,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B4386A03236B9138000DC3DB /* AWSPredictionsPluginTestBase.swift in Sources */,
+				95DAAA04237A3B5B0028544F /* AWSPredictionsPluginTestBase.swift in Sources */,
 				95DAA9D123761C1D0028544F /* AWSPredictionsPlugin+IdentifyBasicIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7195,10 +7214,11 @@
 				FAC2352B227A053D00424678 /* AnalyticsEvent.swift in Sources */,
 				FAC23544227A055200424678 /* ConfigurationError.swift in Sources */,
 				FAC428A4235F802A0000F221 /* APICategory+InterceptorBehavior.swift in Sources */,
+				95DAAA00237A3A5B0028544F /* AgeRange.swift in Sources */,
 				FAC23547227A055200424678 /* Plugin.swift in Sources */,
 				FA9FB780232AA11A00C04D32 /* HubChannelDispatcher.swift in Sources */,
 				FA315298233D644F00DE78E7 /* StorageGetDataRequest.swift in Sources */,
-				B4FEB6362375BF9500818CD2 /* IdentityType.swift in Sources */,
+				B4FEB6362375BF9500818CD2 /* IdentifyType.swift in Sources */,
 				FA4E730A232828EA003B8EEB /* Amplify+Reset.swift in Sources */,
 				FA6BC87B235F5D240001A882 /* APICategoryGraphQLBehavior.swift in Sources */,
 				FA6BC86B235F57920001A882 /* APIError.swift in Sources */,
@@ -7238,6 +7258,7 @@
 				FAC2353D227A055200424678 /* CategoryConfiguration.swift in Sources */,
 				B4D38535236C97360014653D /* PredictionsCategory.swift in Sources */,
 				FAC23595227A4B9800424678 /* HubCategoryPlugin.swift in Sources */,
+				95DAA9F2237A39A20028544F /* Celebrity.swift in Sources */,
 				FAF1B88623392F96007F1435 /* SerialDispatcher.swift in Sources */,
 				FA09B94B2322CBEB000E064D /* LoggingCategoryConfiguration.swift in Sources */,
 				210922572359693900CEC295 /* BasicAnalyticsEvent.swift in Sources */,
@@ -7245,6 +7266,7 @@
 				FA76A2D32342B47100B91ADB /* HubPayloadEventName.swift in Sources */,
 				FA09B9332321A305000E064D /* HubCategory+CategoryConfigurable.swift in Sources */,
 				B92E03B02367CE7A006CEB8D /* DataStoreCallback.swift in Sources */,
+				95DAA9FE237A3A350028544F /* Entity.swift in Sources */,
 				B92E03BA2367CE7A006CEB8D /* Model+Codable.swift in Sources */,
 				FADB3A6823612940006D6FE9 /* BasicClosure.swift in Sources */,
 				B92E03B32367CE7A006CEB8D /* DataStoreCategory.swift in Sources */,
@@ -7262,6 +7284,7 @@
 				FA315295233D634900DE78E7 /* StorageDownloadFileRequest.swift in Sources */,
 				FA56F72722B14BF70039754A /* AmplifyOperation.swift in Sources */,
 				FAC428A6235F83770000F221 /* RESTOperation.swift in Sources */,
+				95DAA9F0237A39860028544F /* Pose.swift in Sources */,
 				FA6BC86D235F5AE30001A882 /* APICategory+HubPayloadEventName.swift in Sources */,
 				FAC23591227A4AF000424678 /* HubCategoryClientBehavior.swift in Sources */,
 				210DBC122332B3C0009B9E51 /* StorageDownloadFileOperation.swift in Sources */,
@@ -7271,6 +7294,7 @@
 				210DBC472332F0C5009B9E51 /* StorageError.swift in Sources */,
 				FA9FB77B2329D4FB00C04D32 /* UnsubscribeToken.swift in Sources */,
 				B4D38531236C97360014653D /* PredictionsCategoryClientBehavior.swift in Sources */,
+				95DAA9F6237A39D80028544F /* GenderType.swift in Sources */,
 				B4FEB63E2375BFFA00818CD2 /* SyntaxToken.swift in Sources */,
 				95DAA9522371CB3B0028544F /* IdentifyLabelsResult.swift in Sources */,
 				FAC428A2235F80000000F221 /* APICategory+GraphQLBehavior.swift in Sources */,
@@ -7280,8 +7304,10 @@
 				B4D38538236C97360014653D /* PredictionsCategoryConfiguration.swift in Sources */,
 				2109225A23596BCD00CEC295 /* AnalyticsCategoryClientBehavior.swift in Sources */,
 				FA09B92F2321A2DE000E064D /* APICategory+CategoryConfigurable.swift in Sources */,
+				95DAA9F8237A39EC0028544F /* EmotionType.swift in Sources */,
 				95DAA9E82379E1860028544F /* IdentifyEntitiesFromCollectionResult.swift in Sources */,
 				B4FEB6422375C01400818CD2 /* KeyPhrase.swift in Sources */,
+				95DAA9FC237A3A1C0028544F /* Attribute.swift in Sources */,
 				B4D3853E236C97360014653D /* PredictionsCategory+HubPayloadEventName.swift in Sources */,
 				FA9FB7792329D4D400C04D32 /* HubFilter.swift in Sources */,
 				B4D3853B236C97360014653D /* PredictionsConvertRequest.swift in Sources */,
@@ -7296,6 +7322,7 @@
 				B92E03AF2367CE7A006CEB8D /* DataStoreCategoryBehavior.swift in Sources */,
 				B4FEB6462375C02D00818CD2 /* SpeechType.swift in Sources */,
 				FA31529C233D645400DE78E7 /* StorageListRequest.swift in Sources */,
+				95DAA9F4237A39BF0028544F /* CollectionEntity.swift in Sources */,
 				B92E03B62367CE7A006CEB8D /* ModelSchema.swift in Sources */,
 				21FFF988230B7B2C005878EA /* AsychronousOperation.swift in Sources */,
 				FA0173352375F8A5005DDDFC /* LoggingError.swift in Sources */,
@@ -7304,6 +7331,7 @@
 				FAC2351A227A053D00424678 /* StorageCategory.swift in Sources */,
 				FA6BC87D235F5D490001A882 /* APICategoryRESTBehavior.swift in Sources */,
 				B92E03B92367CE7A006CEB8D /* Model+Schema.swift in Sources */,
+				95DAA9FA237A3A010028544F /* Emotion.swift in Sources */,
 				B4D38530236C97360014653D /* PredictionsInterpretOperation.swift in Sources */,
 				FAC23541227A055200424678 /* CategoryType.swift in Sources */,
 				210922502359634C00CEC295 /* AnalyticsProfile.swift in Sources */,
@@ -7334,9 +7362,11 @@
 				2142099623721F4400FA140C /* GraphQLOperationType.swift in Sources */,
 				FAC0A2AD22B43FE700B50912 /* HubCategory+ClientBehavior.swift in Sources */,
 				B4D38533236C97360014653D /* InterpretResult.swift in Sources */,
+				95DAA9EC237A389F0028544F /* FormatType.swift in Sources */,
 				FAC23523227A053D00424678 /* LoggingCategoryPlugin.swift in Sources */,
 				FAC23527227A053D00424678 /* LoggingCategoryClientBehavior.swift in Sources */,
 				95DAA9CE2376141D0028544F /* IdentifyCelebsResult.swift in Sources */,
+				95DAA9EE237A39710028544F /* Landmark.swift in Sources */,
 				FA09B92B2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift in Sources */,
 				2144226E234BDE23009357F7 /* StorageUploadFileOperation.swift in Sources */,
 				21FFF9A2230C9731005878EA /* StorageListResult.swift in Sources */,
