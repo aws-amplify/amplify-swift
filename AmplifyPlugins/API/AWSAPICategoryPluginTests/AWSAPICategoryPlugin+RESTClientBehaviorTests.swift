@@ -9,7 +9,6 @@ import XCTest
 
 @testable import Amplify
 @testable import AWSAPICategoryPlugin
-@testable import AWSPluginsTestCommon
 @testable import AmplifyTestCommon
 
 class AWSAPICategoryPluginRESTClientBehaviorTests: AWSAPICategoryPluginTestBase {

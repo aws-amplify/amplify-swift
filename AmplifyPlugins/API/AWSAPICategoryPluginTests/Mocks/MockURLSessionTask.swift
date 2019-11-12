@@ -8,7 +8,6 @@
 import Foundation
 @testable import AWSAPICategoryPlugin
 @testable import Amplify
-@testable import AWSPluginsTestCommon
 @testable import AmplifyTestCommon
 
 class MockURLSessionTask: URLSessionDataTaskBehavior {

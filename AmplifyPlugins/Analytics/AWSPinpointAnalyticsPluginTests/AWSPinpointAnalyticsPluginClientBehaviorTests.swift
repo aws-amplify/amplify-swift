@@ -37,7 +37,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     func testIdentifyUser() {
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
 
-        _ = plugin.listen(to: .analytics, isIncluded: nil) { (payload) in
+        _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
             print(payload)
             if payload.eventName == HubPayload.EventName.Analytics.identifyUser {
                 analyticsEventReceived.fulfill()
@@ -89,7 +89,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
                                                                                                userInfo: nil))
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
 
-        _ = plugin.listen(to: .analytics, isIncluded: nil) { (payload) in
+        _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
             print(payload)
             if payload.eventName == HubPayload.EventName.Analytics.identifyUser {
                 analyticsEventReceived.fulfill()
@@ -131,7 +131,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         let event = BasicAnalyticsEvent(testName, properties: testProperties)
 
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
-        _ = plugin.listen(to: .analytics, isIncluded: nil) { (payload) in
+        _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
             print(payload)
             if payload.eventName == HubPayload.EventName.Analytics.record {
                 analyticsEventReceived.fulfill()
@@ -177,7 +177,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         let event = BasicAnalyticsEvent(testName, properties: testProperties)
 
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
-        _ = plugin.listen(to: .analytics, isIncluded: nil) { (payload) in
+        _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
             print(payload)
             if payload.eventName == HubPayload.EventName.Analytics.record {
                 analyticsEventReceived.fulfill()
@@ -208,7 +208,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         mockPinpoint.createEventResult = expectedPinpointEvent
 
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
-        _ = plugin.listen(to: .analytics, isIncluded: nil) { (payload) in
+        _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
             print(payload)
             if payload.eventName == HubPayload.EventName.Analytics.record {
                 analyticsEventReceived.fulfill()
@@ -251,7 +251,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         mockPinpoint.createEventResult = expectedPinpointEvent
 
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
-        _ = plugin.listen(to: .analytics, isIncluded: nil) { (payload) in
+        _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
             print(payload)
             if payload.eventName == HubPayload.EventName.Analytics.record {
                 analyticsEventReceived.fulfill()
@@ -335,7 +335,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
                                                                            AWSPinpointEvent()] as AnyObject)
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
 
-        _ = plugin.listen(to: .analytics, isIncluded: nil) { (payload) in
+        _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
                 methodWasInvokedOnPlugin.fulfill()
                 guard let pinpointEvents = payload.data as? [AWSPinpointEvent] else {
@@ -373,7 +373,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
                                                                                       userInfo: nil))
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
 
-        _ = plugin.listen(to: .analytics, isIncluded: nil) { (payload) in
+        _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
                 methodWasInvokedOnPlugin.fulfill()
                 guard let error = payload.data as? AnalyticsError else {

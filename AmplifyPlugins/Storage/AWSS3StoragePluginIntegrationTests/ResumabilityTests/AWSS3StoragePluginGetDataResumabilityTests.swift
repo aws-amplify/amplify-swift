@@ -28,7 +28,7 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
         failedInvoked.isInverted = true
         let noProgressAfterPause = expectation(description: "Progress after pause is invoked")
         noProgressAfterPause.isInverted = true
-        let operation = Amplify.Storage.getData(key: key, options: nil) { (event) in
+        let operation = Amplify.Storage.getData(key: key, options: nil) { event in
             switch event {
             case .inProcess(let progress):
                 // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
@@ -65,7 +65,7 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
         let completeInvoked = expectation(description: "Complete invoked")
-        let operation = Amplify.Storage.getData(key: key, options: nil) { (event) in
+        let operation = Amplify.Storage.getData(key: key, options: nil) { event in
             switch event {
             case .inProcess(let progress):
                 // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
@@ -101,7 +101,7 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
         completedInvoked.isInverted = true
         let failedInvoked = expectation(description: "Failed invoked")
         failedInvoked.isInverted = true
-        let operation = Amplify.Storage.getData(key: key, options: nil) { (event) in
+        let operation = Amplify.Storage.getData(key: key, options: nil) { event in
             switch event {
             case .inProcess(let progress):
                 // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
