@@ -19,7 +19,7 @@ struct PredictionsServiceErrorMessage {
         "No result was found for language. An unknown error occurred.",
         "Please try with different input")
 
-    static let predominantLanguageNotDetermined: PredictionsServiceErrorString = (
+    static let dominantLanguageNotDetermined: PredictionsServiceErrorString = (
         "Could not determine the predominant language in the text",
         "Please try with different input")
 }

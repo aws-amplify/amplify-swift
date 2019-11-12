@@ -15,37 +15,30 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
                     onEvent: @escaping AWSPredictionsService.ComprehendServiceEventHandler) {
 
         // We have to find the dominant language first and then invoke features.
-        fetchPredominantLanguage(text) { (languageType, score, error) in
-            if let languageError = error {
-                let networkError = PredictionsError.networkError(languageError.localizedDescription,
-                                                                 languageError.localizedDescription)
-                onEvent(.failed(networkError))
-                return
-            }
+        fetchPredominantLanguage(text) { event in
 
-            guard let dominantLanguageType  = languageType else {
-                let errorDescription = PredictionsServiceErrorMessage.noLanguageFound.errorDescription
-                let recoverySuggestion = PredictionsServiceErrorMessage.noLanguageFound.recoverySuggestion
-                let unknownError = PredictionsError.unknownError(errorDescription, recoverySuggestion)
-                onEvent(.failed(unknownError))
-                return
+            switch event {
+            case .completed(let dominantLanguageType, let score):
+                var featuresResultBuilder = self.analyzeText(text, for: dominantLanguageType)
+                let languageDetected = LanguageDetectionResult(languageCode: dominantLanguageType, score: score)
+                featuresResultBuilder.addLanguage(language: languageDetected)
+                onEvent(.completed(featuresResultBuilder.build()))
+            case .failed(let error):
+                onEvent(.failed(error))
             }
-
-            var featuresResultBuilder = self.analyzeText(text, for: dominantLanguageType)
-            let languageDetected = LanguageDetectionResult(languageCode: dominantLanguageType, score: score)
-            featuresResultBuilder.addLanguage(language: languageDetected)
-            onEvent(.completed(featuresResultBuilder.build()))
         }
     }
 
     private func fetchPredominantLanguage(_ text: String,
-                                          completionHandler: @escaping (LanguageType?, Double?, Error?) -> Void) {
+                                          completionHandler: @escaping (FetchDominantLanguageEvent) -> Void) {
         let detectLanguage: AWSComprehendDetectDominantLanguageRequest = AWSComprehendDetectDominantLanguageRequest()
         detectLanguage.text = text
 
         awsComprehend.detectLanguage(request: detectLanguage).continueWith { (task) -> Any? in
-            guard task.error == nil else {
-                completionHandler(nil, nil, task.error)
+            if let languageError = task.error {
+                let networkError = PredictionsError.networkError(languageError.localizedDescription,
+                languageError.localizedDescription)
+                completionHandler(.failed(networkError))
                 return nil
             }
 
@@ -53,31 +46,22 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
                 let errorDescription = PredictionsServiceErrorMessage.noLanguageFound.errorDescription
                 let recoverySuggestion = PredictionsServiceErrorMessage.noLanguageFound.recoverySuggestion
                 let unknownError = PredictionsError.unknownError(errorDescription, recoverySuggestion)
-                completionHandler(nil, nil, unknownError)
+                completionHandler(.failed(unknownError))
                 return nil
             }
 
-            // Find the dominant language with the highest score.
-            let dominantLanguageOptional = result.languages?.max { item1, item2 in
-                guard let item1Score = item1.score else {
-                    return false
-                }
-                guard let item2Score = item2.score else {
-                    return true
-                }
-                return item1Score.doubleValue > item2Score.doubleValue
-            }
-            guard let dominantLanguageCode = dominantLanguageOptional?.languageCode else {
-                let errorDescription = PredictionsServiceErrorMessage.predominantLanguageNotDetermined.errorDescription
-                let recoverySuggestion = PredictionsServiceErrorMessage.predominantLanguageNotDetermined.recoverySuggestion
-                let unknownError = PredictionsError.unknownError(errorDescription, recoverySuggestion)
-                completionHandler(nil, nil, unknownError)
-                return nil
+            guard let  dominantLanguage = result.languages?.getDominantLanguage(),
+                let dominantLanguageCode = dominantLanguage.languageCode else {
+
+                    let errorDescription = PredictionsServiceErrorMessage.dominantLanguageNotDetermined.errorDescription
+                    let recoverySuggestion = PredictionsServiceErrorMessage.dominantLanguageNotDetermined.recoverySuggestion
+                    let unknownError = PredictionsError.unknownError(errorDescription, recoverySuggestion)
+                    completionHandler(.failed(unknownError))
+                    return nil
             }
             let locale = Locale(identifier: dominantLanguageCode)
-            completionHandler(LanguageType(locale: locale),
-                              dominantLanguageOptional?.score?.doubleValue,
-                              nil)
+            let languageType = LanguageType(locale: locale)
+            completionHandler(.completed(languageType, dominantLanguage.score?.doubleValue))
             return nil
         }
     }
@@ -98,25 +82,25 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
         let comprehendLanguageCode = languageCode.toComprehendLanguage()
         let syntaxLanguageCode = languageCode.toSyntaxLanguage()
         dispatchGroup.enter()
-        fetchSentimentResult(text, languageCode: comprehendLanguageCode) { (sentiment) in
+        fetchSentimentResult(text, languageCode: comprehendLanguageCode) { sentiment in
             sentimentResult = sentiment
             dispatchGroup.leave()
         }
 
         dispatchGroup.enter()
-        detectEntities(text, languageCode: comprehendLanguageCode) { (detectedEntities) in
+        detectEntities(text, languageCode: comprehendLanguageCode) { detectedEntities in
             entitiesResult = detectedEntities
             dispatchGroup.leave()
         }
 
         dispatchGroup.enter()
-        fetchKeyPhrases(text, languageCode: comprehendLanguageCode) { (keyPhrases) in
+        fetchKeyPhrases(text, languageCode: comprehendLanguageCode) { keyPhrases in
             keyPhrasesResult = keyPhrases
             dispatchGroup.leave()
         }
 
         dispatchGroup.enter()
-        fetchSyntax(text, languageCode: syntaxLanguageCode) { (syntaxTokens) in
+        fetchSyntax(text, languageCode: syntaxLanguageCode) { syntaxTokens in
             syntaxTokenResult = syntaxTokens
             dispatchGroup.leave()
         }
@@ -254,4 +238,19 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
 
     }
 
+}
+
+extension Array where Element: AWSComprehendDominantLanguage {
+
+    func getDominantLanguage() -> AWSComprehendDominantLanguage? {
+        return max { item1, item2 in
+            guard let item1Score = item1.score else {
+                return false
+            }
+            guard let item2Score = item2.score else {
+                return true
+            }
+            return item1Score.doubleValue > item2Score.doubleValue
+        }
+    }
 }
