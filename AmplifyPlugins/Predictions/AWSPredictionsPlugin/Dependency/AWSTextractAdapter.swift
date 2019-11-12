@@ -1,0 +1,27 @@
+//
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import Foundation
+import AWSTextract
+
+class AWSTextractAdapter: AWSTextractBehavior {
+
+    let awsTextract: AWSTextract
+
+    init(_ awsTextract: AWSTextract) {
+        self.awsTextract = awsTextract
+    }
+
+    func analyzeDocument(request: AWSTextractAnalyzeDocumentRequest) -> AWSTask<AWSTextractAnalyzeDocumentResponse> {
+        awsTextract.analyzeDocument(request)
+    }
+
+    func getTextract() -> AWSTextract {
+        return awsTextract
+    }
+
+}

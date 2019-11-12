@@ -10,7 +10,7 @@ import Amplify
 import AWSMobileClient
 import AWSPluginsCore
 
-public class AWSRekognitionOperation: AmplifyOperation<PredictionsIdentifyRequest,
+public class AWSIdentifyOperation: AmplifyOperation<PredictionsIdentifyRequest,
     Void, IdentifyResult, PredictionsError>,
 PredictionsIdentifyOperation {
 
@@ -43,8 +43,10 @@ PredictionsIdentifyOperation {
                 self?.onServiceEvent(event: event)
 
             }
-        case .detectText:
-            break
+        case .detectText(let formatType):
+            predictionsService.detectText(image: request.image, format: formatType) { [weak self] event in
+                self?.onServiceEvent(event: event)
+            }
         case .detectLabels:
             predictionsService.detectLabels(
             image: request.image) { [weak self] event in
@@ -52,7 +54,9 @@ PredictionsIdentifyOperation {
             }
 
         case .detectEntities:
-            break
+            predictionsService.detectEntities(image: request.image) { [weak self] event in
+                self?.onServiceEvent(event: event)
+            }
         }
     }
 

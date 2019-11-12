@@ -5,12 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSRekognition
 import AWSTranslate
+import AWSTextract
 
-class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateServiceBehaviour {
+class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateServiceBehaviour, AWSTextractServiceBehaviour {
 
     var identifier: String!
     var awsTranslate: AWSTranslateBehavior!
@@ -18,6 +18,7 @@ class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateService
     var awsPolly: AWSPollyBehavior!
     var awsTranscribe: AWSTranscribeBehavior!
     var awsComprehend: AWSComprehendBehavior!
+    var awsTextract: AWSTextractBehavior!
     var collectionId: String?
     var maxFaces: Int!
 
@@ -43,8 +44,13 @@ class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateService
         let awsRekognition = AWSRekognition(forKey: identifier)
         let awsRekognitionAdapter = AWSRekognitionAdapter(awsRekognition)
 
+        AWSTextract.register(with: serviceConfiguration, forKey: identifier)
+        let awsTextract = AWSTextract(forKey: identifier)
+        let awsTextractAdapter = AWSTextractAdapter(awsTextract)
+
         self.init(awsTranslate: awsTranslateAdapter,
                   awsRekognition: awsRekognitionAdapter,
+                  awsTextract: awsTextractAdapter,
                   collectionId: collectionId,
                   maxFaces: maxFaces,
                   identifier: identifier)
@@ -52,11 +58,13 @@ class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateService
 
     init(awsTranslate: AWSTranslateBehavior,
          awsRekognition: AWSRekognitionBehavior,
+         awsTextract: AWSTextractBehavior,
          collectionId: String?,
          maxFaces: Int,
          identifier: String) {
         self.awsTranslate = awsTranslate
         self.awsRekognition = awsRekognition
+        self.awsTextract = awsTextract
         self.identifier = identifier
         self.collectionId = collectionId
         self.maxFaces = maxFaces
@@ -69,6 +77,9 @@ class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateService
 
         AWSRekognition.remove(forKey: identifier)
         awsRekognition = nil
+
+        AWSTextract.remove(forKey: identifier)
+        awsTextract = nil
 
         identifier = nil
     }
@@ -85,6 +96,8 @@ class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateService
             return awsTranscribe.getTranscribe()
         case .comprehend:
             return awsComprehend.getComprehend()
+        case .textract:
+            return awsTextract.getTextract()
         }
     }
 

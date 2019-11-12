@@ -35,8 +35,10 @@ extension AWSPredictionsPlugin {
                          listener: PredictionsIdentifyOperation.EventListener? = nil) -> PredictionsIdentifyOperation {
         let options = options
 
-        let request = PredictionsIdentifyRequest(image: image, identifyType: type, options: options ?? PredictionsIdentifyRequest.Options())
-        let operation = AWSRekognitionOperation(
+        let request = PredictionsIdentifyRequest(image: image,
+                                                 identifyType: type,
+                                                 options: options ?? PredictionsIdentifyRequest.Options())
+        let operation = AWSIdentifyOperation(
             request, predictionsService: predictionsService,
             authService: authService,
             listener: listener)

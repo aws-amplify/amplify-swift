@@ -19,6 +19,8 @@ PODS:
     - AWSCore (= 2.12.1)
   - AWSS3 (2.12.1):
     - AWSCore (= 2.12.1)
+  - AWSTextract (2.12.1):
+    - AWSCore (= 2.12.1)
   - AWSTranscribe (2.12.1):
     - AWSCore (= 2.12.1)
   - AWSTranslate (2.12.1):
@@ -39,6 +41,7 @@ DEPENDENCIES:
   - AWSPolly (~> 2.12.0)
   - AWSRekognition (~> 2.12.0)
   - AWSS3 (~> 2.12.0)
+  - AWSTextract (~> 2.12.0)
   - AWSTranscribe (~> 2.12.0)
   - AWSTranslate (~> 2.12.0)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
@@ -48,7 +51,7 @@ DEPENDENCIES:
   - SwiftLint
 
 SPEC REPOS:
-  https://cdn.cocoapods.org/:
+  trunk:
     - AWSAuthCore
     - AWSCognitoIdentityProvider
     - AWSCognitoIdentityProviderASF
@@ -59,6 +62,7 @@ SPEC REPOS:
     - AWSPolly
     - AWSRekognition
     - AWSS3
+    - AWSTextract
     - AWSTranscribe
     - AWSTranslate
     - SQLite.swift
@@ -92,6 +96,7 @@ SPEC CHECKSUMS:
   AWSPolly: c09cb781e533199cc9fa884a679f3f182c533517
   AWSRekognition: 95ccdecf21033c08d28feac4f8ebe07e6b02c79e
   AWSS3: 640fad8279e2c5b02d803a82ff5dd6ee75d65c39
+  AWSTextract: 937c60e3f31c5221ac122e66fa010409a1f59d2e
   AWSTranscribe: 66b9d40c98fddcafc0f1c6450d2d841425e3b292
   AWSTranslate: b476a09a7fbaf5b67464dcac561acc40a4c176f8
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
@@ -100,6 +105,6 @@ SPEC CHECKSUMS:
   SwiftFormat: 21c9c3c748d5fcece493d8610eee23df15393458
   SwiftLint: fc9859e4e1752340664851f667bb1898b9c90114
 
-PODFILE CHECKSUM: 2d5e9207ddab7584447ab1ad9493ab86b7e11c11
+PODFILE CHECKSUM: f3ecb84f4a32580ba343d51fa59eac46254dc7a5
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.8.3

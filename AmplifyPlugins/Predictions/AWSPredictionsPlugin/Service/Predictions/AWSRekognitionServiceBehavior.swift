@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSRekognition
 
@@ -19,7 +18,7 @@ protocol AWSRekognitionServiceBehaviour {
 
     func detectCelebs(image: URL, onEvent: @escaping RekognitionServiceEventHandler)
 
-    func detectText(image: URL, onEvent: @escaping RekognitionServiceEventHandler)
+    func detectText(image: URL, format: FormatType, onEvent: @escaping RekognitionServiceEventHandler)
 
     func detectEntities(image: URL, onEvent: @escaping RekognitionServiceEventHandler)
 }

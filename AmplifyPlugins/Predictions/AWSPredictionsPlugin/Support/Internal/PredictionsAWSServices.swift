@@ -13,4 +13,5 @@ enum PredictionsAWSServices {
     case transcribe
     case polly
     case comprehend
+    case textract
 }
