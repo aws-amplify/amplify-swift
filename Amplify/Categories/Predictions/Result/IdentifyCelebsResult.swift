@@ -16,9 +16,9 @@ public struct IdentifyCelebsResult: IdentifyResult {
 }
 
 public struct Celebrity {
-    var metadata: CelebMetadata
-    var boundingBox: BoundingBox
-    var landmarks: [Landmark]
+    public var metadata: CelebMetadata
+    public var boundingBox: BoundingBox
+    public var landmarks: [Landmark]
 
     public init(metadata: CelebMetadata, boundingBox: BoundingBox, landmarks: [Landmark]) {
         self.metadata = metadata
@@ -28,9 +28,9 @@ public struct Celebrity {
 }
 
 public struct Landmark {
-    var type: String
-    var xPosition: Double
-    var yPosition: Double
+    public var type: String
+    public var xPosition: Double
+    public var yPosition: Double
 
     public init(type: String, xPosition: Double, yPosition: Double) {
         self.type = type
@@ -40,10 +40,10 @@ public struct Landmark {
 }
 
 public struct CelebMetadata {
-    var name: String
-    var identifier: String
-    var urls: [URL]
-    var pose: Pose
+    public var name: String
+    public var identifier: String
+    public var urls: [URL]
+    public var pose: Pose
 
     public init(name: String, identifier: String, urls: [URL], pose: Pose) {
         self.name = name
@@ -54,9 +54,9 @@ public struct CelebMetadata {
 }
 
 public struct Pose {
-    var pitch: Double
-    var roll: Double
-    var yaw: Double
+    public var pitch: Double
+    public var roll: Double
+    public var yaw: Double
 
     public init(pitch: Double, roll: Double, yaw: Double) {
         self.pitch = pitch

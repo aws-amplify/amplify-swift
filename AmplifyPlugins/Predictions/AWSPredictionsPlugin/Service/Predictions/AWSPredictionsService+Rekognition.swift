@@ -17,7 +17,7 @@ extension AWSPredictionsService {
         let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
 
         guard let imageData = try? Data(contentsOf: image) else {
-           
+
             onEvent(.failed(
             .networkError("Something was wrong with the image file, make sure it exists.",
                           "Try choosing an image and sending it again.")))
@@ -62,7 +62,7 @@ extension AWSPredictionsService {
         let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
 
         guard let imageData = try? Data(contentsOf: image) else {
-           
+
             onEvent(.failed(
             .networkError("Something was wrong with the image file, make sure it exists.",
                           "Try choosing an image and sending it again.")))
@@ -100,6 +100,113 @@ extension AWSPredictionsService {
             onEvent(.completed(IdentifyCelebsResult(celebrities: newCelebs)))
             return nil
         }
+    }
 
+    func detectEntities(image: URL, onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
+        if let collectionId = collectionId {
+            //call detect face from collection if collection id passed in
+            return detectFacesFromCollection(image: image, collectionId: collectionId, onEvent: onEvent)
+
+        } else {
+            //call detect faces
+            return detectFaces(image: image, onEvent: onEvent)
+        }
+    }
+
+    func detectText(image: URL, onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
+
+    }
+
+    func detectFaces(image: URL, onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
+        let request: AWSRekognitionDetectFacesRequest = AWSRekognitionDetectFacesRequest()
+        let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
+
+        guard let imageData = try? Data(contentsOf: image) else {
+
+            onEvent(.failed(
+            .networkError("Something was wrong with the image file, make sure it exists.",
+                          "Try choosing an image and sending it again.")))
+            return
+        }
+
+        rekognitionImage.bytes = imageData
+        request.image = rekognitionImage
+
+        awsRekognition.detectFaces(request: request).continueWith { (task) -> Any? in
+            guard task.error == nil else {
+                let error = task.error! as NSError
+                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                onEvent(.failed(
+                    .networkError(predictionsErrorString.errorDescription,
+                                  predictionsErrorString.recoverySuggestion)))
+                return nil
+            }
+
+            guard let result = task.result else {
+                onEvent(.failed(
+                    .unknownError("No result was found. An unknown error occurred",
+                                  "Please try again.")))
+                return nil
+            }
+
+            guard let faces = result.faceDetails else {
+                onEvent(.failed(
+                    .networkError("No result was found.",
+                                  "Please make sure the image integrity is maintained before sending")))
+                return nil
+            }
+
+            let newFaces = IdentifyResultsUtils.processFaces(faces)
+            onEvent(.completed(IdentifyEntitiesResult(entities: newFaces)))
+            return nil
+        }
+    }
+
+    func detectFacesFromCollection(image: URL,
+                                   collectionId: String,
+                                   onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
+        let request: AWSRekognitionSearchFacesByImageRequest = AWSRekognitionSearchFacesByImageRequest()
+        let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
+
+        guard let imageData = try? Data(contentsOf: image) else {
+            onEvent(.failed(
+            .networkError("Something was wrong with the image file, make sure it exists.",
+                          "Try choosing an image and sending it again.")))
+            return
+        }
+
+        rekognitionImage.bytes = imageData
+        request.image = rekognitionImage
+        request.collectionId = collectionId
+        request.maxFaces = maxFaces as NSNumber?
+
+        awsRekognition.detectFacesFromCollection(request: request).continueWith { (task) -> Any? in
+            guard task.error == nil else {
+                let error = task.error! as NSError
+                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                onEvent(.failed(
+                    .networkError(predictionsErrorString.errorDescription,
+                                  predictionsErrorString.recoverySuggestion)))
+                return nil
+            }
+
+            guard let result = task.result else {
+                onEvent(.failed(
+                    .unknownError("No result was found. An unknown error occurred",
+                                  "Please try again.")))
+                return nil
+            }
+
+            guard let faces = result.faceMatches else {
+                onEvent(.failed(
+                    .networkError("No result was found.",
+                                  "Please make sure the image integrity is maintained before sending")))
+                return nil
+            }
+
+            let faceMatches = IdentifyResultsUtils.processCollectionFaces(faces)
+            onEvent(.completed(IdentifyEntitiesFromCollectionResult(entities: faceMatches)))
+            return nil
+        }
     }
 }

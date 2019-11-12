@@ -18,8 +18,12 @@ class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateService
     var awsPolly: AWSPollyBehavior!
     var awsTranscribe: AWSTranscribeBehavior!
     var awsComprehend: AWSComprehendBehavior!
+    var collectionId: String?
+    var maxFaces: Int!
 
     convenience init(region: AWSRegionType,
+                     collectionId: String?,
+                     maxFaces: Int,
                      cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
                      identifier: String) throws {
         let serviceConfigurationOptional = AWSServiceConfiguration(region: region,
@@ -34,22 +38,28 @@ class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateService
         AWSTranslate.register(with: serviceConfiguration, forKey: identifier)
         let awsTranslate = AWSTranslate(forKey: identifier)
         let awsTranslateAdapter = AWSTranslateAdapter(awsTranslate)
+
         AWSRekognition.register(with: serviceConfiguration, forKey: identifier)
         let awsRekognition = AWSRekognition(forKey: identifier)
-
         let awsRekognitionAdapter = AWSRekognitionAdapter(awsRekognition)
 
         self.init(awsTranslate: awsTranslateAdapter,
                   awsRekognition: awsRekognitionAdapter,
+                  collectionId: collectionId,
+                  maxFaces: maxFaces,
                   identifier: identifier)
     }
 
     init(awsTranslate: AWSTranslateBehavior,
          awsRekognition: AWSRekognitionBehavior,
+         collectionId: String?,
+         maxFaces: Int,
          identifier: String) {
         self.awsTranslate = awsTranslate
         self.awsRekognition = awsRekognition
         self.identifier = identifier
+        self.collectionId = collectionId
+        self.maxFaces = maxFaces
     }
 
     func reset() {

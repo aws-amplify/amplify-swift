@@ -10,4 +10,6 @@ import Foundation
 struct PluginConstants {
     static let awsPredictionsPluginKey = "AWSPredictionsPlugin"
     static let region = "Region"
+    static let collectionId = "CollectionId"
+    static let maxFaces = "MaxFaces"
 }

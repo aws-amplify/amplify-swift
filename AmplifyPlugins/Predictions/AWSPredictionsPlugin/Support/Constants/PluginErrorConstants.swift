@@ -23,6 +23,14 @@ struct PluginErrorConstants {
         "The 'Bucket' key is missing from the configuration",
         "Make sure 'Bucket' is in the dictionary for the plugin configuration")
 
+    static let missingCollectionId: PluginErrorString = (
+        "The CollectionId is missing from the configuration",
+        "Make sure CollectionId is in the dictionary for the plugin configuration")
+
+    static let invalidCollection: PluginErrorString = (
+        "The collection is invalid",
+        "The collection should be a string value")
+
     static let invalidBucket: PluginErrorString = (
         "The bucket is invalid",
         "The bucket should be a string value")
@@ -30,6 +38,11 @@ struct PluginErrorConstants {
     static let emptyBucket: PluginErrorString = (
         "The bucket value is empty",
         "Add the bucket as the value to the 'Bucket' key in the plugin configuration")
+
+    static let emptyCollection: PluginErrorString = (
+        "The collection value is empty",
+        "Add the collection as the value to the 'CollectionId' key in the plugin configuration")
+
 
     static let missingRegion: PluginErrorString = (
         "The 'Region' key is missing from the configuration",
