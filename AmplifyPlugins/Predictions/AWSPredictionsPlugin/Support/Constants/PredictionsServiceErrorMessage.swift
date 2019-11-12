@@ -14,4 +14,8 @@ struct PredictionsServiceErrorMessage {
     static let accessDenied: PredictionsServiceErrorString = (
         "Access denied!",
         "")
+
+    static let noLaungageFound: PredictionsServiceErrorString = (
+        "No result was found for language. An unknown error occurred.",
+        "Please try with different input")
 }

@@ -15,20 +15,45 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
                     onEvent: @escaping AWSPredictionsService.ComprehendServiceEventHandler) {
 
         // We have to find the dominant language first and then invoke features.
+        fetchPredominantLanguage(text) { (languageType, score, error) in
+            guard let dominantLanguageType  = languageType else {
+                if let languageError = error {
+                    let networkError = PredictionsError.networkError(languageError.localizedDescription,
+                                                                     languageError.localizedDescription)
+                    onEvent(.failed(networkError))
+                } else {
+                    let errorDescription = PredictionsServiceErrorMessage.noLaungageFound.errorDescription
+                    let recoverySuggestion = PredictionsServiceErrorMessage.noLaungageFound.recoverySuggestion
+                    let unknownError = PredictionsError.unknownError(errorDescription, recoverySuggestion)
+                    onEvent(.failed(unknownError))
+                }
+                return
+            }
+
+            var featuresResult = self.interpretTextFeatures(text, for: dominantLanguageType)
+            let languageDetected = LanguageDetectionResult(languageCode: dominantLanguageType, score: score)
+            featuresResult.language = languageDetected
+            onEvent(.completed(featuresResult))
+        }
+    }
+
+    func fetchPredominantLanguage(_ text: String,
+                                  completionHandler: @escaping (LanguageType?, Double?, Error?) -> Void) {
         let detectLanguage: AWSComprehendDetectDominantLanguageRequest = AWSComprehendDetectDominantLanguageRequest()
         detectLanguage.text = text
 
-        awsComprehend.detectLanguage(request: detectLanguage).continueWith { [weak self] (task) -> Any? in
+        awsComprehend.detectLanguage(request: detectLanguage).continueWith { (task) -> Any? in
             guard task.error == nil else {
-                onEvent(.failed(.networkError(task.error!.localizedDescription, task.error!.localizedDescription)))
+                completionHandler(nil, nil, task.error)
                 return nil
             }
 
             guard let result = task.result else {
-                onEvent(.failed(.unknownError("No result was found. An unknown error occurred.", "Please try again.")))
+                completionHandler(nil, nil, nil)
                 return nil
             }
 
+            // Find the dominant language with the highest score.
             let dominantLanguageOptional = result.languages?.max { item1, item2 in
                 guard let item1Score = item1.score else {
                     return false
@@ -39,13 +64,13 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
                 return item1Score.doubleValue > item2Score.doubleValue
             }
             guard let dominantLanguageCode = dominantLanguageOptional?.languageCode else {
-                //TODO: Return error from here
+                completionHandler(nil, nil, nil)
                 return nil
             }
-
-            if let interpretResult = self?.interpretTextFeatures(text, for: dominantLanguageCode) {
-                onEvent(.completed(interpretResult))
-            }
+            let locale = Locale(identifier: dominantLanguageCode)
+            completionHandler(LanguageType(locale: locale),
+                              dominantLanguageOptional?.score?.doubleValue,
+                              nil)
             return nil
         }
     }
@@ -53,7 +78,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
     /// Use the text and language code to fetch features
     /// - Parameter text: Input text
     /// - Parameter languageCode: Dominant language code
-    func interpretTextFeatures(_ text: String, for languageCode: String) -> InterpretResult {
+    func interpretTextFeatures(_ text: String, for languageCode: LanguageType) -> InterpretResult {
 
         var sentimentResult: Sentiment?
         var entitiesResult: [EntityDetectionResult]?
@@ -106,7 +131,30 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
         syntaxRequest.text = text
 
         awsComprehend.detectSyntax(request: syntaxRequest).continueWith { (task) -> Any? in
+            guard let syntaxTokens = task.result?.syntaxTokens else {
+                completionHandler(nil)
+                return nil
+            }
+            var syntaxTokenResult = [SyntaxToken]()
+            for syntax in syntaxTokens {
+                // TODO: Fix the range
+                let range = Range<String.Index>(NSRange(location: syntax.beginOffset?.intValue ?? 0,
+                                                        length: syntax.endOffset?.intValue ?? 0),
+                                                in: text)!
+                var partOfSpeech: PartOfSpeech?
+                if let comprehendPartOfSpeech = syntax.partOfSpeech {
+                    let score = comprehendPartOfSpeech.score?.floatValue
+                    let speechType = comprehendPartOfSpeech.tag.getSpeechType()
+                    partOfSpeech = PartOfSpeech(tag: speechType, score: score)
+                }
+                let syntaxToken = SyntaxToken(tokenId: syntax.tokenId?.intValue ?? 0,
+                                              text: syntax.text ?? "",
+                                              range: range,
+                                              partOfSpeech: partOfSpeech)
+                syntaxTokenResult.append(syntaxToken)
 
+            }
+            completionHandler(syntaxTokenResult)
             return nil
         }
     }
@@ -118,11 +166,26 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
         let keyPhrasesRequest: AWSComprehendDetectKeyPhrasesRequest = AWSComprehendDetectKeyPhrasesRequest()
         keyPhrasesRequest.languageCode = languageCode
         keyPhrasesRequest.text = text
-        awsComprehend.detectKeyPhrases(request: keyPhrasesRequest).continueWith { (task) -> Any? in
 
+        awsComprehend.detectKeyPhrases(request: keyPhrasesRequest).continueWith { (task) -> Any? in
+            guard let keyPhrases = task.result?.keyPhrases else {
+                completionHandler(nil)
+                return nil
+            }
+            var keyPhrasesResult = [KeyPhrase]()
+            for keyPhrase in keyPhrases {
+                // TODO: Fix the range
+                let range = Range<String.Index>(NSRange(location: keyPhrase.beginOffset?.intValue ?? 0,
+                                                        length: keyPhrase.endOffset?.intValue ?? 0),
+                                                in: text)!
+                let amplifyKeyPhrase = KeyPhrase(text: keyPhrase.text ?? "",
+                                                 range: range,
+                                                 score: keyPhrase.score?.floatValue)
+                keyPhrasesResult.append(amplifyKeyPhrase)
+            }
+            completionHandler(keyPhrasesResult)
             return nil
         }
-
     }
 
     func fetchSentimentResult(_ text: String,
@@ -181,28 +244,28 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
 
     }
 
-    /// Convert the language code to comprehend language code type
-    /// - Parameter code: The language code in RFC 5646 code. For more information about
-    /// RFC 5646, see <a href="https://tools.ietf.org/html/rfc5646"
-    ///
-    func languageCodeToComprehendLanguage(_ code: String) -> AWSComprehendLanguageCode {
+    func languageCodeToComprehendLanguage(_ code: LanguageType) -> AWSComprehendLanguageCode {
         // TODO: Fill the right language codes below
-        if code == "" {
+        switch code {
+        case .english:
             return .en
+        case .italian:
+            return .it
+        case .undetermined:
+            return .unknown
         }
-        return .unknown
     }
 
-    /// Convert the language code to comprehend syntax language code type
-    /// - Parameter code: The language code in RFC 5646 code. For more information about
-    /// RFC 5646, see <a href="https://tools.ietf.org/html/rfc5646"
-    ///
-    func languageCodeToSyntaxLanguage(_ code: String) -> AWSComprehendSyntaxLanguageCode {
+    func languageCodeToSyntaxLanguage(_ code: LanguageType) -> AWSComprehendSyntaxLanguageCode {
         // TODO: Fill the right language codes below
-        if code == "" {
+        switch code {
+        case .english:
             return .en
+        case .italian:
+            return .it
+        case .undetermined:
+            return .unknown
         }
-        return .unknown
     }
 }
 
@@ -224,4 +287,53 @@ extension AWSComprehendSentimentType {
             return .unknown
         }
     }
+}
+
+extension AWSComprehendPartOfSpeechTagType {
+
+    func getSpeechType() -> SpeechType {
+        switch self {
+        case .unknown:
+            return .unknown
+        case .adj:
+            return .adjective
+        case .adp:
+            return .adposition
+        case .conj:
+            return .conjunction
+        case .cconj:
+            return .coordinatingConjunction
+        case .det:
+            return .determiner
+        case .intj:
+            return .interjection
+        case .noun:
+            return .noun
+        case .num:
+            return .numeral
+        case .O:
+            return .other
+        case .part:
+            return .particle
+        case .pron:
+            return .pronoun
+        case .propn:
+            return .properNoun
+        case .punct:
+            return .punctuation
+        case .sconj:
+            return .subordinatingConjunction
+        case .sym:
+            return .symbol
+        case .verb:
+            return .verb
+        case .adv:
+            return .adverb
+        case .aux:
+            return .auxiliary
+        @unknown default:
+            return .unknown
+        }
+    }
+
 }

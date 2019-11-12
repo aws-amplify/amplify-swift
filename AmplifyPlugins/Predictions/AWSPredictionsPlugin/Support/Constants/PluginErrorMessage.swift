@@ -19,18 +19,6 @@ struct PluginErrorMessage {
         "Configuration was not a dictionary literal",
         "Make sure the value for the plugin is a dictionary literal with keys 'Bucket' and 'Region'")
 
-    static let missingBucket: PluginErrorString = (
-        "The 'Bucket' key is missing from the configuration",
-        "Make sure 'Bucket' is in the dictionary for the plugin configuration")
-
-    static let invalidBucket: PluginErrorString = (
-        "The bucket is invalid",
-        "The bucket should be a string value")
-
-    static let emptyBucket: PluginErrorString = (
-        "The bucket value is empty",
-        "Add the bucket as the value to the 'Bucket' key in the plugin configuration")
-
     static let missingRegion: PluginErrorString = (
         "The 'Region' key is missing from the configuration",
         "Make sure 'Region' is in the dictionary for the plugin configuration")

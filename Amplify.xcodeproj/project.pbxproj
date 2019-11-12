@@ -2932,8 +2932,8 @@
 		B43869ED236B8DA0000DC3DB /* AWSPredictionsPluginTests */ = {
 			isa = PBXGroup;
 			children = (
-				B438D1FE23748AEC009E2DD0 /* Resources */,
 				B43869EE236B8DA0000DC3DB /* AWSPredictionsPluginTests.swift */,
+				B438D1FE23748AEC009E2DD0 /* Resources */,
 			);
 			path = AWSPredictionsPluginTests;
 			sourceTree = "<group>";
@@ -2941,8 +2941,8 @@
 		B4386A00236B9138000DC3DB /* AWSPredictionsPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
-				B438D1FC23748ABA009E2DD0 /* Resources */,
 				B4386A01236B9138000DC3DB /* AWSPredictionsPluginIntegrationTests.swift */,
+				B438D1FC23748ABA009E2DD0 /* Resources */,
 			);
 			path = AWSPredictionsPluginIntegrationTests;
 			sourceTree = "<group>";
