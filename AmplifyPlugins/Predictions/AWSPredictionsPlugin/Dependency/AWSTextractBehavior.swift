@@ -12,6 +12,8 @@ protocol AWSTextractBehavior {
 
     func analyzeDocument(request: AWSTextractAnalyzeDocumentRequest) -> AWSTask<AWSTextractAnalyzeDocumentResponse>
 
+    func detectDocumentText(request: AWSTextractDetectDocumentTextRequest) -> AWSTask<AWSTextractDetectDocumentTextResponse>
+
     func getTextract() -> AWSTextract
 
 }

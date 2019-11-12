@@ -19,8 +19,8 @@ extension AWSPredictionsService {
         guard let imageData = try? Data(contentsOf: image) else {
 
             onEvent(.failed(
-            .networkError("Something was wrong with the image file, make sure it exists.",
-                          "Try choosing an image and sending it again.")))
+                .networkError("Something was wrong with the image file, make sure it exists.",
+                              "Try choosing an image and sending it again.")))
             return
         }
 
@@ -64,8 +64,8 @@ extension AWSPredictionsService {
         guard let imageData = try? Data(contentsOf: image) else {
 
             onEvent(.failed(
-            .networkError("Something was wrong with the image file, make sure it exists.",
-                          "Try choosing an image and sending it again.")))
+                .networkError("Something was wrong with the image file, make sure it exists.",
+                              "Try choosing an image and sending it again.")))
             return
         }
 
@@ -122,78 +122,9 @@ extension AWSPredictionsService {
         case .table:
             return analyzeDocument(image: image, features: ["TABLES"], onEvent: onEvent)
         case .all:
-        return analyzeDocument(image: image, features: ["FORMS", "TABLES"], onEvent: onEvent)
+            return analyzeDocument(image: image, features: ["FORMS", "TABLES"], onEvent: onEvent)
         case .plain:
-            let request: AWSRekognitionDetectTextRequest = AWSRekognitionDetectTextRequest()
-            let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
-
-            guard let imageData = try? Data(contentsOf: image) else {
-
-                onEvent(.failed(
-                .networkError("Something was wrong with the image file, make sure it exists.",
-                              "Try choosing an image and sending it again.")))
-                return
-            }
-
-            rekognitionImage.bytes = imageData
-            request.image = rekognitionImage
-
-            awsRekognition.detectText(request: request).continueWith { (task) -> Any? in
-                guard task.error == nil else {
-                    let error = task.error! as NSError
-                    let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
-                    onEvent(.failed(
-                        .networkError(predictionsErrorString.errorDescription,
-                                      predictionsErrorString.recoverySuggestion)))
-                    return nil
-                }
-
-                guard let result = task.result else {
-                    onEvent(.failed(
-                        .unknownError("No result was found. An unknown error occurred",
-                                      "Please try again.")))
-                    return nil
-                }
-
-                guard let rekognitionTextDetections = result.textDetections else {
-                    onEvent(.failed(
-                        .networkError("No result was found.",
-                                      "Please make sure the image integrity is maintained before sending")))
-                    return nil
-                }
-
-                let identifyTextResult = IdentifyTextResultUtils.processText(rekognitionTextBlocks: rekognitionTextDetections)
-
-                if identifyTextResult.words.count < 50 {
-                    return onEvent(.completed(identifyTextResult))
-                    //return nil
-                } else {
-                    self.detectDocumentText(image: image) { textractData in
-
-                        guard let blocks = textractData.blocks else {
-                           return  onEvent(.completed(identifyTextResult))
-                           // return nil
-                        }
-                        if rekognitionTextDetections.count > blocks.count {
-                       return onEvent(.completed(identifyTextResult))
-                          // return nil
-                        } else {
-
-                            guard let textractResult = IdentifyTextResultUtils.processText(textractTextBlocks: blocks) else {
-                               return onEvent(.failed(
-                                    .networkError("No result was found.",
-                                                  "Please make sure the image integrity is maintained before sending")))
-                           // return nil
-                            }
-                           return onEvent(.completed(textractResult))
-                           // return nil
-                        }
-                    }
-                }
-
-                return nil
-            }
-
+            return detectTextRekognition(image: image, onEvent: onEvent)
         }
     }
 
@@ -204,8 +135,8 @@ extension AWSPredictionsService {
         guard let imageData = try? Data(contentsOf: image) else {
 
             onEvent(.failed(
-            .networkError("Something was wrong with the image file, make sure it exists.",
-                          "Try choosing an image and sending it again.")))
+                .networkError("Something was wrong with the image file, make sure it exists.",
+                              "Try choosing an image and sending it again.")))
             return
         }
 
@@ -250,8 +181,8 @@ extension AWSPredictionsService {
 
         guard let imageData = try? Data(contentsOf: image) else {
             onEvent(.failed(
-            .networkError("Something was wrong with the image file, make sure it exists.",
-                          "Try choosing an image and sending it again.")))
+                .networkError("Something was wrong with the image file, make sure it exists.",
+                              "Try choosing an image and sending it again.")))
             return
         }
 
@@ -288,5 +219,79 @@ extension AWSPredictionsService {
             onEvent(.completed(IdentifyEntitiesFromCollectionResult(entities: faceMatches)))
             return nil
         }
+    }
+
+    private func detectTextRekognition(image: URL, onEvent: @escaping RekognitionServiceEventHandler) {
+        let request: AWSRekognitionDetectTextRequest = AWSRekognitionDetectTextRequest()
+            let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
+
+            guard let imageData = try? Data(contentsOf: image) else {
+
+                onEvent(.failed(
+                    .networkError("Something was wrong with the image file, make sure it exists.",
+                                  "Try choosing an image and sending it again.")))
+                return
+            }
+
+            rekognitionImage.bytes = imageData
+            request.image = rekognitionImage
+
+            awsRekognition.detectText(request: request).continueWith { (task) -> Any? in
+                guard task.error == nil else {
+                    let error = task.error! as NSError
+                    let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                    onEvent(.failed(
+                        .networkError(predictionsErrorString.errorDescription,
+                                      predictionsErrorString.recoverySuggestion)))
+                    return nil
+                }
+
+                guard let result = task.result else {
+                    onEvent(.failed(
+                        .unknownError("No result was found. An unknown error occurred",
+                                      "Please try again.")))
+                    return nil
+                }
+
+                guard let rekognitionTextDetections = result.textDetections else {
+                    onEvent(.failed(
+                        .networkError("No result was found.",
+                                      "Please make sure the image integrity is maintained before sending")))
+                    return nil
+                }
+
+                let identifyTextResult = IdentifyTextResultUtils.processText(rekognitionTextBlocks: rekognitionTextDetections)
+
+                if identifyTextResult.words.count < 50 {
+                    return onEvent(.completed(identifyTextResult))
+                    //return nil
+                } else {
+                    self.detectDocumentText(image: image) { textractData in
+
+                        guard let blocks = textractData.blocks else {
+                            return  onEvent(.completed(identifyTextResult))
+                            // return nil
+                        }
+                        if rekognitionTextDetections.count > blocks.count {
+                            return onEvent(.completed(identifyTextResult))
+                            // return nil
+                        } else {
+
+                            guard let textractResult = IdentifyTextResultUtils.processText(
+                                textractTextBlocks: blocks) else {
+                                    return onEvent(.failed(
+                                        .networkError("No result was found.",
+                                                      "Please make sure the image integrity is maintained before sending")))
+                                    // return nil
+                            }
+                            return onEvent(.completed(textractResult))
+                            // return nil
+                        }
+                    }
+                }
+
+                return nil
+            }
+
     }
 }
