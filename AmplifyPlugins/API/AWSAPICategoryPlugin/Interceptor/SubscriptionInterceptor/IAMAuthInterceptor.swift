@@ -30,13 +30,14 @@ class IAMAuthInterceptor: AuthInterceptor {
                                                type: message.messageType)
             return signedMessage
         default:
+            // TODO: Log.verbose
             print("Message type does not need signing - \(message.messageType)")
         }
         return message
     }
 
-    func interceptConnection(_ request: AppSyncConnectionRequest, for endpoint: URL) -> AppSyncConnectionRequest {
-        let url = endpoint.appendingPathComponent(RealtimeProviderConstants.iamConnectPath)
+    func interceptConnection(_ request: AppSyncConnectionRequest, for url: URL) -> AppSyncConnectionRequest {
+        let url = url.appendingPathComponent(RealtimeProviderConstants.iamConnectPath)
         let payloadString = SubscriptionConstants.emptyPayload
         guard let authHeader = getAuthHeader(url, with: payloadString) else {
             return request
@@ -59,8 +60,9 @@ class IAMAuthInterceptor: AuthInterceptor {
         return signedRequest
     }
 
-    final private func getAuthHeader(_ endpoint: URL, with payload: String) -> IAMAuthenticationHeader? {
-        guard let host = endpoint.host else {
+    final private func getAuthHeader(_ url: URL, with payload: String) -> IAMAuthenticationHeader? {
+        guard let host = url.host else {
+            print("[IAMAuthInterceptor] getAuthHeader missing host")
             return nil
         }
         let amzDate =  NSDate.aws_clockSkewFixed() as NSDate
@@ -69,11 +71,13 @@ class IAMAuthInterceptor: AuthInterceptor {
         }
         let awsEndpoint = AWSEndpoint(region: region,
                                       serviceName: SubscriptionConstants.appsyncServiceName,
-                                      url: endpoint)
+                                      url: url)
         let signer: AWSSignatureV4Signer = AWSSignatureV4Signer(credentialsProvider: authProvider.getCredentialsProvider(),
                                                                 endpoint: awsEndpoint)
+
+        // TODO: Make this asynchronous https://github.com/aws-amplify/amplify-ios/issues/73
         let semaphore = DispatchSemaphore(value: 0)
-        let mutableRequest = NSMutableURLRequest(url: endpoint)
+        let mutableRequest = NSMutableURLRequest(url: url)
         mutableRequest.httpMethod = "POST"
         mutableRequest.addValue(RealtimeProviderConstants.iamAccept,
                                 forHTTPHeaderField: RealtimeProviderConstants.acceptKey)

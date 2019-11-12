@@ -9,8 +9,6 @@ import Foundation
 
 extension AppSyncConnectionProvider {
 
-    // MARK: - Handle websocket response
-
     func onWebsocketEvent(event: WebsocketEvent) {
         switch event {
         case .connect:
@@ -21,12 +19,8 @@ extension AppSyncConnectionProvider {
 
                 self.state = .connecting
                 self.listener?(.connection(.connecting))
-
-                // Connection provider will internally send connection init message.
                 self.sendConnectionInitMessage()
-                // TODO: Fire off a timer here to mark the beginning of connecting.
-                // When timer fires, and connecting never moves to connected
-                // then call sendConnectionInitMessage() to resend it.
+                self.disconnectIfStale()
             }
         case .disconnect(let error):
             serialConnectionQueue.async {[weak self] in
@@ -52,6 +46,8 @@ extension AppSyncConnectionProvider {
     // MARK: - Helpers
 
     func handleResponse(_ response: WebsocketProviderResponse) {
+        lastKeepAliveTime = DispatchTime.now()
+
         switch response.responseType {
         case .connectionAck:
             switch state {
@@ -65,13 +61,13 @@ extension AppSyncConnectionProvider {
                         self.listener?(.connection(self.state))
                     }
                 case .connected, .disconnected:
-                    break
+                    print("[AppSyncConnectionProvider] connectionAck recieved while connection is \(state)")
             }
 
         case .error:
             switch state {
             case .connecting:
-                /// If we get an error while trying to connect, return it back as connection error.
+                // If we get an error while trying to connect, return it back as connection error.
                 serialConnectionQueue.async {[weak self] in
                     guard let self = self else {
                         return
@@ -86,14 +82,13 @@ extension AppSyncConnectionProvider {
                 break
             }
 
-            /// Return back as generic error if there is no identifier.
             guard let identifier = response.identifier else {
                 let genericError = ConnectionProviderError.other
                 listener?(.unknownError(genericError))
                 return
             }
 
-            /// Map to limit exceed error if we get MaxSubscriptionsReachedException
+            // Map to limit exceed error if we get MaxSubscriptionsReachedException
             if let errorType = response.payload?["errorType"],
                 errorType == "MaxSubscriptionsReachedException" {
                 let limitExceedError = ConnectionProviderError.limitExceeded(identifier)

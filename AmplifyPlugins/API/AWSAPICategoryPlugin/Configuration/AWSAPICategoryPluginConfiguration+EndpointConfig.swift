@@ -12,16 +12,16 @@ import AWSCore
 
 public extension AWSAPICategoryPluginConfiguration {
 
-    /// Contains per endpoint configuration
     struct EndpointConfig {
         let name: String
         let baseURL: URL
         let region: AWSRegionType?
         let authorizationType: AWSAuthorizationType
         let authorizationConfiguration: AWSAuthorizationConfiguration
+        // TODO: Refactor into an "Intercepting connection configuration" or similar --
+        // EndpointConfig shouldn't be holding onto interceptors; it should just be a data holder.
+        // https://github.com/aws-amplify/amplify-ios/issues/73
         var interceptors = [URLRequestInterceptor]()
-
-        // TODO: store subscriptionConnectionFactory here?
 
         public init(name: String, jsonValue: JSONValue, authService: AWSAuthServiceBehavior? = nil) throws {
 
@@ -37,7 +37,6 @@ public extension AWSAPICategoryPluginConfiguration {
                 )
             }
 
-            // TODO: init
             try self.init(name: name,
                           baseURL: try EndpointConfig.getBaseURL(from: endpointJSON),
                           region: try EndpointConfig.getRegion(from: endpointJSON),
@@ -170,6 +169,8 @@ public extension AWSAPICategoryPluginConfiguration {
             return authorizationType
         }
 
+        // TODO: Refactor auth configuration creation into separate files--this file is for endpoint configs
+        // https://github.com/aws-amplify/amplify-ios/issues/73
         private static func getAuthorizationConfiguration(from endpointJSON: [String: JSONValue])
             throws -> AWSAuthorizationConfiguration {
             let authType = try getAuthorizationType(from: endpointJSON)

@@ -61,7 +61,7 @@ class AWSAPICategoryPluginBaseTests: XCTestCase {
 
     func signIn(username: String, password: String) {
         let signInWasSuccessful = expectation(description: "signIn was successful")
-        AWSMobileClient.sharedInstance().signIn(username: username, password: password) { (result, error) in
+        AWSMobileClient.sharedInstance().signIn(username: username, password: password) { result, error in
             if let error = error {
                 XCTFail("Sign in failed: \(error.localizedDescription)")
                 return
@@ -80,7 +80,7 @@ class AWSAPICategoryPluginBaseTests: XCTestCase {
     func signUpUser(username: String, password: String) {
         let signUpExpectation = expectation(description: "successful sign up expectation.")
         let userAttributes = ["email": username]
-        AWSMobileClient.default().signUp(username: username, password: password, userAttributes: userAttributes) { (result, error) in
+        AWSMobileClient.default().signUp(username: username, password: password, userAttributes: userAttributes) { result, error in
 
             if let error = error as? AWSMobileClientError {
                 XCTFail("Failed to sign up user with error: \(error.message)")

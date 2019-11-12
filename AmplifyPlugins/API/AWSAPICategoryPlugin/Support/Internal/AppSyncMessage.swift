@@ -44,22 +44,15 @@ class AuthenticationHeader: Encodable {
 }
 
 /// Message types
-enum AppSyncMessageType {
+enum AppSyncMessageType: String {
 
-    case connectionInit(String)
+    case connectionInit = "connection_init"
 
-    case subscribe(String)
+    case subscribe = "start"
 
-    case unsubscribe(String)
+    case unsubscribe = "stop"
 
     func getValue() -> String {
-        switch self {
-        case .connectionInit(let value):
-            return value
-        case .subscribe(let value):
-            return value
-        case .unsubscribe(let value):
-            return value
-        }
+        return rawValue
     }
 }

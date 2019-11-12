@@ -27,7 +27,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                                            variables: CreateTodoMutation.variables(id: expectedId,
                                                                                    name: expectedName,
                                                                                    description: expectedDescription),
-                                           responseType: CreateTodoMutation.Data.self) { (event) in
+                                           responseType: CreateTodoMutation.Data.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -67,7 +67,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                                            variables: CreateTodoMutation.variables(id: uuid,
                                                                                    name: "",
                                                                                    description: description),
-                                           responseType: CreateTodoMutation.Data.self) { (event) in
+                                           responseType: CreateTodoMutation.Data.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .partial(data, error) = graphQLResponse else {
@@ -102,7 +102,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                                            variables: CreateTodoMutation.variables(id: expectedId,
                                                                                    name: expectedName,
                                                                                    description: expectedDescription),
-                                           responseType: MalformedCreateTodoData.self) { (event) in
+                                           responseType: MalformedCreateTodoData.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 XCTFail("Unexpected .completed event: \(graphQLResponse)")
@@ -134,7 +134,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let queryOperation = Amplify.API.query(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
                                                document: GetTodoQuery.document,
                                                variables: GetTodoQuery.variables(id: todo.id),
-                                               responseType: GetTodoQuery.Data.self) { (event) in
+                                               responseType: GetTodoQuery.Data.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -172,7 +172,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let operation = Amplify.API.query(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
                                           document: GetTodoQuery.document,
                                           variables: GetTodoQuery.variables(id: uuid),
-                                          responseType: GetTodoQuery.Data.self) { (event) in
+                                          responseType: GetTodoQuery.Data.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -213,7 +213,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                                            variables: UpdateTodoMutation.variables(id: todo.id,
                                                                                    name: expectedName,
                                                                                    description: expectedDescription),
-                                           responseType: UpdateTodoMutation.Data.self) { (event) in
+                                           responseType: UpdateTodoMutation.Data.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -257,7 +257,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let deleteOperation = Amplify.API.mutate(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
                                            document: DeleteTodoMutation.document,
                                            variables: DeleteTodoMutation.variables(id: todo.id),
-                                           responseType: DeleteTodoMutation.Data.self) { (event) in
+                                           responseType: DeleteTodoMutation.Data.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -287,7 +287,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let queryOperation = Amplify.API.query(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
                                                document: GetTodoQuery.document,
                                                variables: GetTodoQuery.variables(id: todo.id),
-                                               responseType: GetTodoQuery.Data.self) { (event) in
+                                               responseType: GetTodoQuery.Data.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
@@ -327,7 +327,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let operation = Amplify.API.query(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
                                           document: ListTodosQuery.document,
                                           variables: nil,
-                                          responseType: ListTodosQuery.Data.self) { (event) in
+                                          responseType: ListTodosQuery.Data.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -361,7 +361,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let operation = Amplify.API.query(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
                                           document: ListTodosQuery.document,
                                           variables: variables,
-                                          responseType: ListTodosQuery.Data.self) { (event) in
+                                          responseType: ListTodosQuery.Data.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -395,7 +395,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let operation = Amplify.API.subscribe(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
                                               document: OnCreateTodoSubscription.document,
                                               variables: nil,
-                                              responseType: OnCreateTodoSubscription.Data.self) { (event) in
+                                              responseType: OnCreateTodoSubscription.Data.self) { event in
             switch event {
             case .inProcess(let graphQLResponse):
                 print(graphQLResponse)
@@ -472,7 +472,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                                            variables: CreateTodoMutation.variables(id: id,
                                                                                    name: name,
                                                                                    description: description),
-                                           responseType: CreateTodoMutation.Data.self) { (event) in
+                                           responseType: CreateTodoMutation.Data.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {

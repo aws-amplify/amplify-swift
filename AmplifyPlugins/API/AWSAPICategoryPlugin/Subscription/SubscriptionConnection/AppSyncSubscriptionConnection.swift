@@ -27,7 +27,7 @@ class AppSyncSubscriptionConnection: SubscriptionConnection, RetryableConnection
     init(connectionProvider: ConnectionProvider) {
         self.connectionProvider = connectionProvider
 
-        connectionProvider.setListener { [weak self] (event) in
+        connectionProvider.setListener { [weak self] event in
             guard let self = self else {
                 return
             }

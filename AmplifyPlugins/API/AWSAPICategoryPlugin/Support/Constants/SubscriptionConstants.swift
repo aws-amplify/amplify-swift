@@ -7,6 +7,7 @@
 
 import Foundation
 
+// TODO: Refactor these into the files where they're actually used
 struct SubscriptionConstants {
     static let appsyncHostPart = "appsync-api"
 
