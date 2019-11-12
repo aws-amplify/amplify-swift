@@ -8,7 +8,6 @@
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSPluginsTestCommon
 @testable import AWSAPICategoryPlugin
 
 class AWSGraphQLOperationTests: XCTestCase {

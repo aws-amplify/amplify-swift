@@ -1,0 +1,117 @@
+# file options
+--exclude Pods
+
+# rules with format options
+
+--enable braces
+  --allman false
+
+--enable elseOnSameLine
+  --elseposition same-line
+
+--enable fileHeader
+  --header ignore
+
+--disable hoistPatternLet
+  --patternlet inline
+
+--disable indent
+  --ifdef outdent
+  --indent 4
+  --indentcase false
+  --xcodeindentation disabled
+
+--enable linebreaks
+  --linebreaks lf
+
+--enable numberFormatting
+  --binarygrouping none
+  --decimalgrouping 3
+  --exponentcase lowercase
+  --exponentgrouping disabled
+  --fractiongrouping disabled
+  --hexgrouping none
+  --hexliteralcase lowercase
+  --octalgrouping none
+
+--enable ranges
+  --ranges spaced
+
+--enable redundantSelf
+  --self init-only
+  --selfrequired 
+
+--enable semicolons
+  --semicolons never
+
+--disable sortedImports
+  --importgrouping testable-bottom
+
+--enable spaceAroundOperators
+  --operatorfunc spaced
+
+--enable trailingClosures
+  --trailingclosures 
+
+--disable trailingCommas
+  --commas inline
+
+--enable trailingSpace
+  --trimwhitespace always
+
+--disable unusedArguments
+  --stripunusedargs closure-only
+
+--enable void
+  --empty void
+
+--disable wrapArguments
+  --closingparen same-line
+  --wraparguments after-first
+  --wrapcollections before-first
+
+# standalone rules
+--disable andOperator
+--disable anyObjectProtocol
+--disable blankLinesAroundMark
+--disable blankLinesAtEndOfScope
+--disable blankLinesAtStartOfScope
+--disable blankLinesBetweenScopes
+--disable consecutiveBlankLines
+--disable consecutiveSpaces
+--disable duplicateImports
+--disable emptyBraces
+--enable isEmpty
+--enable leadingDelimiters
+--enable linebreakAtEndOfFile
+--enable redundantBackticks
+--enable redundantBreak
+--enable redundantExtensionACL
+--enable redundantFileprivate
+--enable redundantGet
+--disable redundantInit
+--enable redundantLet
+--enable redundantLetError
+--enable redundantNilInit
+--enable redundantObjc
+--enable redundantParens
+--disable redundantPattern
+--enable redundantRawValues
+--disable redundantReturn
+--enable redundantVoidReturnType
+--disable spaceAroundBraces
+--enable spaceAroundBrackets
+--enable spaceAroundComments
+--enable spaceAroundGenerics
+--enable spaceAroundParens
+--disable spaceInsideBraces
+--enable spaceInsideBrackets
+--disable spaceInsideComments
+--enable spaceInsideGenerics
+--disable spaceInsideParens
+--disable specifiers
+--enable strongOutlets
+--enable strongifiedSelf
+--disable todos
+--enable typeSugar
+--enable yodaConditions

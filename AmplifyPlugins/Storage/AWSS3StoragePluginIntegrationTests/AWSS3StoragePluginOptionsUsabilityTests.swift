@@ -24,7 +24,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
 
         let expires = 10
         let options = StorageGetURLRequest.Options(expires: expires)
-        let operation = Amplify.Storage.getURL(key: key, options: options) { (event) in
+        let operation = Amplify.Storage.getURL(key: key, options: options) { event in
             switch event {
             case .completed(let result):
                 remoteURLOptional = result
@@ -43,7 +43,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         }
 
         let dataTaskCompleteInvoked = expectation(description: "Completion of retrieving data at URL is invoked")
-        let task = URLSession.shared.dataTask(with: remoteURL) { (data, response, error) in
+        let task = URLSession.shared.dataTask(with: remoteURL) { data, response, error in
             if let error = error {
                 XCTFail("Failed to received data from url with error \(error)")
                 return
@@ -69,7 +69,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         sleep(15)
 
         let urlExpired = expectation(description: "Retrieving expired url should have bad response")
-        let task2 = URLSession.shared.dataTask(with: remoteURL) { (_, response, error) in
+        let task2 = URLSession.shared.dataTask(with: remoteURL) { _, response, error in
             if let error = error {
                 XCTFail("Failed to received data from url with error \(error)")
                 return
@@ -100,7 +100,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         let options = StoragePutDataRequest.Options(metadata: metadata)
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.putData(key: key, data: data, options: options) { (event) in
+        let operation = Amplify.Storage.putData(key: key, data: data, options: options) { event in
             switch event {
             case .completed:
                 completeInvoked.fulfill()

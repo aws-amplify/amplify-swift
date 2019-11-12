@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import AWSS3StoragePlugin
-@testable import AWSPluginsTestCommon
+@testable import AmplifyTestCommon
 
 class AWSS3StorageServiceTestBase: XCTestCase {
     var mockTransferUtility: MockAWSS3TransferUtility!

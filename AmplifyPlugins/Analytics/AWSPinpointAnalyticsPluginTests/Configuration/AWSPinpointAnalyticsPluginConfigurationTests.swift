@@ -79,7 +79,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             (AWSPinpointAnalyticsPluginConfiguration.autoFlushEventsIntervalKey, autoFlushInterval))
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
@@ -138,7 +138,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             (AWSPinpointAnalyticsPluginConfiguration.autoSessionTrackingIntervalKey, autoSessionTrackingInterval))
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
@@ -150,7 +150,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
         let analyticsPluginConfig = JSONValue.init(stringLiteral: "notADictionaryLiteral")
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
@@ -164,7 +164,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
@@ -180,7 +180,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
@@ -199,7 +199,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
@@ -218,7 +218,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
@@ -237,7 +237,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
@@ -255,7 +255,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
@@ -274,7 +274,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
@@ -293,7 +293,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
@@ -307,7 +307,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration))
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
@@ -325,7 +325,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
@@ -343,7 +343,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
@@ -360,7 +360,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
@@ -377,7 +377,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
-            guard case let PluginError.pluginConfigurationError(errorDescription, _) = error else {
+            guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }

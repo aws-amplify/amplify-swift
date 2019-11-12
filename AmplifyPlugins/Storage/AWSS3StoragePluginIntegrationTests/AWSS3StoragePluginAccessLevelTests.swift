@@ -32,7 +32,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let options = StorageListRequest.Options(accessLevel: .protected,
                                         targetIdentityId: nil,
                                         path: key)
-        let operation = Amplify.Storage.list(options: options) { (event) in
+        let operation = Amplify.Storage.list(options: options) { event in
             switch event {
             case .completed(let result):
                 XCTAssertNotNil(result)
@@ -58,13 +58,13 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let options = StorageListRequest.Options(accessLevel: .private,
                                         targetIdentityId: nil,
                                         path: key)
-        let operation = Amplify.Storage.list(options: options) { (event) in
+        let operation = Amplify.Storage.list(options: options) { event in
             switch event {
             case .completed:
                 XCTFail("Should not have completed")
             case .failed(let error):
                 // TODO: service error, check string?
-                guard case let .accessDenied(description, suggestion) = error else {
+                guard case let .accessDenied(description, suggestion, _) = error else {
                     XCTFail("Expected accessDenied error")
                     return
                 }
@@ -132,7 +132,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let getFailedExpectation = expectation(description: "Get Operation should fail")
         let getOptions = StorageGetDataRequest.Options(accessLevel: accessLevel,
                                                targetIdentityId: nil)
-        _ = Amplify.Storage.getData(key: key, options: getOptions) { (event) in
+        _ = Amplify.Storage.getData(key: key, options: getOptions) { event in
             switch event {
             case .completed(let results):
                 XCTFail("Should not have completed with result \(results)")
@@ -204,12 +204,12 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let listOptions = StorageListRequest.Options(accessLevel: accessLevel,
                                             targetIdentityId: user1IdentityId,
                                             path: key)
-        _ = Amplify.Storage.list(options: listOptions) { (event) in
+        _ = Amplify.Storage.list(options: listOptions) { event in
             switch event {
             case .completed:
                 XCTFail("Should not have completed")
             case .failed(let error):
-                guard case .validation(let field, let errorDescription, _) = error else {
+                guard case .validation(let field, let errorDescription, _, _) = error else {
                     XCTFail("Expected validation error")
                     return
                 }
@@ -224,12 +224,12 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let getFailedExpectation = expectation(description: "Get Operation should fail")
         let getOptions = StorageGetDataRequest.Options(accessLevel: accessLevel,
                                                targetIdentityId: user1IdentityId)
-        _ = Amplify.Storage.getData(key: key, options: getOptions) { (event) in
+        _ = Amplify.Storage.getData(key: key, options: getOptions) { event in
             switch event {
             case .completed(let results):
                 XCTFail("Should not have completed")
             case .failed(let error):
-                guard case .validation(let field, let errorDescription, _) = error else {
+                guard case .validation(let field, let errorDescription, _, _) = error else {
                     XCTFail("Expected validation error")
                     return
                 }
@@ -265,7 +265,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let getFailedExpectation = expectation(description: "Get Operation should fail")
         let getOptions = StorageGetDataRequest.Options(accessLevel: accessLevel,
                                                targetIdentityId: nil)
-        _ = Amplify.Storage.getData(key: key, options: getOptions) { (event) in
+        _ = Amplify.Storage.getData(key: key, options: getOptions) { event in
             switch event {
             case .completed(let results):
                 XCTFail("Should not have completed with result \(results)")
@@ -291,7 +291,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let listOptions = StorageListRequest.Options(accessLevel: accessLevel,
                                             targetIdentityId: targetIdentityId,
                                             path: path)
-        _ = Amplify.Storage.list(options: listOptions) { (event) in
+        _ = Amplify.Storage.list(options: listOptions) { event in
             switch event {
             case .completed(let results):
                 items = results.items
@@ -311,7 +311,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let getExpectation = expectation(description: "Get Operation should be successful")
         let getOptions = StorageGetDataRequest.Options(accessLevel: accessLevel,
                                                targetIdentityId: targetIdentityId)
-        _ = Amplify.Storage.getData(key: key, options: getOptions) { (event) in
+        _ = Amplify.Storage.getData(key: key, options: getOptions) { event in
             switch event {
             case .completed(let result):
                 data = result
@@ -329,7 +329,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     func put(key: String, data: String, accessLevel: StorageAccessLevel) {
         let putExpectation = expectation(description: "Put operation should be successful")
         let options = StoragePutDataRequest.Options(accessLevel: accessLevel)
-        _ = Amplify.Storage.putData(key: key, data: data.data(using: .utf8)!, options: options) { (event) in
+        _ = Amplify.Storage.putData(key: key, data: data.data(using: .utf8)!, options: options) { event in
             switch event {
             case .completed:
                 putExpectation.fulfill()
@@ -345,7 +345,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     func remove(key: String, accessLevel: StorageAccessLevel) {
         let removeExpectation = expectation(description: "Remove Operation should be successful")
         let removeOptions = StorageRemoveRequest.Options(accessLevel: accessLevel)
-        _ = Amplify.Storage.remove(key: key, options: removeOptions) { (event) in
+        _ = Amplify.Storage.remove(key: key, options: removeOptions) { event in
             switch event {
             case .completed(let key):
                 removeExpectation.fulfill()
@@ -362,7 +362,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
     func signIn(username: String) {
         let signInWasSuccessful = expectation(description: "signIn was successful")
-        AWSMobileClient.sharedInstance().signIn(username: username, password: password) { (result, error) in
+        AWSMobileClient.sharedInstance().signIn(username: username, password: password) { result, error in
             if let error = error {
                 XCTFail("Sign in failed: \(error.localizedDescription)")
                 return
@@ -380,7 +380,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
     func signUpUser(username: String) {
         let signUpExpectation = expectation(description: "successful sign up expectation.")
-        AWSMobileClient.default().signUp(username: username, password: password) { (result, error) in
+        AWSMobileClient.default().signUp(username: username, password: password) { result, error in
             guard error == nil else {
                 let error = error
                 XCTFail("Failed to sign up user with error: \(error?.localizedDescription)")
