@@ -69,7 +69,7 @@ class ConfigurationTests: XCTestCase {
 
         XCTAssertThrowsError(try Amplify.configure(amplifyConfig),
                              "Throws for nonexistent plugin") { error in
-                                guard case PluginError.noSuchPlugin = error else {
+                                guard case LoggingError.configuration = error else {
                                     XCTFail("Should have thrown for nonexistent plugin")
                                     return
                                 }
@@ -103,7 +103,7 @@ class ConfigurationTests: XCTestCase {
         Amplify.reset()
         XCTAssertThrowsError(try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin"),
                              "Plugins should be reset") { error in
-                                guard case PluginError.noSuchPlugin = error else {
+                                guard case LoggingError.configuration = error else {
                                     XCTFail("Expected PluginError.noSuchPlugin error")
                                     return
                                 }

@@ -10,9 +10,10 @@ import Foundation
 // MARK: - Enum
 
 public enum DataStoreError: Error {
-    case decodingError(_ errorDescription: ErrorDescription, _ recoverySuggestion: RecoverySuggestion)
-    case invalidDatabase
-    case invalidOperation(causedBy: Error?)
+    case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
+    case decodingError(ErrorDescription, RecoverySuggestion)
+    case invalidDatabase(path: String, Error? = nil)
+    case invalidOperation(causedBy: Error? = nil)
     case nonUniqueResult(model: String)
 }
 
@@ -22,23 +23,27 @@ extension DataStoreError: AmplifyError {
 
     public var errorDescription: ErrorDescription {
         switch self {
+        case .configuration(let errorDescription, _, _):
+            return errorDescription
         case .decodingError(let errorDescription, _):
             return errorDescription
         case .invalidDatabase:
-            return "Could not provision a database"
+            return "Could not create a new database."
         case .invalidOperation(let causedBy):
             return causedBy?.localizedDescription ?? ""
         case .nonUniqueResult(let model):
-            return "The result of the queried model of type \(model) return more than one result"
+            return "The result of the queried model of type \(model) return more than one result."
         }
     }
 
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
+        case .configuration(_, let recoverySuggestion, _):
+            return recoverySuggestion
         case .decodingError(_, let recoverySuggestion):
             return recoverySuggestion
-        case .invalidDatabase:
-            return ""
+        case .invalidDatabase(let path):
+            return "Make sure the path \(path) is valid and the device has available storage space."
         case .invalidOperation(let causedBy):
             return causedBy?.localizedDescription ?? ""
         case .nonUniqueResult:
@@ -49,4 +54,16 @@ extension DataStoreError: AmplifyError {
         }
     }
 
+    public var underlyingError: Error? {
+        switch self {
+        case .configuration(_, _, let underlyingError):
+            return underlyingError
+        case .invalidDatabase(_, let underlyingError):
+            return underlyingError
+        case .invalidOperation(let underlyingError):
+            return underlyingError
+        default:
+            return nil
+        }
+    }
 }

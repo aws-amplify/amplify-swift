@@ -13,7 +13,7 @@ import Foundation
 /// ```
 /// let post = Post.keys
 ///
-/// Amplify.DataStore.query(Post.self, withCriteria: {
+/// Amplify.DataStore.query(Post.self, where: {
 ///     post.title.contains("[Amplify]")
 ///     .and(post.content.ne(nil))
 /// })
@@ -27,12 +27,11 @@ import Foundation
 /// ```
 /// let post = Post.keys
 ///
-/// Amplify.DataStore.query(Post.self, withCriteria: {
+/// Amplify.DataStore.query(Post.self, where: {
 ///     post.title ~= "[Amplify]" &&
 ///     post.content != nil
 /// })
 /// ```
-///
 public protocol ModelKey: CodingKey, CaseIterable, QueryFieldOperation {}
 
 extension CodingKey where Self: ModelKey {

@@ -21,10 +21,35 @@ public typealias TargetIdentityId = String
 /// Amplify's philosophy is to expose friendly error messages to the customer that assist with debugging.
 /// Therefore, failable APIs are declared to return error results with Amplify errors, which require
 /// recovery suggestions and error messages.
-public protocol AmplifyError: LocalizedError {
+public protocol AmplifyError: LocalizedError, CustomDebugStringConvertible {
     /// A localized message describing what error occurred.
     var errorDescription: ErrorDescription { get }
 
     /// A localized message describing how one might recover from the failure.
     var recoverySuggestion: RecoverySuggestion { get }
+
+    /// The underlying error that caused the error condition
+    var underlyingError: Error? { get }
+}
+
+public extension AmplifyError {
+    var debugDescription: String {
+        let errorType = type(of: self)
+
+        var components = ["\(errorType): \(errorDescription)"]
+
+        if !recoverySuggestion.isEmpty {
+            components.append("Recovery suggestion: \(recoverySuggestion)")
+        }
+
+        if let underlyingError = underlyingError {
+            if let underlyingAmplifyError = underlyingError as? AmplifyError {
+                components.append("Caused by:\n\(underlyingAmplifyError.debugDescription)")
+            } else {
+                components.append("Caused by:\n\(underlyingError)")
+            }
+        }
+
+        return components.joined(separator: "\n")
+    }
 }

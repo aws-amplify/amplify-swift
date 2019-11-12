@@ -21,8 +21,13 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             preconditionFailure("Could not create the database. The `.documentDirectory` is invalid")
         }
         let path = documentsPath.appendingPathComponent("\(databaseName).db").absoluteString
-        let connection = try Connection(path)
-        self.init(connection: connection)
+
+        do {
+            let connection = try Connection(path)
+            self.init(connection: connection)
+        } catch {
+            throw DataStoreError.invalidDatabase(path: path, error)
+        }
     }
 
     internal init(connection: Connection) {
@@ -48,7 +53,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         do {
             try connection.execute(statement)
         } catch {
-            throw DataStoreError.invalidDatabase
+            throw DataStoreError.invalidOperation(causedBy: error)
         }
     }
 
@@ -70,7 +75,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         do {
             let query = queryTranslator.translateToQuery(from: modelType, predicate: predicate)
             let rows = try connection.prepare(query.string).run(query.arguments)
-            let result: [M] = try rows.convert(to: M.self)
+            let result: [M] = try rows.convert(to: modelType)
             completion(.result(result))
         } catch {
             completion(.failure(causedBy: error))

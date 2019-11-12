@@ -22,28 +22,40 @@ extension AWSS3StoragePlugin {
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
     public func configure(using configuration: Any) throws {
         guard let config = configuration as? JSONValue else {
-            throw PluginError.pluginConfigurationError(PluginErrorConstants.decodeConfigurationError.errorDescription,
+            throw StorageError.configuration(PluginErrorConstants.decodeConfigurationError.errorDescription,
                                                        PluginErrorConstants.decodeConfigurationError.recoverySuggestion)
         }
 
         guard case let .object(configObject) = config else {
-            throw PluginError.pluginConfigurationError(
+            throw StorageError.configuration(
                 PluginErrorConstants.configurationObjectExpected.errorDescription,
                 PluginErrorConstants.configurationObjectExpected.recoverySuggestion)
         }
 
-        let bucket = try AWSS3StoragePlugin.getBucket(configObject)
-        let region = try AWSS3StoragePlugin.getRegionType(configObject)
-        let defaultAccessLevel = try AWSS3StoragePlugin.getDefaultAccessLevel(configObject)
+        do {
+            let bucket = try AWSS3StoragePlugin.getBucket(configObject)
+            let region = try AWSS3StoragePlugin.getRegionType(configObject)
+            let defaultAccessLevel = try AWSS3StoragePlugin.getDefaultAccessLevel(configObject)
 
-        let authService = AWSAuthService()
-        let cognitoCredentialsProvider = authService.getCognitoCredentialsProvider()
-        let storageService = try AWSS3StorageService(region: region,
-                                                     bucket: bucket,
-                                                     cognitoCredentialsProvider: cognitoCredentialsProvider,
-                                                     identifier: key)
+            let authService = AWSAuthService()
+            let cognitoCredentialsProvider = authService.getCognitoCredentialsProvider()
+            let storageService = try AWSS3StorageService(region: region,
+                                                         bucket: bucket,
+                                                         cognitoCredentialsProvider: cognitoCredentialsProvider,
+                                                         identifier: key)
 
-        configure(storageService: storageService, authService: authService, defaultAccessLevel: defaultAccessLevel)
+            configure(storageService: storageService, authService: authService, defaultAccessLevel: defaultAccessLevel)
+        } catch let storageError as StorageError {
+            throw storageError
+        } catch {
+            let amplifyError = StorageError.configuration(
+                "Error configuring \(String(describing: self))",
+                """
+                There was an error configuring the plugin. See the underlying error for more details.
+                """,
+                error)
+            throw amplifyError
+        }
     }
 
     // MARK: Internal
