@@ -94,7 +94,7 @@
 --enable redundantLetError
 --enable redundantNilInit
 --enable redundantObjc
---disable redundantParens
+--enable redundantParens
 --disable redundantPattern
 --enable redundantRawValues
 --disable redundantReturn
