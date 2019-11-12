@@ -21,7 +21,7 @@ public typealias TargetIdentityId = String
 /// Amplify's philosophy is to expose friendly error messages to the customer that assist with debugging.
 /// Therefore, failable APIs are declared to return error results with Amplify errors, which require
 /// recovery suggestions and error messages.
-public protocol AmplifyError: LocalizedError, CustomDebugStringConvertible {
+public protocol AmplifyError: Error, CustomDebugStringConvertible {
     /// A localized message describing what error occurred.
     var errorDescription: ErrorDescription { get }
 
