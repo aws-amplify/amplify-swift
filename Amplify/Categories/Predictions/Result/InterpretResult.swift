@@ -28,7 +28,7 @@ public struct InterpretResultBuilder {
         return result
     }
 
-    mutating public  func addKeyPhrases(keyPhrases: [KeyPhrase]?) {
+    mutating public func addKeyPhrases(keyPhrases: [KeyPhrase]?) {
         result.keyPhrases = keyPhrases
     }
 
