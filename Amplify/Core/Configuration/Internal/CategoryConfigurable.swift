@@ -13,17 +13,11 @@ protocol CategoryConfigurable: class, CategoryTypeable {
     /// Configures the category and added plugins using `configuration`
     ///
     /// - Parameter configuration: The CategoryConfiguration
-    /// - Throws:
-    ///   - PluginError.noSuchPlugin: If the specified configuration references a plugin that has not been added
-    ///     using `add(plugin:)`
-    ///   - PluginError.pluginConfigurationError: If any plugin encounters an error during configuration
     func configure(using configuration: CategoryConfiguration) throws
 
     /// Convenience method for configuring the category using the top-level AmplifyConfiguration
     ///
     /// - Parameter amplifyConfiguration: The AmplifyConfiguration
-    /// - Throws:
-    ///   - PluginError.pluginConfigurationError: If any plugin encounters an error during configuration
     func configure(using amplifyConfiguration: AmplifyConfiguration) throws
 
     /// Clears the category configurations, and invokes `reset` on each added plugin

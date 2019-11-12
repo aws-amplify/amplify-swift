@@ -12,3 +12,7 @@ public protocol PredictionsInterpretOperation: AmplifyOperation<
     Void,
     InterpretResult,
 PredictionsError> { }
+
+public extension HubPayload.EventName.Predictions {
+    static let interpret = "Predictions.interpret"
+}

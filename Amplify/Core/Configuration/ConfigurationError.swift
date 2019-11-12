@@ -8,37 +8,40 @@
 /// Errors associated with configuring and inspecting Amplify Categories
 public enum ConfigurationError {
     /// The client issued a subsequent call to `Amplify.configure` after the first had already succeeded
-    case amplifyAlreadyConfigured(ErrorDescription, RecoverySuggestion)
+    case amplifyAlreadyConfigured(ErrorDescription, RecoverySuggestion, Error? = nil)
 
-    /// The specified `amplifyconfiguration.json` file was not present or unreadable. Inspect `RecoverySuggestion` for
-    /// the underlying error.
-    case invalidAmplifyConfigurationFile(ErrorDescription, RecoverySuggestion)
+    /// The specified `amplifyconfiguration.json` file was not present or unreadable
+    case invalidAmplifyConfigurationFile(ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// Unable to decode `amplifyconfiguration.json` into a valid AmplifyConfiguration object
-    case unableToDecode(ErrorDescription, RecoverySuggestion)
+    case unableToDecode(ErrorDescription, RecoverySuggestion, Error? = nil)
 }
 
 extension ConfigurationError: AmplifyError {
     public var errorDescription: ErrorDescription {
         switch self {
-        case .amplifyAlreadyConfigured(let description, _):
-            return description
-        case .invalidAmplifyConfigurationFile(let description, _):
-            return description
-        case .unableToDecode(let description, _):
+        case .amplifyAlreadyConfigured(let description, _, _),
+             .invalidAmplifyConfigurationFile(let description, _, _),
+             .unableToDecode(let description, _, _):
             return description
         }
     }
 
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
-        case .amplifyAlreadyConfigured(_, let recoverySuggestion):
-            return recoverySuggestion
-        case .invalidAmplifyConfigurationFile(_, let recoverySuggestion):
-            return recoverySuggestion
-        case .unableToDecode(_, let recoverySuggestion):
+        case .amplifyAlreadyConfigured(_, let recoverySuggestion, _),
+             .invalidAmplifyConfigurationFile(_, let recoverySuggestion, _),
+             .unableToDecode(_, let recoverySuggestion, _):
             return recoverySuggestion
         }
     }
 
+    public var underlyingError: Error? {
+        switch self {
+        case .amplifyAlreadyConfigured(_, _, let underlyingError),
+             .invalidAmplifyConfigurationFile(_, _, let underlyingError),
+             .unableToDecode(_, _, let underlyingError):
+            return underlyingError
+        }
+    }
 }

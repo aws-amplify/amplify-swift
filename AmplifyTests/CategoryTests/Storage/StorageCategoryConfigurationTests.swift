@@ -73,7 +73,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         Amplify.reset()
         XCTAssertThrowsError(try Amplify.Storage.getPlugin(for: "MockStorageCategoryPlugin"),
                              "Getting a plugin after reset() should throw") { error in
-                                guard case PluginError.noSuchPlugin = error else {
+                                guard case StorageError.configuration = error else {
                                     XCTFail("Expected PluginError.noSuchPlugin")
                                     return
                                 }

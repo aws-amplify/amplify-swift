@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Foundation
 
 public extension AWSAPICategoryPlugin {
     func reset(onComplete: @escaping BasicClosure) {
