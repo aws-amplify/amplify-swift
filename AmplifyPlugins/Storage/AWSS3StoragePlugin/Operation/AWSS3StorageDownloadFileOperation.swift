@@ -28,7 +28,7 @@ Void, StorageError>, StorageDownloadFileOperation {
          authService: AWSAuthServiceBehavior,
          listener: EventListener?) {
 
-        self.storageService = storageService=
+        self.storageService = storageService
         self.authService = authService
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.downloadFile,

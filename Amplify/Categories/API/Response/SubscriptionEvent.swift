@@ -7,13 +7,14 @@
 
 /// Event for subscription
 public enum SubscriptionEvent<T> {
-    /// Connect based event, the associated string will have connection message.
+    /// The subscription's connection state has changed.
     case connection(SubscriptionConnectionState)
 
-    /// Data event, the associated data contains the data received.
+    /// The subscription received data.
     case data(T)
 
-    /// Failure event, the associated error object contains the error occured.
+    // TODO: do we really need this? https://github.com/aws-amplify/amplify-ios/pull/79/files#r344769874
+    /// The subscription received an error.
     case failed(Error)
 
 }

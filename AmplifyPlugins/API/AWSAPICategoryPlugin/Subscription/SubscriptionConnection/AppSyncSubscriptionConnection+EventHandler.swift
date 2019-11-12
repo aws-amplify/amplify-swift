@@ -44,7 +44,7 @@ extension AppSyncSubscriptionConnection {
         case .connecting:
             break
         case .connected:
-            subscriptionItems.forEach { (identifier, subscriptionItem) in
+            subscriptionItems.forEach { identifier, subscriptionItem in
                 switch subscriptionItem.subscriptionConnectionState {
                 case .disconnected:
                     print("Start subscription for identifier: \(subscriptionItem.identifier)")
@@ -60,7 +60,7 @@ extension AppSyncSubscriptionConnection {
             }
 
             // Move all subscriptionItems to disconnected but keep them in memory.
-            subscriptionItems.forEach { (_, subscriptionItem) in
+            subscriptionItems.forEach { _, subscriptionItem in
                 switch subscriptionItem.subscriptionConnectionState {
                 case .connecting, .connected:
                     subscriptionItem.setState(.disconnected)

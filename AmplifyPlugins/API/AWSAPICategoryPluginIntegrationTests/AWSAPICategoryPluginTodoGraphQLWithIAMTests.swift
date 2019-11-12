@@ -72,7 +72,7 @@ class AWSAPICategoryPluginTodoGraphQLWithIAMTests: AWSAPICategoryPluginBaseTests
                                            variables: CreateTodoMutation.variables(id: expectedId,
                                                                                    name: expectedName,
                                                                                    description: expectedDescription),
-                                           responseType: CreateTodoMutation.Data.self) { (event) in
+                                           responseType: CreateTodoMutation.Data.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -114,7 +114,7 @@ class AWSAPICategoryPluginTodoGraphQLWithIAMTests: AWSAPICategoryPluginBaseTests
                                            variables: CreateTodoMutation.variables(id: expectedId,
                                                                                    name: expectedName,
                                                                                    description: expectedDescription),
-                                           responseType: CreateTodoMutation.Data.self) { (event) in
+                                           responseType: CreateTodoMutation.Data.self) { event in
             switch event {
             case .completed(let graphQLResponse):
                 XCTFail("Unexpected .completed event: \(graphQLResponse)")

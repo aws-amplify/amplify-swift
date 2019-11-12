@@ -16,10 +16,14 @@ class CognitoUserPoolsAuthInterceptor: AuthInterceptor {
         self.authProvider = authProvider
     }
 
-    func interceptMessage(_ message: AppSyncMessage, for endpoint: URL) -> AppSyncMessage {
-        let host = endpoint.host!
+    func interceptMessage(_ message: AppSyncMessage, for url: URL) -> AppSyncMessage {
+        guard let host = url.host else {
+            print("[CognitoUserPoolsAuthInterceptor] interceptMessage missing host")
+            return message
+        }
+
         var jwtToken: String?
-        getToken { (token, error) in
+        getToken { token, error in
             jwtToken = token
         }
         guard let token = jwtToken else {
@@ -36,15 +40,20 @@ class CognitoUserPoolsAuthInterceptor: AuthInterceptor {
                                                type: message.messageType)
             return signedMessage
         default:
+            // TODO: Log.verbose
             print("Message type does not need signing - \(message.messageType)")
         }
         return message
     }
 
-    func interceptConnection(_ request: AppSyncConnectionRequest, for endpoint: URL) -> AppSyncConnectionRequest {
-        let host = endpoint.host!
+    func interceptConnection(_ request: AppSyncConnectionRequest, for url: URL) -> AppSyncConnectionRequest {
+        guard let host = url.host else {
+            print("[CognitoUserPoolsAuthInterceptor] interceptConnection missing host")
+            return request
+        }
+
         var jwtToken: String?
-        getToken { (token, error) in
+        getToken { token, error in
             jwtToken = token
         }
         guard let token = jwtToken else {
@@ -81,6 +90,7 @@ class CognitoUserPoolsAuthInterceptor: AuthInterceptor {
     }
 }
 
+// TODO: Should be Struct rather than class
 /// Authentication header for user pool based auth
 private class UserPoolsAuthenticationHeader: AuthenticationHeader {
     let authorization: String

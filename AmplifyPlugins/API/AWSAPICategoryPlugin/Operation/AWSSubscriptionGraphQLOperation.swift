@@ -89,7 +89,7 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperati
         // Create subscription
         subscriptionItem = connection.subscribe(requestString: request.document,
                                                 variables: request.variables,
-                                                eventHandler: { [weak self] (event, _) in
+                                                eventHandler: { [weak self] event, _ in
             self?.onSubscriptionEvent(event: event)
         })
 

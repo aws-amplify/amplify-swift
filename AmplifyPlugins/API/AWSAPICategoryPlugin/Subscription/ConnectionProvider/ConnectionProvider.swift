@@ -29,38 +29,33 @@ enum ConnectionProviderEvent {
 
     case connection(ConnectionState)
 
-    // Keep alive ping from the service
+    /// Keep alive ping from the service
     case keepAlive
 
-    // Subscription has been connected to the connection
+    /// Subscription has been connected to the connection
     case subscriptionConnected(identifier: String)
 
-    // Subscription has been disconnected from the connection
+    /// Subscription has been disconnected from the connection
     case subscriptionDisconnected(identifier: String)
 
-    // Data received on the connection
+    /// Data received on the connection
     case data(identifier: String, payload: [String: JSONValue])
 
-    // Subscription related error
+    /// Subscription related error
     case subscriptionError(String, ConnectionProviderError)
 
-    // Unknown error
+    /// Unknown error
     case unknownError(ConnectionProviderError)
 }
 
-// Synchronized to the state of the underlying websocket connection
+/// Synchronized to the state of the underlying websocket connection
 enum ConnectionState {
-    // The websocket connection was created
+    /// The websocket connection was created
     case connecting
 
-    // The websocket connection has been established
+    /// The websocket connection has been established
     case connected
 
-    // The websocket connection has been disconnected
+    /// The websocket connection has been disconnected
     case disconnected(error: ConnectionProviderError?)
-}
-
-enum SubscriptionState {
-    case connected(identifier: String)
-    case disconnected(identifier: String, error: ConnectionProviderError?)
 }

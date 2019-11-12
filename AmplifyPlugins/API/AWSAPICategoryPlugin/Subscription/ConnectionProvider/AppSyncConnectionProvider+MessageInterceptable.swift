@@ -13,6 +13,7 @@ extension AppSyncConnectionProvider: MessageInterceptable {
         messageInterceptors.append(interceptor)
     }
 
+    // TODO: make interceptors async
     func interceptMessage(_ message: AppSyncMessage, for endpoint: URL) -> AppSyncMessage {
         let finalMessage = messageInterceptors.reduce(message) { $1.interceptMessage($0, for: endpoint) }
         return finalMessage

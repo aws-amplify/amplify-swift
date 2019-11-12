@@ -18,17 +18,21 @@ class APIKeyAuthInterceptor: AuthInterceptor {
         self.apikeyProvider = apikeyProvider
     }
 
-    /// Intercept the connection and adds header, payload query to the request url.
+    /// Intercept the connection request. Adds authorization header and payload query parameters.
     ///
-    /// The value of header should be the base64 string of the following:
+    /// The resulting value of header will contain the base64 string of the following:
     /// * "host": <string> : this is the host for the AppSync endpoint
     /// * "x-amz-date": <string> : UTC timestamp in the following ISO 8601 format: YYYYMMDD'T'HHMMSS'Z'
     /// * "x-api-key": <string> : Api key configured for AppSync API
     /// The value of payload is {}
     /// - Parameter request: Signed request
     func interceptConnection(_ request: AppSyncConnectionRequest,
-                             for endpoint: URL) -> AppSyncConnectionRequest {
-        let host = endpoint.host!
+                             for url: URL) -> AppSyncConnectionRequest {
+        guard let host = url.host else {
+            print("[APIKeyAuthInterceptor] interceptConnection missing host")
+            return request
+        }
+
         let apiKey  = apikeyProvider.getAPIKey()
         let authHeader = APIKeyAuthenticationHeader(apiKey: apiKey, host: host)
         let base64Auth = AppSyncJSONHelper.base64AuthenticationBlob(authHeader)
@@ -49,8 +53,12 @@ class APIKeyAuthInterceptor: AuthInterceptor {
         return signedRequest
     }
 
-    func interceptMessage(_ message: AppSyncMessage, for endpoint: URL) -> AppSyncMessage {
-        let host = endpoint.host!
+    func interceptMessage(_ message: AppSyncMessage, for url: URL) -> AppSyncMessage {
+        guard let host = url.host else {
+            print("[APIKeyAuthInterceptor] interceptMessage missing host")
+            return message
+        }
+
         switch message.messageType {
         case .subscribe:
             let apiKey  = apikeyProvider.getAPIKey()
@@ -63,6 +71,7 @@ class APIKeyAuthInterceptor: AuthInterceptor {
                                                type: message.messageType)
             return signedMessage
         default:
+            // TODO: Log.verbose
             print("Message type does not need signing - \(message.messageType)")
         }
         return message

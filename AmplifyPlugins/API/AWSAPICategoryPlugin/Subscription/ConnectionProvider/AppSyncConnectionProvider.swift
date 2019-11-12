@@ -15,9 +15,12 @@ class AppSyncConnectionProvider: ConnectionProvider {
     let url: URL
     let websocketProvider: WebsocketProvider
 
-    var state: ConnectionState = .disconnected(error: nil)
+    var state = ConnectionState.disconnected(error: nil)
     var listener: ConnectionProviderCallback?
-    var messageInterceptors: [MessageInterceptor] = []
+    var messageInterceptors = [MessageInterceptor]()
+
+    var staleConnectionTimeout = DispatchTimeInterval.seconds(5 * 60)
+    var lastKeepAliveTime = DispatchTime.now()
 
     /// Serial queue for maintaining the connection state in sync with the websocket connection
     let serialConnectionQueue = DispatchQueue(label: "com.amazonaws.AppSyncRealTimeConnectionProvider.serialQueue")
@@ -32,12 +35,8 @@ class AppSyncConnectionProvider: ConnectionProvider {
     init(url: URL, websocketProvider: WebsocketProvider) {
         self.url = url
         self.websocketProvider = websocketProvider
-        websocketProvider.setListener { [weak self] (websocketEvent) in
-            guard let self = self else {
-                return
-            }
-
-            self.onWebsocketEvent(event: websocketEvent)
+        websocketProvider.setListener { [weak self] websocketEvent in
+            self?.onWebsocketEvent(event: websocketEvent)
         }
     }
 
@@ -78,7 +77,7 @@ class AppSyncConnectionProvider: ConnectionProvider {
 
         let message = AppSyncMessage(id: subscriptionItem.identifier,
                                      payload: payload,
-                                     type: .subscribe("start"))
+                                     type: .subscribe)
         do {
             try write(message)
         } catch {
@@ -89,7 +88,7 @@ class AppSyncConnectionProvider: ConnectionProvider {
 
     func unsubscribe(_ identifier: String) {
         print("sendStartSubscriptionMessage, sending start subscription message...")
-        let message = AppSyncMessage(id: identifier, type: .unsubscribe("stop"))
+        let message = AppSyncMessage(id: identifier, type: .unsubscribe)
         do {
             try write(message)
         } catch {
@@ -110,14 +109,14 @@ class AppSyncConnectionProvider: ConnectionProvider {
         listener = callback
     }
 
-    // MARK: - Private
+    // MARK: - Internal
 
     /// Send Connection Init message to finish the connection handshake
     func sendConnectionInitMessage() {
         switch state {
         case .connecting:
             print("sendConnectionInitMessage, sending init message...")
-            let message = AppSyncMessage(type: .connectionInit("connection_init"))
+            let message = AppSyncMessage(type: .connectionInit)
             do {
                 try write(message)
             } catch {
@@ -134,6 +133,39 @@ class AppSyncConnectionProvider: ConnectionProvider {
         }
     }
 
+    /// Check if the we got a keep alive message within the given timeout window.
+    /// If we did not get the keepalive, disconnect the connection and return an error.
+    func disconnectIfStale() {
+
+        // Validate the connection only when it is connected.
+        guard case .connected = state else {
+            return
+        }
+        print("Validating connection")
+        let staleThreshold = lastKeepAliveTime + staleConnectionTimeout
+        let currentTime = DispatchTime.now()
+        if staleThreshold < currentTime {
+
+            serialConnectionQueue.async {[weak self] in
+                guard let self = self else {
+                    return
+                }
+                self.state = .disconnected(error: nil)
+                self.websocketProvider.disconnect()
+                print("Realtime connection is stale, disconnecting.")
+                self.listener?(.connection(self.state))
+            }
+
+        } else {
+            DispatchQueue.global().asyncAfter(deadline: currentTime + staleConnectionTimeout) { [weak self] in
+                self?.disconnectIfStale()
+            }
+        }
+
+    }
+
+    // MARK: - Private
+
     private func write(_ appSyncMessage: AppSyncMessage) throws {
         do {
             let message = try encode(appSyncMessage: appSyncMessage)
@@ -145,6 +177,7 @@ class AppSyncConnectionProvider: ConnectionProvider {
 
     // MARK: - Helpers
 
+    // TODO: Convert to a private initializer of AppSyncMessage.Payload
     private func convertToPayload(for query: String, variables: [String: Any]?) throws -> AppSyncMessage.Payload {
         var dataDict: [String: Any] = ["query": query]
         if let subVariables = variables {

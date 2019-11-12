@@ -33,7 +33,7 @@ final public class AWSAPICategoryPlugin: NSObject, APICategoryPlugin {
     /// A queue that regulates the execution of operations.
     var queue: OperationQueue!
 
-    /// Creating and retrieving websocket connections and subscriptions
+    /// Creating and retrieving connections for subscriptions.
     var subscriptionConnectionFactory: SubscriptionConnectionFactory!
 
     public init(sessionFactory: URLSessionBehaviorFactory) {
@@ -51,6 +51,5 @@ final public class AWSAPICategoryPlugin: NSObject, APICategoryPlugin {
         let factory = URLSessionFactory(configuration: configuration, delegateQueue: nil)
         self.session = factory.makeSession(withDelegate: self)
         self.queue = OperationQueue()
-        self.subscriptionConnectionFactory = AWSSubscriptionConnectionFactory()
     }
 }

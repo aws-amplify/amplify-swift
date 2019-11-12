@@ -55,6 +55,7 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
         case .openIDConnect:
             // TODO: retrieve OIDC Token Provider from somewhere else that the developer added.
             let tokenProvider = BasicUserPoolTokenProvider(authService: authService)
+            // TODO: Need to run through OIDC use case to identify what is the Interceptor logic
             authInterceptor = CognitoUserPoolsAuthInterceptor(tokenProvider)
         case .none:
             throw APIError.unknown("Cannot create AppSync subscription for none auth mode", "")
