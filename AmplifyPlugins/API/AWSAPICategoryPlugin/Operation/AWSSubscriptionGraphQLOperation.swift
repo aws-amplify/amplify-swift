@@ -37,9 +37,15 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: SubscriptionGr
 
     override public func cancel() {
         if let subscriptionItem = subscriptionItem, let subscriptionConnection = subscriptionConnection {
-            subscriptionConnection.unsubscribe(item: subscriptionItem)
+            switch subscriptionItem.subscriptionConnectionState {
+            case .connecting, .connected:
+                subscriptionConnection.unsubscribe(item: subscriptionItem)
+            case .disconnected:
+                super.cancel()
+            }
+        } else {
+            super.cancel()
         }
-        super.cancel()
     }
 
     override public func main() {
@@ -70,9 +76,8 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: SubscriptionGr
         }
 
         // Retrieve the subscription connection
-        let connection: SubscriptionConnection
         do {
-            connection = try subscriptionConnectionFactory.getOrCreateConnection(for: endpointConfig,
+            subscriptionConnection = try subscriptionConnectionFactory.getOrCreateConnection(for: endpointConfig,
                                                                                  authService: authService)
         } catch {
             let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)
@@ -82,10 +87,10 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: SubscriptionGr
         }
 
         // Create subscription
-        subscriptionItem = connection.subscribe(requestString: request.document,
-                                                variables: request.variables,
-                                                onEvent: { [weak self] event in
-                                                    self?.onSubscriptionEvent(event: event)
+        subscriptionItem = subscriptionConnection?.subscribe(requestString: request.document,
+                                                             variables: request.variables,
+                                                             onEvent: { [weak self] event in
+            self?.onSubscriptionEvent(event: event)
         })
 
     }
@@ -97,6 +102,10 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: SubscriptionGr
             case .connection(let subscriptionConnectionState):
                 let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(subscriptionConnectionState)
                 dispatch(event: .inProcess(subscriptionEvent))
+                if case .disconnected = subscriptionConnectionState {
+                    dispatch(event: .completed(()))
+                    finish()
+                }
             case .data(let graphQLResponseData):
                 do {
                     let graphQLServiceResponse = try GraphQLResponseDecoder.deserialize(

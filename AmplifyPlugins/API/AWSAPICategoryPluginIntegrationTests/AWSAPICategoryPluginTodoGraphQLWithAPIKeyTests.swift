@@ -10,6 +10,7 @@ import AWSMobileClient
 import AWSAPICategoryPlugin
 @testable import Amplify
 
+// swiftlint:disable type_body_length
 // These test show the basic functionality of mutate/query/subscribe methods
 class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTests {
 
@@ -399,6 +400,8 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
     /// Then: The subscription handler is called and Todo object is returned
     func testOnCreateTodoSubscription() {
         let connectedInvoked = expectation(description: "Connection established")
+        let disconnectedInvoked = expectation(description: "Connection disconnected")
+        let completedInvoked = expectation(description: "Completed invoked")
         let progressInvoked = expectation(description: "progress invoked")
         progressInvoked.expectedFulfillmentCount = 2
         let request = GraphQLRequest(document: OnCreateTodoSubscription.document,
@@ -417,7 +420,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                     case .connected:
                         connectedInvoked.fulfill()
                     case .disconnected:
-                        break
+                        disconnectedInvoked.fulfill()
                     }
 
                 case .data(let graphQLResponse):
@@ -425,6 +428,8 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                 }
             case .failed(let error):
                 print("Unexpected .failed event: \(error)")
+            case .completed:
+                completedInvoked.fulfill()
             default:
                 XCTFail("Unexpected event: \(event)")
             }
@@ -449,24 +454,165 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
 
         wait(for: [progressInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
         operation.cancel()
-        XCTAssertTrue(operation.isCancelled)
+        wait(for: [disconnectedInvoked, completedInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        XCTAssertTrue(operation.isFinished)
     }
 
     /// Given: A subscription is created for UpdateTodo's
     /// When: Call mutate API on UpdateTodo
     /// Then: The subscription handler is called and Todo object is returned
     func testOnUpdateTodoSubscription() {
+        let connectedInvoked = expectation(description: "Connection established")
+        let disconnectedInvoked = expectation(description: "Connection disconnected")
+        let completedInvoked = expectation(description: "Completed invoked")
+        let progressInvoked = expectation(description: "progress invoked")
+        progressInvoked.expectedFulfillmentCount = 2
+        let request = GraphQLRequest(document: OnUpdateTodoSubscription.document,
+                                     variables: nil,
+                                     responseType: OnUpdateTodoSubscription.Data.self)
+        let operation = Amplify.API.subscribe(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+                                              request: request) { event in
+            switch event {
+            case .inProcess(let graphQLResponse):
+                print(graphQLResponse)
+                switch graphQLResponse {
+                case .connection(let state):
+                    switch state {
+                    case .connecting:
+                        break
+                    case .connected:
+                        connectedInvoked.fulfill()
+                    case .disconnected:
+                        disconnectedInvoked.fulfill()
+                    }
+
+                case .data(let graphQLResponse):
+                    progressInvoked.fulfill()
+                }
+            case .failed(let error):
+                print("Unexpected .failed event: \(error)")
+            case .completed:
+                completedInvoked.fulfill()
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+        XCTAssertNotNil(operation)
+        wait(for: [connectedInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        let uuid = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let name = testMethodName + "Name"
+        let description = testMethodName + "Description"
+
+        guard let todo = createTodo(id: uuid, name: name, description: description) else {
+            XCTFail("Failed to create todo")
+            return
+        }
+
+        guard updateTodo(id: todo.id, name: name + "Updated", description: description) != nil else {
+            XCTFail("Failed to update todo")
+            return
+        }
+
+        guard updateTodo(id: todo.id, name: name + "Updated2", description: description) != nil else {
+            XCTFail("Failed to update todo")
+            return
+        }
+
+        wait(for: [progressInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        operation.cancel()
+        wait(for: [disconnectedInvoked, completedInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        XCTAssertTrue(operation.isFinished)
     }
 
     /// Given: A subscription is created for DeleteTodo
     /// When: Call mutate API on DeleteTodo
     /// Then: The subscription handler is called and Todo object is returned
     func testOnDeleteTodoSubscription() {
+        let connectedInvoked = expectation(description: "Connection established")
+        let disconnectedInvoked = expectation(description: "Connection disconnected")
+        let completedInvoked = expectation(description: "Completed invoked")
+        let progressInvoked = expectation(description: "progress invoked")
+        let request = GraphQLRequest(document: OnDeleteTodoSubscription.document,
+                                     variables: nil,
+                                     responseType: OnDeleteTodoSubscription.Data.self)
+        let operation = Amplify.API.subscribe(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+                                              request: request) { event in
+            switch event {
+            case .inProcess(let graphQLResponse):
+                print(graphQLResponse)
+                switch graphQLResponse {
+                case .connection(let state):
+                    switch state {
+                    case .connecting:
+                        break
+                    case .connected:
+                        connectedInvoked.fulfill()
+                    case .disconnected:
+                        disconnectedInvoked.fulfill()
+                    }
+
+                case .data(let graphQLResponse):
+                    progressInvoked.fulfill()
+                }
+            case .failed(let error):
+                print("Unexpected .failed event: \(error)")
+            case .completed:
+                completedInvoked.fulfill()
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+        XCTAssertNotNil(operation)
+        wait(for: [connectedInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        let uuid = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let name = testMethodName + "Name"
+        let description = testMethodName + "Description"
+
+        guard let todo = createTodo(id: uuid, name: name, description: description) else {
+            XCTFail("Failed to create todo")
+            return
+        }
+
+        guard deleteTodo(id: todo.id, name: name + "Updated", description: description) != nil else {
+            XCTFail("Failed to update todo")
+            return
+        }
+
+        wait(for: [progressInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        operation.cancel()
+        wait(for: [disconnectedInvoked, completedInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        XCTAssertTrue(operation.isFinished)
     }
 
     // Query with two query documents, return two different objects.
-    func testComplexQuery() {
-
+    func testCreateMultipleSubscriptions() {
+        let operations = [createTodoSubscription(),
+                          createTodoSubscription(),
+                          createTodoSubscription(),
+                          createTodoSubscription(),
+                          createTodoSubscription()]
+        let completedInvoked = expectation(description: "Completed invoked")
+        completedInvoked.expectedFulfillmentCount = operations.count
+        for operation in operations {
+            _ = operation.subscribe { event in
+                switch event {
+                case .completed:
+                    completedInvoked.fulfill()
+                case .failed(let error):
+                    XCTFail("Unexpected .failed event: \(error)")
+                default:
+                    break
+                }
+            }
+            XCTAssertTrue(operation.isExecuting)
+            operation.cancel()
+        }
+        wait(for: [completedInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        for operation in operations {
+            XCTAssertTrue(operation.isFinished)
+        }
     }
 
     // MARK: Common functionality
@@ -503,5 +649,101 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         }
         wait(for: [completeInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
         return todo
+    }
+
+    func updateTodo(id: String, name: String, description: String) -> Todo? {
+        let completeInvoked = expectation(description: "Completd is invoked")
+        var todo: Todo?
+
+        let request = GraphQLRequest(document: UpdateTodoMutation.document,
+                                     variables: UpdateTodoMutation.variables(id: id,
+                                                                             name: name,
+                                                                             description: description),
+                                     responseType: UpdateTodoMutation.Data.self)
+        _ = Amplify.API.mutate(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+                               request: request) { event in
+            switch event {
+            case .completed(let graphQLResponse):
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
+                    return
+                }
+                guard let updateTodo = data.updateTodo else {
+                    XCTFail("Missing createTodo")
+                    return
+                }
+
+                todo = updateTodo
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+        wait(for: [completeInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        return todo
+    }
+
+    func deleteTodo(id: String, name: String, description: String) -> Todo? {
+        let completeInvoked = expectation(description: "Completd is invoked")
+        var todo: Todo?
+
+        let request = GraphQLRequest(document: DeleteTodoMutation.document,
+                                     variables: DeleteTodoMutation.variables(id: id),
+                                     responseType: DeleteTodoMutation.Data.self)
+        _ = Amplify.API.mutate(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+                               request: request) { event in
+            switch event {
+            case .completed(let graphQLResponse):
+                guard case let .success(data) = graphQLResponse else {
+                    XCTFail("Missing successful response")
+                    return
+                }
+                guard let deleteTodo = data.deleteTodo else {
+                    XCTFail("Missing deleteTodo")
+                    return
+                }
+
+                todo = deleteTodo
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+        wait(for: [completeInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        return todo
+    }
+
+    func createTodoSubscription() -> SubscriptionGraphQLOperation<OnCreateTodoSubscription.Data> {
+        let connectedInvoked = expectation(description: "Connection established")
+        let request = GraphQLRequest(document: OnCreateTodoSubscription.document,
+                                     variables: nil,
+                                     responseType: OnCreateTodoSubscription.Data.self)
+        let operation = Amplify.API.subscribe(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+                                              request: request) { event in
+            switch event {
+            case .inProcess(let graphQLResponse):
+                print(graphQLResponse)
+                switch graphQLResponse {
+                case .connection(let state):
+                    switch state {
+                    case .connected:
+                        connectedInvoked.fulfill()
+                    default:
+                        break
+                    }
+                default:
+                    break
+                }
+            default:
+                break
+            }
+        }
+        XCTAssertNotNil(operation)
+        wait(for: [connectedInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        return operation
     }
 }

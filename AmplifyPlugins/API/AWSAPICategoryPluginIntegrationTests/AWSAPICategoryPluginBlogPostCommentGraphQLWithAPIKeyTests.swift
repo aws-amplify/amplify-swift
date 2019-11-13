@@ -33,14 +33,13 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
                     XCTFail("Missing error response")
                     return
                 }
-                XCTAssertEqual(errors.count, 1)
 
-                if case .object(let errorObject) = errors[0] {
-                    XCTAssertEqual(errorObject["errorType"], "UnauthorizedException")
-                    XCTAssertEqual(errorObject["message"], "You are not authorized to make this call.")
-                } else {
-                    XCTFail("Could not get error object")
+                guard let error = errors.first else {
+                    XCTFail("Missing error")
+                    return
                 }
+
+                XCTAssertEqual(error.message, "You are not authorized to make this call.")
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -53,7 +52,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
     }
 
     /// Given: Create a blog
-    /// When: Call GetBlog query API for that blog, with responseType JSONValue
+    /// When: Call GetBlog query API for that blog, with responseType String
     /// Then: The successful query operation returns graphQLResponse.data as String, and no errors, and decodes to Blog
     func testGetBlogQueryAsJSONValueAndDecode() {
         let uuid = UUID().uuidString
@@ -68,18 +67,21 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
         let completeInvoked = expectation(description: "request completed")
         let request = GraphQLRequest(document: GetBlogQuery.document,
                                      variables: GetBlogQuery.variables(id: blog.id),
-                                     responseType: JSONValue.self)
+                                     responseType: String.self)
         let queryOperation = Amplify.API.query(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
                                                request: request) { event in
             switch event {
             case .completed(let graphQLResponse):
-                guard case let .success(data) = graphQLResponse else {
+                guard case let .success(dataString) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
                 }
 
                 do {
-                    let serializedBlog = try JSONEncoder().encode(data)
+                    guard let serializedBlog = dataString.data(using: .utf8) else {
+                        XCTFail("Could not get data from string result")
+                        return
+                    }
                     let blogObject = try JSONDecoder().decode(GetBlogQuery.Data.self, from: serializedBlog)
                     guard let blog = blogObject.getBlog else {
                         XCTFail("Failed to deserlize to blog")

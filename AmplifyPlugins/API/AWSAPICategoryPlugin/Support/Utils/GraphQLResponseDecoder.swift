@@ -22,11 +22,13 @@ struct GraphQLResponseDecoder {
             return GraphQLResponse<R>.success(responseData)
 
         case (.none, .some(let errors)):
-            return GraphQLResponse<R>.error(errors)
+            let responseErrors = try decodeErrors(graphQLErrors: errors)
+            return GraphQLResponse<R>.error(responseErrors)
 
         case (.some(let data), .some(let errors)):
             let responseData = try decode(graphQLData: data, into: responseType)
-            return GraphQLResponse<R>.partial(responseData, errors)
+            let responseErrors = try decodeErrors(graphQLErrors: errors)
+            return GraphQLResponse<R>.partial(responseData, responseErrors)
         }
     }
 
@@ -89,7 +91,47 @@ struct GraphQLResponseDecoder {
                                              into responseType: R.Type) throws -> R {
         do {
             let serializedJSON = try JSONEncoder().encode(graphQLData)
+
+            if responseType == String.self {
+                guard let responseString = String(data: serializedJSON, encoding: .utf8) else {
+                    throw APIError.operationError("could not get string from data", "", nil)
+                }
+
+                guard let response = responseString as? R else {
+                    throw APIError.operationError("not of type R", "", nil)
+                }
+
+                return response
+            }
+
             return try JSONDecoder().decode(responseType, from: serializedJSON)
+        } catch let decodingError as DecodingError {
+            throw APIError(error: decodingError)
+        } catch {
+            throw APIError.operationError("", "", error)
+        }
+    }
+
+    private static func decodeErrors(graphQLErrors: [JSONValue]) throws -> [GraphQLError] {
+        var responseErrors = [GraphQLError]()
+        for error in graphQLErrors {
+            do {
+                let responseError = try decode(graphQLError: error)
+                responseErrors.append(responseError)
+            } catch let decodingError as DecodingError {
+                throw APIError(error: decodingError)
+            } catch {
+                throw APIError.operationError("", "", error)
+            }
+        }
+
+        return responseErrors
+    }
+
+    private static func decode(graphQLError: JSONValue) throws -> GraphQLError {
+        do {
+            let serializedJSON = try JSONEncoder().encode(graphQLError)
+            return try JSONDecoder().decode(GraphQLError.self, from: serializedJSON)
         } catch let decodingError as DecodingError {
             throw APIError(error: decodingError)
         } catch {
