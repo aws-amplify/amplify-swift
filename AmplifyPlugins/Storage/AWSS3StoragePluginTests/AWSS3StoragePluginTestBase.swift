@@ -8,7 +8,7 @@
 import XCTest
 import Amplify
 @testable import AWSS3StoragePlugin
-@testable import AWSPluginsTestCommon
+@testable import AmplifyTestCommon
 
 class AWSS3StoragePluginTests: XCTestCase {
     var storagePlugin: AWSS3StoragePlugin!

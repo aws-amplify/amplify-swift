@@ -20,7 +20,7 @@ class AWSPredictionsPluginTestBase: XCTestCase {
         // Once https://github.com/aws-amplify/aws-sdk-ios/pull/1812 is done, we can add code like/
         // AWSInfo.configure(values we pass in), can even read from awsconfiguration.json or amplifyconfiguration.json.
         let mobileClientIsInitialized = expectation(description: "AWSMobileClient is initialized")
-        AWSMobileClient.default().initialize { (userState, error) in
+        AWSMobileClient.default().initialize { userState, error in
             guard error == nil else {
                 XCTFail("Error initializing AWSMobileClient. Error: \(error!.localizedDescription)")
                 return

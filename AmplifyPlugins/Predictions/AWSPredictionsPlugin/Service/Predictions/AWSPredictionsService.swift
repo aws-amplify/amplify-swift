@@ -9,8 +9,9 @@ import Amplify
 import AWSRekognition
 import AWSTranslate
 import AWSTextract
+import AWSComprehend
 
-class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateServiceBehaviour, AWSTextractServiceBehaviour {
+class AWSPredictionsService {
 
     var identifier: String!
     var awsTranslate: AWSTranslateBehavior!
@@ -32,8 +33,8 @@ class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateService
 
         guard let serviceConfiguration = serviceConfigurationOptional else {
             throw PluginError.pluginConfigurationError(
-                PluginErrorConstants.serviceConfigurationInitializationError.errorDescription,
-                PluginErrorConstants.serviceConfigurationInitializationError.recoverySuggestion)
+                PluginErrorMessage.serviceConfigurationInitializationError.errorDescription,
+                PluginErrorMessage.serviceConfigurationInitializationError.recoverySuggestion)
         }
 
         AWSTranslate.register(with: serviceConfiguration, forKey: identifier)
@@ -43,22 +44,28 @@ class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateService
         AWSRekognition.register(with: serviceConfiguration, forKey: identifier)
         let awsRekognition = AWSRekognition(forKey: identifier)
         let awsRekognitionAdapter = AWSRekognitionAdapter(awsRekognition)
-
         AWSTextract.register(with: serviceConfiguration, forKey: identifier)
         let awsTextract = AWSTextract(forKey: identifier)
         let awsTextractAdapter = AWSTextractAdapter(awsTextract)
 
+        AWSComprehend.register(with: serviceConfiguration, forKey: identifier)
+               let awsComprehend = AWSComprehend(forKey: identifier)
+               let awsComprehendAdapter = AWSComprehendAdapter(awsComprehend)
+
         self.init(awsTranslate: awsTranslateAdapter,
                   awsRekognition: awsRekognitionAdapter,
                   awsTextract: awsTextractAdapter,
+                  awsComprehend: awsComprehendAdapter,
                   collectionId: collectionId,
                   maxFaces: maxFaces,
                   identifier: identifier)
+
     }
 
     init(awsTranslate: AWSTranslateBehavior,
          awsRekognition: AWSRekognitionBehavior,
          awsTextract: AWSTextractBehavior,
+         awsComprehend: AWSComprehendBehavior,
          collectionId: String?,
          maxFaces: Int,
          identifier: String) {
@@ -68,6 +75,11 @@ class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateService
         self.identifier = identifier
         self.collectionId = collectionId
         self.maxFaces = maxFaces
+        self.identifier = identifier
+        self.awsTranslate = awsTranslate
+        self.awsRekognition = awsRekognition
+        self.awsComprehend = awsComprehend
+
     }
 
     func reset() {
@@ -81,10 +93,13 @@ class AWSPredictionsService: AWSRekognitionServiceBehaviour, AWSTranslateService
         AWSTextract.remove(forKey: identifier)
         awsTextract = nil
 
+        AWSComprehend.remove(forKey: identifier)
+        awsComprehend = nil
+
         identifier = nil
     }
 
-    func getEscapeHatch(key: PredictionsAWSServices) -> AWSService {
+    func getEscapeHatch(key: PredictionsAWSService) -> AWSService {
         switch key {
         case .rekognition:
             return awsRekognition.getRekognition()

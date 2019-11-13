@@ -16,7 +16,7 @@ class AWSS3StorageServiceDownloadBehaviorTests: AWSS3StorageServiceTestBase {
     func testStorageServiceDownloadData() {
         let completedInvoked = expectation(description: "Completed event was invoked")
 
-        storageService.download(serviceKey: testServiceKey, fileURL: nil) { (event) in
+        storageService.download(serviceKey: testServiceKey, fileURL: nil) { event in
             switch event {
             case .initiated:
                 break

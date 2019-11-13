@@ -7,5 +7,10 @@
 
 public struct LanguageDetectionResult {
     let languageCode: LanguageType
-    let score: Float?
+    let score: Double?
+
+    public init(languageCode: LanguageType, score: Double?) {
+        self.languageCode = languageCode
+        self.score = score
+    }
 }

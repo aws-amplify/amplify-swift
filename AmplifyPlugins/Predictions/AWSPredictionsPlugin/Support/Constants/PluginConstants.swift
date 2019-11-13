@@ -7,9 +7,8 @@
 
 import Foundation
 
-struct PluginConstants {
-    static let awsPredictionsPluginKey = "AWSPredictionsPlugin"
-    static let region = "Region"
+struct PluginConfigConstants {
+    static let region = "region"
     static let identify = "identify"
     static let translate = "translate"
     static let identifyEntities = "identifyEntities"

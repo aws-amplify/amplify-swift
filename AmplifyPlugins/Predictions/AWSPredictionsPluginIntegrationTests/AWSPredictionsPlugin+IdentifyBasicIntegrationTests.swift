@@ -25,7 +25,7 @@ class AWSPredictionsPluginIdentifyIntegrationTest: AWSPredictionsPluginTestBase 
 
         let operation = Amplify.Predictions.identify(type: .detectLabels,
                                                      image: image,
-                                                     options: PredictionsIdentifyRequest.Options()) { (event) in
+                                                     options: PredictionsIdentifyRequest.Options()) { event in
             switch event {
             case .completed:
                 completeInvoked.fulfill()

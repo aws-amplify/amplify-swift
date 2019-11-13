@@ -20,12 +20,12 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         let expectedKey = "public/" + key
         let failInvoked = expectation(description: "Failed is invoked")
         let options = StorageGetDataRequest.Options()
-        let operation = Amplify.Storage.getData(key: key, options: options) { (event) in
+        let operation = Amplify.Storage.getData(key: key, options: options) { event in
             switch event {
             case .completed:
                 XCTFail("Should not have completed successfully")
             case .failed(let error):
-                guard case let .keyNotFound(key, errorDescription, _) = error else {
+                guard case let .keyNotFound(key, errorDescription, _, _) = error else {
                     XCTFail("Should have been validation error")
                     return
                 }
@@ -49,7 +49,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         let failedInvoked = expectation(description: "Failed is invoked")
-        let operation = Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil) { (event) in
+        let operation = Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil) { event in
             switch event {
             case .completed:
                 XCTFail("Completed event is received")

@@ -66,7 +66,7 @@ extension AWSS3StorageService {
     private static func makeOnDownloadProgressHandler(
         onEvent: @escaping StorageServiceDownloadEventHandler) -> AWSS3TransferUtilityProgressBlock {
 
-        let block: AWSS3TransferUtilityProgressBlock = {(task, progress) in
+        let block: AWSS3TransferUtilityProgressBlock = {task, progress in
             onEvent(StorageEvent.inProcess(progress))
         }
 
@@ -77,7 +77,7 @@ extension AWSS3StorageService {
         onEvent: @escaping StorageServiceDownloadEventHandler,
         serviceKey: String) -> AWSS3TransferUtilityDownloadCompletionHandlerBlock {
 
-        let block: AWSS3TransferUtilityDownloadCompletionHandlerBlock = { (task, location, data, error ) in
+        let block: AWSS3TransferUtilityDownloadCompletionHandlerBlock = { task, location, data, error in
             guard let response = task.response else {
                 onEvent(StorageEvent.failed(StorageError.unknown("Missing HTTP Response")))
                 return

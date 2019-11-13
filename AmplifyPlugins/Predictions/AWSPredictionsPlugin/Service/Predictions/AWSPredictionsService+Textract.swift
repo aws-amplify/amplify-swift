@@ -8,9 +8,9 @@
 import AWSTextract
 import Amplify
 
-public typealias DetectDocumentTextCompletedHandler = (AWSTask<AWSTextractDetectDocumentTextResponse>)
+public typealias DetectDocumentTextCompletedHandler = AWSTask<AWSTextractDetectDocumentTextResponse>
 
-extension AWSPredictionsService {
+extension AWSPredictionsService: AWSTextractServiceBehaviour {
     func detectDocumentText(image: Data,
                             onEvent: @escaping TextractServiceEventHandler) -> DetectDocumentTextCompletedHandler {
         let request: AWSTextractDetectDocumentTextRequest = AWSTextractDetectDocumentTextRequest()

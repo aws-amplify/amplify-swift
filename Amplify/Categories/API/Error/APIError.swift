@@ -20,13 +20,15 @@ public enum APIError {
     /// An in-process operation encountered a processing error
     case operationError(ErrorDescription, RecoverySuggestion, Error? = nil)
 
+    /// An error to encapsulate an error received by a dependent plugin
+    case pluginError(AmplifyError)
 }
 
 extension APIError: AmplifyError {
     public var errorDescription: ErrorDescription {
         switch self {
         case .unknown(let errorDescription, _, _):
-            return errorDescription
+            return "Unexpected error occurred with message: \(errorDescription)"
 
         case .invalidConfiguration(let errorDescription, _, _):
             return errorDescription
@@ -36,13 +38,22 @@ extension APIError: AmplifyError {
 
         case .operationError(let errorDescription, _, _):
             return errorDescription
+
+        case .pluginError(let error):
+            return error.errorDescription
         }
     }
 
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .unknown(_, let recoverySuggestion, _):
-            return recoverySuggestion
+            return """
+            \(recoverySuggestion)
+            
+            This should never happen. There is a possibility that there is a bug if this error persists.
+            Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any
+            existing issues that match your scenario, and file an issue with the details of the bug if there isn't.
+            """
 
         case .invalidConfiguration(_, let recoverySuggestion, _):
             return recoverySuggestion
@@ -52,6 +63,9 @@ extension APIError: AmplifyError {
 
         case .operationError(_, let recoverySuggestion, _):
             return recoverySuggestion
+
+        case .pluginError(let error):
+            return error.recoverySuggestion
         }
     }
 
@@ -64,6 +78,8 @@ extension APIError: AmplifyError {
         case .invalidURL(_, _, let error):
             return error
         case .operationError(_, _, let error):
+            return error
+        case .pluginError(let error):
             return error
         }
     }

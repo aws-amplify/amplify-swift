@@ -6,15 +6,16 @@
 //
 
 public struct SyntaxToken {
+
     let tokenId: Int
     let text: String
     let range: Range<String.Index>
-    let partOfSpeech: PartOfSpeech
+    let partOfSpeech: PartOfSpeech?
 
     public init(tokenId: Int,
                 text: String,
                 range: Range<String.Index>,
-                partOfSpeech: PartOfSpeech) {
+                partOfSpeech: PartOfSpeech?) {
         self.tokenId = tokenId
         self.text = text
         self.range = range
