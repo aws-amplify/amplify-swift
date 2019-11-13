@@ -16,7 +16,7 @@ extension Model where Self: Codable {
     /// - Parameter json: a valid JSON object as `String`
     /// - Returns: an instance of the concrete type conforming to `Model`
     /// - Throws: `DecodingError.dataCorrupted` in case data is not a valid JSON or any
-    /// other decoding specific error that `JSONDecorder.decode()` might throw.
+    /// other decoding specific error that `JSONDecoder.decode()` might throw.
     public static func from(json: String) throws -> Self {
         guard let data = json.data(using: .utf8) else {
             // TODO
