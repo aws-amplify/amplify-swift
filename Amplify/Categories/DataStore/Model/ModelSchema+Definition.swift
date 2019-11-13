@@ -15,7 +15,7 @@ public enum ModelFieldType: CustomStringConvertible {
     case date
     case dateTime
     case bool
-    case `enum`(type: Any.Type)
+    case `enum`(Any.Type)
     case model(type: Model.Type)
     case collection(of: Model.Type)
 
@@ -96,12 +96,16 @@ public enum ModelFieldRelationship {
 public struct ModelSchemaDefinition {
 
     internal let name: String
+    internal let namespace: ModelSchemaNamespace
     internal var fields: ModelFields
     internal var attributes: [ModelAttribute]
 
-    init(name: String) {
+    public var syncable: Bool = true
+
+    init(name: String, namespace: ModelSchemaNamespace = .user) {
         self.name = name
-        self.fields = [:] as ModelFields
+        self.namespace = namespace
+        self.fields = ModelFields.init()
         self.attributes = []
     }
 
@@ -117,7 +121,7 @@ public struct ModelSchemaDefinition {
     }
 
     internal func build() -> ModelSchema {
-        return ModelSchema(name: name, fields: fields)
+        return ModelSchema(name: name, syncable: syncable, fields: fields)
     }
 }
 

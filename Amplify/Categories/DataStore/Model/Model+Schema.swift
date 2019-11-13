@@ -14,6 +14,8 @@ extension Model {
         return ModelSchema(name: String(describing: self), fields: [:])
     }
 
+    public typealias ModelSchemaDefinitionBuiler = (inout ModelSchemaDefinition) -> Void
+
     /// Utility function that enables a DSL-like `ModelSchema` definition. Instead of building
     /// objects individually, developers can use this to create the schema with a more fluid
     /// programming model.
@@ -34,7 +36,7 @@ extension Model {
     /// - Returns: a valid `ModelSchema` instance
     public static func defineSchema(name: String? = nil,
                                     attributes: ModelAttribute...,
-                                    define: (inout ModelSchemaDefinition) -> Void) -> ModelSchema {
+                                    define: ModelSchemaDefinitionBuiler) -> ModelSchema {
         var definition = ModelSchemaDefinition(name: name ?? String(describing: self))
         define(&definition)
         return definition.build()

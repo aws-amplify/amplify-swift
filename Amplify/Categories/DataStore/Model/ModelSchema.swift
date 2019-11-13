@@ -67,11 +67,17 @@ public struct ModelField {
 
 public typealias ModelFields = [String: ModelField]
 
+public enum ModelSchemaNamespace: String {
+    case system
+    case user
+}
+
 public struct ModelSchema {
 
     public let name: String
     public let targetName: String?
     public let syncable: Bool
+    public let namespace: ModelSchemaNamespace
     public let fields: ModelFields
 
     public let allFields: [ModelField]
@@ -85,10 +91,12 @@ public struct ModelSchema {
     init(name: String,
          targetName: String? = nil,
          syncable: Bool = true,
+         namespace: ModelSchemaNamespace = .user,
          fields: ModelFields = [:]) {
         self.name = name
         self.targetName = targetName
         self.syncable = syncable
+        self.namespace = namespace
         self.fields = fields
 
         self.allFields = fields.sortedFields()

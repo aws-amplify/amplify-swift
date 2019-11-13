@@ -69,6 +69,12 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
+    public func delete<M: Model>(_ modelType: M.Type,
+                                 withId id: Identifier,
+                                 completion: DataStoreCallback<Void>) {
+        // TODO implement
+    }
+
     public func query<M: Model>(_ modelType: M.Type,
                                 predicate: QueryPredicate? = nil,
                                 completion: DataStoreCallback<[M]>) {

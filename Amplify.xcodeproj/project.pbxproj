@@ -398,6 +398,11 @@
 		B98E9D122372236300934B51 /* QueryField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0A2372236200934B51 /* QueryField.swift */; };
 		B98E9D132372236300934B51 /* QueryOperator+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */; };
 		B98E9D142372236300934B51 /* QueryPredicate+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */; };
+		B98E9D17237279B400934B51 /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D16237279B400934B51 /* SyncEngine.swift */; };
+		B98E9D1A23727A5600934B51 /* MutationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D1923727A5600934B51 /* MutationEvent.swift */; };
+		B98E9D1C23727BAC00934B51 /* MutationEvent+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D1B23727BAC00934B51 /* MutationEvent+Schema.swift */; };
+		B98E9D1E2372854B00934B51 /* MutationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D1D2372854B00934B51 /* MutationQueue.swift */; };
+		B98E9D202374077500934B51 /* Mutation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D1F2374077400934B51 /* Mutation.swift */; };
 		C5C50BA1A2A489CE4977238C /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSS3StoragePluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A6F9B0E5C7D07F29BE4BEE9 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSS3StoragePluginTests.framework */; };
 		D14215EF16B9D090DF17C71D /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_CoreMLPredictionsPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 590F2A08ED60BB9A54788F50 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_CoreMLPredictionsPluginTests.framework */; };
 		E9E4AB6175A0B21B46C875CE /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34A4D98AFFD4B65AEAE350EC /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework */; };
@@ -1526,6 +1531,11 @@
 		B98E9D0A2372236200934B51 /* QueryField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryField.swift; sourceTree = "<group>"; };
 		B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "QueryOperator+Equatable.swift"; sourceTree = "<group>"; };
 		B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "QueryPredicate+Equatable.swift"; sourceTree = "<group>"; };
+		B98E9D16237279B400934B51 /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
+		B98E9D1923727A5600934B51 /* MutationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationEvent.swift; sourceTree = "<group>"; };
+		B98E9D1B23727BAC00934B51 /* MutationEvent+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MutationEvent+Schema.swift"; sourceTree = "<group>"; };
+		B98E9D1D2372854B00934B51 /* MutationQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationQueue.swift; sourceTree = "<group>"; };
+		B98E9D1F2374077400934B51 /* Mutation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mutation.swift; sourceTree = "<group>"; };
 		BAFD88194E245D6B82399825 /* Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		BB548811E9281F8547D83681 /* Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		BCF5BF94BA714000C1C44713 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore.debug.xcconfig"; sourceTree = "<group>"; };
@@ -3261,7 +3271,9 @@
 		B92E03C12367CFF2006CEB8D /* AWSDataStoreCategoryPlugin */ = {
 			isa = PBXGroup;
 			children = (
+				B98E9D1823727A1200934B51 /* Model */,
 				B92E03DD2367D2A4006CEB8D /* Storage */,
+				B98E9D152372795700934B51 /* Sync */,
 				B92E03E62367D2A4006CEB8D /* AWSDataStoreCategoryPlugin.swift */,
 				B92E03C32367CFF2006CEB8D /* Info.plist */,
 			);
@@ -3351,6 +3363,25 @@
 				B98E9D092372236200934B51 /* QueryTranslator.swift */,
 			);
 			path = Query;
+			sourceTree = "<group>";
+		};
+		B98E9D152372795700934B51 /* Sync */ = {
+			isa = PBXGroup;
+			children = (
+				B98E9D1F2374077400934B51 /* Mutation.swift */,
+				B98E9D1D2372854B00934B51 /* MutationQueue.swift */,
+				B98E9D16237279B400934B51 /* SyncEngine.swift */,
+			);
+			path = Sync;
+			sourceTree = "<group>";
+		};
+		B98E9D1823727A1200934B51 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B98E9D1923727A5600934B51 /* MutationEvent.swift */,
+				B98E9D1B23727BAC00934B51 /* MutationEvent+Schema.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		B9DD3F0B23552C4E00D62C65 /* DataStore */ = {
@@ -7027,12 +7058,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				B922E274236A07CA00D09250 /* QueryTranslator+SQLite.swift in Sources */,
+				B98E9D17237279B400934B51 /* SyncEngine.swift in Sources */,
+				B98E9D1E2372854B00934B51 /* MutationQueue.swift in Sources */,
 				B92E03E72367D2A4006CEB8D /* StorageEngineBehavior.swift in Sources */,
+				B98E9D202374077500934B51 /* Mutation.swift in Sources */,
 				B92E03E92367D2A4006CEB8D /* StorageEngine.swift in Sources */,
 				B92E03EA2367D2A4006CEB8D /* ModelSchema+SQLite.swift in Sources */,
 				B92E03EE2367D2A4006CEB8D /* AWSDataStoreCategoryPlugin.swift in Sources */,
 				B92E03E82367D2A4006CEB8D /* StorageEngineAdapter.swift in Sources */,
 				B92E03EB2367D2A4006CEB8D /* Model+SQLite.swift in Sources */,
+				B98E9D1A23727A5600934B51 /* MutationEvent.swift in Sources */,
+				B98E9D1C23727BAC00934B51 /* MutationEvent+Schema.swift in Sources */,
 				B92E03EC2367D2A4006CEB8D /* StorageEngineAdapter+SQLite.swift in Sources */,
 				B92E03ED2367D2A4006CEB8D /* Statement+Model.swift in Sources */,
 				B922E273236A07CA00D09250 /* QueryPredicate+SQLite.swift in Sources */,
