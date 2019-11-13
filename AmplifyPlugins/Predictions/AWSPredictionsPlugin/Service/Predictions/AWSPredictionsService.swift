@@ -20,35 +20,44 @@ class AWSPredictionsService {
     var awsTranscribe: AWSTranscribeBehavior!
     var awsComprehend: AWSComprehendBehavior!
     var awsTextract: AWSTextractBehavior!
-    var collectionId: String?
-    var maxFaces: Int!
+    var predictionsConfig: AWSPredictionsPluginConfiguration!
 
-    convenience init(region: AWSRegionType,
-                     collectionId: String?,
-                     maxFaces: Int,
+
+    convenience init(config: AWSPredictionsPluginConfiguration,
                      cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
                      identifier: String) throws {
-        let serviceConfigurationOptional = AWSServiceConfiguration(region: region,
+
+        let identifyServiceConfigurationOptional = AWSServiceConfiguration(region: config.identifyConfig.region,
                                                                    credentialsProvider: cognitoCredentialsProvider)
 
-        guard let serviceConfiguration = serviceConfigurationOptional else {
+        let convertServiceConfigurationOptional = AWSServiceConfiguration(region: config.convertConfig.region,
+        credentialsProvider: cognitoCredentialsProvider)
+
+        let interpretServiceConfigurationOptional = AWSServiceConfiguration(region: config.interpretConfig.region,
+        credentialsProvider: cognitoCredentialsProvider)
+
+        guard let identifyServiceConfiguration = identifyServiceConfigurationOptional,
+        let convertServiceConfiguration = convertServiceConfigurationOptional,
+        let interpretServiceConfiguration = interpretServiceConfigurationOptional else {
             throw PluginError.pluginConfigurationError(
                 PluginErrorMessage.serviceConfigurationInitializationError.errorDescription,
                 PluginErrorMessage.serviceConfigurationInitializationError.recoverySuggestion)
         }
 
-        AWSTranslate.register(with: serviceConfiguration, forKey: identifier)
+
+
+        AWSTranslate.register(with: convertServiceConfiguration, forKey: identifier)
         let awsTranslate = AWSTranslate(forKey: identifier)
         let awsTranslateAdapter = AWSTranslateAdapter(awsTranslate)
 
-        AWSRekognition.register(with: serviceConfiguration, forKey: identifier)
+        AWSRekognition.register(with: identifyServiceConfiguration, forKey: identifier)
         let awsRekognition = AWSRekognition(forKey: identifier)
         let awsRekognitionAdapter = AWSRekognitionAdapter(awsRekognition)
-        AWSTextract.register(with: serviceConfiguration, forKey: identifier)
+        AWSTextract.register(with: identifyServiceConfiguration, forKey: identifier)
         let awsTextract = AWSTextract(forKey: identifier)
         let awsTextractAdapter = AWSTextractAdapter(awsTextract)
 
-        AWSComprehend.register(with: serviceConfiguration, forKey: identifier)
+        AWSComprehend.register(with: interpretServiceConfiguration, forKey: identifier)
                let awsComprehend = AWSComprehend(forKey: identifier)
                let awsComprehendAdapter = AWSComprehendAdapter(awsComprehend)
 
@@ -56,8 +65,7 @@ class AWSPredictionsService {
                   awsRekognition: awsRekognitionAdapter,
                   awsTextract: awsTextractAdapter,
                   awsComprehend: awsComprehendAdapter,
-                  collectionId: collectionId,
-                  maxFaces: maxFaces,
+                  config: config,
                   identifier: identifier)
 
     }
@@ -66,19 +74,16 @@ class AWSPredictionsService {
          awsRekognition: AWSRekognitionBehavior,
          awsTextract: AWSTextractBehavior,
          awsComprehend: AWSComprehendBehavior,
-         collectionId: String?,
-         maxFaces: Int,
+         config: AWSPredictionsPluginConfiguration,
          identifier: String) {
         self.awsTranslate = awsTranslate
         self.awsRekognition = awsRekognition
         self.awsTextract = awsTextract
-        self.identifier = identifier
-        self.collectionId = collectionId
-        self.maxFaces = maxFaces
-        self.identifier = identifier
         self.awsTranslate = awsTranslate
         self.awsRekognition = awsRekognition
         self.awsComprehend = awsComprehend
+        self.identifier = identifier
+        self.predictionsConfig = config
 
     }
 

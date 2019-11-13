@@ -6,9 +6,24 @@
 //
 
 import Foundation
+import AWSCore
 
 public struct AWSPredictionsPluginConfiguration {
-    //TODO: hold an instance of AWSPredictionsPluginConfiguration on plugin to hold parsed values on configure() to
-    //consolidate the defaults, and use in convert()/identify() methods
-    //TODO: set up configure instance
+    public var identifyConfig: AWSIdentifyConfig
+    public var interpretConfig: AWSInterpretConfig
+    public var convertConfig: AWSConvertConfig
+}
+
+public struct AWSIdentifyConfig {
+    public var region: AWSRegionType
+    public var collectionId: String?
+    public var maxFaces: Int
+}
+
+public struct AWSInterpretConfig {
+    public var region: AWSRegionType
+}
+
+public struct AWSConvertConfig {
+    public var region: AWSRegionType
 }

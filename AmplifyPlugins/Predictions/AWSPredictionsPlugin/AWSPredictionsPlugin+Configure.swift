@@ -32,15 +32,12 @@ extension AWSPredictionsPlugin {
                 PluginErrorMessage.configurationObjectExpected.errorDescription,
                 PluginErrorMessage.configurationObjectExpected.recoverySuggestion)
         }
-        let collectionId = try? AWSPredictionsPlugin.getCollection(configObject)
-        let maxFaces = AWSPredictionsPlugin.getMaxFaces(configObject)
+
         let authService = AWSAuthService()
         let cognitoCredentialsProvider = authService.getCognitoCredentialsProvider()
 
-        let region = try AWSPredictionsPlugin.getRegionType(configObject)
-        let predictionsService = try AWSPredictionsService(region: region,
-                                                            collectionId: collectionId,
-                                                            maxFaces: maxFaces,
+        let predictionsConfig = try AWSPredictionsPlugin.createPredictionsConfiguration(configObject)
+        let predictionsService = try AWSPredictionsService(config: predictionsConfig,
                                                            cognitoCredentialsProvider: cognitoCredentialsProvider,
                                                            identifier: key)
 
@@ -53,6 +50,28 @@ extension AWSPredictionsPlugin {
         self.predictionsService = predictionsService
         self.authService = authService
         self.queue = queue
+    }
+
+    private static func createPredictionsConfiguration(_ configuration: [String: JSONValue]) throws -> AWSPredictionsPluginConfiguration {
+
+
+        let collectionId = try? AWSPredictionsPlugin.getCollection(configuration)
+        let maxFaces = AWSPredictionsPlugin.getMaxFaces(configuration)
+        guard let identifyRegion = try? AWSPredictionsPlugin.getRegionType(configuration, api: .identify),
+            let convertRegion = try? AWSPredictionsPlugin.getRegionType(configuration, api: .convert),
+            let interpretRegion = try? AWSPredictionsPlugin.getRegionType(configuration, api: .interpret) else {
+                throw PluginError.pluginConfigurationError(PluginErrorMessage.missingRegion.errorDescription,
+                                                           PluginErrorMessage.missingRegion.recoverySuggestion)
+        }
+
+        let identifyConfig = AWSIdentifyConfig(region: identifyRegion, collectionId: collectionId, maxFaces: maxFaces)
+
+        let convertConfig = AWSConvertConfig(region: convertRegion)
+
+        let interpretConfig = AWSInterpretConfig(region: interpretRegion)
+
+        let config = AWSPredictionsPluginConfiguration(identifyConfig: identifyConfig, interpretConfig: interpretConfig, convertConfig: convertConfig)
+        return config
     }
 
     private static func getCollection(_ configuration: [String: JSONValue]) throws -> String? {
@@ -79,36 +98,107 @@ extension AWSPredictionsPlugin {
     }
 
     private static func getMaxFaces(_ configuration: [String: JSONValue]) -> Int {
-        guard let maxFacesConfig = configuration[PluginConfigConstants.maxFaces],
-        case let .number(maxFaces) = maxFacesConfig else {
+
+        guard let identifyConfig = configuration[PluginConfigConstants.identify],
+            case let .object(entityConfig) = identifyConfig,
+            let config = entityConfig[PluginConfigConstants.identifyEntities],
+            case let .object(unwrappedConfig) = config,
+            let maxFacesConfig = configuration[PluginConfigConstants.maxFaces] else {
+                return 50 //default
+        }
+        guard case let .number(maxFaces) = maxFacesConfig else {
             return 50 //default
         }
 
         return Int(maxFaces)
     }
     /// Retrieves the region from configuration, validates, and transforms to and returns the AWSRegionType
-    private static func getRegionType(_ configuration: [String: JSONValue]) throws -> AWSRegionType {
-        guard let region = configuration["region"] else {
-            throw PluginError.pluginConfigurationError(PluginErrorMessage.missingRegion.errorDescription,
-                                                       PluginErrorMessage.missingRegion.recoverySuggestion)
+    private static func getRegionType(_ configuration: [String: JSONValue], api: PredictionsApiType) throws -> AWSRegionType {
+
+        switch api {
+        case .identify:
+            guard let identifyConfig = configuration[PluginConfigConstants.identify],
+                case let .object(entityConfig) = identifyConfig,
+                let config = entityConfig[PluginConfigConstants.identifyEntities],
+                case let .object(unwrappedConfig) = config,
+                let region = unwrappedConfig[PluginConfigConstants.region] else {
+                    throw PluginError.pluginConfigurationError(PluginErrorMessage.missingRegion.errorDescription,
+                    PluginErrorMessage.missingRegion.recoverySuggestion)
+            }
+
+            guard case let .string(regionValue) = region else {
+                 throw PluginError.pluginConfigurationError(PluginErrorMessage.missingRegion.errorDescription,
+                                                                      PluginErrorMessage.missingRegion.recoverySuggestion)
+            }
+
+           if regionValue.isEmpty {
+                throw PluginError.pluginConfigurationError(PluginErrorMessage.emptyRegion.errorDescription,
+                                                           PluginErrorMessage.emptyRegion.recoverySuggestion)
+            }
+
+            let regionType = regionValue.aws_regionTypeValue()
+            guard regionType != AWSRegionType.Unknown else {
+                throw PluginError.pluginConfigurationError(PluginErrorMessage.invalidRegion.errorDescription,
+                                                           PluginErrorMessage.invalidRegion.recoverySuggestion)
+            }
+
+            return regionType
+
+        case .convert:
+            guard let convertConfig = configuration[PluginConfigConstants.convert],
+                 case let .object(translateConfig) = convertConfig,
+                let config = translateConfig[PluginConfigConstants.translateText],
+                 case let .object(unwrappedConfig) = config,
+                 let region = unwrappedConfig[PluginConfigConstants.region] else {
+                     throw PluginError.pluginConfigurationError(PluginErrorMessage.missingRegion.errorDescription,
+                     PluginErrorMessage.missingRegion.recoverySuggestion)
+             }
+
+             guard case let .string(regionValue) = region else {
+                  throw PluginError.pluginConfigurationError(PluginErrorMessage.missingRegion.errorDescription,
+                                                                       PluginErrorMessage.missingRegion.recoverySuggestion)
+             }
+
+            if regionValue.isEmpty {
+                 throw PluginError.pluginConfigurationError(PluginErrorMessage.emptyRegion.errorDescription,
+                                                            PluginErrorMessage.emptyRegion.recoverySuggestion)
+             }
+
+             let regionType = regionValue.aws_regionTypeValue()
+             guard regionType != AWSRegionType.Unknown else {
+                 throw PluginError.pluginConfigurationError(PluginErrorMessage.invalidRegion.errorDescription,
+                                                            PluginErrorMessage.invalidRegion.recoverySuggestion)
+             }
+            return regionType
+
+        case .interpret:
+            guard let interpretConfig = configuration[PluginConfigConstants.convert],
+                 case let .object(translateConfig) = interpretConfig,
+                let config = translateConfig[PluginConfigConstants.interpretText],
+                 case let .object(unwrappedConfig) = config,
+                 let region = unwrappedConfig[PluginConfigConstants.region] else {
+                     throw PluginError.pluginConfigurationError(PluginErrorMessage.missingRegion.errorDescription,
+                     PluginErrorMessage.missingRegion.recoverySuggestion)
+             }
+
+             guard case let .string(regionValue) = region else {
+                  throw PluginError.pluginConfigurationError(PluginErrorMessage.missingRegion.errorDescription,
+                                                                       PluginErrorMessage.missingRegion.recoverySuggestion)
+             }
+
+            if regionValue.isEmpty {
+                 throw PluginError.pluginConfigurationError(PluginErrorMessage.emptyRegion.errorDescription,
+                                                            PluginErrorMessage.emptyRegion.recoverySuggestion)
+             }
+
+             let regionType = regionValue.aws_regionTypeValue()
+             guard regionType != AWSRegionType.Unknown else {
+                 throw PluginError.pluginConfigurationError(PluginErrorMessage.invalidRegion.errorDescription,
+                                                            PluginErrorMessage.invalidRegion.recoverySuggestion)
+             }
+            return regionType
         }
 
-        guard case let .string(regionValue) = region else {
-            throw PluginError.pluginConfigurationError(PluginErrorMessage.invalidRegion.errorDescription,
-                                                       PluginErrorMessage.invalidRegion.recoverySuggestion)
-        }
 
-        if regionValue.isEmpty {
-            throw PluginError.pluginConfigurationError(PluginErrorMessage.emptyRegion.errorDescription,
-                                                       PluginErrorMessage.emptyRegion.recoverySuggestion)
-        }
-
-        let regionType = regionValue.aws_regionTypeValue()
-        guard regionType != AWSRegionType.Unknown else {
-            throw PluginError.pluginConfigurationError(PluginErrorMessage.invalidRegion.errorDescription,
-                                                       PluginErrorMessage.invalidRegion.recoverySuggestion)
-        }
-
-        return regionType
     }
 }
