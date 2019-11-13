@@ -7,6 +7,8 @@
 
 import Foundation
 
+public typealias QueryPredicateFactory = () -> QueryPredicate
+
 public protocol DataStoreCategoryBehavior {
 
     func save<M: Model>(_ model: M, completion: DataStoreCallback<M>)
@@ -16,13 +18,14 @@ public protocol DataStoreCategoryBehavior {
                          completion: DataStoreCallback<M?>)
 
     func query<M: Model>(_ modelType: M.Type,
+                         where predicate: QueryPredicateFactory?,
                          completion: DataStoreCallback<[M]>)
 
     func delete<M: Model>(_ model: M,
-                          completion: DataStoreCallback<Bool>)
+                          completion: DataStoreCallback<Void>)
 
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: String,
-                          completion: DataStoreCallback<Void>?)
+                          completion: DataStoreCallback<Void>)
 
 }

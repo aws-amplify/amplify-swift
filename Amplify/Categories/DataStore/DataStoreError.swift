@@ -11,8 +11,10 @@ import Foundation
 
 public enum DataStoreError: Error {
     case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
-    case invalidDatabase(Error? = nil)
+    case decodingError(ErrorDescription, RecoverySuggestion)
+    case invalidDatabase(path: String, Error? = nil)
     case invalidOperation(causedBy: Error? = nil)
+    case nonUniqueResult(model: String)
 }
 
 // MARK: - AmplifyError
@@ -23,10 +25,14 @@ extension DataStoreError: AmplifyError {
         switch self {
         case .configuration(let errorDescription, _, _):
             return errorDescription
+        case .decodingError(let errorDescription, _):
+            return errorDescription
         case .invalidDatabase:
-            return ""
+            return "Could not create a new database."
         case .invalidOperation(let causedBy):
             return causedBy?.localizedDescription ?? ""
+        case .nonUniqueResult(let model):
+            return "The result of the queried model of type \(model) return more than one result."
         }
     }
 
@@ -34,10 +40,17 @@ extension DataStoreError: AmplifyError {
         switch self {
         case .configuration(_, let recoverySuggestion, _):
             return recoverySuggestion
-        case .invalidDatabase:
-            return ""
+        case .decodingError(_, let recoverySuggestion):
+            return recoverySuggestion
+        case .invalidDatabase(let path):
+            return "Make sure the path \(path) is valid and the device has available storage space."
         case .invalidOperation(let causedBy):
             return causedBy?.localizedDescription ?? ""
+        case .nonUniqueResult:
+            return """
+            Check that the condition applied to the query actually guarantees uniqueness, such
+            as unique indexes, primary keys.
+            """
         }
     }
 
@@ -45,10 +58,12 @@ extension DataStoreError: AmplifyError {
         switch self {
         case .configuration(_, _, let underlyingError):
             return underlyingError
-        case .invalidDatabase(let underlyingError):
+        case .invalidDatabase(_, let underlyingError):
             return underlyingError
         case .invalidOperation(let underlyingError):
             return underlyingError
+        default:
+            return nil
         }
     }
 }

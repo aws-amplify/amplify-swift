@@ -32,29 +32,42 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
     }
 
     public func save<M: Model>(_ model: M,
-                               completion: (DataStoreResult<M>) -> Void) {
+                               completion: DataStoreCallback<M>) {
         storageEngine.save(model, completion: completion)
     }
 
     public func query<M: Model>(_ modelType: M.Type,
                                 byId id: String,
-                                completion: (DataStoreResult<M?>) -> Void) {
-        // TODO implement
+                                completion: DataStoreCallback<M?>) {
+        query(modelType, where: { field("id") == id }) {
+            switch $0 {
+            case .result(let models):
+                if models.count > 1 {
+                    completion(.error(.nonUniqueResult(model: modelType.schema.name)))
+                } else {
+                    completion(.result(models.first))
+                }
+            case .error(let error):
+                completion(.failure(causedBy: error))
+            }
+        }
     }
 
     public func query<M: Model>(_ modelType: M.Type,
-                                completion: (DataStoreResult<[M]>) -> Void) {
+                                where predicate: QueryPredicateFactory?,
+                                completion: DataStoreCallback<[M]>) {
         storageEngine.query(modelType, completion: completion)
     }
 
     public func delete<M: Model>(_ model: M,
-                                 completion: (DataStoreResult<Bool>) -> Void) {
+                                 completion: DataStoreCallback<Void>) {
 //        self.delete(type(of: model), withId: model.id, completion: completion)
     }
 
     public func delete<M: Model>(_ modelType: M.Type,
                                  withId id: String,
-                                 completion: DataStoreCallback<Void>?) {
+                                 completion: DataStoreCallback<Void>) {
+
         // TODO implement
     }
 

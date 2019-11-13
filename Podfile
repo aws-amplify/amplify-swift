@@ -7,8 +7,8 @@ target "Amplify" do
   # Comment the next line if you"re not using Swift and don"t want to use dynamic frameworks
   use_frameworks!
 
-  pod 'SwiftFormat/CLI'
-  pod 'SwiftLint'
+  pod "SwiftFormat/CLI"
+  pod "SwiftLint"
 
   abstract_target "AmplifyTestConfigs" do
     pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
