@@ -8,14 +8,14 @@
 import Foundation
 import Amplify
 
-extension GraphQLRequest {
+extension GraphQLOperationRequest {
     // Performs client side validation and returns a `APIError` for any validation failures
     func validate() -> APIError? {
-        if let error = GraphQLRequestUtils.validateDocument(document) {
+        if let error = GraphQLOperationRequestUtils.validateDocument(document) {
             return error
         }
 
-        if let error = GraphQLRequestUtils.validateVariables(variables) {
+        if let error = GraphQLOperationRequestUtils.validateVariables(variables) {
             return error
         }
 

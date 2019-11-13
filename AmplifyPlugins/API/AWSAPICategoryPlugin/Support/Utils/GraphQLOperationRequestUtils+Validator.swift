@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-extension GraphQLRequestUtils {
+extension GraphQLOperationRequestUtils {
 
     static func validateDocument(_ document: String) -> APIError? {
         if document.isEmpty {

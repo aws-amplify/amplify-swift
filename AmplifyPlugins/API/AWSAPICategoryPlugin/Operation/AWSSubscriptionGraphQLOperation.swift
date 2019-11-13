@@ -10,27 +10,21 @@ import Foundation
 import AWSCore
 import AWSPluginsCore
 
-final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRequest,
-    SubscriptionEvent<GraphQLResponse<R>>,
-    Void,
-    APIError> {
+final public class AWSSubscriptionGraphQLOperation<R: Decodable>: SubscriptionGraphQLOperation<R> {
 
     let pluginConfig: AWSAPICategoryPluginConfiguration
-    let responseType: R.Type
     let subscriptionConnectionFactory: SubscriptionConnectionFactory
     let authService: AWSAuthServiceBehavior
 
     var subscriptionConnection: SubscriptionConnection?
     var subscriptionItem: SubscriptionItem?
 
-    init(request: GraphQLRequest,
-         responseType: R.Type,
+    init(request: GraphQLOperationRequest<R>,
          pluginConfig: AWSAPICategoryPluginConfiguration,
          subscriptionConnectionFactory: SubscriptionConnectionFactory,
          authService: AWSAuthServiceBehavior,
          listener: AWSSubscriptionGraphQLOperation.EventListener?) {
 
-        self.responseType = responseType
         self.pluginConfig = pluginConfig
         self.subscriptionConnectionFactory = subscriptionConnectionFactory
         self.authService = authService
@@ -62,14 +56,15 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperati
         }
 
         // Retrieve endpoint configuration
-        guard let endpointConfig = pluginConfig.endpoints[request.apiName] else {
-            let error = APIError.invalidConfiguration(
-                "Unable to get an endpoint configuration for \(request.apiName)",
-                """
-                Review your API plugin configuration and ensure \(request.apiName) has a valid configuration.
-                """
-            )
+        let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
+        do {
+            endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName)
+        } catch let error as APIError {
             dispatch(event: .failed(error))
+            finish()
+            return
+        } catch {
+            dispatch(event: .failed(APIError.unknown("Could not get endpoint configuration", "", nil)))
             finish()
             return
         }
@@ -80,7 +75,7 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperati
             connection = try subscriptionConnectionFactory.getOrCreateConnection(for: endpointConfig,
                                                                                  authService: authService)
         } catch {
-            let error = APIError.operationError("Unable to get connection for api \(request.apiName)", "", error)
+            let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)
             dispatch(event: .failed(error))
             finish()
             return
@@ -90,7 +85,7 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperati
         subscriptionItem = connection.subscribe(requestString: request.document,
                                                 variables: request.variables,
                                                 onEvent: { [weak self] event in
-            self?.onSubscriptionEvent(event: event)
+                                                    self?.onSubscriptionEvent(event: event)
         })
 
     }
@@ -107,7 +102,7 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperati
                     let graphQLServiceResponse = try GraphQLResponseDecoder.deserialize(
                         graphQLResponse: graphQLResponseData)
                     let graphQLResponse = try GraphQLResponseDecoder.decode(
-                        graphQLServiceResponse: graphQLServiceResponse, responseType: responseType)
+                        graphQLServiceResponse: graphQLServiceResponse, responseType: request.responseType)
                     dispatch(event: .inProcess(.data(graphQLResponse)))
                 } catch {
                     // TODO: Verify with the team that terminating a subscription after failing to decode/cast one
@@ -122,6 +117,48 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperati
         default:
             dispatch(event: .failed(APIError.unknown("Unknown subscription event", "", nil)))
             finish()
+        }
+    }
+
+}
+extension Dictionary where Key == String, Value == AWSAPICategoryPluginConfiguration.EndpointConfig {
+    func getConfig(for apiName: String?) throws -> AWSAPICategoryPluginConfiguration.EndpointConfig {
+        if let apiName = apiName {
+            // Retrieve endpoint configuration for the specified APIName
+            guard let endpointConfig = self[apiName] else {
+
+                let error = APIError.invalidConfiguration(
+                    "Unable to get an endpoint configuration for \(apiName)",
+                    """
+                    Review your API plugin configuration and ensure \(apiName) has a valid configuration.
+                    """
+                )
+
+                throw error
+
+            }
+
+            return endpointConfig
+
+        } else {
+            if count == 1, let endpointConfig = self.first {
+                return endpointConfig.value
+            }
+
+            throw APIError.invalidConfiguration("not yet implemented for more than one", "configure only 1 API")
+        }
+    }
+}
+
+extension GraphQLOperationType {
+    func getHubPayloadEventName() -> String {
+        switch self {
+        case .query:
+            return HubPayload.EventName.API.query
+        case .mutation:
+            return HubPayload.EventName.API.mutate
+        case .subscription:
+            return HubPayload.EventName.API.subscribe
         }
     }
 }

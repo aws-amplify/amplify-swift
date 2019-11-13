@@ -21,11 +21,12 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
         let completeInvoked = expectation(description: "request completed")
         let expectedId = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
+        let request = GraphQLRequest(document: CreateBlogMutation.document,
+                                     variables: CreateBlogMutation.variables(id: expectedId,
+                                                                             name: testMethodName),
+                                     responseType: CreateBlogMutation.Data.self)
         let operation = Amplify.API.mutate(apiName: IntegrationTestConfiguration.blogPostGraphQLWithInvalidAPIKey,
-                                           document: CreateBlogMutation.document,
-                                           variables: CreateBlogMutation.variables(id: expectedId,
-                                                                                   name: testMethodName),
-                                           responseType: CreateBlogMutation.Data.self) { event in
+                                           request: request) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .error(errors) = graphQLResponse else {
@@ -52,8 +53,8 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
     }
 
     /// Given: Create a blog
-    /// When: Call GetBlog query API for that blog, with responseType String
-    /// Then: The successful query operation returns graphQLResponse.data as JSONValue, and no errors, and decodes to Blog
+    /// When: Call GetBlog query API for that blog, with responseType JSONValue
+    /// Then: The successful query operation returns graphQLResponse.data as String, and no errors, and decodes to Blog
     func testGetBlogQueryAsJSONValueAndDecode() {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -65,10 +66,11 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
         }
 
         let completeInvoked = expectation(description: "request completed")
+        let request = GraphQLRequest(document: GetBlogQuery.document,
+                                     variables: GetBlogQuery.variables(id: blog.id),
+                                     responseType: JSONValue.self)
         let queryOperation = Amplify.API.query(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
-                                               document: GetBlogQuery.document,
-                                               variables: GetBlogQuery.variables(id: blog.id),
-                                               responseType: JSONValue.self) { event in
+                                               request: request) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -127,10 +129,11 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
         }
 
         let completeInvoked = expectation(description: "request completed")
+        let request = GraphQLRequest(document: GetBlogQuery.document,
+                                     variables: GetBlogQuery.variables(id: blog.id),
+                                     responseType: GetBlogQuery.Data.self)
         let queryOperation = Amplify.API.query(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
-                                               document: GetBlogQuery.document,
-                                               variables: GetBlogQuery.variables(id: blog.id),
-                                               responseType: GetBlogQuery.Data.self) { event in
+                                               request: request) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -165,11 +168,11 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
     func createBlog(id: String, name: String) -> Blog? {
         var blog: Blog?
         let completeInvoked = expectation(description: "request completed")
+        let request = GraphQLRequest(document: CreateBlogMutation.document,
+                                     variables: CreateBlogMutation.variables(id: id, name: name),
+                                     responseType: CreateBlogMutation.Data.self)
         let operation = Amplify.API.mutate(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
-                                           document: CreateBlogMutation.document,
-                                           variables: CreateBlogMutation.variables(id: id,
-                                                                                   name: name),
-                                           responseType: CreateBlogMutation.Data.self) { event in
+                                           request: request) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -196,11 +199,12 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
     func createPost(postBlogId: String, title: String) -> Post? {
         var post: Post?
         let completeInvoked = expectation(description: "request completed")
+        let request = GraphQLRequest(document: CreatePostMutation.document,
+                                     variables: CreatePostMutation.variables(postBlogId: postBlogId,
+                                                                             title: title),
+                                     responseType: CreatePostMutation.Data.self)
         let operation = Amplify.API.mutate(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
-                                           document: CreatePostMutation.document,
-                                           variables: CreatePostMutation.variables(postBlogId: postBlogId,
-                                                                                   title: title),
-                                           responseType: CreatePostMutation.Data.self) { event in
+                                           request: request) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -227,11 +231,12 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
     func createComment(commentPostId: String, content: String) -> Comment? {
         var comment: Comment?
         let completeInvoked = expectation(description: "request completed")
+        let request = GraphQLRequest(document: CreateCommentMutation.document,
+                                     variables: CreateCommentMutation.variables(commentPostId: commentPostId,
+                                                                                content: content),
+                                     responseType: CreateCommentMutation.Data.self)
         let operation = Amplify.API.mutate(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
-                                           document: CreateCommentMutation.document,
-                                           variables: CreateCommentMutation.variables(commentPostId: commentPostId,
-                                                                                   content: content),
-                                           responseType: CreateCommentMutation.Data.self) { event in
+                                           request: request) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {

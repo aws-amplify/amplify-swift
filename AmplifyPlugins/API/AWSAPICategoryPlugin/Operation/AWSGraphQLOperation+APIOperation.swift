@@ -45,7 +45,7 @@ extension AWSGraphQLOperation: APIOperation {
             let graphQLServiceResponse = try GraphQLResponseDecoder.deserialize(graphQLResponse: graphQLResponseData)
 
             let graphQLResponse = try GraphQLResponseDecoder.decode(graphQLServiceResponse: graphQLServiceResponse,
-                                                                    responseType: responseType)
+                                                                    responseType: request.responseType)
 
             dispatch(event: .completed(graphQLResponse))
             finish()
