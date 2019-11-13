@@ -7,8 +7,8 @@
 
 import Foundation
 public enum FormatType: String {
-    case form = "FORM"
-    case table = "TABLE"
+    case form = "FORMS"
+    case table = "TABLES"
     case plain = "PLAIN"
     case all = "ALL"
 }

@@ -109,10 +109,9 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
             //call detect face from collection if collection id passed in
             return detectFacesFromCollection(image: image, collectionId: collectionId, onEvent: onEvent)
 
-        } else {
-            //call detect faces
-            return detectFaces(image: image, onEvent: onEvent)
         }
+        return detectFaces(image: image, onEvent: onEvent)
+        
     }
 
     func detectText(image: URL,
@@ -120,9 +119,9 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                     onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
         switch format {
         case .form:
-            return analyzeDocument(image: image, features: ["FORMS"], onEvent: onEvent)
+            return analyzeDocument(image: image, features: [format.rawValue], onEvent: onEvent)
         case .table:
-            return analyzeDocument(image: image, features: ["TABLES"], onEvent: onEvent)
+            return analyzeDocument(image: image, features: [format.rawValue], onEvent: onEvent)
         case .all:
             return analyzeDocument(image: image, features: ["FORMS", "TABLES"], onEvent: onEvent)
         case .plain:

@@ -64,9 +64,10 @@ PredictionsIdentifyOperation {
         switch event {
         case .completed(let result):
             dispatch(event: .completed(result))
+            finish()
         case .failed(let error):
             dispatch(event: .failed(error))
-
+            finish()
         }
     }
 }

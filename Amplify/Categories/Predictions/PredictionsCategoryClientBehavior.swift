@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 /// Behavior of the Predictions category that clients will use
 public protocol PredictionsCategoryClientBehavior {
