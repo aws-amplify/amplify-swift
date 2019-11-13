@@ -11,4 +11,8 @@ public struct AgeRange {
     public var low: Int
     public var high: Int
 
+    public init(low: Int, high: Int) {
+        self.low = low
+        self.high = high
+    }
 }

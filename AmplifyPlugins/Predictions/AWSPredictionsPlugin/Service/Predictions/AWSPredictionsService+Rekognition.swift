@@ -123,7 +123,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         case .table:
             return analyzeDocument(image: image, features: [format.rawValue], onEvent: onEvent)
         case .all:
-            return analyzeDocument(image: image, features: ["FORMS", "TABLES"], onEvent: onEvent)
+            return analyzeDocument(image: image, features: [FormatType.form.rawValue, FormatType.table.rawValue], onEvent: onEvent)
         case .plain:
             return detectTextRekognition(image: image, onEvent: onEvent)
         }
