@@ -10,7 +10,7 @@ import Foundation
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPICategoryPlugin
-@testable import AWSPluginsTestCommon
+
 import AWSPluginsCore
 
 class AWSAPICategoryPluginTestBase: XCTestCase {

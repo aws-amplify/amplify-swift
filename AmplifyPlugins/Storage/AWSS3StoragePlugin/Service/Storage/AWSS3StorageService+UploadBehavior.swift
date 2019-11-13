@@ -82,7 +82,7 @@ extension AWSS3StorageService {
 
     private static func makeOnUploadProgressHandler(
         onEvent: @escaping StorageServiceUploadEventHandler) -> AWSS3TransferUtilityProgressBlock {
-            let block: AWSS3TransferUtilityProgressBlock = {(task, progress) in
+            let block: AWSS3TransferUtilityProgressBlock = {task, progress in
                 onEvent(StorageEvent.inProcess(progress))
             }
 

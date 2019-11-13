@@ -146,10 +146,10 @@ class IntegrationTestConfiguration {
                 "ApiKey": "KjbPeqbh9F7hc2n2UVkpfD8WKF1kkYX3ydrkyHq6"
             ],
             IntegrationTestConfiguration.todoGraphQLWithAPIKey: [
-                "Endpoint": "https://szc4y7y4mze43foty6qaaiwoqe.appsync-api.us-east-1.amazonaws.com/graphql",
-                "Region": "us-east-1",
+                "Endpoint": "https://akeljq43xfcvpj4hh55fafcrm4.appsync-api.us-west-2.amazonaws.com/graphql",
+                "Region": "us-west-2",
                 "AuthorizationType": "API_KEY",
-                "ApiKey": "da2-kjsu57qbwvbmzh4bphn7mpujny"
+                "ApiKey": "da2-6m3mowpbavh55kscoikywhqova"
             ],
             IntegrationTestConfiguration.blogPostGraphQLWithAPIKey: [
                 "Endpoint": "https://dtoaraxmjjdbjfmoqwowubiyua.appsync-api.us-east-1.amazonaws.com/graphql",

@@ -73,7 +73,7 @@ extension JSONValue: ExpressibleByBooleanLiteral {
 
 extension JSONValue: ExpressibleByDictionaryLiteral {
     public init(dictionaryLiteral elements: (String, JSONValue)...) {
-        let dictionary = elements.reduce([String: JSONValue]()) { (acc, curr) in
+        let dictionary = elements.reduce([String: JSONValue]()) { acc, curr in
             var newValue = acc
             newValue[curr.0] = curr.1
             return newValue

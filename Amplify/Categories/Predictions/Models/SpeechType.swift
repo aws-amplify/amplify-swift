@@ -25,4 +25,5 @@ public enum SpeechType: String {
     case subordinatingConjunction
     case symbol
     case verb
+    case unknown
 }

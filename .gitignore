@@ -41,4 +41,5 @@ Scripts/jenkins.py
 Scripts/ocunit2junit
 __pycache__/
 awsconfiguration.json
+amplifyconfiguration.json
 credentials-mc.json

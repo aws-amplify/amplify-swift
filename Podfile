@@ -31,26 +31,11 @@ target "Amplify" do
 
     pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
 
-    target "AWSAPICategoryPlugin" do
-      inherit! :complete
-    end
 
     target "AWSDataStoreCategoryPlugin" do
       inherit! :complete
       
       pod "SQLite.swift", "~> 0.12.0"
-    end
-
-    target "AWSPinpointAnalyticsPlugin" do
-      inherit! :complete
-
-      pod "AWSPinpoint", "~> #{AWS_SDK_VERSION}"
-    end
-
-    target "AWSS3StoragePlugin" do
-      inherit! :complete
-
-      pod "AWSS3", "~> #{AWS_SDK_VERSION}"
     end
 
     target "AWSPredictionsPlugin" do
@@ -74,16 +59,7 @@ target "Amplify" do
       target "AWSPluginsTestCommon" do
       end
 
-      target "AWSAPICategoryPluginTests" do
-      end
-
       target "AWSDataStoreCategoryPluginTests" do
-      end
-
-      target "AWSPinpointAnalyticsPluginTests" do
-      end
-
-      target "AWSS3StoragePluginTests" do
       end
 
       target "AWSPredictionsPluginTests" do
@@ -100,27 +76,12 @@ end
 
 target "AmplifyTestApp" do
   use_frameworks!
-  pod "AWSS3", "~> #{AWS_SDK_VERSION}"
   pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
   pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
   pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
 
-  target "AWSAPICategoryPluginIntegrationTests" do
-    inherit! :complete
-  end
-
   target "AWSDataStoreCategoryPluginIntegrationTests" do
     inherit! :complete
-  end
-
-  target "AWSPinpointAnalyticsPluginIntegrationTests" do
-    inherit! :complete
-    pod "AWSPinpoint", "~> #{AWS_SDK_VERSION}"
-  end
-
-  target "AWSS3StoragePluginIntegrationTests" do
-    inherit! :complete
-    pod "AWSS3", "~> #{AWS_SDK_VERSION}"
   end
 
   target "AWSPredictionsPluginIntegrationTests" do

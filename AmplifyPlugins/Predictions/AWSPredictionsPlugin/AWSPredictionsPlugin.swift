@@ -11,6 +11,8 @@ import AWSPluginsCore
 
 final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
 
+    let awsPredictionsPluginKey = "AWSPredictionsPlugin"
+
     /// A queue that regulates the execution of operations.
     var queue: OperationQueue!
 
@@ -23,7 +25,7 @@ final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
 
     /// The unique key of the plugin within the predictions category.
     public var key: PluginKey {
-        return PluginConstants.awsPredictionsPluginKey
+        return awsPredictionsPluginKey
     }
 
     public init() {

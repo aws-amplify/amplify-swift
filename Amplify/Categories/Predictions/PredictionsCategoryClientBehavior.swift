@@ -35,7 +35,7 @@ public protocol PredictionsCategoryClientBehavior {
                   options: PredictionsIdentifyRequest.Options?,
                   listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation
 
-    /// Interpret the text and return  sentiment analysis, entity detection, language detection,
+    /// Interpret the text and return sentiment analysis, entity detection, language detection,
     /// syntax detection, key phrases detection
     /// - Parameter text: Text to interpret
     /// - Parameter options:Parameters to specific plugin behavior
@@ -44,14 +44,3 @@ public protocol PredictionsCategoryClientBehavior {
                    options: PredictionsInterpretRequest.Options?,
                    listener: PredictionsInterpretOperation.EventListener?) -> PredictionsInterpretOperation
 }
-
-
-
-
-
-
-
-
-
-
-

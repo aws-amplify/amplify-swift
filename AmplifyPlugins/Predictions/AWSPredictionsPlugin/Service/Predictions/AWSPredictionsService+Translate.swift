@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 import AWSTranslate
 
-extension AWSPredictionsService {
+extension AWSPredictionsService: AWSTranslateServiceBehavior {
 
     func translateText(text: String,
                        language: LanguageType,

@@ -72,7 +72,7 @@ extension AWSPinpointAnalyticsPlugin {
 
     public func registerGlobalProperties(_ properties: [String: AnalyticsPropertyValue]) {
         // TODO: check if there is a limit on total number of properties
-        properties.forEach { (key, _) in
+        properties.forEach { key, _ in
             guard key.count >= 1, key.count <= 50 else {
                 preconditionFailure("""
                                     The key `\(key)` is invalid.
@@ -81,7 +81,7 @@ extension AWSPinpointAnalyticsPlugin {
             }
         }
 
-        properties.forEach { (key, newValue) in
+        properties.forEach { key, newValue in
             globalProperties.updateValue(newValue, forKey: key)
             pinpoint.addGlobalProperty(withValue: newValue, forKey: key)
         }
@@ -90,7 +90,7 @@ extension AWSPinpointAnalyticsPlugin {
 
     public func unregisterGlobalProperties(_ keys: Set<String>?) {
         guard let keys = keys else {
-            globalProperties.forEach { (key, value) in
+            globalProperties.forEach { key, value in
                 pinpoint.removeGlobalProperty(withValue: value, forKey: key)
             }
             globalProperties.removeAll()
@@ -98,7 +98,7 @@ extension AWSPinpointAnalyticsPlugin {
             return
         }
 
-        keys.forEach { (key) in
+        keys.forEach { key in
             if let value = globalProperties[key] {
                 pinpoint.removeGlobalProperty(withValue: value, forKey: key)
                 globalProperties.removeValue(forKey: key)
