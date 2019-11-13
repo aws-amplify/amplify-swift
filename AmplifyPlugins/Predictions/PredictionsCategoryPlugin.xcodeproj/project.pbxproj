@@ -31,7 +31,7 @@
 		95DAAA7A237B8ED40028544F /* PredictionsTranslateTextRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAA47237B8ED30028544F /* PredictionsTranslateTextRequest+Validate.swift */; };
 		95DAAA7B237B8ED40028544F /* PluginErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAA4A237B8ED30028544F /* PluginErrorMessage.swift */; };
 		95DAAA7C237B8ED40028544F /* PredictionsServiceErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAA4B237B8ED30028544F /* PredictionsServiceErrorMessage.swift */; };
-		95DAAA7D237B8ED40028544F /* PluginConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAA4C237B8ED30028544F /* PluginConstants.swift */; };
+		95DAAA7D237B8ED40028544F /* PluginConfigConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAA4C237B8ED30028544F /* PluginConfigConstants.swift */; };
 		95DAAA7E237B8ED40028544F /* LanguageTypeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAA4E237B8ED30028544F /* LanguageTypeExtension.swift */; };
 		95DAAA7F237B8ED40028544F /* AWSComprehendSentimentTypeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAA4F237B8ED30028544F /* AWSComprehendSentimentTypeExtension.swift */; };
 		95DAAA80237B8ED40028544F /* PredictionsAWSServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAA50237B8ED30028544F /* PredictionsAWSServices.swift */; };
@@ -155,7 +155,7 @@
 		95DAAA47237B8ED30028544F /* PredictionsTranslateTextRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PredictionsTranslateTextRequest+Validate.swift"; sourceTree = "<group>"; };
 		95DAAA4A237B8ED30028544F /* PluginErrorMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginErrorMessage.swift; sourceTree = "<group>"; };
 		95DAAA4B237B8ED30028544F /* PredictionsServiceErrorMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsServiceErrorMessage.swift; sourceTree = "<group>"; };
-		95DAAA4C237B8ED30028544F /* PluginConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginConstants.swift; sourceTree = "<group>"; };
+		95DAAA4C237B8ED30028544F /* PluginConfigConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginConfigConstants.swift; sourceTree = "<group>"; };
 		95DAAA4E237B8ED30028544F /* LanguageTypeExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LanguageTypeExtension.swift; sourceTree = "<group>"; };
 		95DAAA4F237B8ED30028544F /* AWSComprehendSentimentTypeExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSComprehendSentimentTypeExtension.swift; sourceTree = "<group>"; };
 		95DAAA50237B8ED30028544F /* PredictionsAWSServices.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsAWSServices.swift; sourceTree = "<group>"; };
@@ -394,7 +394,7 @@
 			children = (
 				95DAAA4A237B8ED30028544F /* PluginErrorMessage.swift */,
 				95DAAA4B237B8ED30028544F /* PredictionsServiceErrorMessage.swift */,
-				95DAAA4C237B8ED30028544F /* PluginConstants.swift */,
+				95DAAA4C237B8ED30028544F /* PluginConfigConstants.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -1449,7 +1449,7 @@
 				95DAAA83237B8ED40028544F /* FetchDominantLanguageEvent.swift in Sources */,
 				95DAAA7C237B8ED40028544F /* PredictionsServiceErrorMessage.swift in Sources */,
 				95DAAA6C237B8ED40028544F /* AWSPredictionsPlugin.swift in Sources */,
-				95DAAA7D237B8ED40028544F /* PluginConstants.swift in Sources */,
+				95DAAA7D237B8ED40028544F /* PluginConfigConstants.swift in Sources */,
 				95DAAA8E237B8ED40028544F /* AWSTextractServiceBehavior.swift in Sources */,
 				95DAAA8F237B8ED40028544F /* AWSPredictionsService+Comprehend.swift in Sources */,
 				95DAAA6E237B8ED40028544F /* AWSPredictionsPlugin+Reset.swift in Sources */,
