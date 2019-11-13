@@ -11,10 +11,10 @@ public struct Table {
     public var columns: Int
     public var cells: [TableCell]
 
-    public init(rows: Int, columns: Int, cells: [TableCell]) {
-        self.rows = rows
-        self.columns = columns
-        self.cells = cells
+    public init() {
+        self.rows = 0
+        self.columns = 0
+        self.cells = [TableCell]()
     }
 }
 

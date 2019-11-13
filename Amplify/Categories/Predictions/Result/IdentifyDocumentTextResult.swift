@@ -14,7 +14,7 @@ public struct IdentifyDocumentTextResult: IdentifyResult {
     public var lines: [String]
     public var linesDetailed: [Word]
     public var selections: [Selection]
-    public var table: Table
+    public var tables: [Table]
     public var keyValues: [KeyValue]
 
     public init(fullText: String,
@@ -22,7 +22,7 @@ public struct IdentifyDocumentTextResult: IdentifyResult {
                 lines: [String],
                 linesDetailed: [Word],
                 selections: [Selection],
-                table: Table,
+                tables: [Table],
                 keyValues: [KeyValue]) {
 
         self.fullText = fullText
@@ -30,7 +30,7 @@ public struct IdentifyDocumentTextResult: IdentifyResult {
         self.lines = lines
         self.linesDetailed = linesDetailed
         self.selections = selections
-        self.table = table
+        self.tables = tables
         self.keyValues = keyValues
     }
 }

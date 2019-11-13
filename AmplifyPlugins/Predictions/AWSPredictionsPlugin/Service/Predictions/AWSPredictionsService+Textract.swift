@@ -8,46 +8,18 @@
 import AWSTextract
 import Amplify
 
+public typealias DetectDocumentTextCompletedHandler = (AWSTask<AWSTextractDetectDocumentTextResponse>)
+
 extension AWSPredictionsService {
-    func detectDocumentText(image: URL, onEvent: @escaping (AWSTextractDetectDocumentTextResponse) -> Void) {
+    func detectDocumentText(image: Data,
+                            onEvent: @escaping TextractServiceEventHandler) -> DetectDocumentTextCompletedHandler {
         let request: AWSTextractDetectDocumentTextRequest = AWSTextractDetectDocumentTextRequest()
         let document: AWSTextractDocument = AWSTextractDocument()
 
-        guard let imageData = try? Data(contentsOf: image) else {
-            return nil
-        }
-        document.bytes = imageData
+        document.bytes = image
         request.document = document
 
-        awsTextract.detectDocumentText(request: request).continueWith { (task) -> Any? in
-//            guard task.error == nil else {
-//                let error = task.error! as NSError
-//                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
-//                onEvent(.failed(
-//                    .networkError(predictionsErrorString.errorDescription,
-//                                  predictionsErrorString.recoverySuggestion)))
-//                return nil
-//            }
-//
-//            guard let result = task.result else {
-//                onEvent(.failed(
-//                    .unknownError("No result was found. An unknown error occurred",
-//                                  "Please try again.")))
-//                return nil
-//            }
-
-            guard let result = task.result else {
-//                onEvent(.failed(
-//                    .networkError("No result was found.",
-//                                  "Please make sure the image integrity is maintained before sending")))
-                return nil
-            }
-            return result
-           // lt textDetectionResult = IdentifyTextResultUtils.processText(textractTextBlocks: textDetections)
-            //onEvent(.completed())
-
-        }
-
+       return awsTextract.detectDocumentText(request: request)
 
     }
 
@@ -94,7 +66,7 @@ extension AWSPredictionsService {
             }
 
             let textResult = IdentifyTextResultUtils.processText(textractTextBlocks: blocks)
-            onEvent(.completed(textResult!))
+            onEvent(.completed(textResult))
             return nil
         }
     }

@@ -46,21 +46,26 @@ extension AWSPredictionsPlugin {
     }
 
     private static func getCollection(_ configuration: [String: JSONValue]) throws -> String? {
-        guard let collectionId = configuration[PluginConstants.collectionId] else {
-            return nil
-        }
 
-        guard case let .string(collection) = collectionId else {
+        guard let identifyConfig = configuration[PluginConstants.identify],
+            case let .object(entityConfig) = identifyConfig,
+            let config = entityConfig[PluginConstants.identifyEntities] ,
+            case let .object(unwrappedConfig) = config,
+            let collection = unwrappedConfig[PluginConstants.collectionId] else {
+                return nil
+        }
+        
+        guard case let .string(collectionId) = collection else {
             throw PluginError.pluginConfigurationError(PluginErrorConstants.invalidCollection.errorDescription,
                                                        PluginErrorConstants.invalidCollection.recoverySuggestion)
         }
-
-        if collection.isEmpty {
+        
+        if collectionId.isEmpty {
             throw PluginError.pluginConfigurationError(PluginErrorConstants.emptyCollection.errorDescription,
                                                        PluginErrorConstants.emptyCollection.recoverySuggestion)
         }
-
-        return collection
+        
+        return collectionId
     }
 
     private static func getMaxFaces(_ configuration: [String: JSONValue]) -> Int {

@@ -20,8 +20,8 @@ class AWSRekognitionAdapter: AWSRekognitionBehavior {
         return awsRekognition.detectLabels(request)
     }
 
-    func detectCelebs(request:
-        AWSRekognitionRecognizeCelebritiesRequest) ->
+    func detectCelebs(
+        request: AWSRekognitionRecognizeCelebritiesRequest) ->
         AWSTask<AWSRekognitionRecognizeCelebritiesResponse> {
         return awsRekognition.recognizeCelebrities(request)
     }
@@ -34,7 +34,8 @@ class AWSRekognitionAdapter: AWSRekognitionBehavior {
         return awsRekognition.detectFaces(request)
     }
 
-    func detectFacesFromCollection(request: AWSRekognitionSearchFacesByImageRequest) -> AWSTask<AWSRekognitionSearchFacesByImageResponse> {
+    func detectFacesFromCollection(
+        request: AWSRekognitionSearchFacesByImageRequest) -> AWSTask<AWSRekognitionSearchFacesByImageResponse> {
         return awsRekognition.searchFaces(byImage: request)
     }
 

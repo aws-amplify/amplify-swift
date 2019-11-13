@@ -15,6 +15,7 @@ protocol AWSTextractServiceBehaviour {
 
     func analyzeDocument(image: URL, features: [String], onEvent: @escaping TextractServiceEventHandler)
 
-    func detectDocumentText(image: URL, onEvent: @escaping (AWSTextractDetectDocumentTextResponse) -> Void)
+    func detectDocumentText(image: Data,
+                            onEvent: @escaping TextractServiceEventHandler) -> DetectDocumentTextCompletedHandler
 
 }

@@ -32,7 +32,6 @@ class IdentifyLabelsResultUtils: IdentifyResultUtils {
         return labels
     }
 
-
     static func processParents(_ rekognitionParents: [AWSRekognitionParent]?) -> [Parent] {
         var parents = [Parent]()
         guard let rekognitionParents = rekognitionParents else {

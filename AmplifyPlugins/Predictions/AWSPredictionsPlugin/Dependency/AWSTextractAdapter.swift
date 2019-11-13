@@ -20,7 +20,8 @@ class AWSTextractAdapter: AWSTextractBehavior {
         awsTextract.analyzeDocument(request)
     }
 
-    func detectDocumentText(request: AWSTextractDetectDocumentTextRequest) -> AWSTask<AWSTextractDetectDocumentTextResponse> {
+    func detectDocumentText(
+        request: AWSTextractDetectDocumentTextRequest) -> AWSTask<AWSTextractDetectDocumentTextResponse> {
         awsTextract.detectDocumentText(request)
     }
 

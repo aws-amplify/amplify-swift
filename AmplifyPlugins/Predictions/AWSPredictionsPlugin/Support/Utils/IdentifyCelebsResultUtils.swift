@@ -51,6 +51,4 @@ class IdentifyCelebsResultUtils: IdentifyResultUtils {
 
         return celebs
     }
-
-
 }

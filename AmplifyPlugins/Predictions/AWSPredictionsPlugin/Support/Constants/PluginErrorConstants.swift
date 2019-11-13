@@ -43,7 +43,6 @@ struct PluginErrorConstants {
         "The collection value is empty",
         "Add the collection as the value to the 'CollectionId' key in the plugin configuration")
 
-
     static let missingRegion: PluginErrorString = (
         "The 'Region' key is missing from the configuration",
         "Make sure 'Region' is in the dictionary for the plugin configuration")
