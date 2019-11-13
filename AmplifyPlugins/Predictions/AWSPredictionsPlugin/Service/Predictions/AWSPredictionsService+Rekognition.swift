@@ -111,7 +111,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
         }
         return detectFaces(image: image, onEvent: onEvent)
-        
+
     }
 
     func detectText(image: URL,

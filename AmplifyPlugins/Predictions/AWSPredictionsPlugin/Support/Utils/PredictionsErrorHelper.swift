@@ -41,7 +41,7 @@ class PredictionsErrorHelper {
 
     static func mapRekognitionError(_ error: NSError) -> PredictionsError {
         let defaultError = PredictionsErrorHelper.getDefaultError(error)
-        
+
         if error.domain == AWSServiceErrorDomain {
             return PredictionsErrorHelper.mapServiceError(error)
         }
@@ -49,29 +49,29 @@ class PredictionsErrorHelper {
         guard error.domain == AWSRekognitionErrorDomain else {
             return defaultError
         }
-        
+
         guard let errorType = AWSRekognitionErrorType.init(rawValue: error.code) else {
             return defaultError
         }
 
         return PredictionsErrorHelper.map(errorType) ?? defaultError
     }
-    
+
     static func mapTextractError(_ error: NSError) -> PredictionsError {
         let defaultError = PredictionsErrorHelper.getDefaultError(error)
-        
+
         if error.domain == AWSServiceErrorDomain {
             return PredictionsErrorHelper.mapServiceError(error)
         }
-        
+
         guard error.domain == AWSTextractErrorDomain else {
             return defaultError
         }
-        
+
         guard let errorType = AWSTextractErrorType.init(rawValue: error.code) else {
             return defaultError
         }
-        
+
         return PredictionsErrorHelper.map(errorType) ?? defaultError
     }
 
@@ -180,9 +180,9 @@ class PredictionsErrorHelper {
 
         return nil
     }
-    
+
     static func map(_ errorType: AWSTextractErrorType) -> PredictionsError? {
-        switch errorType{
+        switch errorType {
         case .accessDenied:
             break
         case .badDocument:
@@ -212,7 +212,7 @@ class PredictionsErrorHelper {
         @unknown default:
             break
         }
-        
+
         return nil
     }
 }
