@@ -21,19 +21,24 @@ class AWSPredictionsService {
     var awsComprehend: AWSComprehendBehavior!
     var awsTextract: AWSTextractBehavior!
     var predictionsConfig: AWSPredictionsPluginConfiguration!
+    var rekognitionWordLimit = 50
 
 
     convenience init(config: AWSPredictionsPluginConfiguration,
                      cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
                      identifier: String) throws {
+        
+        //TODO pull default region from top level config aws_project_region
+        let defaultRegion:AWSRegionType = .USEast1
+        
 
-        let identifyServiceConfigurationOptional = AWSServiceConfiguration(region: config.identifyConfig.region,
+        let identifyServiceConfigurationOptional = AWSServiceConfiguration(region: config.identifyConfig?.region ?? defaultRegion,
                                                                    credentialsProvider: cognitoCredentialsProvider)
 
-        let convertServiceConfigurationOptional = AWSServiceConfiguration(region: config.convertConfig.region,
+        let convertServiceConfigurationOptional = AWSServiceConfiguration(region: config.convertConfig?.region ?? defaultRegion,
         credentialsProvider: cognitoCredentialsProvider)
 
-        let interpretServiceConfigurationOptional = AWSServiceConfiguration(region: config.interpretConfig.region,
+        let interpretServiceConfigurationOptional = AWSServiceConfiguration(region: config.interpretConfig?.region ?? defaultRegion,
         credentialsProvider: cognitoCredentialsProvider)
 
         guard let identifyServiceConfiguration = identifyServiceConfigurationOptional,
@@ -58,8 +63,8 @@ class AWSPredictionsService {
         let awsTextractAdapter = AWSTextractAdapter(awsTextract)
 
         AWSComprehend.register(with: interpretServiceConfiguration, forKey: identifier)
-               let awsComprehend = AWSComprehend(forKey: identifier)
-               let awsComprehendAdapter = AWSComprehendAdapter(awsComprehend)
+        let awsComprehend = AWSComprehend(forKey: identifier)
+        let awsComprehendAdapter = AWSComprehendAdapter(awsComprehend)
 
         self.init(awsTranslate: awsTranslateAdapter,
                   awsRekognition: awsRekognitionAdapter,

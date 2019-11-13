@@ -37,10 +37,11 @@ extension AWSPredictionsPlugin {
         let request = PredictionsIdentifyRequest(image: image,
                                                  identifyType: type,
                                                  options: options ?? PredictionsIdentifyRequest.Options())
-        let operation = AWSIdentifyOperation(
-            request, predictionsService: predictionsService,
-            authService: authService,
-            listener: listener)
+
+        let operation = AWSIdentifyOperation(request: request,
+                                             predictionsService: predictionsService,
+                                             authService: authService,
+                                             listener: listener)
 
         queue.addOperation(operation)
         return operation

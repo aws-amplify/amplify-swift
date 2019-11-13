@@ -9,7 +9,7 @@ import Foundation
 import AWSRekognition
 import Amplify
 
-class IdentifyLabelsResultUtils: IdentifyResultUtils {
+class IdentifyLabelsResultTransformers: IdentifyResultTransformers {
     static func processLabels(_ rekognitionLabels: [AWSRekognitionLabel]) -> [Label] {
         var labels = [Label]()
         for rekognitionLabel in rekognitionLabels {

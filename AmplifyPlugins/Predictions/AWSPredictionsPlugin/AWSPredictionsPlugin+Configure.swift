@@ -41,40 +41,49 @@ extension AWSPredictionsPlugin {
                                                            cognitoCredentialsProvider: cognitoCredentialsProvider,
                                                            identifier: key)
 
-        configure(predictionsService: predictionsService, authService: authService)
+        configure(predictionsService: predictionsService, authService: authService, config: predictionsConfig)
     }
 
     func configure(predictionsService: AWSPredictionsService,
                    authService: AWSAuthServiceBehavior,
+                   config: AWSPredictionsPluginConfiguration,
                    queue: OperationQueue = OperationQueue()) {
         self.predictionsService = predictionsService
         self.authService = authService
+        self.config = config
         self.queue = queue
     }
 
-    private static func createPredictionsConfiguration(_ configuration: [String: JSONValue]) throws -> AWSPredictionsPluginConfiguration {
+    private static func createPredictionsConfiguration(_ configuration: [String: JSONValue])
+        throws -> AWSPredictionsPluginConfiguration {
+
+            var identifyConfig: AWSIdentifyConfig?
+            var convertConfig: AWSConvertConfig?
+            var interpretConfig: AWSInterpretConfig?
+            
+        if let identifyRegion = try? AWSPredictionsPlugin.getRegionType(configuration, api: .identify),
+            let collectionId = try? AWSPredictionsPlugin.getCollectionId(configuration)
+            {
+                 let maxFaces = AWSPredictionsPlugin.getMaxFaces(configuration)
+                 identifyConfig = AWSIdentifyConfig(region: identifyRegion, collectionId: collectionId, maxFaces: maxFaces)
+            }
+            
+            if let convertRegion = try? AWSPredictionsPlugin.getRegionType(configuration, api: .convert) {
+                convertConfig = AWSConvertConfig(region: convertRegion)
+            }
+            
+            if let interpretRegion = try? AWSPredictionsPlugin.getRegionType(configuration, api: .interpret) {
+                interpretConfig = AWSInterpretConfig(region: interpretRegion)
+            }
 
 
-        let collectionId = try? AWSPredictionsPlugin.getCollection(configuration)
-        let maxFaces = AWSPredictionsPlugin.getMaxFaces(configuration)
-        guard let identifyRegion = try? AWSPredictionsPlugin.getRegionType(configuration, api: .identify),
-            let convertRegion = try? AWSPredictionsPlugin.getRegionType(configuration, api: .convert),
-            let interpretRegion = try? AWSPredictionsPlugin.getRegionType(configuration, api: .interpret) else {
-                throw PluginError.pluginConfigurationError(PluginErrorMessage.missingRegion.errorDescription,
-                                                           PluginErrorMessage.missingRegion.recoverySuggestion)
-        }
-
-        let identifyConfig = AWSIdentifyConfig(region: identifyRegion, collectionId: collectionId, maxFaces: maxFaces)
-
-        let convertConfig = AWSConvertConfig(region: convertRegion)
-
-        let interpretConfig = AWSInterpretConfig(region: interpretRegion)
-
-        let config = AWSPredictionsPluginConfiguration(identifyConfig: identifyConfig, interpretConfig: interpretConfig, convertConfig: convertConfig)
+        let config = AWSPredictionsPluginConfiguration(identifyConfig: identifyConfig,
+                                                       interpretConfig: interpretConfig,
+                                                       convertConfig: convertConfig)
         return config
     }
 
-    private static func getCollection(_ configuration: [String: JSONValue]) throws -> String? {
+    private static func getCollectionId(_ configuration: [String: JSONValue]) throws -> String? {
 
         guard let identifyConfig = configuration[PluginConfigConstants.identify],
             case let .object(entityConfig) = identifyConfig,
@@ -103,17 +112,18 @@ extension AWSPredictionsPlugin {
             case let .object(entityConfig) = identifyConfig,
             let config = entityConfig[PluginConfigConstants.identifyEntities],
             case let .object(unwrappedConfig) = config,
-            let maxFacesConfig = configuration[PluginConfigConstants.maxFaces] else {
-                return 50 //default
+            let maxFacesConfig = unwrappedConfig[PluginConfigConstants.maxFaces] else {
+                return rekognitionMaxFacesLimit
         }
         guard case let .number(maxFaces) = maxFacesConfig else {
-            return 50 //default
+            return rekognitionMaxFacesLimit
         }
 
         return Int(maxFaces)
     }
     /// Retrieves the region from configuration, validates, and transforms to and returns the AWSRegionType
-    private static func getRegionType(_ configuration: [String: JSONValue], api: PredictionsApiType) throws -> AWSRegionType {
+    private static func getRegionType(_ configuration: [String: JSONValue], api: PredictionsApiType)
+        throws -> AWSRegionType {
 
         switch api {
         case .identify:
@@ -198,7 +208,5 @@ extension AWSPredictionsPlugin {
              }
             return regionType
         }
-
-
     }
 }

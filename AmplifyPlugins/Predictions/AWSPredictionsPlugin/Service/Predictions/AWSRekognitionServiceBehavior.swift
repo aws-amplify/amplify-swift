@@ -16,7 +16,7 @@ protocol AWSRekognitionServiceBehavior {
     func detectLabels(image: URL,
                       onEvent: @escaping RekognitionServiceEventHandler)
 
-    func detectCelebs(image: URL, onEvent: @escaping RekognitionServiceEventHandler)
+    func detectCelebrities(image: URL, onEvent: @escaping RekognitionServiceEventHandler)
 
     func detectText(image: URL, format: FormatType, onEvent: @escaping RekognitionServiceEventHandler)
 

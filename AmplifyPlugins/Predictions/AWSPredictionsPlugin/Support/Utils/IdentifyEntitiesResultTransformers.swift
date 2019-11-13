@@ -8,7 +8,7 @@
 import AWSRekognition
 import Amplify
 
-class IdentifyEntitiesResultUtils: IdentifyResultUtils {
+class IdentifyEntitiesResultTransformers: IdentifyResultTransformers {
 
     static func processFaces(_ rekognitionFaces: [AWSRekognitionFaceDetail]) -> [Entity] {
         var entities = [Entity]()
@@ -67,12 +67,12 @@ class IdentifyEntitiesResultUtils: IdentifyResultUtils {
                 continue
             }
 
-            guard let similarity = rekognitionFace.similarity,
-                let externalImageId = rekognitionFace.face?.externalImageId else {
+            guard let similarity = rekognitionFace.similarity else {
                 continue
             }
+            
             let metadata = CollectionEntityMetadata(
-                externalImageId: externalImageId,
+                externalImageId: rekognitionFace.face?.externalImageId,
                 similarity: Double(truncating: similarity))
             let entity = CollectionEntity(boundingBox: boundingBox, metadata: metadata)
 

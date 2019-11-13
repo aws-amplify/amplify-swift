@@ -17,7 +17,7 @@ PredictionsIdentifyOperation {
     let predictionsService: AWSPredictionsService
     let authService: AWSAuthServiceBehavior
 
-    init(_ request: PredictionsIdentifyRequest,
+    init(request: PredictionsIdentifyRequest,
          predictionsService: AWSPredictionsService,
          authService: AWSAuthServiceBehavior,
          listener: EventListener?) {
@@ -39,7 +39,7 @@ PredictionsIdentifyOperation {
 
         switch request.identifyType {
         case .detectCelebrity:
-            predictionsService.detectCelebs(image: request.image) { [weak self] event in
+            predictionsService.detectCelebrities(image: request.image) { [weak self] event in
                 self?.onServiceEvent(event: event)
 
             }

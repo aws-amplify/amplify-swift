@@ -10,12 +10,12 @@ import AWSRekognition
 import Amplify
 import AWSTextract
 
-class IdentifyTextResultUtils: IdentifyResultUtils {
+class IdentifyTextResultTransformers: IdentifyResultTransformers {
 
     static func processText(rekognitionTextBlocks: [AWSRekognitionTextDetection]) -> IdentifyTextResult {
-        var words = [Word]()
+        var words = [IdentifiedWord]()
         var lines = [String]()
-        var linesDetailed = [Word]()
+        var linesDetailed = [IdentifiedWord]()
         var fullText = ""
         for rekognitionTextBlock in rekognitionTextBlocks {
             guard let detectedText = rekognitionTextBlock.detectedText else {
@@ -25,7 +25,7 @@ class IdentifyTextResultUtils: IdentifyResultUtils {
             let polygon = Polygon(
                 xPosition: Double(truncating: rekognitionTextBlock.geometry?.polygon?[0].x ?? 0),
                 yPosition: Double(truncating: rekognitionTextBlock.geometry?.polygon?[0].y ?? 0))
-            let word = Word(text: detectedText,
+            let word = IdentifiedWord(text: detectedText,
                             boundingBox: boundingBox,
                             polygon: polygon)
             switch rekognitionTextBlock.types {
@@ -48,13 +48,13 @@ class IdentifyTextResultUtils: IdentifyResultUtils {
 
     static func processText(textractTextBlocks: [AWSTextractBlock]) -> IdentifyDocumentTextResult {
 
-        var words = [Word]()
+        var words = [IdentifiedWord]()
         var lines = [String]()
-        var linesDetailed = [Word]()
+        var linesDetailed = [IdentifiedWord]()
         var selections = [Selection]()
         var fullText = ""
         var tables = [Table]()
-        var keyValues = [KeyValue]()
+        var keyValues = [BoundedKeyValue]()
         var blockMap = [String: AWSTextractBlock]()
         var tableBlocks = [AWSTextractBlock]()
         var keyValueBlocks = [AWSTextractBlock]()
@@ -71,7 +71,7 @@ class IdentifyTextResultUtils: IdentifyResultUtils {
             let polygon = Polygon(
                 xPosition: Double(truncating: block.geometry?.polygon?[0].x ?? 0),
                 yPosition: Double(truncating: block.geometry?.polygon?[0].y ?? 0))
-            var word = Word(text: text, boundingBox: boundingBox, polygon: polygon)
+            var word = IdentifiedWord(text: text, boundingBox: boundingBox, polygon: polygon)
 
             switch block.blockType {
             case .line:
@@ -198,14 +198,14 @@ class IdentifyTextResultUtils: IdentifyResultUtils {
         let cell = TableCell(text: words,
                               boundingBox: boundingBox,
                               polygon: polygon,
-                              selected: isSelected,
+                              isSelected: isSelected,
                               rowSpan: Int(truncating: rowSpan),
                               columnSpan: Int(truncating: columnSpan))
 
         return cell
     }
 
-    static func processKeyValue(_ keyBlock: AWSTextractBlock?, blockMap: [String: AWSTextractBlock]) -> KeyValue? {
+    static func processKeyValue(_ keyBlock: AWSTextractBlock?, blockMap: [String: AWSTextractBlock]) -> BoundedKeyValue? {
         var keyText = ""
         var valueText = ""
         var valueSelected = false
@@ -253,9 +253,9 @@ class IdentifyTextResultUtils: IdentifyResultUtils {
                        xPosition: Double(truncating: keyBlock.geometry?.polygon?[0].x ?? 0),
                        yPosition: Double(truncating: keyBlock.geometry?.polygon?[0].y ?? 0))
 
-        return KeyValue(key: keyText,
+        return BoundedKeyValue(key: keyText,
                         value: valueText,
-                        valueSelected: valueSelected,
+                        isSelected: valueSelected,
                         boundingBox: boundingBox,
                         polygon: polygon)
     }

@@ -53,13 +53,13 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 return nil
             }
 
-            let newLabels = IdentifyLabelsResultUtils.processLabels(labels)
+            let newLabels = IdentifyLabelsResultTransformers.processLabels(labels)
             onEvent(.completed(IdentifyLabelsResult(labels: newLabels)))
             return nil
         }
     }
 
-    func detectCelebs(image: URL, onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
+    func detectCelebrities(image: URL, onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
         let request: AWSRekognitionRecognizeCelebritiesRequest = AWSRekognitionRecognizeCelebritiesRequest()
         let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
 
@@ -98,14 +98,14 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 return nil
             }
 
-            let newCelebs = IdentifyCelebsResultUtils.processCelebs(celebs)
-            onEvent(.completed(IdentifyCelebsResult(celebrities: newCelebs)))
+            let newCelebs = IdentifyCelebritiesResultTransformers.processCelebs(celebs)
+            onEvent(.completed(IdentifyCelebritiesResult(celebrities: newCelebs)))
             return nil
         }
     }
 
     func detectEntities(image: URL, onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
-        if let collectionId = predictionsConfig.identifyConfig.collectionId {
+        if let collectionId = predictionsConfig.identifyConfig?.collectionId {
             //call detect face from collection if collection id passed in
             return detectFacesFromCollection(image: image, collectionId: collectionId, onEvent: onEvent)
 
@@ -118,12 +118,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                     format: FormatType,
                     onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
         switch format {
-        case .form:
-            return analyzeDocument(image: image, features: [format.rawValue], onEvent: onEvent)
-        case .table:
-            return analyzeDocument(image: image, features: [format.rawValue], onEvent: onEvent)
-        case .all:
-            return analyzeDocument(image: image, features: [FormatType.form.rawValue, FormatType.table.rawValue], onEvent: onEvent)
+        case .form, .all, .table:
+            return analyzeDocument(image: image, features: format.textractServiceFormatType, onEvent: onEvent)
         case .plain:
             return detectTextRekognition(image: image, onEvent: onEvent)
         }
@@ -168,7 +164,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 return nil
             }
 
-            let newFaces = IdentifyEntitiesResultUtils.processFaces(faces)
+            let newFaces = IdentifyEntitiesResultTransformers.processFaces(faces)
             onEvent(.completed(IdentifyEntitiesResult(entities: newFaces)))
             return nil
         }
@@ -190,7 +186,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         rekognitionImage.bytes = imageData
         request.image = rekognitionImage
         request.collectionId = collectionId
-        request.maxFaces = predictionsConfig.identifyConfig.maxFaces as NSNumber?
+        request.maxFaces = predictionsConfig.identifyConfig?.maxFaces as NSNumber?
 
         awsRekognition.detectFacesFromCollection(request: request).continueWith { (task) -> Any? in
             guard task.error == nil else {
@@ -216,7 +212,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 return nil
             }
 
-            let faceMatches = IdentifyEntitiesResultUtils.processCollectionFaces(faces)
+            let faceMatches = IdentifyEntitiesResultTransformers.processCollectionFaces(faces)
             onEvent(.completed(IdentifyEntitiesFromCollectionResult(entities: faceMatches)))
             return nil
         }
@@ -263,11 +259,11 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 return nil
             }
 
-            let identifyTextResult = IdentifyTextResultUtils.processText(
+            let identifyTextResult = IdentifyTextResultTransformers.processText(
                 rekognitionTextBlocks: rekognitionTextDetections)
 
             //if limit of words is under 50 return rekognition response otherwise call textract because their limit is higher
-            if identifyTextResult.words.count < 50 {
+            if identifyTextResult.words.count < self.rekognitionWordLimit {
                 onEvent(.completed(identifyTextResult))
                 return nil
             } else {
@@ -299,7 +295,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                     if rekognitionTextDetections.count > textractTextDetections.count {
                         onEvent(.completed(identifyTextResult))
                     } else {
-                        let textractResult = IdentifyTextResultUtils.processText(
+                        let textractResult = IdentifyTextResultTransformers.processText(
                             textractTextBlocks: textractTextDetections)
                         onEvent(.completed(textractResult))
                         return nil

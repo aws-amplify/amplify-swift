@@ -9,15 +9,15 @@ import Foundation
 import AWSCore
 
 public struct AWSPredictionsPluginConfiguration {
-    public var identifyConfig: AWSIdentifyConfig
-    public var interpretConfig: AWSInterpretConfig
-    public var convertConfig: AWSConvertConfig
+    public var identifyConfig: AWSIdentifyConfig?
+    public var interpretConfig: AWSInterpretConfig?
+    public var convertConfig: AWSConvertConfig?
 }
 
 public struct AWSIdentifyConfig {
     public var region: AWSRegionType
     public var collectionId: String?
-    public var maxFaces: Int
+    public var maxFaces: Int?
 }
 
 public struct AWSInterpretConfig {

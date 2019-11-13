@@ -9,7 +9,7 @@ import Foundation
 import AWSRekognition
 import Amplify
 
-class IdentifyCelebsResultUtils: IdentifyResultUtils {
+class IdentifyCelebritiesResultTransformers: IdentifyResultTransformers {
     static func processCelebs(_ rekognitionCelebs: [AWSRekognitionCelebrity]) -> [Celebrity] {
         var celebs = [Celebrity]()
         for rekognitionCeleb in rekognitionCelebs {
@@ -36,7 +36,7 @@ class IdentifyCelebsResultUtils: IdentifyResultUtils {
                 roll: Double(truncating: roll),
                 yaw: Double(truncating: yaw))
 
-            let metadata = CelebMetadata(name: name, identifier: identifier, urls: urls, pose: pose)
+            let metadata = CelebrityMetadata(name: name, identifier: identifier, urls: urls, pose: pose)
 
             guard let boundingBox = processBoundingBox(face.boundingBox) else {
                 continue

@@ -10,7 +10,7 @@ import Amplify
 import AWSRekognition
 import AWSTextract
 
-class IdentifyResultUtils {
+class IdentifyResultTransformers {
 
     static func processBoundingBox(_ rekognitionBoundingBox: AWSRekognitionBoundingBox?) -> BoundingBox? {
         guard let height = rekognitionBoundingBox?.height,

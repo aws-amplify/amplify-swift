@@ -5,13 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
-public struct Word {
-    public var text: String
-    public var boundingBox: BoundingBox
-    public var polygon: Polygon
-    public var page: Int?
+public struct IdentifiedWord {
+    public let text: String
+    public let boundingBox: BoundingBox
+    public let polygon: Polygon
+    public let page: Int?
 
     public init(text: String, boundingBox: BoundingBox, polygon: Polygon) {
         self.text = text
