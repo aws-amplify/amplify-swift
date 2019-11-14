@@ -15,7 +15,12 @@ extension AWSPredictionsService: AWSPollyServiceBehavior {
     func synthesizeText(text: String, onEvent: @escaping AWSPredictionsService.TextToSpeechServiceEventHandler) {
         let request: AWSPollySynthesizeSpeechInput = AWSPollySynthesizeSpeechInput()
         request.text = text
-        request.voiceId = .ivy
+        request.voiceId = .justin
+        request.outputFormat = .mp3
+        request.textType = .text
+        request.sampleRate = "24000"
+        request.engine = .neural
+        request.languageCode = .enUS
 
         awsPolly.synthesizeSpeech(request: request).continueWith { (task) -> Any? in
 

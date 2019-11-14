@@ -10,6 +10,7 @@ import Amplify
 import AWSRekognition
 import AWSTranslate
 import AWSComprehend
+import AWSPolly
 
 class AWSPredictionsService {
 
@@ -43,23 +44,30 @@ class AWSPredictionsService {
         AWSComprehend.register(with: serviceConfiguration, forKey: identifier)
         let awsComprehend = AWSComprehend(forKey: identifier)
         let awsComprehendAdapter = AWSComprehendAdapter(awsComprehend)
+        
+        AWSPolly.register(with: serviceConfiguration, forKey: identifier)
+        let awsPolly = AWSPolly(forKey: identifier)
+        let awsPollyAdapter = AWSPollyAdapter(awsPolly)
 
         self.init(identifier: identifier,
                   awsTranslate: awsTranslateAdapter,
                   awsRekognition: awsRekognitionAdapter,
-                  awsComprehend: awsComprehendAdapter)
+                  awsComprehend: awsComprehendAdapter,
+                  awsPolly: awsPollyAdapter)
     }
 
     init(identifier: String,
          awsTranslate: AWSTranslateBehavior,
          awsRekognition: AWSRekognitionBehavior,
-         awsComprehend: AWSComprehendBehavior) {
+         awsComprehend: AWSComprehendBehavior,
+         awsPolly: AWSPollyBehavior) {
 
         self.identifier = identifier
 
         self.awsTranslate = awsTranslate
         self.awsRekognition = awsRekognition
         self.awsComprehend = awsComprehend
+        self.awsPolly = awsPolly
     }
 
     func reset() {
@@ -72,6 +80,10 @@ class AWSPredictionsService {
 
         AWSComprehend.remove(forKey: identifier)
         awsComprehend = nil
+        
+        AWSPolly.remove(forKey: identifier)
+        awsPolly = nil
+        
         identifier = nil
     }
 
