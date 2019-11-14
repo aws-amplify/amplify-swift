@@ -5,16 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 public enum EmotionType {
-    case happy
-    case sad
     case angry
+    case calm
     case confused
     case disgusted
-    case surprised
-    case calm
     case fear
+    case happy
+    case sad
+    case surprised
     case unknown
 }

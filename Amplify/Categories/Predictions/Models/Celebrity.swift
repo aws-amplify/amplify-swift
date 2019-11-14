@@ -8,11 +8,11 @@
 import Foundation
 
 public struct Celebrity {
-    public var metadata: CelebMetadata
-    public var boundingBox: BoundingBox
-    public var landmarks: [Landmark]
+    public let metadata: CelebrityMetadata
+    public let boundingBox: BoundingBox
+    public let landmarks: [Landmark]
 
-    public init(metadata: CelebMetadata, boundingBox: BoundingBox, landmarks: [Landmark]) {
+    public init(metadata: CelebrityMetadata, boundingBox: BoundingBox, landmarks: [Landmark]) {
         self.metadata = metadata
         self.boundingBox = boundingBox
         self.landmarks = landmarks
@@ -21,11 +21,11 @@ public struct Celebrity {
 
 
 
-public struct CelebMetadata {
-    public var name: String
-    public var identifier: String
-    public var urls: [URL]
-    public var pose: Pose
+public struct CelebrityMetadata {
+    public let name: String
+    public let identifier: String
+    public let urls: [URL]
+    public let pose: Pose
 
     public init(name: String, identifier: String, urls: [URL], pose: Pose) {
         self.name = name

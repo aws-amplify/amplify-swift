@@ -5,12 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 
 public struct Pose {
-    public var pitch: Double
-    public var roll: Double
-    public var yaw: Double
+    public let pitch: Double
+    public let roll: Double
+    public let yaw: Double
 
     public init(pitch: Double, roll: Double, yaw: Double) {
         self.pitch = pitch

@@ -5,9 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 
-public struct KeyValue {
+public struct BoundedKeyValue {
     public let key: String
     public let value: String
     public let isSelected: Bool

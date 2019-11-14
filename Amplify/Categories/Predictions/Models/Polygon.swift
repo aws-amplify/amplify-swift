@@ -5,11 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 public struct Polygon {
-    public var xPosition: Double
-    public var yPosition: Double
+    public let xPosition: Double
+    public let yPosition: Double
 
     public init(xPosition: Double, yPosition: Double) {
         self.xPosition = xPosition

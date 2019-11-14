@@ -8,19 +8,9 @@
 import Foundation
 
 public struct IdentifyEntitiesResult: IdentifyResult {
-    public var entities: [Entity]
+    public let entities: [Entity]
 
     public init(entities: [Entity]) {
         self.entities = entities
     }
 }
-
-
-
-
-
-
-
-
-
-

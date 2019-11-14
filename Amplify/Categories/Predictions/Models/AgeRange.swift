@@ -8,8 +8,8 @@
 import Foundation
 
 public struct AgeRange {
-    public var low: Int
-    public var high: Int
+    public let low: Int
+    public let high: Int
 
     public init(low: Int, high: Int) {
         self.low = low

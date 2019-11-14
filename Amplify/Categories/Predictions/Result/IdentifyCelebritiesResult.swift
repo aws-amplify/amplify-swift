@@ -7,8 +7,8 @@
 
 import Foundation
 
-public struct IdentifyCelebsResult: IdentifyResult {
-    public var celebrities: [Celebrity]
+public struct IdentifyCelebritiesResult: IdentifyResult {
+    public let celebrities: [Celebrity]
 
     public init(celebrities: [Celebrity]) {
         self.celebrities = celebrities

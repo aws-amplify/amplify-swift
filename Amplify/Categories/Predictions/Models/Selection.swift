@@ -5,12 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 
 public struct Selection {
-    public var boundingBox: BoundingBox
-    public var polygon: Polygon
-    public var selectionStatus: Bool
+    public let boundingBox: BoundingBox
+    public let polygon: Polygon
+    public let selectionStatus: Bool
 
     public init(boundingBox: BoundingBox, polygon: Polygon, selectionStatus: Bool) {
         self.boundingBox = boundingBox

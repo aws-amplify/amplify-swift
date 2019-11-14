@@ -8,9 +8,9 @@
 import Foundation
 
 public struct Attribute {
-    public var name: String
-    public var value: Bool
-    public var confidence: Double
+    public let name: String
+    public let value: Bool
+    public let confidence: Double
 
     public init(name: String, value: Bool, confidence: Double) {
         self.name = name

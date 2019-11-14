@@ -8,7 +8,7 @@
 import Foundation
 
 public struct IdentifyLabelsResult: IdentifyResult {
-    public var labels: [Label]
+    public let labels: [Label]
 
     public init(labels: [Label]) {
         self.labels = labels
@@ -16,9 +16,9 @@ public struct IdentifyLabelsResult: IdentifyResult {
 }
 
 public struct Label {
-    public var boundingBoxes: [BoundingBox]
-    public var metadata: LabelMetadata
-    public var name: String
+    public let boundingBoxes: [BoundingBox]
+    public let metadata: LabelMetadata
+    public let name: String
 
     public init(name: String, metadata: LabelMetadata, boundingBoxes: [BoundingBox]) {
         self.name = name
@@ -28,7 +28,7 @@ public struct Label {
 }
 
 public struct Parent {
-    public var name: String
+    public let name: String
 
     public init(name: String) {
         self.name = name
@@ -36,8 +36,8 @@ public struct Parent {
 }
 
 public struct LabelMetadata {
-   public var confidence: Double
-   public var parents: [Parent]
+   public let confidence: Double
+   public let parents: [Parent]
 
     public init(confidence: Double, parents: [Parent]) {
         self.confidence = confidence
@@ -46,10 +46,10 @@ public struct LabelMetadata {
 }
 
 public struct BoundingBox {
-    public var height: Double
-    public var left: Double
-    public var top: Double
-    public var width: Double
+    public let height: Double
+    public let left: Double
+    public let top: Double
+    public let width: Double
 
     public init(height: Double, left: Double, top: Double, width: Double) {
         self.height = height

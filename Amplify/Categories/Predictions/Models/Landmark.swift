@@ -5,11 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
+
 public struct Landmark {
-    public var type: String
-    public var xPosition: Double
-    public var yPosition: Double
+    public let type: String
+    public let xPosition: Double
+    public let yPosition: Double
 
     public init(type: String, xPosition: Double, yPosition: Double) {
         self.type = type

@@ -9,21 +9,21 @@ import Foundation
 
 public struct IdentifyDocumentTextResult: IdentifyResult {
 
-    public var fullText: String
-    public var words: [Word]
-    public var lines: [String]
-    public var linesDetailed: [Word]
-    public var selections: [Selection]
-    public var tables: [Table]
-    public var keyValues: [KeyValue]
+    public let fullText: String
+    public let words: [IdentifiedWord]
+    public let lines: [String]
+    public let linesDetailed: [IdentifiedWord]
+    public let selections: [Selection]
+    public let tables: [Table]
+    public let keyValues: [BoundedKeyValue]
 
     public init(fullText: String,
-                words: [Word],
+                words: [IdentifiedWord],
                 lines: [String],
-                linesDetailed: [Word],
+                linesDetailed: [IdentifiedWord],
                 selections: [Selection],
                 tables: [Table],
-                keyValues: [KeyValue]) {
+                keyValues: [BoundedKeyValue]) {
 
         self.fullText = fullText
         self.words = words

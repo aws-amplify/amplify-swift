@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
+
 public struct Table {
     public var rows: Int
     public var columns: Int
@@ -19,24 +19,26 @@ public struct Table {
 }
 
 public struct TableCell {
-    public var text: String
-    public var boundingBox: BoundingBox
-    public var polygon: Polygon
-    public var selected: Bool
-    public var rowSpan: Int
-    public var columnSpan: Int
+    
+    public let text: String
+    public let boundingBox: BoundingBox
+    public let polygon: Polygon
+    public let isSelected: Bool
+    public let rowSpan: Int
+    public let columnSpan: Int
 
     public init(text: String,
                 boundingBox: BoundingBox,
                 polygon: Polygon,
-                selected: Bool,
+                isSelected: Bool,
                 rowSpan: Int,
                 columnSpan: Int) {
         self.text = text
         self.boundingBox = boundingBox
         self.polygon = polygon
-        self.selected = selected
+        self.isSelected = isSelected
         self.rowSpan = rowSpan
         self.columnSpan = columnSpan
     }
+    
 }

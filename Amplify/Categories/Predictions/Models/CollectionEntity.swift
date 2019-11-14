@@ -5,11 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
+///Struct that holds the result for an entity matched from an entity collection created on Rekogniton and detected from Predictions Identify methods.
 public struct CollectionEntity {
-    public var boundingBox: BoundingBox
-    public var metadata: CollectionEntityMetadata
+    public let boundingBox: BoundingBox
+    public let metadata: CollectionEntityMetadata
 
     public init(boundingBox: BoundingBox, metadata: CollectionEntityMetadata) {
         self.boundingBox = boundingBox
@@ -18,10 +17,10 @@ public struct CollectionEntity {
 }
 
 public struct CollectionEntityMetadata {
-    public var externalImageId: String
-    public var similarity: Double
+    public let externalImageId: String?
+    public let similarity: Double
 
-    public init(externalImageId: String, similarity: Double) {
+    public init(externalImageId: String?, similarity: Double) {
         self.externalImageId = externalImageId
         self.similarity = similarity
     }
