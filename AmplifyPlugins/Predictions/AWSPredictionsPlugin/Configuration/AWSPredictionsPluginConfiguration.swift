@@ -17,7 +17,7 @@ public struct AWSPredictionsPluginConfiguration {
 public struct AWSIdentifyConfig {
     public var region: AWSRegionType
     public var collectionId: String?
-    public var maxFaces: Int?
+    public var maxEntities: Int?
 }
 
 public struct AWSInterpretConfig {

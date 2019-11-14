@@ -23,7 +23,6 @@ class AWSPredictionsService {
     var predictionsConfig: AWSPredictionsPluginConfiguration!
     var rekognitionWordLimit = 50
 
-
     convenience init(config: AWSPredictionsPluginConfiguration,
                      cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
                      identifier: String) throws {
@@ -31,15 +30,17 @@ class AWSPredictionsService {
         //TODO pull default region from top level config aws_project_region
         let defaultRegion: AWSRegionType = .USEast1
 
+        let identifyServiceConfigurationOptional = AWSServiceConfiguration(
+            region: config.identifyConfig?.region ?? defaultRegion,
+            credentialsProvider: cognitoCredentialsProvider)
 
-        let identifyServiceConfigurationOptional = AWSServiceConfiguration(region: config.identifyConfig?.region ?? defaultRegion,
-                                                                   credentialsProvider: cognitoCredentialsProvider)
+        let convertServiceConfigurationOptional = AWSServiceConfiguration(
+            region: config.convertConfig?.region ?? defaultRegion,
+            credentialsProvider: cognitoCredentialsProvider)
 
-        let convertServiceConfigurationOptional = AWSServiceConfiguration(region: config.convertConfig?.region ?? defaultRegion,
-        credentialsProvider: cognitoCredentialsProvider)
-
-        let interpretServiceConfigurationOptional = AWSServiceConfiguration(region: config.interpretConfig?.region ?? defaultRegion,
-        credentialsProvider: cognitoCredentialsProvider)
+        let interpretServiceConfigurationOptional = AWSServiceConfiguration(
+            region: config.interpretConfig?.region ?? defaultRegion,
+            credentialsProvider: cognitoCredentialsProvider)
 
         guard let identifyServiceConfiguration = identifyServiceConfigurationOptional,
         let convertServiceConfiguration = convertServiceConfigurationOptional,
@@ -48,8 +49,6 @@ class AWSPredictionsService {
                 PluginErrorMessage.serviceConfigurationInitializationError.errorDescription,
                 PluginErrorMessage.serviceConfigurationInitializationError.recoverySuggestion)
         }
-
-
 
         AWSTranslate.register(with: convertServiceConfiguration, forKey: identifier)
         let awsTranslate = AWSTranslate(forKey: identifier)

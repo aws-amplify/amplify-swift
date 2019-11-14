@@ -46,14 +46,17 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
             }
         }
 
-        return IdentifyTextResult(fullText: fullText, words: words, rawLineText: lines, identifiedLines: identifiedLines)
+        return IdentifyTextResult(fullText: fullText,
+                                  words: words,
+                                  rawLineText: lines,
+                                  identifiedLines: identifiedLines)
     }
 
     static func processText(textractTextBlocks: [AWSTextractBlock]) -> IdentifyDocumentTextResult {
 
         var words = [IdentifiedWord]()
         var lines = [String]()
-        var linesDetailed = [IdentifiedWord]()
+        var linesDetailed = [IdentifiedLine]()
         var selections = [Selection]()
         var fullText = ""
         var tables = [Table]()
@@ -74,13 +77,20 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
             guard let polygon = processPolygon(block.geometry?.polygon) else {
                 continue
             }
-            var word = IdentifiedWord(text: text, boundingBox: boundingBox, polygon: polygon)
+            let word = IdentifiedWord(text: text,
+                                      boundingBox: boundingBox,
+                                      polygon: polygon,
+                                      page: Int(truncating: block.page ?? 0))
+
+            let line = IdentifiedLine(text: text,
+                                      boundingBox: boundingBox,
+                                      polygon: polygon,
+                                      page: Int(truncating: block.page ?? 0))
 
             switch block.blockType {
             case .line:
                 lines.append(text)
-                word.page = Int(truncating: block.page ?? 0)
-                linesDetailed.append(word)
+                linesDetailed.append(line)
             case .word:
                 fullText += text + " "
                 words.append(word)
@@ -120,8 +130,8 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
         return IdentifyDocumentTextResult(
             fullText: fullText,
             words: words,
-            lines: lines,
-            linesDetailed: linesDetailed,
+            rawLineText: lines,
+            identifiedLines: linesDetailed,
             selections: selections,
             tables: tables,
             keyValues: keyValues)
@@ -208,7 +218,9 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
         return cell
     }
 
-    static func processKeyValue(_ keyBlock: AWSTextractBlock?, blockMap: [String: AWSTextractBlock]) -> BoundedKeyValue? {
+    static func processKeyValue(_
+        keyBlock: AWSTextractBlock?,
+                                blockMap: [String: AWSTextractBlock]) -> BoundedKeyValue? {
         var keyText = ""
         var valueText = ""
         var valueSelected = false

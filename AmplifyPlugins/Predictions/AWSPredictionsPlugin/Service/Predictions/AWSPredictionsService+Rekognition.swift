@@ -9,7 +9,6 @@ import Amplify
 import AWSRekognition
 import AWSTextract
 
-
 extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
     func detectLabels(image: URL,
@@ -186,7 +185,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         rekognitionImage.bytes = imageData
         request.image = rekognitionImage
         request.collectionId = collectionId
-        request.maxFaces = predictionsConfig.identifyConfig?.maxFaces as NSNumber?
+        request.maxFaces = predictionsConfig.identifyConfig?.maxEntities as NSNumber?
 
         awsRekognition.detectFacesFromCollection(request: request).continueWith { (task) -> Any? in
             guard task.error == nil else {
@@ -262,7 +261,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
             let identifyTextResult = IdentifyTextResultTransformers.processText(
                 rekognitionTextBlocks: rekognitionTextDetections)
 
-            //if limit of words is under 50 return rekognition response otherwise call textract because their limit is higher
+            //if limit of words is under 50 return rekognition response
+            //otherwise call textract because their limit is higher
             if identifyTextResult.words.count < self.rekognitionWordLimit {
                 onEvent(.completed(identifyTextResult))
                 return nil

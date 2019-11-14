@@ -11,24 +11,24 @@ public struct IdentifyDocumentTextResult: IdentifyResult {
 
     public let fullText: String
     public let words: [IdentifiedWord]
-    public let lines: [String]
-    public let linesDetailed: [IdentifiedWord]
+    public let rawLineText: [String]
+    public let identifiedLines: [IdentifiedLine]
     public let selections: [Selection]
     public let tables: [Table]
     public let keyValues: [BoundedKeyValue]
 
     public init(fullText: String,
                 words: [IdentifiedWord],
-                lines: [String],
-                linesDetailed: [IdentifiedWord],
+                rawLineText: [String],
+                identifiedLines: [IdentifiedLine],
                 selections: [Selection],
                 tables: [Table],
                 keyValues: [BoundedKeyValue]) {
 
         self.fullText = fullText
         self.words = words
-        self.lines = lines
-        self.linesDetailed = linesDetailed
+        self.rawLineText = rawLineText
+        self.identifiedLines = identifiedLines
         self.selections = selections
         self.tables = tables
         self.keyValues = keyValues

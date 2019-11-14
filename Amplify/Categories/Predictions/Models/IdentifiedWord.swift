@@ -9,7 +9,7 @@ public struct IdentifiedWord: IdentifiedText {
     public let text: String
     public let boundingBox: BoundingBox
     public let polygon: Polygon
-    public var page: Int?
+    public let page: Int?
 
     public init(text: String, boundingBox: BoundingBox, polygon: Polygon, page:Int? = nil) {
         self.text = text

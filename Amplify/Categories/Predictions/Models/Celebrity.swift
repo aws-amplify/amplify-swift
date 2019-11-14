@@ -19,8 +19,6 @@ public struct Celebrity {
     }
 }
 
-
-
 public struct CelebrityMetadata {
     public let name: String
     public let identifier: String
