@@ -59,8 +59,8 @@ class IdentifyEntitiesResultTransformers: IdentifyResultTransformers {
         return entities
     }
 
-    static func processCollectionFaces(_ rekognitionFaces: [AWSRekognitionFaceMatch]) -> [CollectionEntity] {
-        var entities = [CollectionEntity]()
+    static func processCollectionFaces(_ rekognitionFaces: [AWSRekognitionFaceMatch]) -> [EntityMatch] {
+        var entities = [EntityMatch]()
         for rekognitionFace in rekognitionFaces {
 
             guard let boundingBox = processBoundingBox(rekognitionFace.face?.boundingBox) else {
@@ -71,10 +71,10 @@ class IdentifyEntitiesResultTransformers: IdentifyResultTransformers {
                 continue
             }
 
-            let metadata = CollectionEntityMetadata(
+            let metadata = EntityMatchMetadata(
                 externalImageId: rekognitionFace.face?.externalImageId,
                 similarity: Double(truncating: similarity))
-            let entity = CollectionEntity(boundingBox: boundingBox, metadata: metadata)
+            let entity = EntityMatch(boundingBox: boundingBox, metadata: metadata)
 
             entities.append(entity)
         }

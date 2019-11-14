@@ -6,17 +6,17 @@
 //
 
 ///Struct that holds the result for an entity matched from an entity collection created on Rekogniton and detected from Predictions Identify methods.
-public struct CollectionEntity {
+public struct EntityMatch {
     public let boundingBox: BoundingBox
-    public let metadata: CollectionEntityMetadata
+    public let metadata: EntityMatchMetadata
 
-    public init(boundingBox: BoundingBox, metadata: CollectionEntityMetadata) {
+    public init(boundingBox: BoundingBox, metadata: EntityMatchMetadata) {
         self.boundingBox = boundingBox
         self.metadata = metadata
     }
 }
 
-public struct CollectionEntityMetadata {
+public struct EntityMatchMetadata {
     public let externalImageId: String?
     public let similarity: Double
 

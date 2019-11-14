@@ -213,7 +213,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
             }
 
             let faceMatches = IdentifyEntitiesResultTransformers.processCollectionFaces(faces)
-            onEvent(.completed(IdentifyEntitiesFromCollectionResult(entities: faceMatches)))
+            onEvent(.completed(IdentifyEntityMatchesResult(entities: faceMatches)))
             return nil
         }
     }

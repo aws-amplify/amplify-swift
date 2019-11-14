@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public struct IdentifiedWord: SyntacticalStructure {
+public struct IdentifiedWord: IdentifiedText {
     public let text: String
     public let boundingBox: BoundingBox
     public let polygon: Polygon

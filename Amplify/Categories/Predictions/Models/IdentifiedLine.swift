@@ -1,18 +1,17 @@
 //
-//  IdentifiedLine.swift
-//  Amplify
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
 //
-//  Created by Stone, Nicki on 11/14/19.
+// SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 
-public struct IdentifiedLine: SyntacticalStructure {
+public struct IdentifiedLine: IdentifiedText {
     
-    var text: String
-    var boundingBox: BoundingBox
-    var polygon: Polygon
-    var page: Int?
+    public let text: String
+    public let boundingBox: BoundingBox
+    public let polygon: Polygon
+    public var page: Int?
     
     public init(text: String, boundingBox: BoundingBox, polygon: Polygon, page: Int? = nil){
         self.text = text

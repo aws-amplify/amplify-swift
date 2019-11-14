@@ -7,10 +7,10 @@
 
 import Foundation
 
-public struct IdentifyEntitiesFromCollectionResult: IdentifyResult {
-    public let entities: [CollectionEntity]
+public struct IdentifyEntityMatchesResult: IdentifyResult {
+    public let entities: [EntityMatch]
 
-    public init(entities: [CollectionEntity]) {
+    public init(entities: [EntityMatch]) {
         self.entities = entities
     }
 }
