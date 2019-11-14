@@ -9,11 +9,11 @@
 public struct Selection {
     public let boundingBox: BoundingBox
     public let polygon: Polygon
-    public let selectionStatus: Bool
+    public let isSelected: Bool
 
-    public init(boundingBox: BoundingBox, polygon: Polygon, selectionStatus: Bool) {
+    public init(boundingBox: BoundingBox, polygon: Polygon, isSelected: Bool) {
         self.boundingBox = boundingBox
         self.polygon = polygon
-        self.selectionStatus = selectionStatus
+        self.isSelected = isSelected
     }
 }

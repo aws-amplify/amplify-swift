@@ -9,5 +9,5 @@ public enum IdentifyType {
     case detectCelebrity
     case detectLabels
     case detectEntities
-    case detectText(FormatType)
+    case detectText(TextFormatType)
 }

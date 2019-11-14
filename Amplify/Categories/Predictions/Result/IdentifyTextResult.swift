@@ -10,13 +10,13 @@ import Foundation
 public struct IdentifyTextResult: IdentifyResult {
     public let fullText: String
     public let words: [IdentifiedWord]
-    public let lines: [String]
-    public let linesDetailed: [IdentifiedWord]
+    public let rawLineText: [String]
+    public let identifiedLines: [IdentifiedLine]
 
-    public init(fullText: String, words: [IdentifiedWord], lines: [String], linesDetailed: [IdentifiedWord]) {
+    public init(fullText: String, words: [IdentifiedWord], rawLineText: [String], identifiedLines: [IdentifiedLine]) {
         self.fullText = fullText
         self.words = words
-        self.lines = lines
-        self.linesDetailed = linesDetailed
+        self.rawLineText = rawLineText
+        self.identifiedLines = identifiedLines
     }
 }

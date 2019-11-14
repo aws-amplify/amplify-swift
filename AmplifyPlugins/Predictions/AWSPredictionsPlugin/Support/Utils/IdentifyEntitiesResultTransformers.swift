@@ -70,7 +70,7 @@ class IdentifyEntitiesResultTransformers: IdentifyResultTransformers {
             guard let similarity = rekognitionFace.similarity else {
                 continue
             }
-            
+
             let metadata = CollectionEntityMetadata(
                 externalImageId: rekognitionFace.face?.externalImageId,
                 similarity: Double(truncating: similarity))

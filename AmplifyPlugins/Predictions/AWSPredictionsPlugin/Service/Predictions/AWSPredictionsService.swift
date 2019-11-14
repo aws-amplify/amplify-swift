@@ -27,10 +27,10 @@ class AWSPredictionsService {
     convenience init(config: AWSPredictionsPluginConfiguration,
                      cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
                      identifier: String) throws {
-        
+
         //TODO pull default region from top level config aws_project_region
-        let defaultRegion:AWSRegionType = .USEast1
-        
+        let defaultRegion: AWSRegionType = .USEast1
+
 
         let identifyServiceConfigurationOptional = AWSServiceConfiguration(region: config.identifyConfig?.region ?? defaultRegion,
                                                                    credentialsProvider: cognitoCredentialsProvider)

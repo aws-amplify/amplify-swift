@@ -6,7 +6,7 @@
 //
 
 
-public enum FormatType: String {
+public enum TextFormatType: String {
     case form
     case table
     case plain

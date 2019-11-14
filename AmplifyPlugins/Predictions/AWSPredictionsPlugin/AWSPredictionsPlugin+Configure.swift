@@ -60,18 +60,17 @@ extension AWSPredictionsPlugin {
             var identifyConfig: AWSIdentifyConfig?
             var convertConfig: AWSConvertConfig?
             var interpretConfig: AWSInterpretConfig?
-            
+
         if let identifyRegion = try? AWSPredictionsPlugin.getRegionType(configuration, api: .identify),
-            let collectionId = try? AWSPredictionsPlugin.getCollectionId(configuration)
-            {
+            let collectionId = try? AWSPredictionsPlugin.getCollectionId(configuration) {
                  let maxFaces = AWSPredictionsPlugin.getMaxFaces(configuration)
                  identifyConfig = AWSIdentifyConfig(region: identifyRegion, collectionId: collectionId, maxFaces: maxFaces)
             }
-            
+
             if let convertRegion = try? AWSPredictionsPlugin.getRegionType(configuration, api: .convert) {
                 convertConfig = AWSConvertConfig(region: convertRegion)
             }
-            
+
             if let interpretRegion = try? AWSPredictionsPlugin.getRegionType(configuration, api: .interpret) {
                 interpretConfig = AWSInterpretConfig(region: interpretRegion)
             }
@@ -85,11 +84,11 @@ extension AWSPredictionsPlugin {
 
     private static func getCollectionId(_ configuration: [String: JSONValue]) throws -> String? {
 
-        guard let identifyConfig = configuration[PluginConfigConstants.identify],
+        guard let identifyConfig = configuration[AWSPredictionsPluginConfiguration.KeyName.identify.rawValue],
             case let .object(entityConfig) = identifyConfig,
-            let config = entityConfig[PluginConfigConstants.identifyEntities],
+            let config = entityConfig[AWSPredictionsPluginConfiguration.KeyName.identifyEntities.rawValue],
             case let .object(unwrappedConfig) = config,
-            let collection = unwrappedConfig[PluginConfigConstants.collectionId] else {
+            let collection = unwrappedConfig[AWSPredictionsPluginConfiguration.KeyName.collectionId.rawValue] else {
                 return nil
         }
 
@@ -108,11 +107,11 @@ extension AWSPredictionsPlugin {
 
     private static func getMaxFaces(_ configuration: [String: JSONValue]) -> Int {
 
-        guard let identifyConfig = configuration[PluginConfigConstants.identify],
+        guard let identifyConfig = configuration[AWSPredictionsPluginConfiguration.KeyName.identify.rawValue],
             case let .object(entityConfig) = identifyConfig,
-            let config = entityConfig[PluginConfigConstants.identifyEntities],
+            let config = entityConfig[AWSPredictionsPluginConfiguration.KeyName.identifyEntities.rawValue],
             case let .object(unwrappedConfig) = config,
-            let maxFacesConfig = unwrappedConfig[PluginConfigConstants.maxFaces] else {
+            let maxFacesConfig = unwrappedConfig[AWSPredictionsPluginConfiguration.KeyName.maxFaces.rawValue] else {
                 return rekognitionMaxFacesLimit
         }
         guard case let .number(maxFaces) = maxFacesConfig else {
@@ -127,11 +126,11 @@ extension AWSPredictionsPlugin {
 
         switch api {
         case .identify:
-            guard let identifyConfig = configuration[PluginConfigConstants.identify],
+            guard let identifyConfig = configuration[AWSPredictionsPluginConfiguration.KeyName.identify.rawValue],
                 case let .object(entityConfig) = identifyConfig,
-                let config = entityConfig[PluginConfigConstants.identifyEntities],
+                let config = entityConfig[AWSPredictionsPluginConfiguration.KeyName.identifyEntities.rawValue],
                 case let .object(unwrappedConfig) = config,
-                let region = unwrappedConfig[PluginConfigConstants.region] else {
+                let region = unwrappedConfig[AWSPredictionsPluginConfiguration.KeyName.region.rawValue] else {
                     throw PluginError.pluginConfigurationError(PluginErrorMessage.missingRegion.errorDescription,
                     PluginErrorMessage.missingRegion.recoverySuggestion)
             }
@@ -155,11 +154,11 @@ extension AWSPredictionsPlugin {
             return regionType
 
         case .convert:
-            guard let convertConfig = configuration[PluginConfigConstants.convert],
+            guard let convertConfig = configuration[AWSPredictionsPluginConfiguration.KeyName.convert.rawValue],
                  case let .object(translateConfig) = convertConfig,
-                let config = translateConfig[PluginConfigConstants.translateText],
+                let config = translateConfig[AWSPredictionsPluginConfiguration.KeyName.translateText.rawValue],
                  case let .object(unwrappedConfig) = config,
-                 let region = unwrappedConfig[PluginConfigConstants.region] else {
+                let region = unwrappedConfig[AWSPredictionsPluginConfiguration.KeyName.region.rawValue] else {
                      throw PluginError.pluginConfigurationError(PluginErrorMessage.missingRegion.errorDescription,
                      PluginErrorMessage.missingRegion.recoverySuggestion)
              }
@@ -182,11 +181,11 @@ extension AWSPredictionsPlugin {
             return regionType
 
         case .interpret:
-            guard let interpretConfig = configuration[PluginConfigConstants.convert],
+            guard let interpretConfig = configuration[AWSPredictionsPluginConfiguration.KeyName.convert.rawValue],
                  case let .object(translateConfig) = interpretConfig,
-                let config = translateConfig[PluginConfigConstants.interpretText],
+                let config = translateConfig[AWSPredictionsPluginConfiguration.KeyName.interpretText.rawValue],
                  case let .object(unwrappedConfig) = config,
-                 let region = unwrappedConfig[PluginConfigConstants.region] else {
+                let region = unwrappedConfig[AWSPredictionsPluginConfiguration.KeyName.region.rawValue] else {
                      throw PluginError.pluginConfigurationError(PluginErrorMessage.missingRegion.errorDescription,
                      PluginErrorMessage.missingRegion.recoverySuggestion)
              }

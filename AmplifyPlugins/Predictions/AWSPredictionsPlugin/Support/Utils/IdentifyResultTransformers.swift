@@ -40,6 +40,42 @@ class IdentifyResultTransformers {
             width: Double(truncating: width))
     }
 
+    static func processPolygon(_ rekognitionPolygonPoints: [AWSRekognitionPoint]?) -> Polygon? {
+           guard let rekognitionPolygonPoints = rekognitionPolygonPoints else {
+               return nil
+           }
+           var points = [Polygon.Point]()
+           for rekognitionPoint in rekognitionPolygonPoints {
+               guard let xPosition = rekognitionPoint.x,
+                   let yPosition = rekognitionPoint.y else {
+                   continue
+               }
+               let point = Polygon.Point(xPosition: Double(truncating: xPosition),
+                                         yPosition: Double(truncating: yPosition))
+               points.append(point)
+           }
+           return Polygon(points: points)
+
+       }
+
+    static func processPolygon(_ textractPolygonPoints: [AWSTextractPoint]?) -> Polygon? {
+        guard let textractPolygonPoints = textractPolygonPoints else {
+            return nil
+        }
+        var points = [Polygon.Point]()
+        for textractPoint in textractPolygonPoints {
+            guard let xPosition = textractPoint.x,
+                let yPosition = textractPoint.y else {
+                continue
+            }
+            let point = Polygon.Point(xPosition: Double(truncating: xPosition),
+                                      yPosition: Double(truncating: yPosition))
+            points.append(point)
+        }
+        return Polygon(points: points)
+
+    }
+
     static func processLandmarks(_ rekognitionLandmarks: [AWSRekognitionLandmark]?) -> [Landmark] {
         var landmarks = [Landmark]()
         guard let rekognitionLandmarks = rekognitionLandmarks else {

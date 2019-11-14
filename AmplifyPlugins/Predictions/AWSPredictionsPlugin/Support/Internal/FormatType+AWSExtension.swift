@@ -9,7 +9,7 @@
 import Foundation
 import Amplify
 
-extension FormatType {
+extension TextFormatType {
     var textractServiceFormatType: [String] {
         switch self {
         case .form:

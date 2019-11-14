@@ -27,3 +27,17 @@ public struct AWSInterpretConfig {
 public struct AWSConvertConfig {
     public var region: AWSRegionType
 }
+
+public extension AWSPredictionsPluginConfiguration {
+    enum KeyName: String {
+        case region
+        case identify
+        case convert
+        case interpret
+        case interpretText
+        case translateText
+        case identifyEntities
+        case collectionId
+        case maxFaces
+    }
+}

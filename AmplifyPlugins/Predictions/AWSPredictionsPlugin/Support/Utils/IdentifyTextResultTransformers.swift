@@ -15,23 +15,26 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
     static func processText(rekognitionTextBlocks: [AWSRekognitionTextDetection]) -> IdentifyTextResult {
         var words = [IdentifiedWord]()
         var lines = [String]()
-        var linesDetailed = [IdentifiedWord]()
+        var identifiedLines = [IdentifiedLine]()
         var fullText = ""
         for rekognitionTextBlock in rekognitionTextBlocks {
             guard let detectedText = rekognitionTextBlock.detectedText else {
                 continue
             }
             guard let boundingBox = processBoundingBox(rekognitionTextBlock.geometry?.boundingBox) else { continue }
-            let polygon = Polygon(
-                xPosition: Double(truncating: rekognitionTextBlock.geometry?.polygon?[0].x ?? 0),
-                yPosition: Double(truncating: rekognitionTextBlock.geometry?.polygon?[0].y ?? 0))
+            guard let polygon = processPolygon(rekognitionTextBlock.geometry?.polygon) else {
+                continue
+            }
             let word = IdentifiedWord(text: detectedText,
                             boundingBox: boundingBox,
                             polygon: polygon)
+            let line = IdentifiedLine(text: detectedText,
+                                      boundingBox: boundingBox,
+                                      polygon: polygon)
             switch rekognitionTextBlock.types {
             case .line:
                 lines.append(detectedText)
-                linesDetailed.append(word)
+                identifiedLines.append(line)
 
             case .word:
                 fullText += detectedText + " "
@@ -43,7 +46,7 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
             }
         }
 
-        return IdentifyTextResult(fullText: fullText, words: words, lines: lines, linesDetailed: linesDetailed)
+        return IdentifyTextResult(fullText: fullText, words: words, rawLineText: lines, identifiedLines: identifiedLines)
     }
 
     static func processText(textractTextBlocks: [AWSTextractBlock]) -> IdentifyDocumentTextResult {
@@ -68,9 +71,9 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
                 continue
             }
 
-            let polygon = Polygon(
-                xPosition: Double(truncating: block.geometry?.polygon?[0].x ?? 0),
-                yPosition: Double(truncating: block.geometry?.polygon?[0].y ?? 0))
+            guard let polygon = processPolygon(block.geometry?.polygon) else {
+                continue
+            }
             var word = IdentifiedWord(text: text, boundingBox: boundingBox, polygon: polygon)
 
             switch block.blockType {
@@ -84,7 +87,7 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
                 blockMap[identifier] = block
             case .selectionElement:
                 let selectionStatus = block.selectionStatus == .selected ? true : false
-                let selection = Selection(boundingBox: boundingBox, polygon: polygon, selectionStatus: selectionStatus)
+                let selection = Selection(boundingBox: boundingBox, polygon: polygon, isSelected: selectionStatus)
                 selections.append(selection)
                 blockMap[identifier] = block
             case .table:
@@ -165,7 +168,7 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
         return table
     }
 
-    static func constructTableCell(_ block: AWSTextractBlock?) -> TableCell? {
+    static func constructTableCell(_ block: AWSTextractBlock?) -> Table.Cell? {
         guard let blockType = block?.blockType,
             let selectionStatus = block?.selectionStatus,
             let text = block?.text,
@@ -192,10 +195,10 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
             return nil
         }
 
-        let polygon = Polygon(
-                       xPosition: Double(truncating: texttractPolygon[0].x ?? 0),
-                       yPosition: Double(truncating: texttractPolygon[0].y ?? 0))
-        let cell = TableCell(text: words,
+        guard let polygon = processPolygon(texttractPolygon) else {
+            return nil
+        }
+        let cell = Table.Cell(text: words,
                               boundingBox: boundingBox,
                               polygon: polygon,
                               isSelected: isSelected,
@@ -249,9 +252,10 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
         guard let boundingBox = processBoundingBox(keyBlock.geometry?.boundingBox) else {
             return nil
         }
-        let polygon = Polygon(
-                       xPosition: Double(truncating: keyBlock.geometry?.polygon?[0].x ?? 0),
-                       yPosition: Double(truncating: keyBlock.geometry?.polygon?[0].y ?? 0))
+
+        guard let polygon = processPolygon(keyBlock.geometry?.polygon) else {
+            return nil
+        }
 
         return BoundedKeyValue(key: keyText,
                         value: valueText,

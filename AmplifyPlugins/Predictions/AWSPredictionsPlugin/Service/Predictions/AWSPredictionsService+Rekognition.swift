@@ -115,7 +115,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
     }
 
     func detectText(image: URL,
-                    format: FormatType,
+                    format: TextFormatType,
                     onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
         switch format {
         case .form, .all, .table:
