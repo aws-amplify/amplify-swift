@@ -26,6 +26,10 @@ empty_enum_arguments: error
 function_body_length:
   warning: 100
   error: 150
+identifier_name:
+  excluded:
+    - id
+    - or
 line_length:
   warning: 120
   error: 160

@@ -11,17 +11,19 @@ import Foundation
 extension Comment {
 
     // MARK: - CodingKeys
-    public enum CodingKeys: String, CodingKey, CaseIterable {
+    public enum CodingKeys: String, ModelKey {
         case id
         case content
         case createdAt
         case post
     }
 
+    public static let keys = CodingKeys.self
+
     // MARK: - ModelSchema
 
     public static let schema = defineSchema { model in
-        let comment = Comment.CodingKeys.self
+        let comment = Comment.keys
 
         model.fields(
             .id(),

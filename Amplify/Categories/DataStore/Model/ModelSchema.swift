@@ -7,6 +7,18 @@
 
 import Foundation
 
+/// Defines a storage schema. This immutable struct holds a reference to all the available
+/// `Model` types and their respective `ModelSchema`.
+public struct Schema {
+
+    /// The `ModelSchema` instances indexed by their names (i.e. the type name)
+    let models: [String: ModelSchema]
+
+    /// The current version of the schema
+    let version: Int
+
+}
+
 public enum ModelAttribute {
     case index
 }
@@ -17,32 +29,35 @@ public enum ModelFieldAttribute {
 }
 
 public struct ModelField {
+
     public let name: String
+    public let targetName: String?
     public let type: String
     public let isRequired: Bool
     public let isArray: Bool
     public let attributes: [ModelFieldAttribute]
 
     public var isPrimaryKey: Bool {
-        // TODO change it to check for the .primaryKey attribute instead
         return name == "id"
     }
 
     public var isConnected: Bool {
-        return !attributes.filter {
+        return attributes.contains {
             guard case .connected = $0 else {
                 return false
             }
             return true
-        }.isEmpty
+        }
     }
 
     init(name: String,
+         targetName: String? = nil,
          type: String,
          isRequired: Bool = false,
          isArray: Bool = false,
          attributes: [ModelFieldAttribute] = []) {
         self.name = name
+        self.targetName = targetName
         self.type = type
         self.isRequired = isRequired
         self.isArray = isArray
@@ -55,10 +70,11 @@ public typealias ModelFields = [String: ModelField]
 public struct ModelSchema {
 
     public let name: String
+    public let targetName: String?
+    public let syncable: Bool
     public let fields: ModelFields
 
     public let allFields: [ModelField]
-
     public var primaryKey: ModelField {
         guard let primaryKey = fields.first(where: { $1.isPrimaryKey }) else {
             preconditionFailure("Primary Key not defined for `\(name)`")
@@ -66,11 +82,15 @@ public struct ModelSchema {
         return primaryKey.value
     }
 
-    init(name: String, fields: ModelFields = [:]) {
+    init(name: String,
+         targetName: String? = nil,
+         syncable: Bool = true,
+         fields: ModelFields = [:]) {
         self.name = name
+        self.targetName = targetName
+        self.syncable = syncable
         self.fields = fields
 
-        // keep a sorted copy of all the fields as an array
         self.allFields = fields.sortedFields()
     }
 

@@ -32,8 +32,9 @@ final public class StorageEngine: StorageEngineBehavior {
     }
 
     public func query<M: Model>(_ modelType: M.Type,
+                                predicate: QueryPredicate? = nil,
                                 completion: DataStoreCallback<[M]>) {
-        return adapter.query(modelType, completion: completion)
+        return adapter.query(modelType, predicate: predicate, completion: completion)
     }
 
 }

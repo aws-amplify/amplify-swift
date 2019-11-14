@@ -11,7 +11,7 @@ public enum ModelFieldType: CustomStringConvertible {
 
     case string
     case int
-    case decimal
+    case double
     case date
     case dateTime
     case bool
@@ -23,7 +23,7 @@ public enum ModelFieldType: CustomStringConvertible {
         switch self {
         case .string: return "String"
         case .int: return "Int"
-        case .decimal: return "Double"
+        case .double: return "Double"
         case .date:  return "AWSDate"
         case .dateTime: return "AWSDateTime"
         case .bool: return "Boolean"
@@ -49,7 +49,7 @@ extension ModelField {
         switch type {
         case "String": return .string
         case "Int": return .int
-        case "Double": return .decimal
+        case "Double": return .double
         case "Boolean": return .bool
         case "AWSDate": return .date
         case "AWSDateTime": return .dateTime
