@@ -26,6 +26,6 @@ Pod::Spec.new do |s|
 
   s.source_files = 'AmplifyPlugins/Core/AWSPluginsCore/**/*.swift'
   s.dependency 'Amplify', '0.0.1'
-  s.dependency 'AWSMobileClient', AWS_SDK_VERSION
+  s.dependency 'AWSMobileClient', "AWS_SDK_VERSION"
 
 end
