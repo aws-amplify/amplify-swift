@@ -9,6 +9,15 @@ import Foundation
 import CoreImage
 
 extension PredictionsCategory: PredictionsCategoryClientBehavior {
+    
+    public func convert(textToSpeech: String,
+                        options: PredictionsTextToSpeechRequest.Options? = nil,
+                        listener: PredictionsTextToSpeechOperation.EventListener?) -> PredictionsTextToSpeechOperation {
+        plugin.convert(textToSpeech: textToSpeech,
+                       options: options,
+                       listener: listener)
+    }
+    
 
     public func convert(textToTranslate: String,
                         language: LanguageType?,

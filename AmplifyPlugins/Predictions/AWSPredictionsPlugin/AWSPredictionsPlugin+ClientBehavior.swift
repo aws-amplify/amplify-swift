@@ -14,7 +14,7 @@ extension AWSPredictionsPlugin {
     public func convert(textToTranslate: String,
                         language: LanguageType?,
                         targetLanguage: LanguageType?,
-                        listener: ((AsyncEvent<Void, TranslateTextResult, PredictionsError>) -> Void)?,
+                        listener: PredictionsTranslateTextOperation.EventListener? = nil,
                         options: PredictionsTranslateTextRequest.Options?) -> PredictionsTranslateTextOperation {
         // TODO: Default values come from configuration
         let request = PredictionsTranslateTextRequest(textToTranslate: textToTranslate,
@@ -27,6 +27,23 @@ extension AWSPredictionsPlugin {
                                                      listener: listener)
         queue.addOperation(convertOperation)
         return convertOperation
+    }
+
+    public func convert(textToSpeech: String,
+                        options: PredictionsTextToSpeechRequest.Options?,
+                        listener: PredictionsTextToSpeechOperation.EventListener? = nil) -> PredictionsTextToSpeechOperation {
+        let request = PredictionsTextToSpeechRequest(
+            textToSpeech: textToSpeech,
+            options: options ?? PredictionsTextToSpeechRequest.Options())
+
+        let convertOperation = AWSPollyOperation(request,
+                                                 predictionsService: predictionsService,
+                                                 authService: authService,
+                                                 listener: listener)
+
+        queue.addOperation(convertOperation)
+        return convertOperation
+
     }
 
     public func identify(type: IdentifyType,

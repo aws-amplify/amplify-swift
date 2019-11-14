@@ -24,6 +24,14 @@ public protocol PredictionsCategoryClientBehavior {
                  targetLanguage: LanguageType?,
                  listener: PredictionsTranslateTextOperation.EventListener?,
                  options: PredictionsTranslateTextRequest.Options?) -> PredictionsTranslateTextOperation
+    
+    
+    /// - Parameter textToSpeech: The text to be synthesized to audio
+    /// - Parameter listener: Triggered when the event occurs
+    /// - Parameter options: Parameters to specific plugin behavior
+    func convert(textToSpeech: String,
+                 options: PredictionsTextToSpeechRequest.Options?,
+                 listener: PredictionsTextToSpeechOperation.EventListener?) -> PredictionsTextToSpeechOperation
 
     /// Translate the text to the language specified.
     /// - Parameter type: The type of image detection you want to perform
