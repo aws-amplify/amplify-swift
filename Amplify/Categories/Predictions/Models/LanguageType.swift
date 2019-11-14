@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 
 /// Language type supported by Predictions category
 public enum LanguageType: String {

@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSRekognition
 
@@ -14,7 +13,12 @@ protocol AWSRekognitionServiceBehavior {
     typealias RekognitionServiceEventHandler = (RekognitionServiceEvent) -> Void
     typealias RekognitionServiceEvent = PredictionsEvent<IdentifyResult, PredictionsError>
 
-    func detectLabels(image: CGImage,
+    func detectLabels(image: URL,
                       onEvent: @escaping RekognitionServiceEventHandler)
 
+    func detectCelebrities(image: URL, onEvent: @escaping RekognitionServiceEventHandler)
+
+    func detectText(image: URL, format: TextFormatType, onEvent: @escaping RekognitionServiceEventHandler)
+
+    func detectEntities(image: URL, onEvent: @escaping RekognitionServiceEventHandler)
 }

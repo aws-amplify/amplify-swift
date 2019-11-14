@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import CoreGraphics
 
 /// Behavior of the Predictions category that clients will use
 public protocol PredictionsCategoryClientBehavior {
@@ -39,7 +38,7 @@ public protocol PredictionsCategoryClientBehavior {
     /// - Parameter options: Parameters to specific plugin behavior
     /// - Parameter listener: Triggered when the event occurs
     func identify(type: IdentifyType,
-                  image: CGImage,
+                  image: URL,
                   options: PredictionsIdentifyRequest.Options?,
                   listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation
 
@@ -52,3 +51,4 @@ public protocol PredictionsCategoryClientBehavior {
                    options: PredictionsInterpretRequest.Options?,
                    listener: PredictionsInterpretOperation.EventListener?) -> PredictionsInterpretOperation
 }
+
