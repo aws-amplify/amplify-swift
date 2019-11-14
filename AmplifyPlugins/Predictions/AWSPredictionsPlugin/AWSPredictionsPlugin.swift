@@ -19,6 +19,8 @@ final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
     /// An instance of the predictions  service
     var predictionsService: AWSPredictionsService!
 
+    var coreMLService: CoreMLPredictionBehavior!
+
     var authService: AWSAuthServiceBehavior!
 
     var config: AWSPredictionsPluginConfiguration!

@@ -16,6 +16,7 @@ public enum PredictionsError {
     case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
     case httpStatusError(Int, RecoverySuggestion, Error? = nil)
     case networkError(ErrorDescription, RecoverySuggestion, Error? = nil)
+    case service(ErrorDescription, RecoverySuggestion, Error? = nil)
     case unknownError(ErrorDescription, RecoverySuggestion, Error? = nil)
 }
 
@@ -24,6 +25,7 @@ extension PredictionsError: AmplifyError {
         switch self {
         case .accessDenied(let errorDescription, _, _),
              .authError(let errorDescription, _, _),
+             .service(let errorDescription, _, _),
              .configuration(let errorDescription, _, _):
             return errorDescription
         case .unknownError(let errorDescription, _, _):
@@ -41,6 +43,7 @@ extension PredictionsError: AmplifyError {
         case .accessDenied(_, let recoverySuggestion, _),
              .authError(_, let recoverySuggestion, _),
              .configuration(_, let recoverySuggestion, _),
+             .service( _, let recoverySuggestion, _),
              .networkError(_, let recoverySuggestion, _):
             return recoverySuggestion
 
@@ -66,6 +69,7 @@ extension PredictionsError: AmplifyError {
              .configuration(_, _, let underlyingError),
              .httpStatusError(_, _, let underlyingError),
              .networkError(_, _, let underlyingError),
+             .service(_, _, let underlyingError),
              .unknownError(_, _, let underlyingError):
             return underlyingError
         }
