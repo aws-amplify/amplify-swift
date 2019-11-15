@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 import Foundation
 
 /// Struct that holds the message to be send to the connection
