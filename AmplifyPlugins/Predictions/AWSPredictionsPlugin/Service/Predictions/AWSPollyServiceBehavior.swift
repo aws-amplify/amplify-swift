@@ -16,6 +16,6 @@ protocol AWSPollyServiceBehavior {
     typealias TextToSpeechServiceEvent = PredictionsEvent<TextToSpeechResult, PredictionsError>
 
     func synthesizeText(text: String,
-                        voiceId: VoiceType?,
+                        voiceId: AWSPollyVoiceId,
                         onEvent: @escaping TextToSpeechServiceEventHandler)
 }

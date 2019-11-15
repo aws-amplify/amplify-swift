@@ -11,260 +11,62 @@ import AWSPolly
 
 extension VoiceType {
 
-    init?(voice: String?) {
-        var type: VoiceType?
-        guard let voice = voice else {
-            return nil
-        }
-        for vType in VoiceType.allCases where vType.rawStringValue == voice {
-            type = vType
-        }
-        if let realType = type {
-            self = realType
-        } else {
-            return nil
-        }
-    }
-
-    var pollyVoiceType: AWSPollyVoiceId {
-        switch self {
-        case .arabicFemaleZeina:
-            return .zeina
-        case .chineseFemaleZhiyu:
-            return .zhiyu
-        case .danishFemaleNaja:
-            return .naja
-        case .danishMaleMads:
-            return .mads
-        case .dutchFemaleLotte:
-            return .lotte
-        case .dutchMaleRuben:
-            return .ruben
-        case .ausEnglishFemaleNicole:
-            return .nicole
-        case .ausEnglishMaleRussell:
-            return .russell
-        case .britEnglishFemaleAmy:
-            return .amy
-        case .britEnglishFemaleEmma:
-            return .emma
-        case .britEnglishMaleBrian:
-            return .brian
-        case .indiEnglishAndHindFemaleAditi:
-            return .aditi
-        case .indiEnglishFemaleRaveena:
-            return .raveena
-        case .englishFemaleIvy:
-            return .ivy
-        case .englishFemaleJoanna:
-            return .joanna
-        case .englishFemaleKendra:
-            return .kendra
-        case .englishFemaleKimberly:
-            return .kimberly
-        case .englishFemaleSalli:
-            return .salli
-        case .englishMaleJoey:
-            return .joey
-        case .englishMaleJustin:
-            return .justin
-        case .englishMaleMatthew:
-            return .matthew
-        case .welshEnglishMaleGeraint:
-            return .geraint
-        case .frenchFemaleCeline:
-            return .celine
-        case .frenchFemaleLea:
-            return .lea
-        case .frenchMaleMathieu:
-            return .mathieu
-        case .canadianFrenchFemaleChantal:
-            return .chantal
-        case .germanFemaleMarlene:
-            return .marlene
-        case .germanFemaleVicki:
-            return .vicki
-        case .germanMaleHans:
-            return .hans
-        case .icelandicFemaleDora:
-            return .dora
-        case .icelandicMaleKarl:
-            return .karl
-        case .italianFemaleCarla:
-            return .carla
-        case .italianFemaleBianca:
-            return .bianca
-        case .italianMaleGiorgio:
-            return .giorgio
-        case .japaneseFemaleMizuki:
-            return .mizuki
-        case .japaneseMaleTakumi:
-            return .takumi
-        case .koreanFemaleSeoyeon:
-            return .seoyeon
-        case .norwegianFemaleLiv:
-            return .liv
-        case .polishFemaleEwa:
-            return .ewa
-        case .polishFemaleMaja:
-            return .maja
-        case .polishMaleJacek:
-            return .jacek
-        case .polishMaleJan:
-            return .jan
-        case .brazPortugueseFemaleVitoria:
-            return .vitoria
-        case .brazPortugueseMaleRicardo:
-            return .ricardo
-        case .euroPortugueseFemaleInes:
-            return .ines
-        case .euroPortugueseMaleCristiano:
-            return .cristiano
-        case .romanianFemaleCarmen:
-            return .carmen
-        case .russianFemaleTatyana:
-            return .tatyana
-        case .russianMaleMaxim:
-            return .maxim
-        case .euroSpanishFemaleConchita:
-            return .conchita
-        case .euroSpanishFemaleLucia:
-            return .lucia
-        case .euroSpanishMaleEnrique:
-            return .enrique
-        case .mexSpanishFemaleMia:
-            return .mia
-        case .usSpanishFemalePenelope:
-            return .penelope
-        case .usSpanishMaleMiguel:
-            return .miguel
-        case .swedishFemaleAstrid:
-            return .astrid
-        case .turkishFemaleFiliz:
-            return .filiz
-        case .welshFemaleGwyneth:
-            return .gwyneth
-        }
-    }
-
-    var rawStringValue: String {
-        switch self {
-        case .arabicFemaleZeina:
-            return "Zeina"
-        case .ausEnglishFemaleNicole:
-            return "Nicole"
-        case .ausEnglishMaleRussell:
-            return "Russell"
-        case .brazPortugueseFemaleVitoria:
-            return "Vitoria"
-        case .brazPortugueseMaleRicardo:
-            return "Ricardo"
-        case .britEnglishFemaleAmy:
-            return "Amy"
-        case .britEnglishFemaleEmma:
-            return "Emma"
-        case .britEnglishMaleBrian:
-            return "Brian"
-        case .canadianFrenchFemaleChantal:
-            return "Chantal"
-        case .chineseFemaleZhiyu:
-            return "Zhiyu"
-        case .danishFemaleNaja:
-            return "Naja"
-        case .danishMaleMads:
-            return "Mads"
-        case .dutchFemaleLotte:
-            return "Lotte"
-        case .dutchMaleRuben:
-            return "Ruben"
-        case .indiEnglishAndHindFemaleAditi:
-            return "Aditi"
-        case .indiEnglishFemaleRaveena:
-            return "Raveena"
-        case .englishFemaleIvy:
-            return "Ivy"
-        case .englishFemaleJoanna:
-            return "Joanna"
-        case .englishFemaleKendra:
-            return "Kendra"
-        case .englishFemaleKimberly:
-            return "Kimberly"
-        case .englishFemaleSalli:
-            return "Salli"
-        case .englishMaleJoey:
-            return "Joey"
-        case .englishMaleJustin:
-            return "Justin"
-        case .englishMaleMatthew:
-            return "Matthew"
-        case .welshEnglishMaleGeraint:
-            return "Geraint"
-        case .frenchFemaleCeline:
-            return "Celine"
-        case .frenchFemaleLea:
-            return "Lea"
-        case .frenchMaleMathieu:
-            return "Mathieu"
-        case .germanFemaleMarlene:
-            return "Marlene"
-        case .germanFemaleVicki:
-            return "Vicki"
-        case .germanMaleHans:
-            return "Hans"
-        case .icelandicFemaleDora:
-            return "Dora"
-        case .icelandicMaleKarl:
-            return "Karl"
-        case .italianFemaleCarla:
-            return "Carla"
-        case .italianFemaleBianca:
-            return "Bianca"
-        case .italianMaleGiorgio:
-            return "Giorgio"
-        case .japaneseFemaleMizuki:
-            return "Mizuki"
-        case .japaneseMaleTakumi:
-            return "Takumi"
-        case .koreanFemaleSeoyeon:
-            return "Seoyeon"
-        case .norwegianFemaleLiv:
-            return "Liv"
-        case .polishFemaleEwa:
-            return "Ewa"
-        case .polishFemaleMaja:
-            return "Maja"
-        case .polishMaleJacek:
-            return "Jacek"
-        case .polishMaleJan:
-            return "Jan"
-        case .euroPortugueseFemaleInes:
-            return "Ines"
-        case .euroPortugueseMaleCristiano:
-            return "Cristiano"
-        case .romanianFemaleCarmen:
-            return "Carmen"
-        case .russianFemaleTatyana:
-            return "Tatyana"
-        case .russianMaleMaxim:
-            return "Maxim"
-        case .euroSpanishFemaleConchita:
-            return "Conchita"
-        case .euroSpanishFemaleLucia:
-            return "Lucia"
-        case .euroSpanishMaleEnrique:
-            return "Enrique"
-        case .mexSpanishFemaleMia:
-            return "Mia"
-        case .usSpanishFemalePenelope:
-            return "Penelope"
-        case .usSpanishMaleMiguel:
-            return "Miguel"
-        case .swedishFemaleAstrid:
-            return "Astrid"
-        case .turkishFemaleFiliz:
-            return "Filiz"
-        case .welshFemaleGwyneth:
-            return "Gwyneth"
-        }
-    }
+    static let arabicFemaleZeina: VoiceType = .voice("Zeina")
+    static let chineseFemaleZhiyu: VoiceType  = .voice("Zhiyu")
+    static let danishFemaleNaja: VoiceType  = .voice("Naja")
+    static let danishMaleMads: VoiceType  = .voice("Mads")
+    static let dutchFemaleLotte: VoiceType  = .voice("Lotte")
+    static let dutchMaleRuben: VoiceType  = .voice("Ruben")
+    static let ausEnglishFemaleNicole: VoiceType  = .voice("Nicole")
+    static let ausEnglishMaleRussell: VoiceType  = .voice("Russell")
+    static let britEnglishFemaleAmy: VoiceType  = .voice("Amy")
+    static let britEnglishFemaleEmma: VoiceType  = .voice("Emma")
+    static let britEnglishMaleBrian: VoiceType  = .voice("Brian")
+    static let indiEnglishAndHindFemaleAditi: VoiceType  = .voice("Aditi")
+    static let indiEnglishFemaleRaveena: VoiceType  = .voice("Raveena")
+    static let englishFemaleIvy: VoiceType  = .voice("Ivy")
+    static let englishFemaleJoanna: VoiceType  = .voice("Joanna")
+    static let englishFemaleKendra: VoiceType  = .voice("Kendra")
+    static let englishFemaleKimberly: VoiceType  = .voice("Kimberly")
+    static let englishFemaleSalli: VoiceType  = .voice("Salli")
+    static let englishMaleJoey: VoiceType  = .voice("Joey")
+    static let englishMaleJustin: VoiceType  = .voice("Justin")
+    static let englishMaleMatthew: VoiceType  = .voice("Matthew")
+    static let welshEnglishMaleGeraint: VoiceType  = .voice("Geraint")
+    static let frenchFemaleCeline: VoiceType  = .voice("Celine")
+    static let frenchFemaleLea: VoiceType  = .voice("Lea")
+    static let frenchMaleMathieu: VoiceType  = .voice("Mathieu")
+    static let canadianFrenchFemaleChantal: VoiceType  = .voice("Chantal")
+    static let germanFemaleMarlene: VoiceType  = .voice("Marlene")
+    static let germanFemaleVicki: VoiceType  = .voice("Vicki")
+    static let germanMaleHans: VoiceType  = .voice("Hans")
+    static let icelandicFemaleDora: VoiceType  = .voice("Dora")
+    static let icelandicMaleKarl: VoiceType  = .voice("Karl")
+    static let italianFemaleCarla: VoiceType  = .voice("Carla")
+    static let italianFemaleBianca: VoiceType  = .voice("Bianca")
+    static let italianMaleGiorgio: VoiceType  = .voice("Giorgio")
+    static let japaneseFemaleMizuki: VoiceType  = .voice("Mizuki")
+    static let japaneseMaleTakumi: VoiceType  = .voice("Takumi")
+    static let koreanFemaleSeoyeon: VoiceType  = .voice("Seoyeon")
+    static let norwegianFemaleLiv: VoiceType  = .voice("Liv")
+    static let polishFemaleEwa: VoiceType  = .voice("Ewa")
+    static let polishFemaleMaja: VoiceType  = .voice("Maja")
+    static let polishMaleJacek: VoiceType  = .voice("Jacek")
+    static let polishMaleJan: VoiceType  = .voice("Jan")
+    static let brazPortugueseFemaleVitoria: VoiceType  = .voice("Vitoria")
+    static let brazPortugueseMaleRicardo: VoiceType  = .voice("Ricardo")
+    static let euroPortugueseFemaleInes: VoiceType  = .voice("Ines")
+    static let euroPortugueseMaleCristiano: VoiceType  = .voice("Cristiano")
+    static let romanianFemaleCarmen: VoiceType  = .voice("Carmen")
+    static let russianFemaleTatyana: VoiceType  = .voice("Tatyana")
+    static let russianMaleMaxim: VoiceType  = .voice("Maxim")
+    static let euroSpanishFemaleConchita: VoiceType  = .voice("Conchita")
+    static let euroSpanishFemaleLucia: VoiceType  = .voice("Lucia")
+    static let euroSpanishMaleEnrique: VoiceType  = .voice("Enrique")
+    static let mexSpanishFemaleMia: VoiceType  = .voice("Mia")
+    static let usSpanishFemalePenelope: VoiceType  = .voice("Peneleope")
+    static let usSpanishMaleMiguel: VoiceType  = .voice("Miguel")
+    static let swedishFemaleAstrid: VoiceType  = .voice("Astrid")
+    static let turkishFemaleFiliz: VoiceType  = .voice("Filiz")
+    static let welshFemaleGwyneth: VoiceType  = .voice("Gwyneth")
 }

@@ -29,7 +29,7 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
                        options: options)
     }
 
-    public func identify(type: IdentifyType,
+    public func identify(type: IdentifyAction,
                          image: URL,
                          options: PredictionsIdentifyRequest.Options? = nil,
                          listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation {

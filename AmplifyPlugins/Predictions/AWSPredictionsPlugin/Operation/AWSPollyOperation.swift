@@ -5,10 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 import Foundation
 import Amplify
 import AWSPluginsCore
+import AWSPolly
 
 public class AWSPollyOperation: AmplifyOperation<PredictionsTextToSpeechRequest,
     Void, TextToSpeechResult, PredictionsError>,
@@ -39,14 +39,15 @@ PredictionsTextToSpeechOperation {
             return
         }
 
-        if let error = request.validate() {
+        if let error = try? request.validate() {
             dispatch(event: .failed(error))
             finish()
             return
         }
 
+        let voiceId = reconcileVoiceId(voicePassedIn: request.options.voiceType, config: predictionsService.predictionsConfig)
         predictionsService.synthesizeText(text: request.textToSpeech,
-                                          voiceId: request.options.voiceType) { [weak self] event in
+                                          voiceId: voiceId) { [weak self] event in
             self?.onServiceEvent(event: event)
         }
 
@@ -62,6 +63,25 @@ PredictionsTextToSpeechOperation {
             finish()
 
         }
+    }
+
+    private func reconcileVoiceId(voicePassedIn: VoiceType?, config: AWSPredictionsPluginConfiguration) -> AWSPollyVoiceId {
+        //we return a default if what is passed in doesn't resolve properly to our enum and config was empty for some odd reason.
+        let defaultVoiceId = AWSPollyVoiceId.ivy
+
+        if let voicePassedIn = voicePassedIn,
+            let pollyVoiceId = try? AWSPollyVoiceId.from(voiceType: voicePassedIn) {
+                   return pollyVoiceId
+        }
+
+        if let pollyVoiceIdFromConfigString = config.convertConfig?.voiceId {
+            let voiceType: VoiceType = .voice(pollyVoiceIdFromConfigString)
+            if let pollyVoiceIdFromConfig = try? AWSPollyVoiceId.from(voiceType: voiceType) {
+                return pollyVoiceIdFromConfig
+            }
+        }
+
+        return defaultVoiceId
     }
 
 }

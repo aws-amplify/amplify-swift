@@ -46,7 +46,7 @@ extension AWSPredictionsPlugin {
 
     }
 
-    public func identify(type: IdentifyType,
+    public func identify(type: IdentifyAction,
                          image: URL,
                          options: PredictionsIdentifyRequest.Options?,
                          listener: PredictionsIdentifyOperation.EventListener? = nil) -> PredictionsIdentifyOperation {
