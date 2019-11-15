@@ -51,6 +51,7 @@ Pod::Spec.new do |s|
     ss.dependency 'AWSPolly', AWS_SDK_VERSION
     ss.dependency 'AWSTranscribe', AWS_SDK_VERSION
     ss.dependency 'AWSComprehend', AWS_SDK_VERSION
+    ss.dependency 'AWSTextract', AWS_SDK_VERSION
 
   end
 

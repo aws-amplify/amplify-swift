@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import CoreGraphics
 import Amplify
 
 extension AWSPredictionsPlugin {
@@ -30,16 +29,19 @@ extension AWSPredictionsPlugin {
     }
 
     public func identify(type: IdentifyType,
-                         image: CGImage,
+                         image: URL,
                          options: PredictionsIdentifyRequest.Options?,
                          listener: PredictionsIdentifyOperation.EventListener? = nil) -> PredictionsIdentifyOperation {
         let options = options
 
-        let request = PredictionsIdentifyRequest(image: image, identifyType: type, options: options ?? PredictionsIdentifyRequest.Options())
-        let operation = AWSRekognitionOperation(
-            request, predictionsService: predictionsService,
-            authService: authService,
-            listener: listener)
+        let request = PredictionsIdentifyRequest(image: image,
+                                                 identifyType: type,
+                                                 options: options ?? PredictionsIdentifyRequest.Options())
+
+        let operation = AWSIdentifyOperation(request: request,
+                                             predictionsService: predictionsService,
+                                             authService: authService,
+                                             listener: listener)
 
         queue.addOperation(operation)
         return operation

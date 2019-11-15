@@ -10,14 +10,14 @@ import Amplify
 import AWSMobileClient
 import AWSPluginsCore
 
-public class AWSRekognitionOperation: AmplifyOperation<PredictionsIdentifyRequest,
+public class AWSIdentifyOperation: AmplifyOperation<PredictionsIdentifyRequest,
     Void, IdentifyResult, PredictionsError>,
 PredictionsIdentifyOperation {
 
     let predictionsService: AWSPredictionsService
     let authService: AWSAuthServiceBehavior
 
-    init(_ request: PredictionsIdentifyRequest,
+    init(request: PredictionsIdentifyRequest,
          predictionsService: AWSPredictionsService,
          authService: AWSAuthServiceBehavior,
          listener: EventListener?) {
@@ -39,9 +39,14 @@ PredictionsIdentifyOperation {
 
         switch request.identifyType {
         case .detectCelebrity:
-            break
-        case .detectText:
-            break
+            predictionsService.detectCelebrities(image: request.image) { [weak self] event in
+                self?.onServiceEvent(event: event)
+
+            }
+        case .detectText(let formatType):
+            predictionsService.detectText(image: request.image, format: formatType) { [weak self] event in
+                self?.onServiceEvent(event: event)
+            }
         case .detectLabels:
             predictionsService.detectLabels(
             image: request.image) { [weak self] event in
@@ -49,7 +54,9 @@ PredictionsIdentifyOperation {
             }
 
         case .detectEntities:
-            break
+            predictionsService.detectEntities(image: request.image) { [weak self] event in
+                self?.onServiceEvent(event: event)
+            }
         }
     }
 
@@ -57,9 +64,10 @@ PredictionsIdentifyOperation {
         switch event {
         case .completed(let result):
             dispatch(event: .completed(result))
+            finish()
         case .failed(let error):
             dispatch(event: .failed(error))
-
+            finish()
         }
     }
 }

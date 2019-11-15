@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import CoreImage
 
 extension PredictionsCategory: PredictionsCategoryClientBehavior {
 
@@ -23,7 +22,7 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
     }
 
     public func identify(type: IdentifyType,
-                         image: CGImage,
+                         image: URL,
                          options: PredictionsIdentifyRequest.Options? = nil,
                          listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation {
         plugin.identify(type: type,
