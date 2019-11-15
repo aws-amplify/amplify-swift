@@ -22,13 +22,12 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         onComplete()
     }
 
-    func mutate<R>(apiName: String?,
-                   request: GraphQLRequest<R>,
+    func mutate<R>(request: GraphQLRequest<R>,
                    listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
 
         notify("mutate")
         let options = GraphQLOperationRequest<R>.Options()
-        let request = GraphQLOperationRequest<R>(apiName: apiName,
+        let request = GraphQLOperationRequest<R>(apiName: request.apiName,
                                                  operationType: .mutation,
                                                  document: request.document,
                                                  variables: request.variables,
@@ -38,13 +37,12 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         return operation
     }
 
-    func query<R: Decodable>(apiName: String?,
-                             request: GraphQLRequest<R>,
+    func query<R: Decodable>(request: GraphQLRequest<R>,
                              listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
 
         notify("query")
         let options = GraphQLOperationRequest<R>.Options()
-        let request = GraphQLOperationRequest<R>(apiName: apiName,
+        let request = GraphQLOperationRequest<R>(apiName: request.apiName,
                                                  operationType: .query,
                                                  document: request.document,
                                                  variables: request.variables,
@@ -54,13 +52,12 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         return operation
     }
 
-    func subscribe<R: Decodable>(apiName: String?,
-                                 request: GraphQLRequest<R>,
-                                 listener: SubscriptionGraphQLOperation<R>.EventListener?) ->
-        SubscriptionGraphQLOperation<R> {
+    func subscribe<R: Decodable>(request: GraphQLRequest<R>,
+                                 listener: GraphQLSubscriptionOperation<R>.EventListener?) ->
+        GraphQLSubscriptionOperation<R> {
             notify("subscribe")
             let options = GraphQLOperationRequest<R>.Options()
-            let request = GraphQLOperationRequest<R>(apiName: apiName,
+            let request = GraphQLOperationRequest<R>(apiName: request.apiName,
                                                      operationType: .subscription,
                                                      document: request.document,
                                                      variables: request.variables,
@@ -122,7 +119,7 @@ class MockGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
     }
 }
 
-class MockSubscriptionGraphQLOperation<R: Decodable>: SubscriptionGraphQLOperation<R> {
+class MockSubscriptionGraphQLOperation<R: Decodable>: GraphQLSubscriptionOperation<R> {
 
     override func pause() {
     }

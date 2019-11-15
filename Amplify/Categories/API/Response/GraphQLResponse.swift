@@ -7,6 +7,8 @@
 
 import Foundation
 
+public typealias RawGraphQLResponse = String
+
 /// A response from a GraphQL API
 public enum GraphQLResponse<ResponseType: Decodable> {
 
@@ -21,4 +23,8 @@ public enum GraphQLResponse<ResponseType: Decodable> {
     /// service was able to fulfill, and the errors will be an array of JSONValues that contain service-specific error
     /// messages.
     case partial(ResponseType, [GraphQLError])
+
+    /// A successful, or partially successful response from the server that could not be transformed into the specified
+    /// response type. The RawGraphQLResponse contains the entire response from the service, including data and errors.
+    case transformationError(RawGraphQLResponse, APIError)
 }

@@ -11,7 +11,7 @@ public typealias GraphQLOperation<R: Decodable> = AmplifyOperation<
     GraphQLResponse<R>,
     APIError>
 
-public typealias SubscriptionGraphQLOperation<R: Decodable> = AmplifyOperation<
+public typealias GraphQLSubscriptionOperation<R: Decodable> = AmplifyOperation<
     GraphQLOperationRequest<R>,
     SubscriptionEvent<GraphQLResponse<R>>,
     Void,

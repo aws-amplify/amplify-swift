@@ -9,11 +9,9 @@ import Amplify
 
 public extension AWSAPICategoryPlugin {
 
-    func query<R: Decodable>(apiName: String? = nil,
-                             request: GraphQLRequest<R>,
+    func query<R: Decodable>(request: GraphQLRequest<R>,
                              listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
-        let operationRequest = getOperationRequest(apiName: apiName,
-                                                   request: request,
+        let operationRequest = getOperationRequest(request: request,
                                                    operationType: .query)
 
         let operation = AWSGraphQLOperation(request: operationRequest,
@@ -25,11 +23,9 @@ public extension AWSAPICategoryPlugin {
         return operation
     }
 
-    func mutate<R: Decodable>(apiName: String? = nil,
-                              request: GraphQLRequest<R>,
+    func mutate<R: Decodable>(request: GraphQLRequest<R>,
                               listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
-        let operationRequest = getOperationRequest(apiName: apiName,
-                                                   request: request,
+        let operationRequest = getOperationRequest(request: request,
                                                    operationType: .mutation)
 
         let operation = AWSGraphQLOperation(request: operationRequest,
@@ -41,15 +37,14 @@ public extension AWSAPICategoryPlugin {
         return operation
     }
 
-    func subscribe<R>(apiName: String? = nil,
-                      request: GraphQLRequest<R>,
-                      listener: SubscriptionGraphQLOperation<R>.EventListener?) -> SubscriptionGraphQLOperation<R> {
+    func subscribe<R>(request: GraphQLRequest<R>,
+                      listener: GraphQLSubscriptionOperation<R>.EventListener?) ->
+        GraphQLSubscriptionOperation<R> {
 
-        let operationRequest = getOperationRequest(apiName: apiName,
-                                                   request: request,
+        let operationRequest = getOperationRequest(request: request,
                                                    operationType: .subscription)
 
-        let operation = AWSSubscriptionGraphQLOperation(request: operationRequest,
+        let operation = AWSGraphQLSubscriptionOperation(request: operationRequest,
                                                         pluginConfig: pluginConfig,
                                                         subscriptionConnectionFactory: subscriptionConnectionFactory,
                                                         authService: authService,
@@ -58,11 +53,10 @@ public extension AWSAPICategoryPlugin {
         return operation
     }
 
-    private func getOperationRequest<R: Decodable>(apiName: String?,
-                                                   request: GraphQLRequest<R>,
+    private func getOperationRequest<R: Decodable>(request: GraphQLRequest<R>,
                                                    operationType: GraphQLOperationType) -> GraphQLOperationRequest<R> {
 
-        let operationRequest = GraphQLOperationRequest(apiName: apiName,
+        let operationRequest = GraphQLOperationRequest(apiName: request.apiName,
                                                        operationType: operationType,
                                                        document: request.document,
                                                        variables: request.variables,

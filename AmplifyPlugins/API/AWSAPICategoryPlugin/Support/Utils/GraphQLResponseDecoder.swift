@@ -11,24 +11,48 @@ import Amplify
 struct GraphQLResponseDecoder {
 
     static func decode<R: Decodable>(graphQLServiceResponse: AWSAppSyncGraphQLResponse,
-                                     responseType: R.Type) throws -> GraphQLResponse<R> {
+                                     responseType: R.Type,
+                                     rawGraphQLResponse: Data) throws -> GraphQLResponse<R> {
 
         switch (graphQLServiceResponse.data, graphQLServiceResponse.errors) {
         case (nil, nil):
-            throw APIError.unknown("both cannot be nil", "service error")
+            throw APIError.unknown("The service returned some data without any `data` and `errors`",
+                                   "The service did not return an expected GraphQL response ")
 
         case (.some(let data), .none):
-            let responseData = try decode(graphQLData: data, into: responseType)
-            return GraphQLResponse<R>.success(responseData)
+            do {
+                let responseData = try decode(graphQLData: data, into: responseType)
+                return GraphQLResponse<R>.success(responseData)
+            } catch let decodingError as DecodingError {
+                let error = APIError(error: decodingError)
+                guard let rawGraphQLResponseString = String(data: rawGraphQLResponse, encoding: .utf8) else {
+                    throw APIError.operationError(
+                        "Could not get the String of full graphql response containing data and errors", "")
+                }
+                return GraphQLResponse<R>.transformationError(rawGraphQLResponseString, error)
+            } catch {
+                throw error
+            }
 
         case (.none, .some(let errors)):
             let responseErrors = try decodeErrors(graphQLErrors: errors)
             return GraphQLResponse<R>.error(responseErrors)
 
         case (.some(let data), .some(let errors)):
-            let responseData = try decode(graphQLData: data, into: responseType)
-            let responseErrors = try decodeErrors(graphQLErrors: errors)
-            return GraphQLResponse<R>.partial(responseData, responseErrors)
+            do {
+                let responseData = try decode(graphQLData: data, into: responseType)
+                let responseErrors = try decodeErrors(graphQLErrors: errors)
+                return GraphQLResponse<R>.partial(responseData, responseErrors)
+            } catch let decodingError as DecodingError {
+                let error = APIError(error: decodingError)
+                guard let rawGraphQLResponseString = String(data: rawGraphQLResponse, encoding: .utf8) else {
+                    throw APIError.operationError(
+                        "Could not get the String of full graphql response containing data and errors", "")
+                }
+                return GraphQLResponse<R>.transformationError(rawGraphQLResponseString, error)
+            } catch {
+                throw error
+            }
         }
     }
 
@@ -49,13 +73,13 @@ struct GraphQLResponseDecoder {
             json = try JSONDecoder().decode(JSONValue.self, from: graphQLResponse)
         } catch {
             throw APIError.operationError("Could not deserialize response data",
-                                              "Service issue",
-                                              error)
+                                          "Service issue",
+                                          error)
         }
 
         guard case .object(let jsonObject) = json else {
             throw APIError.unknown("Deserialized response data is not an object",
-                                       "Service issue")
+                                   "Service issue")
         }
 
         return jsonObject
@@ -68,7 +92,7 @@ struct GraphQLResponseDecoder {
 
         guard case .array(let errorArray) = errors else {
             throw APIError.unknown("Deserialized response error is not an array",
-                                       "Service issue")
+                                   "Service issue")
         }
 
         return errorArray
@@ -81,7 +105,7 @@ struct GraphQLResponseDecoder {
 
         guard case .object(let dataObject) = data else {
             throw APIError.unknown("Failed to case data object to dict",
-                                       "Service issue")
+                                   "Service issue")
         }
 
         return dataObject
@@ -89,27 +113,21 @@ struct GraphQLResponseDecoder {
 
     private static func decode<R: Decodable>(graphQLData: [String: JSONValue],
                                              into responseType: R.Type) throws -> R {
-        do {
-            let serializedJSON = try JSONEncoder().encode(graphQLData)
+        let serializedJSON = try JSONEncoder().encode(graphQLData)
 
-            if responseType == String.self {
-                guard let responseString = String(data: serializedJSON, encoding: .utf8) else {
-                    throw APIError.operationError("could not get string from data", "", nil)
-                }
-
-                guard let response = responseString as? R else {
-                    throw APIError.operationError("not of type R", "", nil)
-                }
-
-                return response
+        if responseType == String.self {
+            guard let responseString = String(data: serializedJSON, encoding: .utf8) else {
+                throw APIError.operationError("could not get string from data", "", nil)
             }
 
-            return try JSONDecoder().decode(responseType, from: serializedJSON)
-        } catch let decodingError as DecodingError {
-            throw APIError(error: decodingError)
-        } catch {
-            throw APIError.operationError("", "", error)
+            guard let response = responseString as? R else {
+                throw APIError.operationError("Not of type \(String(describing: R.self))", "", nil)
+            }
+
+            return response
         }
+
+        return try JSONDecoder().decode(responseType, from: serializedJSON)
     }
 
     private static func decodeErrors(graphQLErrors: [JSONValue]) throws -> [GraphQLError] {
@@ -129,13 +147,7 @@ struct GraphQLResponseDecoder {
     }
 
     private static func decode(graphQLError: JSONValue) throws -> GraphQLError {
-        do {
-            let serializedJSON = try JSONEncoder().encode(graphQLError)
-            return try JSONDecoder().decode(GraphQLError.self, from: serializedJSON)
-        } catch let decodingError as DecodingError {
-            throw APIError(error: decodingError)
-        } catch {
-            throw APIError.operationError("", "", error)
-        }
+        let serializedJSON = try JSONEncoder().encode(graphQLError)
+        return try JSONDecoder().decode(GraphQLError.self, from: serializedJSON)
     }
 }

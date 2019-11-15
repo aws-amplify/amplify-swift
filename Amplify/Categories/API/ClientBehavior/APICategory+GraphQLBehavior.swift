@@ -6,21 +6,18 @@
 //
 
 extension APICategory: APICategoryGraphQLBehavior {
-    public func query<R: Decodable>(apiName: String? = nil,
-                                    request: GraphQLRequest<R>,
+    public func query<R: Decodable>(request: GraphQLRequest<R>,
                                     listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
-        plugin.query(apiName: apiName, request: request, listener: listener)
+        plugin.query(request: request, listener: listener)
     }
 
-    public func mutate<R: Decodable>(apiName: String? = nil,
-                                     request: GraphQLRequest<R>,
+    public func mutate<R: Decodable>(request: GraphQLRequest<R>,
                                      listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
-        plugin.mutate(apiName: apiName, request: request, listener: listener)
+        plugin.mutate(request: request, listener: listener)
     }
 
-    public func subscribe<R>(apiName: String? = nil,
-                             request: GraphQLRequest<R>,
-                             listener: SubscriptionGraphQLOperation<R>.EventListener?) -> SubscriptionGraphQLOperation<R> {
-        plugin.subscribe(apiName: apiName, request: request, listener: listener)
+    public func subscribe<R>(request: GraphQLRequest<R>,
+                             listener: GraphQLSubscriptionOperation<R>.EventListener?) -> GraphQLSubscriptionOperation<R> {
+        plugin.subscribe(request: request, listener: listener)
     }
 }

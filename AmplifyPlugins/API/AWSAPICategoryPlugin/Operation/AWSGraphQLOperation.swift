@@ -27,7 +27,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         self.pluginConfig = pluginConfig
 
         super.init(categoryType: .api,
-                   eventName: request.operationType.getHubPayloadEventName(),
+                   eventName: request.operationType.hubEventName,
                    request: request,
                    listener: listener)
     }

@@ -10,7 +10,7 @@ import Foundation
 import AWSCore
 import AWSPluginsCore
 
-final public class AWSSubscriptionGraphQLOperation<R: Decodable>: SubscriptionGraphQLOperation<R> {
+final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscriptionOperation<R> {
 
     let pluginConfig: AWSAPICategoryPluginConfiguration
     let subscriptionConnectionFactory: SubscriptionConnectionFactory
@@ -23,7 +23,7 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: SubscriptionGr
          pluginConfig: AWSAPICategoryPluginConfiguration,
          subscriptionConnectionFactory: SubscriptionConnectionFactory,
          authService: AWSAuthServiceBehavior,
-         listener: AWSSubscriptionGraphQLOperation.EventListener?) {
+         listener: AWSGraphQLSubscriptionOperation.EventListener?) {
 
         self.pluginConfig = pluginConfig
         self.subscriptionConnectionFactory = subscriptionConnectionFactory
@@ -111,7 +111,9 @@ final public class AWSSubscriptionGraphQLOperation<R: Decodable>: SubscriptionGr
                     let graphQLServiceResponse = try GraphQLResponseDecoder.deserialize(
                         graphQLResponse: graphQLResponseData)
                     let graphQLResponse = try GraphQLResponseDecoder.decode(
-                        graphQLServiceResponse: graphQLServiceResponse, responseType: request.responseType)
+                        graphQLServiceResponse: graphQLServiceResponse,
+                        responseType: request.responseType,
+                        rawGraphQLResponse: graphQLResponseData)
                     dispatch(event: .inProcess(.data(graphQLResponse)))
                 } catch {
                     // TODO: Verify with the team that terminating a subscription after failing to decode/cast one
@@ -155,19 +157,6 @@ extension Dictionary where Key == String, Value == AWSAPICategoryPluginConfigura
             }
 
             throw APIError.invalidConfiguration("not yet implemented for more than one", "configure only 1 API")
-        }
-    }
-}
-
-extension GraphQLOperationType {
-    func getHubPayloadEventName() -> String {
-        switch self {
-        case .query:
-            return HubPayload.EventName.API.query
-        case .mutation:
-            return HubPayload.EventName.API.mutate
-        case .subscription:
-            return HubPayload.EventName.API.subscribe
         }
     }
 }
