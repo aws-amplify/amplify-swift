@@ -1314,7 +1314,7 @@
 				95DAAB43237E639E0028544F /* IdentifyEntitiesFromCollectionResult.swift */,
 			);
 			name = Result;
-			path = Amplify/Categories/Result;
+			path = Amplify/Categories/Predictions/Result;
 			sourceTree = SOURCE_ROOT;
 		};
 		B4D38515236C97350014653D /* Predictions */ = {
@@ -1331,6 +1331,7 @@
 				B4D38523236C97350014653D /* PredictionsCategoryConfiguration.swift */,
 				B4D3852D236C97350014653D /* PredictionsCategoryPlugin.swift */,
 				B4D38525236C97350014653D /* Request */,
+				95DAAB39237E639E0028544F /* Result */,
 			);
 			path = Predictions;
 			sourceTree = "<group>";
@@ -1826,7 +1827,6 @@
 				FAC2358B227A46A900424678 /* Hub */,
 				FAC23503227A053D00424678 /* Logging */,
 				B4D38515236C97350014653D /* Predictions */,
-				95DAAB39237E639E0028544F /* Result */,
 				FAC234F5227A053D00424678 /* Storage */,
 			);
 			path = Categories;
