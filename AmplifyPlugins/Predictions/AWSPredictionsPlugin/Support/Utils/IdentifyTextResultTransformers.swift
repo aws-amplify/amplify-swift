@@ -218,8 +218,7 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
         return cell
     }
 
-    static func processKeyValue(_
-        keyBlock: AWSTextractBlock?,
+    static func processKeyValue(_ keyBlock: AWSTextractBlock?,
                                 blockMap: [String: AWSTextractBlock]) -> BoundedKeyValue? {
         var keyText = ""
         var valueText = ""

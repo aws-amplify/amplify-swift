@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 public protocol IdentifiedText {
     var text: String { get }
     var boundingBox: BoundingBox { get }
