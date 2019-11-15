@@ -8,7 +8,7 @@
 public struct GraphQLRequest<R: Decodable> {
 
     /// The name of graphQL API being invoked, as specified in `amplifyconfiguration.json`.
-    /// Specify this parameter when more than one API of this type is configured.
+    /// Specify this parameter when more than one GraphQL API is configured.
     public let apiName: String?
 
     /// Query document

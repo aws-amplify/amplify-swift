@@ -55,8 +55,14 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         }
 
         // Validate the request
-        if let error = request.validate() {
+        do {
+            try request.validate()
+        } catch let error as APIError {
             dispatch(event: .failed(error))
+            finish()
+            return
+        } catch {
+            dispatch(event: .failed(APIError.unknown("Could not validate request", "", nil)))
             finish()
             return
         }

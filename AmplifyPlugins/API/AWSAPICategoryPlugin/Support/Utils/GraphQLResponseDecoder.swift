@@ -10,14 +10,20 @@ import Amplify
 
 struct GraphQLResponseDecoder {
 
+    // TODO: code clean up - break the code in these case statements into separate methods
     static func decode<R: Decodable>(graphQLServiceResponse: AWSAppSyncGraphQLResponse,
                                      responseType: R.Type,
                                      rawGraphQLResponse: Data) throws -> GraphQLResponse<R> {
 
         switch (graphQLServiceResponse.data, graphQLServiceResponse.errors) {
         case (nil, nil):
+            guard let rawGraphQLResponseString = String(data: rawGraphQLResponse, encoding: .utf8) else {
+                throw APIError.operationError(
+                    "Could not get the String of full graphql response containing data and errors", "")
+            }
+
             throw APIError.unknown("The service returned some data without any `data` and `errors`",
-                                   "The service did not return an expected GraphQL response ")
+                                   "The service did not return an expected GraphQL response: \(rawGraphQLResponseString)")
 
         case (.some(let data), .none):
             do {
@@ -103,12 +109,15 @@ struct GraphQLResponseDecoder {
             return nil
         }
 
-        guard case .object(let dataObject) = data else {
-            throw APIError.unknown("Failed to case data object to dict",
+        switch data {
+        case .object(let dataObject):
+            return dataObject
+        case .null:
+            return nil
+        default:
+            throw APIError.unknown("Failed to get object or null from data.",
                                    "Service issue")
         }
-
-        return dataObject
     }
 
     private static func decode<R: Decodable>(graphQLData: [String: JSONValue],

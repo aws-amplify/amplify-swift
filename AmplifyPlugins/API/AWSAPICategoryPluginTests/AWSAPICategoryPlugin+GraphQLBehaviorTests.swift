@@ -14,8 +14,8 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
     // MARK: Query API Tests
 
     func testQuery() {
-        let request = GraphQLRequest(document: testDocument, variables: nil, responseType: JSONValue.self)
-        let operation = apiPlugin.query(apiName: apiName, request: request, listener: nil)
+        let request = GraphQLRequest(apiName: apiName, document: testDocument, variables: nil, responseType: JSONValue.self)
+        let operation = apiPlugin.query(request: request, listener: nil)
 
         XCTAssertNotNil(operation)
 
@@ -36,8 +36,8 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
     // MARK: Mutate API Tests
 
     func testMutate() {
-        let request = GraphQLRequest(document: testDocument, variables: nil, responseType: JSONValue.self)
-        let operation = apiPlugin.mutate(apiName: apiName, request: request, listener: nil)
+        let request = GraphQLRequest(apiName: apiName, document: testDocument, variables: nil, responseType: JSONValue.self)
+        let operation = apiPlugin.mutate(request: request, listener: nil)
 
         XCTAssertNotNil(operation)
 
@@ -59,11 +59,11 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
 
     func testSubscribe() {
         let request = GraphQLRequest(document: testDocument, variables: nil, responseType: JSONValue.self)
-        let operation = apiPlugin.subscribe(apiName: apiName, request: request, listener: nil)
+        let operation = apiPlugin.subscribe(request: request, listener: nil)
 
         XCTAssertNotNil(operation)
 
-        guard let subscriptionOperation = operation as? AWSSubscriptionGraphQLOperation<JSONValue> else {
+        guard let subscriptionOperation = operation as? AWSGraphQLSubscriptionOperation<JSONValue> else {
             XCTFail("operation could not be cast to AWSGraphQLOperation")
             return
         }
