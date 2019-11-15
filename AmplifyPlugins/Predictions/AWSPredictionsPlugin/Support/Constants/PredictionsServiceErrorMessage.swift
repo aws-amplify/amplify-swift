@@ -34,4 +34,8 @@ struct PredictionsServiceErrorMessage {
     static let noResultInterpretService: PredictionsServiceErrorString = (
         "Not able to fetch result for interpret text operation",
         "Please try with a different input")
+
+    static let textNotFoundToInterpret: PredictionsServiceErrorString = (
+    "Input text is nil",
+    "Text given for interpret could not be found. Please check the input")
 }

@@ -33,7 +33,7 @@ PredictionsInterpretOperation {
             finish()
             return
         }
-
+        multiService.setTextToInterpret(text: request.textToInterpret)
         switch request.options.callType {
         case .offline:
             multiService.fetchOfflineResult(callback: { event in

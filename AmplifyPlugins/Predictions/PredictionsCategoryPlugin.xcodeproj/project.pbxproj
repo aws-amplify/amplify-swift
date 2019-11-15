@@ -68,7 +68,6 @@
 		B45B0679237F13EB00DC9122 /* InterpretTextMultiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45B0675237F13EB00DC9122 /* InterpretTextMultiService.swift */; };
 		B45B067A237F13EB00DC9122 /* MultiServiceBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45B0676237F13EB00DC9122 /* MultiServiceBehavior.swift */; };
 		B45B067C237F143D00DC9122 /* InterpretTextOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45B067B237F143C00DC9122 /* InterpretTextOperation.swift */; };
-		B45B067E237F14A300DC9122 /* MultiServiceEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45B067D237F14A300DC9122 /* MultiServiceEvent.swift */; };
 		B478F64E2374DCE700C4F92B /* AWSPredictionsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSPredictionsPlugin.framework */; };
 		B478F6762374DF5B00C4F92B /* AWSPredictionsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSPredictionsPlugin.framework */; };
 		B478F6A52374DFE800C4F92B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F6A22374DFE800C4F92B /* ViewController.swift */; };
@@ -215,7 +214,6 @@
 		B45B0675237F13EB00DC9122 /* InterpretTextMultiService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterpretTextMultiService.swift; sourceTree = "<group>"; };
 		B45B0676237F13EB00DC9122 /* MultiServiceBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiServiceBehavior.swift; sourceTree = "<group>"; };
 		B45B067B237F143C00DC9122 /* InterpretTextOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterpretTextOperation.swift; sourceTree = "<group>"; };
-		B45B067D237F14A300DC9122 /* MultiServiceEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiServiceEvent.swift; sourceTree = "<group>"; };
 		B478F5FB2374DBF400C4F92B /* AWSPredictionsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSPredictionsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B478F6492374DCE700C4F92B /* AWSPredictionsPluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPredictionsPluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B478F6582374DD0D00C4F92B /* AWSPredictionsPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPredictionsPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -445,7 +443,6 @@
 				95DAAAF0237DFE5F0028544F /* VoiceType+AWSExtension.swift */,
 				95DAAB93237F53C50028544F /* AWSPollyVoiceId+Extension.swift */,
 				95DAAA4E237B8ED30028544F /* LanguageTypeExtension.swift */,
-				B45B067D237F14A300DC9122 /* MultiServiceEvent.swift */,
 				95DAAACC237C778A0028544F /* PredictionsAction.swift */,
 				95DAAA50237B8ED30028544F /* PredictionsAWSServices.swift */,
 				95DAAA51237B8ED30028544F /* PredictionsEvent.swift */,
@@ -1505,7 +1502,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				95DAAA93237B8ED40028544F /* AWSPredictionsService+Translate.swift in Sources */,
-				B45B067E237F14A300DC9122 /* MultiServiceEvent.swift in Sources */,
 				95DAAA75237B8ED40028544F /* AWSRekognitionBehavior.swift in Sources */,
 				95DAAAED237DFDB00028544F /* AWSPredictionsService+Polly.swift in Sources */,
 				B45B0678237F13EB00DC9122 /* CoreMLPredictionService.swift in Sources */,

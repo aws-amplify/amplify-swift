@@ -8,22 +8,20 @@
 import Amplify
 
 class InterpretTextMultiService: MultiServiceBehavior {
-    
+
     typealias Event = PredictionsEvent<InterpretResult, PredictionsError>
     typealias InterpretTextEventHandler = (Event) -> Void
-    
-    let textToInterpret: String
+
+    var textToInterpret: String?
     weak var coreMLService: CoreMLPredictionBehavior?
     weak var predictionsService: AWSPredictionsService?
-    
-    init(textToInterpret: String,
-         coreMLService: CoreMLPredictionBehavior?,
+
+    init(coreMLService: CoreMLPredictionBehavior?,
          predictionsService: AWSPredictionsService?) {
-        self.textToInterpret = textToInterpret
         self.coreMLService = coreMLService
         self.predictionsService = predictionsService
     }
-    
+
     func fetchOnlineResult(callback: @escaping InterpretTextEventHandler) {
         guard let onlineService = predictionsService else {
             let message = PredictionsServiceErrorMessage.onlineInterpretServiceNotAvailable.errorDescription
@@ -32,9 +30,16 @@ class InterpretTextMultiService: MultiServiceBehavior {
             callback(.failed(predictionError))
             return
         }
-        onlineService.comprehend(text: textToInterpret, onEvent: callback)
+        guard let text = textToInterpret else {
+            let message = PredictionsServiceErrorMessage.textNotFoundToInterpret.errorDescription
+            let recoveryMessage = PredictionsServiceErrorMessage.textNotFoundToInterpret.recoverySuggestion
+            let predictionError = PredictionsError.service(message, recoveryMessage, nil)
+            callback(.failed(predictionError))
+            return
+        }
+        onlineService.comprehend(text: text, onEvent: callback)
     }
-    
+
     func fetchOfflineResult(callback: @escaping InterpretTextEventHandler) {
         guard let offlineService = coreMLService else {
             let message = PredictionsServiceErrorMessage.offlineInterpretServiceNotAvailable.errorDescription
@@ -43,15 +48,26 @@ class InterpretTextMultiService: MultiServiceBehavior {
             callback(.failed(predictionError))
             return
         }
-        offlineService.comprehend(text: textToInterpret, onEvent: callback)
+        guard let text = textToInterpret else {
+            let message = PredictionsServiceErrorMessage.textNotFoundToInterpret.errorDescription
+            let recoveryMessage = PredictionsServiceErrorMessage.textNotFoundToInterpret.recoverySuggestion
+            let predictionError = PredictionsError.service(message, recoveryMessage, nil)
+            callback(.failed(predictionError))
+            return
+        }
+        offlineService.comprehend(text: text, onEvent: callback)
     }
-    
+
+    func setTextToInterpret(text: String) {
+        textToInterpret = text
+    }
+
     // MARK: -
-    
+
     func combineResults(offlineResult: InterpretResult?,
                         onlineResult: InterpretResult?,
                         callback: @escaping  InterpretTextEventHandler) {
         // TODO: Combine logic to be added
-        
+
     }
 }

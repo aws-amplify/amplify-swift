@@ -35,18 +35,18 @@ extension MultiServiceBehavior {
 
         invokeMultiServiceCalls { multiServiceEvent in
             switch multiServiceEvent {
-            case .completed(let offlineResult, let onlineResult):
-                combineResults(offlineResult: offlineResult,
-                               onlineResult: onlineResult,
+            case .success(let mutliRespose):
+                combineResults(offlineResult: mutliRespose.offlineResult,
+                               onlineResult: mutliRespose.onlineResult,
                                callback: callback)
-            case .failed(let error):
+            case .failure(let error):
                 callback(.failed(error))
             }
         }
     }
 
     /// Method that fetch result from offline and online service
-    func invokeMultiServiceCalls(callback: (MultiServiceEvent<ServiceResult>) -> Void) {
+    func invokeMultiServiceCalls(callback: (Result<MultiServiceResponse<ServiceResult>, PredictionsError>) -> Void) {
 
         // Use dispatch group to synchronize two parallel calls for offline and online service
         let dispatchGroup = DispatchGroup()
@@ -81,9 +81,15 @@ extension MultiServiceBehavior {
 
         //TODO: Define what error to send back if both service returned an error
         if offlineError != nil && onlineError != nil {
-            callback(.failed(onlineError!))
+            callback(.failure(onlineError!))
         }
-        callback(.completed(offlineResult, onlineResult))
+        let multiResponse = MultiServiceResponse(onlineResult: onlineResult, offlineResult: offlineResult)
+        callback(.success(multiResponse))
     }
 
+}
+
+struct MultiServiceResponse<ServiceResult> {
+    let onlineResult: ServiceResult?
+    let offlineResult: ServiceResult?
 }
