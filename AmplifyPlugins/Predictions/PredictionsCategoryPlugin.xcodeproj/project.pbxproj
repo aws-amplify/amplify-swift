@@ -728,11 +728,11 @@
 			buildPhases = (
 				03373022B1D9BDBEAD41BEA0 /* [CP] Check Pods Manifest.lock */,
 				B478F5F62374DBF400C4F92B /* Headers */,
+				B478F6612374DDE900C4F92B /* Swift Lint */,
+				B478F6602374DDAE00C4F92B /* Swift Format */,
 				B478F5F72374DBF400C4F92B /* Sources */,
 				B478F5F82374DBF400C4F92B /* Frameworks */,
 				B478F5F92374DBF400C4F92B /* Resources */,
-				B478F6602374DDAE00C4F92B /* Swift Format */,
-				B478F6612374DDE900C4F92B /* Swift Lint */,
 			);
 			buildRules = (
 			);
@@ -793,11 +793,11 @@
 			buildPhases = (
 				78333AA6E9AE577EF5B9E006 /* [CP] Check Pods Manifest.lock */,
 				B478F6672374DF4D00C4F92B /* Headers */,
-				B478F6682374DF4D00C4F92B /* Sources */,
-				B478F6692374DF4D00C4F92B /* Frameworks */,
-				B478F66A2374DF4D00C4F92B /* Resources */,
 				B478F66B2374DF4D00C4F92B /* Swift Format */,
 				B478F66C2374DF4D00C4F92B /* Swift Lint */,
+				B478F6682374DF4D00C4F92B /* Sources */,
+				B478F66A2374DF4D00C4F92B /* Resources */,
+				B478F6692374DF4D00C4F92B /* Frameworks */,
 			);
 			buildRules = (
 			);
