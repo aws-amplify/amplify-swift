@@ -475,13 +475,6 @@
 			remoteGlobalIDString = 8042F2B0721B13AEDEB81F058C2B2125;
 			remoteInfo = AWSAuthCore;
 		};
-		380E6810679FD8527F8690183215C99C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8042F2B0721B13AEDEB81F058C2B2125;
-			remoteInfo = AWSAuthCore;
-		};
 		3A9920B76D2D0C7A97C61BDC011F6E04 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
@@ -1416,15 +1409,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E41DD745B4E9C6C0B6145D504D2FF82E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9AEAF6CAD298F286AE1BC32B731A99FF /* AWSCore.framework in Frameworks */,
-				BF35E2B9FF252642569E97E514E203E4 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		E5B04F861D2FCBAEBF7AEF580DD4E8AC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -2096,8 +2080,8 @@
 				F50D90FDE8F2D4C2053D98F302BA2DE6 /* Frameworks */,
 				B7F8354BF8322F3502423FF94DDB195D /* Support Files */,
 			);
-			name = CwlCatchException;
-			path = CwlCatchException;
+			name = AWSCognitoIdentityProviderASF;
+			path = AWSCognitoIdentityProviderASF;
 			sourceTree = "<group>";
 		};
 		CCB5F2A271CFC907E7EF8CA8034EECE1 /* Pods-AmplifyTestApp */ = {
@@ -2129,15 +2113,6 @@
 			);
 			name = "Support Files";
 			path = "../Target Support Files/SQLite.swift";
-			sourceTree = "<group>";
-		};
-		C7B6C9EDDCDE65270DF25A7B19C7DB33 /* SwiftFormat */ = {
-			isa = PBXGroup;
-			children = (
-				2719EAA2D16265EAB14A887E5D79AB9A /* Support Files */,
-			);
-			name = SwiftFormat;
-			path = SwiftFormat;
 			sourceTree = "<group>";
 		};
 		CF1408CF629C7361332E53B88F7BD30C = {
@@ -2914,6 +2889,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
 			productRefGroup = A71A1F084978AA2C45501B440E18C279 /* Products */;
@@ -2994,21 +2970,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		69DD9CD935A6DEC5C35DE88D20FF51C3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7DCAD016931269B379CD59AA00103216 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		810D0E62A2DFAE3C55FC42223A4AB080 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8193E78788101B5B55993836C79F7110 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		832074B63E24ECE73198B32033BBBB69 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -3023,13 +2999,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B457E7266BF38EDCA65F8F420AFF4729 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C610607DB61FB7D57E5FB787894CEE3A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -3694,12 +3663,6 @@
 			target = 29212B2F049288E035AB98405A23E41E /* AWSCognitoIdentityProvider */;
 			targetProxy = BE94540EF0C0E21FBAB6B1151DB42390 /* PBXContainerItemProxy */;
 		};
-		B7BBCF7EA09C9EA97960EE8C7CD8A034 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = AWSCognitoIdentityProvider;
-			target = 29212B2F049288E035AB98405A23E41E /* AWSCognitoIdentityProvider */;
-			targetProxy = BE94540EF0C0E21FBAB6B1151DB42390 /* PBXContainerItemProxy */;
-		};
 		BAAA3DFA948F508B4FD0FAA63643ADB7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = AWSCore;
@@ -4302,7 +4265,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
-			name = Debug;
+			name = Release;
 		};
 		6957D7F3826F9B061FA690D6549842C9 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -5431,15 +5394,6 @@
 			buildConfigurations = (
 				BF762AF3FA0BD3A6F21E92E355CE0648 /* Debug */,
 				AB8EA580E69DD4917550E086C71FFCBA /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B7A25F64167EDC70379CA76465F9D769 /* Build configuration list for PBXNativeTarget "AWSMobileClient" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				ACCDEF4EA3CB6A4AAFDB92543A36446D /* Debug */,
-				BE4E7E2A89502B88620F2CEABA0A2D85 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
