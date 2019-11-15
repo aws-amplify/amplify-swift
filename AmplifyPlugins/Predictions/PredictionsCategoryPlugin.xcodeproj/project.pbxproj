@@ -403,14 +403,14 @@
 		95DAAA4D237B8ED30028544F /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				95DAAA4E237B8ED30028544F /* LanguageTypeExtension.swift */,
+				95DAAA52237B8ED30028544F /* AWSComprehendPartOfSpeechTagTypeExtension.swift */,
 				95DAAA4F237B8ED30028544F /* AWSComprehendSentimentTypeExtension.swift */,
+				95DAAA53237B8ED30028544F /* FetchDominantLanguageEvent.swift */,
+				95DAAACE237CBE040028544F /* FormatType+AWSExtension.swift */,
+				95DAAA4E237B8ED30028544F /* LanguageTypeExtension.swift */,
+				95DAAACC237C778A0028544F /* PredictionsAction.swift */,
 				95DAAA50237B8ED30028544F /* PredictionsAWSServices.swift */,
 				95DAAA51237B8ED30028544F /* PredictionsEvent.swift */,
-				95DAAA52237B8ED30028544F /* AWSComprehendPartOfSpeechTagTypeExtension.swift */,
-				95DAAA53237B8ED30028544F /* FetchDominantLanguageEvent.swift */,
-				95DAAACC237C778A0028544F /* PredictionsAction.swift */,
-				95DAAACE237CBE040028544F /* FormatType+AWSExtension.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";

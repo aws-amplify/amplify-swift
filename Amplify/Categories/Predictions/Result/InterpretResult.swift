@@ -9,54 +9,61 @@ import Foundation
 
 public struct InterpretResult {
 
-    var keyPhrases: [KeyPhrase]?
-    var sentiment: Sentiment?
-    var entities: [EntityDetectionResult]?
-    var language: LanguageDetectionResult?
-    var syntax: [SyntaxToken]?
+    public let keyPhrases: [KeyPhrase]?
+    public let sentiment: Sentiment?
+    public let entities: [EntityDetectionResult]?
+    public let language: LanguageDetectionResult?
+    public let syntax: [SyntaxToken]?
 }
 
 extension InterpretResult {
 
     public struct Builder {
 
-        var result: InterpretResult
+        var keyPhrases: [KeyPhrase]?
+        var sentiment: Sentiment?
+        var entities: [EntityDetectionResult]?
+        var language: LanguageDetectionResult?
+        var syntax: [SyntaxToken]?
 
-        public init() {
-            self.result = InterpretResult()
-        }
-
+        public init() {}
+        
         public func build() -> InterpretResult {
+            let result = InterpretResult(keyPhrases: keyPhrases,
+                                         sentiment: sentiment,
+                                         entities: entities,
+                                         language: language,
+                                         syntax: syntax)
             return result
         }
 
         @discardableResult
         mutating public func with(keyPhrases: [KeyPhrase]?) -> Builder {
-            result.keyPhrases = keyPhrases
+            self.keyPhrases = keyPhrases
             return self
         }
 
         @discardableResult
         mutating public func with(sentiment: Sentiment?) -> Builder {
-            result.sentiment = sentiment
+            self.sentiment = sentiment
             return self
         }
 
         @discardableResult
         mutating public func with(entities: [EntityDetectionResult]?) -> Builder {
-            result.entities = entities
+            self.entities = entities
             return self
         }
 
         @discardableResult
         mutating public func with(language: LanguageDetectionResult?) -> Builder {
-            result.language = language
+            self.language = language
             return self
         }
 
         @discardableResult
         mutating public func with(syntax: [SyntaxToken]?) -> Builder {
-            result.syntax = syntax
+            self.syntax = syntax
             return self
         }
     }
