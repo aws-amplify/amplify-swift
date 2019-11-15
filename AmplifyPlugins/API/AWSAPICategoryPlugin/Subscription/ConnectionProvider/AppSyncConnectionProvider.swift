@@ -23,7 +23,7 @@ class AppSyncConnectionProvider: ConnectionProvider {
     var lastKeepAliveTime = DispatchTime.now()
 
     /// Serial queue for maintaining the connection state in sync with the websocket connection
-    let serialConnectionQueue = DispatchQueue(label: "com.amazonaws.AppSyncRealTimeConnectionProvider.serialQueue")
+    let serialConnectionQueue = DispatchQueue(label: "com.amazonaws.AppSyncConnectionProvider.serialQueue")
 
     convenience init(for url: URL, interceptor: AuthInterceptor) {
         let websocketProvider = StarscreamWebsocketProvider(url: url)

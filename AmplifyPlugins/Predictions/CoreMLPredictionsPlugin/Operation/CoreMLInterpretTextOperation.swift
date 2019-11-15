@@ -13,7 +13,7 @@ public class CoreMLInterpretTextOperation: AmplifyOperation<PredictionsInterpret
     InterpretResult,
 PredictionsError>, PredictionsInterpretOperation {
 
-    let coreMLNaturalLanguage: CoreMLNaturalLanguageBehavior
+    weak var coreMLNaturalLanguage: CoreMLNaturalLanguageBehavior?
 
     init(_ request: PredictionsInterpretRequest,
          coreMLNaturalLanguage: CoreMLNaturalLanguageBehavior,
@@ -31,11 +31,51 @@ PredictionsError>, PredictionsInterpretOperation {
     }
 
     override public func main() {
+
+        guard let naturalLanguageAdapter = coreMLNaturalLanguage else {
+            finish()
+            return
+        }
+
         if isCancelled {
             finish()
             return
         }
-        let dominantLanguage = coreMLNaturalLanguage.detectDominantLanguage(for: request.textToInterpret)
 
+        var interpretResultBuilder = InterpretResult.Builder()
+        if let dominantLanguage = naturalLanguageAdapter.detectDominantLanguage(for: request.textToInterpret) {
+            let languageResult = LanguageDetectionResult(languageCode: dominantLanguage, score: nil)
+            interpretResultBuilder.with(language: languageResult)
+        }
+
+        if isCancelled {
+            finish()
+            return
+        }
+
+        let syntaxToken = naturalLanguageAdapter.getSyntaxTokens(for: request.textToInterpret)
+        interpretResultBuilder.with(syntax: syntaxToken)
+        if isCancelled {
+            finish()
+            return
+        }
+
+        let entities = naturalLanguageAdapter.getEntities(for: request.textToInterpret)
+        interpretResultBuilder.with(entities: entities)
+        if isCancelled {
+            finish()
+            return
+        }
+
+        let sentiment = naturalLanguageAdapter.getSentiment(for: request.textToInterpret)
+        //interpretResultBuilder.with(sentiment: sentiment)
+        if isCancelled {
+            finish()
+            return
+        }
+
+        let interpretResult = interpretResultBuilder.build()
+        dispatch(event: .completed(interpretResult))
+        finish()
     }
 }

@@ -28,6 +28,7 @@ Pod::Spec.new do |s|
   s.subspec 'AWSAPICategoryPlugin' do |ss|
     ss.source_files = 'AmplifyPlugins/API/AWSAPICategoryPlugin/**/*.swift'
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
+    ss.dependency 'Starscream', '~> 3.0.2'
   end
 
   s.subspec 'AWSDataStoreCategoryPlugin' do |ss|
@@ -50,6 +51,7 @@ Pod::Spec.new do |s|
     ss.dependency 'AWSPolly', AWS_SDK_VERSION
     ss.dependency 'AWSTranscribe', AWS_SDK_VERSION
     ss.dependency 'AWSComprehend', AWS_SDK_VERSION
+    ss.dependency 'AWSTextract', AWS_SDK_VERSION
 
   end
 

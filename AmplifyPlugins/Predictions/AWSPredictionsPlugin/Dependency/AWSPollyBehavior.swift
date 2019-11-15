@@ -14,4 +14,3 @@ protocol AWSPollyBehavior {
 
     func getPolly() -> AWSPolly
 }
-

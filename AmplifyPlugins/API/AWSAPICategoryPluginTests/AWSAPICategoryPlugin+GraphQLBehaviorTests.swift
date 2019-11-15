@@ -14,11 +14,8 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
     // MARK: Query API Tests
 
     func testQuery() {
-        let operation = apiPlugin.query(apiName: apiName,
-                                        document: testDocument,
-                                        variables: testVariables,
-                                        responseType: JSONValue.self,
-                                        listener: nil)
+        let request = GraphQLRequest(apiName: apiName, document: testDocument, variables: nil, responseType: JSONValue.self)
+        let operation = apiPlugin.query(request: request, listener: nil)
 
         XCTAssertNotNil(operation)
 
@@ -27,23 +24,20 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
             return
         }
 
-        let request = queryOperation.request
-        XCTAssertNotNil(request)
-        XCTAssertEqual(request.apiName, apiName)
-        XCTAssertEqual(request.document, testDocument)
-        XCTAssertEqual(request.operationType, GraphQLOperationType.query)
-        XCTAssertNotNil(request.options)
-        XCTAssertNotNil(request.variables)
+        let operationRequest = queryOperation.request
+        XCTAssertNotNil(operationRequest)
+        XCTAssertEqual(operationRequest.apiName, apiName)
+        XCTAssertEqual(operationRequest.document, testDocument)
+        XCTAssertEqual(operationRequest.operationType, GraphQLOperationType.query)
+        XCTAssertNotNil(operationRequest.options)
+        XCTAssertNotNil(operationRequest.variables)
     }
 
     // MARK: Mutate API Tests
 
     func testMutate() {
-        let operation = apiPlugin.mutate(apiName: apiName,
-                                         document: testDocument,
-                                         variables: testVariables,
-                                         responseType: JSONValue.self,
-                                         listener: nil)
+        let request = GraphQLRequest(apiName: apiName, document: testDocument, variables: nil, responseType: JSONValue.self)
+        let operation = apiPlugin.mutate(request: request, listener: nil)
 
         XCTAssertNotNil(operation)
 
@@ -52,18 +46,34 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
             return
         }
 
-        let request = mutateOperation.request
-        XCTAssertNotNil(request)
-        XCTAssertEqual(request.apiName, apiName)
-        XCTAssertEqual(request.document, testDocument)
-        XCTAssertEqual(request.operationType, GraphQLOperationType.mutation)
-        XCTAssertNotNil(request.options)
-        XCTAssertNotNil(request.variables)
+        let operationRequest = mutateOperation.request
+        XCTAssertNotNil(operationRequest)
+        XCTAssertEqual(operationRequest.apiName, apiName)
+        XCTAssertEqual(operationRequest.document, testDocument)
+        XCTAssertEqual(operationRequest.operationType, GraphQLOperationType.mutation)
+        XCTAssertNotNil(operationRequest.options)
+        XCTAssertNotNil(operationRequest.variables)
     }
 
     // MARK: Subscribe API Tests
 
     func testSubscribe() {
-        XCTFail("Not yet implemented")
+        let request = GraphQLRequest(document: testDocument, variables: nil, responseType: JSONValue.self)
+        let operation = apiPlugin.subscribe(request: request, listener: nil)
+
+        XCTAssertNotNil(operation)
+
+        guard let subscriptionOperation = operation as? AWSGraphQLSubscriptionOperation<JSONValue> else {
+            XCTFail("operation could not be cast to AWSGraphQLOperation")
+            return
+        }
+
+        let operationRequest = subscriptionOperation.request
+        XCTAssertNotNil(operationRequest)
+        XCTAssertEqual(operationRequest.apiName, apiName)
+        XCTAssertEqual(operationRequest.document, testDocument)
+        XCTAssertEqual(operationRequest.operationType, GraphQLOperationType.subscription)
+        XCTAssertNotNil(operationRequest.options)
+        XCTAssertNotNil(operationRequest.variables)
     }
 }

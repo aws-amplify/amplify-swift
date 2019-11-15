@@ -38,20 +38,6 @@ target "Amplify" do
       pod "SQLite.swift", "~> 0.12.0"
     end
 
-    target "AWSPredictionsPlugin" do
-      inherit! :complete
-
-      pod "AWSTranslate", "~> #{AWS_SDK_VERSION}"
-      pod "AWSRekognition", "~> #{AWS_SDK_VERSION}"
-      pod "AWSPolly", "~> #{AWS_SDK_VERSION}"
-      pod "AWSComprehend", "~> #{AWS_SDK_VERSION}"
-      pod "AWSTranscribe", "~> #{AWS_SDK_VERSION}"
-    end
-
-    target "CoreMLPredictionsPlugin" do
-      inherit! :complete
-    end
-
     abstract_target "AWSPluginsTestConfigs" do
       pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
       pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
@@ -60,12 +46,6 @@ target "Amplify" do
       end
 
       target "AWSDataStoreCategoryPluginTests" do
-      end
-
-      target "AWSPredictionsPluginTests" do
-      end
-
-      target "CoreMLPredictionsPluginTests" do
       end
 
     end
@@ -81,15 +61,6 @@ target "AmplifyTestApp" do
   pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
 
   target "AWSDataStoreCategoryPluginIntegrationTests" do
-    inherit! :complete
-  end
-
-  target "AWSPredictionsPluginIntegrationTests" do
-    inherit! :complete
-    pod "AWSTranslate", "~> #{AWS_SDK_VERSION}"
-  end
-
-  target "CoreMLPredictionsPluginIntegrationTests" do
     inherit! :complete
   end
 

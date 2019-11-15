@@ -7,6 +7,4 @@
 
 import Foundation
 
-public protocol IdentifyResult {
-
-}
+public protocol IdentifyResult {}

@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// Struct that holds the entity detection result for Predictions category
+/// Struct that holds the entity detection result for a string of text for the Predictions category
 public struct EntityDetectionResult {
     let type: EntityType
     let targetText: String

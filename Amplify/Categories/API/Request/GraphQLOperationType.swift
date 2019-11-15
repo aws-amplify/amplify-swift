@@ -16,3 +16,16 @@ public enum GraphQLOperationType {
     /// A GraphQL Subscription operation
     case subscription
 }
+
+extension GraphQLOperationType: HubPayloadEventNameConvertible {
+    public var hubEventName: String {
+        switch self {
+        case .query:
+            return HubPayload.EventName.API.query
+        case .mutation:
+            return HubPayload.EventName.API.mutate
+        case .subscription:
+            return HubPayload.EventName.API.subscribe
+        }
+    }
+}

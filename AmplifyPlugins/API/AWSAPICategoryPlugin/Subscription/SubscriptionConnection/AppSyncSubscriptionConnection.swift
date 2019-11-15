@@ -18,6 +18,9 @@ class AppSyncSubscriptionConnection: SubscriptionConnection, RetryableConnection
     /// Retry logic to handle connection failuress
     var retryHandler: ConnectionRetryHandler?
 
+    /// Serial queue for maintaining the access to SubscriptionItems
+    let serialSubscriptionQueue = DispatchQueue(label: "com.amazonaws.AppSyncSubscriptionConnection.serialQueue")
+
     convenience init(url: URL, interceptor: AuthInterceptor) {
         let connectionProvider = AppSyncConnectionProvider(for: url, interceptor: interceptor)
         connectionProvider.addInterceptor(interceptor)
@@ -43,7 +46,9 @@ class AppSyncSubscriptionConnection: SubscriptionConnection, RetryableConnection
         let subscriptionItem = SubscriptionItem(requestString: requestString,
                                                 variables: variables,
                                                 onEvent: onEvent)
-        subscriptionItems[subscriptionItem.identifier] = subscriptionItem
+        serialSubscriptionQueue.async {[weak self] in
+            self?.subscriptionItems[subscriptionItem.identifier] = subscriptionItem
+        }
 
         if connectionProvider.isConnected {
             connectionProvider.subscribe(subscriptionItem)
