@@ -42,7 +42,7 @@ PredictionsError>, PredictionsInterpretOperation {
             return
         }
 
-        var interpretResultBuilder = InterpretResultBuilder()
+        var interpretResultBuilder = InterpretResult.Builder()
         if let dominantLanguage = naturalLanguageAdapter.detectDominantLanguage(for: request.textToInterpret) {
             let languageResult = LanguageDetectionResult(languageCode: dominantLanguage, score: nil)
             interpretResultBuilder.with(language: languageResult)
