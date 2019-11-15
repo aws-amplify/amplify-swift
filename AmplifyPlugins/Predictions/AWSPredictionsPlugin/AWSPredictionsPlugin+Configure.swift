@@ -120,6 +120,7 @@ extension AWSPredictionsPlugin {
         }
         guard case let .number(maxFaces) = maxFacesConfig else {
             return rekognitionMaxEntitiesLimit
+
         }
 
         return Int(maxFaces)

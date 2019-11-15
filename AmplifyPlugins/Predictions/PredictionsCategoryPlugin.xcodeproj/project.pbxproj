@@ -1479,10 +1479,11 @@
 				95DAAA8D237B8ED40028544F /* AWSPredictionsService.swift in Sources */,
 				95DAAA86237B8ED40028544F /* PredictionsErrorHelper.swift in Sources */,
 				95DAAA76237B8ED40028544F /* AWSTranslateBehavior.swift in Sources */,
+
 				95DAAAE7237DFC440028544F /* AWSPollyAdapter.swift in Sources */,
 				95DAAA70237B8ED40028544F /* AWSPollyBehavior.swift in Sources */,
 				95DAAA68237B8ED30028544F /* AWSComprehendOperation.swift in Sources */,
-				95DAAA84237B8ED40028544F /* IdentifyResultTransformers.swift in Sources */,
+                95DAAA84237B8ED40028544F /* IdentifyResultTransformers.swift in Sources */,
 				95DAAAEF237DFDC70028544F /* PredictionsTextToSpeechRequest+Validate.swift in Sources */,
 				95DAAAE9237DFD180028544F /* AWSPollyOperation.swift in Sources */,
 				95DAAACF237CBE040028544F /* FormatType+AWSExtension.swift in Sources */,

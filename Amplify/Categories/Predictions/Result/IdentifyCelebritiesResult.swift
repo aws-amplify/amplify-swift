@@ -14,5 +14,3 @@ public struct IdentifyCelebritiesResult: IdentifyResult {
         self.celebrities = celebrities
     }
 }
-
-

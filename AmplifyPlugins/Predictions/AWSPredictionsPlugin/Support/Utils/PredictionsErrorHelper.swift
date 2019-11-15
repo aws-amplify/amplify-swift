@@ -11,6 +11,7 @@ import AWSRekognition
 import AWSTextract
 import AWSPolly
 
+
 class PredictionsErrorHelper {
 
     static func mapHttpResponseCode(statusCode: Int, serviceKey: String) -> PredictionsError? {
@@ -158,6 +159,7 @@ class PredictionsErrorHelper {
 
         return nil
     }
+
     //TODO fill in proper error messages for rekognition, textract and polly
     static func map(_ errorType: AWSRekognitionErrorType) -> PredictionsError? {
         switch errorType {

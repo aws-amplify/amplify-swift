@@ -72,9 +72,9 @@ class AWSPredictionsService {
 
         self.init(awsTranslate: awsTranslateAdapter,
                   awsRekognition: awsRekognitionAdapter,
+                  awsTextract: awsTextractAdapter,
                   awsComprehend: awsComprehendAdapter,
                   awsPolly: awsPollyAdapter,
-                  awsTextract: awsTextractAdapter,
                   config: config,
                   identifier: identifier)
 
@@ -82,20 +82,19 @@ class AWSPredictionsService {
 
     init(awsTranslate: AWSTranslateBehavior,
          awsRekognition: AWSRekognitionBehavior,
+         awsTextract: AWSTextractBehavior,
          awsComprehend: AWSComprehendBehavior,
          awsPolly: AWSPollyBehavior,
-         awsTextract: AWSTextractBehavior,
          config: AWSPredictionsPluginConfiguration,
          identifier: String) {
 
         self.awsTranslate = awsTranslate
         self.awsRekognition = awsRekognition
+        self.awsTextract = awsTextract
         self.awsComprehend = awsComprehend
         self.awsPolly = awsPolly
-        self.awsTextract = awsTextract
         self.predictionsConfig = config
         self.identifier = identifier
-
     }
 
     func reset() {
