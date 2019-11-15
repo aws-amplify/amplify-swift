@@ -8,6 +8,7 @@
 import Foundation
 import Amplify
 import AWSRekognition
+import AWSTextract
 
 class PredictionsErrorHelper {
 
@@ -41,11 +42,33 @@ class PredictionsErrorHelper {
     static func mapRekognitionError(_ error: NSError) -> PredictionsError {
         let defaultError = PredictionsErrorHelper.getDefaultError(error)
 
+        if error.domain == AWSServiceErrorDomain {
+            return PredictionsErrorHelper.mapServiceError(error)
+        }
+
         guard error.domain == AWSRekognitionErrorDomain else {
             return defaultError
         }
 
         guard let errorType = AWSRekognitionErrorType.init(rawValue: error.code) else {
+            return defaultError
+        }
+
+        return PredictionsErrorHelper.map(errorType) ?? defaultError
+    }
+
+    static func mapTextractError(_ error: NSError) -> PredictionsError {
+        let defaultError = PredictionsErrorHelper.getDefaultError(error)
+
+        if error.domain == AWSServiceErrorDomain {
+            return PredictionsErrorHelper.mapServiceError(error)
+        }
+
+        guard error.domain == AWSTextractErrorDomain else {
+            return defaultError
+        }
+
+        guard let errorType = AWSTextractErrorType.init(rawValue: error.code) else {
             return defaultError
         }
 
@@ -116,7 +139,7 @@ class PredictionsErrorHelper {
 
         return nil
     }
-
+    //TODO fill in proper error messages for rekognition and textract
     static func map(_ errorType: AWSRekognitionErrorType) -> PredictionsError? {
         switch errorType {
         case .accessDenied:
@@ -150,6 +173,41 @@ class PredictionsErrorHelper {
         case .unknown:
             break
         case .videoTooLarge:
+            break
+        @unknown default:
+            break
+        }
+
+        return nil
+    }
+
+    static func map(_ errorType: AWSTextractErrorType) -> PredictionsError? {
+        switch errorType {
+        case .accessDenied:
+            break
+        case .badDocument:
+            break
+        case .documentTooLarge:
+            break
+        case .idempotentParameterMismatch:
+            break
+        case .internalServer:
+            break
+        case .invalidJobId:
+            break
+        case .invalidParameter:
+            break
+        case .invalidS3Object:
+            break
+        case .limitExceeded:
+            break
+        case .provisionedThroughputExceeded:
+            break
+        case .throttling:
+            break
+        case .unknown:
+            break
+        case .unsupportedDocument:
             break
         @unknown default:
             break

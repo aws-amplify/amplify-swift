@@ -6,15 +6,15 @@
 //
 
 import Foundation
-import CoreGraphics
+import UIKit
 
 public struct PredictionsIdentifyRequest: AmplifyOperationRequest {
 
-    public let image: CGImage
+    public let image: URL
     public let identifyType: IdentifyType
     public let options: Options
 
-    public init(image: CGImage, identifyType: IdentifyType, options: Options) {
+    public init(image: URL, identifyType: IdentifyType, options: Options) {
         self.image = image
         self.identifyType = identifyType
         self.options = options

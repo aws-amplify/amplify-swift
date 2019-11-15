@@ -16,7 +16,7 @@ PODS:
     - SQLite.swift/standard (= 0.12.2)
   - SQLite.swift/standard (0.12.2)
   - SwiftFormat/CLI (0.40.14)
-  - SwiftLint (0.36.0)
+  - SwiftLint (0.37.0)
 
 DEPENDENCIES:
   - AWSMobileClient (~> 2.12.0)
@@ -63,8 +63,8 @@ SPEC CHECKSUMS:
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SQLite.swift: d2b4642190917051ce6bd1d49aab565fe794eea3
   SwiftFormat: 21c9c3c748d5fcece493d8610eee23df15393458
-  SwiftLint: fc9859e4e1752340664851f667bb1898b9c90114
+  SwiftLint: c078a14d7d7ade75e5507795d185e3da41d844d2
 
 PODFILE CHECKSUM: 2d902e1ea5abfae23f202af4d39b0602a6cd4248
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.8.3

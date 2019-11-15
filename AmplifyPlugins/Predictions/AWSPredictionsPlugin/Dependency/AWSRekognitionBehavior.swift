@@ -12,5 +12,16 @@ protocol AWSRekognitionBehavior {
 
     func detectLabels(request: AWSRekognitionDetectLabelsRequest) -> AWSTask<AWSRekognitionDetectLabelsResponse>
 
+    func detectCelebs(request: AWSRekognitionRecognizeCelebritiesRequest) ->
+        AWSTask<AWSRekognitionRecognizeCelebritiesResponse>
+
+    func detectText(request: AWSRekognitionDetectTextRequest) -> AWSTask<AWSRekognitionDetectTextResponse>
+
+    func detectFaces(request: AWSRekognitionDetectFacesRequest) -> AWSTask<AWSRekognitionDetectFacesResponse>
+
+    func detectFacesFromCollection(
+        request: AWSRekognitionSearchFacesByImageRequest) -> AWSTask<AWSRekognitionSearchFacesByImageResponse>
+
     func getRekognition() -> AWSRekognition
+
 }

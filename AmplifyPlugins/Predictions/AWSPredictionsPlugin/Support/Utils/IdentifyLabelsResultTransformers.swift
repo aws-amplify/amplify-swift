@@ -6,12 +6,11 @@
 //
 
 import Foundation
-import Amplify
 import AWSRekognition
+import Amplify
 
-class IdentifyLabelsResultUtils {
-
-    static func process(_ rekognitionLabels: [AWSRekognitionLabel]) -> [Label] {
+class IdentifyLabelsResultTransformers: IdentifyResultTransformers {
+    static func processLabels(_ rekognitionLabels: [AWSRekognitionLabel]) -> [Label] {
         var labels = [Label]()
         for rekognitionLabel in rekognitionLabels {
 
@@ -53,17 +52,9 @@ class IdentifyLabelsResultUtils {
             return boundingBoxes
         }
         for rekognitionInstance in rekognitionInstances {
-            guard let height = rekognitionInstance.boundingBox?.height,
-                let left = rekognitionInstance.boundingBox?.left,
-                let top = rekognitionInstance.boundingBox?.top,
-                let width = rekognitionInstance.boundingBox?.width else {
-                    continue
+            guard let boundingBox = processBoundingBox(rekognitionInstance.boundingBox) else {
+                continue
             }
-            let boundingBox = BoundingBox(
-                height: Double(truncating: height),
-                left: Double(truncating: left),
-                top: Double(truncating: top),
-                width: Double(truncating: width))
             boundingBoxes.append(boundingBox)
         }
 
