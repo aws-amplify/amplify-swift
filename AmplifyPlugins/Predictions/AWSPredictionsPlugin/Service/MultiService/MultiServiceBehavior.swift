@@ -23,12 +23,30 @@ protocol MultiServiceBehavior: class {
     /// - Parameter callback: Result is send back to the caller
     func fetchMultiServiceResult(callback: @escaping (PredictionsEvent<ServiceResult, PredictionsError>) -> Void)
 
+    func combineResults(offlineResult: ServiceResult?,
+                        onlineResult: ServiceResult?,
+                        callback:  @escaping (PredictionsEvent<ServiceResult, PredictionsError>) -> Void)
+
 }
 
 extension MultiServiceBehavior {
 
+    func fetchMultiServiceResult(callback: @escaping (PredictionsEvent<ServiceResult, PredictionsError>) -> Void) {
+
+        invokeMultiServiceCalls { multiServiceEvent in
+            switch multiServiceEvent {
+            case .completed(let offlineResult, let onlineResult):
+                combineResults(offlineResult: offlineResult,
+                               onlineResult: onlineResult,
+                               callback: callback)
+            case .failed(let error):
+                callback(.failed(error))
+            }
+        }
+    }
+
     /// Method that fetch result from offline and online service
-    func invokeMultiInterpretText(callback: (MultiServiceEvent<ServiceResult>) -> Void) {
+    func invokeMultiServiceCalls(callback: (MultiServiceEvent<ServiceResult>) -> Void) {
 
         // Use dispatch group to synchronize two parallel calls for offline and online service
         let dispatchGroup = DispatchGroup()

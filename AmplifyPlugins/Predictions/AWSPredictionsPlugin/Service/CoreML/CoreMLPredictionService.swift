@@ -27,7 +27,7 @@ class CoreMLPredictionService: CoreMLPredictionBehavior {
                                     case .failed(let error):
                                         onEvent(.failed(error))
                                     default:
-                                        print("No need to handle this case")
+                                        break
                                     }
         }
     }

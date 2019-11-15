@@ -20,7 +20,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         guard let imageData = try? Data(contentsOf: image) else {
 
             onEvent(.failed(
-                .networkError("Something was wrong with the image file, make sure it exists.",
+                .network("Something was wrong with the image file, make sure it exists.",
                               "Try choosing an image and sending it again.")))
             return
         }
@@ -33,21 +33,21 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 let error = task.error! as NSError
                 let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
                 onEvent(.failed(
-                    .networkError(predictionsErrorString.errorDescription,
+                    .network(predictionsErrorString.errorDescription,
                                   predictionsErrorString.recoverySuggestion)))
                 return nil
             }
 
             guard let result = task.result else {
                 onEvent(.failed(
-                    .unknownError("No result was found. An unknown error occurred",
+                    .unknown("No result was found. An unknown error occurred",
                                   "Please try again.")))
                 return nil
             }
 
             guard let labels = result.labels else {
                 onEvent(.failed(
-                    .networkError("No result was found.",
+                    .network("No result was found.",
                                   "Please make sure the image integrity is maintained before sending")))
                 return nil
             }
@@ -65,7 +65,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         guard let imageData = try? Data(contentsOf: image) else {
 
             onEvent(.failed(
-                .networkError("Something was wrong with the image file, make sure it exists.",
+                .network("Something was wrong with the image file, make sure it exists.",
                               "Try choosing an image and sending it again.")))
             return
         }
@@ -78,21 +78,21 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 let error = task.error! as NSError
                 let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
                 onEvent(.failed(
-                    .networkError(predictionsErrorString.errorDescription,
+                    .network(predictionsErrorString.errorDescription,
                                   predictionsErrorString.recoverySuggestion)))
                 return nil
             }
 
             guard let result = task.result else {
                 onEvent(.failed(
-                    .unknownError("No result was found. An unknown error occurred",
+                    .unknown("No result was found. An unknown error occurred",
                                   "Please try again.")))
                 return nil
             }
 
             guard let celebs = result.celebrityFaces else {
                 onEvent(.failed(
-                    .networkError("No result was found.",
+                    .network("No result was found.",
                                   "Please make sure the image integrity is maintained before sending")))
                 return nil
             }
@@ -131,7 +131,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         guard let imageData = try? Data(contentsOf: image) else {
 
             onEvent(.failed(
-                .networkError("Something was wrong with the image file, make sure it exists.",
+                .network("Something was wrong with the image file, make sure it exists.",
                               "Try choosing an image and sending it again.")))
             return
         }
@@ -144,21 +144,21 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 let error = task.error! as NSError
                 let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
                 onEvent(.failed(
-                    .networkError(predictionsErrorString.errorDescription,
+                    .network(predictionsErrorString.errorDescription,
                                   predictionsErrorString.recoverySuggestion)))
                 return nil
             }
 
             guard let result = task.result else {
                 onEvent(.failed(
-                    .unknownError("No result was found. An unknown error occurred",
+                    .unknown("No result was found. An unknown error occurred",
                                   "Please try again.")))
                 return nil
             }
 
             guard let faces = result.faceDetails else {
                 onEvent(.failed(
-                    .networkError("No result was found.",
+                    .network("No result was found.",
                                   "Please make sure the image integrity is maintained before sending")))
                 return nil
             }
@@ -177,7 +177,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
         guard let imageData = try? Data(contentsOf: image) else {
             onEvent(.failed(
-                .networkError("Something was wrong with the image file, make sure it exists.",
+                .network("Something was wrong with the image file, make sure it exists.",
                               "Try choosing an image and sending it again.")))
             return
         }
@@ -192,21 +192,21 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 let error = task.error! as NSError
                 let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
                 onEvent(.failed(
-                    .networkError(predictionsErrorString.errorDescription,
+                    .network(predictionsErrorString.errorDescription,
                                   predictionsErrorString.recoverySuggestion)))
                 return nil
             }
 
             guard let result = task.result else {
                 onEvent(.failed(
-                    .unknownError("No result was found. An unknown error occurred",
+                    .unknown("No result was found. An unknown error occurred",
                                   "Please try again.")))
                 return nil
             }
 
             guard let faces = result.faceMatches else {
                 onEvent(.failed(
-                    .networkError("No result was found.",
+                    .network("No result was found.",
                                   "Please make sure the image integrity is maintained before sending")))
                 return nil
             }
@@ -226,7 +226,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         guard let imageData = try? Data(contentsOf: image) else {
 
             onEvent(.failed(
-                .networkError("Something was wrong with the image file, make sure it exists.",
+                .network("Something was wrong with the image file, make sure it exists.",
                               "Try choosing an image and sending it again.")))
             return
         }
@@ -239,21 +239,21 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 let error = task.error! as NSError
                 let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
                 onEvent(.failed(
-                    .networkError(predictionsErrorString.errorDescription,
+                    .network(predictionsErrorString.errorDescription,
                                   predictionsErrorString.recoverySuggestion)))
                 return nil
             }
 
             guard let result = task.result else {
                 onEvent(.failed(
-                    .unknownError("No result was found. An unknown error occurred",
+                    .unknown("No result was found. An unknown error occurred",
                                   "Please try again.")))
                 return nil
             }
 
             guard let rekognitionTextDetections = result.textDetections else {
                 onEvent(.failed(
-                    .networkError("No result was found.",
+                    .network("No result was found.",
                                   "Please make sure the image integrity is maintained before sending")))
                 return nil
             }
@@ -273,21 +273,21 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                         let error = task.error! as NSError
                         let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
                         onEvent(.failed(
-                            .networkError(predictionsErrorString.errorDescription,
+                            .network(predictionsErrorString.errorDescription,
                                           predictionsErrorString.recoverySuggestion)))
                         return nil
                     }
 
                     guard let result = task.result else {
                         onEvent(.failed(
-                            .unknownError("No result was found. An unknown error occurred",
+                            .unknown("No result was found. An unknown error occurred",
                                           "Please try again.")))
                         return nil
                     }
 
                     guard let textractTextDetections = result.blocks else {
                         onEvent(.failed(
-                            .networkError("No result was found.",
+                            .network("No result was found.",
                                           "Please make sure the image integrity is maintained before sending")))
                         return nil
                     }
