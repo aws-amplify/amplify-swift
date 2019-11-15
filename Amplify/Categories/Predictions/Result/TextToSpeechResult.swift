@@ -9,7 +9,7 @@ import Foundation
 
 public struct TextToSpeechResult: ConvertResult {
      public let audioData: Data
-    
+
     public init(audioData: Data) {
         self.audioData = audioData
     }

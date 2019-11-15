@@ -28,8 +28,8 @@ public extension PredictionsTextToSpeechRequest {
 
         /// The calltype for the operation. The default value will be `auto`.
         public let callType: CallType
-        
-        
+
+
         ///the voice they would like to use for the audio file
         public let voiceType: VoiceType
 

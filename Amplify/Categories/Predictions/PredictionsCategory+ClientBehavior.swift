@@ -8,7 +8,7 @@
 import Foundation
 
 extension PredictionsCategory: PredictionsCategoryClientBehavior {
-    
+
     public func convert(textToSpeech: String,
                         options: PredictionsTextToSpeechRequest.Options? = nil,
                         listener: PredictionsTextToSpeechOperation.EventListener?) -> PredictionsTextToSpeechOperation {
@@ -16,7 +16,6 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
                        options: options,
                        listener: listener)
     }
-    
 
     public func convert(textToTranslate: String,
                         language: LanguageType?,
