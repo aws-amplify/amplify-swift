@@ -69,8 +69,9 @@ extension AWSPredictionsPlugin {
                                                     maxEntities: maxEntities)
             }
 
-            if let convertRegion = try? AWSPredictionsPlugin.getRegionType(configuration, api: .convert) {
-                convertConfig = AWSConvertConfig(region: convertRegion)
+            if let convertRegion = try? AWSPredictionsPlugin.getRegionType(configuration, api: .convert),
+                let voiceId = try? AWSPredictionsPlugin.getVoiceId(configuration) {
+                convertConfig = AWSConvertConfig(region: convertRegion, voiceId: voiceId)
             }
 
             if let interpretRegion = try? AWSPredictionsPlugin.getRegionType(configuration, api: .interpret) {
@@ -122,6 +123,30 @@ extension AWSPredictionsPlugin {
         }
 
         return Int(maxFaces)
+    }
+
+    private static func getVoiceId(_ configuration: [String: JSONValue]) throws -> String? {
+        guard let convertConfig = configuration[AWSPredictionsPluginConfiguration.KeyName.convert.rawValue],
+            case let .object(textToSpeechConfig) = convertConfig,
+            let config = textToSpeechConfig[AWSPredictionsPluginConfiguration.KeyName.speechGenerator.rawValue],
+            case let .object(unwrappedConfig) = config,
+            let voice = unwrappedConfig[AWSPredictionsPluginConfiguration.KeyName.voiceId.rawValue] else {
+                return nil
+        }
+
+        guard case let .string(voiceId) = voice else {
+            throw PluginError.pluginConfigurationError(
+                PluginErrorMessage.invalidCollection.errorDescription,
+                PluginErrorMessage.invalidCollection.recoverySuggestion)
+        }
+
+        if voiceId.isEmpty {
+            throw PluginError.pluginConfigurationError(
+                PluginErrorMessage.emptyCollection.errorDescription,
+                PluginErrorMessage.emptyCollection.recoverySuggestion)
+        }
+
+        return voiceId
     }
     /// Retrieves the region from configuration, validates, and transforms to and returns the AWSRegionType
     private static func getRegionType(_ configuration: [String: JSONValue], api: PredictionsAction)

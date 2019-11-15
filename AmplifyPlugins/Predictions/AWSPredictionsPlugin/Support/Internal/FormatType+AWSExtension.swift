@@ -6,7 +6,6 @@
 //  Copyright © 2019 Amazon Web Services. All rights reserved.
 //
 
-import Foundation
 import Amplify
 
 extension TextFormatType {

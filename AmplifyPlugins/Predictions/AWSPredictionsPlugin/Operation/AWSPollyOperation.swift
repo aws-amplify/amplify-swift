@@ -45,8 +45,8 @@ PredictionsTextToSpeechOperation {
             return
         }
 
-        predictionsService.synthesizeText(text: request.textToSpeech) {
-            [weak self] event in
+        predictionsService.synthesizeText(text: request.textToSpeech,
+                                          voiceId: request.options.voiceType) { [weak self] event in
             self?.onServiceEvent(event: event)
         }
 

@@ -7,6 +7,7 @@
 
 import Foundation
 import AWSCore
+import Amplify
 
 public struct AWSPredictionsPluginConfiguration {
     public var identifyConfig: AWSIdentifyConfig?
@@ -26,6 +27,7 @@ public struct AWSInterpretConfig {
 
 public struct AWSConvertConfig {
     public var region: AWSRegionType
+    public var voiceId: String?
 }
 
 public extension AWSPredictionsPluginConfiguration {
@@ -39,5 +41,7 @@ public extension AWSPredictionsPluginConfiguration {
         case identifyEntities
         case collectionId
         case maxFaces
+        case speechGenerator
+        case voiceId = "VoiceId"
     }
 }

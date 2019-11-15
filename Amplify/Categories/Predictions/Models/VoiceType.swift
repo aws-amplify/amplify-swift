@@ -7,19 +7,18 @@
 
 import Foundation
 
-public enum VoiceType {
-    case arabicFemale
-    case arabicMale
-    case chineseFemale
-    case danishFemale
-    case danishMale
-    case dutchFemale
-    case dutchMale
-    case ausEnglishFemale
-    case ausEnglishMale
+public enum VoiceType: CaseIterable {
+    case arabicFemaleZeina
+    case chineseFemaleZhiyu
+    case danishFemaleNaja
+    case danishMaleMads
+    case dutchFemaleLotte
+    case dutchMaleRuben
+    case ausEnglishFemaleNicole
+    case ausEnglishMaleRussell
     case britEnglishFemaleAmy
     case britEnglishFemaleEmma
-    case britEnglishMale
+    case britEnglishMaleBrian
     case indiEnglishAndHindFemaleAditi
     case indiEnglishFemaleRaveena
     case englishFemaleIvy
@@ -30,7 +29,7 @@ public enum VoiceType {
     case englishMaleJoey
     case englishMaleJustin
     case englishMaleMatthew
-    case welshEnglishMale
+    case welshEnglishMaleGeraint
     case frenchFemaleCeline
     case frenchFemaleLea
     case frenchMaleMathieu

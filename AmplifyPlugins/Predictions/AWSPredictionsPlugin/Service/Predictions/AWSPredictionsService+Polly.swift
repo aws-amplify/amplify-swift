@@ -12,20 +12,33 @@ import AWSPolly
 
 extension AWSPredictionsService: AWSPollyServiceBehavior {
 
-    func synthesizeText(text: String, onEvent: @escaping AWSPredictionsService.TextToSpeechServiceEventHandler) {
+    func synthesizeText(text: String,
+                        voiceId: VoiceType?,
+                        onEvent: @escaping AWSPredictionsService.TextToSpeechServiceEventHandler) {
+
+        guard let voiceFromConfig = VoiceType(voice: predictionsConfig.convertConfig?.voiceId) else {
+            onEvent(.failed(
+                .networkError("Something was wrong with the voice id from config.",
+                              "Make sure a correct value exists in your config file.")))
+            return
+        }
+
         let request: AWSPollySynthesizeSpeechInput = AWSPollySynthesizeSpeechInput()
         request.text = text
-        request.voiceId = .justin
+        //default to what you passed in for options if you passed in anything, if not pull default from config.
+        request.voiceId = voiceId?.pollyVoiceType ?? voiceFromConfig.pollyVoiceType
         request.outputFormat = .mp3
         request.textType = .text
         request.sampleRate = "24000"
-        request.engine = .neural
-        request.languageCode = .enUS
 
         awsPolly.synthesizeSpeech(request: request).continueWith { (task) -> Any? in
 
             guard task.error == nil else {
-                onEvent(.failed(.networkError(task.error!.localizedDescription, task.error!.localizedDescription)))
+                let error = task.error! as NSError
+                let predictionsErrorString = PredictionsErrorHelper.mapPollyError(error)
+                onEvent(.failed(
+                    .networkError(predictionsErrorString.errorDescription,
+                                  predictionsErrorString.recoverySuggestion)))
                 return nil
             }
 

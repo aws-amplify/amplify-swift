@@ -96,7 +96,6 @@ class AWSPredictionsService {
         self.predictionsConfig = config
         self.identifier = identifier
 
-
     }
 
     func reset() {
