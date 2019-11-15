@@ -74,7 +74,7 @@ public struct ModelSchema {
     public let syncable: Bool
     public let fields: ModelFields
 
-    public let allFields: [ModelField]
+    public let sortedFields: [ModelField]
     public var primaryKey: ModelField {
         guard let primaryKey = fields.first(where: { $1.isPrimaryKey }) else {
             preconditionFailure("Primary Key not defined for `\(name)`")
@@ -91,7 +91,7 @@ public struct ModelSchema {
         self.syncable = syncable
         self.fields = fields
 
-        self.allFields = fields.sortedFields()
+        self.sortedFields = fields.sortedFields()
     }
 
     public func field(withName name: String) -> ModelField? {

@@ -9,6 +9,7 @@ import SQLite
 import XCTest
 
 @testable import Amplify
+@testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
 class SQLiteQueryTranslatorTests: XCTestCase {
@@ -50,6 +51,7 @@ class SQLiteQueryTranslatorTests: XCTestCase {
           "createdAt" text not null,
           "postId" text not null,
           foreign key("postId") references Post("id")
+            on delete cascade
         );
         """
         XCTAssertEqual(query.string, expectedStatement)

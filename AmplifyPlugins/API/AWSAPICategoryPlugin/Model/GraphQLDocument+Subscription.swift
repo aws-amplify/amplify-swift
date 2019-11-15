@@ -31,14 +31,14 @@ struct GraphQLSubscription<M: Model>: GraphQLDocument {
 
     var stringValue: String {
         let schema = modelType.schema
-        let modelName = schema.graphqlName
+        let modelName = schema.graphQLName
         let subscriptionName = subscriptionType.rawValue + modelName
 
         let documentName = subscriptionName.prefix(1).uppercased() + subscriptionName.dropFirst()
         return """
         \(documentType) \(documentName) {
           \(subscriptionName) {
-            \(schema.graphqlFields.joined(separator: "\n    "))
+            \(schema.graphQLFields.joined(separator: "\n    "))
           }
         }
         """

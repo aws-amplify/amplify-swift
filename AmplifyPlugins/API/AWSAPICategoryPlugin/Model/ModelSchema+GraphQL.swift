@@ -8,18 +8,25 @@
 import Amplify
 import Foundation
 
+enum ModelRelationship {
+    case manyToMany(Model.Type)
+    case manyToOne(Model.Type)
+    case oneToMany(Model.Type)
+    case oneToOne(Model.Type, name: String)
+}
+
 /// Extension that adds GraphQL specific utilities to `ModelSchema`.
 extension ModelSchema {
 
     /// The GraphQL name of the schema.
-    var graphqlName: String {
+    var graphQLName: String {
         targetName ?? name
     }
 
     /// The list of fields formatted for GraphQL usage.
-    var graphqlFields: [String] {
+    var graphQLFields: [String] {
         sortedFields.map { field in
-            field.graphqlName
+            field.graphQLName
         }
     }
 }
@@ -28,7 +35,7 @@ extension ModelSchema {
 extension ModelField {
 
     /// The GraphQL name of the field.
-    var graphqlName: String {
+    var graphQLName: String {
         // TODO handle connected field name
         return targetName ?? name
     }

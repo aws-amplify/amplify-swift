@@ -23,7 +23,8 @@ enum GraphQLDocumentType: String {
 protocol GraphQLDocument {
     associatedtype M: Model
 
-    /// The `GraphQLDocumentType` a concrete implementation represents
+    /// The `GraphQLDocumentType` a concrete implementation represents the
+    /// GraphQL operation of the document
     var documentType: GraphQLDocumentType { get }
 
     /// The `Model` type associated with the document

@@ -30,7 +30,7 @@ struct GraphQLMutation<M: Model>: GraphQLDocument {
 
     var stringValue: String {
         let schema = modelType.schema
-        let modelName = schema.graphqlName
+        let modelName = schema.graphQLName
 
         let mutationName = mutationType.rawValue + modelName
         let documentName = mutationName.prefix(1).uppercased() + mutationName.dropFirst()
@@ -41,7 +41,7 @@ struct GraphQLMutation<M: Model>: GraphQLDocument {
         return """
         \(documentType) \(documentName)($\(inputName): \(inputType)) {
           \(mutationName)(\(inputName): $\(inputName)) {
-            \(schema.graphqlFields.joined(separator: "\n    "))
+            \(schema.graphQLFields.joined(separator: "\n    "))
           }
         }
         """

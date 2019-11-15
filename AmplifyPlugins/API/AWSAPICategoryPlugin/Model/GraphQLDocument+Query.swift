@@ -35,19 +35,19 @@ struct GraphQLQuery<M: Model>: GraphQLDocument {
 
         // TODO better plural handling? (check current CLI implementation)
         let suffix = queryType == .list ? "s" : ""
-        let modelName = schema.graphqlName + suffix
+        let modelName = schema.graphQLName + suffix
 
         let queryName = queryType.rawValue + modelName
         let documentName = queryName.prefix(1).uppercased() + queryName.dropFirst()
 
         let inputName = queryType == .get ? "id" : "filter"
-        let inputType = queryType == .get ? "ID!" : "Model\(schema.graphqlName)FilterInput"
+        let inputType = queryType == .get ? "ID!" : "Model\(schema.graphQLName)FilterInput"
 
-        var fields = schema.graphqlFields.joined(separator: "\n    ")
+        var fields = schema.graphQLFields.joined(separator: "\n    ")
         if queryType == .list {
             fields = """
             items {
-                  \(schema.graphqlFields.joined(separator: "\n      "))
+                  \(schema.graphQLFields.joined(separator: "\n      "))
                 }
             """
         }

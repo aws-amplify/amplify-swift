@@ -155,20 +155,18 @@ extension ModelField: SQLColumn {
     }
 }
 
-/// Array utilities for `ModelField`.
-extension Array where Element == ModelField {
+extension ModelSchema {
 
     /// Filter the fields that represent actual columns on the `Model` SQL table. The definition of
     /// a column is a field that either represents a scalar value (e.g. string, number, etc) or
     /// the owner of a foreign key to another `Model`. Fields that reference the inverse side of
     /// the relationship (i.e. the "one" side of a "one-to-many" relationship) are excluded.
-    func columns() -> [ModelField] {
-        return filter { !$0.isConnected || $0.isForeignKey }
+    var columns: [ModelField] {
+        sortedFields.filter { !$0.isConnected || $0.isForeignKey }
     }
 
     /// Filter the fields that represent foreign keys.
-    func foreignKeys() -> [ModelField] {
-        return filter { $0.isForeignKey }
+    var foreignKeys: [ModelField] {
+        sortedFields.filter { $0.isForeignKey }
     }
-
 }
