@@ -263,7 +263,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
             //if limit of words is under 50 return rekognition response
             //otherwise call textract because their limit is higher
-            if identifyTextResult.words.count < self.rekognitionWordLimit {
+            if let words = identifyTextResult.words, words.count < self.rekognitionWordLimit {
                 onEvent(.completed(identifyTextResult))
                 return nil
             } else {

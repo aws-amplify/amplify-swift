@@ -21,7 +21,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             case .completed(let dominantLanguageType, let score):
                 var featuresResultBuilder = self.analyzeText(text, for: dominantLanguageType)
                 let languageDetected = LanguageDetectionResult(languageCode: dominantLanguageType, score: score)
-                featuresResultBuilder.addLanguage(language: languageDetected)
+                featuresResultBuilder.with(language: languageDetected)
                 onEvent(.completed(featuresResultBuilder.build()))
             case .failed(let error):
                 onEvent(.failed(error))
@@ -69,7 +69,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
     /// Use the text and language code to fetch features
     /// - Parameter text: Input text
     /// - Parameter languageCode: Dominant language code
-    private func analyzeText(_ text: String, for languageCode: LanguageType) -> InterpretResultBuilder {
+    private func analyzeText(_ text: String, for languageCode: LanguageType) -> InterpretResult.Builder {
 
         var sentimentResult: Sentiment?
         var entitiesResult: [EntityDetectionResult]?
@@ -105,11 +105,11 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             dispatchGroup.leave()
         }
         dispatchGroup.wait()
-        var interpretResultBuilder = InterpretResultBuilder()
-        interpretResultBuilder.addEntities(entities: entitiesResult)
-        interpretResultBuilder.addSyntax(syntax: syntaxTokenResult)
-        interpretResultBuilder.addSentiment(sentiment: sentimentResult)
-        interpretResultBuilder.addKeyPhrases(keyPhrases: keyPhrasesResult)
+        var interpretResultBuilder = InterpretResult.Builder()
+        interpretResultBuilder.with(entities: entitiesResult)
+        interpretResultBuilder.with(syntax: syntaxTokenResult)
+        interpretResultBuilder.with(sentiment: sentimentResult)
+        interpretResultBuilder.with(keyPhrases: keyPhrasesResult)
         return interpretResultBuilder
     }
 

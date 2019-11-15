@@ -9,12 +9,12 @@ import XCTest
 @testable import Amplify
 @testable import CoreMLPredictionsPlugin
 
-class CoreMLNaturalLanguageAdaptorTests: XCTestCase {
+class CoreMLNaturalLanguageAdapterTests: XCTestCase {
 
-    var coreMLNaturalLanguageAdapter: CoreMLNaturalLanguageAdaptor!
+    var coreMLNaturalLanguageAdapter: CoreMLNaturalLanguageAdapter!
 
     override func setUp() {
-        coreMLNaturalLanguageAdapter = CoreMLNaturalLanguageAdaptor()
+        coreMLNaturalLanguageAdapter = CoreMLNaturalLanguageAdapter()
     }
 
     /// Test to see if we get dominant language for valid text
@@ -46,7 +46,7 @@ class CoreMLNaturalLanguageAdaptorTests: XCTestCase {
 
     /// Test if syntax token is working
     ///
-    /// - Given: CoreML Adaptor
+    /// - Given: CoreML Adapter
     /// - When:
     ///    - I invoke get syntax token with valid text
     /// - Then:
@@ -57,14 +57,18 @@ class CoreMLNaturalLanguageAdaptorTests: XCTestCase {
         let result = coreMLNaturalLanguageAdapter.getSyntaxTokens(for: text)
         XCTAssertNotNil(result, "Result should not be nil")
         XCTAssertFalse(result.isEmpty, "Should return some value back")
-        XCTAssertEqual(result[0].partOfSpeech.tag,
+        guard let partOfSpeech = result[0].partOfSpeech else {
+            XCTFail("Part of speech should not be nil")
+            return
+        }
+        XCTAssertEqual(partOfSpeech.tag,
                        SpeechType.determiner,
                        "First word in the input should be determiner")
     }
 
     /// Test syntax token with invalid text
     ///
-    /// - Given: CoreML Adaptor
+    /// - Given: CoreML Adapter
     /// - When:
     ///    - I invoke get syntax token with invalid text
     /// - Then:
@@ -79,7 +83,7 @@ class CoreMLNaturalLanguageAdaptorTests: XCTestCase {
 
     /// Test entities with valid text
     ///
-    /// - Given: CoreML Adaptor
+    /// - Given: CoreML Adapter
     /// - When:
     ///    - I invoke get enitites token with valid text
     /// - Then:
@@ -94,7 +98,7 @@ class CoreMLNaturalLanguageAdaptorTests: XCTestCase {
 
     /// Test entities with valid text
     ///
-    /// - Given: CoreML Adaptor
+    /// - Given: CoreML Adapter
     /// - When:
     ///    - I invoke get enitites token with valid text
     /// - Then:
@@ -109,7 +113,7 @@ class CoreMLNaturalLanguageAdaptorTests: XCTestCase {
 
     /// Test if sentiment score works
     ///
-    /// - Given: CoreML Adaptor
+    /// - Given: CoreML Adapter
     /// - When:
     ///    - I invoke get sentiment
     /// - Then:

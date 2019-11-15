@@ -62,31 +62,32 @@ class AWSPredictionsService {
             convertServiceConfiguration: convertServiceConfiguration,
             identifier: identifier)
 
-        self.init(awsTranslate: awsTranslateAdapter,
+        self.init(identifier: identifier,
+                  awsTranslate: awsTranslateAdapter,
                   awsRekognition: awsRekognitionAdapter,
                   awsTextract: awsTextractAdapter,
                   awsComprehend: awsComprehendAdapter,
                   awsPolly: awsPollyAdapter,
-                  config: config,
-                  identifier: identifier)
+                  config: config)
 
     }
 
-    init(awsTranslate: AWSTranslateBehavior,
+    init(identifier: String,
+         awsTranslate: AWSTranslateBehavior,
          awsRekognition: AWSRekognitionBehavior,
          awsTextract: AWSTextractBehavior,
          awsComprehend: AWSComprehendBehavior,
          awsPolly: AWSPollyBehavior,
-         config: AWSPredictionsPluginConfiguration,
-         identifier: String) {
+         config: AWSPredictionsPluginConfiguration) {
 
+        self.identifier = identifier
         self.awsTranslate = awsTranslate
         self.awsRekognition = awsRekognition
         self.awsTextract = awsTextract
         self.awsComprehend = awsComprehend
         self.awsPolly = awsPolly
         self.predictionsConfig = config
-        self.identifier = identifier
+        
     }
 
     func reset() {

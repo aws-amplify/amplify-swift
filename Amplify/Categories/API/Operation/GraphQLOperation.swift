@@ -5,7 +5,17 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public protocol GraphQLOperation: AmplifyOperation<GraphQLRequest, Void, Decodable, APIError> { }
+public typealias GraphQLOperation<R: Decodable> = AmplifyOperation<
+    GraphQLOperationRequest<R>,
+    Void,
+    GraphQLResponse<R>,
+    APIError>
+
+public typealias GraphQLSubscriptionOperation<R: Decodable> = AmplifyOperation<
+    GraphQLOperationRequest<R>,
+    SubscriptionEvent<GraphQLResponse<R>>,
+    Void,
+    APIError>
 
 public extension HubPayload.EventName.API {
     /// eventName for HubPayloads emitted by this operation
@@ -13,3 +23,4 @@ public extension HubPayload.EventName.API {
     static let query = "API.query"
     static let subscribe = "API.subscribe"
 }
+

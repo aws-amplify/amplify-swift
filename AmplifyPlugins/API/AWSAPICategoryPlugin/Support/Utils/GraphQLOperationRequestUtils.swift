@@ -7,7 +7,7 @@
 
 import Foundation
 
-class GraphQLRequestUtils {
+class GraphQLOperationRequestUtils {
 
     // Get the graphQL request payload from the query document and variables
     static func getQueryDocument(document: String, variables: [String: Any]?) -> [String: Any] {

@@ -207,3 +207,37 @@ class OnCreateTodoSubscription {
         var onCreateTodo: Todo?
     }
 }
+
+class OnUpdateTodoSubscription {
+    static let document = """
+        subscription OnUpdateTodo {\n
+            onUpdateTodo {\n
+                __typename\n
+                id\n
+                name\n
+                description\n
+            }\n
+        }
+        """
+
+    class Data: Decodable {
+        var onUpdateTodo: Todo?
+    }
+}
+
+class OnDeleteTodoSubscription {
+    static let document = """
+        subscription OnDeleteTodo {\n
+            onDeleteTodo {\n
+                __typename\n
+                id\n
+                name\n
+                description\n
+            }\n
+        }
+    """
+
+    class Data: Decodable {
+        var onDeleteTodo: Todo?
+    }
+}

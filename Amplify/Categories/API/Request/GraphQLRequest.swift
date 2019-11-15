@@ -5,38 +5,28 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public struct GraphQLRequest: AmplifyOperationRequest {
+public struct GraphQLRequest<R: Decodable> {
 
-    /// The name of the API to perform the request against
-    public let apiName: String
+    /// The name of graphQL API being invoked, as specified in `amplifyconfiguration.json`.
+    /// Specify this parameter when more than one GraphQL API is configured.
+    public let apiName: String?
 
-    /// The GraphQL operation type
-    public let operationType: GraphQLOperationType
-
-    /// The GraphQL query document used for the operation
+    /// Query document
     public let document: String
 
-    /// The GraphQL variables used for the operation
+    /// Query variables
     public let variables: [String: Any]?
 
-    /// Options to adjust the behavior of this request, including plugin-options
-    public let options: Options
+    /// Type to decode the graphql response data object to
+    public let responseType: R.Type
 
-    public init(apiName: String,
-                operationType: GraphQLOperationType,
+    public init(apiName: String? = nil,
                 document: String,
                 variables: [String: Any]? = nil,
-                options: Options) {
+                responseType: R.Type) {
         self.apiName = apiName
-        self.operationType = operationType
         self.document = document
         self.variables = variables
-        self.options = options
-    }
-}
-
-public extension GraphQLRequest {
-    struct Options {
-        public init() { }
+        self.responseType = responseType
     }
 }

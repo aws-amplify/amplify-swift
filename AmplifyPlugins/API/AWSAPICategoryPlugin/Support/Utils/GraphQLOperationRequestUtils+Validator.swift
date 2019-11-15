@@ -8,20 +8,17 @@
 import Foundation
 import Amplify
 
-extension GraphQLRequestUtils {
+extension GraphQLOperationRequestUtils {
 
-    static func validateDocument(_ document: String) -> APIError? {
+    static func validateDocument(_ document: String) throws {
         if document.isEmpty {
-            return APIError.unknown("document is empty", "provide a valid document")
+            throw APIError.unknown("document is empty", "provide a valid document")
         }
-        return nil
     }
 
-    static func validateVariables(_ variables: [String: Any]?) -> APIError? {
+    static func validateVariables(_ variables: [String: Any]?) throws {
         if let variables = variables {
             // TODO: implement
         }
-
-        return nil
     }
 }

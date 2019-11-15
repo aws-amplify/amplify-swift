@@ -20,10 +20,10 @@ class IdentifyResultTransformers {
                 return nil
         }
         return BoundingBox(
-            height: Double(truncating: height),
             left: Double(truncating: left),
             top: Double(truncating: top),
-            width: Double(truncating: width))
+            width: Double(truncating: width),
+            height: Double(truncating: height))
     }
 
     static func processBoundingBox(_ textractBoundingBox: AWSTextractBoundingBox?) -> BoundingBox? {
@@ -34,10 +34,10 @@ class IdentifyResultTransformers {
                 return nil
         }
         return BoundingBox(
-            height: Double(truncating: height),
             left: Double(truncating: left),
             top: Double(truncating: top),
-            width: Double(truncating: width))
+            width: Double(truncating: width),
+            height: Double(truncating: height))
     }
 
     static func processPolygon(_ rekognitionPolygonPoints: [AWSRekognitionPoint]?) -> Polygon? {

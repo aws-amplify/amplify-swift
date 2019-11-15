@@ -38,9 +38,6 @@ public extension AWSAPICategoryPlugin {
         configure(authService: authService,
                   pluginConfig: pluginConfig)
     }
-
-
-
 }
 
 // MARK: Internal

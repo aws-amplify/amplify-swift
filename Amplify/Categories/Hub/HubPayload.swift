@@ -32,3 +32,7 @@ public struct HubPayload {
         self.data = data
     }
 }
+
+protocol HubPayloadEventNameConvertible {
+   var hubEventName: String { get }
+}
