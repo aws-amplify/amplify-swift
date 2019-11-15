@@ -7,7 +7,6 @@
 
 import Foundation
 import AWSCore
-import Amplify
 
 public struct AWSPredictionsPluginConfiguration {
     public var identifyConfig: AWSIdentifyConfig?

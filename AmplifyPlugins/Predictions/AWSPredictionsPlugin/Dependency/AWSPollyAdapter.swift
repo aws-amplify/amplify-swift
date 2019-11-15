@@ -1,9 +1,8 @@
 //
-//  AWSPollyAdapter.swift
-//  AWSPredictionsPlugin
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
 //
-//  Created by Stone, Nicki on 11/14/19.
-//  Copyright © 2019 Amazon Web Services. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
