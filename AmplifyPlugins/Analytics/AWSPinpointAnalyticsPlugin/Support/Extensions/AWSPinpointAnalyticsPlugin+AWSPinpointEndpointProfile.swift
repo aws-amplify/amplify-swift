@@ -33,15 +33,15 @@ extension AWSPinpointEndpointProfile {
 
     func addUserProfile(_ userProfile: AnalyticsUserProfile) {
         if let email = userProfile.email {
-            addAttribute([email], forKey: PluginConstants.emailKey)
+            addAttribute([email], forKey: "email")
         }
 
         if let name = userProfile.name {
-            addAttribute([name], forKey: PluginConstants.nameKey)
+            addAttribute([name], forKey: "name")
         }
 
         if let plan = userProfile.plan {
-            addAttribute([plan], forKey: PluginConstants.planKey)
+            addAttribute([plan], forKey: "plan")
         }
 
         if let properties = userProfile.properties {

@@ -36,7 +36,6 @@ public typealias DataStoreCallback<Result> = (DataStoreResult<Result>) -> Void
 /// **Implementation Details:** on successful result it emits a warning, so the developer knows
 /// there are discarded results. On error it calls `fatalError`.
 ///
-///
 /// - Warning: This should be avoided in production environments. It is a good utility
 /// for fast prototyping but consider handling all the results in a production app.
 public func ignoreDataStoreResult<T>(_ result: DataStoreResult<T>) {

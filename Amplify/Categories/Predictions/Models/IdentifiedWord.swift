@@ -11,7 +11,7 @@ public struct IdentifiedWord: IdentifiedText {
     public let polygon: Polygon
     public let page: Int?
 
-    public init(text: String, boundingBox: BoundingBox, polygon: Polygon, page:Int? = nil) {
+    public init(text: String, boundingBox: BoundingBox, polygon: Polygon, page: Int? = nil) {
         self.text = text
         self.boundingBox = boundingBox
         self.polygon = polygon

@@ -15,6 +15,7 @@ public struct Post: Model {
     public let content: String
     public let createdAt: Date
     public let updatedAt: Date?
+    public let rating: Double?
     public let draft: Bool
     public let comments: [Comment]?
 
@@ -23,6 +24,7 @@ public struct Post: Model {
                 content: String,
                 createdAt: Date = Date(),
                 updatedAt: Date? = nil,
+                rating: Double? = nil,
                 draft: Bool = false,
                 comments: [Comment] = []) {
         self.id = id
@@ -30,6 +32,7 @@ public struct Post: Model {
         self.content = content
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+        self.rating = rating
         self.draft = draft
         self.comments = comments
     }

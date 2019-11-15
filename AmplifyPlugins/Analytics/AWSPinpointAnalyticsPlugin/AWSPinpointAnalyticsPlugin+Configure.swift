@@ -22,8 +22,8 @@ extension AWSPinpointAnalyticsPlugin {
     public func configure(using configuration: Any) throws {
 
         guard let config = configuration as? JSONValue else {
-            throw PluginError.pluginConfigurationError(PluginErrorConstants.decodeConfigurationError.errorDescription,
-                                                       PluginErrorConstants.decodeConfigurationError.recoverySuggestion)
+            throw PluginError.pluginConfigurationError(AnalyticsErrorConstants.decodeConfigurationError.errorDescription,
+                                                       AnalyticsErrorConstants.decodeConfigurationError.recoverySuggestion)
         }
 
         let pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config)

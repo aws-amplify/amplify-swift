@@ -31,6 +31,7 @@ extension Model {
     ///   - name: the name of the Model. Defaults to the class name
     ///   - attributes: model attributes (aka "directives" or "annotations")
     ///   - define: the closure used to define the model attributes and fields
+    /// - Returns: a valid `ModelSchema` instance
     public static func defineSchema(name: String? = nil,
                                     attributes: ModelAttribute...,
                                     define: (inout ModelSchemaDefinition) -> Void) -> ModelSchema {

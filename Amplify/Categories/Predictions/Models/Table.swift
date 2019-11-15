@@ -19,7 +19,7 @@ public struct Table {
 }
 public extension Table {
     struct Cell {
-        
+
         public let text: String
         ///The location of the recognized text on the image. It includes an axis-aligned, coarse bounding box that surrounds the text in the table
         public let boundingBox: BoundingBox
@@ -28,7 +28,7 @@ public extension Table {
         public let isSelected: Bool
         public let rowSpan: Int
         public let columnSpan: Int
-        
+
         public init(text: String,
                     boundingBox: BoundingBox,
                     polygon: Polygon,
@@ -42,6 +42,6 @@ public extension Table {
             self.rowSpan = rowSpan
             self.columnSpan = columnSpan
         }
-        
+
     }
 }

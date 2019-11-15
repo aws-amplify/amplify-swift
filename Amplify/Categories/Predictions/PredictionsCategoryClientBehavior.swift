@@ -51,4 +51,3 @@ public protocol PredictionsCategoryClientBehavior {
                    options: PredictionsInterpretRequest.Options?,
                    listener: PredictionsInterpretOperation.EventListener?) -> PredictionsInterpretOperation
 }
-

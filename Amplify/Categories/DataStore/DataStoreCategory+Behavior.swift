@@ -20,18 +20,19 @@ extension DataStoreCategory: DataStoreCategoryBehavior {
     }
 
     public func query<M: Model>(_ modelType: M.Type,
+                                where predicate: QueryPredicateFactory?,
                                 completion: DataStoreCallback<[M]>) {
-        plugin.query(modelType, completion: completion)
+        plugin.query(modelType, where: predicate, completion: completion)
     }
 
     public func delete<M: Model>(_ model: M,
-                                 completion: DataStoreCallback<Bool>) {
+                                 completion: DataStoreCallback<Void>) {
         plugin.delete(model, completion: completion)
     }
 
     public func delete<M: Model>(_ modelType: M.Type,
                                  withId id: String,
-                                 completion: DataStoreCallback<Void>?) {
+                                 completion: DataStoreCallback<Void>) {
         plugin.delete(modelType, withId: id, completion: completion)
     }
 }
