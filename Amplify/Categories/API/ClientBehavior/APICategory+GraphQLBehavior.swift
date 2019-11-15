@@ -6,43 +6,18 @@
 //
 
 extension APICategory: APICategoryGraphQLBehavior {
-    public func subscribe<R>(apiName: String,
-                             document: String,
-                             variables: [String: Any]?,
-                             responseType: R.Type,
-                             listener: ((AsyncEvent<SubscriptionEvent<GraphQLResponse<R>>, Void, APIError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, SubscriptionEvent<GraphQLResponse<R>>, Void, APIError> where R: Decodable {
-        plugin.subscribe(apiName: apiName,
-                         document: document,
-                         variables: variables,
-                         responseType: responseType,
-                         listener: listener)
+    public func query<R: Decodable>(request: GraphQLRequest<R>,
+                                    listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
+        plugin.query(request: request, listener: listener)
     }
 
-    public func mutate<R: Decodable>(apiName: String,
-                                     document: String,
-                                     variables: [String: Any]? = nil,
-                                     responseType: R.Type,
-                                     listener: ((AsyncEvent<Void, GraphQLResponse<R>, APIError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, APIError> {
-            plugin.mutate(apiName: apiName,
-                          document: document,
-                          variables: variables,
-                          responseType: responseType,
-                          listener: listener)
+    public func mutate<R: Decodable>(request: GraphQLRequest<R>,
+                                     listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
+        plugin.mutate(request: request, listener: listener)
     }
 
-    public func query<R: Decodable>(apiName: String,
-                                    document: String,
-                                    variables: [String: Any]? = nil,
-                                    responseType: R.Type,
-                                    listener: ((AsyncEvent<Void, GraphQLResponse<R>, APIError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, APIError> {
-
-            plugin.query(apiName: apiName,
-                         document: document,
-                         variables: variables,
-                         responseType: responseType,
-                         listener: listener)
+    public func subscribe<R>(request: GraphQLRequest<R>,
+                             listener: GraphQLSubscriptionOperation<R>.EventListener?) -> GraphQLSubscriptionOperation<R> {
+        plugin.subscribe(request: request, listener: listener)
     }
 }

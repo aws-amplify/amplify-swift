@@ -26,7 +26,9 @@ extension AppSyncSubscriptionConnection {
                 return
             }
             subscriptionItem.setState(.disconnected)
-            subscriptionItems[subscriptionItem.identifier] = nil
+            serialSubscriptionQueue.async {[weak self] in
+                self?.subscriptionItems[subscriptionItem.identifier] = nil
+            }
         case .keepAlive:
             break
         case .subscriptionError(let identifier, let error):
@@ -44,28 +46,31 @@ extension AppSyncSubscriptionConnection {
         case .connecting:
             break
         case .connected:
-            subscriptionItems.forEach { identifier, subscriptionItem in
-                switch subscriptionItem.subscriptionConnectionState {
-                case .disconnected:
-                    print("Start subscription for identifier: \(subscriptionItem.identifier)")
-                    subscriptionItem.setState(.connecting)
-                    connectionProvider.subscribe(subscriptionItem)
-                case .connecting, .connected:
-                    break
+            serialSubscriptionQueue.async {[weak self] in
+                self?.subscriptionItems.forEach { identifier, subscriptionItem in
+                    switch subscriptionItem.subscriptionConnectionState {
+                    case .disconnected:
+                        print("Start subscription for identifier: \(subscriptionItem.identifier)")
+                        subscriptionItem.setState(.connecting)
+                        self?.connectionProvider.subscribe(subscriptionItem)
+                    case .connecting, .connected:
+                        break
+                    }
                 }
             }
         case .disconnected(let error):
             if let error = error {
                 tryReconnectOnError(error: error)
             }
-
-            // Move all subscriptionItems to disconnected but keep them in memory.
-            subscriptionItems.forEach { _, subscriptionItem in
-                switch subscriptionItem.subscriptionConnectionState {
-                case .connecting, .connected:
-                    subscriptionItem.setState(.disconnected)
-                case .disconnected:
-                    break
+            serialSubscriptionQueue.async {[weak self] in
+                // Move all subscriptionItems to disconnected but keep them in memory.
+                self?.subscriptionItems.forEach { _, subscriptionItem in
+                    switch subscriptionItem.subscriptionConnectionState {
+                    case .connecting, .connected:
+                        subscriptionItem.setState(.disconnected)
+                    case .disconnected:
+                        break
+                    }
                 }
             }
         }

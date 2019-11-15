@@ -67,12 +67,13 @@ class AWSAPICategoryPluginTodoGraphQLWithIAMTests: AWSAPICategoryPluginBaseTests
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
         let expectedDescription = "testCreateTodoMutationDescription"
-        let operation = Amplify.API.mutate(apiName: IntegrationTestConfiguration.todoGraphQLWithIAM,
-                                           document: CreateTodoMutation.document,
-                                           variables: CreateTodoMutation.variables(id: expectedId,
-                                                                                   name: expectedName,
-                                                                                   description: expectedDescription),
-                                           responseType: CreateTodoMutation.Data.self) { event in
+        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithIAM,
+                                     document: CreateTodoMutation.document,
+                                     variables: CreateTodoMutation.variables(id: expectedId,
+                                                                             name: expectedName,
+                                                                             description: expectedDescription),
+                                     responseType: CreateTodoMutation.Data.self)
+        let operation = Amplify.API.mutate(request: request) { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -109,12 +110,13 @@ class AWSAPICategoryPluginTodoGraphQLWithIAMTests: AWSAPICategoryPluginBaseTests
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
         let expectedDescription = "testCreateTodoMutationDescription"
-        let operation = Amplify.API.mutate(apiName: IntegrationTestConfiguration.todoGraphQLWithIAM,
-                                           document: CreateTodoMutation.document,
-                                           variables: CreateTodoMutation.variables(id: expectedId,
-                                                                                   name: expectedName,
-                                                                                   description: expectedDescription),
-                                           responseType: CreateTodoMutation.Data.self) { event in
+        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithIAM,
+                                     document: CreateTodoMutation.document,
+                                     variables: CreateTodoMutation.variables(id: expectedId,
+                                                                             name: expectedName,
+                                                                             description: expectedDescription),
+                                     responseType: CreateTodoMutation.Data.self)
+        let operation = Amplify.API.mutate(request: request) { event in
             switch event {
             case .completed(let graphQLResponse):
                 XCTFail("Unexpected .completed event: \(graphQLResponse)")

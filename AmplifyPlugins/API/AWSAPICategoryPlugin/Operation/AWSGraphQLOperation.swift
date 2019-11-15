@@ -8,34 +8,26 @@
 import Amplify
 import Foundation
 
-final public class AWSGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRequest,
-    Void,
-    GraphQLResponse<R>,
-    APIError> {
+final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
 
-    var graphQLResponseData = Data()
     let session: URLSessionBehavior
     let mapper: OperationTaskMapper
     let pluginConfig: AWSAPICategoryPluginConfiguration
-    let responseType: R.Type
 
-    // TODO: fix possible inconsistent request.operationType and eventName passed in, by removing eventName
-    // and retrieveing it from request.operationType.mapToEventName() for example.
-    init(request: GraphQLRequest,
-         eventName: String,
-         responseType: R.Type,
+    var graphQLResponseData = Data()
+
+    init(request: GraphQLOperationRequest<R>,
          session: URLSessionBehavior,
          mapper: OperationTaskMapper,
          pluginConfig: AWSAPICategoryPluginConfiguration,
          listener: AWSGraphQLOperation.EventListener?) {
 
-        self.responseType = responseType
         self.session = session
         self.mapper = mapper
         self.pluginConfig = pluginConfig
 
         super.init(categoryType: .api,
-                   eventName: eventName,
+                   eventName: request.operationType.hubEventName,
                    request: request,
                    listener: listener)
     }
@@ -47,27 +39,34 @@ final public class AWSGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRe
         }
 
         // Validate the request
-        if let error = request.validate() {
+        do {
+            try request.validate()
+        } catch let error as APIError {
             dispatch(event: .failed(error))
+            finish()
+            return
+        } catch {
+            dispatch(event: .failed(APIError.unknown("Could not validate request", "", nil)))
             finish()
             return
         }
 
         // Retrieve endpoint configuration
-        guard let endpointConfig = pluginConfig.endpoints[request.apiName] else {
-            let error = APIError.invalidConfiguration(
-                "Unable to get an endpoint configuration for \(request.apiName)",
-                """
-                Review your API plugin configuration and ensure \(request.apiName) has a valid configuration.
-                """
-            )
+        let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
+        do {
+            endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName)
+        } catch let error as APIError {
             dispatch(event: .failed(error))
+            finish()
+            return
+        } catch {
+            dispatch(event: .failed(APIError.unknown("Could not get endpoint configuration", "", nil)))
             finish()
             return
         }
 
         // Prepare request payload
-        let queryDocument = GraphQLRequestUtils.getQueryDocument(document: request.document,
+        let queryDocument = GraphQLOperationRequestUtils.getQueryDocument(document: request.document,
                                                                  variables: request.variables)
         let requestPayload: Data
         do {
@@ -81,7 +80,7 @@ final public class AWSGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRe
         }
 
         // Create request
-        let urlRequest = GraphQLRequestUtils.constructRequest(with: endpointConfig.baseURL,
+        let urlRequest = GraphQLOperationRequestUtils.constructRequest(with: endpointConfig.baseURL,
                                                               requestPayload: requestPayload)
 
         // Intercept request

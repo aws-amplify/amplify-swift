@@ -22,57 +22,48 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         onComplete()
     }
 
-    func mutate<R: Decodable>(apiName: String,
-                              document: String,
-                              variables: [String: Any]?,
-                              responseType: R.Type,
-                              listener: ((AsyncEvent<Void, GraphQLResponse<R>, APIError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, APIError> {
+    func mutate<R>(request: GraphQLRequest<R>,
+                   listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
 
-            notify("mutate")
-            let options = GraphQLRequest.Options()
-            let request = GraphQLRequest(apiName: apiName,
-                                         operationType: .mutation,
-                                         document: document,
-                                         variables: variables,
-                                         options: options)
-            let operation = MockGraphQLOperation(request: request, responseType: responseType)
-            return operation
+        notify("mutate")
+        let options = GraphQLOperationRequest<R>.Options()
+        let request = GraphQLOperationRequest<R>(apiName: request.apiName,
+                                                 operationType: .mutation,
+                                                 document: request.document,
+                                                 variables: request.variables,
+                                                 responseType: request.responseType,
+                                                 options: options)
+        let operation = MockGraphQLOperation(request: request, responseType: request.responseType)
+        return operation
     }
 
-    func query<R: Decodable>(apiName: String,
-                             document: String,
-                             variables: [String: Any]?,
-                             responseType: R.Type,
-                             listener: ((AsyncEvent<Void, GraphQLResponse<R>, APIError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, APIError> {
+    func query<R: Decodable>(request: GraphQLRequest<R>,
+                             listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
 
-            notify("query")
-            let options = GraphQLRequest.Options()
-            let request = GraphQLRequest(apiName: apiName,
-                                         operationType: .query,
-                                         document: document,
-                                         variables: variables,
-                                         options: options)
-            let operation = MockGraphQLOperation(request: request, responseType: responseType)
-            return operation
+        notify("query")
+        let options = GraphQLOperationRequest<R>.Options()
+        let request = GraphQLOperationRequest<R>(apiName: request.apiName,
+                                                 operationType: .query,
+                                                 document: request.document,
+                                                 variables: request.variables,
+                                                 responseType: request.responseType,
+                                                 options: options)
+        let operation = MockGraphQLOperation(request: request, responseType: request.responseType)
+        return operation
     }
 
-
-    func subscribe<R>(apiName: String,
-                      document: String,
-                      variables: [String: Any]?,
-                      responseType: R.Type, listener: ((AsyncEvent<SubscriptionEvent<GraphQLResponse<R>>, Void, APIError>) -> Void)?) ->
-        AmplifyOperation<GraphQLRequest, SubscriptionEvent<GraphQLResponse<R>>, Void, APIError> where R: Decodable {
-
+    func subscribe<R: Decodable>(request: GraphQLRequest<R>,
+                                 listener: GraphQLSubscriptionOperation<R>.EventListener?) ->
+        GraphQLSubscriptionOperation<R> {
             notify("subscribe")
-            let options = GraphQLRequest.Options()
-            let request = GraphQLRequest(apiName: apiName,
-                                         operationType: .subscription,
-                                         document: document,
-                                         variables: variables,
-                                         options: options)
-            let operation = MockSubscriptionGraphQLOperation(request: request, responseType: responseType)
+            let options = GraphQLOperationRequest<R>.Options()
+            let request = GraphQLOperationRequest<R>(apiName: request.apiName,
+                                                     operationType: .subscription,
+                                                     document: request.document,
+                                                     variables: request.variables,
+                                                     responseType: request.responseType,
+                                                     options: options)
+            let operation = MockSubscriptionGraphQLOperation(request: request, responseType: request.responseType)
             return operation
     }
 
@@ -81,9 +72,9 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
              listener: RESTOperation.EventListener?) -> RESTOperation {
         notify("get")
         let request = RESTRequest(apiName: apiName,
-                                 operationType: .get,
-                                 path: path,
-                                 options: RESTRequest.Options())
+                                  operationType: .get,
+                                  path: path,
+                                  options: RESTRequest.Options())
         let operation = MockAPIGetOperation(request: request)
         return operation
     }
@@ -94,10 +85,10 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
               listener: ((AsyncEvent<Void, Data, APIError>) -> Void)?) -> RESTOperation {
         notify("post")
         let request = RESTRequest(apiName: apiName,
-                                 operationType: .post,
-                                 path: path,
-                                 body: body,
-                                 options: RESTRequest.Options())
+                                  operationType: .post,
+                                  path: path,
+                                  body: body,
+                                  options: RESTRequest.Options())
         let operation = MockAPIPostOperation(request: request)
         return operation
     }
@@ -113,7 +104,7 @@ class MockSecondAPICategoryPlugin: MockAPICategoryPlugin {
     }
 }
 
-class MockGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRequest, Void, GraphQLResponse<R>, APIError> {
+class MockGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
     override func pause() {
     }
 
@@ -128,10 +119,7 @@ class MockGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRequest, Void,
     }
 }
 
-class MockSubscriptionGraphQLOperation<R: Decodable>: AmplifyOperation<GraphQLRequest,
-SubscriptionEvent<GraphQLResponse<R>>,
-Void,
-APIError> {
+class MockSubscriptionGraphQLOperation<R: Decodable>: GraphQLSubscriptionOperation<R> {
 
     override func pause() {
     }
@@ -146,7 +134,6 @@ APIError> {
                    request: request)
     }
 }
-
 
 class MockAPIGetOperation: AmplifyOperation<RESTRequest, Void, Data, APIError>, RESTOperation {
     override func pause() {
