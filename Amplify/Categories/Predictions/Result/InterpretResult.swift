@@ -16,45 +16,48 @@ public struct InterpretResult {
     var syntax: [SyntaxToken]?
 }
 
-public struct InterpretResultBuilder {
+extension InterpretResult {
 
-    var result: InterpretResult
+    public struct Builder {
 
-    public init() {
-        self.result = InterpretResult()
-    }
+        var result: InterpretResult
 
-    public func build() -> InterpretResult {
-        return result
-    }
+        public init() {
+            self.result = InterpretResult()
+        }
 
-    @discardableResult
-    mutating public func with(keyPhrases: [KeyPhrase]?) -> InterpretResultBuilder {
-        result.keyPhrases = keyPhrases
-        return self
-    }
+        public func build() -> InterpretResult {
+            return result
+        }
 
-    @discardableResult
-    mutating public func with(sentiment: Sentiment?) -> InterpretResultBuilder {
-        result.sentiment = sentiment
-        return self
-    }
+        @discardableResult
+        mutating public func with(keyPhrases: [KeyPhrase]?) -> Builder {
+            result.keyPhrases = keyPhrases
+            return self
+        }
 
-    @discardableResult
-    mutating public func with(entities: [EntityDetectionResult]?) -> InterpretResultBuilder {
-        result.entities = entities
-        return self
-    }
+        @discardableResult
+        mutating public func with(sentiment: Sentiment?) -> Builder {
+            result.sentiment = sentiment
+            return self
+        }
 
-    @discardableResult
-    mutating public func with(language: LanguageDetectionResult?) -> InterpretResultBuilder {
-        result.language = language
-        return self
-    }
+        @discardableResult
+        mutating public func with(entities: [EntityDetectionResult]?) -> Builder {
+            result.entities = entities
+            return self
+        }
 
-    @discardableResult
-    mutating public func with(syntax: [SyntaxToken]?) -> InterpretResultBuilder {
-        result.syntax = syntax
-        return self
+        @discardableResult
+        mutating public func with(language: LanguageDetectionResult?) -> Builder {
+            result.language = language
+            return self
+        }
+
+        @discardableResult
+        mutating public func with(syntax: [SyntaxToken]?) -> Builder {
+            result.syntax = syntax
+            return self
+        }
     }
 }

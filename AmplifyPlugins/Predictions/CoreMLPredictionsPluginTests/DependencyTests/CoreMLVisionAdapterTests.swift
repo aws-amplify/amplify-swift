@@ -9,12 +9,12 @@ import XCTest
 import Vision
 @testable import CoreMLPredictionsPlugin
 
-class CoreMLVisionAdaptorTests: XCTestCase {
+class CoreMLVisionAdapterTests: XCTestCase {
 
-    var coreMLVisionAdaptor: CoreMLVisionAdaptor!
+    var coreMLVisionAdapter: CoreMLVisionAdapter!
 
     override func setUp() {
-        coreMLVisionAdaptor = CoreMLVisionAdaptor()
+        coreMLVisionAdapter = CoreMLVisionAdapter()
     }
 
     func testDetectLabels() {
@@ -22,7 +22,7 @@ class CoreMLVisionAdaptorTests: XCTestCase {
         guard let url = testBundle.url(forResource: "people", withExtension: "jpg") else {
             return
         }
-        let result = coreMLVisionAdaptor.detectLabels(url)
+        let result = coreMLVisionAdapter.detectLabels(url)
         XCTAssertNotNil(result, "The result should be nil")
     }
 
@@ -31,7 +31,7 @@ class CoreMLVisionAdaptorTests: XCTestCase {
         guard let url = testBundle.url(forResource: "screenshotWithText", withExtension: "png") else {
             return
         }
-        let result = coreMLVisionAdaptor.detectText(url)
+        let result = coreMLVisionAdapter.detectText(url)
         XCTAssertNotNil(result, "The result should be nil")
     }
 

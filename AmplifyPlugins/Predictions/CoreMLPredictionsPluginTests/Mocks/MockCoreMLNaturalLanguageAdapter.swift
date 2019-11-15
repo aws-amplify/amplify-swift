@@ -9,7 +9,7 @@ import XCTest
 import Amplify
 @testable import CoreMLPredictionsPlugin
 
-class MockCoreMLNaturalLanguageAdaptor: CoreMLNaturalLanguageBehavior {
+class MockCoreMLNaturalLanguageAdapter: CoreMLNaturalLanguageBehavior {
 
     func detectDominantLanguage(for text: String) -> LanguageType? {
         return .italian

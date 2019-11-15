@@ -8,7 +8,7 @@
 import Amplify
 import Vision
 
-struct CoreMLVisionAdaptor: CoreMLVisionBehavior {
+struct CoreMLVisionAdapter: CoreMLVisionBehavior {
 
     public func detectLabels(_ imageURL: URL) -> [Label]? {
         var labelsResult = [Label]()

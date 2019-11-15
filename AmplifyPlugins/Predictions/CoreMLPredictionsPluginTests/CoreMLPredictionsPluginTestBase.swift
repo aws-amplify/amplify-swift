@@ -13,13 +13,13 @@ class CoreMLPredictionsPluginTestBase: XCTestCase {
 
     var coreMLPredictionsPlugin: CoreMLPredictionsPlugin!
 
-    var naturalLanguageBehavior: MockCoreMLNaturalLanguageAdaptor!
+    var naturalLanguageBehavior: MockCoreMLNaturalLanguageAdapter!
 
     var queue: MockOperationQueue!
 
     override func setUp() {
         coreMLPredictionsPlugin = CoreMLPredictionsPlugin()
-        naturalLanguageBehavior = MockCoreMLNaturalLanguageAdaptor()
+        naturalLanguageBehavior = MockCoreMLNaturalLanguageAdapter()
         queue = MockOperationQueue()
         coreMLPredictionsPlugin.configure(naturalLanguageBehavior: naturalLanguageBehavior,
                                           queue: queue)

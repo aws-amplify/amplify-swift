@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 import NaturalLanguage
 
-class CoreMLNaturalLanguageAdaptor: CoreMLNaturalLanguageBehavior {
+class CoreMLNaturalLanguageAdapter: CoreMLNaturalLanguageBehavior {
 
     func detectDominantLanguage(for text: String) -> LanguageType? {
         let languageRecognizer = NLLanguageRecognizer()

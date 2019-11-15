@@ -69,7 +69,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
     /// Use the text and language code to fetch features
     /// - Parameter text: Input text
     /// - Parameter languageCode: Dominant language code
-    private func analyzeText(_ text: String, for languageCode: LanguageType) -> InterpretResultBuilder {
+    private func analyzeText(_ text: String, for languageCode: LanguageType) -> InterpretResult.Builder {
 
         var sentimentResult: Sentiment?
         var entitiesResult: [EntityDetectionResult]?
@@ -105,7 +105,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             dispatchGroup.leave()
         }
         dispatchGroup.wait()
-        var interpretResultBuilder = InterpretResultBuilder()
+        var interpretResultBuilder = InterpretResult.Builder()
         interpretResultBuilder.with(entities: entitiesResult)
         interpretResultBuilder.with(syntax: syntaxTokenResult)
         interpretResultBuilder.with(sentiment: sentimentResult)
