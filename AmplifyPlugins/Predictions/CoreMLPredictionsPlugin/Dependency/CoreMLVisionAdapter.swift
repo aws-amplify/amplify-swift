@@ -37,18 +37,16 @@ struct CoreMLVisionAdapter: CoreMLVisionBehavior {
         guard let observations = request.results as? [VNRecognizedTextObservation] else {
             return nil
         }
-        var fullText = ""
-        var wordsList = [IdentifiedWord]()
+        var identifiedLines = [IdentifiedLine]()
         for observation in observations {
             let boundingbox = observation.boundingBox
             let topPredictions = observation.topCandidates(1)
             let prediction = topPredictions[0]
             let identifiedText = prediction.string
-            let word = IdentifiedWord(text: identifiedText, boundingBox: boundingbox.toBoundingBox())
-            wordsList.append(word)
-            fullText += " \(identifiedText)"
+            let line = IdentifiedLine(text: identifiedText, boundingBox: boundingbox.toBoundingBox())
+            identifiedLines.append(line)
         }
-        return IdentifyTextResult(fullText: fullText, words: wordsList, rawLineText: nil, identifiedLines: nil)
+        return IdentifyTextResult(fullText: nil, words: nil, rawLineText: nil, identifiedLines: identifiedLines)
     }
 }
 
