@@ -16,7 +16,7 @@ extension CoreMLPredictionsPlugin {
             let recoverySuggestion = CoreMLPluginErrorString.decodeConfigurationError.recoverySuggestion
             throw PluginError.pluginConfigurationError(errorDescription, recoverySuggestion)
         }
-        configure(naturalLanguageBehavior: CoreMLNaturalLanguageAdaptor())
+        configure(naturalLanguageBehavior: CoreMLNaturalLanguageAdapter())
     }
 
     func configure(naturalLanguageBehavior: CoreMLNaturalLanguageBehavior,

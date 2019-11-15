@@ -8,12 +8,12 @@
 import Foundation
 
 public struct IdentifyTextResult: IdentifyResult {
-    public let fullText: String
-    public let words: [IdentifiedWord]
-    public let rawLineText: [String]
-    public let identifiedLines: [IdentifiedLine]
+    public let fullText: String?
+    public let words: [IdentifiedWord]?
+    public let rawLineText: [String]?
+    public let identifiedLines: [IdentifiedLine]?
 
-    public init(fullText: String, words: [IdentifiedWord], rawLineText: [String], identifiedLines: [IdentifiedLine]) {
+    public init(fullText: String?, words: [IdentifiedWord]?, rawLineText: [String]?, identifiedLines: [IdentifiedLine]?) {
         self.fullText = fullText
         self.words = words
         self.rawLineText = rawLineText

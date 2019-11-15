@@ -74,15 +74,15 @@
 		B4DFA687237B58900013E17B /* CoreMLPredictionsPlugin+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA679237B58900013E17B /* CoreMLPredictionsPlugin+ClientBehavior.swift */; };
 		B4DFA688237B58900013E17B /* CoreMLVisionBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA67B237B58900013E17B /* CoreMLVisionBehavior.swift */; };
 		B4DFA689237B58900013E17B /* CoreMLNaturalLanguageBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA67C237B58900013E17B /* CoreMLNaturalLanguageBehavior.swift */; };
-		B4DFA68A237B58900013E17B /* CoreMLNaturalLanguageAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA67D237B58900013E17B /* CoreMLNaturalLanguageAdaptor.swift */; };
-		B4DFA68B237B58900013E17B /* CoreMLVisionAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA67E237B58900013E17B /* CoreMLVisionAdaptor.swift */; };
+		B4DFA68A237B58900013E17B /* CoreMLNaturalLanguageAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA67D237B58900013E17B /* CoreMLNaturalLanguageAdapter.swift */; };
+		B4DFA68B237B58900013E17B /* CoreMLVisionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA67E237B58900013E17B /* CoreMLVisionAdapter.swift */; };
 		B4DFA68C237B58900013E17B /* CoreMLPluginErrorString.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA681237B58900013E17B /* CoreMLPluginErrorString.swift */; };
 		B4DFA68D237B58900013E17B /* CoreMLPredictionsPlugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA682237B58900013E17B /* CoreMLPredictionsPlugin+Reset.swift */; };
 		B4DFA68E237B58900013E17B /* CoreMLPredictionsPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA683237B58900013E17B /* CoreMLPredictionsPlugin.swift */; };
 		B4DFA69B237B59450013E17B /* MockOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA691237B59450013E17B /* MockOperationQueue.swift */; };
-		B4DFA69C237B59450013E17B /* MockCoreMLNaturalLanguageAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA692237B59450013E17B /* MockCoreMLNaturalLanguageAdaptor.swift */; };
-		B4DFA69E237B59450013E17B /* CoreMLNaturalLanguageAdaptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA697237B59450013E17B /* CoreMLNaturalLanguageAdaptorTests.swift */; };
-		B4DFA69F237B59450013E17B /* CoreMLVisionAdaptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA698237B59450013E17B /* CoreMLVisionAdaptorTests.swift */; };
+		B4DFA69C237B59450013E17B /* MockCoreMLNaturalLanguageAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA692237B59450013E17B /* MockCoreMLNaturalLanguageAdapter.swift */; };
+		B4DFA69E237B59450013E17B /* CoreMLNaturalLanguageAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA697237B59450013E17B /* CoreMLNaturalLanguageAdapterTests.swift */; };
+		B4DFA69F237B59450013E17B /* CoreMLVisionAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA698237B59450013E17B /* CoreMLVisionAdapterTests.swift */; };
 		B4DFA6A0237B59450013E17B /* CoreMLPredictionsPluginClientBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA699237B59450013E17B /* CoreMLPredictionsPluginClientBehaviorTests.swift */; };
 		B4DFA6A1237B59450013E17B /* CoreMLPredictionsPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA69A237B59450013E17B /* CoreMLPredictionsPluginTestBase.swift */; };
 		B4DFA6A7237B5A290013E17B /* CoreMLPredictionsPluginIntegrationTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA6A5237B5A290013E17B /* CoreMLPredictionsPluginIntegrationTest.swift */; };
@@ -211,16 +211,16 @@
 		B4DFA679237B58900013E17B /* CoreMLPredictionsPlugin+ClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreMLPredictionsPlugin+ClientBehavior.swift"; sourceTree = "<group>"; };
 		B4DFA67B237B58900013E17B /* CoreMLVisionBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLVisionBehavior.swift; sourceTree = "<group>"; };
 		B4DFA67C237B58900013E17B /* CoreMLNaturalLanguageBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLNaturalLanguageBehavior.swift; sourceTree = "<group>"; };
-		B4DFA67D237B58900013E17B /* CoreMLNaturalLanguageAdaptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLNaturalLanguageAdaptor.swift; sourceTree = "<group>"; };
-		B4DFA67E237B58900013E17B /* CoreMLVisionAdaptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLVisionAdaptor.swift; sourceTree = "<group>"; };
+		B4DFA67D237B58900013E17B /* CoreMLNaturalLanguageAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLNaturalLanguageAdapter.swift; sourceTree = "<group>"; };
+		B4DFA67E237B58900013E17B /* CoreMLVisionAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLVisionAdapter.swift; sourceTree = "<group>"; };
 		B4DFA681237B58900013E17B /* CoreMLPluginErrorString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLPluginErrorString.swift; sourceTree = "<group>"; };
 		B4DFA682237B58900013E17B /* CoreMLPredictionsPlugin+Reset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreMLPredictionsPlugin+Reset.swift"; sourceTree = "<group>"; };
 		B4DFA683237B58900013E17B /* CoreMLPredictionsPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPlugin.swift; sourceTree = "<group>"; };
 		B4DFA691237B59450013E17B /* MockOperationQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockOperationQueue.swift; sourceTree = "<group>"; };
-		B4DFA692237B59450013E17B /* MockCoreMLNaturalLanguageAdaptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockCoreMLNaturalLanguageAdaptor.swift; sourceTree = "<group>"; };
+		B4DFA692237B59450013E17B /* MockCoreMLNaturalLanguageAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockCoreMLNaturalLanguageAdapter.swift; sourceTree = "<group>"; };
 		B4DFA695237B59450013E17B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B4DFA697237B59450013E17B /* CoreMLNaturalLanguageAdaptorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLNaturalLanguageAdaptorTests.swift; sourceTree = "<group>"; };
-		B4DFA698237B59450013E17B /* CoreMLVisionAdaptorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLVisionAdaptorTests.swift; sourceTree = "<group>"; };
+		B4DFA697237B59450013E17B /* CoreMLNaturalLanguageAdapterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLNaturalLanguageAdapterTests.swift; sourceTree = "<group>"; };
+		B4DFA698237B59450013E17B /* CoreMLVisionAdapterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLVisionAdapterTests.swift; sourceTree = "<group>"; };
 		B4DFA699237B59450013E17B /* CoreMLPredictionsPluginClientBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPluginClientBehaviorTests.swift; sourceTree = "<group>"; };
 		B4DFA69A237B59450013E17B /* CoreMLPredictionsPluginTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPluginTestBase.swift; sourceTree = "<group>"; };
 		B4DFA6A4237B5A290013E17B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -403,14 +403,14 @@
 		95DAAA4D237B8ED30028544F /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				95DAAA4E237B8ED30028544F /* LanguageTypeExtension.swift */,
+				95DAAA52237B8ED30028544F /* AWSComprehendPartOfSpeechTagTypeExtension.swift */,
 				95DAAA4F237B8ED30028544F /* AWSComprehendSentimentTypeExtension.swift */,
+				95DAAA53237B8ED30028544F /* FetchDominantLanguageEvent.swift */,
+				95DAAACE237CBE040028544F /* FormatType+AWSExtension.swift */,
+				95DAAA4E237B8ED30028544F /* LanguageTypeExtension.swift */,
+				95DAAACC237C778A0028544F /* PredictionsAction.swift */,
 				95DAAA50237B8ED30028544F /* PredictionsAWSServices.swift */,
 				95DAAA51237B8ED30028544F /* PredictionsEvent.swift */,
-				95DAAA52237B8ED30028544F /* AWSComprehendPartOfSpeechTagTypeExtension.swift */,
-				95DAAA53237B8ED30028544F /* FetchDominantLanguageEvent.swift */,
-				95DAAACC237C778A0028544F /* PredictionsAction.swift */,
-				95DAAACE237CBE040028544F /* FormatType+AWSExtension.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -590,10 +590,10 @@
 		B4DFA67A237B58900013E17B /* Dependency */ = {
 			isa = PBXGroup;
 			children = (
-				B4DFA67B237B58900013E17B /* CoreMLVisionBehavior.swift */,
+				B4DFA67D237B58900013E17B /* CoreMLNaturalLanguageAdapter.swift */,
 				B4DFA67C237B58900013E17B /* CoreMLNaturalLanguageBehavior.swift */,
-				B4DFA67D237B58900013E17B /* CoreMLNaturalLanguageAdaptor.swift */,
-				B4DFA67E237B58900013E17B /* CoreMLVisionAdaptor.swift */,
+				B4DFA67E237B58900013E17B /* CoreMLVisionAdapter.swift */,
+				B4DFA67B237B58900013E17B /* CoreMLVisionBehavior.swift */,
 			);
 			path = Dependency;
 			sourceTree = "<group>";
@@ -630,7 +630,7 @@
 			isa = PBXGroup;
 			children = (
 				B4DFA691237B59450013E17B /* MockOperationQueue.swift */,
-				B4DFA692237B59450013E17B /* MockCoreMLNaturalLanguageAdaptor.swift */,
+				B4DFA692237B59450013E17B /* MockCoreMLNaturalLanguageAdapter.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -654,8 +654,8 @@
 		B4DFA696237B59450013E17B /* DependencyTests */ = {
 			isa = PBXGroup;
 			children = (
-				B4DFA697237B59450013E17B /* CoreMLNaturalLanguageAdaptorTests.swift */,
-				B4DFA698237B59450013E17B /* CoreMLVisionAdaptorTests.swift */,
+				B4DFA697237B59450013E17B /* CoreMLNaturalLanguageAdapterTests.swift */,
+				B4DFA698237B59450013E17B /* CoreMLVisionAdapterTests.swift */,
 			);
 			path = DependencyTests;
 			sourceTree = "<group>";
@@ -728,11 +728,11 @@
 			buildPhases = (
 				03373022B1D9BDBEAD41BEA0 /* [CP] Check Pods Manifest.lock */,
 				B478F5F62374DBF400C4F92B /* Headers */,
+				B478F6612374DDE900C4F92B /* Swift Lint */,
+				B478F6602374DDAE00C4F92B /* Swift Format */,
 				B478F5F72374DBF400C4F92B /* Sources */,
 				B478F5F82374DBF400C4F92B /* Frameworks */,
 				B478F5F92374DBF400C4F92B /* Resources */,
-				B478F6602374DDAE00C4F92B /* Swift Format */,
-				B478F6612374DDE900C4F92B /* Swift Lint */,
 			);
 			buildRules = (
 			);
@@ -793,11 +793,11 @@
 			buildPhases = (
 				78333AA6E9AE577EF5B9E006 /* [CP] Check Pods Manifest.lock */,
 				B478F6672374DF4D00C4F92B /* Headers */,
-				B478F6682374DF4D00C4F92B /* Sources */,
-				B478F6692374DF4D00C4F92B /* Frameworks */,
-				B478F66A2374DF4D00C4F92B /* Resources */,
 				B478F66B2374DF4D00C4F92B /* Swift Format */,
 				B478F66C2374DF4D00C4F92B /* Swift Lint */,
+				B478F6682374DF4D00C4F92B /* Sources */,
+				B478F66A2374DF4D00C4F92B /* Resources */,
+				B478F6692374DF4D00C4F92B /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1515,10 +1515,10 @@
 				B4DFA68D237B58900013E17B /* CoreMLPredictionsPlugin+Reset.swift in Sources */,
 				B4DFA689237B58900013E17B /* CoreMLNaturalLanguageBehavior.swift in Sources */,
 				B4DFA68C237B58900013E17B /* CoreMLPluginErrorString.swift in Sources */,
-				B4DFA68B237B58900013E17B /* CoreMLVisionAdaptor.swift in Sources */,
+				B4DFA68B237B58900013E17B /* CoreMLVisionAdapter.swift in Sources */,
 				B4DFA68E237B58900013E17B /* CoreMLPredictionsPlugin.swift in Sources */,
 				B4DFA684237B58900013E17B /* CoreMLInterpretTextOperation.swift in Sources */,
-				B4DFA68A237B58900013E17B /* CoreMLNaturalLanguageAdaptor.swift in Sources */,
+				B4DFA68A237B58900013E17B /* CoreMLNaturalLanguageAdapter.swift in Sources */,
 				B4DFA687237B58900013E17B /* CoreMLPredictionsPlugin+ClientBehavior.swift in Sources */,
 				B4DFA688237B58900013E17B /* CoreMLVisionBehavior.swift in Sources */,
 			);
@@ -1528,12 +1528,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B4DFA69E237B59450013E17B /* CoreMLNaturalLanguageAdaptorTests.swift in Sources */,
-				B4DFA69F237B59450013E17B /* CoreMLVisionAdaptorTests.swift in Sources */,
+				B4DFA69E237B59450013E17B /* CoreMLNaturalLanguageAdapterTests.swift in Sources */,
+				B4DFA69F237B59450013E17B /* CoreMLVisionAdapterTests.swift in Sources */,
 				B4DFA6A1237B59450013E17B /* CoreMLPredictionsPluginTestBase.swift in Sources */,
 				B4DFA6A0237B59450013E17B /* CoreMLPredictionsPluginClientBehaviorTests.swift in Sources */,
 				B4DFA69B237B59450013E17B /* MockOperationQueue.swift in Sources */,
-				B4DFA69C237B59450013E17B /* MockCoreMLNaturalLanguageAdaptor.swift in Sources */,
+				B4DFA69C237B59450013E17B /* MockCoreMLNaturalLanguageAdapter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

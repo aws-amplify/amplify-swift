@@ -9,42 +9,62 @@ import Foundation
 
 public struct InterpretResult {
 
-    var keyPhrases: [KeyPhrase]?
-    var sentiment: Sentiment?
-    var entities: [EntityDetectionResult]?
-    var language: LanguageDetectionResult?
-    var syntax: [SyntaxToken]?
+    public let keyPhrases: [KeyPhrase]?
+    public let sentiment: Sentiment?
+    public let entities: [EntityDetectionResult]?
+    public let language: LanguageDetectionResult?
+    public let syntax: [SyntaxToken]?
 }
 
-public struct InterpretResultBuilder {
+extension InterpretResult {
 
-    var result: InterpretResult
+    public struct Builder {
 
-    public init() {
-        self.result = InterpretResult()
-    }
+        var keyPhrases: [KeyPhrase]?
+        var sentiment: Sentiment?
+        var entities: [EntityDetectionResult]?
+        var language: LanguageDetectionResult?
+        var syntax: [SyntaxToken]?
 
-    public func build() -> InterpretResult {
-        return result
-    }
+        public init() {}
+        
+        public func build() -> InterpretResult {
+            let result = InterpretResult(keyPhrases: keyPhrases,
+                                         sentiment: sentiment,
+                                         entities: entities,
+                                         language: language,
+                                         syntax: syntax)
+            return result
+        }
 
-    mutating public func addKeyPhrases(keyPhrases: [KeyPhrase]?) {
-        result.keyPhrases = keyPhrases
-    }
+        @discardableResult
+        mutating public func with(keyPhrases: [KeyPhrase]?) -> Builder {
+            self.keyPhrases = keyPhrases
+            return self
+        }
 
-    mutating public func addSentiment(sentiment: Sentiment?) {
-        result.sentiment = sentiment
-    }
+        @discardableResult
+        mutating public func with(sentiment: Sentiment?) -> Builder {
+            self.sentiment = sentiment
+            return self
+        }
 
-    mutating public func addEntities(entities: [EntityDetectionResult]?) {
-        result.entities = entities
-    }
+        @discardableResult
+        mutating public func with(entities: [EntityDetectionResult]?) -> Builder {
+            self.entities = entities
+            return self
+        }
 
-    mutating public func addLanguage(language: LanguageDetectionResult?) {
-        result.language = language
-    }
+        @discardableResult
+        mutating public func with(language: LanguageDetectionResult?) -> Builder {
+            self.language = language
+            return self
+        }
 
-    mutating public func addSyntax(syntax: [SyntaxToken]?) {
-        result.syntax = syntax
+        @discardableResult
+        mutating public func with(syntax: [SyntaxToken]?) -> Builder {
+            self.syntax = syntax
+            return self
+        }
     }
 }
