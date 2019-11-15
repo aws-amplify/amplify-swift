@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1110"
+   LastUpgradeVersion = "1100"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B4694744236B1FED001A155D"
-               BuildableName = "CoreMLPredictionsPlugin.framework"
-               BlueprintName = "CoreMLPredictionsPlugin"
+               BlueprintIdentifier = "B9DD3F5D235D759700D62C65"
+               BuildableName = "AWSAppSyncLocalDataStorePlugin.framework"
+               BlueprintName = "AWSAppSyncLocalDataStorePlugin"
                ReferencedContainer = "container:Amplify.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,9 +28,9 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B4386A08236B92AD000DC3DB"
-               BuildableName = "CoreMLPredictionsPluginTests.xctest"
-               BlueprintName = "CoreMLPredictionsPluginTests"
+               BlueprintIdentifier = "B9DD3F65235D759800D62C65"
+               BuildableName = "AWSAppSyncLocalDataStorePluginTests.xctest"
+               BlueprintName = "AWSAppSyncLocalDataStorePluginTests"
                ReferencedContainer = "container:Amplify.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,9 +46,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B4386A08236B92AD000DC3DB"
-               BuildableName = "CoreMLPredictionsPluginTests.xctest"
-               BlueprintName = "CoreMLPredictionsPluginTests"
+               BlueprintIdentifier = "B9DD3F65235D759800D62C65"
+               BuildableName = "AWSAppSyncLocalDataStorePluginTests.xctest"
+               BlueprintName = "AWSAppSyncLocalDataStorePluginTests"
                ReferencedContainer = "container:Amplify.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -74,9 +74,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B4694744236B1FED001A155D"
-            BuildableName = "CoreMLPredictionsPlugin.framework"
-            BlueprintName = "CoreMLPredictionsPlugin"
+            BlueprintIdentifier = "B9DD3F5D235D759700D62C65"
+            BuildableName = "AWSAppSyncLocalDataStorePlugin.framework"
+            BlueprintName = "AWSAppSyncLocalDataStorePlugin"
             ReferencedContainer = "container:Amplify.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
