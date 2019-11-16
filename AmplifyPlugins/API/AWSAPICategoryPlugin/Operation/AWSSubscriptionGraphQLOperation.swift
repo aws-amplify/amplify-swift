@@ -138,31 +138,3 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
     }
 
 }
-extension Dictionary where Key == String, Value == AWSAPICategoryPluginConfiguration.EndpointConfig {
-    func getConfig(for apiName: String?) throws -> AWSAPICategoryPluginConfiguration.EndpointConfig {
-        if let apiName = apiName {
-            // Retrieve endpoint configuration for the specified APIName
-            guard let endpointConfig = self[apiName] else {
-
-                let error = APIError.invalidConfiguration(
-                    "Unable to get an endpoint configuration for \(apiName)",
-                    """
-                    Review your API plugin configuration and ensure \(apiName) has a valid configuration.
-                    """
-                )
-
-                throw error
-
-            }
-
-            return endpointConfig
-
-        } else {
-            if count == 1, let endpointConfig = self.first {
-                return endpointConfig.value
-            }
-
-            throw APIError.invalidConfiguration("not yet implemented for more than one", "configure only 1 API")
-        }
-    }
-}

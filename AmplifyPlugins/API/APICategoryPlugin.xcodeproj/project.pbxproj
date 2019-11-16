@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		217855CA23809EA000A30D19 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 217855C923809EA000A30D19 /* awsconfiguration.json */; };
 		21D7A0DF237B54D90057D00D /* AWSGraphQLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A08D237B54D90057D00D /* AWSGraphQLOperation.swift */; };
 		21D7A0E0237B54D90057D00D /* AWSSubscriptionGraphQLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A08E237B54D90057D00D /* AWSSubscriptionGraphQLOperation.swift */; };
 		21D7A0E1237B54D90057D00D /* AWSRESTOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A08F237B54D90057D00D /* AWSRESTOperation.swift */; };
@@ -52,10 +53,10 @@
 		21D7A109237B54D90057D00D /* AppSyncConnectionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0C3237B54D90057D00D /* AppSyncConnectionRequest.swift */; };
 		21D7A10A237B54D90057D00D /* SubscriptionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0C4237B54D90057D00D /* SubscriptionItem.swift */; };
 		21D7A10B237B54D90057D00D /* AWSAppSyncGraphQLResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0C5237B54D90057D00D /* AWSAppSyncGraphQLResponse.swift */; };
-		21D7A10C237B54D90057D00D /* RESTRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0C7237B54D90057D00D /* RESTRequest+Validate.swift */; };
-		21D7A10D237B54D90057D00D /* RESTRequestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0C8237B54D90057D00D /* RESTRequestUtils.swift */; };
+		21D7A10C237B54D90057D00D /* RESTOperationRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0C7237B54D90057D00D /* RESTOperationRequest+Validate.swift */; };
+		21D7A10D237B54D90057D00D /* RESTOperationRequestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0C8237B54D90057D00D /* RESTOperationRequestUtils.swift */; };
 		21D7A10E237B54D90057D00D /* AppSyncJSONHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0C9237B54D90057D00D /* AppSyncJSONHelper.swift */; };
-		21D7A10F237B54D90057D00D /* RESTRequestUtils+Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0CA237B54D90057D00D /* RESTRequestUtils+Validator.swift */; };
+		21D7A10F237B54D90057D00D /* RESTOperationRequestUtils+Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0CA237B54D90057D00D /* RESTOperationRequestUtils+Validator.swift */; };
 		21D7A110237B54D90057D00D /* GraphQLOperationRequestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0CB237B54D90057D00D /* GraphQLOperationRequestUtils.swift */; };
 		21D7A111237B54D90057D00D /* APIError+DecodingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0CC237B54D90057D00D /* APIError+DecodingError.swift */; };
 		21D7A112237B54D90057D00D /* GraphQLOperationRequestUtils+Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0CD237B54D90057D00D /* GraphQLOperationRequestUtils+Validator.swift */; };
@@ -84,7 +85,6 @@
 		B478F6E22374E0CF00C4F92B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B478F6D62374E0CF00C4F92B /* LaunchScreen.storyboard */; };
 		B478F6E32374E0CF00C4F92B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B478F6D82374E0CF00C4F92B /* Main.storyboard */; };
 		B478F6E52374E0CF00C4F92B /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = B478F6DC2374E0CF00C4F92B /* amplifyconfiguration.json */; };
-		B478F6E62374E0CF00C4F92B /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = B478F6DD2374E0CF00C4F92B /* awsconfiguration.json */; };
 		B4DFA5E0237A611D0013E17B /* MockSessionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5C0237A611D0013E17B /* MockSessionFactory.swift */; };
 		B4DFA5E1237A611D0013E17B /* MockURLSessionTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5C1237A611D0013E17B /* MockURLSessionTask.swift */; };
 		B4DFA5E2237A611D0013E17B /* MockURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5C2237A611D0013E17B /* MockURLSession.swift */; };
@@ -103,7 +103,7 @@
 		B4DFA5EF237A611D0013E17B /* GraphQLRequestUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5D3237A611D0013E17B /* GraphQLRequestUtilsTests.swift */; };
 		B4DFA5F0237A611D0013E17B /* RESTRequestUtils+ValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5D4237A611D0013E17B /* RESTRequestUtils+ValidatorTests.swift */; };
 		B4DFA5F1237A611D0013E17B /* AWSAPICategoryPlugin+URLSessionBehaviorDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5D5237A611D0013E17B /* AWSAPICategoryPlugin+URLSessionBehaviorDelegateTests.swift */; };
-		B4DFA5F2237A611D0013E17B /* APIRequestValidateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5D7237A611D0013E17B /* APIRequestValidateTests.swift */; };
+		B4DFA5F2237A611D0013E17B /* RESTOperationRequestValidateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5D7237A611D0013E17B /* RESTOperationRequestValidateTests.swift */; };
 		B4DFA5F3237A611D0013E17B /* GraphQLOperationRequestValidateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5D8237A611D0013E17B /* GraphQLOperationRequestValidateTests.swift */; };
 		B4DFA5F4237A611D0013E17B /* UserPoolRequestInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5DA237A611D0013E17B /* UserPoolRequestInterceptor.swift */; };
 		B4DFA5F5237A611D0013E17B /* APIKeyURLRequestInterceptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5DB237A611D0013E17B /* APIKeyURLRequestInterceptorTests.swift */; };
@@ -124,6 +124,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		217855C623809CD900A30D19 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B478F6BB2374E0B500C4F92B;
+			remoteInfo = HostApp;
+		};
 		B478F64F2374DCE700C4F92B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
@@ -143,6 +150,7 @@
 /* Begin PBXFileReference section */
 		034FDA6FAA6BC2417B0D6ECF /* Pods-HostApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.debug.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.debug.xcconfig"; sourceTree = "<group>"; };
 		060ACA0EC22274923DCAFE84 /* Pods_HostApp_AWSAPICategoryPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSAPICategoryPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		217855C923809EA000A30D19 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		21D7A08D237B54D90057D00D /* AWSGraphQLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSGraphQLOperation.swift; sourceTree = "<group>"; };
 		21D7A08E237B54D90057D00D /* AWSSubscriptionGraphQLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSSubscriptionGraphQLOperation.swift; sourceTree = "<group>"; };
 		21D7A08F237B54D90057D00D /* AWSRESTOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSRESTOperation.swift; sourceTree = "<group>"; };
@@ -188,10 +196,10 @@
 		21D7A0C3237B54D90057D00D /* AppSyncConnectionRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncConnectionRequest.swift; sourceTree = "<group>"; };
 		21D7A0C4237B54D90057D00D /* SubscriptionItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionItem.swift; sourceTree = "<group>"; };
 		21D7A0C5237B54D90057D00D /* AWSAppSyncGraphQLResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAppSyncGraphQLResponse.swift; sourceTree = "<group>"; };
-		21D7A0C7237B54D90057D00D /* RESTRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RESTRequest+Validate.swift"; sourceTree = "<group>"; };
-		21D7A0C8237B54D90057D00D /* RESTRequestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RESTRequestUtils.swift; sourceTree = "<group>"; };
+		21D7A0C7237B54D90057D00D /* RESTOperationRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RESTOperationRequest+Validate.swift"; sourceTree = "<group>"; };
+		21D7A0C8237B54D90057D00D /* RESTOperationRequestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RESTOperationRequestUtils.swift; sourceTree = "<group>"; };
 		21D7A0C9237B54D90057D00D /* AppSyncJSONHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncJSONHelper.swift; sourceTree = "<group>"; };
-		21D7A0CA237B54D90057D00D /* RESTRequestUtils+Validator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RESTRequestUtils+Validator.swift"; sourceTree = "<group>"; };
+		21D7A0CA237B54D90057D00D /* RESTOperationRequestUtils+Validator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RESTOperationRequestUtils+Validator.swift"; sourceTree = "<group>"; };
 		21D7A0CB237B54D90057D00D /* GraphQLOperationRequestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLOperationRequestUtils.swift; sourceTree = "<group>"; };
 		21D7A0CC237B54D90057D00D /* APIError+DecodingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "APIError+DecodingError.swift"; sourceTree = "<group>"; };
 		21D7A0CD237B54D90057D00D /* GraphQLOperationRequestUtils+Validator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GraphQLOperationRequestUtils+Validator.swift"; sourceTree = "<group>"; };
@@ -232,7 +240,6 @@
 		B478F6D92374E0CF00C4F92B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B478F6DA2374E0CF00C4F92B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B478F6DC2374E0CF00C4F92B /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
-		B478F6DD2374E0CF00C4F92B /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		B4DFA5C0237A611D0013E17B /* MockSessionFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockSessionFactory.swift; sourceTree = "<group>"; };
 		B4DFA5C1237A611D0013E17B /* MockURLSessionTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockURLSessionTask.swift; sourceTree = "<group>"; };
 		B4DFA5C2237A611D0013E17B /* MockURLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockURLSession.swift; sourceTree = "<group>"; };
@@ -251,7 +258,7 @@
 		B4DFA5D3237A611D0013E17B /* GraphQLRequestUtilsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLRequestUtilsTests.swift; sourceTree = "<group>"; };
 		B4DFA5D4237A611D0013E17B /* RESTRequestUtils+ValidatorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RESTRequestUtils+ValidatorTests.swift"; sourceTree = "<group>"; };
 		B4DFA5D5237A611D0013E17B /* AWSAPICategoryPlugin+URLSessionBehaviorDelegateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSAPICategoryPlugin+URLSessionBehaviorDelegateTests.swift"; sourceTree = "<group>"; };
-		B4DFA5D7237A611D0013E17B /* APIRequestValidateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIRequestValidateTests.swift; sourceTree = "<group>"; };
+		B4DFA5D7237A611D0013E17B /* RESTOperationRequestValidateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RESTOperationRequestValidateTests.swift; sourceTree = "<group>"; };
 		B4DFA5D8237A611D0013E17B /* GraphQLOperationRequestValidateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLOperationRequestValidateTests.swift; sourceTree = "<group>"; };
 		B4DFA5DA237A611D0013E17B /* UserPoolRequestInterceptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserPoolRequestInterceptor.swift; sourceTree = "<group>"; };
 		B4DFA5DB237A611D0013E17B /* APIKeyURLRequestInterceptorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKeyURLRequestInterceptorTests.swift; sourceTree = "<group>"; };
@@ -484,9 +491,9 @@
 				21D7A0CB237B54D90057D00D /* GraphQLOperationRequestUtils.swift */,
 				21D7A0CD237B54D90057D00D /* GraphQLOperationRequestUtils+Validator.swift */,
 				21D7A0CE237B54D90057D00D /* GraphQLResponseDecoder.swift */,
-				21D7A0C7237B54D90057D00D /* RESTRequest+Validate.swift */,
-				21D7A0C8237B54D90057D00D /* RESTRequestUtils.swift */,
-				21D7A0CA237B54D90057D00D /* RESTRequestUtils+Validator.swift */,
+				21D7A0C7237B54D90057D00D /* RESTOperationRequest+Validate.swift */,
+				21D7A0C8237B54D90057D00D /* RESTOperationRequestUtils.swift */,
+				21D7A0CA237B54D90057D00D /* RESTOperationRequestUtils+Validator.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -550,7 +557,8 @@
 		B478F6BD2374E0B500C4F92B /* HostApp */ = {
 			isa = PBXGroup;
 			children = (
-				B478F6DB2374E0CF00C4F92B /* Configuration */,
+				217855C923809EA000A30D19 /* awsconfiguration.json */,
+				B478F6DC2374E0CF00C4F92B /* amplifyconfiguration.json */,
 				B478F6D42374E0CF00C4F92B /* Resources */,
 				B478F6D02374E0CE00C4F92B /* Source */,
 			);
@@ -576,15 +584,6 @@
 				B478F6DA2374E0CF00C4F92B /* Info.plist */,
 			);
 			path = Resources;
-			sourceTree = "<group>";
-		};
-		B478F6DB2374E0CF00C4F92B /* Configuration */ = {
-			isa = PBXGroup;
-			children = (
-				B478F6DC2374E0CF00C4F92B /* amplifyconfiguration.json */,
-				B478F6DD2374E0CF00C4F92B /* awsconfiguration.json */,
-			);
-			path = Configuration;
 			sourceTree = "<group>";
 		};
 		B4DFA5BE237A611D0013E17B /* AWSAPICategoryPluginTests */ = {
@@ -660,7 +659,7 @@
 		B4DFA5D6237A611D0013E17B /* Request */ = {
 			isa = PBXGroup;
 			children = (
-				B4DFA5D7237A611D0013E17B /* APIRequestValidateTests.swift */,
+				B4DFA5D7237A611D0013E17B /* RESTOperationRequestValidateTests.swift */,
 				B4DFA5D8237A611D0013E17B /* GraphQLOperationRequestValidateTests.swift */,
 			);
 			path = Request;
@@ -816,6 +815,7 @@
 			);
 			dependencies = (
 				B478F7232374FF5B00C4F92B /* PBXTargetDependency */,
+				217855C723809CD900A30D19 /* PBXTargetDependency */,
 			);
 			name = AWSAPICategoryPluginIntegrationTests;
 			productName = IntegrationTest;
@@ -859,6 +859,7 @@
 					};
 					B478F6572374DD0D00C4F92B = {
 						CreatedOnToolsVersion = 11.1;
+						TestTargetID = B478F6BB2374E0B500C4F92B;
 					};
 					B478F6BB2374E0B500C4F92B = {
 						CreatedOnToolsVersion = 11.1;
@@ -912,8 +913,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				217855CA23809EA000A30D19 /* awsconfiguration.json in Resources */,
 				B478F6E32374E0CF00C4F92B /* Main.storyboard in Resources */,
-				B478F6E62374E0CF00C4F92B /* awsconfiguration.json in Resources */,
 				B478F6E52374E0CF00C4F92B /* amplifyconfiguration.json in Resources */,
 				B478F6E12374E0CF00C4F92B /* Assets.xcassets in Resources */,
 				B478F6E22374E0CF00C4F92B /* LaunchScreen.storyboard in Resources */,
@@ -1192,7 +1193,7 @@
 				21D7A110237B54D90057D00D /* GraphQLOperationRequestUtils.swift in Sources */,
 				21D7A0E8237B54D90057D00D /* AWSAPICategoryPlugin+Configure.swift in Sources */,
 				21D7A0E1237B54D90057D00D /* AWSRESTOperation.swift in Sources */,
-				21D7A10C237B54D90057D00D /* RESTRequest+Validate.swift in Sources */,
+				21D7A10C237B54D90057D00D /* RESTOperationRequest+Validate.swift in Sources */,
 				21D7A0FB237B54D90057D00D /* AWSAPICategoryPlugin+GraphQLBehavior.swift in Sources */,
 				21D7A0E7237B54D90057D00D /* AWSAPICategoryPlugin+Reset.swift in Sources */,
 				21D7A115237B54D90057D00D /* AWSAPICategoryPlugin+RESTBehavior.swift in Sources */,
@@ -1200,7 +1201,7 @@
 				21D7A0EA237B54D90057D00D /* AWSAPICategoryPlugin.swift in Sources */,
 				21D7A0E2237B54D90057D00D /* AWSAPIOperation+APIOperation.swift in Sources */,
 				21D7A0F3237B54D90057D00D /* AppSyncConnectionProvider.swift in Sources */,
-				21D7A10D237B54D90057D00D /* RESTRequestUtils.swift in Sources */,
+				21D7A10D237B54D90057D00D /* RESTOperationRequestUtils.swift in Sources */,
 				21D7A119237B54D90057D00D /* IAMURLRequestInterceptor.swift in Sources */,
 				21D7A114237B54D90057D00D /* GraphQLOperationRequest+Validate.swift in Sources */,
 				21D7A0E3237B54D90057D00D /* AWSGraphQLOperation+APIOperation.swift in Sources */,
@@ -1232,7 +1233,7 @@
 				21D7A0ED237B54D90057D00D /* WebsocketProviderResponse.swift in Sources */,
 				21D7A105237B54D90057D00D /* ConnectionProviderError.swift in Sources */,
 				21D7A0DF237B54D90057D00D /* AWSGraphQLOperation.swift in Sources */,
-				21D7A10F237B54D90057D00D /* RESTRequestUtils+Validator.swift in Sources */,
+				21D7A10F237B54D90057D00D /* RESTOperationRequestUtils+Validator.swift in Sources */,
 				21D7A111237B54D90057D00D /* APIError+DecodingError.swift in Sources */,
 				21D7A100237B54D90057D00D /* URLSessionTask+URLSessionTaskBehavior.swift in Sources */,
 				21D7A0F5237B54D90057D00D /* AppSyncSubscriptionConnection+EventHandler.swift in Sources */,
@@ -1251,7 +1252,7 @@
 			files = (
 				B4DFA5EE237A611D0013E17B /* RESTRequestUtilsTests.swift in Sources */,
 				B4DFA5F0237A611D0013E17B /* RESTRequestUtils+ValidatorTests.swift in Sources */,
-				B4DFA5F2237A611D0013E17B /* APIRequestValidateTests.swift in Sources */,
+				B4DFA5F2237A611D0013E17B /* RESTOperationRequestValidateTests.swift in Sources */,
 				B4DFA5E2237A611D0013E17B /* MockURLSession.swift in Sources */,
 				B4DFA5F5237A611D0013E17B /* APIKeyURLRequestInterceptorTests.swift in Sources */,
 				B4DFA5EA237A611D0013E17B /* AWSAPICategoryPlugin+GraphQLBehaviorTests.swift in Sources */,
@@ -1308,6 +1309,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		217855C723809CD900A30D19 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B478F6BB2374E0B500C4F92B /* HostApp */;
+			targetProxy = 217855C623809CD900A30D19 /* PBXContainerItemProxy */;
+		};
 		B478F6502374DCE700C4F92B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B478F5FA2374DBF400C4F92B /* AWSAPICategoryPlugin */;
@@ -1571,6 +1577,7 @@
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = HostApp;
 			};
 			name = Debug;
 		};
@@ -1595,6 +1602,7 @@
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = HostApp;
 			};
 			name = Release;
 		};

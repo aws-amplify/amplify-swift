@@ -8,14 +8,12 @@
 import Foundation
 import Amplify
 
-final class RESTRequestUtils {
+final class RESTOperationRequestUtils {
     private init() {
 
     }
-    // TODO: path could be optional
-    // Construct a URL given the url and path
-    static func constructURL(_ baseURL: URL, path: String) throws -> URL {
 
+    static func constructURL(for baseURL: URL, with path: String?) throws -> URL {
         guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
             throw APIError.invalidURL("Invalid URL: \(baseURL.absoluteString)",
                 """
@@ -25,17 +23,11 @@ final class RESTRequestUtils {
             )
         }
 
-        // TODO: fix this:
-        /*
-         This code will not do anything for the case of a base URL like
-         baseURL = http://foo.com/bar;
-         path = "/baz" where the expectation is that the final URL is http://foo.com/bar/baz
-         */
-        if components.path.isEmpty {
-            components.path = path
-        } else {
-            components.path.append(path)
+        guard let path = path else {
+            return baseURL
         }
+
+        components.path.append(path)
 
         guard let url = components.url else {
             throw APIError.invalidURL(
@@ -51,9 +43,9 @@ final class RESTRequestUtils {
     }
 
     // Construct a request specific to the `RESTOperationType`
-    static func constructRequest(with url: URL,
-                                 operationType: RESTOperationType,
-                                 requestPayload: Data?) -> URLRequest {
+    static func constructURLRequest(with url: URL,
+                                    operationType: RESTOperationType,
+                                    requestPayload: Data?) -> URLRequest {
 
         var baseRequest = URLRequest(url: url)
         let headers = ["content-type": "application/json"]
@@ -70,6 +62,8 @@ final class RESTRequestUtils {
         case .patch:
             break
         case .delete:
+            break
+        case .head:
             break
         }
 

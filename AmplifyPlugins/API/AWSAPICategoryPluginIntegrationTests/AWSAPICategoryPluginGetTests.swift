@@ -15,7 +15,9 @@ class AWSAPICategoryPluginGetTests: AWSAPICategoryPluginBaseTests {
 
     func testSimpleGet() {
         let getCompleted = expectation(description: "get request completed")
-        _ = Amplify.API.get(apiName: "none", path: "/simplesuccess") { event in
+        let request = RESTRequest(apiName: "none",
+                                  path: "/simplesuccess")
+        _ = Amplify.API.get(request: request) { event in
             switch event {
             case .completed(let data):
                 // The endpoint echoes the request back, so we don't need to assert the whole thing
@@ -40,7 +42,9 @@ class AWSAPICategoryPluginGetTests: AWSAPICategoryPluginBaseTests {
 
     func testAPIKeyGet() {
         let getCompleted = expectation(description: "get request completed")
-        _ = Amplify.API.get(apiName: "apiKey", path: "/simplesuccessapikey") { event in
+        let request = RESTRequest(apiName: "apiKey",
+                                  path: "/simplesuccessapikey")
+        _ = Amplify.API.get(request: request) { event in
             switch event {
             case .completed(let data):
                 // The endpoint echoes the request back, so we don't need to assert the whole thing
@@ -65,8 +69,10 @@ class AWSAPICategoryPluginGetTests: AWSAPICategoryPluginBaseTests {
 
     func testSimplePost() {
         let getCompleted = expectation(description: "post request completed")
-
-        Amplify.API.post(apiName: "none", path: "/simplesuccess", body: Data()) { event in
+        let request = RESTRequest(apiName: "none",
+                                  path: "/simplesuccess",
+                                  body: Data())
+        Amplify.API.post(request: request) { event in
             switch event {
             case .completed(let data):
                 // The endpoint echoes the request back
@@ -89,5 +95,31 @@ class AWSAPICategoryPluginGetTests: AWSAPICategoryPluginBaseTests {
         wait(for: [getCompleted], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
     }
 
+    func testRESTAPI() {
+        let getCompleted = expectation(description: "get request completed")
+        let request = RESTRequest(apiName: IntegrationTestConfiguration.restAPI,
+                                  path: "/items")
+        _ = Amplify.API.get(request: request) { event in
+            switch event {
+            case .completed(let data):
+                // The endpoint echoes the request back, so we don't need to assert the whole thing
+                if let jsonValue = try? JSONDecoder().decode(JSONValue.self, from: data),
+                    case .object(let response) = jsonValue,
+                    case .object(let context) = response["context"],
+                    case .string(let resourcePath) = context["resource-path"] {
+                    XCTAssertEqual(resourcePath, "/simplesuccessapikey")
+                } else {
+                    XCTFail("Could not access response object's [context][resource-path]: \(data)")
+                }
+                getCompleted.fulfill()
+            case .failed(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+
+        wait(for: [getCompleted], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+    }
 
 }

@@ -24,7 +24,7 @@
 		2125E265231C2D3100B3DEB5 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 2125E2102318D73B00B3DEB5 /* awsconfiguration.json */; };
 		2142099623721F4400FA140C /* GraphQLOperationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2142099223721F4400FA140C /* GraphQLOperationType.swift */; };
 		2142099723721F4400FA140C /* RESTOperationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2142099323721F4400FA140C /* RESTOperationType.swift */; };
-		2142099823721F4400FA140C /* RESTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2142099423721F4400FA140C /* RESTRequest.swift */; };
+		2142099823721F4400FA140C /* RESTOperationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2142099423721F4400FA140C /* RESTOperationRequest.swift */; };
 		21420A8F237222A900FA140C /* AWSIAMConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420A7B237222A700FA140C /* AWSIAMConfiguration.swift */; };
 		21420A90237222A900FA140C /* APIKeyConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420A7C237222A700FA140C /* APIKeyConfiguration.swift */; };
 		21420A91237222A900FA140C /* AWSAuthorizationConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21420A7D237222A700FA140C /* AWSAuthorizationConfiguration.swift */; };
@@ -45,6 +45,7 @@
 		216879FE23636A0A004A056E /* RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216879FD23636A0A004A056E /* RepeatingTimer.swift */; };
 		21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A3D236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift */; };
 		21687A41236371E1004A056E /* AnalyticsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A40236371E1004A056E /* AnalyticsError.swift */; };
+		217855C3237F84D700A30D19 /* RESTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217855C2237F84D700A30D19 /* RESTRequest.swift */; };
 		21D1CE8C2334233F0003BAA8 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D1CE8B2334233F0003BAA8 /* AuthError.swift */; };
 		21D79FDA237617C60057D00D /* SubscriptionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FD9237617C60057D00D /* SubscriptionEvent.swift */; };
 		21D79FE12377BF4B0057D00D /* AuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FE02377BF4B0057D00D /* AuthProvider.swift */; };
@@ -490,7 +491,7 @@
 		2125E2A72321DCDD00B3DEB5 /* MockAWSAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAWSAuthService.swift; sourceTree = "<group>"; };
 		2142099223721F4400FA140C /* GraphQLOperationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLOperationType.swift; sourceTree = "<group>"; };
 		2142099323721F4400FA140C /* RESTOperationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RESTOperationType.swift; sourceTree = "<group>"; };
-		2142099423721F4400FA140C /* RESTRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RESTRequest.swift; sourceTree = "<group>"; };
+		2142099423721F4400FA140C /* RESTOperationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RESTOperationRequest.swift; sourceTree = "<group>"; };
 		21420A7B237222A700FA140C /* AWSIAMConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSIAMConfiguration.swift; sourceTree = "<group>"; };
 		21420A7C237222A700FA140C /* APIKeyConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIKeyConfiguration.swift; sourceTree = "<group>"; };
 		21420A7D237222A700FA140C /* AWSAuthorizationConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthorizationConfiguration.swift; sourceTree = "<group>"; };
@@ -512,6 +513,7 @@
 		216879FD23636A0A004A056E /* RepeatingTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepeatingTimer.swift; sourceTree = "<group>"; };
 		21687A3D236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AnalyticsCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		21687A40236371E1004A056E /* AnalyticsError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsError.swift; sourceTree = "<group>"; };
+		217855C2237F84D700A30D19 /* RESTRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTRequest.swift; sourceTree = "<group>"; };
 		21D1CE8B2334233F0003BAA8 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
 		21D79FD9237617C60057D00D /* SubscriptionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionEvent.swift; sourceTree = "<group>"; };
 		21D79FE02377BF4B0057D00D /* AuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthProvider.swift; sourceTree = "<group>"; };
@@ -1721,7 +1723,8 @@
 				2142099223721F4400FA140C /* GraphQLOperationType.swift */,
 				21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */,
 				2142099323721F4400FA140C /* RESTOperationType.swift */,
-				2142099423721F4400FA140C /* RESTRequest.swift */,
+				2142099423721F4400FA140C /* RESTOperationRequest.swift */,
+				217855C2237F84D700A30D19 /* RESTRequest.swift */,
 			);
 			path = Request;
 			sourceTree = "<group>";
@@ -3314,7 +3317,7 @@
 				FAC23545227A055200424678 /* AmplifyConfiguration.swift in Sources */,
 				B4D38536236C97360014653D /* CallType.swift in Sources */,
 				95DAAB1F237E63370028544F /* CollectionEntity.swift in Sources */,
-				2142099823721F4400FA140C /* RESTRequest.swift in Sources */,
+				2142099823721F4400FA140C /* RESTOperationRequest.swift in Sources */,
 				21FFF994230C96CB005878EA /* StoragePutDataOperation.swift in Sources */,
 				95DAAB30237E63370028544F /* IdentifyType.swift in Sources */,
 				21D79FE32377F4120057D00D /* SubscriptionConnectionState.swift in Sources */,
@@ -3327,7 +3330,7 @@
 				FA09B9412321BB78000E064D /* JSONValue.swift in Sources */,
 				FA6BC875235F5C270001A882 /* GraphQLOperationRequest.swift in Sources */,
 				95DAAB2E237E63370028544F /* AgeRange.swift in Sources */,
-				FA6BC875235F5C270001A882 /* GraphQLRequest.swift in Sources */,
+				FA6BC875235F5C270001A882 /* GraphQLOperationRequest.swift in Sources */,
 				B4D3853A236C97360014653D /* PredictionsInterpretRequest.swift in Sources */,
 				2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */,
 				FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */,
@@ -3369,6 +3372,7 @@
 				FAC2352D227A053D00424678 /* AnalyticsCategoryPlugin.swift in Sources */,
 				2142099723721F4400FA140C /* RESTOperationType.swift in Sources */,
 				FA56F71E22B144F80039754A /* AsyncEvent.swift in Sources */,
+				217855C3237F84D700A30D19 /* RESTRequest.swift in Sources */,
 				95DAAB34237E63370028544F /* Emotion.swift in Sources */,
 				95DAAB20237E63370028544F /* SyntaxToken.swift in Sources */,
 				FA4E731623294B6E003B8EEB /* AWSHubPlugin.swift in Sources */,

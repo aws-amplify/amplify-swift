@@ -8,12 +8,11 @@
 import Foundation
 import Amplify
 
-extension RESTRequestUtils {
+extension RESTOperationRequestUtils {
 
-    static func validateApiName(_ apiName: String) -> APIError? {
+    static func validateApiName(_ apiName: String) throws {
         if apiName.isEmpty {
-            return APIError.unknown("apiName is empty", "provide valid API Name")
+            throw APIError.unknown("apiName is empty", "provide valid API Name")
         }
-        return nil
     }
 }
