@@ -10,7 +10,8 @@ import Amplify
 import AWSRekognition
 import AWSTextract
 import AWSPolly
-
+import AWSTranslate
+import AWSComprehend
 
 class PredictionsErrorHelper {
 
@@ -20,79 +21,50 @@ class PredictionsErrorHelper {
         }
 
         if statusCode == 404 {
-
+           return PredictionsError.httpStatusError(404, "Please check your request and try again")
         }
         // TODO status error mapper
         return PredictionsError.httpStatusError(statusCode, "TODO some status code to recovery message mapper")
     }
-
-    static func mapServiceError(_ error: NSError) -> PredictionsError {
+   // swiftlint:disable cyclomatic_complexity
+    static func mapPredictionsServiceError(_ error: NSError) -> PredictionsError {
         let defaultError = PredictionsErrorHelper.getDefaultError(error)
 
-        guard error.domain == AWSServiceErrorDomain else {
+        switch error.domain {
+        case AWSServiceErrorDomain:
+            let errorTypeOptional = AWSServiceErrorType.init(rawValue: error.code)
+            guard let errorType = errorTypeOptional else {
+                return defaultError
+            }
+            return PredictionsErrorHelper.map(errorType) ?? defaultError
+        case AWSRekognitionErrorDomain:
+            guard let errorType = AWSRekognitionErrorType.init(rawValue: error.code) else {
+                return defaultError
+            }
+            return AWSRekognitionErrorMessage.map(errorType) ?? defaultError
+        case AWSPollyErrorDomain:
+            guard let errorType = AWSPollyErrorType.init(rawValue: error.code) else {
+                return defaultError
+            }
+            return AWSPollyErrorMessage.map(errorType) ?? defaultError
+        case AWSTextractErrorDomain:
+            guard let errorType = AWSTextractErrorType.init(rawValue: error.code) else {
+                return defaultError
+            }
+            return AWSTextractErrorMessage.map(errorType) ?? defaultError
+        case AWSComprehendErrorDomain:
+            guard let errorType = AWSComprehendErrorType.init(rawValue: error.code) else {
+                return defaultError
+            }
+            return AWSComprehendErrorMessage.map(errorType) ?? defaultError
+        case AWSTranslateErrorDomain:
+            guard let errorType = AWSTranslateErrorType.init(rawValue: error.code) else {
+                return defaultError
+            }
+            return AWSTranslateErrorMessage.map(errorType) ?? defaultError
+        default:
             return defaultError
         }
-
-        let errorTypeOptional = AWSServiceErrorType.init(rawValue: error.code)
-        guard let errorType = errorTypeOptional else {
-            return defaultError
-        }
-
-        return PredictionsErrorHelper.map(errorType) ?? defaultError
-    }
-
-    static func mapRekognitionError(_ error: NSError) -> PredictionsError {
-        let defaultError = PredictionsErrorHelper.getDefaultError(error)
-
-        if error.domain == AWSServiceErrorDomain {
-            return PredictionsErrorHelper.mapServiceError(error)
-        }
-
-        guard error.domain == AWSRekognitionErrorDomain else {
-            return defaultError
-        }
-
-        guard let errorType = AWSRekognitionErrorType.init(rawValue: error.code) else {
-            return defaultError
-        }
-
-        return PredictionsErrorHelper.map(errorType) ?? defaultError
-    }
-
-    static func mapTextractError(_ error: NSError) -> PredictionsError {
-        let defaultError = PredictionsErrorHelper.getDefaultError(error)
-
-        if error.domain == AWSServiceErrorDomain {
-            return PredictionsErrorHelper.mapServiceError(error)
-        }
-
-        guard error.domain == AWSTextractErrorDomain else {
-            return defaultError
-        }
-
-        guard let errorType = AWSTextractErrorType.init(rawValue: error.code) else {
-            return defaultError
-        }
-
-        return PredictionsErrorHelper.map(errorType) ?? defaultError
-    }
-
-    static func mapPollyError(_ error: NSError) -> PredictionsError {
-        let defaultError = PredictionsErrorHelper.getDefaultError(error)
-
-        if error.domain == AWSServiceErrorDomain {
-            return PredictionsErrorHelper.mapServiceError(error)
-        }
-
-        guard error.domain == AWSPollyErrorDomain else {
-            return defaultError
-        }
-
-        guard let errorType = AWSPollyErrorType.init(rawValue: error.code) else {
-            return defaultError
-        }
-
-        return PredictionsErrorHelper.map(errorType) ?? defaultError
     }
 
     static func getDefaultError(_ error: NSError) -> PredictionsError {
@@ -123,8 +95,8 @@ class PredictionsErrorHelper {
         case .authFailure:
             break
         case .accessDeniedException:
-            return PredictionsError.accessDenied(PredictionsServiceErrorMessage.accessDenied.errorDescription,
-                                                 PredictionsServiceErrorMessage.accessDenied.recoverySuggestion)
+            return PredictionsError.accessDenied(AWSComprehendErrorMessage.accessDenied.errorDescription,
+                                                 AWSComprehendErrorMessage.accessDenied.recoverySuggestion)
         case .unrecognizedClientException:
             break
         case .incompleteSignature:
@@ -134,8 +106,8 @@ class PredictionsErrorHelper {
         case .missingAuthenticationToken:
             break
         case .accessDenied:
-            return PredictionsError.accessDenied(PredictionsServiceErrorMessage.accessDenied.errorDescription,
-                                                 PredictionsServiceErrorMessage.accessDenied.recoverySuggestion)
+            return PredictionsError.accessDenied(AWSComprehendErrorMessage.accessDenied.errorDescription,
+                                                 AWSComprehendErrorMessage.accessDenied.recoverySuggestion)
         case .expiredToken:
             break
         case .invalidAccessKeyId:
@@ -145,143 +117,13 @@ class PredictionsErrorHelper {
         case .tokenRefreshRequired:
             break
         case .accessFailure:
-            return PredictionsError.accessDenied(PredictionsServiceErrorMessage.accessDenied.errorDescription,
-                                                 PredictionsServiceErrorMessage.accessDenied.recoverySuggestion)
+            return PredictionsError.accessDenied(AWSComprehendErrorMessage.accessDenied.errorDescription,
+                                                 AWSComprehendErrorMessage.accessDenied.recoverySuggestion)
         case .authMissingFailure:
             break
         case .throttling:
             break
         case .throttlingException:
-            break
-        @unknown default:
-            break
-        }
-
-        return nil
-    }
-
-    //TODO fill in proper error messages for rekognition, textract and polly
-    static func map(_ errorType: AWSRekognitionErrorType) -> PredictionsError? {
-        switch errorType {
-        case .accessDenied:
-            break
-        case .idempotentParameterMismatch:
-            break
-        case .imageTooLarge:
-            break
-        case .internalServer:
-            break
-        case .invalidImageFormat:
-            break
-        case .invalidPaginationToken:
-            break
-        case .invalidParameter:
-            break
-        case .invalidS3Object:
-            break
-        case .limitExceeded:
-            break
-        case .provisionedThroughputExceeded:
-            break
-        case .resourceAlreadyExists:
-            break
-        case .resourceInUse:
-            break
-        case .resourceNotFound:
-            break
-        case .throttling:
-            break
-        case .unknown:
-            break
-        case .videoTooLarge:
-            break
-        @unknown default:
-            break
-        }
-
-        return nil
-    }
-
-    static func map(_ errorType: AWSTextractErrorType) -> PredictionsError? {
-        switch errorType {
-        case .accessDenied:
-            break
-        case .badDocument:
-            break
-        case .documentTooLarge:
-            break
-        case .idempotentParameterMismatch:
-            break
-        case .internalServer:
-            break
-        case .invalidJobId:
-            break
-        case .invalidParameter:
-            break
-        case .invalidS3Object:
-            break
-        case .limitExceeded:
-            break
-        case .provisionedThroughputExceeded:
-            break
-        case .throttling:
-            break
-        case .unknown:
-            break
-        case .unsupportedDocument:
-            break
-        @unknown default:
-            break
-        }
-
-        return nil
-    }
-
-    static func map(_ errorType: AWSPollyErrorType) -> PredictionsError? {
-        switch errorType {
-        case .engineNotSupported:
-            break
-        case .invalidLexicon:
-            break
-        case .invalidNextToken:
-            break
-        case .invalidS3Bucket:
-            break
-        case .invalidS3Key:
-            break
-        case .invalidSampleRate:
-            break
-        case .invalidSnsTopicArn:
-            break
-        case .invalidSsml:
-            break
-        case .invalidTaskId:
-            break
-        case .languageNotSupported:
-            break
-        case .lexiconNotFound:
-            break
-        case .lexiconSizeExceeded:
-            break
-        case .marksNotSupportedForFormat:
-            break
-        case .maxLexemeLengthExceeded:
-            break
-        case .maxLexiconsNumberExceeded:
-            break
-        case .serviceFailure:
-            break
-        case .ssmlMarksNotSupportedForTextType:
-            break
-        case .synthesisTaskNotFound:
-            break
-        case .textLengthExceeded:
-            break
-        case .unknown:
-            break
-        case .unsupportedPlsAlphabet:
-            break
-        case .unsupportedPlsLanguage:
             break
         @unknown default:
             break

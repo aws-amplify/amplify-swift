@@ -22,7 +22,11 @@ extension AWSPredictionsService: AWSTranslateServiceBehavior {
 
             guard task.error == nil else {
 
-                onEvent(.failed(.networkError(task.error!.localizedDescription, task.error!.localizedDescription)))
+                let error = task.error! as NSError
+                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
+                onEvent(.failed(
+                    .networkError(predictionsErrorString.errorDescription,
+                                  predictionsErrorString.recoverySuggestion)))
                 return nil
             }
 

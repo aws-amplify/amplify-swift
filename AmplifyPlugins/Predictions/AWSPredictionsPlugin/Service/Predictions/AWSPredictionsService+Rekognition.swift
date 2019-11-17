@@ -31,7 +31,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         awsRekognition.detectLabels(request: request).continueWith { (task) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
-                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                 onEvent(.failed(
                     .networkError(predictionsErrorString.errorDescription,
                                   predictionsErrorString.recoverySuggestion)))
@@ -76,7 +76,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         awsRekognition.detectCelebs(request: request).continueWith { (task) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
-                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                 onEvent(.failed(
                     .networkError(predictionsErrorString.errorDescription,
                                   predictionsErrorString.recoverySuggestion)))
@@ -142,7 +142,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         awsRekognition.detectFaces(request: request).continueWith { (task) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
-                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                 onEvent(.failed(
                     .networkError(predictionsErrorString.errorDescription,
                                   predictionsErrorString.recoverySuggestion)))
@@ -190,7 +190,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         awsRekognition.detectFacesFromCollection(request: request).continueWith { (task) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
-                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                 onEvent(.failed(
                     .networkError(predictionsErrorString.errorDescription,
                                   predictionsErrorString.recoverySuggestion)))
@@ -237,7 +237,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         awsRekognition.detectText(request: request).continueWith { (task) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
-                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                 onEvent(.failed(
                     .networkError(predictionsErrorString.errorDescription,
                                   predictionsErrorString.recoverySuggestion)))
@@ -271,7 +271,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
                     guard task.error == nil else {
                         let error = task.error! as NSError
-                        let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                        let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                         onEvent(.failed(
                             .networkError(predictionsErrorString.errorDescription,
                                           predictionsErrorString.recoverySuggestion)))
