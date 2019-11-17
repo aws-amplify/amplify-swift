@@ -12,7 +12,61 @@ import AWSAPICategoryPlugin
 @testable import Amplify
 
 // These test cover the more complex scenarios, compared to the Todo graphQL endpoint
-class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTests {
+class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
+
+    static let networkTimeout = TimeInterval(180)
+
+    /*
+     These are the instructions to set up the `blogPostCommonGraphQLWithAPIKey`. Same as `todoGraphQLWithAPIKey`
+     except with the Blog Post and Comment graphQL schema
+
+     2. Add api `amplify add api`
+         * What best describes your project: `One-to-many relationship (e.g., “Blogs” with “Posts” and “Comments”)`
+
+     3. `amplify push`
+        * Enter maximum statement depth [increase from default if your schema is deeply nested] `3`
+
+     */
+    static let blogPostGraphQLWithAPIKey = "blogPostCommentGraphQLWithAPIKey"
+
+    /*
+     Using the same values as `blogPostCommonGraphQLWithAPIKey` except the API key is replaced with an invalid one.
+     */
+    static let blogPostGraphQLWithInvalidAPIKey = "blogPostCommentGraphQLWithInvalidAPIKey"
+
+    override func setUp() {
+        Amplify.reset()
+        let plugin = AWSAPICategoryPlugin()
+
+        let apiConfig = APICategoryConfiguration(plugins: [
+            "AWSAPICategoryPlugin": [
+                BlogPostCommentGraphQLWithAPIKeyTests.blogPostGraphQLWithAPIKey: [
+                    "Endpoint": "https://dtoaraxmjjdbjfmoqwowubiyua.appsync-api.us-east-1.amazonaws.com/graphql",
+                    "Region": "us-east-1",
+                    "AuthorizationType": "API_KEY",
+                    "ApiKey": "da2-4th2pofe7ne4xdm3va23hvovfa"
+                ],
+                BlogPostCommentGraphQLWithAPIKeyTests.blogPostGraphQLWithInvalidAPIKey: [
+                    "Endpoint": "https://dtoaraxmjjdbjfmoqwowubiyua.appsync-api.us-east-1.amazonaws.com/graphql",
+                    "Region": "us-east-1",
+                    "AuthorizationType": "API_KEY",
+                    "ApiKey": "da2-invalidAPIKey"
+                ],
+            ]
+        ])
+
+        let amplifyConfig = AmplifyConfiguration(api: apiConfig)
+        do {
+            try Amplify.add(plugin: plugin)
+            try Amplify.configure(amplifyConfig)
+        } catch {
+            XCTFail("Error during setup: \(error)")
+        }
+    }
+
+    override func tearDown() {
+        Amplify.reset()
+    }
 
     /// Given: A valid graphql endpoint with invalid API Key
     /// When: Call mutate API
@@ -21,7 +75,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
         let completeInvoked = expectation(description: "request completed")
         let expectedId = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.blogPostGraphQLWithInvalidAPIKey,
+        let request = GraphQLRequest(apiName: BlogPostCommentGraphQLWithAPIKeyTests.blogPostGraphQLWithInvalidAPIKey,
                                      document: CreateBlogMutation.document,
                                      variables: CreateBlogMutation.variables(id: expectedId,
                                                                              name: testMethodName),
@@ -48,7 +102,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        waitForExpectations(timeout: BlogPostCommentGraphQLWithAPIKeyTests.networkTimeout)
     }
 
     /// Given: Create a blog
@@ -65,7 +119,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
         }
 
         let completeInvoked = expectation(description: "request completed")
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: BlogPostCommentGraphQLWithAPIKeyTests.blogPostGraphQLWithAPIKey,
                                      document: GetBlogQuery.document,
                                      variables: GetBlogQuery.variables(id: blog.id),
                                      responseType: String.self)
@@ -104,7 +158,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
             }
         }
         XCTAssertNotNil(queryOperation)
-        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        waitForExpectations(timeout: BlogPostCommentGraphQLWithAPIKeyTests.networkTimeout)
     }
 
     /// Given: Create a blog, a post on that blog, a comment on that post.
@@ -131,7 +185,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
         }
 
         let completeInvoked = expectation(description: "request completed")
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: BlogPostCommentGraphQLWithAPIKeyTests.blogPostGraphQLWithAPIKey,
                                      document: GetBlogQuery.document,
                                      variables: GetBlogQuery.variables(id: blog.id),
                                      responseType: GetBlogQuery.Data.self)
@@ -162,7 +216,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
             }
         }
         XCTAssertNotNil(queryOperation)
-        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        waitForExpectations(timeout: BlogPostCommentGraphQLWithAPIKeyTests.networkTimeout)
     }
 
     // MARK: Common functionality
@@ -170,7 +224,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
     func createBlog(id: String, name: String) -> Blog? {
         var blog: Blog?
         let completeInvoked = expectation(description: "request completed")
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: BlogPostCommentGraphQLWithAPIKeyTests.blogPostGraphQLWithAPIKey,
                                      document: CreateBlogMutation.document,
                                      variables: CreateBlogMutation.variables(id: id, name: name),
                                      responseType: CreateBlogMutation.Data.self)
@@ -194,14 +248,14 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        waitForExpectations(timeout: BlogPostCommentGraphQLWithAPIKeyTests.networkTimeout)
         return blog
     }
 
     func createPost(postBlogId: String, title: String) -> Post? {
         var post: Post?
         let completeInvoked = expectation(description: "request completed")
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: BlogPostCommentGraphQLWithAPIKeyTests.blogPostGraphQLWithAPIKey,
                                      document: CreatePostMutation.document,
                                      variables: CreatePostMutation.variables(postBlogId: postBlogId,
                                                                              title: title),
@@ -226,14 +280,14 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        waitForExpectations(timeout: BlogPostCommentGraphQLWithAPIKeyTests.networkTimeout)
         return post
     }
 
     func createComment(commentPostId: String, content: String) -> Comment? {
         var comment: Comment?
         let completeInvoked = expectation(description: "request completed")
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.blogPostGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: BlogPostCommentGraphQLWithAPIKeyTests.blogPostGraphQLWithAPIKey,
                                      document: CreateCommentMutation.document,
                                      variables: CreateCommentMutation.variables(commentPostId: commentPostId,
                                                                                 content: content),
@@ -259,7 +313,7 @@ class AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests: AWSAPICategoryP
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        waitForExpectations(timeout: BlogPostCommentGraphQLWithAPIKeyTests.networkTimeout)
         return comment
     }
 

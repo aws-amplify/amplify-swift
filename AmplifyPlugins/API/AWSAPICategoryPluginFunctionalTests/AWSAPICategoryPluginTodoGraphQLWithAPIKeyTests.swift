@@ -12,7 +12,65 @@ import AWSAPICategoryPlugin
 
 // swiftlint:disable type_body_length
 // These test show the basic functionality of mutate/query/subscribe methods
-class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTests {
+class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: XCTestCase {
+
+    /*
+     These are the instructions to set up the `todoGraphQLWithAPIKey` api. If for whatever reason, test resources are
+     deleted from test credentails then these are the steps to recreate the resource:
+     1. Run `amplify init` and choose `ios` for the type of app you're building
+
+     2. Add api `amplify add api`
+        * Please select from one of the below mentioned services `GraphQL`
+        * Provide API name: `amplifyapigraphqlsam`
+        * Choose the default authorization type for the API `API key`
+        * Enter a description for the API key: `keyy`
+        * After how many days from now the API key should expire (1-365): `180`
+        * Do you want to configure advanced settings for the GraphQL API `No, I am done.`
+        * Do you have an annotated GraphQL schema? `No`
+        * Do you want a guided schema creation? `Yes`
+        * What best describes your project: `Single object with fields (e.g., “Todo” with ID, name, description)`
+        * Do you want to edit the schema now? `No`
+
+     3. `amplify push`
+        * Do you want to generate code for your newly created GraphQL API `Yes`
+        * Enter the file name pattern of graphql queries, mutations and subscriptions `graphql/**/*.graphql`
+        * Do you want to generate/update all possible GraphQL operations - queries, mutations and subscriptions `Yes`
+        * Enter maximum statement depth [increase from default if your schema is deeply nested] `2`
+        * Enter the file name for the generated code `API.swift`
+         * GraphQL endpoint: `https://szc4yxxxxxxxxxxqaaiwoqe.appsync-api.us-east-1.amazonaws.com/graphql`
+         * GraphQL API KEY: `da2-kjsuxxxxxxxxxx4pujny`
+     */
+    static let todoGraphQLWithAPIKey = "todoGraphQLWithAPIKey"
+
+    static let networkTimeout = TimeInterval(180)
+
+    override func setUp() {
+        Amplify.reset()
+        let plugin = AWSAPICategoryPlugin()
+
+        let apiConfig = APICategoryConfiguration(plugins: [
+            "AWSAPICategoryPlugin": [
+                AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey: [
+                    "Endpoint": "https://akeljq43xfcvpj4hh55fafcrm4.appsync-api.us-west-2.amazonaws.com/graphql",
+                    "Region": "us-west-2",
+                    "AuthorizationType": "API_KEY",
+                    "ApiKey": "da2-6m3mowpbavh55kscoikywhqova"
+                ],
+            ]
+        ])
+
+        let amplifyConfig = AmplifyConfiguration(api: apiConfig)
+        do {
+            try Amplify.add(plugin: plugin)
+            try Amplify.configure(amplifyConfig)
+        } catch {
+            XCTFail("Error during setup: \(error)")
+        }
+    }
+
+    override func tearDown() {
+        Amplify.reset()
+    }
 
     /// Given: A CreateTodo mutation request
     /// When: Call mutate API
@@ -23,7 +81,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
         let expectedDescription = "testCreateTodoMutationDescription"
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
                                      document: CreateTodoMutation.document,
                                      variables: CreateTodoMutation.variables(id: expectedId,
                                                                              name: expectedName,
@@ -55,7 +113,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        waitForExpectations(timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
     }
 
     /// Given: A CreateTodo mutation request with input variable in document and missing values from variables
@@ -65,7 +123,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let completeInvoked = expectation(description: "request completed")
         let uuid = UUID().uuidString
         let description = "testCreateTodoMutationWithMissingInputFromVariables"
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
                                      document: CreateTodoMutation.document,
                                      variables: CreateTodoMutation.variables(id: uuid,
                                                                              name: "",
@@ -88,7 +146,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        waitForExpectations(timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
     }
 
     /// Given: A CreateTodo mutation request with incorrect repsonse type (ListTodo instead of Todo)
@@ -100,7 +158,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
         let expectedDescription = "testCreateTodoMutationDescription"
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
                                      document: CreateTodoMutation.document,
                                      variables: CreateTodoMutation.variables(id: expectedId,
                                                                              name: expectedName,
@@ -121,7 +179,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        waitForExpectations(timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
     }
 
     /// Given: A Todo is created successfully
@@ -138,7 +196,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         }
 
         let completeInvoked = expectation(description: "request completed")
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
                                      document: GetTodoQuery.document,
                                      variables: GetTodoQuery.variables(id: todo.id),
                                      responseType: GetTodoQuery.Data.self)
@@ -167,7 +225,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             }
         }
         XCTAssertNotNil(queryOperation)
-        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        waitForExpectations(timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
     }
 
     /// Given: A newly generated random uuid
@@ -177,7 +235,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let uuid = UUID().uuidString
 
         let completeInvoked = expectation(description: "request completed")
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
                                      document: GetTodoQuery.document,
                                      variables: GetTodoQuery.variables(id: uuid),
                                      responseType: GetTodoQuery.Data.self)
@@ -198,7 +256,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        waitForExpectations(timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
     }
 
     /// Given: A successful Todo created and an Update mutation request
@@ -216,7 +274,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let expectedName = name + "Updated"
         let expectedDescription = description + "Updated"
         let completeInvoked = expectation(description: "request completed")
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
                                      document: UpdateTodoMutation.document,
                                      variables: UpdateTodoMutation.variables(id: todo.id,
                                                                              name: expectedName,
@@ -246,7 +304,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        waitForExpectations(timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
     }
 
     /// Given: A successful Todo created and a Delete mutation request
@@ -263,7 +321,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         }
 
         let deleteCompleteInvoked = expectation(description: "request completed")
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
                                      document: DeleteTodoMutation.document,
                                      variables: DeleteTodoMutation.variables(id: todo.id),
                                      responseType: DeleteTodoMutation.Data.self)
@@ -291,10 +349,10 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             }
         }
         XCTAssertNotNil(deleteOperation)
-        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        waitForExpectations(timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
 
         let queryCompleteInvoked = expectation(description: "request completed")
-        let getTodoRequest = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        let getTodoRequest = GraphQLRequest(apiName: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
                                             document: GetTodoQuery.document,
                                             variables: GetTodoQuery.variables(id: todo.id),
                                             responseType: GetTodoQuery.Data.self)
@@ -317,7 +375,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             }
         }
         XCTAssertNotNil(queryOperation)
-        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        waitForExpectations(timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
     }
 
     // TODO: first time run fails, hm
@@ -335,7 +393,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         }
 
         let listCompleteInvoked = expectation(description: "request completed")
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
                                      document: ListTodosQuery.document,
                                      variables: nil,
                                      responseType: ListTodosQuery.Data.self)
@@ -360,7 +418,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        waitForExpectations(timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
     }
 
     /// When: Call query API with ListTodo mutation with filter on the random Id
@@ -370,7 +428,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let filter = ["id": ["eq": uuid]]
         let variables = ListTodosQuery.variables(filter: filter, limit: 10)
         let listCompleteInvoked = expectation(description: "request completed")
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
                                      document: ListTodosQuery.document,
                                      variables: variables,
                                      responseType: ListTodosQuery.Data.self)
@@ -395,7 +453,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        waitForExpectations(timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
     }
 
     /// Given: A successful subscription is created for CreateTodo's
@@ -407,7 +465,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let completedInvoked = expectation(description: "Completed invoked")
         let progressInvoked = expectation(description: "progress invoked")
         progressInvoked.expectedFulfillmentCount = 2
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
                                      document: OnCreateTodoSubscription.document,
                                      variables: nil,
                                      responseType: OnCreateTodoSubscription.Data.self)
@@ -438,7 +496,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             }
         }
         XCTAssertNotNil(operation)
-        wait(for: [connectedInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        wait(for: [connectedInvoked], timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let name = testMethodName + "Name"
@@ -455,9 +513,9 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             return
         }
 
-        wait(for: [progressInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        wait(for: [progressInvoked], timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
         operation.cancel()
-        wait(for: [disconnectedInvoked, completedInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        wait(for: [disconnectedInvoked, completedInvoked], timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
         XCTAssertTrue(operation.isFinished)
     }
 
@@ -470,7 +528,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let completedInvoked = expectation(description: "Completed invoked")
         let progressInvoked = expectation(description: "progress invoked")
         progressInvoked.expectedFulfillmentCount = 2
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
                                      document: OnUpdateTodoSubscription.document,
                                      variables: nil,
                                      responseType: OnUpdateTodoSubscription.Data.self)
@@ -501,7 +559,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             }
         }
         XCTAssertNotNil(operation)
-        wait(for: [connectedInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        wait(for: [connectedInvoked], timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let name = testMethodName + "Name"
@@ -522,9 +580,9 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             return
         }
 
-        wait(for: [progressInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        wait(for: [progressInvoked], timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
         operation.cancel()
-        wait(for: [disconnectedInvoked, completedInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        wait(for: [disconnectedInvoked, completedInvoked], timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
         XCTAssertTrue(operation.isFinished)
     }
 
@@ -536,7 +594,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let disconnectedInvoked = expectation(description: "Connection disconnected")
         let completedInvoked = expectation(description: "Completed invoked")
         let progressInvoked = expectation(description: "progress invoked")
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
                                      document: OnDeleteTodoSubscription.document,
                                      variables: nil,
                                      responseType: OnDeleteTodoSubscription.Data.self)
@@ -567,7 +625,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             }
         }
         XCTAssertNotNil(operation)
-        wait(for: [connectedInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        wait(for: [connectedInvoked], timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let name = testMethodName + "Name"
@@ -583,9 +641,9 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             return
         }
 
-        wait(for: [progressInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        wait(for: [progressInvoked], timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
         operation.cancel()
-        wait(for: [disconnectedInvoked, completedInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        wait(for: [disconnectedInvoked, completedInvoked], timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
         XCTAssertTrue(operation.isFinished)
     }
 
@@ -612,7 +670,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             XCTAssertTrue(operation.isExecuting)
             operation.cancel()
         }
-        wait(for: [completedInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        wait(for: [completedInvoked], timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
         for operation in operations {
             XCTAssertTrue(operation.isFinished)
         }
@@ -624,7 +682,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let completeInvoked = expectation(description: "Completd is invoked")
         var todo: Todo?
 
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
                                      document: CreateTodoMutation.document,
                                      variables: CreateTodoMutation.variables(id: id,
                                                                              name: name,
@@ -650,7 +708,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                 XCTFail("Unexpected event: \(event)")
             }
         }
-        wait(for: [completeInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        wait(for: [completeInvoked], timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
         return todo
     }
 
@@ -658,7 +716,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let completeInvoked = expectation(description: "Completd is invoked")
         var todo: Todo?
 
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
                                      document: UpdateTodoMutation.document,
                                      variables: UpdateTodoMutation.variables(id: id,
                                                                              name: name,
@@ -684,7 +742,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                 XCTFail("Unexpected event: \(event)")
             }
         }
-        wait(for: [completeInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        wait(for: [completeInvoked], timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
         return todo
     }
 
@@ -692,7 +750,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
         let completeInvoked = expectation(description: "Completd is invoked")
         var todo: Todo?
 
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
                                      document: DeleteTodoMutation.document,
                                      variables: DeleteTodoMutation.variables(id: id),
                                      responseType: DeleteTodoMutation.Data.self)
@@ -716,13 +774,13 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
                 XCTFail("Unexpected event: \(event)")
             }
         }
-        wait(for: [completeInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        wait(for: [completeInvoked], timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
         return todo
     }
 
     func createTodoSubscription() -> GraphQLSubscriptionOperation<OnCreateTodoSubscription.Data> {
         let connectedInvoked = expectation(description: "Connection established")
-        let request = GraphQLRequest(apiName: IntegrationTestConfiguration.todoGraphQLWithAPIKey,
+        let request = GraphQLRequest(apiName: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
                                      document: OnCreateTodoSubscription.document,
                                      variables: nil,
                                      responseType: OnCreateTodoSubscription.Data.self)
@@ -746,7 +804,7 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: AWSAPICategoryPluginBaseTe
             }
         }
         XCTAssertNotNil(operation)
-        wait(for: [connectedInvoked], timeout: AWSAPICategoryPluginBaseTests.networkTimeout)
+        wait(for: [connectedInvoked], timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
         return operation
     }
 }

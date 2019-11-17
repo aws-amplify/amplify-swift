@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-
+/// TODO: Replace with AmplifyTestCommon's DataStore's geneated model
 /// This model corresponds to the resources created for the Todo graphQL endpoint. As a developer, this is
 /// hand-written from the codegen that created the API.swift that depends on AppSync sdk.
 struct Todo: Decodable {

@@ -8,6 +8,8 @@
 import Foundation
 import Amplify
 
+/// TODO: Replace with AmplifyTestCommon's DataStore's geneated model
+
 struct Blog: Decodable {
     let id: String
     let name: String
