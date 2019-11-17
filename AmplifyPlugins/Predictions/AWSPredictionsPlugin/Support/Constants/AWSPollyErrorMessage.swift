@@ -11,7 +11,7 @@ import AWSPolly
 typealias AWSPollyErrorString = (errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion)
 
 struct AWSPollyErrorMessage {
-    static let accessDenied: AWSComprehendErrorString = (
+    static let accessDenied: AWSPollyErrorString = (
         "Access denied!",
         "Please check that your Cognito IAM role has permissions to access Polly.")
     // swiftlint:disable cyclomatic_complexity

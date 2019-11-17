@@ -8,13 +8,14 @@
 import AWSTextract
 import Amplify
 
-typealias AWSTextractErrorString = (ErrorDescription, RecoverySuggestion)
+typealias AWSTextractErrorString = (errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion)
 
 struct AWSTextractErrorMessage {
-    static let accessDenied: AWSComprehendErrorString = (
+    static let accessDenied: AWSTextractErrorString = (
         "Access denied!",
         "Please check that your Cognito IAM role has permissions to access Textract.")
 
+    // swiftlint:disable cyclomatic_complexity
     static func map(_ errorType: AWSTextractErrorType) -> PredictionsError? {
         switch errorType {
         case .accessDenied:

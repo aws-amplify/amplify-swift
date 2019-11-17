@@ -8,13 +8,16 @@
 import AWSRekognition
 import Amplify
 
-typealias AWSRekognitionErrorMessageString = (ErrorDescription, RecoverySuggestion)
+typealias AWSRekognitionErrorMessageString = (
+    errorDescription: ErrorDescription,
+    recoverySuggestion: RecoverySuggestion)
 
 struct AWSRekognitionErrorMessage {
-    static let accessDenied: AWSComprehendErrorString = (
+    static let accessDenied: AWSRekognitionErrorMessageString = (
         "Access denied!",
         "Please check that your Cognito IAM role has permissions to access Rekognition.")
 
+    // swiftlint:disable cyclomatic_complexity
     static func map(_ errorType: AWSRekognitionErrorType) -> PredictionsError? {
         switch errorType {
         case .accessDenied:
