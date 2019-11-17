@@ -31,7 +31,7 @@ class AWSAPICategoryPluginGetTests: XCTestCase {
                     "Endpoint": "https://rqdxvfh3ue.execute-api.us-east-1.amazonaws.com/Prod",
                     "Region": "us-east-1",
                     "AuthorizationType": "API_KEY",
-                    "ApiKey": "KjbPeqbh9F7hc2n2UVkpfD8WKF1kkYX3ydrkyHq6"
+                    "ApiKey": "KjbPeqbh9F7hc2n2UVkpfD8WKF1kkYX3ydrkyHq6",
                     "EndpointType": "REST"
                 ]
             ]

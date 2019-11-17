@@ -6,7 +6,6 @@
 //
 
 import XCTest
-@testable import AWSAPICategoryHostAppWithIAM
 @testable import Amplify
 import AWSAPICategoryPlugin
 import AWSMobileClient

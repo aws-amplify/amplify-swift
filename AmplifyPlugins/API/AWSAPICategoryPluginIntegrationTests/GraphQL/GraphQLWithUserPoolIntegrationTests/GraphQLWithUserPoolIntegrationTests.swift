@@ -102,7 +102,8 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                 GraphQLWithUserPoolIntegrationTests.todoGraphQLWithUserPools: [
                     "Endpoint": "https://ggp44fsi3fg5hhg5vq6r65a5wu.appsync-api.us-east-1.amazonaws.com/graphql",
                     "Region": "us-east-1",
-                    "AuthorizationType": "AMAZON_COGNITO_USER_POOLS"
+                    "AuthorizationType": "AMAZON_COGNITO_USER_POOLS",
+                    "EndpointType": "GraphQL"
                 ]
             ]
         ])
