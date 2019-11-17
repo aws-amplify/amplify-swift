@@ -22,7 +22,8 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             RESTWithIAMIntegrationTests.restAPI: [
                 "Endpoint": "https://crmjcxtcwa.execute-api.us-west-2.amazonaws.com/devo",
                 "Region": "us-west-2",
-                "AuthorizationType": "AWS_IAM"
+                "AuthorizationType": "AWS_IAM",
+                "EndpointType": "REST"
             ]
         ]
     ])
@@ -69,7 +70,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
     }
 
     func testRESTAPI() {
-        let getCompleted = expectation(description: "get request completed")
+        let completeInvoked = expectation(description: "request completed")
         let request = RESTRequest(apiName: RESTWithIAMIntegrationTests.restAPI,
                                   path: "/items")
         _ = Amplify.API.get(request: request) { event in
@@ -79,7 +80,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
                 print(data)
                 let result = String(decoding: data, as: UTF8.self)
                 print(result)
-                getCompleted.fulfill()
+                completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")
             default:
@@ -87,8 +88,141 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [getCompleted], timeout: RESTWithIAMIntegrationTests.networkTimeout)
+        wait(for: [completeInvoked], timeout: RESTWithIAMIntegrationTests.networkTimeout)
     }
+
+    func testGetAPISuccess() {
+        let completeInvoked = expectation(description: "request completed")
+        let request = RESTRequest(apiName: RESTWithIAMIntegrationTests.restAPI,
+                                  path: "/items")
+        _ = Amplify.API.get(request: request) { event in
+            switch event {
+            case .completed(let data):
+                // The endpoint echoes the request back, so we don't need to assert the whole thing
+                print(data)
+                let result = String(decoding: data, as: UTF8.self)
+                print(result)
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+
+        wait(for: [completeInvoked], timeout: RESTWithIAMIntegrationTests.networkTimeout)
+    }
+
+    func testPutAPISuccess() {
+        let completeInvoked = expectation(description: "request completed")
+        let request = RESTRequest(apiName: RESTWithIAMIntegrationTests.restAPI,
+                                  path: "/items")
+        _ = Amplify.API.put(request: request) { event in
+            switch event {
+            case .completed(let data):
+                // The endpoint echoes the request back, so we don't need to assert the whole thing
+                print(data)
+                let result = String(decoding: data, as: UTF8.self)
+                print(result)
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+
+        wait(for: [completeInvoked], timeout: RESTWithIAMIntegrationTests.networkTimeout)
+    }
+
+    func testPostAPISuccess() {
+        let completeInvoked = expectation(description: "request completed")
+        let request = RESTRequest(apiName: RESTWithIAMIntegrationTests.restAPI,
+                                  path: "/items")
+        _ = Amplify.API.post(request: request) { event in
+            switch event {
+            case .completed(let data):
+                // The endpoint echoes the request back, so we don't need to assert the whole thing
+                print(data)
+                let result = String(decoding: data, as: UTF8.self)
+                print(result)
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+
+        wait(for: [completeInvoked], timeout: RESTWithIAMIntegrationTests.networkTimeout)
+    }
+
+    func testDeleteAPISuccess() {
+        let completeInvoked = expectation(description: "request completed")
+        let request = RESTRequest(apiName: RESTWithIAMIntegrationTests.restAPI,
+                                  path: "/items")
+        _ = Amplify.API.delete(request: request) { event in
+            switch event {
+            case .completed(let data):
+                // The endpoint echoes the request back, so we don't need to assert the whole thing
+                print(data)
+                let result = String(decoding: data, as: UTF8.self)
+                print(result)
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+
+        wait(for: [completeInvoked], timeout: RESTWithIAMIntegrationTests.networkTimeout)
+    }
+
+    func testHeadAPISuccess() {
+        let completeInvoked = expectation(description: "request completed")
+        let request = RESTRequest(apiName: RESTWithIAMIntegrationTests.restAPI,
+                                  path: "/items")
+        _ = Amplify.API.head(request: request) { event in
+            switch event {
+            case .completed(let data):
+                // The endpoint echoes the request back, so we don't need to assert the whole thing
+                print(data)
+                let result = String(decoding: data, as: UTF8.self)
+                print(result)
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+
+        wait(for: [completeInvoked], timeout: RESTWithIAMIntegrationTests.networkTimeout)
+    }
+
+    func testPatchAPISuccess() {
+        let completeInvoked = expectation(description: "request completed")
+        let request = RESTRequest(apiName: RESTWithIAMIntegrationTests.restAPI,
+                                  path: "/items")
+        _ = Amplify.API.patch(request: request) { event in
+            switch event {
+            case .completed(let data):
+                // The endpoint echoes the request back, so we don't need to assert the whole thing
+                print(data)
+                let result = String(decoding: data, as: UTF8.self)
+                print(result)
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+
+        wait(for: [completeInvoked], timeout: RESTWithIAMIntegrationTests.networkTimeout)
+    }
+
 
     // MARK: - Utilities
 

@@ -44,13 +44,15 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
                     "Endpoint": "https://dtoaraxmjjdbjfmoqwowubiyua.appsync-api.us-east-1.amazonaws.com/graphql",
                     "Region": "us-east-1",
                     "AuthorizationType": "API_KEY",
-                    "ApiKey": "da2-4th2pofe7ne4xdm3va23hvovfa"
+                    "ApiKey": "da2-4th2pofe7ne4xdm3va23hvovfa",
+                    "EndpointType": "GraphQL"
                 ],
                 BlogPostCommentGraphQLWithAPIKeyTests.blogPostGraphQLWithInvalidAPIKey: [
                     "Endpoint": "https://dtoaraxmjjdbjfmoqwowubiyua.appsync-api.us-east-1.amazonaws.com/graphql",
                     "Region": "us-east-1",
                     "AuthorizationType": "API_KEY",
-                    "ApiKey": "da2-invalidAPIKey"
+                    "ApiKey": "da2-invalidAPIKey",
+                    "EndpointType": "GraphQL"
                 ],
             ]
         ])

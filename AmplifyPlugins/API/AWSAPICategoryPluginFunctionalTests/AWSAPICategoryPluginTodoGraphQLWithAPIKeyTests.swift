@@ -54,7 +54,8 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: XCTestCase {
                     "Endpoint": "https://akeljq43xfcvpj4hh55fafcrm4.appsync-api.us-west-2.amazonaws.com/graphql",
                     "Region": "us-west-2",
                     "AuthorizationType": "API_KEY",
-                    "ApiKey": "da2-6m3mowpbavh55kscoikywhqova"
+                    "ApiKey": "da2-6m3mowpbavh55kscoikywhqova",
+                    "EndpointType": "GraphQL"
                 ],
             ]
         ])

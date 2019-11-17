@@ -130,7 +130,8 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
                 "todoGraphQLWithIAM": [
                     "Endpoint": "https://fsdfgjw5ojdanhivobrnmw54s4.appsync-api.us-east-1.amazonaws.com/graphql",
                     "Region": "us-east-1",
-                    "AuthorizationType": "AWS_IAM"
+                    "AuthorizationType": "AWS_IAM",
+                    "EndpointType": "GraphQL"
                 ]
             ]
         ])
