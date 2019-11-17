@@ -29,7 +29,7 @@ struct AWSTextractErrorMessage {
         case .idempotentParameterMismatch:
             break
         case .internalServer:
-            break
+             return PredictionsError.internalServiceError("", "")
         case .invalidJobId:
             break
         case .invalidParameter:

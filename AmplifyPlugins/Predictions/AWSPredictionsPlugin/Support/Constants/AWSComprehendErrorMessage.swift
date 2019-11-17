@@ -38,7 +38,7 @@ struct AWSComprehendErrorMessage {
         case .concurrentModification:
             break
         case .internalServer:
-            break
+            return PredictionsError.internalServiceError("", "")
         case .invalidFilter:
             break
         case .invalidRequest:

@@ -19,13 +19,6 @@ struct AWSTranslateErrorMessage {
         "A language was detected but with very low confidence",
         "Please make sure you sent in one of the available languages for Translate")
 
-    static let internalServerError: AWSTranslateErrorMessageString = (
-        "An internal server error occurred",
-        """
-        Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any
-        existing issues that match your scenario, and file an issue with the details of the bug if there isn't.
-        """)
-
     static let invalidParameterValue: AWSTranslateErrorMessageString = (
         "An invalid or out-of-range value was supplied for the input parameter.",
         "Please check your request and try again.")
@@ -49,16 +42,21 @@ struct AWSTranslateErrorMessage {
     static let textSizeLimitExceeded: AWSTranslateErrorMessageString = (
         "The size of the text string exceeded the limit. The limit is the first 256 terms in a string of text.",
         "Please send a shorter text string.")
-    
+
     static let tooManyRequests: AWSTranslateErrorMessageString = (
         """
-        Too many requests made, the limit of requests was exceeded. Please check the limits here https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html#limits_amazon_translate
+        Too many requests made, the limit of requests was exceeded.
+        Please check the limits here
+        https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html#limits_amazon_translate
         """,
         "Please decrease the number of requests and try again.")
-    
+
     static let unsupportedLanguagePair: AWSTranslateErrorMessageString = (
         "Your target language and source language are an unsupported language pair.",
-        "Please refer to this table to see supported language pairs https://docs.aws.amazon.com/translate/latest/dg/what-is.html.")
+        """
+        Please refer to this table to see supported language pairs
+        https://docs.aws.amazon.com/translate/latest/dg/what-is.html.
+        """)
 
     // swiftlint:disable cyclomatic_complexity
     static func map(_ errorType: AWSTranslateErrorType) -> PredictionsError? {
@@ -68,9 +66,7 @@ struct AWSTranslateErrorMessage {
                 detectedLanguageLowConfidence.errorDescription,
                 detectedLanguageLowConfidence.recoverySuggestion)
         case .internalServer:
-            return PredictionsError.serviceError(
-                internalServerError.errorDescription,
-                internalServerError.recoverySuggestion)
+            return PredictionsError.internalServiceError("", "")
         case .invalidParameterValue:
             return PredictionsError.serviceError(
                 invalidParameterValue.errorDescription,
