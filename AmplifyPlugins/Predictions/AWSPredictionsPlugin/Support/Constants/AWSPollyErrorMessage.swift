@@ -12,51 +12,37 @@ typealias AWSPollyErrorString = (errorDescription: ErrorDescription, recoverySug
 
 struct AWSPollyErrorMessage {
     
+    static let languageNotSupported: AWSPollyErrorString = (
+        "The language specified is not currently supported by Amazon Polly in this capacity.",
+        "For a list of supported languages, check here https://docs.aws.amazon.com/polly/latest/dg/SupportedLanguage.html.")
+    
+    static let serviceFailure: AWSPollyErrorString = (
+        "An unknown condition has caused a service failure.",
+        "Please check to see if there is an outage at https://status.aws.amazon.com/ and reach out to AWS support.")
+    
+    static let textLengthExceeded: AWSPollyErrorString = (
+        "The string of text sent in is longer than the accepted limits.",
+        "The limit for input text is a maximum of 6000 characters total.")
+    
     // swiftlint:disable cyclomatic_complexity
     static func map(_ errorType: AWSPollyErrorType) -> PredictionsError? {
         switch errorType {
-        case .engineNotSupported:
-            break
-        case .invalidLexicon:
-            break
-        case .invalidNextToken:
-            break
-        case .invalidSampleRate:
-            break
-        case .invalidSsml:
-            break
-        case .invalidTaskId:
-            break
         case .languageNotSupported:
-            break
-        case .lexiconNotFound:
-            break
-        case .lexiconSizeExceeded:
-            break
-        case .marksNotSupportedForFormat:
-            break
-        case .maxLexemeLengthExceeded:
-            break
-        case .maxLexiconsNumberExceeded:
-            break
+            return PredictionsError.serviceError(
+                languageNotSupported.errorDescription,
+                languageNotSupported.recoverySuggestion)
         case .serviceFailure:
-            break
-        case .ssmlMarksNotSupportedForTextType:
-            break
-        case .synthesisTaskNotFound:
-            break
+            return PredictionsError.serviceError(
+                serviceFailure.errorDescription,
+                serviceFailure.recoverySuggestion)
         case .textLengthExceeded:
-            break
+            return PredictionsError.serviceError(
+                textLengthExceeded.errorDescription,
+                textLengthExceeded.recoverySuggestion)
         case .unknown:
             return PredictionsError.unknownError("An unknown error occurred.", "")
-        case .unsupportedPlsAlphabet:
-            break
-        case .unsupportedPlsLanguage:
-            break
         default:
             return nil
         }
-
-        return nil
     }
 }

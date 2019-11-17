@@ -17,18 +17,6 @@ struct AWSRekognitionErrorMessage {
         "Access denied!",
         "Please check that your Cognito IAM role has permissions to access Rekognition.")
     
-    static let idempotentParameterMismatch: AWSRekognitionErrorMessageString = (
-        """
-        A ClientRequestToken input parameter was reused with an operation,
-        but at least one of the other input parameters is different from
-        the previous call to the operation.
-        """,
-        """
-        This shouldn't happen. Please make sure your requests are sending correctly
-        and if still no luck, please submit a github issue here
-        https://github.com/aws-amplify/amplify-ios/issues.
-        """)
-    
     static let imageTooLarge: AWSRekognitionErrorMessageString = (
         "The image you sent was too large.",
         "Try downsizing the image and sending it again.")
@@ -36,10 +24,6 @@ struct AWSRekognitionErrorMessage {
     static let invalidImageFormat: AWSRekognitionErrorMessageString = (
         "The provided image format isn't supported.",
         "Use a supported image format (.JPEG and .PNG) and try again.")
-    
-    static let invalidPaginationToken: AWSRekognitionErrorMessageString = (
-        "The pagination token in the request isn't valid. The token might have expired.",
-        "Please try your request again.")
     
     static let invalidParameter: AWSRekognitionErrorMessageString = (
         "An input parameter violated a constraint.",
@@ -84,10 +68,6 @@ struct AWSRekognitionErrorMessage {
             return PredictionsError.accessDenied(
                 accessDenied.errorDescription,
                 accessDenied.recoverySuggestion)
-        case .idempotentParameterMismatch:
-            return PredictionsError.serviceError(
-                idempotentParameterMismatch.errorDescription,
-                idempotentParameterMismatch.recoverySuggestion)
         case .imageTooLarge:
             return PredictionsError.serviceError(
                 imageTooLarge.errorDescription,
@@ -98,10 +78,6 @@ struct AWSRekognitionErrorMessage {
             return PredictionsError.serviceError(
                 invalidImageFormat.errorDescription,
                 invalidImageFormat.recoverySuggestion)
-        case .invalidPaginationToken:
-            return PredictionsError.serviceError(
-                invalidPaginationToken.errorDescription,
-                invalidPaginationToken.recoverySuggestion)
         case .invalidParameter:
             return PredictionsError.serviceError(
                 invalidParameter.errorDescription,

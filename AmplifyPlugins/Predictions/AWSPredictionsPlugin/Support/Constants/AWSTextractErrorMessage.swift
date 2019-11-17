@@ -35,18 +35,6 @@ struct AWSTextractErrorMessage {
         https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html#limits_textract
         """)
     
-    static let idempotentParameterMismatch: AWSTextractErrorString = (
-        """
-        A ClientRequestToken input parameter was reused with an operation,
-        but at least one of the other input parameters is different from
-        the previous call to the operation.
-        """,
-        """
-        This shouldn't happen. Please make sure your requests are sending correctly
-        and if still no luck, please submit a github issue here
-        https://github.com/aws-amplify/amplify-ios/issues.
-        """)
-    
     static let invalidParameter: AWSTextractErrorString = (
         "An input parameter violated a constraint.",
         "Validate your parameters before calling the API operation again.")
@@ -78,10 +66,6 @@ struct AWSTextractErrorMessage {
             return PredictionsError.serviceError(
                 documentTooLarge.errorDescription,
                 documentTooLarge.recoverySuggestion)
-        case .idempotentParameterMismatch:
-            return PredictionsError.serviceError(
-                idempotentParameterMismatch.errorDescription,
-                idempotentParameterMismatch.recoverySuggestion)
         case .internalServer:
             return PredictionsError.internalServiceError("", "")
         case .invalidParameter:
