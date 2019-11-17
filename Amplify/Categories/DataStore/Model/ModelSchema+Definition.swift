@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Defines the relatioship type between two models. The type of relationship is
+/// Defines the relationship type between two models. The type of relationship is
 /// important when defining how to store and query them. Each relationship have
 /// its own rules depending on the storage mechanism. For example, on SQL a
 /// `manyToOne`/`oneToMany` relationship has a "foreign key" stored on the "many"
