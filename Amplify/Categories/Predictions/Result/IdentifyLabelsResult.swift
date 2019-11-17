@@ -50,7 +50,7 @@ public struct BoundingBox {
     public let top: Double
     public let width: Double
     public let height: Double
-    
+
     public init(left: Double, top: Double, width: Double, height: Double) {
         self.height = height
         self.left = left

@@ -20,8 +20,8 @@ class SQLiteQueryTranslator: QueryTranslator {
         let name = schema.name
         var statement = "create table if not exists \(name) (\n"
 
-        let columns = schema.allFields.columns()
-        let foreignKeys = schema.allFields.foreignKeys()
+        let columns = schema.columns
+        let foreignKeys = schema.foreignKeys
 
         for (index, column) in columns.enumerated() {
             statement += "  \"\(column.sqlName)\" \(column.sqlType.rawValue)"
@@ -61,7 +61,7 @@ class SQLiteQueryTranslator: QueryTranslator {
     func translateToInsert(from model: Model) -> Query<Binding?> {
         let modelType = type(of: model)
         let schema = modelType.schema
-        let fields = schema.allFields.columns()
+        let fields = schema.columns
         let columns = fields.map { $0.columnName() }
         var statement = "insert into \(schema.name) "
         statement += "(\(columns.joined(separator: ", ")))\n"
@@ -80,7 +80,7 @@ class SQLiteQueryTranslator: QueryTranslator {
     func translateToQuery(from modelType: Model.Type,
                           predicate: QueryPredicate? = nil) -> Query<Binding?> {
         let schema = modelType.schema
-        let fields = schema.allFields.columns()
+        let fields = schema.columns
         let tableName = schema.name
         var columns = fields.map { field -> String in
             return field.columnName(forNamespace: "root") + " " + field.columnAlias()
@@ -88,7 +88,7 @@ class SQLiteQueryTranslator: QueryTranslator {
 
         // eager load many-to-one relationships (simple inner join)
         var joinStatements: [String] = []
-        for foreignKey in schema.allFields.foreignKeys() {
+        for foreignKey in schema.foreignKeys {
             let connectedModelType = foreignKey.requiredConnectedModel
             let connectedSchema = connectedModelType.schema
             let connectedTableName = connectedModelType.schema.name
@@ -99,7 +99,7 @@ class SQLiteQueryTranslator: QueryTranslator {
             let foreignKeyName = foreignKey.columnName(forNamespace: "root")
 
             // append columns from relationships
-            columns += connectedSchema.allFields.columns().map { field -> String in
+            columns += connectedSchema.columns.map { field -> String in
                 return field.columnName(forNamespace: alias) + " " + field.columnAlias(forNamespace: alias)
             }
 

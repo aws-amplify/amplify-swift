@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 public struct Selection {
     public let boundingBox: BoundingBox
     public let polygon: Polygon

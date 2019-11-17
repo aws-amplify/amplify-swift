@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 public struct Table {
     public var rows: Int
     public var columns: Int
