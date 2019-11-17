@@ -9,6 +9,7 @@ import SQLite
 import XCTest
 
 @testable import Amplify
+@testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
 class SQLiteStorageEngineAdapterTests: XCTestCase {

@@ -121,6 +121,13 @@
 		B4DFA613237A61D00013E17B /* AWSAPICategoryPluginTodoGraphQLWithIAMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA607237A61D00013E17B /* AWSAPICategoryPluginTodoGraphQLWithIAMTests.swift */; };
 		B4DFA614237A61D00013E17B /* AWSAPICategoryPluginTaskPrivateNoteGraphQLWithUserPoolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA608237A61D00013E17B /* AWSAPICategoryPluginTaskPrivateNoteGraphQLWithUserPoolTests.swift */; };
 		B4DFA615237A61D00013E17B /* AWSAPICategoryPluginGetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA609237A61D00013E17B /* AWSAPICategoryPluginGetTests.swift */; };
+		B9521820237CE69800F53237 /* Model+GraphQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = B952181F237CE69800F53237 /* Model+GraphQL.swift */; };
+		B9521822237D12EC00F53237 /* GraphQLDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9521821237D12EC00F53237 /* GraphQLDocument.swift */; };
+		B9521826237DE74A00F53237 /* ModelSchema+GraphQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9521825237DE74A00F53237 /* ModelSchema+GraphQL.swift */; };
+		B9521828237DE96300F53237 /* GraphQLDocument+Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9521827237DE96300F53237 /* GraphQLDocument+Subscription.swift */; };
+		B952182A237DFD2E00F53237 /* GraphQLDocument+Mutation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9521829237DFD2E00F53237 /* GraphQLDocument+Mutation.swift */; };
+		B952182C237DFDA600F53237 /* GraphQLDocument+Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = B952182B237DFDA600F53237 /* GraphQLDocument+Query.swift */; };
+		B952183A237E251C00F53237 /* GraphQLDocumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9521839237E251C00F53237 /* GraphQLDocumentTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -271,6 +278,13 @@
 		B4DFA608237A61D00013E17B /* AWSAPICategoryPluginTaskPrivateNoteGraphQLWithUserPoolTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginTaskPrivateNoteGraphQLWithUserPoolTests.swift; sourceTree = "<group>"; };
 		B4DFA609237A61D00013E17B /* AWSAPICategoryPluginGetTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginGetTests.swift; sourceTree = "<group>"; };
 		B4DFA60A237A61D00013E17B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B952181F237CE69800F53237 /* Model+GraphQL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+GraphQL.swift"; sourceTree = "<group>"; };
+		B9521821237D12EC00F53237 /* GraphQLDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLDocument.swift; sourceTree = "<group>"; };
+		B9521825237DE74A00F53237 /* ModelSchema+GraphQL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelSchema+GraphQL.swift"; sourceTree = "<group>"; };
+		B9521827237DE96300F53237 /* GraphQLDocument+Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphQLDocument+Subscription.swift"; sourceTree = "<group>"; };
+		B9521829237DFD2E00F53237 /* GraphQLDocument+Mutation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphQLDocument+Mutation.swift"; sourceTree = "<group>"; };
+		B952182B237DFDA600F53237 /* GraphQLDocument+Query.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphQLDocument+Query.swift"; sourceTree = "<group>"; };
+		B9521839237E251C00F53237 /* GraphQLDocumentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLDocumentTests.swift; sourceTree = "<group>"; };
 		C2C05B10D5AD07D6A5C6463D /* Pods-AWSAPICategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAPICategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSAPICategoryPlugin/Pods-AWSAPICategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -336,6 +350,7 @@
 				21D7A093237B54D90057D00D /* Configuration */,
 				21D7A0DE237B54D90057D00D /* Info.plist */,
 				21D7A0D2237B54D90057D00D /* Interceptor */,
+				B952181E237CE67A00F53237 /* Model */,
 				21D7A08C237B54D90057D00D /* Operation */,
 				21D7A09C237B54D90057D00D /* Subscription */,
 				21D7A0BA237B54D90057D00D /* Support */,
@@ -590,6 +605,7 @@
 		B4DFA5BE237A611D0013E17B /* AWSAPICategoryPluginTests */ = {
 			isa = PBXGroup;
 			children = (
+				B9521838237E241D00F53237 /* GraphQL */,
 				B4DFA5DE237A611D0013E17B /* AWSAPICategoryPlugin+ConfigureTests.swift */,
 				B4DFA5CC237A611D0013E17B /* AWSAPICategoryPlugin+GraphQLBehaviorTests.swift */,
 				B4DFA5C9237A611D0013E17B /* AWSAPICategoryPlugin+InterceptorBehaviorTests.swift */,
@@ -727,6 +743,27 @@
 			path = Support;
 			sourceTree = "<group>";
 		};
+		B952181E237CE67A00F53237 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B9521821237D12EC00F53237 /* GraphQLDocument.swift */,
+				B9521829237DFD2E00F53237 /* GraphQLDocument+Mutation.swift */,
+				B952182B237DFDA600F53237 /* GraphQLDocument+Query.swift */,
+				B9521827237DE96300F53237 /* GraphQLDocument+Subscription.swift */,
+				B952181F237CE69800F53237 /* Model+GraphQL.swift */,
+				B9521825237DE74A00F53237 /* ModelSchema+GraphQL.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		B9521838237E241D00F53237 /* GraphQL */ = {
+			isa = PBXGroup;
+			children = (
+				B9521839237E251C00F53237 /* GraphQLDocumentTests.swift */,
+			);
+			path = GraphQL;
+			sourceTree = "<group>";
+		};
 		B9988EB08EC62C1E57FB295B /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -762,12 +799,12 @@
 			buildConfigurationList = B478F6032374DBF400C4F92B /* Build configuration list for PBXNativeTarget "AWSAPICategoryPlugin" */;
 			buildPhases = (
 				5613285A2AA3539567C0FEF0 /* [CP] Check Pods Manifest.lock */,
+				B478F6602374DDAE00C4F92B /* Swift Format */,
+				B478F6612374DDE900C4F92B /* Swift Lint */,
 				B478F5F62374DBF400C4F92B /* Headers */,
 				B478F5F72374DBF400C4F92B /* Sources */,
 				B478F5F82374DBF400C4F92B /* Frameworks */,
 				B478F5F92374DBF400C4F92B /* Resources */,
-				B478F6602374DDAE00C4F92B /* Swift Format */,
-				B478F6612374DDE900C4F92B /* Swift Lint */,
 			);
 			buildRules = (
 			);
@@ -783,11 +820,11 @@
 			buildConfigurationList = B478F6532374DCE700C4F92B /* Build configuration list for PBXNativeTarget "AWSAPICategoryPluginTests" */;
 			buildPhases = (
 				545CD035F7EA47266FCC27C1 /* [CP] Check Pods Manifest.lock */,
+				B478F6642374DE2B00C4F92B /* Swift Format */,
+				B478F6622374DE0100C4F92B /* Swift Lint */,
 				B478F6452374DCE700C4F92B /* Sources */,
 				B478F6462374DCE700C4F92B /* Frameworks */,
 				B478F6472374DCE700C4F92B /* Resources */,
-				B478F6622374DE0100C4F92B /* Swift Lint */,
-				B478F6642374DE2B00C4F92B /* Swift Format */,
 				97332BF0085398F958DF3CA3 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
@@ -1061,7 +1098,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../../.swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
 		};
 		B478F6612374DDE900C4F92B /* Swift Lint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1184,6 +1221,7 @@
 				21D7A0FD237B54D90057D00D /* URLSession+URLSessionBehavior.swift in Sources */,
 				21D7A113237B54D90057D00D /* GraphQLResponseDecoder.swift in Sources */,
 				21D7A0FF237B54D90057D00D /* URLSessionBehavior.swift in Sources */,
+				B9521828237DE96300F53237 /* GraphQLDocument+Subscription.swift in Sources */,
 				21D7A109237B54D90057D00D /* AppSyncConnectionRequest.swift in Sources */,
 				21D7A11F237B54D90057D00D /* APIKeyAuthInterceptor.swift in Sources */,
 				21D7A104237B54D90057D00D /* SubscriptionConstants.swift in Sources */,
@@ -1197,6 +1235,7 @@
 				21D7A0E7237B54D90057D00D /* AWSAPICategoryPlugin+Reset.swift in Sources */,
 				21D7A115237B54D90057D00D /* AWSAPICategoryPlugin+RESTBehavior.swift in Sources */,
 				21D7A0F9237B54D90057D00D /* SubscriptionConnectionFactory.swift in Sources */,
+				B9521822237D12EC00F53237 /* GraphQLDocument.swift in Sources */,
 				21D7A0EA237B54D90057D00D /* AWSAPICategoryPlugin.swift in Sources */,
 				21D7A0E2237B54D90057D00D /* AWSAPIOperation+APIOperation.swift in Sources */,
 				21D7A0F3237B54D90057D00D /* AppSyncConnectionProvider.swift in Sources */,
@@ -1212,13 +1251,17 @@
 				21D7A0EE237B54D90057D00D /* StarscreamWebsocketProvider+ConnectionInterceptable.swift in Sources */,
 				21D7A11E237B54D90057D00D /* CognitoUserPoolsAuthInterceptor.swift in Sources */,
 				21D7A0F6237B54D90057D00D /* SubscriptionConnection.swift in Sources */,
+				B952182C237DFDA600F53237 /* GraphQLDocument+Query.swift in Sources */,
 				21D7A11B237B54D90057D00D /* IAMAuthInterceptor.swift in Sources */,
 				21D7A0F4237B54D90057D00D /* ConnectionProvider.swift in Sources */,
 				21D7A0F2237B54D90057D00D /* AppSyncConnectionProvider+EventHandler.swift in Sources */,
 				21D7A0E4237B54D90057D00D /* APIOperation.swift in Sources */,
+				B952182A237DFD2E00F53237 /* GraphQLDocument+Mutation.swift in Sources */,
 				21D7A11A237B54D90057D00D /* AWSAPICategoryPluginError.swift in Sources */,
 				21D7A117237B54D90057D00D /* UserPoolRequestInterceptor.swift in Sources */,
+				B9521820237CE69800F53237 /* Model+GraphQL.swift in Sources */,
 				21D7A0F1237B54D90057D00D /* AppSyncConnectionProvider+MessageInterceptable.swift in Sources */,
+				B9521826237DE74A00F53237 /* ModelSchema+GraphQL.swift in Sources */,
 				21D7A106237B54D90057D00D /* AWSAppSyncRetryStrategy.swift in Sources */,
 				21D7A112237B54D90057D00D /* GraphQLOperationRequestUtils+Validator.swift in Sources */,
 				21D7A0FC237B54D90057D00D /* URLSessionFactory.swift in Sources */,
@@ -1273,6 +1316,7 @@
 				B4DFA5EB237A611D0013E17B /* AWSAPICategoryPlugin+ResetTests.swift in Sources */,
 				B4DFA5F6237A611D0013E17B /* IAMURLRequestInterceptor.swift in Sources */,
 				B4DFA5ED237A611D0013E17B /* GraphQLResponseDecoderTests.swift in Sources */,
+				B952183A237E251C00F53237 /* GraphQLDocumentTests.swift in Sources */,
 				B4DFA5F3237A611D0013E17B /* GraphQLOperationRequestValidateTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

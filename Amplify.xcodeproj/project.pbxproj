@@ -149,13 +149,13 @@
 		B92E03ED2367D2A4006CEB8D /* Statement+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03E52367D2A4006CEB8D /* Statement+Model.swift */; };
 		B92E03EE2367D2A4006CEB8D /* AWSDataStoreCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03E62367D2A4006CEB8D /* AWSDataStoreCategoryPlugin.swift */; };
 		B92E040423680E2C006CEB8D /* SQLiteStorageEngineAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03EF2367D2BB006CEB8D /* SQLiteStorageEngineAdapterTests.swift */; };
-		B92E040523680E36006CEB8D /* Comment+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03F12367D2BB006CEB8D /* Comment+Schema.swift */; };
-		B92E040623680E36006CEB8D /* schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = B92E03F22367D2BB006CEB8D /* schema.graphql */; };
-		B92E040723680E36006CEB8D /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03F32367D2BB006CEB8D /* Comment.swift */; };
-		B92E040823680E36006CEB8D /* Post+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03F42367D2BB006CEB8D /* Post+Schema.swift */; };
-		B92E040923680E36006CEB8D /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03F52367D2BB006CEB8D /* Post.swift */; };
 		B92E04112368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E04102368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests.swift */; };
 		B92E04132368FE5B006CEB8D /* AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B92E03C02367CFF2006CEB8D /* AWSDataStoreCategoryPlugin.framework */; };
+		B9521833237E21BA00F53237 /* Comment+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B952182E237E21B900F53237 /* Comment+Schema.swift */; };
+		B9521834237E21BA00F53237 /* schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = B952182F237E21B900F53237 /* schema.graphql */; };
+		B9521835237E21BA00F53237 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9521830237E21B900F53237 /* Comment.swift */; };
+		B9521836237E21BA00F53237 /* Post+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9521831237E21B900F53237 /* Post+Schema.swift */; };
+		B9521837237E21BA00F53237 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9521832237E21B900F53237 /* Post.swift */; };
 		B98E9D0D2372236300934B51 /* Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D052372236200934B51 /* Query.swift */; };
 		B98E9D0E2372236300934B51 /* ModelKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D062372236200934B51 /* ModelKey.swift */; };
 		B98E9D0F2372236300934B51 /* QueryOperator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D072372236200934B51 /* QueryOperator.swift */; };
@@ -720,14 +720,14 @@
 		B92E03E52367D2A4006CEB8D /* Statement+Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Statement+Model.swift"; sourceTree = "<group>"; };
 		B92E03E62367D2A4006CEB8D /* AWSDataStoreCategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSDataStoreCategoryPlugin.swift; sourceTree = "<group>"; };
 		B92E03EF2367D2BB006CEB8D /* SQLiteStorageEngineAdapterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteStorageEngineAdapterTests.swift; sourceTree = "<group>"; };
-		B92E03F12367D2BB006CEB8D /* Comment+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment+Schema.swift"; sourceTree = "<group>"; };
-		B92E03F22367D2BB006CEB8D /* schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
-		B92E03F32367D2BB006CEB8D /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
-		B92E03F42367D2BB006CEB8D /* Post+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post+Schema.swift"; sourceTree = "<group>"; };
-		B92E03F52367D2BB006CEB8D /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		B92E040E2368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSDataStoreCategoryPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B92E04102368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreCategoryPluginIntegrationTests.swift; sourceTree = "<group>"; };
 		B92E04122368FE5B006CEB8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B952182E237E21B900F53237 /* Comment+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment+Schema.swift"; sourceTree = "<group>"; };
+		B952182F237E21B900F53237 /* schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
+		B9521830237E21B900F53237 /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
+		B9521831237E21B900F53237 /* Post+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post+Schema.swift"; sourceTree = "<group>"; };
+		B9521832237E21B900F53237 /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		B98A93BFFD5E72827BDCC750 /* Pods_AmplifyTestApp_AWSPredictionsPluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AmplifyTestApp_AWSPredictionsPluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B98E9D052372236200934B51 /* Query.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Query.swift; sourceTree = "<group>"; };
 		B98E9D062372236200934B51 /* ModelKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelKey.swift; sourceTree = "<group>"; };
@@ -1423,7 +1423,6 @@
 		B92E03CE2367CFF3006CEB8D /* AWSDataStoreCategoryPluginTests */ = {
 			isa = PBXGroup;
 			children = (
-				B92E03F02367D2BB006CEB8D /* Models */,
 				B922E27B236BC59F00D09250 /* QueryPredicateTests.swift */,
 				B922E275236A083B00D09250 /* SQLiteQueryTranslatorTests.swift */,
 				B92E03EF2367D2BB006CEB8D /* SQLiteStorageEngineAdapterTests.swift */,
@@ -1456,18 +1455,6 @@
 			path = SQLite;
 			sourceTree = "<group>";
 		};
-		B92E03F02367D2BB006CEB8D /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				B92E03F32367D2BB006CEB8D /* Comment.swift */,
-				B92E03F12367D2BB006CEB8D /* Comment+Schema.swift */,
-				B92E03F52367D2BB006CEB8D /* Post.swift */,
-				B92E03F42367D2BB006CEB8D /* Post+Schema.swift */,
-				B92E03F22367D2BB006CEB8D /* schema.graphql */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
 		B92E040F2368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -1475,6 +1462,25 @@
 				B92E04122368FE5B006CEB8D /* Info.plist */,
 			);
 			path = AWSDataStoreCategoryPluginIntegrationTests;
+			sourceTree = "<group>";
+		};
+		B952181D237CD16200F53237 /* GraphQL */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = GraphQL;
+			sourceTree = "<group>";
+		};
+		B952182D237E21B900F53237 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B9521830237E21B900F53237 /* Comment.swift */,
+				B952182E237E21B900F53237 /* Comment+Schema.swift */,
+				B9521832237E21B900F53237 /* Post.swift */,
+				B9521831237E21B900F53237 /* Post+Schema.swift */,
+				B952182F237E21B900F53237 /* schema.graphql */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		B98E9D032372232100934B51 /* Recovered References */ = {
@@ -1508,6 +1514,7 @@
 		B9DD3F0B23552C4E00D62C65 /* DataStore */ = {
 			isa = PBXGroup;
 			children = (
+				B952181D237CD16200F53237 /* GraphQL */,
 				B92E03A62367CE7A006CEB8D /* Model */,
 				B98E9D042372236200934B51 /* Query */,
 				B92E03A12367CE79006CEB8D /* DataStoreCallback.swift */,
@@ -2096,6 +2103,7 @@
 			isa = PBXGroup;
 			children = (
 				FAC23577227A056F00424678 /* Mocks */,
+				B952182D237E21B900F53237 /* Models */,
 				FACA36062327FBD4000E74F6 /* AmplifyTestCommon.h */,
 				FAC6792C2329B267004DDFE8 /* AtomicValue.swift */,
 				FACA36072327FBD4000E74F6 /* Info.plist */,
@@ -2537,7 +2545,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B92E040623680E36006CEB8D /* schema.graphql in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2594,6 +2601,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B9521834237E21BA00F53237 /* schema.graphql in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3226,13 +3234,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B92E040523680E36006CEB8D /* Comment+Schema.swift in Sources */,
-				B92E040723680E36006CEB8D /* Comment.swift in Sources */,
-				B92E040823680E36006CEB8D /* Post+Schema.swift in Sources */,
 				B92E040423680E2C006CEB8D /* SQLiteStorageEngineAdapterTests.swift in Sources */,
 				B922E27C236BC5A000D09250 /* QueryPredicateTests.swift in Sources */,
 				B922E276236A083B00D09250 /* SQLiteQueryTranslatorTests.swift in Sources */,
-				B92E040923680E36006CEB8D /* Post.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3327,7 +3331,7 @@
 				FA09B9412321BB78000E064D /* JSONValue.swift in Sources */,
 				FA6BC875235F5C270001A882 /* GraphQLOperationRequest.swift in Sources */,
 				95DAAB2E237E63370028544F /* AgeRange.swift in Sources */,
-				FA6BC875235F5C270001A882 /* GraphQLRequest.swift in Sources */,
+				FA6BC875235F5C270001A882 /* GraphQLOperationRequest.swift in Sources */,
 				B4D3853A236C97360014653D /* PredictionsInterpretRequest.swift in Sources */,
 				2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */,
 				FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */,
@@ -3529,14 +3533,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B9521833237E21BA00F53237 /* Comment+Schema.swift in Sources */,
 				B4BD6B3723708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift in Sources */,
 				FACA361C2327FC7D000E74F6 /* MockHubCategoryPlugin.swift in Sources */,
 				FACA361A2327FC69000E74F6 /* MockStorageCategoryPlugin.swift in Sources */,
+				B9521837237E21BA00F53237 /* Post.swift in Sources */,
 				FACA361B2327FC74000E74F6 /* MockLoggingCategoryPlugin.swift in Sources */,
 				FACF52042329633500646E10 /* TestExtensions.swift in Sources */,
+				B9521836237E21BA00F53237 /* Post+Schema.swift in Sources */,
 				FACA36152327FC39000E74F6 /* MessageReporter.swift in Sources */,
 				FACA361D2327FC84000E74F6 /* MockAPICategoryPlugin.swift in Sources */,
 				FAC6792D2329B267004DDFE8 /* AtomicValue.swift in Sources */,
+				B9521835237E21BA00F53237 /* Comment.swift in Sources */,
 				FACA361E2327FC8E000E74F6 /* MockAnalyticsCategoryPlugin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

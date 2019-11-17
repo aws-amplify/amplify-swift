@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 public struct BoundedKeyValue {
     public let key: String
     public let value: String

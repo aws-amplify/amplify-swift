@@ -1,8 +1,8 @@
 //
-//  IdentifyFacesResult.swift
-//  Amplify
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
 //
-//  Created by Stone, Nicki on 11/8/19.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation

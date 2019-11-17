@@ -27,7 +27,7 @@ extension InterpretResult {
         var syntax: [SyntaxToken]?
 
         public init() {}
-        
+
         public func build() -> InterpretResult {
             let result = InterpretResult(keyPhrases: keyPhrases,
                                          sentiment: sentiment,

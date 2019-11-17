@@ -57,41 +57,7 @@ extension ModelField: SQLColumn {
     }
 
     var isForeignKey: Bool {
-        switch typeDefinition {
-        case .model:
-            return true
-        default:
-            return false
-        }
-    }
-
-    /// If the field represents a relationship (aka connected) returns the `Model.Type` of
-    /// the connection. Connected types are represented by `.model(type)` and `.collection(type)`.
-    /// - seealso: `ModelFieldType`
-    var connectedModel: Model.Type? {
-        switch typeDefinition {
-        case .model(let type), .collection(let type):
-            return type
-        default:
-            return nil
-        }
-    }
-
-    /// This calls `connectedModel` but enforces that the field must represent a relationship.
-    /// In case the field type is not a `Model.Type` is calls `preconditionFailure`. Consumers
-    /// should fix their models in order to recover from it, since connected models are required
-    /// to be of `Model.Type`.
-    ///
-    /// **Note:** as a maintainer, make sure you use this computed property only when context
-    /// allows (i.e. the field is a valid relatioship, such as foreign keys).
-    var requiredConnectedModel: Model.Type {
-        guard let modelType = connectedModel else {
-            preconditionFailure("""
-            Model fields that are foreign keys must be connected to another Model.
-            Check the `ModelSchema` section of your "\(name)+Schema.swift" file.
-            """)
-        }
-        return modelType
+        isRelationshipOwner
     }
 
     /// Get the name of the `ModelField` as a SQL column name. Columns can be optionally namespaced
@@ -155,20 +121,18 @@ extension ModelField: SQLColumn {
     }
 }
 
-/// Array utilities for `ModelField`.
-extension Array where Element == ModelField {
+extension ModelSchema {
 
     /// Filter the fields that represent actual columns on the `Model` SQL table. The definition of
     /// a column is a field that either represents a scalar value (e.g. string, number, etc) or
     /// the owner of a foreign key to another `Model`. Fields that reference the inverse side of
     /// the relationship (i.e. the "one" side of a "one-to-many" relationship) are excluded.
-    func columns() -> [ModelField] {
-        return filter { !$0.isConnected || $0.isForeignKey }
+    var columns: [ModelField] {
+        sortedFields.filter { !$0.isConnected || $0.isForeignKey }
     }
 
     /// Filter the fields that represent foreign keys.
-    func foreignKeys() -> [ModelField] {
-        return filter { $0.isForeignKey }
+    var foreignKeys: [ModelField] {
+        sortedFields.filter { $0.isForeignKey }
     }
-
 }

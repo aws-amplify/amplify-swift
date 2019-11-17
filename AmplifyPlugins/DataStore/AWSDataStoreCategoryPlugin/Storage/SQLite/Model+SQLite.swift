@@ -55,7 +55,7 @@ extension Model {
     /// - Returns: an array of SQLite's `Binding` compatible type
     internal func sqlValues(for fields: [ModelField]?) -> [Binding?] {
         let modelType = type(of: self)
-        let modelFields = fields ?? modelType.schema.allFields
+        let modelFields = fields ?? modelType.schema.sortedFields
         let values: [Binding?] = modelFields.map { field in
             let value = self[field.name]
             // TODO why are `nil` optional number types not being skipped as expected?
@@ -107,7 +107,7 @@ extension Array where Element == Model.Type {
 
         func walkConnectedModels(of modelType: Model.Type) {
             if !sortedKeys.contains(modelType.schema.name) {
-                let connectedModels = modelType.schema.allFields
+                let connectedModels = modelType.schema.sortedFields
                     .filter { $0.isForeignKey }
                     .map { $0.connectedModel! }
                 connectedModels.forEach(walkConnectedModels(of:))
