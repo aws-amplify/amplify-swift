@@ -54,7 +54,9 @@ struct AWSTranslateErrorMessage {
                 detectedLanguageLowConfidence.errorDescription,
                 detectedLanguageLowConfidence.recoverySuggestion)
         case .internalServer:
-            return PredictionsError.internalServiceError("", "")
+              return PredictionsError.serviceError(
+                AWSServiceErrorMessage.internalServerError.errorDescription,
+                AWSServiceErrorMessage.internalServerError.recoverySuggestion)
         case .invalidParameterValue:
             return PredictionsError.serviceError(
                 invalidParameterValue.errorDescription,

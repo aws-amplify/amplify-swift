@@ -31,6 +31,14 @@ struct AWSServiceErrorMessage {
         "The resource is currently unavailable.",
         "Please check to see if there is an outage at https://status.aws.amazon.com/ and reach out to AWS support.")
     
+    static let internalServerError: AWSServiceErrorMessageString = (
+        "An internal server error occurred.",
+        """
+        This should never happen. There is a possibility that there is a bug if this error persists.
+        Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any
+        existing issues that match your scenario, and file an issue with the details of the bug if there isn't.
+        """)
+    
     // swiftlint:disable cyclomatic_complexity
     static func map(_ errorType: AWSServiceErrorType) -> PredictionsError? {
         switch errorType {
@@ -55,7 +63,5 @@ struct AWSServiceErrorMessage {
         default:
             return nil
         }
-
-        return nil
     }
 }

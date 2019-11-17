@@ -49,7 +49,9 @@ struct AWSComprehendErrorMessage {
     static func map(_ errorType: AWSComprehendErrorType) -> PredictionsError? {
         switch errorType {
         case .internalServer:
-            return PredictionsError.internalServiceError("", "")
+            return PredictionsError.serviceError(
+            AWSServiceErrorMessage.internalServerError.errorDescription,
+            AWSServiceErrorMessage.internalServerError.recoverySuggestion)
         case .invalidRequest:
             return PredictionsError.serviceError(
                 invalidRequest.errorDescription,

@@ -63,7 +63,9 @@ struct AWSTextractErrorMessage {
                 documentTooLarge.errorDescription,
                 documentTooLarge.recoverySuggestion)
         case .internalServer:
-            return PredictionsError.internalServiceError("", "")
+            return PredictionsError.serviceError(
+            AWSServiceErrorMessage.internalServerError.errorDescription,
+            AWSServiceErrorMessage.internalServerError.recoverySuggestion)
         case .invalidParameter:
             return PredictionsError.serviceError(
                 invalidParameter.errorDescription,

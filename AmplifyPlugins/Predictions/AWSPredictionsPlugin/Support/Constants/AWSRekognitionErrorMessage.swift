@@ -61,7 +61,9 @@ struct AWSRekognitionErrorMessage {
                 imageTooLarge.errorDescription,
                 imageTooLarge.recoverySuggestion)
         case .internalServer:
-            return PredictionsError.internalServiceError("", "")
+            return PredictionsError.serviceError(
+            AWSServiceErrorMessage.internalServerError.errorDescription,
+            AWSServiceErrorMessage.internalServerError.recoverySuggestion)
         case .invalidImageFormat:
             return PredictionsError.serviceError(
                 invalidImageFormat.errorDescription,

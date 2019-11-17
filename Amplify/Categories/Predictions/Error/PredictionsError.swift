@@ -18,7 +18,6 @@ public enum PredictionsError {
     case networkError(ErrorDescription, RecoverySuggestion, Error? = nil)
     case unknownError(ErrorDescription, RecoverySuggestion, Error? = nil)
     case serviceError(ErrorDescription, RecoverySuggestion, Error? = nil)
-    case internalServiceError(ErrorDescription, RecoverySuggestion, Error? = nil)
 }
 
 extension PredictionsError: AmplifyError {
@@ -36,8 +35,6 @@ extension PredictionsError: AmplifyError {
             return "The HTTP response status code is [\(statusCode)]."
         case .serviceError(let errorDescription, _, _):
             return "A service error occurred with message:\(errorDescription)"
-        case .internalServiceError(_, _, _):
-        return "An internal server error occurred."
         }
 
     }
@@ -57,8 +54,7 @@ extension PredictionsError: AmplifyError {
             For more information on HTTP status codes, take a look at
             https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
             """
-        case .internalServiceError,
-             .unknownError:
+        case .unknownError:
             return """
             This should never happen. There is a possibility that there is a bug if this error persists.
             Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any
@@ -75,7 +71,6 @@ extension PredictionsError: AmplifyError {
              .httpStatusError(_, _, let underlyingError),
              .networkError(_, _, let underlyingError),
              .serviceError(_, _, let underlyingError),
-             .internalServiceError(_, _, let underlyingError),
              .unknownError(_, _, let underlyingError):
             return underlyingError
         }
