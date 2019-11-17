@@ -29,10 +29,13 @@ struct GraphQLSubscription<M: Model>: GraphQLDocument {
         self.subscriptionType = subscriptionType
     }
 
+    var name: String {
+        subscriptionType.rawValue + modelType.schema.graphQLName
+    }
+
     var stringValue: String {
         let schema = modelType.schema
-        let modelName = schema.graphQLName
-        let subscriptionName = subscriptionType.rawValue + modelName
+        let subscriptionName = name
 
         let documentName = subscriptionName.prefix(1).uppercased() + subscriptionName.dropFirst()
         return """

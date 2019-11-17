@@ -28,11 +28,14 @@ struct GraphQLMutation<M: Model>: GraphQLDocument {
         self.mutationType = mutationType
     }
 
+    var name: String {
+        mutationType.rawValue + modelType.schema.graphQLName
+    }
+
     var stringValue: String {
         let schema = modelType.schema
-        let modelName = schema.graphQLName
 
-        let mutationName = mutationType.rawValue + modelName
+        let mutationName = name
         let documentName = mutationName.prefix(1).uppercased() + mutationName.dropFirst()
 
         let inputName = mutationType == .delete ? "id" : "input"

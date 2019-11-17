@@ -57,41 +57,7 @@ extension ModelField: SQLColumn {
     }
 
     var isForeignKey: Bool {
-        switch typeDefinition {
-        case .model:
-            return true
-        default:
-            return false
-        }
-    }
-
-    /// If the field represents a relationship (aka connected) returns the `Model.Type` of
-    /// the connection. Connected types are represented by `.model(type)` and `.collection(type)`.
-    /// - seealso: `ModelFieldType`
-    var connectedModel: Model.Type? {
-        switch typeDefinition {
-        case .model(let type), .collection(let type):
-            return type
-        default:
-            return nil
-        }
-    }
-
-    /// This calls `connectedModel` but enforces that the field must represent a relationship.
-    /// In case the field type is not a `Model.Type` is calls `preconditionFailure`. Consumers
-    /// should fix their models in order to recover from it, since connected models are required
-    /// to be of `Model.Type`.
-    ///
-    /// **Note:** as a maintainer, make sure you use this computed property only when context
-    /// allows (i.e. the field is a valid relatioship, such as foreign keys).
-    var requiredConnectedModel: Model.Type {
-        guard let modelType = connectedModel else {
-            preconditionFailure("""
-            Model fields that are foreign keys must be connected to another Model.
-            Check the `ModelSchema` section of your "\(name)+Schema.swift" file.
-            """)
-        }
-        return modelType
+        isRelationshipOwner
     }
 
     /// Get the name of the `ModelField` as a SQL column name. Columns can be optionally namespaced

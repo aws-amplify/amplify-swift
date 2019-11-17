@@ -30,14 +30,17 @@ struct GraphQLQuery<M: Model>: GraphQLDocument {
         self.queryType = queryType
     }
 
+    var name: String {
+        // TODO better plural handling? (check current CLI implementation)
+        let suffix = queryType == .list ? "s" : ""
+        let modelName = modelType.schema.graphQLName + suffix
+        return queryType.rawValue + modelName
+    }
+
     var stringValue: String {
         let schema = modelType.schema
 
-        // TODO better plural handling? (check current CLI implementation)
-        let suffix = queryType == .list ? "s" : ""
-        let modelName = schema.graphQLName + suffix
-
-        let queryName = queryType.rawValue + modelName
+        let queryName = name
         let documentName = queryName.prefix(1).uppercased() + queryName.dropFirst()
 
         let inputName = queryType == .get ? "id" : "filter"

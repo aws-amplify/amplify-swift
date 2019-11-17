@@ -8,13 +8,6 @@
 import Amplify
 import Foundation
 
-enum ModelRelationship {
-    case manyToMany(Model.Type)
-    case manyToOne(Model.Type)
-    case oneToMany(Model.Type)
-    case oneToOne(Model.Type, name: String)
-}
-
 /// Extension that adds GraphQL specific utilities to `ModelSchema`.
 extension ModelSchema {
 
@@ -25,10 +18,26 @@ extension ModelSchema {
 
     /// The list of fields formatted for GraphQL usage.
     var graphQLFields: [String] {
-        sortedFields.map { field in
-            field.graphQLName
-        }
+        sortedFields
+            .filter { field in
+                !field.isConnected || field.isRelationshipOwner
+            }
+            .map { field in
+                field.graphQLName
+            }
     }
+
+    func findConnectedField(byType type: Model.Type) -> ModelField? {
+        let fields = sortedFields.filter { field in
+            field.isConnected && type == field.connectedModel
+        }
+        if fields.count > 1 {
+            // TODO add a validation message. Check with CLI, they do the same validation
+            preconditionFailure("")
+        }
+        return fields.first
+    }
+
 }
 
 /// Extension that adds GraphQL specific utilities to `ModelField`.
@@ -36,7 +45,12 @@ extension ModelField {
 
     /// The GraphQL name of the field.
     var graphQLName: String {
-        // TODO handle connected field name
-        return targetName ?? name
+        let name = targetName ?? self.name
+        if isRelationshipOwner {
+            // TODO generate the correct connected field name
+            // e.g. Post - Comment: `commentPostId` on the `Comment.post`
+            return name + "Id"
+        }
+        return name
     }
 }

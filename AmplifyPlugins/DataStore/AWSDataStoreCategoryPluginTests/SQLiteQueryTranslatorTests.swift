@@ -51,7 +51,6 @@ class SQLiteQueryTranslatorTests: XCTestCase {
           "createdAt" text not null,
           "postId" text not null,
           foreign key("postId") references Post("id")
-            on delete cascade
         );
         """
         XCTAssertEqual(query.string, expectedStatement)

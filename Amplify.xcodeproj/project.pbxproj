@@ -164,7 +164,6 @@
 		B98E9D122372236300934B51 /* QueryField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0A2372236200934B51 /* QueryField.swift */; };
 		B98E9D132372236300934B51 /* QueryOperator+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */; };
 		B98E9D142372236300934B51 /* QueryPredicate+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */; };
-		D14215EF16B9D090DF17C71D /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_CoreMLPredictionsPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 590F2A08ED60BB9A54788F50 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_CoreMLPredictionsPluginTests.framework */; };
 		E9E4AB6175A0B21B46C875CE /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34A4D98AFFD4B65AEAE350EC /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework */; };
 		FA0173352375F8A5005DDDFC /* LoggingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173342375F8A5005DDDFC /* LoggingError.swift */; };
 		FA0173372375FAA5005DDDFC /* HubError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173362375FAA5005DDDFC /* HubError.swift */; };
@@ -3332,7 +3331,7 @@
 				FA09B9412321BB78000E064D /* JSONValue.swift in Sources */,
 				FA6BC875235F5C270001A882 /* GraphQLOperationRequest.swift in Sources */,
 				95DAAB2E237E63370028544F /* AgeRange.swift in Sources */,
-				FA6BC875235F5C270001A882 /* GraphQLRequest.swift in Sources */,
+				FA6BC875235F5C270001A882 /* GraphQLOperationRequest.swift in Sources */,
 				B4D3853A236C97360014653D /* PredictionsInterpretRequest.swift in Sources */,
 				2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */,
 				FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */,

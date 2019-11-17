@@ -23,10 +23,12 @@ class GraphQLDocumentTests: XCTestCase {
 
     /// - Given: a `Model` type
     /// - When:
+    ///   - the model is of type `Post`
     ///   - the model has no eager loaded connections
     ///   - the mutation is of type `.create`
     /// - Then:
-    ///   - check if the generated GraphQL document is a valid mutation
+    ///   - check if the generated GraphQL document is a valid mutation:
+    ///     - it is named `createPost`
     ///     - it contains an `input` of type `CreatePostInput`
     ///     - it has a list of fields with no nested/connected models
     func testCreateGraphQLMutationFromSimpleModel() {
@@ -41,7 +43,6 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
-            comments
           }
         }
         """
@@ -50,10 +51,12 @@ class GraphQLDocumentTests: XCTestCase {
 
     /// - Given: a `Model` type
     /// - When:
+    ///   - the model is of type `Post`
     ///   - the model has no eager loaded connections
     ///   - the mutation is of type `.update`
     /// - Then:
-    ///   - check if the generated GraphQL document is a valid mutation
+    ///   - check if the generated GraphQL document is a valid mutation:
+    ///     - it is named `updatePost`
     ///     - it contains an `input` of type `UpdatePostInput`
     ///     - it has a list of fields with no nested/connected models
     func testUpdateGraphQLMutationFromSimpleModel() {
@@ -68,7 +71,6 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
-            comments
           }
         }
         """
@@ -77,10 +79,12 @@ class GraphQLDocumentTests: XCTestCase {
 
     /// - Given: a `Model` type
     /// - When:
+    ///   - the model is of type `Post`
     ///   - the model has no eager loaded connections
     ///   - the mutation is of type `.delete`
     /// - Then:
-    ///   - check if the generated GraphQL document is a valid mutation
+    ///   - check if the generated GraphQL document is a valid mutation:
+    ///     - it is named `deletePost`
     ///     - it contains an `input` of type `ID!`
     ///     - it has a list of fields with no nested/connected models
     func testDeleteGraphQLMutationFromSimpleModel() {
@@ -95,7 +99,6 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
-            comments
           }
         }
         """
@@ -106,11 +109,13 @@ class GraphQLDocumentTests: XCTestCase {
 
     /// - Given: a `Model` type
     /// - When:
+    ///   - the model is of type `Post`
     ///   - the model has no eager loaded connections
     ///   - the query is of type `.list`
     /// - Then:
-    ///   - check if the generated GraphQL document is valid query
+    ///   - check if the generated GraphQL document is valid query:
     ///     - it contains an `filter` argument of type `ModelPostFilterInput`
+    ///     - it is named `listPosts`
     ///     - it has a list of fields with no nested/connected models
     ///     - fields are wrapped with `items`
     func testListGraphQLQueryFromSimpleModel() {
@@ -126,7 +131,6 @@ class GraphQLDocumentTests: XCTestCase {
               rating
               title
               updatedAt
-              comments
             }
           }
         }
@@ -136,11 +140,13 @@ class GraphQLDocumentTests: XCTestCase {
 
     /// - Given: a `Model` type
     /// - When:
+    ///   - the model is of type `Post`
     ///   - the model has no eager loaded connections
     ///   - the query is of type `.get`
     /// - Then:
-    ///   - check if the generated GraphQL document is valid query
+    ///   - check if the generated GraphQL document is valid query:
     ///     - it contains an `id` argument of type `ID!`
+    ///     - it is named `getPost`
     ///     - it has a list of fields with no nested/connected models
     func testGetGraphQLQueryFromSimpleModel() {
         let document = GraphQLQuery(from: Post.self, type: .get)
@@ -154,7 +160,6 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
-            comments
           }
         }
         """
@@ -182,7 +187,6 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
-            comments
           }
         }
         """
@@ -208,7 +212,6 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
-            comments
           }
         }
         """
@@ -234,7 +237,6 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
-            comments
           }
         }
         """
