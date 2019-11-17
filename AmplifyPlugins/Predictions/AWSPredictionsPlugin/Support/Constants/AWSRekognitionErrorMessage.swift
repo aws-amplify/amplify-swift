@@ -16,7 +16,7 @@ struct AWSRekognitionErrorMessage {
     static let accessDenied: AWSRekognitionErrorMessageString = (
         "Access denied!",
         "Please check that your Cognito IAM role has permissions to access Rekognition.")
-
+    
     static let idempotentParameterMismatch: AWSRekognitionErrorMessageString = (
         """
         A ClientRequestToken input parameter was reused with an operation,
@@ -28,11 +28,11 @@ struct AWSRekognitionErrorMessage {
         and if still no luck, please submit a github issue here
         https://github.com/aws-amplify/amplify-ios/issues.
         """)
-
+    
     static let imageTooLarge: AWSRekognitionErrorMessageString = (
         "The image you sent was too large.",
         "Try downsizing the image and sending it again.")
-
+    
     static let invalidImageFormat: AWSRekognitionErrorMessageString = (
         "The provided image format isn't supported.",
         "Use a supported image format (.JPEG and .PNG) and try again.")
@@ -76,7 +76,7 @@ struct AWSRekognitionErrorMessage {
     static let throttling: AWSRekognitionErrorMessageString = (
         "Your rate of request increase is too fast.",
         "Slow down your request rate and gradually increase it.")
-
+    
     // swiftlint:disable cyclomatic_complexity
     static func map(_ errorType: AWSRekognitionErrorType) -> PredictionsError? {
         switch errorType {
@@ -85,57 +85,57 @@ struct AWSRekognitionErrorMessage {
                 accessDenied.errorDescription,
                 accessDenied.recoverySuggestion)
         case .idempotentParameterMismatch:
-            return PredictionsError.accessDenied(
-            idempotentParameterMismatch.errorDescription,
-            idempotentParameterMismatch.recoverySuggestion)
+            return PredictionsError.serviceError(
+                idempotentParameterMismatch.errorDescription,
+                idempotentParameterMismatch.recoverySuggestion)
         case .imageTooLarge:
-            return PredictionsError.accessDenied(
-            imageTooLarge.errorDescription,
-            imageTooLarge.recoverySuggestion)
+            return PredictionsError.serviceError(
+                imageTooLarge.errorDescription,
+                imageTooLarge.recoverySuggestion)
         case .internalServer:
             return PredictionsError.internalServiceError("", "")
         case .invalidImageFormat:
-            return PredictionsError.accessDenied(
-            invalidImageFormat.errorDescription,
-            invalidImageFormat.recoverySuggestion)
+            return PredictionsError.serviceError(
+                invalidImageFormat.errorDescription,
+                invalidImageFormat.recoverySuggestion)
         case .invalidPaginationToken:
-            return PredictionsError.accessDenied(
-            invalidPaginationToken.errorDescription,
-            invalidPaginationToken.recoverySuggestion)
+            return PredictionsError.serviceError(
+                invalidPaginationToken.errorDescription,
+                invalidPaginationToken.recoverySuggestion)
         case .invalidParameter:
-             return PredictionsError.accessDenied(
-            invalidParameter.errorDescription,
-            invalidParameter.recoverySuggestion)
+            return PredictionsError.serviceError(
+                invalidParameter.errorDescription,
+                invalidParameter.recoverySuggestion)
         case .limitExceeded:
-            return PredictionsError.accessDenied(
-            limitExceeded.errorDescription,
-            limitExceeded.recoverySuggestion)
+            return PredictionsError.serviceError(
+                limitExceeded.errorDescription,
+                limitExceeded.recoverySuggestion)
         case .provisionedThroughputExceeded:
-            return PredictionsError.accessDenied(
-            provisionedThroughputExceeded.errorDescription,
-            provisionedThroughputExceeded.recoverySuggestion)
+            return PredictionsError.serviceError(
+                provisionedThroughputExceeded.errorDescription,
+                provisionedThroughputExceeded.recoverySuggestion)
         case .resourceAlreadyExists:
-            return PredictionsError.accessDenied(
-            resourceAlreadyExists.errorDescription,
-            resourceAlreadyExists.recoverySuggestion)
+            return PredictionsError.serviceError(
+                resourceAlreadyExists.errorDescription,
+                resourceAlreadyExists.recoverySuggestion)
         case .resourceInUse:
-             return PredictionsError.accessDenied(
-            resourceInUse.errorDescription,
-            resourceInUse.recoverySuggestion)
+            return PredictionsError.serviceError(
+                resourceInUse.errorDescription,
+                resourceInUse.recoverySuggestion)
         case .resourceNotFound:
-            return PredictionsError.accessDenied(
-            resourceNotFound.errorDescription,
-            resourceNotFound.recoverySuggestion)
+            return PredictionsError.serviceError(
+                resourceNotFound.errorDescription,
+                resourceNotFound.recoverySuggestion)
         case .throttling:
-            return PredictionsError.accessDenied(
-            throttling.errorDescription,
-            throttling.recoverySuggestion)
+            return PredictionsError.serviceError(
+                throttling.errorDescription,
+                throttling.recoverySuggestion)
         case .unknown:
             return PredictionsError.unknownError("An unknown error occurred.", "")
         case .videoTooLarge:
-            return PredictionsError.accessDenied(
-            limitExceeded.errorDescription,
-            limitExceeded.recoverySuggestion)
+            return PredictionsError.serviceError(
+                limitExceeded.errorDescription,
+                limitExceeded.recoverySuggestion)
         default:
             return nil
         }
