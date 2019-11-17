@@ -14,10 +14,12 @@ public protocol QueryTranslator {
 
     associatedtype Value
 
-    /// Translate a model reference to a `delete`-type operation.
-    /// - Parameter model: the model instance
+    /// Translate a modelType reference to a `delete`-type operation with the specified predicate.
+    /// - Parameter modelType: the model type
+    /// - Parameter predicate: the optional predicate with condition operations
     /// - Returns: a `Query` object that contains the query as string and the associated values
-    func translateToDelete(from model: Model) -> Query<Value>
+    func translateToDelete(from modelType: Model.Type,
+                           predicate: QueryPredicate?) -> Query<Value>
 
     /// Translate a model reference to a `insert`-type operation.
     /// - Parameter model: the model instance
@@ -25,7 +27,7 @@ public protocol QueryTranslator {
     func translateToInsert(from model: Model) -> Query<Value>
 
     /// Translate a model reference to a `query`-type operation.
-    /// - Parameter model: the model type
+    /// - Parameter modelType: the model type
     /// - Parameter predicate: the optional predicate with condition operations
     /// - Returns: a `Query` object that contains the query as string and the associated values
     func translateToQuery(from modelType: Model.Type,

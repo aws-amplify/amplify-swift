@@ -15,9 +15,22 @@ public protocol Model: Codable {
     /// A reference to the `ModelSchema` associated with this model.
     static var schema: ModelSchema { get }
 
+    static var modelName: String { get }
+
+    var modelName: String { get }
+
     /// The Model identifier (aka primary key)
     var id: Identifier { get }
+}
 
+extension Model {
+    public static var modelName: String {
+        return String(describing: self)
+    }
+
+    public var modelName: String {
+        return type(of: self).modelName
+    }
 }
 
 /// Alias of Model identifier (i.e. primary key)

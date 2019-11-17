@@ -14,23 +14,23 @@ import XCTest
 
 class SQLiteStorageEngineAdapterTests: XCTestCase {
 
-    private let models: [Model.Type] = [Post.self, Comment.self]
-
     var storageAdapter: SQLiteStorageEngineAdapter!
 
     override func setUp() {
         super.setUp()
+
+        Amplify.reset()
+
+        ModelRegistry.register(modelType: Post.self)
+        ModelRegistry.register(modelType: Comment.self)
 
         let connection = try? Connection(.inMemory)
         XCTAssertNotNil(connection)
         storageAdapter = SQLiteStorageEngineAdapter(connection: connection!)
         XCTAssertNotNil(storageAdapter)
 
-        // Register the models for fast lookup
-        models.forEach(registerModel(type:))
-
         do {
-            try storageAdapter.setUp(models: models)
+            try storageAdapter.setUp(models: ModelRegistry.models)
         } catch {
             XCTFail(String(describing: error))
             return

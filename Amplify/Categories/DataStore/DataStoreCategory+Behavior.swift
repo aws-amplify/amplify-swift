@@ -5,11 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
-extension DataStoreCategory: DataStoreCategoryBehavior {
-
-    public func save<M: Model>(_ model: M, completion: DataStoreCallback<M>) {
+extension DataStoreCategory: DataStoreBaseBehavior {
+    public func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
         plugin.save(model, completion: completion)
     }
 
