@@ -27,18 +27,6 @@ struct AWSTranslateErrorMessage {
         "An invalid request was sent.",
         "Please check your request and try again.")
     
-    static let limitExceeded: AWSTranslateErrorMessageString = (
-        "The number of requests made has exceeded the limit.",
-        "Please decrease the number of requests and try again.")
-    
-    static let resourceNotFound: AWSTranslateErrorMessageString = (
-        "Your resource was not found.",
-        "Please make sure you either created the resource using the Amplify CLI or the AWS Console")
-    
-    static let serviceUnavailable: AWSTranslateErrorMessageString = (
-        "The service is currently unavailable.",
-        "Please check to see if there is an outage at https://status.aws.amazon.com/ and reach out to AWS support.")
-    
     static let textSizeLimitExceeded: AWSTranslateErrorMessageString = (
         "The size of the text string exceeded the limit. The limit is the first 256 terms in a string of text.",
         "Please send a shorter text string.")
@@ -77,16 +65,16 @@ struct AWSTranslateErrorMessage {
                 invalidRequest.recoverySuggestion)
         case .limitExceeded:
             return PredictionsError.serviceError(
-                limitExceeded.errorDescription,
-                limitExceeded.recoverySuggestion)
+                AWSServiceErrorMessage.limitExceeded.errorDescription,
+                AWSServiceErrorMessage.limitExceeded.recoverySuggestion)
         case .resourceNotFound:
             return PredictionsError.serviceError(
-                resourceNotFound.errorDescription,
-                resourceNotFound.recoverySuggestion)
+                AWSServiceErrorMessage.resourceNotFound.errorDescription,
+                AWSServiceErrorMessage.resourceNotFound.recoverySuggestion)
         case .serviceUnavailable:
             return PredictionsError.serviceError(
-                serviceUnavailable.errorDescription,
-                serviceUnavailable.recoverySuggestion)
+                AWSServiceErrorMessage.resourceUnavailable.errorDescription,
+                AWSServiceErrorMessage.resourceUnavailable.recoverySuggestion)
         case .textSizeLimitExceeded:
             return PredictionsError.serviceError(
                 textSizeLimitExceeded.errorDescription,

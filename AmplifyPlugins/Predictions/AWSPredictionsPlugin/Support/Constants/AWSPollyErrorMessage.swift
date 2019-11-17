@@ -16,10 +16,6 @@ struct AWSPollyErrorMessage {
         "The language specified is not currently supported by Amazon Polly in this capacity.",
         "For a list of supported languages, check here https://docs.aws.amazon.com/polly/latest/dg/SupportedLanguage.html.")
     
-    static let serviceFailure: AWSPollyErrorString = (
-        "An unknown condition has caused a service failure.",
-        "Please check to see if there is an outage at https://status.aws.amazon.com/ and reach out to AWS support.")
-    
     static let textLengthExceeded: AWSPollyErrorString = (
         "The string of text sent in is longer than the accepted limits.",
         "The limit for input text is a maximum of 6000 characters total.")
@@ -33,8 +29,8 @@ struct AWSPollyErrorMessage {
                 languageNotSupported.recoverySuggestion)
         case .serviceFailure:
             return PredictionsError.serviceError(
-                serviceFailure.errorDescription,
-                serviceFailure.recoverySuggestion)
+                AWSServiceErrorMessage.resourceUnavailable.errorDescription,
+                AWSServiceErrorMessage.resourceUnavailable.recoverySuggestion)
         case .textLengthExceeded:
             return PredictionsError.serviceError(
                 textLengthExceeded.errorDescription,

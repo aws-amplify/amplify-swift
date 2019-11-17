@@ -36,7 +36,7 @@ class PredictionsErrorHelper {
             guard let errorType = errorTypeOptional else {
                 return defaultError
             }
-            return PredictionsErrorHelper.map(errorType) ?? defaultError
+            return AWSServiceErrorMessage.map(errorType) ?? defaultError
         case AWSRekognitionErrorDomain:
             guard let errorType = AWSRekognitionErrorType.init(rawValue: error.code) else {
                 return defaultError
@@ -79,56 +79,5 @@ class PredictionsErrorHelper {
         return PredictionsError.unknownError(errorMessage, "")
     }
 
-    // swiftlint:disable cyclomatic_complexity
-    static func map(_ errorType: AWSServiceErrorType) -> PredictionsError? {
-        switch errorType {
-        case .unknown:
-            break
-        case .requestTimeTooSkewed:
-            break
-        case .invalidSignatureException:
-            break
-        case .signatureDoesNotMatch:
-            break
-        case .requestExpired:
-            break
-        case .authFailure:
-            break
-        case .accessDeniedException:
-            return PredictionsError.accessDenied(AWSComprehendErrorMessage.accessDenied.errorDescription,
-                                                 AWSComprehendErrorMessage.accessDenied.recoverySuggestion)
-        case .unrecognizedClientException:
-            break
-        case .incompleteSignature:
-            break
-        case .invalidClientTokenId:
-            break
-        case .missingAuthenticationToken:
-            break
-        case .accessDenied:
-            return PredictionsError.accessDenied(AWSComprehendErrorMessage.accessDenied.errorDescription,
-                                                 AWSComprehendErrorMessage.accessDenied.recoverySuggestion)
-        case .expiredToken:
-            break
-        case .invalidAccessKeyId:
-            break
-        case .invalidToken:
-            break
-        case .tokenRefreshRequired:
-            break
-        case .accessFailure:
-            return PredictionsError.accessDenied(AWSComprehendErrorMessage.accessDenied.errorDescription,
-                                                 AWSComprehendErrorMessage.accessDenied.recoverySuggestion)
-        case .authMissingFailure:
-            break
-        case .throttling:
-            break
-        case .throttlingException:
-            break
-        @unknown default:
-            break
-        }
 
-        return nil
-    }
 }

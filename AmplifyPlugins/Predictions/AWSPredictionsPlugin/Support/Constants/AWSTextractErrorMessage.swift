@@ -15,10 +15,6 @@ struct AWSTextractErrorMessage {
         "Access denied!",
         "Please check that your Cognito IAM role has permissions to access Textract.")
     
-    static let throttling: AWSTextractErrorString = (
-        "Your rate of request increase is too fast.",
-        "Slow down your request rate and gradually increase it.")
-    
     static let limitExceeded: AWSTextractErrorString = (
         "The request exceeded the service limits.",
         """
@@ -82,8 +78,8 @@ struct AWSTextractErrorMessage {
                 provisionedThroughputExceeded.recoverySuggestion)
         case .throttling:
             return PredictionsError.serviceError(
-                throttling.errorDescription,
-                throttling.recoverySuggestion)
+                AWSServiceErrorMessage.throttling.errorDescription,
+                AWSServiceErrorMessage.throttling.recoverySuggestion)
         case .unknown:
             return PredictionsError.unknownError("An unknown error occurred.", "")
         case .unsupportedDocument:

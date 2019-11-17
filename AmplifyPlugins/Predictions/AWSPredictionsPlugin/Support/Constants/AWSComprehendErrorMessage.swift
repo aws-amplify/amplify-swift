@@ -21,14 +21,6 @@ struct AWSComprehendErrorMessage {
         "Could not determine the predominant language in the text",
         "Please try with different input")
     
-    static let batchSizeLimitExceeded: AWSComprehendErrorString = (
-        "The size of the request was too large",
-        "Please decrease the size of the request and try again")
-    
-    static let resourceNotFound: AWSComprehendErrorString = (
-        "Your resource was not found.",
-        "Please make sure you either created the resource using the Amplify CLI or the AWS Console")
-    
     static let invalidRequest: AWSComprehendErrorString = (
         "An invalid request was sent.",
         "Please check your request and try again.")
@@ -45,10 +37,6 @@ struct AWSComprehendErrorMessage {
         https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html#limits_amazon_comprehend
         """)
     
-    static let resourceUnavailable: AWSComprehendErrorString = (
-        "The resource is currently unavailable.",
-        "Please check to see if there is an outage at https://status.aws.amazon.com/ and reach out to AWS support.")
-    
     static let textSizeLimitExceeded: AWSComprehendErrorString = (
         "The size of the input text exceeds the limit.",
         "Use a smaller document.")
@@ -60,10 +48,6 @@ struct AWSComprehendErrorMessage {
     // swiftlint:disable cyclomatic_complexity
     static func map(_ errorType: AWSComprehendErrorType) -> PredictionsError? {
         switch errorType {
-        case .batchSizeLimitExceeded:
-            return PredictionsError.serviceError(
-                batchSizeLimitExceeded.errorDescription,
-                batchSizeLimitExceeded.recoverySuggestion)
         case .internalServer:
             return PredictionsError.internalServiceError("", "")
         case .invalidRequest:
@@ -81,12 +65,12 @@ struct AWSComprehendErrorMessage {
                 limitExceeded.recoverySuggestion)
         case .resourceNotFound:
             return PredictionsError.serviceError(
-                resourceNotFound.errorDescription,
-                resourceNotFound.recoverySuggestion)
+                AWSServiceErrorMessage.resourceNotFound.errorDescription,
+                AWSServiceErrorMessage.resourceNotFound.recoverySuggestion)
         case .resourceUnavailable:
             return PredictionsError.serviceError(
-                resourceUnavailable.errorDescription,
-                resourceUnavailable.recoverySuggestion)
+                AWSServiceErrorMessage.resourceUnavailable.errorDescription,
+                AWSServiceErrorMessage.resourceUnavailable.recoverySuggestion)
         case .textSizeLimitExceeded:
             return PredictionsError.serviceError(
                 textSizeLimitExceeded.errorDescription,

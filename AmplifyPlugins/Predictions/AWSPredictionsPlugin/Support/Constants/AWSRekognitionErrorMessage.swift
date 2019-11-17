@@ -45,21 +45,9 @@ struct AWSRekognitionErrorMessage {
         https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html#limits_rekognition
         """)
     
-    static let resourceAlreadyExists: AWSRekognitionErrorMessageString = (
-        "A collection with the specified ID already exists.",
-        "Please create a new collection")
-    
     static let resourceInUse: AWSRekognitionErrorMessageString = (
         "The resource is already in use.",
         "Retry when the resource is available.")
-    
-    static let resourceNotFound: AWSRekognitionErrorMessageString = (
-        "The specified resource doesn't exist.",
-        "Please make sure you have added the ability to identify things through the CLI or the AWS console.")
-    
-    static let throttling: AWSRekognitionErrorMessageString = (
-        "Your rate of request increase is too fast.",
-        "Slow down your request rate and gradually increase it.")
     
     // swiftlint:disable cyclomatic_complexity
     static func map(_ errorType: AWSRekognitionErrorType) -> PredictionsError? {
@@ -90,22 +78,18 @@ struct AWSRekognitionErrorMessage {
             return PredictionsError.serviceError(
                 provisionedThroughputExceeded.errorDescription,
                 provisionedThroughputExceeded.recoverySuggestion)
-        case .resourceAlreadyExists:
-            return PredictionsError.serviceError(
-                resourceAlreadyExists.errorDescription,
-                resourceAlreadyExists.recoverySuggestion)
         case .resourceInUse:
             return PredictionsError.serviceError(
                 resourceInUse.errorDescription,
                 resourceInUse.recoverySuggestion)
         case .resourceNotFound:
             return PredictionsError.serviceError(
-                resourceNotFound.errorDescription,
-                resourceNotFound.recoverySuggestion)
+                AWSServiceErrorMessage.resourceNotFound.errorDescription,
+                AWSServiceErrorMessage.resourceNotFound.recoverySuggestion)
         case .throttling:
             return PredictionsError.serviceError(
-                throttling.errorDescription,
-                throttling.recoverySuggestion)
+                AWSServiceErrorMessage.throttling.errorDescription,
+                AWSServiceErrorMessage.throttling.recoverySuggestion)
         case .unknown:
             return PredictionsError.unknownError("An unknown error occurred.", "")
         case .videoTooLarge:
