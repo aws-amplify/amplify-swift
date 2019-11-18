@@ -29,9 +29,7 @@ extension MutationEvent {
             .id(),
             .field(mutation.modelName, is: .required, ofType: .string),
             .field(mutation.json, is: .required, ofType: .string),
-            .field(mutation.mutationType,
-                   is: .required,
-                   ofType: .enum(type: MutationType.self)),
+            .field(mutation.mutationType, is: .required, ofType: .string),
             .field(mutation.createdAt, is: .required, ofType: .dateTime)
         )
     }

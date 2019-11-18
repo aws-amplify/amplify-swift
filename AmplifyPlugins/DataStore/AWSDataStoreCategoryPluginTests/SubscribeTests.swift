@@ -28,7 +28,7 @@ class SubscribeTests: XCTestCase {
         do {
             let connection = try Connection(.inMemory)
             storageAdapter = SQLiteStorageEngineAdapter(connection: connection)
-            storageEngine = StorageEngine(adapter: storageAdapter, syncEngine: nil)
+            storageEngine = StorageEngine(adapter: storageAdapter, syncEngineFactory: nil)
         } catch {
             XCTFail(String(describing: error))
             return
@@ -108,7 +108,7 @@ class SubscribeTests: XCTestCase {
                     break
                 }
         }, receiveValue: { mutationEvent in
-            if mutationEvent.mutationType == .create {
+            if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue {
                 receivedMutationEvent.fulfill()
             }
         })
@@ -149,7 +149,7 @@ class SubscribeTests: XCTestCase {
                     break
                 }
         }, receiveValue: { mutationEvent in
-            if mutationEvent.mutationType == .update {
+            if mutationEvent.mutationType == MutationEvent.MutationType.update.rawValue {
                 receivedMutationEvent.fulfill()
             }
         })
@@ -190,7 +190,7 @@ class SubscribeTests: XCTestCase {
                     break
                 }
         }, receiveValue: { mutationEvent in
-            if mutationEvent.mutationType == .delete {
+            if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue {
                 receivedMutationEvent.fulfill()
             }
         })

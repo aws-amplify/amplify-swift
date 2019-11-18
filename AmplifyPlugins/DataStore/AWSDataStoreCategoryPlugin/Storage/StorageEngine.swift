@@ -11,12 +11,15 @@ import Foundation
 
 final class StorageEngine: StorageEngineBehavior {
 
-    let adapter: StorageEngineAdapter
-    let syncEngine: CloudSyncEngineBehavior?
+    private let adapter: StorageEngineAdapter
 
-    public init(adapter: StorageEngineAdapter,
-                syncEngine: CloudSyncEngineBehavior?) {
+    private var syncEngine: CloudSyncEngineBehavior?
+
+    // Internal initializer used for testing, to allow lazy initialization of the SyncEngine
+    init(adapter: StorageEngineAdapter,
+         syncEngineFactory: CloudSyncEngineBehavior.Factory?) {
         self.adapter = adapter
+        let syncEngine = syncEngineFactory?(self)
         self.syncEngine = syncEngine
     }
 
@@ -25,12 +28,15 @@ final class StorageEngine: StorageEngineBehavior {
         let databaseName = Bundle.main.object(forInfoDictionaryKey: key) as? String
         let adapter = try SQLiteStorageEngineAdapter(databaseName: databaseName ?? "app")
 
-        let syncEngine = isSyncEnabled ? CloudSyncEngine(storageEngine: adapter) : nil
-        self.init(adapter: adapter, syncEngine: syncEngine)
+        let syncEngineFactory: CloudSyncEngineBehavior.Factory? =
+            isSyncEnabled ? { CloudSyncEngine(storageEngine: $0) } : nil
+
+        self.init(adapter: adapter, syncEngineFactory: syncEngineFactory)
     }
 
     public func setUp(models: [Model.Type]) throws {
         try adapter.setUp(models: models)
+        syncEngine?.start()
     }
 
     public func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
@@ -46,6 +52,7 @@ final class StorageEngine: StorageEngineBehavior {
             }
 
             do {
+                // TODO: select correct mutation type
                 let mutationEvent = try MutationEvent(model: savedModel, mutationType: .create)
 
                 // TODO: Refactor this into something actually readable once we get the final sync implementation done
@@ -61,16 +68,8 @@ final class StorageEngine: StorageEngineBehavior {
                                 break
                             }
 
-                    }, receiveValue: { mutationEvent in
-                        let model: M
-                        do {
-                            model = try mutationEvent.decodeModel(as: M.self)
-                        } catch {
-                            completion(.failure(causedBy: error))
-                            return
-                        }
-
-                        completion(.result(model))
+                    }, receiveValue: { _ in
+                        completion(.result(savedModel))
                     })
             } catch let dataStoreError as DataStoreError {
                 completion(.error(dataStoreError))

@@ -7,6 +7,7 @@
 
 import XCTest
 import SQLite
+import CwlPreconditionTesting
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -17,14 +18,22 @@ class SyncTests: XCTestCase {
     // Tests in this class will directly access the database to validate persistent queue behavior
     var storageAdapter: SQLiteStorageEngineAdapter!
 
-    override func setUp() {
-        super.setUp()
-        do {
-            try setUpWithAPI()
-        } catch {
-            XCTFail("Error: \(error)")
-            return
-        }
+    /// Amplify should not crash if attempting to mutate a non-syncable model
+    /// without a configured API category
+    ///
+    /// - Given: An Amplify system configured with a DataStore but no API category
+    /// - When:
+    ///    - I invoke `save` on a non-syncable model
+    /// - Then:
+    ///    - The operation succeeds
+    func testNonSyncableWithoutAPICategorySucceeds() throws {
+        try setUpWithAPI()
+
+        let model = MockUnsynced()
+
+        let modelSaved = expectation(description: "Model saved")
+        Amplify.DataStore.save(model) { _ in modelSaved.fulfill() }
+        wait(for: [modelSaved], timeout: 1.0)
     }
 
     /// Amplify should crash with a preconditionFailure if attempting to mutate a syncable model
@@ -35,9 +44,15 @@ class SyncTests: XCTestCase {
     ///    - I invoke `save` on a syncable model
     /// - Then:
     ///    - Amplify crashes
-    ///
-    func testSyncWithoutAPICategoryCrashes() {
-        XCTFail("Not yet implemented")
+    func testSyncWithoutAPICategoryCrashes() throws {
+        try setUpWithoutAPI()
+
+        let model = MockSynced()
+
+        let exception: BadInstructionException? = catchBadInstruction {
+            Amplify.DataStore.save(model) { _ in }
+        }
+        XCTAssertNotNil(exception)
     }
 
     /// Amplify should allow me to subscribe() to model
@@ -47,7 +62,6 @@ class SyncTests: XCTestCase {
     ///    - I invoke `Amplify.DataStore.subscribe()`
     /// - Then:
     ///    - I receive a notification for updates to that model
-    ///
     func testSubscribe() {
         XCTFail("Not yet implemented")
     }
@@ -59,7 +73,6 @@ class SyncTests: XCTestCase {
     ///    - I subscribe to model events
     /// - Then:
     ///    - I am notified of `save` events
-    ///
     func testSave() {
         XCTFail("Not yet implemented")
     }
@@ -71,7 +84,6 @@ class SyncTests: XCTestCase {
     ///    - I subscribe to model events
     /// - Then:
     ///    - I am notified of `update` events
-    ///
     func testUpdate() {
         XCTFail("Not yet implemented")
     }
@@ -83,7 +95,6 @@ class SyncTests: XCTestCase {
     ///    - I subscribe to model events
     /// - Then:
     ///    - I am notified of `delete` events
-    ///
     func testDelete() {
         XCTFail("Not yet implemented")
     }
@@ -95,11 +106,14 @@ class SyncTests: XCTestCase {
 extension SyncTests {
     private func setUpCore() throws -> AmplifyConfiguration {
         Amplify.reset()
-        ModelRegistry.register(modelType: MockSyncable.self)
+        ModelRegistry.register(modelType: MockSynced.self)
+        ModelRegistry.register(modelType: MockUnsynced.self)
 
         let connection = try Connection(.inMemory)
         storageAdapter = SQLiteStorageEngineAdapter(connection: connection)
-        let storageEngine = StorageEngine(adapter: storageAdapter, syncEngine: nil)
+
+        let syncEngineFactory: CloudSyncEngineBehavior.Factory? = { CloudSyncEngine(storageEngine: $0) }
+        let storageEngine = StorageEngine(adapter: storageAdapter, syncEngineFactory: syncEngineFactory)
 
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStoreCategoryPlugin(storageEngine: storageEngine,
@@ -141,9 +155,9 @@ extension SyncTests {
 
 }
 
-// MARK: - MockSyncable
+// MARK: - MockSynced
 
-public struct MockSyncable: Model {
+public struct MockSynced: Model {
 
     public let id: String
 
@@ -153,7 +167,7 @@ public struct MockSyncable: Model {
 
 }
 
-extension MockSyncable {
+extension MockSynced {
 
     // MARK: - CodingKeys
     public enum CodingKeys: String, ModelKey {
@@ -165,9 +179,42 @@ extension MockSyncable {
     // MARK: - ModelSchema
 
     public static let schema = defineSchema { model in
-        let post = MockSyncable.keys
+        let post = MockSynced.keys
 
         model.attributes = [.isSyncable]
+
+        model.fields(
+            .id()
+        )
+    }
+
+}
+
+// MARK: - MockUnsynced
+
+public struct MockUnsynced: Model {
+
+    public let id: String
+
+    public init(id: String = UUID().uuidString) {
+        self.id = id
+    }
+
+}
+
+extension MockUnsynced {
+
+    // MARK: - CodingKeys
+    public enum CodingKeys: String, ModelKey {
+        case id
+    }
+
+    public static let keys = CodingKeys.self
+
+    // MARK: - ModelSchema
+
+    public static let schema = defineSchema { model in
+        let post = MockUnsynced.keys
 
         model.fields(
             .id()

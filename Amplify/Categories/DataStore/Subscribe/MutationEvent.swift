@@ -17,7 +17,7 @@ public struct MutationEvent: Model {
     public let id: Identifier
     public let modelName: String
     public let json: String
-    public let mutationType: MutationType
+    public let mutationType: String
     public let createdAt: Date
 
     public init(id: Identifier = UUID().uuidString,
@@ -28,7 +28,7 @@ public struct MutationEvent: Model {
         self.id = id
         self.modelName = modelName
         self.json = data
-        self.mutationType = mutationType
+        self.mutationType = mutationType.rawValue
         self.createdAt = createdAt
     }
 

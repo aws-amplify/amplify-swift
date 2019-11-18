@@ -22,16 +22,93 @@ class SyncEngineMutationSubscriber {
 
     // MARK: - Sync
 
-    private func syncToCloud<M: Model>(model: M) -> Future<String, DataStoreError> {
-        print("Syncing to cloud: \(model)")
-        return Future { $0(.success("Synced")) }
-//        let modelType = type(of: model)
-//        let schema = modelType.schema
-//        let document = modelType
-//        let request = GraphQLRequest<M>(document: model,
-//                                        variables: <#T##[String : Any]?#>,
-//                                        responseType: <#T##Model.Protocol#>)
-//        api.mutate(request: <#T##GraphQLRequest<Decodable>#>) { event in ... }
+    private func syncToCloud(mutationEvent: MutationEvent) -> AnyPublisher<String, DataStoreError> {
+        guard let model = ModelRegistry.modelType(from: mutationEvent.modelName) else {
+            let error = DataStoreError.invalidModelName(mutationEvent.modelName)
+            return Fail(error: error).eraseToAnyPublisher()
+        }
+
+        // TODO: Get an actual GraphQL request from the model
+        print("Not yet getting a real GraphQL request for \(model)")
+        let request = GraphQLRequest<String>(document: "{do a mutation}",
+                                             variables: nil,
+                                             responseType: String.self)
+        return Future { future in
+            _ = self.api.mutate(request: request) { mutationResponse in
+                switch mutationResponse {
+                case .completed(let graphQLResponse):
+                    SyncEngineMutationSubscriber.resolve(future: future, graphQLResponse: graphQLResponse)
+                case .failed(let apiError):
+                    future(.failure(DataStoreError.api(apiError)))
+                default:
+                    break
+                }
+            }
+            print("Syncing to cloud: \(mutationEvent)")
+
+        }.eraseToAnyPublisher()
+    }
+
+    // MARK: - Response handling
+
+    private static func resolve<R: Decodable>(future: Future<R, DataStoreError>.Promise,
+                                              graphQLResponse: GraphQLResponse<R>) {
+        switch graphQLResponse {
+        case .success(let successResponse):
+            future(.success(successResponse))
+        case .error(let graphQLErrors):
+            resolve(future: future, graphQLErrors: graphQLErrors)
+        case .partial(let partialResponse, let graphQLErrors):
+            resolve(future: future, partialResponse: partialResponse, graphQLErrors: graphQLErrors)
+        case .transformationError(let rawResponse, let transformationError):
+            resolve(future: future, rawResponse: rawResponse, transformationError: transformationError)
+        }
+
+    }
+
+    // MARK: - Error handling
+
+    private static func resolve<R: Decodable>(future: Future<R, DataStoreError>.Promise,
+                                              graphQLErrors: [GraphQLError]) {
+        let syncError = DataStoreError.sync(
+            "Sync failed with GraphQL errors from service",
+            """
+            Inspect the errors for more details:
+            \(graphQLErrors)
+            """
+        )
+        future(.failure(syncError))
+    }
+
+    private static func resolve<R: Decodable>(future: Future<R, DataStoreError>.Promise,
+                                              partialResponse: R,
+                                              graphQLErrors: [GraphQLError]) {
+        let syncError = DataStoreError.sync(
+            "Sync failed with a partial response from service",
+            """
+            Partial response:
+            \(partialResponse)
+
+            Inspect the errors for more details:
+            \(graphQLErrors)
+            """
+        )
+        future(.failure(syncError))
+    }
+
+    private static func resolve<R: Decodable>(future: Future<R, DataStoreError>.Promise,
+                                              rawResponse: RawGraphQLResponse,
+                                              transformationError: APIError) {
+        let syncError = DataStoreError.sync(
+            "Sync failed because it was not able to decode the response into the specified result type",
+            """
+            Sync failed trying to decode the raw response below into \(String(describing: R.self)). \
+            See underlying error for more information. Raw response:
+            \(rawResponse)
+            """,
+            transformationError
+        )
+        future(.failure(syncError))
     }
 
 }
@@ -51,6 +128,27 @@ extension SyncEngineMutationSubscriber: Subscriber {
     /// Receives one input event and submits it for syncing. Once its processing is complete, requests a new event from
     /// the subscription
     func receive(_ input: MutationEvent) -> Subscribers.Demand {
+
+        // The `sink` completion handlers below must hold onto this reference, or else Combine cancels it when the
+        // method returns. To prevent retains, be sure to set the subscription to `nil` inside each of the sink
+        // `receive` events
+        var syncSubscription: AnyCancellable?
+
+        syncSubscription = syncToCloud(mutationEvent: input).sink(
+            receiveCompletion: { completion in
+                print("Subscription received completion: \(completion)")
+                syncSubscription?.cancel()
+                syncSubscription = nil
+        }, receiveValue: { value in
+            print("Subscription received value: \(value)")
+            self.subscription?.request(.max(1))
+            syncSubscription?.cancel()
+            syncSubscription = nil
+        })
+
+        // Return `.none` from this method, because we don't want to request a new input until after we've fully
+        // resolved the current one. That resolution may include network traffic, conflict resolution, and error
+        // retries
         return .none
     }
 

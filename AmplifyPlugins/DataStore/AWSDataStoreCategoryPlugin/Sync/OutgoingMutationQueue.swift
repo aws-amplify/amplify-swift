@@ -33,7 +33,7 @@ import AWSPluginsCore
 /// - subscriber dequeues mutation event
 /// - subscriber requests next event
 final class OutgoingMutationQueue {
-    let storageEngine: StorageEngineBehavior
+    weak var storageEngine: StorageEngineBehavior?
 
     /// Incoming mutations are enqueued into this subject
     private let incomingMutations: PassthroughSubject<MutationEvent, DataStoreError>
@@ -44,6 +44,9 @@ final class OutgoingMutationQueue {
     init(storageEngine: StorageEngineBehavior) {
         self.storageEngine = storageEngine
         self.incomingMutations = PassthroughSubject()
+
+        // TODO: Find the right place to do this
+        ModelRegistry.register(modelType: MutationEvent.self)
     }
 
     func subscribe<S: Subscriber>(subscriber: S)
@@ -61,7 +64,21 @@ final class OutgoingMutationQueue {
 
     func enqueue(event: MutationEvent) -> Future<MutationEvent, DataStoreError> {
         Future<MutationEvent, DataStoreError> { future in
-            self.storageEngine.save(event) {
+            guard let storageEngine = self.storageEngine else {
+                let error = DataStoreError.configuration(
+                    "storageEngine is nil inside of OutgoingMutationQueue.enqueue",
+                    """
+                    The reference to storageEngine has been released while an ongoing mutation was being processed.
+                    There is a possibility that there is a bug if this error persists. Please take a look at
+                    https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that
+                    match your scenario, and file an issue with the details of the bug if there isn't.
+                    """
+                )
+                future(.failure(error))
+                return
+            }
+
+            storageEngine.save(event) {
                 switch $0 {
                 case .result:
                     self.incomingMutations.send(event)
@@ -75,7 +92,21 @@ final class OutgoingMutationQueue {
 
     func dequeue(event: MutationEvent) -> Future<MutationEvent, DataStoreError> {
         Future<MutationEvent, DataStoreError> { future in
-            self.storageEngine.delete(MutationEvent.self, withId: event.id) {
+            guard let storageEngine = self.storageEngine else {
+                let error = DataStoreError.configuration(
+                    "storageEngine is nil inside of OutgoingMutationQueue.enqueue",
+                    """
+                    The reference to storageEngine has been released while an ongoing mutation was being processed.
+                    There is a possibility that there is a bug if this error persists. Please take a look at
+                    https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that
+                    match your scenario, and file an issue with the details of the bug if there isn't.
+                    """
+                )
+                future(.failure(error))
+                return
+            }
+
+            storageEngine.delete(MutationEvent.self, withId: event.id) {
                 switch $0 {
                 case .result:
                     future(.success(event))
@@ -90,7 +121,21 @@ final class OutgoingMutationQueue {
 
     private func loadStoredMutations() -> AnyPublisher<MutationEvent, DataStoreError> {
         return Record { record in
-            self.storageEngine.query(MutationEvent.self, predicate: nil) {
+            guard let storageEngine = self.storageEngine else {
+                let error = DataStoreError.configuration(
+                    "storageEngine is nil inside of OutgoingMutationQueue.enqueue",
+                    """
+                    The reference to storageEngine has been released while an ongoing mutation was being processed.
+                    There is a possibility that there is a bug if this error persists. Please take a look at
+                    https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that
+                    match your scenario, and file an issue with the details of the bug if there isn't.
+                    """
+                )
+                record.receive(completion: .failure(error))
+                return
+            }
+
+            storageEngine.query(MutationEvent.self, predicate: nil) {
                 let unsortedEvents: [MutationEvent]
                 switch $0 {
                 case .result(let events):
