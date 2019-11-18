@@ -24,7 +24,7 @@ class InterpretBasicIntegrationTests: AWSPredictionsPluginTestBase {
         AWSDDLog.sharedInstance.logLevel = .verbose
         AWSDDLog.add(AWSDDTTYLogger.sharedInstance)
         let interpretInvoked = expectation(description: "Interpret invoked")
-        let operation = Amplify.Predictions.interpret(text: "Hello there how are you?") { event in
+        let operation = Amplify.Predictions.interpret(text: "Hello there 😊 how are you?") { event in
             switch event {
             case .completed(let result):
                 interpretInvoked.fulfill()

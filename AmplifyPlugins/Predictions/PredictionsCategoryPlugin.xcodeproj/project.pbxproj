@@ -485,17 +485,17 @@
 		95DAAA5D237B8ED30028544F /* Predictions */ = {
 			isa = PBXGroup;
 			children = (
-				95DAAAEA237DFDAF0028544F /* AWSPollyServiceBehavior.swift */,
-				95DAAA5E237B8ED30028544F /* AWSTranslateServiceBehavior.swift */,
 				95DAAA5F237B8ED30028544F /* AWSComprehendServiceBehavior.swift */,
+				95DAAAEA237DFDAF0028544F /* AWSPollyServiceBehavior.swift */,
 				95DAAA60237B8ED30028544F /* AWSPredictionsService.swift */,
-				95DAAA61237B8ED30028544F /* AWSTextractServiceBehavior.swift */,
-				95DAAA63237B8ED30028544F /* AWSRekognitionServiceBehavior.swift */,
 				95DAAA62237B8ED30028544F /* AWSPredictionsService+Comprehend.swift */,
 				95DAAAEB237DFDB00028544F /* AWSPredictionsService+Polly.swift */,
-				95DAAA64237B8ED30028544F /* AWSPredictionsService+Textract.swift */,
 				95DAAA65237B8ED30028544F /* AWSPredictionsService+Rekognition.swift */,
+				95DAAA64237B8ED30028544F /* AWSPredictionsService+Textract.swift */,
 				95DAAA66237B8ED30028544F /* AWSPredictionsService+Translate.swift */,
+				95DAAA63237B8ED30028544F /* AWSRekognitionServiceBehavior.swift */,
+				95DAAA61237B8ED30028544F /* AWSTextractServiceBehavior.swift */,
+				95DAAA5E237B8ED30028544F /* AWSTranslateServiceBehavior.swift */,
 			);
 			path = Predictions;
 			sourceTree = "<group>";
@@ -625,10 +625,10 @@
 		B4DFA66D237B577B0013E17B /* AWSPredictionsPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
-				B44A9A8423830C36003B0540 /* Configuration */,
 				B44A9A6923823F97003B0540 /* AWSPredictionsPlugin+IdentifyBasicIntegrationTests.swift */,
 				B44A9A6823823F97003B0540 /* AWSPredictionsPluginTestBase.swift */,
 				B44A9A6C238244B5003B0540 /* InterpretBasicIntegrationTests.swift */,
+				B44A9A8423830C36003B0540 /* Configuration */,
 				B4DFA66F237B577B0013E17B /* Resources */,
 			);
 			path = AWSPredictionsPluginIntegrationTests;
