@@ -83,6 +83,6 @@ class PredictionsErrorHelper {
         LocalizedRecoverySuggestion: [\(error.localizedRecoverySuggestion ?? "")
         """
 
-        return PredictionsError.unknownError(errorMessage, "")
+        return PredictionsError.unknown(errorMessage, "")
     }
 }

@@ -54,7 +54,6 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
 
             guard let  dominantLanguage = result.languages?.getDominantLanguage(),
                 let dominantLanguageCode = dominantLanguage.languageCode else {
-
                     let errorDescription = AWSComprehendErrorMessage.dominantLanguageNotDetermined.errorDescription
                     let recoverySuggestion = AWSComprehendErrorMessage.dominantLanguageNotDetermined.recoverySuggestion
                     let unknownError = PredictionsError.unknownError(errorDescription, recoverySuggestion)

@@ -6,6 +6,6 @@
 //
 
 public enum VoiceType {
-    
+
     case voice(String)
 }
