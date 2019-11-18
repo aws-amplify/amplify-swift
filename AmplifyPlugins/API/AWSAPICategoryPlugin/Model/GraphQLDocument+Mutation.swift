@@ -19,13 +19,23 @@ public enum GraphQLMutationType: String {
 /// The type of the operation is defined by `GraphQLMutationType`.
 public struct GraphQLMutation<M: Model>: GraphQLDocument {
 
-    public let documentType: GraphQLDocumentType = .mutation
+    public let documentType = GraphQLDocumentType.mutation
     public let modelType: M.Type
     public let mutationType: GraphQLMutationType
+    public let variables: [String: Any]
 
-    public init(of modelType: M.Type, type mutationType: GraphQLMutationType) {
-        self.modelType = modelType
+    public init(of model: M, type mutationType: GraphQLMutationType) {
+        self.modelType = Swift.type(of: model)
         self.mutationType = mutationType
+        if mutationType == .delete {
+            self.variables = [
+                "id": model.id
+            ]
+        } else {
+            self.variables = [
+                "input": model.graphQLInput
+            ]
+        }
     }
 
     public var name: String {
@@ -35,16 +45,16 @@ public struct GraphQLMutation<M: Model>: GraphQLDocument {
     public var stringValue: String {
         let schema = modelType.schema
 
-        let mutationName = name
-        let documentName = mutationName.prefix(1).uppercased() + mutationName.dropFirst()
+        let mutationName = name.toPascalCase()
+        let isDelete = mutationType == .delete
+        let inputName = isDelete ? "id" : "input"
+        let inputType = isDelete ? "ID!" : "\(mutationName)Input!"
 
-        let inputName = mutationType == .delete ? "id" : "input"
-        let inputType = mutationType == .delete ? "ID!" : "\(documentName)Input!"
         let fields = schema.graphQLFields.map { $0.graphQLName }
 
         return """
-        \(documentType) \(documentName)($\(inputName): \(inputType)) {
-          \(mutationName)(\(inputName): $\(inputName)) {
+        \(documentType) \(mutationName)($\(inputName): \(inputType)) {
+          \(name)(\(inputName): $\(inputName)) {
             \(fields.joined(separator: "\n    "))
           }
         }

@@ -21,7 +21,7 @@ class GraphQLDocumentTests: XCTestCase {
 
     // MARK: - Mutations
 
-    /// - Given: a `Model` type
+    /// - Given: a `Model` instance
     /// - When:
     ///   - the model is of type `Post`
     ///   - the model has no eager loaded connections
@@ -32,7 +32,8 @@ class GraphQLDocumentTests: XCTestCase {
     ///     - it contains an `input` of type `CreatePostInput`
     ///     - it has a list of fields with no nested/connected models
     func testCreateGraphQLMutationFromSimpleModel() {
-        let document = GraphQLMutation(of: Post.self, type: .create)
+        let post = Post(title: "title", content: "content")
+        let document = GraphQLMutation(of: post, type: .create)
         let expected = """
         mutation CreatePost($input: CreatePostInput!) {
           createPost(input: $input) {
@@ -47,9 +48,11 @@ class GraphQLDocumentTests: XCTestCase {
         }
         """
         XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.name, "createPost")
+        XCTAssert(document.variables["input"] != nil)
     }
 
-    /// - Given: a `Model` type
+    /// - Given: a `Model` instance
     /// - When:
     ///   - the model is of type `Post`
     ///   - the model has no eager loaded connections
@@ -60,7 +63,8 @@ class GraphQLDocumentTests: XCTestCase {
     ///     - it contains an `input` of type `UpdatePostInput`
     ///     - it has a list of fields with no nested/connected models
     func testUpdateGraphQLMutationFromSimpleModel() {
-        let document = GraphQLMutation(of: Post.self, type: .update)
+        let post = Post(title: "title", content: "content")
+        let document = GraphQLMutation(of: post, type: .update)
         let expected = """
         mutation UpdatePost($input: UpdatePostInput!) {
           updatePost(input: $input) {
@@ -75,9 +79,11 @@ class GraphQLDocumentTests: XCTestCase {
         }
         """
         XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.name, "updatePost")
+        XCTAssert(document.variables["input"] != nil)
     }
 
-    /// - Given: a `Model` type
+    /// - Given: a `Model` instance
     /// - When:
     ///   - the model is of type `Post`
     ///   - the model has no eager loaded connections
@@ -88,7 +94,8 @@ class GraphQLDocumentTests: XCTestCase {
     ///     - it contains an `input` of type `ID!`
     ///     - it has a list of fields with no nested/connected models
     func testDeleteGraphQLMutationFromSimpleModel() {
-        let document = GraphQLMutation(of: Post.self, type: .delete)
+        let post = Post(title: "title", content: "content")
+        let document = GraphQLMutation(of: post, type: .delete)
         let expected = """
         mutation DeletePost($id: ID!) {
           deletePost(id: $id) {
@@ -103,6 +110,8 @@ class GraphQLDocumentTests: XCTestCase {
         }
         """
         XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.name, "deletePost")
+        XCTAssert(document.variables["id"] as? String == post.id)
     }
 
     // MARK: - Queries
@@ -255,7 +264,7 @@ class GraphQLDocumentTests: XCTestCase {
     ///     - the `variables` has the right keys and values
     func testCreateMutationGraphQLRequest() {
         let post = Post(title: "title", content: "content")
-        let document = GraphQLMutation(of: Post.self, type: .create)
+        let document = GraphQLMutation(of: post, type: .create)
         let request = GraphQLRequest<Post>.mutation(of: post, type: .create)
 
         XCTAssertEqual(document.stringValue, request.document)
@@ -265,7 +274,7 @@ class GraphQLDocumentTests: XCTestCase {
         XCTAssert(request.variables != nil)
 
         guard let input = request.variables?["input"] as? [String: Any] else {
-            XCTFail("Request variables doesn't contain the right values")
+            XCTFail("The request variables property doesn't contain a valid input")
             return
         }
         XCTAssert(input["title"] as? String == post.title)

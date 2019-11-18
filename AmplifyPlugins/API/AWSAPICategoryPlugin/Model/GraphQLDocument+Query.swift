@@ -21,12 +21,16 @@ public enum GraphQLQueryType: String {
 /// as defined by `GraphQLQueryType`.
 public struct GraphQLQuery<M: Model>: GraphQLDocument {
 
-    public let documentType: GraphQLDocumentType = .query
+    public let documentType = GraphQLDocumentType.query
     public let modelType: M.Type
+    public let predicate: QueryPredicate?
     public let queryType: GraphQLQueryType
 
-    public init(from modelType: M.Type, type queryType: GraphQLQueryType) {
+    public init(from modelType: M.Type,
+                predicate: QueryPredicate? = nil,
+                type queryType: GraphQLQueryType) {
         self.modelType = modelType
+        self.predicate = predicate
         self.queryType = queryType
     }
 
@@ -39,9 +43,6 @@ public struct GraphQLQuery<M: Model>: GraphQLDocument {
 
     public var stringValue: String {
         let schema = modelType.schema
-
-        let queryName = name
-        let documentName = queryName.prefix(1).uppercased() + queryName.dropFirst()
 
         let inputName = queryType == .get ? "id" : "filter"
         let inputType = queryType == .get ? "ID!" : "Model\(schema.graphQLName)FilterInput"
@@ -56,9 +57,10 @@ public struct GraphQLQuery<M: Model>: GraphQLDocument {
             """
         }
 
+        let queryName = name.toPascalCase()
         return """
-        \(documentType) \(documentName)($\(inputName): \(inputType)) {
-          \(queryName)(\(inputName): $\(inputName)) {
+        \(documentType) \(queryName)($\(inputName): \(inputType)) {
+          \(name)(\(inputName): $\(inputName)) {
             \(documentFields)
           }
         }

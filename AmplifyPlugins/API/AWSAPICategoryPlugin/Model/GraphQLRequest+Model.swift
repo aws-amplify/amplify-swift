@@ -25,15 +25,9 @@ extension GraphQLRequest {
     /// - seealso: `GraphQLMutation`, `GraphQLMutationType`
     public static func mutation<M: Model>(of model: M,
                                           type: GraphQLMutationType) -> GraphQLRequest<M> {
-        let document = GraphQLMutation(of: M.self, type: type)
-        var variables: [String: Any] = [:]
-        if type == .delete {
-            variables.updateValue(model.id, forKey: "id")
-        } else {
-            variables.updateValue(model.graphQLInput, forKey: "input")
-        }
+        let document = GraphQLMutation(of: model, type: type)
         return GraphQLRequest<M>(document: document.stringValue,
-                                 variables: variables,
+                                 variables: document.variables,
                                  responseType: M.self)
     }
 
@@ -54,8 +48,8 @@ extension GraphQLRequest {
             "id": id
         ]
         return GraphQLRequest<M?>(document: document.stringValue,
-                                 variables: variables,
-                                 responseType: M?.self)
+                                  variables: variables,
+                                  responseType: M?.self)
     }
 
     /// Creates a `GraphQLRequest` that represents a query that expects multiple values as a result.

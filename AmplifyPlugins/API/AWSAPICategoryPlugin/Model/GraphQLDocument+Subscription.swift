@@ -20,7 +20,7 @@ public enum GraphQLSubscriptionType: String {
 /// These operations are defined by `GraphQLSubscriptionType`.
 public struct GraphQLSubscription<M: Model>: GraphQLDocument {
 
-    public let documentType: GraphQLDocumentType = .subscription
+    public let documentType = GraphQLDocumentType.subscription
     public let modelType: M.Type
     public let subscriptionType: GraphQLSubscriptionType
 
@@ -35,13 +35,12 @@ public struct GraphQLSubscription<M: Model>: GraphQLDocument {
 
     public var stringValue: String {
         let schema = modelType.schema
-        let subscriptionName = name
 
-        let documentName = subscriptionName.prefix(1).uppercased() + subscriptionName.dropFirst()
+        let subscriptionName = name.toPascalCase()
         let fields = schema.graphQLFields.map { $0.graphQLName }
         return """
-        \(documentType) \(documentName) {
-          \(subscriptionName) {
+        \(documentType) \(subscriptionName) {
+          \(name) {
             \(fields.joined(separator: "\n    "))
           }
         }
