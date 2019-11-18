@@ -31,9 +31,11 @@ final class StorageEngine: StorageEngineBehavior {
 
     public func setUp(models: [Model.Type]) throws {
         try adapter.setUp(models: models)
+        syncEngine?.start(storageEngine: self)
     }
 
     public func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
+
         let modelSaveCompletion: DataStoreCallback<M> = { result in
             guard type(of: model).schema.isSyncable, let syncEngine = self.syncEngine else {
                 completion(result)
@@ -61,15 +63,7 @@ final class StorageEngine: StorageEngineBehavior {
                             }
 
                     }, receiveValue: { mutationEvent in
-                        let model: M
-                        do {
-                            model = try mutationEvent.decodeModel(as: M.self)
-                        } catch {
-                            completion(.failure(causedBy: error))
-                            return
-                        }
-
-                        completion(.result(model))
+                        completion(.result(savedModel))
                     })
             } catch let dataStoreError as DataStoreError {
                 completion(.error(dataStoreError))
