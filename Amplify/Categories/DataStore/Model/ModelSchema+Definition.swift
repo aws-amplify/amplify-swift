@@ -7,6 +7,18 @@
 
 import Foundation
 
+/// Defines the relationship type between two models. The type of relationship is
+/// important when defining how to store and query them. Each relationship have
+/// its own rules depending on the storage mechanism. For example, on SQL a
+/// `manyToOne`/`oneToMany` relationship has a "foreign key" stored on the "many"
+/// side of the relation.
+public enum ModelRelationship {
+    case manyToMany(Model.Type)
+    case manyToOne(Model.Type)
+    case oneToMany(Model.Type)
+    case oneToOne(Model.Type, name: String)
+}
+
 public enum ModelFieldType: CustomStringConvertible {
 
     case string
@@ -59,6 +71,56 @@ extension ModelField {
             }
             return isArray ? .collection(of: model) : .model(type: model)
         }
+    }
+
+    /// If the field represents a relationship (aka connected) returns the `Model.Type` of
+    /// the connection. Connected types are represented by `.model(type)` and `.collection(type)`.
+    /// - seealso: `ModelFieldType`
+    public var connectedModel: Model.Type? {
+        switch typeDefinition {
+        case .model(let type), .collection(let type):
+            return type
+        default:
+            return nil
+        }
+    }
+
+    /// This calls `connectedModel` but enforces that the field must represent a relationship.
+    /// In case the field type is not a `Model.Type` is calls `preconditionFailure`. Consumers
+    /// should fix their models in order to recover from it, since connected models are required
+    /// to be of `Model.Type`.
+    ///
+    /// **Note:** as a maintainer, make sure you use this computed property only when context
+    /// allows (i.e. the field is a valid relatioship, such as foreign keys).
+    public var requiredConnectedModel: Model.Type {
+        guard let modelType = connectedModel else {
+            preconditionFailure("""
+            Model fields that are foreign keys must be connected to another Model.
+            Check the `ModelSchema` section of your "\(name)+Schema.swift" file.
+            """)
+        }
+        return modelType
+    }
+
+    public var relatioship: ModelRelationship? {
+        switch typeDefinition {
+        case .collection(let modelType):
+            // TODO find the other side of the relationship and infer the type correctly
+            // it might also be a .manyToMany
+            return .oneToMany(modelType)
+        case .model(let modelType):
+            // TODO find the other side of the relationship and infer the type correctly
+            // it might also be a .oneToOne
+            return .manyToOne(modelType)
+        default:
+            return nil
+        }
+    }
+
+    public var isRelationshipOwner: Bool {
+        // TODO improve connected model ownership (i.e. foreignKey side)
+        // this depends on the relationship type defined by `relationship`
+        return isConnected && !isArray
     }
 }
 

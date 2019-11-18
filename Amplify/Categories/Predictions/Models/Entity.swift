@@ -4,6 +4,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+
 ///Struct that holds the result of an entity detected from an image per the Identify method
 public struct Entity {
     public let boundingBox: BoundingBox

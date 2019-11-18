@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 public struct Pose {
     public let pitch: Double
     public let roll: Double

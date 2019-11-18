@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 public struct Landmark {
     public let type: String
     public let xPosition: Double

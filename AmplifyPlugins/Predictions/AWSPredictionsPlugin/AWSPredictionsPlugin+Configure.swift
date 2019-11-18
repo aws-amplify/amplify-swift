@@ -87,6 +87,7 @@ extension AWSPredictionsPlugin {
                                                            interpretConfig: interpretConfig,
                                                            convertConfig: convertConfig,
                                                            defaultProjectRegion: defaultProjectRegion)
+
             return config
     }
 

@@ -78,6 +78,4 @@ class PredictionsErrorHelper {
 
         return PredictionsError.unknownError(errorMessage, "")
     }
-
-
 }
