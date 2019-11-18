@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 public struct IdentifyTextResult: IdentifyResult {
     public let fullText: String?
     public let words: [IdentifiedWord]?

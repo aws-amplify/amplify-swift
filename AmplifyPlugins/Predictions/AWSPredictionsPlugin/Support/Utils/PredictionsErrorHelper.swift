@@ -9,6 +9,8 @@ import Foundation
 import Amplify
 import AWSRekognition
 import AWSTextract
+import AWSPolly
+
 
 class PredictionsErrorHelper {
 
@@ -69,6 +71,24 @@ class PredictionsErrorHelper {
         }
 
         guard let errorType = AWSTextractErrorType.init(rawValue: error.code) else {
+            return defaultError
+        }
+
+        return PredictionsErrorHelper.map(errorType) ?? defaultError
+    }
+
+    static func mapPollyError(_ error: NSError) -> PredictionsError {
+        let defaultError = PredictionsErrorHelper.getDefaultError(error)
+
+        if error.domain == AWSServiceErrorDomain {
+            return PredictionsErrorHelper.mapServiceError(error)
+        }
+
+        guard error.domain == AWSPollyErrorDomain else {
+            return defaultError
+        }
+
+        guard let errorType = AWSPollyErrorType.init(rawValue: error.code) else {
             return defaultError
         }
 
@@ -139,7 +159,8 @@ class PredictionsErrorHelper {
 
         return nil
     }
-    //TODO fill in proper error messages for rekognition and textract
+
+    //TODO fill in proper error messages for rekognition, textract and polly
     static func map(_ errorType: AWSRekognitionErrorType) -> PredictionsError? {
         switch errorType {
         case .accessDenied:
@@ -208,6 +229,59 @@ class PredictionsErrorHelper {
         case .unknown:
             break
         case .unsupportedDocument:
+            break
+        @unknown default:
+            break
+        }
+
+        return nil
+    }
+
+    static func map(_ errorType: AWSPollyErrorType) -> PredictionsError? {
+        switch errorType {
+        case .engineNotSupported:
+            break
+        case .invalidLexicon:
+            break
+        case .invalidNextToken:
+            break
+        case .invalidS3Bucket:
+            break
+        case .invalidS3Key:
+            break
+        case .invalidSampleRate:
+            break
+        case .invalidSnsTopicArn:
+            break
+        case .invalidSsml:
+            break
+        case .invalidTaskId:
+            break
+        case .languageNotSupported:
+            break
+        case .lexiconNotFound:
+            break
+        case .lexiconSizeExceeded:
+            break
+        case .marksNotSupportedForFormat:
+            break
+        case .maxLexemeLengthExceeded:
+            break
+        case .maxLexiconsNumberExceeded:
+            break
+        case .serviceFailure:
+            break
+        case .ssmlMarksNotSupportedForTextType:
+            break
+        case .synthesisTaskNotFound:
+            break
+        case .textLengthExceeded:
+            break
+        case .unknown:
+            break
+        case .unsupportedPlsAlphabet:
+            break
+        case .unsupportedPlsLanguage:
             break
         @unknown default:
             break
