@@ -20,11 +20,14 @@ class AWSPredictionsPluginIdentifyIntegrationTest: AWSPredictionsPluginTestBase 
     /// Then: The operation completes successfully
     func testIdentifyLabels() {
 
-        guard let image = UIImage(named: "testImage") else { return }
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImage", withExtension: "jpg") else {
+            return
+        }
         let completeInvoked = expectation(description: "Completed is invoked")
 
         let operation = Amplify.Predictions.identify(type: .detectLabels,
-                                                     image: image,
+                                                     image: url,
                                                      options: PredictionsIdentifyRequest.Options()) { event in
             switch event {
             case .completed:

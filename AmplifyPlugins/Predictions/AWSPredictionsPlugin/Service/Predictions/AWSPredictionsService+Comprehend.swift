@@ -39,7 +39,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
                 let error = languageError as NSError
                 let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                 completionHandler(.failed(.network(predictionsErrorString.errorDescription,
-                                  predictionsErrorString.recoverySuggestion)))
+                                                   predictionsErrorString.recoverySuggestion)))
                 return nil
             }
 

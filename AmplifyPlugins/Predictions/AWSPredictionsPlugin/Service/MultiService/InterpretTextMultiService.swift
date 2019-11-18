@@ -67,7 +67,20 @@ class InterpretTextMultiService: MultiServiceBehavior {
     func combineResults(offlineResult: InterpretResult?,
                         onlineResult: InterpretResult?,
                         callback: @escaping  InterpretTextEventHandler) {
-        // TODO: Combine logic to be added
-
+        if offlineResult == nil && onlineResult == nil {
+            let message = PredictionsServiceErrorMessage.interpretTextNoResult.errorDescription
+            let recoveryMessage = PredictionsServiceErrorMessage.interpretTextNoResult.recoverySuggestion
+            let predictionError = PredictionsError.service(message, recoveryMessage, nil)
+            callback(.failed(predictionError))
+        }
+        guard let finalOfflineResult = offlineResult else {
+            callback(.completed(onlineResult!))
+            return
+        }
+        guard let finalOnlineResult = onlineResult else {
+            callback(.completed(finalOfflineResult))
+            return
+        }
+        // TODO: Combine results
     }
 }
