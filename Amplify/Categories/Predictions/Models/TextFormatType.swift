@@ -5,7 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-
 public enum TextFormatType: String {
     case form
     case table
