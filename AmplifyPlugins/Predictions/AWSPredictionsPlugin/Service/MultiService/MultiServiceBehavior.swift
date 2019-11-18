@@ -35,9 +35,9 @@ extension MultiServiceBehavior {
 
         invokeMultiServiceCalls { multiServiceEvent in
             switch multiServiceEvent {
-            case .success(let mutliRespose):
-                combineResults(offlineResult: mutliRespose.offlineResult,
-                               onlineResult: mutliRespose.onlineResult,
+            case .success(let multiRespose):
+                combineResults(offlineResult: multiRespose.offlineResult,
+                               onlineResult: multiRespose.onlineResult,
                                callback: callback)
             case .failure(let error):
                 callback(.failed(error))
