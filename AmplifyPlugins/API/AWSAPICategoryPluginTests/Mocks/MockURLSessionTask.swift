@@ -20,6 +20,7 @@ class MockURLSessionTask: URLSessionDataTaskBehavior {
     weak var mockSession: MockURLSession?
 
     let taskBehaviorIdentifier: Int
+    let taskBehaviorResponse: URLResponse?
 
     var onCancel: BasicClosure?
     var onPause: BasicClosure?
@@ -32,6 +33,7 @@ class MockURLSessionTask: URLSessionDataTaskBehavior {
         self.onPause = onPause
         self.onResume = onResume
         self.taskBehaviorIdentifier = MockURLSessionTask.counter.increment()
+        self.taskBehaviorResponse = URLResponse()
     }
 
     func cancel() {

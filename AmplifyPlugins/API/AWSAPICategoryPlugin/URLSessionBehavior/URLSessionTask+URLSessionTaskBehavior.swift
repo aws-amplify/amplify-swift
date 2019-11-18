@@ -8,6 +8,10 @@
 import Foundation
 
 extension URLSessionTask: URLSessionDataTaskBehavior {
+    public var taskBehaviorResponse: URLResponse? {
+        response
+    }
+
     public var taskBehaviorIdentifier: Int {
         taskIdentifier
     }

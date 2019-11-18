@@ -38,7 +38,8 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
                 baseURL: baseURL,
                 region: region,
                 authorizationType: AWSAuthorizationType.none,
-                authorizationConfiguration: AWSAuthorizationConfiguration.none)]
+                authorizationConfiguration: AWSAuthorizationConfiguration.none,
+                endpointType: .graphQL)]
             pluginConfig = AWSAPICategoryPluginConfiguration(endpoints: endpointConfig)
             apiPlugin.configure(authService: authService,
                                 pluginConfig: pluginConfig)

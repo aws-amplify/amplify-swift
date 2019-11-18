@@ -5,6 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+public typealias StatusCode = Int
+public typealias Headers = [AnyHashable: Any]
+
 /// Errors specific to the API Category
 public enum APIError {
 
@@ -19,6 +22,9 @@ public enum APIError {
 
     /// An in-process operation encountered a processing error
     case operationError(ErrorDescription, RecoverySuggestion, Error? = nil)
+
+    /// A non 200 response from the service
+    case httpStatusError(StatusCode, Headers, RecoverySuggestion, Error? = nil)
 
     /// An error to encapsulate an error received by a dependent plugin
     case pluginError(AmplifyError)
@@ -38,6 +44,9 @@ extension APIError: AmplifyError {
 
         case .operationError(let errorDescription, _, _):
             return errorDescription
+
+        case .httpStatusError(let statusCode, _, _, _):
+            return "The HTTP response status code is [\(statusCode)]."
 
         case .pluginError(let error):
             return error.errorDescription
@@ -64,6 +73,12 @@ extension APIError: AmplifyError {
         case .operationError(_, let recoverySuggestion, _):
             return recoverySuggestion
 
+        case .httpStatusError(_, _, let recoverySuggestion, _):
+            return """
+            \(recoverySuggestion).
+            For more information on HTTP status codes, take a look at
+            https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+            """
         case .pluginError(let error):
             return error.recoverySuggestion
         }
@@ -78,6 +93,8 @@ extension APIError: AmplifyError {
         case .invalidURL(_, _, let error):
             return error
         case .operationError(_, _, let error):
+            return error
+        case .httpStatusError(_, _, _, let error):
             return error
         case .pluginError(let error):
             return error

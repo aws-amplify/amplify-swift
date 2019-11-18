@@ -17,11 +17,45 @@ extension AWSGraphQLOperation: APIOperation {
         cancel()
     }
 
-    func updateProgress(_ data: Data) {
+    func updateProgress(_ data: Data, response: URLResponse?) {
+        guard let response = response as? HTTPURLResponse else {
+            let apiError = APIError.unknown("Could not retrieve HTTPURLResponse", "")
+            dispatch(event: .failed(apiError))
+            finish()
+            return
+        }
+
+        let statusCode = response.statusCode
+
+        if statusCode < 200 || statusCode >= 300 {
+            let headers = response.allHeaderFields
+            let apiError = APIError.httpStatusError(statusCode, headers, "")
+            dispatch(event: .failed(apiError))
+            finish()
+            return
+        }
+
         graphQLResponseData.append(data)
     }
 
-    func complete(with error: Error?) {
+    func complete(with error: Error?, response: URLResponse?) {
+        guard let response = response as? HTTPURLResponse else {
+            let apiError = APIError.unknown("Could not retrieve HTTPURLResponse", "", error)
+            dispatch(event: .failed(apiError))
+            finish()
+            return
+        }
+
+        let statusCode = response.statusCode
+
+        if statusCode < 200 || statusCode >= 300 {
+            let headers = response.allHeaderFields
+            let apiError = APIError.httpStatusError(statusCode, headers, "", error)
+            dispatch(event: .failed(apiError))
+            finish()
+            return
+        }
+
         if let error = error {
             let apiError = APIError.operationError(
                 "The operation for this request failed.",

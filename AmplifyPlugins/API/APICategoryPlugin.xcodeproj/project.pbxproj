@@ -92,6 +92,8 @@
 		21D7A11D237B54D90057D00D /* SubscriptionInterceptable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0DB237B54D90057D00D /* SubscriptionInterceptable.swift */; };
 		21D7A11E237B54D90057D00D /* CognitoUserPoolsAuthInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0DC237B54D90057D00D /* CognitoUserPoolsAuthInterceptor.swift */; };
 		21D7A11F237B54D90057D00D /* APIKeyAuthInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A0DD237B54D90057D00D /* APIKeyAuthInterceptor.swift */; };
+		5379CCC99BBF418517E2A6BF /* Pods_HostApp_AWSAPICategoryPluginFunctionalTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7B6C08AD27E184E4170B245 /* Pods_HostApp_AWSAPICategoryPluginFunctionalTests.framework */; };
+		6F01E17DC4718FDDBDDD9559 /* Pods_HostApp_RESTWithIAMIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5176B05CEB428503DEEE29B3 /* Pods_HostApp_RESTWithIAMIntegrationTests.framework */; };
 		9A6361BDB208A773E043AAAB /* Pods_HostApp_GraphQLWithUserPoolIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDA191FD47FEEA614FB952F9 /* Pods_HostApp_GraphQLWithUserPoolIntegrationTests.framework */; };
 		9B13EA5E48896E8B38883633 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 930DD773E0FB4047393CA2AD /* Pods_HostApp.framework */; };
 		A04815BCD5F9181C8AEDEF43 /* Pods_AWSAPICategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 881AB4B98B48235DEC7754C2 /* Pods_AWSAPICategoryPlugin.framework */; };
@@ -129,17 +131,6 @@
 		B4DFA5F6237A611D0013E17B /* IAMURLRequestInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5DC237A611D0013E17B /* IAMURLRequestInterceptor.swift */; };
 		B4DFA5F8237A611D0013E17B /* AWSAPICategoryPlugin+ConfigureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5DE237A611D0013E17B /* AWSAPICategoryPlugin+ConfigureTests.swift */; };
 		B4DFA5F9237A611D0013E17B /* AWSAPICategoryPlugin+URLSessionDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5DF237A611D0013E17B /* AWSAPICategoryPlugin+URLSessionDelegateTests.swift */; };
-		B4DFA60B237A61D00013E17B /* AWSAPICategoryPluginTodoGraphQLWithUserPoolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5FB237A61D00013E17B /* AWSAPICategoryPluginTodoGraphQLWithUserPoolTests.swift */; };
-		B4DFA60C237A61D00013E17B /* IntegrationTestConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5FD237A61D00013E17B /* IntegrationTestConfiguration.swift */; };
-		B4DFA60D237A61D00013E17B /* AWSAPICategoryPluginBaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5FF237A61D00013E17B /* AWSAPICategoryPluginBaseTests.swift */; };
-		B4DFA60E237A61D00013E17B /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA601237A61D00013E17B /* Todo.swift */; };
-		B4DFA60F237A61D00013E17B /* BlogPostComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA602237A61D00013E17B /* BlogPostComment.swift */; };
-		B4DFA610237A61D00013E17B /* AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA603237A61D00013E17B /* AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.swift */; };
-		B4DFA611237A61D00013E17B /* AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA604237A61D00013E17B /* AWSAPICategoryPluginBlogPostCommentGraphQLWithAPIKeyTests.swift */; };
-		B4DFA612237A61D00013E17B /* Extension+AWSMobileClientError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA606237A61D00013E17B /* Extension+AWSMobileClientError.swift */; };
-		B4DFA613237A61D00013E17B /* AWSAPICategoryPluginTodoGraphQLWithIAMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA607237A61D00013E17B /* AWSAPICategoryPluginTodoGraphQLWithIAMTests.swift */; };
-		B4DFA614237A61D00013E17B /* AWSAPICategoryPluginTaskPrivateNoteGraphQLWithUserPoolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA608237A61D00013E17B /* AWSAPICategoryPluginTaskPrivateNoteGraphQLWithUserPoolTests.swift */; };
-		B4DFA615237A61D00013E17B /* AWSAPICategoryPluginGetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA609237A61D00013E17B /* AWSAPICategoryPluginGetTests.swift */; };
 		B9521820237CE69800F53237 /* Model+GraphQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = B952181F237CE69800F53237 /* Model+GraphQL.swift */; };
 		B9521822237D12EC00F53237 /* GraphQLDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9521821237D12EC00F53237 /* GraphQLDocument.swift */; };
 		B9521826237DE74A00F53237 /* ModelSchema+GraphQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9521825237DE74A00F53237 /* ModelSchema+GraphQL.swift */; };
@@ -314,6 +305,7 @@
 		3DD7865560F692DDB7C1548D /* Pods-HostApp-AWSAPICategoryPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginTests/Pods-HostApp-AWSAPICategoryPluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		41EF2F5050AE28AA51894B0E /* Pods-AWSAPICategoryPluginFunctionalTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAPICategoryPluginFunctionalTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSAPICategoryPluginFunctionalTests/Pods-AWSAPICategoryPluginFunctionalTests.debug.xcconfig"; sourceTree = "<group>"; };
 		44F446A2568E2ECDBA56BE56 /* Pods-HostApp-AWSAPICategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSAPICategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSAPICategoryPluginTests/Pods-HostApp-AWSAPICategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
+		48151EBFBE86C900B1E47505 /* Pods-HostApp-GraphQLWithUserPoolIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-GraphQLWithUserPoolIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-GraphQLWithUserPoolIntegrationTests/Pods-HostApp-GraphQLWithUserPoolIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		4AD63A179BA4F1B0F5A8239C /* Pods-HostApp-GraphQLWithIAMIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-GraphQLWithIAMIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-GraphQLWithIAMIntegrationTests/Pods-HostApp-GraphQLWithIAMIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		4C9D31E2654F5401D8DFA1EC /* Pods-AWSAPICategoryHostAppWithIAM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAPICategoryHostAppWithIAM.debug.xcconfig"; path = "Target Support Files/Pods-AWSAPICategoryHostAppWithIAM/Pods-AWSAPICategoryHostAppWithIAM.debug.xcconfig"; sourceTree = "<group>"; };
 		5176B05CEB428503DEEE29B3 /* Pods_HostApp_RESTWithIAMIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_RESTWithIAMIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -375,7 +367,6 @@
 		B4DFA604237A61D00013E17B /* BlogPostCommentGraphQLWithAPIKeyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlogPostCommentGraphQLWithAPIKeyTests.swift; sourceTree = "<group>"; };
 		B4DFA606237A61D00013E17B /* Extension+AWSMobileClientError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Extension+AWSMobileClientError.swift"; sourceTree = "<group>"; };
 		B4DFA609237A61D00013E17B /* AWSAPICategoryPluginGetTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginGetTests.swift; sourceTree = "<group>"; };
-		B4DFA60A237A61D00013E17B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B952181F237CE69800F53237 /* Model+GraphQL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+GraphQL.swift"; sourceTree = "<group>"; };
 		B9521821237D12EC00F53237 /* GraphQLDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLDocument.swift; sourceTree = "<group>"; };
 		B9521825237DE74A00F53237 /* ModelSchema+GraphQL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelSchema+GraphQL.swift"; sourceTree = "<group>"; };
@@ -411,7 +402,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				217856742380C73600A30D19 /* AWSAPICategoryPlugin.framework in Frameworks */,
-				C41FDBFB6C6934F72517D8FD /* Pods_HostApp_AWSAPICategoryPluginFunctionalTests.framework in Frameworks */,
+				5379CCC99BBF418517E2A6BF /* Pods_HostApp_AWSAPICategoryPluginFunctionalTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -420,7 +411,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				217856852380C90600A30D19 /* AWSAPICategoryPlugin.framework in Frameworks */,
-				E76D5B59BC33EF6EAE568532 /* Pods_HostApp_RESTWithIAMIntegrationTests.framework in Frameworks */,
+				6F01E17DC4718FDDBDDD9559 /* Pods_HostApp_RESTWithIAMIntegrationTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -980,8 +971,6 @@
 				3DD7865560F692DDB7C1548D /* Pods-HostApp-AWSAPICategoryPluginTests.release.xcconfig */,
 				4C9D31E2654F5401D8DFA1EC /* Pods-AWSAPICategoryHostAppWithIAM.debug.xcconfig */,
 				F2E34DE129C74003DCC9F6A2 /* Pods-AWSAPICategoryHostAppWithIAM.release.xcconfig */,
-				BCF11503564B58438C130577 /* Pods-AWSAPICategoryHostAppWithIAM-AWSAPICategoryHostAppWithIAMTests.debug.xcconfig */,
-				BED3141048E726C439426897 /* Pods-AWSAPICategoryHostAppWithIAM-AWSAPICategoryHostAppWithIAMTests.release.xcconfig */,
 				1FDC07084023DEF205FF6598 /* Pods-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */,
 				590266D0504CD8553B44EAE8 /* Pods-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig */,
 				90C677B6FAC9BCDE6385E3C4 /* Pods-HostApp-AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.debug.xcconfig */,
@@ -995,15 +984,14 @@
 				41EF2F5050AE28AA51894B0E /* Pods-AWSAPICategoryPluginFunctionalTests.debug.xcconfig */,
 				662A3518991D5D3389278520 /* Pods-AWSAPICategoryPluginFunctionalTests.release.xcconfig */,
 				64F4420E15AABEDB9EB87636 /* Pods-RESTWithIAMIntegrationTests.debug.xcconfig */,
-				B6F91E1BE8D3CEEB57C62FCF /* Pods-RESTWithIAMIntegrationTests.release.xcconfig */,
 				D81918B51EB7C63CA41E8BCC /* Pods-GraphQLWithIAMIntegrationTests.debug.xcconfig */,
 				2A9C1061115A6639265D6C9C /* Pods-GraphQLWithIAMIntegrationTests.release.xcconfig */,
 				99A35870182D00C9A88BA452 /* Pods-HostApp-GraphQLWithUserPoolIntegrationTests.debug.xcconfig */,
-				B7ED3033F3B1A53D1FE1CAC8 /* Pods-HostApp-GraphQLWithUserPoolIntegrationTests.release.xcconfig */,
 				4AD63A179BA4F1B0F5A8239C /* Pods-HostApp-GraphQLWithIAMIntegrationTests.debug.xcconfig */,
 				C3D37DF0A0811D30BC333916 /* Pods-HostApp-GraphQLWithIAMIntegrationTests.release.xcconfig */,
 				CEC56C63267289FDB34EA467 /* Pods-HostApp-RESTWithIAMIntegrationTests.debug.xcconfig */,
 				A8C3A4BB4483C7A952572919 /* Pods-HostApp-RESTWithIAMIntegrationTests.release.xcconfig */,
+				48151EBFBE86C900B1E47505 /* Pods-HostApp-GraphQLWithUserPoolIntegrationTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -1430,7 +1418,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../../.swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 		};
 		5B088E45F2F0CCDAE86DE090 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1998,7 +1986,7 @@
 		};
 		217856A923810B9400A30D19 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B7ED3033F3B1A53D1FE1CAC8 /* Pods-HostApp-GraphQLWithUserPoolIntegrationTests.release.xcconfig */;
+			baseConfigurationReference = 48151EBFBE86C900B1E47505 /* Pods-HostApp-GraphQLWithUserPoolIntegrationTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W3DRXD72QU;
