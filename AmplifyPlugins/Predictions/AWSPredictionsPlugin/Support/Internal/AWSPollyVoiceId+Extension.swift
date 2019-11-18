@@ -10,7 +10,6 @@ import Amplify
 
 // swiftlint:disable cyclomatic_complexity
 extension AWSPollyVoiceId {
-
     // swiftlint:disable function_body_length
     static func from(voiceType: VoiceType) -> AWSPollyVoiceId {
         guard case let .voice(name) = voiceType else {

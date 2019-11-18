@@ -17,7 +17,7 @@ struct PluginErrorMessage {
 
     static let configurationObjectExpected: PluginErrorString = (
         "Configuration was not a dictionary literal",
-        "Make sure the value for the plugin is a dictionary literal with keys 'identify' and 'convert'")
+        "Make sure the value for the plugin is a dictionary literal with keys 'identify', 'convert' and 'interpret'")
 
     static let missingCollectionId: PluginErrorString = (
         "The CollectionId is missing from the configuration",
