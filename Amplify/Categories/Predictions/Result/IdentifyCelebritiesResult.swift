@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 public struct IdentifyCelebritiesResult: IdentifyResult {
     public let celebrities: [Celebrity]
 
@@ -14,5 +12,3 @@ public struct IdentifyCelebritiesResult: IdentifyResult {
         self.celebrities = celebrities
     }
 }
-
-

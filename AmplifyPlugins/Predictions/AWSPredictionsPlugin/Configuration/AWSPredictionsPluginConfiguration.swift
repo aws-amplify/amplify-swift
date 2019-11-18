@@ -12,6 +12,17 @@ public struct AWSPredictionsPluginConfiguration {
     public var identifyConfig: AWSIdentifyConfig?
     public var interpretConfig: AWSInterpretConfig?
     public var convertConfig: AWSConvertConfig?
+    public var defaultProjectRegion: AWSRegionType
+
+    public init(identifyConfig: AWSIdentifyConfig?,
+                interpretConfig: AWSInterpretConfig?,
+                convertConfig: AWSConvertConfig?,
+                defaultProjectRegion: AWSRegionType) {
+        self.identifyConfig = identifyConfig
+        self.interpretConfig = interpretConfig
+        self.convertConfig = convertConfig
+        self.defaultProjectRegion = defaultProjectRegion
+    }
 }
 
 public struct AWSIdentifyConfig {
@@ -26,6 +37,7 @@ public struct AWSInterpretConfig {
 
 public struct AWSConvertConfig {
     public var region: AWSRegionType
+    public var voiceId: String?
 }
 
 public extension AWSPredictionsPluginConfiguration {
@@ -39,5 +51,8 @@ public extension AWSPredictionsPluginConfiguration {
         case identifyEntities
         case collectionId
         case maxFaces
+        case speechGenerator
+        case voiceId = "VoiceId"
+        case defaultProjectRegion = "aws_project_region"
     }
 }

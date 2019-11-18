@@ -11,7 +11,7 @@ import Foundation
 /// Defines the type of query, either a `list` which returns multiple results
 /// and can optionally use filters or a `get`, which aims to fetch one result
 /// identified by its `id`.
-enum GraphQLQueryType: String {
+public enum GraphQLQueryType: String {
     case get
     case list
 }
@@ -19,46 +19,49 @@ enum GraphQLQueryType: String {
 /// A concrete implementation of `GraphQLDocument` that represents a query operation.
 /// Queries can either return a single (`.get`) or mutiple (`.list`) results
 /// as defined by `GraphQLQueryType`.
-struct GraphQLQuery<M: Model>: GraphQLDocument {
+public struct GraphQLQuery<M: Model>: GraphQLDocument {
 
-    let documentType: GraphQLDocumentType = .query
-    let modelType: M.Type
-    let queryType: GraphQLQueryType
+    public let documentType = GraphQLDocumentType.query
+    public let modelType: M.Type
+    public let predicate: QueryPredicate?
+    public let queryType: GraphQLQueryType
 
-    init(from modelType: M.Type, type queryType: GraphQLQueryType) {
+    public init(from modelType: M.Type,
+                predicate: QueryPredicate? = nil,
+                type queryType: GraphQLQueryType) {
         self.modelType = modelType
+        self.predicate = predicate
         self.queryType = queryType
     }
 
-    var name: String {
+    public var name: String {
         // TODO better plural handling? (check current CLI implementation)
         let suffix = queryType == .list ? "s" : ""
         let modelName = modelType.schema.graphQLName + suffix
         return queryType.rawValue + modelName
     }
 
-    var stringValue: String {
+    public var stringValue: String {
         let schema = modelType.schema
-
-        let queryName = name
-        let documentName = queryName.prefix(1).uppercased() + queryName.dropFirst()
 
         let inputName = queryType == .get ? "id" : "filter"
         let inputType = queryType == .get ? "ID!" : "Model\(schema.graphQLName)FilterInput"
 
-        var fields = schema.graphQLFields.joined(separator: "\n    ")
+        let fields = schema.graphQLFields.map { $0.graphQLName }
+        var documentFields = fields.joined(separator: "\n    ")
         if queryType == .list {
-            fields = """
+            documentFields = """
             items {
-                  \(schema.graphQLFields.joined(separator: "\n      "))
+                  \(fields.joined(separator: "\n      "))
                 }
             """
         }
 
+        let queryName = name.toPascalCase()
         return """
-        \(documentType) \(documentName)($\(inputName): \(inputType)) {
-          \(queryName)(\(inputName): $\(inputName)) {
-            \(fields)
+        \(documentType) \(queryName)($\(inputName): \(inputType)) {
+          \(name)(\(inputName): $\(inputName)) {
+            \(documentFields)
           }
         }
         """

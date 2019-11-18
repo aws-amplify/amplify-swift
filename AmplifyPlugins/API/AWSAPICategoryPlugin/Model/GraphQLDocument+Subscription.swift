@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 
 /// Defines the type of a GraphQL subscription.
-enum GraphQLSubscriptionType: String {
+public enum GraphQLSubscriptionType: String {
     case onCreate
     case onDelete
     case onUpdate
@@ -18,30 +18,30 @@ enum GraphQLSubscriptionType: String {
 /// A concrete implementation of `GraphQLDocument` that represents a subscription operation.
 /// Subscriptions are triggered when specific operations happen on the defined `Model`.
 /// These operations are defined by `GraphQLSubscriptionType`.
-struct GraphQLSubscription<M: Model>: GraphQLDocument {
+public struct GraphQLSubscription<M: Model>: GraphQLDocument {
 
-    let documentType: GraphQLDocumentType = .subscription
-    let modelType: M.Type
-    let subscriptionType: GraphQLSubscriptionType
+    public let documentType = GraphQLDocumentType.subscription
+    public let modelType: M.Type
+    public let subscriptionType: GraphQLSubscriptionType
 
-    init(of modelType: M.Type, type subscriptionType: GraphQLSubscriptionType) {
+    public init(of modelType: M.Type, type subscriptionType: GraphQLSubscriptionType) {
         self.modelType = modelType
         self.subscriptionType = subscriptionType
     }
 
-    var name: String {
+    public var name: String {
         subscriptionType.rawValue + modelType.schema.graphQLName
     }
 
-    var stringValue: String {
+    public var stringValue: String {
         let schema = modelType.schema
-        let subscriptionName = name
 
-        let documentName = subscriptionName.prefix(1).uppercased() + subscriptionName.dropFirst()
+        let subscriptionName = name.toPascalCase()
+        let fields = schema.graphQLFields.map { $0.graphQLName }
         return """
-        \(documentType) \(documentName) {
-          \(subscriptionName) {
-            \(schema.graphQLFields.joined(separator: "\n    "))
+        \(documentType) \(subscriptionName) {
+          \(name) {
+            \(fields.joined(separator: "\n    "))
           }
         }
         """
