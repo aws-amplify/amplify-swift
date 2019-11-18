@@ -87,7 +87,7 @@ class AWSPredictionsService {
         self.awsComprehend = awsComprehend
         self.awsPolly = awsPolly
         self.predictionsConfig = config
-        
+
     }
 
     func reset() {
