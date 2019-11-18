@@ -57,6 +57,13 @@
 		21FFF9A2230C9731005878EA /* StorageListResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF9A1230C9730005878EA /* StorageListResult.swift */; };
 		2861F5F799C24671B5C4DB8D /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C448F4F6DD01A268675E1C68 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTestCommon.framework */; };
 		3263D332138415AF42E64FF7 /* Pods_AmplifyTestApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDC7F1C368154B364CB74742 /* Pods_AmplifyTestApp.framework */; };
+		6B1F15122383671B00AB23EF /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B1F15102383671B00AB23EF /* NetworkReachability.swift */; };
+		6B1F15132383671B00AB23EF /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B1F15102383671B00AB23EF /* NetworkReachability.swift */; };
+		6B1F15142383671B00AB23EF /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B1F15102383671B00AB23EF /* NetworkReachability.swift */; };
+		6B1F15152383671B00AB23EF /* NetworkReachabilityNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B1F15112383671B00AB23EF /* NetworkReachabilityNotifier.swift */; };
+		6B1F15162383671B00AB23EF /* NetworkReachabilityNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B1F15112383671B00AB23EF /* NetworkReachabilityNotifier.swift */; };
+		6B1F15172383671B00AB23EF /* NetworkReachabilityNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B1F15112383671B00AB23EF /* NetworkReachabilityNotifier.swift */; };
+		6B1F15192383691B00AB23EF /* NetworkReachabilityNotifierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B1F15182383691B00AB23EF /* NetworkReachabilityNotifierTests.swift */; };
 		7D5ED6C78E25246DDAF2F2EC /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */; platformFilter = ios; };
 		7F27B1DCE59C1E674172CCD6 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */; };
 		80CF9ED038D61833716854B8 /* Pods_Amplify_AWSPluginsCore_AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ED013FD8A569C8E3D67506B /* Pods_Amplify_AWSPluginsCore_AWSDataStoreCategoryPlugin.framework */; };
@@ -573,6 +580,9 @@
 		65CCD77CBA8619E2E9D41196 /* Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPluginTests/Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		687B09E9348F8D29979A2404 /* Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6AF0E4775809F0866F9C44D9 /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin-AWSS3StoragePluginTests.debug.xcconfig"; sourceTree = "<group>"; };
+		6B1F15102383671B00AB23EF /* NetworkReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
+		6B1F15112383671B00AB23EF /* NetworkReachabilityNotifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkReachabilityNotifier.swift; sourceTree = "<group>"; };
+		6B1F15182383691B00AB23EF /* NetworkReachabilityNotifierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkReachabilityNotifierTests.swift; sourceTree = "<group>"; };
 		6BAC32194A15ACB56F07DC87 /* Pods-AWSS3StoragePlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSS3StoragePlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSS3StoragePlugin/Pods-AWSS3StoragePlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		6C41D3730B7ED4FD62A43E40 /* Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6D51240C78418B733FFA6829 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSDataStoreCategoryPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1435,6 +1445,7 @@
 			isa = PBXGroup;
 			children = (
 				B92E03D12367CFF3006CEB8D /* Info.plist */,
+				6B1F15182383691B00AB23EF /* NetworkReachabilityNotifierTests.swift */,
 				B922E27B236BC59F00D09250 /* QueryPredicateTests.swift */,
 				B922E275236A083B00D09250 /* SQLiteQueryTranslatorTests.swift */,
 				B92E03EF2367D2BB006CEB8D /* SQLiteStorageEngineAdapterTests.swift */,
@@ -1777,6 +1788,8 @@
 			children = (
 				FA9FD2372381CFC300A7CAF5 /* CloudSyncEngine.swift */,
 				FA9FD2392381CFC300A7CAF5 /* OutgoingMutationQueue.swift */,
+				6B1F15102383671B00AB23EF /* NetworkReachability.swift */,
+				6B1F15112383671B00AB23EF /* NetworkReachabilityNotifier.swift */,
 				FAA274B02382EA7100EDD2EA /* SyncingMutationSubscriber.swift */,
 			);
 			path = Sync;
@@ -3258,6 +3271,7 @@
 				B92E03E72367D2A4006CEB8D /* StorageEngineBehavior.swift in Sources */,
 				B92E03E92367D2A4006CEB8D /* StorageEngine.swift in Sources */,
 				B92E03EA2367D2A4006CEB8D /* ModelSchema+SQLite.swift in Sources */,
+				6B1F15152383671B00AB23EF /* NetworkReachabilityNotifier.swift in Sources */,
 				B92E03EE2367D2A4006CEB8D /* AWSDataStoreCategoryPlugin.swift in Sources */,
 				FA9FD23A2381CFC300A7CAF5 /* CloudSyncEngine.swift in Sources */,
 				FAA274B12382EA7100EDD2EA /* SyncingMutationSubscriber.swift in Sources */,
@@ -3267,6 +3281,7 @@
 				B92E03ED2367D2A4006CEB8D /* Statement+Model.swift in Sources */,
 				FAD393732381FF4200463F5E /* DataStorePublisher.swift in Sources */,
 				B922E273236A07CA00D09250 /* QueryPredicate+SQLite.swift in Sources */,
+				6B1F15122383671B00AB23EF /* NetworkReachability.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3278,7 +3293,10 @@
 				FAD393762382036000463F5E /* SubscribeTests.swift in Sources */,
 				B922E27C236BC5A000D09250 /* QueryPredicateTests.swift in Sources */,
 				B922E276236A083B00D09250 /* SQLiteQueryTranslatorTests.swift in Sources */,
+				6B1F15172383671B00AB23EF /* NetworkReachabilityNotifier.swift in Sources */,
 				FAD3937823820BB000463F5E /* SyncTests.swift in Sources */,
+				6B1F15142383671B00AB23EF /* NetworkReachability.swift in Sources */,
+				6B1F15192383691B00AB23EF /* NetworkReachabilityNotifierTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3286,7 +3304,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B1F15162383671B00AB23EF /* NetworkReachabilityNotifier.swift in Sources */,
 				B92E04112368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests.swift in Sources */,
+				6B1F15132383671B00AB23EF /* NetworkReachability.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
