@@ -77,9 +77,10 @@ extension AWSPredictionsPlugin {
 
         let request = PredictionsInterpretRequest(textToInterpret: text,
                                                   options: options ?? PredictionsInterpretRequest.Options())
-        let operation = AWSComprehendOperation(request,
-                                               predictionsService: predictionsService,
-                                               authService: authService,
+        let multiService = InterpretTextMultiService(coreMLService: coreMLService,
+                                                     predictionsService: predictionsService)
+        let operation = InterpretTextOperation(request,
+                                               multiService: multiService,
                                                listener: listener)
         queue.addOperation(operation)
         return operation

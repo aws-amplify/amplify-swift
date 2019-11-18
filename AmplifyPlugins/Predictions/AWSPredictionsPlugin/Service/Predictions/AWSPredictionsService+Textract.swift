@@ -33,7 +33,7 @@ extension AWSPredictionsService: AWSTextractServiceBehaviour {
         guard let imageData = try? Data(contentsOf: image) else {
 
             onEvent(.failed(
-                .networkError("Something was wrong with the image file, make sure it exists.",
+                .network("Something was wrong with the image file, make sure it exists.",
                               "Try choosing an image and sending it again.")))
             return
         }
@@ -46,21 +46,21 @@ extension AWSPredictionsService: AWSTextractServiceBehaviour {
                 let error = task.error! as NSError
                 let predictionsErrorString = PredictionsErrorHelper.mapTextractError(error)
                 onEvent(.failed(
-                    .networkError(predictionsErrorString.errorDescription,
+                    .network(predictionsErrorString.errorDescription,
                                   predictionsErrorString.recoverySuggestion)))
                 return nil
             }
 
             guard let result = task.result else {
                 onEvent(.failed(
-                    .unknownError("No result was found. An unknown error occurred",
+                    .unknown("No result was found. An unknown error occurred",
                                   "Please try again.")))
                 return nil
             }
 
             guard let blocks = result.blocks else {
                 onEvent(.failed(
-                    .networkError("No result was found.",
+                    .network("No result was found.",
                                   "Please make sure the image integrity is maintained before sending")))
                 return nil
             }

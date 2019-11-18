@@ -23,7 +23,7 @@ class PredictionsErrorHelper {
 
         }
         // TODO status error mapper
-        return PredictionsError.httpStatusError(statusCode, "TODO some status code to recovery message mapper")
+        return PredictionsError.httpStatus(statusCode, "TODO some status code to recovery message mapper")
     }
 
     static func mapServiceError(_ error: NSError) -> PredictionsError {
@@ -104,7 +104,7 @@ class PredictionsErrorHelper {
         LocalizedRecoverySuggestion: [\(error.localizedRecoverySuggestion ?? "")
         """
 
-        return PredictionsError.unknownError(errorMessage, "")
+        return PredictionsError.unknown(errorMessage, "")
     }
 
     // swiftlint:disable cyclomatic_complexity
