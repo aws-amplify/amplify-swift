@@ -81,6 +81,9 @@ class InterpretTextMultiService: MultiServiceBehavior {
             callback(.completed(finalOfflineResult))
             return
         }
-        // TODO: Combine results
+        callback(.completed(finalOnlineResult))
+        let onlineSentiment = finalOnlineResult.sentiment
+        let offlineSentiment = finalOnlineResult.sentiment
+
     }
 }

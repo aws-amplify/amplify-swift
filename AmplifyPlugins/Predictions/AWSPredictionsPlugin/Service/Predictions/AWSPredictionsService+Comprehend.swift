@@ -132,15 +132,12 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             }
             var syntaxTokenResult = [SyntaxToken]()
             for syntax in syntaxTokens {
-                print("Syntax - \(syntax)")
-                // TODO: Fix the range
                 let beginOffSet = syntax.beginOffset?.intValue ?? 0
                 let endOffset = syntax.endOffset?.intValue ?? 0
-                let range = Range<String.Index>(NSRange(location: beginOffSet,
-                                                        length: endOffset - beginOffSet),
-                                                in: text)!
-                print("Text - \(text)")
-                print("range = \(text[range])")
+                let startIndex = text.index(text.startIndex, offsetBy: beginOffSet)
+                let endIndex = text.index(text.startIndex, offsetBy: endOffset)
+                let range = startIndex ..< endIndex
+                print("Input = \(syntax) text = \(text[range])")
                 var partOfSpeech: PartOfSpeech?
                 if let comprehendPartOfSpeech = syntax.partOfSpeech {
                     let score = comprehendPartOfSpeech.score?.floatValue
@@ -174,10 +171,13 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             }
             var keyPhrasesResult = [KeyPhrase]()
             for keyPhrase in keyPhrases {
-                // TODO: Fix the range
-                let range = Range<String.Index>(NSRange(location: keyPhrase.beginOffset?.intValue ?? 0,
-                                                        length: keyPhrase.endOffset?.intValue ?? 0),
-                                                in: text)!
+
+                let beginOffSet = keyPhrase.beginOffset?.intValue ?? 0
+                let endOffset = keyPhrase.endOffset?.intValue ?? 0
+                let startIndex = text.index(text.startIndex, offsetBy: beginOffSet)
+                let endIndex = text.index(text.startIndex, offsetBy: endOffset)
+                let range = startIndex ..< endIndex
+                print("Input = \(keyPhrase) text = \(text[range])")
                 let amplifyKeyPhrase = KeyPhrase(text: keyPhrase.text ?? "",
                                                  range: range,
                                                  score: keyPhrase.score?.floatValue)
@@ -230,12 +230,13 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             }
             var entitiesResult = [EntityDetectionResult]()
             for entity in entities {
-
-                // TODO: Fix the range
-                let range = Range<String.Index>(NSRange(location: entity.beginOffset?.intValue ?? 0,
-                                                        length: entity.endOffset?.intValue ?? 0),
-                                                in: text)!
-                let interpretEntity = EntityDetectionResult(type: EntityType.event,
+                let beginOffSet = entity.beginOffset?.intValue ?? 0
+                let endOffset = entity.endOffset?.intValue ?? 0
+                let startIndex = text.index(text.startIndex, offsetBy: beginOffSet)
+                let endIndex = text.index(text.startIndex, offsetBy: endOffset)
+                let range = startIndex ..< endIndex
+                print("Input = \(entity) text = \(text[range])")
+                let interpretEntity = EntityDetectionResult(type: entity.types.toAmplifyEntityType(),
                                                             targetText: entity.text ?? "",
                                                             score: entity.score?.floatValue,
                                                             range: range)

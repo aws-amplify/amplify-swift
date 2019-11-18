@@ -79,7 +79,6 @@ extension MultiServiceBehavior {
         }
         dispatchGroup.wait()
 
-        //TODO: Define what error to send back if both service returned an error
         if offlineError != nil && onlineError != nil {
             callback(.failure(onlineError!))
         }

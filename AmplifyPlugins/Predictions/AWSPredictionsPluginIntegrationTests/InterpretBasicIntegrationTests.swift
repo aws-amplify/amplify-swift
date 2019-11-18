@@ -21,10 +21,12 @@ class InterpretBasicIntegrationTests: AWSPredictionsPluginTestBase {
     ///    - Should return no empty result
     ///
     func testInterpretText() {
-        AWSDDLog.sharedInstance.logLevel = .verbose
-        AWSDDLog.add(AWSDDTTYLogger.sharedInstance)
+        let inputText = """
+        Here is a text to be tested. This text contains emojis like 🙃😆 and like 🚀. Also it contains entities like
+        places in Seattle and on November 19. Text is long enough to have happy emotions.
+        """
         let interpretInvoked = expectation(description: "Interpret invoked")
-        let operation = Amplify.Predictions.interpret(text: "Hello there 😊 how are you?") { event in
+        let operation = Amplify.Predictions.interpret(text: inputText) { event in
             switch event {
             case .completed(let result):
                 interpretInvoked.fulfill()

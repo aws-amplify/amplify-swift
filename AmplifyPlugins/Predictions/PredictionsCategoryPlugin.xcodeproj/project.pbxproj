@@ -455,6 +455,7 @@
 				95DAAACC237C778A0028544F /* PredictionsAction.swift */,
 				95DAAA50237B8ED30028544F /* PredictionsAWSServices.swift */,
 				95DAAA51237B8ED30028544F /* PredictionsEvent.swift */,
+				B44FC315238355F000F54040 /* AWSComprehendEntityTypeExtension.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";

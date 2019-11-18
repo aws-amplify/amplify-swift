@@ -15,4 +15,5 @@ public enum EntityType: String {
     case quantity
     case title
     case other
+    case unknown
 }
