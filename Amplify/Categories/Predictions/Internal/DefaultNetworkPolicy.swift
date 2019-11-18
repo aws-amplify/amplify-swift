@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// CallType of the operation
+/// DefaultNetworkPolicy of the operation
 public enum DefaultNetworkPolicy {
 
     /// `offline` operation doesnot make network call

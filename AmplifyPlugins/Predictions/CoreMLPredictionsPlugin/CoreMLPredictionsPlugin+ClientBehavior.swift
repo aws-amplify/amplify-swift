@@ -19,7 +19,13 @@ extension CoreMLPredictionsPlugin {
         fatalError("Incomplete implementation")
     }
 
-    public func identify(type: IdentifyType,
+    public func convert(textToSpeech: String,
+                        options: PredictionsTextToSpeechRequest.Options? = nil,
+                        listener: PredictionsTextToSpeechOperation.EventListener?) -> PredictionsTextToSpeechOperation {
+        fatalError("Incomplete implementation")
+    }
+
+    public func identify(type: IdentifyAction,
                          image: URL,
                          options: PredictionsIdentifyRequest.Options?,
                          listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation {
