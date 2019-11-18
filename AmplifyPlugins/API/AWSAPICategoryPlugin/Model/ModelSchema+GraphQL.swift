@@ -17,14 +17,10 @@ extension ModelSchema {
     }
 
     /// The list of fields formatted for GraphQL usage.
-    var graphQLFields: [String] {
-        sortedFields
-            .filter { field in
-                !field.isConnected || field.isRelationshipOwner
-            }
-            .map { field in
-                field.graphQLName
-            }
+    var graphQLFields: [ModelField] {
+        sortedFields.filter { field in
+            !field.isConnected || field.isRelationshipOwner
+        }
     }
 
     func findConnectedField(byType type: Model.Type) -> ModelField? {

@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 
 /// Defines the type of a GraphQL mutation.
-enum GraphQLMutationType: String {
+public enum GraphQLMutationType: String {
     case create
     case update
     case delete
@@ -17,22 +17,22 @@ enum GraphQLMutationType: String {
 
 /// A concrete implementation of `GraphQLDocument` that represents a data mutation operation.
 /// The type of the operation is defined by `GraphQLMutationType`.
-struct GraphQLMutation<M: Model>: GraphQLDocument {
+public struct GraphQLMutation<M: Model>: GraphQLDocument {
 
-    let documentType: GraphQLDocumentType = .mutation
-    let modelType: M.Type
-    let mutationType: GraphQLMutationType
+    public let documentType: GraphQLDocumentType = .mutation
+    public let modelType: M.Type
+    public let mutationType: GraphQLMutationType
 
-    init(of modelType: M.Type, type mutationType: GraphQLMutationType) {
+    public init(of modelType: M.Type, type mutationType: GraphQLMutationType) {
         self.modelType = modelType
         self.mutationType = mutationType
     }
 
-    var name: String {
+    public var name: String {
         mutationType.rawValue + modelType.schema.graphQLName
     }
 
-    var stringValue: String {
+    public var stringValue: String {
         let schema = modelType.schema
 
         let mutationName = name
@@ -40,11 +40,12 @@ struct GraphQLMutation<M: Model>: GraphQLDocument {
 
         let inputName = mutationType == .delete ? "id" : "input"
         let inputType = mutationType == .delete ? "ID!" : "\(documentName)Input!"
+        let fields = schema.graphQLFields.map { $0.graphQLName }
 
         return """
         \(documentType) \(documentName)($\(inputName): \(inputType)) {
           \(mutationName)(\(inputName): $\(inputName)) {
-            \(schema.graphQLFields.joined(separator: "\n    "))
+            \(fields.joined(separator: "\n    "))
           }
         }
         """

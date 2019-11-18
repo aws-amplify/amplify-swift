@@ -14,3 +14,4 @@ type Comment @model {
     createdAt: AWSDate!
     post: Post @connected(name: "PostComment")
 }
+

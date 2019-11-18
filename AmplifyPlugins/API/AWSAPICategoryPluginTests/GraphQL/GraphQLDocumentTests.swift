@@ -242,4 +242,34 @@ class GraphQLDocumentTests: XCTestCase {
         """
         XCTAssertEqual(document.stringValue, expected)
     }
+
+    // MARK: - GraphQLRequest+Model
+
+    /// - Given: a `Model` instance
+    /// - When:
+    ///   - the model is a `Post`
+    ///   - the mutation is of type `.create`
+    /// - Then:
+    ///   - check if the `GraphQLRequest` is valid:
+    ///     - the `document` has the right content
+    ///     - the `variables` has the right keys and values
+    func testCreateMutationGraphQLRequest() {
+        let post = Post(title: "title", content: "content")
+        let document = GraphQLMutation(of: Post.self, type: .create)
+        let request = GraphQLRequest<Post>.mutation(of: post, type: .create)
+
+        XCTAssertEqual(document.stringValue, request.document)
+        XCTAssert(request.responseType == Post.self)
+
+        // test the input
+        XCTAssert(request.variables != nil)
+
+        guard let input = request.variables?["input"] as? [String: Any] else {
+            XCTFail("Request variables doesn't contain the right values")
+            return
+        }
+        XCTAssert(input["title"] as? String == post.title)
+        XCTAssert(input["content"] as? String == post.content)
+    }
+
 }
