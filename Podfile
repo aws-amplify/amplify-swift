@@ -34,7 +34,7 @@ target "Amplify" do
 
     target "AWSDataStoreCategoryPlugin" do
       inherit! :complete
-      
+      pod "ReachabilitySwift", "~> 5.0.0"
       pod "SQLite.swift", "~> 0.12.0"
     end
 
@@ -46,6 +46,7 @@ target "Amplify" do
       end
 
       target "AWSDataStoreCategoryPluginTests" do
+        pod "ReachabilitySwift", "~> 5.0.0"
       end
 
     end
