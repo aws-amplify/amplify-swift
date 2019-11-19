@@ -63,7 +63,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                     let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
                     onEvent(.failed(
                         .network(predictionsErrorString.errorDescription,
-                                      predictionsErrorString.recoverySuggestion)))
+                                 predictionsErrorString.recoverySuggestion)))
                     return nil
                 }
 
@@ -81,7 +81,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                     return nil
                 }
 
-                let unsafeContent: Bool = moderationRekognitionlabels.count > 0
+                let unsafeContent: Bool = moderationRekognitionlabels.isEmpty
                 let labels = IdentifyLabelsResultTransformers.processModerationLabels(moderationRekognitionlabels)
                 onEvent(.completed(IdentifyLabelsResult(labels: labels, unsafeContent: unsafeContent)))
                 return nil
@@ -419,7 +419,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                                   "Please make sure the image integrity is maintained before sending")))
                 return nil
             }
-            unsafeContent = moderationRekognitionLabels.count > 0
+            unsafeContent = moderationRekognitionLabels.isEmpty
             dispatchGroup.leave()
             return nil
         }
