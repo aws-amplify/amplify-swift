@@ -13,6 +13,7 @@ import AWSPredictionsPlugin
 import AWSRekognition
 import XCTest
 
+// swiftlint:type_name disable
 class AWSPredictionsPluginIdentifyIntegrationTest: AWSPredictionsPluginTestBase {
 
     /// Given: An Image
@@ -41,12 +42,11 @@ class AWSPredictionsPluginIdentifyIntegrationTest: AWSPredictionsPluginTestBase 
     }
 
     func getImageFromDir(_ imageName: String) -> URL? {
+        let testBundle = Bundle(for: type(of: self))
+        guard let fileURL = testBundle.url(forResource: imageName, withExtension: "jpg")
+          else { fatalError() }
+        return fileURL
 
-        if let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-            let fileURL = documentsUrl.appendingPathComponent(imageName)
-            return fileURL
-        }
-        return nil
     }
 
 }

@@ -42,7 +42,12 @@ class AWSPredictionsPluginTestBase: XCTestCase {
         let predictionsConfig = PredictionsCategoryConfiguration(
             plugins: [
                 "AWSPredictionsPlugin": [
-                    "Region": region
+                    "aws_project_region": region,
+                    "identify": [
+                        "maxFaces": 50,
+                        "collectionId": "",
+                        "region": region
+                    ]
                 ]
             ]
         )
@@ -64,17 +69,4 @@ class AWSPredictionsPluginTestBase: XCTestCase {
         Amplify.reset()
         sleep(5)
     }
-
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
 }
