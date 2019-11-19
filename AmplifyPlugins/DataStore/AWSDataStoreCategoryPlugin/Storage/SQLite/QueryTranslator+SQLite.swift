@@ -54,8 +54,25 @@ class SQLiteQueryTranslator: QueryTranslator {
         return Query(statement)
     }
 
-    func translateToDelete(from model: Model) -> Query<Binding?> {
-        preconditionFailure("Not implemented for SQLite yet")
+    func translateToDelete(from modelType: Model.Type,
+                           predicate: QueryPredicate? = nil) -> Query<Binding?> {
+
+        let schema = modelType.schema
+        let sql = "delete from \(schema.name)"
+
+        guard let predicate = predicate else {
+            return Query(sql)
+        }
+
+        let conditionQuery = translateQueryPredicate(from: modelType, predicate: predicate)
+        return Query(
+            """
+            \(sql)
+            where 1 = 1
+               \(conditionQuery.string)
+            """,
+            arguments: conditionQuery.arguments)
+
     }
 
     func translateToInsert(from model: Model) -> Query<Binding?> {

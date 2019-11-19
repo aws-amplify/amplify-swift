@@ -8,11 +8,15 @@
 import Amplify
 import Foundation
 
-public protocol StorageEngineBehavior {
+protocol StorageEngineBehavior {
 
     func setUp(models: [Model.Type]) throws
 
-    func save<M: Model>(_ model: M, completion: DataStoreCallback<M>)
+    func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>)
+
+    func delete<M: Model>(_ modelType: M.Type,
+                          withId id: Model.Identifier,
+                          completion: DataStoreCallback<Void>)
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate?,

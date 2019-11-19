@@ -12,7 +12,6 @@ import SQLite
 /// [SQLite](https://sqlite.org) `StorageEngineAdapter` implementation. This class provides
 /// an integration layer between the AppSyncLocal `StorageEngine` and SQLite for local storage.
 final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
-
     internal var connection: Connection!
     internal let queryTranslator: SQLiteQueryTranslator
 
@@ -67,6 +66,20 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         } catch {
             completion(.failure(causedBy: error))
         }
+    }
+
+    public func delete<M: Model>(_ modelType: M.Type,
+                                 withId id: Model.Identifier,
+                                 completion: (DataStoreResult<Void>) -> Void) {
+        let predicate: QueryPredicateFactory = { field("id") == id }
+        let query = queryTranslator.translateToDelete(from: modelType, predicate: predicate())
+        do {
+            _ = try connection.prepare(query.string).run(query.arguments)
+            completion(.result(()))
+        } catch {
+            completion(.failure(causedBy: error))
+        }
+
     }
 
     public func query<M: Model>(_ modelType: M.Type,
