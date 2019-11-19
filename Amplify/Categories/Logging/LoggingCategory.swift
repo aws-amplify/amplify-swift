@@ -9,6 +9,21 @@
 final public class LoggingCategory: Category {
     public let categoryType = CategoryType.logging
 
+    /// The global logLevel. Messages logged at a priority less than or equal to this value will be logged (e.g., if
+    /// `logLevel` is set to `.info`, then messages sent at `.error`, `.warn`, and `.info` will be logged, but messages
+    /// at `.debug` and `.verbose` will not be logged. The global log level is also used for the default logger
+    /// e.g., `Amplify.Log.debug("debug message")`. Defaults to `.error`.
+    ///
+    /// Developers can override log levels per log category, as in
+    /// ```
+    /// let viewLogger = Amplify.Logging.logger(forCategory: "views", level: .error)
+    /// let networkLogger = Amplify.Logging.logger(forCategory: "network", level: .info)
+    ///
+    /// viewLogger.info("A view loaded") // Will not be logged
+    /// networkLogger.info("A network operation started") // Will be logged
+    /// ```
+    public var logLevel = LogLevel.error
+
     var plugins = [PluginKey: LoggingCategoryPlugin]()
 
     /// Returns the plugin added to the category, if only one plugin is added. Accessing this property if no plugins
