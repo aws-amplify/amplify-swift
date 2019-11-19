@@ -34,7 +34,7 @@ PredictionsInterpretOperation {
             return
         }
         multiService.setTextToInterpret(text: request.textToInterpret)
-        switch request.options.callType {
+        switch request.options.defaultNetworkPolicy {
         case .offline:
             multiService.fetchOfflineResult(callback: { event in
                 self.onServiceEvent(event: event)

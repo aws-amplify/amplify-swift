@@ -8,13 +8,13 @@
 import Foundation
 
 public struct PredictionsTextToSpeechRequest: AmplifyOperationRequest, PredictionsConvertRequest {
-
+    
     /// The text to synthesize to speech
     public let textToSpeech: String
-
+    
     /// Options to adjust the behavior of this request, including plugin options
     public let options: Options
-
+    
     public init(textToSpeech: String,
                 options: Options) {
         self.textToSpeech = textToSpeech
@@ -23,23 +23,23 @@ public struct PredictionsTextToSpeechRequest: AmplifyOperationRequest, Predictio
 }
 
 public extension PredictionsTextToSpeechRequest {
-
+    
     struct Options {
-
-        /// The calltype for the operation. The default value will be `auto`.
-        public let callType: DefaultNetworkPolicy
-
+        
+        /// The default NetworkPolicy for the operation. The default value will be `auto`.
+        public let defaultNetworkPolicy: DefaultNetworkPolicy
+        
         public let voiceType: VoiceType?
-
+        
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
         /// a way to utilize the underlying storage system's functionality. See plugin documentation for expected
         /// key/values
         public let pluginOptions: [String: Any]?
-
-        public init(callType: DefaultNetworkPolicy = .auto,
+        
+        public init(defaultNetworkPolicy: DefaultNetworkPolicy = .auto,
                     voiceType: VoiceType? = nil,
                     pluginOptions: [String: Any]? = nil) {
-            self.callType = callType
+            self.defaultNetworkPolicy = defaultNetworkPolicy
             self.voiceType = voiceType
             self.pluginOptions = pluginOptions
         }

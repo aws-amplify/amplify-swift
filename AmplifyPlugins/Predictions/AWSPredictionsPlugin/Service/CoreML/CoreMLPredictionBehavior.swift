@@ -18,8 +18,8 @@ protocol CoreMLPredictionBehavior: class {
     func comprehend(text: String,
                     onEvent: @escaping InterpretTextEventHandler)
 
-    func detectLabels(_ imageURL: URL,
-                      type: IdentifyAction,
-                      onEvent: @escaping IdentifyEventHandler)
+    func identify(_ imageURL: URL,
+                  type: IdentifyAction,
+                  onEvent: @escaping IdentifyEventHandler)
 
 }

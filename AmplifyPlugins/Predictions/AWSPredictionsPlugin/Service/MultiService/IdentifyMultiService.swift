@@ -56,9 +56,9 @@ class IdentifyMultiService: MultiServiceBehavior {
             callback(.failed(predictionError))
             return
         }
-        offlineService.detectLabels(request.image,
-                                    type: request.identifyType,
-                                    onEvent: callback)
+        offlineService.identify(request.image,
+                                type: request.identifyType,
+                                onEvent: callback)
     }
 
     // MARK: -

@@ -36,7 +36,7 @@ PredictionsIdentifyOperation {
             return
         }
         multiService.setRequest(request)
-        switch request.options.callType {
+        switch request.options.defaultNetworkPolicy {
         case .offline:
             multiService.fetchOfflineResult(callback: { event in
                 self.onServiceEvent(event: event)

@@ -26,17 +26,17 @@ public extension PredictionsInterpretRequest {
 
     struct Options {
 
-        /// The calltype for the operation. The default value will be `auto`.
-        public let callType: DefaultNetworkPolicy
+        /// The defaultNetworkPolicy for the operation. The default value will be `auto`.
+        public let defaultNetworkPolicy: DefaultNetworkPolicy
 
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
         /// a way to utilize the underlying storage system's functionality. See plugin documentation for expected
         /// key/values
         public let pluginOptions: Any?
 
-        public init(callType: DefaultNetworkPolicy = .auto,
+        public init(defaultNetworkPolicy: DefaultNetworkPolicy = .auto,
                     pluginOptions: Any? = nil) {
-            self.callType = callType
+            self.defaultNetworkPolicy = defaultNetworkPolicy
             self.pluginOptions = pluginOptions
         }
     }
