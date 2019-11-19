@@ -36,7 +36,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
 
         awsComprehend.detectLanguage(request: detectLanguage).continueWith { (task) -> Any? in
             if let languageError = task.error {
-                let networkError = PredictionsError.networkError(languageError.localizedDescription,
+                let networkError = PredictionsError.network(languageError.localizedDescription,
                 languageError.localizedDescription)
                 completionHandler(.failed(networkError))
                 return nil
@@ -45,7 +45,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             guard let result = task.result else {
                 let errorDescription = PredictionsServiceErrorMessage.noLanguageFound.errorDescription
                 let recoverySuggestion = PredictionsServiceErrorMessage.noLanguageFound.recoverySuggestion
-                let unknownError = PredictionsError.unknownError(errorDescription, recoverySuggestion)
+                let unknownError = PredictionsError.unknown(errorDescription, recoverySuggestion)
                 completionHandler(.failed(unknownError))
                 return nil
             }
@@ -55,7 +55,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
 
                     let errorDescription = PredictionsServiceErrorMessage.dominantLanguageNotDetermined.errorDescription
                     let recoverySuggestion = PredictionsServiceErrorMessage.dominantLanguageNotDetermined.recoverySuggestion
-                    let unknownError = PredictionsError.unknownError(errorDescription, recoverySuggestion)
+                    let unknownError = PredictionsError.unknown(errorDescription, recoverySuggestion)
                     completionHandler(.failed(unknownError))
                     return nil
             }

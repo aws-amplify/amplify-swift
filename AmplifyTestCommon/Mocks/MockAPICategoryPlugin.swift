@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Foundation
 
 class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
@@ -93,13 +94,13 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     func get(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
         notify("get")
-        let request = RESTOperationRequest(apiName: request.apiName,
+        let operationRequest = RESTOperationRequest(apiName: request.apiName,
                                            operationType: .get,
                                            path: request.path,
                                            queryParameters: request.queryParameters,
                                            body: request.body,
                                            options: RESTOperationRequest.Options())
-        let operation = MockAPIOperation(request: request)
+        let operation = MockAPIOperation(request: operationRequest)
         return operation
     }
 

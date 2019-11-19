@@ -29,20 +29,20 @@ extension AWSPredictionsService: AWSPollyServiceBehavior {
                 let error = task.error! as NSError
                 let predictionsErrorString = PredictionsErrorHelper.mapPollyError(error)
                 onEvent(.failed(
-                    .networkError(predictionsErrorString.errorDescription,
-                                  predictionsErrorString.recoverySuggestion)))
+                    .network(predictionsErrorString.errorDescription,
+                             predictionsErrorString.recoverySuggestion)))
                 return nil
             }
 
             guard let result = task.result else {
-                onEvent(.failed(.unknownError("No result was found. An unknown error occurred.", "Please try again.")))
+                onEvent(.failed(.unknown("No result was found. An unknown error occurred.", "Please try again.")))
                 return nil
             }
 
             guard let speech = result.audioStream else {
                 onEvent(.failed(
-                    .networkError("No result was found.",
-                                  "Please make sure a text string was sent over to synthesize.")))
+                    .network("No result was found.",
+                             "Please make sure a text string was sent over to synthesize.")))
                 return nil
             }
 

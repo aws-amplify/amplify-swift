@@ -27,7 +27,7 @@ public extension PredictionsTextToSpeechRequest {
     struct Options {
 
         /// The calltype for the operation. The default value will be `auto`.
-        public let callType: CallType
+        public let callType: DefaultNetworkPolicy
 
         public let voiceType: VoiceType?
 
@@ -36,7 +36,7 @@ public extension PredictionsTextToSpeechRequest {
         /// key/values
         public let pluginOptions: [String: Any]?
 
-        public init(callType: CallType = .auto,
+        public init(callType: DefaultNetworkPolicy = .auto,
                     voiceType: VoiceType? = nil,
                     pluginOptions: [String: Any]? = nil) {
             self.callType = callType
