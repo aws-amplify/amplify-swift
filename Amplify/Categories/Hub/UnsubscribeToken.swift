@@ -11,7 +11,6 @@ import Foundation
 /// conforms to Hashable, only the `id` property is considered for equality and hash value; `channel` is used only for
 /// routing an unsubscribe request to the correct HubChannel.
 public struct UnsubscribeToken {
-    // swiftlint:disable identifier_name
     let channel: HubChannel
     let id: UUID
 
@@ -19,7 +18,6 @@ public struct UnsubscribeToken {
         self.channel = channel
         self.id = id
     }
-    // swiftlint:enable identifier_name
 }
 
 extension UnsubscribeToken: Hashable {
