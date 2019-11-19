@@ -18,6 +18,7 @@ public enum PredictionsError {
     case network(ErrorDescription, RecoverySuggestion, Error? = nil)
     case service(ErrorDescription, RecoverySuggestion, Error? = nil)
     case unknown(ErrorDescription, RecoverySuggestion, Error? = nil)
+
 }
 
 extension PredictionsError: AmplifyError {
@@ -25,7 +26,6 @@ extension PredictionsError: AmplifyError {
         switch self {
         case .accessDenied(let errorDescription, _, _),
              .auth(let errorDescription, _, _),
-             .service(let errorDescription, _, _),
              .configuration(let errorDescription, _, _):
             return errorDescription
         case .unknown(let errorDescription, _, _):
@@ -34,6 +34,8 @@ extension PredictionsError: AmplifyError {
             return "Network error occurred with message:\(errorDescription)"
         case .httpStatus(let statusCode, _, _):
             return "The HTTP response status code is [\(statusCode)]."
+        case .service(let errorDescription, _, _):
+            return "A service error occurred with message:\(errorDescription)"
         }
 
     }

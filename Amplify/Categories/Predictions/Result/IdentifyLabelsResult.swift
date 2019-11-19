@@ -9,7 +9,9 @@ public struct IdentifyLabelsResult: IdentifyResult {
     public let labels: [Label]
     public let unsafeContent: Bool?
 
-    public init(labels: [Label], unsafeContent:Bool? = false) {
+
+    public init(labels: [Label], unsafeContent:Bool? = nil) {
+
         self.labels = labels
         self.unsafeContent = unsafeContent
     }

@@ -17,3 +17,4 @@ Pod::Spec.new do |s|
   s.dependency 'Amplify', '0.0.1'
 
 end
+

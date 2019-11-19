@@ -21,11 +21,9 @@ Error: AmplifyError>: AsynchronousOperation {
     /// The concrete Request associated with this operation
     public typealias Request = Request
 
-    // swiftlint:disable identifier_name
     /// The unique ID of the operation. In categories where operations are persisted for future processing, this id can
     /// be used to identify previously-scheduled work for progress tracking or other functions.
     public let id: UUID
-    // swiftlint:enable identifier_name
 
     /// Incoming parameters of the original request
     public let request: Request

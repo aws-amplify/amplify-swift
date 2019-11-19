@@ -32,7 +32,7 @@ public struct Entity {
     }
 }
 
-public struct EntityMetadata{
+public struct EntityMetadata {
     public let confidence: Double
     public let pose: Pose
 
@@ -41,4 +41,3 @@ public struct EntityMetadata{
         self.pose = pose
     }
 }
-

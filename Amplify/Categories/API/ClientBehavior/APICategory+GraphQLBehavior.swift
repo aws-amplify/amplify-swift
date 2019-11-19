@@ -17,7 +17,8 @@ extension APICategory: APICategoryGraphQLBehavior {
     }
 
     public func subscribe<R>(request: GraphQLRequest<R>,
-                             listener: GraphQLSubscriptionOperation<R>.EventListener?) -> GraphQLSubscriptionOperation<R> {
+                             listener: GraphQLSubscriptionOperation<R>.EventListener?)
+        -> GraphQLSubscriptionOperation<R> {
         plugin.subscribe(request: request, listener: listener)
     }
 }

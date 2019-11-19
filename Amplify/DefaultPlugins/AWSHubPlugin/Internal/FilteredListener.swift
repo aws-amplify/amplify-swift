@@ -8,10 +8,8 @@
 import Foundation
 
 struct FilteredListener {
-    // swiftlint:disable identifier_name
     /// A unique identifier for this listener
     let id: UUID
-    // swiftlint:enable identifier_name
 
     /// The HubChannel to which the listener is assigned
     let channel: HubChannel

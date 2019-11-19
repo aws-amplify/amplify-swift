@@ -48,8 +48,10 @@ PredictionsIdentifyOperation {
                 self?.onServiceEvent(event: event)
             }
         case .detectLabels(let labelType):
-            predictionsService.detectLabels(
-            image: request.image, type: labelType) { [weak self] event in
+
+            predictionsService.detectLabels(image: request.image,
+                                            type: labelType) { [weak self] event in
+
                 self?.onServiceEvent(event: event)
             }
 

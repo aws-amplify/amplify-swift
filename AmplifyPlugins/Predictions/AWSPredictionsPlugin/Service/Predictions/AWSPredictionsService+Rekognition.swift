@@ -31,7 +31,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
             detectRekognitionLabels(image: imageData, onEvent: onEvent).continueWith { (task) -> Any? in
                 guard task.error == nil else {
                     let error = task.error! as NSError
-                    let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                    let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                     onEvent(.failed(
                         .network(predictionsErrorString.errorDescription,
                                       predictionsErrorString.recoverySuggestion)))
@@ -60,10 +60,10 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
             detectModerationLabels(image: imageData, onEvent: onEvent).continueWith { (task) -> Any? in
                 guard task.error == nil else {
                     let error = task.error! as NSError
-                    let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
-                    onEvent(.failed(
-                        .network(predictionsErrorString.errorDescription,
-                                      predictionsErrorString.recoverySuggestion)))
+
+                    let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
+                    onEvent(.failed(.network(predictionsErrorString.errorDescription,
+                                             predictionsErrorString.recoverySuggestion)))
                     return nil
                 }
 
@@ -81,7 +81,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                     return nil
                 }
 
-                let unsafeContent: Bool = moderationRekognitionlabels.count > 0
+                let unsafeContent: Bool = moderationRekognitionlabels.isEmpty
+
                 let labels = IdentifyLabelsResultTransformers.processModerationLabels(moderationRekognitionlabels)
                 onEvent(.completed(IdentifyLabelsResult(labels: labels, unsafeContent: unsafeContent)))
                 return nil
@@ -109,7 +110,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         awsRekognition.detectCelebs(request: request).continueWith { (task) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
-                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                 onEvent(.failed(
                     .network(predictionsErrorString.errorDescription,
                                   predictionsErrorString.recoverySuggestion)))
@@ -174,7 +175,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         awsRekognition.detectFaces(request: request).continueWith { (task) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
-                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                 onEvent(.failed(
                     .network(predictionsErrorString.errorDescription,
                                   predictionsErrorString.recoverySuggestion)))
@@ -222,7 +223,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         awsRekognition.detectFacesFromCollection(request: request).continueWith { (task) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
-                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                 onEvent(.failed(
                     .network(predictionsErrorString.errorDescription,
                                   predictionsErrorString.recoverySuggestion)))
@@ -269,7 +270,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         awsRekognition.detectText(request: request).continueWith { (task) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
-                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                 onEvent(.failed(
                     .network(predictionsErrorString.errorDescription,
                                   predictionsErrorString.recoverySuggestion)))
@@ -303,7 +304,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
                     guard task.error == nil else {
                         let error = task.error! as NSError
-                        let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                        let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                         onEvent(.failed(
                             .network(predictionsErrorString.errorDescription,
                                           predictionsErrorString.recoverySuggestion)))
@@ -371,10 +372,11 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         detectRekognitionLabels(image: image, onEvent: onEvent).continueWith { (task) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
-                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
-                onEvent(.failed(
-                    .network(predictionsErrorString.errorDescription,
-                                  predictionsErrorString.recoverySuggestion)))
+
+                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
+
+                onEvent(.failed(.network(predictionsErrorString.errorDescription,
+                                         predictionsErrorString.recoverySuggestion)))
                 return nil
             }
 
@@ -400,7 +402,9 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         detectModerationLabels(image: image, onEvent: onEvent).continueWith {(task) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
-                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+
+                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
+
                 onEvent(.failed(
                     .network(predictionsErrorString.errorDescription,
                                   predictionsErrorString.recoverySuggestion)))
@@ -419,7 +423,9 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                                   "Please make sure the image integrity is maintained before sending")))
                 return nil
             }
-            unsafeContent = moderationRekognitionLabels.count > 0
+
+            unsafeContent = moderationRekognitionLabels.isEmpty
+
             dispatchGroup.leave()
             return nil
         }
