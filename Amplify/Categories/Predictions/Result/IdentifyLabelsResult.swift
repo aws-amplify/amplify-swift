@@ -7,18 +7,22 @@
 
 public struct IdentifyLabelsResult: IdentifyResult {
     public let labels: [Label]
+    public let unsafeContent: Bool?
 
-    public init(labels: [Label]) {
+    public init(labels: [Label], unsafeContent:Bool? = nil) {
         self.labels = labels
+        self.unsafeContent = unsafeContent
     }
 }
 
 public struct Label {
-    public let boundingBoxes: [BoundingBox]?
-    public let metadata: LabelMetadata?
     public let name: String
+    public let metadata: LabelMetadata?
+    public let boundingBoxes: [BoundingBox]?
 
-    public init(name: String, metadata: LabelMetadata? = nil, boundingBoxes: [BoundingBox]? = nil) {
+    public init(name: String,
+                metadata: LabelMetadata? = nil,
+                boundingBoxes: [BoundingBox]? = nil) {
         self.name = name
         self.metadata = metadata
         self.boundingBoxes = boundingBoxes

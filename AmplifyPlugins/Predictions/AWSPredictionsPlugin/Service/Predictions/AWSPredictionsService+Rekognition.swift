@@ -9,52 +9,85 @@ import Amplify
 import AWSRekognition
 import AWSTextract
 
+typealias DetectModerationLabelsCompletedHandler = AWSTask<AWSRekognitionDetectModerationLabelsResponse>
+
+typealias DetectLabelsCompletedHandler = AWSTask<AWSRekognitionDetectLabelsResponse>
+
 extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
     func detectLabels(image: URL,
+                      type: LabelType,
                       onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
-
-        let request: AWSRekognitionDetectLabelsRequest = AWSRekognitionDetectLabelsRequest()
-        let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
-
         guard let imageData = try? Data(contentsOf: image) else {
 
-            onEvent(.failed(
-                .network("Something was wrong with the image file, make sure it exists.",
-                              "Try choosing an image and sending it again.")))
-            return
+                   onEvent(.failed(
+                       .network("Something was wrong with the image file, make sure it exists.",
+                                     "Try choosing an image and sending it again.")))
+                   return
         }
 
-        rekognitionImage.bytes = imageData
-        request.image = rekognitionImage
+        switch type {
+        case .labels:
+            detectRekognitionLabels(image: imageData, onEvent: onEvent).continueWith { (task) -> Any? in
+                guard task.error == nil else {
+                    let error = task.error! as NSError
+                    let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                    onEvent(.failed(
+                        .network(predictionsErrorString.errorDescription,
+                                      predictionsErrorString.recoverySuggestion)))
+                    return nil
+                }
 
-        awsRekognition.detectLabels(request: request).continueWith { (task) -> Any? in
-            guard task.error == nil else {
-                let error = task.error! as NSError
-                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
-                onEvent(.failed(
-                    .network(predictionsErrorString.errorDescription,
-                                  predictionsErrorString.recoverySuggestion)))
+                guard let result = task.result else {
+                    onEvent(.failed(
+                        .unknown("No result was found. An unknown error occurred",
+                                      "Please try again.")))
+                    return nil
+                }
+
+                guard let labels = result.labels else {
+                    onEvent(.failed(
+                        .network("No result was found.",
+                                      "Please make sure the image integrity is maintained before sending")))
+                    return nil
+                }
+
+                let newLabels = IdentifyLabelsResultTransformers.processLabels(labels)
+                onEvent(.completed(IdentifyLabelsResult(labels: newLabels, unsafeContent: nil)))
                 return nil
             }
+        case .moderation:
+            detectModerationLabels(image: imageData, onEvent: onEvent).continueWith { (task) -> Any? in
+                guard task.error == nil else {
+                    let error = task.error! as NSError
+                    let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                    onEvent(.failed(
+                        .network(predictionsErrorString.errorDescription,
+                                 predictionsErrorString.recoverySuggestion)))
+                    return nil
+                }
 
-            guard let result = task.result else {
-                onEvent(.failed(
-                    .unknown("No result was found. An unknown error occurred",
-                                  "Please try again.")))
+                guard let result = task.result else {
+                    onEvent(.failed(
+                        .unknown("No result was found. An unknown error occurred",
+                                      "Please try again.")))
+                    return nil
+                }
+
+                guard let moderationRekognitionlabels = result.moderationLabels else {
+                    onEvent(.failed(
+                        .network("No result was found.",
+                                      "Please make sure the image integrity is maintained before sending")))
+                    return nil
+                }
+
+                let unsafeContent: Bool = moderationRekognitionlabels.isEmpty
+                let labels = IdentifyLabelsResultTransformers.processModerationLabels(moderationRekognitionlabels)
+                onEvent(.completed(IdentifyLabelsResult(labels: labels, unsafeContent: unsafeContent)))
                 return nil
             }
-
-            guard let labels = result.labels else {
-                onEvent(.failed(
-                    .network("No result was found.",
-                                  "Please make sure the image integrity is maintained before sending")))
-                return nil
-            }
-
-            let newLabels = IdentifyLabelsResultTransformers.processLabels(labels)
-            onEvent(.completed(IdentifyLabelsResult(labels: newLabels)))
-            return nil
+        case .all:
+            return detectAllLabels(image: imageData, onEvent: onEvent)
         }
     }
 
@@ -110,7 +143,6 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
 
         }
         return detectFaces(image: image, onEvent: onEvent)
-
     }
 
     func detectText(image: URL,
@@ -309,4 +341,90 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         }
     }
 
+    private func detectModerationLabels(image: Data, onEvent: @escaping
+        RekognitionServiceEventHandler) -> DetectModerationLabelsCompletedHandler {
+        let request: AWSRekognitionDetectModerationLabelsRequest = AWSRekognitionDetectModerationLabelsRequest()
+        let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
+
+        rekognitionImage.bytes = image
+        request.image = rekognitionImage
+
+        return awsRekognition.detectModerationLabels(request: request)
+    }
+
+    private func detectRekognitionLabels(image: Data, onEvent: @escaping
+        RekognitionServiceEventHandler) -> DetectLabelsCompletedHandler {
+        let request: AWSRekognitionDetectLabelsRequest = AWSRekognitionDetectLabelsRequest()
+        let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
+
+        rekognitionImage.bytes = image
+        request.image = rekognitionImage
+
+        return awsRekognition.detectLabels(request: request)
+    }
+
+    private func detectAllLabels(image: Data, onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
+        let dispatchGroup = DispatchGroup()
+        var allLabels = [Label]()
+        var unsafeContent: Bool = false
+        dispatchGroup.enter()
+        detectRekognitionLabels(image: image, onEvent: onEvent).continueWith { (task) -> Any? in
+            guard task.error == nil else {
+                let error = task.error! as NSError
+                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                onEvent(.failed(
+                    .network(predictionsErrorString.errorDescription,
+                                  predictionsErrorString.recoverySuggestion)))
+                return nil
+            }
+
+            guard let result = task.result else {
+                onEvent(.failed(
+                    .unknown("No result was found. An unknown error occurred",
+                                  "Please try again.")))
+                return nil
+            }
+
+            guard let labels = result.labels else {
+                onEvent(.failed(
+                    .network("No result was found.",
+                                  "Please make sure the image integrity is maintained before sending")))
+                return nil
+            }
+
+            allLabels = IdentifyLabelsResultTransformers.processLabels(labels)
+            dispatchGroup.leave()
+            return nil
+        }
+        dispatchGroup.enter()
+        detectModerationLabels(image: image, onEvent: onEvent).continueWith {(task) -> Any? in
+            guard task.error == nil else {
+                let error = task.error! as NSError
+                let predictionsErrorString = PredictionsErrorHelper.mapRekognitionError(error)
+                onEvent(.failed(
+                    .network(predictionsErrorString.errorDescription,
+                                  predictionsErrorString.recoverySuggestion)))
+                return nil
+            }
+            guard let result = task.result else {
+                onEvent(.failed(
+                    .unknown("No result was found. An unknown error occurred",
+                                  "Please try again.")))
+                return nil
+            }
+
+            guard let moderationRekognitionLabels = result.moderationLabels else {
+                onEvent(.failed(
+                    .network("No result was found.",
+                                  "Please make sure the image integrity is maintained before sending")))
+                return nil
+            }
+            unsafeContent = moderationRekognitionLabels.isEmpty
+            dispatchGroup.leave()
+            return nil
+        }
+        dispatchGroup.wait()
+
+        onEvent(.completed(IdentifyLabelsResult(labels: allLabels, unsafeContent: unsafeContent)))
+    }
 }

@@ -44,15 +44,17 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'AWSPredictionsPlugin' do |ss|
+    ss.platform = :ios, '13.0'
     ss.source_files = 'AmplifyPlugins/Predictions/AWSPredictionsPlugin/**/*.swift'
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
+    ss.dependency 'CoreMLPredictionsPlugin', AMPLIFY_VERSION
     ss.dependency 'AWSTranslate', AWS_SDK_VERSION
     ss.dependency 'AWSRekognition', AWS_SDK_VERSION
     ss.dependency 'AWSPolly', AWS_SDK_VERSION
     ss.dependency 'AWSTranscribe', AWS_SDK_VERSION
     ss.dependency 'AWSComprehend', AWS_SDK_VERSION
     ss.dependency 'AWSTextract', AWS_SDK_VERSION
-
+    ss.dependency 'CoreMLPredictionsPlugin', AMPLIFY_VERSION
   end
 
   s.subspec 'AWSS3StoragePlugin' do |ss|

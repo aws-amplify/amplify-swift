@@ -21,7 +21,6 @@ final class HubChannelDispatcher {
         messageQueue.maxConcurrentOperationCount = 1
     }
 
-    // swiftlint:disable identifier_name
     /// Returns true if the dispatcher has a listener registered with `id`
     ///
     /// - Parameter id: The ID of the listener to check
@@ -29,7 +28,6 @@ final class HubChannelDispatcher {
     func hasListener(withId id: UUID) -> Bool {
         return listenersById.getValue(forKey: id) != nil
     }
-    // swiftlint:enable identifier_name
 
     /// Inserts `listener` into the `listenersById` dictionary by its ID
     ///
@@ -38,12 +36,10 @@ final class HubChannelDispatcher {
         listenersById.set(value: listener, forKey: listener.id)
     }
 
-    // swiftlint:disable identifier_name
     /// Removes the listener identified by `id` from the `listeners` dictionary
     ///
     /// - Parameter id: The ID of the listener to remove
     func removeListener(withId id: UUID) {
-        // swiftlint:enable identifier_name
         listenersById.removeValue(forKey: id)
     }
 

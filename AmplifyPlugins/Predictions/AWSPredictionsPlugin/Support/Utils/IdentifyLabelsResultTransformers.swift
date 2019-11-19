@@ -26,6 +26,28 @@ class IdentifyLabelsResultTransformers: IdentifyResultTransformers {
             let boundingBoxes = processInstances(rekognitionLabel.instances)
 
             let label = Label(name: name, metadata: metadata, boundingBoxes: boundingBoxes)
+            labels.append(label)
+
+        }
+        return labels
+    }
+
+    static func processModerationLabels(_ rekognitionLabels: [AWSRekognitionModerationLabel]) -> [Label] {
+        var labels = [Label]()
+        for rekognitionLabel in rekognitionLabels {
+
+            guard let name = rekognitionLabel.name else {
+                continue
+            }
+            var parents = [Parent]()
+            if let parentName = rekognitionLabel.parentName {
+                let parent = Parent(name: parentName)
+                parents.append(parent)
+            }
+            let metadata = LabelMetadata(confidence: Double(
+                truncating: rekognitionLabel.confidence ?? 0.0), parents: parents)
+
+            let label = Label(name: name, metadata: metadata, boundingBoxes: nil)
 
             labels.append(label)
         }
