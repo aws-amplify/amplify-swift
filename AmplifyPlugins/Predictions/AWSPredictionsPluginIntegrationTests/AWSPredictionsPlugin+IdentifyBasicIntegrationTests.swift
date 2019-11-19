@@ -20,12 +20,14 @@ class AWSPredictionsPluginIdentifyIntegrationTest: AWSPredictionsPluginTestBase 
     /// When: Image is sent to Rekognition
     /// Then: The operation completes successfully
     func testIdentifyLabels() {
-
-        guard let image = getImageFromDir("testImage") else { return }
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImage", withExtension: "jpg") else {
+            return
+        }
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Predictions.identify(type: .detectLabels(.all),
-                                                     image: image,
+        let operation = Amplify.Predictions.identify(type: .detectLabels(.labels),
+                                                     image: url,
                                                      options: PredictionsIdentifyRequest.Options()) { event in
             switch event {
             case .completed:
@@ -39,6 +41,7 @@ class AWSPredictionsPluginIdentifyIntegrationTest: AWSPredictionsPluginTestBase 
 
         XCTAssertNotNil(operation)
         waitForExpectations(timeout: networkTimeout)
+
     }
 
     func getImageFromDir(_ imageName: String) -> URL? {

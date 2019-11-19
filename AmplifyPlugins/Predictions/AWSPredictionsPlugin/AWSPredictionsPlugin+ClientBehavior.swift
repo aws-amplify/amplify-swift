@@ -55,11 +55,11 @@ extension AWSPredictionsPlugin {
         let request = PredictionsIdentifyRequest(image: image,
                                                  identifyType: type,
                                                  options: options ?? PredictionsIdentifyRequest.Options())
-
-        let operation = AWSIdentifyOperation(request: request,
-                                             predictionsService: predictionsService,
-                                             authService: authService,
-                                             listener: listener)
+        let multiService = IdentifyMultiService(coreMLService: coreMLService,
+                                                predictionsService: predictionsService)
+        let operation = IdentifyOperation(request: request,
+                                          multiService: multiService,
+                                          listener: listener)
 
         queue.addOperation(operation)
         return operation

@@ -68,7 +68,18 @@ PredictionsError>, PredictionsInterpretOperation {
         }
 
         let sentiment = naturalLanguageAdapter.getSentiment(for: request.textToInterpret)
-        //interpretResultBuilder.with(sentiment: sentiment)
+        var amplifySentiment: Sentiment!
+        switch sentiment {
+        case 0.0:
+            amplifySentiment = Sentiment(predominantSentiment: .neutral, sentimentScores: nil)
+        case -1.0 ..< 0.0:
+            amplifySentiment = Sentiment(predominantSentiment: .negative, sentimentScores: nil)
+        case 0.0 ... 1.0:
+            amplifySentiment = Sentiment(predominantSentiment: .positive, sentimentScores: nil)
+        default:
+            amplifySentiment = Sentiment(predominantSentiment: .mixed, sentimentScores: nil)
+        }
+        interpretResultBuilder.with(sentiment: amplifySentiment)
         if isCancelled {
             finish()
             return

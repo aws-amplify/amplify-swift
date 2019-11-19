@@ -6,13 +6,14 @@
 //
 
 public enum EntityType: String {
-    case person
+    case commercialItem
+    case date
+    case event
     case location
     case organization
-    case commercialItem
-    case event
-    case date
+    case other
+    case person
     case quantity
     case title
-    case other
+    case unknown
 }
