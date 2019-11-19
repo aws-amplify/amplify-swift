@@ -34,7 +34,7 @@ final class StorageEngine: StorageEngineBehavior {
     }
 
     public func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
-        let modelSaveCompletion: DataStoreCallback<M> = { result in
+        let saveMutationEventCompletion: DataStoreCallback<M> = { result in
             guard type(of: model).schema.isSyncable, let syncEngine = self.syncEngine else {
                 completion(result)
                 return
@@ -48,6 +48,7 @@ final class StorageEngine: StorageEngineBehavior {
             do {
                 let mutationEvent = try MutationEvent(model: savedModel, mutationType: .create)
 
+                // TODO: Refactor this into something actually readable once we get the final sync implementation done
                 _ = syncEngine
                     .submit(mutationEvent)
                     .sink(
@@ -85,12 +86,12 @@ final class StorageEngine: StorageEngineBehavior {
             }
         }
 
-        adapter.save(model, completion: modelSaveCompletion)
+        adapter.save(model, completion: saveMutationEventCompletion)
 
     }
 
     public func delete<M: Model>(_ modelType: M.Type,
-                                 withId id: Identifier,
+                                 withId id: Model.Identifier,
                                  completion: (DataStoreResult<Void>) -> Void) {
         adapter.delete(modelType, withId: id, completion: completion)
     }

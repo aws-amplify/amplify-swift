@@ -12,11 +12,18 @@ import Foundation
 /// All persistent models should conform to the Model protocol.
 public protocol Model: Codable {
 
+    /// Alias of Model identifier (i.e. primary key)
+    typealias Identifier = String
+
     /// A reference to the `ModelSchema` associated with this model.
     static var schema: ModelSchema { get }
 
+    /// The name of the model, as registered in `ModelRegistry`.
     static var modelName: String { get }
 
+    /// Convenience property to return the Type's `modelName`. Developers are strongly encouraged not to override the
+    /// instance property, as an implementation that returns a different value for the instance property will cause
+    /// undefined behavior.
     var modelName: String { get }
 
     /// The Model identifier (aka primary key)
@@ -32,9 +39,6 @@ extension Model {
         return type(of: self).modelName
     }
 }
-
-/// Alias of Model identifier (i.e. primary key)
-public typealias Identifier = String
 
 // MARK: - Model subscript
 

@@ -76,9 +76,8 @@ public struct ModelSchema {
 
     public let name: String
     public let targetName: String?
-    public let isSyncable: Bool
     public let fields: ModelFields
-
+    public let attributes: [ModelAttribute]
     public let sortedFields: [ModelField]
     public var primaryKey: ModelField {
         guard let primaryKey = fields.first(where: { $1.isPrimaryKey }) else {
@@ -89,11 +88,11 @@ public struct ModelSchema {
 
     init(name: String,
          targetName: String? = nil,
-         isSyncable: Bool = true,
+         attributes: [ModelAttribute] = [],
          fields: ModelFields = [:]) {
         self.name = name
         self.targetName = targetName
-        self.isSyncable = isSyncable
+        self.attributes = attributes
         self.fields = fields
 
         self.sortedFields = fields.sortedFields()
@@ -103,6 +102,12 @@ public struct ModelSchema {
         return fields[name]
     }
 
+}
+
+public extension ModelSchema {
+    var isSyncable: Bool {
+        attributes.contains(.isSyncable)
+    }
 }
 
 extension Dictionary where Key == String, Value == ModelField {

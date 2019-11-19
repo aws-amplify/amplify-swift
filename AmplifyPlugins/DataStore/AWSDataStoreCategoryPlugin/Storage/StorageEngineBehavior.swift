@@ -15,7 +15,7 @@ protocol StorageEngineBehavior {
     func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>)
 
     func delete<M: Model>(_ modelType: M.Type,
-                          withId id: Identifier,
+                          withId id: Model.Identifier,
                           completion: DataStoreCallback<Void>)
 
     func query<M: Model>(_ modelType: M.Type,

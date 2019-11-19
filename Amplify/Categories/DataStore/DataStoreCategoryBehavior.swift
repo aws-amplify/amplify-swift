@@ -9,7 +9,7 @@ import Combine
 
 public typealias QueryPredicateFactory = () -> QueryPredicate
 
-public protocol DataStoreCategoryBehavior: DataStoreBaseBehavior & DataStoreSubscribeBehavior { }
+public typealias DataStoreCategoryBehavior = DataStoreBaseBehavior & DataStoreSubscribeBehavior
 
 public protocol DataStoreBaseBehavior {
 

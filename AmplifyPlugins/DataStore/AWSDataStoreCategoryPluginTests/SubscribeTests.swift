@@ -195,14 +195,8 @@ class SubscribeTests: XCTestCase {
             }
         })
 
-        let model = Post(id: UUID().uuidString,
-                         title: "Test Post",
-                         content: "Test Post Content",
-                         createdAt: Date(),
-                         updatedAt: nil,
-                         rating: nil,
-                         draft: false,
-                         comments: [])
+        let model = Post(title: "Test Post",
+                         content: "Test Post Content")
 
         Amplify.DataStore.save(model) { _ in }
         Amplify.DataStore.delete(model) { _ in }

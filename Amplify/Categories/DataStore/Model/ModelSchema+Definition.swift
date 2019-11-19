@@ -179,8 +179,7 @@ public struct ModelSchemaDefinition {
     }
 
     internal func build() -> ModelSchema {
-        let isSyncable = attributes.contains(.isSyncable)
-        return ModelSchema(name: name, isSyncable: isSyncable, fields: fields)
+        return ModelSchema(name: name, attributes: attributes, fields: fields)
     }
 }
 

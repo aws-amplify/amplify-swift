@@ -20,23 +20,12 @@ public struct ModelRegistry {
 
     public static func register<M: Model>(modelType: M.Type) {
 
-        let decoder: ModelDecoder = { jsonString in
-            let decoder = JSONDecoder()
-            guard let data = jsonString.data(using: .utf8) else {
-                throw DataStoreError.decodingError(
-                    "Unable to get data from mutation event",
-                    """
-                    Validate that the json string contains no invalid UTF8 data:
-
-                    \(jsonString)
-                    """)
-            }
-
-            let model = try decoder.decode(modelType, from: data)
+        let decoderBlock: ModelDecoder = { jsonString in
+            let model = try modelType.from(json: jsonString)
             return model
         }
 
-        decoders[modelType.modelName] = decoder
+        decoders[modelType.modelName] = decoderBlock
         modelTypes[modelType.modelName] = modelType
     }
 

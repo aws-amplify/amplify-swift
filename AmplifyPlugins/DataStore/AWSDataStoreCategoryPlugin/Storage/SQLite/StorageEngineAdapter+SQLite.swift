@@ -69,7 +69,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     public func delete<M: Model>(_ modelType: M.Type,
-                                 withId id: Identifier,
+                                 withId id: Model.Identifier,
                                  completion: (DataStoreResult<Void>) -> Void) {
         let predicate: QueryPredicateFactory = { field("id") == id }
         let query = queryTranslator.translateToDelete(from: modelType, predicate: predicate())

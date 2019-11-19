@@ -23,7 +23,7 @@ extension MutationEvent {
     public static let schema = defineSchema { definition in
         let mutation = MutationEvent.keys
 
-        definition.attributes(.isSyncable, .isSystem)
+        definition.attributes(.isSystem)
 
         definition.fields(
             .id(),
@@ -34,5 +34,11 @@ extension MutationEvent {
                    ofType: .enum(type: MutationType.self)),
             .field(mutation.createdAt, is: .required, ofType: .dateTime)
         )
+    }
+}
+
+extension MutationEvent {
+    var isSystem: Bool {
+        true
     }
 }
