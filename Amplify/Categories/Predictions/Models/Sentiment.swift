@@ -7,8 +7,9 @@
 
 /// Sentiment Analysis result for Predictions category
 public struct Sentiment {
-    let predominantSentiment: SentimentType
-    let sentimentScores: [SentimentType: Double]?
+
+    public let predominantSentiment: SentimentType
+    public let sentimentScores: [SentimentType: Double]?
 
     public init(predominantSentiment: SentimentType,
                 sentimentScores: [SentimentType: Double]?) {

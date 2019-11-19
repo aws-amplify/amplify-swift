@@ -57,10 +57,7 @@ class CoreMLNaturalLanguageAdapterTests: XCTestCase {
         let result = coreMLNaturalLanguageAdapter.getSyntaxTokens(for: text)
         XCTAssertNotNil(result, "Result should not be nil")
         XCTAssertFalse(result.isEmpty, "Should return some value back")
-        guard let partOfSpeech = result[0].partOfSpeech else {
-            XCTFail("Part of speech should not be nil")
-            return
-        }
+        let partOfSpeech = result[0].partOfSpeech
         XCTAssertEqual(partOfSpeech.tag,
                        SpeechType.determiner,
                        "First word in the input should be determiner")

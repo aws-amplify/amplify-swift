@@ -19,10 +19,12 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
 
             switch event {
             case .completed(let dominantLanguageType, let score):
-                var featuresResultBuilder = self.analyzeText(text, for: dominantLanguageType)
-                let languageDetected = LanguageDetectionResult(languageCode: dominantLanguageType, score: score)
-                featuresResultBuilder.with(language: languageDetected)
-                onEvent(.completed(featuresResultBuilder.build()))
+                self.analyzeText(text, for: dominantLanguageType) { analyzeResultBuilder in
+                    var builder = analyzeResultBuilder
+                    let languageDetected = LanguageDetectionResult(languageCode: dominantLanguageType, score: score)
+                    builder.with(language: languageDetected)
+                    onEvent(.completed(builder.build()))
+                }
             case .failed(let error):
                 onEvent(.failed(error))
             }
@@ -39,7 +41,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
                 let error = languageError as NSError
                 let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                 completionHandler(.failed(.network(predictionsErrorString.errorDescription,
-                                  predictionsErrorString.recoverySuggestion)))
+                                                   predictionsErrorString.recoverySuggestion)))
                 return nil
             }
 
@@ -69,48 +71,50 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
     /// Use the text and language code to fetch features
     /// - Parameter text: Input text
     /// - Parameter languageCode: Dominant language code
-    private func analyzeText(_ text: String, for languageCode: LanguageType) -> InterpretResult.Builder {
+    private func analyzeText(_ text: String, for languageCode: LanguageType,
+                             completionHandler: @escaping (InterpretResult.Builder) -> Void) {
+        DispatchQueue.global().async {
+            var sentimentResult: Sentiment?
+            var entitiesResult: [EntityDetectionResult]?
+            var keyPhrasesResult: [KeyPhrase]?
+            var syntaxTokenResult: [SyntaxToken]?
 
-        var sentimentResult: Sentiment?
-        var entitiesResult: [EntityDetectionResult]?
-        var keyPhrasesResult: [KeyPhrase]?
-        var syntaxTokenResult: [SyntaxToken]?
+            // Use dispatch group to group the parallel comprehend calls.
+            let dispatchGroup = DispatchGroup()
 
-        // Use dispatch group to group the parallel comprehend calls.
-        let dispatchGroup = DispatchGroup()
+            let comprehendLanguageCode = languageCode.toComprehendLanguage()
+            let syntaxLanguageCode = languageCode.toSyntaxLanguage()
+            dispatchGroup.enter()
+            self.fetchSentimentResult(text, languageCode: comprehendLanguageCode) { sentiment in
+                sentimentResult = sentiment
+                dispatchGroup.leave()
+            }
 
-        let comprehendLanguageCode = languageCode.toComprehendLanguage()
-        let syntaxLanguageCode = languageCode.toSyntaxLanguage()
-        dispatchGroup.enter()
-        fetchSentimentResult(text, languageCode: comprehendLanguageCode) { sentiment in
-            sentimentResult = sentiment
-            dispatchGroup.leave()
+            dispatchGroup.enter()
+            self.detectEntities(text, languageCode: comprehendLanguageCode) { detectedEntities in
+                entitiesResult = detectedEntities
+                dispatchGroup.leave()
+            }
+
+            dispatchGroup.enter()
+            self.fetchKeyPhrases(text, languageCode: comprehendLanguageCode) { keyPhrases in
+                keyPhrasesResult = keyPhrases
+                dispatchGroup.leave()
+            }
+
+            dispatchGroup.enter()
+            self.fetchSyntax(text, languageCode: syntaxLanguageCode) { syntaxTokens in
+                syntaxTokenResult = syntaxTokens
+                dispatchGroup.leave()
+            }
+            dispatchGroup.wait()
+            var interpretResultBuilder = InterpretResult.Builder()
+            interpretResultBuilder.with(entities: entitiesResult)
+            interpretResultBuilder.with(syntax: syntaxTokenResult)
+            interpretResultBuilder.with(sentiment: sentimentResult)
+            interpretResultBuilder.with(keyPhrases: keyPhrasesResult)
+            completionHandler(interpretResultBuilder)
         }
-
-        dispatchGroup.enter()
-        detectEntities(text, languageCode: comprehendLanguageCode) { detectedEntities in
-            entitiesResult = detectedEntities
-            dispatchGroup.leave()
-        }
-
-        dispatchGroup.enter()
-        fetchKeyPhrases(text, languageCode: comprehendLanguageCode) { keyPhrases in
-            keyPhrasesResult = keyPhrases
-            dispatchGroup.leave()
-        }
-
-        dispatchGroup.enter()
-        fetchSyntax(text, languageCode: syntaxLanguageCode) { syntaxTokens in
-            syntaxTokenResult = syntaxTokens
-            dispatchGroup.leave()
-        }
-        dispatchGroup.wait()
-        var interpretResultBuilder = InterpretResult.Builder()
-        interpretResultBuilder.with(entities: entitiesResult)
-        interpretResultBuilder.with(syntax: syntaxTokenResult)
-        interpretResultBuilder.with(sentiment: sentimentResult)
-        interpretResultBuilder.with(keyPhrases: keyPhrasesResult)
-        return interpretResultBuilder
     }
 
     private func fetchSyntax(_ text: String,
@@ -128,16 +132,18 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             }
             var syntaxTokenResult = [SyntaxToken]()
             for syntax in syntaxTokens {
-                // TODO: Fix the range
-                let range = Range<String.Index>(NSRange(location: syntax.beginOffset?.intValue ?? 0,
-                                                        length: syntax.endOffset?.intValue ?? 0),
-                                                in: text)!
-                var partOfSpeech: PartOfSpeech?
-                if let comprehendPartOfSpeech = syntax.partOfSpeech {
-                    let score = comprehendPartOfSpeech.score?.floatValue
-                    let speechType = comprehendPartOfSpeech.tag.getSpeechType()
-                    partOfSpeech = PartOfSpeech(tag: speechType, score: score)
+                guard let comprehendPartOfSpeech = syntax.partOfSpeech else {
+                    continue
                 }
+                let beginOffSet = syntax.beginOffset?.intValue ?? 0
+                let endOffset = syntax.endOffset?.intValue ?? 0
+                let startIndex = text.index(text.startIndex, offsetBy: beginOffSet)
+                let endIndex = text.index(text.startIndex, offsetBy: endOffset)
+                let range = startIndex ..< endIndex
+
+                let score = comprehendPartOfSpeech.score?.floatValue
+                let speechType = comprehendPartOfSpeech.tag.getSpeechType()
+                let partOfSpeech = PartOfSpeech(tag: speechType, score: score)
                 let syntaxToken = SyntaxToken(tokenId: syntax.tokenId?.intValue ?? 0,
                                               text: syntax.text ?? "",
                                               range: range,
@@ -165,10 +171,12 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             }
             var keyPhrasesResult = [KeyPhrase]()
             for keyPhrase in keyPhrases {
-                // TODO: Fix the range
-                let range = Range<String.Index>(NSRange(location: keyPhrase.beginOffset?.intValue ?? 0,
-                                                        length: keyPhrase.endOffset?.intValue ?? 0),
-                                                in: text)!
+
+                let beginOffSet = keyPhrase.beginOffset?.intValue ?? 0
+                let endOffset = keyPhrase.endOffset?.intValue ?? 0
+                let startIndex = text.index(text.startIndex, offsetBy: beginOffSet)
+                let endIndex = text.index(text.startIndex, offsetBy: endOffset)
+                let range = startIndex ..< endIndex
                 let amplifyKeyPhrase = KeyPhrase(text: keyPhrase.text ?? "",
                                                  range: range,
                                                  score: keyPhrase.score?.floatValue)
@@ -203,7 +211,6 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
                                         sentimentScores: score))
             return nil
         }
-
     }
 
     private func detectEntities(_ text: String,
@@ -221,12 +228,12 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             }
             var entitiesResult = [EntityDetectionResult]()
             for entity in entities {
-
-                // TODO: Fix the range
-                let range = Range<String.Index>(NSRange(location: entity.beginOffset?.intValue ?? 0,
-                                                        length: entity.endOffset?.intValue ?? 0),
-                                                in: text)!
-                let interpretEntity = EntityDetectionResult(type: EntityType.event,
+                let beginOffSet = entity.beginOffset?.intValue ?? 0
+                let endOffset = entity.endOffset?.intValue ?? 0
+                let startIndex = text.index(text.startIndex, offsetBy: beginOffSet)
+                let endIndex = text.index(text.startIndex, offsetBy: endOffset)
+                let range = startIndex ..< endIndex
+                let interpretEntity = EntityDetectionResult(type: entity.types.toAmplifyEntityType(),
                                                             targetText: entity.text ?? "",
                                                             score: entity.score?.floatValue,
                                                             range: range)
@@ -235,9 +242,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             completionHandler(entitiesResult)
             return nil
         }
-
     }
-
 }
 
 extension Array where Element: AWSComprehendDominantLanguage {
