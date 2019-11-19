@@ -62,9 +62,9 @@ class IdentifyMultiService: MultiServiceBehavior {
     }
 
     // MARK: -
-    func combineResults(offlineResult: IdentifyResult?,
-                        onlineResult: IdentifyResult?,
-                        callback: @escaping  IdentifyEventHandler) {
+    func mergeResults(offlineResult: IdentifyResult?,
+                      onlineResult: IdentifyResult?,
+                      callback: @escaping  IdentifyEventHandler) {
         // TODO: Combine logic to be added
     }
 }

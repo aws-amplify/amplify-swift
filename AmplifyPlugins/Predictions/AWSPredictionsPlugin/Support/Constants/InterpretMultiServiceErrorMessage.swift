@@ -22,11 +22,15 @@ struct InterpretMultiServiceErrorMessage {
         "Offline interpret service is not available",
         "Please check if the values are proprely initialized")
 
-    static let noResultInterpretService: CoreMLInterpretServiceErrorString = (
+    static let noResultInterpretService: InterpretMultiServiceErrorString = (
         "Not able to fetch result for interpret text operation",
         "Please try with a different input")
 
-    static let textNotFoundToInterpret: CoreMLInterpretServiceErrorString = (
+    static let textNotFoundToInterpret: InterpretMultiServiceErrorString = (
         "Input text is nil",
         "Text given for interpret could not be found. Check the input")
+
+    static let interpretTextNoResult: InterpretMultiServiceErrorString = (
+        "No result found for the text",
+        "Interpret text did not produce any result")
 }

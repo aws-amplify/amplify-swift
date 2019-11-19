@@ -68,8 +68,8 @@ class InterpretTextMultiService: MultiServiceBehavior {
                       onlineResult: InterpretResult?,
                       callback: @escaping  InterpretTextEventHandler) {
         if offlineResult == nil && onlineResult == nil {
-            let message = PredictionsServiceErrorMessage.interpretTextNoResult.errorDescription
-            let recoveryMessage = PredictionsServiceErrorMessage.interpretTextNoResult.recoverySuggestion
+            let message = InterpretMultiServiceErrorMessage.interpretTextNoResult.errorDescription
+            let recoveryMessage = InterpretMultiServiceErrorMessage.interpretTextNoResult.recoverySuggestion
             let predictionError = PredictionsError.service(message, recoveryMessage, nil)
             callback(.failed(predictionError))
         }
