@@ -140,7 +140,6 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
                 let startIndex = text.index(text.startIndex, offsetBy: beginOffSet)
                 let endIndex = text.index(text.startIndex, offsetBy: endOffset)
                 let range = startIndex ..< endIndex
-                print("Input = \(syntax) text = \(text[range])")
 
                 let score = comprehendPartOfSpeech.score?.floatValue
                 let speechType = comprehendPartOfSpeech.tag.getSpeechType()
@@ -178,7 +177,6 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
                 let startIndex = text.index(text.startIndex, offsetBy: beginOffSet)
                 let endIndex = text.index(text.startIndex, offsetBy: endOffset)
                 let range = startIndex ..< endIndex
-                print("Input = \(keyPhrase) text = \(text[range])")
                 let amplifyKeyPhrase = KeyPhrase(text: keyPhrase.text ?? "",
                                                  range: range,
                                                  score: keyPhrase.score?.floatValue)
@@ -236,7 +234,6 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
                 let startIndex = text.index(text.startIndex, offsetBy: beginOffSet)
                 let endIndex = text.index(text.startIndex, offsetBy: endOffset)
                 let range = startIndex ..< endIndex
-                print("Input = \(entity) text = \(text[range])")
                 let interpretEntity = EntityDetectionResult(type: entity.types.toAmplifyEntityType(),
                                                             targetText: entity.text ?? "",
                                                             score: entity.score?.floatValue,

@@ -23,9 +23,13 @@ protocol MultiServiceBehavior: class {
     /// - Parameter callback: Result is send back to the caller
     func fetchMultiServiceResult(callback: @escaping (PredictionsEvent<ServiceResult, PredictionsError>) -> Void)
 
-    func combineResults(offlineResult: ServiceResult?,
-                        onlineResult: ServiceResult?,
-                        callback:  @escaping (PredictionsEvent<ServiceResult, PredictionsError>) -> Void)
+    /// Merge the offline and online result to return a single result.
+    /// - Parameter offlineResult:Offline result
+    /// - Parameter onlineResult: Online result
+    /// - Parameter callback: Callback invoked after successful merge
+    func mergeResults(offlineResult: ServiceResult?,
+                      onlineResult: ServiceResult?,
+                      callback: @escaping (PredictionsEvent<ServiceResult, PredictionsError>) -> Void)
 
 }
 
@@ -36,9 +40,9 @@ extension MultiServiceBehavior {
         invokeMultiServiceCalls { multiServiceEvent in
             switch multiServiceEvent {
             case .success(let multiResponse):
-                combineResults(offlineResult: multiResponse.offlineResult,
-                               onlineResult: multiResponse.onlineResult,
-                               callback: callback)
+                mergeResults(offlineResult: multiResponse.offlineResult,
+                             onlineResult: multiResponse.onlineResult,
+                             callback: callback)
             case .failure(let error):
                 callback(.failed(error))
             }

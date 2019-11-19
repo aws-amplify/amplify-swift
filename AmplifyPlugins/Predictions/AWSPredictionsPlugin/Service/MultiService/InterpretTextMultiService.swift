@@ -64,9 +64,9 @@ class InterpretTextMultiService: MultiServiceBehavior {
 
     // MARK: -
 
-    func combineResults(offlineResult: InterpretResult?,
-                        onlineResult: InterpretResult?,
-                        callback: @escaping  InterpretTextEventHandler) {
+    func mergeResults(offlineResult: InterpretResult?,
+                      onlineResult: InterpretResult?,
+                      callback: @escaping  InterpretTextEventHandler) {
         if offlineResult == nil && onlineResult == nil {
             let message = PredictionsServiceErrorMessage.interpretTextNoResult.errorDescription
             let recoveryMessage = PredictionsServiceErrorMessage.interpretTextNoResult.recoverySuggestion
@@ -75,75 +75,30 @@ class InterpretTextMultiService: MultiServiceBehavior {
         }
 
         guard let finalOfflineResult = offlineResult else {
+            // We are sure that the value will be non-nil aat this point.
             callback(.completed(onlineResult!))
             return
         }
+
         guard let finalOnlineResult = onlineResult else {
             callback(.completed(finalOfflineResult))
             return
         }
 
-        // Combine Language detection
-        var finalDetectedLanguage: LanguageDetectionResult?
-        if let onlineDetectedLanguage = finalOnlineResult.language {
-            finalDetectedLanguage = onlineDetectedLanguage
-        } else {
-            finalDetectedLanguage  = finalOfflineResult.language
-        }
+        let finalDetectedLanguage = mergeLanguage(onlineResult: finalOnlineResult.language,
+                                                  offlineResult: finalOfflineResult.language)
 
-        // Combined final sentiment
-        var finalSentiment: Sentiment?
-        if let onlineSentiment = finalOnlineResult.sentiment,
-            onlineSentiment.predominantSentiment != .unknown {
+        let finalSentiment = mergeSentiment(onlineResult: finalOnlineResult.sentiment,
+                                            offlineResult: finalOfflineResult.sentiment)
 
-            finalSentiment = onlineSentiment
-        } else {
-            finalSentiment = offlineResult?.sentiment
-        }
+        let finalEntities = mergeEntities(onlineResult: finalOnlineResult.entities,
+                                          offlineResult: finalOfflineResult.entities)
 
-        // Combine KeyPhrase
-        var finalKeyPhrases: [KeyPhrase]?
-        if let onlineKeyPhrases = finalOnlineResult.keyPhrases,
-            let offlineKeyPhrases = finalOfflineResult.keyPhrases {
-            let onlineKeyPhraseSet = Set<KeyPhrase>(onlineKeyPhrases)
-            let offlineKeyPhraseSet = Set<KeyPhrase>(offlineKeyPhrases)
-            finalKeyPhrases = Array(onlineKeyPhraseSet.union(offlineKeyPhraseSet))
-        } else {
-            if let onlineKeyPrases = finalOnlineResult.keyPhrases {
-                finalKeyPhrases = onlineKeyPrases
-            } else {
-                finalKeyPhrases = offlineResult?.keyPhrases
-            }
-        }
+        let finalKeyPhrases = mergeKeyPhrases(onlineResult: finalOnlineResult.keyPhrases,
+                                              offlineResult: finalOfflineResult.keyPhrases)
 
-        // Combine Entity
-        var finalEntities: [EntityDetectionResult]?
-        if let onlineEntities = finalOnlineResult.entities,
-            let offlineEntities = finalOfflineResult.entities {
-            let onlineEntitiesSet = Set<EntityDetectionResult>(onlineEntities)
-            let offlineEntitiesSet = Set<EntityDetectionResult>(offlineEntities)
-            finalEntities = Array(onlineEntitiesSet.union(offlineEntitiesSet))
-        } else {
-            if let onlineEntities = finalOnlineResult.entities {
-                finalEntities = onlineEntities
-            } else {
-                finalEntities = offlineResult?.entities
-            }
-        }
-        // Combine syntax
-        var finalSyntax: [SyntaxToken]?
-        if let onlineSyntax = finalOnlineResult.syntax,
-            let offlineSyntax = finalOfflineResult.syntax {
-            let onlineSyntaxSet = Set<SyntaxToken>(onlineSyntax)
-            let offlineSyntaxSet = Set<SyntaxToken>(offlineSyntax)
-            finalSyntax = Array(onlineSyntaxSet.union(offlineSyntaxSet))
-        } else {
-            if let onlineSyntax = finalOnlineResult.syntax {
-                finalSyntax = onlineSyntax
-            } else {
-                finalSyntax = offlineResult?.syntax
-            }
-        }
+        let finalSyntax = mergeSyntax(onlineResult: finalOnlineResult.syntax,
+                                      offlineResult: finalOfflineResult.syntax)
         var builder = InterpretResult.Builder()
         builder.with(language: finalDetectedLanguage)
         builder.with(sentiment: finalSentiment)
@@ -151,6 +106,62 @@ class InterpretTextMultiService: MultiServiceBehavior {
         builder.with(keyPhrases: finalKeyPhrases)
         builder.with(syntax: finalSyntax)
         callback(.completed(builder.build()))
+    }
+
+    func mergeLanguage(onlineResult: LanguageDetectionResult?,
+                       offlineResult: LanguageDetectionResult?) -> LanguageDetectionResult? {
+        return onlineResult ?? offlineResult
+    }
+
+    func mergeSentiment(onlineResult: Sentiment?,
+                        offlineResult: Sentiment?) -> Sentiment? {
+        guard let onlineSentiment = onlineResult,
+            onlineSentiment.predominantSentiment != .unknown else {
+                return offlineResult
+        }
+        return onlineSentiment
+    }
+
+    func mergeKeyPhrases(onlineResult: [KeyPhrase]?,
+                         offlineResult: [KeyPhrase]?) -> [KeyPhrase]? {
+        if let onlineKeyPhrases = onlineResult,
+            let offlineKeyPhrases = offlineResult {
+            let onlineKeyPhraseSet = Set<KeyPhrase>(onlineKeyPhrases)
+            let offlineKeyPhraseSet = Set<KeyPhrase>(offlineKeyPhrases)
+            return Array(onlineKeyPhraseSet.union(offlineKeyPhraseSet))
+        }
+        if let onlineKeyPrases = onlineResult {
+            return onlineKeyPrases
+        }
+        return offlineResult
+    }
+
+    func mergeEntities(onlineResult: [EntityDetectionResult]?,
+                       offlineResult: [EntityDetectionResult]?) -> [EntityDetectionResult]? {
+        if let onlineEntities = onlineResult,
+            let offlineEntities = offlineResult {
+            let onlineEntitiesSet = Set<EntityDetectionResult>(onlineEntities)
+            let offlineEntitiesSet = Set<EntityDetectionResult>(offlineEntities)
+            return Array(onlineEntitiesSet.union(offlineEntitiesSet))
+        }
+        if let onlineEntities = onlineResult {
+            return onlineEntities
+        }
+        return offlineResult
+    }
+
+    func mergeSyntax(onlineResult: [SyntaxToken]?,
+                     offlineResult: [SyntaxToken]?) -> [SyntaxToken]? {
+        if let onlineSyntax = onlineResult,
+            let offlineSyntax = offlineResult {
+            let onlineSyntaxSet = Set<SyntaxToken>(onlineSyntax)
+            let offlineSyntaxSet = Set<SyntaxToken>(offlineSyntax)
+            return Array(onlineSyntaxSet.union(offlineSyntaxSet))
+        }
+        if let onlineSyntax = onlineResult {
+            return onlineSyntax
+        }
+        return offlineResult
     }
 }
 
