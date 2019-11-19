@@ -5,6 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 
-public protocol StorageEngineAdapter: StorageEngineBehavior {}
+public protocol StorageEngineAdapter: StorageEngineBehavior {
+
+    func exists(_ modelType: Model.Type, withId id: Identifier) throws -> Bool
+}

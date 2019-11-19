@@ -19,14 +19,14 @@ public enum GraphQLQueryType: String {
 /// A concrete implementation of `GraphQLDocument` that represents a query operation.
 /// Queries can either return a single (`.get`) or mutiple (`.list`) results
 /// as defined by `GraphQLQueryType`.
-public struct GraphQLQuery<M: Model>: GraphQLDocument {
+public struct GraphQLQuery: GraphQLDocument {
 
     public let documentType = GraphQLDocumentType.query
-    public let modelType: M.Type
+    public let modelType: Model.Type
     public let predicate: QueryPredicate?
     public let queryType: GraphQLQueryType
 
-    public init(from modelType: M.Type,
+    public init(from modelType: Model.Type,
                 predicate: QueryPredicate? = nil,
                 type queryType: GraphQLQueryType) {
         self.modelType = modelType

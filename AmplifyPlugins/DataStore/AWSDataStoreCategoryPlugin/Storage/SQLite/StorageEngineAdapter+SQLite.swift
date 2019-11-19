@@ -14,7 +14,6 @@ import SQLite
 final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     internal var connection: Connection!
-    internal let queryTranslator: SQLiteQueryTranslator
 
     public convenience init(databaseName: String = "database") throws {
         guard let documentsPath = getDocumentPath() else {
@@ -32,13 +31,12 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     internal init(connection: Connection) {
         self.connection = connection
-        self.queryTranslator = SQLiteQueryTranslator()
     }
 
     public func setUp(models: [Model.Type]) throws {
         let createTableStatements = models
             .sortByDependencyOrder()
-            .map { queryTranslator.translateToCreateTable(from: $0).string }
+            .map { CreateTableStatement(modelType: $0).stringValue }
             .joined(separator: "\n")
 
         // database setup statement
@@ -58,11 +56,20 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     public func save<M: Model>(_ model: M, completion: DataStoreCallback<M>) {
-        let query = queryTranslator.translateToInsert(from: model)
         do {
-            _ = try connection.prepare(query.string).run(query.arguments)
+            let modelType = type(of: model)
+            let shouldUpdate = try exists(modelType, withId: model.id)
+
             // TODO serialize result and create a new instance of the model
             // (some columns might be auto-generated after DB insert/update)
+            if shouldUpdate {
+                let statement = UpdateStatement(model: model)
+                _ = try connection.prepare(statement.stringValue).run(statement.variables)
+            } else {
+                let statement = InsertStatement(model: model)
+                _ = try connection.prepare(statement.stringValue).run(statement.variables)
+            }
+
             completion(.result(model))
         } catch {
             completion(.failure(causedBy: error))
@@ -73,13 +80,37 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                                 predicate: QueryPredicate? = nil,
                                 completion: DataStoreCallback<[M]>) {
         do {
-            let query = queryTranslator.translateToQuery(from: modelType, predicate: predicate)
-            let rows = try connection.prepare(query.string).run(query.arguments)
+            let statement = SelectStatement(from: modelType, predicate: predicate)
+            let rows = try connection.prepare(statement.stringValue).run(statement.variables)
             let result: [M] = try rows.convert(to: modelType)
             completion(.result(result))
         } catch {
             completion(.failure(causedBy: error))
         }
+    }
+
+    public func delete<M: Model>(_ modelType: M.Type,
+                                 withId id: Identifier,
+                                 completion: DataStoreCallback<Void>) {
+        do {
+            let statement = DeleteStatement(modelType: modelType, withId: id)
+            _ = try connection.prepare(statement.stringValue).run(statement.variables)
+            completion(.emptyResult)
+        } catch {
+            completion(.failure(causedBy: error))
+        }
+    }
+
+    public func exists(_ modelType: Model.Type, withId id: Identifier) throws -> Bool {
+        let schema = modelType.schema
+        let primaryKey = schema.primaryKey.sqlName
+        let sql = "select count(\(primaryKey)) from \(schema.name) where \(primaryKey) = ?"
+
+        let result = try connection.scalar(sql, [id])
+        guard let count = result as? Int, count <= 1 else {
+            throw DataStoreError.nonUniqueResult(model: schema.name)
+        }
+        return count == 1
     }
 
 }
