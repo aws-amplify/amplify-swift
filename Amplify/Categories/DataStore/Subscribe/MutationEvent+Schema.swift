@@ -36,9 +36,3 @@ extension MutationEvent {
         )
     }
 }
-
-extension MutationEvent {
-    var isSystem: Bool {
-        true
-    }
-}
