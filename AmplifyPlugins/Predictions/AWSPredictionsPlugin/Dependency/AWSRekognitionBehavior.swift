@@ -19,6 +19,8 @@ protocol AWSRekognitionBehavior {
 
     func detectFaces(request: AWSRekognitionDetectFacesRequest) -> AWSTask<AWSRekognitionDetectFacesResponse>
 
+    func detectModerationLabels(request: AWSRekognitionDetectModerationLabelsRequest) -> AWSTask<AWSRekognitionDetectModerationLabelsResponse>
+
     func detectFacesFromCollection(
         request: AWSRekognitionSearchFacesByImageRequest) -> AWSTask<AWSRekognitionSearchFacesByImageResponse>
 

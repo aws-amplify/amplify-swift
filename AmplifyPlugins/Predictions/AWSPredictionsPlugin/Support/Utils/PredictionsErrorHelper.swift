@@ -16,21 +16,36 @@ import AWSComprehend
 class PredictionsErrorHelper {
 
     static func mapHttpResponseCode(statusCode: Int, serviceKey: String) -> PredictionsError? {
-        
+
         switch statusCode {
-        case 200..<300:
+        case 200 ..< 300:
             return nil
         case 404:
-            return PredictionsError.httpStatusError(statusCode, "Please check your request and try again")
+            return PredictionsError.httpStatus(statusCode, "Please check your request and try again")
         case 400:
-            return PredictionsError.httpStatusError(statusCode, "There are number of reasons for receiving a 400 status code. Please check the service documentation for the specific service you are hitting.")
+            return PredictionsError.httpStatus(statusCode,
+                                               """
+                                                There are number of reasons for receiving a
+                                                400 status code. Please check the service documentation
+                                                for the specific service you are hitting.
+                                                """)
         case 500:
-            return PredictionsError.httpStatusError(statusCode, "The request processing has failed because of an unknown error, exception or failure. Please check aws-amplify github for known issues.")
+            return PredictionsError.httpStatus(statusCode,
+                                               """
+                                                The request processing has failed because of an
+                                                unknown error, exception or failure. Please check
+                                                aws-amplify github for known issues.
+                                                """)
         case 503:
-            return PredictionsError.httpStatusError(statusCode, "The request has failed due to a temporary failure of the server.")
+            return PredictionsError.httpStatus(statusCode,
+                                               "The request has failed due to a temporary failure of the server.")
         default:
-            return PredictionsError.httpStatusError(statusCode,
-                                             "Status code unrecognized, please refer to the AWS Service error documentation. https://docs.aws.amazon.com/directoryservice/latest/devguide/CommonErrors.html")
+            return PredictionsError.httpStatus(statusCode,
+                                               """
+                                                Status code unrecognized, please refer
+                                                to the AWS Service error documentation.
+                                               https://docs.aws.amazon.com/directoryservice/latest/devguide/CommonErrors.html
+                                               """)
         }
     }
    // swiftlint:disable cyclomatic_complexity

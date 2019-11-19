@@ -11,9 +11,15 @@ import Foundation
 
 class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin {
 
-
     func configure(using configuration: Any) throws {
         notify()
+    }
+
+    func convert(textToSpeech: String,
+                 options: PredictionsTextToSpeechRequest.Options?,
+                 listener: PredictionsTextToSpeechOperation.EventListener?) -> PredictionsTextToSpeechOperation {
+        notify("textToSpeech")
+        fatalError("Add the rest of implementation")
     }
 
     func convert(textToTranslate: String,
@@ -30,18 +36,18 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
 
     }
 
-    func identify(type: IdentifyType,
+    func identify(type: IdentifyAction,
                   image: URL,
                   options: PredictionsIdentifyRequest.Options?,
                   listener: ((AsyncEvent<Void, IdentifyResult, PredictionsError>) -> Void)?)
         -> PredictionsIdentifyOperation {
 
-        notify("identifyLabels")
+            notify("identifyLabels")
 
-        let request = PredictionsIdentifyRequest(image: image,
-                                                 identifyType: type,
-                                                 options: options ?? PredictionsIdentifyRequest.Options())
-        return MockPredictionsIdentifyOperation(request: request)
+            let request = PredictionsIdentifyRequest(image: image,
+                                                     identifyType: type,
+                                                     options: options ?? PredictionsIdentifyRequest.Options())
+            return MockPredictionsIdentifyOperation(request: request)
     }
 
     func interpret(text: String,
@@ -70,8 +76,8 @@ class MockSecondPredictionsCategoryPlugin: MockPredictionsCategoryPlugin {
 }
 
 class MockPredictionsTranslateTextOperation: AmplifyOperation<PredictionsTranslateTextRequest,
-Void,
-TranslateTextResult,
+    Void,
+    TranslateTextResult,
 PredictionsError>, PredictionsTranslateTextOperation {
 
     override func pause() {
@@ -89,8 +95,8 @@ PredictionsError>, PredictionsTranslateTextOperation {
 }
 
 class MockPredictionsIdentifyOperation: AmplifyOperation<PredictionsIdentifyRequest,
-Void,
-IdentifyResult,
+    Void,
+    IdentifyResult,
 PredictionsError>, PredictionsIdentifyOperation {
 
     override func pause() {
@@ -108,8 +114,8 @@ PredictionsError>, PredictionsIdentifyOperation {
 }
 
 class MockPredictionsInterpretOperation: AmplifyOperation<PredictionsInterpretRequest,
-Void,
-InterpretResult,
+    Void,
+    InterpretResult,
 PredictionsError>, PredictionsInterpretOperation {
 
     override func pause() {
