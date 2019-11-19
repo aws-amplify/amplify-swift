@@ -36,6 +36,14 @@ struct PredictionsServiceErrorMessage {
         "Please try with a different input")
 
     static let textNotFoundToInterpret: PredictionsServiceErrorString = (
-    "Input text is nil",
-    "Text given for interpret could not be found. Please check the input")
+        "Input text is nil",
+        "Text given for interpret could not be found. Please check the input")
+
+    static let onlineIdentifyServiceNotAvailable: PredictionsServiceErrorString = (
+        "Online identify service is not available",
+        "Please check if the values are proprely initialized")
+
+    static let offlineIdentifyServiceNotAvailable: PredictionsServiceErrorString = (
+        "Offline identify service is not available",
+        "Please check if the values are proprely initialized")
 }

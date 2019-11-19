@@ -31,4 +31,14 @@ class CoreMLPredictionService: CoreMLPredictionBehavior {
                                     }
         }
     }
+
+    func detectLabels(_ imageURL: URL,
+                      type: IdentifyAction,
+                      onEvent: @escaping IdentifyEventHandler) {
+        _ = coreMLPlugin.identify(type: type,
+                                  image: imageURL,
+                                  options: PredictionsIdentifyRequest.Options()) { event in
+
+        }
+    }
 }
