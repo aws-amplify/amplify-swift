@@ -175,6 +175,7 @@
 		B98E9D122372236300934B51 /* QueryField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0A2372236200934B51 /* QueryField.swift */; };
 		B98E9D132372236300934B51 /* QueryOperator+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */; };
 		B98E9D142372236300934B51 /* QueryPredicate+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */; };
+		D42A205FF2A946E41A8463C0 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34A4D98AFFD4B65AEAE350EC /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework */; };
 		FA0173352375F8A5005DDDFC /* LoggingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173342375F8A5005DDDFC /* LoggingError.swift */; };
 		FA0173372375FAA5005DDDFC /* HubError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173362375FAA5005DDDFC /* HubError.swift */; };
 		FA09337C23844E9F00C2FD5F /* GraphQLOperationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09337B23844E9F00C2FD5F /* GraphQLOperationRequest.swift */; };
@@ -234,6 +235,9 @@
 		FAA274B12382EA7100EDD2EA /* SyncingMutationSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA274B02382EA7100EDD2EA /* SyncingMutationSubscriber.swift */; };
 		FAA9FC3B23620CE50012638A /* URLRequestInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA9FC3A23620CE50012638A /* URLRequestInterceptor.swift */; };
 		FAA9FC3E236210840012638A /* APICategoryClientInterceptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA9FC3D236210840012638A /* APICategoryClientInterceptorTests.swift */; };
+		FAB2C9A42384B218008EE879 /* MockAWSMobileClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E20D2318CD3900B3DEB5 /* MockAWSMobileClient.swift */; };
+		FAB2C9A52384B21C008EE879 /* MockAWSAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2A72321DCDD00B3DEB5 /* MockAWSAuthService.swift */; };
+		FAB2C9A62384B229008EE879 /* AWSPluginsTestCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = FA131AE023610B6A0008381C /* AWSPluginsTestCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FAB9D811233BF5F600928AA9 /* AmplifyOperationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB9D810233BF5F600928AA9 /* AmplifyOperationContext.swift */; };
 		FAC0A29B22B3DEEE00B50912 /* HubPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A29A22B3DEEE00B50912 /* HubPayload.swift */; };
 		FAC0A2AD22B43FE700B50912 /* HubCategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC0A2AC22B43FE700B50912 /* HubCategory+ClientBehavior.swift */; };
@@ -852,6 +856,7 @@
 		FAA274B02382EA7100EDD2EA /* SyncingMutationSubscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncingMutationSubscriber.swift; sourceTree = "<group>"; };
 		FAA9FC3A23620CE50012638A /* URLRequestInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequestInterceptor.swift; sourceTree = "<group>"; };
 		FAA9FC3D236210840012638A /* APICategoryClientInterceptorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICategoryClientInterceptorTests.swift; sourceTree = "<group>"; };
+		FAB2C99A2384B108008EE879 /* AWSPluginsTestCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSPluginsTestCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAB9D810233BF5F600928AA9 /* AmplifyOperationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyOperationContext.swift; sourceTree = "<group>"; };
 		FAC0A29A22B3DEEE00B50912 /* HubPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubPayload.swift; sourceTree = "<group>"; };
 		FAC0A2AC22B43FE700B50912 /* HubCategory+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HubCategory+ClientBehavior.swift"; sourceTree = "<group>"; };
@@ -1002,6 +1007,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA131AB32360FE070008381C /* AWSPluginsCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAB2C9972384B108008EE879 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D42A205FF2A946E41A8463C0 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1843,6 +1856,7 @@
 				B92E03C02367CFF2006CEB8D /* AWSDataStoreCategoryPlugin.framework */,
 				B92E03C82367CFF3006CEB8D /* AWSDataStoreCategoryPluginTests.xctest */,
 				B92E040E2368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests.xctest */,
+				FAB2C99A2384B108008EE879 /* AWSPluginsTestCommon.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2249,6 +2263,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FAB2C9952384B108008EE879 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAB2C9A62384B229008EE879 /* AWSPluginsTestCommon.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FAC234CD2279F8DA00424678 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -2401,6 +2423,27 @@
 			productReference = FA131AB22360FE070008381C /* AWSPluginsCoreTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		FAB2C9992384B108008EE879 /* AWSPluginsTestCommon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FAB2C9A12384B108008EE879 /* Build configuration list for PBXNativeTarget "AWSPluginsTestCommon" */;
+			buildPhases = (
+				21A8FC2B25736B60640CE56D /* [CP] Check Pods Manifest.lock */,
+				FAB2C9952384B108008EE879 /* Headers */,
+				FAB2C9962384B108008EE879 /* Sources */,
+				FAB2C9A22384B11B008EE879 /* SwiftFormat */,
+				FAB2C9A32384B131008EE879 /* SwiftLint */,
+				FAB2C9972384B108008EE879 /* Frameworks */,
+				FAB2C9982384B108008EE879 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AWSPluginsTestCommon;
+			productName = AWSPluginsTestCommon;
+			productReference = FAB2C99A2384B108008EE879 /* AWSPluginsTestCommon.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		FAC234D12279F8DA00424678 /* Amplify */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FAC234E62279F8DA00424678 /* Build configuration list for PBXNativeTarget "Amplify" */;
@@ -2524,6 +2567,9 @@
 						CreatedOnToolsVersion = 11.1;
 						TestTargetID = 2125E2502319EC3000B3DEB5;
 					};
+					FAB2C9992384B108008EE879 = {
+						CreatedOnToolsVersion = 11.1;
+					};
 					FAC234D12279F8DA00424678 = {
 						CreatedOnToolsVersion = 10.2.1;
 					};
@@ -2558,6 +2604,7 @@
 				FACA35F12327FB14000E74F6 /* AmplifyFunctionalTests */,
 				FA131AA92360FE070008381C /* AWSPluginsCore */,
 				FA131AB12360FE070008381C /* AWSPluginsCoreTests */,
+				FAB2C9992384B108008EE879 /* AWSPluginsTestCommon */,
 				B92E03BF2367CFF2006CEB8D /* AWSDataStoreCategoryPlugin */,
 				B92E040D2368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests */,
 				B92E03C72367CFF3006CEB8D /* AWSDataStoreCategoryPluginTests */,
@@ -2608,6 +2655,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		FA131AB02360FE070008381C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAB2C9982384B108008EE879 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2792,6 +2846,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyTestCommon\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
+		};
+		21A8FC2B25736B60640CE56D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 		2F8DAE72BD3C0F67BA5CAD60 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3217,6 +3293,42 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsCore\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
 		};
+		FAB2C9A22384B11B008EE879 /* SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftFormat;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/AmplifyPlugins/DataStore/AWSPluginsTestCommon\"\n";
+		};
+		FAB2C9A32384B131008EE879 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyPlugins/DataStore/AWSPluginsTestCommon\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
+		};
 		FAC23581227A2D8C00424678 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -3339,6 +3451,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA131ABA2360FE070008381C /* AWSPluginsCoreTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAB2C9962384B108008EE879 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAB2C9A42384B218008EE879 /* MockAWSMobileClient.swift in Sources */,
+				FAB2C9A52384B21C008EE879 /* MockAWSAuthService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4010,6 +4131,58 @@
 			};
 			name = Release;
 		};
+		FAB2C99F2384B108008EE879 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3FB6AA5C119CC26F1F1EF2B5 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = AmplifyPlugins/Core/AWSPluginsTestCommon/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSPluginsTestCommon;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FAB2C9A02384B108008EE879 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F11A64999AC69429DBFD11BF /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = AmplifyPlugins/Core/AWSPluginsTestCommon/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSPluginsTestCommon;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		FAC234E42279F8DA00424678 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4373,6 +4546,15 @@
 			buildConfigurations = (
 				FA131AC52360FE070008381C /* Debug */,
 				FA131AC62360FE070008381C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FAB2C9A12384B108008EE879 /* Build configuration list for PBXNativeTarget "AWSPluginsTestCommon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAB2C99F2384B108008EE879 /* Debug */,
+				FAB2C9A02384B108008EE879 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
