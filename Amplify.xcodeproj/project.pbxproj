@@ -22,6 +22,7 @@
 		2125E25B2319EC3200B3DEB5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2125E25A2319EC3200B3DEB5 /* Assets.xcassets */; };
 		2125E25E2319EC3200B3DEB5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2125E25C2319EC3200B3DEB5 /* LaunchScreen.storyboard */; };
 		2125E265231C2D3100B3DEB5 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 2125E2102318D73B00B3DEB5 /* awsconfiguration.json */; };
+		21409C4D23847E41000A53C9 /* LabelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C4C23847E41000A53C9 /* LabelType.swift */; };
 		2142099623721F4400FA140C /* GraphQLOperationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2142099223721F4400FA140C /* GraphQLOperationType.swift */; };
 		2142099723721F4400FA140C /* RESTOperationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2142099323721F4400FA140C /* RESTOperationType.swift */; };
 		2142099823721F4400FA140C /* RESTOperationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2142099423721F4400FA140C /* RESTOperationRequest.swift */; };
@@ -478,6 +479,7 @@
 		2125E25D2319EC3200B3DEB5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2125E25F2319EC3200B3DEB5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2125E2A72321DCDD00B3DEB5 /* MockAWSAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAWSAuthService.swift; sourceTree = "<group>"; };
+		21409C4C23847E41000A53C9 /* LabelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelType.swift; sourceTree = "<group>"; };
 		2142099223721F4400FA140C /* GraphQLOperationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLOperationType.swift; sourceTree = "<group>"; };
 		2142099323721F4400FA140C /* RESTOperationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RESTOperationType.swift; sourceTree = "<group>"; };
 		2142099423721F4400FA140C /* RESTOperationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RESTOperationRequest.swift; sourceTree = "<group>"; };
@@ -1272,6 +1274,7 @@
 				95DAAB81237F13940028544F /* EntityMatch.swift */,
 				95DAAB82237F13940028544F /* VoiceType.swift */,
 				95DAAB01237E63370028544F /* IdentifiedWord.swift */,
+				21409C4C23847E41000A53C9 /* LabelType.swift */,
 				95DAAB02237E63370028544F /* TextFormatType.swift */,
 				95DAAB04237E63370028544F /* SyntaxToken.swift */,
 				95DAAB05237E63370028544F /* LanguageDetectionResult.swift */,
@@ -3320,6 +3323,7 @@
 				FACF520723298BF100646E10 /* SynchronizedDictionary.swift in Sources */,
 				FAC2353D227A055200424678 /* CategoryConfiguration.swift in Sources */,
 				95DAAB23237E63370028544F /* BoundedKeyValue.swift in Sources */,
+				21409C4D23847E41000A53C9 /* LabelType.swift in Sources */,
 				B4D38535236C97360014653D /* PredictionsCategory.swift in Sources */,
 				FAC23595227A4B9800424678 /* HubCategoryPlugin.swift in Sources */,
 				FAF1B88623392F96007F1435 /* SerialDispatcher.swift in Sources */,
