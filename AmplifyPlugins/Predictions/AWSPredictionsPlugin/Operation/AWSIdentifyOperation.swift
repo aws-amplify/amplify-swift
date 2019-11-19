@@ -47,9 +47,9 @@ PredictionsIdentifyOperation {
             predictionsService.detectText(image: request.image, format: formatType) { [weak self] event in
                 self?.onServiceEvent(event: event)
             }
-        case .detectLabels:
+        case .detectLabels(let labelType):
             predictionsService.detectLabels(
-            image: request.image) { [weak self] event in
+            image: request.image, type: labelType) { [weak self] event in
                 self?.onServiceEvent(event: event)
             }
 
