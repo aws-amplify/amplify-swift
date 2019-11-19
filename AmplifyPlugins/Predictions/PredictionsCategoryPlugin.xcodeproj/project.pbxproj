@@ -517,6 +517,22 @@
 			path = Constants;
 			sourceTree = "<group>";
 		};
+		B453796E2384984200F7B354 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				B45379702384984200F7B354 /* AWSComprehendErrorMessage.swift */,
+				B45379772384984200F7B354 /* AWSPollyErrorMessage.swift */,
+				B45379762384984200F7B354 /* AWSRekognitionErrorMessage.swift */,
+				B45379712384984200F7B354 /* AWSServiceErrorMessage.swift */,
+				B45379752384984200F7B354 /* AWSTextractErrorMessage.swift */,
+				B453796F2384984200F7B354 /* AWSTranslateErrorMessage.swift */,
+				B45379722384984200F7B354 /* CoreMLInterpretErrorMessage.swift */,
+				B45379732384984200F7B354 /* PluginErrorMessage.swift */,
+				B45379742384984200F7B354 /* PredictionsServiceErrorMessage.swift */,
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
 		B45B0671237F13EA00DC9122 /* CoreML */ = {
 			isa = PBXGroup;
 			children = (
@@ -1560,11 +1576,13 @@
 				95DAAA72237B8ED40028544F /* AWSComprehendAdapter.swift in Sources */,
 				95DAAA8D237B8ED40028544F /* AWSPredictionsService.swift in Sources */,
 				95DAAB94237F53C50028544F /* AWSPollyVoiceId+Extension.swift in Sources */,
+				B453797A2384984200F7B354 /* AWSServiceErrorMessage.swift in Sources */,
 				95DAAA86237B8ED40028544F /* PredictionsErrorHelper.swift in Sources */,
 				95DAAA76237B8ED40028544F /* AWSTranslateBehavior.swift in Sources */,
 				95DAAAE7237DFC440028544F /* AWSPollyAdapter.swift in Sources */,
 				95DAAA70237B8ED40028544F /* AWSPollyBehavior.swift in Sources */,
 				95DAAA84237B8ED40028544F /* IdentifyResultTransformers.swift in Sources */,
+				B453797F2384984200F7B354 /* AWSRekognitionErrorMessage.swift in Sources */,
 				95DAAAEF237DFDC70028544F /* PredictionsTextToSpeechRequest+Validate.swift in Sources */,
 				95DAAAE9237DFD180028544F /* AWSPollyOperation.swift in Sources */,
 				95DAAACF237CBE040028544F /* FormatType+AWSExtension.swift in Sources */,
@@ -1574,12 +1592,14 @@
 				95DAAA90237B8ED40028544F /* AWSRekognitionServiceBehavior.swift in Sources */,
 				B45B0677237F13EB00DC9122 /* CoreMLPredictionBehavior.swift in Sources */,
 				B45B067A237F13EB00DC9122 /* MultiServiceBehavior.swift in Sources */,
+				B453797E2384984200F7B354 /* AWSTextractErrorMessage.swift in Sources */,
 				B45B0679237F13EB00DC9122 /* InterpretTextMultiService.swift in Sources */,
 				B4E26A7A2383D9EA00739926 /* IdentifyMultiService.swift in Sources */,
 				95DAAA79237B8ED40028544F /* PredictionsIdentifyRequest+Validate.swift in Sources */,
 				95DAAA69237B8ED40028544F /* IdentifyOperation.swift in Sources */,
 				B453796423848A5F00F7B354 /* AWSTranslateErrorMessage.swift in Sources */,
 				95DAAA7F237B8ED40028544F /* AWSComprehendSentimentTypeExtension.swift in Sources */,
+				B45379782384984200F7B354 /* AWSTranslateErrorMessage.swift in Sources */,
 				95DAAA78237B8ED40028544F /* AWSRekognitionAdapter.swift in Sources */,
 				95DAAA88237B8ED40028544F /* IdentifyCelebritiesResultTransformers.swift in Sources */,
 				B453796D23848A5F00F7B354 /* AWSPollyErrorMessage.swift in Sources */,
@@ -1589,6 +1609,7 @@
 				95DAAAF1237DFE5F0028544F /* VoiceType+AWSExtension.swift in Sources */,
 				95DAAA80237B8ED40028544F /* PredictionsAWSServices.swift in Sources */,
 				95DAAA7A237B8ED40028544F /* PredictionsTranslateTextRequest+Validate.swift in Sources */,
+				B453797B2384984200F7B354 /* CoreMLInterpretErrorMessage.swift in Sources */,
 				95DAAA77237B8ED40028544F /* AWSComprehendBehavior.swift in Sources */,
 				95DAAA87237B8ED40028544F /* IdentifyLabelsResultTransformers.swift in Sources */,
 				95DAAA74237B8ED40028544F /* AWSTextractAdapter.swift in Sources */,

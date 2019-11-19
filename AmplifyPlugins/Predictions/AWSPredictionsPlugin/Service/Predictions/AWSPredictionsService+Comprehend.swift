@@ -19,8 +19,8 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
 
             switch event {
             case .completed(let dominantLanguageType, let score):
-                self.analyzeText(text, for: dominantLanguageType) { featuresResultBuilder in
-                    var builder = featuresResultBuilder
+                self.analyzeText(text, for: dominantLanguageType) { analyzeResultBuilder in
+                    var builder = analyzeResultBuilder
                     let languageDetected = LanguageDetectionResult(languageCode: dominantLanguageType, score: score)
                     builder.with(language: languageDetected)
                     onEvent(.completed(builder.build()))
@@ -211,7 +211,6 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
                                         sentimentScores: score))
             return nil
         }
-
     }
 
     private func detectEntities(_ text: String,
@@ -243,9 +242,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             completionHandler(entitiesResult)
             return nil
         }
-
     }
-
 }
 
 extension Array where Element: AWSComprehendDominantLanguage {
