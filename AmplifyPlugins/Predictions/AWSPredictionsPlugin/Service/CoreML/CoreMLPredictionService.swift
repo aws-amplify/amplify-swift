@@ -13,7 +13,7 @@ class CoreMLPredictionService: CoreMLPredictionBehavior {
 
     let coreMLPlugin: CoreMLPredictionsPlugin
 
-    init(config: AWSPredictionsPluginConfiguration) throws {
+    init(config: Any) throws {
         self.coreMLPlugin = CoreMLPredictionsPlugin()
         try coreMLPlugin.configure(using: config)
     }

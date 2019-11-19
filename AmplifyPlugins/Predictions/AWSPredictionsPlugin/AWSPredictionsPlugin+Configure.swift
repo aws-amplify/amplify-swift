@@ -37,7 +37,7 @@ extension AWSPredictionsPlugin {
         let cognitoCredentialsProvider = authService.getCognitoCredentialsProvider()
 
         let predictionsConfig = try AWSPredictionsPlugin.createPredictionsConfiguration(configObject)
-        let coremlService = try CoreMLPredictionService(config: predictionsConfig)
+        let coremlService = try CoreMLPredictionService(config: configuration)
         let predictionsService = try AWSPredictionsService(config: predictionsConfig,
                                                            cognitoCredentialsProvider: cognitoCredentialsProvider,
                                                            identifier: key)
