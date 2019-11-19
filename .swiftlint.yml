@@ -1,17 +1,10 @@
-included:
-  - Amplify
-  - AmplifyTests
-  - AmplifyTestCommon
-  - AmplifyFunctionalTests
-  - AWSPlugins
+# Do not specify an `included` section at this top-level file. Specify the
+# `--config` option pointing to this file, and the `--path` option to the files
+# you wish to lint
 
-# Note: This feature is experimental. As of this writing (4-Dec-2018) warnings
-# triggered by these rules should not be used to fail builds. Known issues:
-# - unused_private_declaration incorrectly triggers on
-#   AWSAppSyncClientConfiguration.oidcAuthProvider
 analyzer_rules:
   - unused_import
-  - unused_private_declaration
+  - unused_declaration
 
 opt_in_rules:
   - empty_count
@@ -29,6 +22,7 @@ function_body_length:
 identifier_name:
   excluded:
     - id
+    - of
     - or
 line_length:
   warning: 120

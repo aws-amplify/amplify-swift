@@ -23,4 +23,3 @@ public extension HubPayload.EventName.API {
     static let query = "API.query"
     static let subscribe = "API.subscribe"
 }
-

@@ -5,7 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-///Struct that holds the result for an entity matched from an entity collection created on Rekogniton and detected from Predictions Identify methods.
+/// Struct that holds the result for an entity matched from an entity collection
+/// created on Rekogniton and detected from Predictions Identify methods.
 public struct EntityMatch {
     public let boundingBox: BoundingBox
     public let metadata: EntityMatchMetadata
