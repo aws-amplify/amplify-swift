@@ -79,7 +79,7 @@
 		95DAAB2D237E63370028544F /* EmotionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB11237E63370028544F /* EmotionType.swift */; };
 		95DAAB2E237E63370028544F /* AgeRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB12237E63370028544F /* AgeRange.swift */; };
 		95DAAB2F237E63370028544F /* LanguageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB13237E63370028544F /* LanguageType.swift */; };
-		95DAAB30237E63370028544F /* IdentifyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB14237E63370028544F /* IdentifyType.swift */; };
+		95DAAB30237E63370028544F /* IdentifyAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB14237E63370028544F /* IdentifyAction.swift */; };
 		95DAAB31237E63370028544F /* PartOfSpeech.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB15237E63370028544F /* PartOfSpeech.swift */; };
 		95DAAB32237E63370028544F /* EntityType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB16237E63370028544F /* EntityType.swift */; };
 		95DAAB33237E63370028544F /* KeyPhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB17237E63370028544F /* KeyPhrase.swift */; };
@@ -628,7 +628,7 @@
 		95DAAB11237E63370028544F /* EmotionType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmotionType.swift; sourceTree = "<group>"; };
 		95DAAB12237E63370028544F /* AgeRange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgeRange.swift; sourceTree = "<group>"; };
 		95DAAB13237E63370028544F /* LanguageType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LanguageType.swift; sourceTree = "<group>"; };
-		95DAAB14237E63370028544F /* IdentifyType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyType.swift; sourceTree = "<group>"; };
+		95DAAB14237E63370028544F /* IdentifyAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyAction.swift; sourceTree = "<group>"; };
 		95DAAB15237E63370028544F /* PartOfSpeech.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartOfSpeech.swift; sourceTree = "<group>"; };
 		95DAAB16237E63370028544F /* EntityType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntityType.swift; sourceTree = "<group>"; };
 		95DAAB17237E63370028544F /* KeyPhrase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyPhrase.swift; sourceTree = "<group>"; };
@@ -1291,7 +1291,7 @@
 				95DAAB10237E63370028544F /* IdentifiedLine.swift */,
 				95DAAB08237E63370028544F /* IdentifiedText.swift */,
 				95DAAB01237E63370028544F /* IdentifiedWord.swift */,
-				95DAAB14237E63370028544F /* IdentifyType.swift */,
+				95DAAB14237E63370028544F /* IdentifyAction.swift */,
 				95DAAB17237E63370028544F /* KeyPhrase.swift */,
 				FAD3E11D2384956600F6F41C /* LabelType.swift */,
 				95DAAB1C237E63370028544F /* Landmark.swift */,
@@ -3359,7 +3359,7 @@
 				FAD3E11E2384956600F6F41C /* LabelType.swift in Sources */,
 				2142099823721F4400FA140C /* RESTRequest.swift in Sources */,
 				21FFF994230C96CB005878EA /* StoragePutDataOperation.swift in Sources */,
-				95DAAB30237E63370028544F /* IdentifyType.swift in Sources */,
+				95DAAB30237E63370028544F /* IdentifyAction.swift in Sources */,
 				21D79FE32377F4120057D00D /* SubscriptionConnectionState.swift in Sources */,
 				95DAAB45237E639E0028544F /* IdentifyResult.swift in Sources */,
 				95DAAB21237E63370028544F /* LanguageDetectionResult.swift in Sources */,
