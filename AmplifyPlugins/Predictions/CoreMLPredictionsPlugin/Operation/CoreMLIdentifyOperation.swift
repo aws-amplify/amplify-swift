@@ -26,10 +26,6 @@ PredictionsError>, PredictionsIdentifyOperation {
                    listener: listener)
     }
 
-    override public func cancel() {
-        super.cancel()
-    }
-
     override public func main() {
 
         guard let coreMLVisionAdapter = coreMLVision else {
@@ -43,21 +39,33 @@ PredictionsError>, PredictionsIdentifyOperation {
         }
         switch request.identifyType {
         case .detectCelebrity, .detectEntities:
-            fatalError()
+            let errorDescription = CoreMLPluginErrorString.operationNotSupported.errorDescription
+            let recovery = CoreMLPluginErrorString.operationNotSupported.recoverySuggestion
+            let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
+            dispatch(event: .failed(predictionsError))
+            finish()
         case .detectText:
             guard  let result = coreMLVisionAdapter.detectText(request.image) else {
+                let errorDescription = CoreMLPluginErrorString.detectTextNoResult.errorDescription
+                let recovery = CoreMLPluginErrorString.detectTextNoResult.recoverySuggestion
+                let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
+                dispatch(event: .failed(predictionsError))
+                finish()
                 return
             }
             dispatch(event: .completed(result))
             finish()
         case .detectLabels:
             guard  let result = coreMLVisionAdapter.detectLabels(request.image) else {
+                let errorDescription = CoreMLPluginErrorString.detectLabelsNoResult.errorDescription
+                let recovery = CoreMLPluginErrorString.detectLabelsNoResult.recoverySuggestion
+                let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
+                dispatch(event: .failed(predictionsError))
+                finish()
                 return
             }
             dispatch(event: .completed(result))
             finish()
         }
-
-        finish()
     }
 }
