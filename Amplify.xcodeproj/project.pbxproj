@@ -79,7 +79,7 @@
 		95DAAB2D237E63370028544F /* EmotionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB11237E63370028544F /* EmotionType.swift */; };
 		95DAAB2E237E63370028544F /* AgeRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB12237E63370028544F /* AgeRange.swift */; };
 		95DAAB2F237E63370028544F /* LanguageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB13237E63370028544F /* LanguageType.swift */; };
-		95DAAB30237E63370028544F /* IdentifyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB14237E63370028544F /* IdentifyType.swift */; };
+		95DAAB30237E63370028544F /* IdentifyAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB14237E63370028544F /* IdentifyAction.swift */; };
 		95DAAB31237E63370028544F /* PartOfSpeech.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB15237E63370028544F /* PartOfSpeech.swift */; };
 		95DAAB32237E63370028544F /* EntityType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB16237E63370028544F /* EntityType.swift */; };
 		95DAAB33237E63370028544F /* KeyPhrase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB17237E63370028544F /* KeyPhrase.swift */; };
@@ -310,6 +310,7 @@
 		FAD3937A23820CDB00463F5E /* DataStoreCategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD3937923820CDB00463F5E /* DataStoreCategoryClientAPITests.swift */; };
 		FAD3937D23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD3937C23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift */; };
 		FAD3937F23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD3937E23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift */; };
+		FAD3E11E2384956600F6F41C /* LabelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD3E11D2384956600F6F41C /* LabelType.swift */; };
 		FADB3A6823612940006D6FE9 /* BasicClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADB3A6723612940006D6FE9 /* BasicClosure.swift */; };
 		FAF1B88423392F7C007F1435 /* ConcurrentDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B88323392F7C007F1435 /* ConcurrentDispatcher.swift */; };
 		FAF1B88623392F96007F1435 /* SerialDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B88523392F96007F1435 /* SerialDispatcher.swift */; };
@@ -627,7 +628,7 @@
 		95DAAB11237E63370028544F /* EmotionType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmotionType.swift; sourceTree = "<group>"; };
 		95DAAB12237E63370028544F /* AgeRange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgeRange.swift; sourceTree = "<group>"; };
 		95DAAB13237E63370028544F /* LanguageType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LanguageType.swift; sourceTree = "<group>"; };
-		95DAAB14237E63370028544F /* IdentifyType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyType.swift; sourceTree = "<group>"; };
+		95DAAB14237E63370028544F /* IdentifyAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyAction.swift; sourceTree = "<group>"; };
 		95DAAB15237E63370028544F /* PartOfSpeech.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartOfSpeech.swift; sourceTree = "<group>"; };
 		95DAAB16237E63370028544F /* EntityType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntityType.swift; sourceTree = "<group>"; };
 		95DAAB17237E63370028544F /* KeyPhrase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyPhrase.swift; sourceTree = "<group>"; };
@@ -926,6 +927,7 @@
 		FAD3937923820CDB00463F5E /* DataStoreCategoryClientAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreCategoryClientAPITests.swift; sourceTree = "<group>"; };
 		FAD3937C23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreCategoryConfigurationTests.swift; sourceTree = "<group>"; };
 		FAD3937E23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataStoreCategoryPlugin.swift; sourceTree = "<group>"; };
+		FAD3E11D2384956600F6F41C /* LabelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelType.swift; sourceTree = "<group>"; };
 		FADB3A6723612940006D6FE9 /* BasicClosure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicClosure.swift; sourceTree = "<group>"; };
 		FAF1B88323392F7C007F1435 /* ConcurrentDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentDispatcher.swift; sourceTree = "<group>"; };
 		FAF1B88523392F96007F1435 /* SerialDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialDispatcher.swift; sourceTree = "<group>"; };
@@ -1275,35 +1277,36 @@
 		95DAAB00237E63370028544F /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				95DAAB81237F13940028544F /* EntityMatch.swift */,
-				95DAAB82237F13940028544F /* VoiceType.swift */,
-				95DAAB01237E63370028544F /* IdentifiedWord.swift */,
-				95DAAB02237E63370028544F /* TextFormatType.swift */,
-				95DAAB04237E63370028544F /* SyntaxToken.swift */,
-				95DAAB05237E63370028544F /* LanguageDetectionResult.swift */,
-				95DAAB06237E63370028544F /* SpeechType.swift */,
-				95DAAB07237E63370028544F /* BoundedKeyValue.swift */,
-				95DAAB08237E63370028544F /* IdentifiedText.swift */,
-				95DAAB09237E63370028544F /* Entity.swift */,
-				95DAAB0A237E63370028544F /* Sentiment.swift */,
-				95DAAB0B237E63370028544F /* GenderType.swift */,
-				95DAAB0C237E63370028544F /* Celebrity.swift */,
-				95DAAB0D237E63370028544F /* EntityDetectionResult.swift */,
-				95DAAB0E237E63370028544F /* Pose.swift */,
-				95DAAB0F237E63370028544F /* Table.swift */,
-				95DAAB10237E63370028544F /* IdentifiedLine.swift */,
-				95DAAB11237E63370028544F /* EmotionType.swift */,
 				95DAAB12237E63370028544F /* AgeRange.swift */,
-				95DAAB13237E63370028544F /* LanguageType.swift */,
-				95DAAB14237E63370028544F /* IdentifyType.swift */,
-				95DAAB15237E63370028544F /* PartOfSpeech.swift */,
-				95DAAB16237E63370028544F /* EntityType.swift */,
-				95DAAB17237E63370028544F /* KeyPhrase.swift */,
-				95DAAB18237E63370028544F /* Emotion.swift */,
-				95DAAB19237E63370028544F /* Polygon.swift */,
-				95DAAB1A237E63370028544F /* Selection.swift */,
 				95DAAB1B237E63370028544F /* Attribute.swift */,
+				95DAAB07237E63370028544F /* BoundedKeyValue.swift */,
+				95DAAB0C237E63370028544F /* Celebrity.swift */,
+				95DAAB18237E63370028544F /* Emotion.swift */,
+				95DAAB11237E63370028544F /* EmotionType.swift */,
+				95DAAB09237E63370028544F /* Entity.swift */,
+				95DAAB0D237E63370028544F /* EntityDetectionResult.swift */,
+				95DAAB81237F13940028544F /* EntityMatch.swift */,
+				95DAAB16237E63370028544F /* EntityType.swift */,
+				95DAAB0B237E63370028544F /* GenderType.swift */,
+				95DAAB10237E63370028544F /* IdentifiedLine.swift */,
+				95DAAB08237E63370028544F /* IdentifiedText.swift */,
+				95DAAB01237E63370028544F /* IdentifiedWord.swift */,
+				95DAAB14237E63370028544F /* IdentifyAction.swift */,
+				95DAAB17237E63370028544F /* KeyPhrase.swift */,
+				FAD3E11D2384956600F6F41C /* LabelType.swift */,
 				95DAAB1C237E63370028544F /* Landmark.swift */,
+				95DAAB05237E63370028544F /* LanguageDetectionResult.swift */,
+				95DAAB13237E63370028544F /* LanguageType.swift */,
+				95DAAB15237E63370028544F /* PartOfSpeech.swift */,
+				95DAAB19237E63370028544F /* Polygon.swift */,
+				95DAAB0E237E63370028544F /* Pose.swift */,
+				95DAAB1A237E63370028544F /* Selection.swift */,
+				95DAAB0A237E63370028544F /* Sentiment.swift */,
+				95DAAB06237E63370028544F /* SpeechType.swift */,
+				95DAAB04237E63370028544F /* SyntaxToken.swift */,
+				95DAAB0F237E63370028544F /* Table.swift */,
+				95DAAB02237E63370028544F /* TextFormatType.swift */,
+				95DAAB82237F13940028544F /* VoiceType.swift */,
 			);
 			name = Models;
 			path = Amplify/Categories/Predictions/Models;
@@ -1350,10 +1353,10 @@
 		B4D38516236C97350014653D /* Operation */ = {
 			isa = PBXGroup;
 			children = (
-				95DAAB85237F13A10028544F /* PredictionsTextToSpeechOperation.swift */,
 				B4D38517236C97350014653D /* PredictionsIdentifyOperation.swift */,
-				B4D38518236C97350014653D /* PredictionsTranslateTextOperation.swift */,
 				B4D38519236C97350014653D /* PredictionsInterpretOperation.swift */,
+				95DAAB85237F13A10028544F /* PredictionsTextToSpeechOperation.swift */,
+				B4D38518236C97350014653D /* PredictionsTranslateTextOperation.swift */,
 			);
 			path = Operation;
 			sourceTree = "<group>";
@@ -3353,9 +3356,10 @@
 				FA09337C23844E9F00C2FD5F /* GraphQLOperationRequest.swift in Sources */,
 				FAC23545227A055200424678 /* AmplifyConfiguration.swift in Sources */,
 				95DAAB84237F13940028544F /* VoiceType.swift in Sources */,
+				FAD3E11E2384956600F6F41C /* LabelType.swift in Sources */,
 				2142099823721F4400FA140C /* RESTRequest.swift in Sources */,
 				21FFF994230C96CB005878EA /* StoragePutDataOperation.swift in Sources */,
-				95DAAB30237E63370028544F /* IdentifyType.swift in Sources */,
+				95DAAB30237E63370028544F /* IdentifyAction.swift in Sources */,
 				21D79FE32377F4120057D00D /* SubscriptionConnectionState.swift in Sources */,
 				95DAAB45237E639E0028544F /* IdentifyResult.swift in Sources */,
 				95DAAB21237E63370028544F /* LanguageDetectionResult.swift in Sources */,
