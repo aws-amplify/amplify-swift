@@ -141,7 +141,7 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
                 let syntaxToken = SyntaxToken(tokenId: syntax.tokenId?.intValue ?? 0,
                                               text: syntax.text ?? "",
                                               range: range,
-                                              partOfSpeech: partOfSpeech!)
+                                              partOfSpeech: partOfSpeech)
                 syntaxTokenResult.append(syntaxToken)
 
             }
