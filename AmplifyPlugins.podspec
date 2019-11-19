@@ -47,6 +47,7 @@ Pod::Spec.new do |s|
     ss.platform = :ios, '13.0'
     ss.source_files = 'AmplifyPlugins/Predictions/AWSPredictionsPlugin/**/*.swift'
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
+    ss.dependency 'CoreMLPredictionsPlugin', AMPLIFY_VERSION
     ss.dependency 'AWSTranslate', AWS_SDK_VERSION
     ss.dependency 'AWSRekognition', AWS_SDK_VERSION
     ss.dependency 'AWSPolly', AWS_SDK_VERSION

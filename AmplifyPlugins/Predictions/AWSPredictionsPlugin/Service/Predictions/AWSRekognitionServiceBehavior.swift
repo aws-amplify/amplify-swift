@@ -14,6 +14,7 @@ protocol AWSRekognitionServiceBehavior {
     typealias RekognitionServiceEvent = PredictionsEvent<IdentifyResult, PredictionsError>
 
     func detectLabels(image: URL,
+                      type: LabelType,
                       onEvent: @escaping RekognitionServiceEventHandler)
 
     func detectCelebrities(image: URL, onEvent: @escaping RekognitionServiceEventHandler)
