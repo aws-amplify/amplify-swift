@@ -10,7 +10,7 @@ import Amplify
 
 protocol CoreMLVisionBehavior: class {
 
-    func detectLabels(_ imageURL: URL) -> [Label]?
+    func detectLabels(_ imageURL: URL) -> IdentifyLabelsResult?
 
     func detectText(_ imageURL: URL) -> IdentifyTextResult?
 }

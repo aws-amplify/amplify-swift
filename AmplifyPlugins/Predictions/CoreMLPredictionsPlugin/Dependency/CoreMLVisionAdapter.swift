@@ -10,7 +10,7 @@ import Vision
 
 class CoreMLVisionAdapter: CoreMLVisionBehavior {
 
-    public func detectLabels(_ imageURL: URL) -> [Label]? {
+    public func detectLabels(_ imageURL: URL) -> IdentifyLabelsResult? {
         var labelsResult = [Label]()
         let handler = VNImageRequestHandler(url: imageURL, options: [:])
         let request = VNClassifyImageRequest()
@@ -26,7 +26,7 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
             let label = Label(name: category.identifier, metadata: metaData)
             labelsResult.append(label)
         }
-        return labelsResult
+        return IdentifyLabelsResult(labels: labelsResult)
     }
 
     public func detectText(_ imageURL: URL) -> IdentifyTextResult? {
