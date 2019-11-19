@@ -5,10 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-//swiftlint:disable colon
 /// Behavior of the API category that clients will use
-public protocol APICategoryClientBehavior:
+public typealias APICategoryClientBehavior =
     APICategoryRESTBehavior &
     APICategoryGraphQLBehavior &
-    APICategoryInterceptorBehavior { }
-//swiftlint:enable colon
+    APICategoryInterceptorBehavior

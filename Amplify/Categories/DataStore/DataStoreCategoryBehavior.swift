@@ -5,13 +5,17 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
+import Combine
 
 public typealias QueryPredicateFactory = () -> QueryPredicate
 
-public protocol DataStoreCategoryBehavior {
+public typealias DataStoreCategoryBehavior = DataStoreBaseBehavior & DataStoreSubscribeBehavior
 
-    func save<M: Model>(_ model: M, completion: DataStoreCallback<M>)
+public protocol DataStoreBaseBehavior {
+
+    /// Saves the model to storage. If sync is enabled, also initiates a sync of the mutation to the cloud API
+    func save<M: Model>(_ model: M,
+                        completion: @escaping DataStoreCallback<M>)
 
     func query<M: Model>(_ modelType: M.Type,
                          byId id: String,
@@ -27,5 +31,11 @@ public protocol DataStoreCategoryBehavior {
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: String,
                           completion: DataStoreCallback<Void>)
+}
 
+public protocol DataStoreSubscribeBehavior {
+    /// Returns a Publisher for model changes (create, updates, delete)
+    /// - Parameter modelType: The model type to observe
+    @available(iOS 13.0, *)
+    func publisher<M: Model>(for modelType: M.Type) -> AnyPublisher<MutationEvent, DataStoreError>
 }

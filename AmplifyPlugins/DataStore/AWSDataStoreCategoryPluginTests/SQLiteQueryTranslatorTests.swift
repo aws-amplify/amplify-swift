@@ -14,12 +14,11 @@ import XCTest
 
 class SQLiteQueryTranslatorTests: XCTestCase {
 
-    private let models: [Model.Type] = [Post.self, Comment.self]
-
     let queryTranslator: SQLiteQueryTranslator = SQLiteQueryTranslator()
 
-    override func setUp() {
-        models.forEach(registerModel(type:))
+    override static func setUp() {
+        ModelRegistry.register(modelType: Post.self)
+        ModelRegistry.register(modelType: Comment.self)
     }
 
     // MARK: - Create Table

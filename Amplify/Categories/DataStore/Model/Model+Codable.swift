@@ -19,10 +19,9 @@ extension Model where Self: Codable {
     /// other decoding specific error that `JSONDecoder.decode()` might throw.
     public static func from(json: String) throws -> Self {
         guard let data = json.data(using: .utf8) else {
-            // TODO
             throw DataStoreError.decodingError(
                 "Invalid JSON string. Could not convert the passed JSON string into a UTF-8 Data object",
-                "Check if your JSON doesn't contain any invalid UTF-8 character."
+                "Ensure the JSON doesn't contain any invalid UTF-8 data:\n\n\(json)"
             )
         }
         return try JSONDecoder().decode(Self.self, from: data)

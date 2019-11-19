@@ -11,7 +11,7 @@ extension Model {
 
     public static var schema: ModelSchema {
         // TODO load schema from JSON when this it not overridden by specific models
-        return ModelSchema(name: String(describing: self), fields: [:])
+        return ModelSchema(name: modelName, fields: [:])
     }
 
     /// Utility function that enables a DSL-like `ModelSchema` definition. Instead of building
@@ -35,7 +35,8 @@ extension Model {
     public static func defineSchema(name: String? = nil,
                                     attributes: ModelAttribute...,
                                     define: (inout ModelSchemaDefinition) -> Void) -> ModelSchema {
-        var definition = ModelSchemaDefinition(name: name ?? String(describing: self))
+        var definition = ModelSchemaDefinition(name: name ?? modelName,
+                                               attributes: attributes)
         define(&definition)
         return definition.build()
     }

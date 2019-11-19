@@ -7,4 +7,4 @@
 
 import Foundation
 
-public protocol StorageEngineAdapter: StorageEngineBehavior {}
+protocol StorageEngineAdapter: StorageEngineBehavior {}

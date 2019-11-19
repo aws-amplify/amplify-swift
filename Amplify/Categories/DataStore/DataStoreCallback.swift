@@ -38,6 +38,7 @@ public typealias DataStoreCallback<Result> = (DataStoreResult<Result>) -> Void
 ///
 /// - Warning: This should be avoided in production environments. It is a good utility
 /// for fast prototyping but consider handling all the results in a production app.
+// TODO: This shouldn't be a top-level method
 public func ignoreDataStoreResult<T>(_ result: DataStoreResult<T>) {
     switch result {
     case .error(let error):
