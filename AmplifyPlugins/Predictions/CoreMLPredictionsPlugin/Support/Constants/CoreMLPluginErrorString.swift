@@ -19,4 +19,16 @@ struct CoreMLPluginErrorString {
         "Configuration was not a dictionary literal",
         "Make sure the value for the plugin is a dictionary literal with keys 'Bucket' and 'Region'")
 
+    static let operationNotSupported: PluginErrorString = (
+        "This operation is not supported.",
+        "Operation is not currently supported by offline mode.")
+
+    static let detectTextNoResult: PluginErrorString = (
+        "Detect text return with no result",
+        "The input might not have enough data points to find text")
+
+    static let detectLabelsNoResult: PluginErrorString = (
+        "Detect labels return with no result",
+        "The input might not have enough data points to find labels")
+
 }

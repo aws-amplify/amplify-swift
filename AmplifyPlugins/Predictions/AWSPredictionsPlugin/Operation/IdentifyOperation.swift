@@ -7,33 +7,35 @@
 
 import Foundation
 import Amplify
+import AWSMobileClient
 import AWSPluginsCore
 
-public class InterpretTextOperation: AmplifyOperation<PredictionsInterpretRequest,
+public class IdentifyOperation: AmplifyOperation<PredictionsIdentifyRequest,
     Void,
-    InterpretResult,
+    IdentifyResult,
     PredictionsError>,
-PredictionsInterpretOperation {
+PredictionsIdentifyOperation {
 
-    let multiService: InterpretTextMultiService
+    let multiService: IdentifyMultiService
 
-    init(_ request: PredictionsInterpretRequest,
-         multiService: InterpretTextMultiService,
+    init(request: PredictionsIdentifyRequest,
+         multiService: IdentifyMultiService,
          listener: EventListener?) {
-
         self.multiService = multiService
         super.init(categoryType: .predictions,
-                   eventName: HubPayload.EventName.Predictions.interpret,
+                   eventName: HubPayload.EventName.Predictions.identifyLabels,
                    request: request,
                    listener: listener)
     }
 
     override public func main() {
-        if isCancelled {
+
+        if let error = request.validate() {
+            dispatch(event: .failed(error))
             finish()
             return
         }
-        multiService.setTextToInterpret(text: request.textToInterpret)
+        multiService.setRequest(request)
         switch request.options.defaultNetworkPolicy {
         case .offline:
             multiService.fetchOfflineResult(callback: { event in
@@ -46,15 +48,7 @@ PredictionsInterpretOperation {
         }
     }
 
-    // MARK: -
-
-    private func onServiceEvent(event: PredictionsEvent<InterpretResult, PredictionsError>) {
-
-        if isCancelled {
-            finish()
-            return
-        }
-
+    private func onServiceEvent(event: PredictionsEvent<IdentifyResult, PredictionsError>) {
         switch event {
         case .completed(let result):
             dispatch(event: .completed(result))
@@ -64,5 +58,4 @@ PredictionsInterpretOperation {
             finish()
         }
     }
-
 }

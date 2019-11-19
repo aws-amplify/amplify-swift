@@ -31,4 +31,21 @@ class CoreMLPredictionService: CoreMLPredictionBehavior {
                                     }
         }
     }
+
+    func identify(_ imageURL: URL,
+                  type: IdentifyAction,
+                  onEvent: @escaping IdentifyEventHandler) {
+        _ = coreMLPlugin.identify(type: type,
+                                  image: imageURL,
+                                  options: PredictionsIdentifyRequest.Options()) { event in
+                                    switch event {
+                                    case .completed(let result):
+                                        onEvent(.completed(result))
+                                    case .failed(let error):
+                                        onEvent(.failed(error))
+                                    default:
+                                        break
+                                    }
+        }
+    }
 }
