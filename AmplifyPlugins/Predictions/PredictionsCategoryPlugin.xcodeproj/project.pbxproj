@@ -62,6 +62,8 @@
 		95DAAAEF237DFDC70028544F /* PredictionsTextToSpeechRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAAEE237DFDC70028544F /* PredictionsTextToSpeechRequest+Validate.swift */; };
 		95DAAAF1237DFE5F0028544F /* VoiceType+AWSExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAAF0237DFE5F0028544F /* VoiceType+AWSExtension.swift */; };
 		95DAAB94237F53C50028544F /* AWSPollyVoiceId+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB93237F53C50028544F /* AWSPollyVoiceId+Extension.swift */; };
+		95DAABA323838B920028544F /* AWSPredictionsPlugin+IdentifyBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAABA123838B910028544F /* AWSPredictionsPlugin+IdentifyBasicIntegrationTests.swift */; };
+		95DAABA423838B920028544F /* AWSPredictionsPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAABA223838B920028544F /* AWSPredictionsPluginTestBase.swift */; };
 		A54C2F5EE55421C229DD65CD /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85D4620E45EBA05AC83EF99D /* Pods_HostApp.framework */; };
 		B45B0677237F13EB00DC9122 /* CoreMLPredictionBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45B0672237F13EA00DC9122 /* CoreMLPredictionBehavior.swift */; };
 		B45B0678237F13EB00DC9122 /* CoreMLPredictionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45B0673237F13EA00DC9122 /* CoreMLPredictionService.swift */; };
@@ -79,7 +81,6 @@
 		B478F6B52374E07300C4F92B /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = B478F6B42374E07300C4F92B /* amplifyconfiguration.json */; };
 		B478F6B72374E08100C4F92B /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = B478F6B62374E08100C4F92B /* awsconfiguration.json */; };
 		B49D1437237B665E00856777 /* AWSPredictionsPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49D1435237B665E00856777 /* AWSPredictionsPluginTests.swift */; };
-		B4DFA671237B577B0013E17B /* AWSPredictionsPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA66E237B577B0013E17B /* AWSPredictionsPluginIntegrationTests.swift */; };
 		B4DFA684237B58900013E17B /* CoreMLInterpretTextOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA675237B58900013E17B /* CoreMLInterpretTextOperation.swift */; };
 		B4DFA685237B58900013E17B /* CoreMLPredictionsPlugin+Configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA676237B58900013E17B /* CoreMLPredictionsPlugin+Configure.swift */; };
 		B4DFA687237B58900013E17B /* CoreMLPredictionsPlugin+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA679237B58900013E17B /* CoreMLPredictionsPlugin+ClientBehavior.swift */; };
@@ -102,6 +103,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		95DAABA52383981F0028544F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B478F5FA2374DBF400C4F92B;
+			remoteInfo = AWSPredictionsPlugin;
+		};
 		B478F64F2374DCE700C4F92B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
@@ -205,6 +213,8 @@
 		95DAAAEE237DFDC70028544F /* PredictionsTextToSpeechRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PredictionsTextToSpeechRequest+Validate.swift"; sourceTree = "<group>"; };
 		95DAAAF0237DFE5F0028544F /* VoiceType+AWSExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VoiceType+AWSExtension.swift"; sourceTree = "<group>"; };
 		95DAAB93237F53C50028544F /* AWSPollyVoiceId+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSPollyVoiceId+Extension.swift"; sourceTree = "<group>"; };
+		95DAABA123838B910028544F /* AWSPredictionsPlugin+IdentifyBasicIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSPredictionsPlugin+IdentifyBasicIntegrationTests.swift"; sourceTree = "<group>"; };
+		95DAABA223838B920028544F /* AWSPredictionsPluginTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPredictionsPluginTestBase.swift; sourceTree = "<group>"; };
 		9D641B3534D2B17D4720921A /* Pods-HostApp-CoreMLPredictionsPluginIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-CoreMLPredictionsPluginIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-CoreMLPredictionsPluginIntegrationTests/Pods-HostApp-CoreMLPredictionsPluginIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		9DF157BEADB426098FC5AA8C /* Pods-AWSPredictionsPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPredictionsPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSPredictionsPlugin/Pods-AWSPredictionsPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		AE9BC9BF5E7E9728E854E8F8 /* Pods-HostApp-AWSPredictionsPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSPredictionsPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSPredictionsPluginIntegrationTests/Pods-HostApp-AWSPredictionsPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -232,7 +242,6 @@
 		B478F6B62374E08100C4F92B /* awsconfiguration.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		B49D1434237B665E00856777 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B49D1435237B665E00856777 /* AWSPredictionsPluginTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPredictionsPluginTests.swift; sourceTree = "<group>"; };
-		B4DFA66E237B577B0013E17B /* AWSPredictionsPluginIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPredictionsPluginIntegrationTests.swift; sourceTree = "<group>"; };
 		B4DFA670237B577B0013E17B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B4DFA675237B58900013E17B /* CoreMLInterpretTextOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLInterpretTextOperation.swift; sourceTree = "<group>"; };
 		B4DFA676237B58900013E17B /* CoreMLPredictionsPlugin+Configure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreMLPredictionsPlugin+Configure.swift"; sourceTree = "<group>"; };
@@ -362,7 +371,6 @@
 			isa = PBXGroup;
 			children = (
 				95DAAAE8237DFD180028544F /* AWSPollyOperation.swift */,
-				95DAAA31237B8ED30028544F /* AWSComprehendOperation.swift */,
 				B45B067B237F143C00DC9122 /* InterpretTextOperation.swift */,
 				95DAAA32237B8ED30028544F /* AWSIdentifyOperation.swift */,
 				95DAAA33237B8ED30028544F /* AWSTranslateOperation.swift */,
@@ -599,7 +607,8 @@
 		B4DFA66D237B577B0013E17B /* AWSPredictionsPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
-				B4DFA66E237B577B0013E17B /* AWSPredictionsPluginIntegrationTests.swift */,
+				95DAABA123838B910028544F /* AWSPredictionsPlugin+IdentifyBasicIntegrationTests.swift */,
+				95DAABA223838B920028544F /* AWSPredictionsPluginTestBase.swift */,
 				B4DFA66F237B577B0013E17B /* Resources */,
 			);
 			path = AWSPredictionsPluginIntegrationTests;
@@ -838,6 +847,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				95DAABA62383981F0028544F /* PBXTargetDependency */,
 				B478F8EB2375112E00C4F92B /* PBXTargetDependency */,
 			);
 			name = AWSPredictionsPluginIntegrationTests;
@@ -1572,7 +1582,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B4DFA671237B577B0013E17B /* AWSPredictionsPluginIntegrationTests.swift in Sources */,
+				95DAABA423838B920028544F /* AWSPredictionsPluginTestBase.swift in Sources */,
+				95DAABA323838B920028544F /* AWSPredictionsPlugin+IdentifyBasicIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1627,6 +1638,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		95DAABA62383981F0028544F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B478F5FA2374DBF400C4F92B /* AWSPredictionsPlugin */;
+			targetProxy = 95DAABA52383981F0028544F /* PBXContainerItemProxy */;
+		};
 		B478F6502374DCE700C4F92B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B478F5FA2374DBF400C4F92B /* AWSPredictionsPlugin */;

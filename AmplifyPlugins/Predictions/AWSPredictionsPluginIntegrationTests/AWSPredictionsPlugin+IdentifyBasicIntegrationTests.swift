@@ -20,10 +20,10 @@ class AWSPredictionsPluginIdentifyIntegrationTest: AWSPredictionsPluginTestBase 
     /// Then: The operation completes successfully
     func testIdentifyLabels() {
 
-        guard let image = UIImage(named: "testImage") else { return }
+        guard let image = getImageFromDir("testImage") else { return }
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Predictions.identify(type: .detectLabels,
+        let operation = Amplify.Predictions.identify(type: .detectLabels(.all),
                                                      image: image,
                                                      options: PredictionsIdentifyRequest.Options()) { event in
             switch event {
@@ -38,6 +38,15 @@ class AWSPredictionsPluginIdentifyIntegrationTest: AWSPredictionsPluginTestBase 
 
         XCTAssertNotNil(operation)
         waitForExpectations(timeout: networkTimeout)
+    }
+
+    func getImageFromDir(_ imageName: String) -> URL? {
+
+        if let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            let fileURL = documentsUrl.appendingPathComponent(imageName)
+            return fileURL
+        }
+        return nil
     }
 
 }
