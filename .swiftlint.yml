@@ -22,6 +22,7 @@ function_body_length:
 identifier_name:
   excluded:
     - id
+    - of
     - or
 line_length:
   warning: 120

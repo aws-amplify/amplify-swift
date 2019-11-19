@@ -24,7 +24,6 @@ public protocol PredictionsCategoryClientBehavior {
                  listener: PredictionsTranslateTextOperation.EventListener?,
                  options: PredictionsTranslateTextRequest.Options?) -> PredictionsTranslateTextOperation
 
-
     /// - Parameter textToSpeech: The text to be synthesized to audio
     /// - Parameter listener: Triggered when the event occurs
     /// - Parameter options: Parameters to specific plugin behavior

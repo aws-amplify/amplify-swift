@@ -170,6 +170,7 @@
 		B98E9D142372236300934B51 /* QueryPredicate+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */; };
 		FA0173352375F8A5005DDDFC /* LoggingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173342375F8A5005DDDFC /* LoggingError.swift */; };
 		FA0173372375FAA5005DDDFC /* HubError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173362375FAA5005DDDFC /* HubError.swift */; };
+		FA09337C23844E9F00C2FD5F /* GraphQLOperationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09337B23844E9F00C2FD5F /* GraphQLOperationRequest.swift */; };
 		FA09B92B2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92A2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift */; };
 		FA09B92D2321A27F000E064D /* CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92C2321A27F000E064D /* CategoryConfigurable.swift */; };
 		FA09B92F2321A2DE000E064D /* APICategory+CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92E2321A2DE000E064D /* APICategory+CategoryConfigurable.swift */; };
@@ -211,7 +212,6 @@
 		FA6BC86B235F57920001A882 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC86A235F57920001A882 /* APIError.swift */; };
 		FA6BC86D235F5AE30001A882 /* APICategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC86C235F5AE30001A882 /* APICategory+HubPayloadEventName.swift */; };
 		FA6BC872235F5BD60001A882 /* GraphQLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC871235F5BD60001A882 /* GraphQLOperation.swift */; };
-		FA6BC875235F5C270001A882 /* GraphQLOperationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC874235F5C270001A882 /* GraphQLOperationRequest.swift */; };
 		FA6BC87B235F5D240001A882 /* APICategoryGraphQLBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC87A235F5D240001A882 /* APICategoryGraphQLBehavior.swift */; };
 		FA6BC87D235F5D490001A882 /* APICategoryRESTBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC87C235F5D490001A882 /* APICategoryRESTBehavior.swift */; };
 		FA6BC87F235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC87E235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift */; };
@@ -767,6 +767,7 @@
 		F9667716F7B167C1C2DFD881 /* Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests/Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests.debug.xcconfig"; sourceTree = "<group>"; };
 		FA0173342375F8A5005DDDFC /* LoggingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingError.swift; sourceTree = "<group>"; };
 		FA0173362375FAA5005DDDFC /* HubError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubError.swift; sourceTree = "<group>"; };
+		FA09337B23844E9F00C2FD5F /* GraphQLOperationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLOperationRequest.swift; sourceTree = "<group>"; };
 		FA09B92A2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnalyticsCategory+CategoryConfigurable.swift"; sourceTree = "<group>"; };
 		FA09B92C2321A27F000E064D /* CategoryConfigurable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryConfigurable.swift; sourceTree = "<group>"; };
 		FA09B92E2321A2DE000E064D /* APICategory+CategoryConfigurable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+CategoryConfigurable.swift"; sourceTree = "<group>"; };
@@ -811,7 +812,6 @@
 		FA6BC86A235F57920001A882 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		FA6BC86C235F5AE30001A882 /* APICategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		FA6BC871235F5BD60001A882 /* GraphQLOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLOperation.swift; sourceTree = "<group>"; };
-		FA6BC874235F5C270001A882 /* GraphQLOperationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLOperationRequest.swift; sourceTree = "<group>"; };
 		FA6BC87A235F5D240001A882 /* APICategoryGraphQLBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APICategoryGraphQLBehavior.swift; sourceTree = "<group>"; };
 		FA6BC87C235F5D490001A882 /* APICategoryRESTBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICategoryRESTBehavior.swift; sourceTree = "<group>"; };
 		FA6BC87E235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICategoryInterceptorBehavior.swift; sourceTree = "<group>"; };
@@ -1709,7 +1709,7 @@
 		FA6BC876235F5C370001A882 /* Request */ = {
 			isa = PBXGroup;
 			children = (
-				FA6BC874235F5C270001A882 /* GraphQLOperationRequest.swift */,
+				FA09337B23844E9F00C2FD5F /* GraphQLOperationRequest.swift */,
 				2142099223721F4400FA140C /* GraphQLOperationType.swift */,
 				21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */,
 				2142099323721F4400FA140C /* RESTOperationType.swift */,
@@ -3266,6 +3266,7 @@
 				95DAAB28237E63370028544F /* Celebrity.swift in Sources */,
 				FA6BC87F235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift in Sources */,
 				95DAAB25237E63370028544F /* Entity.swift in Sources */,
+				FA09337C23844E9F00C2FD5F /* GraphQLOperationRequest.swift in Sources */,
 				FAC23545227A055200424678 /* AmplifyConfiguration.swift in Sources */,
 				95DAAB84237F13940028544F /* VoiceType.swift in Sources */,
 				2142099823721F4400FA140C /* RESTRequest.swift in Sources */,
@@ -3279,9 +3280,7 @@
 				95DAAB2F237E63370028544F /* LanguageType.swift in Sources */,
 				B4D3852E236C97360014653D /* PredictionsIdentifyOperation.swift in Sources */,
 				FA09B9412321BB78000E064D /* JSONValue.swift in Sources */,
-				FA6BC875235F5C270001A882 /* GraphQLOperationRequest.swift in Sources */,
 				95DAAB2E237E63370028544F /* AgeRange.swift in Sources */,
-				FA6BC875235F5C270001A882 /* GraphQLOperationRequest.swift in Sources */,
 				B4D3853A236C97360014653D /* PredictionsInterpretRequest.swift in Sources */,
 				2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */,
 				FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */,
