@@ -137,7 +137,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
     }
 
     func detectEntities(image: URL, onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
-        if let collectionId = predictionsConfig.identifyConfig?.collectionId {
+        if let collectionId = predictionsConfig.identify.identifyEntities?.collectionId {
             //call detect face from collection if collection id passed in
             return detectFacesFromCollection(image: image, collectionId: collectionId, onEvent: onEvent)
 
@@ -217,7 +217,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         rekognitionImage.bytes = imageData
         request.image = rekognitionImage
         request.collectionId = collectionId
-        request.maxFaces = predictionsConfig.identifyConfig?.maxEntities as NSNumber?
+        request.maxFaces = predictionsConfig.identify.identifyEntities?.maxEntities as NSNumber?
 
         awsRekognition.detectFacesFromCollection(request: request).continueWith { (task) -> Any? in
             guard task.error == nil else {

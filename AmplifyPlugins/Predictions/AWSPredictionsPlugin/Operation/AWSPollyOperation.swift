@@ -67,7 +67,7 @@ PredictionsTextToSpeechOperation {
         }
     }
 
-    private func reconcileVoiceId(voicePassedIn: VoiceType?, config: AWSPredictionsPluginConfiguration) -> AWSPollyVoiceId {
+    private func reconcileVoiceId(voicePassedIn: VoiceType?, config: PredictionsPluginConfiguration) -> AWSPollyVoiceId {
         //we return a default if what is passed in doesn't resolve properly to our enum and config was empty for some odd reason.
         let defaultVoiceId = AWSPollyVoiceId.ivy
 
@@ -76,7 +76,7 @@ PredictionsTextToSpeechOperation {
             return pollyVoiceId
         }
 
-        if let pollyVoiceIdFromConfigString = config.convertConfig?.voiceId {
+        if let pollyVoiceIdFromConfigString = config.convert.speechGenerator?.voiceID {
             let voiceType: VoiceType = .voice(pollyVoiceIdFromConfigString)
             let pollyVoiceIdFromConfig = AWSPollyVoiceId.from(voiceType: voiceType)
             return pollyVoiceIdFromConfig
