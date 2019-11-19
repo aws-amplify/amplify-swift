@@ -126,12 +126,13 @@ class SQLiteQueryTranslatorTests: XCTestCase {
         let statement = UpdateStatement(model: post)
 
         let expectedStatement = """
-        update Post set
-          "content" = ?
-          "createdAt" = ?
-          "draft" = ?
-          "rating" = ?
-          "title" = ?
+        update Post
+        set
+          "content" = ?,
+          "createdAt" = ?,
+          "draft" = ?,
+          "rating" = ?,
+          "title" = ?,
           "updatedAt" = ?
         where "id" = ?
         """

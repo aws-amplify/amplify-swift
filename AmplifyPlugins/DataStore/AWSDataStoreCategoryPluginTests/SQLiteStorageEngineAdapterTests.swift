@@ -39,7 +39,11 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
 
     // MARK: - Utilities
 
-    /// it should sort a `Model` collection by their dependency order
+    /// - Given: a list of `Model` types
+    /// - When:
+    ///   - the list is not in the correct order: `[Comment, Post]`
+    /// - Then:
+    ///   - check if `sortByDependencyOrder()` sorts the list to `[Post, Comment]`
     func testModelDependencySortOrder() {
         let models: [Model.Type] = [Comment.self, Post.self]
         let sorted = models.sortByDependencyOrder()
@@ -51,7 +55,11 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
 
     // MARK: - Operations
 
-    /// it should create a table, insert a row and select it
+    /// - Given: a list a `Post` instance
+    /// - When:
+    ///   - the `save(post)` is called
+    /// - Then:
+    ///   - call `query(Post)` to check if the model was correctly inserted
     func testInsertPost() {
         let expectation = self.expectation(
             description: "it should save and select a Post from the database")
@@ -65,9 +73,11 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
                     switch queryResult {
                     case .result(let posts):
                         XCTAssert(posts.count == 1)
-                        XCTAssert(posts.first!.id == post.id)
-                        XCTAssert(posts.first!.title == post.title)
-                        XCTAssert(posts.first!.content == post.content)
+                        if let post = posts.first {
+                            XCTAssert(post.id == post.id)
+                            XCTAssert(post.title == post.title)
+                            XCTAssert(post.content == post.content)
+                        }
                         expectation.fulfill()
                     case .error(let error):
                         XCTFail(String(describing: error))
@@ -83,6 +93,12 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
         wait(for: [expectation], timeout: 5)
     }
 
+    /// - Given: a list a `Post` instance
+    /// - When:
+    ///   - the `save(post)` is called
+    /// - Then:
+    ///   - call `query(Post, where: title == post.title)` to check
+    ///   if the model was correctly inserted using a predicate
     func testInsertPostAndSelectByTitle() {
         let expectation = self.expectation(
             description: "it should save and select a Post from the database")
@@ -97,13 +113,116 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
                     switch queryResult {
                     case .result(let posts):
                         XCTAssertEqual(posts.count, 1)
-                        XCTAssertEqual(posts.first!.id, post.id)
-                        XCTAssertEqual(posts.first!.title, post.title)
-                        XCTAssertEqual(posts.first!.content, post.content)
+                        if let post = posts.first {
+                            XCTAssert(post.id == post.id)
+                            XCTAssert(post.title == post.title)
+                            XCTAssert(post.content == post.content)
+                        }
                         expectation.fulfill()
                     case .error(let error):
                         XCTFail(String(describing: error))
                         expectation.fulfill()
+                    }
+                }
+            case .error(let error):
+                XCTFail(String(describing: error))
+                expectation.fulfill()
+            }
+        }
+
+        wait(for: [expectation], timeout: 5)
+    }
+
+    /// - Given: a list a `Post` instance
+    /// - When:
+    ///   - the `save(post)` is called
+    /// - Then:
+    ///   - call `save(post)` again with an updated title
+    ///   - check if the `query(Post)` returns only 1 post
+    ///   - the post has the updated title
+    func testInsertPostAndThenUpdateIt() {
+        let expectation = self.expectation(
+            description: "it should insert and update a Post")
+
+        func checkSavedPost(id: String) {
+            storageAdapter.query(Post.self) {
+                switch $0 {
+                case .result(let posts):
+                    XCTAssertEqual(posts.count, 1)
+                    if let post = posts.first {
+                        XCTAssertEqual(post.id, id)
+                        XCTAssertEqual(post.title, "title updated")
+                    }
+                    expectation.fulfill()
+                case .error(let error):
+                    XCTFail(String(describing: error))
+                    expectation.fulfill()
+                }
+            }
+        }
+
+        let post = Post(title: "title", content: "content")
+        storageAdapter.save(post) { insertResult in
+            switch insertResult {
+            case .result:
+                let updatedPost = Post(id: post.id,
+                                       title: "title updated",
+                                       content: "content")
+                storageAdapter.save(updatedPost) { updateResult in
+                    switch updateResult {
+                    case .result:
+                        checkSavedPost(id: updatedPost.id)
+                    case .error(let error):
+                        XCTFail(error.errorDescription)
+                    }
+                }
+            case .error(let error):
+                XCTFail(String(describing: error))
+                expectation.fulfill()
+            }
+        }
+
+        wait(for: [expectation], timeout: 5)
+    }
+
+    /// - Given: a list a `Post` instance
+    /// - When:
+    ///   - the `save(post)` is called
+    /// - Then:
+    ///   - call `delete(Post, id)` and check if `query(Post)` is empty
+    ///   - check if `storageAdapter.exists(Post, id)` returns `false`
+    func testInsertPostAndThenDeleteIt() {
+        let expectation = self.expectation(description: "it should insert and update a Post")
+
+        func checkDeletedPost(id: String) {
+            storageAdapter.query(Post.self) {
+                switch $0 {
+                case .result(let posts):
+                    XCTAssertEqual(posts.count, 0)
+                    do {
+                        let exists = try storageAdapter.exists(Post.self, withId: id)
+                        XCTAssertFalse(exists)
+                    } catch {
+                        XCTFail(String(describing: error))
+                    }
+                    expectation.fulfill()
+                case .error(let error):
+                    XCTFail(String(describing: error))
+                    expectation.fulfill()
+                }
+            }
+        }
+
+        let post = Post(title: "title", content: "content")
+        storageAdapter.save(post) { insertResult in
+            switch insertResult {
+            case .result:
+                storageAdapter.delete(Post.self, withId: post.id) {
+                    switch $0 {
+                    case .result:
+                        checkDeletedPost(id: post.id)
+                    case .error(let error):
+                        XCTFail(error.errorDescription)
                     }
                 }
             case .error(let error):

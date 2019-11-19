@@ -24,14 +24,17 @@ struct UpdateStatement: SQLStatement {
         let schema = modelType.schema
         let columns = updateColumns.map { $0.columnName() }
 
-        var statement = "update \(schema.name) set"
-        columns.forEach { column in
-            statement += "\n  \(column) = ?"
+        let columnsStatement = columns.map { column in
+            "  \(column) = ?"
         }
-        // TODO allow predicates for update?
-        statement += "\nwhere \(schema.primaryKey.columnName()) = ?"
 
-        return statement
+        // TODO add predicates to update
+        return """
+        update \(schema.name)
+        set
+        \(columnsStatement.joined(separator: ",\n"))
+        where \(schema.primaryKey.columnName()) = ?
+        """
     }
 
     var variables: [Binding?] {
