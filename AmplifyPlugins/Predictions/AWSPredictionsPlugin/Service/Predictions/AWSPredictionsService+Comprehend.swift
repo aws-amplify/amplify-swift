@@ -132,18 +132,19 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
             }
             var syntaxTokenResult = [SyntaxToken]()
             for syntax in syntaxTokens {
+                guard let comprehendPartOfSpeech = syntax.partOfSpeech else {
+                    continue
+                }
                 let beginOffSet = syntax.beginOffset?.intValue ?? 0
                 let endOffset = syntax.endOffset?.intValue ?? 0
                 let startIndex = text.index(text.startIndex, offsetBy: beginOffSet)
                 let endIndex = text.index(text.startIndex, offsetBy: endOffset)
                 let range = startIndex ..< endIndex
                 print("Input = \(syntax) text = \(text[range])")
-                var partOfSpeech: PartOfSpeech?
-                if let comprehendPartOfSpeech = syntax.partOfSpeech {
-                    let score = comprehendPartOfSpeech.score?.floatValue
-                    let speechType = comprehendPartOfSpeech.tag.getSpeechType()
-                    partOfSpeech = PartOfSpeech(tag: speechType, score: score)
-                }
+
+                let score = comprehendPartOfSpeech.score?.floatValue
+                let speechType = comprehendPartOfSpeech.tag.getSpeechType()
+                let partOfSpeech = PartOfSpeech(tag: speechType, score: score)
                 let syntaxToken = SyntaxToken(tokenId: syntax.tokenId?.intValue ?? 0,
                                               text: syntax.text ?? "",
                                               range: range,

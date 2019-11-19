@@ -29,6 +29,7 @@ class CoreMLNaturalLanguageAdapter: CoreMLNaturalLanguageBehavior {
                              options: options) { tag, tokenRange in
 
                                 if let tag = tag {
+                                    print(tag)
                                     let partOfSpeech = PartOfSpeech(tag: tag.getSpeechType(), score: 1)
                                     let stringPart = String(text[tokenRange])
                                     let syntaxToken = SyntaxToken(tokenId: tokenId,

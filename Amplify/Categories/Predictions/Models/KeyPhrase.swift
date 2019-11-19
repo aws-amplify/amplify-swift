@@ -7,9 +7,9 @@
 
 public struct KeyPhrase {
 
-    let score: Float?
-    let text: String
-    let range: Range<String.Index>
+    public let score: Float?
+    public let text: String
+    public let range: Range<String.Index>
 
     public init(text: String, range: Range<String.Index>, score: Float?) {
         self.text = text
