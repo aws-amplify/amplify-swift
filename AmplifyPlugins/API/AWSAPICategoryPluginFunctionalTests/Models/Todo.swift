@@ -64,6 +64,8 @@ class CreateTodoMutation {
         return ["input": input]
     }
 
+    static let decodePath = "createTodo"
+
     class Data: Decodable {
         var createTodo: Todo?
     }

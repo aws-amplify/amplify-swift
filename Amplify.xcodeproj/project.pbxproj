@@ -46,6 +46,9 @@
 		21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A3D236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift */; };
 		21687A41236371E1004A056E /* AnalyticsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A40236371E1004A056E /* AnalyticsError.swift */; };
 		217855C3237F84D700A30D19 /* RESTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217855C2237F84D700A30D19 /* RESTRequest.swift */; };
+		217856BB2383320900A30D19 /* GraphQLQueryType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217856BA2383320900A30D19 /* GraphQLQueryType.swift */; };
+		217856BE2383322700A30D19 /* GraphQLMutationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217856BD2383322700A30D19 /* GraphQLMutationType.swift */; };
+		217856C02383323100A30D19 /* GraphQLSubscriptionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217856BF2383323100A30D19 /* GraphQLSubscriptionType.swift */; };
 		21D1CE8C2334233F0003BAA8 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D1CE8B2334233F0003BAA8 /* AuthError.swift */; };
 		21D79FDA237617C60057D00D /* SubscriptionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FD9237617C60057D00D /* SubscriptionEvent.swift */; };
 		21D79FE12377BF4B0057D00D /* AuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FE02377BF4B0057D00D /* AuthProvider.swift */; };
@@ -518,6 +521,9 @@
 		21687A3D236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AnalyticsCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		21687A40236371E1004A056E /* AnalyticsError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsError.swift; sourceTree = "<group>"; };
 		217855C2237F84D700A30D19 /* RESTRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTRequest.swift; sourceTree = "<group>"; };
+		217856BA2383320900A30D19 /* GraphQLQueryType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLQueryType.swift; sourceTree = "<group>"; };
+		217856BD2383322700A30D19 /* GraphQLMutationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLMutationType.swift; sourceTree = "<group>"; };
+		217856BF2383323100A30D19 /* GraphQLSubscriptionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLSubscriptionType.swift; sourceTree = "<group>"; };
 		21D1CE8B2334233F0003BAA8 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
 		21D79FD9237617C60057D00D /* SubscriptionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionEvent.swift; sourceTree = "<group>"; };
 		21D79FE02377BF4B0057D00D /* AuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthProvider.swift; sourceTree = "<group>"; };
@@ -1090,6 +1096,16 @@
 			path = Error;
 			sourceTree = "<group>";
 		};
+		217856BC2383321200A30D19 /* GraphQL */ = {
+			isa = PBXGroup;
+			children = (
+				217856BA2383320900A30D19 /* GraphQLQueryType.swift */,
+				217856BD2383322700A30D19 /* GraphQLMutationType.swift */,
+				217856BF2383323100A30D19 /* GraphQLSubscriptionType.swift */,
+			);
+			path = GraphQL;
+			sourceTree = "<group>";
+		};
 		21FFF999230C96E0005878EA /* Operation */ = {
 			isa = PBXGroup;
 			children = (
@@ -1478,13 +1494,6 @@
 			path = AWSDataStoreCategoryPluginIntegrationTests;
 			sourceTree = "<group>";
 		};
-		B952181D237CD16200F53237 /* GraphQL */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = GraphQL;
-			sourceTree = "<group>";
-		};
 		B952182D237E21B900F53237 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -1528,9 +1537,6 @@
 		B9DD3F0B23552C4E00D62C65 /* DataStore */ = {
 			isa = PBXGroup;
 			children = (
-				B952181D237CD16200F53237 /* GraphQL */,
-				B92E03A62367CE7A006CEB8D /* Model */,
-				B98E9D042372236200934B51 /* Query */,
 				B92E03A12367CE79006CEB8D /* DataStoreCallback.swift */,
 				B92E03A42367CE7A006CEB8D /* DataStoreCategory.swift */,
 				B92E039E2367CE79006CEB8D /* DataStoreCategory+Behavior.swift */,
@@ -1539,6 +1545,9 @@
 				B92E03A32367CE79006CEB8D /* DataStoreCategoryConfiguration.swift */,
 				B92E039F2367CE79006CEB8D /* DataStoreCategoryPlugin.swift */,
 				B92E03A22367CE79006CEB8D /* DataStoreError.swift */,
+				217856BC2383321200A30D19 /* GraphQL */,
+				B92E03A62367CE7A006CEB8D /* Model */,
+				B98E9D042372236200934B51 /* Query */,
 			);
 			path = DataStore;
 			sourceTree = "<group>";
@@ -3333,7 +3342,7 @@
 				FAC23545227A055200424678 /* AmplifyConfiguration.swift in Sources */,
 				B4D38536236C97360014653D /* CallType.swift in Sources */,
 				95DAAB84237F13940028544F /* VoiceType.swift in Sources */,
-				2142099823721F4400FA140C /* RESTRequest.swift in Sources */,
+				2142099823721F4400FA140C /* RESTOperationRequest.swift in Sources */,
 				21FFF994230C96CB005878EA /* StoragePutDataOperation.swift in Sources */,
 				95DAAB30237E63370028544F /* IdentifyType.swift in Sources */,
 				21D79FE32377F4120057D00D /* SubscriptionConnectionState.swift in Sources */,
@@ -3351,6 +3360,7 @@
 				2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */,
 				FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */,
 				21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */,
+				217856BE2383322700A30D19 /* GraphQLMutationType.swift in Sources */,
 				FAC428A0235F7F980000F221 /* APICategory+RESTBehavior.swift in Sources */,
 				95DAAB46237E639E0028544F /* IdentifyTextResult.swift in Sources */,
 				95DAAB22237E63370028544F /* SpeechType.swift in Sources */,
@@ -3396,6 +3406,7 @@
 				FAC23543227A055200424678 /* Category+Configuration.swift in Sources */,
 				FA09B9452322C9E8000E064D /* AnalyticsCategoryConfiguration.swift in Sources */,
 				B4D3852F236C97360014653D /* PredictionsTranslateTextOperation.swift in Sources */,
+				217856BB2383320900A30D19 /* GraphQLQueryType.swift in Sources */,
 				FA09B9472322CBA7000E064D /* APICategoryConfiguration.swift in Sources */,
 				21FFF995230C96CB005878EA /* StorageListOperation.swift in Sources */,
 				95DAAB33237E63370028544F /* KeyPhrase.swift in Sources */,
@@ -3483,6 +3494,7 @@
 				95DAAB36237E63370028544F /* Selection.swift in Sources */,
 				FAC0A2AD22B43FE700B50912 /* HubCategory+ClientBehavior.swift in Sources */,
 				FAC23523227A053D00424678 /* LoggingCategoryPlugin.swift in Sources */,
+				217856C02383323100A30D19 /* GraphQLSubscriptionType.swift in Sources */,
 				FAC23527227A053D00424678 /* LoggingCategoryClientBehavior.swift in Sources */,
 				FA09B92B2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift in Sources */,
 				2144226E234BDE23009357F7 /* StorageUploadFileOperation.swift in Sources */,

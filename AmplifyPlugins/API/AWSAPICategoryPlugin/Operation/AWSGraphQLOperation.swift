@@ -67,7 +67,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
 
         // Prepare request payload
         let queryDocument = GraphQLOperationRequestUtils.getQueryDocument(document: request.document,
-                                                                 variables: request.variables)
+                                                                           variables: request.variables)
         let requestPayload: Data
         do {
             requestPayload = try JSONSerialization.data(withJSONObject: queryDocument)

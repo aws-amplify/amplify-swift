@@ -22,6 +22,30 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         onComplete()
     }
 
+    func query<M>(from modelType: M.Type,
+                  byId id: String,
+                  listener: GraphQLOperation<M?>.EventListener?) -> GraphQLOperation<M?> {
+        fatalError("Not yet implemented")
+    }
+
+    func query<M>(from modelType: M.Type,
+                  where predicate: QueryPredicate?,
+                  listener: GraphQLOperation<[M]>.EventListener?) -> GraphQLOperation<[M]> {
+        fatalError("Not yet implemented")
+    }
+
+    func mutate<M>(of model: M,
+                   type: GraphQLMutationType,
+                   listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M> {
+        fatalError("Not yet implemented")
+    }
+
+    func subscribe<M>(from modelType: M.Type,
+                      type: GraphQLSubscriptionType,
+                      listener: GraphQLSubscriptionOperation<M>.EventListener?) -> GraphQLSubscriptionOperation<M> {
+        fatalError("Not yet implemented")
+    }
+
     func mutate<R>(request: GraphQLRequest<R>,
                    listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
 

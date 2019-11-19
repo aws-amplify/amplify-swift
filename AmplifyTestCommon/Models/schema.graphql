@@ -2,16 +2,17 @@ type Post @model {
     id: ID!
     title: String!
     content: String!
-    createdAt: AWSDate!
-    updatedAt: AWSDate
+    createdAt: AWSDateTime!
+    updatedAt: AWSDateTime
     draft: Boolean
-    comments: [Comment] @connected(name: "PostComment")
+    rating: Float
+    comments: [Comment] @connection(name: "PostComment")
 }
 
 type Comment @model {
     id: ID!
     content: String!
-    createdAt: AWSDate!
-    post: Post @connected(name: "PostComment")
+    createdAt: AWSDateTime!
+    post: Post @connection(name: "PostComment")
 }
 

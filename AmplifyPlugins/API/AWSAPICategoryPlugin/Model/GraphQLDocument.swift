@@ -56,6 +56,9 @@ public protocol GraphQLDocument {
     /// The variables that will be passed to the GraphQL endpoint when submiting
     /// the document content return by `stringValue`.
     var variables: [String: Any] { get }
+
+    /// The path to the object to be decoded to the `M` Model.
+    var decodePath: String { get }
 }
 
 extension GraphQLDocument {

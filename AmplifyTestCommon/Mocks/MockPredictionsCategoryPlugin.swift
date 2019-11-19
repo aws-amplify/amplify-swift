@@ -11,7 +11,6 @@ import Foundation
 
 class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin {
 
-
     func configure(using configuration: Any) throws {
         notify()
     }
@@ -30,7 +29,13 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
 
     }
 
-    func identify(type: IdentifyType,
+    func convert(textToSpeech: String,
+                 options: PredictionsTextToSpeechRequest.Options?,
+                 listener: ((AsyncEvent<Void, TextToSpeechResult, PredictionsError>) -> Void)?) -> PredictionsTextToSpeechOperation {
+        fatalError("Not yet implemented")
+    }
+
+    func identify(type: IdentifyAction,
                   image: URL,
                   options: PredictionsIdentifyRequest.Options?,
                   listener: ((AsyncEvent<Void, IdentifyResult, PredictionsError>) -> Void)?)

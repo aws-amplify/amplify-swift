@@ -20,13 +20,20 @@ public struct GraphQLRequest<R: Decodable> {
     /// Type to decode the graphql response data object to
     public let responseType: R.Type
 
+    /// The path to decode to `responseType`, delimited by `.`.
+    /// For example, "listTodos.item" will traverse to the object at `listTodos`, and decode the object at `items` to
+    /// the `responseType`. The `responseType` should be `[Todo]`.
+    public let decodePath: String?
+
     public init(apiName: String? = nil,
                 document: String,
                 variables: [String: Any]? = nil,
-                responseType: R.Type) {
+                responseType: R.Type,
+                decodePath: String? = nil) {
         self.apiName = apiName
         self.document = document
         self.variables = variables
         self.responseType = responseType
+        self.decodePath = decodePath
     }
 }

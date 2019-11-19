@@ -27,6 +27,7 @@
 		217856AE23810E9F00A30D19 /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217856AC23810E9800A30D19 /* Todo.swift */; };
 		217856B123810EC400A30D19 /* AWSMobileClientError+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217856AF23810EBD00A30D19 /* AWSMobileClientError+Message.swift */; };
 		217856B72381F19400A30D19 /* AWSAPICategoryPluginEndpointType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217856B62381F19300A30D19 /* AWSAPICategoryPluginEndpointType.swift */; };
+		217856C22383339D00A30D19 /* AWSAPICategoryPluginGraphQLModelBasedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217856C12383339D00A30D19 /* AWSAPICategoryPluginGraphQLModelBasedTests.swift */; };
 		21D7A0DF237B54D90057D00D /* AWSGraphQLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A08D237B54D90057D00D /* AWSGraphQLOperation.swift */; };
 		21D7A0E0237B54D90057D00D /* AWSSubscriptionGraphQLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A08E237B54D90057D00D /* AWSSubscriptionGraphQLOperation.swift */; };
 		21D7A0E1237B54D90057D00D /* AWSRESTOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A08F237B54D90057D00D /* AWSRESTOperation.swift */; };
@@ -234,6 +235,7 @@
 		217856AC23810E9800A30D19 /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
 		217856AF23810EBD00A30D19 /* AWSMobileClientError+Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSMobileClientError+Message.swift"; sourceTree = "<group>"; };
 		217856B62381F19300A30D19 /* AWSAPICategoryPluginEndpointType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginEndpointType.swift; sourceTree = "<group>"; };
+		217856C12383339D00A30D19 /* AWSAPICategoryPluginGraphQLModelBasedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginGraphQLModelBasedTests.swift; sourceTree = "<group>"; };
 		21D7A08D237B54D90057D00D /* AWSGraphQLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSGraphQLOperation.swift; sourceTree = "<group>"; };
 		21D7A08E237B54D90057D00D /* AWSSubscriptionGraphQLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSSubscriptionGraphQLOperation.swift; sourceTree = "<group>"; };
 		21D7A08F237B54D90057D00D /* AWSRESTOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSRESTOperation.swift; sourceTree = "<group>"; };
@@ -515,6 +517,7 @@
 			children = (
 				217856712380C73600A30D19 /* AWSAPICategoryPluginFunctionalTestBase.swift */,
 				B4DFA609237A61D00013E17B /* AWSAPICategoryPluginGetTests.swift */,
+				217856C12383339D00A30D19 /* AWSAPICategoryPluginGraphQLModelBasedTests.swift */,
 				B4DFA603237A61D00013E17B /* AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.swift */,
 				B4DFA604237A61D00013E17B /* BlogPostCommentGraphQLWithAPIKeyTests.swift */,
 				B4DFA5FC237A61D00013E17B /* Configuration */,
@@ -1627,6 +1630,7 @@
 				217856942380CECA00A30D19 /* BlogPostComment.swift in Sources */,
 				217856972380CF0500A30D19 /* IntegrationTestConfiguration.swift in Sources */,
 				217856962380CEEA00A30D19 /* Extension+AWSMobileClientError.swift in Sources */,
+				217856C22383339D00A30D19 /* AWSAPICategoryPluginGraphQLModelBasedTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1678,7 +1682,7 @@
 				21D7A0E2237B54D90057D00D /* AWSAPIOperation+APIOperation.swift in Sources */,
 				21D7A0F3237B54D90057D00D /* AppSyncConnectionProvider.swift in Sources */,
 				B9FB05E823821A7500DE1FD4 /* GraphQLRequest+Model.swift in Sources */,
-				21D7A10D237B54D90057D00D /* RESTRequestUtils.swift in Sources */,
+				21D7A10D237B54D90057D00D /* RESTOperationRequestUtils.swift in Sources */,
 				21D7A119237B54D90057D00D /* IAMURLRequestInterceptor.swift in Sources */,
 				21D7A114237B54D90057D00D /* GraphQLOperationRequest+Validate.swift in Sources */,
 				21D7A0E3237B54D90057D00D /* AWSGraphQLOperation+APIOperation.swift in Sources */,

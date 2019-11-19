@@ -87,7 +87,8 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: XCTestCase {
                                      variables: CreateTodoMutation.variables(id: expectedId,
                                                                              name: expectedName,
                                                                              description: expectedDescription),
-                                     responseType: CreateTodoMutation.Data.self)
+                                     responseType: Todo?.self,
+                                     decodePath: CreateTodoMutation.decodePath)
 
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
@@ -96,7 +97,8 @@ class AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests: XCTestCase {
                     XCTFail("Missing successful response")
                     return
                 }
-                guard let todo = data.createTodo else {
+
+                guard let todo = data else {
                     XCTFail("Missing Todo")
                     return
                 }

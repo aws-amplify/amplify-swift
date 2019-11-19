@@ -72,9 +72,9 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
 
     /// Given: A valid graphql endpoint with invalid API Key
     /// When: Call mutate API
-    /// Then: The operation completes successfully with no data and error containing Authentication error
+    /// Then: The operation fails with HttpStatus error containing Authentication error
     func testCreateBlogMutationWithInvalidAPIKey() {
-        let completeInvoked = expectation(description: "request completed")
+        let failedInvoked = expectation(description: "request failed")
         let expectedId = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let request = GraphQLRequest(apiName: BlogPostCommentGraphQLWithAPIKeyTests.blogPostGraphQLWithInvalidAPIKey,
@@ -85,20 +85,15 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
             case .completed(let graphQLResponse):
-                guard case let .error(errors) = graphQLResponse else {
-                    XCTFail("Missing error response")
-                    return
-                }
-
-                guard let error = errors.first else {
-                    XCTFail("Missing error")
-                    return
-                }
-
-                XCTAssertEqual(error.message, "You are not authorized to make this call.")
-                completeInvoked.fulfill()
+                XCTFail("Unexpected .completed event: \(graphQLResponse)")
             case .failed(let error):
-                XCTFail("Unexpected .failed event: \(error)")
+                guard case let .httpStatusError(status, headers, _, _) = error else {
+                    XCTFail("Should be Http Status error")
+                    return
+                }
+
+                XCTAssertEqual(status, 401)
+                failedInvoked.fulfill()
             default:
                 XCTFail("Unexpected event: \(event)")
             }

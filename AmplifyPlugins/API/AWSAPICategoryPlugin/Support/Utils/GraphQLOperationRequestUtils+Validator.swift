@@ -18,7 +18,10 @@ extension GraphQLOperationRequestUtils {
 
     static func validateVariables(_ variables: [String: Any]?) throws {
         if let variables = variables {
-            // TODO: implement
+
+            if !JSONSerialization.isValidJSONObject(variables) {
+                throw APIError.operationError("Variables is a not a valid JSON object", "")
+            }
         }
     }
 }

@@ -8,6 +8,23 @@
 /// Behavior of the API category related to GraphQL operations
 public protocol APICategoryGraphQLBehavior {
 
+
+    func query<M: Model>(from modelType: M.Type,
+                         byId id: String,
+                         listener: GraphQLOperation<M?>.EventListener?) -> GraphQLOperation<M?>
+
+    func query<M: Model>(from modelType: M.Type,
+                         where predicate: QueryPredicate?,
+                         listener: GraphQLOperation<[M]>.EventListener?) -> GraphQLOperation<[M]>
+
+    func mutate<M: Model>(of model: M,
+                          type: GraphQLMutationType,
+                          listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M>
+
+    func subscribe<M: Model>(from modelType: M.Type,
+                             type: GraphQLSubscriptionType,
+                             listener: GraphQLSubscriptionOperation<M>.EventListener?) -> GraphQLSubscriptionOperation<M>
+
     /// Perform a GraphQL query operation against a previously configured API. This operation
     /// will be asynchronous, with the callback accessible both locally and via the Hub.
     ///
@@ -35,3 +52,6 @@ public protocol APICategoryGraphQLBehavior {
     func subscribe<R: Decodable>(request: GraphQLRequest<R>,
                                  listener: GraphQLSubscriptionOperation<R>.EventListener?) -> GraphQLSubscriptionOperation<R>
 }
+
+
+

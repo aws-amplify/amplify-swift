@@ -13,6 +13,7 @@ struct GraphQLResponseDecoder {
     // TODO: code clean up - break the code in these case statements into separate methods
     static func decode<R: Decodable>(graphQLServiceResponse: AWSAppSyncGraphQLResponse,
                                      responseType: R.Type,
+                                     decodePath: String?,
                                      rawGraphQLResponse: Data) throws -> GraphQLResponse<R> {
 
         switch (graphQLServiceResponse.data, graphQLServiceResponse.errors) {
@@ -27,7 +28,7 @@ struct GraphQLResponseDecoder {
 
         case (.some(let data), .none):
             do {
-                let responseData = try decode(graphQLData: data, into: responseType)
+                let responseData = try decode(graphQLData: data, into: responseType, at: decodePath)
                 return GraphQLResponse<R>.success(responseData)
             } catch let decodingError as DecodingError {
                 let error = APIError(error: decodingError)
@@ -46,7 +47,7 @@ struct GraphQLResponseDecoder {
 
         case (.some(let data), .some(let errors)):
             do {
-                let responseData = try decode(graphQLData: data, into: responseType)
+                let responseData = try decode(graphQLData: data, into: responseType, at: decodePath)
                 let responseErrors = try decodeErrors(graphQLErrors: errors)
                 return GraphQLResponse<R>.partial(responseData, responseErrors)
             } catch let decodingError as DecodingError {
@@ -121,8 +122,42 @@ struct GraphQLResponseDecoder {
     }
 
     private static func decode<R: Decodable>(graphQLData: [String: JSONValue],
-                                             into responseType: R.Type) throws -> R {
-        let serializedJSON = try JSONEncoder().encode(graphQLData)
+                                             into responseType: R.Type,
+                                             at decodePath: String?) throws -> R {
+
+        let serializedJSON: Data
+
+        if let decodePath = decodePath {
+            var keys = decodePath.components(separatedBy: ".")
+
+            // Process the first key
+            guard let firstKey = keys.first else {
+                throw APIError.operationError(
+                    "The decode path was passed in: \(decodePath), but could not find the first key",
+                    "Pass in a decode path like 'getTodo' or 'listTodos.items'",
+                    nil)
+            }
+
+            var data = graphQLData[firstKey] // retrieve the value at the first key
+
+            // Continue traversing if there are more than one key in the decode path
+            if keys.count > 1 {
+                keys.remove(at: 0) // remove the first key after since we have used it already
+
+                for key in keys {
+                    // For each subsequential key, make sure that it is an object, then get the value for that `key`
+                    guard case let .object(dataObject) = data else {
+                        throw APIError.operationError("Cannot decode at \(key), data is not object: \(data)", "", nil)
+                    }
+                    var value = dataObject[key]
+                    data = value
+                }
+            }
+
+            serializedJSON = try JSONEncoder().encode(data)
+        } else {
+            serializedJSON = try JSONEncoder().encode(graphQLData)
+        }
 
         if responseType == String.self {
             guard let responseString = String(data: serializedJSON, encoding: .utf8) else {
@@ -136,7 +171,9 @@ struct GraphQLResponseDecoder {
             return response
         }
 
-        return try JSONDecoder().decode(responseType, from: serializedJSON)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(DateFormatter.iso8601Full)
+        return try decoder.decode(responseType, from: serializedJSON)
     }
 
     private static func decodeErrors(graphQLErrors: [JSONValue]) throws -> [GraphQLError] {
@@ -160,3 +197,5 @@ struct GraphQLResponseDecoder {
         return try JSONDecoder().decode(GraphQLError.self, from: serializedJSON)
     }
 }
+
+

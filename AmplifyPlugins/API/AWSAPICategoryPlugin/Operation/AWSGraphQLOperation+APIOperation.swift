@@ -80,6 +80,7 @@ extension AWSGraphQLOperation: APIOperation {
 
             let graphQLResponse = try GraphQLResponseDecoder.decode(graphQLServiceResponse: graphQLServiceResponse,
                                                                     responseType: request.responseType,
+                                                                    decodePath: request.decodePath,
                                                                     rawGraphQLResponse: graphQLResponseData)
 
             dispatch(event: .completed(graphQLResponse))

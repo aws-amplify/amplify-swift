@@ -119,6 +119,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
                     let graphQLResponse = try GraphQLResponseDecoder.decode(
                         graphQLServiceResponse: graphQLServiceResponse,
                         responseType: request.responseType,
+                        decodePath: request.decodePath,
                         rawGraphQLResponse: graphQLResponseData)
                     dispatch(event: .inProcess(.data(graphQLResponse)))
                 } catch {

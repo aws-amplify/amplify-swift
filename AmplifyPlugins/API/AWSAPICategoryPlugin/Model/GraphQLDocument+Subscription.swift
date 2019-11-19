@@ -8,13 +8,6 @@
 import Amplify
 import Foundation
 
-/// Defines the type of a GraphQL subscription.
-public enum GraphQLSubscriptionType: String {
-    case onCreate
-    case onDelete
-    case onUpdate
-}
-
 /// A concrete implementation of `GraphQLDocument` that represents a subscription operation.
 /// Subscriptions are triggered when specific operations happen on the defined `Model`.
 /// These operations are defined by `GraphQLSubscriptionType`.
@@ -31,6 +24,10 @@ public struct GraphQLSubscription<M: Model>: GraphQLDocument {
 
     public var name: String {
         subscriptionType.rawValue + modelType.schema.graphQLName
+    }
+
+    public var decodePath: String {
+        name
     }
 
     public var stringValue: String {
