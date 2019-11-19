@@ -51,7 +51,7 @@ class InterpretBasicIntegrationTests: AWSPredictionsPluginTestBase {
     ///
     func testInterpretTextOffline() {
         let interpretInvoked = expectation(description: "Interpret invoked")
-        let options = PredictionsInterpretRequest.Options(callType: .offline, pluginOptions: nil)
+        let options = PredictionsInterpretRequest.Options(defaultNetworkPolicy: .offline, pluginOptions: nil)
         let operation = Amplify.Predictions.interpret(text: "Hello there how are you?", options: options) { event in
             switch event {
             case .completed(let result):
