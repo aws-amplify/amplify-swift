@@ -29,8 +29,8 @@ class IdentifyMultiService: MultiServiceBehavior {
 
     func fetchOnlineResult(callback: @escaping IdentifyEventHandler) {
         guard let onlineService = predictionsService else {
-            let message = PredictionsServiceErrorMessage.onlineIdentifyServiceNotAvailable.errorDescription
-            let recoveryMessage = PredictionsServiceErrorMessage.onlineIdentifyServiceNotAvailable.recoverySuggestion
+            let message = IdentifyMultiServiceErrorMessage.onlineIdentifyServiceNotAvailable.errorDescription
+            let recoveryMessage = IdentifyMultiServiceErrorMessage.onlineIdentifyServiceNotAvailable.recoverySuggestion
             let predictionError = PredictionsError.service(message, recoveryMessage, nil)
             callback(.failed(predictionError))
             return
@@ -41,8 +41,8 @@ class IdentifyMultiService: MultiServiceBehavior {
             onlineService.detectCelebrities(image: request.image, onEvent: callback)
         case .detectText(let formatType):
             onlineService.detectText(image: request.image, format: formatType, onEvent: callback)
-        case .detectLabels:
-            onlineService.detectLabels(image: request.image, onEvent: callback)
+        case .detectLabels(let labelType):
+            onlineService.detectLabels(image: request.image, type: labelType, onEvent: callback)
         case .detectEntities:
             onlineService.detectEntities(image: request.image, onEvent: callback)
         }
@@ -50,8 +50,8 @@ class IdentifyMultiService: MultiServiceBehavior {
 
     func fetchOfflineResult(callback: @escaping IdentifyEventHandler) {
         guard let offlineService = coreMLService else {
-            let message = PredictionsServiceErrorMessage.offlineIdentifyServiceNotAvailable.errorDescription
-            let recoveryMessage = PredictionsServiceErrorMessage.offlineIdentifyServiceNotAvailable.recoverySuggestion
+            let message = IdentifyMultiServiceErrorMessage.offlineIdentifyServiceNotAvailable.errorDescription
+            let recoveryMessage = IdentifyMultiServiceErrorMessage.offlineIdentifyServiceNotAvailable.recoverySuggestion
             let predictionError = PredictionsError.service(message, recoveryMessage, nil)
             callback(.failed(predictionError))
             return
