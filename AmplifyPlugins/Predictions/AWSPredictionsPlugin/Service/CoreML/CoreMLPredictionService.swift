@@ -19,16 +19,16 @@ class CoreMLPredictionService: CoreMLPredictionBehavior {
     }
 
     func comprehend(text: String, onEvent: @escaping InterpretTextEventHandler) {
-        _  = coreMLPlugin.interpret(text: text,
-                                   options: PredictionsInterpretRequest.Options()) { event in
-                                    switch event {
-                                    case .completed(let result):
-                                        onEvent(.completed(result))
-                                    case .failed(let error):
-                                        onEvent(.failed(error))
-                                    default:
-                                        break
-                                    }
+        _ = coreMLPlugin.interpret(text: text,
+                                    options: PredictionsInterpretRequest.Options()) { event in
+                                        switch event {
+                                        case .completed(let result):
+                                            onEvent(.completed(result))
+                                        case .failed(let error):
+                                            onEvent(.failed(error))
+                                        default:
+                                            break
+                                        }
         }
     }
 
