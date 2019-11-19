@@ -7,7 +7,7 @@
 
 public enum IdentifyAction {
     case detectCelebrity
-    case detectLabels(LabelType)
+//    case detectLabels(LabelType)
     case detectEntities
     case detectText(TextFormatType)
 }
