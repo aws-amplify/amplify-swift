@@ -44,7 +44,7 @@ extension AWSPredictionsService: AWSTextractServiceBehaviour {
         awsTextract.analyzeDocument(request: request).continueWith { (task) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
-                let predictionsErrorString = PredictionsErrorHelper.mapTextractError(error)
+                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                 onEvent(.failed(
                     .network(predictionsErrorString.errorDescription,
                                   predictionsErrorString.recoverySuggestion)))

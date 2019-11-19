@@ -91,7 +91,9 @@ extension AWSPredictionsPlugin {
 
             let config = AWSPredictionsPluginConfiguration(identifyConfig: identifyConfig,
                                                            interpretConfig: interpretConfig,
-                                                           convertConfig: convertConfig, defaultProjectRegion: defaultProjectRegion)
+                                                           convertConfig: convertConfig,
+                                                           defaultProjectRegion: defaultProjectRegion)
+
             return config
     }
 

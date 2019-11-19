@@ -24,15 +24,15 @@ class InterpretTextMultiService: MultiServiceBehavior {
 
     func fetchOnlineResult(callback: @escaping InterpretTextEventHandler) {
         guard let onlineService = predictionsService else {
-            let message = PredictionsServiceErrorMessage.onlineInterpretServiceNotAvailable.errorDescription
-            let recoveryMessage = PredictionsServiceErrorMessage.onlineInterpretServiceNotAvailable.recoverySuggestion
+            let message = CoreMLInterpretErrorMessage.onlineInterpretServiceNotAvailable.errorDescription
+            let recoveryMessage = CoreMLInterpretErrorMessage.onlineInterpretServiceNotAvailable.recoverySuggestion
             let predictionError = PredictionsError.service(message, recoveryMessage, nil)
             callback(.failed(predictionError))
             return
         }
         guard let text = textToInterpret else {
-            let message = PredictionsServiceErrorMessage.textNotFoundToInterpret.errorDescription
-            let recoveryMessage = PredictionsServiceErrorMessage.textNotFoundToInterpret.recoverySuggestion
+            let message = CoreMLInterpretErrorMessage.textNotFoundToInterpret.errorDescription
+            let recoveryMessage = CoreMLInterpretErrorMessage.textNotFoundToInterpret.recoverySuggestion
             let predictionError = PredictionsError.service(message, recoveryMessage, nil)
             callback(.failed(predictionError))
             return
@@ -42,15 +42,15 @@ class InterpretTextMultiService: MultiServiceBehavior {
 
     func fetchOfflineResult(callback: @escaping InterpretTextEventHandler) {
         guard let offlineService = coreMLService else {
-            let message = PredictionsServiceErrorMessage.offlineInterpretServiceNotAvailable.errorDescription
-            let recoveryMessage = PredictionsServiceErrorMessage.offlineInterpretServiceNotAvailable.recoverySuggestion
+            let message = CoreMLInterpretErrorMessage.offlineInterpretServiceNotAvailable.errorDescription
+            let recoveryMessage = CoreMLInterpretErrorMessage.offlineInterpretServiceNotAvailable.recoverySuggestion
             let predictionError = PredictionsError.service(message, recoveryMessage, nil)
             callback(.failed(predictionError))
             return
         }
         guard let text = textToInterpret else {
-            let message = PredictionsServiceErrorMessage.textNotFoundToInterpret.errorDescription
-            let recoveryMessage = PredictionsServiceErrorMessage.textNotFoundToInterpret.recoverySuggestion
+            let message = CoreMLInterpretErrorMessage.textNotFoundToInterpret.errorDescription
+            let recoveryMessage = CoreMLInterpretErrorMessage.textNotFoundToInterpret.recoverySuggestion
             let predictionError = PredictionsError.service(message, recoveryMessage, nil)
             callback(.failed(predictionError))
             return

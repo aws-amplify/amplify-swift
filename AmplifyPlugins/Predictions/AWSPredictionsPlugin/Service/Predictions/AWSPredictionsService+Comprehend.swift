@@ -36,15 +36,16 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
 
         awsComprehend.detectLanguage(request: detectLanguage).continueWith { (task) -> Any? in
             if let languageError = task.error {
-                let networkError = PredictionsError.network(languageError.localizedDescription,
-                languageError.localizedDescription)
-                completionHandler(.failed(networkError))
+                let error = languageError as NSError
+                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
+                completionHandler(.failed(.network(predictionsErrorString.errorDescription,
+                                  predictionsErrorString.recoverySuggestion)))
                 return nil
             }
 
             guard let result = task.result else {
-                let errorDescription = PredictionsServiceErrorMessage.noLanguageFound.errorDescription
-                let recoverySuggestion = PredictionsServiceErrorMessage.noLanguageFound.recoverySuggestion
+                let errorDescription = AWSComprehendErrorMessage.noLanguageFound.errorDescription
+                let recoverySuggestion = AWSComprehendErrorMessage.noLanguageFound.recoverySuggestion
                 let unknownError = PredictionsError.unknown(errorDescription, recoverySuggestion)
                 completionHandler(.failed(unknownError))
                 return nil
@@ -52,9 +53,8 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
 
             guard let  dominantLanguage = result.languages?.getDominantLanguage(),
                 let dominantLanguageCode = dominantLanguage.languageCode else {
-
-                    let errorDescription = PredictionsServiceErrorMessage.dominantLanguageNotDetermined.errorDescription
-                    let recoverySuggestion = PredictionsServiceErrorMessage.dominantLanguageNotDetermined.recoverySuggestion
+                    let errorDescription = AWSComprehendErrorMessage.dominantLanguageNotDetermined.errorDescription
+                    let recoverySuggestion = AWSComprehendErrorMessage.dominantLanguageNotDetermined.recoverySuggestion
                     let unknownError = PredictionsError.unknown(errorDescription, recoverySuggestion)
                     completionHandler(.failed(unknownError))
                     return nil

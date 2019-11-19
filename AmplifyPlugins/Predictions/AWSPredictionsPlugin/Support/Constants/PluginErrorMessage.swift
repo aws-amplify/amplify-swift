@@ -17,7 +17,7 @@ struct PluginErrorMessage {
 
     static let configurationObjectExpected: PluginErrorString = (
         "Configuration was not a dictionary literal",
-        "Make sure the value for the plugin is a dictionary literal with keys 'Bucket' and 'Region'")
+        "Make sure the value for the plugin is a dictionary literal with keys 'identify', 'convert' and 'interpret'")
 
     static let missingCollectionId: PluginErrorString = (
         "The CollectionId is missing from the configuration",
@@ -29,7 +29,7 @@ struct PluginErrorMessage {
 
     static let emptyCollection: PluginErrorString = (
         "The collection value is empty",
-        "Add the collection as the value to the 'CollectionId' key in the plugin configuration")
+        "Add the collection as the value to the 'collectionId' key in the plugin configuration")
 
     static let missingRegion: PluginErrorString = (
         "The 'Region' key is missing from the configuration",
