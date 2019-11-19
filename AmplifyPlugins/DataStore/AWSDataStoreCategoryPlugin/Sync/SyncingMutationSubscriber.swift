@@ -22,8 +22,8 @@ class SyncEngineMutationSubscriber {
 
     // MARK: - Sync
 
-    private func syncToCloud<M: Model>(model: M) -> Future<String, DataStoreError> {
-        print("Syncing to cloud: \(model)")
+    private func syncToCloud(mutationEvent: MutationEvent) -> Future<String, DataStoreError> {
+        print("Syncing to cloud: \(mutationEvent)")
         return Future { $0(.success("Synced")) }
 //        let modelType = type(of: model)
 //        let schema = modelType.schema
@@ -51,6 +51,27 @@ extension SyncEngineMutationSubscriber: Subscriber {
     /// Receives one input event and submits it for syncing. Once its processing is complete, requests a new event from
     /// the subscription
     func receive(_ input: MutationEvent) -> Subscribers.Demand {
+
+        // The `sink` completion handlers below must hold onto this reference, or else Combine cancels it when the
+        // method returns. To prevent retains, be sure to set the subscription to `nil` inside each of the sink
+        // `receive` events
+        var syncSubscription: AnyCancellable?
+
+        syncSubscription = syncToCloud(mutationEvent: input).sink(
+            receiveCompletion: { completion in
+                print("Subscription received completion: \(completion)")
+                syncSubscription?.cancel()
+                syncSubscription = nil
+        }, receiveValue: { value in
+            print("Subscription received value: \(value)")
+            self.subscription?.request(.max(1))
+            syncSubscription?.cancel()
+            syncSubscription = nil
+        })
+
+        // Return `.none` from this method, because we don't want to request a new input until after we've fully
+        // resolved the current one. That resolution may include network traffic, conflict resolution, and error
+        // retries
         return .none
     }
 

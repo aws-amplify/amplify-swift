@@ -11,12 +11,15 @@ import Foundation
 
 final class StorageEngine: StorageEngineBehavior {
 
-    let adapter: StorageEngineAdapter
-    let syncEngine: CloudSyncEngineBehavior?
+    private let adapter: StorageEngineAdapter
 
-    public init(adapter: StorageEngineAdapter,
-                syncEngine: CloudSyncEngineBehavior?) {
+    private var syncEngine: CloudSyncEngineBehavior?
+
+    // Internal initializer used for testing, to allow lazy initialization of the SyncEngine
+    init(adapter: StorageEngineAdapter,
+         syncEngineFactory: CloudSyncEngineBehavior.Factory?) {
         self.adapter = adapter
+        let syncEngine = syncEngineFactory?(self)
         self.syncEngine = syncEngine
     }
 
@@ -25,17 +28,18 @@ final class StorageEngine: StorageEngineBehavior {
         let databaseName = Bundle.main.object(forInfoDictionaryKey: key) as? String
         let adapter = try SQLiteStorageEngineAdapter(databaseName: databaseName ?? "app")
 
-        let syncEngine = isSyncEnabled ? CloudSyncEngine(storageEngine: adapter) : nil
-        self.init(adapter: adapter, syncEngine: syncEngine)
+        let syncEngineFactory: CloudSyncEngineBehavior.Factory? =
+            isSyncEnabled ? { CloudSyncEngine(storageEngine: $0) } : nil
+
+        self.init(adapter: adapter, syncEngineFactory: syncEngineFactory)
     }
 
     public func setUp(models: [Model.Type]) throws {
         try adapter.setUp(models: models)
-        syncEngine?.start(storageEngine: self)
+        syncEngine?.start()
     }
 
     public func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
-
         let modelSaveCompletion: DataStoreCallback<M> = { result in
             guard type(of: model).schema.isSyncable, let syncEngine = self.syncEngine else {
                 completion(result)
@@ -48,6 +52,7 @@ final class StorageEngine: StorageEngineBehavior {
             }
 
             do {
+                // TODO: select correct mutation type
                 let mutationEvent = try MutationEvent(model: savedModel, mutationType: .create)
 
                 _ = syncEngine
@@ -62,7 +67,7 @@ final class StorageEngine: StorageEngineBehavior {
                                 break
                             }
 
-                    }, receiveValue: { mutationEvent in
+                    }, receiveValue: { _ in
                         completion(.result(savedModel))
                     })
             } catch let dataStoreError as DataStoreError {

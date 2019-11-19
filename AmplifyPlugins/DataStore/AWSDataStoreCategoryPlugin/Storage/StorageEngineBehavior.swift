@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 
-protocol StorageEngineBehavior {
+protocol StorageEngineBehavior: class {
 
     func setUp(models: [Model.Type]) throws
 

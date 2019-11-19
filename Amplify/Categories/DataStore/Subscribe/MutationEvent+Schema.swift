@@ -23,15 +23,13 @@ extension MutationEvent {
     public static let schema = defineSchema { definition in
         let mutation = MutationEvent.keys
 
-        definition.attributes(.isSyncable, .isSystem)
+        definition.attributes(.isSystem)
 
         definition.fields(
             .id(),
             .field(mutation.modelName, is: .required, ofType: .string),
             .field(mutation.json, is: .required, ofType: .string),
-            .field(mutation.mutationType,
-                   is: .required,
-                   ofType: .enum(type: MutationType.self)),
+            .field(mutation.mutationType, is: .required, ofType: .string),
             .field(mutation.createdAt, is: .required, ofType: .dateTime)
         )
     }
