@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 public struct InterpretResult {
 
     public let keyPhrases: [KeyPhrase]?

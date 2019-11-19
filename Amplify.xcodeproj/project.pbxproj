@@ -63,7 +63,6 @@
 		881246F5DCC59436DC932469 /* Pods_Amplify_AWSPluginsCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35D92182B8445C8F9B0FAE94 /* Pods_Amplify_AWSPluginsCore.framework */; };
 		95DAAB1D237E63370028544F /* IdentifiedWord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB01237E63370028544F /* IdentifiedWord.swift */; };
 		95DAAB1E237E63370028544F /* TextFormatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB02237E63370028544F /* TextFormatType.swift */; };
-		95DAAB1F237E63370028544F /* CollectionEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB03237E63370028544F /* CollectionEntity.swift */; };
 		95DAAB20237E63370028544F /* SyntaxToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB04237E63370028544F /* SyntaxToken.swift */; };
 		95DAAB21237E63370028544F /* LanguageDetectionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB05237E63370028544F /* LanguageDetectionResult.swift */; };
 		95DAAB22237E63370028544F /* SpeechType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB06237E63370028544F /* SpeechType.swift */; };
@@ -98,7 +97,13 @@
 		95DAAB4A237E639E0028544F /* InterpretResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB40237E639E0028544F /* InterpretResult.swift */; };
 		95DAAB4B237E639E0028544F /* TranslateTextResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB41237E639E0028544F /* TranslateTextResult.swift */; };
 		95DAAB4C237E639E0028544F /* IdentifyEntitiesResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB42237E639E0028544F /* IdentifyEntitiesResult.swift */; };
-		95DAAB4D237E639E0028544F /* IdentifyEntitiesFromCollectionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB43237E639E0028544F /* IdentifyEntitiesFromCollectionResult.swift */; };
+		95DAAB83237F13940028544F /* EntityMatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB81237F13940028544F /* EntityMatch.swift */; };
+		95DAAB84237F13940028544F /* VoiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB82237F13940028544F /* VoiceType.swift */; };
+		95DAAB86237F13A10028544F /* PredictionsTextToSpeechOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB85237F13A10028544F /* PredictionsTextToSpeechOperation.swift */; };
+		95DAAB89237F13B70028544F /* IdentifyEntityMatchesResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB87237F13B70028544F /* IdentifyEntityMatchesResult.swift */; };
+		95DAAB8A237F13B70028544F /* TextToSpeechResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB88237F13B70028544F /* TextToSpeechResult.swift */; };
+		95DAAB8C237F13D10028544F /* PredictionsTextToSpeechRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB8B237F13D10028544F /* PredictionsTextToSpeechRequest.swift */; };
+		B4340A24238325B900101BBA /* DefaultNetworkPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4340A23238325B900101BBA /* DefaultNetworkPolicy.swift */; };
 		B4BD6B3323708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BD6B3223708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift */; };
 		B4BD6B3523708C1200A1F0A7 /* PredictionsCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BD6B3423708C1200A1F0A7 /* PredictionsCategoryConfigurationTests.swift */; };
 		B4BD6B3723708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BD6B3623708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift */; };
@@ -108,7 +113,6 @@
 		B4D38530236C97360014653D /* PredictionsInterpretOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D38519236C97350014653D /* PredictionsInterpretOperation.swift */; };
 		B4D38531236C97360014653D /* PredictionsCategoryClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D3851A236C97350014653D /* PredictionsCategoryClientBehavior.swift */; };
 		B4D38535236C97360014653D /* PredictionsCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D3851F236C97350014653D /* PredictionsCategory.swift */; };
-		B4D38536236C97360014653D /* CallType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D38521236C97350014653D /* CallType.swift */; };
 		B4D38537236C97360014653D /* PredictionsCategory+CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D38522236C97350014653D /* PredictionsCategory+CategoryConfigurable.swift */; };
 		B4D38538236C97360014653D /* PredictionsCategoryConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D38523236C97350014653D /* PredictionsCategoryConfiguration.swift */; };
 		B4D38539236C97360014653D /* PredictionsCategory+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D38524236C97350014653D /* PredictionsCategory+ClientBehavior.swift */; };
@@ -169,9 +173,9 @@
 		B9FB05F42383222300DE1FD4 /* SQLStatement+Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FB05F32383222300DE1FD4 /* SQLStatement+Update.swift */; };
 		B9FB05F623836F8700DE1FD4 /* SQLStatement+Condition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FB05F523836F8700DE1FD4 /* SQLStatement+Condition.swift */; };
 		B9FB05F82383740D00DE1FD4 /* DataStoreStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FB05F72383740D00DE1FD4 /* DataStoreStatement.swift */; };
-		E9E4AB6175A0B21B46C875CE /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34A4D98AFFD4B65AEAE350EC /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework */; };
 		FA0173352375F8A5005DDDFC /* LoggingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173342375F8A5005DDDFC /* LoggingError.swift */; };
 		FA0173372375FAA5005DDDFC /* HubError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173362375FAA5005DDDFC /* HubError.swift */; };
+		FA09337C23844E9F00C2FD5F /* GraphQLOperationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09337B23844E9F00C2FD5F /* GraphQLOperationRequest.swift */; };
 		FA09B92B2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92A2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift */; };
 		FA09B92D2321A27F000E064D /* CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92C2321A27F000E064D /* CategoryConfigurable.swift */; };
 		FA09B92F2321A2DE000E064D /* APICategory+CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92E2321A2DE000E064D /* APICategory+CategoryConfigurable.swift */; };
@@ -190,9 +194,6 @@
 		FA131ABC2360FE070008381C /* AWSPluginsCore.h in Headers */ = {isa = PBXBuildFile; fileRef = FA131AAC2360FE070008381C /* AWSPluginsCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FA131ABF2360FE070008381C /* AWSPluginsCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA131AAA2360FE070008381C /* AWSPluginsCore.framework */; };
 		FA131AC02360FE070008381C /* AWSPluginsCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FA131AAA2360FE070008381C /* AWSPluginsCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		FA131AE223610B6A0008381C /* AWSPluginsTestCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = FA131AE023610B6A0008381C /* AWSPluginsTestCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FA131AF623610C5A0008381C /* MockAWSMobileClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E20D2318CD3900B3DEB5 /* MockAWSMobileClient.swift */; };
-		FA131AF723610C5F0008381C /* MockAWSAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2A72321DCDD00B3DEB5 /* MockAWSAuthService.swift */; };
 		FA315295233D634900DE78E7 /* StorageDownloadFileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA315294233D634900DE78E7 /* StorageDownloadFileRequest.swift */; };
 		FA315298233D644F00DE78E7 /* StorageGetDataRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA315297233D644F00DE78E7 /* StorageGetDataRequest.swift */; };
 		FA31529A233D645200DE78E7 /* StorageGetURLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA315299233D645200DE78E7 /* StorageGetURLRequest.swift */; };
@@ -216,7 +217,6 @@
 		FA6BC86B235F57920001A882 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC86A235F57920001A882 /* APIError.swift */; };
 		FA6BC86D235F5AE30001A882 /* APICategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC86C235F5AE30001A882 /* APICategory+HubPayloadEventName.swift */; };
 		FA6BC872235F5BD60001A882 /* GraphQLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC871235F5BD60001A882 /* GraphQLOperation.swift */; };
-		FA6BC875235F5C270001A882 /* GraphQLOperationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC874235F5C270001A882 /* GraphQLOperationRequest.swift */; };
 		FA6BC87B235F5D240001A882 /* APICategoryGraphQLBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC87A235F5D240001A882 /* APICategoryGraphQLBehavior.swift */; };
 		FA6BC87D235F5D490001A882 /* APICategoryRESTBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC87C235F5D490001A882 /* APICategoryRESTBehavior.swift */; };
 		FA6BC87F235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC87E235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift */; };
@@ -227,6 +227,9 @@
 		FA9FB77D232AA0D800C04D32 /* FilteredListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FB77C232AA0D800C04D32 /* FilteredListener.swift */; };
 		FA9FB780232AA11A00C04D32 /* HubChannelDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FB77F232AA11A00C04D32 /* HubChannelDispatcher.swift */; };
 		FA9FB782232AA26500C04D32 /* DefaultHubPluginCustomChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FB781232AA26500C04D32 /* DefaultHubPluginCustomChannelTests.swift */; };
+		FA9FD23A2381CFC300A7CAF5 /* CloudSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FD2372381CFC300A7CAF5 /* CloudSyncEngine.swift */; };
+		FA9FD23C2381CFC300A7CAF5 /* OutgoingMutationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FD2392381CFC300A7CAF5 /* OutgoingMutationQueue.swift */; };
+		FAA274B12382EA7100EDD2EA /* SyncingMutationSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA274B02382EA7100EDD2EA /* SyncingMutationSubscriber.swift */; };
 		FAA9FC3B23620CE50012638A /* URLRequestInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA9FC3A23620CE50012638A /* URLRequestInterceptor.swift */; };
 		FAA9FC3E236210840012638A /* APICategoryClientInterceptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA9FC3D236210840012638A /* APICategoryClientInterceptorTests.swift */; };
 		FAB9D811233BF5F600928AA9 /* AmplifyOperationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB9D810233BF5F600928AA9 /* AmplifyOperationContext.swift */; };
@@ -303,6 +306,15 @@
 		FACF520723298BF100646E10 /* SynchronizedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACF520623298BF100646E10 /* SynchronizedDictionary.swift */; };
 		FACF520923298C1200646E10 /* SynchronizedDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACF520823298C1200646E10 /* SynchronizedDictionaryTests.swift */; };
 		FAD2A1892374D5DC0005CD6B /* GraphQLResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD2A1882374D5DC0005CD6B /* GraphQLResponse.swift */; };
+		FAD3936B2381F91100463F5E /* MutationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FD2332381CD0000A7CAF5 /* MutationEvent.swift */; };
+		FAD3936D2381FA1700463F5E /* MutationEvent+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FD2322381CD0000A7CAF5 /* MutationEvent+Schema.swift */; };
+		FAD393712381FD3C00463F5E /* DataStoreCategory+Subscribe.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD393702381FD3C00463F5E /* DataStoreCategory+Subscribe.swift */; };
+		FAD393732381FF4200463F5E /* DataStorePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD393722381FF4200463F5E /* DataStorePublisher.swift */; };
+		FAD393762382036000463F5E /* SubscribeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD393752382036000463F5E /* SubscribeTests.swift */; };
+		FAD3937823820BB000463F5E /* SyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD3937723820BB000463F5E /* SyncTests.swift */; };
+		FAD3937A23820CDB00463F5E /* DataStoreCategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD3937923820CDB00463F5E /* DataStoreCategoryClientAPITests.swift */; };
+		FAD3937D23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD3937C23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift */; };
+		FAD3937F23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD3937E23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift */; };
 		FADB3A6823612940006D6FE9 /* BasicClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADB3A6723612940006D6FE9 /* BasicClosure.swift */; };
 		FAF1B88423392F7C007F1435 /* ConcurrentDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B88323392F7C007F1435 /* ConcurrentDispatcher.swift */; };
 		FAF1B88623392F96007F1435 /* SerialDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B88523392F96007F1435 /* SerialDispatcher.swift */; };
@@ -381,20 +393,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = FAC234D12279F8DA00424678;
 			remoteInfo = Amplify;
-		};
-		FA131AE623610B960008381C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = FA131ADD23610B6A0008381C;
-			remoteInfo = AWSPluginsTestCommon;
-		};
-		FA131AF423610C090008381C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = FA131AA92360FE070008381C;
-			remoteInfo = AWSPluginsCore;
 		};
 		FAC234DD2279F8DA00424678 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -618,7 +616,6 @@
 		941C4FA7EED42C093243D628 /* Pods-Amplify-AmplifyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTests/Pods-Amplify-AmplifyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		95DAAB01237E63370028544F /* IdentifiedWord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifiedWord.swift; sourceTree = "<group>"; };
 		95DAAB02237E63370028544F /* TextFormatType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFormatType.swift; sourceTree = "<group>"; };
-		95DAAB03237E63370028544F /* CollectionEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionEntity.swift; sourceTree = "<group>"; };
 		95DAAB04237E63370028544F /* SyntaxToken.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxToken.swift; sourceTree = "<group>"; };
 		95DAAB05237E63370028544F /* LanguageDetectionResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LanguageDetectionResult.swift; sourceTree = "<group>"; };
 		95DAAB06237E63370028544F /* SpeechType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeechType.swift; sourceTree = "<group>"; };
@@ -653,7 +650,12 @@
 		95DAAB40237E639E0028544F /* InterpretResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterpretResult.swift; sourceTree = "<group>"; };
 		95DAAB41237E639E0028544F /* TranslateTextResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TranslateTextResult.swift; sourceTree = "<group>"; };
 		95DAAB42237E639E0028544F /* IdentifyEntitiesResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyEntitiesResult.swift; sourceTree = "<group>"; };
-		95DAAB43237E639E0028544F /* IdentifyEntitiesFromCollectionResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyEntitiesFromCollectionResult.swift; sourceTree = "<group>"; };
+		95DAAB81237F13940028544F /* EntityMatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntityMatch.swift; sourceTree = "<group>"; };
+		95DAAB82237F13940028544F /* VoiceType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceType.swift; sourceTree = "<group>"; };
+		95DAAB85237F13A10028544F /* PredictionsTextToSpeechOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsTextToSpeechOperation.swift; sourceTree = "<group>"; };
+		95DAAB87237F13B70028544F /* IdentifyEntityMatchesResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyEntityMatchesResult.swift; sourceTree = "<group>"; };
+		95DAAB88237F13B70028544F /* TextToSpeechResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextToSpeechResult.swift; sourceTree = "<group>"; };
+		95DAAB8B237F13D10028544F /* PredictionsTextToSpeechRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsTextToSpeechRequest.swift; sourceTree = "<group>"; };
 		976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9883B94C1A1C9D551AC012AE /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSDataStoreCategoryPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSDataStoreCategoryPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99CFDB8E55EADE7A74938E6C /* Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin/Pods-AWSPlugins-AWSAuthService-AWSAPICategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
@@ -665,6 +667,7 @@
 		AB74666B4E8B096CB3305EAE /* Pods-AmplifyAppExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAppExample.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAppExample/Pods-AmplifyAppExample.release.xcconfig"; sourceTree = "<group>"; };
 		AE1BE989582A3F5BB378AF15 /* Pods-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPlugin/Pods-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		B2CF34EB93BFDE1F02457D5E /* Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
+		B4340A23238325B900101BBA /* DefaultNetworkPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultNetworkPolicy.swift; sourceTree = "<group>"; };
 		B4BD6B3223708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsCategoryClientAPITests.swift; sourceTree = "<group>"; };
 		B4BD6B3423708C1200A1F0A7 /* PredictionsCategoryConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsCategoryConfigurationTests.swift; sourceTree = "<group>"; };
 		B4BD6B3623708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPredictionsCategoryPlugin.swift; sourceTree = "<group>"; };
@@ -674,7 +677,6 @@
 		B4D38519236C97350014653D /* PredictionsInterpretOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsInterpretOperation.swift; sourceTree = "<group>"; };
 		B4D3851A236C97350014653D /* PredictionsCategoryClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsCategoryClientBehavior.swift; sourceTree = "<group>"; };
 		B4D3851F236C97350014653D /* PredictionsCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsCategory.swift; sourceTree = "<group>"; };
-		B4D38521236C97350014653D /* CallType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallType.swift; sourceTree = "<group>"; };
 		B4D38522236C97350014653D /* PredictionsCategory+CategoryConfigurable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PredictionsCategory+CategoryConfigurable.swift"; sourceTree = "<group>"; };
 		B4D38523236C97350014653D /* PredictionsCategoryConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsCategoryConfiguration.swift; sourceTree = "<group>"; };
 		B4D38524236C97350014653D /* PredictionsCategory+ClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PredictionsCategory+ClientBehavior.swift"; sourceTree = "<group>"; };
@@ -787,6 +789,7 @@
 		F9667716F7B167C1C2DFD881 /* Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests/Pods-AWSPlugins-AWSAuthService-AWSAuthServiceTests.debug.xcconfig"; sourceTree = "<group>"; };
 		FA0173342375F8A5005DDDFC /* LoggingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingError.swift; sourceTree = "<group>"; };
 		FA0173362375FAA5005DDDFC /* HubError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubError.swift; sourceTree = "<group>"; };
+		FA09337B23844E9F00C2FD5F /* GraphQLOperationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLOperationRequest.swift; sourceTree = "<group>"; };
 		FA09B92A2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnalyticsCategory+CategoryConfigurable.swift"; sourceTree = "<group>"; };
 		FA09B92C2321A27F000E064D /* CategoryConfigurable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryConfigurable.swift; sourceTree = "<group>"; };
 		FA09B92E2321A2DE000E064D /* APICategory+CategoryConfigurable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+CategoryConfigurable.swift"; sourceTree = "<group>"; };
@@ -806,7 +809,6 @@
 		FA131AB22360FE070008381C /* AWSPluginsCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPluginsCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA131AB92360FE070008381C /* AWSPluginsCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSPluginsCoreTests.swift; sourceTree = "<group>"; };
 		FA131ABB2360FE070008381C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		FA131ADE23610B6A0008381C /* AWSPluginsTestCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSPluginsTestCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA131AE023610B6A0008381C /* AWSPluginsTestCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AWSPluginsTestCommon.h; sourceTree = "<group>"; };
 		FA131AE123610B6A0008381C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA315294233D634900DE78E7 /* StorageDownloadFileRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StorageDownloadFileRequest.swift; path = Amplify/Categories/Storage/Request/StorageDownloadFileRequest.swift; sourceTree = SOURCE_ROOT; };
@@ -832,7 +834,6 @@
 		FA6BC86A235F57920001A882 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		FA6BC86C235F5AE30001A882 /* APICategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		FA6BC871235F5BD60001A882 /* GraphQLOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLOperation.swift; sourceTree = "<group>"; };
-		FA6BC874235F5C270001A882 /* GraphQLOperationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLOperationRequest.swift; sourceTree = "<group>"; };
 		FA6BC87A235F5D240001A882 /* APICategoryGraphQLBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APICategoryGraphQLBehavior.swift; sourceTree = "<group>"; };
 		FA6BC87C235F5D490001A882 /* APICategoryRESTBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICategoryRESTBehavior.swift; sourceTree = "<group>"; };
 		FA6BC87E235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICategoryInterceptorBehavior.swift; sourceTree = "<group>"; };
@@ -843,6 +844,11 @@
 		FA9FB77C232AA0D800C04D32 /* FilteredListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteredListener.swift; sourceTree = "<group>"; };
 		FA9FB77F232AA11A00C04D32 /* HubChannelDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubChannelDispatcher.swift; sourceTree = "<group>"; };
 		FA9FB781232AA26500C04D32 /* DefaultHubPluginCustomChannelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHubPluginCustomChannelTests.swift; sourceTree = "<group>"; };
+		FA9FD2322381CD0000A7CAF5 /* MutationEvent+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MutationEvent+Schema.swift"; sourceTree = "<group>"; };
+		FA9FD2332381CD0000A7CAF5 /* MutationEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutationEvent.swift; sourceTree = "<group>"; };
+		FA9FD2372381CFC300A7CAF5 /* CloudSyncEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudSyncEngine.swift; sourceTree = "<group>"; };
+		FA9FD2392381CFC300A7CAF5 /* OutgoingMutationQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutgoingMutationQueue.swift; sourceTree = "<group>"; };
+		FAA274B02382EA7100EDD2EA /* SyncingMutationSubscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncingMutationSubscriber.swift; sourceTree = "<group>"; };
 		FAA9FC3A23620CE50012638A /* URLRequestInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequestInterceptor.swift; sourceTree = "<group>"; };
 		FAA9FC3D236210840012638A /* APICategoryClientInterceptorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICategoryClientInterceptorTests.swift; sourceTree = "<group>"; };
 		FAB9D810233BF5F600928AA9 /* AmplifyOperationContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyOperationContext.swift; sourceTree = "<group>"; };
@@ -923,6 +929,13 @@
 		FACF520623298BF100646E10 /* SynchronizedDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedDictionary.swift; sourceTree = "<group>"; };
 		FACF520823298C1200646E10 /* SynchronizedDictionaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedDictionaryTests.swift; sourceTree = "<group>"; };
 		FAD2A1882374D5DC0005CD6B /* GraphQLResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLResponse.swift; sourceTree = "<group>"; };
+		FAD393702381FD3C00463F5E /* DataStoreCategory+Subscribe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataStoreCategory+Subscribe.swift"; sourceTree = "<group>"; };
+		FAD393722381FF4200463F5E /* DataStorePublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStorePublisher.swift; sourceTree = "<group>"; };
+		FAD393752382036000463F5E /* SubscribeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribeTests.swift; sourceTree = "<group>"; };
+		FAD3937723820BB000463F5E /* SyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncTests.swift; sourceTree = "<group>"; };
+		FAD3937923820CDB00463F5E /* DataStoreCategoryClientAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreCategoryClientAPITests.swift; sourceTree = "<group>"; };
+		FAD3937C23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreCategoryConfigurationTests.swift; sourceTree = "<group>"; };
+		FAD3937E23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataStoreCategoryPlugin.swift; sourceTree = "<group>"; };
 		FADB3A6723612940006D6FE9 /* BasicClosure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicClosure.swift; sourceTree = "<group>"; };
 		FAF1B88323392F7C007F1435 /* ConcurrentDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentDispatcher.swift; sourceTree = "<group>"; };
 		FAF1B88523392F96007F1435 /* SerialDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialDispatcher.swift; sourceTree = "<group>"; };
@@ -987,14 +1000,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA131AB32360FE070008381C /* AWSPluginsCore.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		FA131ADB23610B6A0008381C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E9E4AB6175A0B21B46C875CE /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1280,9 +1285,10 @@
 		95DAAB00237E63370028544F /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				95DAAB81237F13940028544F /* EntityMatch.swift */,
+				95DAAB82237F13940028544F /* VoiceType.swift */,
 				95DAAB01237E63370028544F /* IdentifiedWord.swift */,
 				95DAAB02237E63370028544F /* TextFormatType.swift */,
-				95DAAB03237E63370028544F /* CollectionEntity.swift */,
 				95DAAB04237E63370028544F /* SyntaxToken.swift */,
 				95DAAB05237E63370028544F /* LanguageDetectionResult.swift */,
 				95DAAB06237E63370028544F /* SpeechType.swift */,
@@ -1316,6 +1322,8 @@
 		95DAAB39237E639E0028544F /* Result */ = {
 			isa = PBXGroup;
 			children = (
+				95DAAB87237F13B70028544F /* IdentifyEntityMatchesResult.swift */,
+				95DAAB88237F13B70028544F /* TextToSpeechResult.swift */,
 				95DAAB3A237E639E0028544F /* ConvertResult.swift */,
 				95DAAB3B237E639E0028544F /* IdentifyResult.swift */,
 				95DAAB3C237E639E0028544F /* IdentifyTextResult.swift */,
@@ -1325,7 +1333,6 @@
 				95DAAB40237E639E0028544F /* InterpretResult.swift */,
 				95DAAB41237E639E0028544F /* TranslateTextResult.swift */,
 				95DAAB42237E639E0028544F /* IdentifyEntitiesResult.swift */,
-				95DAAB43237E639E0028544F /* IdentifyEntitiesFromCollectionResult.swift */,
 			);
 			name = Result;
 			path = Amplify/Categories/Predictions/Result;
@@ -1353,6 +1360,7 @@
 		B4D38516236C97350014653D /* Operation */ = {
 			isa = PBXGroup;
 			children = (
+				95DAAB85237F13A10028544F /* PredictionsTextToSpeechOperation.swift */,
 				B4D38517236C97350014653D /* PredictionsIdentifyOperation.swift */,
 				B4D38518236C97350014653D /* PredictionsTranslateTextOperation.swift */,
 				B4D38519236C97350014653D /* PredictionsInterpretOperation.swift */,
@@ -1363,7 +1371,7 @@
 		B4D38520236C97350014653D /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				B4D38521236C97350014653D /* CallType.swift */,
+				B4340A23238325B900101BBA /* DefaultNetworkPolicy.swift */,
 				B4D38522236C97350014653D /* PredictionsCategory+CategoryConfigurable.swift */,
 			);
 			path = Internal;
@@ -1372,6 +1380,7 @@
 		B4D38525236C97350014653D /* Request */ = {
 			isa = PBXGroup;
 			children = (
+				95DAAB8B237F13D10028544F /* PredictionsTextToSpeechRequest.swift */,
 				B4D38526236C97350014653D /* PredictionsInterpretRequest.swift */,
 				B4BD6B382370932300A1F0A7 /* PredictionsIdentifyRequest.swift */,
 				B4D38527236C97350014653D /* PredictionsConvertRequest.swift */,
@@ -1424,6 +1433,8 @@
 			isa = PBXGroup;
 			children = (
 				B92E03DD2367D2A4006CEB8D /* Storage */,
+				FAD393742381FF5E00463F5E /* Subscribe */,
+				FA9FD2362381CFC300A7CAF5 /* Sync */,
 				B92E03E62367D2A4006CEB8D /* AWSDataStoreCategoryPlugin.swift */,
 				B92E03C32367CFF2006CEB8D /* Info.plist */,
 			);
@@ -1437,6 +1448,8 @@
 				B922E27B236BC59F00D09250 /* QueryPredicateTests.swift */,
 				B92E03EF2367D2BB006CEB8D /* SQLiteStorageEngineAdapterTests.swift */,
 				B922E275236A083B00D09250 /* SQLStatementTests.swift */,
+				FAD393752382036000463F5E /* SubscribeTests.swift */,
+				FAD3937723820BB000463F5E /* SyncTests.swift */,
 			);
 			path = AWSDataStoreCategoryPluginTests;
 			sourceTree = "<group>";
@@ -1521,12 +1534,13 @@
 		B9DD3F0B23552C4E00D62C65 /* DataStore */ = {
 			isa = PBXGroup;
 			children = (
+				FAD393802382130B00463F5E /* Internal */,
 				B92E03A62367CE7A006CEB8D /* Model */,
 				B98E9D042372236200934B51 /* Query */,
+				FAD3936C2381F91C00463F5E /* Subscribe */,
 				B92E03A12367CE79006CEB8D /* DataStoreCallback.swift */,
 				B92E03A42367CE7A006CEB8D /* DataStoreCategory.swift */,
 				B92E039E2367CE79006CEB8D /* DataStoreCategory+Behavior.swift */,
-				B92E03A52367CE7A006CEB8D /* DataStoreCategory+Configurable.swift */,
 				B92E03A02367CE79006CEB8D /* DataStoreCategoryBehavior.swift */,
 				B92E03A32367CE79006CEB8D /* DataStoreCategoryConfiguration.swift */,
 				B92E039F2367CE79006CEB8D /* DataStoreCategoryPlugin.swift */,
@@ -1731,7 +1745,7 @@
 		FA6BC876235F5C370001A882 /* Request */ = {
 			isa = PBXGroup;
 			children = (
-				FA6BC874235F5C270001A882 /* GraphQLOperationRequest.swift */,
+				FA09337B23844E9F00C2FD5F /* GraphQLOperationRequest.swift */,
 				2142099223721F4400FA140C /* GraphQLOperationType.swift */,
 				21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */,
 				2142099323721F4400FA140C /* RESTOperationType.swift */,
@@ -1763,6 +1777,16 @@
 				FAF1B88523392F96007F1435 /* SerialDispatcher.swift */,
 			);
 			path = Internal;
+			sourceTree = "<group>";
+		};
+		FA9FD2362381CFC300A7CAF5 /* Sync */ = {
+			isa = PBXGroup;
+			children = (
+				FA9FD2372381CFC300A7CAF5 /* CloudSyncEngine.swift */,
+				FA9FD2392381CFC300A7CAF5 /* OutgoingMutationQueue.swift */,
+				FAA274B02382EA7100EDD2EA /* SyncingMutationSubscriber.swift */,
+			);
+			path = Sync;
 			sourceTree = "<group>";
 		};
 		FAA9FC3C23620CED0012638A /* Interceptor */ = {
@@ -1807,7 +1831,6 @@
 				FACA36042327FBD4000E74F6 /* AmplifyTestCommon.framework */,
 				FA131AAA2360FE070008381C /* AWSPluginsCore.framework */,
 				FA131AB22360FE070008381C /* AWSPluginsCoreTests.xctest */,
-				FA131ADE23610B6A0008381C /* AWSPluginsTestCommon.framework */,
 				B92E03C02367CFF2006CEB8D /* AWSDataStoreCategoryPlugin.framework */,
 				B92E03C82367CFF3006CEB8D /* AWSDataStoreCategoryPluginTests.xctest */,
 				B92E040E2368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests.xctest */,
@@ -1948,6 +1971,7 @@
 			children = (
 				FAC2355D227A056600424678 /* Analytics */,
 				FAC23555227A056600424678 /* API */,
+				FAD3937B23820CE200463F5E /* DataStore */,
 				FAC23584227A442000424678 /* Hub */,
 				FAC23559227A056600424678 /* Logging */,
 				B4D38541236C9BF40014653D /* Predictions */,
@@ -2013,6 +2037,7 @@
 				FAC23578227A056F00424678 /* MessageReporter.swift */,
 				FAC2355E227A056600424678 /* MockAnalyticsCategoryPlugin.swift */,
 				FAC23557227A056600424678 /* MockAPICategoryPlugin.swift */,
+				FAD3937E23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift */,
 				FAC23589227A45D500424678 /* MockHubCategoryPlugin.swift */,
 				FAC0A2BB22B4603800B50912 /* MockLoggingCategoryPlugin.swift */,
 				B4BD6B3623708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift */,
@@ -2144,6 +2169,41 @@
 			path = Response;
 			sourceTree = "<group>";
 		};
+		FAD3936C2381F91C00463F5E /* Subscribe */ = {
+			isa = PBXGroup;
+			children = (
+				FAD393702381FD3C00463F5E /* DataStoreCategory+Subscribe.swift */,
+				FA9FD2332381CD0000A7CAF5 /* MutationEvent.swift */,
+				FA9FD2322381CD0000A7CAF5 /* MutationEvent+Schema.swift */,
+			);
+			path = Subscribe;
+			sourceTree = "<group>";
+		};
+		FAD393742381FF5E00463F5E /* Subscribe */ = {
+			isa = PBXGroup;
+			children = (
+				FAD393722381FF4200463F5E /* DataStorePublisher.swift */,
+			);
+			path = Subscribe;
+			sourceTree = "<group>";
+		};
+		FAD3937B23820CE200463F5E /* DataStore */ = {
+			isa = PBXGroup;
+			children = (
+				FAD3937923820CDB00463F5E /* DataStoreCategoryClientAPITests.swift */,
+				FAD3937C23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift */,
+			);
+			path = DataStore;
+			sourceTree = "<group>";
+		};
+		FAD393802382130B00463F5E /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				B92E03A52367CE7A006CEB8D /* DataStoreCategory+Configurable.swift */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
 		FADDA7BC2374CA4A00836431 /* DefaultPlugins */ = {
 			isa = PBXGroup;
 			children = (
@@ -2177,14 +2237,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA131ABC2360FE070008381C /* AWSPluginsCore.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		FA131AD923610B6A0008381C /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				FA131AE223610B6A0008381C /* AWSPluginsTestCommon.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2279,6 +2331,8 @@
 			buildConfigurationList = B92E04162368FE5C006CEB8D /* Build configuration list for PBXNativeTarget "AWSDataStoreCategoryPluginIntegrationTests" */;
 			buildPhases = (
 				9A6B8979B0D54EC8D02EA756 /* [CP] Check Pods Manifest.lock */,
+				FA093379238449C500C2FD5F /* SwiftFormat */,
+				FA0933782384499600C2FD5F /* SwiftLint */,
 				B92E040A2368FE5B006CEB8D /* Sources */,
 				B92E040B2368FE5B006CEB8D /* Frameworks */,
 				B92E040C2368FE5B006CEB8D /* Resources */,
@@ -2330,7 +2384,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				FA131AE723610B960008381C /* PBXTargetDependency */,
 				FA131AB52360FE070008381C /* PBXTargetDependency */,
 				FA131AB72360FE070008381C /* PBXTargetDependency */,
 			);
@@ -2338,26 +2391,6 @@
 			productName = AWSPluginsCoreTests;
 			productReference = FA131AB22360FE070008381C /* AWSPluginsCoreTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		FA131ADD23610B6A0008381C /* AWSPluginsTestCommon */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = FA131AE523610B6A0008381C /* Build configuration list for PBXNativeTarget "AWSPluginsTestCommon" */;
-			buildPhases = (
-				DAFB4D84E68288E873E4DEC2 /* [CP] Check Pods Manifest.lock */,
-				FA131AD923610B6A0008381C /* Headers */,
-				FA131ADA23610B6A0008381C /* Sources */,
-				FA131ADB23610B6A0008381C /* Frameworks */,
-				FA131ADC23610B6A0008381C /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				FA131AF523610C090008381C /* PBXTargetDependency */,
-			);
-			name = AWSPluginsTestCommon;
-			productName = AWSPluginsTestCommon;
-			productReference = FA131ADE23610B6A0008381C /* AWSPluginsTestCommon.framework */;
-			productType = "com.apple.product-type.framework";
 		};
 		FAC234D12279F8DA00424678 /* Amplify */ = {
 			isa = PBXNativeTarget;
@@ -2482,9 +2515,6 @@
 						CreatedOnToolsVersion = 11.1;
 						TestTargetID = 2125E2502319EC3000B3DEB5;
 					};
-					FA131ADD23610B6A0008381C = {
-						CreatedOnToolsVersion = 11.1;
-					};
 					FAC234D12279F8DA00424678 = {
 						CreatedOnToolsVersion = 10.2.1;
 					};
@@ -2518,7 +2548,6 @@
 				FAC234DA2279F8DA00424678 /* AmplifyTests */,
 				FACA35F12327FB14000E74F6 /* AmplifyFunctionalTests */,
 				FA131AA92360FE070008381C /* AWSPluginsCore */,
-				FA131ADD23610B6A0008381C /* AWSPluginsTestCommon */,
 				FA131AB12360FE070008381C /* AWSPluginsCoreTests */,
 				B92E03BF2367CFF2006CEB8D /* AWSDataStoreCategoryPlugin */,
 				B92E040D2368FE5B006CEB8D /* AWSDataStoreCategoryPluginIntegrationTests */,
@@ -2570,13 +2599,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		FA131AB02360FE070008381C /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		FA131ADC23610B6A0008381C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2670,7 +2692,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyTests\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyTests\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
 		};
 		21578BEF234D43E600FF0F03 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2688,7 +2710,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyFunctionalTests\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyFunctionalTests\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
 		};
 		21578BF1234D459B00FF0F03 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2760,7 +2782,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyTestCommon\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyTestCommon\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
 		};
 		2F8DAE72BD3C0F67BA5CAD60 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3058,7 +3080,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
 		};
 		B92E040323680BCA006CEB8D /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3076,9 +3098,9 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyPlugins/DataStore/AWSDataStoreCategoryPluginTests\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyPlugins/DataStore/AWSDataStoreCategoryPluginTests\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
 		};
-		DAFB4D84E68288E873E4DEC2 /* [CP] Check Pods Manifest.lock */ = {
+		FA0933782384499600C2FD5F /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -3086,19 +3108,33 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "[CP] Check Pods Manifest.lock";
+			name = SwiftLint;
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyPlugins/DataStore/AWSDataStoreCategoryPluginIntegrationTests\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
+		};
+		FA093379238449C500C2FD5F /* SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftFormat;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/AmplifyPlugins/DataStore/AWSDataStoreCategoryPluginIntegrationTests\"\n";
 		};
 		FA131ACF2360FED30008381C /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3134,7 +3170,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsCoreTests\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsCoreTests\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
 		};
 		FA131AD12360FF310008381C /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3170,7 +3206,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsCore\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsCore\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
 		};
 		FAC23581227A2D8C00424678 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3188,7 +3224,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/Amplify\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/Amplify\" --config \"${SRCROOT}/.swiftlint.yml\"\n\n";
 		};
 		FAF8AC86233AB5CF009FBF97 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3225,6 +3261,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B9FB05F623836F8700DE1FD4 /* SQLStatement+Condition.swift in Sources */,
+				FA9FD23C2381CFC300A7CAF5 /* OutgoingMutationQueue.swift in Sources */,
 				B92E03E72367D2A4006CEB8D /* StorageEngineBehavior.swift in Sources */,
 				B9FB05F023831A1000DE1FD4 /* SQLStatement+Select.swift in Sources */,
 				B92E03E92367D2A4006CEB8D /* StorageEngine.swift in Sources */,
@@ -3235,10 +3272,13 @@
 				B9FB05EC238313CD00DE1FD4 /* SQLStatement+Insert.swift in Sources */,
 				B9FB05F22383220300DE1FD4 /* SQLStatement+Delete.swift in Sources */,
 				B92E03EE2367D2A4006CEB8D /* AWSDataStoreCategoryPlugin.swift in Sources */,
+				FA9FD23A2381CFC300A7CAF5 /* CloudSyncEngine.swift in Sources */,
+				FAA274B12382EA7100EDD2EA /* SyncingMutationSubscriber.swift in Sources */,
 				B92E03E82367D2A4006CEB8D /* StorageEngineAdapter.swift in Sources */,
 				B92E03EB2367D2A4006CEB8D /* Model+SQLite.swift in Sources */,
 				B92E03EC2367D2A4006CEB8D /* StorageEngineAdapter+SQLite.swift in Sources */,
 				B92E03ED2367D2A4006CEB8D /* Statement+Model.swift in Sources */,
+				FAD393732381FF4200463F5E /* DataStorePublisher.swift in Sources */,
 				B922E273236A07CA00D09250 /* QueryPredicate+SQLite.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3248,8 +3288,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				B92E040423680E2C006CEB8D /* SQLiteStorageEngineAdapterTests.swift in Sources */,
+				FAD393762382036000463F5E /* SubscribeTests.swift in Sources */,
 				B922E27C236BC5A000D09250 /* QueryPredicateTests.swift in Sources */,
 				B922E276236A083B00D09250 /* SQLStatementTests.swift in Sources */,
+				FAD3937823820BB000463F5E /* SyncTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3290,20 +3332,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		FA131ADA23610B6A0008381C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				FA131AF623610C5A0008381C /* MockAWSMobileClient.swift in Sources */,
-				FA131AF723610C5F0008381C /* MockAWSAuthService.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		FAC234CE2279F8DA00424678 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				B92E03AE2367CE7A006CEB8D /* DataStoreCategoryPlugin.swift in Sources */,
+				FAD3936B2381F91100463F5E /* MutationEvent.swift in Sources */,
 				FAC0A29B22B3DEEE00B50912 /* HubPayload.swift in Sources */,
 				B4D3853F236C97360014653D /* PredictionsError.swift in Sources */,
 				FAD2A1892374D5DC0005CD6B /* GraphQLResponse.swift in Sources */,
@@ -3324,13 +3358,14 @@
 				FA6BC86B235F57920001A882 /* APIError.swift in Sources */,
 				216879FE23636A0A004A056E /* RepeatingTimer.swift in Sources */,
 				FAC23542227A055200424678 /* Foundation+Utils.swift in Sources */,
+				FAD393712381FD3C00463F5E /* DataStoreCategory+Subscribe.swift in Sources */,
 				FAC0A2AF22B4400100B50912 /* LoggingCategory+ClientBehavior.swift in Sources */,
 				95DAAB28237E63370028544F /* Celebrity.swift in Sources */,
 				FA6BC87F235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift in Sources */,
 				95DAAB25237E63370028544F /* Entity.swift in Sources */,
+				FA09337C23844E9F00C2FD5F /* GraphQLOperationRequest.swift in Sources */,
 				FAC23545227A055200424678 /* AmplifyConfiguration.swift in Sources */,
-				B4D38536236C97360014653D /* CallType.swift in Sources */,
-				95DAAB1F237E63370028544F /* CollectionEntity.swift in Sources */,
+				95DAAB84237F13940028544F /* VoiceType.swift in Sources */,
 				2142099823721F4400FA140C /* RESTRequest.swift in Sources */,
 				21FFF994230C96CB005878EA /* StoragePutDataOperation.swift in Sources */,
 				95DAAB30237E63370028544F /* IdentifyType.swift in Sources */,
@@ -3342,9 +3377,7 @@
 				95DAAB2F237E63370028544F /* LanguageType.swift in Sources */,
 				B4D3852E236C97360014653D /* PredictionsIdentifyOperation.swift in Sources */,
 				FA09B9412321BB78000E064D /* JSONValue.swift in Sources */,
-				FA6BC875235F5C270001A882 /* GraphQLOperationRequest.swift in Sources */,
 				95DAAB2E237E63370028544F /* AgeRange.swift in Sources */,
-				FA6BC875235F5C270001A882 /* GraphQLOperationRequest.swift in Sources */,
 				B4D3853A236C97360014653D /* PredictionsInterpretRequest.swift in Sources */,
 				2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */,
 				FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */,
@@ -3352,6 +3385,7 @@
 				FAC428A0235F7F980000F221 /* APICategory+RESTBehavior.swift in Sources */,
 				95DAAB46237E639E0028544F /* IdentifyTextResult.swift in Sources */,
 				95DAAB22237E63370028544F /* SpeechType.swift in Sources */,
+				95DAAB8C237F13D10028544F /* PredictionsTextToSpeechRequest.swift in Sources */,
 				95DAAB24237E63370028544F /* IdentifiedText.swift in Sources */,
 				FAC23548227A055200424678 /* Category.swift in Sources */,
 				FACA35ED2326BB54000E74F6 /* AmplifyConfigurationInitialization.swift in Sources */,
@@ -3411,6 +3445,7 @@
 				95DAAB2C237E63370028544F /* IdentifiedLine.swift in Sources */,
 				FA9FB77B2329D4FB00C04D32 /* UnsubscribeToken.swift in Sources */,
 				B4D38531236C97360014653D /* PredictionsCategoryClientBehavior.swift in Sources */,
+				95DAAB89237F13B70028544F /* IdentifyEntityMatchesResult.swift in Sources */,
 				FAC428A2235F80000000F221 /* APICategory+GraphQLBehavior.swift in Sources */,
 				95DAAB37237E63370028544F /* Attribute.swift in Sources */,
 				95DAAB2D237E63370028544F /* EmotionType.swift in Sources */,
@@ -3418,7 +3453,6 @@
 				95DAAB29237E63370028544F /* EntityDetectionResult.swift in Sources */,
 				FA31529E233D645800DE78E7 /* StoragePutDataRequest.swift in Sources */,
 				B4D38538236C97360014653D /* PredictionsCategoryConfiguration.swift in Sources */,
-				95DAAB4D237E639E0028544F /* IdentifyEntitiesFromCollectionResult.swift in Sources */,
 				95DAAB27237E63370028544F /* GenderType.swift in Sources */,
 				2109225A23596BCD00CEC295 /* AnalyticsCategoryClientBehavior.swift in Sources */,
 				FA09B92F2321A2DE000E064D /* APICategory+CategoryConfigurable.swift in Sources */,
@@ -3429,6 +3463,7 @@
 				FAC2354B227A055A00424678 /* Amplify.swift in Sources */,
 				FA09B92D2321A27F000E064D /* CategoryConfigurable.swift in Sources */,
 				B92E03B72367CE7A006CEB8D /* ModelRegistry.swift in Sources */,
+				95DAAB83237F13940028544F /* EntityMatch.swift in Sources */,
 				FA09B93B2321A36F000E064D /* StorageCategory+CategoryConfigurable.swift in Sources */,
 				95DAAB4C237E639E0028544F /* IdentifyEntitiesResult.swift in Sources */,
 				B4D38539236C97360014653D /* PredictionsCategory+ClientBehavior.swift in Sources */,
@@ -3450,6 +3485,7 @@
 				FA6BC87D235F5D490001A882 /* APICategoryRESTBehavior.swift in Sources */,
 				B92E03B92367CE7A006CEB8D /* Model+Schema.swift in Sources */,
 				B4D38530236C97360014653D /* PredictionsInterpretOperation.swift in Sources */,
+				FAD3936D2381FA1700463F5E /* MutationEvent+Schema.swift in Sources */,
 				FAC23541227A055200424678 /* CategoryType.swift in Sources */,
 				210922502359634C00CEC295 /* AnalyticsProfile.swift in Sources */,
 				FA76A2D12342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift in Sources */,
@@ -3457,6 +3493,7 @@
 				FA09B9492322CBD5000E064D /* HubCategoryConfiguration.swift in Sources */,
 				21D1CE8C2334233F0003BAA8 /* AuthError.swift in Sources */,
 				FAC0A2B222B4402000B50912 /* StorageCategory+ClientBehavior.swift in Sources */,
+				B4340A24238325B900101BBA /* DefaultNetworkPolicy.swift in Sources */,
 				B4D38537236C97360014653D /* PredictionsCategory+CategoryConfigurable.swift in Sources */,
 				FA4E730C23282917003B8EEB /* Amplify+Resolve.swift in Sources */,
 				FAB9D811233BF5F600928AA9 /* AmplifyOperationContext.swift in Sources */,
@@ -3487,6 +3524,8 @@
 				FAC23522227A053D00424678 /* LoggingCategory.swift in Sources */,
 				FAC2358F227A4A6E00424678 /* HubCategory.swift in Sources */,
 				B98E9D0E2372236300934B51 /* ModelKey.swift in Sources */,
+				95DAAB86237F13A10028544F /* PredictionsTextToSpeechOperation.swift in Sources */,
+				95DAAB8A237F13B70028544F /* TextToSpeechResult.swift in Sources */,
 				B98E9D122372236300934B51 /* QueryField.swift in Sources */,
 				B98E9D0F2372236300934B51 /* QueryOperator.swift in Sources */,
 				B98E9D132372236300934B51 /* QueryOperator+Equatable.swift in Sources */,
@@ -3512,11 +3551,13 @@
 				FAC23567227A056600424678 /* APICategoryClientRESTTests.swift in Sources */,
 				FACA35EB2326B217000E74F6 /* AmplifyConfigurationInitializationTests.swift in Sources */,
 				FAF1B8882339633C007F1435 /* ConcurrentDispatcherPerformanceTests.swift in Sources */,
+				FAD3937A23820CDB00463F5E /* DataStoreCategoryClientAPITests.swift in Sources */,
 				FAC23599227A598B00424678 /* DefaultHubPluginTests.swift in Sources */,
 				FAC23575227A056B00424678 /* FoundationUtilsTests.swift in Sources */,
 				FAC23569227A056600424678 /* APICategoryConfigurationTests.swift in Sources */,
 				FAC23588227A446C00424678 /* HubClientAPITests.swift in Sources */,
 				FAC23564227A056600424678 /* StorageCategoryClientAPITests.swift in Sources */,
+				FAD3937D23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift in Sources */,
 				FA607FE2233D131B00DFEA24 /* AmplifyOperationHubTests.swift in Sources */,
 				FAC2356A227A056600424678 /* LoggingCategoryConfigurationTests.swift in Sources */,
 				FA47B8362350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift in Sources */,
@@ -3548,6 +3589,7 @@
 				B9521833237E21BA00F53237 /* Comment+Schema.swift in Sources */,
 				B4BD6B3723708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift in Sources */,
 				FACA361C2327FC7D000E74F6 /* MockHubCategoryPlugin.swift in Sources */,
+				FAD3937F23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift in Sources */,
 				FACA361A2327FC69000E74F6 /* MockStorageCategoryPlugin.swift in Sources */,
 				B9521837237E21BA00F53237 /* Post.swift in Sources */,
 				FACA361B2327FC74000E74F6 /* MockLoggingCategoryPlugin.swift in Sources */,
@@ -3613,16 +3655,6 @@
 			isa = PBXTargetDependency;
 			target = FAC234D12279F8DA00424678 /* Amplify */;
 			targetProxy = FA131ACD2360FEBB0008381C /* PBXContainerItemProxy */;
-		};
-		FA131AE723610B960008381C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = FA131ADD23610B6A0008381C /* AWSPluginsTestCommon */;
-			targetProxy = FA131AE623610B960008381C /* PBXContainerItemProxy */;
-		};
-		FA131AF523610C090008381C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = FA131AA92360FE070008381C /* AWSPluginsCore */;
-			targetProxy = FA131AF423610C090008381C /* PBXContainerItemProxy */;
 		};
 		FAC234DE2279F8DA00424678 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -3963,58 +3995,6 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AmplifyTestApp.app/AmplifyTestApp";
-			};
-			name = Release;
-		};
-		FA131AE323610B6A0008381C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3FB6AA5C119CC26F1F1EF2B5 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.debug.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = AmplifyPlugins/Core/AWSPluginsTestCommon/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSPluginsTestCommon;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		FA131AE423610B6A0008381C /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = F11A64999AC69429DBFD11BF /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-AWSPluginsTestCommon.release.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = AmplifyPlugins/Core/AWSPluginsTestCommon/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.amazonaws.AWSPluginsTestCommon;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -4381,15 +4361,6 @@
 			buildConfigurations = (
 				FA131AC52360FE070008381C /* Debug */,
 				FA131AC62360FE070008381C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		FA131AE523610B6A0008381C /* Build configuration list for PBXNativeTarget "AWSPluginsTestCommon" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				FA131AE323610B6A0008381C /* Debug */,
-				FA131AE423610B6A0008381C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

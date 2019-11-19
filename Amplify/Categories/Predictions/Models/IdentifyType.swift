@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public enum IdentifyType {
+public enum IdentifyAction {
     case detectCelebrity
-    case detectLabels
+//    case detectLabels(LabelType)
     case detectEntities
     case detectText(TextFormatType)
 }

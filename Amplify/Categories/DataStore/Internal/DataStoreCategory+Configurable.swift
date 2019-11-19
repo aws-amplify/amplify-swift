@@ -10,25 +10,32 @@ import Foundation
 extension DataStoreCategory: CategoryConfigurable {
 
     func configure(using configuration: CategoryConfiguration) throws {
-        // TODO add configuration logic
+        guard !isConfigured else {
+            let error = ConfigurationError.amplifyAlreadyConfigured(
+                "\(categoryType.displayName) has already been configured.",
+                "Remove the duplicate call to `Amplify.configure()`"
+            )
+            throw error
+        }
+
+        DataStoreModelRegistration.registerModels()
+
         for (pluginKey, pluginConfiguration) in configuration.plugins {
             let plugin = try getPlugin(for: pluginKey)
             try plugin.configure(using: pluginConfiguration)
         }
+
         isConfigured = true
     }
 
     func configure(using amplifyConfiguration: AmplifyConfiguration) throws {
-        let plugins: [String: JSONValue] = amplifyConfiguration.dataStore?.plugins ?? [:]
-        // TODO add configuration logic
-        for (pluginKey, pluginConfiguration) in plugins {
-            let plugin = try getPlugin(for: pluginKey)
-            try plugin.configure(using: pluginConfiguration)
+        guard let configuration = categoryConfiguration(from: amplifyConfiguration) else {
+            return
         }
-        isConfigured = true
+        try configure(using: configuration)
     }
 
-    func reset(onComplete: @escaping (() -> Void)) {
+    func reset(onComplete: @escaping BasicClosure) {
         let group = DispatchGroup()
 
         for plugin in plugins.values {
@@ -36,10 +43,19 @@ extension DataStoreCategory: CategoryConfigurable {
             plugin.reset { group.leave() }
         }
 
+        ModelRegistry.reset()
+
         group.wait()
 
         isConfigured = false
         onComplete()
     }
 
+}
+
+// TODO: Remove this once codegen begins generating this
+struct DataStoreModelRegistration {
+    public static func registerModels() {
+        // Does nothing by default.
+    }
 }

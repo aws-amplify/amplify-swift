@@ -11,10 +11,10 @@ import UIKit
 public struct PredictionsIdentifyRequest: AmplifyOperationRequest {
 
     public let image: URL
-    public let identifyType: IdentifyType
+    public let identifyType: IdentifyAction
     public let options: Options
 
-    public init(image: URL, identifyType: IdentifyType, options: Options) {
+    public init(image: URL, identifyType: IdentifyAction, options: Options) {
         self.image = image
         self.identifyType = identifyType
         self.options = options
@@ -25,13 +25,13 @@ public struct PredictionsIdentifyRequest: AmplifyOperationRequest {
 public extension PredictionsIdentifyRequest {
     struct Options {
          /// The calltype for the operation. The default value will be `auto`.
-        let callType: CallType
+        let callType: DefaultNetworkPolicy
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
         /// a way to utilize the underlying storage system's functionality. See plugin documentation for expected
         /// key/values
         let pluginOptions: Any?
 
-        public init(callType: CallType = .auto, uploadToRemote: Bool = false, pluginOptions: Any? = nil) {
+        public init(callType: DefaultNetworkPolicy = .auto, uploadToRemote: Bool = false, pluginOptions: Any? = nil) {
         self.callType = callType
         self.pluginOptions = pluginOptions
 

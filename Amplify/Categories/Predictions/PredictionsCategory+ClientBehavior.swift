@@ -9,6 +9,14 @@ import Foundation
 
 extension PredictionsCategory: PredictionsCategoryClientBehavior {
 
+    public func convert(textToSpeech: String,
+                        options: PredictionsTextToSpeechRequest.Options? = nil,
+                        listener: PredictionsTextToSpeechOperation.EventListener?) -> PredictionsTextToSpeechOperation {
+        plugin.convert(textToSpeech: textToSpeech,
+                       options: options,
+                       listener: listener)
+    }
+
     public func convert(textToTranslate: String,
                         language: LanguageType?,
                         targetLanguage: LanguageType?,
@@ -21,7 +29,7 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
                        options: options)
     }
 
-    public func identify(type: IdentifyType,
+    public func identify(type: IdentifyAction,
                          image: URL,
                          options: PredictionsIdentifyRequest.Options? = nil,
                          listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation {

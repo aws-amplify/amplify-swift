@@ -20,10 +20,15 @@ public extension Table {
     struct Cell {
 
         public let text: String
-        ///The location of the recognized text on the image. It includes an axis-aligned, coarse bounding box that surrounds the text in the table
+
+        /// The location of the recognized text on the image. It includes an axis-aligned,
+        /// coarse bounding box that surrounds the text in the table
         public let boundingBox: BoundingBox
-        ///The location of the recognized text on the image in a finer-grain polygon than the bounding box for more accurate spatial information of where the text is in the table
+
+        /// The location of the recognized text on the image in a finer-grain polygon than
+        /// the bounding box for more accurate spatial information of where the text is in the table
         public let polygon: Polygon
+
         public let isSelected: Bool
         public let rowSpan: Int
         public let columnSpan: Int

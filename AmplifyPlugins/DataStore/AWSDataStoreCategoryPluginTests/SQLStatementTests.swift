@@ -12,12 +12,11 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
-class SQLiteQueryTranslatorTests: XCTestCase {
-
-    private let models: [Model.Type] = [Post.self, Comment.self]
+class SQLStatementTests: XCTestCase {
 
     override func setUp() {
-        models.forEach(registerModel(type:))
+        ModelRegistry.register(modelType: Post.self)
+        ModelRegistry.register(modelType: Comment.self)
     }
 
     // MARK: - Create Table

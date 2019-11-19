@@ -6,40 +6,88 @@
 //
 
 import Amplify
-import Foundation
+import Combine
 
 final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
 
     public var key: PluginKey = "AWSDataStoreCategoryPlugin"
 
-    let storageEngine: StorageEngine
+    /// `true` if any models are syncable. Resolved during configuration phase
+    var isSyncEnabled: Bool
 
-    // TODO temporary, replace with configuration
-    let models: [Model.Type]
+    /// The Publisher that sends mutation events to subscribers
+    private let dataStorePublisher: DataStorePublisher
 
-    public init(storageEngine: StorageEngine, models: [Model.Type]) {
+    /// The local storage provider. Resolved during configuration phase
+    private var storageEngine: StorageEngineBehavior!
+
+    /// No-argument init that uses defaults for all providers
+    public init() {
+        self.isSyncEnabled = false
+        self.dataStorePublisher = DataStorePublisher()
+    }
+
+    /// Internal initializer for testing
+    init(storageEngine: StorageEngineBehavior,
+         dataStorePublisher: DataStorePublisher) {
+        self.isSyncEnabled = false
         self.storageEngine = storageEngine
-        self.models = models
+        self.dataStorePublisher = dataStorePublisher
     }
 
-    public convenience init(models: [Model.Type]) throws {
-        let engine = try StorageEngine(adapter: SQLiteStorageEngineAdapter())
-        self.init(storageEngine: engine, models: models)
-    }
-
+    /// By the time this method gets called, DataStore will already have invoked
+    /// `DataStoreModelRegistration.registerModels`, so we can inspect those models to derive isSyncEnabled, and pass
+    /// them to `StorageEngine.setUp(models:)`
     public func configure(using configuration: Any) throws {
-        try storageEngine.setUp(models: models)
+        resolveSyncEnabled()
+        try resolveStorageEngine()
+        try storageEngine.setUp(models: ModelRegistry.models)
     }
+
+    private func resolveSyncEnabled() {
+        if #available(iOS 13.0, *) {
+            self.isSyncEnabled = ModelRegistry.models.contains { $0.schema.isSyncable }
+        } else {
+            isSyncEnabled = false
+        }
+    }
+
+    private func resolveStorageEngine() throws {
+        guard storageEngine == nil else {
+            return
+        }
+
+        storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled)
+    }
+}
+
+extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
 
     public func save<M: Model>(_ model: M,
-                               completion: DataStoreCallback<M>) {
-        storageEngine.save(model, completion: completion)
+                               completion: @escaping DataStoreCallback<M>) {
+        let publishingCompletion: DataStoreCallback<M> = { result in
+            switch result {
+            case .result(let model):
+                // TODO: Differentiate between save & update
+                // TODO: Handle errors from mutation event creation
+                if let mutationEvent = try? MutationEvent(model: model, mutationType: .create) {
+                    self.dataStorePublisher.send(input: mutationEvent)
+                }
+            case .error:
+                break
+            }
+
+            completion(result)
+        }
+
+        storageEngine.save(model, completion: publishingCompletion)
     }
 
     public func query<M: Model>(_ modelType: M.Type,
                                 byId id: String,
                                 completion: DataStoreCallback<M?>) {
-        query(modelType, where: { field("id") == id }) {
+        let predicate: QueryPredicateFactory = { field("id") == id }
+        query(modelType, where: predicate) {
             switch $0 {
             case .result(let models):
                 if models.count > 1 {
@@ -54,26 +102,52 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
     }
 
     public func query<M: Model>(_ modelType: M.Type,
-                                where predicate: QueryPredicateFactory?,
+                                where predicateFactory: QueryPredicateFactory?,
                                 completion: DataStoreCallback<[M]>) {
-        storageEngine.query(modelType, completion: completion)
+        storageEngine.query(modelType,
+                            predicate: predicateFactory?(),
+                            completion: completion)
     }
 
     public func delete<M: Model>(_ model: M,
                                  completion: DataStoreCallback<Void>) {
-//        self.delete(type(of: model), withId: model.id, completion: completion)
+        let publishingCompletion: DataStoreCallback<Void> = { result in
+            switch result {
+            case .result:
+                // TODO: Handle errors from mutation event creation
+                if let mutationEvent = try? MutationEvent(model: model, mutationType: .delete) {
+                    self.dataStorePublisher.send(input: mutationEvent)
+                }
+            case .error:
+                break
+            }
+            completion(result)
+        }
+
+        delete(type(of: model),
+               withId: model.id,
+               completion: publishingCompletion)
     }
 
     public func delete<M: Model>(_ modelType: M.Type,
                                  withId id: String,
                                  completion: DataStoreCallback<Void>) {
-
-        // TODO implement
+        storageEngine.delete(modelType,
+                             withId: id,
+                             completion: completion)
     }
 
     public func reset(onComplete: @escaping (() -> Void)) {
-//        storageEngine.shutdown()
+        //        storageEngine.shutdown()
         onComplete()
     }
 
+}
+
+extension AWSDataStoreCategoryPlugin: DataStoreSubscribeBehavior {
+    @available(iOS 13.0, *)
+    public func publisher<M: Model>(for modelType: M.Type)
+        -> AnyPublisher<MutationEvent, DataStoreError> {
+            return dataStorePublisher.publisher(for: modelType)
+    }
 }

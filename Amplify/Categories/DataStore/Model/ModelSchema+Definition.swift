@@ -39,9 +39,9 @@ public enum ModelFieldType: CustomStringConvertible {
         case .date:  return "AWSDate"
         case .dateTime: return "AWSDateTime"
         case .bool: return "Boolean"
-        case .enum(let type): return String(describing: type)
-        case .model(let type): return String(describing: type)
-        case .collection(let ofType): return String(describing: ofType)
+        case .enum(let anyType): return String(describing: anyType)
+        case .model(let modelType): return modelType.modelName
+        case .collection(let modelType): return modelType.modelName
         }
     }
 
@@ -66,7 +66,7 @@ extension ModelField {
         case "AWSDate": return .date
         case "AWSDateTime": return .dateTime
         default:
-            guard let model = modelType(from: type) else {
+            guard let model = ModelRegistry.modelType(from: type) else {
                 preconditionFailure("Model with name \(type) could not be found.")
             }
             return isArray ? .collection(of: model) : .model(type: model)
@@ -161,10 +161,10 @@ public struct ModelSchemaDefinition {
     internal var fields: ModelFields
     internal var attributes: [ModelAttribute]
 
-    init(name: String) {
+    init(name: String, attributes: [ModelAttribute] = []) {
         self.name = name
         self.fields = [:] as ModelFields
-        self.attributes = []
+        self.attributes = attributes
     }
 
     public mutating func fields(_ fields: ModelFieldDefinition...) {
@@ -179,7 +179,7 @@ public struct ModelSchemaDefinition {
     }
 
     internal func build() -> ModelSchema {
-        return ModelSchema(name: name, fields: fields)
+        return ModelSchema(name: name, attributes: attributes, fields: fields)
     }
 }
 

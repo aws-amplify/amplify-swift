@@ -22,19 +22,25 @@ extension AWSPredictionsService: AWSTranslateServiceBehavior {
 
             guard task.error == nil else {
 
-                onEvent(.failed(.networkError(task.error!.localizedDescription, task.error!.localizedDescription)))
+                let error = task.error! as NSError
+                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
+                onEvent(.failed(
+                    .network(predictionsErrorString.errorDescription,
+                                  predictionsErrorString.recoverySuggestion)))
                 return nil
             }
 
             guard let result = task.result else {
-                onEvent(.failed(.unknownError("No result was found. An unknown error occurred.", "Please try again.")))
+                onEvent(.failed(.unknown("No result was found. An unknown error occurred.", "Please try again.")))
                 return nil
             }
 
             guard let translatedText = result.translatedText else {
                 onEvent(.failed(
-                    .networkError("No result was found.",
-                                  "Please make sure a text string was sent over and that the target language was different from the language sent.")))
+                    .network("No result was found.",
+                             """
+                            Please make sure a text string was sent over and that the target language was different from the language sent.
+                            """)))
                 return nil
             }
 

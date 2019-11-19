@@ -27,7 +27,7 @@ struct DeleteStatement: SQLStatement {
         self.conditionStatement = conditionStatement
     }
 
-    init(modelType: Model.Type, withId id: Identifier) {
+    init(modelType: Model.Type, withId id: Model.Identifier) {
         self.init(modelType: modelType, predicate: field("id") == id)
     }
 

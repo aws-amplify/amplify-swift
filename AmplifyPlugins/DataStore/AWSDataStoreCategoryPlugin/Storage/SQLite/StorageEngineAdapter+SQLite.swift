@@ -12,7 +12,6 @@ import SQLite
 /// [SQLite](https://sqlite.org) `StorageEngineAdapter` implementation. This class provides
 /// an integration layer between the AppSyncLocal `StorageEngine` and SQLite for local storage.
 final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
-
     internal var connection: Connection!
 
     public convenience init(databaseName: String = "database") throws {
@@ -76,6 +75,19 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
+    public func delete<M: Model>(_ modelType: M.Type,
+                                 withId id: Model.Identifier,
+                                 completion: (DataStoreResult<Void>) -> Void) {
+        do {
+            let statement = DeleteStatement(modelType: modelType, withId: id)
+            _ = try connection.prepare(statement.stringValue).run(statement.variables)
+            completion(.emptyResult)
+        } catch {
+            completion(.failure(causedBy: error))
+        }
+
+    }
+
     public func query<M: Model>(_ modelType: M.Type,
                                 predicate: QueryPredicate? = nil,
                                 completion: DataStoreCallback<[M]>) {
@@ -89,19 +101,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
-    public func delete<M: Model>(_ modelType: M.Type,
-                                 withId id: Identifier,
-                                 completion: DataStoreCallback<Void>) {
-        do {
-            let statement = DeleteStatement(modelType: modelType, withId: id)
-            _ = try connection.prepare(statement.stringValue).run(statement.variables)
-            completion(.emptyResult)
-        } catch {
-            completion(.failure(causedBy: error))
-        }
-    }
-
-    public func exists(_ modelType: Model.Type, withId id: Identifier) throws -> Bool {
+    public func exists(_ modelType: Model.Type, withId id: Model.Identifier) throws -> Bool {
         let schema = modelType.schema
         let primaryKey = schema.primaryKey.sqlName
         let sql = "select count(\(primaryKey)) from \(schema.name) where \(primaryKey) = ?"

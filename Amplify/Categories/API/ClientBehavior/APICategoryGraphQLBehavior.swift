@@ -33,5 +33,6 @@ public protocol APICategoryGraphQLBehavior {
     /// - Parameter listener: The event listener for the operation
     /// - Returns: The AmplifyOperation being enqueued
     func subscribe<R: Decodable>(request: GraphQLRequest<R>,
-                                 listener: GraphQLSubscriptionOperation<R>.EventListener?) -> GraphQLSubscriptionOperation<R>
+                                 listener: GraphQLSubscriptionOperation<R>.EventListener?)
+        -> GraphQLSubscriptionOperation<R>
 }

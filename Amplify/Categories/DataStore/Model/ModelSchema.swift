@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 /// Defines a storage schema. This immutable struct holds a reference to all the available
 /// `Model` types and their respective `ModelSchema`.
 public struct Schema {
@@ -20,7 +18,14 @@ public struct Schema {
 }
 
 public enum ModelAttribute {
+    /// TODO: What does this mean?
     case index
+
+    /// Instances of this model are syncable to the cloud via the API category
+    case isSyncable
+
+    /// This model is used by the Amplify system or a plugin, and should not be used by the app developer
+    case isSystem
 }
 
 public enum ModelFieldAttribute {
@@ -71,9 +76,8 @@ public struct ModelSchema {
 
     public let name: String
     public let targetName: String?
-    public let syncable: Bool
     public let fields: ModelFields
-
+    public let attributes: [ModelAttribute]
     public let sortedFields: [ModelField]
     public var primaryKey: ModelField {
         guard let primaryKey = fields.first(where: { $1.isPrimaryKey }) else {
@@ -84,11 +88,11 @@ public struct ModelSchema {
 
     init(name: String,
          targetName: String? = nil,
-         syncable: Bool = true,
+         attributes: [ModelAttribute] = [],
          fields: ModelFields = [:]) {
         self.name = name
         self.targetName = targetName
-        self.syncable = syncable
+        self.attributes = attributes
         self.fields = fields
 
         self.sortedFields = fields.sortedFields()
@@ -98,6 +102,12 @@ public struct ModelSchema {
         return fields[name]
     }
 
+}
+
+public extension ModelSchema {
+    var isSyncable: Bool {
+        attributes.contains(.isSyncable)
+    }
 }
 
 extension Dictionary where Key == String, Value == ModelField {

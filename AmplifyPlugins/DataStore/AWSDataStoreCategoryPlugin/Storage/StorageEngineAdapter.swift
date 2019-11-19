@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 
-public protocol StorageEngineAdapter: StorageEngineBehavior {
+protocol StorageEngineAdapter: StorageEngineBehavior {
 
-    func exists(_ modelType: Model.Type, withId id: Identifier) throws -> Bool
+    func exists(_ modelType: Model.Type, withId id: Model.Identifier) throws -> Bool
 }

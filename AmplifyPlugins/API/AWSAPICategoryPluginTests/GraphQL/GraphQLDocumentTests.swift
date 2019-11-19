@@ -13,10 +13,9 @@ import XCTest
 
 class GraphQLDocumentTests: XCTestCase {
 
-    private let models: [Model.Type] = [Post.self, Comment.self]
-
     override func setUp() {
-        models.forEach(registerModel(type:))
+        ModelRegistry.register(modelType: Comment.self)
+        ModelRegistry.register(modelType: Post.self)
     }
 
     // MARK: - Mutations
