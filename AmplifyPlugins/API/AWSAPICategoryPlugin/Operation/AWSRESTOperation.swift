@@ -76,7 +76,9 @@ RESTOperation {
         // Construct URL with path
         let url: URL
         do {
-            url = try RESTOperationRequestUtils.constructURL(for: endpointConfig.baseURL, with: request.path)
+            url = try RESTOperationRequestUtils.constructURL(for: endpointConfig.baseURL,
+                                                             with: request.path,
+                                                             with: request.queryParameters)
         } catch let error as APIError {
             dispatch(event: .failed(error))
             finish()

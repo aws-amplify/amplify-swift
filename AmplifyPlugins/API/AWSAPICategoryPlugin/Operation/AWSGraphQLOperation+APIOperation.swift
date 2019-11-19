@@ -18,6 +18,11 @@ extension AWSGraphQLOperation: APIOperation {
     }
 
     func updateProgress(_ data: Data, response: URLResponse?) {
+        if isCancelled || isFinished {
+            finish()
+            return
+        }
+
         guard let response = response as? HTTPURLResponse else {
             let apiError = APIError.unknown("Could not retrieve HTTPURLResponse", "")
             dispatch(event: .failed(apiError))
@@ -39,6 +44,11 @@ extension AWSGraphQLOperation: APIOperation {
     }
 
     func complete(with error: Error?, response: URLResponse?) {
+        if isCancelled || isFinished {
+            finish()
+            return
+        }
+
         guard let response = response as? HTTPURLResponse else {
             let apiError = APIError.unknown("Could not retrieve HTTPURLResponse", "", error)
             dispatch(event: .failed(apiError))

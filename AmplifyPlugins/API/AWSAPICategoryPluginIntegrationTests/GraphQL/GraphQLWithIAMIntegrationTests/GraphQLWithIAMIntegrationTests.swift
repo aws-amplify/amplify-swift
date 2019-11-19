@@ -205,7 +205,6 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
     /// Then: The operation fails and contains UnAuthorized error
     func testCreateTodoMutationWithIAMWithNoUserSignedIn() {
         let failedInvoked = expectation(description: "request failed")
-
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
         let expectedDescription = "testCreateTodoMutationDescription"
@@ -218,13 +217,16 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
             case .completed(let result):
-                switch result {
-                case .error(let errors):
-                    print(errors)
-                    failedInvoked.fulfill()
-                default:
-                    XCTFail("Unexpected event: \(event)")
+                XCTFail("Unexpected .completed event: \(result)")
+            case .failed(let error):
+                print(error)
+                guard case let .httpStatusError(statusCode, headers, _, _) = error else {
+                    XCTFail("Should be HttpStatusError")
+                    return
                 }
+
+                XCTAssertEqual(statusCode, 401)
+                failedInvoked.fulfill()
             default:
                 XCTFail("Unexpected event: \(event)")
             }

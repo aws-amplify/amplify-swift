@@ -17,7 +17,37 @@ extension AWSRESTOperation: APIOperation {
         cancel()
     }
 
+    func updateProgress(_ data: Data, response: URLResponse?) {
+        if isCancelled || isFinished {
+            finish()
+            return
+        }
+
+        guard let response = response as? HTTPURLResponse else {
+            let apiError = APIError.unknown("Could not retrieve HTTPURLResponse", "")
+            dispatch(event: .failed(apiError))
+            finish()
+            return
+        }
+
+        let statusCode = response.statusCode
+
+        if statusCode < 200 || statusCode >= 300 {
+            let headers = response.allHeaderFields
+            let apiError = APIError.httpStatusError(statusCode, headers, "")
+            dispatch(event: .failed(apiError))
+            finish()
+            return
+        }
+
+        self.data.append(data)
+    }
+
     func complete(with error: Error?, response: URLResponse?) {
+        if isCancelled || isFinished {
+            finish()
+            return
+        }
 
         guard let response = response as? HTTPURLResponse else {
             let apiError = APIError.unknown("Could not retrieve HTTPURLResponse", "", error)
@@ -57,28 +87,5 @@ extension AWSRESTOperation: APIOperation {
 
         dispatch(event: .completed(data))
         finish()
-    }
-
-    func updateProgress(_ data: Data, response: URLResponse?) {
-
-        guard let response = response as? HTTPURLResponse else {
-            let apiError = APIError.unknown("Could not retrieve HTTPURLResponse", "")
-            dispatch(event: .failed(apiError))
-            finish()
-            return
-        }
-
-        let statusCode = response.statusCode
-
-        if statusCode < 200 || statusCode >= 300 {
-            let headers = response.allHeaderFields
-            let apiError = APIError.httpStatusError(statusCode, headers, "")
-            dispatch(event: .failed(apiError))
-            finish()
-            return
-        }
-
-
-        self.data.append(data)
     }
 }

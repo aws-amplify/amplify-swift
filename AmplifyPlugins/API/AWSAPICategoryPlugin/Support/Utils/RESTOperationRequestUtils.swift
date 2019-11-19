@@ -13,7 +13,7 @@ final class RESTOperationRequestUtils {
 
     }
 
-    static func constructURL(for baseURL: URL, with path: String?) throws -> URL {
+    static func constructURL(for baseURL: URL, with path: String?, with queryParameters: [String: String]?) throws -> URL {
         guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
             throw APIError.invalidURL("Invalid URL: \(baseURL.absoluteString)",
                 """
@@ -23,11 +23,16 @@ final class RESTOperationRequestUtils {
             )
         }
 
-        guard let path = path else {
-            return baseURL
+        if let path = path {
+            components.path.append(path)
         }
 
-        components.path.append(path)
+        if let queryParameters = queryParameters {
+            for queryParameter in queryParameters {
+                let queryItem = URLQueryItem(name: queryParameter.key, value: queryParameter.value)
+                components.queryItems?.append(queryItem)
+            }
+        }
 
         guard let url = components.url else {
             throw APIError.invalidURL(
@@ -50,15 +55,17 @@ final class RESTOperationRequestUtils {
         var baseRequest = URLRequest(url: url)
         let headers = ["content-type": "application/json"]
         baseRequest.allHTTPHeaderFields = headers
-
         baseRequest.httpMethod = operationType.rawValue
+        baseRequest.httpBody = requestPayload
+
+
         switch operationType {
         case .get:
             break
         case .put:
             break
         case .post:
-            baseRequest.httpBody = requestPayload
+            break
         case .patch:
             break
         case .delete:
