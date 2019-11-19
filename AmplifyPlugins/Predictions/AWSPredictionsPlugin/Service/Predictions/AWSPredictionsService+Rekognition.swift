@@ -25,7 +25,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                                      "Try choosing an image and sending it again.")))
                    return
         }
-        
+
         switch type {
         case .labels:
             detectRekognitionLabels(image: imageData, onEvent: onEvent).continueWith { (task) -> Any? in
@@ -80,7 +80,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                                       "Please make sure the image integrity is maintained before sending")))
                     return nil
                 }
-             
+
                 let unsafeContent: Bool = moderationRekognitionlabels.count > 0
                 let labels = IdentifyLabelsResultTransformers.processModerationLabels(moderationRekognitionlabels)
                 onEvent(.completed(IdentifyLabelsResult(labels: labels, unsafeContent: unsafeContent)))
@@ -366,7 +366,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
     private func detectAllLabels(image: Data, onEvent: @escaping AWSPredictionsService.RekognitionServiceEventHandler) {
         let dispatchGroup = DispatchGroup()
         var allLabels = [Label]()
-        var unsafeContent:Bool = false
+        var unsafeContent: Bool = false
         dispatchGroup.enter()
         detectRekognitionLabels(image: image, onEvent: onEvent).continueWith { (task) -> Any? in
             guard task.error == nil else {
@@ -424,7 +424,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
             return nil
         }
         dispatchGroup.wait()
-        
+
         onEvent(.completed(IdentifyLabelsResult(labels: allLabels, unsafeContent: unsafeContent)))
     }
 }

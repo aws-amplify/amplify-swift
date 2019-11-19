@@ -13,21 +13,21 @@ class IdentifyLabelsResultTransformers: IdentifyResultTransformers {
     static func processLabels(_ rekognitionLabels: [AWSRekognitionLabel]) -> [Label] {
         var labels = [Label]()
         for rekognitionLabel in rekognitionLabels {
-            
+
             guard let name = rekognitionLabel.name else {
                 continue
             }
-            
+
             let parents = processParents(rekognitionLabel.parents)
-            
+
             let metadata = LabelMetadata(confidence: Double(
                 truncating: rekognitionLabel.confidence ?? 0.0), parents: parents)
-            
+
             let boundingBoxes = processInstances(rekognitionLabel.instances)
 
             let label = Label(name: name, metadata: metadata, boundingBoxes: boundingBoxes)
             labels.append(label)
-            
+
         }
         return labels
     }
