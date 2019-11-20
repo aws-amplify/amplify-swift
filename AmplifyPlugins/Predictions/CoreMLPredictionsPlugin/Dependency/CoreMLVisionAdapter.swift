@@ -22,7 +22,7 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
 
         let categories = observations.filter { $0.hasMinimumRecall(0.01, forPrecision: 0.9) }
         for category in categories {
-            let metaData = LabelMetadata(confidence: Double(category.confidence))
+            let metaData = LabelMetadata(confidence: Double(category.confidence * 100))
             let label = Label(name: category.identifier, metadata: metaData)
             labelsResult.append(label)
         }

@@ -118,7 +118,7 @@ class IdentifyBasicIntegrationTests: XCTestCase {
     func testIdentifyLabels() {
         setupAmplify()
         let testBundle = Bundle(for: type(of: self))
-        guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
+        guard let url = testBundle.url(forResource: "testImageText1", withExtension: "jpg") else {
              XCTFail("Unable to find image")
              return
         }
@@ -274,7 +274,7 @@ class IdentifyBasicIntegrationTests: XCTestCase {
     func testIdentifyTextPlain() {
          setupAmplify()
         let testBundle = Bundle(for: type(of: self))
-        guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
+        guard let url = testBundle.url(forResource: "testImageText1", withExtension: "jpg") else {
              XCTFail("Unable to find image")
              return
         }

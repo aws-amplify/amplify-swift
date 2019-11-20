@@ -162,18 +162,34 @@ class IdentifyMultiService: MultiServiceBehavior {
         guard let offlineLines = offlineTextResult.identifiedLines else {
             return onlineTextResult
         }
+        var combinedLines = Set<IdentifiedLine>()
 
         let onlineLineSet = Set<IdentifiedLine>(onlineLines)
         let offlineLineSet = Set<IdentifiedLine>(offlineLines)
-        //TODO: figure out how to compare bounding boxes to avoid removing duplicate text in diff places
-        let mergedLines = Array(onlineLineSet.union(offlineLineSet))
 
+        let intersectingLines = onlineLineSet.intersection(offlineLineSet)
+        for line in intersectingLines {
+            let onlineIndex = onlineLineSet.firstIndex(of: line)!
+            let offlineIndex = offlineLineSet.firstIndex(of: line)!
+            let onlineLine = onlineLineSet[onlineIndex]
+            let offlineLine = offlineLineSet[offlineIndex]
+            //test to see if bounding boxes intersect, if they do it's the same line of text. if not, add both lines
+            if onlineLine.intersectingBoundingBoxes(compareTo: offlineLine) {
+                combinedLines.insert(onlineLine) //insert only one of them if they intersect
+            } else {
+                combinedLines.insert(onlineLine)
+                combinedLines.insert(offlineLine)
+            }
+        }
+
+        combinedLines = combinedLines.union(offlineLineSet)
+        combinedLines = combinedLines.union(onlineLineSet)
         //offline result doesn't return anything except identified lines so
         //merging them plus the other stuff from online is a merged result
         return IdentifyTextResult(fullText: onlineTextResult.fullText,
                                   words: onlineTextResult.words,
                                   rawLineText: onlineTextResult.rawLineText,
-                                  identifiedLines: mergedLines)
+                                  identifiedLines: Array(combinedLines))
     }
 }
 
@@ -196,19 +212,18 @@ extension Label: Hashable {
     }
 }
 
-extension LabelMetadata: Hashable, Comparable {
+extension LabelMetadata: Equatable, Comparable {
 
     public static func == (lhs: LabelMetadata, rhs: LabelMetadata) -> Bool {
-        return lhs.confidence == rhs.confidence
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(confidence)
+        let value = lhs.confidence == rhs.confidence
+        return value
     }
 
     public static func < (lhs: LabelMetadata, rhs: LabelMetadata) -> Bool {
-        return lhs.confidence < rhs.confidence
+        let value = lhs.confidence < rhs.confidence
+        return value
     }
+
 }
 
 extension IdentifiedLine: Hashable {
@@ -219,5 +234,17 @@ extension IdentifiedLine: Hashable {
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(text)
+    }
+
+    func intersectingBoundingBoxes(compareTo: IdentifiedLine) -> Bool {
+        let cgRectFirst = CGRect(x: boundingBox.left,
+                                 y: boundingBox.top,
+                                 width: boundingBox.width,
+                                 height: boundingBox.height)
+        let cgRectSecond = CGRect(x: compareTo.boundingBox.left,
+                                  y: compareTo.boundingBox.top,
+                                  width: compareTo.boundingBox.width,
+                                  height: compareTo.boundingBox.height)
+        return cgRectFirst.intersects(cgRectSecond)
     }
 }
