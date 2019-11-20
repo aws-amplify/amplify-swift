@@ -20,7 +20,7 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
     /// Then: The operation completes successfully
     func testIdentifyLabels() {
         let testBundle = Bundle(for: type(of: self))
-        guard let url = testBundle.url(forResource: "testImage", withExtension: "jpg") else {
+        guard let url = testBundle.url(forResource: "testImageLabels", withExtension: "jpg") else {
             return
         }
         let completeInvoked = expectation(description: "Completed is invoked")
@@ -44,7 +44,7 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
 
     func testIdentifyModerationLabels() {
         let testBundle = Bundle(for: type(of: self))
-        guard let url = testBundle.url(forResource: "testImage", withExtension: "jpg") else {
+        guard let url = testBundle.url(forResource: "testImageLabels", withExtension: "jpg") else {
             return
         }
         let completeInvoked = expectation(description: "Completed is invoked")
@@ -68,7 +68,7 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
 
     func testIdentifyAllLabels() {
         let testBundle = Bundle(for: type(of: self))
-        guard let url = testBundle.url(forResource: "testImage", withExtension: "jpg") else {
+        guard let url = testBundle.url(forResource: "testImageLabels", withExtension: "jpg") else {
             return
         }
         let completeInvoked = expectation(description: "Completed is invoked")
@@ -98,6 +98,54 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
         let completeInvoked = expectation(description: "Completed is invoked")
 
         let operation = Amplify.Predictions.identify(type: .detectCelebrity,
+                                                     image: url,
+                                                     options: PredictionsIdentifyRequest.Options()) { event in
+                                                        switch event {
+                                                        case .completed:
+                                                            completeInvoked.fulfill()
+                                                        case .failed(let error):
+                                                            XCTFail("Failed with \(error)")
+                                                        default:
+                                                            break
+                                                        }
+        }
+
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: networkTimeout)
+    }
+
+    func testIdentifyEntities() {
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImageEntities", withExtension: "jpg") else {
+            return
+        }
+        let completeInvoked = expectation(description: "Completed is invoked")
+
+        let operation = Amplify.Predictions.identify(type: .detectEntities,
+                                                     image: url,
+                                                     options: PredictionsIdentifyRequest.Options()) { event in
+                                                        switch event {
+                                                        case .completed:
+                                                            completeInvoked.fulfill()
+                                                        case .failed(let error):
+                                                            XCTFail("Failed with \(error)")
+                                                        default:
+                                                            break
+                                                        }
+        }
+
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: networkTimeout)
+    }
+
+    func testIdentifyText() {
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
+            return
+        }
+        let completeInvoked = expectation(description: "Completed is invoked")
+
+        let operation = Amplify.Predictions.identify(type: .detectText(.plain),
                                                      image: url,
                                                      options: PredictionsIdentifyRequest.Options()) { event in
                                                         switch event {
