@@ -65,6 +65,104 @@ class IdentifyMultiService: MultiServiceBehavior {
     func mergeResults(offlineResult: IdentifyResult?,
                       onlineResult: IdentifyResult?,
                       callback: @escaping  IdentifyEventHandler) {
-        // TODO: Combine logic to be added
+
+        if offlineResult == nil && onlineResult == nil {
+            let message = InterpretMultiServiceErrorMessage.interpretTextNoResult.errorDescription
+            let recoveryMessage = InterpretMultiServiceErrorMessage.interpretTextNoResult.recoverySuggestion
+            let predictionError = PredictionsError.service(message, recoveryMessage, nil)
+            callback(.failed(predictionError))
+        }
+
+        guard let finalOfflineResult = offlineResult else {
+            // We are sure that the value will be non-nil at this point.
+            callback(.completed(onlineResult!))
+            return
+        }
+
+        guard let finalOnlineResult = onlineResult else {
+            callback(.completed(finalOfflineResult))
+            return
+        }
+
+        if finalOnlineResult is IdentifyLabelsResult || finalOfflineResult is IdentifyLabelsResult {
+            //merge labels result
+            // swiftlint:force_cast disable
+            guard let onlineLabelResult = finalOnlineResult as? IdentifyLabelsResult,
+                let offlineLabelResult = finalOfflineResult as? IdentifyLabelsResult else {
+                    //this should never happen, something went seriously wrong throw error
+                    let message = InterpretMultiServiceErrorMessage.interpretTextNoResult.errorDescription
+                    let recoveryMessage = InterpretMultiServiceErrorMessage.interpretTextNoResult.recoverySuggestion
+                    let predictionError = PredictionsError.service(message, recoveryMessage, nil)
+                    callback(.failed(predictionError))
+                    return
+            }
+            let mergedResult = mergeLabels(onlineLabelResult: onlineLabelResult,
+                                           offlineLabelResult: offlineLabelResult)
+            callback(.completed(mergedResult))
+            return
+        } else if finalOnlineResult is IdentifyTextResult || finalOnlineResult is IdentifyTextResult {
+            print("got text")
+        }
+    }
+
+    func mergeLabels(onlineLabelResult: IdentifyLabelsResult,
+                     offlineLabelResult: IdentifyLabelsResult) -> IdentifyLabelsResult {
+        var combinedLabels = [Label]()
+
+        let onlineLabelSet = Set<Label>(onlineLabelResult.labels)
+        let offlineLabelSet = Set<Label>(offlineLabelResult.labels)
+
+        //first find the labels that are the same
+        let intersectingLabels = onlineLabelSet.intersection(offlineLabelSet)
+        //loop through to find higher confidences and retain those labels and add to final result
+        for label in intersectingLabels {
+            guard let onlineLabel = onlineLabelResult.labels.first(
+                where: {$0.name.lowercased() == label.name.lowercased()}),
+                let offlineLabel = offlineLabelResult.labels.first(
+                    where: {$0.name.lowercased() == label.name.lowercased()}) else {
+                    continue
+            }
+            let labelWithHigherConfidence = onlineLabel.higherConfidence(compareTo: offlineLabel)
+            guard let betterLabel = labelWithHigherConfidence else {
+                combinedLabels.append(onlineLabel) //append aws label as default in the event no confidences to compare
+                continue
+            }
+            combinedLabels.append(betterLabel)
+        }
+
+        //get the differences
+        let differingLabels = Array(onlineLabelSet.symmetricDifference(offlineLabelSet))
+        combinedLabels.append(contentsOf: differingLabels)
+
+        if let unsafeContent = onlineLabelResult.unsafeContent { //all labels was called
+            let combinedResult = IdentifyLabelsResult(labels: combinedLabels, unsafeContent: unsafeContent)
+            return combinedResult
+        } else {
+            let combinedResult = IdentifyLabelsResult(labels: combinedLabels)
+            return combinedResult
+        }
+    }
+}
+
+extension Label: Hashable {
+
+    public static func == (lhs: Label, rhs: Label) -> Bool {
+        return lhs.name.lowercased() == rhs.name.lowercased()
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(name.lowercased())
+    }
+
+    func higherConfidence(compareTo: Label) -> Label? {
+        guard let firstMetadata = self.metadata,
+            let secondMetadata = compareTo.metadata else {
+                return nil
+        }
+        if firstMetadata.confidence >= secondMetadata.confidence {
+            return self
+        } else {
+            return compareTo
+        }
     }
 }

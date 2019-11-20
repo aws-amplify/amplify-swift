@@ -12,10 +12,11 @@ import AWSPredictionsPlugin
 
 class AWSPredictionsPluginTestBase: XCTestCase {
 
-    let region: JSONValue = "us-east-1"
+    let region: JSONValue = "us-west-2"
     let networkTimeout = TimeInterval(180) // 180 seconds to wait before network timeouts
 
     override func setUp() {
+        setupMobileClient()
         setupAmplify()
     }
 

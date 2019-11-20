@@ -81,7 +81,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                     return nil
                 }
 
-                let unsafeContent: Bool = moderationRekognitionlabels.isEmpty
+                let unsafeContent: Bool = !moderationRekognitionlabels.isEmpty
 
                 let labels = IdentifyLabelsResultTransformers.processModerationLabels(moderationRekognitionlabels)
                 onEvent(.completed(IdentifyLabelsResult(labels: labels, unsafeContent: unsafeContent)))
@@ -424,7 +424,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 return nil
             }
 
-            unsafeContent = moderationRekognitionLabels.isEmpty
+            unsafeContent = !moderationRekognitionLabels.isEmpty
 
             dispatchGroup.leave()
             return nil

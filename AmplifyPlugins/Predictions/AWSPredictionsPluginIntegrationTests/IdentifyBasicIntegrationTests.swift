@@ -40,6 +40,77 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
 
         XCTAssertNotNil(operation)
         waitForExpectations(timeout: networkTimeout)
+    }
 
+    func testIdentifyModerationLabels() {
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImage", withExtension: "jpg") else {
+            return
+        }
+        let completeInvoked = expectation(description: "Completed is invoked")
+
+        let operation = Amplify.Predictions.identify(type: .detectLabels(.moderation),
+                                                     image: url,
+                                                     options: PredictionsIdentifyRequest.Options()) { event in
+                                                        switch event {
+                                                        case .completed:
+                                                            completeInvoked.fulfill()
+                                                        case .failed(let error):
+                                                            XCTFail("Failed with \(error)")
+                                                        default:
+                                                            break
+                                                        }
+        }
+
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: networkTimeout)
+    }
+
+    func testIdentifyAllLabels() {
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImage", withExtension: "jpg") else {
+            return
+        }
+        let completeInvoked = expectation(description: "Completed is invoked")
+
+        let operation = Amplify.Predictions.identify(type: .detectLabels(.all),
+                                                     image: url,
+                                                     options: PredictionsIdentifyRequest.Options()) { event in
+                                                        switch event {
+                                                        case .completed:
+                                                            completeInvoked.fulfill()
+                                                        case .failed(let error):
+                                                            XCTFail("Failed with \(error)")
+                                                        default:
+                                                            break
+                                                        }
+        }
+
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: networkTimeout)
+    }
+
+    func testIdentifyCelebrities() {
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImageCeleb", withExtension: "jpg") else {
+            return
+        }
+        let completeInvoked = expectation(description: "Completed is invoked")
+
+        let operation = Amplify.Predictions.identify(type: .detectCelebrity,
+                                                     image: url,
+                                                     options: PredictionsIdentifyRequest.Options()) { event in
+                                                        switch event {
+                                                        case .completed:
+                                                            completeInvoked.fulfill()
+                                                        case .failed(let error):
+                                                            XCTFail("Failed with \(error)")
+                                                        default:
+                                                            break
+                                                        }
+        }
+
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: networkTimeout)
     }
 }
