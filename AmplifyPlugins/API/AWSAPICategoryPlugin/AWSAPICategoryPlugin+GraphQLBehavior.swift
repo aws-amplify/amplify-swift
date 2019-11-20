@@ -9,38 +9,6 @@ import Amplify
 
 public extension AWSAPICategoryPlugin {
 
-    // MARK: - GraphQL model based APIs
-
-    func query<M: Model>(from modelType: M.Type,
-                         byId id: String,
-                         listener: GraphQLOperation<M?>.EventListener?) -> GraphQLOperation<M?> {
-        let request = GraphQLRequest<M>.query(from: modelType, byId: id)
-        return query(request: request, listener: listener)
-    }
-
-    func query<M: Model>(from modelType: M.Type,
-                         where predicate: QueryPredicate?,
-                         listener: GraphQLOperation<[M]>.EventListener?) -> GraphQLOperation<[M]> {
-        let request = GraphQLRequest<[M]>.query(from: modelType, where: predicate)
-        return query(request: request, listener: listener)
-    }
-
-    func mutate<M: Model>(of model: M,
-                          type: GraphQLMutationType,
-                          listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M> {
-        let request = GraphQLRequest<M>.mutation(of: model, type: type)
-        return mutate(request: request, listener: listener)
-    }
-
-    func subscribe<M: Model>(from modelType: M.Type,
-                             type: GraphQLSubscriptionType,
-                             listener: GraphQLSubscriptionOperation<M>.EventListener?) -> GraphQLSubscriptionOperation<M> {
-        let request = GraphQLRequest<M>.subscription(of: modelType, type: type)
-        return subscribe(request: request, listener: listener)
-    }
-
-    // MARK: GraphQL document based APIs
-
     func query<R: Decodable>(request: GraphQLRequest<R>,
                              listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
         let operationRequest = getOperationRequest(request: request,

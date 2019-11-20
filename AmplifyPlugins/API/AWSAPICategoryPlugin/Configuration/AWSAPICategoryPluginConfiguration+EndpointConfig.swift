@@ -267,32 +267,46 @@ public extension AWSAPICategoryPluginConfiguration {
     }
 }
 
-
 extension Dictionary where Key == String, Value == AWSAPICategoryPluginConfiguration.EndpointConfig {
-    func getConfig(for apiName: String?) throws -> AWSAPICategoryPluginConfiguration.EndpointConfig {
+    func getConfig(for apiName: String?,
+                   endpointType: AWSAPICategoryPluginEndpointType) throws ->
+        AWSAPICategoryPluginConfiguration.EndpointConfig {
         if let apiName = apiName {
-            // Retrieve endpoint configuration for the specified APIName
-            guard let endpointConfig = self[apiName] else {
-
-                let error = APIError.invalidConfiguration(
-                    "Unable to get an endpoint configuration for \(apiName)",
-                    """
-                    Review your API plugin configuration and ensure \(apiName) has a valid configuration.
-                    """
-                )
-
-                throw error
-
-            }
-
-            return endpointConfig
-
-        } else {
-            if count == 1, let endpointConfig = self.first {
-                return endpointConfig.value
-            }
-
-            throw APIError.invalidConfiguration("not yet implemented for more than one", "configure only 1 API")
+            return try getConfig(for: apiName)
         }
+
+        let apiForEndpointType = filter { (_, endpointConfig) -> Bool in
+            return endpointConfig.endpointType == endpointType
+        }
+
+        guard let endpointConfig = apiForEndpointType.first else {
+            throw APIError.invalidConfiguration("Missing API for \(endpointType) endpointType",
+                                                "Add the \(endpointType) API to configuration.")
+        }
+
+        if apiForEndpointType.count > 1 {
+            throw APIError.invalidConfiguration(
+                "More than one \(endpointType) API configured. Could not infer which API to call",
+                "Use the apiName to specify which API to call")
+        }
+
+        return endpointConfig.value
+    }
+
+    private func getConfig(for apiName: String) throws -> AWSAPICategoryPluginConfiguration.EndpointConfig {
+        guard let endpointConfig = self[apiName] else {
+
+            let error = APIError.invalidConfiguration(
+                "Unable to get an endpoint configuration for \(apiName)",
+                """
+                Review your API plugin configuration and ensure \(apiName) has a valid configuration.
+                """
+            )
+
+            throw error
+
+        }
+
+        return endpointConfig
     }
 }

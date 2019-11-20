@@ -54,7 +54,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         // Retrieve endpoint configuration
         let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
         do {
-            endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName)
+            endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL)
         } catch let error as APIError {
             dispatch(event: .failed(error))
             finish()

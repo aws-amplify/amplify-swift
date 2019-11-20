@@ -125,41 +125,10 @@ struct GraphQLResponseDecoder {
                                              into responseType: R.Type,
                                              at decodePath: String?) throws -> R {
 
-        let serializedJSON: Data
-
-        if let decodePath = decodePath {
-            var keys = decodePath.components(separatedBy: ".")
-
-            // Process the first key
-            guard let firstKey = keys.first else {
-                throw APIError.operationError(
-                    "The decode path was passed in: \(decodePath), but could not find the first key",
-                    "Pass in a decode path like 'getTodo' or 'listTodos.items'",
-                    nil)
-            }
-
-            var data = graphQLData[firstKey] // retrieve the value at the first key
-
-            // Continue traversing if there are more than one key in the decode path
-            if keys.count > 1 {
-                keys.remove(at: 0) // remove the first key after since we have used it already
-
-                for key in keys {
-                    // For each subsequential key, make sure that it is an object, then get the value for that `key`
-                    guard case let .object(dataObject) = data else {
-                        throw APIError.operationError("Cannot decode at \(key), data is not object: \(data)", "", nil)
-                    }
-                    var value = dataObject[key]
-                    data = value
-                }
-            }
-
-            serializedJSON = try JSONEncoder().encode(data)
-        } else {
-            serializedJSON = try JSONEncoder().encode(graphQLData)
-        }
+        let serializedJSON = try serialize(at: decodePath, graphQLData: graphQLData)
 
         if responseType == String.self {
+
             guard let responseString = String(data: serializedJSON, encoding: .utf8) else {
                 throw APIError.operationError("could not get string from data", "", nil)
             }
@@ -196,6 +165,28 @@ struct GraphQLResponseDecoder {
         let serializedJSON = try JSONEncoder().encode(graphQLError)
         return try JSONDecoder().decode(GraphQLError.self, from: serializedJSON)
     }
+
+    private static func serialize(at decodePath: String?, graphQLData: [String: JSONValue]) throws -> Data {
+        guard let decodePath = decodePath else {
+            return try JSONEncoder().encode(graphQLData)
+        }
+
+        let keys = decodePath.components(separatedBy: ".")
+
+        var data: JSONValue?
+        for (index, key) in keys.enumerated() {
+            if index == 0 {
+                data = graphQLData[key]
+                continue
+            }
+
+            guard case let .object(dataObject) = data else {
+                throw APIError.operationError("Could not retrieve object, given decode path: \(decodePath)", "", nil)
+            }
+
+            data = dataObject[key]
+        }
+
+        return try JSONEncoder().encode(data)
+    }
 }
-
-

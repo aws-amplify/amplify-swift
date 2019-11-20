@@ -62,7 +62,7 @@ RESTOperation {
         // Retrieve endpoint configuration
         let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
         do {
-            endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName)
+            endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .rest)
         } catch let error as APIError {
             dispatch(event: .failed(error))
             finish()

@@ -41,12 +41,12 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
         switch endpointType {
         case .graphQL:
             endpoint = AWSEndpoint(region: region,
-                                       serviceName: URLRequestContants.appSyncServiceName,
-                                       url: mutableRequest.url)
+                                   serviceName: URLRequestContants.appSyncServiceName,
+                                   url: mutableRequest.url)
         case .rest:
             endpoint = AWSEndpoint(region: region,
-                                       service: AWSServiceType.APIGateway,
-                                       url: mutableRequest.url)
+                                   service: AWSServiceType.APIGateway,
+                                   url: mutableRequest.url)
         }
 
         let signer: AWSSignatureV4Signer = AWSSignatureV4Signer(
@@ -55,7 +55,7 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
 
         let task = signer.interceptRequest(mutableRequest)
         task?.waitUntilFinished()
-         if let error = task?.error {
+        if let error = task?.error {
             throw APIError.operationError("Got error trying to sign", "", error)
         }
 

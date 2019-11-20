@@ -20,9 +20,8 @@ struct APIOperationResponse {
 
 extension APIOperationResponse {
 
-    /// Throws APIError if the response contains error or non-2xx status.
+    /// Validate the response from the service and throws APIError if invalid.
     func validate() throws {
-
         switch (urlError, httpURLResponse) {
         case (nil, nil):
             break
