@@ -27,7 +27,9 @@ extension AWSPredictionsService: AWSPollyServiceBehavior {
 
             guard task.error == nil else {
                 let error = task.error! as NSError
-                let predictionsErrorString = PredictionsErrorHelper.mapPollyError(error)
+
+                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
+
                 onEvent(.failed(
                     .network(predictionsErrorString.errorDescription,
                              predictionsErrorString.recoverySuggestion)))

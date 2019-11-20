@@ -15,6 +15,8 @@ final public class CoreMLPredictionsPlugin: PredictionsCategoryPlugin {
 
     var coreMLNaturalLanguage: CoreMLNaturalLanguageBehavior!
 
+    var coreMLVision: CoreMLVisionBehavior!
+
     /// A queue that regulates the execution of operations.
     var queue: OperationQueue!
 

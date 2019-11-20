@@ -9,7 +9,6 @@ pod 'SwiftLint'
 target 'AWSPredictionsPlugin' do
   pod 'Amplify', :path => '../../'
   pod 'AWSPluginsCore', :path => '../../'
-  pod 'CoreMLPredictionsPlugin', :path => '../../'
   pod "AWSTranslate", "~> #{AWS_SDK_VERSION}"
   pod "AWSRekognition", "~> #{AWS_SDK_VERSION}"
   pod "AWSPolly", "~> #{AWS_SDK_VERSION}"

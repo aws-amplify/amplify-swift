@@ -9,7 +9,7 @@ import Amplify
 import AWSComprehend
 
 extension AWSComprehendPartOfSpeechTagType {
-
+    // swiftlint:disable cyclomatic_complexity
     func getSpeechType() -> SpeechType {
         switch self {
         case .unknown:

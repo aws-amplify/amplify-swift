@@ -1,0 +1,74 @@
+//
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import Amplify
+import Foundation
+import SQLite
+
+typealias SQLPredicate = (String, [Binding?])
+
+/// Utility function that translates a `QueryPredicate` to well-formatted SQL conditions.
+/// It walks all nodes of a predicate tree and output the appropriate SQL statement.
+///
+/// - Parameters:
+///   - modelType: the metatype of the `Model`
+///   - predicate: the query predicate
+/// - Returns: a tuple containing the SQL string and the associated values
+private func translateQueryPredicate(from modelType: Model.Type,
+                                     predicate: QueryPredicate) -> SQLPredicate {
+    var sql: [String] = []
+    var bindings: [Binding?] = []
+    var groupType: QueryPredicateGroupType = .and
+    let indentPrefix = "  "
+    var indentSize = 1
+    var groupOpened = false
+
+    func translate(_ pred: QueryPredicate) {
+        let indent = String(repeating: indentPrefix, count: indentSize)
+        if let operation = pred as? QueryPredicateOperation {
+            let logicalOperator = groupOpened ? "" : "\(groupType.rawValue) "
+            let column = operation.operator.columnFor(field: operation.field)
+            sql.append("\(indent)\(logicalOperator)\(column) \(operation.operator.sqlOperation)")
+            bindings.append(contentsOf: operation.operator.bindings)
+            groupOpened = false
+        } else if let group = pred as? QueryPredicateGroup {
+            var shouldClose = false
+            groupOpened = group.type != groupType
+            if groupOpened {
+                sql.append("\(indent)\(groupType.rawValue) (")
+                groupType = group.type
+                indentSize += 1
+                shouldClose = true
+            }
+            group.predicates.forEach { translate($0) }
+            if shouldClose {
+                indentSize -= 1
+                sql.append("\(indent))")
+            }
+        }
+    }
+    translate(predicate)
+    return (sql.joined(separator: "\n"), bindings)
+}
+
+/// Represents a partial SQL statement with query conditions. This type can be used to
+/// compose `insert`, `update`, `delete` and `select` statements with conditions.
+struct ConditionStatement: SQLStatement {
+
+    let modelType: Model.Type
+    let stringValue: String
+    let variables: [Binding?]
+
+    init(modelType: Model.Type, predicate: QueryPredicate) {
+        self.modelType = modelType
+
+        let (sql, variables) = translateQueryPredicate(from: modelType, predicate: predicate)
+        self.stringValue = sql
+        self.variables = variables
+    }
+
+}

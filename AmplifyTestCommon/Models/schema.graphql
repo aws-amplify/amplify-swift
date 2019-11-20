@@ -5,14 +5,13 @@ type Post @model {
     createdAt: AWSDateTime!
     updatedAt: AWSDateTime
     draft: Boolean
-    rating: Float
+    rating: Double
     comments: [Comment] @connection(name: "PostComment")
 }
 
 type Comment @model {
     id: ID!
     content: String!
-    createdAt: AWSDateTime!
+    createdAt: AWSDate!
     post: Post @connection(name: "PostComment")
 }
-

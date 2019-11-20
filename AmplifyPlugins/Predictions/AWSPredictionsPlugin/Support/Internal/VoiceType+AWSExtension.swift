@@ -9,7 +9,6 @@ import Amplify
 import AWSPolly
 
 extension VoiceType {
-
     public static let arabicFemaleZeina: VoiceType = .voice("Zeina")
     public static let chineseFemaleZhiyu: VoiceType  = .voice("Zhiyu")
     public static let danishFemaleNaja: VoiceType  = .voice("Naja")
