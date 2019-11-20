@@ -14,6 +14,7 @@ class AWSPredictionsPluginTestBase: XCTestCase {
 
     let region: JSONValue = "us-west-2"
     let networkTimeout = TimeInterval(180) // 180 seconds to wait before network timeouts
+    let withCollection = false
 
     override func setUp() {
         setupMobileClient()
@@ -28,18 +29,39 @@ class AWSPredictionsPluginTestBase: XCTestCase {
 
     private func setupAmplify() {
         // Set up Amplify predictions configuration
-        let predictionsConfig = PredictionsCategoryConfiguration(
+        var predictionsConfig = PredictionsCategoryConfiguration(
             plugins: [
                 "AWSPredictionsPlugin": [
                     "aws_project_region": region,
                     "identify": [
+                        "identifyEntities": [
                         "maxFaces": 50,
-                        "collectionId": "",
+                        "collectionId": "", //no collectionid
                         "region": region
+                        ]
                     ]
                 ]
             ]
         )
+        if withCollection {
+         predictionsConfig = PredictionsCategoryConfiguration(
+            plugins: [
+                "AWSPredictionsPlugin": [
+                    "aws_project_region": region,
+                    "identify": [
+                        "identifyEntities": [
+                        "maxFaces": 50,
+                        "collectionId": "TestCollection",
+                        "region": region
+                        ]
+                    ]
+                ]
+            ]
+        )
+        }
+        else {
+
+        }
 
         let amplifyConfig = AmplifyConfiguration(predictions: predictionsConfig)
 

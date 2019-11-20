@@ -21,7 +21,8 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
     func testIdentifyLabels() {
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageLabels", withExtension: "jpg") else {
-            return
+             XCTFail("Unable to find image")
+             return
         }
         let completeInvoked = expectation(description: "Completed is invoked")
 
@@ -45,7 +46,8 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
     func testIdentifyModerationLabels() {
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageLabels", withExtension: "jpg") else {
-            return
+             XCTFail("Unable to find image")
+             return
         }
         let completeInvoked = expectation(description: "Completed is invoked")
 
@@ -69,7 +71,8 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
     func testIdentifyAllLabels() {
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageLabels", withExtension: "jpg") else {
-            return
+             XCTFail("Unable to find image")
+             return
         }
         let completeInvoked = expectation(description: "Completed is invoked")
 
@@ -93,7 +96,8 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
     func testIdentifyCelebrities() {
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageCeleb", withExtension: "jpg") else {
-            return
+             XCTFail("Unable to find image")
+             return
         }
         let completeInvoked = expectation(description: "Completed is invoked")
 
@@ -115,8 +119,10 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
     }
 
     func testIdentifyEntities() {
+        
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageEntities", withExtension: "jpg") else {
+            XCTFail("Unable to find image")
             return
         }
         let completeInvoked = expectation(description: "Completed is invoked")
@@ -141,7 +147,8 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
     func testIdentifyTextPlain() {
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
-            return
+             XCTFail("Unable to find image")
+             return
         }
         let completeInvoked = expectation(description: "Completed is invoked")
 
@@ -165,7 +172,8 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
     func testIdentifyTextAll() {
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
-            return
+             XCTFail("Unable to find image")
+             return
         }
         let completeInvoked = expectation(description: "Completed is invoked")
 
@@ -189,7 +197,8 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
     func testIdentifyTextForms() {
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
-            return
+             XCTFail("Unable to find image")
+             return
         }
         let completeInvoked = expectation(description: "Completed is invoked")
 
@@ -213,7 +222,8 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
     func testIdentifyTextTables() {
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
-            return
+             XCTFail("Unable to find image")
+             return
         }
         let completeInvoked = expectation(description: "Completed is invoked")
 
