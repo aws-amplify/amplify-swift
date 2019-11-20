@@ -16,12 +16,14 @@ extension CoreMLPredictionsPlugin {
                         targetLanguage: LanguageType?,
                         listener: PredictionsTranslateTextOperation.EventListener?,
                         options: PredictionsTranslateTextRequest.Options?) -> PredictionsTranslateTextOperation {
+        // TODO: Remove the below and add proper message
         fatalError("Incomplete implementation")
     }
 
     public func convert(textToSpeech: String,
                         options: PredictionsTextToSpeechRequest.Options? = nil,
                         listener: PredictionsTextToSpeechOperation.EventListener?) -> PredictionsTextToSpeechOperation {
+        // TODO: Remove the below and add proper message
         fatalError("Incomplete implementation")
     }
 
@@ -29,7 +31,15 @@ extension CoreMLPredictionsPlugin {
                          image: URL,
                          options: PredictionsIdentifyRequest.Options?,
                          listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation {
-        fatalError("Incomplete implementation")
+        let options = options
+        let request = PredictionsIdentifyRequest(image: image,
+                                                 identifyType: type,
+                                                 options: options ?? PredictionsIdentifyRequest.Options())
+        let operation = CoreMLIdentifyOperation(request,
+                                                coreMLVision: coreMLVision,
+                                                listener: listener)
+        queue.addOperation(operation)
+        return operation
     }
 
     public func interpret(text: String,

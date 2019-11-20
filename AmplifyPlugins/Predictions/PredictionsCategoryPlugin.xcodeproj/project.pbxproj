@@ -75,6 +75,11 @@
 		B42094BE2384A74B000F98A3 /* AWSPredictionsPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42094B92384A74A000F98A3 /* AWSPredictionsPluginTestBase.swift */; };
 		B42094BF2384A74B000F98A3 /* InterpretBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42094BA2384A74A000F98A3 /* InterpretBasicIntegrationTests.swift */; };
 		B42094C02384A74B000F98A3 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = B42094BC2384A74B000F98A3 /* awsconfiguration.json */; };
+		B42094C72384BA0A000F98A3 /* MockCoreMLVisionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42094C62384BA0A000F98A3 /* MockCoreMLVisionAdapter.swift */; };
+		B42094C92384BB56000F98A3 /* CoreMLPredictionsPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42094C82384BB56000F98A3 /* CoreMLPredictionsPluginTestBase.swift */; };
+		B42094CD2384BBC9000F98A3 /* screenshotWithText.png in Resources */ = {isa = PBXBuildFile; fileRef = B42094CA2384BBC8000F98A3 /* screenshotWithText.png */; };
+		B42094CE2384BBC9000F98A3 /* vehicles.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B42094CB2384BBC9000F98A3 /* vehicles.jpg */; };
+		B42094CF2384BBC9000F98A3 /* people.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B42094CC2384BBC9000F98A3 /* people.jpg */; };
 		B45B0677237F13EB00DC9122 /* CoreMLPredictionBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45B0672237F13EA00DC9122 /* CoreMLPredictionBehavior.swift */; };
 		B45B0678237F13EB00DC9122 /* CoreMLPredictionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45B0673237F13EA00DC9122 /* CoreMLPredictionService.swift */; };
 		B45B0679237F13EB00DC9122 /* InterpretTextMultiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45B0675237F13EB00DC9122 /* InterpretTextMultiService.swift */; };
@@ -239,6 +244,11 @@
 		B42094B92384A74A000F98A3 /* AWSPredictionsPluginTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPredictionsPluginTestBase.swift; sourceTree = "<group>"; };
 		B42094BA2384A74A000F98A3 /* InterpretBasicIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterpretBasicIntegrationTests.swift; sourceTree = "<group>"; };
 		B42094BC2384A74B000F98A3 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
+		B42094C62384BA0A000F98A3 /* MockCoreMLVisionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCoreMLVisionAdapter.swift; sourceTree = "<group>"; };
+		B42094C82384BB56000F98A3 /* CoreMLPredictionsPluginTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPluginTestBase.swift; sourceTree = "<group>"; };
+		B42094CA2384BBC8000F98A3 /* screenshotWithText.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = screenshotWithText.png; sourceTree = "<group>"; };
+		B42094CB2384BBC9000F98A3 /* vehicles.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = vehicles.jpg; sourceTree = "<group>"; };
+		B42094CC2384BBC9000F98A3 /* people.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = people.jpg; sourceTree = "<group>"; };
 		B45B0672237F13EA00DC9122 /* CoreMLPredictionBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionBehavior.swift; sourceTree = "<group>"; };
 		B45B0673237F13EA00DC9122 /* CoreMLPredictionService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionService.swift; sourceTree = "<group>"; };
 		B45B0675237F13EB00DC9122 /* InterpretTextMultiService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterpretTextMultiService.swift; sourceTree = "<group>"; };
@@ -735,6 +745,7 @@
 			children = (
 				B4DFA691237B59450013E17B /* MockOperationQueue.swift */,
 				B4DFA692237B59450013E17B /* MockCoreMLNaturalLanguageAdapter.swift */,
+				B42094C62384BA0A000F98A3 /* MockCoreMLVisionAdapter.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -751,6 +762,9 @@
 		B4DFA694237B59450013E17B /* TestImages */ = {
 			isa = PBXGroup;
 			children = (
+				B42094CC2384BBC9000F98A3 /* people.jpg */,
+				B42094CA2384BBC8000F98A3 /* screenshotWithText.png */,
+				B42094CB2384BBC9000F98A3 /* vehicles.jpg */,
 			);
 			path = TestImages;
 			sourceTree = "<group>";
@@ -767,6 +781,7 @@
 		B4DFA6A2237B5A290013E17B /* CoreMLPredictionsPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				B42094C82384BB56000F98A3 /* CoreMLPredictionsPluginTestBase.swift */,
 				B4DFA6A5237B5A290013E17B /* CoreMLPredictionsPluginIntegrationTest.swift */,
 				B4DFA6A3237B5A290013E17B /* Resources */,
 			);
@@ -1064,6 +1079,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B42094CE2384BBC9000F98A3 /* vehicles.jpg in Resources */,
+				B42094CD2384BBC9000F98A3 /* screenshotWithText.png in Resources */,
+				B42094CF2384BBC9000F98A3 /* people.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1660,6 +1678,7 @@
 				B4DFA69E237B59450013E17B /* CoreMLNaturalLanguageAdapterTests.swift in Sources */,
 				B4DFA69F237B59450013E17B /* CoreMLVisionAdapterTests.swift in Sources */,
 				B4DFA6A1237B59450013E17B /* CoreMLPredictionsPluginTestBase.swift in Sources */,
+				B42094C72384BA0A000F98A3 /* MockCoreMLVisionAdapter.swift in Sources */,
 				B4DFA6A0237B59450013E17B /* CoreMLPredictionsPluginClientBehaviorTests.swift in Sources */,
 				B4DFA69B237B59450013E17B /* MockOperationQueue.swift in Sources */,
 				B4DFA69C237B59450013E17B /* MockCoreMLNaturalLanguageAdapter.swift in Sources */,
@@ -1670,6 +1689,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B42094C92384BB56000F98A3 /* CoreMLPredictionsPluginTestBase.swift in Sources */,
 				B4DFA6A7237B5A290013E17B /* CoreMLPredictionsPluginIntegrationTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
