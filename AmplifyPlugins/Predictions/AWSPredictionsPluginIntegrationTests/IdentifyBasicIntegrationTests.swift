@@ -13,8 +13,7 @@ import AWSPredictionsPlugin
 import AWSRekognition
 import XCTest
 
-// swiftlint:type_name disable
-class AWSPredictionsPluginIdentifyIntegrationTest: AWSPredictionsPluginTestBase {
+class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
 
     /// Given: An Image
     /// When: Image is sent to Rekognition
@@ -43,13 +42,4 @@ class AWSPredictionsPluginIdentifyIntegrationTest: AWSPredictionsPluginTestBase 
         waitForExpectations(timeout: networkTimeout)
 
     }
-
-    func getImageFromDir(_ imageName: String) -> URL? {
-        let testBundle = Bundle(for: type(of: self))
-        guard let fileURL = testBundle.url(forResource: imageName, withExtension: "jpg")
-          else { fatalError() }
-        return fileURL
-
-    }
-
 }
