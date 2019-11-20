@@ -245,7 +245,7 @@
 		FA9FB782232AA26500C04D32 /* DefaultHubPluginCustomChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FB781232AA26500C04D32 /* DefaultHubPluginCustomChannelTests.swift */; };
 		FA9FD23A2381CFC300A7CAF5 /* CloudSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FD2372381CFC300A7CAF5 /* CloudSyncEngine.swift */; };
 		FA9FD23C2381CFC300A7CAF5 /* OutgoingMutationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FD2392381CFC300A7CAF5 /* OutgoingMutationQueue.swift */; };
-		FAA274B12382EA7100EDD2EA /* SyncingMutationSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA274B02382EA7100EDD2EA /* SyncingMutationSubscriber.swift */; };
+		FAA274B12382EA7100EDD2EA /* SyncEngineMutationSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA274B02382EA7100EDD2EA /* SyncEngineMutationSubscriber.swift */; };
 		FAA9FC3B23620CE50012638A /* URLRequestInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA9FC3A23620CE50012638A /* URLRequestInterceptor.swift */; };
 		FAA9FC3E236210840012638A /* APICategoryClientInterceptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA9FC3D236210840012638A /* APICategoryClientInterceptorTests.swift */; };
 		FAB2C9A42384B218008EE879 /* MockAWSMobileClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E20D2318CD3900B3DEB5 /* MockAWSMobileClient.swift */; };
@@ -883,7 +883,7 @@
 		FA9FD2332381CD0000A7CAF5 /* MutationEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutationEvent.swift; sourceTree = "<group>"; };
 		FA9FD2372381CFC300A7CAF5 /* CloudSyncEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudSyncEngine.swift; sourceTree = "<group>"; };
 		FA9FD2392381CFC300A7CAF5 /* OutgoingMutationQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutgoingMutationQueue.swift; sourceTree = "<group>"; };
-		FAA274B02382EA7100EDD2EA /* SyncingMutationSubscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncingMutationSubscriber.swift; sourceTree = "<group>"; };
+		FAA274B02382EA7100EDD2EA /* SyncEngineMutationSubscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngineMutationSubscriber.swift; sourceTree = "<group>"; };
 		FAA9FC3A23620CE50012638A /* URLRequestInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequestInterceptor.swift; sourceTree = "<group>"; };
 		FAA9FC3D236210840012638A /* APICategoryClientInterceptorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICategoryClientInterceptorTests.swift; sourceTree = "<group>"; };
 		FAB2C99A2384B108008EE879 /* AWSPluginsTestCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSPluginsTestCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1868,7 +1868,7 @@
 				FA9FD2392381CFC300A7CAF5 /* OutgoingMutationQueue.swift */,
 				6B1F15102383671B00AB23EF /* NetworkReachability.swift */,
 				6B1F15112383671B00AB23EF /* NetworkReachabilityNotifier.swift */,
-				FAA274B02382EA7100EDD2EA /* SyncingMutationSubscriber.swift */,
+				FAA274B02382EA7100EDD2EA /* SyncEngineMutationSubscriber.swift */,
 			);
 			path = Sync;
 			sourceTree = "<group>";
@@ -3439,7 +3439,7 @@
 				6B1F15152383671B00AB23EF /* NetworkReachabilityNotifier.swift in Sources */,
 				B92E03EE2367D2A4006CEB8D /* AWSDataStoreCategoryPlugin.swift in Sources */,
 				FA9FD23A2381CFC300A7CAF5 /* CloudSyncEngine.swift in Sources */,
-				FAA274B12382EA7100EDD2EA /* SyncingMutationSubscriber.swift in Sources */,
+				FAA274B12382EA7100EDD2EA /* SyncEngineMutationSubscriber.swift in Sources */,
 				B92E03E82367D2A4006CEB8D /* StorageEngineAdapter.swift in Sources */,
 				B92E03EB2367D2A4006CEB8D /* Model+SQLite.swift in Sources */,
 				B92E03EC2367D2A4006CEB8D /* StorageEngineAdapter+SQLite.swift in Sources */,
