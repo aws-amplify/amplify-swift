@@ -26,14 +26,17 @@ extension APIOperationResponse {
         case (nil, nil):
             break
         case (.some(let error), .none):
-            throw APIError(urlError: error)
+            throw APIError.networkError(error.localizedDescription, nil, error)
         case (.none, .some(let response)):
             let statusCode = response.statusCode
-            if statusCode < 200 || statusCode >= 300 {
-                throw APIError.httpStatusError("", "", response)
+
+            let successStatusCodes = 200 ..< 300
+            if !successStatusCodes.contains(statusCode) {
+                throw APIError.httpStatusError(statusCode, response)
             }
         case (.some(let error), .some(let response)):
-            throw APIError(urlError: error, httpURLResponse: response)
+            let userInfo = ["HTTPURLResponse": response]
+            throw APIError.networkError(error.localizedDescription, userInfo, error)
         }
     }
 }
