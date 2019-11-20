@@ -9,6 +9,8 @@ import Foundation
 
 extension LoggingCategory: CategoryConfigurable {
 
+    /// Configures the LoggingCategory using the incoming CategoryConfiguration. If the incoming configuration does not
+    /// specify a Logging plugin, then we will inject the AWSLoggingCategoryPlugin.
     func configure(using configuration: CategoryConfiguration) throws {
         guard !isConfigured else {
             let error = ConfigurationError.amplifyAlreadyConfigured(
@@ -18,9 +20,13 @@ extension LoggingCategory: CategoryConfigurable {
             throw error
         }
 
-        for (pluginKey, pluginConfiguration) in configuration.plugins {
-            let plugin = try getPlugin(for: pluginKey)
-            try plugin.configure(using: pluginConfiguration)
+        if configuration.plugins.isEmpty && plugins.isEmpty {
+            try configureDefaultPlugin(using: configuration)
+        } else {
+            for (pluginKey, pluginConfiguration) in configuration.plugins {
+                let plugin = try getPlugin(for: pluginKey)
+                try plugin.configure(using: pluginConfiguration)
+            }
         }
 
         isConfigured = true
@@ -28,6 +34,8 @@ extension LoggingCategory: CategoryConfigurable {
 
     func configure(using amplifyConfiguration: AmplifyConfiguration) throws {
         guard let configuration = categoryConfiguration(from: amplifyConfiguration) else {
+            try configureDefaultPlugin(using: nil)
+            isConfigured = true
             return
         }
         try configure(using: configuration)
@@ -47,4 +55,10 @@ extension LoggingCategory: CategoryConfigurable {
         onComplete()
     }
 
+    func configureDefaultPlugin(using configuration: CategoryConfiguration?) throws {
+        let pluginConfiguration = configuration?.plugins[AWSUnifiedLoggingPlugin.key] ?? [:]
+        let defaultPlugin = AWSUnifiedLoggingPlugin()
+        try add(plugin: defaultPlugin)
+        try defaultPlugin.configure(using: pluginConfiguration)
+    }
 }

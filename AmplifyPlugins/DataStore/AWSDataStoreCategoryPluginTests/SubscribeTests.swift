@@ -19,6 +19,7 @@ class SubscribeTests: XCTestCase {
         super.setUp()
 
         Amplify.reset()
+        Amplify.Logging.logLevel = .warn
 
         ModelRegistry.register(modelType: Post.self)
         ModelRegistry.register(modelType: Comment.self)

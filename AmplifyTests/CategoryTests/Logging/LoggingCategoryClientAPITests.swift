@@ -31,7 +31,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "error(_:file:function:line:)" {
+            if message == "error(_:)" {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
@@ -48,7 +48,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "error(error:file:function:line:)" {
+            if message == "error(error:)" {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
@@ -66,7 +66,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "warn(_:file:function:line:)" {
+            if message == "warn(_:)" {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
@@ -83,7 +83,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "info(_:file:function:line:)" {
+            if message == "info(_:)" {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
@@ -100,7 +100,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "debug(_:file:function:line:)" {
+            if message == "debug(_:)" {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }
@@ -117,7 +117,7 @@ class LoggingCategoryClientAPITests: XCTestCase {
 
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "verbose(_:file:function:line:)" {
+            if message == "verbose(_:)" {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }

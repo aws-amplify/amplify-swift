@@ -184,6 +184,9 @@
 		FA0173352375F8A5005DDDFC /* LoggingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173342375F8A5005DDDFC /* LoggingError.swift */; };
 		FA0173372375FAA5005DDDFC /* HubError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173362375FAA5005DDDFC /* HubError.swift */; };
 		FA09337C23844E9F00C2FD5F /* GraphQLOperationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09337B23844E9F00C2FD5F /* GraphQLOperationRequest.swift */; };
+		FA09337E2384677A00C2FD5F /* AWSUnifiedLoggingPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09337D2384677A00C2FD5F /* AWSUnifiedLoggingPlugin.swift */; };
+		FA0933812384749A00C2FD5F /* LoggingCategory+Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0933802384749A00C2FD5F /* LoggingCategory+Logger.swift */; };
+		FA093386238480EB00C2FD5F /* OSLogWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09338223847E5800C2FD5F /* OSLogWrapper.swift */; };
 		FA09B92B2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92A2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift */; };
 		FA09B92D2321A27F000E064D /* CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92C2321A27F000E064D /* CategoryConfigurable.swift */; };
 		FA09B92F2321A2DE000E064D /* APICategory+CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA09B92E2321A2DE000E064D /* APICategory+CategoryConfigurable.swift */; };
@@ -212,6 +215,7 @@
 		FA31710A232AEAEC009BC140 /* DefaultHubPluginTestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA317109232AEAEC009BC140 /* DefaultHubPluginTestHelpers.swift */; };
 		FA47B8362350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA47B8352350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift */; };
 		FA47B8382350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA47B8372350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift */; };
+		FA4B38AB238482B100E20DAB /* DefaultLoggingPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4B38AA238482B100E20DAB /* DefaultLoggingPluginTests.swift */; };
 		FA4E730A232828EA003B8EEB /* Amplify+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E7309232828EA003B8EEB /* Amplify+Reset.swift */; };
 		FA4E730C23282917003B8EEB /* Amplify+Resolve.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E730B23282917003B8EEB /* Amplify+Resolve.swift */; };
 		FA4E730E232829F1003B8EEB /* Plugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E730D232829F1003B8EEB /* Plugin+Reset.swift */; };
@@ -805,6 +809,9 @@
 		FA0173342375F8A5005DDDFC /* LoggingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingError.swift; sourceTree = "<group>"; };
 		FA0173362375FAA5005DDDFC /* HubError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubError.swift; sourceTree = "<group>"; };
 		FA09337B23844E9F00C2FD5F /* GraphQLOperationRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLOperationRequest.swift; sourceTree = "<group>"; };
+		FA09337D2384677A00C2FD5F /* AWSUnifiedLoggingPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSUnifiedLoggingPlugin.swift; sourceTree = "<group>"; };
+		FA0933802384749A00C2FD5F /* LoggingCategory+Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoggingCategory+Logger.swift"; sourceTree = "<group>"; };
+		FA09338223847E5800C2FD5F /* OSLogWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSLogWrapper.swift; sourceTree = "<group>"; };
 		FA09B92A2321A10E000E064D /* AnalyticsCategory+CategoryConfigurable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnalyticsCategory+CategoryConfigurable.swift"; sourceTree = "<group>"; };
 		FA09B92C2321A27F000E064D /* CategoryConfigurable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryConfigurable.swift; sourceTree = "<group>"; };
 		FA09B92E2321A2DE000E064D /* APICategory+CategoryConfigurable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APICategory+CategoryConfigurable.swift"; sourceTree = "<group>"; };
@@ -836,6 +843,7 @@
 		FA317109232AEAEC009BC140 /* DefaultHubPluginTestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHubPluginTestHelpers.swift; sourceTree = "<group>"; };
 		FA47B8352350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUnsubscribeOperationTests.swift; sourceTree = "<group>"; };
 		FA47B8372350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoUnsubscribeHubListenToOperationTests.swift; sourceTree = "<group>"; };
+		FA4B38AA238482B100E20DAB /* DefaultLoggingPluginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLoggingPluginTests.swift; sourceTree = "<group>"; };
 		FA4E7309232828EA003B8EEB /* Amplify+Reset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Amplify+Reset.swift"; sourceTree = "<group>"; };
 		FA4E730B23282917003B8EEB /* Amplify+Resolve.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Amplify+Resolve.swift"; sourceTree = "<group>"; };
 		FA4E730D232829F1003B8EEB /* Plugin+Reset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Plugin+Reset.swift"; sourceTree = "<group>"; };
@@ -1605,6 +1613,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		FA09337F23846CB400C2FD5F /* AWSUnifiedLoggingPlugin */ = {
+			isa = PBXGroup;
+			children = (
+				FA09337D2384677A00C2FD5F /* AWSUnifiedLoggingPlugin.swift */,
+				FA09338423847EEB00C2FD5F /* Internal */,
+			);
+			path = AWSUnifiedLoggingPlugin;
+			sourceTree = "<group>";
+		};
+		FA09338423847EEB00C2FD5F /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				FA09338223847E5800C2FD5F /* OSLogWrapper.swift */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
 		FA09B9342321A310000E064D /* Internal */ = {
 			isa = PBXGroup;
 			children = (
@@ -1947,6 +1972,7 @@
 				FA09B9392321A35D000E064D /* Internal */,
 				FAC23504227A053D00424678 /* LoggingCategory.swift */,
 				FAC0A2AE22B4400100B50912 /* LoggingCategory+ClientBehavior.swift */,
+				FA0933802384749A00C2FD5F /* LoggingCategory+Logger.swift */,
 				FAC23509227A053D00424678 /* LoggingCategoryClientBehavior.swift */,
 				FA09B94A2322CBEB000E064D /* LoggingCategoryConfiguration.swift */,
 				FAC23505227A053D00424678 /* LoggingCategoryPlugin.swift */,
@@ -2033,6 +2059,7 @@
 		FAC23559227A056600424678 /* Logging */ = {
 			isa = PBXGroup;
 			children = (
+				FA4B38AA238482B100E20DAB /* DefaultLoggingPluginTests.swift */,
 				FAC2355C227A056600424678 /* LoggingCategoryClientAPITests.swift */,
 				FAC2355A227A056600424678 /* LoggingCategoryConfigurationTests.swift */,
 			);
@@ -2238,6 +2265,7 @@
 			isa = PBXGroup;
 			children = (
 				FA4E731723294B78003B8EEB /* AWSHubPlugin */,
+				FA09337F23846CB400C2FD5F /* AWSUnifiedLoggingPlugin */,
 			);
 			path = DefaultPlugins;
 			sourceTree = "<group>";
@@ -2323,10 +2351,10 @@
 			buildConfigurationList = B92E03D72367CFF3006CEB8D /* Build configuration list for PBXNativeTarget "AWSDataStoreCategoryPlugin" */;
 			buildPhases = (
 				8462353A6F750A55FB39D461 /* [CP] Check Pods Manifest.lock */,
+				B92E03BC2367CFF2006CEB8D /* Sources */,
 				B92E040023680B59006CEB8D /* SwiftFormat */,
 				B92E040223680BA4006CEB8D /* SwiftLint */,
 				B92E03BB2367CFF2006CEB8D /* Headers */,
-				B92E03BC2367CFF2006CEB8D /* Sources */,
 				B92E03BD2367CFF2006CEB8D /* Frameworks */,
 				B92E03BE2367CFF2006CEB8D /* Resources */,
 			);
@@ -2346,9 +2374,9 @@
 			buildConfigurationList = B92E03DA2367CFF3006CEB8D /* Build configuration list for PBXNativeTarget "AWSDataStoreCategoryPluginTests" */;
 			buildPhases = (
 				5885F843B10E59739A31F4D8 /* [CP] Check Pods Manifest.lock */,
+				B92E03C42367CFF3006CEB8D /* Sources */,
 				B92E040123680B80006CEB8D /* SwiftFormat */,
 				B92E040323680BCA006CEB8D /* SwiftLint */,
-				B92E03C42367CFF3006CEB8D /* Sources */,
 				B92E03C52367CFF3006CEB8D /* Frameworks */,
 				B92E03C62367CFF3006CEB8D /* Resources */,
 				124D44F928F089CEEB2B4416 /* [CP] Embed Pods Frameworks */,
@@ -2369,9 +2397,9 @@
 			buildConfigurationList = B92E04162368FE5C006CEB8D /* Build configuration list for PBXNativeTarget "AWSDataStoreCategoryPluginIntegrationTests" */;
 			buildPhases = (
 				9A6B8979B0D54EC8D02EA756 /* [CP] Check Pods Manifest.lock */,
+				B92E040A2368FE5B006CEB8D /* Sources */,
 				FA093379238449C500C2FD5F /* SwiftFormat */,
 				FA0933782384499600C2FD5F /* SwiftLint */,
-				B92E040A2368FE5B006CEB8D /* Sources */,
 				B92E040B2368FE5B006CEB8D /* Frameworks */,
 				B92E040C2368FE5B006CEB8D /* Resources */,
 				93DC01362BAA2A9AEB4D00D3 /* [CP] Embed Pods Frameworks */,
@@ -2392,10 +2420,10 @@
 			buildConfigurationList = FA131AC12360FE070008381C /* Build configuration list for PBXNativeTarget "AWSPluginsCore" */;
 			buildPhases = (
 				2F8DAE72BD3C0F67BA5CAD60 /* [CP] Check Pods Manifest.lock */,
-				FA131AA52360FE070008381C /* Headers */,
+				FA131AA62360FE070008381C /* Sources */,
 				FA131AD12360FF310008381C /* SwiftFormat */,
 				FA131AD22360FF320008381C /* SwiftLint */,
-				FA131AA62360FE070008381C /* Sources */,
+				FA131AA52360FE070008381C /* Headers */,
 				FA131AA72360FE070008381C /* Frameworks */,
 				FA131AA82360FE070008381C /* Resources */,
 			);
@@ -2413,9 +2441,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FA131AC42360FE070008381C /* Build configuration list for PBXNativeTarget "AWSPluginsCoreTests" */;
 			buildPhases = (
+				FA131AAE2360FE070008381C /* Sources */,
 				FA131ACF2360FED30008381C /* SwiftFormat */,
 				FA131AD02360FEF20008381C /* SwiftLint */,
-				FA131AAE2360FE070008381C /* Sources */,
 				FA131AAF2360FE070008381C /* Frameworks */,
 				FA131AB02360FE070008381C /* Resources */,
 			);
@@ -2435,10 +2463,10 @@
 			buildConfigurationList = FAB2C9A12384B108008EE879 /* Build configuration list for PBXNativeTarget "AWSPluginsTestCommon" */;
 			buildPhases = (
 				21A8FC2B25736B60640CE56D /* [CP] Check Pods Manifest.lock */,
-				FAB2C9952384B108008EE879 /* Headers */,
 				FAB2C9962384B108008EE879 /* Sources */,
 				FAB2C9A22384B11B008EE879 /* SwiftFormat */,
 				FAB2C9A32384B131008EE879 /* SwiftLint */,
+				FAB2C9952384B108008EE879 /* Headers */,
 				FAB2C9972384B108008EE879 /* Frameworks */,
 				FAB2C9982384B108008EE879 /* Resources */,
 			);
@@ -2456,10 +2484,10 @@
 			buildConfigurationList = FAC234E62279F8DA00424678 /* Build configuration list for PBXNativeTarget "Amplify" */;
 			buildPhases = (
 				5F9B8F5FB2FC02D2CEA5EFD6 /* [CP] Check Pods Manifest.lock */,
+				FAC234CE2279F8DA00424678 /* Sources */,
 				FAF8AC86233AB5CF009FBF97 /* SwiftFormat */,
 				FAC23581227A2D8C00424678 /* SwiftLint */,
 				FAC234CD2279F8DA00424678 /* Headers */,
-				FAC234CE2279F8DA00424678 /* Sources */,
 				FAC234CF2279F8DA00424678 /* Frameworks */,
 				FAC234D02279F8DA00424678 /* Resources */,
 			);
@@ -2477,9 +2505,9 @@
 			buildConfigurationList = FAC234E92279F8DA00424678 /* Build configuration list for PBXNativeTarget "AmplifyTests" */;
 			buildPhases = (
 				A4E096288FFA1CCB41E64D9F /* [CP] Check Pods Manifest.lock */,
+				FAC234D72279F8DA00424678 /* Sources */,
 				21578BF1234D459B00FF0F03 /* SwiftFormat */,
 				21578BEE234D433800FF0F03 /* SwiftLint */,
-				FAC234D72279F8DA00424678 /* Sources */,
 				FAC234D82279F8DA00424678 /* Frameworks */,
 				FAC234D92279F8DA00424678 /* Resources */,
 				9D7A6AE98E5582ADB1124CD3 /* [CP] Embed Pods Frameworks */,
@@ -2500,9 +2528,9 @@
 			buildConfigurationList = FACA35FA2327FB14000E74F6 /* Build configuration list for PBXNativeTarget "AmplifyFunctionalTests" */;
 			buildPhases = (
 				5EBB35ADE01DB9AE7CEB06C3 /* [CP] Check Pods Manifest.lock */,
+				FACA35EE2327FB14000E74F6 /* Sources */,
 				21578BF2234D45BF00FF0F03 /* SwiftFormat */,
 				21578BEF234D43E600FF0F03 /* SwiftLint */,
-				FACA35EE2327FB14000E74F6 /* Sources */,
 				FACA35EF2327FB14000E74F6 /* Frameworks */,
 				FACA35F02327FB14000E74F6 /* Resources */,
 				AA34B99F75451DF4C72791D2 /* [CP] Embed Pods Frameworks */,
@@ -2524,10 +2552,10 @@
 			buildConfigurationList = FACA360D2327FBD4000E74F6 /* Build configuration list for PBXNativeTarget "AmplifyTestCommon" */;
 			buildPhases = (
 				8934CE3BAE4AA68651840D9C /* [CP] Check Pods Manifest.lock */,
+				FACA36002327FBD4000E74F6 /* Sources */,
 				215A84AA234D330400109930 /* SwiftFormat */,
 				215A84AB234D332D00109930 /* SwiftLint */,
 				FACA35FF2327FBD4000E74F6 /* Headers */,
-				FACA36002327FBD4000E74F6 /* Sources */,
 				FACA36012327FBD4000E74F6 /* Frameworks */,
 				FACA36022327FBD4000E74F6 /* Resources */,
 			);
@@ -3490,6 +3518,7 @@
 				21558E40237CB8640032A5BB /* GraphQLError.swift in Sources */,
 				B4D3853C236C97360014653D /* PredictionsTranslateTextRequest.swift in Sources */,
 				FAC2352B227A053D00424678 /* AnalyticsEvent.swift in Sources */,
+				FA093386238480EB00C2FD5F /* OSLogWrapper.swift in Sources */,
 				FAC23544227A055200424678 /* ConfigurationError.swift in Sources */,
 				95DAAB44237E639E0028544F /* ConvertResult.swift in Sources */,
 				FAC428A4235F802A0000F221 /* APICategory+InterceptorBehavior.swift in Sources */,
@@ -3505,6 +3534,7 @@
 				FAD393712381FD3C00463F5E /* DataStoreCategory+Subscribe.swift in Sources */,
 				FAC0A2AF22B4400100B50912 /* LoggingCategory+ClientBehavior.swift in Sources */,
 				95DAAB28237E63370028544F /* Celebrity.swift in Sources */,
+				FA0933812384749A00C2FD5F /* LoggingCategory+Logger.swift in Sources */,
 				FA6BC87F235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift in Sources */,
 				95DAAB25237E63370028544F /* Entity.swift in Sources */,
 				FA09337C23844E9F00C2FD5F /* GraphQLOperationRequest.swift in Sources */,
@@ -3551,6 +3581,7 @@
 				95DAAB23237E63370028544F /* BoundedKeyValue.swift in Sources */,
 				B4D38535236C97360014653D /* PredictionsCategory.swift in Sources */,
 				FAC23595227A4B9800424678 /* HubCategoryPlugin.swift in Sources */,
+				FA09337E2384677A00C2FD5F /* AWSUnifiedLoggingPlugin.swift in Sources */,
 				FAF1B88623392F96007F1435 /* SerialDispatcher.swift in Sources */,
 				FA09B94B2322CBEB000E064D /* LoggingCategoryConfiguration.swift in Sources */,
 				210922572359693900CEC295 /* BasicAnalyticsEvent.swift in Sources */,
@@ -3690,6 +3721,7 @@
 				B4BD6B3523708C1200A1F0A7 /* PredictionsCategoryConfigurationTests.swift in Sources */,
 				FAA9FC3E236210840012638A /* APICategoryClientInterceptorTests.swift in Sources */,
 				FACF520923298C1200646E10 /* SynchronizedDictionaryTests.swift in Sources */,
+				FA4B38AB238482B100E20DAB /* DefaultLoggingPluginTests.swift in Sources */,
 				FA6BC869235F52740001A882 /* APICategoryClientGraphQLTests.swift in Sources */,
 				FA317108232AE8DF009BC140 /* SerialDispatcherPerformanceTests.swift in Sources */,
 				FA9FB782232AA26500C04D32 /* DefaultHubPluginCustomChannelTests.swift in Sources */,
