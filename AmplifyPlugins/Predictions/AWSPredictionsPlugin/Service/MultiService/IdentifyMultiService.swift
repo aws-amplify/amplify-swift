@@ -120,7 +120,7 @@ class IdentifyMultiService: MultiServiceBehavior {
 
     func mergeLabelResult(onlineLabelResult: IdentifyLabelsResult,
                           offlineLabelResult: IdentifyLabelsResult) -> IdentifyLabelsResult {
-        var combinedLabels = [Label]()
+        var combinedLabels = Set<Label>()
 
         let onlineLabelSet = Set<Label>(onlineLabelResult.labels)
         let offlineLabelSet = Set<Label>(offlineLabelResult.labels)
@@ -129,31 +129,24 @@ class IdentifyMultiService: MultiServiceBehavior {
         let intersectingLabels = onlineLabelSet.intersection(offlineLabelSet)
         //loop through to find higher confidences and retain those labels and add to final result
         for label in intersectingLabels {
-            guard let onlineLabel = onlineLabelResult.labels.first(
-                where: {$0.name.lowercased() == label.name.lowercased()}),
-                let offlineLabel = offlineLabelResult.labels.first(
-                    where: {$0.name.lowercased() == label.name.lowercased()}) else {
-                    continue
-            }
+            let onlineIndex = onlineLabelSet.firstIndex(of: label)!
+            let offlineIndex = offlineLabelSet.firstIndex(of: label)!
+            let onlineLabel = onlineLabelSet[onlineIndex]
+            let offlineLabel = offlineLabelSet[offlineIndex]
             let labelWithHigherConfidence = onlineLabel.higherConfidence(compareTo: offlineLabel)
-            guard let betterLabel = labelWithHigherConfidence else {
-                combinedLabels.append(onlineLabel) //append aws label as default in the event no confidences to compare
-                continue
-            }
-            combinedLabels.append(betterLabel)
+            combinedLabels.insert(labelWithHigherConfidence)
         }
 
         //get the differences
-        let differingLabels = Array(onlineLabelSet.symmetricDifference(offlineLabelSet))
-        combinedLabels.append(contentsOf: differingLabels)
+        //leaving here for performance comparison
+        // let differingLabels = Array(onlineLabelSet.symmetricDifference(offlineLabelSet))
+        // combinedLabels.append(contentsOf: differingLabels)
+        combinedLabels = combinedLabels.union(onlineLabelSet)
+        combinedLabels = combinedLabels.union(offlineLabelSet)
 
-        if let unsafeContent = onlineLabelResult.unsafeContent { //all labels was called
-            let combinedResult = IdentifyLabelsResult(labels: combinedLabels, unsafeContent: unsafeContent)
-            return combinedResult
-        } else {
-            let combinedResult = IdentifyLabelsResult(labels: combinedLabels)
-            return combinedResult
-        }
+        return IdentifyLabelsResult(labels: Array(combinedLabels),
+                                    unsafeContent: onlineLabelResult.unsafeContent ?? nil)
+
     }
 
     func mergeTextResult(onlineTextResult: IdentifyTextResult,
@@ -172,7 +165,7 @@ class IdentifyMultiService: MultiServiceBehavior {
 
         let onlineLineSet = Set<IdentifiedLine>(onlineLines)
         let offlineLineSet = Set<IdentifiedLine>(offlineLines)
-
+        //TODO: figure out how to compare bounding boxes to avoid removing duplicate text in diff places
         let mergedLines = Array(onlineLineSet.union(offlineLineSet))
 
         //offline result doesn't return anything except identified lines so
@@ -194,16 +187,27 @@ extension Label: Hashable {
         hasher.combine(name.lowercased())
     }
 
-    func higherConfidence(compareTo: Label) -> Label? {
+    func higherConfidence(compareTo: Label) -> Label {
         guard let firstMetadata = self.metadata,
             let secondMetadata = compareTo.metadata else {
-                return nil
+                return self
         }
-        if firstMetadata.confidence >= secondMetadata.confidence {
-            return self
-        } else {
-            return compareTo
-        }
+        return max(firstMetadata, secondMetadata) == firstMetadata ? self : compareTo
+    }
+}
+
+extension LabelMetadata: Hashable, Comparable {
+
+    public static func == (lhs: LabelMetadata, rhs: LabelMetadata) -> Bool {
+        return lhs.confidence == rhs.confidence
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(confidence)
+    }
+
+    public static func < (lhs: LabelMetadata, rhs: LabelMetadata) -> Bool {
+        return lhs.confidence < rhs.confidence
     }
 }
 
