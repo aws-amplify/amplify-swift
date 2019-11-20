@@ -107,8 +107,8 @@ class AWSAPICategoryPluginGraphQLModelBasedTests: XCTestCase {
             try Amplify.configure(amplifyConfig)
 
             // The API plugin should register the models into the model cache
-            let models: [Model.Type] = [AmplifyTestCommon.Post.self, AmplifyTestCommon.Comment.self]
-            models.forEach(registerModel(type:))
+            ModelRegistry.register(modelType: AmplifyTestCommon.Comment.self)
+            ModelRegistry.register(modelType: AmplifyTestCommon.Post.self)
 
         } catch {
             XCTFail("Error during setup: \(error)")
