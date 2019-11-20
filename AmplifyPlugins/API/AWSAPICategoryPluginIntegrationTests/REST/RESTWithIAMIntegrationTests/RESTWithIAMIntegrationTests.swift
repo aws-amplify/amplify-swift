@@ -101,12 +101,12 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             case .completed(let data):
                 XCTFail("Unexpected .complted event: \(data)")
             case .failed(let error):
-                guard case let .httpStatusError(status, headers, recoverySuggestion, error) = error else {
+                guard case let .httpStatusError(_, _, httpURLResponse, error) = error else {
                     XCTFail("Error should be httpStatusError")
                     return
                 }
 
-                XCTAssertEqual(status, 403)
+                XCTAssertEqual(httpURLResponse.statusCode, 403)
                 failedInvoked.fulfill()
             default:
                 XCTFail("Unexpected event: \(event)")
@@ -185,12 +185,12 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             case .completed(let data):
                 XCTFail("Unexpected .completed event: \(data)")
             case .failed(let error):
-                guard case let .httpStatusError(status, headers, recoverySuggestion, error) = error else {
+                guard case let .httpStatusError(_, _, httpURLResponse, _) = error else {
                     XCTFail("Error should be httpStatusError")
                     return
                 }
 
-                XCTAssertEqual(status, 403)
+                XCTAssertEqual(httpURLResponse.statusCode, 403)
                 failedInvoked.fulfill()
             default:
                 XCTFail("Unexpected event: \(event)")
@@ -209,13 +209,12 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             case .completed(let data):
                 XCTFail("Unexpected .completed event: \(data)")
             case .failed(let error):
-                guard case let .httpStatusError(status, headers, recoverySuggestion, error) = error else {
+                guard case let .httpStatusError(_, _, httpURLResponse, _) = error else {
                     XCTFail("Error should be httpStatusError")
                     return
                 }
 
-                XCTAssertEqual(status, 404)
-                print(headers)
+                XCTAssertEqual(httpURLResponse.statusCode, 404)
                 failedInvoked.fulfill()
             default:
                 XCTFail("Unexpected event: \(event)")

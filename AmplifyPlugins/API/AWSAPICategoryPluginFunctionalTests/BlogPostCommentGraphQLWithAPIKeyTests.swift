@@ -87,12 +87,12 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
             case .completed(let graphQLResponse):
                 XCTFail("Unexpected .completed event: \(graphQLResponse)")
             case .failed(let error):
-                guard case let .httpStatusError(status, headers, _, _) = error else {
+                guard case let .httpStatusError(_, _, httpURLResponse, _) = error else {
                     XCTFail("Should be Http Status error")
                     return
                 }
 
-                XCTAssertEqual(status, 401)
+                XCTAssertEqual(httpURLResponse.statusCode, 401)
                 failedInvoked.fulfill()
             default:
                 XCTFail("Unexpected event: \(event)")

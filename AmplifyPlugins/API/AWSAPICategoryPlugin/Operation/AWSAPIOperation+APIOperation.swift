@@ -23,19 +23,15 @@ extension AWSRESTOperation: APIOperation {
             return
         }
 
-        guard let response = response as? HTTPURLResponse else {
-            let apiError = APIError.unknown("Could not retrieve HTTPURLResponse", "")
-            dispatch(event: .failed(apiError))
+        let apiOperationResponse = APIOperationResponse(error: nil, response: response)
+        do {
+            try apiOperationResponse.validate()
+        } catch let error as APIError {
+            dispatch(event: .failed(error))
             finish()
             return
-        }
-
-        let statusCode = response.statusCode
-
-        if statusCode < 200 || statusCode >= 300 {
-            let headers = response.allHeaderFields
-            let apiError = APIError.httpStatusError(statusCode, headers, "")
-            dispatch(event: .failed(apiError))
+        } catch {
+            dispatch(event: .failed(APIError.unknown("", "", error)))
             finish()
             return
         }
@@ -49,38 +45,15 @@ extension AWSRESTOperation: APIOperation {
             return
         }
 
-        guard let response = response as? HTTPURLResponse else {
-            let apiError = APIError.unknown("Could not retrieve HTTPURLResponse", "", error)
-            dispatch(event: .failed(apiError))
+        let apiOperationResponse = APIOperationResponse(error: error, response: response)
+        do {
+            try apiOperationResponse.validate()
+        } catch let error as APIError {
+            dispatch(event: .failed(error))
             finish()
             return
-        }
-
-        let statusCode = response.statusCode
-
-        if statusCode < 200 || statusCode >= 300 {
-            let headers = response.allHeaderFields
-            let apiError = APIError.httpStatusError(statusCode, headers, "", error)
-            dispatch(event: .failed(apiError))
-            finish()
-            return
-        }
-
-        if let error = error {
-            let apiError = APIError.operationError(
-                "The operation for this request failed.",
-                """
-                The operation for the request shown below failed with the following message: \
-                \(error.localizedDescription).
-
-                Inspect this error's `.error` property for more information.
-
-                Request:
-                \(request)
-                """,
-                error)
-
-            dispatch(event: .failed(apiError))
+        } catch {
+            dispatch(event: .failed(APIError.unknown("", "", error)))
             finish()
             return
         }
