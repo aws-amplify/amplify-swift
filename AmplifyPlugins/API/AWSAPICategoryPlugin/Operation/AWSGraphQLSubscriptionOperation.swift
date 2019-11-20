@@ -96,44 +96,59 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         subscriptionItem = subscriptionConnection?.subscribe(requestString: request.document,
                                                              variables: request.variables,
                                                              onEvent: { [weak self] event in
-            self?.onSubscriptionEvent(event: event)
+            self?.onAsyncSubscriptionEvent(event: event)
         })
 
     }
 
-    private func onSubscriptionEvent(event: AsyncEvent<SubscriptionEvent<Data>, Void, APIError>) {
+    private func onAsyncSubscriptionEvent(event: AsyncEvent<SubscriptionEvent<Data>, Void, APIError>) {
         switch event {
         case .inProcess(let subscriptionEvent):
-            switch subscriptionEvent {
-            case .connection(let subscriptionConnectionState):
-                let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(subscriptionConnectionState)
-                dispatch(event: .inProcess(subscriptionEvent))
-                if case .disconnected = subscriptionConnectionState {
-                    dispatch(event: .completed(()))
-                    finish()
-                }
-            case .data(let graphQLResponseData):
-                do {
-                    let graphQLServiceResponse = try GraphQLResponseDecoder.deserialize(
-                        graphQLResponse: graphQLResponseData)
-                    let graphQLResponse = try GraphQLResponseDecoder.decode(
-                        graphQLServiceResponse: graphQLServiceResponse,
-                        responseType: request.responseType,
-                        decodePath: request.decodePath,
-                        rawGraphQLResponse: graphQLResponseData)
-                    dispatch(event: .inProcess(.data(graphQLResponse)))
-                } catch {
-                    // TODO: Verify with the team that terminating a subscription after failing to decode/cast one
-                    // payload is the right thing to do. Another option would be to propagate a GraphQL error, but
-                    // leave the subscription alive.
-                    dispatch(event: .failed(APIError.operationError("Failed to deserialize", "", error)))
-                }
-            }
+            onSubscriptionEvent(subscriptionEvent)
         case .failed(let error):
             dispatch(event: .failed(error))
             finish()
         default:
             dispatch(event: .failed(APIError.unknown("Unknown subscription event", "", nil)))
+            finish()
+        }
+    }
+
+    private func onSubscriptionEvent(_ subscriptionEvent: SubscriptionEvent<Data>) {
+        switch subscriptionEvent {
+        case .connection(let subscriptionConnectionState):
+            onSubscriptionConnectionState(subscriptionConnectionState)
+        case .data(let graphQLResponseData):
+            onGraphQLResponseData(graphQLResponseData)
+        }
+    }
+
+    private func onSubscriptionConnectionState(_ subscriptionConnectionState: SubscriptionConnectionState) {
+        let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(subscriptionConnectionState)
+        dispatch(event: .inProcess(subscriptionEvent))
+
+        if case .disconnected = subscriptionConnectionState {
+            dispatch(event: .completed(()))
+            finish()
+        }
+    }
+
+    private func onGraphQLResponseData(_ graphQLResponseData: Data) {
+        do {
+            let graphQLServiceResponse = try GraphQLResponseDecoder.deserialize(graphQLResponse: graphQLResponseData)
+            let graphQLResponse = try GraphQLResponseDecoder.decode(graphQLServiceResponse: graphQLServiceResponse,
+                                                                    responseType: request.responseType,
+                                                                    decodePath: request.decodePath,
+                                                                    rawGraphQLResponse: graphQLResponseData)
+            dispatch(event: .inProcess(.data(graphQLResponse)))
+        } catch let error as APIError {
+            dispatch(event: .failed(error))
+            finish()
+        } catch {
+            // TODO: Verify with the team that terminating a subscription after failing to decode/cast one
+            // payload is the right thing to do. Another option would be to propagate a GraphQL error, but
+            // leave the subscription alive.
+            dispatch(event: .failed(APIError.operationError("Failed to deserialize", "", error)))
             finish()
         }
     }
