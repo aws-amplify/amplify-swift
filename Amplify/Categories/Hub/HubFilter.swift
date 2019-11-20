@@ -69,4 +69,12 @@ public struct HubFilters {
 
         return filter
     }
+
+    public static func hubFilter(forEventName eventName: HubPayloadEventName) -> HubFilter {
+        let filter: HubFilter = { payload in
+            payload.eventName == eventName
+        }
+        return filter
+    }
+
 }

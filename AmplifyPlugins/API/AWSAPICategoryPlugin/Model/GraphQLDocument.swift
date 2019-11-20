@@ -35,7 +35,7 @@ extension String {
 /// This type aims to provide an integration between GraphQL and an Amplify `Model`.
 /// Therefore, documents represented by concrete implementations provide a single GraphQL
 /// operation based on a defined `Model`.
-public protocol GraphQLDocument: DataStoreStatement where V == [String: Any] {
+public protocol GraphQLDocument: DataStoreStatement where Variables == [String: Any] {
 
     /// The `GraphQLDocumentType` a concrete implementation represents the
     /// GraphQL operation of the document

@@ -48,7 +48,7 @@ class GraphQLDocumentTests: XCTestCase {
         """
         XCTAssertEqual(document.stringValue, expected)
         XCTAssertEqual(document.name, "createPost")
-        XCTAssert(document.variables["input"] != nil)
+        XCTAssertNotNil(document.variables["input"])
     }
 
     /// - Given: a `Model` instance
@@ -79,7 +79,7 @@ class GraphQLDocumentTests: XCTestCase {
         """
         XCTAssertEqual(document.stringValue, expected)
         XCTAssertEqual(document.name, "updatePost")
-        XCTAssert(document.variables["input"] != nil)
+        XCTAssertNotNil(document.variables["input"])
     }
 
     /// - Given: a `Model` instance
@@ -115,7 +115,7 @@ class GraphQLDocumentTests: XCTestCase {
             XCTFail("Could not get object at `input`")
             return
         }
-        XCTAssert(input["id"] as? String == post.id)
+        XCTAssertEqual(input["id"], post.id)
     }
 
     // MARK: - Queries

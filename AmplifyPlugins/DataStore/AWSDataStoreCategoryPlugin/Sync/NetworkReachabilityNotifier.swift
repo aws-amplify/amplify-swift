@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 import Reachability
 import Combine
@@ -34,7 +35,7 @@ class NetworkReachabilityNotifier {
             try reachability?.startNotifier()
         } catch {
             //TODO: Test effects of inability to start ReachabilitySwift
-            print("Unable to start notifier from ReachabilitySwift")
+            Amplify.DataStore.log.error("Unable to start notifier from ReachabilitySwift")
         }
     }
 

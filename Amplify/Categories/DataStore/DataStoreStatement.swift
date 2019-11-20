@@ -13,7 +13,7 @@ import Foundation
 public protocol DataStoreStatement {
 
     /// The type of the variables container related to a concrete statement implementation
-    associatedtype V
+    associatedtype Variables
 
     /// The type of the `Model` associated with a particular statement
     var modelType: Model.Type { get }
@@ -22,5 +22,5 @@ public protocol DataStoreStatement {
     var stringValue: String { get }
 
     /// The variables associated with the statement
-    var variables: V { get }
+    var variables: Variables { get }
 }

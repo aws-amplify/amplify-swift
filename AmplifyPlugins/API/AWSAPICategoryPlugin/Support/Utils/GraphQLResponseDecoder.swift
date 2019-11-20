@@ -24,11 +24,17 @@ struct GraphQLResponseDecoder {
             }
 
             throw APIError.unknown("The service returned some data without any `data` and `errors`",
-                                   "The service did not return an expected GraphQL response: \(rawGraphQLResponseString)")
+                                   """
+                                   The service did not return an expected GraphQL response: \
+                                   \(rawGraphQLResponseString)
+                                   """)
 
         case (.some(let data), .none):
             do {
-                let responseData = try decode(graphQLData: data, into: responseType, at: decodePath)
+                let jsonValue = JSONValue.object(data)
+                let responseData = try decode(graphQLData: jsonValue,
+                                              into: responseType,
+                                              at: decodePath)
                 return GraphQLResponse<R>.success(responseData)
             } catch let decodingError as DecodingError {
                 let error = APIError(error: decodingError)
@@ -47,7 +53,10 @@ struct GraphQLResponseDecoder {
 
         case (.some(let data), .some(let errors)):
             do {
-                let responseData = try decode(graphQLData: data, into: responseType, at: decodePath)
+                let jsonValue = JSONValue.object(data)
+                let responseData = try decode(graphQLData: jsonValue,
+                                              into: responseType,
+                                              at: decodePath)
                 let responseErrors = try decodeErrors(graphQLErrors: errors)
                 return GraphQLResponse<R>.partial(responseData, responseErrors)
             } catch let decodingError as DecodingError {
@@ -121,11 +130,15 @@ struct GraphQLResponseDecoder {
         }
     }
 
-    private static func decode<R: Decodable>(graphQLData: [String: JSONValue],
+    private static func decode<R: Decodable>(graphQLData: JSONValue,
                                              into responseType: R.Type,
                                              at decodePath: String?) throws -> R {
 
-        let serializedJSON = try serialize(at: decodePath, graphQLData: graphQLData)
+        let isAnyModel = responseType == AnyModel.self
+
+        let serializedJSON = isAnyModel ?
+            try serializeAnyModel(from: graphQLData, at: decodePath) :
+            try serialize(graphQLData: graphQLData, at: decodePath)
 
         if responseType == String.self {
 
@@ -166,27 +179,29 @@ struct GraphQLResponseDecoder {
         return try JSONDecoder().decode(GraphQLError.self, from: serializedJSON)
     }
 
-    private static func serialize(at decodePath: String?, graphQLData: [String: JSONValue]) throws -> Data {
+    private static func serialize(graphQLData: JSONValue,
+                                  at decodePath: String?) throws -> Data {
+        let modelJSON = try getModelJSONValue(from: graphQLData, at: decodePath)
+        return try JSONEncoder().encode(modelJSON)
+    }
+
+    private static func serializeAnyModel(from graphQLData: JSONValue,
+                                          at decodePath: String?) throws -> Data {
+        let modelJSON = try getModelJSONValue(from: graphQLData, at: decodePath)
+        let anyModel = try AnyModel(modelJSON: modelJSON)
+        return try JSONEncoder().encode(anyModel)
+    }
+
+    private static func getModelJSONValue(from graphQLData: JSONValue,
+                                          at decodePath: String?) throws -> JSONValue {
         guard let decodePath = decodePath else {
-            return try JSONEncoder().encode(graphQLData)
+            return graphQLData
         }
 
-        let keys = decodePath.components(separatedBy: ".")
-
-        var data: JSONValue?
-        for (index, key) in keys.enumerated() {
-            if index == 0 {
-                data = graphQLData[key]
-                continue
-            }
-
-            guard case let .object(dataObject) = data else {
-                throw APIError.operationError("Could not retrieve object, given decode path: \(decodePath)", "", nil)
-            }
-
-            data = dataObject[key]
+        guard let model = graphQLData.value(at: decodePath) else {
+            throw APIError.operationError("Could not retrieve object, given decode path: \(decodePath)", "", nil)
         }
 
-        return try JSONEncoder().encode(data)
+        return model
     }
 }

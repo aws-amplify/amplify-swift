@@ -51,6 +51,24 @@ class DefaultHubPluginTests: XCTestCase {
         XCTAssertNotNil(unsubscribe)
     }
 
+    /// Given: The default Hub plugin
+    /// When: I invoke listen(to:eventName:)
+    /// Then: I receive messages with that event name
+    func testDefaultPluginListenEventName() throws {
+        let expectedMessageReceived = expectation(description: "Message was received as expected")
+        let unsubscribeToken = plugin.listen(to: .storage, eventName: "TEST_EVENT") { _ in
+            expectedMessageReceived.fulfill()
+        }
+
+        guard try HubListenerTestUtilities.waitForListener(with: unsubscribeToken, plugin: plugin, timeout: 0.5) else {
+            XCTFail("Token with \(unsubscribeToken.id) was not registered")
+            return
+        }
+
+        plugin.dispatch(to: .storage, payload: HubPayload(eventName: "TEST_EVENT"))
+        wait(for: [expectedMessageReceived], timeout: 0.5)
+    }
+
     /// Given: The default Hub plugin with a registered listener
     /// When: I dispatch a message
     /// Then: My listener is invoked with the message
@@ -60,7 +78,7 @@ class DefaultHubPluginTests: XCTestCase {
             messageReceived.fulfill()
         }
 
-        guard try DefaultHubPluginTestHelpers.waitForListener(with: token, plugin: plugin, timeout: 0.5) else {
+        guard try HubListenerTestUtilities.waitForListener(with: token, plugin: plugin, timeout: 0.5) else {
             XCTFail("Token with \(token.id) was not registered")
             return
         }
@@ -87,7 +105,7 @@ class DefaultHubPluginTests: XCTestCase {
             }
         }
 
-        guard try DefaultHubPluginTestHelpers.waitForListener(with: unsubscribeToken,
+        guard try HubListenerTestUtilities.waitForListener(with: unsubscribeToken,
                                                               plugin: plugin,
                                                               timeout: 0.5) else {
             XCTFail("Token with \(unsubscribeToken.id) was not registered")
@@ -99,7 +117,7 @@ class DefaultHubPluginTests: XCTestCase {
 
         plugin.removeListener(unsubscribeToken)
 
-        let isStillRegistered = try DefaultHubPluginTestHelpers.waitForListener(with: unsubscribeToken,
+        let isStillRegistered = try HubListenerTestUtilities.waitForListener(with: unsubscribeToken,
                                                                                 plugin: plugin,
                                                                                 timeout: 0.5)
         XCTAssertFalse(isStillRegistered, "Should not be registered after removeListener")

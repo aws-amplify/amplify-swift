@@ -13,12 +13,14 @@ import Foundation
 public struct GraphQLMutation: GraphQLDocument {
 
     public let documentType = GraphQLDocumentType.mutation
+    public let model: Model
     public let modelType: Model.Type
     public let mutationType: GraphQLMutationType
     public let variables: [String: Any]
 
     public init(of model: Model, type mutationType: GraphQLMutationType) {
-        self.modelType = Swift.type(of: model)
+        self.model = model
+        self.modelType = ModelRegistry.modelType(from: model.modelName) ?? Swift.type(of: model)
         self.mutationType = mutationType
         if mutationType == .delete {
             self.variables = [
@@ -34,7 +36,7 @@ public struct GraphQLMutation: GraphQLDocument {
     }
 
     public var name: String {
-        mutationType.rawValue + modelType.schema.graphQLName
+        mutationType.rawValue + model.schema.graphQLName
     }
 
     public var decodePath: String {
@@ -42,21 +44,25 @@ public struct GraphQLMutation: GraphQLDocument {
     }
 
     public var stringValue: String {
-        let schema = modelType.schema
-
         let mutationName = name.toPascalCase()
         let inputName = "input"
         let inputType = "\(mutationName)Input!"
 
-        let fields = schema.graphQLFields.map { $0.graphQLName }
+        let schema = model.schema
+        var fields = schema.graphQLFields.map { $0.graphQLName }
 
-        return """
+        // All mutation documents should include typename, to support type-erased operations on the client
+        fields.append("__typename")
+
+        let document = """
         \(documentType) \(mutationName)($\(inputName): \(inputType)) {
           \(name)(\(inputName): $\(inputName)) {
             \(fields.joined(separator: "\n    "))
           }
         }
         """
+
+        return document
     }
 
 }

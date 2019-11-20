@@ -9,8 +9,8 @@ import Foundation
 
 extension LoggingCategory: CategoryConfigurable {
 
-    /// Configures the LoggingCategory using the incoming CategoryConfiguration. If the incoming configuration does not
-    /// specify a Logging plugin, then we will inject the AWSLoggingCategoryPlugin.
+    /// Configures the LoggingCategory using the incoming CategoryConfiguration. If the incoming configuration does
+    /// not specify a Logging plugin, then we will inject the `AWSLoggingCategoryPlugin`.
     func configure(using configuration: CategoryConfiguration) throws {
         guard !isConfigured else {
             let error = ConfigurationError.amplifyAlreadyConfigured(

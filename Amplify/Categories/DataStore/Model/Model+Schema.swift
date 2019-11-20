@@ -11,7 +11,11 @@ extension Model {
 
     public static var schema: ModelSchema {
         // TODO load schema from JSON when this it not overridden by specific models
-        return ModelSchema(name: modelName, fields: [:])
+        ModelSchema(name: modelName, fields: [:])
+    }
+
+    public var schema: ModelSchema {
+        type(of: self).schema
     }
 
     /// Utility function that enables a DSL-like `ModelSchema` definition. Instead of building

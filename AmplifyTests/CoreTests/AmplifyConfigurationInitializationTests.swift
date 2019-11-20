@@ -144,6 +144,26 @@ class AmplifyConfigurationInitializationTests: XCTestCase {
         }
     }
 
+    /// - Given: A valid configuration
+    /// - When:
+    ///    - Amplify is finished configuring its plugins
+    /// - Then:
+    ///    - I receive a Hub event
+    func testConfigurationNotification() throws {
+        let notificationReceived = expectation(description: "Configured notification received")
+        let listeningPlugin = NotificationListeningAnalyticsPlugin(notificationReceived: notificationReceived)
+        Amplify.reset()
+        try Amplify.add(plugin: listeningPlugin)
+
+        let analyticsConfiguration = AnalyticsCategoryConfiguration(plugins: [
+            "NotificationListeningAnalyticsPlugin": true
+        ])
+        let config = AmplifyConfiguration(analytics: analyticsConfiguration)
+        try Amplify.configure(config)
+
+        wait(for: [notificationReceived], timeout: 1.0)
+    }
+
     // MARK: - Utilities
 
     /// Creates the directory used as the container for the test bundle; each test will need this.

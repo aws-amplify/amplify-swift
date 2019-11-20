@@ -25,6 +25,12 @@ extension APICategory: APICategoryGraphQLBehavior {
         plugin.mutate(of: model, type: type, listener: listener)
     }
 
+    public func mutate(of model: AnyModel,
+                       type: GraphQLMutationType,
+                       listener: GraphQLOperation<AnyModel>.EventListener?) -> GraphQLOperation<AnyModel> {
+        plugin.mutate(of: model, type: type, listener: listener)
+    }
+
     public func subscribe<M: Model>(from modelType: M.Type,
                                     type: GraphQLSubscriptionType,
                                     listener: GraphQLSubscriptionOperation<M>.EventListener?)
