@@ -90,23 +90,36 @@ class IdentifyMultiService: MultiServiceBehavior {
             guard let onlineLabelResult = finalOnlineResult as? IdentifyLabelsResult,
                 let offlineLabelResult = finalOfflineResult as? IdentifyLabelsResult else {
                     //this should never happen, something went seriously wrong throw error
-                    let message = InterpretMultiServiceErrorMessage.interpretTextNoResult.errorDescription
-                    let recoveryMessage = InterpretMultiServiceErrorMessage.interpretTextNoResult.recoverySuggestion
+                    let message = IdentifyMultiServiceErrorMessage.noResultIdentifyService.errorDescription
+                    let recoveryMessage = IdentifyMultiServiceErrorMessage.noResultIdentifyService.recoverySuggestion
                     let predictionError = PredictionsError.service(message, recoveryMessage, nil)
                     callback(.failed(predictionError))
                     return
             }
-            let mergedResult = mergeLabels(onlineLabelResult: onlineLabelResult,
+            let mergedResult = mergeLabelResult(onlineLabelResult: onlineLabelResult,
                                            offlineLabelResult: offlineLabelResult)
             callback(.completed(mergedResult))
             return
         } else if finalOnlineResult is IdentifyTextResult || finalOnlineResult is IdentifyTextResult {
-            print("got text")
+           // swiftlint:force_cast disable
+           guard let onlineTextResult = finalOnlineResult as? IdentifyTextResult,
+               let offlineTextResult = finalOfflineResult as? IdentifyTextResult else {
+                   //this should never happen, something went seriously wrong throw error
+                   let message = IdentifyMultiServiceErrorMessage.noResultIdentifyService.errorDescription
+                   let recoveryMessage = IdentifyMultiServiceErrorMessage.noResultIdentifyService.recoverySuggestion
+                   let predictionError = PredictionsError.service(message, recoveryMessage, nil)
+                   callback(.failed(predictionError))
+                   return
+           }
+           let mergedResult = mergeTextResult(onlineTextResult: onlineTextResult,
+                                          offlineTextResult: offlineTextResult)
+           callback(.completed(mergedResult))
+           return
         }
     }
 
-    func mergeLabels(onlineLabelResult: IdentifyLabelsResult,
-                     offlineLabelResult: IdentifyLabelsResult) -> IdentifyLabelsResult {
+    func mergeLabelResult(onlineLabelResult: IdentifyLabelsResult,
+                          offlineLabelResult: IdentifyLabelsResult) -> IdentifyLabelsResult {
         var combinedLabels = [Label]()
 
         let onlineLabelSet = Set<Label>(onlineLabelResult.labels)
@@ -142,6 +155,33 @@ class IdentifyMultiService: MultiServiceBehavior {
             return combinedResult
         }
     }
+
+    func mergeTextResult(onlineTextResult: IdentifyTextResult,
+                         offlineTextResult: IdentifyTextResult) -> IdentifyTextResult {
+
+        guard let onlineLines = onlineTextResult.identifiedLines else {
+            return IdentifyTextResult(fullText: onlineTextResult.fullText,
+                                      words: onlineTextResult.words,
+                                      rawLineText: onlineTextResult.rawLineText,
+                                      identifiedLines: offlineTextResult.identifiedLines)
+        }
+
+        guard let offlineLines = offlineTextResult.identifiedLines else {
+            return onlineTextResult
+        }
+
+        let onlineLineSet = Set<IdentifiedLine>(onlineLines)
+        let offlineLineSet = Set<IdentifiedLine>(offlineLines)
+
+        let mergedLines = Array(onlineLineSet.union(offlineLineSet))
+
+        //offline result doesn't return anything except identified lines so
+        //merging them plus the other stuff from online is a merged result
+        return IdentifyTextResult(fullText: onlineTextResult.fullText,
+                                  words: onlineTextResult.words,
+                                  rawLineText: onlineTextResult.rawLineText,
+                                  identifiedLines: mergedLines)
+    }
 }
 
 extension Label: Hashable {
@@ -164,5 +204,16 @@ extension Label: Hashable {
         } else {
             return compareTo
         }
+    }
+}
+
+extension IdentifiedLine: Hashable {
+
+    public static func == (lhs: IdentifiedLine, rhs: IdentifiedLine) -> Bool {
+        return lhs.text == rhs.text
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(text)
     }
 }

@@ -138,7 +138,7 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
         waitForExpectations(timeout: networkTimeout)
     }
 
-    func testIdentifyText() {
+    func testIdentifyTextPlain() {
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
             return
@@ -146,6 +146,78 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
         let completeInvoked = expectation(description: "Completed is invoked")
 
         let operation = Amplify.Predictions.identify(type: .detectText(.plain),
+                                                     image: url,
+                                                     options: PredictionsIdentifyRequest.Options()) { event in
+                                                        switch event {
+                                                        case .completed:
+                                                            completeInvoked.fulfill()
+                                                        case .failed(let error):
+                                                            XCTFail("Failed with \(error)")
+                                                        default:
+                                                            break
+                                                        }
+        }
+
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: networkTimeout)
+    }
+
+    func testIdentifyTextAll() {
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
+            return
+        }
+        let completeInvoked = expectation(description: "Completed is invoked")
+
+        let operation = Amplify.Predictions.identify(type: .detectText(.all),
+                                                     image: url,
+                                                     options: PredictionsIdentifyRequest.Options()) { event in
+                                                        switch event {
+                                                        case .completed:
+                                                            completeInvoked.fulfill()
+                                                        case .failed(let error):
+                                                            XCTFail("Failed with \(error)")
+                                                        default:
+                                                            break
+                                                        }
+        }
+
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: networkTimeout)
+    }
+
+    func testIdentifyTextForms() {
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
+            return
+        }
+        let completeInvoked = expectation(description: "Completed is invoked")
+
+        let operation = Amplify.Predictions.identify(type: .detectText(.form),
+                                                     image: url,
+                                                     options: PredictionsIdentifyRequest.Options()) { event in
+                                                        switch event {
+                                                        case .completed:
+                                                            completeInvoked.fulfill()
+                                                        case .failed(let error):
+                                                            XCTFail("Failed with \(error)")
+                                                        default:
+                                                            break
+                                                        }
+        }
+
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: networkTimeout)
+    }
+
+    func testIdentifyTextTables() {
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
+            return
+        }
+        let completeInvoked = expectation(description: "Completed is invoked")
+
+        let operation = Amplify.Predictions.identify(type: .detectText(.table),
                                                      image: url,
                                                      options: PredictionsIdentifyRequest.Options()) { event in
                                                         switch event {
