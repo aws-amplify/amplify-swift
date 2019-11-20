@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import OSLog
+import os.log
 
 /// A Logging category plugin that forwards calls to the OS's Unified Logging system
 final public class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {

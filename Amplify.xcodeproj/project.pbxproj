@@ -334,7 +334,6 @@
 		FAD3937A23820CDB00463F5E /* DataStoreCategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD3937923820CDB00463F5E /* DataStoreCategoryClientAPITests.swift */; };
 		FAD3937D23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD3937C23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift */; };
 		FAD3937F23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD3937E23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift */; };
-		FAD3E11E2384956600F6F41C /* LabelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD3E11D2384956600F6F41C /* LabelType.swift */; };
 		FADB3A6823612940006D6FE9 /* BasicClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADB3A6723612940006D6FE9 /* BasicClosure.swift */; };
 		FAF1B88423392F7C007F1435 /* ConcurrentDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B88323392F7C007F1435 /* ConcurrentDispatcher.swift */; };
 		FAF1B88623392F96007F1435 /* SerialDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B88523392F96007F1435 /* SerialDispatcher.swift */; };
@@ -2483,7 +2482,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FAB2C9A12384B108008EE879 /* Build configuration list for PBXNativeTarget "AWSPluginsTestCommon" */;
 			buildPhases = (
-				21A8FC2B25736B60640CE56D /* [CP] Check Pods Manifest.lock */,
 				FAB2C9962384B108008EE879 /* Sources */,
 				FAB2C9A22384B11B008EE879 /* SwiftFormat */,
 				FAB2C9A32384B131008EE879 /* SwiftLint */,
@@ -3539,7 +3537,6 @@
 				FA09337C23844E9F00C2FD5F /* GraphQLOperationRequest.swift in Sources */,
 				FAC23545227A055200424678 /* AmplifyConfiguration.swift in Sources */,
 				95DAAB84237F13940028544F /* VoiceType.swift in Sources */,
-				FAD3E11E2384956600F6F41C /* LabelType.swift in Sources */,
 				2142099823721F4400FA140C /* RESTOperationRequest.swift in Sources */,
 				21FFF994230C96CB005878EA /* StoragePutDataOperation.swift in Sources */,
 				95DAAB30237E63370028544F /* IdentifyAction.swift in Sources */,
