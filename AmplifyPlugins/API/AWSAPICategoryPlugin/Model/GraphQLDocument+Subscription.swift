@@ -18,13 +18,14 @@ public enum GraphQLSubscriptionType: String {
 /// A concrete implementation of `GraphQLDocument` that represents a subscription operation.
 /// Subscriptions are triggered when specific operations happen on the defined `Model`.
 /// These operations are defined by `GraphQLSubscriptionType`.
-public struct GraphQLSubscription<M: Model>: GraphQLDocument {
+public struct GraphQLSubscription: GraphQLDocument {
 
     public let documentType = GraphQLDocumentType.subscription
-    public let modelType: M.Type
+    public let modelType: Model.Type
     public let subscriptionType: GraphQLSubscriptionType
 
-    public init(of modelType: M.Type, type subscriptionType: GraphQLSubscriptionType) {
+    public init(of modelType: Model.Type,
+                type subscriptionType: GraphQLSubscriptionType) {
         self.modelType = modelType
         self.subscriptionType = subscriptionType
     }

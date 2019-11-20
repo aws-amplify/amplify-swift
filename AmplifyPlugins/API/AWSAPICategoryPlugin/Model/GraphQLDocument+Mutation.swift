@@ -17,14 +17,14 @@ public enum GraphQLMutationType: String {
 
 /// A concrete implementation of `GraphQLDocument` that represents a data mutation operation.
 /// The type of the operation is defined by `GraphQLMutationType`.
-public struct GraphQLMutation<M: Model>: GraphQLDocument {
+public struct GraphQLMutation: GraphQLDocument {
 
     public let documentType = GraphQLDocumentType.mutation
-    public let modelType: M.Type
+    public let modelType: Model.Type
     public let mutationType: GraphQLMutationType
     public let variables: [String: Any]
 
-    public init(of model: M, type mutationType: GraphQLMutationType) {
+    public init(of model: Model, type mutationType: GraphQLMutationType) {
         self.modelType = Swift.type(of: model)
         self.mutationType = mutationType
         if mutationType == .delete {

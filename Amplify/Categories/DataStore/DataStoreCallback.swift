@@ -25,6 +25,11 @@ extension DataStoreResult {
         let dataStoreError = error as? DataStoreError ?? .invalidOperation(causedBy: error)
         return .error(dataStoreError)
     }
+
+    public static var emptyResult: DataStoreResult<Void> {
+        .result(())
+    }
+
 }
 
 /// Function type of every `DataStore` asynchronous API.
