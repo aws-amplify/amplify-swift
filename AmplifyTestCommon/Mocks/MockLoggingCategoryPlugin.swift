@@ -7,7 +7,21 @@
 
 import Amplify
 
-class MockLoggingCategoryPlugin: MessageReporter, LoggingCategoryPlugin {
+class MockLoggingCategoryPlugin: MessageReporter, LoggingCategoryPlugin, Logger {
+    var logLevel = LogLevel.verbose
+
+    var `default`: Logger {
+        self
+    }
+
+    func logger(forCategory category: String) -> Logger {
+        self
+    }
+
+    func logger(forCategory category: String, logLevel: LogLevel) -> Logger {
+        self
+    }
+
     var key: String {
         return "MockLoggingCategoryPlugin"
     }
@@ -21,27 +35,27 @@ class MockLoggingCategoryPlugin: MessageReporter, LoggingCategoryPlugin {
         onComplete()
     }
 
-    func error(_ message: @autoclosure () -> String, file: String, function: String, line: Int) {
+    func error(_ message: @autoclosure () -> String) {
         notify()
     }
 
-    func error(error: Error, file: String, function: String, line: Int) {
+    func error(error: Error) {
         notify()
     }
 
-    func warn(_ message: @autoclosure () -> String, file: String, function: String, line: Int) {
+    func warn(_ message: @autoclosure () -> String) {
         notify()
     }
 
-    func info(_ message: @autoclosure () -> String, file: String, function: String, line: Int) {
+    func info(_ message: @autoclosure () -> String) {
         notify()
     }
 
-    func debug(_ message: @autoclosure () -> String, file: String, function: String, line: Int) {
+    func debug(_ message: @autoclosure () -> String) {
         notify()
     }
 
-    func verbose(_ message: @autoclosure () -> String, file: String, function: String, line: Int) {
+    func verbose(_ message: @autoclosure () -> String) {
         notify()
     }
 }
