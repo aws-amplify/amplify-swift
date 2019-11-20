@@ -10,6 +10,7 @@ import XCTest
 import AWSMobileClient
 import AWSAPICategoryPlugin
 @testable import Amplify
+@testable import AWSAPICategoryPluginTestCommon
 
 // These test cover the more complex scenarios, compared to the Todo graphQL endpoint
 class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {

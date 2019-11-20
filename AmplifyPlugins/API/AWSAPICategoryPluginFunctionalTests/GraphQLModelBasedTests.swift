@@ -11,7 +11,7 @@ import AWSAPICategoryPlugin
 @testable import Amplify
 import AmplifyTestCommon
 
-class AWSAPICategoryPluginGraphQLModelBasedTests: XCTestCase {
+class GraphQLModelBasedTests: XCTestCase {
 
     /*
      The backend is set up using this schema:
@@ -91,7 +91,7 @@ class AWSAPICategoryPluginGraphQLModelBasedTests: XCTestCase {
 
         let apiConfig = APICategoryConfiguration(plugins: [
             "AWSAPICategoryPlugin": [
-                AWSAPICategoryPluginGraphQLModelBasedTests.modelBasedGraphQLWithAPIKey: [
+                GraphQLModelBasedTests.modelBasedGraphQLWithAPIKey: [
                     "Endpoint": "https://5dxswtkp3favlnw2pvcmsp2mti.appsync-api.us-west-2.amazonaws.com/graphql",
                     "Region": "us-west-2",
                     "AuthorizationType": "API_KEY",
@@ -242,7 +242,7 @@ class AWSAPICategoryPluginGraphQLModelBasedTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        wait(for: [connectedInvoked], timeout: AWSAPICategoryPluginTodoGraphQLWithAPIKeyTests.networkTimeout)
+        wait(for: [connectedInvoked], timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
@@ -258,9 +258,9 @@ class AWSAPICategoryPluginGraphQLModelBasedTests: XCTestCase {
             return
         }
 
-        wait(for: [progressInvoked], timeout: AWSAPICategoryPluginGraphQLModelBasedTests.networkTimeout)
+        wait(for: [progressInvoked], timeout: GraphQLModelBasedTests.networkTimeout)
         operation.cancel()
-        wait(for: [disconnectedInvoked, completedInvoked], timeout: AWSAPICategoryPluginGraphQLModelBasedTests.networkTimeout)
+        wait(for: [disconnectedInvoked, completedInvoked], timeout: GraphQLModelBasedTests.networkTimeout)
         XCTAssertTrue(operation.isFinished)
     }
 

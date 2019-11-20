@@ -28,20 +28,23 @@ target "HostApp" do
   pod 'Amplify', :path => '../../'
   pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
 
-  target "AWSAPICategoryPluginFunctionalTests" do
+  target "AWSAPICategoryPluginTestCommon" do
     inherit! :complete
-  end 
 
-  target "GraphQLWithIAMIntegrationTests" do 
-    inherit! :complete
+    target "AWSAPICategoryPluginFunctionalTests" do
+      inherit! :complete
+    end 
+  
+    target "GraphQLWithIAMIntegrationTests" do 
+      inherit! :complete
+    end
+  
+    target "GraphQLWithUserPoolIntegrationTests" do 
+      inherit! :complete
+    end
+  
+    target "RESTWithIAMIntegrationTests" do 
+      inherit! :complete
+    end
   end
-
-  target "GraphQLWithUserPoolIntegrationTests" do 
-    inherit! :complete
-  end
-
-  target "RESTWithIAMIntegrationTests" do 
-    inherit! :complete
-  end
-
 end

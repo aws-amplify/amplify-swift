@@ -9,6 +9,7 @@ import XCTest
 @testable import Amplify
 import AWSMobileClient
 import AWSAPICategoryPlugin
+@testable import AWSAPICategoryPluginTestCommon
 
 class GraphQLWithIAMIntegrationTests: XCTestCase {
 
