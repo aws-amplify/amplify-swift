@@ -14,6 +14,8 @@
 		21409C7223850BEE000A53C9 /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C7123850BEE000A53C9 /* Todo.swift */; };
 		21409C7423850BFD000A53C9 /* AWSMobileClient+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C7323850BFD000A53C9 /* AWSMobileClient+Message.swift */; };
 		21409C7623850D1D000A53C9 /* BlogPostComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C7523850D1D000A53C9 /* BlogPostComment.swift */; };
+		21409C8123851524000A53C9 /* TestCommonConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C8023851524000A53C9 /* TestCommonConstants.swift */; };
+		21409C8323851796000A53C9 /* AuthHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C8223851796000A53C9 /* AuthHelper.swift */; };
 		217856632380C60400A30D19 /* GraphQLWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217856622380C60400A30D19 /* GraphQLWithIAMIntegrationTests.swift */; };
 		217856652380C60400A30D19 /* AWSAPICategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSAPICategoryPlugin.framework */; };
 		217856742380C73600A30D19 /* AWSAPICategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSAPICategoryPlugin.framework */; };
@@ -256,6 +258,8 @@
 		21409C7123850BEE000A53C9 /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
 		21409C7323850BFD000A53C9 /* AWSMobileClient+Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSMobileClient+Message.swift"; sourceTree = "<group>"; };
 		21409C7523850D1D000A53C9 /* BlogPostComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlogPostComment.swift; sourceTree = "<group>"; };
+		21409C8023851524000A53C9 /* TestCommonConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestCommonConstants.swift; sourceTree = "<group>"; };
+		21409C8223851796000A53C9 /* AuthHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHelper.swift; sourceTree = "<group>"; };
 		217856602380C60400A30D19 /* GraphQLWithIAMIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GraphQLWithIAMIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		217856622380C60400A30D19 /* GraphQLWithIAMIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLWithIAMIntegrationTests.swift; sourceTree = "<group>"; };
 		217856642380C60400A30D19 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -537,6 +541,8 @@
 				21409C7323850BFD000A53C9 /* AWSMobileClient+Message.swift */,
 				21409C6A23850A9E000A53C9 /* Info.plist */,
 				21409C7F23850F3D000A53C9 /* Model */,
+				21409C8023851524000A53C9 /* TestCommonConstants.swift */,
+				21409C8223851796000A53C9 /* AuthHelper.swift */,
 			);
 			path = AWSAPICategoryPluginTestCommon;
 			sourceTree = "<group>";
@@ -589,11 +595,11 @@
 			isa = PBXGroup;
 			children = (
 				B4DFA609237A61D00013E17B /* AWSAPICategoryPluginGetTests.swift */,
-				217856C12383339D00A30D19 /* GraphQLModelBasedTests.swift */,
-				B4DFA603237A61D00013E17B /* TodoGraphQLWithAPIKeyTests.swift */,
 				B4DFA604237A61D00013E17B /* BlogPostCommentGraphQLWithAPIKeyTests.swift */,
-				B4DFA5FD237A61D00013E17B /* IntegrationTestConfiguration.swift */,
+				217856C12383339D00A30D19 /* GraphQLModelBasedTests.swift */,
 				217856732380C73600A30D19 /* Info.plist */,
+				B4DFA5FD237A61D00013E17B /* IntegrationTestConfiguration.swift */,
+				B4DFA603237A61D00013E17B /* TodoGraphQLWithAPIKeyTests.swift */,
 			);
 			path = AWSAPICategoryPluginFunctionalTests;
 			sourceTree = "<group>";
@@ -1722,6 +1728,8 @@
 			files = (
 				21409C7423850BFD000A53C9 /* AWSMobileClient+Message.swift in Sources */,
 				21409C7623850D1D000A53C9 /* BlogPostComment.swift in Sources */,
+				21409C8323851796000A53C9 /* AuthHelper.swift in Sources */,
+				21409C8123851524000A53C9 /* TestCommonConstants.swift in Sources */,
 				21409C7223850BEE000A53C9 /* Todo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

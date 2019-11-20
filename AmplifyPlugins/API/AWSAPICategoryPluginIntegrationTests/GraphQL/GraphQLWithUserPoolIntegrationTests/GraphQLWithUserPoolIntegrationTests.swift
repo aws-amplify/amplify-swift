@@ -13,8 +13,6 @@ import AWSAPICategoryPlugin
 
 class GraphQLWithUserPoolIntegrationTests: XCTestCase {
 
-    static let networkTimeout = TimeInterval(180)
-
     /* Instructions for `todoGraphQLWithUserPools`
      `amplify add api`
         * Please select from one of the below mentioned services GraphQL
@@ -93,7 +91,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         ]
         AWSInfo.configureDefaultAWSInfo(config)
 
-        GraphQLWithUserPoolIntegrationTests.initializeMobileClient()
+        AuthHelper.initializeMobileClient()
 
         Amplify.reset()
         let plugin = AWSAPICategoryPlugin()
@@ -123,19 +121,17 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     }
 
     let user1 = "storageUser1@testing.com"
-    let user2  = "storageUser2@testing.com"
     let password = "Abc123@@!!"
     // This is a run once function to set up users then use console to verify and run rest of these tests.
     func testSetUpOnce() {
-        signUpUser(username: user1, password: password)
-        signUpUser(username: user2, password: password)
+        AuthHelper.signUpUser(username: user1, password: password)
     }
 
     /// Given: A CreateTodo mutation request, and user signed in, graphql has userpools as auth mode.
     /// When: Call mutate API
     /// Then: The operation completes successfully with no errors and todo in response
     func testCreateTodoMutationWithUserPoolWithSignedInUser() {
-        signIn(username: user1, password: password)
+        AuthHelper.signIn(username: user1, password: password)
         let completeInvoked = expectation(description: "request completed")
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
@@ -171,7 +167,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: GraphQLWithUserPoolIntegrationTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: GraphQL with userPool, no user signed in, Cognito configured with no guest access.
@@ -202,70 +198,6 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: GraphQLWithUserPoolIntegrationTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
-
-    func signIn(username: String, password: String) {
-           let signInWasSuccessful = expectation(description: "signIn was successful")
-           AWSMobileClient.sharedInstance().signIn(username: username, password: password) { result, error in
-               if let error = error {
-                   XCTFail("Sign in failed: \(error.localizedDescription)")
-                   return
-               }
-
-               guard let result = result else {
-                   XCTFail("No result from SignIn")
-                   return
-               }
-               XCTAssertEqual(result.signInState, .signedIn)
-               signInWasSuccessful.fulfill()
-           }
-           waitForExpectations(timeout: GraphQLWithUserPoolIntegrationTests.networkTimeout)
-       }
-
-    func signUpUser(username: String, password: String) {
-        let signUpExpectation = expectation(description: "successful sign up expectation.")
-        let userAttributes = ["email": username]
-        AWSMobileClient.default().signUp(username: username, password: password, userAttributes: userAttributes) { result, error in
-
-            if let error = error as? AWSMobileClientError {
-                XCTFail("Failed to sign up user with error: \(error.message)")
-                return
-            }
-
-            guard result != nil else {
-                XCTFail("result from signUp should not be nil")
-                return
-            }
-
-            signUpExpectation.fulfill()
-        }
-
-        waitForExpectations(timeout: GraphQLWithUserPoolIntegrationTests.networkTimeout)
-    }
-
-    static func initializeMobileClient() {
-        let callbackInvoked = DispatchSemaphore(value: 1)
-
-        AWSMobileClient.default().initialize { userState, error in
-            if let error = error {
-                XCTFail("Error initializing AWSMobileClient. Error: \(error.localizedDescription)")
-                return
-            }
-
-            guard let userState = userState else {
-                XCTFail("userState is unexpectedly empty initializing AWSMobileClient")
-                return
-            }
-
-            if userState != UserState.signedOut {
-                AWSMobileClient.default().signOut()
-            }
-            print("AWSMobileClient Initialized")
-            callbackInvoked.signal()
-        }
-
-        _ = callbackInvoked.wait(timeout: .now() + 100)
-    }
-
 }

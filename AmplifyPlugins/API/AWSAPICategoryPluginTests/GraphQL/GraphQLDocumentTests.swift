@@ -96,8 +96,8 @@ class GraphQLDocumentTests: XCTestCase {
         let post = Post(title: "title", content: "content")
         let document = GraphQLMutation(of: post, type: .delete)
         let expected = """
-        mutation DeletePost($id: ID!) {
-          deletePost(id: $id) {
+        mutation DeletePost($input: DeletePostInput!) {
+          deletePost(input: $input) {
             id
             content
             createdAt
@@ -110,7 +110,12 @@ class GraphQLDocumentTests: XCTestCase {
         """
         XCTAssertEqual(document.stringValue, expected)
         XCTAssertEqual(document.name, "deletePost")
-        XCTAssert(document.variables["id"] as? String == post.id)
+        XCTAssert(document.variables["input"] != nil)
+        guard let input = document.variables["input"] as? [String: String] else {
+            XCTFail("Could not get object at `input`")
+            return
+        }
+        XCTAssert(input["id"] as? String == post.id)
     }
 
     // MARK: - Queries

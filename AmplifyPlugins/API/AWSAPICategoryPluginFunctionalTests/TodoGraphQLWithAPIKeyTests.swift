@@ -43,8 +43,6 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
      */
     static let todoGraphQLWithAPIKey = "todoGraphQLWithAPIKey"
 
-    static let networkTimeout = TimeInterval(180)
-
     override func setUp() {
         Amplify.reset()
         let plugin = AWSAPICategoryPlugin()
@@ -117,7 +115,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A CreateTodo mutation request with input variable in document and missing values from variables
@@ -150,7 +148,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A CreateTodo mutation request with incorrect repsonse type (ListTodo instead of Todo)
@@ -183,7 +181,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A Todo is created successfully
@@ -229,7 +227,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(queryOperation)
-        waitForExpectations(timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A newly generated random uuid
@@ -260,7 +258,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A successful Todo created and an Update mutation request
@@ -308,7 +306,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A successful Todo created and a Delete mutation request
@@ -353,7 +351,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(deleteOperation)
-        waitForExpectations(timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
 
         let queryCompleteInvoked = expectation(description: "request completed")
         let getTodoRequest = GraphQLRequest(apiName: TodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey,
@@ -379,7 +377,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(queryOperation)
-        waitForExpectations(timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     // TODO: first time run fails, hm
@@ -422,7 +420,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// When: Call query API with ListTodo mutation with filter on the random Id
@@ -457,7 +455,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A successful subscription is created for CreateTodo's
@@ -500,7 +498,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        wait(for: [connectedInvoked], timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let name = testMethodName + "Name"
@@ -517,9 +515,9 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             return
         }
 
-        wait(for: [progressInvoked], timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         operation.cancel()
-        wait(for: [disconnectedInvoked, completedInvoked], timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        wait(for: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
         XCTAssertTrue(operation.isFinished)
     }
 
@@ -563,7 +561,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        wait(for: [connectedInvoked], timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let name = testMethodName + "Name"
@@ -584,9 +582,9 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             return
         }
 
-        wait(for: [progressInvoked], timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         operation.cancel()
-        wait(for: [disconnectedInvoked, completedInvoked], timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        wait(for: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
         XCTAssertTrue(operation.isFinished)
     }
 
@@ -629,7 +627,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        wait(for: [connectedInvoked], timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let name = testMethodName + "Name"
@@ -645,9 +643,9 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             return
         }
 
-        wait(for: [progressInvoked], timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         operation.cancel()
-        wait(for: [disconnectedInvoked, completedInvoked], timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        wait(for: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
         XCTAssertTrue(operation.isFinished)
     }
 
@@ -674,7 +672,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             XCTAssertTrue(operation.isExecuting)
             operation.cancel()
         }
-        wait(for: [completedInvoked], timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        wait(for: [completedInvoked], timeout: TestCommonConstants.networkTimeout)
         for operation in operations {
             XCTAssertTrue(operation.isFinished)
         }
@@ -712,7 +710,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
                 XCTFail("Unexpected event: \(event)")
             }
         }
-        wait(for: [completeInvoked], timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return todo
     }
 
@@ -746,7 +744,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
                 XCTFail("Unexpected event: \(event)")
             }
         }
-        wait(for: [completeInvoked], timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return todo
     }
 
@@ -778,7 +776,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
                 XCTFail("Unexpected event: \(event)")
             }
         }
-        wait(for: [completeInvoked], timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return todo
     }
 
@@ -808,7 +806,7 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        wait(for: [connectedInvoked], timeout: TodoGraphQLWithAPIKeyTests.networkTimeout)
+        wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         return operation
     }
 }

@@ -14,8 +14,6 @@ import AWSAPICategoryPlugin
 
 class AWSAPICategoryPluginGetTests: XCTestCase {
 
-    static let networkTimeout = TimeInterval(180)
-
     override func setUp() {
         Amplify.reset()
         let plugin = AWSAPICategoryPlugin()
@@ -75,7 +73,7 @@ class AWSAPICategoryPluginGetTests: XCTestCase {
             }
         }
 
-        wait(for: [getCompleted], timeout: AWSAPICategoryPluginGetTests.networkTimeout)
+        wait(for: [getCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testAPIKeyGet() {
@@ -102,7 +100,7 @@ class AWSAPICategoryPluginGetTests: XCTestCase {
             }
         }
 
-        wait(for: [getCompleted], timeout: AWSAPICategoryPluginGetTests.networkTimeout)
+        wait(for: [getCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testSimplePost() {
@@ -130,6 +128,6 @@ class AWSAPICategoryPluginGetTests: XCTestCase {
             }
         }
 
-        wait(for: [getCompleted], timeout: AWSAPICategoryPluginGetTests.networkTimeout)
+        wait(for: [getCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 }

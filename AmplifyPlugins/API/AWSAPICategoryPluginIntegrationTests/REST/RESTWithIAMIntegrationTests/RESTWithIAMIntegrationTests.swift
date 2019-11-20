@@ -17,8 +17,6 @@ class RESTWithIAMIntegrationTests: XCTestCase {
      Folow these instructions to get this set up: https://aws-amplify.github.io/docs/ios/api#rest-api
      */
 
-    static let networkTimeout = TimeInterval(180)
-
     static let restAPI = "restAPI"
 
     static let apiConfig = APICategoryConfiguration(plugins: [
@@ -55,7 +53,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
 
         AWSInfo.configureDefaultAWSInfo(config)
 
-        RESTWithIAMIntegrationTests.initializeMobileClient()
+        AuthHelper.initializeMobileClient()
 
         Amplify.reset()
         let plugin = AWSAPICategoryPlugin()
@@ -90,7 +88,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [completeInvoked], timeout: RESTWithIAMIntegrationTests.networkTimeout)
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testGetAPIFailedAccessDenied() {
@@ -114,7 +112,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [failedInvoked], timeout: RESTWithIAMIntegrationTests.networkTimeout)
+        wait(for: [failedInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testPutAPISuccess() {
@@ -134,7 +132,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [completeInvoked], timeout: RESTWithIAMIntegrationTests.networkTimeout)
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testPostAPISuccess() {
@@ -154,7 +152,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [completeInvoked], timeout: RESTWithIAMIntegrationTests.networkTimeout)
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeleteAPISuccess() {
@@ -174,7 +172,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [completeInvoked], timeout: RESTWithIAMIntegrationTests.networkTimeout)
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testHeadAPIAccessDenied() {
@@ -198,7 +196,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [failedInvoked], timeout: RESTWithIAMIntegrationTests.networkTimeout)
+        wait(for: [failedInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testPatchAPINotFound() {
@@ -222,33 +220,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [failedInvoked], timeout: RESTWithIAMIntegrationTests.networkTimeout)
-    }
-
-    // MARK: - Utilities
-
-    static func initializeMobileClient() {
-        let callbackInvoked = DispatchSemaphore(value: 1)
-
-        AWSMobileClient.default().initialize { userState, error in
-            if let error = error {
-                XCTFail("Error initializing AWSMobileClient. Error: \(error.localizedDescription)")
-                return
-            }
-
-            guard let userState = userState else {
-                XCTFail("userState is unexpectedly empty initializing AWSMobileClient")
-                return
-            }
-
-            if userState != UserState.signedOut {
-                AWSMobileClient.default().signOut()
-            }
-            print("AWSMobileClient Initialized")
-            callbackInvoked.signal()
-        }
-
-        _ = callbackInvoked.wait(timeout: .now() + networkTimeout)
+        wait(for: [failedInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
 }

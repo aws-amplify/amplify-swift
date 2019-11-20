@@ -22,7 +22,9 @@ public struct GraphQLMutation: GraphQLDocument {
         self.mutationType = mutationType
         if mutationType == .delete {
             self.variables = [
-                "id": model.id
+                "input": [
+                    "id": model.id
+                ]
             ]
         } else {
             self.variables = [
@@ -43,9 +45,8 @@ public struct GraphQLMutation: GraphQLDocument {
         let schema = modelType.schema
 
         let mutationName = name.toPascalCase()
-        let isDelete = mutationType == .delete
-        let inputName = isDelete ? "id" : "input"
-        let inputType = isDelete ? "ID!" : "\(mutationName)Input!"
+        let inputName = "input"
+        let inputType = "\(mutationName)Input!"
 
         let fields = schema.graphQLFields.map { $0.graphQLName }
 

@@ -15,8 +15,6 @@ import AWSAPICategoryPlugin
 // These test cover the more complex scenarios, compared to the Todo graphQL endpoint
 class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
 
-    static let networkTimeout = TimeInterval(180)
-
     /*
      These are the instructions to set up the `blogPostCommonGraphQLWithAPIKey`. Same as `todoGraphQLWithAPIKey`
      except with the Blog Post and Comment graphQL schema
@@ -100,7 +98,7 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: BlogPostCommentGraphQLWithAPIKeyTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: Create a blog
@@ -156,7 +154,7 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(queryOperation)
-        waitForExpectations(timeout: BlogPostCommentGraphQLWithAPIKeyTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: Create a blog, a post on that blog, a comment on that post.
@@ -214,7 +212,7 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(queryOperation)
-        waitForExpectations(timeout: BlogPostCommentGraphQLWithAPIKeyTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     // MARK: Common functionality
@@ -246,7 +244,7 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: BlogPostCommentGraphQLWithAPIKeyTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
         return blog
     }
 
@@ -278,7 +276,7 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: BlogPostCommentGraphQLWithAPIKeyTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
         return post
     }
 
@@ -311,7 +309,7 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: BlogPostCommentGraphQLWithAPIKeyTests.networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
         return comment
     }
 
