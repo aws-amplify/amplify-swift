@@ -10,45 +10,86 @@ import Foundation
 
 public extension AWSAPICategoryPlugin {
 
-    func get(apiName: String,
-             path: String,
-             listener: RESTOperation.EventListener?) -> RESTOperation {
+    func get(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+        let operationRequest = RESTOperationRequest(request: request,
+                                                    operationType: .get)
 
-        let request = RESTRequest(apiName: apiName,
-                                       operationType: .get,
-                                       path: path,
-                                       options: RESTRequest.Options())
+        let operation = AWSRESTOperation(request: operationRequest,
+                                         session: session,
+                                         mapper: mapper,
+                                         pluginConfig: pluginConfig,
+                                         listener: listener)
 
-        let operation = AWSRESTOperation(request: request,
-                                        eventName: HubPayload.EventName.API.get,
-                                        session: session,
-                                        mapper: mapper,
-                                        pluginConfig: pluginConfig,
-                                        listener: listener)
         queue.addOperation(operation)
-
         return operation
     }
 
-    func post(apiName: String,
-              path: String,
-              body: Data?,
-              listener: ((AsyncEvent<Void, Data, APIError>) -> Void)?) -> RESTOperation {
-        let request = RESTRequest(apiName: apiName,
-                                        operationType: .post,
-                                        path: path,
-                                        body: body,
-                                        options: RESTRequest.Options())
+    func put(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+        let operationRequest = RESTOperationRequest(request: request,
+                                                    operationType: .put)
 
-        let operation = AWSRESTOperation(request: request,
-                                        eventName: HubPayload.EventName.API.post,
-                                        session: session,
-                                        mapper: mapper,
-                                        pluginConfig: pluginConfig,
-                                        listener: listener)
+        let operation = AWSRESTOperation(request: operationRequest,
+                                         session: session,
+                                         mapper: mapper,
+                                         pluginConfig: pluginConfig,
+                                         listener: listener)
 
         queue.addOperation(operation)
+        return operation
+    }
 
+    func post(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+        let operationRequest = RESTOperationRequest(request: request,
+                                                    operationType: .post)
+
+        let operation = AWSRESTOperation(request: operationRequest,
+                                         session: session,
+                                         mapper: mapper,
+                                         pluginConfig: pluginConfig,
+                                         listener: listener)
+
+        queue.addOperation(operation)
+        return operation
+    }
+
+    func patch(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+        let operationRequest = RESTOperationRequest(request: request, operationType: .patch)
+
+        let operation = AWSRESTOperation(request: operationRequest,
+                                         session: session,
+                                         mapper: mapper,
+                                         pluginConfig: pluginConfig,
+                                         listener: listener)
+
+        queue.addOperation(operation)
+        return operation
+    }
+
+    func delete(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+        let operationRequest = RESTOperationRequest(request: request,
+                                                    operationType: .delete)
+
+        let operation = AWSRESTOperation(request: operationRequest,
+                                         session: session,
+                                         mapper: mapper,
+                                         pluginConfig: pluginConfig,
+                                         listener: listener)
+
+        queue.addOperation(operation)
+        return operation
+    }
+
+    func head(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+        let operationRequest = RESTOperationRequest(request: request,
+                                                    operationType: .head)
+
+        let operation = AWSRESTOperation(request: operationRequest,
+                                         session: session,
+                                         mapper: mapper,
+                                         pluginConfig: pluginConfig,
+                                         listener: listener)
+
+        queue.addOperation(operation)
         return operation
     }
 }

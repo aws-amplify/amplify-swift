@@ -8,13 +8,6 @@
 import Amplify
 import Foundation
 
-/// Defines the type of a GraphQL mutation.
-public enum GraphQLMutationType: String {
-    case create
-    case update
-    case delete
-}
-
 /// A concrete implementation of `GraphQLDocument` that represents a data mutation operation.
 /// The type of the operation is defined by `GraphQLMutationType`.
 public struct GraphQLMutation: GraphQLDocument {
@@ -29,7 +22,9 @@ public struct GraphQLMutation: GraphQLDocument {
         self.mutationType = mutationType
         if mutationType == .delete {
             self.variables = [
-                "id": model.id
+                "input": [
+                    "id": model.id
+                ]
             ]
         } else {
             self.variables = [
@@ -42,13 +37,16 @@ public struct GraphQLMutation: GraphQLDocument {
         mutationType.rawValue + modelType.schema.graphQLName
     }
 
+    public var decodePath: String {
+        name
+    }
+
     public var stringValue: String {
         let schema = modelType.schema
 
         let mutationName = name.toPascalCase()
-        let isDelete = mutationType == .delete
-        let inputName = isDelete ? "id" : "input"
-        let inputType = isDelete ? "ID!" : "\(mutationName)Input!"
+        let inputName = "input"
+        let inputType = "\(mutationName)Input!"
 
         let fields = schema.graphQLFields.map { $0.graphQLName }
 

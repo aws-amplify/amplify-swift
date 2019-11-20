@@ -8,14 +8,6 @@
 import Amplify
 import Foundation
 
-/// Defines the type of query, either a `list` which returns multiple results
-/// and can optionally use filters or a `get`, which aims to fetch one result
-/// identified by its `id`.
-public enum GraphQLQueryType: String {
-    case get
-    case list
-}
-
 /// A concrete implementation of `GraphQLDocument` that represents a query operation.
 /// Queries can either return a single (`.get`) or mutiple (`.list`) results
 /// as defined by `GraphQLQueryType`.
@@ -39,6 +31,10 @@ public struct GraphQLQuery: GraphQLDocument {
         let suffix = queryType == .list ? "s" : ""
         let modelName = modelType.schema.graphQLName + suffix
         return queryType.rawValue + modelName
+    }
+
+    public var decodePath: String {
+        return queryType == .list ? name + ".items" : name
     }
 
     public var stringValue: String {

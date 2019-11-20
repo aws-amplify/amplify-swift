@@ -1,0 +1,19 @@
+//
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import Amplify
+
+extension RESTOperationRequest {
+    init(request: RESTRequest, operationType: RESTOperationType) {
+        self = RESTOperationRequest(apiName: request.apiName,
+                                    operationType: operationType,
+                                    path: request.path,
+                                    queryParameters: request.queryParameters,
+                                    body: request.body,
+                                    options: RESTOperationRequest.Options())
+    }
+}

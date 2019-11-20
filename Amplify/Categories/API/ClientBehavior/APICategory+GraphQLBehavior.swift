@@ -6,6 +6,32 @@
 //
 
 extension APICategory: APICategoryGraphQLBehavior {
+
+    public func query<M: Model>(from modelType: M.Type,
+                                byId id: String,
+                                listener: GraphQLOperation<M?>.EventListener?) -> GraphQLOperation<M?> {
+        plugin.query(from: modelType, byId: id, listener: listener)
+    }
+
+    public func query<M: Model>(from modelType: M.Type,
+                                where predicate: QueryPredicate?,
+                                listener: GraphQLOperation<[M]>.EventListener?) -> GraphQLOperation<[M]> {
+        plugin.query(from: modelType, where: predicate, listener: listener)
+    }
+
+    public func mutate<M: Model>(of model: M,
+                                 type: GraphQLMutationType,
+                                 listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M> {
+        plugin.mutate(of: model, type: type, listener: listener)
+    }
+
+    public func subscribe<M: Model>(from modelType: M.Type,
+                                    type: GraphQLSubscriptionType,
+                                    listener: GraphQLSubscriptionOperation<M>.EventListener?)
+        -> GraphQLSubscriptionOperation<M> {
+        plugin.subscribe(from: modelType, type: type, listener: listener)
+    }
+
     public func query<R: Decodable>(request: GraphQLRequest<R>,
                                     listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
         plugin.query(request: request, listener: listener)

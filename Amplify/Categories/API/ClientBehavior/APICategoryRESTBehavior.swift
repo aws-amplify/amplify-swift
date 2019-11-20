@@ -12,27 +12,37 @@ public protocol APICategoryRESTBehavior {
 
     /// Perform an HTTP GET operation
     ///
-    /// - Parameter apiName: The name of the API to perform the request against
-    /// - Parameter path: The path to the resource being requested
+    /// - Parameter request: Contains information such as path, query parameters, body.
     /// - Returns: An operation that can be observed for its value
-    func get(apiName: String,
-             path: String,
-             listener: RESTOperation.EventListener?) -> RESTOperation
+    func get(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation
+
+    /// Perform an HTTP PUT operation
+    ///
+    /// - Parameter request: Contains information such as path, query parameters, body.
+    /// - Returns: An operation that can be observed for its value
+    func put(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation
 
     /// Perform an HTTP POST operation
     ///
-    /// - Parameter apiName: The name of the API to perform the request against
-    /// - Parameter path: The path to the resource being requested
-    /// - Parameter body: The content body of the request
+    /// - Parameter request: Contains information such as path, query parameters, body.
     /// - Returns: An operation that can be observed for its value
-    func post(apiName: String,
-              path: String,
-              body: Data?,
-              listener: RESTOperation.EventListener?) -> RESTOperation
+    func post(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation
 
-//    func put() -> APIOperation
-//
-//    func patch() -> APIOperation
-//
-//    func delete() -> APIOperation
+    /// Perform an HTTP DELETE operation
+    ///
+    /// - Parameter request: Contains information such as path, query parameters, body.
+    /// - Returns: An operation that can be observed for its value
+    func delete(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation
+
+    /// Perform an HTTP HEAD operation
+    ///
+    /// - Parameter request: Contains information such as path, query parameters, body.
+    /// - Returns: An operation that can be observed for its value
+    func head(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation
+
+    /// Perform an HTTP PATCH operation
+    ///
+    /// - Parameter request: Contains information such as path, query parameters, body.
+    /// - Returns: An operation that can be observed for its value
+    func patch(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation
 }

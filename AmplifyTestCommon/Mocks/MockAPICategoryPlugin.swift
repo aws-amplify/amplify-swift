@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Foundation
 
 class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
@@ -20,6 +21,30 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     func reset(onComplete: @escaping BasicClosure) {
         notify("reset")
         onComplete()
+    }
+
+    func query<M>(from modelType: M.Type,
+                  byId id: String,
+                  listener: GraphQLOperation<M?>.EventListener?) -> GraphQLOperation<M?> {
+        fatalError("Not yet implemented")
+    }
+
+    func query<M>(from modelType: M.Type,
+                  where predicate: QueryPredicate?,
+                  listener: GraphQLOperation<[M]>.EventListener?) -> GraphQLOperation<[M]> {
+        fatalError("Not yet implemented")
+    }
+
+    func mutate<M>(of model: M,
+                   type: GraphQLMutationType,
+                   listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M> {
+        fatalError("Not yet implemented")
+    }
+
+    func subscribe<M>(from modelType: M.Type,
+                      type: GraphQLSubscriptionType,
+                      listener: GraphQLSubscriptionOperation<M>.EventListener?) -> GraphQLSubscriptionOperation<M> {
+        fatalError("Not yet implemented")
     }
 
     func mutate<R>(request: GraphQLRequest<R>,
@@ -67,29 +92,75 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
             return operation
     }
 
-    func get(apiName: String,
-             path: String,
-             listener: RESTOperation.EventListener?) -> RESTOperation {
+    func get(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
         notify("get")
-        let request = RESTRequest(apiName: apiName,
-                                  operationType: .get,
-                                  path: path,
-                                  options: RESTRequest.Options())
-        let operation = MockAPIGetOperation(request: request)
+        let operationRequest = RESTOperationRequest(apiName: request.apiName,
+                                           operationType: .get,
+                                           path: request.path,
+                                           queryParameters: request.queryParameters,
+                                           body: request.body,
+                                           options: RESTOperationRequest.Options())
+        let operation = MockAPIOperation(request: operationRequest)
         return operation
     }
 
-    func post(apiName: String,
-              path: String,
-              body: Data?,
-              listener: ((AsyncEvent<Void, Data, APIError>) -> Void)?) -> RESTOperation {
+    func put(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+        notify("put")
+        let request = RESTOperationRequest(apiName: request.apiName,
+                                           operationType: .put,
+                                           path: request.path,
+                                           queryParameters: request.queryParameters,
+                                           body: request.body,
+                                           options: RESTOperationRequest.Options())
+        let operation = MockAPIOperation(request: request)
+        return operation
+    }
+
+    func post(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
         notify("post")
-        let request = RESTRequest(apiName: apiName,
-                                  operationType: .post,
-                                  path: path,
-                                  body: body,
-                                  options: RESTRequest.Options())
-        let operation = MockAPIPostOperation(request: request)
+        let request = RESTOperationRequest(apiName: request.apiName,
+                                           operationType: .post,
+                                           path: request.path,
+                                           queryParameters: request.queryParameters,
+                                           body: request.body,
+                                           options: RESTOperationRequest.Options())
+        let operation = MockAPIOperation(request: request)
+        return operation
+    }
+
+    func delete(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+        notify("delete")
+        let request = RESTOperationRequest(apiName: request.apiName,
+                                           operationType: .delete,
+                                           path: request.path,
+                                           queryParameters: request.queryParameters,
+                                           body: request.body,
+                                           options: RESTOperationRequest.Options())
+        let operation = MockAPIOperation(request: request)
+        return operation
+    }
+
+    func patch(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+        notify("patch")
+        let request = RESTOperationRequest(apiName: request.apiName,
+                                           operationType: .patch,
+                                           path: request.path,
+                                           queryParameters: request.queryParameters,
+                                           body: request.body,
+                                           options: RESTOperationRequest.Options())
+        let operation = MockAPIOperation(request: request)
+        return operation
+    }
+
+    func head(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+        notify("head")
+        let request = RESTOperationRequest(apiName: request.apiName,
+                                           operationType: .head,
+                                           path: request.path,
+                                           queryParameters: request.queryParameters,
+                                           body: request.body,
+                                           options: RESTOperationRequest.Options())
+        let operation = MockAPIOperation(request: request)
         return operation
     }
 
@@ -135,7 +206,7 @@ class MockSubscriptionGraphQLOperation<R: Decodable>: GraphQLSubscriptionOperati
     }
 }
 
-class MockAPIGetOperation: AmplifyOperation<RESTRequest, Void, Data, APIError>, RESTOperation {
+class MockAPIOperation: AmplifyOperation<RESTOperationRequest, Void, Data, APIError>, RESTOperation {
     override func pause() {
     }
 
@@ -144,21 +215,7 @@ class MockAPIGetOperation: AmplifyOperation<RESTRequest, Void, Data, APIError>, 
 
     init(request: Request) {
         super.init(categoryType: .api,
-                   eventName: HubPayload.EventName.API.get,
-                   request: request)
-    }
-}
-
-class MockAPIPostOperation: AmplifyOperation<RESTRequest, Void, Data, APIError>, RESTOperation {
-    override func pause() {
-    }
-
-    override func resume() {
-    }
-
-    init(request: Request) {
-        super.init(categoryType: .api,
-                   eventName: HubPayload.EventName.API.post,
+                   eventName: request.operationType.hubEventName,
                    request: request)
     }
 }

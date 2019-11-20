@@ -14,4 +14,24 @@ public enum RESTOperationType: String {
     case post = "POST"
     case patch = "PATCH"
     case delete = "DELETE"
+    case head = "HEAD"
+}
+
+extension RESTOperationType: HubPayloadEventNameConvertible {
+    public var hubEventName: String {
+        switch self {
+        case .get:
+            return HubPayload.EventName.API.get
+        case .put:
+            return HubPayload.EventName.API.put
+        case .post:
+            return HubPayload.EventName.API.post
+        case .patch:
+            return HubPayload.EventName.API.patch
+        case .delete:
+            return HubPayload.EventName.API.delete
+        case .head:
+            return HubPayload.EventName.API.head
+        }
+    }
 }

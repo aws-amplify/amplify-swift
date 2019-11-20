@@ -22,11 +22,13 @@ class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
             "Test": [
                 "Endpoint": "http://www.example.com",
                 "AuthorizationType": "API_KEY",
-                "ApiKey": "SpecialApiKey33"
+                "ApiKey": "SpecialApiKey33",
+                "EndpointType": "REST"
             ],
             "Test2": [
                 "Endpoint": "http://www.example.com",
-                "AuthorizationType": "AMAZON_COGNITO_USER_POOLS"
+                "AuthorizationType": "AMAZON_COGNITO_USER_POOLS",
+                "EndpointType": "GraphQL"
             ]
         ]
 

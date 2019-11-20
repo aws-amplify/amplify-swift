@@ -44,7 +44,8 @@ class AWSRESTOperationTests: XCTestCase {
         Amplify.reset()
         setUpPlugin()
 
-        let operation = Amplify.API.get(apiName: "Valid", path: "/path", listener: nil)
+        let request = RESTRequest(apiName: "Valid", path: "/path")
+        let operation = Amplify.API.get(request: request, listener: nil)
 
         XCTAssertNotNil(operation)
 
@@ -86,7 +87,8 @@ class AWSRESTOperationTests: XCTestCase {
         setUpPlugin(with: factory)
 
         let callbackInvoked = expectation(description: "Callback was invoked")
-        _ = Amplify.API.get(apiName: "INVALID_API_NAME", path: "/path") { event in
+        let request = RESTRequest(apiName: "INVALID_API_NAME", path: "/path")
+        _ = Amplify.API.get(request: request) { event in
             switch event {
             case .completed(let data):
                 XCTFail("Unexpected completed event: \(data)")
@@ -135,7 +137,8 @@ class AWSRESTOperationTests: XCTestCase {
         setUpPlugin(with: factory)
 
         let callbackInvoked = expectation(description: "Callback was invoked")
-        _ = Amplify.API.get(apiName: "Valid", path: "/path") { event in
+        let request = RESTRequest(apiName: "Valid", path: "/path")
+        _ = Amplify.API.get(request: request) { event in
             switch event {
             case .completed(let data):
                 XCTAssertEqual(data, sentData)

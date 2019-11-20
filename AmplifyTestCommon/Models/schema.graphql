@@ -2,8 +2,8 @@ type Post @model {
     id: ID!
     title: String!
     content: String!
-    createdAt: AWSDate!
-    updatedAt: AWSDate
+    createdAt: AWSDateTime!
+    updatedAt: AWSDateTime
     draft: Boolean
     rating: Double
     comments: [Comment] @connection(name: "PostComment")

@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import OSLog
+import os.log
 
 final class OSLogWrapper: Logger {
     private let osLog: OSLog

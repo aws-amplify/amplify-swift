@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 
-final public class AWSRESTOperation: AmplifyOperation<RESTRequest,
+final public class AWSRESTOperation: AmplifyOperation<RESTOperationRequest,
     Void,
     Data,
     APIError
@@ -22,10 +22,7 @@ RESTOperation {
     var mapper: OperationTaskMapper
     let pluginConfig: AWSAPICategoryPluginConfiguration
 
-    // TODO: fix possible inconsistent request.operationType and eventName passed in, by removing eventName
-    // and retrieveing it from request.operationType.mapToEventName() for example.
-    init(request: RESTRequest,
-         eventName: String,
+    init(request: RESTOperationRequest,
          session: URLSessionBehavior,
          mapper: OperationTaskMapper,
          pluginConfig: AWSAPICategoryPluginConfiguration,
@@ -36,7 +33,7 @@ RESTOperation {
         self.pluginConfig = pluginConfig
 
         super.init(categoryType: .api,
-                   eventName: eventName,
+                   eventName: request.operationType.hubEventName,
                    request: request,
                    listener: listener)
 
@@ -50,21 +47,28 @@ RESTOperation {
         }
 
         // Validate the request
-        if let error = request.validate() {
+        do {
+            try request.validate()
+        } catch let error as APIError {
             dispatch(event: .failed(error))
+            finish()
+            return
+        } catch {
+            dispatch(event: .failed(APIError.unknown("Could not validate request", "", nil)))
             finish()
             return
         }
 
         // Retrieve endpoint configuration
-        guard let endpointConfig = pluginConfig.endpoints[request.apiName] else {
-            let error = APIError.invalidConfiguration(
-                "Unable to get an endpoint configuration for \(request.apiName)",
-                """
-                Review your API plugin configuration and ensure \(request.apiName) has a valid configuration.
-                """
-            )
+        let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
+        do {
+            endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .rest)
+        } catch let error as APIError {
             dispatch(event: .failed(error))
+            finish()
+            return
+        } catch {
+            dispatch(event: .failed(APIError.unknown("Could not get endpoint configuration", "", nil)))
             finish()
             return
         }
@@ -72,7 +76,9 @@ RESTOperation {
         // Construct URL with path
         let url: URL
         do {
-            url = try RESTRequestUtils.constructURL(endpointConfig.baseURL, path: request.path)
+            url = try RESTOperationRequestUtils.constructURL(for: endpointConfig.baseURL,
+                                                             with: request.path,
+                                                             with: request.queryParameters)
         } catch let error as APIError {
             dispatch(event: .failed(error))
             finish()
@@ -84,10 +90,10 @@ RESTOperation {
             return
         }
 
-        // Construct Request
-        let urlRequest = RESTRequestUtils.constructRequest(with: url,
-                                                           operationType: request.operationType,
-                                                           requestPayload: request.body)
+        // Construct URL Request with url and request body
+        let urlRequest = RESTOperationRequestUtils.constructURLRequest(with: url,
+                                                                       operationType: request.operationType,
+                                                                       requestPayload: request.body)
 
         // Intercept request
         let finalRequest = endpointConfig.interceptors.reduce(urlRequest) { (request, interceptor) -> URLRequest in

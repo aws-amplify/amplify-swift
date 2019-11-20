@@ -27,6 +27,7 @@ class GraphQLResponseDecoderTests: XCTestCase {
         let response = AWSAppSyncGraphQLResponse(data: jsonDictionary, errors: nil)
         let decodedResponse = try GraphQLResponseDecoder.decode(graphQLServiceResponse: response,
                                                                 responseType: JSONValue.self,
+                                                                decodePath: nil,
                                                                 rawGraphQLResponse: Data())
 
         XCTAssertNotNil(decodedResponse)
