@@ -188,16 +188,15 @@ class GraphQLModelBasedTests: XCTestCase {
     func testListQueryWithPredicate() {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
-        let title = testMethodName + "Title"
-//        guard createPost(id: uuid, title: title) != nil else {
-//            XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
-//            return
-//        }
+        let uniqueTitle = testMethodName + uuid + "Title"
+        guard createPost(id: uuid, title: uniqueTitle) != nil else {
+            XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
+            return
+        }
 
         let completeInvoked = expectation(description: "request completed")
         let post = Post.keys
-        let predicate = post.content == "Daudelin" && (post.title == "David" || post.title == "Sarah")
-
+        let predicate = post.title == uniqueTitle
         _ = Amplify.API.query(from: Post.self, where: predicate, listener: { event in
             switch event {
             case .completed(let graphQLResponse):
@@ -205,8 +204,12 @@ class GraphQLModelBasedTests: XCTestCase {
                     XCTFail("Missing successful response")
                     return
                 }
-                XCTAssertTrue(!posts.isEmpty)
-                print(posts)
+                XCTAssertEqual(posts.count, 1)
+                guard let singlePost = posts.first else {
+                    XCTFail("Should only have a single post with the unique title")
+                    return
+                }
+                XCTAssertEqual(singlePost.title, uniqueTitle)
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")

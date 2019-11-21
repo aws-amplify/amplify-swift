@@ -42,3 +42,119 @@ extension Model {
         return input
     }
 }
+
+extension QueryPredicate {
+    var graphQLFilterVariables: [String: Any] {
+        if let operation = self as? QueryPredicateOperation {
+            return operation.graphQLFilterOperation
+        } else if let group = self as? QueryPredicateGroup {
+            return group.graphQLFilterGroup
+        }
+
+        // TODO: Should never happen, probably throw preconditionFailure or fatalError
+        return [String: Any]()
+    }
+}
+
+extension QueryPredicateOperation {
+    var graphQLFilterOperation: [String: Any] {
+        return [self.field: [self.operator.graphQLOperator: self.operator.value]]
+    }
+}
+
+extension QueryPredicateGroup {
+    var graphQLFilterGroup: [String: Any] {
+        switch type {
+        case .and, .or:
+            var graphQLPredicateOperation = [self.type.rawValue: [Any]()]
+            predicates.forEach { predicate in
+                graphQLPredicateOperation[self.type.rawValue]?.append(predicate.graphQLFilterVariables)
+            }
+            return graphQLPredicateOperation
+        case .not:
+            if let predicate = self.predicates.first {
+                return [self.type.rawValue: predicate.graphQLFilterVariables]
+            } else {
+                // TODO: Should never happen, probably throw preconditionFailure or fatalError
+                return [self.type.rawValue: ""]
+            }
+        }
+    }
+}
+extension QueryOperator {
+    var graphQLOperator: String {
+        switch self {
+        case .notEqual:
+            return "ne"
+        case .equals:
+            return "eq"
+        case .lessOrEqual:
+            return "le"
+        case .lessThan:
+            return "lt"
+        case .greaterOrEqual:
+            return "ge"
+        case .greaterThan:
+            return "gt"
+        case .contains:
+            return "contains"
+        case .between:
+            return "between"
+        case .beginsWith:
+            return "beginsWith"
+        }
+    }
+
+    var value: Any {
+        switch self {
+        case .notEqual(let value),
+             .equals(let value):
+            if let value = value {
+                return value.graphQLValue()
+            }
+            return ""
+        case .lessOrEqual(let value),
+             .lessThan(let value),
+             .greaterOrEqual(let value),
+             .greaterThan(let value):
+            return value.graphQLValue()
+        case .contains(let value):
+            return value
+        case .between(let start, let end):
+            return [start.graphQLValue(), end.graphQLValue()]
+        case .beginsWith(let value):
+            return value
+        }
+    }
+}
+
+extension Persistable {
+    internal func graphQLValue() -> String {
+        let value = self
+
+        if let value = value as? Bool {
+            return String(value)
+        }
+
+        if let value = value as? Date {
+            return value.iso8601
+        }
+
+        if let value = value as? Double {
+            return String(value)
+        }
+
+        if let value = value as? Int {
+            return String(value)
+        }
+
+        if let value = value as? String {
+            return value
+        }
+
+        preconditionFailure("""
+        Value \(String(describing: value)) of type \(String(describing: type(of: value)))
+        is not a compatible type.
+        """)
+    }
+}

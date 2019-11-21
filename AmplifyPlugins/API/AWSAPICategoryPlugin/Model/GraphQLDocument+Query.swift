@@ -37,29 +37,33 @@ public struct GraphQLQuery: GraphQLDocument {
         return queryType == .list ? name + ".items" : name
     }
 
-    // TODO: when quertType == .list, inputType contains:
-    // ($filter: ModelTodoFilterInput, $limit: Int, $nextToken: String)
-    // we could set '$limit' here, and hardcode the value of limit in the variables to 1000
     public var stringValue: String {
         let schema = modelType.schema
 
-        let inputName = queryType == .get ? "id" : "filter"
-        let inputType = queryType == .get ? "ID!" : "Model\(schema.graphQLName)FilterInput"
+        let input = queryType == .get ?
+            "$id: ID!" :
+            "$filter: Model\(schema.graphQLName)FilterInput, $limit: Int, $nextToken: String"
+        let inputName = queryType == .get ?
+            "id: $id" :
+            "filter: $filter, limit: $limit, nextToken: $nextToken"
 
         let fields = schema.graphQLFields.map { $0.graphQLName }
         var documentFields = fields.joined(separator: "\n    ")
         if queryType == .list {
-            documentFields = """
+            documentFields =
+            """
             items {
                   \(fields.joined(separator: "\n      "))
                 }
+                nextToken
             """
         }
 
         let queryName = name.toPascalCase()
+
         return """
-        \(documentType) \(queryName)($\(inputName): \(inputType)) {
-          \(name)(\(inputName): $\(inputName)) {
+        \(documentType) \(queryName)(\(input)) {
+          \(name)(\(inputName)) {
             \(documentFields)
           }
         }
