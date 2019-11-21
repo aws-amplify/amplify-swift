@@ -83,7 +83,11 @@ extension IdentifyConfiguration: Decodable {
             self.identifyText = nil
         }
 
-        self.region = awsRegion!
+        guard  let region = awsRegion else {
+            throw PluginError.pluginConfigurationError(PluginErrorMessage.missingRegion.errorDescription,
+                                                       PluginErrorMessage.missingRegion.recoverySuggestion)
+        }
+        self.region = region
     }
 
     static func getRegionIfPresent(_ container: KeyedDecodingContainer<SubRegion>) -> AWSRegionType? {

@@ -37,9 +37,9 @@ class AWSPredictionsService {
             let interpretServiceConfiguration = AWSPredictionsService.makeInterpretAWSServiceConfiguration(
                 fromConfig: config,
                 cognitoCredentialsProvider: cognitoCredentialsProvider) else {
-            throw PluginError.pluginConfigurationError(
-                PluginErrorMessage.serviceConfigurationInitializationError.errorDescription,
-                PluginErrorMessage.serviceConfigurationInitializationError.recoverySuggestion)
+                    throw PluginError.pluginConfigurationError(
+                        PluginErrorMessage.serviceConfigurationInitializationError.errorDescription,
+                        PluginErrorMessage.serviceConfigurationInitializationError.recoverySuggestion)
         }
 
         let awsTranslateAdapter = AWSPredictionsService.makeAWSTranslate(
@@ -127,11 +127,11 @@ class AWSPredictionsService {
         }
     }
 
-    private static func makeConvertAWSServiceConfiguration(
+    private static func makeConvertAWSServiceConfiguration (
         fromConfig config: PredictionsPluginConfiguration,
         cognitoCredentialsProvider: AWSCognitoCredentialsProvider) -> AWSServiceConfiguration? {
         let convertServiceConfigurationOptional = AWSServiceConfiguration(
-            region: .USEast1,
+            region: config.convert.region,
             credentialsProvider: cognitoCredentialsProvider)
 
         return convertServiceConfigurationOptional
@@ -141,7 +141,7 @@ class AWSPredictionsService {
         fromConfig config: PredictionsPluginConfiguration,
         cognitoCredentialsProvider: AWSCognitoCredentialsProvider) -> AWSServiceConfiguration? {
         let identifyServiceConfigurationOptional = AWSServiceConfiguration(
-            region: .USEast1,
+            region: config.identify.region,
             credentialsProvider: cognitoCredentialsProvider)
 
         return identifyServiceConfigurationOptional

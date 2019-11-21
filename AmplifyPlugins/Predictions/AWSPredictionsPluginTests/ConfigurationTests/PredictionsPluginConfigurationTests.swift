@@ -79,4 +79,25 @@ class PredictionsPluginConfigurationTests: XCTestCase {
         }
     }
 
+    func testConfigurationWithNoRegion() {
+        let inputJsonData = """
+        {
+        "defaultRegion": "us-west-2",
+        "convert": {
+            "translateText": {
+                "sourceLanguage": "en",
+                "targetLanguage": "it"
+            }
+        }
+        }
+        """.data(using: .utf8)!
+        let decoder = JSONDecoder()
+        do {
+            _ = try decoder.decode(PredictionsPluginConfiguration.self, from: inputJsonData)
+            XCTFail("Should through an error because region is not present")
+        } catch {
+
+        }
+    }
+
 }
