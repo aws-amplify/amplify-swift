@@ -199,12 +199,17 @@ class IdentifyMultiService: MultiServiceBehavior {
                                  y: originalLine.boundingBox.top * Double((image?.size.height)!),
                                  width: originalLine.boundingBox.width * Double((image?.size.width)!),
                                  height: originalLine.boundingBox.height * Double((image?.size.height)!))
+        
+        let height = compareTo.boundingBox.height * Double((image?.size.height)!)
+        let yPosition = compareTo.boundingBox.top * Double((image?.size.height)!)
+        let yy1 = Double((image?.size.height)!) - yPosition
+        let yy2 = yy1 - height
+        
         let cgRectSecond = CGRect(x: compareTo.boundingBox.left * Double((image?.size.width)!),
-                                  y: compareTo.boundingBox.top * Double((image?.size.height)!),
+                                  y: yy2,
                                   width: compareTo.boundingBox.width * Double((image?.size.width)!),
-                                  height: compareTo.boundingBox.height * Double((image?.size.height)!))
-        return cgRectFirst.intersects(cgRectSecond) || cgRectSecond.intersects(cgRectFirst)
-            || cgRectFirst.contains(cgRectSecond) || cgRectSecond.contains(cgRectFirst)
+                                  height: height)
+        return cgRectFirst.intersects(cgRectSecond)
     }
 }
 
