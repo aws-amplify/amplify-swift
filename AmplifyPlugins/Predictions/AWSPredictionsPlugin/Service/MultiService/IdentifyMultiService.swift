@@ -194,21 +194,36 @@ class IdentifyMultiService: MultiServiceBehavior {
 
     func intersectingBoundingBoxes(originalLine: IdentifiedLine, compareTo: IdentifiedLine) -> Bool {
         let imageData = try? Data(contentsOf: request.image)
+        // there is no way the image should be nil as we got here so we already have results based on the
+        // other two calls where the image didn't produce an error so this should be safe.
+        // and for some odd reason we do not need to import uikit
         let image = UIImage(data: imageData!)
-        let cgRectFirst = CGRect(x: originalLine.boundingBox.left * Double((image?.size.width)!),
-                                 y: originalLine.boundingBox.top * Double((image?.size.height)!),
-                                 width: originalLine.boundingBox.width * Double((image?.size.width)!),
-                                 height: originalLine.boundingBox.height * Double((image?.size.height)!))
-        
-        let height = compareTo.boundingBox.height * Double((image?.size.height)!)
-        let yPosition = compareTo.boundingBox.top * Double((image?.size.height)!)
-        let yy1 = Double((image?.size.height)!) - yPosition
-        let yy2 = yy1 - height
-        
-        let cgRectSecond = CGRect(x: compareTo.boundingBox.left * Double((image?.size.width)!),
-                                  y: yy2,
-                                  width: compareTo.boundingBox.width * Double((image?.size.width)!),
-                                  height: height)
+        guard let imageHeightFloat = image?.size.height,
+            let imageWidthFloat = image?.size.width else {
+                return false
+        }
+
+        //convert floats to doubles so we can convert the ratios from the bounding boxes
+        // to the actual x and y and width and height numbers
+        let imageHeight = Double(imageHeightFloat)
+        let imageWidth = Double(imageWidthFloat)
+
+        let cgRectFirst = CGRect(x: originalLine.boundingBox.left * imageWidth,
+                                 y: originalLine.boundingBox.top * imageHeight,
+                                 width: originalLine.boundingBox.width * imageWidth,
+                                 height: originalLine.boundingBox.height * imageHeight)
+
+        //coreml starts 0,0 from the lower left while rekognition starts 0,0 from the top left.
+        // so flip the y axis here and subtract the height of the bounding box to get the same y
+        // starting point as if it began from top left.
+        let heightCoreMLBoundingBox = compareTo.boundingBox.height * imageHeight
+        let yPositionCoremL = compareTo.boundingBox.top * imageHeight
+        let flippedY = (imageHeight - yPositionCoremL) - heightCoreMLBoundingBox
+
+        let cgRectSecond = CGRect(x: compareTo.boundingBox.left * imageWidth,
+                                  y: flippedY,
+                                  width: compareTo.boundingBox.width * imageWidth,
+                                  height: heightCoreMLBoundingBox)
         return cgRectFirst.intersects(cgRectSecond)
     }
 }

@@ -15,7 +15,6 @@
 		95CF45052385EEAC00479D24 /* testImageLabels.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 95CF45012385EEAB00479D24 /* testImageLabels.jpg */; };
 		95CF45062385EEAC00479D24 /* testImageEntities.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 95CF45022385EEAB00479D24 /* testImageEntities.jpg */; };
 		95CF45072385EEAC00479D24 /* testImageCeleb.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 95CF45032385EEAB00479D24 /* testImageCeleb.jpg */; };
-		95CF45092385F39D00479D24 /* testImageText1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 95CF45082385F39C00479D24 /* testImageText1.jpg */; };
 		95DAAA69237B8ED40028544F /* IdentifyOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAA32237B8ED30028544F /* IdentifyOperation.swift */; };
 		95DAAA6A237B8ED40028544F /* AWSTranslateOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAA33237B8ED30028544F /* AWSTranslateOperation.swift */; };
 		95DAAA6B237B8ED40028544F /* AWSPredictionsPluginConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAA35237B8ED30028544F /* AWSPredictionsPluginConfiguration.swift */; };
@@ -188,7 +187,6 @@
 		95CF45012385EEAB00479D24 /* testImageLabels.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageLabels.jpg; sourceTree = "<group>"; };
 		95CF45022385EEAB00479D24 /* testImageEntities.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageEntities.jpg; sourceTree = "<group>"; };
 		95CF45032385EEAB00479D24 /* testImageCeleb.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageCeleb.jpg; sourceTree = "<group>"; };
-		95CF45082385F39C00479D24 /* testImageText1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageText1.jpg; sourceTree = "<group>"; };
 		95DAAA32237B8ED30028544F /* IdentifyOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyOperation.swift; sourceTree = "<group>"; };
 		95DAAA33237B8ED30028544F /* AWSTranslateOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSTranslateOperation.swift; sourceTree = "<group>"; };
 		95DAAA35237B8ED30028544F /* AWSPredictionsPluginConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPredictionsPluginConfiguration.swift; sourceTree = "<group>"; };
@@ -398,7 +396,6 @@
 		95CF44FF2385EEAB00479D24 /* TestImages */ = {
 			isa = PBXGroup;
 			children = (
-				95CF45082385F39C00479D24 /* testImageText1.jpg */,
 				95CF45002385EEAB00479D24 /* testImageText.jpg */,
 				95CF45012385EEAB00479D24 /* testImageLabels.jpg */,
 				95CF45022385EEAB00479D24 /* testImageEntities.jpg */,
@@ -1098,7 +1095,6 @@
 			files = (
 				95CF45052385EEAC00479D24 /* testImageLabels.jpg in Resources */,
 				95DAABC02384B7770028544F /* awsconfiguration.json in Resources */,
-				95CF45092385F39D00479D24 /* testImageText1.jpg in Resources */,
 				95CF45042385EEAC00479D24 /* testImageText.jpg in Resources */,
 				95CF45062385EEAC00479D24 /* testImageEntities.jpg in Resources */,
 				95DAABBE2384B76D0028544F /* amplifyconfiguration.json in Resources */,
