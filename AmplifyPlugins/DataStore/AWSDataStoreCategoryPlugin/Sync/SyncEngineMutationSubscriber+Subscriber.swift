@@ -27,7 +27,7 @@ extension SyncEngineMutationSubscriber: Subscriber {
         // `receive` events
         var mutationSyncSubscription: AnyCancellable?
 
-        mutationSyncSubscription = syncMutationToCloud(mutationEvent).sink(
+        mutationSyncSubscription = syncMutationToCloud(mutationEvent: mutationEvent).sink(
             receiveCompletion: { completion in
                 self.log.verbose("mutationSyncSubscription.receiveCompletion: \(completion)")
                 mutationSyncSubscription?.cancel()

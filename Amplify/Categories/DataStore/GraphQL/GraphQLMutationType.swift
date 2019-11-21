@@ -11,3 +11,5 @@ public enum GraphQLMutationType: String, Codable {
     case update
     case delete
 }
+
+extension GraphQLMutationType: CaseIterable { }

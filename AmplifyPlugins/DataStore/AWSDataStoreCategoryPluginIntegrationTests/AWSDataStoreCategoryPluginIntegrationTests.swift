@@ -14,10 +14,9 @@ import AWSMobileClient
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
-// swiftlint:disable:next type_name
-// TODO: Remove this when we remove _version
 // TODO: Delete mutation events from the database so that this can be run multiple times without having to remove the
 // app from the device/simulator
+// swiftlint:disable:next type_name
 class AWSDataStoreCategoryPluginIntegrationTests: XCTestCase {
     static let networkTimeout = TimeInterval(180)
 
