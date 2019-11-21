@@ -321,6 +321,10 @@
 		FACA361D2327FC84000E74F6 /* MockAPICategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC23557227A056600424678 /* MockAPICategoryPlugin.swift */; };
 		FACA361E2327FC8E000E74F6 /* MockAnalyticsCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC2355E227A056600424678 /* MockAnalyticsCategoryPlugin.swift */; };
 		FACA36222327FDD7000E74F6 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = FACA36212327FDD2000E74F6 /* amplifyconfiguration.json */; };
+		FACD264C2386E8F10068FBE6 /* JSONValue+SubscriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACD264A2386E8F10068FBE6 /* JSONValue+SubscriptTests.swift */; };
+		FACD264D2386E8F10068FBE6 /* JSONValue+KeyPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACD264B2386E8F10068FBE6 /* JSONValue+KeyPathTests.swift */; };
+		FACD26502386E9410068FBE6 /* JSONValue+Subscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACD264E2386E9410068FBE6 /* JSONValue+Subscript.swift */; };
+		FACD26512386E9410068FBE6 /* JSONValue+KeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACD264F2386E9410068FBE6 /* JSONValue+KeyPath.swift */; };
 		FACF52042329633500646E10 /* TestExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACF52032329633500646E10 /* TestExtensions.swift */; };
 		FACF520723298BF100646E10 /* SynchronizedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACF520623298BF100646E10 /* SynchronizedDictionary.swift */; };
 		FACF520923298C1200646E10 /* SynchronizedDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACF520823298C1200646E10 /* SynchronizedDictionaryTests.swift */; };
@@ -957,6 +961,10 @@
 		FACA36062327FBD4000E74F6 /* AmplifyTestCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AmplifyTestCommon.h; sourceTree = "<group>"; };
 		FACA36072327FBD4000E74F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FACA36212327FDD2000E74F6 /* amplifyconfiguration.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
+		FACD264A2386E8F10068FBE6 /* JSONValue+SubscriptTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONValue+SubscriptTests.swift"; sourceTree = "<group>"; };
+		FACD264B2386E8F10068FBE6 /* JSONValue+KeyPathTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONValue+KeyPathTests.swift"; sourceTree = "<group>"; };
+		FACD264E2386E9410068FBE6 /* JSONValue+Subscript.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONValue+Subscript.swift"; sourceTree = "<group>"; };
+		FACD264F2386E9410068FBE6 /* JSONValue+KeyPath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JSONValue+KeyPath.swift"; sourceTree = "<group>"; };
 		FACF52032329633500646E10 /* TestExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestExtensions.swift; sourceTree = "<group>"; };
 		FACF520623298BF100646E10 /* SynchronizedDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedDictionary.swift; sourceTree = "<group>"; };
 		FACF520823298C1200646E10 /* SynchronizedDictionaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedDictionaryTests.swift; sourceTree = "<group>"; };
@@ -1790,6 +1798,8 @@
 				FADB3A6723612940006D6FE9 /* BasicClosure.swift */,
 				FA56F72222B14B420039754A /* Cancellable.swift */,
 				FA09B9402321BB78000E064D /* JSONValue.swift */,
+				FACD264F2386E9410068FBE6 /* JSONValue+KeyPath.swift */,
+				FACD264E2386E9410068FBE6 /* JSONValue+Subscript.swift */,
 				216879FD23636A0A004A056E /* RepeatingTimer.swift */,
 				FA56F72422B14B6A0039754A /* Resumable.swift */,
 			);
@@ -2101,9 +2111,11 @@
 				FACA35EA2326B217000E74F6 /* AmplifyConfigurationInitializationTests.swift */,
 				FAC23571227A056B00424678 /* ConfigurationTests.swift */,
 				FAC23572227A056B00424678 /* FoundationUtilsTests.swift */,
+				FACD264B2386E8F10068FBE6 /* JSONValue+KeyPathTests.swift */,
+				FACD264A2386E8F10068FBE6 /* JSONValue+SubscriptTests.swift */,
+				FA09B9422321CB0C000E064D /* JSONValueTests.swift */,
 				FACF520823298C1200646E10 /* SynchronizedDictionaryTests.swift */,
 				FAC6792A2329AA7B004DDFE8 /* SynchronizedQueueTests.swift */,
-				FA09B9422321CB0C000E064D /* JSONValueTests.swift */,
 			);
 			path = CoreTests;
 			sourceTree = "<group>";
@@ -3571,6 +3583,7 @@
 				FAF1B88423392F7C007F1435 /* ConcurrentDispatcher.swift in Sources */,
 				21687A41236371E1004A056E /* AnalyticsError.swift in Sources */,
 				FAC23528227A053D00424678 /* AnalyticsCategory+ClientBehavior.swift in Sources */,
+				FACD26512386E9410068FBE6 /* JSONValue+KeyPath.swift in Sources */,
 				FAC679292329A5D1004DDFE8 /* SynchronizedQueue.swift in Sources */,
 				FACF520723298BF100646E10 /* SynchronizedDictionary.swift in Sources */,
 				FAC2353D227A055200424678 /* CategoryConfiguration.swift in Sources */,
@@ -3690,6 +3703,7 @@
 				2142099623721F4400FA140C /* GraphQLOperationType.swift in Sources */,
 				95DAAB36237E63370028544F /* Selection.swift in Sources */,
 				FAC0A2AD22B43FE700B50912 /* HubCategory+ClientBehavior.swift in Sources */,
+				FACD26502386E9410068FBE6 /* JSONValue+Subscript.swift in Sources */,
 				FAC23523227A053D00424678 /* LoggingCategoryPlugin.swift in Sources */,
 				B9FB05F82383740D00DE1FD4 /* DataStoreStatement.swift in Sources */,
 				FAC23527227A053D00424678 /* LoggingCategoryClientBehavior.swift in Sources */,
@@ -3725,6 +3739,8 @@
 				FA4B38AB238482B100E20DAB /* DefaultLoggingPluginTests.swift in Sources */,
 				FA6BC869235F52740001A882 /* APICategoryClientGraphQLTests.swift in Sources */,
 				FA317108232AE8DF009BC140 /* SerialDispatcherPerformanceTests.swift in Sources */,
+				FACD264C2386E8F10068FBE6 /* JSONValue+SubscriptTests.swift in Sources */,
+				FACD264D2386E8F10068FBE6 /* JSONValue+KeyPathTests.swift in Sources */,
 				FA9FB782232AA26500C04D32 /* DefaultHubPluginCustomChannelTests.swift in Sources */,
 				FAC23567227A056600424678 /* APICategoryClientRESTTests.swift in Sources */,
 				FACA35EB2326B217000E74F6 /* AmplifyConfigurationInitializationTests.swift in Sources */,
