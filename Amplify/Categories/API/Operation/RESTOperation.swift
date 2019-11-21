@@ -8,7 +8,7 @@
 import Foundation
 
 /// All HTTP operations have the same underlying Operation type
-public protocol RESTOperation: AmplifyOperation<RESTRequest, Void, Data, APIError> { }
+public protocol RESTOperation: AmplifyOperation<RESTOperationRequest, Void, Data, APIError> { }
 
 /// Event names for HubPayloads emitted by this operation
 public extension HubPayload.EventName.API {
@@ -17,4 +17,5 @@ public extension HubPayload.EventName.API {
     static let patch = "API.patch"
     static let post = "API.post"
     static let put = "API.put"
+    static let head = "API.head"
 }

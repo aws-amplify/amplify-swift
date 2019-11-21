@@ -14,4 +14,7 @@ public protocol URLSessionDataTaskBehavior: Cancellable, Resumable {
     /// Uniquely identifies this task in the local system. This identifier is not
     /// guaranteed to be globally unique
     var taskBehaviorIdentifier: Int { get }
+
+    /// The response containing http status code, response headers, etc.
+    var taskBehaviorResponse: URLResponse? { get }
 }

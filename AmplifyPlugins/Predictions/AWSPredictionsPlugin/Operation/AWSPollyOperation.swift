@@ -77,7 +77,7 @@ PredictionsTextToSpeechOperation {
             return pollyVoiceId
         }
 
-        if let pollyVoiceIdFromConfigString = config.convertConfig?.voiceId {
+        if let pollyVoiceIdFromConfigString = config.convert.speechGenerator?.voiceID {
             let voiceType: VoiceType = .voice(pollyVoiceIdFromConfigString)
             let pollyVoiceIdFromConfig = AWSPollyVoiceId.from(voiceType: voiceType)
             return pollyVoiceIdFromConfig

@@ -7,34 +7,28 @@
 
 import Foundation
 
-public struct RESTRequest: AmplifyOperationRequest {
-    /// The name of the API to perform the request against
-    public let apiName: String
+public class RESTRequest {
 
-    public let operationType: RESTOperationType
+    /// The name of REST API being invoked, as specified in `amplifyconfiguration.json`.
+    /// Specify this parameter when more than one REST API is configured.
+    public let apiName: String?
 
-    public let path: String
+    /// Path of the resource
+    public let path: String?
 
+    /// Query parameters
+    public let queryParameters: [String: String]?
+
+    /// Body content
     public let body: Data?
 
-    /// Options to adjust the behavior of this request, including plugin-options
-    public let options: Options
-
-    public init(apiName: String,
-                operationType: RESTOperationType,
-                path: String,
-                body: Data? = nil,
-                options: Options) {
+    public init(apiName: String? = nil,
+                path: String? = nil,
+                queryParameters: [String: String]? = nil,
+                body: Data? = nil) {
         self.apiName = apiName
-        self.operationType = operationType
         self.path = path
+        self.queryParameters = queryParameters
         self.body = body
-        self.options = options
-    }
-}
-
-public extension RESTRequest {
-    struct Options {
-        public init() { }
     }
 }

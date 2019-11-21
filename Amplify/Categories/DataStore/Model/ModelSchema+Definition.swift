@@ -19,6 +19,8 @@ public enum ModelRelationship {
     case oneToOne(Model.Type, name: String)
 }
 
+// TODO: Add the rest of the AppSync scalar types
+// https://docs.aws.amazon.com/appsync/latest/devguide/scalars.html
 public enum ModelFieldType: CustomStringConvertible {
 
     case string

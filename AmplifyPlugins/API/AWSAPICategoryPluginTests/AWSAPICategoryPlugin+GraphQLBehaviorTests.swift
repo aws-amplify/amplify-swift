@@ -30,7 +30,7 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
         XCTAssertEqual(operationRequest.document, testDocument)
         XCTAssertEqual(operationRequest.operationType, GraphQLOperationType.query)
         XCTAssertNotNil(operationRequest.options)
-        XCTAssertNotNil(operationRequest.variables)
+        XCTAssertNil(operationRequest.variables)
     }
 
     // MARK: Mutate API Tests
@@ -52,7 +52,7 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
         XCTAssertEqual(operationRequest.document, testDocument)
         XCTAssertEqual(operationRequest.operationType, GraphQLOperationType.mutation)
         XCTAssertNotNil(operationRequest.options)
-        XCTAssertNotNil(operationRequest.variables)
+        XCTAssertNil(operationRequest.variables)
     }
 
     // MARK: Subscribe API Tests
@@ -74,6 +74,6 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
         XCTAssertEqual(operationRequest.document, testDocument)
         XCTAssertEqual(operationRequest.operationType, GraphQLOperationType.subscription)
         XCTAssertNotNil(operationRequest.options)
-        XCTAssertNotNil(operationRequest.variables)
+        XCTAssertNil(operationRequest.variables)
     }
 }

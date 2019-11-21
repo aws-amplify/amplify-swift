@@ -42,9 +42,6 @@ target "Amplify" do
       pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
       pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
 
-      target "AWSPluginsTestCommon" do
-      end
-
       target "AWSDataStoreCategoryPluginTests" do
         pod "ReachabilitySwift", "~> 5.0.0"
       end

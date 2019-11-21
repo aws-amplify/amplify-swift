@@ -25,8 +25,19 @@ extension Model {
             let name = field.graphQLName
             let value = self[field.name]
 
-            // TODO handle relationships (connected properties)
-            input[name] = value
+            switch field.typeDefinition {
+            case .date, .dateTime:
+                if let date = value as? Date {
+                    input[name] = date.iso8601
+                } else {
+                    input[name] = value
+                }
+            case .collection(let of):
+                // TODO handle relationships (connected properties)
+                break
+            default:
+                input[name] = value
+            }
         }
         return input
     }

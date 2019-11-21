@@ -116,7 +116,7 @@ class APICategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        _ = Amplify.API.get(apiName: "foo", path: "/foo") { _ in }
+        _ = Amplify.API.get(request: RESTRequest()) { _ in }
 
         waitForExpectations(timeout: 1.0)
     }
@@ -140,7 +140,7 @@ class APICategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
 
         let exception: BadInstructionException? = catchBadInstruction {
-            _ = Amplify.API.get(apiName: "foo", path: "/foo") { _ in }
+            _ = Amplify.API.get(request: RESTRequest()) { _ in }
         }
         XCTAssertNotNil(exception)
     }
@@ -177,7 +177,7 @@ class APICategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(api: apiConfig)
 
         try Amplify.configure(amplifyConfig)
-        _ = try Amplify.API.getPlugin(for: "MockSecondAPICategoryPlugin").get(apiName: "foo", path: "/foo") { _ in }
+        _ = try Amplify.API.getPlugin(for: "MockSecondAPICategoryPlugin").get(request: RESTRequest()) { _ in }
 
         waitForExpectations(timeout: 1.0)
     }
@@ -219,7 +219,7 @@ class APICategoryConfigurationTests: XCTestCase {
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
         let exception: BadInstructionException? = catchBadInstruction {
-            _ = Amplify.API.get(apiName: "foo", path: "/foo") { _ in }
+            _ = Amplify.API.get(request: RESTRequest()) { _ in }
         }
         XCTAssertNotNil(exception)
     }

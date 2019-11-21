@@ -51,6 +51,17 @@
                BlueprintName = "AWSAPICategoryPluginTests"
                ReferencedContainer = "container:APICategoryPlugin.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "AWSRESTOperationTests">
+               </Test>
+               <Test
+                  Identifier = "AWSRESTOperationTests/testGetFailsWithBadAPIName()">
+               </Test>
+               <Test
+                  Identifier = "AWSRESTOperationTests/testGetReturnsOperation()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

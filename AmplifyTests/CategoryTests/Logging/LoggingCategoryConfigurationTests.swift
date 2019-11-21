@@ -105,7 +105,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         let plugin = MockLoggingCategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin.listeners.append { message in
-            if message == "error(_:file:function:line:)" {
+            if message == "error(_:)" {
                 methodInvokedOnDefaultPlugin.fulfill()
             }
         }
@@ -116,7 +116,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        Amplify.Logging.error("test", file: #file, function: #function, line: #line)
+        Amplify.Logging.error("test")
 
         waitForExpectations(timeout: 1.0)
     }
@@ -140,7 +140,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
 
         let exception: BadInstructionException? = catchBadInstruction {
-            Amplify.Logging.error("test", file: #file, function: #function, line: #line)
+            Amplify.Logging.error("test")
         }
         XCTAssertNotNil(exception)
     }
@@ -151,7 +151,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
             expectation(description: "test method should not be invoked on default plugin")
         methodShouldNotBeInvokedOnDefaultPlugin.isInverted = true
         plugin1.listeners.append { message in
-            if message == "error(_:file:function:line:)" {
+            if message == "error(_:)" {
                 methodShouldNotBeInvokedOnDefaultPlugin.fulfill()
             }
         }
@@ -161,7 +161,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         let methodShouldBeInvokedOnSecondPlugin =
             expectation(description: "test method should be invoked on second plugin")
         plugin2.listeners.append { message in
-            if message == "error(_:file:function:line:)" {
+            if message == "error(_:)" {
                 methodShouldBeInvokedOnSecondPlugin.fulfill()
             }
         }
@@ -178,7 +178,8 @@ class LoggingCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Logging.getPlugin(for: "MockSecondLoggingCategoryPlugin")
-            .error("test", file: #file, function: #function, line: #line)
+            .default
+            .error("test")
         waitForExpectations(timeout: 1.0)
     }
 

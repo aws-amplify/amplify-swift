@@ -21,10 +21,10 @@ class AWSPredictionsService {
     var awsTranscribe: AWSTranscribeBehavior!
     var awsComprehend: AWSComprehendBehavior!
     var awsTextract: AWSTextractBehavior!
-    var predictionsConfig: AWSPredictionsPluginConfiguration!
+    var predictionsConfig: PredictionsPluginConfiguration!
     var rekognitionWordLimit = 50
 
-    convenience init(config: AWSPredictionsPluginConfiguration,
+    convenience init(config: PredictionsPluginConfiguration,
                      cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
                      identifier: String) throws {
 
@@ -37,9 +37,9 @@ class AWSPredictionsService {
             let interpretServiceConfiguration = AWSPredictionsService.makeInterpretAWSServiceConfiguration(
                 fromConfig: config,
                 cognitoCredentialsProvider: cognitoCredentialsProvider) else {
-            throw PluginError.pluginConfigurationError(
-                PluginErrorMessage.serviceConfigurationInitializationError.errorDescription,
-                PluginErrorMessage.serviceConfigurationInitializationError.recoverySuggestion)
+                    throw PluginError.pluginConfigurationError(
+                        PluginErrorMessage.serviceConfigurationInitializationError.errorDescription,
+                        PluginErrorMessage.serviceConfigurationInitializationError.recoverySuggestion)
         }
 
         let awsTranslateAdapter = AWSPredictionsService.makeAWSTranslate(
@@ -78,7 +78,7 @@ class AWSPredictionsService {
          awsTextract: AWSTextractBehavior,
          awsComprehend: AWSComprehendBehavior,
          awsPolly: AWSPollyBehavior,
-         config: AWSPredictionsPluginConfiguration) {
+         config: PredictionsPluginConfiguration) {
 
         self.identifier = identifier
         self.awsTranslate = awsTranslate
@@ -128,30 +128,30 @@ class AWSPredictionsService {
     }
 
     private static func makeConvertAWSServiceConfiguration(
-        fromConfig config: AWSPredictionsPluginConfiguration,
+        fromConfig config: PredictionsPluginConfiguration,
         cognitoCredentialsProvider: AWSCognitoCredentialsProvider) -> AWSServiceConfiguration? {
         let convertServiceConfigurationOptional = AWSServiceConfiguration(
-            region: config.convertConfig?.region ?? config.defaultProjectRegion,
+            region: config.convert.region,
             credentialsProvider: cognitoCredentialsProvider)
 
         return convertServiceConfigurationOptional
     }
 
     private static func makeIdentifyAWSServiceConfiguration(
-        fromConfig config: AWSPredictionsPluginConfiguration,
+        fromConfig config: PredictionsPluginConfiguration,
         cognitoCredentialsProvider: AWSCognitoCredentialsProvider) -> AWSServiceConfiguration? {
         let identifyServiceConfigurationOptional = AWSServiceConfiguration(
-            region: config.identifyConfig?.region ?? config.defaultProjectRegion,
+            region: config.identify.region,
             credentialsProvider: cognitoCredentialsProvider)
 
         return identifyServiceConfigurationOptional
     }
 
     private static func makeInterpretAWSServiceConfiguration(
-        fromConfig config: AWSPredictionsPluginConfiguration,
+        fromConfig config: PredictionsPluginConfiguration,
         cognitoCredentialsProvider: AWSCognitoCredentialsProvider) -> AWSServiceConfiguration? {
         let interpretServiceConfigurationOptional = AWSServiceConfiguration(
-            region: config.interpretConfig?.region ?? config.defaultProjectRegion,
+            region: config.interpret.region,
             credentialsProvider: cognitoCredentialsProvider)
 
         return interpretServiceConfigurationOptional

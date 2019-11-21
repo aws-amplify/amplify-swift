@@ -34,7 +34,7 @@ class IdentifyBasicIntegrationTests: XCTestCase {
         var predictionsConfig = PredictionsCategoryConfiguration(
             plugins: [
                 "AWSPredictionsPlugin": [
-                    "aws_project_region": region,
+                    "defaultRegion": region,
                     "identify": [
                         "identifyEntities": [
                         "maxFaces": 50,
@@ -49,7 +49,7 @@ class IdentifyBasicIntegrationTests: XCTestCase {
          predictionsConfig = PredictionsCategoryConfiguration(
             plugins: [
                 "AWSPredictionsPlugin": [
-                    "aws_project_region": region,
+                    "defaultRegion": region,
                     "identify": [
                         "identifyEntities": [
                         "maxFaces": 50,
