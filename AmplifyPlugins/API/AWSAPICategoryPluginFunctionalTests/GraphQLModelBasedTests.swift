@@ -158,7 +158,7 @@ class GraphQLModelBasedTests: XCTestCase {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
-        guard let post = createPost(id: uuid, title: title) else {
+        guard createPost(id: uuid, title: title) != nil else {
             XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
             return
         }
@@ -166,6 +166,39 @@ class GraphQLModelBasedTests: XCTestCase {
         let completeInvoked = expectation(description: "request completed")
 
         _ = Amplify.API.query(from: Post.self, where: nil, listener: { event in
+            switch event {
+            case .completed(let graphQLResponse):
+                guard case let .success(posts) = graphQLResponse else {
+                    XCTFail("Missing successful response")
+                    return
+                }
+                XCTAssertTrue(!posts.isEmpty)
+                print(posts)
+                completeInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Unexpected .failed event: \(error)")
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        })
+
+        wait(for: [completeInvoked], timeout: GraphQLModelBasedTests.networkTimeout)
+    }
+
+    func testListQueryWithPredicate() {
+        let uuid = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let title = testMethodName + "Title"
+//        guard createPost(id: uuid, title: title) != nil else {
+//            XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
+//            return
+//        }
+
+        let completeInvoked = expectation(description: "request completed")
+        let post = Post.keys
+        let predicate = post.content == "Daudelin" && (post.title == "David" || post.title == "Sarah")
+
+        _ = Amplify.API.query(from: Post.self, where: predicate, listener: { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(posts) = graphQLResponse else {

@@ -37,6 +37,9 @@ public struct GraphQLQuery: GraphQLDocument {
         return queryType == .list ? name + ".items" : name
     }
 
+    // TODO: when quertType == .list, inputType contains:
+    // ($filter: ModelTodoFilterInput, $limit: Int, $nextToken: String)
+    // we could set '$limit' here, and hardcode the value of limit in the variables to 1000
     public var stringValue: String {
         let schema = modelType.schema
 

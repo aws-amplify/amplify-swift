@@ -16,7 +16,7 @@ public struct Post: Model {
     public let createdAt: Date
     public let updatedAt: Date?
     public let rating: Double?
-    public let draft: Bool
+    public let draft: Bool?
     public let comments: [Comment]?
 
     public init(id: String = UUID().uuidString,
@@ -25,7 +25,7 @@ public struct Post: Model {
                 createdAt: Date = Date(),
                 updatedAt: Date? = nil,
                 rating: Double? = nil,
-                draft: Bool = false,
+                draft: Bool? = nil,
                 comments: [Comment] = []) {
         self.id = id
         self.title = title

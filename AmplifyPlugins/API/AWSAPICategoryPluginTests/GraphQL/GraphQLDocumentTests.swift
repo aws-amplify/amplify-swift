@@ -285,4 +285,23 @@ class GraphQLDocumentTests: XCTestCase {
         XCTAssert(input["content"] as? String == post.content)
     }
 
+    func testListQueryGraphQLRequest() {
+        let post = Post.keys
+        let predicate = post.id.eq("id") && post.title.beginsWith("Title") || post.content.contains("content")
+
+        let predicate2 = post.draft.beginsWith("id")
+        let request = GraphQLRequest<Post>.query(from: Post.self, where: predicate)
+
+        XCTAssert(request.responseType == Post.self)
+    }
+
+    func testListQueryGraphQLRequest2() {
+        let post = Post.keys
+        let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
+
+        let request = GraphQLRequest<Post>.query(from: Post.self, where: predicate)
+
+        XCTAssert(request.responseType == [Post].self)
+    }
+
 }

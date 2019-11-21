@@ -16,6 +16,8 @@ public extension AWSAPICategoryPlugin {
         return query(request: request, listener: listener)
     }
 
+    // TODO: Since list operations do not return any token, we should basicaly traversal over all of the items
+    // ourselves.
     func query<M: Model>(from modelType: M.Type,
                          where predicate: QueryPredicate?,
                          listener: GraphQLOperation<[M]>.EventListener?) -> GraphQLOperation<[M]> {
