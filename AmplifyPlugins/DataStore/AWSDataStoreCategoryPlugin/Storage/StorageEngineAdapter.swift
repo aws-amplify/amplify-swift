@@ -23,7 +23,7 @@ protocol ModelStorageBehavior {
 
 }
 
-protocol StorageEngineAdapter: ModelStorageBehavior {
+protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
     func exists(_ modelType: Model.Type, withId id: Model.Identifier) throws -> Bool
 }

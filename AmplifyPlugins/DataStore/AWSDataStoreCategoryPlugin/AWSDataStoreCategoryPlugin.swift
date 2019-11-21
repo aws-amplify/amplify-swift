@@ -9,8 +9,9 @@ import Amplify
 import Combine
 
 final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
-
     public var key: PluginKey = "AWSDataStoreCategoryPlugin"
+
+    static let logCategory = "AWSDataStoreCategoryPlugin"
 
     /// `true` if any models are syncable. Resolved during configuration phase
     var isSyncEnabled: Bool

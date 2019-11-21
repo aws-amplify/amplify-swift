@@ -23,6 +23,8 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         onComplete()
     }
 
+    // MARK: - Model-based GraphQL methods
+
     func query<M>(from modelType: M.Type,
                   byId id: String,
                   listener: GraphQLOperation<M?>.EventListener?) -> GraphQLOperation<M?> {
@@ -44,8 +46,20 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     func subscribe<M>(from modelType: M.Type,
                       type: GraphQLSubscriptionType,
                       listener: GraphQLSubscriptionOperation<M>.EventListener?) -> GraphQLSubscriptionOperation<M> {
-        fatalError("Not yet implemented")
+        notify("subscribe(from:\(modelType),type:\(type),listener:)")
+
+        let options = GraphQLOperationRequest<M>.Options()
+        let request = GraphQLOperationRequest<M>(apiName: nil,
+                                                 operationType: .subscription,
+                                                 document: "",
+                                                 variables: nil,
+                                                 responseType: M.self,
+                                                 options: options)
+        let operation = MockSubscriptionGraphQLOperation(request: request, responseType: M.self)
+        return operation
     }
+
+    // MARK: - Request-based GraphQL methods
 
     func mutate<R>(request: GraphQLRequest<R>,
                    listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
@@ -91,6 +105,8 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
             let operation = MockSubscriptionGraphQLOperation(request: request, responseType: request.responseType)
             return operation
     }
+
+    // MARK: - REST methods
 
     func get(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
         notify("get")
