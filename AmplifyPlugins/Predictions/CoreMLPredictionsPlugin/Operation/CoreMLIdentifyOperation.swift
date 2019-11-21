@@ -44,18 +44,36 @@ PredictionsError>, PredictionsIdentifyOperation {
             let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
             dispatch(event: .failed(predictionsError))
             finish()
-        case .detectText:
-            guard  let result = coreMLVisionAdapter.detectText(request.image) else {
-                let errorDescription = CoreMLPluginErrorString.detectTextNoResult.errorDescription
-                let recovery = CoreMLPluginErrorString.detectTextNoResult.recoverySuggestion
+        case .detectText(let format):
+            switch format {
+            case .all, .table, .form:
+                let errorDescription = CoreMLPluginErrorString.operationNotSupported.errorDescription
+                let recovery = CoreMLPluginErrorString.operationNotSupported.recoverySuggestion
+                let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
+                dispatch(event: .failed(predictionsError))
+                finish()
+            case .plain:
+                guard  let result = coreMLVisionAdapter.detectText(request.image) else {
+                    let errorDescription = CoreMLPluginErrorString.detectTextNoResult.errorDescription
+                    let recovery = CoreMLPluginErrorString.detectTextNoResult.recoverySuggestion
+                    let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
+                    dispatch(event: .failed(predictionsError))
+                    finish()
+                    return
+                }
+                dispatch(event: .completed(result))
+                finish()
+
+            }
+        case .detectLabels(let labelType):
+            if labelType == .moderation { //coreml does not have an endpoint to detect moderation labels in images
+                let errorDescription = CoreMLPluginErrorString.operationNotSupported.errorDescription
+                let recovery = CoreMLPluginErrorString.operationNotSupported.recoverySuggestion
                 let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
                 dispatch(event: .failed(predictionsError))
                 finish()
                 return
             }
-            dispatch(event: .completed(result))
-            finish()
-        case .detectLabels:
             guard  let result = coreMLVisionAdapter.detectLabels(request.image) else {
                 let errorDescription = CoreMLPluginErrorString.detectLabelsNoResult.errorDescription
                 let recovery = CoreMLPluginErrorString.detectLabelsNoResult.recoverySuggestion

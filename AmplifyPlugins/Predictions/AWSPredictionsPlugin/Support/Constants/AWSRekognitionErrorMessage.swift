@@ -49,6 +49,14 @@ struct AWSRekognitionErrorMessage {
         "The resource is already in use.",
         "Retry when the resource is available.")
 
+    static let imageNotFound: AWSRekognitionErrorMessageString = (
+        "Something was wrong with the image file, make sure it exists.",
+        "Try choosing an image and sending it again.")
+
+    static let noResultFound: AWSRekognitionErrorMessageString = (
+        "No result was found. An unknown error occurred.",
+        "Please try again.")
+
     // swiftlint:disable cyclomatic_complexity
     static func map(_ errorType: AWSRekognitionErrorType) -> PredictionsError? {
         switch errorType {

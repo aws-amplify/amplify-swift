@@ -8,6 +8,7 @@
 import Amplify
 import Foundation
 import AWSPluginsCore
+import AWSCore
 
 final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
 
@@ -31,6 +32,10 @@ final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
     /// The unique key of the plugin within the predictions category.
     public var key: PluginKey {
         return awsPredictionsPluginKey
+    }
+
+    public func getEscapeHatch(key: PredictionsAWSService) -> AWSService {
+        return predictionsService.getEscapeHatch(key: key)
     }
 
     public init() {

@@ -15,9 +15,9 @@ extension TextFormatType {
         case .table:
             return ["TABLES"]
         case .all:
-            return ["TABLES, FORMS"]
+            return ["TABLES", "FORMS"]
         default:
-            return ["TABLES, FORMS"]
+            return ["TABLES", "FORMS"]
         }
     }
 }
