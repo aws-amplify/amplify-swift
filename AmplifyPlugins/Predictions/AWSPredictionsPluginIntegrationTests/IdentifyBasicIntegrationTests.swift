@@ -20,7 +20,6 @@ class IdentifyBasicIntegrationTests: XCTestCase {
 
     override func setUp() {
         setupMobileClient()
-        //setupAmplify
     }
 
     override func tearDown() {

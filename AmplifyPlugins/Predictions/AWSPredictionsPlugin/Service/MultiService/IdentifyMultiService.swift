@@ -84,38 +84,25 @@ class IdentifyMultiService: MultiServiceBehavior {
             return
         }
 
-        if finalOnlineResult is IdentifyLabelsResult || finalOfflineResult is IdentifyLabelsResult {
-            //merge labels result
-            // swiftlint:force_cast disable
-            guard let onlineLabelResult = finalOnlineResult as? IdentifyLabelsResult,
-                let offlineLabelResult = finalOfflineResult as? IdentifyLabelsResult else {
-                    //this should never happen, something went seriously wrong throw error
-                    let message = IdentifyMultiServiceErrorMessage.noResultIdentifyService.errorDescription
-                    let recoveryMessage = IdentifyMultiServiceErrorMessage.noResultIdentifyService.recoverySuggestion
-                    let predictionError = PredictionsError.service(message, recoveryMessage, nil)
-                    callback(.failed(predictionError))
-                    return
-            }
+        if let onlineLabelResult = finalOnlineResult as? IdentifyLabelsResult,
+                let offlineLabelResult = finalOfflineResult as? IdentifyLabelsResult {
             let mergedResult = mergeLabelResult(onlineLabelResult: onlineLabelResult,
-                                           offlineLabelResult: offlineLabelResult)
+                                            offlineLabelResult: offlineLabelResult)
             callback(.completed(mergedResult))
             return
-        } else if finalOnlineResult is IdentifyTextResult || finalOnlineResult is IdentifyTextResult {
-           // swiftlint:force_cast disable
-           guard let onlineTextResult = finalOnlineResult as? IdentifyTextResult,
-               let offlineTextResult = finalOfflineResult as? IdentifyTextResult else {
-                   //this should never happen, something went seriously wrong throw error
-                   let message = IdentifyMultiServiceErrorMessage.noResultIdentifyService.errorDescription
-                   let recoveryMessage = IdentifyMultiServiceErrorMessage.noResultIdentifyService.recoverySuggestion
-                   let predictionError = PredictionsError.service(message, recoveryMessage, nil)
-                   callback(.failed(predictionError))
-                   return
-           }
-           let mergedResult = mergeTextResult(onlineTextResult: onlineTextResult,
-                                          offlineTextResult: offlineTextResult)
-           callback(.completed(mergedResult))
-           return
         }
+        if let onlineTextResult = finalOnlineResult as? IdentifyTextResult,
+                let offlineTextResult = finalOfflineResult as? IdentifyTextResult {
+            let mergedResult = mergeTextResult(onlineTextResult: onlineTextResult,
+                                            offlineTextResult: offlineTextResult)
+            callback(.completed(mergedResult))
+            return
+        }
+
+        let message = IdentifyMultiServiceErrorMessage.noResultIdentifyService.errorDescription
+        let recoveryMessage = IdentifyMultiServiceErrorMessage.noResultIdentifyService.recoverySuggestion
+        let predictionError = PredictionsError.service(message, recoveryMessage, nil)
+        callback(.failed(predictionError))
     }
 
     func mergeLabelResult(onlineLabelResult: IdentifyLabelsResult,
@@ -167,6 +154,7 @@ class IdentifyMultiService: MultiServiceBehavior {
         let onlineLineSet = Set<IdentifiedLine>(onlineLines)
         let offlineLineSet = Set<IdentifiedLine>(offlineLines)
 
+        //find the matchine lines and loop through them
         let intersectingLines = onlineLineSet.intersection(offlineLineSet)
         for line in intersectingLines {
             let onlineIndex = onlineLineSet.firstIndex(of: line)!
