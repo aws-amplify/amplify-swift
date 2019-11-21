@@ -10,19 +10,17 @@ import Foundation
 /// Behavior of the Predictions category that clients will use
 public protocol PredictionsCategoryClientBehavior {
 
-    //TOOD: Update the api names after final review
-
     /// Translate the text to the language specified.
     /// - Parameter textToTranslate: The text to translate
     /// - Parameter language: The language of the text given
     /// - Parameter targetLanguage: The language to which the text should be translated
-    /// - Parameter listener: Triggered when the event occurs
     /// - Parameter options: Parameters to specific plugin behavior
+    /// - Parameter listener: Triggered when the event occurs
     func convert(textToTranslate: String,
                  language: LanguageType?,
                  targetLanguage: LanguageType?,
-                 listener: PredictionsTranslateTextOperation.EventListener?,
-                 options: PredictionsTranslateTextRequest.Options?) -> PredictionsTranslateTextOperation
+                 options: PredictionsTranslateTextRequest.Options?,
+                 listener: PredictionsTranslateTextOperation.EventListener?) -> PredictionsTranslateTextOperation
 
     /// - Parameter textToSpeech: The text to be synthesized to audio
     /// - Parameter listener: Triggered when the event occurs
