@@ -14,7 +14,8 @@ extension AWSPredictionsPlugin {
                         language: LanguageType?,
                         targetLanguage: LanguageType?,
                         options: PredictionsTranslateTextRequest.Options?,
-                        listener: PredictionsTranslateTextOperation.EventListener? = nil) -> PredictionsTranslateTextOperation {
+                        listener: PredictionsTranslateTextOperation.EventListener? = nil)
+        -> PredictionsTranslateTextOperation {
         let request = PredictionsTranslateTextRequest(textToTranslate: textToTranslate,
                                                       targetLanguage: targetLanguage ?? .italian,
                                                       language: language ?? .english,
@@ -29,8 +30,8 @@ extension AWSPredictionsPlugin {
 
     public func convert(textToSpeech: String,
                         options: PredictionsTextToSpeechRequest.Options?,
-                        listener: PredictionsTextToSpeechOperation.EventListener?
-        = nil) -> PredictionsTextToSpeechOperation {
+                        listener: PredictionsTextToSpeechOperation.EventListener? = nil)
+        -> PredictionsTextToSpeechOperation {
         let request = PredictionsTextToSpeechRequest(
             textToSpeech: textToSpeech,
             options: options ?? PredictionsTextToSpeechRequest.Options())
