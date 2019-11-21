@@ -174,7 +174,7 @@ class IdentifyMultiService: MultiServiceBehavior {
             let onlineLine = onlineLineSet[onlineIndex]
             let offlineLine = offlineLineSet[offlineIndex]
             //test to see if bounding boxes intersect, if they do it's the same line of text. if not, add both lines
-            if onlineLine.intersectingBoundingBoxes(compareTo: offlineLine) {
+            if intersectingBoundingBoxes(originalLine: onlineLine, compareTo: offlineLine) {
                 combinedLines.insert(onlineLine) //insert only one of them if they intersect
             } else {
                 combinedLines.insert(onlineLine)
@@ -190,6 +190,21 @@ class IdentifyMultiService: MultiServiceBehavior {
                                   words: onlineTextResult.words,
                                   rawLineText: onlineTextResult.rawLineText,
                                   identifiedLines: Array(combinedLines))
+    }
+
+    func intersectingBoundingBoxes(originalLine: IdentifiedLine, compareTo: IdentifiedLine) -> Bool {
+        let imageData = try? Data(contentsOf: request.image)
+        let image = UIImage(data: imageData!)
+        let cgRectFirst = CGRect(x: originalLine.boundingBox.left * Double((image?.size.width)!),
+                                 y: originalLine.boundingBox.top * Double((image?.size.height)!),
+                                 width: originalLine.boundingBox.width * Double((image?.size.width)!),
+                                 height: originalLine.boundingBox.height * Double((image?.size.height)!))
+        let cgRectSecond = CGRect(x: compareTo.boundingBox.left * Double((image?.size.width)!),
+                                  y: compareTo.boundingBox.top * Double((image?.size.height)!),
+                                  width: compareTo.boundingBox.width * Double((image?.size.width)!),
+                                  height: compareTo.boundingBox.height * Double((image?.size.height)!))
+        return cgRectFirst.intersects(cgRectSecond) || cgRectSecond.intersects(cgRectFirst)
+            || cgRectFirst.contains(cgRectSecond) || cgRectSecond.contains(cgRectFirst)
     }
 }
 
@@ -234,17 +249,5 @@ extension IdentifiedLine: Hashable {
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(text)
-    }
-
-    func intersectingBoundingBoxes(compareTo: IdentifiedLine) -> Bool {
-        let cgRectFirst = CGRect(x: boundingBox.left,
-                                 y: boundingBox.top,
-                                 width: boundingBox.width,
-                                 height: boundingBox.height)
-        let cgRectSecond = CGRect(x: compareTo.boundingBox.left,
-                                  y: compareTo.boundingBox.top,
-                                  width: compareTo.boundingBox.width,
-                                  height: compareTo.boundingBox.height)
-        return cgRectFirst.intersects(cgRectSecond)
     }
 }

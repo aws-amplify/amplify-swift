@@ -32,12 +32,15 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
     public func detectText(_ imageURL: URL) -> IdentifyTextResult? {
         let handler = VNImageRequestHandler(url: imageURL, options: [:])
         let request = VNRecognizeTextRequest()
+        request.recognitionLevel = .accurate
         try? handler.perform([request])
 
         guard let observations = request.results as? [VNRecognizedTextObservation] else {
             return nil
         }
+
         var identifiedLines = [IdentifiedLine]()
+        var rawLineText = [String]()
         for observation in observations {
             let boundingbox = observation.boundingBox
             let topPredictions = observation.topCandidates(1)
@@ -45,8 +48,9 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
             let identifiedText = prediction.string
             let line = IdentifiedLine(text: identifiedText, boundingBox: boundingbox.toBoundingBox())
             identifiedLines.append(line)
+            rawLineText.append(identifiedText)
         }
-        return IdentifyTextResult(fullText: nil, words: nil, rawLineText: nil, identifiedLines: identifiedLines)
+        return IdentifyTextResult(fullText: nil, words: nil, rawLineText: rawLineText, identifiedLines: identifiedLines)
     }
 }
 
