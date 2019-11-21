@@ -134,7 +134,11 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
             case .completed(let graphQLResponse):
-                guard case let .partial(data, error) = graphQLResponse else {
+                guard case let .failure(graphQLResponseError) = graphQLResponse else {
+                    XCTFail("Missing failure")
+                    return
+                }
+                guard case let .partial(data, error) = graphQLResponseError else {
                     XCTFail("Missing partial response")
                     return
                 }
@@ -169,13 +173,16 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
             case .completed(let graphQLResponse):
-                switch graphQLResponse {
-                case .transformationError(let rawGraphQLResponse, let error):
-                    transformationErrorInvoked.fulfill()
-                default:
-                    XCTFail("Unexpected event: \(event)")
+                guard case let .failure(graphQLResponseError) = graphQLResponse else {
+                    XCTFail("Unexpected event: \(graphQLResponse)")
+                    return
                 }
 
+                guard case .transformationError = graphQLResponseError else {
+                    XCTFail("Should be transformation error")
+                    return
+                }
+                transformationErrorInvoked.fulfill()
             default:
                 XCTFail("Unexpected event: \(event)")
             }

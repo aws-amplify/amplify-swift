@@ -225,10 +225,8 @@ class GraphQLModelBasedTests: XCTestCase {
                 switch data {
                 case .success(let post):
                     XCTAssertEqual(post.title, title)
-                case .error(let error):
+                case .failure(let error):
                     print(error)
-                default:
-                    XCTFail("Could not get data back")
                 }
                 completeInvoked.fulfill()
             case .failed(let error):

@@ -56,14 +56,16 @@ class SyncEngineMutationSubscriber {
         switch graphQLResponse {
         case .success(let successResponse):
             future(.success(successResponse))
-        case .error(let graphQLErrors):
-            resolve(future: future, graphQLErrors: graphQLErrors)
-        case .partial(let partialResponse, let graphQLErrors):
-            resolve(future: future, partialResponse: partialResponse, graphQLErrors: graphQLErrors)
-        case .transformationError(let rawResponse, let transformationError):
-            resolve(future: future, rawResponse: rawResponse, transformationError: transformationError)
+        case .failure(let graphQLResponseError):
+            switch graphQLResponseError {
+            case .error(let graphQLErrors):
+                resolve(future: future, graphQLErrors: graphQLErrors)
+            case .partial(let partialResponse, let graphQLErrors):
+                resolve(future: future, partialResponse: partialResponse, graphQLErrors: graphQLErrors)
+            case .transformationError(let rawResponse, let transformationError):
+                resolve(future: future, rawResponse: rawResponse, transformationError: transformationError)
+            }
         }
-
     }
 
     // MARK: - Error handling
