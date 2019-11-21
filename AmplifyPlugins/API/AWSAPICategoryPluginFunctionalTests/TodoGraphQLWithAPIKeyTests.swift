@@ -130,7 +130,8 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
                                      variables: CreateTodoMutation.variables(id: uuid,
                                                                              name: "",
                                                                              description: description),
-                                     responseType: CreateTodoMutation.Data.self)
+                                     responseType: Todo?.self,
+                                     decodePath: CreateTodoMutation.decodePath)
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
             case .completed(let graphQLResponse):
@@ -138,11 +139,11 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
                     XCTFail("Missing failure")
                     return
                 }
-                guard case let .partial(data, error) = graphQLResponseError else {
+                guard case let .partial(todo, error) = graphQLResponseError else {
                     XCTFail("Missing partial response")
                     return
                 }
-                XCTAssertNil(data.createTodo)
+                XCTAssertNil(todo)
                 XCTAssertNotNil(error)
                 completeInvoked.fulfill()
             case .failed(let error):
