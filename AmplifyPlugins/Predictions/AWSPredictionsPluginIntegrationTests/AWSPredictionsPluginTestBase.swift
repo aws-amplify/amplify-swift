@@ -31,7 +31,7 @@ class AWSPredictionsPluginTestBase: XCTestCase {
         let predictionsConfig = PredictionsCategoryConfiguration(
             plugins: [
                 "AWSPredictionsPlugin": [
-                    "Region": region
+                    "defaultRegion": region
                 ]
             ]
         )
@@ -43,7 +43,7 @@ class AWSPredictionsPluginTestBase: XCTestCase {
             try Amplify.add(plugin: AWSPredictionsPlugin())
             try Amplify.configure(amplifyConfig)
         } catch {
-            XCTFail("Failed to initialize and configure Amplify")
+            XCTFail("Failed to initialize and configure Amplify - \(error)")
         }
         print("Amplify initialized")
     }

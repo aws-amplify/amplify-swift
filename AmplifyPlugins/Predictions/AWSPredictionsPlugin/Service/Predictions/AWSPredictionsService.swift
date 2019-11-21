@@ -127,7 +127,7 @@ class AWSPredictionsService {
         }
     }
 
-    private static func makeConvertAWSServiceConfiguration (
+    private static func makeConvertAWSServiceConfiguration(
         fromConfig config: PredictionsPluginConfiguration,
         cognitoCredentialsProvider: AWSCognitoCredentialsProvider) -> AWSServiceConfiguration? {
         let convertServiceConfigurationOptional = AWSServiceConfiguration(
