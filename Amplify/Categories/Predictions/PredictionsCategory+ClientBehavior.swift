@@ -20,13 +20,13 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
     public func convert(textToTranslate: String,
                         language: LanguageType?,
                         targetLanguage: LanguageType?,
-                        listener: PredictionsTranslateTextOperation.EventListener?,
-                        options: PredictionsTranslateTextRequest.Options? = nil) -> PredictionsTranslateTextOperation {
+                        options: PredictionsTranslateTextRequest.Options? = nil,
+                        listener: PredictionsTranslateTextOperation.EventListener?) -> PredictionsTranslateTextOperation {
         plugin.convert(textToTranslate: textToTranslate,
                        language: language,
                        targetLanguage: targetLanguage,
-                       listener: listener,
-                       options: options)
+                       options: options,
+                       listener: listener)
     }
 
     public func identify(type: IdentifyAction,

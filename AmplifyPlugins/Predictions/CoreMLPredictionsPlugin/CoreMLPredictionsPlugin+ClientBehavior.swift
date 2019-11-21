@@ -14,8 +14,8 @@ extension CoreMLPredictionsPlugin {
     public func convert(textToTranslate: String,
                         language: LanguageType?,
                         targetLanguage: LanguageType?,
-                        listener: PredictionsTranslateTextOperation.EventListener?,
-                        options: PredictionsTranslateTextRequest.Options?) -> PredictionsTranslateTextOperation {
+                        options: PredictionsTranslateTextRequest.Options?,
+                        listener: PredictionsTranslateTextOperation.EventListener?) -> PredictionsTranslateTextOperation {
         // TODO: Remove the below and add proper message
         fatalError("Incomplete implementation")
     }
