@@ -18,7 +18,7 @@ public struct Sentiment {
     }
 }
 
-public enum SentimentType {
+public enum SentimentType: String {
     case unknown
     case positive
     case negative

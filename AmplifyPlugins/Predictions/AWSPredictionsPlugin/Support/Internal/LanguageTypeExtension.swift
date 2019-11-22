@@ -11,25 +11,39 @@ import AWSComprehend
 extension LanguageType {
 
     func toComprehendLanguage() -> AWSComprehendLanguageCode {
-        // TODO: Fill the right language codes below
         switch self {
         case .english:
             return .en
         case .italian:
             return .it
-        case .undetermined:
+        case .spanish:
+            return .es
+        case .french:
+            return .fr
+        case .german:
+            return .de
+        case .portuguese:
+            return .pt
+        default:
             return .unknown
         }
     }
 
     func toSyntaxLanguage() -> AWSComprehendSyntaxLanguageCode {
-        // TODO: Fill the right language codes below
         switch self {
         case .english:
             return .en
         case .italian:
             return .it
-        case .undetermined:
+        case .spanish:
+            return .es
+        case .french:
+            return .fr
+        case .german:
+            return .de
+        case .portuguese:
+            return .pt
+        default:
             return .unknown
         }
     }

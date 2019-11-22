@@ -66,6 +66,15 @@ extension Amplify {
     /// This method must be invoked after registering plugins, and before using any Amplify category. It must not be
     /// invoked more than once.
     ///
+    /// **Lifecycle**
+    ///
+    /// Internally, Amplify configures the Hub and Logging categories first, so they are available to plugins in the
+    /// remaining categories during the configuration phase. Plugins for the Hub and Logging categories must not
+    /// assume that any other categories are available.
+    ///
+    /// After Amplify has configured all of its categories, it will dispatch a `HubPayload.EventName.Amplify.configured`
+    /// event to each Amplify Hub channel. After this point, plugins may invoke calls on other Amplify categories.
+    ///
     /// - Parameter configuration: The AmplifyConfiguration for specified Categories
     public static func configure(_ configuration: AmplifyConfiguration? = nil) throws {
         guard !isConfigured else {
@@ -80,8 +89,13 @@ extension Amplify {
 
         let configuration = try Amplify.resolve(configuration: configuration)
 
+        // Always configure Logging and Hub first, so they are available to other categoories.
+        try Hub.configure(using: configuration)
+        try Logging.configure(using: configuration)
+
         // Looping through all categories to ensure we don't accidentally forget a category at some point in the future
-        for categoryType in CategoryType.allCases {
+        let remainingCategories = CategoryType.allCases.filter { $0 != .hub && $0 != .logging }
+        for categoryType in remainingCategories {
             switch categoryType {
             case .analytics:
                 try Analytics.configure(using: configuration)
@@ -89,18 +103,27 @@ extension Amplify {
                 try API.configure(using: configuration)
             case .dataStore:
                 try DataStore.configure(using: configuration)
-            case .hub:
-                try Hub.configure(using: configuration)
-            case .logging:
-                try Logging.configure(using: configuration)
             case .predictions:
                 try Predictions.configure(using: configuration)
             case .storage:
                 try Storage.configure(using: configuration)
+
+            case .hub, .logging:
+                // Already configured
+                break
             }
         }
-
         isConfigured = true
+
+        notifyAllHubChannels()
     }
 
+    /// Notifies all hub channels that Amplify is configured, in case any plugins need to be notified of the end of the
+    /// configuration phase (e.g., to set up cross-channel dependencies)
+    private static func notifyAllHubChannels() {
+        let payload = HubPayload(eventName: HubPayload.EventName.Amplify.configured)
+        for channel in HubChannel.amplifyChannels {
+            Hub.plugins.values.forEach { $0.dispatch(to: channel, payload: payload) }
+        }
+    }
 }

@@ -37,6 +37,8 @@ public extension AWSAPICategoryPlugin {
 
         configure(authService: authService,
                   pluginConfig: pluginConfig)
+
+        log.info("Configure finished")
     }
 }
 

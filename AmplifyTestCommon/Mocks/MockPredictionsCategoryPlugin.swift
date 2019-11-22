@@ -25,8 +25,8 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
     func convert(textToTranslate: String,
                  language: LanguageType?,
                  targetLanguage: LanguageType?,
-                 listener: PredictionsTranslateTextOperation.EventListener?,
-                 options: PredictionsTranslateTextRequest.Options?) -> PredictionsTranslateTextOperation {
+                 options: PredictionsTranslateTextRequest.Options?,
+                 listener: PredictionsTranslateTextOperation.EventListener?) -> PredictionsTranslateTextOperation {
         notify("textToTranslate")
         let request = PredictionsTranslateTextRequest(textToTranslate: textToTranslate,
                                                       targetLanguage: targetLanguage ?? .italian,

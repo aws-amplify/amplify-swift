@@ -25,6 +25,8 @@ extension Comment {
     public static let schema = defineSchema { model in
         let comment = Comment.keys
 
+        model.attributes(.isSyncable)
+
         model.fields(
             .id(),
             .field(comment.content, is: .required, ofType: .string),

@@ -12,7 +12,7 @@ import SQLite
 /// A sub-protocol of `DataStoreStatement` that represents a SQL statement.
 ///
 /// SQL statements include: `create table`, `insert`, `update`, `delete` and `select`.
-protocol SQLStatement: DataStoreStatement where V == [Binding?] {}
+protocol SQLStatement: DataStoreStatement where Variables == [Binding?] {}
 
 /// An useful extension to add a default empty array to `SQLStatement.variables` to
 /// concrete types conforming to `SQLStatement`.

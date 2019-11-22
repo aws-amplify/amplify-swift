@@ -7,6 +7,7 @@
 
 import XCTest
 @testable import Amplify
+@testable import AmplifyTestCommon
 
 class DefaultHubPluginConcurrencyTests: XCTestCase {
     var plugin: HubCategoryPlugin {
@@ -60,7 +61,7 @@ class DefaultHubPluginConcurrencyTests: XCTestCase {
                     messageReceived.fulfill()
                 }
 
-                guard try DefaultHubPluginTestHelpers.waitForListener(with: token, plugin: plugin, timeout: 1.0) else {
+                guard try HubListenerTestUtilities.waitForListener(with: token, plugin: plugin, timeout: 1.0) else {
                     XCTFail("Listener \(listenerIteration) on channel \(channel) not registered")
                     return
                 }

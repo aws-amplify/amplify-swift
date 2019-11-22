@@ -89,7 +89,7 @@ Error: AmplifyError>: AsynchronousOperation {
 
     func subscribe(listener: @escaping EventListener) -> UnsubscribeToken {
         let channel = HubChannel(from: categoryType)
-        let filterById = HubFilters.hubFilter(forOperation: self)
+        let filterById = HubFilters.forOperation(self)
 
         var token: UnsubscribeToken?
         let hubListener: HubListener = { payload in

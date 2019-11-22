@@ -13,18 +13,21 @@ extension Model where Self: Codable {
     /// De-serialize a JSON string into an instance of the concrete type that conforms
     /// to the `Model` protocol.
     ///
-    /// - Parameter json: a valid JSON object as `String`
+    /// - Parameters:
+    ///   - json: a valid JSON object as `String`
+    ///   - decoder: an optional JSONDecoder to use to decode the model. Defaults to `JSONDecoder()`
     /// - Returns: an instance of the concrete type conforming to `Model`
     /// - Throws: `DecodingError.dataCorrupted` in case data is not a valid JSON or any
     /// other decoding specific error that `JSONDecoder.decode()` might throw.
-    public static func from(json: String) throws -> Self {
+    public static func from(json: String,
+                            decoder: JSONDecoder = JSONDecoder()) throws -> Self {
         guard let data = json.data(using: .utf8) else {
             throw DataStoreError.decodingError(
                 "Invalid JSON string. Could not convert the passed JSON string into a UTF-8 Data object",
                 "Ensure the JSON doesn't contain any invalid UTF-8 data:\n\n\(json)"
             )
         }
-        return try JSONDecoder().decode(Self.self, from: data)
+        return try decoder.decode(Self.self, from: data)
     }
 
     /// De-serialize a `Dictionary` into an instance of the concrete type that conforms

@@ -32,7 +32,7 @@ class AmplifyOperationHubTests: XCTestCase {
     /// Given: An AmplifyOperation
     /// When: I invoke Hub.listen(to: operation)
     /// Then: I am notified of events for that operation, in the operation event listener format
-    func testlistenerViaListenToOperation() {
+    func testlistenerViaListenToOperation() throws {
         let options = StorageListRequest.Options(pluginOptions: ["pluginDelay": 0.5])
         let request = StorageListRequest(options: options)
 
@@ -44,7 +44,9 @@ class AmplifyOperationHubTests: XCTestCase {
             listenerWasInvoked.fulfill()
         }
 
-        _ = Amplify.Hub.listen(to: operation, listener: listener)
+        let token = Amplify.Hub.listen(to: operation, listener: listener)
+
+        try waitForToken(token)
 
         operation.doMockDispatch()
 
@@ -55,7 +57,7 @@ class AmplifyOperationHubTests: XCTestCase {
     /// When: I perform an operation with an `listener` listener
     /// Then: That listener is notified when an event occurs
     func testlistenerViaOperationInit() {
-        let listenerInvoked = expectation(description: "listener listener was invoked")
+        let listenerInvoked = expectation(description: "listener was invoked")
         _ = Amplify.Storage.getURL(key: "foo") { _ in
             listenerInvoked.fulfill()
         }
@@ -65,15 +67,15 @@ class AmplifyOperationHubTests: XCTestCase {
     /// Given: A configured system
     /// When: I subscribe to Hub events filtered by operation ID
     /// Then: My listener receives events for that ID
-    func testListenerViaHubListen() {
-        let listenerInvoked = expectation(description: "listener listener was invoked")
+    func testListenerViaHubListen() throws {
+        let listenerInvoked = expectation(description: "listener was invoked")
         let operation = Amplify.Storage.getURL(key: "foo") { _ in
             listenerInvoked.fulfill()
         }
 
         let operationId = operation.id
 
-        _ = Amplify.Hub.listen(to: .storage) { payload in
+        let token = Amplify.Hub.listen(to: .storage) { payload in
             guard let context = payload.context as? AmplifyOperationContext<StorageListRequest> else {
                 return
             }
@@ -82,8 +84,22 @@ class AmplifyOperationHubTests: XCTestCase {
                 listenerInvoked.fulfill()
             }
         }
+
+        try waitForToken(token)
+
         waitForExpectations(timeout: 1.0)
     }
+
+    // Convenience to let tests wait for a listener to be registered. Instead of returning a bool, simply throws if the
+    // listener is not registered
+    private func waitForToken(_ token: UnsubscribeToken) throws {
+        // swiftlint:disable:next force_cast
+        let hubPlugin = try Amplify.Hub.getPlugin(for: AWSHubPlugin.key) as! AWSHubPlugin
+        guard try HubListenerTestUtilities.waitForListener(with: token, plugin: hubPlugin, timeout: 1.0) else {
+            throw "Listener not registered"
+        }
+    }
+
 }
 
 class MockDispatchingStoragePlugin: StorageCategoryPlugin {
