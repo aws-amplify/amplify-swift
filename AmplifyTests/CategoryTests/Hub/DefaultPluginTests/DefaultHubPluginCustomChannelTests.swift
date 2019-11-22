@@ -44,7 +44,7 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
             eventReceived.fulfill()
         }
 
-        guard try DefaultHubPluginTestHelpers.waitForListener(with: listener, plugin: plugin, timeout: 0.5) else {
+        guard try HubListenerTestUtilities.waitForListener(with: listener, plugin: plugin, timeout: 0.5) else {
             XCTFail("listener1 not registered")
             return
         }
@@ -65,7 +65,7 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
             eventReceived.fulfill()
         }
 
-        guard try DefaultHubPluginTestHelpers.waitForListener(with: listener, plugin: plugin, timeout: 0.5) else {
+        guard try HubListenerTestUtilities.waitForListener(with: listener, plugin: plugin, timeout: 0.5) else {
             XCTFail("listener1 not registered")
             return
         }
@@ -86,7 +86,7 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
             listener1Invoked.fulfill()
         }
 
-        guard try DefaultHubPluginTestHelpers.waitForListener(with: listener1, plugin: plugin, timeout: 0.5) else {
+        guard try HubListenerTestUtilities.waitForListener(with: listener1, plugin: plugin, timeout: 0.5) else {
             XCTFail("listener1 not registered")
             return
         }
@@ -95,7 +95,7 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
             listener2Invoked.fulfill()
         }
 
-        guard try DefaultHubPluginTestHelpers.waitForListener(with: listener2, plugin: plugin, timeout: 0.5) else {
+        guard try HubListenerTestUtilities.waitForListener(with: listener2, plugin: plugin, timeout: 0.5) else {
             XCTFail("listener2 not registered")
             return
         }

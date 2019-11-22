@@ -8,24 +8,25 @@
 import Foundation
 
 public struct ModelRegistry {
-    public typealias ModelDecoder = (String) throws -> Model
+
+    /// ModelDecoder's are used to decode untyped model data by looking up by key.
+    private typealias ModelDecoder = (String, JSONDecoder) throws -> Model
 
     private static var modelTypes = [String: Model.Type]()
 
-    private static var decoders = [String: ModelDecoder]()
+    private static var modelDecoders = [String: ModelDecoder]()
 
     public static var models: [Model.Type] {
         Array(modelTypes.values)
     }
 
     public static func register<M: Model>(modelType: M.Type) {
-
-        let decoderBlock: ModelDecoder = { jsonString in
-            let model = try modelType.from(json: jsonString)
+        let modelDecoder: ModelDecoder = { jsonString, jsonDecoder in
+            let model = try modelType.from(json: jsonString, decoder: jsonDecoder)
             return model
         }
 
-        decoders[modelType.modelName] = decoderBlock
+        modelDecoders[modelType.modelName] = modelDecoder
         modelTypes[modelType.modelName] = modelType
     }
 
@@ -33,8 +34,10 @@ public struct ModelRegistry {
         modelTypes[name]
     }
 
-    public static func decode(modelName: String, from jsonString: String) throws -> Model {
-        guard let decoder = decoders[modelName] else {
+    public static func decode(modelName: String,
+                              from jsonString: String,
+                              jsonDecoder: JSONDecoder = JSONDecoder()) throws -> Model {
+        guard let decoder = modelDecoders[modelName] else {
             throw DataStoreError.decodingError(
                 "No decoder found for model named \(modelName)",
                 """
@@ -43,13 +46,13 @@ public struct ModelRegistry {
                 """)
         }
 
-        return try decoder(jsonString)
+        return try decoder(jsonString, jsonDecoder)
     }
 }
 
 extension ModelRegistry {
     static func reset() {
         modelTypes = [:]
-        decoders = [:]
+        modelDecoders = [:]
     }
 }

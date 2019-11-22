@@ -32,6 +32,7 @@ class SQLStatementTests: XCTestCase {
         let expectedStatement = """
         create table if not exists Post (
           "id" text primary key not null,
+          "_version" integer,
           "content" text not null,
           "createdAt" text not null,
           "draft" integer not null,
@@ -78,14 +79,14 @@ class SQLStatementTests: XCTestCase {
         let statement = InsertStatement(model: post)
 
         let expectedStatement = """
-        insert into Post ("id", "content", "createdAt", "draft", "rating", "title", "updatedAt")
-        values (?, ?, ?, ?, ?, ?, ?)
+        insert into Post ("id", "_version", "content", "createdAt", "draft", "rating", "title", "updatedAt")
+        values (?, ?, ?, ?, ?, ?, ?, ?)
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
 
         let variables = statement.variables
-        XCTAssertEqual(variables[1] as? String, "content")
-        XCTAssertEqual(variables[5] as? String, "title")
+        XCTAssertEqual(variables[2] as? String, "content")
+        XCTAssertEqual(variables[6] as? String, "title")
     }
 
     /// - Given: a `Model` instance
@@ -127,6 +128,7 @@ class SQLStatementTests: XCTestCase {
         let expectedStatement = """
         update Post
         set
+          "_version" = ?,
           "content" = ?,
           "createdAt" = ?,
           "draft" = ?,
@@ -138,9 +140,9 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
 
         let variables = statement.variables
-        XCTAssertEqual(variables[0] as? String, "content")
-        XCTAssertEqual(variables[4] as? String, "title")
-        XCTAssertEqual(variables[6] as? String, post.id)
+        XCTAssertEqual(variables[1] as? String, "content")
+        XCTAssertEqual(variables[5] as? String, "title")
+        XCTAssertEqual(variables[7] as? String, post.id)
     }
 
     // MARK: - Delete Statements
@@ -177,9 +179,9 @@ class SQLStatementTests: XCTestCase {
         let statement = SelectStatement(from: Post.self)
         let expectedStatement = """
         select
-          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
-          "root"."draft" as "draft", "root"."rating" as "rating", "root"."title" as "title",
-          "root"."updatedAt" as "updatedAt"
+          "root"."id" as "id", "root"."_version" as "_version", "root"."content" as "content",
+          "root"."createdAt" as "createdAt", "root"."draft" as "draft", "root"."rating" as "rating",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
         from Post as root
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
@@ -198,9 +200,9 @@ class SQLStatementTests: XCTestCase {
         let statement = SelectStatement(from: Post.self, predicate: predicate)
         let expectedStatement = """
         select
-          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
-          "root"."draft" as "draft", "root"."rating" as "rating", "root"."title" as "title",
-          "root"."updatedAt" as "updatedAt"
+          "root"."id" as "id", "root"."_version" as "_version", "root"."content" as "content",
+          "root"."createdAt" as "createdAt", "root"."draft" as "draft", "root"."rating" as "rating",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
         from Post as root
         where 1 = 1
           and "draft" = ?
@@ -224,9 +226,9 @@ class SQLStatementTests: XCTestCase {
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
-          "root"."postId" as "postId", "post"."id" as "post.id", "post"."content" as "post.content",
-          "post"."createdAt" as "post.createdAt", "post"."draft" as "post.draft", "post"."rating" as "post.rating",
-          "post"."title" as "post.title", "post"."updatedAt" as "post.updatedAt"
+          "root"."postId" as "postId", "post"."id" as "post.id", "post"."_version" as "post._version",
+          "post"."content" as "post.content", "post"."createdAt" as "post.createdAt", "post"."draft" as "post.draft",
+          "post"."rating" as "post.rating", "post"."title" as "post.title", "post"."updatedAt" as "post.updatedAt"
         from Comment as root
         inner join Post as post
           on "post"."id" = "root"."postId"

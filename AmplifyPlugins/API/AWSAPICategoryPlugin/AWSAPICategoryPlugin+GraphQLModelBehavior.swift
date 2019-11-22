@@ -30,9 +30,17 @@ public extension AWSAPICategoryPlugin {
         return mutate(request: request, listener: listener)
     }
 
+    func mutate(of model: AnyModel,
+                type: GraphQLMutationType,
+                listener: GraphQLOperation<AnyModel>.EventListener?) -> GraphQLOperation<AnyModel> {
+        let request = GraphQLRequest<AnyModel>.mutation(of: model, type: type)
+        return mutate(request: request, listener: listener)
+    }
+
     func subscribe<M: Model>(from modelType: M.Type,
                              type: GraphQLSubscriptionType,
-                             listener: GraphQLSubscriptionOperation<M>.EventListener?) -> GraphQLSubscriptionOperation<M> {
+                             listener: GraphQLSubscriptionOperation<M>.EventListener?)
+        -> GraphQLSubscriptionOperation<M> {
         let request = GraphQLRequest<M>.subscription(of: modelType, type: type)
         return subscribe(request: request, listener: listener)
     }

@@ -141,7 +141,7 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
             return
         }
 
-        guard try DefaultHubPluginTestHelpers.waitForListener(with: token, plugin: plugin, timeout: 1.0) else {
+        guard try HubListenerTestUtilities.waitForListener(with: token, plugin: plugin, timeout: 1.0) else {
             XCTFail("Listener not registered")
             return
         }

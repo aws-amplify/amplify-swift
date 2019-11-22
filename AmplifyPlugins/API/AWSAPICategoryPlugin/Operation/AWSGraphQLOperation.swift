@@ -33,6 +33,8 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
     }
 
     override public func main() {
+        Amplify.API.log.debug("Starting \(request.operationType) \(id)")
+
         if isCancelled {
             finish()
             return

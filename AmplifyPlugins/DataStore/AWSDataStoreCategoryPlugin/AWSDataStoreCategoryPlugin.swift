@@ -46,6 +46,15 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
         resolveSyncEnabled()
         try resolveStorageEngine()
         try storageEngine.setUp(models: ModelRegistry.models)
+
+        let filter = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
+        var token: UnsubscribeToken?
+        token = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { _ in
+            self.storageEngine.startSync()
+            if let token = token {
+                Amplify.Hub.removeListener(token)
+            }
+        }
     }
 
     private func resolveSyncEnabled() {
@@ -70,12 +79,35 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
     public func save<M: Model>(_ model: M,
                                completion: @escaping DataStoreCallback<M>) {
         log.verbose("save: \(model)")
+
+        // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
+        // mutation type
+        let modelExists: Bool
+        do {
+            guard let engine = storageEngine as? StorageEngine else {
+                throw DataStoreError.configuration("Unable to get storage adapter",
+                                                   "")
+            }
+            modelExists = try engine.adapter.exists(M.self, withId: model.id)
+        } catch {
+            if let dataStoreError = error as? DataStoreError {
+                completion(.error(dataStoreError))
+                return
+            }
+
+            let dataStoreError = DataStoreError.invalidOperation(causedBy: error)
+            completion(.error(dataStoreError))
+            return
+        }
+
+        let mutationType = modelExists ? MutationEvent.MutationType.update : .create
+
         let publishingCompletion: DataStoreCallback<M> = { result in
             switch result {
             case .result(let model):
                 // TODO: Differentiate between save & update
                 // TODO: Handle errors from mutation event creation
-                if let mutationEvent = try? MutationEvent(model: model, mutationType: .create) {
+                if let mutationEvent = try? MutationEvent(model: model, mutationType: mutationType) {
                     self.dataStorePublisher.send(input: mutationEvent)
                 }
             case .error:
