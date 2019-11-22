@@ -7,10 +7,17 @@
 
 import Foundation
 
+private final class SynchronizedDictionaryQueueHolder {
+    static let targetQueue = DispatchQueue(label: "com.amazonaws.SynchronizedDictionaryQueueHolder",
+                                           qos: .default,
+                                           attributes: .concurrent)
+}
+
 final class SynchronizedDictionary<Key: Hashable, Value> {
     private let concurrencyQueue = DispatchQueue(label: "com.amazonaws.SynchronizedDictionary",
                                                  qos: .default,
-                                                 attributes: .concurrent)
+                                                 attributes: .concurrent,
+                                                 target: SynchronizedDictionaryQueueHolder.targetQueue)
 
     private var elements = [Key: Value]()
 
