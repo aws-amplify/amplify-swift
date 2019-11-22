@@ -5,21 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import CoreGraphics
+
 public struct Polygon {
 
-    public let points: [Point]
+    public let points: [CGPoint]
 
-    public init(points: [Point]) {
+    public init(points: [CGPoint]) {
         self.points = points
-    }
-
-    public struct Point {
-        public let xPosition: Double
-        public let yPosition: Double
-
-        public init(xPosition: Double, yPosition: Double) {
-            self.xPosition = xPosition
-            self.yPosition = yPosition
-        }
     }
 }
