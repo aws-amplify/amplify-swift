@@ -109,6 +109,7 @@ extension QueryOperator {
             if let value = value {
                 return value.graphQLValue()
             }
+            // shouldn't you return nil in case the value is nil?
             return ""
         case .lessOrEqual(let value),
              .lessThan(let value),
@@ -126,6 +127,8 @@ extension QueryOperator {
 }
 
 extension Persistable {
+    // TODO: is this correct? by looking at the generated GraphQL types, it seems like the operators can handle Boolean,
+    // Float, etc.
     internal func graphQLValue() -> String {
         let value = self
 

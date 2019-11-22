@@ -30,10 +30,10 @@ public enum GraphQLResponseError<ResponseType: Decodable>: AmplifyError {
 
     public var errorDescription: ErrorDescription {
         switch self {
-        case .error:
-            return "GraphQL service returned a successful response containing errors."
-        case .partial:
-            return "GraphQL service returned a partially-successful response containing "
+        case .error(let errors):
+            return "GraphQL service returned a successful response containing errors: \(errors)"
+        case .partial(_, let errors):
+            return "GraphQL service returned a partially-successful response containing errors: \(errors)"
         case .transformationError:
             return "Failed to decode GraphQL response to the `ResponseType` \(String(describing: ResponseType.self))"
         }

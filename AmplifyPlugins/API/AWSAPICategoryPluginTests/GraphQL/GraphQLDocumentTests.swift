@@ -305,6 +305,8 @@ class GraphQLDocumentTests: XCTestCase {
     // MARK: - QueryPredicate tests
 
     // TODO: write better tests for this
+    // food for thought: if the JSON serialization is used elsewhere, either by the API itself or other tests,
+    // consider adding an extension to QueryPredicate that exposes a func toJSON() throws -> String
     func testQueryPredicateToGraphQLFilterVariables() throws {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))

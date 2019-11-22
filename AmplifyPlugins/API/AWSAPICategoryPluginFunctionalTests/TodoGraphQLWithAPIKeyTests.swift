@@ -139,10 +139,12 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
                     XCTFail("Missing failure")
                     return
                 }
+
                 guard case let .partial(todo, error) = graphQLResponseError else {
                     XCTFail("Missing partial response")
                     return
                 }
+                print(graphQLResponseError.errorDescription)
                 XCTAssertNil(todo)
                 XCTAssertNotNil(error)
                 completeInvoked.fulfill()
