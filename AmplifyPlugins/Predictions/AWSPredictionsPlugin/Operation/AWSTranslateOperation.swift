@@ -14,14 +14,11 @@ public class AWSTranslateOperation: AmplifyOperation<PredictionsTranslateTextReq
 PredictionsTranslateTextOperation {
 
     let predictionsService: AWSPredictionsService
-    let authService: AWSAuthServiceBehavior
 
     init(_ request: PredictionsTranslateTextRequest,
          predictionsService: AWSPredictionsService,
-         authService: AWSAuthServiceBehavior,
          listener: EventListener?) {
         self.predictionsService = predictionsService
-        self.authService = authService
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.translate,
                    request: request,

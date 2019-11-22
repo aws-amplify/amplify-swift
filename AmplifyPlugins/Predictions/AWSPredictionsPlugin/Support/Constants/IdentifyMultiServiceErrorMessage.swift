@@ -18,5 +18,9 @@ struct IdentifyMultiServiceErrorMessage {
     static let offlineIdentifyServiceNotAvailable: IdentifyMultiServiceErrorString = (
         "Offline identify service is not available",
         "Please check if the values are proprely initialized")
+
+    static let noResultIdentifyService: IdentifyMultiServiceErrorString = (
+        "Not able to fetch result for identify labels operation",
+        "Please try with a different input")
 }
 

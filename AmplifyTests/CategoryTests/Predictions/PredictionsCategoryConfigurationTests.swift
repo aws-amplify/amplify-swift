@@ -168,8 +168,8 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
         _ = Amplify.Predictions.convert(textToTranslate: "Sample",
                                         language: nil,
                                         targetLanguage: nil,
-                                        listener: nil,
-                                        options: nil)
+                                        options: nil,
+                                        listener: nil)
         waitForExpectations(timeout: 1.0)
     }
 
@@ -217,8 +217,8 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
             .convert(textToTranslate: "Sample",
                      language: nil,
                      targetLanguage: nil,
-                     listener: nil,
-                     options: nil)
+                     options: nil,
+                     listener: nil)
         waitForExpectations(timeout: 1.0)
     }
 
@@ -252,8 +252,8 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
             _ = Amplify.Predictions.convert(textToTranslate: "Sample",
                                             language: nil,
                                             targetLanguage: nil,
-                                            listener: nil,
-                                            options: nil)
+                                            options: nil,
+                                            listener: nil)
         }
         XCTAssertNotNil(exception)
     }
@@ -314,8 +314,8 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
             _ = Amplify.Predictions.convert(textToTranslate: "Sample",
                                             language: nil,
                                             targetLanguage: nil,
-                                            listener: nil,
-                                            options: nil)
+                                            options: nil,
+                                            listener: nil)
         }
         XCTAssertNotNil(exception)
     }
