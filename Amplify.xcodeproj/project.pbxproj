@@ -1717,23 +1717,6 @@
 			path = Internal;
 			sourceTree = "<group>";
 		};
-		FA9FD2362381CFC300A7CAF5 /* Sync */ = {
-			isa = PBXGroup;
-			children = (
-				FA9FD2372381CFC300A7CAF5 /* CloudSyncEngine.swift */,
-				6B1F15102383671B00AB23EF /* NetworkReachability.swift */,
-				6B1F15112383671B00AB23EF /* NetworkReachabilityNotifier.swift */,
-				FA9FD2392381CFC300A7CAF5 /* OutgoingMutationQueue.swift */,
-				6BAD766A2386181B004482F6 /* RequestRetryable.swift */,
-				6BAD766B2386181B004482F6 /* RequestRetryablePolicy.swift */,
-				FAA274B02382EA7100EDD2EA /* SyncEngineMutationSubscriber.swift */,
-				FA5BF2602385A1510070C843 /* SyncEngineMutationSubscriber+Log.swift */,
-				FA176ED02384F5FD00C5C5F9 /* SyncEngineMutationSubscriber+Responses.swift */,
-				FA176ED22384F6C800C5C5F9 /* SyncEngineMutationSubscriber+Subscriber.swift */,
-			);
-			path = Sync;
-			sourceTree = "<group>";
-		};
 		FAA9FC3C23620CED0012638A /* Interceptor */ = {
 			isa = PBXGroup;
 			children = (
