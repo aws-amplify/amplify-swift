@@ -21,7 +21,8 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
                         language: LanguageType?,
                         targetLanguage: LanguageType?,
                         options: PredictionsTranslateTextRequest.Options? = nil,
-                        listener: PredictionsTranslateTextOperation.EventListener?) -> PredictionsTranslateTextOperation {
+                        listener: PredictionsTranslateTextOperation.EventListener?)
+        -> PredictionsTranslateTextOperation {
         plugin.convert(textToTranslate: textToTranslate,
                        language: language,
                        targetLanguage: targetLanguage,

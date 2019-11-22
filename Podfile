@@ -31,21 +31,15 @@ target "Amplify" do
 
     pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
 
-
-    target "AWSDataStoreCategoryPlugin" do
-      inherit! :complete
-      pod "ReachabilitySwift", "~> 5.0.0"
-      pod "SQLite.swift", "~> 0.12.0"
-    end
-
     abstract_target "AWSPluginsTestConfigs" do
       pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
       pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
 
-      target "AWSDataStoreCategoryPluginTests" do
-        pod "ReachabilitySwift", "~> 5.0.0"
+      target "AWSPluginsCoreTests" do
       end
 
+      target "AWSPluginsTestCommon" do
+      end
     end
 
   end
@@ -57,9 +51,4 @@ target "AmplifyTestApp" do
   pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
   pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
   pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
-
-  target "AWSDataStoreCategoryPluginIntegrationTests" do
-    inherit! :complete
-  end
-
 end

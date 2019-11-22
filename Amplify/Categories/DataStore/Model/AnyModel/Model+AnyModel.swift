@@ -7,6 +7,6 @@
 
 public extension Model {
     func eraseToAnyModel() throws -> AnyModel {
-        try AnyModel(self)
+        AnyModel(self)
     }
 }
