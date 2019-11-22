@@ -61,7 +61,7 @@ class NotificationListeningAnalyticsPlugin: AnalyticsCategoryPlugin {
     }
 
     func reset(onComplete: @escaping BasicClosure) {
-        // Do nothing
+        onComplete()
     }
 
 }
