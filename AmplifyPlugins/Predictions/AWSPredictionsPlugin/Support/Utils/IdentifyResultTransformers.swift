@@ -20,8 +20,10 @@ class IdentifyResultTransformers {
             let width = rekognitionBoundingBox?.width?.doubleValue else {
                 return nil
         }
-        let fff1 = 1 - top - height
-        return CGRect(x: left, y: fff1, width: width, height: height)
+        // In the default Core Graphics coordinate space, the origin is located in the lower-left
+        // corner of the rectangle and the rectangle extends towards the upper-right corner.
+        let cgCoordinateY = 1 - top - height
+        return CGRect(x: left, y: cgCoordinateY, width: width, height: height)
     }
 
     static func processBoundingBox(_ textractBoundingBox: AWSTextractBoundingBox?) -> CGRect? {
@@ -31,8 +33,10 @@ class IdentifyResultTransformers {
             let width = textractBoundingBox?.width?.doubleValue else {
                 return nil
         }
-        let fff1 = 1 - top - height
-        return CGRect(x: left, y: fff1, width: width, height: height)
+        // In the default Core Graphics coordinate space, the origin is located in the lower-left
+        // corner of the rectangle and the rectangle extends towards the upper-right corner.
+        let cgCoordinateY = 1 - top - height
+        return CGRect(x: left, y: cgCoordinateY, width: width, height: height)
     }
 
     static func processPolygon(_ rekognitionPolygonPoints: [AWSRekognitionPoint]?) -> Polygon? {
