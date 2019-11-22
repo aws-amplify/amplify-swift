@@ -12,10 +12,6 @@ PODS:
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
-  - ReachabilitySwift (5.0.0)
-  - SQLite.swift (0.12.2):
-    - SQLite.swift/standard (= 0.12.2)
-  - SQLite.swift/standard (0.12.2)
   - SwiftFormat/CLI (0.40.14)
   - SwiftLint (0.37.0)
 
@@ -23,8 +19,6 @@ DEPENDENCIES:
   - AWSMobileClient (~> 2.12.0)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
-  - ReachabilitySwift (~> 5.0.0)
-  - SQLite.swift (~> 0.12.0)
   - SwiftFormat/CLI
   - SwiftLint
 
@@ -35,8 +29,6 @@ SPEC REPOS:
     - AWSCognitoIdentityProviderASF
     - AWSCore
     - AWSMobileClient
-    - ReachabilitySwift
-    - SQLite.swift
     - SwiftFormat
     - SwiftLint
 
@@ -64,11 +56,9 @@ SPEC CHECKSUMS:
   AWSMobileClient: b178cd21ba500030e727c6afcc00dda438b1fecd
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
-  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  SQLite.swift: d2b4642190917051ce6bd1d49aab565fe794eea3
   SwiftFormat: 21c9c3c748d5fcece493d8610eee23df15393458
   SwiftLint: c078a14d7d7ade75e5507795d185e3da41d844d2
 
-PODFILE CHECKSUM: b2bf11a6cff9694d965fb2d3c9fbb787a785918e
+PODFILE CHECKSUM: a97a2ad9fd3e0e021dff2170fac729f3448cd4a8
 
 COCOAPODS: 1.8.4

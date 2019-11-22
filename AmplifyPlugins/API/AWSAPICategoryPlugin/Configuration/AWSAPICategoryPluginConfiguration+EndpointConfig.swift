@@ -40,11 +40,11 @@ public extension AWSAPICategoryPluginConfiguration {
             }
 
             try self.init(name: name,
-                          baseURL: try EndpointConfig.getBaseURL(from: endpointJSON),
-                          region: try EndpointConfig.getRegion(from: endpointJSON),
-                          authorizationType: try EndpointConfig.getAuthorizationType(from: endpointJSON),
-                          authorizationConfiguration: try EndpointConfig.getAuthorizationConfiguration(from: endpointJSON),
-                          endpointType: try EndpointConfig.getEndpointType(from: endpointJSON),
+                          baseURL: EndpointConfig.getBaseURL(from: endpointJSON),
+                          region: EndpointConfig.getRegion(from: endpointJSON),
+                          authorizationType: EndpointConfig.getAuthorizationType(from: endpointJSON),
+                          authorizationConfiguration: EndpointConfig.getAuthorizationConfiguration(from: endpointJSON),
+                          endpointType: EndpointConfig.getEndpointType(from: endpointJSON),
                           authService: authService)
         }
 

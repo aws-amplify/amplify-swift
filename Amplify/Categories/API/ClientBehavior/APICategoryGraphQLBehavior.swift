@@ -8,7 +8,6 @@
 /// Behavior of the API category related to GraphQL operations
 public protocol APICategoryGraphQLBehavior {
 
-
     /// Perform a GraphQL query for a single `Model` item. This operation will be asychronous, with the callback
     /// accessible both locally and via the Hub.
     ///
@@ -66,7 +65,8 @@ public protocol APICategoryGraphQLBehavior {
     /// - Returns: The AmplifyOperation being enqueued.
     func subscribe<M: Model>(from modelType: M.Type,
                              type: GraphQLSubscriptionType,
-                             listener: GraphQLSubscriptionOperation<M>.EventListener?) -> GraphQLSubscriptionOperation<M>
+                             listener: GraphQLSubscriptionOperation<M>.EventListener?)
+        -> GraphQLSubscriptionOperation<M>
 
     /// Perform a GraphQL query operation against a previously configured API. This operation
     /// will be asynchronous, with the callback accessible both locally and via the Hub.
@@ -99,6 +99,3 @@ public protocol APICategoryGraphQLBehavior {
                                  listener: GraphQLSubscriptionOperation<R>.EventListener?)
         -> GraphQLSubscriptionOperation<R>
 }
-
-
-
