@@ -37,7 +37,7 @@ extension Post {
             .field(post.updatedAt, is: .optional, ofType: .dateTime),
             .field(post.rating, is: .optional, ofType: .double),
             .field(post.draft, is: .required, ofType: .bool),
-            .connected(post.comments, .oneToMany(Comment.self), withName: "PostComments")
+            .hasMany(post.comments, ofType: Comment.self, associatedWith: Comment.keys.post)
         )
     }
 

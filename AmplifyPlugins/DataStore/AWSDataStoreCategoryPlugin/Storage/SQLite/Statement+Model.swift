@@ -69,22 +69,16 @@ extension Statement: StatementModelConvertible {
                 : column
             if name.firstIndex(of: ".") != nil {
                 let propertyName = String(name.split(separator: ".").first!)
-                guard let connectedField = schema.field(withName: propertyName) else {
+                guard let associatedField = schema.field(withName: propertyName) else {
                     preconditionFailure("""
                     Field `\(propertyName)` not found on `\(schema.name)`.
                     The property was found on the result set but was not defined in the
                     `\(schema.name)` schema.
                     """)
                 }
-                guard let connectedModelType = connectedField.connectedModel else {
-                    preconditionFailure("""
-                    Property `\(propertyName)` must have a valid associated Model.
-                    Make sure your properties that represent relationship between two model
-                    must be properly annotated with `.connected`.
-                    """)
-                }
+                let associatedModelType = associatedField.requiredAssociatedModel
                 let connectedModel = try mapEach(row: row,
-                                                 to: connectedModelType,
+                                                 to: associatedModelType,
                                                  fieldName: propertyName)
                 values[propertyName] = connectedModel
             } else if let field = schema.field(withName: name) {
@@ -92,6 +86,12 @@ extension Statement: StatementModelConvertible {
             } else {
                 // TODO log ignored column
             }
+
+//            if let id = values[schema.primaryKey.name] {
+//                schema.fields.values.filter { $0.isArray }.forEach { field in
+//                    field.requiredAssociatedModel.listOf(id: id, field: field)
+//                }
+//            }
         }
         return values
     }

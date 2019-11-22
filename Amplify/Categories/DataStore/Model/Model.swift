@@ -50,6 +50,7 @@ extension Model {
 extension Model {
 
     public subscript(_ key: String) -> Any? {
+        // TODO cache this for the instance?
         let mirror = Mirror(reflecting: self)
         let property = mirror.children.first { $0.label == key }
         return property == nil ? nil : property!.value
@@ -79,6 +80,16 @@ extension Date: Persistable {}
 extension Double: Persistable {}
 extension Int: Persistable {}
 extension String: Persistable {}
+
+//public protocol PersistableEnum: Persistable {
+//    func value() -> String
+//}
+//
+//extension PersistableEnum where Self: RawRepresentable, Self.RawValue == String {
+//    public func value() -> String {
+//        return rawValue
+//    }
+//}
 
 struct PersistableHelper {
 

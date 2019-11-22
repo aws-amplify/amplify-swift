@@ -45,7 +45,7 @@ struct DeleteStatement: SQLStatement {
             return """
             \(sql)
             where 1 = 1
-              \(conditionStatement.stringValue)
+            \(conditionStatement.stringValue)
             """
         }
         return sql

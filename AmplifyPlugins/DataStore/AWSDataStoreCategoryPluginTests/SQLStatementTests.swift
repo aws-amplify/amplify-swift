@@ -15,8 +15,57 @@ import XCTest
 class SQLStatementTests: XCTestCase {
 
     override func setUp() {
+        // one-to-many/many-to-one association
         ModelRegistry.register(modelType: Post.self)
         ModelRegistry.register(modelType: Comment.self)
+
+        // one-to-one association
+        ModelRegistry.register(modelType: UserAccount.self)
+        ModelRegistry.register(modelType: UserProfile.self)
+
+        // many-to-many association
+        ModelRegistry.register(modelType: Author.self)
+        ModelRegistry.register(modelType: Book.self)
+        ModelRegistry.register(modelType: BookAuthor.self)
+
+    }
+
+    func testCollection() {
+        let postDict: [String: Any?] = [
+            "id": "some-id",
+            "title": "Title",
+            "content": "Content",
+            "createdAt": 0,
+            "updatedAt": nil,
+            "draft": false,
+            "comments": [
+                "associatedId": "some-id",
+                "associatedFieldName": "post",
+                "items": []
+            ]
+        ]
+        do {
+            print("============================")
+            let post = try Post.from(dictionary: postDict)
+            print(post)
+            print("============================")
+        } catch {
+            print(error)
+            print("============================")
+        }
+
+
+        let posts: List<Post> = [
+            Post(title: "title 1", content: "content 1"),
+            Post(title: "title 2", content: "content 2")
+        ]
+
+        for post in posts {
+            print(post)
+        }
+
+        XCTAssertEqual(posts.count, 2)
+        XCTAssertEqual(posts[1].title, "title 2")
     }
 
     // MARK: - Create Table
@@ -59,6 +108,51 @@ class SQLStatementTests: XCTestCase {
           "createdAt" text not null,
           "postId" text not null,
           foreign key("postId") references Post("id")
+            on delete cascade
+        );
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `UserAccount`
+    ///   - the model has an `unique` foreign key
+    /// - Then:
+    ///   - check if the generated SQL statement is valid:
+    ///     - contains a `foreign key` referencing `UserProfile`
+    ///     - the foreign key column is `unique`
+    func testCreateTableFromModelWithOneToOneForeignKey() {
+        let statement = CreateTableStatement(modelType: UserProfile.self)
+        let expectedStatement = """
+        create table if not exists UserProfile (
+          "id" text primary key not null,
+          "accountId" text not null unique,
+          foreign key("accountId") references UserAccount("id")
+            on delete cascade
+        );
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `BookAuthor`
+    ///   - the model represents an association of `many-to-many` between `Book` and `Author`
+    /// - Then:
+    ///   - check if the generated SQL statement is valid:
+    ///     - contains a `foreign key` referencing `Author`
+    ///     - contains a `foreign key` referencing `Book`
+    func testCreateTableFromManyToManyAssociationModel() {
+        let statement = CreateTableStatement(modelType: BookAuthor.self)
+        let expectedStatement = """
+        create table if not exists BookAuthor (
+          "id" text primary key not null,
+          "authorId" text not null,
+          "bookId" text not null,
+          foreign key("authorId") references Author("id")
+            on delete cascade
+          foreign key("bookId") references Book("id")
             on delete cascade
         );
         """
@@ -158,7 +252,7 @@ class SQLStatementTests: XCTestCase {
         let expectedStatement = """
         delete from Post
         where 1 = 1
-            and "id" = ?
+          and "id" = ?
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
 
