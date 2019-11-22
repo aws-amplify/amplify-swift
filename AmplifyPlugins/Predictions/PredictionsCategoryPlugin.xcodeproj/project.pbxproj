@@ -82,7 +82,6 @@
 		B42094BD2384A74B000F98A3 /* IdentifyBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42094B82384A749000F98A3 /* IdentifyBasicIntegrationTests.swift */; };
 		B42094BE2384A74B000F98A3 /* AWSPredictionsPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42094B92384A74A000F98A3 /* AWSPredictionsPluginTestBase.swift */; };
 		B42094BF2384A74B000F98A3 /* InterpretBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42094BA2384A74A000F98A3 /* InterpretBasicIntegrationTests.swift */; };
-		B42094C02384A74B000F98A3 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = B42094BC2384A74B000F98A3 /* awsconfiguration.json */; };
 		B42094C32384B5FB000F98A3 /* PredictionsPluginConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42094C22384B5FB000F98A3 /* PredictionsPluginConfigurationTests.swift */; };
 		B42094C72384BA0A000F98A3 /* MockCoreMLVisionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42094C62384BA0A000F98A3 /* MockCoreMLVisionAdapter.swift */; };
 		B42094C92384BB56000F98A3 /* CoreMLPredictionsPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42094C82384BB56000F98A3 /* CoreMLPredictionsPluginTestBase.swift */; };
@@ -92,6 +91,8 @@
 		B4215C1B2385A31E0057CF0E /* IdentifyConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4215C1A2385A31E0057CF0E /* IdentifyConfiguration.swift */; };
 		B4215C1D2385A3480057CF0E /* InterpretConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4215C1C2385A3480057CF0E /* InterpretConfiguration.swift */; };
 		B4215C1F2385A3660057CF0E /* ConvertConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4215C1E2385A3660057CF0E /* ConvertConfiguration.swift */; };
+		B4281B872387873B00440998 /* CoreMLTranslateTextOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4281B862387873B00440998 /* CoreMLTranslateTextOperation.swift */; };
+		B4281B89238789EE00440998 /* CoreMLTextToSpeechOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4281B88238789EE00440998 /* CoreMLTextToSpeechOperation.swift */; };
 		B45B0677237F13EB00DC9122 /* CoreMLPredictionBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45B0672237F13EA00DC9122 /* CoreMLPredictionBehavior.swift */; };
 		B45B0678237F13EB00DC9122 /* CoreMLPredictionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45B0673237F13EA00DC9122 /* CoreMLPredictionService.swift */; };
 		B45B0679237F13EB00DC9122 /* InterpretTextMultiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45B0675237F13EB00DC9122 /* InterpretTextMultiService.swift */; };
@@ -263,7 +264,6 @@
 		B42094B82384A749000F98A3 /* IdentifyBasicIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifyBasicIntegrationTests.swift; sourceTree = "<group>"; };
 		B42094B92384A74A000F98A3 /* AWSPredictionsPluginTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPredictionsPluginTestBase.swift; sourceTree = "<group>"; };
 		B42094BA2384A74A000F98A3 /* InterpretBasicIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterpretBasicIntegrationTests.swift; sourceTree = "<group>"; };
-		B42094BC2384A74B000F98A3 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		B42094C22384B5FB000F98A3 /* PredictionsPluginConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsPluginConfigurationTests.swift; sourceTree = "<group>"; };
 		B42094C62384BA0A000F98A3 /* MockCoreMLVisionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCoreMLVisionAdapter.swift; sourceTree = "<group>"; };
 		B42094C82384BB56000F98A3 /* CoreMLPredictionsPluginTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionsPluginTestBase.swift; sourceTree = "<group>"; };
@@ -273,6 +273,8 @@
 		B4215C1A2385A31E0057CF0E /* IdentifyConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifyConfiguration.swift; sourceTree = "<group>"; };
 		B4215C1C2385A3480057CF0E /* InterpretConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpretConfiguration.swift; sourceTree = "<group>"; };
 		B4215C1E2385A3660057CF0E /* ConvertConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvertConfiguration.swift; sourceTree = "<group>"; };
+		B4281B862387873B00440998 /* CoreMLTranslateTextOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLTranslateTextOperation.swift; sourceTree = "<group>"; };
+		B4281B88238789EE00440998 /* CoreMLTextToSpeechOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLTextToSpeechOperation.swift; sourceTree = "<group>"; };
 		B45B0672237F13EA00DC9122 /* CoreMLPredictionBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionBehavior.swift; sourceTree = "<group>"; };
 		B45B0673237F13EA00DC9122 /* CoreMLPredictionService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreMLPredictionService.swift; sourceTree = "<group>"; };
 		B45B0675237F13EB00DC9122 /* InterpretTextMultiService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterpretTextMultiService.swift; sourceTree = "<group>"; };
@@ -584,14 +586,6 @@
 			path = Constants;
 			sourceTree = "<group>";
 		};
-		B42094BB2384A74B000F98A3 /* Configuration */ = {
-			isa = PBXGroup;
-			children = (
-				B42094BC2384A74B000F98A3 /* awsconfiguration.json */,
-			);
-			path = Configuration;
-			sourceTree = "<group>";
-		};
 		B42094C12384B5D4000F98A3 /* ConfigurationTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -748,6 +742,8 @@
 			children = (
 				B4DFA675237B58900013E17B /* CoreMLInterpretTextOperation.swift */,
 				B4E26A7B2384536400739926 /* CoreMLIdentifyOperation.swift */,
+				B4281B862387873B00440998 /* CoreMLTranslateTextOperation.swift */,
+				B4281B88238789EE00440998 /* CoreMLTextToSpeechOperation.swift */,
 			);
 			path = Operation;
 			sourceTree = "<group>";
@@ -1734,6 +1730,8 @@
 				B4E26A7C2384536400739926 /* CoreMLIdentifyOperation.swift in Sources */,
 				B4DFA68B237B58900013E17B /* CoreMLVisionAdapter.swift in Sources */,
 				B4DFA68E237B58900013E17B /* CoreMLPredictionsPlugin.swift in Sources */,
+				B4281B872387873B00440998 /* CoreMLTranslateTextOperation.swift in Sources */,
+				B4281B89238789EE00440998 /* CoreMLTextToSpeechOperation.swift in Sources */,
 				B4DFA684237B58900013E17B /* CoreMLInterpretTextOperation.swift in Sources */,
 				B4DFA68A237B58900013E17B /* CoreMLNaturalLanguageAdapter.swift in Sources */,
 				B4DFA687237B58900013E17B /* CoreMLPredictionsPlugin+ClientBehavior.swift in Sources */,

@@ -29,7 +29,7 @@ class CoreMLNaturalLanguageAdapter: CoreMLNaturalLanguageBehavior {
                              options: options) { tag, tokenRange in
 
                                 if let tag = tag {
-                                    let partOfSpeech = PartOfSpeech(tag: tag.getSpeechType(), score: 1)
+                                    let partOfSpeech = PartOfSpeech(tag: tag.getSpeechType(), score: nil)
                                     let stringPart = String(text[tokenRange])
                                     let syntaxToken = SyntaxToken(tokenId: tokenId,
                                                                   text: stringPart,
@@ -91,9 +91,24 @@ extension NLTag {
             return .preposition
         case .verb:
             return .verb
+        case .adverb:
+            return .adverb
+        case .pronoun:
+            return .pronoun
+        case .particle:
+            return .particle
+        case .number:
+            return .numeral
+        case .conjunction:
+            return .conjunction
+        case .interjection:
+            return .interjection
+        case .openQuote, .closeQuote, .openParenthesis,
+             .closeParenthesis, .dash, .otherPunctuation:
+            return .symbol
         default:
-            // TODO: Add the rest here
             return .other
+
         }
     }
 
@@ -101,8 +116,11 @@ extension NLTag {
         switch self {
         case .placeName:
             return .location
+        case .personalName:
+            return .person
+        case .organizationName:
+            return .organization
         default:
-            // TODO: Add other entities
             return .other
         }
     }
