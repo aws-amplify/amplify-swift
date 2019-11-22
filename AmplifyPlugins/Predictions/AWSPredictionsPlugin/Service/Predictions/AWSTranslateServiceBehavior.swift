@@ -14,7 +14,7 @@ protocol AWSTranslateServiceBehavior {
     typealias TranslateTextServiceEvent = PredictionsEvent<TranslateTextResult, PredictionsError>
 
     func translateText(text: String,
-                       language: LanguageType,
-                       targetLanguage: LanguageType,
+                       language: LanguageType?,
+                       targetLanguage: LanguageType?,
                        onEvent: @escaping TranslateTextServiceEventHandler)
 }
