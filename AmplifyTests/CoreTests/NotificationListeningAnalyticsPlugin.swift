@@ -17,7 +17,7 @@ class NotificationListeningAnalyticsPlugin: AnalyticsCategoryPlugin {
     }
 
     func configure(using configuration: Any) throws {
-        let isConfigured = HubFilters.hubFilter(forEventName: HubPayload.EventName.Amplify.configured)
+        let isConfigured = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
 
         var token: UnsubscribeToken?
         token = Amplify.Hub.listen(to: .analytics, isIncluded: isConfigured) { _ in

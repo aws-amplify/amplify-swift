@@ -9,8 +9,9 @@ import Amplify
 import Foundation
 
 public extension GraphQLRequest {
-    /// Gets a GraphQLRequest for an `AnyModel`, erasing both the incoming and return type. The actual document created
-    /// for the request will be cast to the type of the AnyModel's `instance`.
+    /// Gets a GraphQLRequest for an `AnyModel`'s underlying instance type. The generated GraphQL document will reflect
+    /// the structure and variables of `AnyModel.instance`, but the return value will be erased to `AnyModel`, allowing
+    /// it to be collected.
     static func mutation(of anyModel: AnyModel,
                          type: GraphQLMutationType) -> GraphQLRequest<AnyModel> {
         let document = GraphQLMutation(of: anyModel, type: type)

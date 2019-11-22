@@ -16,7 +16,9 @@ class AnyModelTests: XCTestCase {
 
     func testModelName() throws {
         let tester = AnyModelTester(stringProperty: "test", intProperty: -123)
+
         let anyModel = try tester.eraseToAnyModel()
+
         XCTAssertEqual(anyModel.modelName, tester.modelName)
     }
 
@@ -24,6 +26,7 @@ class AnyModelTests: XCTestCase {
         let tester = AnyModelTester(stringProperty: "test", intProperty: -123)
         let originalAnyModel = try tester.eraseToAnyModel()
         let jsonEncoded = try JSONEncoder().encode(originalAnyModel)
+
         let decodedAnyModel = try JSONDecoder().decode(AnyModel.self, from: jsonEncoded)
 
         XCTAssertEqual(originalAnyModel, decodedAnyModel)
@@ -31,32 +34,41 @@ class AnyModelTests: XCTestCase {
 
     func testId() throws {
         let tester = AnyModelTester(stringProperty: "test", intProperty: -123)
+
         let anyModel = try tester.eraseToAnyModel()
+
         XCTAssertEqual(anyModel.id, tester.id)
     }
 
-    func testSubscript() throws {
+    func testIntSubscript() throws {
         let tester = AnyModelTester(stringProperty: "test", intProperty: -123)
+
+        let anyModel = try tester.eraseToAnyModel()
+
+        guard let intProperty = anyModel["intProperty"] as? Int else {
+            XCTFail("Couldn't get intProperty as Int")
+            return
+        }
+        XCTAssertEqual(intProperty, tester.intProperty)
+    }
+
+    func testStringSubscript() throws {
+        let tester = AnyModelTester(stringProperty: "test", intProperty: -123)
+
         let anyModel = try tester.eraseToAnyModel()
 
         guard let stringProperty = anyModel["stringProperty"] as? String else {
             XCTFail("Couldn't get stringProperty as String")
             return
         }
-
         XCTAssertEqual(stringProperty, tester.stringProperty)
-
-        guard let intProperty = anyModel["intProperty"] as? Int else {
-            XCTFail("Couldn't get intProperty as Int")
-            return
-        }
-
-        XCTAssertEqual(intProperty, tester.intProperty)
     }
 
     func testSchema() throws {
         let tester = AnyModelTester(stringProperty: "test", intProperty: -123)
+
         let anyModel = try tester.eraseToAnyModel()
+
         XCTAssertEqual(anyModel.schema.name, tester.schema.name)
     }
 }
@@ -68,7 +80,7 @@ struct AnyModelTester: Model {
     let stringProperty: String
     let intProperty: Int
 
-    init(id: Identifier = UUID().uuidString, stringProperty: String, intProperty: Int) {
+    init(id: Identifier = "test-id", stringProperty: String, intProperty: Int) {
         self.id = id
         self.stringProperty = stringProperty
         self.intProperty = intProperty

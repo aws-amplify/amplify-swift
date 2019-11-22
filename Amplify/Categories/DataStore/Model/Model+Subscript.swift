@@ -11,15 +11,20 @@
 /// let id = model["id"]
 /// ```
 extension Model {
-
-    public subscript(_ key: String) -> Any? {
+    public subscript(_ key: String) -> Any?? {
         let mirror = Mirror(reflecting: self)
-        let property = mirror.children.first { $0.label == key }
-        return property?.value
-    }
+        let firstChild = mirror.children.first { $0.label == key }
+        guard let property = firstChild else {
+            return nil
+        }
 
-    public subscript(_ key: CodingKey) -> Any? {
-        return self[key.stringValue]
+        // Special case for properties that have optional values. Child.property is Any rather than Any?, and we want
+        // callers to receive a `.some(nil)` (indicating that the property exists, but has a `nil` value) rather than a
+        // bare `nil` (indicating the property doesn't exist). This matches how Swift handles dictionary subscripting
+        if case Optional<Any>.none = property.value {
+            return .some(nil)
+        } else {
+            return property.value
+        }
     }
-
 }

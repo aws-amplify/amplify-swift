@@ -47,7 +47,7 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
         try resolveStorageEngine()
         try storageEngine.setUp(models: ModelRegistry.models)
 
-        let filter = HubFilters.hubFilter(forEventName: HubPayload.EventName.Amplify.configured)
+        let filter = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
         var token: UnsubscribeToken?
         token = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { _ in
             self.storageEngine.startSync()

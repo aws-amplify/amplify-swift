@@ -118,7 +118,8 @@ extension Amplify {
         notifyAllHubChannels()
     }
 
-    /// Notifies all hub channels that Amplify is configured, in case any
+    /// Notifies all hub channels that Amplify is configured, in case any plugins need to be notified of the end of the
+    /// configuration phase (e.g., to set up cross-channel dependencies)
     private static func notifyAllHubChannels() {
         let payload = HubPayload(eventName: HubPayload.EventName.Amplify.configured)
         for channel in HubChannel.amplifyChannels {
