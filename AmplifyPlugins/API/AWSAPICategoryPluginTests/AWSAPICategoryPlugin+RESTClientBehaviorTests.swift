@@ -16,7 +16,8 @@ class AWSAPICategoryPluginRESTClientBehaviorTests: AWSAPICategoryPluginTestBase 
     // MARK: Get API tests
 
     func testGet() {
-        let operation = apiPlugin.get(apiName: apiName, path: testPath, listener: nil)
+        let request = RESTRequest(apiName: apiName, path: testPath)
+        let operation = apiPlugin.get(request: request, listener: nil)
 
         XCTAssertNotNil(operation)
 
@@ -25,20 +26,21 @@ class AWSAPICategoryPluginRESTClientBehaviorTests: AWSAPICategoryPluginTestBase 
             return
         }
 
-        let request = getOperation.request
-        XCTAssertNotNil(request)
-        XCTAssertEqual(request.apiName, apiName)
-        XCTAssertEqual(request.path, testPath)
-        XCTAssertNil(request.body)
-        XCTAssertEqual(request.operationType, RESTOperationType.get)
-        XCTAssertNotNil(request.options)
-        XCTAssertNotNil(request.path)
+        let operationRequest = getOperation.request
+        XCTAssertNotNil(operationRequest)
+        XCTAssertEqual(operationRequest.apiName, apiName)
+        XCTAssertEqual(operationRequest.path, testPath)
+        XCTAssertNil(operationRequest.body)
+        XCTAssertEqual(operationRequest.operationType, RESTOperationType.get)
+        XCTAssertNotNil(operationRequest.options)
+        XCTAssertNotNil(operationRequest.path)
     }
 
     // MARK: Post API tests
 
     func testPost() {
-        let operation = apiPlugin.post(apiName: apiName, path: testPath, body: testBody, listener: nil)
+        let request = RESTRequest(apiName: apiName, path: testPath, body: testBody)
+        let operation = apiPlugin.post(request: request, listener: nil)
 
         XCTAssertNotNil(operation)
 
@@ -47,14 +49,14 @@ class AWSAPICategoryPluginRESTClientBehaviorTests: AWSAPICategoryPluginTestBase 
             return
         }
 
-        let request = postOperation.request
-        XCTAssertNotNil(request)
-        XCTAssertEqual(request.apiName, apiName)
-        XCTAssertEqual(request.path, testPath)
-        XCTAssertEqual(request.body, testBody)
-        XCTAssertEqual(request.operationType, RESTOperationType.post)
-        XCTAssertNotNil(request.options)
-        XCTAssertNotNil(request.path)
+        let operationRequest = postOperation.request
+        XCTAssertNotNil(operationRequest)
+        XCTAssertEqual(operationRequest.apiName, apiName)
+        XCTAssertEqual(operationRequest.path, testPath)
+        XCTAssertEqual(operationRequest.body, testBody)
+        XCTAssertEqual(operationRequest.operationType, RESTOperationType.post)
+        XCTAssertNotNil(operationRequest.options)
+        XCTAssertNotNil(operationRequest.path)
     }
 
     // MARK: Put API tests
@@ -62,4 +64,6 @@ class AWSAPICategoryPluginRESTClientBehaviorTests: AWSAPICategoryPluginTestBase 
     // MARK: Patch API tests
 
     // MARK: Delete API tests
+
+    // MARK: HEAD API tests
 }

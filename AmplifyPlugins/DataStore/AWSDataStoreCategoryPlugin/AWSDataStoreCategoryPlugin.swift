@@ -21,6 +21,10 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
     /// The local storage provider. Resolved during configuration phase
     private var storageEngine: StorageEngineBehavior!
 
+    private lazy var log: Logger = {
+        Amplify.Logging.logger(forCategory: key)
+    }()
+
     /// No-argument init that uses defaults for all providers
     public init() {
         self.isSyncEnabled = false
@@ -65,6 +69,7 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
 
     public func save<M: Model>(_ model: M,
                                completion: @escaping DataStoreCallback<M>) {
+        log.verbose("save: \(model)")
         let publishingCompletion: DataStoreCallback<M> = { result in
             switch result {
             case .result(let model):

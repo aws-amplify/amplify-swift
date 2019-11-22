@@ -17,26 +17,43 @@ extension AWSGraphQLOperation: APIOperation {
         cancel()
     }
 
-    func updateProgress(_ data: Data) {
+    func updateProgress(_ data: Data, response: URLResponse?) {
+        if isCancelled || isFinished {
+            finish()
+            return
+        }
+
+        let apiOperationResponse = APIOperationResponse(error: nil, response: response)
+        do {
+            try apiOperationResponse.validate()
+        } catch let error as APIError {
+            dispatch(event: .failed(error))
+            finish()
+            return
+        } catch {
+            dispatch(event: .failed(APIError.unknown("", "", error)))
+            finish()
+            return
+        }
+
         graphQLResponseData.append(data)
     }
 
-    func complete(with error: Error?) {
-        if let error = error {
-            let apiError = APIError.operationError(
-                "The operation for this request failed.",
-                """
-                The operation for the request shown below failed with the following message: \
-                \(error.localizedDescription).
+    func complete(with error: Error?, response: URLResponse?) {
+        if isCancelled || isFinished {
+            finish()
+            return
+        }
 
-                Inspect this error's `.error` property for more information.
-
-                Request:
-                \(request)
-                """,
-                error)
-
-            dispatch(event: .failed(apiError))
+        let apiOperationResponse = APIOperationResponse(error: error, response: response)
+        do {
+            try apiOperationResponse.validate()
+        } catch let error as APIError {
+            dispatch(event: .failed(error))
+            finish()
+            return
+        } catch {
+            dispatch(event: .failed(APIError.unknown("", "", error)))
             finish()
             return
         }
@@ -46,6 +63,7 @@ extension AWSGraphQLOperation: APIOperation {
 
             let graphQLResponse = try GraphQLResponseDecoder.decode(graphQLServiceResponse: graphQLServiceResponse,
                                                                     responseType: request.responseType,
+                                                                    decodePath: request.decodePath,
                                                                     rawGraphQLResponse: graphQLResponseData)
 
             dispatch(event: .completed(graphQLResponse))
@@ -58,5 +76,20 @@ extension AWSGraphQLOperation: APIOperation {
             dispatch(event: .failed(apiError))
             finish()
         }
+    }
+}
+
+class APIErrorHelper {
+
+    static func getDefaultError(_ error: NSError) -> APIError {
+        let errorMessage = """
+                           Domain: [\(error.domain)
+                           Code: [\(error.code)
+                           LocalizedDescription: [\(error.localizedDescription)
+                           LocalizedFailureReason: [\(error.localizedFailureReason ?? "")
+                           LocalizedRecoverySuggestion: [\(error.localizedRecoverySuggestion ?? "")
+                           """
+
+        return APIError.unknown(errorMessage, "", error)
     }
 }

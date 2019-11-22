@@ -19,8 +19,11 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
     /// The GraphQL variables used for the operation
     public let variables: [String: Any]?
 
-    /// responseTyp
+    /// The type to decode to
     public let responseType: R.Type
+
+    /// The path to traverse before decoding to `responseType`.
+    public let decodePath: String?
 
     /// Options to adjust the behavior of this request, including plugin-options
     public let options: Options
@@ -30,12 +33,14 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
                 document: String,
                 variables: [String: Any]? = nil,
                 responseType: R.Type,
+                decodePath: String? = nil,
                 options: Options) {
         self.apiName = apiName
         self.operationType = operationType
         self.document = document
         self.variables = variables
         self.responseType = responseType
+        self.decodePath = decodePath
         self.options = options
     }
 }

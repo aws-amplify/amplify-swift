@@ -54,7 +54,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         // Retrieve endpoint configuration
         let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
         do {
-            endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName)
+            endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL)
         } catch let error as APIError {
             dispatch(event: .failed(error))
             finish()
@@ -67,21 +67,21 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
 
         // Prepare request payload
         let queryDocument = GraphQLOperationRequestUtils.getQueryDocument(document: request.document,
-                                                                 variables: request.variables)
+                                                                          variables: request.variables)
         let requestPayload: Data
         do {
             requestPayload = try JSONSerialization.data(withJSONObject: queryDocument)
         } catch {
             dispatch(event: .failed(APIError.operationError("Failed to serialize query document",
-                                                                "fix the document or variables",
-                                                                error)))
+                                                            "fix the document or variables",
+                                                            error)))
             finish()
             return
         }
 
         // Create request
         let urlRequest = GraphQLOperationRequestUtils.constructRequest(with: endpointConfig.baseURL,
-                                                              requestPayload: requestPayload)
+                                                                       requestPayload: requestPayload)
 
         // Intercept request
         let finalRequest = endpointConfig.interceptors.reduce(urlRequest) { (request, interceptor) -> URLRequest in
@@ -89,8 +89,8 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
                 return try interceptor.intercept(request)
             } catch {
                 dispatch(event: .failed(APIError.operationError("Failed to intercept request fully..",
-                                                                    "Something wrong with the interceptor",
-                                                                    error)))
+                                                                "Something wrong with the interceptor",
+                                                                error)))
                 cancel()
                 return request
             }

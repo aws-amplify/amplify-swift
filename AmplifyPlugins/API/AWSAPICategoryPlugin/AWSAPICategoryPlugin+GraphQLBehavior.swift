@@ -41,16 +41,16 @@ public extension AWSAPICategoryPlugin {
                       listener: GraphQLSubscriptionOperation<R>.EventListener?) ->
         GraphQLSubscriptionOperation<R> {
 
-        let operationRequest = getOperationRequest(request: request,
-                                                   operationType: .subscription)
+            let operationRequest = getOperationRequest(request: request,
+                                                       operationType: .subscription)
 
-        let operation = AWSGraphQLSubscriptionOperation(request: operationRequest,
-                                                        pluginConfig: pluginConfig,
-                                                        subscriptionConnectionFactory: subscriptionConnectionFactory,
-                                                        authService: authService,
-                                                        listener: listener)
-        queue.addOperation(operation)
-        return operation
+            let operation = AWSGraphQLSubscriptionOperation(request: operationRequest,
+                                                            pluginConfig: pluginConfig,
+                                                            subscriptionConnectionFactory: subscriptionConnectionFactory,
+                                                            authService: authService,
+                                                            listener: listener)
+            queue.addOperation(operation)
+            return operation
     }
 
     private func getOperationRequest<R: Decodable>(request: GraphQLRequest<R>,
@@ -61,6 +61,7 @@ public extension AWSAPICategoryPlugin {
                                                        document: request.document,
                                                        variables: request.variables,
                                                        responseType: request.responseType,
+                                                       decodePath: request.decodePath,
                                                        options: GraphQLOperationRequest.Options())
         return operationRequest
     }

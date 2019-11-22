@@ -28,7 +28,8 @@ extension GraphQLRequest {
         let document = GraphQLMutation(of: model, type: type)
         return GraphQLRequest<M>(document: document.stringValue,
                                  variables: document.variables,
-                                 responseType: M.self)
+                                 responseType: M.self,
+                                 decodePath: document.decodePath)
     }
 
     /// Creates a `GraphQLRequest` that represents a query that expects a single value as a result.
@@ -41,15 +42,16 @@ extension GraphQLRequest {
     /// - Returns: the `GraphQLRequest` ready to be used
     ///
     /// - seealso: `GraphQLQuery`, `GraphQLQueryType.get`
-    public static func querySingle<M: Model>(from modelType: M.Type,
-                                             byId id: String) -> GraphQLRequest<M?> {
+    public static func query<M: Model>(from modelType: M.Type,
+                                       byId id: String) -> GraphQLRequest<M?> {
         let document = GraphQLQuery(from: modelType, type: .get)
         let variables: [String: Any] = [
             "id": id
         ]
         return GraphQLRequest<M?>(document: document.stringValue,
                                   variables: variables,
-                                  responseType: M?.self)
+                                  responseType: M?.self,
+                                  decodePath: document.decodePath)
     }
 
     /// Creates a `GraphQLRequest` that represents a query that expects multiple values as a result.
@@ -69,7 +71,8 @@ extension GraphQLRequest {
         let variables: [String: Any] = [:]
         return GraphQLRequest<[M]>(document: document.stringValue,
                                    variables: variables,
-                                   responseType: [M].self)
+                                   responseType: [M].self,
+                                   decodePath: document.decodePath)
     }
 
     /// Creates a `GraphQLRequest` that represents a subscription of a given `type` for a `model` type.
@@ -84,7 +87,9 @@ extension GraphQLRequest {
     public static func subscription<M: Model>(of modelType: M.Type,
                                               type: GraphQLSubscriptionType) -> GraphQLRequest<M> {
         let document = GraphQLSubscription(of: modelType, type: type)
-        return GraphQLRequest<M>(document: document.stringValue, responseType: modelType)
+        return GraphQLRequest<M>(document: document.stringValue,
+                                 responseType: modelType,
+                                 decodePath: document.decodePath)
     }
 
 }

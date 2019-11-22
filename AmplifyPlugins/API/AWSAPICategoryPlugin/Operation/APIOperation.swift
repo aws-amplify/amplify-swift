@@ -14,10 +14,10 @@ protocol APIOperation {
     func getOperationId() -> UUID
 
     /// Signal the operation on progress of new data from the data task
-    func updateProgress(_ data: Data)
+    func updateProgress(_ data: Data, response: URLResponse?)
 
     /// Signal on completion of the data task
-    func complete(with error: Error?)
+    func complete(with error: Error?, response: URLResponse?)
 
     /// Signal the operation to be cancelled when the task is terminateds
     func cancelOperation()

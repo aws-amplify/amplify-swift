@@ -17,31 +17,48 @@ extension AWSRESTOperation: APIOperation {
         cancel()
     }
 
-    func complete(with error: Error?) {
-        if let error = error {
-            let apiError = APIError.operationError(
-                "The operation for this request failed.",
-                """
-                The operation for the request shown below failed with the following message: \
-                \(error.localizedDescription).
+    func updateProgress(_ data: Data, response: URLResponse?) {
+        if isCancelled || isFinished {
+            finish()
+            return
+        }
 
-                Inspect this error's `.error` property for more information.
+        let apiOperationResponse = APIOperationResponse(error: nil, response: response)
+        do {
+            try apiOperationResponse.validate()
+        } catch let error as APIError {
+            dispatch(event: .failed(error))
+            finish()
+            return
+        } catch {
+            dispatch(event: .failed(APIError.unknown("", "", error)))
+            finish()
+            return
+        }
 
-                Request:
-                \(request)
-                """,
-                error)
+        self.data.append(data)
+    }
 
-            dispatch(event: .failed(apiError))
+    func complete(with error: Error?, response: URLResponse?) {
+        if isCancelled || isFinished {
+            finish()
+            return
+        }
+
+        let apiOperationResponse = APIOperationResponse(error: error, response: response)
+        do {
+            try apiOperationResponse.validate()
+        } catch let error as APIError {
+            dispatch(event: .failed(error))
+            finish()
+            return
+        } catch {
+            dispatch(event: .failed(APIError.unknown("", "", error)))
             finish()
             return
         }
 
         dispatch(event: .completed(data))
         finish()
-    }
-
-    func updateProgress(_ data: Data) {
-        self.data.append(data)
     }
 }

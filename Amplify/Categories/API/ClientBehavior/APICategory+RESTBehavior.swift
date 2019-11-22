@@ -8,19 +8,27 @@
 import Foundation
 
 extension APICategory: APICategoryRESTBehavior {
-
-    public func get(apiName: String,
-                    path: String,
-                    listener: RESTOperation.EventListener?) -> RESTOperation {
-        return plugin.get(apiName: apiName,
-                          path: path,
-                          listener: listener)
+    public func get(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+        plugin.get(request: request, listener: listener)
     }
 
-    public func post(apiName: String,
-                     path: String,
-                     body: Data?,
-                     listener: RESTOperation.EventListener?) -> RESTOperation {
-        return plugin.post(apiName: apiName, path: path, body: body, listener: listener)
+    public func put(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+        plugin.put(request: request, listener: listener)
+    }
+
+    public func post(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+        plugin.post(request: request, listener: listener)
+    }
+
+    public func delete(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+        plugin.delete(request: request, listener: listener)
+    }
+
+    public func head(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+        plugin.head(request: request, listener: listener)
+    }
+
+    public func patch(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+        plugin.patch(request: request, listener: listener)
     }
 }

@@ -65,6 +65,197 @@ class IdentifyMultiService: MultiServiceBehavior {
     func mergeResults(offlineResult: IdentifyResult?,
                       onlineResult: IdentifyResult?,
                       callback: @escaping  IdentifyEventHandler) {
-        // TODO: Combine logic to be added
+
+        if offlineResult == nil && onlineResult == nil {
+            let message = InterpretMultiServiceErrorMessage.interpretTextNoResult.errorDescription
+            let recoveryMessage = InterpretMultiServiceErrorMessage.interpretTextNoResult.recoverySuggestion
+            let predictionError = PredictionsError.service(message, recoveryMessage, nil)
+            callback(.failed(predictionError))
+        }
+
+        guard let finalOfflineResult = offlineResult else {
+            // We are sure that the value will be non-nil at this point.
+            callback(.completed(onlineResult!))
+            return
+        }
+
+        guard let finalOnlineResult = onlineResult else {
+            callback(.completed(finalOfflineResult))
+            return
+        }
+
+        if let onlineLabelResult = finalOnlineResult as? IdentifyLabelsResult,
+                let offlineLabelResult = finalOfflineResult as? IdentifyLabelsResult {
+            let mergedResult = mergeLabelResult(onlineLabelResult: onlineLabelResult,
+                                            offlineLabelResult: offlineLabelResult)
+            callback(.completed(mergedResult))
+            return
+        }
+        if let onlineTextResult = finalOnlineResult as? IdentifyTextResult,
+                let offlineTextResult = finalOfflineResult as? IdentifyTextResult {
+            let mergedResult = mergeTextResult(onlineTextResult: onlineTextResult,
+                                            offlineTextResult: offlineTextResult)
+            callback(.completed(mergedResult))
+            return
+        }
+
+        let message = IdentifyMultiServiceErrorMessage.noResultIdentifyService.errorDescription
+        let recoveryMessage = IdentifyMultiServiceErrorMessage.noResultIdentifyService.recoverySuggestion
+        let predictionError = PredictionsError.service(message, recoveryMessage, nil)
+        callback(.failed(predictionError))
+    }
+
+    func mergeLabelResult(onlineLabelResult: IdentifyLabelsResult,
+                          offlineLabelResult: IdentifyLabelsResult) -> IdentifyLabelsResult {
+        var combinedLabels = Set<Label>()
+
+        let onlineLabelSet = Set<Label>(onlineLabelResult.labels)
+        let offlineLabelSet = Set<Label>(offlineLabelResult.labels)
+
+        //first find the labels that are the same
+        let intersectingLabels = onlineLabelSet.intersection(offlineLabelSet)
+        //loop through to find higher confidences and retain those labels and add to final result
+        for label in intersectingLabels {
+            let onlineIndex = onlineLabelSet.firstIndex(of: label)!
+            let offlineIndex = offlineLabelSet.firstIndex(of: label)!
+            let onlineLabel = onlineLabelSet[onlineIndex]
+            let offlineLabel = offlineLabelSet[offlineIndex]
+            let labelWithHigherConfidence = onlineLabel.higherConfidence(compareTo: offlineLabel)
+            combinedLabels.insert(labelWithHigherConfidence)
+        }
+
+        //get the differences
+        //leaving here for performance comparison
+        // let differingLabels = Array(onlineLabelSet.symmetricDifference(offlineLabelSet))
+        // combinedLabels.append(contentsOf: differingLabels)
+        combinedLabels = combinedLabels.union(onlineLabelSet)
+        combinedLabels = combinedLabels.union(offlineLabelSet)
+
+        return IdentifyLabelsResult(labels: Array(combinedLabels),
+                                    unsafeContent: onlineLabelResult.unsafeContent ?? nil)
+
+    }
+
+    func mergeTextResult(onlineTextResult: IdentifyTextResult,
+                         offlineTextResult: IdentifyTextResult) -> IdentifyTextResult {
+
+        guard let onlineLines = onlineTextResult.identifiedLines else {
+            return IdentifyTextResult(fullText: onlineTextResult.fullText,
+                                      words: onlineTextResult.words,
+                                      rawLineText: onlineTextResult.rawLineText,
+                                      identifiedLines: offlineTextResult.identifiedLines)
+        }
+
+        guard let offlineLines = offlineTextResult.identifiedLines else {
+            return onlineTextResult
+        }
+        var combinedLines = Set<IdentifiedLine>()
+
+        let onlineLineSet = Set<IdentifiedLine>(onlineLines)
+        let offlineLineSet = Set<IdentifiedLine>(offlineLines)
+
+        //find the matchine lines and loop through them
+        let intersectingLines = onlineLineSet.intersection(offlineLineSet)
+        for line in intersectingLines {
+            let onlineIndex = onlineLineSet.firstIndex(of: line)!
+            let offlineIndex = offlineLineSet.firstIndex(of: line)!
+            let onlineLine = onlineLineSet[onlineIndex]
+            let offlineLine = offlineLineSet[offlineIndex]
+            //test to see if bounding boxes intersect, if they do it's the same line of text. if not, add both lines
+            if intersectingBoundingBoxes(originalLine: onlineLine, compareTo: offlineLine) {
+                combinedLines.insert(onlineLine) //insert only one of them if they intersect
+            } else {
+                combinedLines.insert(onlineLine)
+                combinedLines.insert(offlineLine)
+            }
+        }
+
+        combinedLines = combinedLines.union(offlineLineSet)
+        combinedLines = combinedLines.union(onlineLineSet)
+        //offline result doesn't return anything except identified lines so
+        //merging them plus the other stuff from online is a merged result
+        return IdentifyTextResult(fullText: onlineTextResult.fullText,
+                                  words: onlineTextResult.words,
+                                  rawLineText: onlineTextResult.rawLineText,
+                                  identifiedLines: Array(combinedLines))
+    }
+
+    func intersectingBoundingBoxes(originalLine: IdentifiedLine, compareTo: IdentifiedLine) -> Bool {
+        let imageData = try? Data(contentsOf: request.image)
+        // there is no way the image should be nil as we got here so we already have results based on the
+        // other two calls where the image didn't produce an error so this should be safe.
+        // and for some odd reason we do not need to import uikit
+        let image = UIImage(data: imageData!)
+        guard let imageHeightFloat = image?.size.height,
+            let imageWidthFloat = image?.size.width else {
+                return false
+        }
+
+        //convert floats to doubles so we can convert the ratios from the bounding boxes
+        // to the actual x and y and width and height numbers
+        let imageHeight = Double(imageHeightFloat)
+        let imageWidth = Double(imageWidthFloat)
+
+        let cgRectFirst = CGRect(x: originalLine.boundingBox.left * imageWidth,
+                                 y: originalLine.boundingBox.top * imageHeight,
+                                 width: originalLine.boundingBox.width * imageWidth,
+                                 height: originalLine.boundingBox.height * imageHeight)
+
+        //coreml starts 0,0 from the lower left while rekognition starts 0,0 from the top left.
+        // so flip the y axis here and subtract the height of the bounding box to get the same y
+        // starting point as if it began from top left.
+        let heightCoreMLBoundingBox = compareTo.boundingBox.height * imageHeight
+        let yPositionCoremL = compareTo.boundingBox.top * imageHeight
+        let flippedY = (imageHeight - yPositionCoremL) - heightCoreMLBoundingBox
+
+        let cgRectSecond = CGRect(x: compareTo.boundingBox.left * imageWidth,
+                                  y: flippedY,
+                                  width: compareTo.boundingBox.width * imageWidth,
+                                  height: heightCoreMLBoundingBox)
+        return cgRectFirst.intersects(cgRectSecond)
+    }
+}
+
+extension Label: Hashable {
+
+    public static func == (lhs: Label, rhs: Label) -> Bool {
+        return lhs.name.lowercased() == rhs.name.lowercased()
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(name.lowercased())
+    }
+
+    func higherConfidence(compareTo: Label) -> Label {
+        guard let firstMetadata = self.metadata,
+            let secondMetadata = compareTo.metadata else {
+                return self
+        }
+        return max(firstMetadata, secondMetadata) == firstMetadata ? self : compareTo
+    }
+}
+
+extension LabelMetadata: Equatable, Comparable {
+
+    public static func == (lhs: LabelMetadata, rhs: LabelMetadata) -> Bool {
+        let value = lhs.confidence == rhs.confidence
+        return value
+    }
+
+    public static func < (lhs: LabelMetadata, rhs: LabelMetadata) -> Bool {
+        let value = lhs.confidence < rhs.confidence
+        return value
+    }
+
+}
+
+extension IdentifiedLine: Hashable {
+
+    public static func == (lhs: IdentifiedLine, rhs: IdentifiedLine) -> Bool {
+        return lhs.text == rhs.text
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(text)
     }
 }

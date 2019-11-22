@@ -8,6 +8,7 @@
 import Amplify
 import Foundation
 import AWSPluginsCore
+import AWSCore
 
 final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
 
@@ -23,7 +24,7 @@ final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
 
     var authService: AWSAuthServiceBehavior!
 
-    var config: AWSPredictionsPluginConfiguration!
+    var config: PredictionsPluginConfiguration!
 
     ///public limit rekognition has on number of faces it can detect.
     public static let rekognitionMaxEntitiesLimit = 50
@@ -31,6 +32,10 @@ final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
     /// The unique key of the plugin within the predictions category.
     public var key: PluginKey {
         return awsPredictionsPluginKey
+    }
+
+    public func getEscapeHatch(key: PredictionsAWSService) -> AWSService {
+        return predictionsService.getEscapeHatch(key: key)
     }
 
     public init() {
