@@ -65,7 +65,8 @@ public protocol APICategoryGraphQLBehavior {
     /// - Returns: The AmplifyOperation being enqueued.
     func subscribe<M: Model>(from modelType: M.Type,
                              type: GraphQLSubscriptionType,
-                             listener: GraphQLSubscriptionOperation<M>.EventListener?) -> GraphQLSubscriptionOperation<M>
+                             listener: GraphQLSubscriptionOperation<M>.EventListener?)
+        -> GraphQLSubscriptionOperation<M>
 
     /// Perform a GraphQL query operation against a previously configured API. This operation
     /// will be asynchronous, with the callback accessible both locally and via the Hub.

@@ -160,7 +160,7 @@ class AnyModelIntegrationTests: XCTestCase {
 
     }
 
-    func testDeleteAsAnyModel throws () {
+    func testDeleteAsAnyModel() throws {
         XCTFail("Not yet implemented")
     }
 }

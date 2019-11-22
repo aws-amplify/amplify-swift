@@ -2,6 +2,9 @@
 # `--config` option pointing to this file, and the `--path` option to the files
 # you wish to lint
 
+excluded:
+  - Pods
+
 analyzer_rules:
   - unused_import
   - unused_declaration
