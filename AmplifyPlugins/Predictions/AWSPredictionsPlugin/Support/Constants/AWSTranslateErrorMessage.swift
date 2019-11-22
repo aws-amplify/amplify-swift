@@ -15,6 +15,14 @@ struct AWSTranslateErrorMessage {
         "Access denied! You do not have sufficient access to perform this action.",
         "Please check that your Cognito IAM role has permissions to access Translate.")
 
+    static let sourceLanguageNotProvided: AWSTranslateErrorMessageString = (
+        "Source language is not provided",
+        "Provide a supported source language")
+
+    static let targetLanguageNotProvided: AWSTranslateErrorMessageString = (
+        "Target language is not provided",
+        "Provide a supported target language")
+
     static let detectedLanguageLowConfidence: AWSTranslateErrorMessageString = (
         "A language was detected but with very low confidence",
         "Please make sure you sent in one of the available languages for Translate")
@@ -53,8 +61,8 @@ struct AWSTranslateErrorMessage {
             return PredictionsError.service(detectedLanguageLowConfidence.errorDescription,
                                             detectedLanguageLowConfidence.recoverySuggestion)
         case .internalServer:
-              return PredictionsError.service(AWSServiceErrorMessage.internalServerError.errorDescription,
-                                              AWSServiceErrorMessage.internalServerError.recoverySuggestion)
+            return PredictionsError.service(AWSServiceErrorMessage.internalServerError.errorDescription,
+                                            AWSServiceErrorMessage.internalServerError.recoverySuggestion)
         case .invalidParameterValue:
             return PredictionsError.service(invalidParameterValue.errorDescription,
                                             invalidParameterValue.recoverySuggestion)
