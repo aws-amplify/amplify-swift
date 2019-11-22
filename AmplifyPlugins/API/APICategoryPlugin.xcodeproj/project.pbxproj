@@ -1097,6 +1097,8 @@
 				744BE58EBECD1B4E20209489 /* [CP] Check Pods Manifest.lock */,
 				21409C6223850A9E000A53C9 /* Headers */,
 				21409C6323850A9E000A53C9 /* Sources */,
+				FA941E0E2388898C0099B2E8 /* SwiftFormat */,
+				FA941E0D2388897B0099B2E8 /* SwiftLint */,
 				21409C6423850A9E000A53C9 /* Frameworks */,
 				21409C6523850A9E000A53C9 /* Resources */,
 			);
@@ -1115,6 +1117,8 @@
 			buildPhases = (
 				0316C46B2D3369D8B11CFE3F /* [CP] Check Pods Manifest.lock */,
 				2178565C2380C60400A30D19 /* Sources */,
+				FA941E1023888A1B0099B2E8 /* SwiftFormat */,
+				FA941E1423888AFF0099B2E8 /* SwiftLint */,
 				2178565D2380C60400A30D19 /* Frameworks */,
 				2178565E2380C60400A30D19 /* Resources */,
 				234EB4E426CA2A5E328F1760 /* [CP] Embed Pods Frameworks */,
@@ -1137,6 +1141,8 @@
 			buildPhases = (
 				08F2E9E147FE5EA82B36437D /* [CP] Check Pods Manifest.lock */,
 				2178566B2380C73500A30D19 /* Sources */,
+				FA941E0F23888A050099B2E8 /* SwiftFormat */,
+				FA941E1323888AED0099B2E8 /* SwiftLint */,
 				2178566C2380C73500A30D19 /* Frameworks */,
 				2178566D2380C73500A30D19 /* Resources */,
 				FDD102FD0C405872630B4F56 /* [CP] Embed Pods Frameworks */,
@@ -1159,6 +1165,8 @@
 			buildPhases = (
 				94D98A04ADDC5C5F8A920D34 /* [CP] Check Pods Manifest.lock */,
 				2178567C2380C90600A30D19 /* Sources */,
+				FA941E1223888A5D0099B2E8 /* SwiftFormat */,
+				FA941E1623888B1C0099B2E8 /* SwiftLint */,
 				2178567D2380C90600A30D19 /* Frameworks */,
 				2178567E2380C90600A30D19 /* Resources */,
 				5B088E45F2F0CCDAE86DE090 /* [CP] Embed Pods Frameworks */,
@@ -1181,6 +1189,8 @@
 			buildPhases = (
 				0975C929DED29D1DD5F2234A /* [CP] Check Pods Manifest.lock */,
 				2178569B23810B9400A30D19 /* Sources */,
+				FA941E1123888A2B0099B2E8 /* SwiftFormat */,
+				FA941E1523888B0D0099B2E8 /* SwiftLint */,
 				2178569C23810B9400A30D19 /* Frameworks */,
 				2178569D23810B9400A30D19 /* Resources */,
 				F300E778EA070DB2E7D769A0 /* [CP] Embed Pods Frameworks */,
@@ -1316,10 +1326,10 @@
 				B478F5FA2374DBF400C4F92B /* AWSAPICategoryPlugin */,
 				21409C6623850A9E000A53C9 /* AWSAPICategoryPluginTestCommon */,
 				B478F6482374DCE700C4F92B /* AWSAPICategoryPluginTests */,
-				2178565F2380C60400A30D19 /* GraphQLWithIAMIntegrationTests */,
 				2178566E2380C73500A30D19 /* AWSAPICategoryPluginFunctionalTests */,
-				2178567F2380C90600A30D19 /* RESTWithIAMIntegrationTests */,
+				2178565F2380C60400A30D19 /* GraphQLWithIAMIntegrationTests */,
 				2178569E23810B9400A30D19 /* GraphQLWithUserPoolIntegrationTests */,
+				2178567F2380C90600A30D19 /* RESTWithIAMIntegrationTests */,
 				B478F6BB2374E0B500C4F92B /* HostApp */,
 			);
 		};
@@ -1665,7 +1675,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSAPICategoryPlugin\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n";
 		};
 		B478F6622374DE0100C4F92B /* Swift Lint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1683,7 +1693,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/$(PRODUCT_NAME)\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSAPICategoryPluginTests\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n";
 		};
 		B478F6642374DE2B00C4F92B /* Swift Format */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1719,6 +1729,186 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithUserPoolIntegrationTests/Pods-HostApp-AWSAPICategoryPluginTestCommon-GraphQLWithUserPoolIntegrationTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		FA941E0D2388897B0099B2E8 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSAPICategoryPluginTestCommon\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n";
+		};
+		FA941E0E2388898C0099B2E8 /* SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftFormat;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+		};
+		FA941E0F23888A050099B2E8 /* SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftFormat;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+		};
+		FA941E1023888A1B0099B2E8 /* SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftFormat;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+		};
+		FA941E1123888A2B0099B2E8 /* SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftFormat;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+		};
+		FA941E1223888A5D0099B2E8 /* SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftFormat;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+		};
+		FA941E1323888AED0099B2E8 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSAPICategoryPluginFunctionalTests\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n";
+		};
+		FA941E1423888AFF0099B2E8 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSAPICategoryPluginIntegrationTests/GraphQL/GraphQLWithIAMIntegrationTests\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n";
+		};
+		FA941E1523888B0D0099B2E8 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSAPICategoryPluginIntegrationTests/GraphQL/GraphQLWithUserPoolIntegrationTests\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n";
+		};
+		FA941E1623888B1C0099B2E8 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSAPICategoryPluginIntegrationTests/REST/RESTWithIAMIntegrationTests\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n\n";
 		};
 		FDD102FD0C405872630B4F56 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2285,7 +2475,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2342,7 +2532,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
