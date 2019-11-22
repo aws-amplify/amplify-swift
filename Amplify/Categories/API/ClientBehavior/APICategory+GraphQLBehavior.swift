@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension APICategory: APICategoryGraphQLBehavior & APICategoryGraphQLModelBehavior {
+extension APICategory: APICategoryGraphQLBehavior {
 
     public func query<M: Model>(from modelType: M.Type,
                                 byId id: String,

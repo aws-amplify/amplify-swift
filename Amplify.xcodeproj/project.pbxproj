@@ -46,7 +46,6 @@
 		2144226E234BDE23009357F7 /* StorageUploadFileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2144226D234BDE23009357F7 /* StorageUploadFileOperation.swift */; };
 		21558E3E237BB4BF0032A5BB /* GraphQLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */; };
 		21558E40237CB8640032A5BB /* GraphQLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21558E3F237CB8640032A5BB /* GraphQLError.swift */; };
-		215FAF732385E23F006D9D7F /* APICategoryGraphQLModelBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215FAF722385E23F006D9D7F /* APICategoryGraphQLModelBehavior.swift */; };
 		216879FE23636A0A004A056E /* RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216879FD23636A0A004A056E /* RepeatingTimer.swift */; };
 		21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A3D236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift */; };
 		21687A41236371E1004A056E /* AnalyticsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A40236371E1004A056E /* AnalyticsError.swift */; };
@@ -578,7 +577,6 @@
 		21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequest.swift; sourceTree = "<group>"; };
 		21558E3F237CB8640032A5BB /* GraphQLError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLError.swift; sourceTree = "<group>"; };
 		215F4BCAAB89FA54AA121BDE /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		215FAF722385E23F006D9D7F /* APICategoryGraphQLModelBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICategoryGraphQLModelBehavior.swift; sourceTree = "<group>"; };
 		216879FD23636A0A004A056E /* RepeatingTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepeatingTimer.swift; sourceTree = "<group>"; };
 		21687A3D236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AnalyticsCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		21687A40236371E1004A056E /* AnalyticsError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsError.swift; sourceTree = "<group>"; };
@@ -1938,7 +1936,6 @@
 				FAC4289F235F7F980000F221 /* APICategory+RESTBehavior.swift */,
 				FAC234FC227A053D00424678 /* APICategoryClientBehavior.swift */,
 				FA6BC87A235F5D240001A882 /* APICategoryGraphQLBehavior.swift */,
-				215FAF722385E23F006D9D7F /* APICategoryGraphQLModelBehavior.swift */,
 				FA6BC87E235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift */,
 				FA6BC87C235F5D490001A882 /* APICategoryRESTBehavior.swift */,
 			);
@@ -1974,7 +1971,6 @@
 				FA9FD2372381CFC300A7CAF5 /* CloudSyncEngine.swift */,
 				6B1F15102383671B00AB23EF /* NetworkReachability.swift */,
 				6B1F15112383671B00AB23EF /* NetworkReachabilityNotifier.swift */,
-				FAA274B02382EA7100EDD2EA /* SyncEngineMutationSubscriber.swift */,
 				FA9FD2392381CFC300A7CAF5 /* OutgoingMutationQueue.swift */,
 				6BAD766A2386181B004482F6 /* RequestRetryable.swift */,
 				6BAD766B2386181B004482F6 /* RequestRetryablePolicy.swift */,
@@ -3775,7 +3771,6 @@
 				21FFF98E230C81E6005878EA /* StorageAccessLevel.swift in Sources */,
 				95DAAB4A237E639E0028544F /* InterpretResult.swift in Sources */,
 				B92E03B12367CE7A006CEB8D /* DataStoreError.swift in Sources */,
-				215FAF732385E23F006D9D7F /* APICategoryGraphQLModelBehavior.swift in Sources */,
 				95DAAB48237E639E0028544F /* IdentifyCelebritiesResult.swift in Sources */,
 				210922522359634C00CEC295 /* AnalyticsPropertyValue.swift in Sources */,
 				210DBC472332F0C5009B9E51 /* StorageError.swift in Sources */,

@@ -9,5 +9,4 @@
 public typealias APICategoryClientBehavior =
     APICategoryRESTBehavior &
     APICategoryGraphQLBehavior &
-    APICategoryGraphQLModelBehavior &
     APICategoryInterceptorBehavior
