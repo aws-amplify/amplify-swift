@@ -11,6 +11,7 @@ import AWSAPICategoryPlugin
 @testable import Amplify
 import AmplifyTestCommon
 
+// swiftlint:disable type_body_length
 class GraphQLModelBasedTests: XCTestCase {
 
     /*
@@ -25,6 +26,7 @@ class GraphQLModelBasedTests: XCTestCase {
          draft: Boolean
          rating: Float
          comments: [Comment] @connection(name: "PostComment")
+         _version: Int
      }
 
      type Comment @model {
@@ -231,10 +233,10 @@ class GraphQLModelBasedTests: XCTestCase {
                 switch data {
                 case .success(let post):
                     XCTAssertEqual(post.title, "title")
-                default:
-                    XCTFail("Could not get data back")
+                    completeInvoked.fulfill()
+                case .failure(let error):
+                    XCTFail("Unexpected response with error \(error)")
                 }
-                completeInvoked.fulfill()
             case .failed(let error):
                 print(error)
             default:
