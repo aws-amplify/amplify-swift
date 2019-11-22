@@ -1242,7 +1242,6 @@
 		95DAAB00237E63370028544F /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				21409C542384C55D000A53C9 /* LabelType.swift */,
 				95DAAB12237E63370028544F /* AgeRange.swift */,
 				95DAAB1B237E63370028544F /* Attribute.swift */,
 				95DAAB07237E63370028544F /* BoundedKeyValue.swift */,
@@ -1259,6 +1258,7 @@
 				95DAAB01237E63370028544F /* IdentifiedWord.swift */,
 				95DAAB14237E63370028544F /* IdentifyAction.swift */,
 				95DAAB17237E63370028544F /* KeyPhrase.swift */,
+				21409C542384C55D000A53C9 /* LabelType.swift */,
 				FAD3E11D2384956600F6F41C /* LabelType.swift */,
 				95DAAB1C237E63370028544F /* Landmark.swift */,
 				95DAAB05237E63370028544F /* LanguageDetectionResult.swift */,

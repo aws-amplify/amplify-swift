@@ -6,13 +6,14 @@
 //
 
 import Foundation
+import CoreGraphics
 
 public struct Celebrity {
     public let metadata: CelebrityMetadata
-    public let boundingBox: BoundingBox
+    public let boundingBox: CGRect
     public let landmarks: [Landmark]
 
-    public init(metadata: CelebrityMetadata, boundingBox: BoundingBox, landmarks: [Landmark]) {
+    public init(metadata: CelebrityMetadata, boundingBox: CGRect, landmarks: [Landmark]) {
         self.metadata = metadata
         self.boundingBox = boundingBox
         self.landmarks = landmarks

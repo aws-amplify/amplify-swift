@@ -46,25 +46,10 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
             let topPredictions = observation.topCandidates(1)
             let prediction = topPredictions[0]
             let identifiedText = prediction.string
-            let line = IdentifiedLine(text: identifiedText, boundingBox: boundingbox.toBoundingBox())
+            let line = IdentifiedLine(text: identifiedText, boundingBox: boundingbox)
             identifiedLines.append(line)
             rawLineText.append(identifiedText)
         }
         return IdentifyTextResult(fullText: nil, words: nil, rawLineText: rawLineText, identifiedLines: identifiedLines)
-    }
-}
-
-extension CGRect {
-
-    func toBoundingBox() -> BoundingBox {
-        let x = origin.x
-        let y = origin.y
-        let width = size.width
-        let height = size.height
-        let boundingBox = BoundingBox(left: Double(x),
-                                      top: Double(y),
-                                      width: Double(width),
-                                      height: Double(height))
-        return boundingBox
     }
 }

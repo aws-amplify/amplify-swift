@@ -85,16 +85,16 @@ class IdentifyMultiService: MultiServiceBehavior {
         }
 
         if let onlineLabelResult = finalOnlineResult as? IdentifyLabelsResult,
-                let offlineLabelResult = finalOfflineResult as? IdentifyLabelsResult {
+            let offlineLabelResult = finalOfflineResult as? IdentifyLabelsResult {
             let mergedResult = mergeLabelResult(onlineLabelResult: onlineLabelResult,
-                                            offlineLabelResult: offlineLabelResult)
+                                                offlineLabelResult: offlineLabelResult)
             callback(.completed(mergedResult))
             return
         }
         if let onlineTextResult = finalOnlineResult as? IdentifyTextResult,
-                let offlineTextResult = finalOfflineResult as? IdentifyTextResult {
+            let offlineTextResult = finalOfflineResult as? IdentifyTextResult {
             let mergedResult = mergeTextResult(onlineTextResult: onlineTextResult,
-                                            offlineTextResult: offlineTextResult)
+                                               offlineTextResult: offlineTextResult)
             callback(.completed(mergedResult))
             return
         }
@@ -150,69 +150,19 @@ class IdentifyMultiService: MultiServiceBehavior {
             return onlineTextResult
         }
         var combinedLines = Set<IdentifiedLine>()
-
         let onlineLineSet = Set<IdentifiedLine>(onlineLines)
         let offlineLineSet = Set<IdentifiedLine>(offlineLines)
 
-        //find the matchine lines and loop through them
-        let intersectingLines = onlineLineSet.intersection(offlineLineSet)
-        for line in intersectingLines {
-            let onlineIndex = onlineLineSet.firstIndex(of: line)!
-            let offlineIndex = offlineLineSet.firstIndex(of: line)!
-            let onlineLine = onlineLineSet[onlineIndex]
-            let offlineLine = offlineLineSet[offlineIndex]
-            //test to see if bounding boxes intersect, if they do it's the same line of text. if not, add both lines
-            if intersectingBoundingBoxes(originalLine: onlineLine, compareTo: offlineLine) {
-                combinedLines.insert(onlineLine) //insert only one of them if they intersect
-            } else {
-                combinedLines.insert(onlineLine)
-                combinedLines.insert(offlineLine)
-            }
-        }
-
+        combinedLines = onlineLineSet.intersection(offlineLineSet)
         combinedLines = combinedLines.union(offlineLineSet)
         combinedLines = combinedLines.union(onlineLineSet)
+
         //offline result doesn't return anything except identified lines so
         //merging them plus the other stuff from online is a merged result
         return IdentifyTextResult(fullText: onlineTextResult.fullText,
                                   words: onlineTextResult.words,
                                   rawLineText: onlineTextResult.rawLineText,
                                   identifiedLines: Array(combinedLines))
-    }
-
-    func intersectingBoundingBoxes(originalLine: IdentifiedLine, compareTo: IdentifiedLine) -> Bool {
-        let imageData = try? Data(contentsOf: request.image)
-        // there is no way the image should be nil as we got here so we already have results based on the
-        // other two calls where the image didn't produce an error so this should be safe.
-        // and for some odd reason we do not need to import uikit
-        let image = UIImage(data: imageData!)
-        guard let imageHeightFloat = image?.size.height,
-            let imageWidthFloat = image?.size.width else {
-                return false
-        }
-
-        //convert floats to doubles so we can convert the ratios from the bounding boxes
-        // to the actual x and y and width and height numbers
-        let imageHeight = Double(imageHeightFloat)
-        let imageWidth = Double(imageWidthFloat)
-
-        let cgRectFirst = CGRect(x: originalLine.boundingBox.left * imageWidth,
-                                 y: originalLine.boundingBox.top * imageHeight,
-                                 width: originalLine.boundingBox.width * imageWidth,
-                                 height: originalLine.boundingBox.height * imageHeight)
-
-        //coreml starts 0,0 from the lower left while rekognition starts 0,0 from the top left.
-        // so flip the y axis here and subtract the height of the bounding box to get the same y
-        // starting point as if it began from top left.
-        let heightCoreMLBoundingBox = compareTo.boundingBox.height * imageHeight
-        let yPositionCoremL = compareTo.boundingBox.top * imageHeight
-        let flippedY = (imageHeight - yPositionCoremL) - heightCoreMLBoundingBox
-
-        let cgRectSecond = CGRect(x: compareTo.boundingBox.left * imageWidth,
-                                  y: flippedY,
-                                  width: compareTo.boundingBox.width * imageWidth,
-                                  height: heightCoreMLBoundingBox)
-        return cgRectFirst.intersects(cgRectSecond)
     }
 }
 
@@ -246,13 +196,13 @@ extension LabelMetadata: Equatable, Comparable {
         let value = lhs.confidence < rhs.confidence
         return value
     }
-
 }
 
 extension IdentifiedLine: Hashable {
 
     public static func == (lhs: IdentifiedLine, rhs: IdentifiedLine) -> Bool {
         return lhs.text == rhs.text
+            && lhs.boundingBox.intersects(rhs.boundingBox)
     }
 
     public func hash(into hasher: inout Hasher) {

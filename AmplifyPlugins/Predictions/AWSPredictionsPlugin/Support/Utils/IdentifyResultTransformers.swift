@@ -9,49 +9,47 @@ import Foundation
 import Amplify
 import AWSRekognition
 import AWSTextract
+import CoreGraphics
 
 class IdentifyResultTransformers {
 
-    static func processBoundingBox(_ rekognitionBoundingBox: AWSRekognitionBoundingBox?) -> BoundingBox? {
-        guard let height = rekognitionBoundingBox?.height,
-            let left = rekognitionBoundingBox?.left,
-            let top = rekognitionBoundingBox?.top,
-            let width = rekognitionBoundingBox?.width else {
+    static func processBoundingBox(_ rekognitionBoundingBox: AWSRekognitionBoundingBox?) -> CGRect? {
+        guard let height = rekognitionBoundingBox?.height?.doubleValue,
+            let left = rekognitionBoundingBox?.left?.doubleValue,
+            let top = rekognitionBoundingBox?.top?.doubleValue,
+            let width = rekognitionBoundingBox?.width?.doubleValue else {
                 return nil
         }
-        return BoundingBox(
-            left: Double(truncating: left),
-            top: Double(truncating: top),
-            width: Double(truncating: width),
-            height: Double(truncating: height))
+        // In the default Core Graphics coordinate space, the origin is located in the lower-left
+        // corner of the rectangle and the rectangle extends towards the upper-right corner.
+        let cgCoordinateY = 1 - top - height
+        return CGRect(x: left, y: cgCoordinateY, width: width, height: height)
     }
 
-    static func processBoundingBox(_ textractBoundingBox: AWSTextractBoundingBox?) -> BoundingBox? {
-        guard let height = textractBoundingBox?.height,
-            let left = textractBoundingBox?.left,
-            let top = textractBoundingBox?.top,
-            let width = textractBoundingBox?.width else {
+    static func processBoundingBox(_ textractBoundingBox: AWSTextractBoundingBox?) -> CGRect? {
+        guard let height = textractBoundingBox?.height?.doubleValue,
+            let left = textractBoundingBox?.left?.doubleValue,
+            let top = textractBoundingBox?.top?.doubleValue,
+            let width = textractBoundingBox?.width?.doubleValue else {
                 return nil
         }
-        return BoundingBox(
-            left: Double(truncating: left),
-            top: Double(truncating: top),
-            width: Double(truncating: width),
-            height: Double(truncating: height))
+        // In the default Core Graphics coordinate space, the origin is located in the lower-left
+        // corner of the rectangle and the rectangle extends towards the upper-right corner.
+        let cgCoordinateY = 1 - top - height
+        return CGRect(x: left, y: cgCoordinateY, width: width, height: height)
     }
 
     static func processPolygon(_ rekognitionPolygonPoints: [AWSRekognitionPoint]?) -> Polygon? {
            guard let rekognitionPolygonPoints = rekognitionPolygonPoints else {
                return nil
            }
-           var points = [Polygon.Point]()
+           var points = [CGPoint]()
            for rekognitionPoint in rekognitionPolygonPoints {
                guard let xPosition = rekognitionPoint.x,
                    let yPosition = rekognitionPoint.y else {
                    continue
                }
-               let point = Polygon.Point(xPosition: Double(truncating: xPosition),
-                                         yPosition: Double(truncating: yPosition))
+            let point = CGPoint(x: Double(truncating: xPosition), y: Double(truncating: yPosition))
                points.append(point)
            }
            return Polygon(points: points)
@@ -62,14 +60,13 @@ class IdentifyResultTransformers {
         guard let textractPolygonPoints = textractPolygonPoints else {
             return nil
         }
-        var points = [Polygon.Point]()
+        var points = [CGPoint]()
         for textractPoint in textractPolygonPoints {
             guard let xPosition = textractPoint.x,
                 let yPosition = textractPoint.y else {
                 continue
             }
-            let point = Polygon.Point(xPosition: Double(truncating: xPosition),
-                                      yPosition: Double(truncating: yPosition))
+            let point = CGPoint(x: Double(truncating: xPosition), y: Double(truncating: yPosition))
             points.append(point)
         }
         return Polygon(points: points)
