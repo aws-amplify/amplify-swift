@@ -39,7 +39,7 @@ extension Model {
         return input
     }
 }
-
+/*
 extension QueryPredicate {
     var graphQLFilterVariables: [String: Any] {
         if let operation = self as? QueryPredicateOperation {
@@ -158,3 +158,4 @@ extension Persistable {
         """)
     }
 }
+*/
