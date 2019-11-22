@@ -9,6 +9,7 @@ import Foundation
 import XCTest
 import Reachability
 import Combine
+@testable import AWSDataStoreCategoryPlugin
 
 class NetworkReachabilityNotifierTests: XCTestCase {
     var networkReach: NetworkReachabilityNotifier!
