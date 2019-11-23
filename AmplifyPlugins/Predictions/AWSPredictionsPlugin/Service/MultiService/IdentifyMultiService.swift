@@ -67,10 +67,11 @@ class IdentifyMultiService: MultiServiceBehavior {
                       callback: @escaping  IdentifyEventHandler) {
 
         if offlineResult == nil && onlineResult == nil {
-            let message = InterpretMultiServiceErrorMessage.interpretTextNoResult.errorDescription
-            let recoveryMessage = InterpretMultiServiceErrorMessage.interpretTextNoResult.recoverySuggestion
+            let message = IdentifyMultiServiceErrorMessage.noResultIdentifyService.errorDescription
+            let recoveryMessage = IdentifyMultiServiceErrorMessage.noResultIdentifyService.recoverySuggestion
             let predictionError = PredictionsError.service(message, recoveryMessage, nil)
             callback(.failed(predictionError))
+            return
         }
 
         guard let finalOfflineResult = offlineResult else {
