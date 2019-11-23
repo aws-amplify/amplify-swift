@@ -47,6 +47,8 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
             let detectedTextWidth = observation.boundingBox.width
             let detectedTextHeight = observation.boundingBox.height
 
+            // Converting the y coordinate to iOS coordinate space and create a CGrect
+            // out of it.
             let boundingbox = CGRect(x: detectedTextX,
                                      y: 1 - detectedTextHeight - detectedTextY,
                                      width: detectedTextWidth,
