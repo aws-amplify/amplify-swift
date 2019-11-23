@@ -35,4 +35,13 @@ class CoreMLVisionAdapterTests: XCTestCase {
         XCTAssertNotNil(result, "The result should be nil")
     }
 
+    func testDetectEntities() {
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "people", withExtension: "jpg") else {
+            return
+        }
+        let result = coreMLVisionAdapter.detectEntities(url)
+        XCTAssertNotNil(result, "The result should be nil")
+    }
+
 }

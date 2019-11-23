@@ -63,4 +63,49 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
         }
         return IdentifyTextResult(fullText: nil, words: nil, rawLineText: rawLineText, identifiedLines: identifiedLines)
     }
+
+    func detectEntities(_ imageURL: URL) -> IdentifyEntitiesResult? {
+        let handler = VNImageRequestHandler(url: imageURL, options: [:])
+        let request = VNDetectFaceLandmarksRequest()
+        let request2 = VNDetectFaceRectanglesRequest()
+
+        try? handler.perform([request, request2])
+        guard let observations = request.results as? [VNFaceObservation] else {
+            return nil
+        }
+
+        guard let obs2 = request2.results as? [VNFaceObservation] else {
+            return nil
+        }
+
+        for observation in observations {
+//            print(observation.boundingBox)
+//            print(observation.landmarks)
+            let boundingBox = observation.boundingBox
+            let confidence = observation.confidence
+            let roll = observation.roll
+            let yaw = observation.yaw
+//            let pitch = observation.pitc
+//            let entity = Entity
+            print(observation.roll)
+            print(observation.yaw)
+
+        }
+
+         for observation in obs2 {
+        //            print(observation.boundingBox)
+        //            print(observation.landmarks)
+                    let boundingBox = observation.boundingBox
+                    let confidence = observation.confidence
+                    let roll = observation.roll
+                    let yaw = observation.yaw
+        //            let pitch = observation.pitc
+        //            let entity = Entity
+                    print(observation.roll)
+                    print(observation.yaw)
+
+                }
+
+        fatalError()
+    }
 }
