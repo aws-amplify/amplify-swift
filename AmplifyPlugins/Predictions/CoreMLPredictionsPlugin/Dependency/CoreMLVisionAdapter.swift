@@ -42,7 +42,18 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
         var identifiedLines = [IdentifiedLine]()
         var rawLineText = [String]()
         for observation in observations {
-            let boundingbox = observation.boundingBox
+            let detectedTextX = observation.boundingBox.origin.x
+            let detectedTextY = observation.boundingBox.origin.y
+            let detectedTextWidth = observation.boundingBox.width
+            let detectedTextHeight = observation.boundingBox.height
+
+            // Converting the y coordinate to iOS coordinate space and create a CGrect
+            // out of it.
+            let boundingbox = CGRect(x: detectedTextX,
+                                     y: 1 - detectedTextHeight - detectedTextY,
+                                     width: detectedTextWidth,
+                                     height: detectedTextHeight)
+
             let topPredictions = observation.topCandidates(1)
             let prediction = topPredictions[0]
             let identifiedText = prediction.string

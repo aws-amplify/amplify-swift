@@ -20,7 +20,7 @@ struct IdentifyMultiServiceErrorMessage {
         "Please check if the values are proprely initialized")
 
     static let noResultIdentifyService: IdentifyMultiServiceErrorString = (
-        "Not able to fetch result for identify labels operation",
+        "Not able to fetch result for identify operation",
         "Please try with a different input")
 }
 
