@@ -29,12 +29,14 @@ class GraphQLAnyModelDocumentTests: XCTestCase {
         mutation CreatePost($input: CreatePostInput!) {
           createPost(input: $input) {
             id
+            _version
             content
             createdAt
             draft
             rating
             title
             updatedAt
+            __typename
           }
         }
         """
@@ -51,12 +53,14 @@ class GraphQLAnyModelDocumentTests: XCTestCase {
         mutation UpdatePost($input: UpdatePostInput!) {
           updatePost(input: $input) {
             id
+            _version
             content
             createdAt
             draft
             rating
             title
             updatedAt
+            __typename
           }
         }
         """
@@ -73,12 +77,14 @@ class GraphQLAnyModelDocumentTests: XCTestCase {
         mutation DeletePost($input: DeletePostInput!) {
           deletePost(input: $input) {
             id
+            _version
             content
             createdAt
             draft
             rating
             title
             updatedAt
+            __typename
           }
         }
         """
@@ -112,6 +118,19 @@ class GraphQLAnyModelDocumentTests: XCTestCase {
         }
         XCTAssert(input["title"] as? String == originalPost.title)
         XCTAssert(input["content"] as? String == originalPost.content)
+    }
+
+    func testCreateSubscriptionGraphQLRequest() throws {
+        let modelType = Post.self as Model.Type
+        let document = GraphQLSubscription(of: modelType, type: .onCreate)
+        let request = GraphQLRequest<AnyModel>.subscription(toAnyModelType: modelType,
+                                                            subscriptionType: .onCreate)
+
+        XCTAssertEqual(document.stringValue, request.document)
+        XCTAssert(request.responseType == AnyModel.self)
+
+        // test the input
+        XCTAssertNil(request.variables)
     }
 
 }

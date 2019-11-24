@@ -106,8 +106,11 @@ public protocol APICategoryGraphQLBehavior {
     ///
     /// - Parameters:
     ///   - modelType: The type of the model to subscribe to, as the `Model` protocol rather than the concrete type
-    ///   - mutationType: The type of mutation to subscribe to
-    /// - Returns: An AnyPublisher that will publish notifications about specified mutations on the model type
-    @available(iOS 13.0, *)
-    func subscribe(modelType: Model.Type, mutationType: GraphQLMutationType) -> AnyPublisher<AnyModel, APIError>
+    ///   - subscriptionType: The type of subscription (onCreate, onUpdate, onDelete) to subscribe to
+    /// - Returns: The AmplifyOperation being enqueued
+    func subscribe(toAnyModelType modelType: Model.Type,
+                   subscriptionType: GraphQLSubscriptionType,
+                   listener: GraphQLSubscriptionOperation<AnyModel>.EventListener?)
+    -> GraphQLSubscriptionOperation<AnyModel>
+
 }

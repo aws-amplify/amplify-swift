@@ -60,11 +60,20 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         return operation
     }
 
-    @available(iOS 13.0, *)
-    func subscribe(modelType: Model.Type, mutationType: GraphQLMutationType) -> AnyPublisher<AnyModel, APIError> {
-        notify("subscribe(modelType:\(modelType),mutationType:\(mutationType))")
-        let error = APIError.invalidConfiguration("Mock method doesn't actually subscribe", "")
-        return Fail<AnyModel, APIError>(error: error).eraseToAnyPublisher()
+    func subscribe(toAnyModelType modelType: Model.Type,
+                   subscriptionType: GraphQLSubscriptionType,
+                   listener: GraphQLSubscriptionOperation<AnyModel>.EventListener?)
+        -> GraphQLSubscriptionOperation<AnyModel> {
+            notify("subscribe(toAnyModelType:subscriptionType:listener)")
+            let options = GraphQLOperationRequest<AnyModel>.Options()
+            let request = GraphQLOperationRequest<AnyModel>(apiName: nil,
+                                                            operationType: .subscription,
+                                                            document: "",
+                                                            variables: nil,
+                                                            responseType: AnyModel.self,
+                                                            options: options)
+            let operation = MockSubscriptionGraphQLOperation(request: request, responseType: request.responseType)
+            return operation
     }
 
     // MARK: - Request-based GraphQL methods
@@ -102,7 +111,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     func subscribe<R: Decodable>(request: GraphQLRequest<R>,
                                  listener: GraphQLSubscriptionOperation<R>.EventListener?) ->
         GraphQLSubscriptionOperation<R> {
-            notify("subscribe")
+            notify("subscribe(request:listener:)")
             let options = GraphQLOperationRequest<R>.Options()
             let request = GraphQLOperationRequest<R>(apiName: request.apiName,
                                                      operationType: .subscription,
@@ -119,11 +128,11 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     func get(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
         notify("get")
         let operationRequest = RESTOperationRequest(apiName: request.apiName,
-                                           operationType: .get,
-                                           path: request.path,
-                                           queryParameters: request.queryParameters,
-                                           body: request.body,
-                                           options: RESTOperationRequest.Options())
+                                                    operationType: .get,
+                                                    path: request.path,
+                                                    queryParameters: request.queryParameters,
+                                                    body: request.body,
+                                                    options: RESTOperationRequest.Options())
         let operation = MockAPIOperation(request: operationRequest)
         return operation
     }

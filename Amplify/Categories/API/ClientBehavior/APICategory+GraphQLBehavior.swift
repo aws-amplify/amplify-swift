@@ -56,9 +56,11 @@ extension APICategory: APICategoryGraphQLBehavior {
             plugin.subscribe(request: request, listener: listener)
     }
 
-    @available(iOS 13.0, *)
-    public func subscribe(modelType: Model.Type, mutationType: GraphQLMutationType)
-        -> AnyPublisher<AnyModel, APIError> {
-            plugin.subscribe(modelType: modelType, mutationType: mutationType)
+    public func subscribe(toAnyModelType modelType: Model.Type,
+                          subscriptionType: GraphQLSubscriptionType,
+                          listener: GraphQLSubscriptionOperation<AnyModel>.EventListener?)
+        -> GraphQLSubscriptionOperation<AnyModel> {
+            plugin.subscribe(toAnyModelType: modelType, subscriptionType: subscriptionType, listener: listener)
     }
+
 }
