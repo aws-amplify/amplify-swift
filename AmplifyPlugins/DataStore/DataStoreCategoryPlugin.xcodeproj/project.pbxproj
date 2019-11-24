@@ -214,8 +214,8 @@
 				2149E5A72388684F00873955 /* Storage */,
 				2149E5B82388684F00873955 /* Subscribe */,
 				2149E5BA2388684F00873955 /* Sync */,
-				2149E5C32388684F00873955 /* Info.plist */,
 				2149E5C42388684F00873955 /* AWSDataStoreCategoryPlugin.swift */,
+				2149E5C32388684F00873955 /* Info.plist */,
 			);
 			path = AWSDataStoreCategoryPlugin;
 			sourceTree = "<group>";
@@ -223,10 +223,10 @@
 		2149E5A72388684F00873955 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
-				2149E5A82388684F00873955 /* StorageEngineBehavior.swift */,
-				2149E5A92388684F00873955 /* StorageEngineAdapter.swift */,
-				2149E5AA2388684F00873955 /* StorageEngine.swift */,
 				2149E5AB2388684F00873955 /* SQLite */,
+				2149E5AA2388684F00873955 /* StorageEngine.swift */,
+				2149E5A92388684F00873955 /* StorageEngineAdapter.swift */,
+				2149E5A82388684F00873955 /* StorageEngineBehavior.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -234,18 +234,18 @@
 		2149E5AB2388684F00873955 /* SQLite */ = {
 			isa = PBXGroup;
 			children = (
-				2149E5AC2388684F00873955 /* SQLStatement.swift */,
-				2149E5AD2388684F00873955 /* SQLStatement+Insert.swift */,
-				2149E5AE2388684F00873955 /* ModelSchema+SQLite.swift */,
 				2149E5AF2388684F00873955 /* Model+SQLite.swift */,
-				2149E5B02388684F00873955 /* SQLStatement+Select.swift */,
-				2149E5B12388684F00873955 /* SQLStatement+Update.swift */,
+				2149E5AE2388684F00873955 /* ModelSchema+SQLite.swift */,
+				2149E5B42388684F00873955 /* QueryPredicate+SQLite.swift */,
+				2149E5AC2388684F00873955 /* SQLStatement.swift */,
+				2149E5B62388684F00873955 /* SQLStatement+Condition.swift */,
 				2149E5B22388684F00873955 /* SQLStatement+CreateTable.swift */,
 				2149E5B32388684F00873955 /* SQLStatement+Delete.swift */,
-				2149E5B42388684F00873955 /* QueryPredicate+SQLite.swift */,
-				2149E5B52388684F00873955 /* StorageEngineAdapter+SQLite.swift */,
-				2149E5B62388684F00873955 /* SQLStatement+Condition.swift */,
+				2149E5AD2388684F00873955 /* SQLStatement+Insert.swift */,
+				2149E5B02388684F00873955 /* SQLStatement+Select.swift */,
+				2149E5B12388684F00873955 /* SQLStatement+Update.swift */,
 				2149E5B72388684F00873955 /* Statement+Model.swift */,
+				2149E5B52388684F00873955 /* StorageEngineAdapter+SQLite.swift */,
 			);
 			path = SQLite;
 			sourceTree = "<group>";
@@ -261,13 +261,13 @@
 		2149E5BA2388684F00873955 /* Sync */ = {
 			isa = PBXGroup;
 			children = (
-				2149E5BB2388684F00873955 /* SyncEngineMutationSubscriber+Responses.swift */,
-				2149E5BC2388684F00873955 /* SyncEngineMutationSubscriber+Log.swift */,
-				2149E5BD2388684F00873955 /* NetworkReachabilityNotifier.swift */,
 				2149E5BE2388684F00873955 /* CloudSyncEngine.swift */,
-				2149E5BF2388684F00873955 /* SyncEngineMutationSubscriber.swift */,
-				2149E5C02388684F00873955 /* OutgoingMutationQueue.swift */,
 				2149E5C12388684F00873955 /* NetworkReachability.swift */,
+				2149E5BD2388684F00873955 /* NetworkReachabilityNotifier.swift */,
+				2149E5C02388684F00873955 /* OutgoingMutationQueue.swift */,
+				2149E5BF2388684F00873955 /* SyncEngineMutationSubscriber.swift */,
+				2149E5BC2388684F00873955 /* SyncEngineMutationSubscriber+Log.swift */,
+				2149E5BB2388684F00873955 /* SyncEngineMutationSubscriber+Responses.swift */,
 				2149E5C22388684F00873955 /* SyncEngineMutationSubscriber+Subscriber.swift */,
 			);
 			path = Sync;
@@ -276,16 +276,16 @@
 		2149E5E42388692E00873955 /* AWSDataStoreCategoryPluginTests */ = {
 			isa = PBXGroup;
 			children = (
-				2149E5E72388692E00873955 /* Info.plist */,
+				2149E5EE238869CF00873955 /* TestSupport */,
 				2149E5F1238869CF00873955 /* APICategoryDependencyTests.swift */,
 				2149E5F5238869CF00873955 /* CloudSyncTests.swift */,
+				2149E5E72388692E00873955 /* Info.plist */,
 				2149E5F3238869CF00873955 /* LocalSubscriptionTests.swift */,
 				2149E5F2238869CF00873955 /* NetworkReachabilityNotifierTests.swift */,
 				2149E5F4238869CF00873955 /* OutgoingMutationQueueTests.swift */,
 				2149E5F0238869CF00873955 /* QueryPredicateTests.swift */,
 				2149E5F7238869CF00873955 /* SQLiteStorageEngineAdapterTests.swift */,
 				2149E5F6238869CF00873955 /* SQLStatementTests.swift */,
-				2149E5EE238869CF00873955 /* TestSupport */,
 			);
 			path = AWSDataStoreCategoryPluginTests;
 			sourceTree = "<group>";

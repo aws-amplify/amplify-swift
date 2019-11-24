@@ -12,11 +12,11 @@ public class Author: Model {
 
     public let id: Model.Identifier
 
-    // hasMany(associatedWith: "")
-    public let books: [BookAuthor]
+    // hasMany(associatedWith: "author")
+    public let books: List<BookAuthor>
 
     public init(id: String = UUID().uuidString,
-                books: [BookAuthor] = []) {
+                books: List<BookAuthor> = []) {
         self.id = id
         self.books = books
     }

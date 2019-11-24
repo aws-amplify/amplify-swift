@@ -7,7 +7,11 @@
 
 import Foundation
 
-/// `List<ModelType>` is a DataStore-aware custom `Collection` that
+/// `List<ModelType>` is a DataStore-aware custom `Collection` that is capable of loading
+/// records from the `DataStore` on-demand. This is specially useful when dealing with
+/// Model associations that need to be lazy loaded.
+///
+/// When using `Data`
 public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLiteral {
 
     public typealias Index = Int
@@ -23,8 +27,16 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
     internal var associatedId: Model.Identifier?
     internal var associatedField: ModelField?
 
-    internal var limit: Int = 10
-    internal var status: LoadStatus = .pending
+    internal var limit: Int = 100
+
+    // The current state of the lazy load
+    internal var state: LoadState = .pending
+
+    // MARK: - Initializers
+
+    public convenience init(_ elements: Elements) {
+        self.init(elements, associatedId: nil, associatedField: nil)
+    }
 
     init(_ elements: Elements,
          associatedId: Model.Identifier? = nil,
@@ -32,12 +44,6 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
         self.elements = elements
         self.associatedId = associatedId
         self.associatedField = associatedField
-    }
-
-    public func limit(_ limit: Int) -> Self {
-        self.limit = limit
-        status = .pending
-        return self
     }
 
     // MARK: - ExpressibleByArrayLiteral
@@ -73,7 +79,15 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
     // MARK: - Persistent Operations
 
     public var totalCount: Int {
+        // TODO handle total count
         return 0
+    }
+
+    public func limit(_ limit: Int) -> Self {
+        // TODO handle query with limit
+        self.limit = limit
+        state = .pending
+        return self
     }
 
     // MARK: - Codable
@@ -88,12 +102,8 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
             if case let .string(associatedId) = list["associatedId"],
                case let .string(associatedField) = list["associatedField"] {
                 let field = Element.schema.field(withName: associatedField)
-                if case let .array(elements) = list["elements"] {
-                    // TODO handle eager loaded associations with elements
-                    self.init([], associatedId: associatedId, associatedField: field)
-                } else {
-                    self.init([], associatedId: associatedId, associatedField: field)
-                }
+                // TODO handle eager loaded associations with elements
+                self.init([], associatedId: associatedId, associatedField: field)
             } else {
                 self.init(Elements())
             }
@@ -106,14 +116,4 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
         try elements.encode(to: encoder)
     }
 
-}
-
-func createDecodableList(_ elements: [Any] = [],
-                         associatedId: String? = nil,
-                         associatedField: String? = nil) -> [String: Any?] {
-    return [
-        "associatedId": associatedId,
-        "associatedField": associatedField,
-        "elements": elements
-    ]
 }

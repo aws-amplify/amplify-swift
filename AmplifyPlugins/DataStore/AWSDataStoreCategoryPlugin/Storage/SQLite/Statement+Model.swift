@@ -104,7 +104,7 @@ extension Statement: StatementModelConvertible {
             } else if let field = schema.field(withName: name) {
                 values[name] = field.value(from: row[index])
             } else {
-                logger.warn("""
+                logger.debug("""
                 A column named \(name) was found in the result set but no field on
                 \(schema.name) could be found with that name and it will be ignored.
                 """)
@@ -114,6 +114,7 @@ extension Statement: StatementModelConvertible {
         if let id = values[schema.primaryKey.name] as? String {
             // create instances of lazy-load lists of fields that represent "many" associations
             schema.fields.values.filter { $0.isArray }.forEach { field in
+                // TODO extract this to a List utility
                 let lazyListDecodable: [String: Any?] = [
                     "associatedId": id,
                     "associatedField": field.associatedField?.name,

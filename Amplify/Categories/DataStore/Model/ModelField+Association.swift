@@ -47,15 +47,11 @@ import Foundation
 ///
 /// ```
 /// struct Person: Model {
-///   let id: Model.Identifier
-///
 ///   // hasOne(associatedWith: License.keys.person)
 ///   let license: License?
 /// }
 ///
 /// struct License: Model {
-///   let id: Model.Identifier
-///
 ///   // belongsTo
 ///   let person: Person
 /// }
@@ -68,17 +64,33 @@ import Foundation
 /// `hasMany` and `belongsTo` with an intermediate `Model` that is responsible for
 /// holding a reference to the keys of both related models.
 ///
-/// TODO: define how many-to-many is implemented
+/// ```
+/// struct Book: Model {
+///   // hasMany(associatedWith: BookAuthor.keys.book)
+///   let auhors: [BookAuthor]
+/// }
+///
+/// struct Author: Model {
+///   // hasMany(associatedWith: BookAuthor.keys.author)
+///   let books: [BookAuthor]
+/// }
+///
+/// struct BookAuthor: Model {
+///   // belongsTo
+///   let book: Book
+///
+///   // belongsTo
+///   let author: Author
+/// }
+/// ```
 ///
 public enum ModelAssociation {
-    case hasManyAndBelongsTo(associatedWith: CodingKey?)
-    case hasMany(associatedWith: CodingKey)
-    case hasOne(associatedWith: CodingKey)
+    case hasMany(associatedWith: CodingKey?)
+    case hasOne(associatedWith: CodingKey?)
     case belongsTo(associatedWith: CodingKey?)
 
     public static let belongsTo: ModelAssociation = .belongsTo(associatedWith: nil)
 
-    public static let hasManyAndBelongsTo: ModelAssociation = .hasManyAndBelongsTo(associatedWith: nil)
 }
 
 extension ModelField {
@@ -104,7 +116,7 @@ extension ModelField {
     /// should fix their models in order to recover from it, since associations are only
     /// possible between two `Model.Type`.
     ///
-    /// **Note:** as a maintainer, make sure you use this computed property only when context
+    /// - Note: as a maintainer, make sure you use this computed property only when context
     /// allows (i.e. the field is a valid relationship, such as foreign keys).
     public var requiredAssociatedModel: Model.Type {
         guard let modelType = associatedModel else {
@@ -128,12 +140,10 @@ extension ModelField {
             let associatedModel = requiredAssociatedModel
             switch association {
             case .belongsTo(let associatedKey),
-                 .hasManyAndBelongsTo(let associatedKey):
+                 .hasOne(let associatedKey),
+                 .hasMany(let associatedKey):
                 let key = associatedKey?.stringValue ?? associatedModel.modelName
                 return associatedModel.schema.field(withName: key)
-            case .hasOne(let associatedKey),
-                 .hasMany(let associatedKey):
-                return associatedModel.schema.field(withName: associatedKey.stringValue)
             case .none:
                 return nil
             }
@@ -146,14 +156,6 @@ extension ModelField {
             return true
         }
         if case .belongsTo = association, case .hasOne = associatedField?.association {
-            return true
-        }
-        return false
-    }
-
-    public var isManyToMany: Bool {
-        if case .hasManyAndBelongsTo = association,
-           case .hasManyAndBelongsTo = associatedField?.association {
             return true
         }
         return false
