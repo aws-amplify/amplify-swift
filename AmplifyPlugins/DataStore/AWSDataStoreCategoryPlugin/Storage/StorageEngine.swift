@@ -11,7 +11,8 @@ import Foundation
 
 final class StorageEngine: StorageEngineBehavior {
 
-    private let adapter: StorageEngineAdapter
+    // TODO: Make this private once we get a request/response flow with metadata/mutation types figured out
+    let adapter: StorageEngineAdapter
 
     private var syncEngine: CloudSyncEngineBehavior?
 
@@ -36,10 +37,22 @@ final class StorageEngine: StorageEngineBehavior {
 
     public func setUp(models: [Model.Type]) throws {
         try adapter.setUp(models: models)
-        syncEngine?.start()
     }
 
     public func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
+        // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
+        // mutation type
+        let modelExists: Bool
+        do {
+            modelExists = try adapter.exists(M.self, withId: model.id)
+        } catch {
+            let dataStoreError = DataStoreError.invalidOperation(causedBy: error)
+            completion(.error(dataStoreError))
+            return
+        }
+
+        let mutationType = modelExists ? MutationEvent.MutationType.update : .create
+
         let saveMutationEventCompletion: DataStoreCallback<M> = { result in
             guard type(of: model).schema.isSyncable, let syncEngine = self.syncEngine else {
                 completion(result)
@@ -52,8 +65,7 @@ final class StorageEngine: StorageEngineBehavior {
             }
 
             do {
-                // TODO: select correct mutation type
-                let mutationEvent = try MutationEvent(model: savedModel, mutationType: .create)
+                let mutationEvent = try MutationEvent(model: savedModel, mutationType: mutationType)
 
                 // TODO: Refactor this into something actually readable once we get the final sync implementation done
                 _ = syncEngine
@@ -101,4 +113,7 @@ final class StorageEngine: StorageEngineBehavior {
         return adapter.query(modelType, predicate: predicate, completion: completion)
     }
 
+    func startSync() {
+        syncEngine?.start()
+    }
 }

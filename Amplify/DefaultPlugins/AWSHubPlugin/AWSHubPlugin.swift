@@ -49,6 +49,13 @@ final public class AWSHubPlugin: HubCategoryPlugin {
     }
 
     public func listen(to channel: HubChannel,
+                       eventName: HubPayloadEventName,
+                       listener: @escaping HubListener) -> UnsubscribeToken {
+        let filter = HubFilters.forEventName(eventName)
+        return listen(to: channel, isIncluded: filter, listener: listener)
+    }
+
+    public func listen(to channel: HubChannel,
                        isIncluded filter: HubFilter? = nil,
                        listener: @escaping HubListener) -> UnsubscribeToken {
         let filteredListener = FilteredListener(for: channel, filter: filter, listener: listener)

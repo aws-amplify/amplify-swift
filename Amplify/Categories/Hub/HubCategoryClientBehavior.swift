@@ -18,6 +18,15 @@ public protocol HubCategoryClientBehavior {
     /// - Parameter payload: The payload to send
     func dispatch(to channel: HubChannel, payload: HubPayload)
 
+    /// Listen to Hub messages with a particular event name on a particular channel
+    ///
+    /// - Parameter channel: The channel to listen for messages on
+    /// - Parameter eventName: Only hub payloads with this event name will be dispatched to the listener
+    /// - Parameter listener: The closure to invoke with the received message
+    func listen(to channel: HubChannel,
+                eventName: HubPayloadEventName,
+                listener: @escaping HubListener) -> UnsubscribeToken
+
     /// Listen to Hub messages on a particular channel, optionally filtering message prior to dispatching them
     ///
     /// - Parameter channel: The channel to listen for messages on

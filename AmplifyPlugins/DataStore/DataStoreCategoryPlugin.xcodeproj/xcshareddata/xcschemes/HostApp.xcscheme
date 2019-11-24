@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "217855F42380A0CA00A30D19"
-               BuildableName = "AWSAPICategoryHostAppWithIAM.app"
-               BlueprintName = "AWSAPICategoryHostAppWithIAM"
-               ReferencedContainer = "container:APICategoryPlugin.xcodeproj">
+               BlueprintIdentifier = "2149E60423886C7B00873955"
+               BuildableName = "HostApp.app"
+               BlueprintName = "HostApp"
+               ReferencedContainer = "container:DataStoreCategoryPlugin.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,10 +32,10 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "217856092380A0CB00A30D19"
-               BuildableName = "AWSAPICategoryHostAppWithIAMTests.xctest"
-               BlueprintName = "AWSAPICategoryHostAppWithIAMTests"
-               ReferencedContainer = "container:APICategoryPlugin.xcodeproj">
+               BlueprintIdentifier = "2149E61C23886CEE00873955"
+               BuildableName = "AWSDataStoreCategoryPluginIntegrationTests.xctest"
+               BlueprintName = "AWSDataStoreCategoryPluginIntegrationTests"
+               ReferencedContainer = "container:DataStoreCategoryPlugin.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -54,10 +54,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "217855F42380A0CA00A30D19"
-            BuildableName = "AWSAPICategoryHostAppWithIAM.app"
-            BlueprintName = "AWSAPICategoryHostAppWithIAM"
-            ReferencedContainer = "container:APICategoryPlugin.xcodeproj">
+            BlueprintIdentifier = "2149E60423886C7B00873955"
+            BuildableName = "HostApp.app"
+            BlueprintName = "HostApp"
+            ReferencedContainer = "container:DataStoreCategoryPlugin.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -71,10 +71,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "217855F42380A0CA00A30D19"
-            BuildableName = "AWSAPICategoryHostAppWithIAM.app"
-            BlueprintName = "AWSAPICategoryHostAppWithIAM"
-            ReferencedContainer = "container:APICategoryPlugin.xcodeproj">
+            BlueprintIdentifier = "2149E60423886C7B00873955"
+            BuildableName = "HostApp.app"
+            BlueprintName = "HostApp"
+            ReferencedContainer = "container:DataStoreCategoryPlugin.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

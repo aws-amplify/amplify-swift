@@ -16,16 +16,11 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "217856492380C3DB00A30D19"
-               BuildableName = "GraphQLWithAPIKeyIntegrationTests2.xctest"
-               BlueprintName = "GraphQLWithAPIKeyIntegrationTests2"
-               ReferencedContainer = "container:APICategoryPlugin.xcodeproj">
+               BlueprintIdentifier = "2149E61C23886CEE00873955"
+               BuildableName = "AWSDataStoreCategoryPluginIntegrationTests.xctest"
+               BlueprintName = "AWSDataStoreCategoryPluginIntegrationTests"
+               ReferencedContainer = "container:DataStoreCategoryPlugin.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "GraphQLWithAPIKeyIntegrationTests/testSetUpOnce()">
-               </Test>
-            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

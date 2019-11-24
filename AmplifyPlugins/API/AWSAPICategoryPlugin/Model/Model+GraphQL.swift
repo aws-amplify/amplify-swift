@@ -16,9 +16,6 @@ extension Model {
     /// Get the `Model` values as a `Dictionary` of `String` to `Any?` that can be
     /// used as the `input` of GraphQL related operations.
     var graphQLInput: GraphQLInput {
-        let modelType = type(of: self)
-        let schema = modelType.schema
-
         var input: GraphQLInput = [:]
         schema.fields.forEach {
             let field = $0.value

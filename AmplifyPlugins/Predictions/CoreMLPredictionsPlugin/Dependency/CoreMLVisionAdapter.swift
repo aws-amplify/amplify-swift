@@ -23,7 +23,7 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
         let categories = observations.filter { $0.hasMinimumRecall(0.01, forPrecision: 0.9) }
         for category in categories {
             let metaData = LabelMetadata(confidence: Double(category.confidence * 100))
-            let label = Label(name: category.identifier, metadata: metaData)
+            let label = Label(name: category.identifier.capitalized, metadata: metaData)
             labelsResult.append(label)
         }
         return IdentifyLabelsResult(labels: labelsResult)
@@ -42,29 +42,25 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
         var identifiedLines = [IdentifiedLine]()
         var rawLineText = [String]()
         for observation in observations {
-            let boundingbox = observation.boundingBox
+            let detectedTextX = observation.boundingBox.origin.x
+            let detectedTextY = observation.boundingBox.origin.y
+            let detectedTextWidth = observation.boundingBox.width
+            let detectedTextHeight = observation.boundingBox.height
+
+            // Converting the y coordinate to iOS coordinate space and create a CGrect
+            // out of it.
+            let boundingbox = CGRect(x: detectedTextX,
+                                     y: 1 - detectedTextHeight - detectedTextY,
+                                     width: detectedTextWidth,
+                                     height: detectedTextHeight)
+
             let topPredictions = observation.topCandidates(1)
             let prediction = topPredictions[0]
             let identifiedText = prediction.string
-            let line = IdentifiedLine(text: identifiedText, boundingBox: boundingbox.toBoundingBox())
+            let line = IdentifiedLine(text: identifiedText, boundingBox: boundingbox)
             identifiedLines.append(line)
             rawLineText.append(identifiedText)
         }
         return IdentifyTextResult(fullText: nil, words: nil, rawLineText: rawLineText, identifiedLines: identifiedLines)
-    }
-}
-
-extension CGRect {
-
-    func toBoundingBox() -> BoundingBox {
-        let x = origin.x
-        let y = origin.y
-        let width = size.width
-        let height = size.height
-        let boundingBox = BoundingBox(left: Double(x),
-                                      top: Double(y),
-                                      width: Double(width),
-                                      height: Double(height))
-        return boundingBox
     }
 }

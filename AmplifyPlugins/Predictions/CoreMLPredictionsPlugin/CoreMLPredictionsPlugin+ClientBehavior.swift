@@ -16,25 +16,36 @@ extension CoreMLPredictionsPlugin {
                         targetLanguage: LanguageType?,
                         options: PredictionsTranslateTextRequest.Options?,
                         listener: PredictionsTranslateTextOperation.EventListener?) -> PredictionsTranslateTextOperation {
-        // TODO: Remove the below and add proper message
-        fatalError("Incomplete implementation")
+
+        let options = options ?? PredictionsTranslateTextRequest.Options()
+        let request = PredictionsTranslateTextRequest(textToTranslate: textToTranslate,
+                                                      targetLanguage: targetLanguage,
+                                                      language: language,
+                                                      options: options)
+        let operation = CoreMLTranslateTextOperation(request, listener: listener)
+        queue.addOperation(operation)
+        return operation
     }
 
     public func convert(textToSpeech: String,
                         options: PredictionsTextToSpeechRequest.Options? = nil,
                         listener: PredictionsTextToSpeechOperation.EventListener?) -> PredictionsTextToSpeechOperation {
-        // TODO: Remove the below and add proper message
-        fatalError("Incomplete implementation")
+        let options = options ?? PredictionsTextToSpeechRequest.Options()
+        let request = PredictionsTextToSpeechRequest(textToSpeech: textToSpeech,
+                                                     options: options)
+        let operation = CoreMLTextToSpeechOperation(request, listener: listener)
+        queue.addOperation(operation)
+        return operation
     }
 
     public func identify(type: IdentifyAction,
                          image: URL,
                          options: PredictionsIdentifyRequest.Options?,
                          listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation {
-        let options = options
+        let options = options ?? PredictionsIdentifyRequest.Options()
         let request = PredictionsIdentifyRequest(image: image,
                                                  identifyType: type,
-                                                 options: options ?? PredictionsIdentifyRequest.Options())
+                                                 options: options)
         let operation = CoreMLIdentifyOperation(request,
                                                 coreMLVision: coreMLVision,
                                                 listener: listener)

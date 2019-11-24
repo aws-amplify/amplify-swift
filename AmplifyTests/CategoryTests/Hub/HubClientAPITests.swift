@@ -50,6 +50,19 @@ class HubClientAPITests: XCTestCase {
         waitForExpectations(timeout: 0.5)
     }
 
+    func testListenToEventName() throws {
+        let plugin = try makeAndAddMockPlugin()
+        let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
+        plugin.listeners.append { message in
+            if message == "listenEventName" {
+                methodWasInvokedOnPlugin.fulfill()
+            }
+        }
+
+        _ = Amplify.Hub.listen(to: .storage, eventName: "testEvent") { _ in }
+        waitForExpectations(timeout: 0.5)
+    }
+
     func testRemove() throws {
         let plugin = try makeAndAddMockPlugin()
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")

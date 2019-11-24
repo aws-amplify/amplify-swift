@@ -68,8 +68,8 @@ class IdentifyLabelsResultTransformers: IdentifyResultTransformers {
         return parents
     }
 
-    static func processInstances(_ rekognitionInstances: [AWSRekognitionInstance]?) -> [BoundingBox] {
-        var boundingBoxes = [BoundingBox]()
+    static func processInstances(_ rekognitionInstances: [AWSRekognitionInstance]?) -> [CGRect] {
+        var boundingBoxes = [CGRect]()
         guard let rekognitionInstances = rekognitionInstances else {
             return boundingBoxes
         }

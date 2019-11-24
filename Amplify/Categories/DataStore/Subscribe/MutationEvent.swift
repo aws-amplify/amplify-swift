@@ -8,12 +8,6 @@
 import Foundation
 
 public struct MutationEvent: Model {
-    public enum MutationType: String, Codable {
-        case create
-        case update
-        case delete
-    }
-
     public let id: Identifier
     public let modelName: String
     public let json: String

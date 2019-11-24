@@ -51,6 +51,24 @@ class DefaultHubPluginTests: XCTestCase {
         XCTAssertNotNil(unsubscribe)
     }
 
+    /// Given: The default Hub plugin
+    /// When: I invoke listen(to:eventName:)
+    /// Then: I receive messages with that event name
+    func testDefaultPluginListenEventName() throws {
+        let expectedMessageReceived = expectation(description: "Message was received as expected")
+        let unsubscribeToken = plugin.listen(to: .storage, eventName: "TEST_EVENT") { _ in
+            expectedMessageReceived.fulfill()
+        }
+
+        guard try HubListenerTestUtilities.waitForListener(with: unsubscribeToken, plugin: plugin, timeout: 0.5) else {
+            XCTFail("Token with \(unsubscribeToken.id) was not registered")
+            return
+        }
+
+        plugin.dispatch(to: .storage, payload: HubPayload(eventName: "TEST_EVENT"))
+        wait(for: [expectedMessageReceived], timeout: 0.5)
+    }
+
     /// Given: The default Hub plugin with a registered listener
     /// When: I dispatch a message
     /// Then: My listener is invoked with the message
@@ -60,7 +78,7 @@ class DefaultHubPluginTests: XCTestCase {
             messageReceived.fulfill()
         }
 
-        guard try DefaultHubPluginTestHelpers.waitForListener(with: token, plugin: plugin, timeout: 0.5) else {
+        guard try HubListenerTestUtilities.waitForListener(with: token, plugin: plugin, timeout: 0.5) else {
             XCTFail("Token with \(token.id) was not registered")
             return
         }
@@ -77,17 +95,22 @@ class DefaultHubPluginTests: XCTestCase {
         let unexpectedMessageReceived = expectation(description: "Message was received after removing listener")
         unexpectedMessageReceived.isInverted = true
 
-        var messageHasBeenReceived = false
-        let unsubscribeToken = plugin.listen(to: .storage, isIncluded: nil) { _ in
-            if !messageHasBeenReceived {
-                messageHasBeenReceived.toggle()
+        var isStillRegistered = true
+        let unsubscribeToken = plugin.listen(to: .storage, isIncluded: nil) { hubPayload in
+            if isStillRegistered {
+                // Ignore system-generated notifications (e.g., "configuration finished"). After we `removeListener`
+                // though, we don't expect to receive any message, so we only check for the message name if we haven't
+                // yet unsubscribed.
+                guard hubPayload.eventName == "TEST_EVENT" else {
+                    return
+                }
                 expectedMessageReceived.fulfill()
             } else {
                 unexpectedMessageReceived.fulfill()
             }
         }
 
-        guard try DefaultHubPluginTestHelpers.waitForListener(with: unsubscribeToken,
+        guard try HubListenerTestUtilities.waitForListener(with: unsubscribeToken,
                                                               plugin: plugin,
                                                               timeout: 0.5) else {
             XCTFail("Token with \(unsubscribeToken.id) was not registered")
@@ -99,9 +122,9 @@ class DefaultHubPluginTests: XCTestCase {
 
         plugin.removeListener(unsubscribeToken)
 
-        let isStillRegistered = try DefaultHubPluginTestHelpers.waitForListener(with: unsubscribeToken,
-                                                                                plugin: plugin,
-                                                                                timeout: 0.5)
+        isStillRegistered = try HubListenerTestUtilities.waitForListener(with: unsubscribeToken,
+                                                                         plugin: plugin,
+                                                                         timeout: 0.5)
         XCTAssertFalse(isStillRegistered, "Should not be registered after removeListener")
 
         plugin.dispatch(to: .storage, payload: HubPayload(eventName: "TEST_EVENT"))
@@ -114,7 +137,11 @@ class DefaultHubPluginTests: XCTestCase {
     func testMessagesAreDeliveredOnlyToSpecifiedChannel() {
         let messageShouldNotBeReceived = expectation(description: "Message should not be received")
         messageShouldNotBeReceived.isInverted = true
-        _ = plugin.listen(to: .storage, isIncluded: nil) { _ in
+        _ = plugin.listen(to: .storage, isIncluded: nil) { hubPayload in
+            // Ignore system-generated notifications (e.g., "configuration finished")
+            guard hubPayload.eventName == "TEST_EVENT" else {
+                return
+            }
             messageShouldNotBeReceived.fulfill()
         }
         plugin.dispatch(to: .custom("DifferentChannel"), payload: HubPayload(eventName: "TEST_EVENT"))

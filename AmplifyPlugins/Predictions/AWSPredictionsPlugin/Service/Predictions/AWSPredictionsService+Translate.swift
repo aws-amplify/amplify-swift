@@ -11,12 +11,26 @@ import AWSTranslate
 extension AWSPredictionsService: AWSTranslateServiceBehavior {
 
     func translateText(text: String,
-                       language: LanguageType,
-                       targetLanguage: LanguageType,
+                       language: LanguageType?,
+                       targetLanguage: LanguageType?,
                        onEvent: @escaping AWSPredictionsService.TranslateTextServiceEventHandler) {
+
+        guard let sourceLanguage = language ?? predictionsConfig.convert.translateText?.sourceLanguage else {
+            onEvent(.failed(.configuration(AWSTranslateErrorMessage.sourceLanguageNotProvided.errorDescription,
+                                          AWSTranslateErrorMessage.sourceLanguageNotProvided.errorDescription,
+                                          nil)))
+            return
+        }
+        guard let finalTargetLanguage = targetLanguage ?? predictionsConfig.convert.translateText?.targetLanguage else {
+            onEvent(.failed(.configuration(AWSTranslateErrorMessage.sourceLanguageNotProvided.errorDescription,
+            AWSTranslateErrorMessage.sourceLanguageNotProvided.errorDescription,
+            nil)))
+            return
+        }
+
         let request: AWSTranslateTranslateTextRequest = AWSTranslateTranslateTextRequest()
-        request.sourceLanguageCode = language.rawValue
-        request.targetLanguageCode = targetLanguage.rawValue
+        request.sourceLanguageCode = sourceLanguage.rawValue
+        request.targetLanguageCode = finalTargetLanguage.rawValue
         request.text = text
         awsTranslate.translateText(request: request).continueWith { (task) -> Any? in
 

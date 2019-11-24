@@ -28,6 +28,13 @@ class MockHubCategoryPlugin: MessageReporter, HubCategoryPlugin {
     }
 
     func listen(to channel: HubChannel,
+                eventName: HubPayloadEventName,
+                listener: @escaping HubListener) -> UnsubscribeToken {
+        notify("listenEventName")
+        return UnsubscribeToken(channel: channel, id: UUID())
+    }
+
+    func listen(to channel: HubChannel,
                 isIncluded filter: HubFilter?,
                 listener: @escaping HubListener) -> UnsubscribeToken {
         notify("listen")

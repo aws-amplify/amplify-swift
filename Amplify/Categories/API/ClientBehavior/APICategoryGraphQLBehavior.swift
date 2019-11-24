@@ -8,7 +8,6 @@
 /// Behavior of the API category related to GraphQL operations
 public protocol APICategoryGraphQLBehavior {
 
-
     /// Perform a GraphQL query for a single `Model` item. This operation will be asychronous, with the callback
     /// accessible both locally and via the Hub.
     ///
@@ -45,6 +44,18 @@ public protocol APICategoryGraphQLBehavior {
                           type: GraphQLMutationType,
                           listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M>
 
+    /// Performs a GraphQL mutate for the `AnyModel` item. This operation will be asynchronous, with the callback
+    /// accessible both locally and via the Hub.
+    ///
+    /// - Parameters:
+    ///   - model: The instance of the `AnyModel`.
+    ///   - type: The type of mutation to apply on the instance of `AnyModel`.
+    ///   - listener: The event listener for the operation
+    /// - Returns: The AmplifyOperation being enqueued.
+    func mutate(of model: AnyModel,
+                type: GraphQLMutationType,
+                listener: GraphQLOperation<AnyModel>.EventListener?) -> GraphQLOperation<AnyModel>
+
     /// Performs a GraphQL subscribe operation for `Model` items.
     ///
     /// - Parameters:
@@ -54,7 +65,8 @@ public protocol APICategoryGraphQLBehavior {
     /// - Returns: The AmplifyOperation being enqueued.
     func subscribe<M: Model>(from modelType: M.Type,
                              type: GraphQLSubscriptionType,
-                             listener: GraphQLSubscriptionOperation<M>.EventListener?) -> GraphQLSubscriptionOperation<M>
+                             listener: GraphQLSubscriptionOperation<M>.EventListener?)
+        -> GraphQLSubscriptionOperation<M>
 
     /// Perform a GraphQL query operation against a previously configured API. This operation
     /// will be asynchronous, with the callback accessible both locally and via the Hub.
@@ -87,6 +99,3 @@ public protocol APICategoryGraphQLBehavior {
                                  listener: GraphQLSubscriptionOperation<R>.EventListener?)
         -> GraphQLSubscriptionOperation<R>
 }
-
-
-

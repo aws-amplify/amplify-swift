@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import CoreGraphics
+
 public struct Table {
     public var rows: Int
     public var columns: Int
@@ -23,7 +25,7 @@ public extension Table {
 
         /// The location of the recognized text on the image. It includes an axis-aligned,
         /// coarse bounding box that surrounds the text in the table
-        public let boundingBox: BoundingBox
+        public let boundingBox: CGRect
 
         /// The location of the recognized text on the image in a finer-grain polygon than
         /// the bounding box for more accurate spatial information of where the text is in the table
@@ -34,7 +36,7 @@ public extension Table {
         public let columnSpan: Int
 
         public init(text: String,
-                    boundingBox: BoundingBox,
+                    boundingBox: CGRect,
                     polygon: Polygon,
                     isSelected: Bool,
                     rowSpan: Int,
