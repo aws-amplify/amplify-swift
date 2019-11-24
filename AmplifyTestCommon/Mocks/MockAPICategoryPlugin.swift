@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Combine
 import Foundation
 
 class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
@@ -57,6 +58,13 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
                                                  options: options)
         let operation = MockSubscriptionGraphQLOperation(request: request, responseType: M.self)
         return operation
+    }
+
+    @available(iOS 13.0, *)
+    func subscribe(modelType: Model.Type, mutationType: GraphQLMutationType) -> AnyPublisher<AnyModel, APIError> {
+        notify("subscribe(modelType:\(modelType),mutationType:\(mutationType))")
+        let error = APIError.invalidConfiguration("Mock method doesn't actually subscribe", "")
+        return Fail<AnyModel, APIError>(error: error).eraseToAnyPublisher()
     }
 
     // MARK: - Request-based GraphQL methods

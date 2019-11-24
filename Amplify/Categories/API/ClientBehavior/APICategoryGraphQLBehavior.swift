@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Combine
+
 /// Behavior of the API category related to GraphQL operations
 public protocol APICategoryGraphQLBehavior {
 
@@ -98,4 +100,14 @@ public protocol APICategoryGraphQLBehavior {
     func subscribe<R: Decodable>(request: GraphQLRequest<R>,
                                  listener: GraphQLSubscriptionOperation<R>.EventListener?)
         -> GraphQLSubscriptionOperation<R>
+
+    /// An internal method used by Plugins to perform initial subscriptions on registered model types to keep them in
+    /// sync with DataStore.
+    ///
+    /// - Parameters:
+    ///   - modelType: The type of the model to subscribe to, as the `Model` protocol rather than the concrete type
+    ///   - mutationType: The type of mutation to subscribe to
+    /// - Returns: An AnyPublisher that will publish notifications about specified mutations on the model type
+    @available(iOS 13.0, *)
+    func subscribe(modelType: Model.Type, mutationType: GraphQLMutationType) -> AnyPublisher<AnyModel, APIError>
 }

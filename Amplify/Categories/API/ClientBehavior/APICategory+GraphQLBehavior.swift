@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Combine
+
 extension APICategory: APICategoryGraphQLBehavior {
 
     public func query<M: Model>(from modelType: M.Type,
@@ -35,7 +37,7 @@ extension APICategory: APICategoryGraphQLBehavior {
                                     type: GraphQLSubscriptionType,
                                     listener: GraphQLSubscriptionOperation<M>.EventListener?)
         -> GraphQLSubscriptionOperation<M> {
-        plugin.subscribe(from: modelType, type: type, listener: listener)
+            plugin.subscribe(from: modelType, type: type, listener: listener)
     }
 
     public func query<R: Decodable>(request: GraphQLRequest<R>,
@@ -51,6 +53,12 @@ extension APICategory: APICategoryGraphQLBehavior {
     public func subscribe<R>(request: GraphQLRequest<R>,
                              listener: GraphQLSubscriptionOperation<R>.EventListener?)
         -> GraphQLSubscriptionOperation<R> {
-        plugin.subscribe(request: request, listener: listener)
+            plugin.subscribe(request: request, listener: listener)
+    }
+
+    @available(iOS 13.0, *)
+    public func subscribe(modelType: Model.Type, mutationType: GraphQLMutationType)
+        -> AnyPublisher<AnyModel, APIError> {
+            plugin.subscribe(modelType: modelType, mutationType: mutationType)
     }
 }
