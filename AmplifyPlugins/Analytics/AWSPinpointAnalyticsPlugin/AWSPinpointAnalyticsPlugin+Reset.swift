@@ -20,8 +20,8 @@ extension AWSPinpointAnalyticsPlugin {
             authService = nil
         }
 
-        if flushEventsTracker != nil {
-            flushEventsTracker = nil
+        if autoFlushEventsTimer != nil {
+            autoFlushEventsTimer = nil
         }
 
         if appSessionTracker != nil {

@@ -15,7 +15,6 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
     var analyticsPlugin: AWSPinpointAnalyticsPlugin!
     var mockPinpoint: MockAWSPinpoint!
     var authService: MockAWSAuthService!
-    var flushEventsTracker: MockFlushEventsTracker!
     var appSessionTracker: MockAppSessionTracker!
 
     let testAppId = "56e6f06fd4f244c6b202bc1234567890"
@@ -37,15 +36,13 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
 
         mockPinpoint = MockAWSPinpoint()
         authService = MockAWSAuthService()
-        flushEventsTracker =
-            MockFlushEventsTracker(autoFlushEventsInterval: PluginConstants.defaultAutoFlushEventsInterval)
-        appSessionTracker =
-            MockAppSessionTracker(trackAppSessions: PluginConstants.defaultTrackAppSession,
-                                  autoSessionTrackingInterval: PluginConstants.defaultAutoSessionTrackingInterval)
+        appSessionTracker = MockAppSessionTracker(
+            trackAppSessions: AWSPinpointAnalyticsPluginConfiguration.defaultTrackAppSession,
+            autoSessionTrackingInterval: AWSPinpointAnalyticsPluginConfiguration.defaultAutoSessionTrackingInterval)
 
         analyticsPlugin.configure(pinpoint: mockPinpoint,
                                   authService: authService,
-                                  flushEventsTracker: flushEventsTracker,
+                                  autoFlushEventsTimer: nil,
                                   appSessionTracker: appSessionTracker)
 
         Amplify.reset()

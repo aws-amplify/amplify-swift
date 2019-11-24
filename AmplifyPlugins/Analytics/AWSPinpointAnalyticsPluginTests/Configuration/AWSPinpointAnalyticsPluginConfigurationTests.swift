@@ -41,9 +41,12 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             XCTAssertEqual(config.appId, testAppId)
             XCTAssertEqual(config.region, testRegion.aws_regionTypeValue())
             XCTAssertEqual(config.targetingRegion, testRegion.aws_regionTypeValue())
-            XCTAssertEqual(config.autoFlushEventsInterval, PluginConstants.defaultAutoFlushEventsInterval)
-            XCTAssertEqual(config.trackAppSessions, PluginConstants.defaultTrackAppSession)
-            XCTAssertEqual(config.autoSessionTrackingInterval, PluginConstants.defaultAutoSessionTrackingInterval)
+            XCTAssertEqual(config.autoFlushEventsInterval,
+                           AWSPinpointAnalyticsPluginConfiguration.defaultAutoFlushEventsInterval)
+            XCTAssertEqual(config.trackAppSessions,
+                           AWSPinpointAnalyticsPluginConfiguration.defaultTrackAppSession)
+            XCTAssertEqual(config.autoSessionTrackingInterval,
+                           AWSPinpointAnalyticsPluginConfiguration.defaultAutoSessionTrackingInterval)
         } catch {
             XCTFail("Failed to instantiate analytics plugin configuration")
         }
@@ -63,8 +66,10 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             XCTAssertEqual(config.region, testRegion.aws_regionTypeValue())
             XCTAssertEqual(config.targetingRegion, testRegion.aws_regionTypeValue())
             XCTAssertEqual(config.autoFlushEventsInterval, testAutoFlushInterval)
-            XCTAssertEqual(config.trackAppSessions, PluginConstants.defaultTrackAppSession)
-            XCTAssertEqual(config.autoSessionTrackingInterval, PluginConstants.defaultAutoSessionTrackingInterval)
+            XCTAssertEqual(config.trackAppSessions,
+                           AWSPinpointAnalyticsPluginConfiguration.defaultTrackAppSession)
+            XCTAssertEqual(config.autoSessionTrackingInterval,
+                           AWSPinpointAnalyticsPluginConfiguration.defaultAutoSessionTrackingInterval)
          } catch {
             XCTFail("Failed to instantiate analytics plugin configuration")
          }
@@ -83,7 +88,8 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsErrorConstants.invalidAutoFlushEventsInterval.errorDescription)
+            XCTAssertEqual(errorDescription,
+                           AnalyticsPluginErrorConstant.invalidAutoFlushEventsInterval.errorDescription)
         }
     }
 
@@ -100,9 +106,11 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             XCTAssertEqual(config.appId, testAppId)
             XCTAssertEqual(config.region, testRegion.aws_regionTypeValue())
             XCTAssertEqual(config.targetingRegion, testRegion.aws_regionTypeValue())
-            XCTAssertEqual(config.autoFlushEventsInterval, PluginConstants.defaultAutoFlushEventsInterval)
+            XCTAssertEqual(config.autoFlushEventsInterval,
+                           AWSPinpointAnalyticsPluginConfiguration.defaultAutoFlushEventsInterval)
             XCTAssertEqual(config.trackAppSessions, testTrackAppSession)
-            XCTAssertEqual(config.autoSessionTrackingInterval, PluginConstants.defaultAutoSessionTrackingInterval)
+            XCTAssertEqual(config.autoSessionTrackingInterval,
+                           AWSPinpointAnalyticsPluginConfiguration.defaultAutoSessionTrackingInterval)
         } catch {
             XCTFail("Failed to instantiate analytics plugin configuration")
         }
@@ -121,8 +129,9 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             XCTAssertEqual(config.appId, testAppId)
             XCTAssertEqual(config.region, testRegion.aws_regionTypeValue())
             XCTAssertEqual(config.targetingRegion, testRegion.aws_regionTypeValue())
-            XCTAssertEqual(config.autoFlushEventsInterval, PluginConstants.defaultAutoFlushEventsInterval)
-            XCTAssertEqual(config.trackAppSessions, PluginConstants.defaultTrackAppSession)
+            XCTAssertEqual(config.autoFlushEventsInterval,
+                           AWSPinpointAnalyticsPluginConfiguration.defaultAutoFlushEventsInterval)
+            XCTAssertEqual(config.trackAppSessions, AWSPinpointAnalyticsPluginConfiguration.defaultTrackAppSession)
             XCTAssertEqual(config.autoSessionTrackingInterval, testAutoSessionTrackingInterval)
         } catch {
             XCTFail("Failed to instantiate analytics plugin configuration")
@@ -142,7 +151,8 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsErrorConstants.invalidAutoSessionTrackingInterval.errorDescription)
+            XCTAssertEqual(errorDescription,
+                           AnalyticsPluginErrorConstant.invalidAutoSessionTrackingInterval.errorDescription)
         }
     }
 
@@ -154,7 +164,8 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsErrorConstants.configurationObjectExpected.errorDescription)
+            XCTAssertEqual(errorDescription,
+                           AnalyticsPluginErrorConstant.configurationObjectExpected.errorDescription)
         }
      }
 
@@ -168,7 +179,8 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsErrorConstants.missingPinpointAnalyicsConfiguration.errorDescription)
+            XCTAssertEqual(errorDescription,
+                           AnalyticsPluginErrorConstant.missingPinpointAnalyicsConfiguration.errorDescription)
         }
      }
 
@@ -185,7 +197,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 return
             }
             XCTAssertEqual(errorDescription,
-                           AnalyticsErrorConstants.pinpointAnalyticsConfigurationExpected.errorDescription)
+                           AnalyticsPluginErrorConstant.pinpointAnalyticsConfigurationExpected.errorDescription)
         }
      }
 
@@ -203,7 +215,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsErrorConstants.missingAppId.errorDescription)
+            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.missingAppId.errorDescription)
         }
      }
 
@@ -222,7 +234,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsErrorConstants.emptyAppId.errorDescription)
+            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.emptyAppId.errorDescription)
         }
      }
 
@@ -241,7 +253,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsErrorConstants.invalidAppId.errorDescription)
+            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.invalidAppId.errorDescription)
         }
     }
 
@@ -259,7 +271,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsErrorConstants.missingRegion.errorDescription)
+            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.missingRegion.errorDescription)
         }
     }
 
@@ -278,7 +290,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsErrorConstants.emptyRegion.errorDescription)
+            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.emptyRegion.errorDescription)
         }
     }
 
@@ -297,7 +309,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsErrorConstants.invalidRegion.errorDescription)
+            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.invalidRegion.errorDescription)
         }
     }
 
@@ -312,7 +324,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 return
             }
             XCTAssertEqual(errorDescription,
-                           AnalyticsErrorConstants.missingPinpointTargetingConfiguration.errorDescription)
+                           AnalyticsPluginErrorConstant.missingPinpointTargetingConfiguration.errorDescription)
         }
 
     }
@@ -330,7 +342,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 return
             }
             XCTAssertEqual(errorDescription,
-                           AnalyticsErrorConstants.pinpointTargetingConfigurationExpected.errorDescription)
+                           AnalyticsPluginErrorConstant.pinpointTargetingConfigurationExpected.errorDescription)
         }
     }
 
@@ -347,7 +359,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsErrorConstants.missingRegion.errorDescription)
+            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.missingRegion.errorDescription)
         }
     }
 
@@ -364,7 +376,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsErrorConstants.emptyRegion.errorDescription)
+            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.emptyRegion.errorDescription)
         }
     }
 
@@ -381,7 +393,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                 XCTFail("Expected PluginError pluginConfigurationError, got: \(error)")
                 return
             }
-            XCTAssertEqual(errorDescription, AnalyticsErrorConstants.invalidRegion.errorDescription)
+            XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.invalidRegion.errorDescription)
         }
     }
 }

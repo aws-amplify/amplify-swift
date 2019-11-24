@@ -48,7 +48,7 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
 
             XCTAssertNotNil(analyticsPlugin.pinpoint)
             XCTAssertNotNil(analyticsPlugin.authService)
-            XCTAssertNotNil(analyticsPlugin.flushEventsTracker)
+            XCTAssertNotNil(analyticsPlugin.autoFlushEventsTimer)
             XCTAssertNotNil(analyticsPlugin.appSessionTracker)
             XCTAssertNotNil(analyticsPlugin.globalProperties)
             XCTAssertNotNil(analyticsPlugin.isEnabled)
