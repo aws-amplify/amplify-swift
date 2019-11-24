@@ -196,7 +196,8 @@
 		B9FAA11C23879B35009414B4 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11B23879B35009414B4 /* Book.swift */; };
 		B9FAA11E23879B9F009414B4 /* Book+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11D23879B9F009414B4 /* Book+Schema.swift */; };
 		B9FAA12023879BD0009414B4 /* BookAuthor+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11F23879BD0009414B4 /* BookAuthor+Schema.swift */; };
-		B9FAA1222387B06A009414B4 /* Model+Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA1212387B06A009414B4 /* Model+Collection.swift */; };
+		B9FAA1252388BE48009414B4 /* List+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA1242388BE48009414B4 /* List+Model.swift */; };
+		B9FAA1272388BE91009414B4 /* List+LazyLoad.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA1262388BE91009414B4 /* List+LazyLoad.swift */; };
 		B9FB05EA2383123000DE1FD4 /* SQLStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FB05E92383123000DE1FD4 /* SQLStatement.swift */; };
 		B9FB05EC238313CD00DE1FD4 /* SQLStatement+Insert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FB05EB238313CD00DE1FD4 /* SQLStatement+Insert.swift */; };
 		B9FB05EE238315E100DE1FD4 /* SQLStatement+CreateTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FB05ED238315E100DE1FD4 /* SQLStatement+CreateTable.swift */; };
@@ -808,7 +809,8 @@
 		B9FAA11B23879B35009414B4 /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
 		B9FAA11D23879B9F009414B4 /* Book+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Book+Schema.swift"; sourceTree = "<group>"; };
 		B9FAA11F23879BD0009414B4 /* BookAuthor+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookAuthor+Schema.swift"; sourceTree = "<group>"; };
-		B9FAA1212387B06A009414B4 /* Model+Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+Collection.swift"; sourceTree = "<group>"; };
+		B9FAA1242388BE48009414B4 /* List+Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "List+Model.swift"; sourceTree = "<group>"; };
+		B9FAA1262388BE91009414B4 /* List+LazyLoad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "List+LazyLoad.swift"; sourceTree = "<group>"; };
 		B9FB05E92383123000DE1FD4 /* SQLStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLStatement.swift; sourceTree = "<group>"; };
 		B9FB05EB238313CD00DE1FD4 /* SQLStatement+Insert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SQLStatement+Insert.swift"; sourceTree = "<group>"; };
 		B9FB05ED238315E100DE1FD4 /* SQLStatement+CreateTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SQLStatement+CreateTable.swift"; sourceTree = "<group>"; };
@@ -1513,9 +1515,9 @@
 		B92E03A62367CE7A006CEB8D /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B9FAA1232388BE2B009414B4 /* Collection */,
 				B92E03A72367CE7A006CEB8D /* Model.swift */,
 				B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */,
-				B9FAA1212387B06A009414B4 /* Model+Collection.swift */,
 				B92E03AB2367CE7A006CEB8D /* Model+Schema.swift */,
 				B9FAA10A23878122009414B4 /* ModelField+Association.swift */,
 				B92E03A92367CE7A006CEB8D /* ModelRegistry.swift */,
@@ -1669,6 +1671,15 @@
 				B9FAA11323878CEA009414B4 /* UserProfile+Schema.swift */,
 			);
 			path = Associations;
+			sourceTree = "<group>";
+		};
+		B9FAA1232388BE2B009414B4 /* Collection */ = {
+			isa = PBXGroup;
+			children = (
+				B9FAA1242388BE48009414B4 /* List+Model.swift */,
+				B9FAA1262388BE91009414B4 /* List+LazyLoad.swift */,
+			);
+			path = Collection;
 			sourceTree = "<group>";
 		};
 		C4DBE378379CBB2C3F4536BE /* Frameworks */ = {
@@ -3749,8 +3760,10 @@
 				FA76A2D12342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift in Sources */,
 				FAC23546227A055200424678 /* AmplifyError.swift in Sources */,
 				FA09B9492322CBD5000E064D /* HubCategoryConfiguration.swift in Sources */,
+				B9FAA1252388BE48009414B4 /* List+Model.swift in Sources */,
 				21D1CE8C2334233F0003BAA8 /* AuthError.swift in Sources */,
 				FAC0A2B222B4402000B50912 /* StorageCategory+ClientBehavior.swift in Sources */,
+				B9FAA1272388BE91009414B4 /* List+LazyLoad.swift in Sources */,
 				B4340A24238325B900101BBA /* DefaultNetworkPolicy.swift in Sources */,
 				B4D38537236C97360014653D /* PredictionsCategory+CategoryConfigurable.swift in Sources */,
 				FA4E730C23282917003B8EEB /* Amplify+Resolve.swift in Sources */,
@@ -3760,7 +3773,6 @@
 				95DAAB31237E63370028544F /* PartOfSpeech.swift in Sources */,
 				FA56F72522B14B6A0039754A /* Resumable.swift in Sources */,
 				21FFF997230C96CB005878EA /* StorageRemoveOperation.swift in Sources */,
-				B9FAA1222387B06A009414B4 /* Model+Collection.swift in Sources */,
 				FAC2351C227A053D00424678 /* APICategoryPlugin.swift in Sources */,
 				210DBC162332B3CB009B9E51 /* StorageGetDataOperation.swift in Sources */,
 				FAC235A3227A5ED000424678 /* HubChannel.swift in Sources */,

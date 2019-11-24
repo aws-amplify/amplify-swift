@@ -30,44 +30,6 @@ class SQLStatementTests: XCTestCase {
 
     }
 
-    func testCollection() {
-        let postDict: [String: Any?] = [
-            "id": "some-id",
-            "title": "Title",
-            "content": "Content",
-            "createdAt": 0,
-            "updatedAt": nil,
-            "draft": false,
-            "comments": [
-                "associatedId": "some-id",
-                "associatedFieldName": "post",
-                "items": []
-            ]
-        ]
-        do {
-            print("============================")
-            let post = try Post.from(dictionary: postDict)
-            print(post)
-            print("============================")
-        } catch {
-            print(error)
-            print("============================")
-        }
-
-
-        let posts: List<Post> = [
-            Post(title: "title 1", content: "content 1"),
-            Post(title: "title 2", content: "content 2")
-        ]
-
-        for post in posts {
-            print(post)
-        }
-
-        XCTAssertEqual(posts.count, 2)
-        XCTAssertEqual(posts[1].title, "title 2")
-    }
-
     // MARK: - Create Table
 
     /// - Given: a `Model` type

@@ -14,23 +14,39 @@ import XCTest
 
 class SQLiteStorageEngineAdapterTests: XCTestCase {
 
+    var connection: Connection!
     var storageAdapter: SQLiteStorageEngineAdapter!
 
     override func setUp() {
         super.setUp()
 
         Amplify.reset()
+        Amplify.Logging.logLevel = .warn
 
         ModelRegistry.register(modelType: Post.self)
         ModelRegistry.register(modelType: Comment.self)
 
-        let connection = try? Connection(.inMemory)
-        XCTAssertNotNil(connection)
-        storageAdapter = SQLiteStorageEngineAdapter(connection: connection!)
-        XCTAssertNotNil(storageAdapter)
-
+        let storageEngine: StorageEngine
         do {
-            try storageAdapter.setUp(models: ModelRegistry.models)
+            connection = try Connection(.inMemory)
+            storageAdapter = SQLiteStorageEngineAdapter(connection: connection)
+            storageEngine = StorageEngine(adapter: storageAdapter, syncEngineFactory: nil)
+        } catch {
+            XCTFail(String(describing: error))
+            return
+        }
+
+        let dataStorePublisher = DataStorePublisher()
+        let dataStorePlugin = AWSDataStoreCategoryPlugin(storageEngine: storageEngine,
+                                                         dataStorePublisher: dataStorePublisher)
+
+        let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
+            "AWSDataStoreCategoryPlugin": true
+        ])
+        let amplifyConfig = AmplifyConfiguration(dataStore: dataStoreConfig)
+        do {
+            try Amplify.add(plugin: dataStorePlugin)
+            try Amplify.configure(amplifyConfig)
         } catch {
             XCTFail(String(describing: error))
             return
@@ -232,6 +248,73 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 5)
+    }
+
+    func testInsertPostAndComments() {
+        let expectation = self.expectation(
+            description: "it should save and select a Post from the database")
+
+        let newPost = Post(title: "title", content: "post")
+        prepareData(newPost)
+        prepareData(
+            Comment(content: "comment 1", post: newPost),
+            Comment(content: "comment 2", post: newPost),
+            Comment(content: "comment 3", post: newPost)
+        )
+
+        // query the post by id
+
+        storageAdapter.query(Post.self, predicate: Post.keys.id == newPost.id) {
+            switch $0 {
+            case .result(let posts):
+                XCTAssertEqual(posts.count, 1)
+                if let post = posts.first {
+                    let comments = post.comments
+                    XCTAssertEqual(comments.count, 3)
+                    for comment in comments {
+                        XCTAssertEqual(comment.post.id, post.id)
+                        XCTAssertEqual(comment.post.title, post.title)
+                    }
+                    expectation.fulfill()
+                }
+            case .error(let error):
+                XCTFail(String(describing: error))
+                expectation.fulfill()
+            }
+        }
+
+        wait(for: [expectation], timeout: 5)
+    }
+
+    // MARK: - Utilities
+
+    private func prepareData<M: Model>(_ models: M...) {
+        let semaphore = DispatchSemaphore(value: 0)
+
+        func save(model: M, index: Int) {
+            storageAdapter.save(model) {
+                switch $0 {
+                case .result:
+                    let nextIndex = index + 1
+                    if nextIndex < models.endIndex {
+                        save(model: models[nextIndex], index: nextIndex)
+                    } else {
+                        semaphore.signal()
+                    }
+                case .error(let error):
+                    XCTFail(error.errorDescription)
+                    semaphore.signal()
+                }
+            }
+        }
+
+        if let model = models.first {
+            save(model: model, index: 0)
+            semaphore.wait()
+        } else {
+            semaphore.signal()
+        }
+
     }
 
 }

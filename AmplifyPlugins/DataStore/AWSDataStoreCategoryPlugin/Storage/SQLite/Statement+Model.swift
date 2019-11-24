@@ -9,7 +9,9 @@ import Amplify
 import Foundation
 import SQLite
 
-typealias ModelValues = [String: Any]
+typealias ModelValues = [String: Any?]
+
+typealias ConvertCache = [String: ModelValues]
 
 /// Struct used to hold the values extracted from a executed `Statement`.
 ///
@@ -18,7 +20,7 @@ typealias ModelValues = [String: Any]
 /// large result sets efficient.
 struct StatementResult<M: Model>: Decodable {
 
-    let models: [M]
+    let elements: [M]
 
     public static func from(dictionary: ModelValues) throws -> Self {
         let data = try JSONSerialization.data(withJSONObject: dictionary)
@@ -40,19 +42,27 @@ protocol StatementModelConvertible {
 /// Extend `Statement` with the model conversion capabilities defined by `StatementModelConvertible`.
 extension Statement: StatementModelConvertible {
 
+    var logger: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName)
+    }
+
     public func convert<M: Model>(to modelType: M.Type) throws -> [M] {
         var rows: [ModelValues] = []
+        var convertedCache: ConvertCache = [:]
         for row in self {
-            let modelDictionary = try mapEach(row: row, to: modelType)
+            let modelDictionary = try mapEach(row: row,
+                                              to: modelType,
+                                              cache: &convertedCache)
             rows.append(modelDictionary)
         }
-        let values: ModelValues = ["models": rows]
+        let values: ModelValues = ["elements": rows]
         let result: StatementResult<M> = try StatementResult.from(dictionary: values)
-        return result.models
+        return result.elements
     }
 
     internal func mapEach(row: Element,
                           to modelType: Model.Type,
+                          cache: inout ConvertCache,
                           fieldName: String? = nil) throws -> ModelValues {
         // hold the extracted values
         var values: ModelValues = [:]
@@ -60,6 +70,15 @@ extension Statement: StatementModelConvertible {
         let columns = columnNames
         let propertyPrefix = fieldName != nil ? "\(fieldName!)." : nil
         let schema = modelType.schema
+
+        // check if model with the given id was already converted to ModelValues
+        // this is a needed optimization since the same row can be present in different
+        // parts of the result set, including in circular association scenarios
+        let keyName = (propertyPrefix ?? "") + schema.primaryKey.sqlName
+        let indexOfId = columns.firstIndex(of: keyName)
+        if let index = indexOfId, let id = row[index] as? String, let cached = cache[id] {
+            return cached
+        }
 
         for (index, column) in columns.enumerated()
             where propertyPrefix == nil || column.starts(with: propertyPrefix!) {
@@ -77,21 +96,32 @@ extension Statement: StatementModelConvertible {
                     """)
                 }
                 let associatedModelType = associatedField.requiredAssociatedModel
-                let connectedModel = try mapEach(row: row,
-                                                 to: associatedModelType,
-                                                 fieldName: propertyName)
-                values[propertyName] = connectedModel
+                let associatedModel = try mapEach(row: row,
+                                                  to: associatedModelType,
+                                                  cache: &cache,
+                                                  fieldName: propertyName)
+                values[propertyName] = associatedModel
             } else if let field = schema.field(withName: name) {
                 values[name] = field.value(from: row[index])
             } else {
-                // TODO log ignored column
+                logger.warn("""
+                A column named \(name) was found in the result set but no field on
+                \(schema.name) could be found with that name and it will be ignored.
+                """)
             }
+        }
 
-//            if let id = values[schema.primaryKey.name] {
-//                schema.fields.values.filter { $0.isArray }.forEach { field in
-//                    field.requiredAssociatedModel.listOf(id: id, field: field)
-//                }
-//            }
+        if let id = values[schema.primaryKey.name] as? String {
+            // create instances of lazy-load lists of fields that represent "many" associations
+            schema.fields.values.filter { $0.isArray }.forEach { field in
+                let lazyListDecodable: [String: Any?] = [
+                    "associatedId": id,
+                    "associatedField": field.associatedField?.name,
+                    "elements": []
+                ]
+                values[field.name] = lazyListDecodable
+            }
+            cache.updateValue(values, forKey: id)
         }
         return values
     }
