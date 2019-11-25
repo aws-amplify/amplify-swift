@@ -13,7 +13,7 @@ public class UserAccount: Model {
     public let id: Model.Identifier
 
     // hasOne(associatedWith: "account")
-    public let profile: UserProfile?
+    public var profile: UserProfile?
 
     public init(id: String = UUID().uuidString,
                 profile: UserProfile? = nil) {

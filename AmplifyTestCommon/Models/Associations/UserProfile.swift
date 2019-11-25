@@ -13,7 +13,7 @@ public class UserProfile: Model {
     public let id: Model.Identifier
 
     // belongsTo(associatedWith: "profile")
-    public let account: UserAccount
+    public var account: UserAccount
 
     public init(id: String = UUID().uuidString,
                 account: UserAccount) {

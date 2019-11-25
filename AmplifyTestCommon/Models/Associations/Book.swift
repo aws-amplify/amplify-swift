@@ -13,7 +13,7 @@ public class Book: Model {
     public let id: Model.Identifier
 
     // hasMany(associatedWith: "book")
-    public let authors: List<BookAuthor>
+    public var authors: List<BookAuthor>
 
     public init(id: String = UUID().uuidString,
                 authors: List<BookAuthor> = []) {

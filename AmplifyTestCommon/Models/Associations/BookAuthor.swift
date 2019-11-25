@@ -13,7 +13,7 @@ public class BookAuthor: Model {
     public let id: Model.Identifier
 
     // belongsTo
-    public let author: Author
+    public var author: Author
 
     // belongsTo
     public let book: Book

@@ -177,17 +177,15 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
             }
         }
 
-        let post = Post(title: "title", content: "content")
+        var post = Post(title: "title", content: "content")
         storageAdapter.save(post) { insertResult in
             switch insertResult {
             case .result:
-                let updatedPost = Post(id: post.id,
-                                       title: "title updated",
-                                       content: "content")
-                storageAdapter.save(updatedPost) { updateResult in
+                post.title = "title updated"
+                storageAdapter.save(post) { updateResult in
                     switch updateResult {
                     case .result:
-                        checkSavedPost(id: updatedPost.id)
+                        checkSavedPost(id: post.id)
                     case .error(let error):
                         XCTFail(error.errorDescription)
                     }
