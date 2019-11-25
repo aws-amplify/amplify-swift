@@ -70,15 +70,15 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             // load the recent saved instance and pass it back to the callback
             query(modelType, predicate: field("id").eq(model.id)) {
                 switch $0 {
-                case .result(let result):
+                case .success(let result):
                     if let saved = result.first {
-                        completion(.result(saved))
+                        completion(.success(saved))
                     } else {
-                        completion(.error(.nonUniqueResult(model: modelType.modelName,
-                                                           count: result.count)))
+                        completion(.failure(.nonUniqueResult(model: modelType.modelName,
+                                                             count: result.count)))
                     }
-                case .error(let error):
-                    completion(.error(error))
+                case .failure(let error):
+                    completion(.failure(error))
                 }
             }
         } catch {
@@ -106,7 +106,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             let statement = SelectStatement(from: modelType, predicate: predicate)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
             let result: [M] = try rows.convert(to: modelType)
-            completion(.result(result))
+            completion(.success(result))
         } catch {
             completion(.failure(causedBy: error))
         }

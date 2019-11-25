@@ -167,6 +167,8 @@
 		B9FAA12023879BD0009414B4 /* BookAuthor+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11F23879BD0009414B4 /* BookAuthor+Schema.swift */; };
 		B9FAA1252388BE48009414B4 /* List+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA1242388BE48009414B4 /* List+Model.swift */; };
 		B9FAA1272388BE91009414B4 /* List+LazyLoad.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA1262388BE91009414B4 /* List+LazyLoad.swift */; };
+		B9FAA13A238BBADE009414B4 /* List+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA139238BBADE009414B4 /* List+Combine.swift */; };
+		B9FAA13C238BBE67009414B4 /* DataStoreCallback+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA13B238BBE67009414B4 /* DataStoreCallback+Combine.swift */; };
 		B9FB05F82383740D00DE1FD4 /* DataStoreStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FB05F72383740D00DE1FD4 /* DataStoreStatement.swift */; };
 		BBDAB9BA4CFBCBEAC27D0AEB /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DB257EB47AB94ED06B62380 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework */; };
 		FA0173352375F8A5005DDDFC /* LoggingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173342375F8A5005DDDFC /* LoggingError.swift */; };
@@ -721,6 +723,8 @@
 		B9FAA11F23879BD0009414B4 /* BookAuthor+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookAuthor+Schema.swift"; sourceTree = "<group>"; };
 		B9FAA1242388BE48009414B4 /* List+Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "List+Model.swift"; sourceTree = "<group>"; };
 		B9FAA1262388BE91009414B4 /* List+LazyLoad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "List+LazyLoad.swift"; sourceTree = "<group>"; };
+		B9FAA139238BBADE009414B4 /* List+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "List+Combine.swift"; sourceTree = "<group>"; };
+		B9FAA13B238BBE67009414B4 /* DataStoreCallback+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataStoreCallback+Combine.swift"; sourceTree = "<group>"; };
 		B9FB05F72383740D00DE1FD4 /* DataStoreStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreStatement.swift; sourceTree = "<group>"; };
 		BAFD88194E245D6B82399825 /* Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		BB548811E9281F8547D83681 /* Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -1472,9 +1476,10 @@
 				B98E9D042372236200934B51 /* Query */,
 				FAD3936C2381F91C00463F5E /* Subscribe */,
 				B92E03A12367CE79006CEB8D /* DataStoreCallback.swift */,
-				FA176ED42385012000C5C5F9 /* DataStoreCategory+HubPayloadEventName.swift */,
+				B9FAA13B238BBE67009414B4 /* DataStoreCallback+Combine.swift */,
 				B92E03A42367CE7A006CEB8D /* DataStoreCategory.swift */,
 				B92E039E2367CE79006CEB8D /* DataStoreCategory+Behavior.swift */,
+				FA176ED42385012000C5C5F9 /* DataStoreCategory+HubPayloadEventName.swift */,
 				B92E03A02367CE79006CEB8D /* DataStoreCategoryBehavior.swift */,
 				B92E03A32367CE79006CEB8D /* DataStoreCategoryConfiguration.swift */,
 				B92E039F2367CE79006CEB8D /* DataStoreCategoryPlugin.swift */,
@@ -1505,6 +1510,7 @@
 		B9FAA1232388BE2B009414B4 /* Collection */ = {
 			isa = PBXGroup;
 			children = (
+				B9FAA139238BBADE009414B4 /* List+Combine.swift */,
 				B9FAA1262388BE91009414B4 /* List+LazyLoad.swift */,
 				B9FAA1242388BE48009414B4 /* List+Model.swift */,
 			);
@@ -3288,6 +3294,7 @@
 				21D79FDA237617C60057D00D /* SubscriptionEvent.swift in Sources */,
 				B92E03B52367CE7A006CEB8D /* Model.swift in Sources */,
 				95DAAB31237E63370028544F /* PartOfSpeech.swift in Sources */,
+				B9FAA13A238BBADE009414B4 /* List+Combine.swift in Sources */,
 				FA8EE77B2386271A0097E4F1 /* Model+AnyModel.swift in Sources */,
 				FA56F72522B14B6A0039754A /* Resumable.swift in Sources */,
 				21FFF997230C96CB005878EA /* StorageRemoveOperation.swift in Sources */,
@@ -3316,6 +3323,7 @@
 				FAC2358F227A4A6E00424678 /* HubCategory.swift in Sources */,
 				B98E9D0E2372236300934B51 /* ModelKey.swift in Sources */,
 				95DAAB86237F13A10028544F /* PredictionsTextToSpeechOperation.swift in Sources */,
+				B9FAA13C238BBE67009414B4 /* DataStoreCallback+Combine.swift in Sources */,
 				95DAAB8A237F13B70028544F /* TextToSpeechResult.swift in Sources */,
 				B98E9D122372236300934B51 /* QueryField.swift in Sources */,
 				B98E9D0F2372236300934B51 /* QueryOperator.swift in Sources */,

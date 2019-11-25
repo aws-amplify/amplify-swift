@@ -31,7 +31,7 @@ extension List {
         // if the collection has no associated field, return the current elements
         guard let associatedId = self.associatedId,
               let associatedField = self.associatedField else {
-            completion(.result(elements))
+            completion(.success(elements))
             return
         }
 
@@ -40,11 +40,11 @@ extension List {
         let predicate: QueryPredicateFactory = { field(name) == associatedId }
         Amplify.DataStore.query(Element.self, where: predicate) {
             switch $0 {
-            case .result(let elements):
+            case .success(let elements):
                 self.elements = elements
                 self.state = .loaded
-                completion(.result(elements))
-            case .error(let error):
+                completion(.success(elements))
+            case .failure(let error):
                 completion(.failure(causedBy: error))
             }
         }
@@ -79,10 +79,10 @@ extension List {
         let semaphore = DispatchSemaphore(value: 0)
         lazyLoad {
             switch $0 {
-            case .result(let elements):
+            case .success(let elements):
                 self.elements = elements
                 semaphore.signal()
-            case .error(let error):
+            case .failure(let error):
                 semaphore.signal()
                 // TODO how to handle this failure? should it crash? just log the error?
                 fatalError(error.errorDescription)
