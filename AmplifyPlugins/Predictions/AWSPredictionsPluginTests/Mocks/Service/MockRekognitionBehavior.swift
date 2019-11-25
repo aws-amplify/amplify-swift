@@ -85,6 +85,11 @@ class MockRekognitionBehavior: AWSRekognitionBehavior {
         error = nil
     }
 
+    public func setLabelsResponse(result: AWSRekognitionDetectLabelsResponse) {
+        detectLabels = result
+        error = nil
+    }
+
     public func setFacesFromCollection(result: AWSRekognitionSearchFacesByImageResponse) {
         facesFromCollection = result
         error = nil
