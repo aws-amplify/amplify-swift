@@ -20,6 +20,12 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
         super.setUp()
 
         Amplify.reset()
+        let config = AmplifyConfiguration()
+        do {
+            try Amplify.configure(config)
+        } catch {
+            XCTFail(String(describing: error))
+        }
 
         ModelRegistry.register(modelType: Post.self)
         ModelRegistry.register(modelType: Comment.self)

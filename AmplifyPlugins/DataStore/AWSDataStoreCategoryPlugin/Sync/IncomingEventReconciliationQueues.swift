@@ -15,7 +15,7 @@ import Foundation
 /// systems.
 final class IncomingEventReconciliationQueues {
 
-    var reconciliationQueues = [String: ReconciliationQueue]()
+    private var reconciliationQueues = [String: ReconciliationQueue]()
 
     init(modelTypes: [Model.Type],
          api: APICategoryGraphQLBehavior,
@@ -29,6 +29,18 @@ final class IncomingEventReconciliationQueues {
 
     func start() {
         reconciliationQueues.values.forEach { $0.start() }
+    }
+
+    /// Returns an AsyncEvent listener for mutation events on `modelType`, that subsequently publishes the
+    /// asyncEvent to the appropriate ReconciliationQueue. Used as the Outgoing mutation event listener.
+    ///
+    /// - Parameter modelType: The model type for which to create a listener
+    func incomingMutationEventsSubject(for modelName: String) -> IncomingAsyncMutationEventSubject.Subject? {
+        guard let queue = reconciliationQueues[modelName] else {
+            return nil
+        }
+
+        return queue.incomingAsyncMutationEvents
     }
 }
 
@@ -44,9 +56,13 @@ final class ReconciliationQueue {
 
     private let modelName: String
 
-    private let incomingSubscriptionEvents: IncomingSubscriptionQueue
-    // TODO: fix naming
-//    private let incomingMutationResponses: OutgoingMutationQueue
+    private let incomingSubscriptionEvents: IncomingSubscriptionEventPublisher
+
+    private let incomingMutationEvents: IncomingMutationEventPublisher
+
+    var incomingAsyncMutationEvents: IncomingAsyncMutationEventSubject.Subject {
+        incomingMutationEvents.incomingAsyncMutationEvents
+    }
 
     private var allModels: AnyCancellable?
 
@@ -63,16 +79,13 @@ final class ReconciliationQueue {
         operationQueue.underlyingQueue = DispatchQueue.global()
         operationQueue.isSuspended = true
 
-        // TODO: Wire this up to mutation queue
-//        self.incomingMutationResponses = modelsFromLocalMutations.publisher
-        let modelsFromLocalMutations = PassthroughSubject<AnyModel, DataStoreError>()
-
-        let incomingSubscriptionEvents = IncomingSubscriptionQueue(modelType: modelType,
-                                                                   api: api)
-
+        let incomingSubscriptionEvents = IncomingSubscriptionEventPublisher(modelType: modelType, api: api)
         self.incomingSubscriptionEvents = incomingSubscriptionEvents
 
-        self.allModels = Publishers.Merge(modelsFromLocalMutations,
+        let incomingMutationEvents = IncomingMutationEventPublisher(modelType: modelType, api: api)
+        self.incomingMutationEvents = incomingMutationEvents
+
+        self.allModels = Publishers.Merge(incomingMutationEvents.publisher,
                                           incomingSubscriptionEvents.publisher)
             .eraseToAnyPublisher()
             .sink(receiveCompletion: { [weak self] completion in

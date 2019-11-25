@@ -15,8 +15,7 @@ final class StorageEngine: StorageEngineBehavior {
     let adapter: StorageEngineAdapter
 
     private var syncEngine: CloudSyncEngineBehavior?
-    // TODO: Make APICategoryGraphQLBehavior a class constrained protocol and weaken this
-    private var api: APICategoryGraphQLBehavior?
+    private weak var api: APICategoryGraphQLBehavior?
 
     // Internal initializer used for testing, to allow lazy initialization of the SyncEngine
     init(adapter: StorageEngineAdapter,

@@ -18,6 +18,7 @@ public enum DataStoreError: Error {
     case invalidOperation(causedBy: Error? = nil)
     case nonUniqueResult(model: String)
     case sync(ErrorDescription, RecoverySuggestion, Error? = nil)
+    case unknown(ErrorDescription, RecoverySuggestion, Error? = nil)
 }
 
 // MARK: - AmplifyError
@@ -28,10 +29,6 @@ extension DataStoreError: AmplifyError {
         switch self {
         case .api(let error):
             return error.errorDescription
-        case .configuration(let errorDescription, _, _):
-            return errorDescription
-        case .decodingError(let errorDescription, _):
-            return errorDescription
         case .invalidDatabase:
             return "Could not create a new database."
         case .invalidModelName(let modelName):
@@ -40,7 +37,10 @@ extension DataStoreError: AmplifyError {
             return causedBy?.localizedDescription ?? ""
         case .nonUniqueResult(let model):
             return "The result of the queried model of type \(model) return more than one result."
-        case .sync(let errorDescription, _, _):
+        case .configuration(let errorDescription, _, _),
+             .decodingError(let errorDescription, _),
+             .sync(let errorDescription, _, _),
+             .unknown(let errorDescription, _, _):
             return errorDescription
         }
     }
@@ -49,10 +49,6 @@ extension DataStoreError: AmplifyError {
         switch self {
         case .api(let error):
             return error.recoverySuggestion
-        case .configuration(_, let recoverySuggestion, _):
-            return recoverySuggestion
-        case .decodingError(_, let recoverySuggestion):
-            return recoverySuggestion
         case .invalidDatabase(let path):
             return "Make sure the path \(path) is valid and the device has available storage space."
         case .invalidModelName(let modelName):
@@ -65,7 +61,10 @@ extension DataStoreError: AmplifyError {
             Check that the condition applied to the query actually guarantees uniqueness, such
             as unique indexes, primary keys.
             """
-        case .sync(_, let recoverySuggestion, _):
+        case .configuration(_, let recoverySuggestion, _),
+             .decodingError(_, let recoverySuggestion),
+             .sync(_, let recoverySuggestion, _),
+             .unknown(_, let recoverySuggestion, _):
             return recoverySuggestion
         }
     }
@@ -77,10 +76,30 @@ extension DataStoreError: AmplifyError {
         case .configuration(_, _, let underlyingError),
              .invalidDatabase(_, let underlyingError),
              .invalidOperation(let underlyingError),
-             .sync(_, _, let underlyingError):
+             .sync(_, _, let underlyingError),
+             .unknown(_, _, let underlyingError):
             return underlyingError
         default:
             return nil
+        }
+    }
+}
+
+extension DataStoreError {
+    init(error: Error) {
+        if let dataStoreError = error as? DataStoreError {
+            self = dataStoreError
+        } else if let amplifyError = error as? AmplifyError {
+            let dataStoreError = DataStoreError.api(amplifyError)
+            self = dataStoreError
+        } else {
+            let dataStoreError = DataStoreError.unknown(
+                "An unknown error occurred",
+                """
+                See underlying error for details
+                """,
+                error)
+            self = dataStoreError
         }
     }
 }

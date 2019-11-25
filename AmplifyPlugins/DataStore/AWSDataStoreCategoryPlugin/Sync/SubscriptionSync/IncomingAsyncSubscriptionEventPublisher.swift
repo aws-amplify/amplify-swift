@@ -17,8 +17,8 @@ import Combine
 /// At initialization, the Queue sets up subscriptions, via the provided `APICategoryGraphQLBehavior`, for each type
 /// `GraphQLSubscriptionType` and holds a reference to the returned operation. The operations' listeners enqueue
 /// incoming successful events onto a `Publisher`, that queue processors can subscribe to.
-final class IncomingSubscriptionAsyncEventQueue {
-    typealias QueueElement = AsyncEvent<SubscriptionEvent<GraphQLResponse<AnyModel>>, Void, APIError>
+final class IncomingAsyncSubscriptionEventPublisher {
+    typealias Event = AsyncEvent<SubscriptionEvent<GraphQLResponse<AnyModel>>, Void, APIError>
 
     private var onCreateOperation: GraphQLSubscriptionOperation<AnyModel>?
     private let onCreateListener: GraphQLSubscriptionOperation<AnyModel>.EventListener
@@ -29,11 +29,11 @@ final class IncomingSubscriptionAsyncEventQueue {
     private var onDeleteOperation: GraphQLSubscriptionOperation<AnyModel>?
     private let onDeleteListener: GraphQLSubscriptionOperation<AnyModel>.EventListener
 
-    private let incomingSubscriptionEvents: PassthroughSubject<QueueElement, DataStoreError>
+    private let incomingSubscriptionEvents: PassthroughSubject<Event, DataStoreError>
 
     init(modelType: Model.Type, api: APICategoryGraphQLBehavior) {
-        let log = Amplify.Logging.logger(forCategory: "IncomingSubscriptionAsyncEventQueue")
-        let incomingSubscriptionEvents = PassthroughSubject<QueueElement, DataStoreError>()
+        let log = Amplify.Logging.logger(forCategory: "IncomingAsyncSubscriptionEventPublisher")
+        let incomingSubscriptionEvents = PassthroughSubject<Event, DataStoreError>()
         self.incomingSubscriptionEvents = incomingSubscriptionEvents
 
         let onCreateListener: GraphQLSubscriptionOperation<AnyModel>.EventListener = { event in
@@ -64,9 +64,9 @@ final class IncomingSubscriptionAsyncEventQueue {
                                                listener: onDeleteListener)
     }
 
-    func subscribe<S: Subscriber>(subscriber: S) where S.Input == QueueElement, S.Failure == DataStoreError {
+    func subscribe<S: Subscriber>(subscriber: S) where S.Input == Event, S.Failure == DataStoreError {
         incomingSubscriptionEvents.subscribe(subscriber)
     }
 }
 
-extension IncomingSubscriptionAsyncEventQueue: DefaultLogger { }
+extension IncomingAsyncSubscriptionEventPublisher: DefaultLogger { }

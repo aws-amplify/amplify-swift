@@ -8,7 +8,7 @@
 import Combine
 
 /// Behavior of the API category related to GraphQL operations
-public protocol APICategoryGraphQLBehavior {
+public protocol APICategoryGraphQLBehavior: class {
 
     /// Perform a GraphQL query for a single `Model` item. This operation will be asychronous, with the callback
     /// accessible both locally and via the Hub.

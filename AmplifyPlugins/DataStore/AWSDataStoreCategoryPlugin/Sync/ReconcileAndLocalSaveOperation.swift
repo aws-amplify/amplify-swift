@@ -48,9 +48,9 @@ class ReconcileAndLocalSaveOperation: Operation {
     }
 
     private weak var storageAdapter: StorageEngineAdapter?
-    let stateMachine: StateMachine<State, Action>
-    let anyModel: AnyModel
-    var stateMachineSink: AnyCancellable?
+    private let stateMachine: StateMachine<State, Action>
+    private let anyModel: AnyModel
+    private var stateMachineSink: AnyCancellable?
 
     init(anyModel: AnyModel,
          storageAdapter: StorageEngineAdapter) {
@@ -295,11 +295,11 @@ class ReconcileAndLocalSaveOperation: Operation {
         case (.saving, .saved(let savedModel)):
             return .notifying(savedModel)
 
-        case (_, .errored(let amplifyError)):
-            return .inError(amplifyError)
-
         case (.notifying, .notified):
             return .finished
+
+        case (_, .errored(let amplifyError)):
+            return .inError(amplifyError)
 
         case (.finished, _):
             return .finished

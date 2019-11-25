@@ -31,11 +31,14 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     internal init(connection: Connection) {
-        log.debug("Created database connection at \(connection)")
+        // Reinstate once we fix https://github.com/aws-amplify/amplify-ios/issues/161
+        // log.debug("Created database connection at \(connection)")
         self.connection = connection
     }
 
     func setUp(models: [Model.Type]) throws {
+        log.debug("Setting up database connection at \(String(describing: connection))")
+
         let createTableStatements = models
             .sortByDependencyOrder()
             .map { CreateTableStatement(modelType: $0).stringValue }

@@ -25,14 +25,9 @@
 		2149E5D22388684F00873955 /* SQLStatement+Condition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E5B62388684F00873955 /* SQLStatement+Condition.swift */; };
 		2149E5D32388684F00873955 /* Statement+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E5B72388684F00873955 /* Statement+Model.swift */; };
 		2149E5D42388684F00873955 /* DataStorePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E5B92388684F00873955 /* DataStorePublisher.swift */; };
-		2149E5D52388684F00873955 /* SyncEngineMutationSubscriber+Responses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E5BB2388684F00873955 /* SyncEngineMutationSubscriber+Responses.swift */; };
-		2149E5D62388684F00873955 /* SyncEngineMutationSubscriber+Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E5BC2388684F00873955 /* SyncEngineMutationSubscriber+Log.swift */; };
 		2149E5D72388684F00873955 /* NetworkReachabilityNotifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E5BD2388684F00873955 /* NetworkReachabilityNotifier.swift */; };
 		2149E5D82388684F00873955 /* CloudSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E5BE2388684F00873955 /* CloudSyncEngine.swift */; };
-		2149E5D92388684F00873955 /* SyncEngineMutationSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E5BF2388684F00873955 /* SyncEngineMutationSubscriber.swift */; };
-		2149E5DA2388684F00873955 /* OutgoingMutationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E5C02388684F00873955 /* OutgoingMutationQueue.swift */; };
 		2149E5DB2388684F00873955 /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E5C12388684F00873955 /* NetworkReachability.swift */; };
-		2149E5DC2388684F00873955 /* SyncEngineMutationSubscriber+Subscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E5C22388684F00873955 /* SyncEngineMutationSubscriber+Subscriber.swift */; };
 		2149E5DE2388684F00873955 /* AWSDataStoreCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E5C42388684F00873955 /* AWSDataStoreCategoryPlugin.swift */; };
 		2149E5E82388692E00873955 /* AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2149E59B238867E100873955 /* AWSDataStoreCategoryPlugin.framework */; };
 		2149E5F9238869CF00873955 /* QueryPredicateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E5F0238869CF00873955 /* QueryPredicateTests.swift */; };
@@ -62,13 +57,20 @@
 		FA3841EF23889DCC0070AD5B /* MockModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841EE23889DCC0070AD5B /* MockModels.swift */; };
 		FA5D4CED238AFC4D00D2F54A /* AWSDataStoreCategoryPlugin+DefaultLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5D4CEC238AFC4D00D2F54A /* AWSDataStoreCategoryPlugin+DefaultLogger.swift */; };
 		FA5D4CEF238AFCBC00D2F54A /* AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5D4CEE238AFCBC00D2F54A /* AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift */; };
+		FA93BC97238C549F00492E10 /* IncomingAsyncMutationEventSubject.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA93BC96238C549F00492E10 /* IncomingAsyncMutationEventSubject.swift */; };
+		FA93BC99238C557C00492E10 /* AsyncMutationEventToAnyModelMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA93BC98238C557C00492E10 /* AsyncMutationEventToAnyModelMapper.swift */; };
+		FA93BC9D238C565900492E10 /* IncomingMutationEventPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA93BC9C238C565900492E10 /* IncomingMutationEventPublisher.swift */; };
 		FACBB2AE238AFAE800C29602 /* AWSDataStoreCategoryPlugin+DataStoreBaseBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACBB2AD238AFAE800C29602 /* AWSDataStoreCategoryPlugin+DataStoreBaseBehavior.swift */; };
-		FADD728F238B0F10005AA69A /* IncomingSubscriptionAsyncEventQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADD728E238B0F10005AA69A /* IncomingSubscriptionAsyncEventQueue.swift */; };
-		FADD7291238B19CB005AA69A /* AsyncEventToAnyModelMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADD7290238B19CB005AA69A /* AsyncEventToAnyModelMapper.swift */; };
-		FAED5738238B3A2A008EBED8 /* IncomingSubscriptionQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAED5737238B3A2A008EBED8 /* IncomingSubscriptionQueue.swift */; };
+		FADD728F238B0F10005AA69A /* IncomingAsyncSubscriptionEventPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADD728E238B0F10005AA69A /* IncomingAsyncSubscriptionEventPublisher.swift */; };
+		FADD7291238B19CB005AA69A /* AsyncSubscriptionEventToAnyModelMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADD7290238B19CB005AA69A /* AsyncSubscriptionEventToAnyModelMapper.swift */; };
+		FAED5738238B3A2A008EBED8 /* IncomingSubscriptionEventPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAED5737238B3A2A008EBED8 /* IncomingSubscriptionEventPublisher.swift */; };
 		FAED573C238B4B03008EBED8 /* Statement+AnyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAED573B238B4B03008EBED8 /* Statement+AnyModel.swift */; };
 		FAED573E238B4C2F008EBED8 /* StorageEngineAdapter+UntypedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAED573D238B4C2F008EBED8 /* StorageEngineAdapter+UntypedModel.swift */; };
 		FAED5742238B52CE008EBED8 /* ModelStorageBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAED5741238B52CE008EBED8 /* ModelStorageBehavior.swift */; };
+		FAF7CEC9238C6A940095547B /* SyncMutationToCloudOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF7CEC8238C6A940095547B /* SyncMutationToCloudOperation.swift */; };
+		FAF7CECB238C72830095547B /* OutgoingMutationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF7CECA238C72830095547B /* OutgoingMutationQueue.swift */; };
+		FAF7CECD238C7B2D0095547B /* OutgoingMutationQueue+Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF7CECC238C7B2D0095547B /* OutgoingMutationQueue+Errors.swift */; };
+		FAF7CECF238C93A50095547B /* CloudSyncEngineBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF7CECE238C93A50095547B /* CloudSyncEngineBehavior.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,14 +116,9 @@
 		2149E5B62388684F00873955 /* SQLStatement+Condition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SQLStatement+Condition.swift"; sourceTree = "<group>"; };
 		2149E5B72388684F00873955 /* Statement+Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Statement+Model.swift"; sourceTree = "<group>"; };
 		2149E5B92388684F00873955 /* DataStorePublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStorePublisher.swift; sourceTree = "<group>"; };
-		2149E5BB2388684F00873955 /* SyncEngineMutationSubscriber+Responses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SyncEngineMutationSubscriber+Responses.swift"; sourceTree = "<group>"; };
-		2149E5BC2388684F00873955 /* SyncEngineMutationSubscriber+Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SyncEngineMutationSubscriber+Log.swift"; sourceTree = "<group>"; };
 		2149E5BD2388684F00873955 /* NetworkReachabilityNotifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkReachabilityNotifier.swift; sourceTree = "<group>"; };
 		2149E5BE2388684F00873955 /* CloudSyncEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudSyncEngine.swift; sourceTree = "<group>"; };
-		2149E5BF2388684F00873955 /* SyncEngineMutationSubscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncEngineMutationSubscriber.swift; sourceTree = "<group>"; };
-		2149E5C02388684F00873955 /* OutgoingMutationQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutgoingMutationQueue.swift; sourceTree = "<group>"; };
 		2149E5C12388684F00873955 /* NetworkReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
-		2149E5C22388684F00873955 /* SyncEngineMutationSubscriber+Subscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SyncEngineMutationSubscriber+Subscriber.swift"; sourceTree = "<group>"; };
 		2149E5C32388684F00873955 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2149E5C42388684F00873955 /* AWSDataStoreCategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSDataStoreCategoryPlugin.swift; sourceTree = "<group>"; };
 		2149E5E32388692E00873955 /* AWSDataStoreCategoryPluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSDataStoreCategoryPluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -165,13 +162,20 @@
 		FA3841EE23889DCC0070AD5B /* MockModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockModels.swift; sourceTree = "<group>"; };
 		FA5D4CEC238AFC4D00D2F54A /* AWSDataStoreCategoryPlugin+DefaultLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSDataStoreCategoryPlugin+DefaultLogger.swift"; sourceTree = "<group>"; };
 		FA5D4CEE238AFCBC00D2F54A /* AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift"; sourceTree = "<group>"; };
+		FA93BC96238C549F00492E10 /* IncomingAsyncMutationEventSubject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingAsyncMutationEventSubject.swift; sourceTree = "<group>"; };
+		FA93BC98238C557C00492E10 /* AsyncMutationEventToAnyModelMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncMutationEventToAnyModelMapper.swift; sourceTree = "<group>"; };
+		FA93BC9C238C565900492E10 /* IncomingMutationEventPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingMutationEventPublisher.swift; sourceTree = "<group>"; };
 		FACBB2AD238AFAE800C29602 /* AWSDataStoreCategoryPlugin+DataStoreBaseBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSDataStoreCategoryPlugin+DataStoreBaseBehavior.swift"; sourceTree = "<group>"; };
-		FADD728E238B0F10005AA69A /* IncomingSubscriptionAsyncEventQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingSubscriptionAsyncEventQueue.swift; sourceTree = "<group>"; };
-		FADD7290238B19CB005AA69A /* AsyncEventToAnyModelMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncEventToAnyModelMapper.swift; sourceTree = "<group>"; };
-		FAED5737238B3A2A008EBED8 /* IncomingSubscriptionQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingSubscriptionQueue.swift; sourceTree = "<group>"; };
+		FADD728E238B0F10005AA69A /* IncomingAsyncSubscriptionEventPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingAsyncSubscriptionEventPublisher.swift; sourceTree = "<group>"; };
+		FADD7290238B19CB005AA69A /* AsyncSubscriptionEventToAnyModelMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncSubscriptionEventToAnyModelMapper.swift; sourceTree = "<group>"; };
+		FAED5737238B3A2A008EBED8 /* IncomingSubscriptionEventPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingSubscriptionEventPublisher.swift; sourceTree = "<group>"; };
 		FAED573B238B4B03008EBED8 /* Statement+AnyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Statement+AnyModel.swift"; sourceTree = "<group>"; };
 		FAED573D238B4C2F008EBED8 /* StorageEngineAdapter+UntypedModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageEngineAdapter+UntypedModel.swift"; sourceTree = "<group>"; };
 		FAED5741238B52CE008EBED8 /* ModelStorageBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelStorageBehavior.swift; sourceTree = "<group>"; };
+		FAF7CEC8238C6A940095547B /* SyncMutationToCloudOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMutationToCloudOperation.swift; sourceTree = "<group>"; };
+		FAF7CECA238C72830095547B /* OutgoingMutationQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutgoingMutationQueue.swift; sourceTree = "<group>"; };
+		FAF7CECC238C7B2D0095547B /* OutgoingMutationQueue+Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OutgoingMutationQueue+Errors.swift"; sourceTree = "<group>"; };
+		FAF7CECE238C93A50095547B /* CloudSyncEngineBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncEngineBehavior.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -296,6 +300,7 @@
 			isa = PBXGroup;
 			children = (
 				2149E5BE2388684F00873955 /* CloudSyncEngine.swift */,
+				FAF7CECE238C93A50095547B /* CloudSyncEngineBehavior.swift */,
 				FA3841E423889D280070AD5B /* IncomingEventReconciliationQueues.swift */,
 				FAED5736238B2DFA008EBED8 /* MutationSync */,
 				2149E5C12388684F00873955 /* NetworkReachability.swift */,
@@ -384,12 +389,32 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		FA93BC9E238C566400492E10 /* Incoming */ = {
+			isa = PBXGroup;
+			children = (
+				FA93BC98238C557C00492E10 /* AsyncMutationEventToAnyModelMapper.swift */,
+				FA93BC96238C549F00492E10 /* IncomingAsyncMutationEventSubject.swift */,
+				FA93BC9C238C565900492E10 /* IncomingMutationEventPublisher.swift */,
+			);
+			path = Incoming;
+			sourceTree = "<group>";
+		};
+		FA93BC9F238C566B00492E10 /* Outgoing */ = {
+			isa = PBXGroup;
+			children = (
+				FAF7CEC8238C6A940095547B /* SyncMutationToCloudOperation.swift */,
+				FAF7CECA238C72830095547B /* OutgoingMutationQueue.swift */,
+				FAF7CECC238C7B2D0095547B /* OutgoingMutationQueue+Errors.swift */,
+			);
+			path = Outgoing;
+			sourceTree = "<group>";
+		};
 		FAED5735238B2DEC008EBED8 /* SubscriptionSync */ = {
 			isa = PBXGroup;
 			children = (
-				FADD7290238B19CB005AA69A /* AsyncEventToAnyModelMapper.swift */,
-				FADD728E238B0F10005AA69A /* IncomingSubscriptionAsyncEventQueue.swift */,
-				FAED5737238B3A2A008EBED8 /* IncomingSubscriptionQueue.swift */,
+				FADD7290238B19CB005AA69A /* AsyncSubscriptionEventToAnyModelMapper.swift */,
+				FADD728E238B0F10005AA69A /* IncomingAsyncSubscriptionEventPublisher.swift */,
+				FAED5737238B3A2A008EBED8 /* IncomingSubscriptionEventPublisher.swift */,
 			);
 			path = SubscriptionSync;
 			sourceTree = "<group>";
@@ -397,11 +422,8 @@
 		FAED5736238B2DFA008EBED8 /* MutationSync */ = {
 			isa = PBXGroup;
 			children = (
-				2149E5C02388684F00873955 /* OutgoingMutationQueue.swift */,
-				2149E5BF2388684F00873955 /* SyncEngineMutationSubscriber.swift */,
-				2149E5BC2388684F00873955 /* SyncEngineMutationSubscriber+Log.swift */,
-				2149E5BB2388684F00873955 /* SyncEngineMutationSubscriber+Responses.swift */,
-				2149E5C22388684F00873955 /* SyncEngineMutationSubscriber+Subscriber.swift */,
+				FA93BC9E238C566400492E10 /* Incoming */,
+				FA93BC9F238C566B00492E10 /* Outgoing */,
 			);
 			path = MutationSync;
 			sourceTree = "<group>";
@@ -845,39 +867,41 @@
 				FA3841E923889D440070AD5B /* StateMachine.swift in Sources */,
 				FA3841E523889D280070AD5B /* IncomingEventReconciliationQueues.swift in Sources */,
 				2149E5DB2388684F00873955 /* NetworkReachability.swift in Sources */,
-				2149E5D62388684F00873955 /* SyncEngineMutationSubscriber+Log.swift in Sources */,
 				2149E5D12388684F00873955 /* StorageEngineAdapter+SQLite.swift in Sources */,
 				FA5D4CED238AFC4D00D2F54A /* AWSDataStoreCategoryPlugin+DefaultLogger.swift in Sources */,
 				2149E5CA2388684F00873955 /* ModelSchema+SQLite.swift in Sources */,
+				FA93BC99238C557C00492E10 /* AsyncMutationEventToAnyModelMapper.swift in Sources */,
 				2149E5CD2388684F00873955 /* SQLStatement+Update.swift in Sources */,
+				FAF7CEC9238C6A940095547B /* SyncMutationToCloudOperation.swift in Sources */,
 				2149E5D02388684F00873955 /* QueryPredicate+SQLite.swift in Sources */,
 				2149E5D22388684F00873955 /* SQLStatement+Condition.swift in Sources */,
-				2149E5DC2388684F00873955 /* SyncEngineMutationSubscriber+Subscriber.swift in Sources */,
+				FA93BC9D238C565900492E10 /* IncomingMutationEventPublisher.swift in Sources */,
 				FAED573C238B4B03008EBED8 /* Statement+AnyModel.swift in Sources */,
-				2149E5D92388684F00873955 /* SyncEngineMutationSubscriber.swift in Sources */,
 				2149E5D72388684F00873955 /* NetworkReachabilityNotifier.swift in Sources */,
 				2149E5C52388684F00873955 /* StorageEngineBehavior.swift in Sources */,
+				FAF7CECF238C93A50095547B /* CloudSyncEngineBehavior.swift in Sources */,
 				2149E5CF2388684F00873955 /* SQLStatement+Delete.swift in Sources */,
 				2149E5C92388684F00873955 /* SQLStatement+Insert.swift in Sources */,
 				2149E5D42388684F00873955 /* DataStorePublisher.swift in Sources */,
-				2149E5DA2388684F00873955 /* OutgoingMutationQueue.swift in Sources */,
 				FA3841E723889D340070AD5B /* ReconcileAndLocalSaveOperation.swift in Sources */,
-				FADD728F238B0F10005AA69A /* IncomingSubscriptionAsyncEventQueue.swift in Sources */,
+				FADD728F238B0F10005AA69A /* IncomingAsyncSubscriptionEventPublisher.swift in Sources */,
 				2149E5C72388684F00873955 /* StorageEngine.swift in Sources */,
 				FAED573E238B4C2F008EBED8 /* StorageEngineAdapter+UntypedModel.swift in Sources */,
+				FAF7CECB238C72830095547B /* OutgoingMutationQueue.swift in Sources */,
 				2149E5CC2388684F00873955 /* SQLStatement+Select.swift in Sources */,
-				2149E5D52388684F00873955 /* SyncEngineMutationSubscriber+Responses.swift in Sources */,
-				FADD7291238B19CB005AA69A /* AsyncEventToAnyModelMapper.swift in Sources */,
+				FADD7291238B19CB005AA69A /* AsyncSubscriptionEventToAnyModelMapper.swift in Sources */,
 				2149E5D82388684F00873955 /* CloudSyncEngine.swift in Sources */,
 				2149E5CB2388684F00873955 /* Model+SQLite.swift in Sources */,
 				FA5D4CEF238AFCBC00D2F54A /* AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift in Sources */,
 				2149E5C82388684F00873955 /* SQLStatement.swift in Sources */,
 				FAED5742238B52CE008EBED8 /* ModelStorageBehavior.swift in Sources */,
 				2149E5C62388684F00873955 /* StorageEngineAdapter.swift in Sources */,
-				FAED5738238B3A2A008EBED8 /* IncomingSubscriptionQueue.swift in Sources */,
+				FA93BC97238C549F00492E10 /* IncomingAsyncMutationEventSubject.swift in Sources */,
+				FAED5738238B3A2A008EBED8 /* IncomingSubscriptionEventPublisher.swift in Sources */,
 				2149E5CE2388684F00873955 /* SQLStatement+CreateTable.swift in Sources */,
 				FACBB2AE238AFAE800C29602 /* AWSDataStoreCategoryPlugin+DataStoreBaseBehavior.swift in Sources */,
 				2149E5D32388684F00873955 /* Statement+Model.swift in Sources */,
+				FAF7CECD238C7B2D0095547B /* OutgoingMutationQueue+Errors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

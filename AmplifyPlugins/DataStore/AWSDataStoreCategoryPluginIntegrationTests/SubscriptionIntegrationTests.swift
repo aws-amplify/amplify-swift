@@ -31,6 +31,7 @@ class SubscriptionIntegrationTests: XCTestCase {
         Amplify.Logging.logLevel = .verbose
 
         ModelRegistry.register(modelType: Post.self)
+        ModelRegistry.register(modelType: Comment.self)
 
         // TODO: Move this to an integ test config file
         let apiConfig = APICategoryConfiguration(plugins: [
@@ -96,7 +97,36 @@ class SubscriptionIntegrationTests: XCTestCase {
                 }
             })
 
-        // Simulate another system by creating, updating, and deleting a model directly via the API
+        // TODO: Need a better way of ensuring setup is complete before subscribing and sending syncable
+        // mutations
+        DispatchQueue.global().asyncAfter(deadline: .now() + 5.0) {
+            // Simulate another system by creating, updating, and deleting a model directly via the API
+            let newPost = Post(title: "Post title",
+                               content: "Post content")
+            _ = Amplify.API.mutate(of: newPost, type: .create) { event in
+                print("Created event received: \(event)")
+            }
+
+//            let updatedPost = Post(id: newPost.id,
+//                                   title: newPost.title,
+//                                   content: "Updated post content",
+//                                   createdAt: newPost.createdAt,
+//                                   updatedAt: newPost.updatedAt,
+//                                   rating: newPost.rating,
+//                                   draft: newPost.draft,
+//                                   _version: 1)
+//            _ = Amplify.API.mutate(of: updatedPost, type: .update, listener: nil)
+//
+//            let deletedPost = Post(id: updatedPost.id,
+//                                   title: updatedPost.title,
+//                                   content: "Updated post content",
+//                                   createdAt: updatedPost.createdAt,
+//                                   updatedAt: updatedPost.updatedAt,
+//                                   rating: updatedPost.rating,
+//                                   draft: updatedPost.draft,
+//                                   _version: 2)
+//            _ = Amplify.API.mutate(of: deletedPost, type: .delete, listener: nil)
+        }
 
         wait(for: [createdMutationReceived, updatedMutationReceived, deletedMutationReceived],
              timeout: networkTimeout)

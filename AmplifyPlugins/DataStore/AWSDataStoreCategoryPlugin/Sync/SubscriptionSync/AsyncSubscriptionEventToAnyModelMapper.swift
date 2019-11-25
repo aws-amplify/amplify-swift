@@ -10,8 +10,8 @@ import AWSPluginsCore
 import Combine
 
 /// Subscribes to an IncomingSubscriptionAsyncEventQueue, and publishes AnyModel
-final class AsyncEventToAnyModelMapper: Subscriber {
-    typealias Input = IncomingSubscriptionAsyncEventQueue.QueueElement
+final class AsyncSubscriptionEventToAnyModelMapper: Subscriber {
+    typealias Input = IncomingAsyncSubscriptionEventPublisher.Event
     typealias Failure = DataStoreError
 
     var subscription: Subscription?
@@ -34,7 +34,7 @@ final class AsyncEventToAnyModelMapper: Subscriber {
         subscription.request(.max(1))
     }
 
-    func receive(_ input: IncomingSubscriptionAsyncEventQueue.QueueElement) -> Subscribers.Demand {
+    func receive(_ input: IncomingAsyncSubscriptionEventPublisher.Event) -> Subscribers.Demand {
         log.verbose("\(#function): \(input)")
 
         switch input {
@@ -84,4 +84,4 @@ final class AsyncEventToAnyModelMapper: Subscriber {
     }
 }
 
-extension AsyncEventToAnyModelMapper: DefaultLogger { }
+extension AsyncSubscriptionEventToAnyModelMapper: DefaultLogger { }
