@@ -66,23 +66,21 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
 
     func detectEntities(_ imageURL: URL) -> IdentifyEntitiesResult? {
         let handler = VNImageRequestHandler(url: imageURL, options: [:])
-        let request = VNDetectFaceLandmarksRequest()
-        let request2 = VNDetectFaceRectanglesRequest()
-
-        try? handler.perform([request, request2])
-        guard let observations = request.results as? [VNFaceObservation] else {
+        let faceLandmarksRequest = VNDetectFaceLandmarksRequest()
+        try? handler.perform([faceLandmarksRequest])
+        guard let observations = faceLandmarksRequest.results as? [VNFaceObservation] else {
             return nil
         }
 
         var entities: [Entity] = []
         for observation in observations {
             let pose = Pose(pitch: 0.0, // CoreML doesnot return pitch
-                            roll: observation.roll?.doubleValue ?? 0.0,
-                            yaw: observation.yaw?.doubleValue ?? 0.0)
+                roll: observation.roll?.doubleValue ?? 0.0,
+                yaw: observation.yaw?.doubleValue ?? 0.0)
             let entityMetaData = EntityMetadata(confidence: Double(observation.confidence),
                                                 pose: pose)
             let entity = Entity(boundingBox: observation.boundingBox,
-                                landmarks: [],
+                                landmarks: mapLandmarks(observation.landmarks),
                                 ageRange: nil,
                                 attributes: nil,
                                 gender: nil,
@@ -93,4 +91,68 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
         let result = IdentifyEntitiesResult(entities: entities)
         return result
     }
+
+    private func mapLandmarks(_ coreMLLandmarks: VNFaceLandmarks2D?) -> [Landmark] {
+        var finalLandmarks: [Landmark] = []
+        guard let landmarks = coreMLLandmarks else {
+            return finalLandmarks
+        }
+
+        if let points = landmarks.allPoints {
+            finalLandmarks.append(Landmark(type: .allPoints,
+                                            points: points.normalizedPoints))
+        }
+        if let points = landmarks.faceContour {
+            finalLandmarks.append(Landmark(type: .faceContour,
+                                            points: points.normalizedPoints))
+        }
+        if let points = landmarks.leftEye {
+            finalLandmarks.append(Landmark(type: .leftEye,
+                                            points: points.normalizedPoints))
+        }
+        if let points = landmarks.rightEye {
+            finalLandmarks.append(Landmark(type: .rightEye,
+                                            points: points.normalizedPoints))
+        }
+        if let points = landmarks.leftEyebrow {
+            finalLandmarks.append(Landmark(type: .leftEyebrow,
+                                            points: points.normalizedPoints))
+        }
+        if let points = landmarks.rightEyebrow {
+            finalLandmarks.append(Landmark(type: .rightEyebrow,
+                                            points: points.normalizedPoints))
+        }
+        if let points = landmarks.nose {
+            finalLandmarks.append(Landmark(type: .nose,
+                                            points: points.normalizedPoints))
+        }
+        if let points = landmarks.noseCrest {
+            finalLandmarks.append(Landmark(type: .noseCrest,
+                                            points: points.normalizedPoints))
+        }
+        if let points = landmarks.medianLine {
+            finalLandmarks.append(Landmark(type: .medianLine,
+                                            points: points.normalizedPoints))
+        }
+        if let points = landmarks.outerLips {
+            finalLandmarks.append(Landmark(type: .outerLips,
+                                            points: points.normalizedPoints))
+        }
+        if let points = landmarks.innerLips {
+            finalLandmarks.append(Landmark(type: .innerLips,
+                                            points: points.normalizedPoints))
+        }
+        if let points = landmarks.leftPupil {
+            finalLandmarks.append(Landmark(type: .leftPupil,
+                                            points: points.normalizedPoints))
+        }
+        if let points = landmarks.rightPupil {
+            finalLandmarks.append(Landmark(type: .rightPupil,
+                                            points: points.normalizedPoints))
+        }
+        return finalLandmarks
+    }
+
 }
+
+

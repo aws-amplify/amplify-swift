@@ -67,95 +67,81 @@ class IdentifyResultTransformers {
 
     }
 
+    // swiftlint:disable cyclomatic_complexity
     static func processLandmarks(_ rekognitionLandmarks: [AWSRekognitionLandmark]?) -> [Landmark] {
         var landmarks = [Landmark]()
         guard let rekognitionLandmarks = rekognitionLandmarks else {
             return landmarks
         }
 
+        var allPoints: [CGPoint] = []
+        var leftEyePoints: [CGPoint] = []
+        var rightEyePoints: [CGPoint] = []
+        var leftEyeBrowPoints: [CGPoint] = []
+        var rightEyeBrowPoints: [CGPoint] = []
+        var nosePoints: [CGPoint] = []
+        var noseCrestPoints: [CGPoint] = []
+        var outerLipPoints: [CGPoint] = []
+        var leftPupilPoints: [CGPoint] = []
+        var rightPupilPoints: [CGPoint] = []
+        var faceContourPoints: [CGPoint] = []
         for rekognitionLandmark in rekognitionLandmarks {
-            guard let xPosition = rekognitionLandmark.x, let yPosition = rekognitionLandmark.y else {
+            guard let xPosition = rekognitionLandmark.x?.doubleValue,
+                let yPosition = rekognitionLandmark.y?.doubleValue else {
+                    continue
+            }
+            let point = CGPoint(x: xPosition, y: yPosition)
+            allPoints.append(point)
+            switch rekognitionLandmark.types {
+            case .eyeLeft,
+                 .leftEyeUp,
+                 .leftEyeDown,
+                 .leftEyeLeft,
+                 .leftEyeRight:
+                leftEyePoints.append(point)
+            case .eyeRight,
+                 .rightEyeLeft,
+                 .rightEyeRight,
+                 .rightEyeUp,
+                 .rightEyeDown:
+                rightEyePoints.append(point)
+            case .leftEyeBrowLeft, .leftEyeBrowRight, .leftEyeBrowUp:
+                leftEyeBrowPoints.append(point)
+            case .rightEyeBrowLeft, .rightEyeBrowRight, .rightEyeBrowUp:
+                rightEyeBrowPoints.append(point)
+            case .nose:
+                nosePoints.append(point)
+            case .noseLeft, .noseRight:
+                noseCrestPoints.append(point)
+            case .mouthLeft, .mouthRight, .mouthUp, .mouthDown:
+                outerLipPoints.append(point)
+            case .leftPupil:
+                leftPupilPoints.append(point)
+            case .rightPupil:
+                rightPupilPoints.append(point)
+            case .upperJawlineLeft,
+                 .midJawlineLeft,
+                 .chinBottom,
+                 .midJawlineRight,
+                 .upperJawlineRight:
+                faceContourPoints.append(point)
+            case .unknown:
+                continue
+            @unknown default:
                 continue
             }
-            let landmark = Landmark(
-                type: rekognitionLandmark.types.toLandmarkType(),
-                xPosition: Double(truncating: xPosition),
-                yPosition: Double(truncating: yPosition))
-            landmarks.append(landmark)
         }
+        landmarks.append(Landmark(type: .allPoints, points: allPoints))
+        landmarks.append(Landmark(type: .leftEye, points: leftEyePoints))
+        landmarks.append(Landmark(type: .rightEye, points: rightEyePoints))
+        landmarks.append(Landmark(type: .leftEyebrow, points: leftEyeBrowPoints))
+        landmarks.append(Landmark(type: .rightEyebrow, points: rightEyeBrowPoints))
+        landmarks.append(Landmark(type: .nose, points: nosePoints))
+        landmarks.append(Landmark(type: .noseCrest, points: noseCrestPoints))
+        landmarks.append(Landmark(type: .outerLips, points: outerLipPoints))
+        landmarks.append(Landmark(type: .leftPupil, points: leftPupilPoints))
+        landmarks.append(Landmark(type: .rightPupil, points: rightPupilPoints))
+        landmarks.append(Landmark(type: .faceContour, points: faceContourPoints))
         return landmarks
-    }
-}
-
-extension AWSRekognitionLandmarkType {
-
-    // swiftlint:disable cyclomatic_complexity
-    func toLandmarkType() -> LandmarkType {
-        switch self {
-        case .unknown:
-            return .unknown
-        case .eyeLeft:
-            return .eyeLeft
-        case .eyeRight:
-            return .eyeRight
-        case .nose:
-            return .nose
-        case .mouthLeft:
-            return .mouthLeft
-        case .mouthRight:
-            return .mouthRight
-        case .leftEyeBrowLeft:
-            return .leftEyeBrowLeft
-        case .leftEyeBrowRight:
-            return .leftEyeBrowRight
-        case .leftEyeBrowUp:
-            return .leftEyeBrowUp
-        case .rightEyeBrowLeft:
-            return .rightEyeBrowLeft
-        case .rightEyeBrowRight:
-            return .rightEyeBrowRight
-        case .rightEyeBrowUp:
-            return .rightEyeBrowUp
-        case .leftEyeLeft:
-            return .leftEyeLeft
-        case .leftEyeRight:
-            return .leftEyeRight
-        case .leftEyeUp:
-            return .leftEyeUp
-        case .leftEyeDown:
-            return .leftEyeDown
-        case .rightEyeLeft:
-            return .rightEyeLeft
-        case .rightEyeRight:
-            return .rightEyeRight
-        case .rightEyeUp:
-            return .rightEyeUp
-        case .rightEyeDown:
-            return .rightEyeDown
-        case .noseLeft:
-            return .noseLeft
-        case .noseRight:
-            return .noseRight
-        case .mouthUp:
-            return .mouthUp
-        case .mouthDown:
-            return .mouthDown
-        case .leftPupil:
-            return .leftPupil
-        case .rightPupil:
-            return .rightPupil
-        case .upperJawlineLeft:
-            return .upperJawlineLeft
-        case .midJawlineLeft:
-            return .midJawlineLeft
-        case .chinBottom:
-            return .chinBottom
-        case .midJawlineRight:
-            return .midJawlineRight
-        case .upperJawlineRight:
-            return .upperJawlineRight
-        @unknown default:
-            return .unknown
-        }
     }
 }
