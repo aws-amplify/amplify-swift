@@ -214,9 +214,9 @@ class SQLStatementTests: XCTestCase {
         let statement = DeleteStatement(modelType: Post.self, withId: id)
 
         let expectedStatement = """
-        delete from Post
+        delete from Post as root
         where 1 = 1
-          and "id" = ?
+          and "root"."id" = ?
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
 
@@ -261,8 +261,8 @@ class SQLStatementTests: XCTestCase {
           "root"."title" as "title", "root"."updatedAt" as "updatedAt"
         from Post as root
         where 1 = 1
-          and "draft" = ?
-          and "rating" > ?
+          and "root"."draft" = ?
+          and "root"."rating" > ?
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
 
@@ -307,7 +307,7 @@ class SQLStatementTests: XCTestCase {
         let statement = ConditionStatement(modelType: Post.self, predicate: predicate)
 
         XCTAssertEqual("""
-          and "id" is not null
+          and "root"."id" is not null
         """, statement.stringValue)
         XCTAssert(statement.variables.isEmpty)
     }
@@ -336,22 +336,22 @@ class SQLStatementTests: XCTestCase {
         }
 
         let post = Post.keys
-        assertPredicate(post.id == nil, matches: "\"id\" is null")
-        assertPredicate(post.id != nil, matches: "\"id\" is not null")
-        assertPredicate(post.draft == true, matches: "\"draft\" = ?", bindings: [1])
-        assertPredicate(post.draft != false, matches: "\"draft\" <> ?", bindings: [0])
-        assertPredicate(post.rating > 0, matches: "\"rating\" > ?", bindings: [0])
-        assertPredicate(post.rating >= 1, matches: "\"rating\" >= ?", bindings: [1])
-        assertPredicate(post.rating < 2, matches: "\"rating\" < ?", bindings: [2])
-        assertPredicate(post.rating <= 3, matches: "\"rating\" <= ?", bindings: [3])
+        assertPredicate(post.id == nil, matches: "\"root\".\"id\" is null")
+        assertPredicate(post.id != nil, matches: "\"root\".\"id\" is not null")
+        assertPredicate(post.draft == true, matches: "\"root\".\"draft\" = ?", bindings: [1])
+        assertPredicate(post.draft != false, matches: "\"root\".\"draft\" <> ?", bindings: [0])
+        assertPredicate(post.rating > 0, matches: "\"root\".\"rating\" > ?", bindings: [0])
+        assertPredicate(post.rating >= 1, matches: "\"root\".\"rating\" >= ?", bindings: [1])
+        assertPredicate(post.rating < 2, matches: "\"root\".\"rating\" < ?", bindings: [2])
+        assertPredicate(post.rating <= 3, matches: "\"root\".\"rating\" <= ?", bindings: [3])
         assertPredicate(post.rating.between(start: 3, end: 5),
-                        matches: "\"rating\" between ? and ?",
+                        matches: "\"root\".\"rating\" between ? and ?",
                         bindings: [3, 5])
         assertPredicate(post.title.beginsWith("gelato"),
-                        matches: "\"title\" like ?",
+                        matches: "\"root\".\"title\" like ?",
                         bindings: ["gelato%"])
         assertPredicate(post.title ~= "gelato",
-                        matches: "\"title\" like ?",
+                        matches: "\"root\".\"title\" like ?",
                         bindings: ["%gelato%"])
     }
 
@@ -373,14 +373,14 @@ class SQLStatementTests: XCTestCase {
         let statement = ConditionStatement(modelType: Post.self, predicate: predicate)
 
         XCTAssertEqual("""
-          and "id" is not null
-          and "draft" = ?
-          and "rating" > ?
-          and "rating" between ? and ?
-          and "updatedAt" is null
+          and "root"."id" is not null
+          and "root"."draft" = ?
+          and "root"."rating" > ?
+          and "root"."rating" between ? and ?
+          and "root"."updatedAt" is null
           and (
-            "content" like ?
-            or "title" like ?
+            "root"."content" like ?
+            or "root"."title" like ?
           )
         """, statement.stringValue)
 
