@@ -5,13 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import CoreGraphics
+
 /// Struct that holds the result for an entity matched from an entity collection
 /// created on Rekogniton and detected from Predictions Identify methods.
 public struct EntityMatch {
-    public let boundingBox: BoundingBox
+    public let boundingBox: CGRect
     public let metadata: EntityMatchMetadata
 
-    public init(boundingBox: BoundingBox, metadata: EntityMatchMetadata) {
+    public init(boundingBox: CGRect, metadata: EntityMatchMetadata) {
         self.boundingBox = boundingBox
         self.metadata = metadata
     }

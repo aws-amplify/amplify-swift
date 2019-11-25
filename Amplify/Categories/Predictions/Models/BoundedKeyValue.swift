@@ -5,14 +5,16 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import CoreGraphics
+
 public struct BoundedKeyValue {
     public let key: String
     public let value: String
     public let isSelected: Bool
-    public let boundingBox: BoundingBox
+    public let boundingBox: CGRect
     public let polygon: Polygon
 
-    public init(key: String, value: String, isSelected: Bool, boundingBox: BoundingBox, polygon: Polygon) {
+    public init(key: String, value: String, isSelected: Bool, boundingBox: CGRect, polygon: Polygon) {
         self.key = key
         self.value = value
         self.isSelected = isSelected

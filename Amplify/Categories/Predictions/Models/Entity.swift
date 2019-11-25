@@ -5,9 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import CoreGraphics
+
 ///Struct that holds the result of an entity detected from an image per the Identify method
 public struct Entity {
-    public let boundingBox: BoundingBox
+    public let boundingBox: CGRect
     public let landmarks: [Landmark]
     public let ageRange: AgeRange
     public let attributes: [Attribute]
@@ -15,7 +17,7 @@ public struct Entity {
     public let metadata: EntityMetadata
     public let emotions: [Emotion]
 
-    public init(boundingBox: BoundingBox,
+    public init(boundingBox: CGRect,
                 landmarks: [Landmark],
                 ageRange: AgeRange,
                 attributes: [Attribute],

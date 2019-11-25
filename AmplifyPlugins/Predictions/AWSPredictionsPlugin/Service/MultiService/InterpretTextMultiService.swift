@@ -72,6 +72,7 @@ class InterpretTextMultiService: MultiServiceBehavior {
             let recoveryMessage = InterpretMultiServiceErrorMessage.interpretTextNoResult.recoverySuggestion
             let predictionError = PredictionsError.service(message, recoveryMessage, nil)
             callback(.failed(predictionError))
+            return
         }
 
         guard let finalOfflineResult = offlineResult else {

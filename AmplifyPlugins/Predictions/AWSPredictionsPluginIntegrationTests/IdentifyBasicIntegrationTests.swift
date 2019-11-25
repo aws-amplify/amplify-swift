@@ -33,14 +33,7 @@ class IdentifyBasicIntegrationTests: XCTestCase {
         var predictionsConfig = PredictionsCategoryConfiguration(
             plugins: [
                 "AWSPredictionsPlugin": [
-                    "defaultRegion": region,
-                    "identify": [
-                        "identifyEntities": [
-                        "maxFaces": 50,
-                        "collectionId": "", //no collectionid
-                        "region": region
-                        ]
-                    ]
+                    "defaultRegion": region
                 ]
             ]
         )
@@ -48,14 +41,7 @@ class IdentifyBasicIntegrationTests: XCTestCase {
          predictionsConfig = PredictionsCategoryConfiguration(
             plugins: [
                 "AWSPredictionsPlugin": [
-                    "defaultRegion": region,
-                    "identify": [
-                        "identifyEntities": [
-                        "maxFaces": 50,
-                        "collectionId": "TestCollection",
-                        "region": region
-                        ]
-                    ]
+                    "defaultRegion": region
                 ]
             ]
         )
