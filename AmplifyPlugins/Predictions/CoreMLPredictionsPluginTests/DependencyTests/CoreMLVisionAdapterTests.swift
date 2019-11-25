@@ -42,6 +42,7 @@ class CoreMLVisionAdapterTests: XCTestCase {
         }
         let result = coreMLVisionAdapter.detectEntities(url)
         XCTAssertNotNil(result, "The result should be nil")
+        XCTAssertTrue(result?.entities.isEmpty != true, "The result should contain values for the image provided.")
     }
 
 }

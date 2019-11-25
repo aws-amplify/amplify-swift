@@ -74,38 +74,23 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
             return nil
         }
 
-        guard let obs2 = request2.results as? [VNFaceObservation] else {
-            return nil
-        }
-
+        var entities: [Entity] = []
         for observation in observations {
-//            print(observation.boundingBox)
-//            print(observation.landmarks)
-            let boundingBox = observation.boundingBox
-            let confidence = observation.confidence
-            let roll = observation.roll
-            let yaw = observation.yaw
-//            let pitch = observation.pitc
-//            let entity = Entity
-            print(observation.roll)
-            print(observation.yaw)
-
+            let pose = Pose(pitch: 0.0, // CoreML doesnot return pitch
+                            roll: observation.roll?.doubleValue ?? 0.0,
+                            yaw: observation.yaw?.doubleValue ?? 0.0)
+            let entityMetaData = EntityMetadata(confidence: Double(observation.confidence),
+                                                pose: pose)
+            let entity = Entity(boundingBox: observation.boundingBox,
+                                landmarks: [],
+                                ageRange: nil,
+                                attributes: nil,
+                                gender: nil,
+                                metadata: entityMetaData,
+                                emotions: nil)
+            entities.append(entity)
         }
-
-         for observation in obs2 {
-        //            print(observation.boundingBox)
-        //            print(observation.landmarks)
-                    let boundingBox = observation.boundingBox
-                    let confidence = observation.confidence
-                    let roll = observation.roll
-                    let yaw = observation.yaw
-        //            let pitch = observation.pitc
-        //            let entity = Entity
-                    print(observation.roll)
-                    print(observation.yaw)
-
-                }
-
-        fatalError()
+        let result = IdentifyEntitiesResult(entities: entities)
+        return result
     }
 }

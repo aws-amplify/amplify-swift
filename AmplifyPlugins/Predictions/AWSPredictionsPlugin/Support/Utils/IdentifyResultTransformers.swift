@@ -34,21 +34,21 @@ class IdentifyResultTransformers {
     }
 
     static func processPolygon(_ rekognitionPolygonPoints: [AWSRekognitionPoint]?) -> Polygon? {
-           guard let rekognitionPolygonPoints = rekognitionPolygonPoints else {
-               return nil
-           }
-           var points = [CGPoint]()
-           for rekognitionPoint in rekognitionPolygonPoints {
-               guard let xPosition = rekognitionPoint.x,
-                   let yPosition = rekognitionPoint.y else {
-                   continue
-               }
+        guard let rekognitionPolygonPoints = rekognitionPolygonPoints else {
+            return nil
+        }
+        var points = [CGPoint]()
+        for rekognitionPoint in rekognitionPolygonPoints {
+            guard let xPosition = rekognitionPoint.x,
+                let yPosition = rekognitionPoint.y else {
+                    continue
+            }
             let point = CGPoint(x: Double(truncating: xPosition), y: Double(truncating: yPosition))
-               points.append(point)
-           }
-           return Polygon(points: points)
+            points.append(point)
+        }
+        return Polygon(points: points)
 
-       }
+    }
 
     static func processPolygon(_ textractPolygonPoints: [AWSTextractPoint]?) -> Polygon? {
         guard let textractPolygonPoints = textractPolygonPoints else {
@@ -58,7 +58,7 @@ class IdentifyResultTransformers {
         for textractPoint in textractPolygonPoints {
             guard let xPosition = textractPoint.x,
                 let yPosition = textractPoint.y else {
-                continue
+                    continue
             }
             let point = CGPoint(x: Double(truncating: xPosition), y: Double(truncating: yPosition))
             points.append(point)
@@ -78,14 +78,84 @@ class IdentifyResultTransformers {
                 continue
             }
             let landmark = Landmark(
-                type: String(rekognitionLandmark.types.rawValue),
+                type: rekognitionLandmark.types.toLandmarkType(),
                 xPosition: Double(truncating: xPosition),
                 yPosition: Double(truncating: yPosition))
-
             landmarks.append(landmark)
-
         }
-
         return landmarks
+    }
+}
+
+extension AWSRekognitionLandmarkType {
+
+    // swiftlint:disable cyclomatic_complexity
+    func toLandmarkType() -> LandmarkType {
+        switch self {
+        case .unknown:
+            return .unknown
+        case .eyeLeft:
+            return .eyeLeft
+        case .eyeRight:
+            return .eyeRight
+        case .nose:
+            return .nose
+        case .mouthLeft:
+            return .mouthLeft
+        case .mouthRight:
+            return .mouthRight
+        case .leftEyeBrowLeft:
+            return .leftEyeBrowLeft
+        case .leftEyeBrowRight:
+            return .leftEyeBrowRight
+        case .leftEyeBrowUp:
+            return .leftEyeBrowUp
+        case .rightEyeBrowLeft:
+            return .rightEyeBrowLeft
+        case .rightEyeBrowRight:
+            return .rightEyeBrowRight
+        case .rightEyeBrowUp:
+            return .rightEyeBrowUp
+        case .leftEyeLeft:
+            return .leftEyeLeft
+        case .leftEyeRight:
+            return .leftEyeRight
+        case .leftEyeUp:
+            return .leftEyeUp
+        case .leftEyeDown:
+            return .leftEyeDown
+        case .rightEyeLeft:
+            return .rightEyeLeft
+        case .rightEyeRight:
+            return .rightEyeRight
+        case .rightEyeUp:
+            return .rightEyeUp
+        case .rightEyeDown:
+            return .rightEyeDown
+        case .noseLeft:
+            return .noseLeft
+        case .noseRight:
+            return .noseRight
+        case .mouthUp:
+            return .mouthUp
+        case .mouthDown:
+            return .mouthDown
+        case .leftPupil:
+            return .leftPupil
+        case .rightPupil:
+            return .rightPupil
+        case .upperJawlineLeft:
+            return .upperJawlineLeft
+        case .midJawlineLeft:
+            return .midJawlineLeft
+        case .chinBottom:
+            return .chinBottom
+        case .midJawlineRight:
+            return .midJawlineRight
+        case .upperJawlineRight:
+            return .upperJawlineRight
+        @unknown default:
+            return .unknown
+        }
     }
 }
