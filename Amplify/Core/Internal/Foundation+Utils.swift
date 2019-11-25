@@ -40,26 +40,3 @@ extension Optional where Wrapped: Collection {
         }
     }
 }
-
-extension DateFormatter {
-    public static let iso8601Full: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
-        formatter.calendar = Calendar(identifier: .iso8601)
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter
-    }()
-}
-
-extension Date {
-    public var iso8601: String {
-        return DateFormatter.iso8601Full.string(from: self)
-    }
-}
-
-extension String {
-    public var iso8601: Date? {
-        return DateFormatter.iso8601Full.date(from: self)
-    }
-}

@@ -45,7 +45,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try predicate.graphQLFilterVariablesString()
+        let result = try predicate.toGraphQLFilterJSON()
         XCTAssertEqual(result, expected)
     }
 
@@ -115,7 +115,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try predicate.graphQLFilterVariablesString()
+        let result = try predicate.toGraphQLFilterJSON()
         XCTAssertEqual(result, expected)
     }
 
@@ -147,7 +147,22 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try predicate.graphQLFilterVariablesString()
+        let result = try predicate.toGraphQLFilterJSON()
         XCTAssertEqual(result, expected)
+    }
+}
+
+extension QueryPredicate {
+    func toGraphQLFilterJSON() throws -> String {
+        let graphQLFilterVariablesData = try JSONSerialization.data(withJSONObject: graphQLFilterVariables,
+                                                                    options: .prettyPrinted)
+
+        guard let serializedString = String(data: graphQLFilterVariablesData, encoding: .utf8) else {
+            throw """
+            Could not initialize String from graphQLFilterVariables: \(String(describing: graphQLFilterVariablesData))
+            """
+        }
+
+        return serializedString
     }
 }
