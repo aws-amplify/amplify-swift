@@ -72,19 +72,35 @@ class SubscriptionIntegrationTests: XCTestCase {
     func testSubscribeAtStartup() throws {
         try Amplify.configure(amplifyConfig)
 
-        let mutationReceived = expectation(description: "Mutation received")
+        let createdMutationReceived = expectation(description: "Created mutation received")
+        let updatedMutationReceived = expectation(description: "Updated mutation received")
+        let deletedMutationReceived = expectation(description: "Deleted mutation received")
+
         let sub = Amplify.DataStore.publisher(for: Post.self)
             .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    XCTFail("Unexpected error: \(error)")
+                }
             }, receiveValue: { mutationEvent in
-                mutationReceived.fulfill()
+                guard let model = try? mutationEvent.decodeModel(as: Post.self) else {
+                    XCTFail("Couldn't decode model")
+                    return
+                }
+
+                if model._deleted ?? false {
+                    deletedMutationReceived.fulfill()
+                } else if model._version == 1 {
+                    createdMutationReceived.fulfill()
+                } else if model._version == 2 {
+                    updatedMutationReceived.fulfill()
+                }
             })
 
         // Simulate another system by creating, updating, and deleting a model directly via the API
-//        let createdViaAPI = expectation(description: "Post created")
-//        let updatedViaAPI = expectation(description: "Post updated")
-//        let deletedViaAPI = expectation(description: "Post deleted")
 
-        wait(for: [mutationReceived], timeout: networkTimeout)
+        wait(for: [createdMutationReceived, updatedMutationReceived, deletedMutationReceived],
+             timeout: networkTimeout)
+
         sub.cancel()
     }
 

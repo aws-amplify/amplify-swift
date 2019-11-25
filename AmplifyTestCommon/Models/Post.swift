@@ -21,8 +21,9 @@ public struct Post: Model {
     public let draft: Bool?
     public let comments: [Comment]?
 
-    // TODO: Remove this once we get sync metadata wired up
+    // TODO: Remove these once we get sync metadata wired up
     public let _version: Int?
+    public let _deleted: Bool?
 
     public init(id: String = UUID().uuidString,
                 title: String,
@@ -32,6 +33,7 @@ public struct Post: Model {
                 rating: Double? = nil,
                 draft: Bool? = nil,
                 _version: Int? = nil,
+                _deleted: Bool? = nil,
                 comments: [Comment] = []) {
         self.id = id
         self.title = title
@@ -42,6 +44,7 @@ public struct Post: Model {
         self.draft = draft
         self.comments = comments
         self._version = _version
+        self._deleted = _deleted
     }
 
 }
