@@ -52,14 +52,15 @@ class ReconcileAndLocalSaveOperation: Operation {
     private var stateMachineSink: AnyCancellable?
 
     init(anyModel: AnyModel,
-         storageAdapter: StorageEngineAdapter) {
+         storageAdapter: StorageEngineAdapter,
+         stateMachine: StateMachine<State, Action>? = nil) {
         self.anyModel = anyModel
         self.storageAdapter = storageAdapter
-        self.stateMachine = StateMachine(initialState: .waiting,
-                                         resolver: ReconcileAndLocalSaveOperation.resolve(currentState:action:))
+        self.stateMachine = stateMachine ?? StateMachine(initialState: .waiting,
+                                                         resolver: ReconcileAndLocalSaveOperation.resolve(currentState:action:))
         super.init()
 
-        self.stateMachineSink = stateMachine
+        self.stateMachineSink = self.stateMachine
             .$state
             .sink { [weak self] newState in
                 guard let self = self else {
