@@ -146,6 +146,7 @@ public enum ModelFieldDefinition {
     public static func hasMany(_ key: CodingKey,
                                is nullability: ModelFieldNullability = .required,
                                ofType type: Model.Type,
+                               targetName: String? = nil,
                                associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
@@ -156,8 +157,10 @@ public enum ModelFieldDefinition {
     public static func hasOne(_ key: CodingKey,
                               is nullability: ModelFieldNullability = .required,
                               ofType type: Model.Type,
+                              targetName: String? = nil,
                               associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
         return .field(key,
+                      targetName: targetName,
                       is: nullability,
                       ofType: .model(type: type),
                       association: .hasOne(associatedWith: associatedKey))
@@ -166,8 +169,10 @@ public enum ModelFieldDefinition {
     public static func belongsTo(_ key: CodingKey,
                                  is nullability: ModelFieldNullability = .required,
                                  ofType type: Model.Type,
+                                 targetName: String? = nil,
                                  associatedWith associatedKey: CodingKey? = nil) -> ModelFieldDefinition {
         return .field(key,
+                      targetName: targetName,
                       is: nullability,
                       ofType: .model(type: type),
                       association: .belongsTo(associatedWith: associatedKey))
