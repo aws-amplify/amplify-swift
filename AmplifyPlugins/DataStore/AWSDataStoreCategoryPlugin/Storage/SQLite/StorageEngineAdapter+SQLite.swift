@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Foundation
 import SQLite
 
@@ -30,6 +31,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     internal init(connection: Connection) {
+        log.debug("Created database connection at \(connection)")
         self.connection = connection
     }
 
@@ -125,3 +127,5 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 private func getDocumentPath() -> URL? {
     return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
 }
+
+extension SQLiteStorageEngineAdapter: DefaultLogger { }

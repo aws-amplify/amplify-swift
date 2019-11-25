@@ -17,6 +17,9 @@ class ReconcileAndLocalSaveOperation: Operation {
     typealias CloudModel = Model
     typealias SavedModel = Model
 
+    private let workQueue = DispatchQueue(label: "com.amazonaws.ReconcileAndLocalSaveOperation",
+                                          target: DispatchQueue.global())
+
     /// States are descriptive, they say what is happening in the system right now
     enum State {
         case waiting
@@ -56,18 +59,26 @@ class ReconcileAndLocalSaveOperation: Operation {
         self.stateMachine = StateMachine(initialState: .waiting,
                                          resolver: ReconcileAndLocalSaveOperation.resolve(currentState:action:))
         super.init()
+
+        self.stateMachineSink = stateMachine
+            .$state
+            .sink { [weak self] newState in
+                guard let self = self else {
+                    return
+                }
+                self.log.verbose("New state: \(newState)")
+                self.workQueue.async {
+                    self.respond(to: newState)
+                }
+        }
+
     }
 
     override func main() {
+        log.verbose(#function)
+
         guard !isCancelled else {
             return
-        }
-
-        stateMachineSink = stateMachine
-            .$state
-            .sink { [weak self] in
-                self?.log.verbose("New state: \($0)")
-                self?.respond(to: $0)
         }
 
         stateMachine.notify(action: .started(anyModel))
@@ -75,6 +86,8 @@ class ReconcileAndLocalSaveOperation: Operation {
 
     /// Listens to incoming state changes and invokes the appropriate asynchronous methods in response.
     func respond(to newState: State) {
+        log.verbose("\(#function): \(newState)")
+
         switch newState {
         case .waiting:
             break
@@ -111,7 +124,10 @@ class ReconcileAndLocalSaveOperation: Operation {
     /// - deserialized
     /// - error
     func deserialize(anyModel: AnyModel) {
+        log.verbose(#function)
+
         guard !isCancelled else {
+            log.verbose("\(#function) - cancelled, aborting")
             return
         }
 
@@ -123,11 +139,11 @@ class ReconcileAndLocalSaveOperation: Operation {
     /// - queried
     /// - errored
     func query(cloudModel: CloudModel) {
+        log.verbose("query: \(cloudModel)")
         guard !isCancelled else {
+            log.verbose("\(#function) - cancelled, aborting")
             return
         }
-
-        Amplify.Logging.log.verbose("Querying model: \(cloudModel.id)")
 
         guard let storageAdapter = storageAdapter else {
             Amplify.Logging.log.warn("No storageAdapter, aborting")
@@ -177,11 +193,14 @@ class ReconcileAndLocalSaveOperation: Operation {
     /// - conflict
     /// - errored
     func reconcile(cloudModel: CloudModel, to localModel: LocalModel?) {
+        log.verbose(#function)
         guard !isCancelled else {
+            log.verbose("\(#function) - cancelled, aborting")
             return
         }
 
         guard let localModel = localModel else {
+            log.verbose("\(#function) - saving new model")
             let reconciledAction = Action.reconciled(cloudModel)
             stateMachine.notify(action: reconciledAction)
             return
@@ -189,6 +208,7 @@ class ReconcileAndLocalSaveOperation: Operation {
 
         // TODO: Reenable this once we add version/conflict state to DataStore system
         let reconciledAction = Action.reconciled(cloudModel)
+        log.verbose("\(#function) - Cloud model newer than local model, saving")
         stateMachine.notify(action: reconciledAction)
 //        if cloudModel.version > localModel.version {
 //            let reconciledAction = Action.reconciled(cloudModel)
@@ -206,7 +226,14 @@ class ReconcileAndLocalSaveOperation: Operation {
     /// - saved
     /// - errored
     func save(cloudModel: CloudModel) {
+        if log.logLevel == .verbose {
+            log.verbose("\(#function): cloudModel")
+        } else if log.logLevel == .debug {
+            log.debug(#function)
+        }
+
         guard !isCancelled else {
+            log.verbose("\(#function) - cancelled, aborting")
             return
         }
 
@@ -216,6 +243,7 @@ class ReconcileAndLocalSaveOperation: Operation {
         }
 
         storageAdapter.save(untypedModel: cloudModel) { response in
+            self.log.verbose("\(#function) - response: \(response)")
             switch response {
             case .error(let dataStoreError):
                 let errorAction = Action.errored(dataStoreError)
@@ -229,7 +257,10 @@ class ReconcileAndLocalSaveOperation: Operation {
     /// Responder method for `notifying`. Notify actions:
     /// - notified
     func notify(savedModel: SavedModel) {
+        log.verbose(#function)
+
         guard !isCancelled else {
+            log.verbose("\(#function) - cancelled, aborting")
             return
         }
 

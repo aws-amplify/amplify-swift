@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSPluginsCore
 import Combine
 import Foundation
 
@@ -35,6 +36,7 @@ class StateMachine<State, Action> {
     /// state will be published to `state`, before the `notify` action returns.
     func notify(action: Action) {
         queue.sync {
+            log.verbose("Notifying: \(action)")
             let newState = self.resolve(currentState: self.state, action: action)
             self.state = newState
         }
@@ -43,7 +45,10 @@ class StateMachine<State, Action> {
     /// Resolves `action` via `reducer`, updates `currentState` with the resolved State value.
     private func resolve(currentState: State, action: Action) -> State {
         let newState = reducer(currentState, action)
+        log.verbose("resolve(\(currentState), \(action)) -> \(newState)")
         return newState
     }
 
 }
+
+extension StateMachine: DefaultLogger { }

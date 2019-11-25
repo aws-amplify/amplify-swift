@@ -30,8 +30,7 @@ class SubscriptionIntegrationTests: XCTestCase {
         Amplify.reset()
         Amplify.Logging.logLevel = .verbose
 
-        ModelRegistry.register(modelType: AmplifyTestCommon.Post.self)
-        ModelRegistry.register(modelType: AmplifyTestCommon.Comment.self)
+        ModelRegistry.register(modelType: Post.self)
 
         // TODO: Move this to an integ test config file
         let apiConfig = APICategoryConfiguration(plugins: [
@@ -73,15 +72,20 @@ class SubscriptionIntegrationTests: XCTestCase {
     func testSubscribeAtStartup() throws {
         try Amplify.configure(amplifyConfig)
 
-        let completionReceived = expectation(description: "Completion received")
+        let mutationReceived = expectation(description: "Mutation received")
         let sub = Amplify.DataStore.publisher(for: Post.self)
             .sink(receiveCompletion: { completion in
-                completionReceived.fulfill()
             }, receiveValue: { mutationEvent in
-
+                mutationReceived.fulfill()
             })
 
-        wait(for: [completionReceived], timeout: networkTimeout)
+        // Simulate another system by creating, updating, and deleting a model directly via the API
+//        let createdViaAPI = expectation(description: "Post created")
+//        let updatedViaAPI = expectation(description: "Post updated")
+//        let deletedViaAPI = expectation(description: "Post deleted")
+
+        wait(for: [mutationReceived], timeout: networkTimeout)
+        sub.cancel()
     }
 
 }

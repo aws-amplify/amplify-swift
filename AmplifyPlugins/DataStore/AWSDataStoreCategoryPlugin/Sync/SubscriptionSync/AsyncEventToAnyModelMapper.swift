@@ -9,23 +9,21 @@ import Amplify
 import AWSPluginsCore
 import Combine
 
-/// Subscribes to an IncomingSUbscriptionAsyncEventQueue, and publishes AnyModel
+/// Subscribes to an IncomingSubscriptionAsyncEventQueue, and publishes AnyModel
 final class AsyncEventToAnyModelMapper: Subscriber {
     typealias Input = IncomingSubscriptionAsyncEventQueue.QueueElement
     typealias Failure = DataStoreError
 
     var subscription: Subscription?
 
-    private let incomingSubscriptionEvents: PassthroughSubject<AnyModel, DataStoreError>
+    private let modelsFromSubscription: PassthroughSubject<AnyModel, DataStoreError>
 
     var publisher: AnyPublisher<AnyModel, DataStoreError> {
-        incomingSubscriptionEvents.eraseToAnyPublisher()
+        modelsFromSubscription.eraseToAnyPublisher()
     }
 
-    init(asyncEventQueue: IncomingSubscriptionAsyncEventQueue) {
-        let incomingSubscriptionEvents = PassthroughSubject<AnyModel, DataStoreError>()
-        self.incomingSubscriptionEvents = incomingSubscriptionEvents
-        asyncEventQueue.subscribe(subscriber: self)
+    init() {
+        self.modelsFromSubscription = PassthroughSubject<AnyModel, DataStoreError>()
     }
 
     // MARK: - Subscriber
@@ -37,22 +35,22 @@ final class AsyncEventToAnyModelMapper: Subscriber {
     }
 
     func receive(_ input: IncomingSubscriptionAsyncEventQueue.QueueElement) -> Subscribers.Demand {
-        log.verbose("received event: \(input)")
+        log.verbose("\(#function): \(input)")
+
         switch input {
         case .completed:
             log.debug("received completed event: \(input)")
-            incomingSubscriptionEvents.send(completion: .finished)
+            modelsFromSubscription.send(completion: .finished)
         case .failed(let apiError):
             let dataStoreError = DataStoreError.api(apiError)
             log.error(error: dataStoreError)
-            incomingSubscriptionEvents.send(completion: .failure(dataStoreError))
-            return .max(1)
+            modelsFromSubscription.send(completion: .failure(dataStoreError))
         case .inProcess(let subscriptionEvent):
             dispose(of: subscriptionEvent)
         default:
             break
         }
-        return .none
+        return .max(1)
     }
 
     func receive(completion: Subscribers.Completion<DataStoreError>) {
@@ -62,6 +60,7 @@ final class AsyncEventToAnyModelMapper: Subscriber {
     // MARK: - Event processing
 
     private func dispose(of subscriptionEvent: SubscriptionEvent<GraphQLResponse<AnyModel>>) {
+        log.verbose("dispose(of subscriptionEvent): \(subscriptionEvent)")
         switch subscriptionEvent {
         case .connection(let connectionState):
             log.info("connectionState now \(connectionState)")
@@ -71,10 +70,10 @@ final class AsyncEventToAnyModelMapper: Subscriber {
     }
 
     private func dispose(of graphQLResponse: GraphQLResponse<AnyModel>) {
+        log.verbose("dispose(of graphQLResponse): \(graphQLResponse)")
         switch graphQLResponse {
         case .success(let anyModel):
-            incomingSubscriptionEvents.send(anyModel)
-            subscription?.request(.max(1))
+            modelsFromSubscription.send(anyModel)
         case .error(let graphQLErrors):
             log.error("Received graphql errors: \(graphQLErrors)")
         case .partial(_, let graphQLErrors):

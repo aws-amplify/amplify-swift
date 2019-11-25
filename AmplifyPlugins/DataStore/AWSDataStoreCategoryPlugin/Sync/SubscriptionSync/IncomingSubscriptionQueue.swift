@@ -24,7 +24,7 @@ final class IncomingSubscriptionQueue {
         self.asyncEventQueue = IncomingSubscriptionAsyncEventQueue(modelType: modelType,
                                                                    api: api)
 
-        let mapper = AsyncEventToAnyModelMapper(asyncEventQueue: asyncEventQueue)
+        let mapper = AsyncEventToAnyModelMapper()
         self.mapper = mapper
 
         asyncEventQueue.subscribe(subscriber: mapper)

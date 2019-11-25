@@ -7,6 +7,7 @@
 
 import Foundation
 import Amplify
+import AWSPluginsCore
 import Combine
 
 @available(iOS 13.0, *)
@@ -101,20 +102,22 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
     }
 
     func submit(_ mutationEvent: MutationEvent) -> Future<MutationEvent, DataStoreError> {
+        log.verbose("submit: \(mutationEvent)")
         return mutationQueue.enqueue(event: mutationEvent)
     }
 
     // MARK: - Startup sequence
     private func pauseSubscriptions() {
-        log.debug("pauseSubscriptions")
+        log.debug(#function)
     }
 
     private func pauseMutations() {
-        log.debug("pauseMutations")
+        log.debug(#function)
     }
 
     private func setUpCloudSubscriptions(api: APICategoryGraphQLBehavior,
                                          storageAdapter: StorageEngineAdapter) {
+        log.debug(#function)
         let syncableModelTypes = ModelRegistry.models.filter { $0.schema.isSyncable }
         reconciliationQueues = IncomingEventReconciliationQueues(modelTypes: syncableModelTypes,
                                                                  api: api,
@@ -122,16 +125,19 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
     }
 
     private func performInitialQueries() {
-        log.debug("performInitialQueries")
+        log.debug(#function)
     }
 
     private func activateCloudSubscriptions() {
-        log.debug("activateCloudSubscriptions")
+        log.debug(#function)
+        reconciliationQueues?.start()
     }
 
     private func startMutationQueue() {
-        log.debug("startMutationQueue")
+        log.debug(#function)
         mutationQueue.subscribe(subscriber: subscriber)
     }
 
 }
+
+extension CloudSyncEngine: DefaultLogger { }

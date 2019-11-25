@@ -26,10 +26,17 @@ final class IncomingEventReconciliationQueues {
             reconciliationQueues[modelName] = queue
         }
     }
+
+    func start() {
+        reconciliationQueues.values.forEach { $0.start() }
+    }
 }
 
 /// A queue of reconciliation operations, merged from incoming subscription events and responses to locally-sourced
 /// mutations for a single model type.
+///
+/// Although subscriptions are listened to and enqueued at initialization, you must call `start` on a
+/// ReconciliationQueue to write events to the DataStore.
 final class ReconciliationQueue {
 
     private let operationQueue: OperationQueue
@@ -54,6 +61,7 @@ final class ReconciliationQueue {
         operationQueue.name = "com.amazonaws.DataStore.ReconciliationQueue.\(modelType)"
         operationQueue.maxConcurrentOperationCount = 1
         operationQueue.underlyingQueue = DispatchQueue.global()
+        operationQueue.isSuspended = true
 
         // TODO: Wire this up to mutation queue
 //        self.incomingMutationResponses = modelsFromLocalMutations.publisher
