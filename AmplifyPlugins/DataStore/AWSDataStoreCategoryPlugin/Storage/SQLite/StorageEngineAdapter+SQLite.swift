@@ -59,8 +59,6 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             let modelType = type(of: model)
             let shouldUpdate = try exists(modelType, withId: model.id)
 
-            // TODO serialize result and create a new instance of the model
-            // (some columns might be auto-generated after DB insert/update)
             if shouldUpdate {
                 let statement = UpdateStatement(model: model)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
@@ -69,7 +67,20 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
 
-            completion(.result(model))
+            // load the recent saved instance and pass it back to the callback
+            query(modelType, predicate: field("id").eq(model.id)) {
+                switch $0 {
+                case .result(let result):
+                    if let saved = result.first {
+                        completion(.result(saved))
+                    } else {
+                        completion(.error(.nonUniqueResult(model: modelType.modelName,
+                                                           count: result.count)))
+                    }
+                case .error(let error):
+                    completion(.error(error))
+                }
+            }
         } catch {
             completion(.failure(causedBy: error))
         }
