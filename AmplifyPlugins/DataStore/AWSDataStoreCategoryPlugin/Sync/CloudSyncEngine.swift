@@ -13,7 +13,7 @@ import Combine
 /// Behavior to sync mutation events to the cloud, and to subscribe to mutations from the cloud
 protocol CloudSyncEngineBehavior {
     /// Used for testing
-    typealias Factory = (StorageEngineBehavior) -> CloudSyncEngineBehavior
+    typealias Factory = () -> CloudSyncEngineBehavior
 
     /// Start the sync process with a "delta sync" merge
     ///
@@ -25,32 +25,40 @@ protocol CloudSyncEngineBehavior {
     ///    the updates in the Datastore
     /// 1. Mutation processor drains messages off the queue in serial and sends to the service, invoking
     ///    any local callbacks on error if necessary
-    func start()
+    func start(api: APICategoryGraphQLBehavior, storageAdapter: StorageEngineAdapter)
 
-    /// Submits a new mutation for synchronization to the cloud
+    /// Submits a new mutation for synchronization to the cloud. The response will be handled by the appropriate
+    /// reconciliation queue
     func submit(_ mutationEvent: MutationEvent) -> Future<MutationEvent, DataStoreError>
 }
 
 @available(iOS 13.0, *)
 class CloudSyncEngine: CloudSyncEngineBehavior {
 
-    let mutationQueue: OutgoingMutationQueue
-    let subscriber: SyncEngineMutationSubscriber
+    // Assigned at `start`
+    private var mutationQueue: OutgoingMutationQueue!
+
+    // Assigned at `start`
+    private var subscriber: SyncEngineMutationSubscriber!
 
     /// Synchronizes startup operations
     let syncQueue: OperationQueue
 
-    init(storageEngine: StorageEngineBehavior,
-         api: APICategoryGraphQLBehavior = Amplify.API) {
-        self.mutationQueue = OutgoingMutationQueue(storageEngine: storageEngine)
-        self.subscriber = SyncEngineMutationSubscriber(api: api)
+    var reconciliationQueues: IncomingEventReconciliationQueues?
 
+    init() {
         self.syncQueue = OperationQueue()
         syncQueue.name = "com.amazonaws.Amplify.\(AWSDataStoreCategoryPlugin.self).CloudSyncEngine"
         syncQueue.maxConcurrentOperationCount = 1
     }
 
-    func start() {
+    func start(api: APICategoryGraphQLBehavior = Amplify.API,
+               storageAdapter: StorageEngineAdapter) {
+
+        mutationQueue = OutgoingMutationQueue(storageAdapter: storageAdapter)
+
+        subscriber = SyncEngineMutationSubscriber(api: api)
+
         // TODO: Refactor this into a reactive, state-based process
 
         let pauseSubscriptionsOp = BlockOperation {
@@ -63,7 +71,7 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
         pauseMutationsOp.addDependency(pauseSubscriptionsOp)
 
         let setUpCloudSubscriptionsOp = BlockOperation {
-            self.setUpCloudSubscriptions()
+            self.setUpCloudSubscriptions(api: api, storageAdapter: storageAdapter)
         }
         setUpCloudSubscriptionsOp.addDependency(pauseMutationsOp)
 
@@ -105,8 +113,12 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
         log.debug("pauseMutations")
     }
 
-    private func setUpCloudSubscriptions() {
-        log.debug("setUpCloudSubscriptions")
+    private func setUpCloudSubscriptions(api: APICategoryGraphQLBehavior,
+                                         storageAdapter: StorageEngineAdapter) {
+        let syncableModelTypes = ModelRegistry.models.filter { $0.schema.isSyncable }
+        reconciliationQueues = IncomingEventReconciliationQueues(modelTypes: syncableModelTypes,
+                                                                 api: api,
+                                                                 storageAdapter: storageAdapter)
     }
 
     private func performInitialQueries() {

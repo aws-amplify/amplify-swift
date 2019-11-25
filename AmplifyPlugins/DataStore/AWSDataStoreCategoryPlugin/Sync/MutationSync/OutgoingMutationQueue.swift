@@ -10,6 +10,8 @@ import Combine
 import Foundation
 import AWSPluginsCore
 
+// TODO: The buffering strategy described below doesn't work as desired. Need to implement a new strategy.
+
 /// An asynchronous queue composed of Combine publishers. This queue has a maximum event limit of 10,000 items.
 ///
 /// (Although this is a rehash of Combine's behavior, it's slightly confusing, and worth a discussion of the intent to
@@ -33,7 +35,7 @@ import AWSPluginsCore
 /// - subscriber dequeues mutation event
 /// - subscriber requests next event
 final class OutgoingMutationQueue {
-    weak var storageEngine: StorageEngineBehavior?
+    weak var storageAdapter: StorageEngineAdapter?
 
     /// Incoming mutations are enqueued into this subject
     private let incomingMutations: PassthroughSubject<MutationEvent, DataStoreError>
@@ -41,8 +43,8 @@ final class OutgoingMutationQueue {
     /// Pending mutations are published from this publisher into the subscriber
     private var pendingMutations: AnyPublisher<MutationEvent, DataStoreError>?
 
-    init(storageEngine: StorageEngineBehavior) {
-        self.storageEngine = storageEngine
+    init(storageAdapter: StorageEngineAdapter) {
+        self.storageAdapter = storageAdapter
         self.incomingMutations = PassthroughSubject()
 
         // TODO: Find the right place to do this
@@ -64,11 +66,11 @@ final class OutgoingMutationQueue {
 
     func enqueue(event: MutationEvent) -> Future<MutationEvent, DataStoreError> {
         Future<MutationEvent, DataStoreError> { future in
-            guard let storageEngine = self.storageEngine else {
+            guard let storageAdapter = self.storageAdapter else {
                 let error = DataStoreError.configuration(
-                    "storageEngine is nil inside of OutgoingMutationQueue.enqueue",
+                    "storageAdapter is nil inside of OutgoingMutationQueue.enqueue",
                     """
-                    The reference to storageEngine has been released while an ongoing mutation was being processed.
+                    The reference to storageAdapter has been released while an ongoing mutation was being processed.
                     There is a possibility that there is a bug if this error persists. Please take a look at
                     https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that
                     match your scenario, and file an issue with the details of the bug if there isn't.
@@ -78,7 +80,7 @@ final class OutgoingMutationQueue {
                 return
             }
 
-            storageEngine.save(event) {
+            storageAdapter.save(event) {
                 switch $0 {
                 case .result:
                     self.incomingMutations.send(event)
@@ -92,11 +94,11 @@ final class OutgoingMutationQueue {
 
     func dequeue(event: MutationEvent) -> Future<MutationEvent, DataStoreError> {
         Future<MutationEvent, DataStoreError> { future in
-            guard let storageEngine = self.storageEngine else {
+            guard let storageAdapter = self.storageAdapter else {
                 let error = DataStoreError.configuration(
-                    "storageEngine is nil inside of OutgoingMutationQueue.enqueue",
+                    "storageAdapter is nil inside of OutgoingMutationQueue.enqueue",
                     """
-                    The reference to storageEngine has been released while an ongoing mutation was being processed.
+                    The reference to storageAdapter has been released while an ongoing mutation was being processed.
                     There is a possibility that there is a bug if this error persists. Please take a look at
                     https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that
                     match your scenario, and file an issue with the details of the bug if there isn't.
@@ -106,7 +108,7 @@ final class OutgoingMutationQueue {
                 return
             }
 
-            storageEngine.delete(MutationEvent.self, withId: event.id) {
+            storageAdapter.delete(MutationEvent.self, withId: event.id) {
                 switch $0 {
                 case .result:
                     future(.success(event))
@@ -121,11 +123,11 @@ final class OutgoingMutationQueue {
 
     private func loadStoredMutations() -> AnyPublisher<MutationEvent, DataStoreError> {
         return Record { record in
-            guard let storageEngine = self.storageEngine else {
+            guard let storageAdapter = self.storageAdapter else {
                 let error = DataStoreError.configuration(
-                    "storageEngine is nil inside of OutgoingMutationQueue.enqueue",
+                    "storageAdapter is nil inside of OutgoingMutationQueue.enqueue",
                     """
-                    The reference to storageEngine has been released while an ongoing mutation was being processed.
+                    The reference to storageAdapter has been released while an ongoing mutation was being processed.
                     There is a possibility that there is a bug if this error persists. Please take a look at
                     https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that
                     match your scenario, and file an issue with the details of the bug if there isn't.
@@ -135,7 +137,7 @@ final class OutgoingMutationQueue {
                 return
             }
 
-            storageEngine.query(MutationEvent.self, predicate: nil) {
+            storageAdapter.query(MutationEvent.self, predicate: nil) {
                 let unsortedEvents: [MutationEvent]
                 switch $0 {
                 case .result(let events):

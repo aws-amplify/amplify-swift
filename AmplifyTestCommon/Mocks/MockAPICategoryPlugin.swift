@@ -64,7 +64,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
                    subscriptionType: GraphQLSubscriptionType,
                    listener: GraphQLSubscriptionOperation<AnyModel>.EventListener?)
         -> GraphQLSubscriptionOperation<AnyModel> {
-            notify("subscribe(toAnyModelType:subscriptionType:listener)")
+            notify("subscribe(toAnyModelType:\(modelType),subscriptionType:\(subscriptionType),listener:)")
             let options = GraphQLOperationRequest<AnyModel>.Options()
             let request = GraphQLOperationRequest<AnyModel>(apiName: nil,
                                                             operationType: .subscription,

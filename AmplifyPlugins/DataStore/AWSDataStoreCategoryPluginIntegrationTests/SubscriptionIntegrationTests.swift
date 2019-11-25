@@ -7,7 +7,7 @@
 
 import XCTest
 
-import AWSAPICategoryPlugin
+import AmplifyPlugins
 import AWSMobileClient
 
 @testable import Amplify
@@ -18,8 +18,12 @@ import AWSMobileClient
 // app from the device/simulator
 // swiftlint:disable:next type_name
 class SubscriptionIntegrationTests: XCTestCase {
-    static let networkTimeout = TimeInterval(180)
+    let networkTimeout = TimeInterval(180)
 
+    var amplifyConfig: AmplifyConfiguration!
+
+    // NOTE: This setUp does not invoke `Amplify.configure()`, to ensure the local tests have control over the time at
+    // which sync startup happens.
     override func setUp() {
         super.setUp()
 
@@ -46,12 +50,11 @@ class SubscriptionIntegrationTests: XCTestCase {
             "AWSDataStoreCategoryPlugin": true
         ])
 
-        let amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: dataStoreConfig)
+        amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: dataStoreConfig)
 
         do {
             try Amplify.add(plugin: AWSAPICategoryPlugin())
             try Amplify.add(plugin: AWSDataStoreCategoryPlugin())
-            try Amplify.configure(amplifyConfig)
         } catch {
             XCTFail(String(describing: error))
             return
@@ -62,7 +65,23 @@ class SubscriptionIntegrationTests: XCTestCase {
         Amplify.reset()
     }
 
+    /// - Given: An API-connected DataStore
+    /// - When:
+    ///    - I start Amplify
+    /// - Then:
+    ///    - I receive subscriptions from other systems for syncable models
     func testSubscribeAtStartup() throws {
+        try Amplify.configure(amplifyConfig)
+
+        let completionReceived = expectation(description: "Completion received")
+        let sub = Amplify.DataStore.publisher(for: Post.self)
+            .sink(receiveCompletion: { completion in
+                completionReceived.fulfill()
+            }, receiveValue: { mutationEvent in
+
+            })
+
+        wait(for: [completionReceived], timeout: networkTimeout)
     }
 
 }

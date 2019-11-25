@@ -6,20 +6,21 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Combine
 import Foundation
 
 /// Reconciles an incoming model mutation with the stored model. If there is no conflict (e.g., the incoming model has
 /// a later version than the stored model), then write the new data to the store.
-class ReconcileAndLocalSaveOperation<M: Model>: Operation {
-    typealias LocalModel = M
-    typealias CloudModel = M
-    typealias SavedModel = M
+class ReconcileAndLocalSaveOperation: Operation {
+    typealias LocalModel = Model
+    typealias CloudModel = Model
+    typealias SavedModel = Model
 
     /// States are descriptive, they say what is happening in the system right now
     enum State {
         case waiting
-        case deserializing(AnyModel, CloudModel.Type)
+        case deserializing(AnyModel)
         case querying(CloudModel)
         case reconciling(CloudModel, LocalModel?)
         case saving(CloudModel)
@@ -32,7 +33,7 @@ class ReconcileAndLocalSaveOperation<M: Model>: Operation {
 
     /// Actions are declarative, they say what I just did
     enum Action {
-        case started(AnyModel, CloudModel.Type)
+        case started(AnyModel)
         case deserialized(CloudModel)
         case queried(CloudModel, LocalModel?)
         case reconciled(CloudModel)
@@ -46,14 +47,11 @@ class ReconcileAndLocalSaveOperation<M: Model>: Operation {
     private weak var storageAdapter: StorageEngineAdapter?
     let stateMachine: StateMachine<State, Action>
     let anyModel: AnyModel
-    let modelType: M.Type
     var stateMachineSink: AnyCancellable?
 
     init(anyModel: AnyModel,
-         modelType: M.Type,
          storageAdapter: StorageEngineAdapter) {
         self.anyModel = anyModel
-        self.modelType = modelType
         self.storageAdapter = storageAdapter
         self.stateMachine = StateMachine(initialState: .waiting,
                                          resolver: ReconcileAndLocalSaveOperation.resolve(currentState:action:))
@@ -72,7 +70,7 @@ class ReconcileAndLocalSaveOperation<M: Model>: Operation {
                 self?.respond(to: $0)
         }
 
-        stateMachine.notify(action: .started(anyModel, modelType))
+        stateMachine.notify(action: .started(anyModel))
     }
 
     /// Listens to incoming state changes and invokes the appropriate asynchronous methods in response.
@@ -81,8 +79,8 @@ class ReconcileAndLocalSaveOperation<M: Model>: Operation {
         case .waiting:
             break
 
-        case .deserializing(let anyModel, let modelType):
-            deserialize(anyModel: anyModel, into: modelType)
+        case .deserializing(let anyModel):
+            deserialize(anyModel: anyModel)
 
         case .querying(let cloudModel):
             query(cloudModel: cloudModel)
@@ -112,26 +110,12 @@ class ReconcileAndLocalSaveOperation<M: Model>: Operation {
     /// Responder method for `deserializing`. Notify actions:
     /// - deserialized
     /// - error
-    func deserialize(anyModel: AnyModel, into modelType: M.Type) {
+    func deserialize(anyModel: AnyModel) {
         guard !isCancelled else {
             return
         }
 
-        guard let model = anyModel.instance as? M else {
-            let dataStoreError = DataStoreError.decodingError(
-                "Cannot extract \(modelType) from AnyModel",
-                """
-                Ensure the incoming, type-erased AnyModel matches the expected type, \(modelType). The AnyModel is \
-                below:
-                \(anyModel)
-                """
-            )
-            let errorAction = Action.errored(dataStoreError)
-            stateMachine.notify(action: errorAction)
-            return
-        }
-
-        let action = Action.deserialized(model)
+        let action = Action.deserialized(anyModel.instance)
         stateMachine.notify(action: action)
     }
 
@@ -150,9 +134,14 @@ class ReconcileAndLocalSaveOperation<M: Model>: Operation {
             return
         }
 
+        guard let modelType = ModelRegistry.modelType(from: cloudModel.modelName) else {
+            Amplify.Logging.log.warn("No model for \(cloudModel.modelName), aborting")
+            return
+        }
+
         let predicate: QueryPredicateFactory = { field("id") == cloudModel.id }
 
-        storageAdapter.query(type(of: cloudModel), predicate: predicate()) { queryResult in
+        storageAdapter.query(untypedModel: modelType, predicate: predicate()) { queryResult in
             let models: [LocalModel]
             switch queryResult {
             case .error(let dataStoreError):
@@ -226,7 +215,7 @@ class ReconcileAndLocalSaveOperation<M: Model>: Operation {
             return
         }
 
-        storageAdapter.save(cloudModel) { response in
+        storageAdapter.save(untypedModel: cloudModel) { response in
             switch response {
             case .error(let dataStoreError):
                 let errorAction = Action.errored(dataStoreError)
@@ -260,8 +249,8 @@ class ReconcileAndLocalSaveOperation<M: Model>: Operation {
     static func resolve(currentState: State, action: Action) -> State {
         switch (currentState, action) {
 
-        case (.waiting, .started(let anyModel, let modelType)):
-            return .deserializing(anyModel, modelType)
+        case (.waiting, .started(let anyModel)):
+            return .deserializing(anyModel)
 
         case (.deserializing, .deserialized(let model)):
             return .querying(model)
@@ -293,4 +282,4 @@ class ReconcileAndLocalSaveOperation<M: Model>: Operation {
 
 }
 
-extension ReconcileAndLocalSaveOperation: SelfLogging { }
+extension ReconcileAndLocalSaveOperation: DefaultLogger { }

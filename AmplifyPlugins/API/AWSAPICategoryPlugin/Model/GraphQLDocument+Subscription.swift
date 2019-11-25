@@ -37,9 +37,12 @@ public struct GraphQLSubscription: GraphQLDocument {
         let subscriptionName = name.toPascalCase()
         var fields = schema.graphQLFields.map { $0.graphQLName }
 
+        // TODO: Move these conflict resolution fields
+
         // All subscription documents should include typename in the selection set,
         // to support type-erased operations on the client
         fields.append("__typename")
+        fields.append("_deleted")
 
         let document = """
         \(documentType) \(subscriptionName) {

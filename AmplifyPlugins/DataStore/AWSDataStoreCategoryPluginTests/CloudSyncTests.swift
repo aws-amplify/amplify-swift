@@ -37,7 +37,7 @@ class CloudSyncTests: XCTestCase {
         let storageEngine: StorageEngine
         do {
             let connection = try Connection(.inMemory)
-            let syncEngineFactory: CloudSyncEngineBehavior.Factory? = { CloudSyncEngine(storageEngine: $0) }
+            let syncEngineFactory: CloudSyncEngineBehavior.Factory? = { CloudSyncEngine() }
             storageAdapter = SQLiteStorageEngineAdapter(connection: connection)
             storageEngine = StorageEngine(adapter: storageAdapter, syncEngineFactory: syncEngineFactory)
         } catch {
@@ -79,11 +79,11 @@ class CloudSyncTests: XCTestCase {
 
         apiPlugin.listeners.append { message in
             switch message {
-            case "subscribe(from:Post,type:onCreate,listener:)":
+            case "subscribe(toAnyModelType:Post,subscriptionType:onCreate,listener:)":
                 createSubscriptionStarted.fulfill()
-            case "subscribe(from:Post,type:onUpdate,listener:)":
+            case "subscribe(toAnyModelType:Post,subscriptionType:onUpdate,listener:)":
                 updateSubscriptionStarted.fulfill()
-            case "subscribe(from:Post,type:onDelete,listener:)":
+            case "subscribe(toAnyModelType:Post,subscriptionType:onDelete,listener:)":
                 deleteSubscriptionStarted.fulfill()
             default:
                 break

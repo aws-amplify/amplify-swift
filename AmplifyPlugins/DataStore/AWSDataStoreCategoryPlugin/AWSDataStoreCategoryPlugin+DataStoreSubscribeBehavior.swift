@@ -1,9 +1,17 @@
 //
-//  AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift
-//  AWSDataStoreCategoryPlugin
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
 //
-//  Created by Schmelter, Tim on 11/24/19.
-//  Copyright © 2019 Amazon Web Services. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
+import Amplify
+import Combine
+
+extension AWSDataStoreCategoryPlugin: DataStoreSubscribeBehavior {
+    @available(iOS 13.0, *)
+    public func publisher<M: Model>(for modelType: M.Type)
+        -> AnyPublisher<MutationEvent, DataStoreError> {
+            return dataStorePublisher.publisher(for: modelType)
+    }
+}

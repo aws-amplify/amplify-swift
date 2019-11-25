@@ -55,12 +55,21 @@
 		65681A029CC7068D348C585E /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78D7B65396B17E57FDE99E6D /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */; };
 		9BDB42C47E6D7F9A113AE558 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C6448DF009E54C11ACE4515 /* Pods_HostApp.framework */; };
 		FA3841E323889D1A0070AD5B /* CloudSyncEngine+Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841E223889D190070AD5B /* CloudSyncEngine+Log.swift */; };
-		FA3841E523889D280070AD5B /* APISubscriptionListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841E423889D280070AD5B /* APISubscriptionListener.swift */; };
+		FA3841E523889D280070AD5B /* IncomingEventReconciliationQueues.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841E423889D280070AD5B /* IncomingEventReconciliationQueues.swift */; };
 		FA3841E723889D340070AD5B /* ReconcileAndLocalSaveOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841E623889D340070AD5B /* ReconcileAndLocalSaveOperation.swift */; };
 		FA3841E923889D440070AD5B /* StateMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841E823889D440070AD5B /* StateMachine.swift */; };
 		FA3841EB23889D6C0070AD5B /* SubscriptionIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841EA23889D6C0070AD5B /* SubscriptionIntegrationTests.swift */; };
 		FA3841ED23889D8F0070AD5B /* StateMachineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841EC23889D8F0070AD5B /* StateMachineTests.swift */; };
 		FA3841EF23889DCC0070AD5B /* MockModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841EE23889DCC0070AD5B /* MockModels.swift */; };
+		FA5D4CED238AFC4D00D2F54A /* AWSDataStoreCategoryPlugin+DefaultLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5D4CEC238AFC4D00D2F54A /* AWSDataStoreCategoryPlugin+DefaultLogger.swift */; };
+		FA5D4CEF238AFCBC00D2F54A /* AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5D4CEE238AFCBC00D2F54A /* AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift */; };
+		FACBB2AE238AFAE800C29602 /* AWSDataStoreCategoryPlugin+DataStoreBaseBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACBB2AD238AFAE800C29602 /* AWSDataStoreCategoryPlugin+DataStoreBaseBehavior.swift */; };
+		FADD728F238B0F10005AA69A /* IncomingSubscriptionAsyncEventQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADD728E238B0F10005AA69A /* IncomingSubscriptionAsyncEventQueue.swift */; };
+		FADD7291238B19CB005AA69A /* AsyncEventToAnyModelMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADD7290238B19CB005AA69A /* AsyncEventToAnyModelMapper.swift */; };
+		FAED5738238B3A2A008EBED8 /* IncomingSubscriptionQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAED5737238B3A2A008EBED8 /* IncomingSubscriptionQueue.swift */; };
+		FAED573C238B4B03008EBED8 /* Statement+AnyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAED573B238B4B03008EBED8 /* Statement+AnyModel.swift */; };
+		FAED573E238B4C2F008EBED8 /* StorageEngineAdapter+UntypedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAED573D238B4C2F008EBED8 /* StorageEngineAdapter+UntypedModel.swift */; };
+		FAED5742238B52CE008EBED8 /* ModelStorageBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAED5741238B52CE008EBED8 /* ModelStorageBehavior.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -150,12 +159,21 @@
 		AA98AF8502498A6DD04B5B9D /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
 		CD06D94E36718128AEAB1BAB /* Pods-AWSDataStoreCategoryPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSDataStoreCategoryPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AWSDataStoreCategoryPlugin/Pods-AWSDataStoreCategoryPlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		FA3841E223889D190070AD5B /* CloudSyncEngine+Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CloudSyncEngine+Log.swift"; sourceTree = "<group>"; };
-		FA3841E423889D280070AD5B /* APISubscriptionListener.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APISubscriptionListener.swift; sourceTree = "<group>"; };
+		FA3841E423889D280070AD5B /* IncomingEventReconciliationQueues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncomingEventReconciliationQueues.swift; sourceTree = "<group>"; };
 		FA3841E623889D340070AD5B /* ReconcileAndLocalSaveOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReconcileAndLocalSaveOperation.swift; sourceTree = "<group>"; };
 		FA3841E823889D440070AD5B /* StateMachine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StateMachine.swift; sourceTree = "<group>"; };
 		FA3841EA23889D6C0070AD5B /* SubscriptionIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionIntegrationTests.swift; sourceTree = "<group>"; };
 		FA3841EC23889D8F0070AD5B /* StateMachineTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StateMachineTests.swift; sourceTree = "<group>"; };
 		FA3841EE23889DCC0070AD5B /* MockModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockModels.swift; sourceTree = "<group>"; };
+		FA5D4CEC238AFC4D00D2F54A /* AWSDataStoreCategoryPlugin+DefaultLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSDataStoreCategoryPlugin+DefaultLogger.swift"; sourceTree = "<group>"; };
+		FA5D4CEE238AFCBC00D2F54A /* AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift"; sourceTree = "<group>"; };
+		FACBB2AD238AFAE800C29602 /* AWSDataStoreCategoryPlugin+DataStoreBaseBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSDataStoreCategoryPlugin+DataStoreBaseBehavior.swift"; sourceTree = "<group>"; };
+		FADD728E238B0F10005AA69A /* IncomingSubscriptionAsyncEventQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingSubscriptionAsyncEventQueue.swift; sourceTree = "<group>"; };
+		FADD7290238B19CB005AA69A /* AsyncEventToAnyModelMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncEventToAnyModelMapper.swift; sourceTree = "<group>"; };
+		FAED5737238B3A2A008EBED8 /* IncomingSubscriptionQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingSubscriptionQueue.swift; sourceTree = "<group>"; };
+		FAED573B238B4B03008EBED8 /* Statement+AnyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Statement+AnyModel.swift"; sourceTree = "<group>"; };
+		FAED573D238B4C2F008EBED8 /* StorageEngineAdapter+UntypedModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageEngineAdapter+UntypedModel.swift"; sourceTree = "<group>"; };
+		FAED5741238B52CE008EBED8 /* ModelStorageBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelStorageBehavior.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -223,11 +241,14 @@
 		2149E5A62388684F00873955 /* AWSDataStoreCategoryPlugin */ = {
 			isa = PBXGroup;
 			children = (
+				2149E5C42388684F00873955 /* AWSDataStoreCategoryPlugin.swift */,
+				FACBB2AD238AFAE800C29602 /* AWSDataStoreCategoryPlugin+DataStoreBaseBehavior.swift */,
+				FA5D4CEE238AFCBC00D2F54A /* AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift */,
+				FA5D4CEC238AFC4D00D2F54A /* AWSDataStoreCategoryPlugin+DefaultLogger.swift */,
+				2149E5C32388684F00873955 /* Info.plist */,
 				2149E5A72388684F00873955 /* Storage */,
 				2149E5B82388684F00873955 /* Subscribe */,
 				2149E5BA2388684F00873955 /* Sync */,
-				2149E5C32388684F00873955 /* Info.plist */,
-				2149E5C42388684F00873955 /* AWSDataStoreCategoryPlugin.swift */,
 			);
 			path = AWSDataStoreCategoryPlugin;
 			sourceTree = "<group>";
@@ -235,10 +256,11 @@
 		2149E5A72388684F00873955 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
-				2149E5A82388684F00873955 /* StorageEngineBehavior.swift */,
-				2149E5A92388684F00873955 /* StorageEngineAdapter.swift */,
-				2149E5AA2388684F00873955 /* StorageEngine.swift */,
+				FAED5741238B52CE008EBED8 /* ModelStorageBehavior.swift */,
 				2149E5AB2388684F00873955 /* SQLite */,
+				2149E5AA2388684F00873955 /* StorageEngine.swift */,
+				2149E5A92388684F00873955 /* StorageEngineAdapter.swift */,
+				2149E5A82388684F00873955 /* StorageEngineBehavior.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -256,6 +278,8 @@
 				2149E5B32388684F00873955 /* SQLStatement+Delete.swift */,
 				2149E5B42388684F00873955 /* QueryPredicate+SQLite.swift */,
 				2149E5B52388684F00873955 /* StorageEngineAdapter+SQLite.swift */,
+				FAED573D238B4C2F008EBED8 /* StorageEngineAdapter+UntypedModel.swift */,
+				FAED573B238B4B03008EBED8 /* Statement+AnyModel.swift */,
 				2149E5B62388684F00873955 /* SQLStatement+Condition.swift */,
 				2149E5B72388684F00873955 /* Statement+Model.swift */,
 			);
@@ -273,18 +297,15 @@
 		2149E5BA2388684F00873955 /* Sync */ = {
 			isa = PBXGroup;
 			children = (
-				FA3841E423889D280070AD5B /* APISubscriptionListener.swift */,
 				2149E5BE2388684F00873955 /* CloudSyncEngine.swift */,
 				FA3841E223889D190070AD5B /* CloudSyncEngine+Log.swift */,
+				FA3841E423889D280070AD5B /* IncomingEventReconciliationQueues.swift */,
+				FAED5736238B2DFA008EBED8 /* MutationSync */,
 				2149E5C12388684F00873955 /* NetworkReachability.swift */,
 				2149E5BD2388684F00873955 /* NetworkReachabilityNotifier.swift */,
-				2149E5C02388684F00873955 /* OutgoingMutationQueue.swift */,
 				FA3841E623889D340070AD5B /* ReconcileAndLocalSaveOperation.swift */,
 				FA3841E823889D440070AD5B /* StateMachine.swift */,
-				2149E5BF2388684F00873955 /* SyncEngineMutationSubscriber.swift */,
-				2149E5BC2388684F00873955 /* SyncEngineMutationSubscriber+Log.swift */,
-				2149E5BB2388684F00873955 /* SyncEngineMutationSubscriber+Responses.swift */,
-				2149E5C22388684F00873955 /* SyncEngineMutationSubscriber+Subscriber.swift */,
+				FAED5735238B2DEC008EBED8 /* SubscriptionSync */,
 			);
 			path = Sync;
 			sourceTree = "<group>";
@@ -364,6 +385,28 @@
 				78D7B65396B17E57FDE99E6D /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FAED5735238B2DEC008EBED8 /* SubscriptionSync */ = {
+			isa = PBXGroup;
+			children = (
+				FADD7290238B19CB005AA69A /* AsyncEventToAnyModelMapper.swift */,
+				FADD728E238B0F10005AA69A /* IncomingSubscriptionAsyncEventQueue.swift */,
+				FAED5737238B3A2A008EBED8 /* IncomingSubscriptionQueue.swift */,
+			);
+			path = SubscriptionSync;
+			sourceTree = "<group>";
+		};
+		FAED5736238B2DFA008EBED8 /* MutationSync */ = {
+			isa = PBXGroup;
+			children = (
+				2149E5C02388684F00873955 /* OutgoingMutationQueue.swift */,
+				2149E5BF2388684F00873955 /* SyncEngineMutationSubscriber.swift */,
+				2149E5BC2388684F00873955 /* SyncEngineMutationSubscriber+Log.swift */,
+				2149E5BB2388684F00873955 /* SyncEngineMutationSubscriber+Responses.swift */,
+				2149E5C22388684F00873955 /* SyncEngineMutationSubscriber+Subscriber.swift */,
+			);
+			path = MutationSync;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -625,7 +668,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/AWSDataStoreCategoryPlugin\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/AWSDataStoreCategoryPlugin\" --config \"${SRCROOT}/../../.swiftformat\"\n";
 		};
 		50B9D3566132A3E54BA4C2F8 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -738,7 +781,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/AWSDataStoreCategoryPluginIntegrationTests\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/AWSDataStoreCategoryPluginIntegrationTests\" --config \"${SRCROOT}/../../.swiftformat\"\n\n";
 		};
 		FA9EB2C6238894A800BAADBD /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -774,7 +817,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/AWSDataStoreCategoryPluginTests\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/AWSDataStoreCategoryPluginTests\" --config \"${SRCROOT}/../../.swiftformat\"\n\n";
 		};
 		FA9EB2C8238894CB00BAADBD /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -803,15 +846,17 @@
 			files = (
 				2149E5DE2388684F00873955 /* AWSDataStoreCategoryPlugin.swift in Sources */,
 				FA3841E923889D440070AD5B /* StateMachine.swift in Sources */,
-				FA3841E523889D280070AD5B /* APISubscriptionListener.swift in Sources */,
+				FA3841E523889D280070AD5B /* IncomingEventReconciliationQueues.swift in Sources */,
 				2149E5DB2388684F00873955 /* NetworkReachability.swift in Sources */,
 				2149E5D62388684F00873955 /* SyncEngineMutationSubscriber+Log.swift in Sources */,
 				2149E5D12388684F00873955 /* StorageEngineAdapter+SQLite.swift in Sources */,
+				FA5D4CED238AFC4D00D2F54A /* AWSDataStoreCategoryPlugin+DefaultLogger.swift in Sources */,
 				2149E5CA2388684F00873955 /* ModelSchema+SQLite.swift in Sources */,
 				2149E5CD2388684F00873955 /* SQLStatement+Update.swift in Sources */,
 				2149E5D02388684F00873955 /* QueryPredicate+SQLite.swift in Sources */,
 				2149E5D22388684F00873955 /* SQLStatement+Condition.swift in Sources */,
 				2149E5DC2388684F00873955 /* SyncEngineMutationSubscriber+Subscriber.swift in Sources */,
+				FAED573C238B4B03008EBED8 /* Statement+AnyModel.swift in Sources */,
 				2149E5D92388684F00873955 /* SyncEngineMutationSubscriber.swift in Sources */,
 				2149E5D72388684F00873955 /* NetworkReachabilityNotifier.swift in Sources */,
 				2149E5C52388684F00873955 /* StorageEngineBehavior.swift in Sources */,
@@ -820,14 +865,21 @@
 				2149E5D42388684F00873955 /* DataStorePublisher.swift in Sources */,
 				2149E5DA2388684F00873955 /* OutgoingMutationQueue.swift in Sources */,
 				FA3841E723889D340070AD5B /* ReconcileAndLocalSaveOperation.swift in Sources */,
+				FADD728F238B0F10005AA69A /* IncomingSubscriptionAsyncEventQueue.swift in Sources */,
 				2149E5C72388684F00873955 /* StorageEngine.swift in Sources */,
+				FAED573E238B4C2F008EBED8 /* StorageEngineAdapter+UntypedModel.swift in Sources */,
 				2149E5CC2388684F00873955 /* SQLStatement+Select.swift in Sources */,
 				2149E5D52388684F00873955 /* SyncEngineMutationSubscriber+Responses.swift in Sources */,
+				FADD7291238B19CB005AA69A /* AsyncEventToAnyModelMapper.swift in Sources */,
 				2149E5D82388684F00873955 /* CloudSyncEngine.swift in Sources */,
 				2149E5CB2388684F00873955 /* Model+SQLite.swift in Sources */,
+				FA5D4CEF238AFCBC00D2F54A /* AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift in Sources */,
 				2149E5C82388684F00873955 /* SQLStatement.swift in Sources */,
+				FAED5742238B52CE008EBED8 /* ModelStorageBehavior.swift in Sources */,
 				2149E5C62388684F00873955 /* StorageEngineAdapter.swift in Sources */,
+				FAED5738238B3A2A008EBED8 /* IncomingSubscriptionQueue.swift in Sources */,
 				2149E5CE2388684F00873955 /* SQLStatement+CreateTable.swift in Sources */,
+				FACBB2AE238AFAE800C29602 /* AWSDataStoreCategoryPlugin+DataStoreBaseBehavior.swift in Sources */,
 				2149E5D32388684F00873955 /* Statement+Model.swift in Sources */,
 				FA3841E323889D1A0070AD5B /* CloudSyncEngine+Log.swift in Sources */,
 			);
