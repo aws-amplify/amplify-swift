@@ -18,4 +18,8 @@ class MockCoreMLVisionAdapter: CoreMLVisionBehavior {
     func detectText(_ imageURL: URL) -> IdentifyTextResult? {
         return nil
     }
+
+    func detectEntities(_ imageURL: URL) -> IdentifyEntitiesResult? {
+        return nil
+    }
 }

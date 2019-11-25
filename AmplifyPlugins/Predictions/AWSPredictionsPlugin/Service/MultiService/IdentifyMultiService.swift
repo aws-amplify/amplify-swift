@@ -56,9 +56,7 @@ class IdentifyMultiService: MultiServiceBehavior {
             callback(.failed(predictionError))
             return
         }
-        offlineService.identify(request.image,
-                                type: request.identifyType,
-                                onEvent: callback)
+        offlineService.identify(request.image, type: request.identifyType, onEvent: callback)
     }
 
     // MARK: -
@@ -100,10 +98,9 @@ class IdentifyMultiService: MultiServiceBehavior {
             return
         }
 
-        let message = IdentifyMultiServiceErrorMessage.noResultIdentifyService.errorDescription
-        let recoveryMessage = IdentifyMultiServiceErrorMessage.noResultIdentifyService.recoverySuggestion
-        let predictionError = PredictionsError.service(message, recoveryMessage, nil)
-        callback(.failed(predictionError))
+        // At this point we decided not to merge the result and return the non-nil online
+        // result back.
+        callback(.completed(finalOnlineResult))
     }
 
     func mergeLabelResult(onlineLabelResult: IdentifyLabelsResult,
