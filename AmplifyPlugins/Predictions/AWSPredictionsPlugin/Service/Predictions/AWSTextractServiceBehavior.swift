@@ -8,7 +8,7 @@
 import Amplify
 import AWSTextract
 
-protocol AWSTextractServiceBehaviour {
+protocol AWSTextractServiceBehavior {
 
     typealias TextractServiceEventHandler = (TextractServiceEvent) -> Void
     typealias TextractServiceEvent = PredictionsEvent<IdentifyResult, PredictionsError>

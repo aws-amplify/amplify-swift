@@ -98,6 +98,12 @@
 		B45B0679237F13EB00DC9122 /* InterpretTextMultiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45B0675237F13EB00DC9122 /* InterpretTextMultiService.swift */; };
 		B45B067A237F13EB00DC9122 /* MultiServiceBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45B0676237F13EB00DC9122 /* MultiServiceBehavior.swift */; };
 		B45B067C237F143D00DC9122 /* InterpretTextOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45B067B237F143C00DC9122 /* InterpretTextOperation.swift */; };
+		B461DF92238C3D64004DED35 /* MockTranslateBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B461DF91238C3D64004DED35 /* MockTranslateBehavior.swift */; };
+		B461DF94238C3D85004DED35 /* PredictionsServiceTranslateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B461DF93238C3D85004DED35 /* PredictionsServiceTranslateTests.swift */; };
+		B461DF96238C3DC3004DED35 /* MockComprehendBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B461DF95238C3DC3004DED35 /* MockComprehendBehavior.swift */; };
+		B461DF98238C3DD1004DED35 /* MockPollyBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B461DF97238C3DD1004DED35 /* MockPollyBehavior.swift */; };
+		B461DF9A238C3DE5004DED35 /* MockRekognitionBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B461DF99238C3DE5004DED35 /* MockRekognitionBehavior.swift */; };
+		B461DF9C238C3DF0004DED35 /* MockTextractBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B461DF9B238C3DF0004DED35 /* MockTextractBehavior.swift */; };
 		B478F64E2374DCE700C4F92B /* AWSPredictionsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSPredictionsPlugin.framework */; };
 		B478F6762374DF5B00C4F92B /* AWSPredictionsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSPredictionsPlugin.framework */; };
 		B478F6A52374DFE800C4F92B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F6A22374DFE800C4F92B /* ViewController.swift */; };
@@ -280,6 +286,12 @@
 		B45B0675237F13EB00DC9122 /* InterpretTextMultiService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterpretTextMultiService.swift; sourceTree = "<group>"; };
 		B45B0676237F13EB00DC9122 /* MultiServiceBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiServiceBehavior.swift; sourceTree = "<group>"; };
 		B45B067B237F143C00DC9122 /* InterpretTextOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterpretTextOperation.swift; sourceTree = "<group>"; };
+		B461DF91238C3D64004DED35 /* MockTranslateBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockTranslateBehavior.swift; sourceTree = "<group>"; };
+		B461DF93238C3D85004DED35 /* PredictionsServiceTranslateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsServiceTranslateTests.swift; sourceTree = "<group>"; };
+		B461DF95238C3DC3004DED35 /* MockComprehendBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockComprehendBehavior.swift; sourceTree = "<group>"; };
+		B461DF97238C3DD1004DED35 /* MockPollyBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPollyBehavior.swift; sourceTree = "<group>"; };
+		B461DF99238C3DE5004DED35 /* MockRekognitionBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRekognitionBehavior.swift; sourceTree = "<group>"; };
+		B461DF9B238C3DF0004DED35 /* MockTextractBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTextractBehavior.swift; sourceTree = "<group>"; };
 		B478F5FB2374DBF400C4F92B /* AWSPredictionsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSPredictionsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B478F6492374DCE700C4F92B /* AWSPredictionsPluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPredictionsPluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B478F6582374DD0D00C4F92B /* AWSPredictionsPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPredictionsPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -613,6 +625,42 @@
 			path = MultiService;
 			sourceTree = "<group>";
 		};
+		B461DF8A238C3B0B004DED35 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				B461DF8B238C3B6A004DED35 /* PredictionsTest */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		B461DF8B238C3B6A004DED35 /* PredictionsTest */ = {
+			isa = PBXGroup;
+			children = (
+				B461DF93238C3D85004DED35 /* PredictionsServiceTranslateTests.swift */,
+			);
+			path = PredictionsTest;
+			sourceTree = "<group>";
+		};
+		B461DF8F238C3D64004DED35 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				B461DF90238C3D64004DED35 /* Service */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
+		B461DF90238C3D64004DED35 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				B461DF91238C3D64004DED35 /* MockTranslateBehavior.swift */,
+				B461DF95238C3DC3004DED35 /* MockComprehendBehavior.swift */,
+				B461DF97238C3DD1004DED35 /* MockPollyBehavior.swift */,
+				B461DF99238C3DE5004DED35 /* MockRekognitionBehavior.swift */,
+				B461DF9B238C3DF0004DED35 /* MockTextractBehavior.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
 		B478F5F12374DBF400C4F92B = {
 			isa = PBXGroup;
 			children = (
@@ -686,6 +734,8 @@
 		B49D1432237B665E00856777 /* AWSPredictionsPluginTests */ = {
 			isa = PBXGroup;
 			children = (
+				B461DF8F238C3D64004DED35 /* Mocks */,
+				B461DF8A238C3B0B004DED35 /* Service */,
 				B42094C12384B5D4000F98A3 /* ConfigurationTests */,
 				B49D1433237B665E00856777 /* Resources */,
 				B49D1435237B665E00856777 /* AWSPredictionsPluginTests.swift */,
@@ -1704,8 +1754,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B461DF92238C3D64004DED35 /* MockTranslateBehavior.swift in Sources */,
 				B42094C32384B5FB000F98A3 /* PredictionsPluginConfigurationTests.swift in Sources */,
+				B461DF98238C3DD1004DED35 /* MockPollyBehavior.swift in Sources */,
 				B49D1437237B665E00856777 /* AWSPredictionsPluginTests.swift in Sources */,
+				B461DF94238C3D85004DED35 /* PredictionsServiceTranslateTests.swift in Sources */,
+				B461DF96238C3DC3004DED35 /* MockComprehendBehavior.swift in Sources */,
+				B461DF9C238C3DF0004DED35 /* MockTextractBehavior.swift in Sources */,
+				B461DF9A238C3DE5004DED35 /* MockRekognitionBehavior.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
