@@ -107,10 +107,14 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         let sql = "select count(\(primaryKey)) from \(schema.name) where \(primaryKey) = ?"
 
         let result = try connection.scalar(sql, [id])
-        guard let count = result as? Int64, count <= 1 else {
-            throw DataStoreError.nonUniqueResult(model: schema.name)
+        if let count = result as? Int64 {
+            if count > 1 {
+                throw DataStoreError.nonUniqueResult(model: modelType.modelName,
+                                                     count: Int(count))
+            }
+            return count == 1
         }
-        return count == 1
+        return false
     }
 
 }

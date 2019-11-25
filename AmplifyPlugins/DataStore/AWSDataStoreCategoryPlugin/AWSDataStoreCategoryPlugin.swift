@@ -127,8 +127,9 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
         query(modelType, where: predicate) {
             switch $0 {
             case .result(let models):
+                let count = models.count
                 if models.count > 1 {
-                    completion(.error(.nonUniqueResult(model: modelType.schema.name)))
+                    completion(.error(.nonUniqueResult(model: modelType.modelName, count: count)))
                 } else {
                     completion(.result(models.first))
                 }
