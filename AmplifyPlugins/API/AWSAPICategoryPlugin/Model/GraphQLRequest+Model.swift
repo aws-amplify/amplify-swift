@@ -48,6 +48,7 @@ extension GraphQLRequest {
         let variables: [String: Any] = [
             "id": id
         ]
+
         return GraphQLRequest<M?>(document: document.stringValue,
                                   variables: variables,
                                   responseType: M?.self,
@@ -67,8 +68,17 @@ extension GraphQLRequest {
     public static func query<M: Model>(from modelType: M.Type,
                                        where predicate: QueryPredicate? = nil) -> GraphQLRequest<[M]> {
         let document = GraphQLQuery(from: modelType, type: .list)
-        // TODO convert predicate to ModelFilterInput as pass as variables
-        let variables: [String: Any] = [:]
+        var variables = [String: Any]()
+
+        if let predicate = predicate {
+            // TODO: variables.updateValue(predicate.graphQLFilterVariables, forKey: "filter")
+        }
+
+        // TODO: Remove this once we support limit and nextToken passed in from the developer
+        variables.updateValue(1_000, forKey: "limit")
+
+        // By constructing the query request in this way, we should pass in some options that check for "token"
+        // and keep retrieving items until it's done and populate it back. like `exhaustList`
         return GraphQLRequest<[M]>(document: document.stringValue,
                                    variables: variables,
                                    responseType: [M].self,

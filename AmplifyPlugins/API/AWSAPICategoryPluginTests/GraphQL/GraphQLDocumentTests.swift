@@ -134,8 +134,8 @@ class GraphQLDocumentTests: XCTestCase {
     func testListGraphQLQueryFromSimpleModel() {
         let document = GraphQLQuery(from: Post.self, type: .list)
         let expected = """
-        query ListPosts($filter: ModelPostFilterInput) {
-          listPosts(filter: $filter) {
+        query ListPosts($filter: ModelPostFilterInput, $limit: Int, $nextToken: String) {
+          listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
             items {
               id
               content
@@ -145,6 +145,7 @@ class GraphQLDocumentTests: XCTestCase {
               title
               updatedAt
             }
+            nextToken
           }
         }
         """
@@ -285,4 +286,41 @@ class GraphQLDocumentTests: XCTestCase {
         XCTAssert(input["content"] as? String == post.content)
     }
 
+    func testListQueryGraphQLRequest() {
+        let post = Post.keys
+        let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
+        let request = GraphQLRequest<Post>.query(from: Post.self, where: predicate)
+        XCTAssert(request.responseType == [Post].self)
+        XCTAssertNotNil(request.variables)
+        guard let variables = request.variables else {
+            XCTFail("Missing variables")
+            return
+        }
+
+        XCTAssertNotNil(variables["limit"])
+        XCTAssertEqual(variables["limit"] as? Int, 1_000)
+        XCTAssertNotNil(variables["filter"])
+    }
+
+    // MARK: - QueryPredicate tests
+
+    // TODO: Predicate testing
+    // food for thought: if the JSON serialization is used elsewhere, either by the API itself or other tests,
+    // consider adding an extension to QueryPredicate that exposes a func toJSON() throws -> String
+    /*
+    func testQueryPredicateToGraphQLFilterVariables() throws {
+        let post = Post.keys
+        let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
+        let expectedString = """
+        {"and":[{"id":{"eq":"id"}},{"or":[{"title":{"beginsWith":"Title"}},{"content":{"contains":"content"}}]}]}
+        """
+        let filterVariables = predicate.graphQLFilterVariables
+        let serializedJSON = try JSONSerialization.data(withJSONObject: filterVariables)
+        guard let serializedString = String(data: serializedJSON, encoding: .utf8) else {
+            XCTFail("Could not get string from JSON data")
+            return
+        }
+        XCTAssertEqual(serializedString, expectedString)
+    }
+    */
 }
