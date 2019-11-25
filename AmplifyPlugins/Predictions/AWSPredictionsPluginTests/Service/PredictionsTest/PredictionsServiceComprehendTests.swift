@@ -38,6 +38,14 @@ class PredictionsServiceComprehendTests: XCTestCase {
         }
     }
 
+    /// Test comprehend text with only dominant language result
+    ///
+    /// - Given: Predictions service with comprehend behavior
+    /// - When:
+    ///    - I invoke comprehend text
+    /// - Then:
+    ///    - I should get back a result with dominant language
+    ///
     func testWithOnlyLanguageResult() {
         let english = AWSComprehendDominantLanguage()!
         english.languageCode = "en"
@@ -55,6 +63,14 @@ class PredictionsServiceComprehendTests: XCTestCase {
         }
     }
 
+    /// Test whether we get correct dominant language for multiple languages
+    ///
+    /// - Given: Predictions service with comprehend behavior
+    /// - When:
+    ///    - I invoke comprehend text and service return multiple languages
+    /// - Then:
+    ///    - I should get back the language with highest score
+    ///
     func testWithMultipleLanguageResult() {
         let english = AWSComprehendDominantLanguage()!
         english.languageCode = "en"
@@ -78,6 +94,14 @@ class PredictionsServiceComprehendTests: XCTestCase {
         }
     }
 
+    /// Test whether empty result from service gives us error
+    ///
+    /// - Given: Predictions service with comprehend behavior
+    /// - When:
+    ///    - I invoke comprehend text and service return empty result
+    /// - Then:
+    ///    - I should get an error
+    ///
     func testWithEmptyLanguageResult() {
         let mockDominantLanguage = mockDominantLanguageResult()
         mockComprehend.setResult(languageResponse: mockDominantLanguage)
@@ -91,6 +115,14 @@ class PredictionsServiceComprehendTests: XCTestCase {
         }
     }
 
+    /// Test whether returninng all nil from service gives us an error
+    ///
+    /// - Given: Predictions service with comprehend behavior
+    /// - When:
+    ///    - I invoke comprehend with text
+    /// - Then:
+    ///    - I should get an error
+    ///
     func testAllNilResult() {
         mockComprehend.setResult()
         predictionsService.comprehend(text: inputForTest) { event in
@@ -103,6 +135,14 @@ class PredictionsServiceComprehendTests: XCTestCase {
         }
     }
 
+    /// Test whether we get an error if service return error for language detection
+    ///
+    /// - Given: Predictions service with comprehend behavior
+    /// - When:
+    ///    - I invoke comprehend text and service returns an error
+    /// - Then:
+    ///    - I should get an error back
+    ///
     func testLanguageError() {
         let mockError = NSError(domain: AWSComprehendErrorDomain,
                                 code: AWSComprehendErrorType.internalServer.rawValue,
@@ -118,6 +158,14 @@ class PredictionsServiceComprehendTests: XCTestCase {
         }
     }
 
+    /// Test a complete response
+    ///
+    /// - Given: Predictions service with comprehend behavior
+    /// - When:
+    ///    - I invoke comprehend with all values
+    /// - Then:
+    ///    - I should get back the result
+    ///
     func testCompleteResult() {
 
         let english = AWSComprehendDominantLanguage()!
