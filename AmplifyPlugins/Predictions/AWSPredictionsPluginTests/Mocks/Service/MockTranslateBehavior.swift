@@ -14,17 +14,17 @@ class MockTranslateBehavior: AWSTranslateBehavior {
     var error: Error?
 
     func translateText(request: AWSTranslateTranslateTextRequest) -> AWSTask<AWSTranslateTranslateTextResponse> {
-        if let finalResult = result {
-            return AWSTask(result: finalResult)
+        guard let finalError = error else {
+            return AWSTask(result: result)
         }
-        return AWSTask(error: error!)
+        return AWSTask(error: finalError)
     }
 
     func getTranslate() -> AWSTranslate {
         return AWSTranslate()
     }
 
-    public func setResult(result: AWSTranslateTranslateTextResponse) {
+    public func setResult(result: AWSTranslateTranslateTextResponse?) {
         self.result = result
         error = nil
     }
