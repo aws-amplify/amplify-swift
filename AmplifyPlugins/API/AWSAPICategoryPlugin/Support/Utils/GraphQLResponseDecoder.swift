@@ -42,14 +42,14 @@ struct GraphQLResponseDecoder {
                     throw APIError.operationError(
                         "Could not get the String of full graphql response containing data and errors", "")
                 }
-                return GraphQLResponse<R>.transformationError(rawGraphQLResponseString, error)
+                return GraphQLResponse<R>.failure(.transformationError(rawGraphQLResponseString, error))
             } catch {
                 throw error
             }
 
         case (.none, .some(let errors)):
             let responseErrors = try decodeErrors(graphQLErrors: errors)
-            return GraphQLResponse<R>.error(responseErrors)
+            return GraphQLResponse<R>.failure(.error(responseErrors))
 
         case (.some(let data), .some(let errors)):
             do {
@@ -58,14 +58,14 @@ struct GraphQLResponseDecoder {
                                               into: responseType,
                                               at: decodePath)
                 let responseErrors = try decodeErrors(graphQLErrors: errors)
-                return GraphQLResponse<R>.partial(responseData, responseErrors)
+                return GraphQLResponse<R>.failure(.partial(responseData, responseErrors))
             } catch let decodingError as DecodingError {
                 let error = APIError(error: decodingError)
                 guard let rawGraphQLResponseString = String(data: rawGraphQLResponse, encoding: .utf8) else {
                     throw APIError.operationError(
                         "Could not get the String of full graphql response containing data and errors", "")
                 }
-                return GraphQLResponse<R>.transformationError(rawGraphQLResponseString, error)
+                return GraphQLResponse<R>.failure(.transformationError(rawGraphQLResponseString, error))
             } catch {
                 throw error
             }

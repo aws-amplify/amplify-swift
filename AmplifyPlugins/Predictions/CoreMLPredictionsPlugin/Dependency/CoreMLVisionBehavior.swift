@@ -13,4 +13,6 @@ protocol CoreMLVisionBehavior: class {
     func detectLabels(_ imageURL: URL) -> IdentifyLabelsResult?
 
     func detectText(_ imageURL: URL) -> IdentifyTextResult?
+
+    func detectEntities(_ imageURL: URL) -> IdentifyEntitiesResult?
 }

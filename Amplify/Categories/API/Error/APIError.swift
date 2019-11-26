@@ -10,6 +10,9 @@ import Foundation
 /// Errors specific to the API Category
 public enum APIError {
 
+    public typealias UserInfo = [String: Any]
+    public typealias StatusCode = Int
+
     /// An unknown error
     case unknown(ErrorDescription, RecoverySuggestion, Error? = nil)
 
@@ -22,14 +25,11 @@ public enum APIError {
     /// An in-process operation encountered a processing error
     case operationError(ErrorDescription, RecoverySuggestion, Error? = nil)
 
-    /// An error returned from the URL process
-    case urlError(ErrorDescription, RecoverySuggestion, URLError, HTTPURLResponse? = nil)
-
-    /// A network related error such as internet connectivity
-    case networkError(ErrorDescription, RecoverySuggestion, HTTPURLResponse? = nil, Error? = nil)
+    /// The category received an underlying error from network layer.
+    case networkError(ErrorDescription, UserInfo? = nil, Error? = nil)
 
     /// A non 2xx response from the service.
-    case httpStatusError(ErrorDescription, RecoverySuggestion, HTTPURLResponse, Error? = nil)
+    case httpStatusError(StatusCode, HTTPURLResponse)
 
     /// An error to encapsulate an error received by a dependent plugin
     case pluginError(AmplifyError)
@@ -51,14 +51,11 @@ extension APIError: AmplifyError {
         case .operationError(let errorDescription, _, _):
             return errorDescription
 
-        case .urlError(let errorDescription, _, _, _):
+        case .networkError(let errorDescription, _, _):
             return errorDescription
 
-        case .networkError(let errorDescription, _, _, _):
-            return errorDescription
-
-        case .httpStatusError(let errorDescription, _, let response, _):
-            return "\(errorDescription). The HTTP response status code is [\(response.statusCode)]."
+        case .httpStatusError(let statusCode, _):
+            return "The HTTP response status code is [\(statusCode)]."
 
         case .pluginError(let error):
             return error.errorDescription
@@ -85,15 +82,12 @@ extension APIError: AmplifyError {
         case .operationError(_, let recoverySuggestion, _):
             return recoverySuggestion
 
-        case .urlError(_, let recoverySuggestion, _, _):
-            return recoverySuggestion
+        case .networkError(let errorDescription, _, _):
+            return errorDescription
 
-        case .networkError(_, let recoverySuggestion, _, _):
-            return recoverySuggestion
-
-        case .httpStatusError(_, let recoverySuggestion, _, _):
+        case .httpStatusError:
             return """
-            \(recoverySuggestion).
+            The metadata associated with the response is contained in the HTTPURLResponse.
             For more information on HTTP status codes, take a look at
             https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
             """
@@ -112,12 +106,10 @@ extension APIError: AmplifyError {
             return error
         case .operationError(_, _, let error):
             return error
-        case .urlError(_, _, let error, _):
+        case .networkError(_, _, let error):
             return error
-        case .networkError(_, _, _, let error):
-            return error
-        case .httpStatusError(_, _, _, let error):
-            return error
+        case .httpStatusError:
+            return nil
         case .pluginError(let error):
             return error
         }

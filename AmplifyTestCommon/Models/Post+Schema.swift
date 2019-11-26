@@ -41,7 +41,7 @@ extension Post {
             .field(post.createdAt, is: .required, ofType: .dateTime),
             .field(post.updatedAt, is: .optional, ofType: .dateTime),
             .field(post.rating, is: .optional, ofType: .double),
-            .field(post.draft, is: .required, ofType: .bool),
+            .field(post.draft, is: .optional, ofType: .bool),
             .field(post._version, is: .optional, ofType: .int),
             .hasMany(post.comments, ofType: Comment.self, associatedWith: Comment.keys.post)
         )

@@ -18,7 +18,7 @@ public struct Post: Model {
     public var createdAt: Date
     public var updatedAt: Date?
     public var rating: Double?
-    public var draft: Bool
+    public var draft: Bool?
     public var comments: List<Comment>
 
     // TODO: Remove this once we get sync metadata wired up
@@ -30,7 +30,7 @@ public struct Post: Model {
                 createdAt: Date = Date(),
                 updatedAt: Date? = nil,
                 rating: Double? = nil,
-                draft: Bool = false,
+                draft: Bool? = nil,
                 _version: Int? = nil,
                 comments: List<Comment> = []) {
         self.id = id
