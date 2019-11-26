@@ -28,7 +28,7 @@ struct APIKeyURLRequestInterceptor: URLRequestInterceptor {
     // MARK: - Utilities
 
     private static func apiKey(from endpointJSON: [String: JSONValue]) throws -> String {
-        guard case .string(let apiKey) = endpointJSON["ApiKey"] else {
+        guard case .string(let apiKey) = endpointJSON["apiKey"] else {
             throw PluginError.pluginConfigurationError(
                 "Could not get `ApiKey` from plugin configuration",
                 """

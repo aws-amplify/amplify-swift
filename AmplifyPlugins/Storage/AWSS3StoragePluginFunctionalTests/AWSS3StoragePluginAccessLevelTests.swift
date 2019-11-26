@@ -101,7 +101,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     /// Then: The list, get, and remove operations complete successful and data is retrieved then removed.
     func testPutToPublicAndListThenGetThenRemoveFromOtherUser() {
         let key = "testPutToPublicAndListThenGetThenRemoveFromOtherUser"
-        let accessLevel: StorageAccessLevel = .public
+        let accessLevel: StorageAccessLevel = .guest
 
         // Sign into user1
         signIn(username: user1)

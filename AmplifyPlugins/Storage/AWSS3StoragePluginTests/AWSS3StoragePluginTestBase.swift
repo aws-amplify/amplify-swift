@@ -18,7 +18,7 @@ class AWSS3StoragePluginTests: XCTestCase {
     let testKey = "key"
     let testBucket = "bucket"
     let testRegion = "us-east-1"
-    let defaultAccessLevel: StorageAccessLevel = .public
+    let defaultAccessLevel: StorageAccessLevel = .guest
     let testIdentityId = "TestIdentityId"
     let testContentType = "TestContentType"
     let testURL = URL(fileURLWithPath: "fileURLWithPath")

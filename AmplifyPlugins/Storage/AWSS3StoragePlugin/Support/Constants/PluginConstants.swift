@@ -7,8 +7,8 @@
 
 import Foundation
 struct PluginConstants {
-    static let awsS3StoragePluginKey = "AWSS3StoragePlugin"
-    static let bucket = "Bucket"
-    static let region = "Region"
-    static let defaultAccessLevel = "DefaultAccessLevel"
+    static let awsS3StoragePluginKey = "awsS3StoragePlugin"
+    static let bucket = "bucket"
+    static let region = "region"
+    static let defaultAccessLevel = "defaultAccessLevel"
 }

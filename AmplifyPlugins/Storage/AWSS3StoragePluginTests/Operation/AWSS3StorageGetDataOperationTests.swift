@@ -68,7 +68,7 @@ class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(Data())]
         let request = StorageGetDataRequest(key: testKey, options: StorageGetDataRequest.Options())
-        let expectedServiceKey = StorageAccessLevel.public.rawValue + "/" + testKey
+        let expectedServiceKey = StorageAccessLevel.guest.serviceAccessPrefix + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageGetDataOperation(request,
@@ -97,7 +97,7 @@ class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
             StorageEvent.inProcess(Progress()),
             StorageEvent.failed(StorageError.service("", ""))]
         let request = StorageGetDataRequest(key: testKey, options: StorageGetDataRequest.Options())
-        let expectedServiceKey = StorageAccessLevel.public.rawValue + "/" + testKey
+        let expectedServiceKey = StorageAccessLevel.guest.serviceAccessPrefix + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let failInvoked = expectation(description: "fail was invoked on operation")
         let operation = AWSS3StorageGetDataOperation(request,

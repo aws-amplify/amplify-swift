@@ -115,7 +115,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         waitForExpectations(timeout: networkTimeout)
 
         do {
-            let pluginOptional = try Amplify.Storage.getPlugin(for: "AWSS3StoragePlugin")
+            let pluginOptional = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin")
 
             guard let plugin = pluginOptional as? AWSS3StoragePlugin else {
                 XCTFail("Could not cast as AWSS3StoragePlugin")

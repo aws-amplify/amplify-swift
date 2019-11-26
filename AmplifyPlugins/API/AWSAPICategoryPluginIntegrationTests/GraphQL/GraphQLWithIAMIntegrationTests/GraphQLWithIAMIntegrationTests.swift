@@ -124,12 +124,12 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         let plugin = AWSAPICategoryPlugin()
 
         let apiConfig = APICategoryConfiguration(plugins: [
-            "AWSAPICategoryPlugin": [
+            "awsAPIPlugin": [
                 "todoGraphQLWithIAM": [
-                    "Endpoint": "https://fsdfgjw5ojdanhivobrnmw54s4.appsync-api.us-east-1.amazonaws.com/graphql",
-                    "Region": "us-east-1",
-                    "AuthorizationType": "AWS_IAM",
-                    "EndpointType": "GraphQL"
+                    "endpoint": "https://fsdfgjw5ojdanhivobrnmw54s4.appsync-api.us-east-1.amazonaws.com/graphql",
+                    "region": "us-east-1",
+                    "authorizationType": "AWS_IAM",
+                    "endpointType": "GraphQL"
                 ]
             ]
         ])
