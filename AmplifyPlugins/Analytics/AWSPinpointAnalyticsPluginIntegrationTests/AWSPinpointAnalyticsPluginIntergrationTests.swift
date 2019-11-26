@@ -71,7 +71,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
          }
      }
      */
-    let analyticsPluginKey = "AWSPinpointAnalyticsPlugin"
+    let analyticsPluginKey = "awsPinpointAnalyticsPlugin"
 
     override func setUp() {
         let config = [
@@ -106,17 +106,17 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
 
         let analyticsConfig = AnalyticsCategoryConfiguration(
             plugins: [
-                "AWSPinpointAnalyticsPlugin": [
-                    "PinpointAnalytics": [
-                        "AppId": "8149446537de48eea84ec94e2a41390d",
-                        "Region": "us-west-2"
+                "awsPinpointAnalyticsPlugin": [
+                    "pinpointAnalytics": [
+                        "appId": "8149446537de48eea84ec94e2a41390d",
+                        "region": "us-west-2"
                     ],
-                    "PinpointTargeting": [
-                        "Region": "us-west-2"
+                    "pinpointTargeting": [
+                        "region": "us-west-2"
                     ],
-                    "AutoFlushEventsInterval": 10,
-                    "TrackAppSessions": true,
-                    "AutoSessionTrackingInterval": 2
+                    "autoFlushEventsInterval": 10,
+                    "trackAppSessions": true,
+                    "autoSessionTrackingInterval": 2
             ]
         ])
 

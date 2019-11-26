@@ -24,9 +24,9 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
     let testAutoSessionTrackingInterval = 10
 
     var plugin: HubCategoryPlugin {
-        guard let plugin = try? Amplify.Hub.getPlugin(for: "AWSHubPlugin"),
-            plugin.key == "AWSHubPlugin" else {
-                fatalError("Could not access AWSHubPlugin")
+        guard let plugin = try? Amplify.Hub.getPlugin(for: "awsHubPlugin"),
+            plugin.key == "awsHubPlugin" else {
+                fatalError("Could not access awsHubPlugin")
         }
         return plugin
     }
