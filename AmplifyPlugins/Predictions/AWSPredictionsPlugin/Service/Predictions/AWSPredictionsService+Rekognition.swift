@@ -269,8 +269,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 return nil
             }
 
-            let identifyTextResult = IdentifyTextResultTransformers.processText(
-                rekognitionTextBlocks: rekognitionTextDetections)
+            let identifyTextResult = IdentifyTextResultTransformers.processText(rekognitionTextDetections)
 
             //if limit of words is under 50 return rekognition response
             //otherwise call textract because their limit is higher
@@ -303,8 +302,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                     if rekognitionTextDetections.count > textractTextDetections.count {
                         onEvent(.completed(identifyTextResult))
                     } else {
-                        let textractResult = IdentifyTextResultTransformers.processText(
-                            textractTextBlocks: textractTextDetections)
+                        let textractResult = IdentifyTextResultTransformers.processText(textractTextDetections)
                         onEvent(.completed(textractResult))
                         return nil
 

@@ -8,6 +8,7 @@
 import Amplify
 import AWSCore
 import AWSRekognition
+import Foundation
 @testable import AWSPredictionsPlugin
 
 class MockRekognitionBehavior: AWSRekognitionBehavior {
@@ -92,6 +93,11 @@ class MockRekognitionBehavior: AWSRekognitionBehavior {
 
     public func setFacesFromCollection(result: AWSRekognitionSearchFacesByImageResponse) {
         facesFromCollection = result
+        error = nil
+    }
+
+    public func setText(result: AWSRekognitionDetectTextResponse) {
+        detectText = result
         error = nil
     }
 

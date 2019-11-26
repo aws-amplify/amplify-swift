@@ -7,9 +7,9 @@
 
 import XCTest
 import AWSRekognition
-import AWSTextract
 import CoreML
 import Amplify
+import Foundation
 @testable import AWSPredictionsPlugin
 
 class PredictionsServiceRekognitionTests: XCTestCase {
@@ -18,12 +18,11 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     let mockRekognition = MockRekognitionBehavior()
     var mockConfigurationJSON = """
     {
-        "defaultRegion": "us-east-1"
+        "defaultRegion": "us-west-2"
     }
     """
 
     override func setUp() {
-
 
     }
 
@@ -33,10 +32,10 @@ class PredictionsServiceRekognitionTests: XCTestCase {
             //set test collection id to invoke collection method of rekognition
             mockConfigurationJSON = """
             {
-                "defaultRegion": "us-east-1"
-                "identify: : {
-                    "identifyEntities" : {
-                        "collectionId" : "TestCollection",
+                "defaultRegion": "us-west-2",
+                "identify": {
+                    "identifyEntities": {
+                        "collectionId": "TestCollection",
                         "maxFaces": 50,
                         "region": "us-west-2"
                     }
@@ -56,6 +55,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                                                        awsPolly: MockPollyBehavior(),
                                                        config: mockConfiguration)
         } catch {
+            print(error)
             XCTFail("Initialization of the text failed")
         }
     }
@@ -150,6 +150,14 @@ class PredictionsServiceRekognitionTests: XCTestCase {
         }
     }
 
+    /// Test whether error is correctly propogated for detecting entities
+    ///
+    /// - Given: Predictions service with rekogniton behavior
+    /// - When:
+    ///    - I invoke an invalid request
+    /// - Then:
+    ///    - I should get back a service error
+    ///
     func testIdentifyEntitiesServiceWithError() {
         setUpAmplify()
         let mockError = NSError(domain: AWSRekognitionErrorDomain,
@@ -191,11 +199,96 @@ class PredictionsServiceRekognitionTests: XCTestCase {
         predictionsService.detectEntities(image: url) { event in
             switch event {
             case .completed(let result):
-                let entitiesResult = result as? IdentifyEntitiesResult
+                let entitiesResult = result as? IdentifyEntityMatchesResult
                 let newFaces = IdentifyEntitiesResultTransformers.processCollectionFaces(mockResponse.faceMatches!)
                 XCTAssertEqual(entitiesResult?.entities.count, newFaces.count, "Faces count number should be the same")
             case .failed(let error):
                 XCTFail("Should not produce error: \(error)")
+            }
+        }
+    }
+
+    /// Test whether error is correctly propogated for entity matches
+    ///
+    /// - Given: Predictions service with rekogniton behavior
+    /// - When:
+    ///    - I invoke an invalid request
+    /// - Then:
+    ///    - I should get back a service error
+    ///
+        func testIdentifyEntityMatchesServiceWithError() {
+        setUpAmplify(withCollection: true)
+        let mockError = NSError(domain: AWSRekognitionErrorDomain,
+                                code: AWSRekognitionErrorType.invalidImageFormat.rawValue,
+                                userInfo: [:])
+        mockRekognition.setError(error: mockError)
+        let url = URL(fileURLWithPath: "")
+
+        predictionsService.detectEntities(image: url) { event in
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+            }
+        }
+    }
+
+    /// Test whether we can make a successfull rekognition call to identify plain text
+    ///
+    /// - Given: Predictions service with rekognition behavior
+    /// - When:
+    ///    - I invoke rekognition api in predictions service
+    /// - Then:
+    ///    - I should get back a result
+    ///
+    func testIdentifyPlainTextService() {
+        setUpAmplify()
+        let mockResponse: AWSRekognitionDetectTextResponse = AWSRekognitionDetectTextResponse()
+        mockResponse.textDetections = [AWSRekognitionTextDetection]()
+
+        mockRekognition.setText(result: mockResponse)
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
+             XCTFail("Unable to find image")
+             return
+        }
+
+        predictionsService.detectText(image: url, format: .plain) { event in
+            switch event {
+            case .completed(let result):
+                let textResult = result as? IdentifyTextResult
+                let newText = IdentifyTextResultTransformers.processText(mockResponse.textDetections!)
+                XCTAssertEqual(textResult?.identifiedLines?.count,
+                               newText.identifiedLines?.count, "Text line count number should be the same")
+            case .failed(let error):
+                XCTFail("Should not produce error: \(error)")
+            }
+        }
+    }
+
+    /// Test whether error is correctly propogated for text matches
+    ///
+    /// - Given: Predictions service with rekogniton behavior
+    /// - When:
+    ///    - I invoke an invalid request
+    /// - Then:
+    ///    - I should get back a service error
+    ///
+        func testIdentifyPlainTextServiceWithError() {
+        setUpAmplify()
+        let mockError = NSError(domain: AWSRekognitionErrorDomain,
+                                code: AWSRekognitionErrorType.invalidImageFormat.rawValue,
+                                userInfo: [:])
+        mockRekognition.setError(error: mockError)
+        let url = URL(fileURLWithPath: "")
+
+            predictionsService.detectText(image: url, format: .plain) { event in
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
             }
         }
     }
