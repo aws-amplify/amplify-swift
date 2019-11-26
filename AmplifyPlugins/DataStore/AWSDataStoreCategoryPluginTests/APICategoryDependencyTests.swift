@@ -72,7 +72,7 @@ extension APICategoryDependencyTests {
         try Amplify.add(plugin: dataStorePlugin)
 
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
-            "AWSDataStoreCategoryPlugin": true
+            "awsDataStoreCategoryPlugin": true
         ])
 
         let amplifyConfig = AmplifyConfiguration(dataStore: dataStoreConfig)

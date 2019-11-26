@@ -13,8 +13,8 @@ import XCTest
 class DefaultHubPluginTests: XCTestCase {
 
     var plugin: HubCategoryPlugin {
-        guard let plugin = try? Amplify.Hub.getPlugin(for: "AWSHubPlugin"),
-            plugin.key == "AWSHubPlugin" else {
+        guard let plugin = try? Amplify.Hub.getPlugin(for: "awsHubPlugin"),
+            plugin.key == "awsHubPlugin" else {
                 fatalError("Could not access AWSHubPlugin")
         }
         return plugin
@@ -38,9 +38,9 @@ class DefaultHubPluginTests: XCTestCase {
     /// When: I invoke Amplify.configure()
     /// Then: I have access to the framework-provided Hub plugin
     func testDefaultPluginAssigned() throws {
-        let plugin = try? Amplify.Hub.getPlugin(for: "AWSHubPlugin")
+        let plugin = try? Amplify.Hub.getPlugin(for: "awsHubPlugin")
         XCTAssertNotNil(plugin)
-        XCTAssertEqual(plugin?.key, "AWSHubPlugin")
+        XCTAssertEqual(plugin?.key, "awsHubPlugin")
     }
 
     /// Given: The default Hub plugin

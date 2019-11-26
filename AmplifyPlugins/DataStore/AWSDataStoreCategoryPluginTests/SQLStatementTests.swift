@@ -35,7 +35,7 @@ class SQLStatementTests: XCTestCase {
           "_version" integer,
           "content" text not null,
           "createdAt" text not null,
-          "draft" integer not null,
+          "draft" integer,
           "rating" real,
           "title" text not null,
           "updatedAt" text

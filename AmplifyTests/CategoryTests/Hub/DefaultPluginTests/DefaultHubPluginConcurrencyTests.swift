@@ -11,8 +11,8 @@ import XCTest
 
 class DefaultHubPluginConcurrencyTests: XCTestCase {
     var plugin: HubCategoryPlugin {
-        guard let plugin = try? Amplify.Hub.getPlugin(for: "AWSHubPlugin"),
-            plugin.key == "AWSHubPlugin" else {
+        guard let plugin = try? Amplify.Hub.getPlugin(for: "awsHubPlugin"),
+            plugin.key == "awsHubPlugin" else {
                 fatalError("Could not access AWSHubPlugin")
         }
         return plugin
