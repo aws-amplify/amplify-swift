@@ -644,10 +644,10 @@
 			children = (
 				21D7A09A237B54D90057D00D /* AWSAPICategoryPlugin.swift */,
 				21D7A098237B54D90057D00D /* AWSAPICategoryPlugin+Configure.swift */,
-				FA8EE784238632620097E4F1 /* AWSAPICategoryPlugin+Log.swift */,
 				21D7A0B1237B54D90057D00D /* AWSAPICategoryPlugin+GraphQLBehavior.swift */,
 				21409C5D2384DE2C000A53C9 /* AWSAPICategoryPlugin+GraphQLModelBehavior.swift */,
 				21D7A099237B54D90057D00D /* AWSAPICategoryPlugin+InterceptorBehavior.swift */,
+				FA8EE784238632620097E4F1 /* AWSAPICategoryPlugin+Log.swift */,
 				21D7A096237B54D90057D00D /* AWSAPICategoryPlugin+Reset.swift */,
 				21D7A0D0237B54D90057D00D /* AWSAPICategoryPlugin+RESTBehavior.swift */,
 				21D7A0D1237B54D90057D00D /* AWSAPICategoryPlugin+URLSessionBehaviorDelegate.swift */,
