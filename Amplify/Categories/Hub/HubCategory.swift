@@ -11,15 +11,35 @@
 /// notification of a file download.
 final public class HubCategory: Category {
 
-    /// Always `.hub`
+    enum ConfigurationState {
+        /// Default configuration at initialization
+        case `default`
+
+        /// After a custom plugin is added, but before `configure` was invoked
+        case notConfigured
+
+        /// After a custom plugin is added and `configure` is invoked
+        case configured
+    }
+
     public let categoryType = CategoryType.hub
 
-    var plugins = [PluginKey: HubCategoryPlugin]()
+    // Upon creation, the LoggingCategory will have a default plugin and a configuration state reflecting that.
+    // Customers can still add custom plugins; doing so will remove the default plugin.
+    var plugins: [PluginKey: HubCategoryPlugin] = [
+        AWSHubPlugin.key: AWSHubPlugin()
+    ]
+
+    var configurationState = ConfigurationState.default
+
+    var isConfigured: Bool {
+        configurationState != .notConfigured
+    }
 
     /// Returns the plugin added to the category, if only one plugin is added. Accessing this property if no plugins
     /// are added, or if more than one plugin is added, will cause a preconditionFailure.
     var plugin: HubCategoryPlugin {
-        guard isConfigured else {
+        guard configurationState != .notConfigured else {
             preconditionFailure(
                 """
                 \(categoryType.displayName) category is not configured. Call Amplify.configure() before using \
@@ -45,14 +65,24 @@ final public class HubCategory: Category {
         return plugins.first!.value
     }
 
-    var isConfigured = false
-
     // MARK: - Plugin handling
 
     /// Adds `plugin` to the list of Plugins that implement functionality for this category.
     ///
+    /// The default plugin that is assigned at initialization will function without an explicit call to `configure`.
+    /// However, adding a plugin removes the default plugin, and will also cause the Hub category to
+    /// require `configure` be invoked before using any logging APIs.
+    ///
+    /// Note: It is a programmer error to use `Amplify.Hub` APIs during the initialization and configuration phases
+    /// of a custom Hub category plugin.
+    ///
     /// - Parameter plugin: The Plugin to add
     public func add(plugin: HubCategoryPlugin) throws {
+        if configurationState == .default {
+            configurationState = .notConfigured
+            plugins[AWSHubPlugin.key] = nil
+        }
+
         let key = plugin.key
         guard !key.isEmpty else {
             let pluginDescription = String(describing: plugin)

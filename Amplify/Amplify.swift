@@ -19,12 +19,18 @@ public class Amplify {
     /// ConfigurationError.amplifyAlreadyConfigured error.
     static var isConfigured = false
 
-    // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset
+    // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset.
+    // Initialize Logging and Hub first, to ensure their default plugins are registered and available to other
+    // categories during their initialization and configuration phases.
+    //
+    // It is not supported to mutate these category properties. They are `var` to support the `reset()` method for ease
+    // of testing.
+    public static internal(set) var Logging = LoggingCategory()
+    public static internal(set) var Hub = HubCategory()
+
     public static internal(set) var Analytics = AnalyticsCategory()
     public static internal(set) var API = APICategory()
     public static internal(set) var DataStore = DataStoreCategory()
-    public static internal(set) var Hub = HubCategory()
-    public static internal(set) var Logging = LoggingCategory()
     public static internal(set) var Predictions = PredictionsCategory()
     public static internal(set) var Storage = StorageCategory()
 
@@ -32,6 +38,7 @@ public class Amplify {
     ///
     /// - Parameter plugin: The AnalyticsCategoryPlugin to add
     public static func add<P: Plugin>(plugin: P) throws {
+        log.debug("Adding plugin: \(plugin))")
         switch plugin {
         case let plugin as AnalyticsCategoryPlugin:
             try Analytics.add(plugin: plugin)
@@ -55,3 +62,5 @@ public class Amplify {
     }
 
 }
+
+extension Amplify: DefaultLogger { }

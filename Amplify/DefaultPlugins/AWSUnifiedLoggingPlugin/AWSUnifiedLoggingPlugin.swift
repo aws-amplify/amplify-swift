@@ -51,8 +51,10 @@ final public class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
 
     /// Removes listeners and empties the message queue
     public func reset(onComplete: @escaping BasicClosure) {
-        registeredLogs = [:]
-        onComplete()
+        concurrencyQueue.sync {
+            registeredLogs = [:]
+            onComplete()
+        }
     }
 
     // MARK: - Log wrapper caching

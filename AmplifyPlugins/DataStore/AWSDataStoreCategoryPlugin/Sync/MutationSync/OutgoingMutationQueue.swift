@@ -7,7 +7,6 @@
 
 import Amplify
 import Combine
-import AWSPluginsCore
 import Foundation
 
 @available(iOS 13.0, *)

@@ -5,10 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import AWSPluginsCore
 import Combine
+import Foundation
 
 @available(iOS 13.0, *)
 class CloudSyncEngine: CloudSyncEngineBehavior {
