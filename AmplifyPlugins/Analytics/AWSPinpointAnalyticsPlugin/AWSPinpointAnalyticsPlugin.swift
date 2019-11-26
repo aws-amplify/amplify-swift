@@ -30,7 +30,7 @@ final public class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
 
     /// Optional timer is nil when auto flush is disabled
     /// Otherwise automatically flushes the events that have been recorded on an interval
-    var autoFlushEventsTimer: RepeatingTimer?
+    var autoFlushEventsTimer: DispatchSourceTimer?
 
     /// The unique key of the plugin within the analytics category
     public var key: PluginKey {

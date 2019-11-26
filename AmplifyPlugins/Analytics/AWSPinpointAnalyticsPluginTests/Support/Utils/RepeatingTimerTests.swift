@@ -15,7 +15,7 @@ class RepeatingTimerTests: XCTestCase {
         var timerFiredCount = 0
         timerFired.expectedFulfillmentCount = 10
 
-        let timer = RepeatingTimer(timeInterval: TimeInterval(1)) {
+        let timer = RepeatingTimer.createRepeatingTimer(timeInterval: TimeInterval(1)) {
             timerFired.fulfill()
             timerFiredCount += 1
         }
