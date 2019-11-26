@@ -34,7 +34,7 @@ final public class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
 
     /// The unique key of the plugin within the analytics category
     public var key: PluginKey {
-        return "AWSPinpointAnalyticsPlugin"
+        return "awsPinpointAnalyticsPlugin"
     }
 
     /// Default logger from Amplify

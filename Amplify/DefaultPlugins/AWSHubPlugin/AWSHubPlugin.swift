@@ -22,7 +22,7 @@
 final public class AWSHubPlugin: HubCategoryPlugin {
     /// Convenience property. Each instance of `AWSHubPlugin` has the same key
     public static var key: String {
-        return "AWSHubPlugin"
+        return "awsHubPlugin"
     }
 
     private let dispatcher = HubChannelDispatcher()

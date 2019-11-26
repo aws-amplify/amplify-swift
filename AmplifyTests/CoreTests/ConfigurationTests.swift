@@ -143,7 +143,7 @@ class ConfigurationTests: XCTestCase {
 
     func testDecodeConfiguration() throws {
         let jsonString = """
-        {"UserAgent":"aws-amplify-cli/2.0","Version":"1.0","Storage":{"plugins":{"MockStorageCategoryPlugin":{}}}}
+        {"UserAgent":"aws-amplify-cli/2.0","Version":"1.0","storage":{"plugins":{"MockStorageCategoryPlugin":{}}}}
         """
 
         let jsonData = jsonString.data(using: .utf8)!

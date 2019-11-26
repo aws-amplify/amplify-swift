@@ -11,13 +11,13 @@ import AWSPinpoint
 
 public struct AWSPinpointAnalyticsPluginConfiguration {
 
-    static let pinpointAnalyticsConfigKey = "PinpointAnalytics"
-    static let pinpointTargetingConfigKey = "PinpointTargeting"
-    static let autoFlushEventsIntervalKey = "AutoFlushEventsInterval"
-    static let trackAppSessionsKey = "TrackAppSessions"
-    static let autoSessionTrackingIntervalKey = "AutoSessionTrackingInterval"
-    static let appIdConfigKey = "AppId"
-    static let regionConfigKey = "Region"
+    static let pinpointAnalyticsConfigKey = "pinpointAnalytics"
+    static let pinpointTargetingConfigKey = "pinpointTargeting"
+    static let autoFlushEventsIntervalKey = "autoFlushEventsInterval"
+    static let trackAppSessionsKey = "trackAppSessions"
+    static let autoSessionTrackingIntervalKey = "autoSessionTrackingInterval"
+    static let appIdConfigKey = "appId"
+    static let regionConfigKey = "region"
 
     static let defaultAutoFlushEventsInterval = 10
     static let defaultTrackAppSession = true

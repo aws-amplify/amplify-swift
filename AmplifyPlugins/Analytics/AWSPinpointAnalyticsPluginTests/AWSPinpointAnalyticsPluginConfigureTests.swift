@@ -14,7 +14,7 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
     // MARK: Plugin Key test
     func testPluginKey() {
         let pluginKey = analyticsPlugin.key
-        XCTAssertEqual(pluginKey, "AWSPinpointAnalyticsPlugin")
+        XCTAssertEqual(pluginKey, "awsPinpointAnalyticsPlugin")
     }
 
     // MARK: Configuration tests

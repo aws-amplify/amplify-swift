@@ -13,22 +13,22 @@ import XCTest
 class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
 
     func testPluginKey() {
-        XCTAssertEqual(apiPlugin.key, "AWSAPICategoryPlugin")
+        XCTAssertEqual(apiPlugin.key, "awsAPIPlugin")
     }
 
     func testConfigureSuccess() throws {
         let apiPlugin = AWSAPICategoryPlugin()
         let apiPluginConfig: JSONValue = [
             "Test": [
-                "Endpoint": "http://www.example.com",
-                "AuthorizationType": "API_KEY",
-                "ApiKey": "SpecialApiKey33",
-                "EndpointType": "REST"
+                "endpoint": "http://www.example.com",
+                "authorizationType": "API_KEY",
+                "apiKey": "SpecialApiKey33",
+                "endpointType": "REST"
             ],
             "Test2": [
-                "Endpoint": "http://www.example.com",
-                "AuthorizationType": "AMAZON_COGNITO_USER_POOLS",
-                "EndpointType": "GraphQL"
+                "endpoint": "http://www.example.com",
+                "authorizationType": "AMAZON_COGNITO_USER_POOLS",
+                "endpointType": "GraphQL"
             ]
         ]
 

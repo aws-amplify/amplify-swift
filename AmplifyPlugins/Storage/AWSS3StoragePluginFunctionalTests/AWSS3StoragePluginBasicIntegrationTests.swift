@@ -289,9 +289,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let expectedMD5Hex = MD5(string: key).map { String(format: "%02hhx", $0) }.joined()
         putData(key: key, dataString: key)
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageListRequest.Options(accessLevel: .public,
-                                        targetIdentityId: nil,
-                                        path: key)
+        let options = StorageListRequest.Options(accessLevel: .guest,
+                                                 targetIdentityId: nil,
+                                                 path: key)
         let operation = Amplify.Storage.list(options: options) { event in
             switch event {
             case .completed(let result):
@@ -324,9 +324,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     func testListEmpty() {
         let key = "testListEmpty"
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageListRequest.Options(accessLevel: .public,
-                                        targetIdentityId: nil,
-                                        path: key)
+        let options = StorageListRequest.Options(accessLevel: .guest,
+                                                 targetIdentityId: nil,
+                                                 path: key)
         let operation = Amplify.Storage.list(options: options) { event in
             switch event {
             case .completed(let result):
@@ -358,9 +358,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageListRequest.Options(accessLevel: .public,
-                                        targetIdentityId: nil,
-                                        path: folder)
+        let options = StorageListRequest.Options(accessLevel: .guest,
+                                                 targetIdentityId: nil,
+                                                 path: folder)
         let operation = Amplify.Storage.list(options: options) { event in
             switch event {
             case .completed(let result):
@@ -397,9 +397,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageListRequest.Options(accessLevel: .public,
-                                        targetIdentityId: nil,
-                                        path: key1)
+        let options = StorageListRequest.Options(accessLevel: .guest,
+                                                 targetIdentityId: nil,
+                                                 path: key1)
         let operation = Amplify.Storage.list(options: options) { event in
             switch event {
             case .completed(let result):
@@ -471,7 +471,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         putData(key: key, dataString: key)
 
         do {
-            let pluginOptional = try Amplify.Storage.getPlugin(for: "AWSS3StoragePlugin")
+            let pluginOptional = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin")
 
             guard let plugin = pluginOptional as? AWSS3StoragePlugin else {
                 XCTFail("Could not cast as AWSS3StoragePlugin")
