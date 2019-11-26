@@ -7,10 +7,12 @@
 
 import Foundation
 
-// TODO add Combine integration: `func load() -> Future<Elements, DataStoreError>`
-
+/// This extension adds lazy load logic to the `List<ModelType>`. Lazy loading means
+/// the contents of a list that represents an association between two models will only be
+/// loaded when it's needed.
 extension List {
 
+    /// Represents the data state of the `List`.
     internal enum LoadState {
         case pending
         case loaded
@@ -50,7 +52,7 @@ extension List {
         }
     }
 
-    // MARK: Synchronous API
+    // MARK: - Synchronous API
 
     /// Trigger `DataStore` query to initialize the collection. This function always
     /// fetches data from the `DataStore.query`. However, consumers must be aware of

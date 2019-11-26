@@ -10,7 +10,14 @@ import Combine
 @available(iOS 13.0, *)
 extension List {
 
-    public func load() -> Future<Elements, DataStoreError> {
+    public typealias LazyListPublisher = AnyPublisher<Elements, DataStoreError>
+
+    /// Lazy load the collection and expose the loaded `Elements` as a Combine `Publisher`.
+    /// This is useful for integrating the `List<ModelType>` with existing Combine code
+    /// and/or SwiftUI.
+    ///
+    /// - Returns: a type-erased Combine publisher
+    public func loadAsPublisher() -> LazyListPublisher {
         return Future { promise in
             self.load {
                 switch $0 {
@@ -20,6 +27,6 @@ extension List {
                     promise(.failure(error))
                 }
             }
-        }
+        }.eraseToAnyPublisher()
     }
 }

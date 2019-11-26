@@ -11,7 +11,9 @@ import Foundation
 /// records from the `DataStore` on-demand. This is specially useful when dealing with
 /// Model associations that need to be lazy loaded.
 ///
-/// When using `Data`
+/// When using `DataStore.query(_ modelType:)` some models might contain associations
+/// with other models and those aren't fetched automatically. This collection keeps track
+/// of the associated `id` and `field` and fetches the associated data on demand.
 public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLiteral {
 
     public typealias Index = Int
@@ -20,22 +22,28 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
 
     public typealias ArrayLiteralElement = ModelType
 
-    /// The array of `Element` that backs the custom collection implementation
+    /// The array of `Element` that backs the custom collection implementation.
     internal var elements: Elements
 
-    /// If the list represents a
+    /// If the list represents an association between two models, the `associatedId` will
+    /// hold the information necessary to query the associated elements (e.g. comments of a post)
     internal var associatedId: Model.Identifier?
+
+    /// The associatedField represents the field to which the owner of the `List` is linked to.
+    /// For example, if `Post.comments` is associated with `Comment.post` the `List<Comment>`
+    /// of `Post` will have a reference to the `post` field in `Comment`.
     internal var associatedField: ModelField?
 
     internal var limit: Int = 100
 
-    // The current state of the lazy load
+    /// The current state of lazily loaded list
     internal var state: LoadState = .pending
 
     // MARK: - Initializers
 
     public convenience init(_ elements: Elements) {
         self.init(elements, associatedId: nil, associatedField: nil)
+        self.state = .loaded
     }
 
     init(_ elements: Elements,
