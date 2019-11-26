@@ -44,7 +44,6 @@ public extension StorageUploadFileRequest {
         /// key/values
         public let pluginOptions: Any?
 
-        // TODO: Is `guest` the correct default?
         public init(accessLevel: StorageAccessLevel = .guest,
                     targetIdentityId: String? = nil,
                     metadata: [String: String]? = nil,

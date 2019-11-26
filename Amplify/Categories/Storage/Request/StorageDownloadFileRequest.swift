@@ -38,7 +38,6 @@ public extension StorageDownloadFileRequest {
         /// key/values
         public let pluginOptions: Any?
 
-        // TODO: Is `guest` the correct default?
         public init(accessLevel: StorageAccessLevel = .guest,
                     targetIdentityId: String? = nil,
                     pluginOptions: Any? = nil) {

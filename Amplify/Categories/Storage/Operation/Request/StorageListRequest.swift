@@ -31,7 +31,6 @@ public extension StorageListRequest {
         /// key/values
         public let pluginOptions: Any?
 
-        // TODO: Is `guest` the correct default?
         public init(accessLevel: StorageAccessLevel = .guest,
                     targetIdentityId: String? = nil,
                     path: String? = nil,
