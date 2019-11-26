@@ -45,8 +45,7 @@ public extension StoragePutDataRequest {
         /// key/values
         public let pluginOptions: Any?
 
-        // TODO: Is `public` the correct default?
-        public init(accessLevel: StorageAccessLevel = .public,
+        public init(accessLevel: StorageAccessLevel = .guest,
                     targetIdentityId: String? = nil,
                     metadata: [String: String]? = nil,
                     contentType: String? = nil,

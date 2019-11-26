@@ -24,7 +24,6 @@ public extension StorageGetURLRequest {
         /// The default amount of time before the URL expires is 18000 seconds, or 5 hours.
         public static let defaultExpireInSeconds = 18_000
 
-        // TODO: Is `public` the actual default?
         /// Access level of the storage system. Defaults to `public`
         public let accessLevel: StorageAccessLevel
 
@@ -39,8 +38,7 @@ public extension StorageGetURLRequest {
         /// key/values
         public let pluginOptions: Any?
 
-        // TODO: Is `public` the correct default?
-        public init(accessLevel: StorageAccessLevel = .public,
+        public init(accessLevel: StorageAccessLevel = .guest,
                     targetIdentityId: String? = nil,
                     expires: Int = Options.defaultExpireInSeconds,
                     pluginOptions: Any? = nil) {

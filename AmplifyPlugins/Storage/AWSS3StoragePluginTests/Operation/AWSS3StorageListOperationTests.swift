@@ -73,7 +73,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
         let options = StorageListRequest.Options(path: testPath)
         let request = StorageListRequest(options: options)
 
-        let expectedPrefix = StorageAccessLevel.public.rawValue + "/"
+        let expectedPrefix = StorageAccessLevel.guest.serviceAccessPrefix + "/"
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
                                                   storageService: mockStorageService,
@@ -98,7 +98,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
         let options = StorageListRequest.Options(path: testPath)
         let request = StorageListRequest(options: options)
 
-        let expectedPrefix = StorageAccessLevel.public.rawValue + "/"
+        let expectedPrefix = StorageAccessLevel.guest.serviceAccessPrefix + "/"
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
                                                   storageService: mockStorageService,

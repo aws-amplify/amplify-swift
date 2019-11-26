@@ -148,6 +148,6 @@ extension AWSS3StoragePlugin {
             return defaultAccessLevel
         }
 
-        return .public
+        return .guest
     }
 }

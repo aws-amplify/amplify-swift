@@ -14,7 +14,7 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
     // MARK: Plugin Key test
     func testPluginKey() {
         let pluginKey = storagePlugin.key
-        XCTAssertEqual(pluginKey, "AWSS3StoragePlugin")
+        XCTAssertEqual(pluginKey, "awsS3StoragePlugin")
     }
 
     // MARK: Configuration tests

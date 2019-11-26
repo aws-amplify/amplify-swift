@@ -19,19 +19,19 @@ class AWSAPICategoryPluginGetTests: XCTestCase {
         let plugin = AWSAPICategoryPlugin()
 
         let apiConfig = APICategoryConfiguration(plugins: [
-            "AWSAPICategoryPlugin": [
+            "awsAPIPlugin": [
                 "none": [
-                    "Endpoint": "https://0idx6yjn11.execute-api.us-east-1.amazonaws.com/beta",
-                    "Region": "us-east-1",
-                    "AuthorizationType": "NONE",
-                    "EndpointType": "REST"
+                    "endpoint": "https://0idx6yjn11.execute-api.us-east-1.amazonaws.com/beta",
+                    "region": "us-east-1",
+                    "authorizationType": "NONE",
+                    "endpointType": "REST"
                 ],
                 "apiKey": [
-                    "Endpoint": "https://rqdxvfh3ue.execute-api.us-east-1.amazonaws.com/Prod",
-                    "Region": "us-east-1",
-                    "AuthorizationType": "API_KEY",
-                    "ApiKey": "KjbPeqbh9F7hc2n2UVkpfD8WKF1kkYX3ydrkyHq6",
-                    "EndpointType": "REST"
+                    "endpoint": "https://rqdxvfh3ue.execute-api.us-east-1.amazonaws.com/Prod",
+                    "region": "us-east-1",
+                    "authorizationType": "API_KEY",
+                    "apiKey": "KjbPeqbh9F7hc2n2UVkpfD8WKF1kkYX3ydrkyHq6",
+                    "endpointType": "REST"
                 ]
             ]
         ])
