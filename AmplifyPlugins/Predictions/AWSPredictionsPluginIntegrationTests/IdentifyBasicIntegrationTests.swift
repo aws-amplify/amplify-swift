@@ -102,8 +102,6 @@ class IdentifyBasicIntegrationTests: XCTestCase {
     /// Then: The operation completes successfully
     func testIdentifyLabels() {
         setupAmplify()
-        AWSDDLog.sharedInstance.logLevel = .verbose
-        AWSDDLog.add(AWSDDTTYLogger.sharedInstance)
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageLabels", withExtension: "jpg") else {
              XCTFail("Unable to find image")
