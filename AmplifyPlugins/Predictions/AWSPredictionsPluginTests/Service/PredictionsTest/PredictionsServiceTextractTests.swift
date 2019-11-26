@@ -150,4 +150,61 @@ class PredictionsServiceTextractTests: XCTest {
             }
         }
     }
+
+    /// Test whether we can make a successfull textract call to identify forms and tables
+    ///
+    /// - Given: Predictions service with textract behavior
+    /// - When:
+    ///    - I invoke textract api in predictions service
+    /// - Then:
+    ///    - I should get back a result
+    ///
+    func testIdentifyAllTextService() {
+        let mockResponse: AWSTextractDetectDocumentTextResponse = AWSTextractDetectDocumentTextResponse()
+        mockResponse.blocks = [AWSTextractBlock]()
+
+        mockTextract.setDetectDocumentText(result: mockResponse)
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
+             XCTFail("Unable to find image")
+             return
+        }
+
+        predictionsService.detectText(image: url, format: .all) { event in
+            switch event {
+            case .completed(let result):
+                let textResult = result as? IdentifyTextResult
+                let text = IdentifyTextResultTransformers.processText(mockResponse.blocks!)
+                XCTAssertEqual(textResult?.identifiedLines?.count,
+                               text.identifiedLines.count, "Line count should be the same")
+            case .failed(let error):
+                XCTFail("Should not produce error: \(error)")
+            }
+        }
+    }
+
+    /// Test whether error is correctly propogated for .all document text matches
+    ///
+    /// - Given: Predictions service with textract behavior
+    /// - When:
+    ///    - I invoke an invalid request
+    /// - Then:
+    ///    - I should get back a service error
+    ///
+    func testIdentifyAllTextServiceWithError() {
+        let mockError = NSError(domain: AWSTextractErrorDomain,
+                                code: AWSTextractErrorType.badDocument.rawValue,
+                                userInfo: [:])
+        mockTextract.setError(error: mockError)
+        let url = URL(fileURLWithPath: "")
+
+        predictionsService.detectText(image: url, format: .all) { event in
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+            }
+        }
+    }
 }
