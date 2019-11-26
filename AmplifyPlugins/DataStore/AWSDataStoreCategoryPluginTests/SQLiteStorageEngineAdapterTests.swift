@@ -5,37 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import SQLite
+//import SQLite
 import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
-class SQLiteStorageEngineAdapterTests: XCTestCase {
-
-    var storageAdapter: SQLiteStorageEngineAdapter!
-
-    override func setUp() {
-        super.setUp()
-
-        Amplify.reset()
-
-        ModelRegistry.register(modelType: Post.self)
-        ModelRegistry.register(modelType: Comment.self)
-
-        let connection = try? Connection(.inMemory)
-        XCTAssertNotNil(connection)
-        storageAdapter = SQLiteStorageEngineAdapter(connection: connection!)
-        XCTAssertNotNil(storageAdapter)
-
-        do {
-            try storageAdapter.setUp(models: ModelRegistry.models)
-        } catch {
-            XCTFail(String(describing: error))
-            return
-        }
-    }
+class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
 
     // MARK: - Utilities
 
@@ -68,10 +45,10 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
         let post = Post(title: "title", content: "content")
         storageAdapter.save(post) { saveResult in
             switch saveResult {
-            case .result:
+            case .success:
                 storageAdapter.query(Post.self) { queryResult in
                     switch queryResult {
-                    case .result(let posts):
+                    case .success(let posts):
                         XCTAssert(posts.count == 1)
                         if let post = posts.first {
                             XCTAssert(post.id == post.id)
@@ -79,12 +56,12 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
                             XCTAssert(post.content == post.content)
                         }
                         expectation.fulfill()
-                    case .error(let error):
+                    case .failure(let error):
                         XCTFail(String(describing: error))
                         expectation.fulfill()
                     }
                 }
-            case .error(let error):
+            case .failure(let error):
                 XCTFail(String(describing: error))
                 expectation.fulfill()
             }
@@ -107,11 +84,11 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
         let post = Post(title: "title", content: "content")
         storageAdapter.save(post) { saveResult in
             switch saveResult {
-            case .result:
+            case .success:
                 let predicate = Post.keys.title == post.title
                 storageAdapter.query(Post.self, predicate: predicate) { queryResult in
                     switch queryResult {
-                    case .result(let posts):
+                    case .success(let posts):
                         XCTAssertEqual(posts.count, 1)
                         if let post = posts.first {
                             XCTAssert(post.id == post.id)
@@ -119,12 +96,12 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
                             XCTAssert(post.content == post.content)
                         }
                         expectation.fulfill()
-                    case .error(let error):
+                    case .failure(let error):
                         XCTFail(String(describing: error))
                         expectation.fulfill()
                     }
                 }
-            case .error(let error):
+            case .failure(let error):
                 XCTFail(String(describing: error))
                 expectation.fulfill()
             }
@@ -147,36 +124,34 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
         func checkSavedPost(id: String) {
             storageAdapter.query(Post.self) {
                 switch $0 {
-                case .result(let posts):
+                case .success(let posts):
                     XCTAssertEqual(posts.count, 1)
                     if let post = posts.first {
                         XCTAssertEqual(post.id, id)
                         XCTAssertEqual(post.title, "title updated")
                     }
                     expectation.fulfill()
-                case .error(let error):
+                case .failure(let error):
                     XCTFail(String(describing: error))
                     expectation.fulfill()
                 }
             }
         }
 
-        let post = Post(title: "title", content: "content")
+        var post = Post(title: "title", content: "content")
         storageAdapter.save(post) { insertResult in
             switch insertResult {
-            case .result:
-                let updatedPost = Post(id: post.id,
-                                       title: "title updated",
-                                       content: "content")
-                storageAdapter.save(updatedPost) { updateResult in
+            case .success:
+                post.title = "title updated"
+                storageAdapter.save(post) { updateResult in
                     switch updateResult {
-                    case .result:
-                        checkSavedPost(id: updatedPost.id)
-                    case .error(let error):
+                    case .success:
+                        checkSavedPost(id: post.id)
+                    case .failure(let error):
                         XCTFail(error.errorDescription)
                     }
                 }
-            case .error(let error):
+            case .failure(let error):
                 XCTFail(String(describing: error))
                 expectation.fulfill()
             }
@@ -197,7 +172,7 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
         func checkDeletedPost(id: String) {
             storageAdapter.query(Post.self) {
                 switch $0 {
-                case .result(let posts):
+                case .success(let posts):
                     XCTAssertEqual(posts.count, 0)
                     do {
                         let exists = try storageAdapter.exists(Post.self, withId: id)
@@ -206,7 +181,7 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
                         XCTFail(String(describing: error))
                     }
                     expectation.fulfill()
-                case .error(let error):
+                case .failure(let error):
                     XCTFail(String(describing: error))
                     expectation.fulfill()
                 }
@@ -216,16 +191,16 @@ class SQLiteStorageEngineAdapterTests: XCTestCase {
         let post = Post(title: "title", content: "content")
         storageAdapter.save(post) { insertResult in
             switch insertResult {
-            case .result:
+            case .success:
                 storageAdapter.delete(Post.self, withId: post.id) {
                     switch $0 {
-                    case .result:
+                    case .success:
                         checkDeletedPost(id: post.id)
-                    case .error(let error):
+                    case .failure(let error):
                         XCTFail(error.errorDescription)
                     }
                 }
-            case .error(let error):
+            case .failure(let error):
                 XCTFail(String(describing: error))
                 expectation.fulfill()
             }

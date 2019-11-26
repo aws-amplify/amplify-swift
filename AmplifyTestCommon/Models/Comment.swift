@@ -11,9 +11,9 @@ import Foundation
 public struct Comment: Model {
 
     public let id: String
-    public let content: String
-    public let createdAt: Date
-    public let post: Post
+    public var content: String
+    public var createdAt: Date
+    public var post: Post
 
     public init(id: String = UUID().uuidString,
                 content: String,

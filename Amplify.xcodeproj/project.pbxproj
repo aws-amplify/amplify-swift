@@ -153,6 +153,22 @@
 		B98E9D122372236300934B51 /* QueryField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0A2372236200934B51 /* QueryField.swift */; };
 		B98E9D132372236300934B51 /* QueryOperator+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */; };
 		B98E9D142372236300934B51 /* QueryPredicate+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */; };
+		B9FAA10723865C21009414B4 /* DataStoreModelRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10623865C21009414B4 /* DataStoreModelRegistration.swift */; };
+		B9FAA10B23878122009414B4 /* ModelField+Association.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10A23878122009414B4 /* ModelField+Association.swift */; };
+		B9FAA10E23878BF3009414B4 /* UserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10D23878BF3009414B4 /* UserAccount.swift */; };
+		B9FAA11023878C5E009414B4 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10F23878C5E009414B4 /* UserProfile.swift */; };
+		B9FAA11223878C96009414B4 /* UserAccount+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11123878C96009414B4 /* UserAccount+Schema.swift */; };
+		B9FAA11423878CEA009414B4 /* UserProfile+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11323878CEA009414B4 /* UserProfile+Schema.swift */; };
+		B9FAA116238799D3009414B4 /* Author.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA115238799D3009414B4 /* Author.swift */; };
+		B9FAA11823879A57009414B4 /* Author+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11723879A57009414B4 /* Author+Schema.swift */; };
+		B9FAA11A23879AC8009414B4 /* BookAuthor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11923879AC8009414B4 /* BookAuthor.swift */; };
+		B9FAA11C23879B35009414B4 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11B23879B35009414B4 /* Book.swift */; };
+		B9FAA11E23879B9F009414B4 /* Book+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11D23879B9F009414B4 /* Book+Schema.swift */; };
+		B9FAA12023879BD0009414B4 /* BookAuthor+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA11F23879BD0009414B4 /* BookAuthor+Schema.swift */; };
+		B9FAA1252388BE48009414B4 /* List+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA1242388BE48009414B4 /* List+Model.swift */; };
+		B9FAA1272388BE91009414B4 /* List+LazyLoad.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA1262388BE91009414B4 /* List+LazyLoad.swift */; };
+		B9FAA13A238BBADE009414B4 /* List+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA139238BBADE009414B4 /* List+Combine.swift */; };
+		B9FAA13C238BBE67009414B4 /* DataStoreCallback+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA13B238BBE67009414B4 /* DataStoreCallback+Combine.swift */; };
 		B9FB05F82383740D00DE1FD4 /* DataStoreStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FB05F72383740D00DE1FD4 /* DataStoreStatement.swift */; };
 		BBDAB9BA4CFBCBEAC27D0AEB /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DB257EB47AB94ED06B62380 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsTestCommon.framework */; };
 		FA0173352375F8A5005DDDFC /* LoggingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173342375F8A5005DDDFC /* LoggingError.swift */; };
@@ -693,6 +709,22 @@
 		B98E9D0A2372236200934B51 /* QueryField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryField.swift; sourceTree = "<group>"; };
 		B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "QueryOperator+Equatable.swift"; sourceTree = "<group>"; };
 		B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "QueryPredicate+Equatable.swift"; sourceTree = "<group>"; };
+		B9FAA10623865C21009414B4 /* DataStoreModelRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreModelRegistration.swift; sourceTree = "<group>"; };
+		B9FAA10A23878122009414B4 /* ModelField+Association.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelField+Association.swift"; sourceTree = "<group>"; };
+		B9FAA10D23878BF3009414B4 /* UserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccount.swift; sourceTree = "<group>"; };
+		B9FAA10F23878C5E009414B4 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		B9FAA11123878C96009414B4 /* UserAccount+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserAccount+Schema.swift"; sourceTree = "<group>"; };
+		B9FAA11323878CEA009414B4 /* UserProfile+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserProfile+Schema.swift"; sourceTree = "<group>"; };
+		B9FAA115238799D3009414B4 /* Author.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Author.swift; sourceTree = "<group>"; };
+		B9FAA11723879A57009414B4 /* Author+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Author+Schema.swift"; sourceTree = "<group>"; };
+		B9FAA11923879AC8009414B4 /* BookAuthor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookAuthor.swift; sourceTree = "<group>"; };
+		B9FAA11B23879B35009414B4 /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
+		B9FAA11D23879B9F009414B4 /* Book+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Book+Schema.swift"; sourceTree = "<group>"; };
+		B9FAA11F23879BD0009414B4 /* BookAuthor+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookAuthor+Schema.swift"; sourceTree = "<group>"; };
+		B9FAA1242388BE48009414B4 /* List+Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "List+Model.swift"; sourceTree = "<group>"; };
+		B9FAA1262388BE91009414B4 /* List+LazyLoad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "List+LazyLoad.swift"; sourceTree = "<group>"; };
+		B9FAA139238BBADE009414B4 /* List+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "List+Combine.swift"; sourceTree = "<group>"; };
+		B9FAA13B238BBE67009414B4 /* DataStoreCallback+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataStoreCallback+Combine.swift"; sourceTree = "<group>"; };
 		B9FB05F72383740D00DE1FD4 /* DataStoreStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreStatement.swift; sourceTree = "<group>"; };
 		BAFD88194E245D6B82399825 /* Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		BB548811E9281F8547D83681 /* Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -1378,11 +1410,13 @@
 			isa = PBXGroup;
 			children = (
 				FA8EE775238626C70097E4F1 /* AnyModel */,
+				B9FAA1232388BE2B009414B4 /* Collection */,
 				B92E03A72367CE7A006CEB8D /* Model.swift */,
 				B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */,
 				FA8EE778238627040097E4F1 /* Model+ModelName.swift */,
 				B92E03AB2367CE7A006CEB8D /* Model+Schema.swift */,
 				FA8EE77C238627350097E4F1 /* Model+Subscript.swift */,
+				B9FAA10A23878122009414B4 /* ModelField+Association.swift */,
 				B92E03A92367CE7A006CEB8D /* ModelRegistry.swift */,
 				B92E03A82367CE7A006CEB8D /* ModelSchema.swift */,
 				B92E03AA2367CE7A006CEB8D /* ModelSchema+Definition.swift */,
@@ -1394,6 +1428,7 @@
 		B952182D237E21B900F53237 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				B9FAA10C23878BD6009414B4 /* Associations */,
 				B9521830237E21B900F53237 /* Comment.swift */,
 				B952182E237E21B900F53237 /* Comment+Schema.swift */,
 				B9521832237E21B900F53237 /* Post.swift */,
@@ -1441,16 +1476,45 @@
 				B98E9D042372236200934B51 /* Query */,
 				FAD3936C2381F91C00463F5E /* Subscribe */,
 				B92E03A12367CE79006CEB8D /* DataStoreCallback.swift */,
-				FA176ED42385012000C5C5F9 /* DataStoreCategory+HubPayloadEventName.swift */,
+				B9FAA13B238BBE67009414B4 /* DataStoreCallback+Combine.swift */,
 				B92E03A42367CE7A006CEB8D /* DataStoreCategory.swift */,
 				B92E039E2367CE79006CEB8D /* DataStoreCategory+Behavior.swift */,
+				FA176ED42385012000C5C5F9 /* DataStoreCategory+HubPayloadEventName.swift */,
 				B92E03A02367CE79006CEB8D /* DataStoreCategoryBehavior.swift */,
 				B92E03A32367CE79006CEB8D /* DataStoreCategoryConfiguration.swift */,
 				B92E039F2367CE79006CEB8D /* DataStoreCategoryPlugin.swift */,
 				B92E03A22367CE79006CEB8D /* DataStoreError.swift */,
+				B9FAA10623865C21009414B4 /* DataStoreModelRegistration.swift */,
 				B9FB05F72383740D00DE1FD4 /* DataStoreStatement.swift */,
 			);
 			path = DataStore;
+			sourceTree = "<group>";
+		};
+		B9FAA10C23878BD6009414B4 /* Associations */ = {
+			isa = PBXGroup;
+			children = (
+				B9FAA115238799D3009414B4 /* Author.swift */,
+				B9FAA11723879A57009414B4 /* Author+Schema.swift */,
+				B9FAA11B23879B35009414B4 /* Book.swift */,
+				B9FAA11D23879B9F009414B4 /* Book+Schema.swift */,
+				B9FAA11923879AC8009414B4 /* BookAuthor.swift */,
+				B9FAA11F23879BD0009414B4 /* BookAuthor+Schema.swift */,
+				B9FAA10D23878BF3009414B4 /* UserAccount.swift */,
+				B9FAA11123878C96009414B4 /* UserAccount+Schema.swift */,
+				B9FAA10F23878C5E009414B4 /* UserProfile.swift */,
+				B9FAA11323878CEA009414B4 /* UserProfile+Schema.swift */,
+			);
+			path = Associations;
+			sourceTree = "<group>";
+		};
+		B9FAA1232388BE2B009414B4 /* Collection */ = {
+			isa = PBXGroup;
+			children = (
+				B9FAA139238BBADE009414B4 /* List+Combine.swift */,
+				B9FAA1262388BE91009414B4 /* List+LazyLoad.swift */,
+				B9FAA1242388BE48009414B4 /* List+Model.swift */,
+			);
+			path = Collection;
 			sourceTree = "<group>";
 		};
 		C4DBE378379CBB2C3F4536BE /* Frameworks */ = {
@@ -3096,6 +3160,7 @@
 				21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */,
 				FAC428A0235F7F980000F221 /* APICategory+RESTBehavior.swift in Sources */,
 				95DAAB46237E639E0028544F /* IdentifyTextResult.swift in Sources */,
+				B9FAA10B23878122009414B4 /* ModelField+Association.swift in Sources */,
 				95DAAB22237E63370028544F /* SpeechType.swift in Sources */,
 				95DAAB8C237F13D10028544F /* PredictionsTextToSpeechRequest.swift in Sources */,
 				95DAAB24237E63370028544F /* IdentifiedText.swift in Sources */,
@@ -3124,6 +3189,7 @@
 				FAF1B88623392F96007F1435 /* SerialDispatcher.swift in Sources */,
 				FA09B94B2322CBEB000E064D /* LoggingCategoryConfiguration.swift in Sources */,
 				210922572359693900CEC295 /* BasicAnalyticsEvent.swift in Sources */,
+				B9FAA10723865C21009414B4 /* DataStoreModelRegistration.swift in Sources */,
 				FAC2353F227A055200424678 /* PluginError.swift in Sources */,
 				FA76A2D32342B47100B91ADB /* HubPayloadEventName.swift in Sources */,
 				FA8EE77F2386274A0097E4F1 /* AnyModel+Subscript.swift in Sources */,
@@ -3215,8 +3281,10 @@
 				FA76A2D12342B1A600B91ADB /* StorageCategory+HubPayloadEventName.swift in Sources */,
 				FAC23546227A055200424678 /* AmplifyError.swift in Sources */,
 				FA09B9492322CBD5000E064D /* HubCategoryConfiguration.swift in Sources */,
+				B9FAA1252388BE48009414B4 /* List+Model.swift in Sources */,
 				21D1CE8C2334233F0003BAA8 /* AuthError.swift in Sources */,
 				FAC0A2B222B4402000B50912 /* StorageCategory+ClientBehavior.swift in Sources */,
+				B9FAA1272388BE91009414B4 /* List+LazyLoad.swift in Sources */,
 				B4340A24238325B900101BBA /* DefaultNetworkPolicy.swift in Sources */,
 				B4D38537236C97360014653D /* PredictionsCategory+CategoryConfigurable.swift in Sources */,
 				FA4E730C23282917003B8EEB /* Amplify+Resolve.swift in Sources */,
@@ -3226,6 +3294,7 @@
 				21D79FDA237617C60057D00D /* SubscriptionEvent.swift in Sources */,
 				B92E03B52367CE7A006CEB8D /* Model.swift in Sources */,
 				95DAAB31237E63370028544F /* PartOfSpeech.swift in Sources */,
+				B9FAA13A238BBADE009414B4 /* List+Combine.swift in Sources */,
 				FA8EE77B2386271A0097E4F1 /* Model+AnyModel.swift in Sources */,
 				FA56F72522B14B6A0039754A /* Resumable.swift in Sources */,
 				21FFF997230C96CB005878EA /* StorageRemoveOperation.swift in Sources */,
@@ -3254,6 +3323,7 @@
 				FAC2358F227A4A6E00424678 /* HubCategory.swift in Sources */,
 				B98E9D0E2372236300934B51 /* ModelKey.swift in Sources */,
 				95DAAB86237F13A10028544F /* PredictionsTextToSpeechOperation.swift in Sources */,
+				B9FAA13C238BBE67009414B4 /* DataStoreCallback+Combine.swift in Sources */,
 				95DAAB8A237F13B70028544F /* TextToSpeechResult.swift in Sources */,
 				B98E9D122372236300934B51 /* QueryField.swift in Sources */,
 				B98E9D0F2372236300934B51 /* QueryOperator.swift in Sources */,
@@ -3323,6 +3393,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B9FAA116238799D3009414B4 /* Author.swift in Sources */,
 				B9521833237E21BA00F53237 /* Comment+Schema.swift in Sources */,
 				FA176ED7238503C200C5C5F9 /* HubListenerTestUtilities.swift in Sources */,
 				B4BD6B3723708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift in Sources */,
@@ -3330,14 +3401,23 @@
 				FAD3937F23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift in Sources */,
 				FACA361A2327FC69000E74F6 /* MockStorageCategoryPlugin.swift in Sources */,
 				B9521837237E21BA00F53237 /* Post.swift in Sources */,
+				B9FAA11A23879AC8009414B4 /* BookAuthor.swift in Sources */,
+				B9FAA11E23879B9F009414B4 /* Book+Schema.swift in Sources */,
 				FACA361B2327FC74000E74F6 /* MockLoggingCategoryPlugin.swift in Sources */,
 				FACF52042329633500646E10 /* TestExtensions.swift in Sources */,
+				B9FAA11823879A57009414B4 /* Author+Schema.swift in Sources */,
 				B9521836237E21BA00F53237 /* Post+Schema.swift in Sources */,
+				B9FAA11223878C96009414B4 /* UserAccount+Schema.swift in Sources */,
 				FACA36152327FC39000E74F6 /* MessageReporter.swift in Sources */,
+				B9FAA11C23879B35009414B4 /* Book.swift in Sources */,
+				B9FAA11423878CEA009414B4 /* UserProfile+Schema.swift in Sources */,
 				FACA361D2327FC84000E74F6 /* MockAPICategoryPlugin.swift in Sources */,
 				FAC6792D2329B267004DDFE8 /* AtomicValue.swift in Sources */,
+				B9FAA11023878C5E009414B4 /* UserProfile.swift in Sources */,
+				B9FAA12023879BD0009414B4 /* BookAuthor+Schema.swift in Sources */,
 				B9521835237E21BA00F53237 /* Comment.swift in Sources */,
 				FACA361E2327FC8E000E74F6 /* MockAnalyticsCategoryPlugin.swift in Sources */,
+				B9FAA10E23878BF3009414B4 /* UserAccount.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

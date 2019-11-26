@@ -57,7 +57,7 @@ extension ModelField: SQLColumn {
     }
 
     var isForeignKey: Bool {
-        isRelationshipOwner
+        isAssociationOwner
     }
 
     /// Get the name of the `ModelField` as a SQL column name. Columns can be optionally namespaced
@@ -128,7 +128,7 @@ extension ModelSchema {
     /// the owner of a foreign key to another `Model`. Fields that reference the inverse side of
     /// the relationship (i.e. the "one" side of a "one-to-many" relationship) are excluded.
     var columns: [ModelField] {
-        sortedFields.filter { !$0.isConnected || $0.isForeignKey }
+        sortedFields.filter { !$0.hasAssociation || $0.isForeignKey }
     }
 
     /// Filter the fields that represent foreign keys.

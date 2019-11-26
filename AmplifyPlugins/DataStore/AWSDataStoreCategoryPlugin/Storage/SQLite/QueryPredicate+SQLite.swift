@@ -33,7 +33,13 @@ extension QueryOperator {
     }
 
     func columnFor(field: String) -> String {
-        return field.quoted()
+        var tokens = field.split(separator: ".")
+        if tokens.count == 1 {
+            tokens.insert("root", at: 0)
+        }
+        return tokens
+            .map { String($0).quoted() }
+            .joined(separator: ".")
     }
 
     var bindings: [Binding?] {

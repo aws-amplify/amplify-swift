@@ -37,12 +37,14 @@ class GraphQLDocumentTests: XCTestCase {
         mutation CreatePost($input: CreatePostInput!) {
           createPost(input: $input) {
             id
+            _version
             content
             createdAt
             draft
             rating
             title
             updatedAt
+            __typename
           }
         }
         """
@@ -68,12 +70,14 @@ class GraphQLDocumentTests: XCTestCase {
         mutation UpdatePost($input: UpdatePostInput!) {
           updatePost(input: $input) {
             id
+            _version
             content
             createdAt
             draft
             rating
             title
             updatedAt
+            __typename
           }
         }
         """
@@ -99,12 +103,14 @@ class GraphQLDocumentTests: XCTestCase {
         mutation DeletePost($input: DeletePostInput!) {
           deletePost(input: $input) {
             id
+            _version
             content
             createdAt
             draft
             rating
             title
             updatedAt
+            __typename
           }
         }
         """
@@ -138,6 +144,7 @@ class GraphQLDocumentTests: XCTestCase {
           listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
             items {
               id
+              _version
               content
               createdAt
               draft
@@ -168,6 +175,7 @@ class GraphQLDocumentTests: XCTestCase {
         query GetPost($id: ID!) {
           getPost(id: $id) {
             id
+            _version
             content
             createdAt
             draft
@@ -195,6 +203,7 @@ class GraphQLDocumentTests: XCTestCase {
         subscription OnCreatePost {
           onCreatePost {
             id
+            _version
             content
             createdAt
             draft
@@ -220,6 +229,7 @@ class GraphQLDocumentTests: XCTestCase {
         subscription OnUpdatePost {
           onUpdatePost {
             id
+            _version
             content
             createdAt
             draft
@@ -245,6 +255,7 @@ class GraphQLDocumentTests: XCTestCase {
         subscription OnDeletePost {
           onDeletePost {
             id
+            _version
             content
             createdAt
             draft
@@ -301,26 +312,4 @@ class GraphQLDocumentTests: XCTestCase {
         XCTAssertEqual(variables["limit"] as? Int, 1_000)
         XCTAssertNotNil(variables["filter"])
     }
-
-    // MARK: - QueryPredicate tests
-
-    // TODO: Predicate testing
-    // food for thought: if the JSON serialization is used elsewhere, either by the API itself or other tests,
-    // consider adding an extension to QueryPredicate that exposes a func toJSON() throws -> String
-    /*
-    func testQueryPredicateToGraphQLFilterVariables() throws {
-        let post = Post.keys
-        let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
-        let expectedString = """
-        {"and":[{"id":{"eq":"id"}},{"or":[{"title":{"beginsWith":"Title"}},{"content":{"contains":"content"}}]}]}
-        """
-        let filterVariables = predicate.graphQLFilterVariables
-        let serializedJSON = try JSONSerialization.data(withJSONObject: filterVariables)
-        guard let serializedString = String(data: serializedJSON, encoding: .utf8) else {
-            XCTFail("Could not get string from JSON data")
-            return
-        }
-        XCTAssertEqual(serializedString, expectedString)
-    }
-    */
 }

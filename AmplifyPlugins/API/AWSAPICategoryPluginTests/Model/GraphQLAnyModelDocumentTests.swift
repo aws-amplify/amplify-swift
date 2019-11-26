@@ -29,12 +29,14 @@ class GraphQLAnyModelDocumentTests: XCTestCase {
         mutation CreatePost($input: CreatePostInput!) {
           createPost(input: $input) {
             id
+            _version
             content
             createdAt
             draft
             rating
             title
             updatedAt
+            __typename
           }
         }
         """
@@ -51,12 +53,14 @@ class GraphQLAnyModelDocumentTests: XCTestCase {
         mutation UpdatePost($input: UpdatePostInput!) {
           updatePost(input: $input) {
             id
+            _version
             content
             createdAt
             draft
             rating
             title
             updatedAt
+            __typename
           }
         }
         """
@@ -73,12 +77,14 @@ class GraphQLAnyModelDocumentTests: XCTestCase {
         mutation DeletePost($input: DeletePostInput!) {
           deletePost(input: $input) {
             id
+            _version
             content
             createdAt
             draft
             rating
             title
             updatedAt
+            __typename
           }
         }
         """

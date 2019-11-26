@@ -80,10 +80,10 @@ final class OutgoingMutationQueue {
 
             storageEngine.save(event) {
                 switch $0 {
-                case .result:
+                case .success:
                     self.incomingMutations.send(event)
                     future(.success(event))
-                case .error(let error):
+                case .failure(let error):
                     future(.failure(error))
                 }
             }
@@ -108,9 +108,9 @@ final class OutgoingMutationQueue {
 
             storageEngine.delete(MutationEvent.self, withId: event.id) {
                 switch $0 {
-                case .result:
+                case .success:
                     future(.success(event))
-                case .error(let error):
+                case .failure(let error):
                     future(.failure(error))
                 }
             }
@@ -138,9 +138,9 @@ final class OutgoingMutationQueue {
             storageEngine.query(MutationEvent.self, predicate: nil) {
                 let unsortedEvents: [MutationEvent]
                 switch $0 {
-                case .result(let events):
+                case .success(let events):
                     unsortedEvents = events
-                case .error(let error):
+                case .failure(let error):
                     record.receive(completion: .failure(error))
                     return
                 }

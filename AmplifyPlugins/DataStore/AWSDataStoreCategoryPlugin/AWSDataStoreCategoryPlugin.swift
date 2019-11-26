@@ -91,12 +91,12 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
             modelExists = try engine.adapter.exists(M.self, withId: model.id)
         } catch {
             if let dataStoreError = error as? DataStoreError {
-                completion(.error(dataStoreError))
+                completion(.failure(dataStoreError))
                 return
             }
 
             let dataStoreError = DataStoreError.invalidOperation(causedBy: error)
-            completion(.error(dataStoreError))
+            completion(.failure(dataStoreError))
             return
         }
 
@@ -104,13 +104,13 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
 
         let publishingCompletion: DataStoreCallback<M> = { result in
             switch result {
-            case .result(let model):
+            case .success(let model):
                 // TODO: Differentiate between save & update
                 // TODO: Handle errors from mutation event creation
                 if let mutationEvent = try? MutationEvent(model: model, mutationType: mutationType) {
                     self.dataStorePublisher.send(input: mutationEvent)
                 }
-            case .error:
+            case .failure:
                 break
             }
 
@@ -126,13 +126,14 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
         let predicate: QueryPredicateFactory = { field("id") == id }
         query(modelType, where: predicate) {
             switch $0 {
-            case .result(let models):
+            case .success(let models):
+                let count = models.count
                 if models.count > 1 {
-                    completion(.error(.nonUniqueResult(model: modelType.schema.name)))
+                    completion(.failure(.nonUniqueResult(model: modelType.modelName, count: count)))
                 } else {
-                    completion(.result(models.first))
+                    completion(.success(models.first))
                 }
-            case .error(let error):
+            case .failure(let error):
                 completion(.failure(causedBy: error))
             }
         }
@@ -150,12 +151,12 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
                                  completion: DataStoreCallback<Void>) {
         let publishingCompletion: DataStoreCallback<Void> = { result in
             switch result {
-            case .result:
+            case .success:
                 // TODO: Handle errors from mutation event creation
                 if let mutationEvent = try? MutationEvent(model: model, mutationType: .delete) {
                     self.dataStorePublisher.send(input: mutationEvent)
                 }
-            case .error:
+            case .failure:
                 break
             }
             completion(result)
