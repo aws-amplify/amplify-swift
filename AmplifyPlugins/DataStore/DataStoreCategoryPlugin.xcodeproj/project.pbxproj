@@ -63,9 +63,6 @@
 		FA3841EF23889DCC0070AD5B /* MockModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841EE23889DCC0070AD5B /* MockModels.swift */; };
 		FA5D4CED238AFC4D00D2F54A /* AWSDataStoreCategoryPlugin+DefaultLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5D4CEC238AFC4D00D2F54A /* AWSDataStoreCategoryPlugin+DefaultLogger.swift */; };
 		FA5D4CEF238AFCBC00D2F54A /* AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5D4CEE238AFCBC00D2F54A /* AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift */; };
-		FA93BC97238C549F00492E10 /* IncomingAsyncMutationEventSubject.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA93BC96238C549F00492E10 /* IncomingAsyncMutationEventSubject.swift */; };
-		FA93BC99238C557C00492E10 /* AsyncMutationEventToAnyModelMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA93BC98238C557C00492E10 /* AsyncMutationEventToAnyModelMapper.swift */; };
-		FA93BC9D238C565900492E10 /* IncomingMutationEventPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA93BC9C238C565900492E10 /* IncomingMutationEventPublisher.swift */; };
 		FACBB2AE238AFAE800C29602 /* AWSDataStoreCategoryPlugin+DataStoreBaseBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACBB2AD238AFAE800C29602 /* AWSDataStoreCategoryPlugin+DataStoreBaseBehavior.swift */; };
 		FADD728F238B0F10005AA69A /* IncomingAsyncSubscriptionEventPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADD728E238B0F10005AA69A /* IncomingAsyncSubscriptionEventPublisher.swift */; };
 		FADD7291238B19CB005AA69A /* AsyncSubscriptionEventToAnyModelMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADD7290238B19CB005AA69A /* AsyncSubscriptionEventToAnyModelMapper.swift */; };
@@ -174,9 +171,6 @@
 		FA3841EE23889DCC0070AD5B /* MockModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockModels.swift; sourceTree = "<group>"; };
 		FA5D4CEC238AFC4D00D2F54A /* AWSDataStoreCategoryPlugin+DefaultLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSDataStoreCategoryPlugin+DefaultLogger.swift"; sourceTree = "<group>"; };
 		FA5D4CEE238AFCBC00D2F54A /* AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift"; sourceTree = "<group>"; };
-		FA93BC96238C549F00492E10 /* IncomingAsyncMutationEventSubject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingAsyncMutationEventSubject.swift; sourceTree = "<group>"; };
-		FA93BC98238C557C00492E10 /* AsyncMutationEventToAnyModelMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncMutationEventToAnyModelMapper.swift; sourceTree = "<group>"; };
-		FA93BC9C238C565900492E10 /* IncomingMutationEventPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingMutationEventPublisher.swift; sourceTree = "<group>"; };
 		FACBB2AD238AFAE800C29602 /* AWSDataStoreCategoryPlugin+DataStoreBaseBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSDataStoreCategoryPlugin+DataStoreBaseBehavior.swift"; sourceTree = "<group>"; };
 		FADD728E238B0F10005AA69A /* IncomingAsyncSubscriptionEventPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingAsyncSubscriptionEventPublisher.swift; sourceTree = "<group>"; };
 		FADD7290238B19CB005AA69A /* AsyncSubscriptionEventToAnyModelMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncSubscriptionEventToAnyModelMapper.swift; sourceTree = "<group>"; };
@@ -408,16 +402,6 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		FA93BC9E238C566400492E10 /* Incoming */ = {
-			isa = PBXGroup;
-			children = (
-				FA93BC98238C557C00492E10 /* AsyncMutationEventToAnyModelMapper.swift */,
-				FA93BC96238C549F00492E10 /* IncomingAsyncMutationEventSubject.swift */,
-				FA93BC9C238C565900492E10 /* IncomingMutationEventPublisher.swift */,
-			);
-			path = Incoming;
-			sourceTree = "<group>";
-		};
 		FA93BC9F238C566B00492E10 /* Outgoing */ = {
 			isa = PBXGroup;
 			children = (
@@ -452,7 +436,6 @@
 		FAED5736238B2DFA008EBED8 /* MutationSync */ = {
 			isa = PBXGroup;
 			children = (
-				FA93BC9E238C566400492E10 /* Incoming */,
 				FA93BC9F238C566B00492E10 /* Outgoing */,
 			);
 			path = MutationSync;
@@ -900,12 +883,10 @@
 				2149E5D12388684F00873955 /* StorageEngineAdapter+SQLite.swift in Sources */,
 				FA5D4CED238AFC4D00D2F54A /* AWSDataStoreCategoryPlugin+DefaultLogger.swift in Sources */,
 				2149E5CA2388684F00873955 /* ModelSchema+SQLite.swift in Sources */,
-				FA93BC99238C557C00492E10 /* AsyncMutationEventToAnyModelMapper.swift in Sources */,
 				2149E5CD2388684F00873955 /* SQLStatement+Update.swift in Sources */,
 				FAF7CEC9238C6A940095547B /* SyncMutationToCloudOperation.swift in Sources */,
 				2149E5D02388684F00873955 /* QueryPredicate+SQLite.swift in Sources */,
 				2149E5D22388684F00873955 /* SQLStatement+Condition.swift in Sources */,
-				FA93BC9D238C565900492E10 /* IncomingMutationEventPublisher.swift in Sources */,
 				FAED573C238B4B03008EBED8 /* Statement+AnyModel.swift in Sources */,
 				2149E5D72388684F00873955 /* NetworkReachabilityNotifier.swift in Sources */,
 				2149E5C52388684F00873955 /* StorageEngineBehavior.swift in Sources */,
@@ -926,7 +907,6 @@
 				2149E5C82388684F00873955 /* SQLStatement.swift in Sources */,
 				FAED5742238B52CE008EBED8 /* ModelStorageBehavior.swift in Sources */,
 				2149E5C62388684F00873955 /* StorageEngineAdapter.swift in Sources */,
-				FA93BC97238C549F00492E10 /* IncomingAsyncMutationEventSubject.swift in Sources */,
 				FAED5738238B3A2A008EBED8 /* IncomingSubscriptionEventPublisher.swift in Sources */,
 				2149E5CE2388684F00873955 /* SQLStatement+CreateTable.swift in Sources */,
 				FACBB2AE238AFAE800C29602 /* AWSDataStoreCategoryPlugin+DataStoreBaseBehavior.swift in Sources */,

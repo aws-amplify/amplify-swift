@@ -102,14 +102,6 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
         return mutationQueue.submit(mutationEvent: mutationEvent)
     }
 
-    func asyncMutationEventSubject(for modelName: String) -> IncomingAsyncMutationEventSubject.Subject? {
-        guard let reconciliationQueues = reconciliationQueues else {
-            return nil
-        }
-
-        return reconciliationQueues.incomingMutationEventsSubject(for: modelName)
-    }
-
     // MARK: - Startup sequence
 
     private func pauseSubscriptions() {

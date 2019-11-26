@@ -178,15 +178,8 @@ final class OutgoingMutationQueue {
         }
 
         for mutationEvent in mutationEvents {
-            guard let asyncEventSubject = syncEngine?.asyncMutationEventSubject(for: mutationEvent.modelName) else {
-                // TODO: Error handling for missing subjects--should we just drop queued events that no longer have
-                // a schema representation?
-                return
-            }
             let syncMutationToCloudOperation =
-                SyncMutationToCloudOperation(mutationEvent: mutationEvent,
-                                             api: api,
-                                             asyncEventSubject: asyncEventSubject)
+                SyncMutationToCloudOperation(mutationEvent: mutationEvent, api: api)
 
             operationQueue.addOperation(syncMutationToCloudOperation)
         }
@@ -221,21 +214,13 @@ final class OutgoingMutationQueue {
     /// - errored
     /// - enqueued
     private func enqueue(savedMutationEvent: SavedMutationEvent) {
-        guard let asyncEventSubject = syncEngine?.asyncMutationEventSubject(for: savedMutationEvent.modelName) else {
-            // TODO: Error handling for missing subjects--should we just drop queued events that no longer have
-            // a schema representation?
-            return
-        }
-
         guard let api = api else {
             stateMachine.notify(action: .errored(Errors.nilAPIBehavior))
             return
         }
 
         let syncMutationToCloudOperation =
-            SyncMutationToCloudOperation(mutationEvent: savedMutationEvent,
-                                         api: api,
-                                         asyncEventSubject: asyncEventSubject)
+            SyncMutationToCloudOperation(mutationEvent: savedMutationEvent, api: api)
 
         operationQueue.addOperation(syncMutationToCloudOperation)
     }

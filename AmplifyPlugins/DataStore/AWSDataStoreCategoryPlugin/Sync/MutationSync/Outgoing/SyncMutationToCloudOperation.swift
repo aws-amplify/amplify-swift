@@ -17,17 +17,15 @@ import Foundation
 /// terminal failure, publishes the event response to the appropriate ReconciliationQueue subject.
 class SyncMutationToCloudOperation: Operation {
 
+    typealias MutationCloudResponse = AsyncEvent<Void, GraphQLResponse<AnyModel>, APIError>
+
     private weak var api: APICategoryGraphQLBehavior?
-    private weak var asyncEventSubject: IncomingAsyncMutationEventSubject.Subject?
     private let mutationEvent: MutationEvent
     private var mutationOperation: GraphQLOperation<AnyModel>?
 
-    init(mutationEvent: MutationEvent,
-         api: APICategoryGraphQLBehavior,
-         asyncEventSubject: IncomingAsyncMutationEventSubject.Subject) {
+    init(mutationEvent: MutationEvent, api: APICategoryGraphQLBehavior) {
         self.mutationEvent = mutationEvent
         self.api = api
-        self.asyncEventSubject = asyncEventSubject
 
         super.init()
     }
@@ -79,25 +77,17 @@ class SyncMutationToCloudOperation: Operation {
 
         mutationOperation = api.mutate(of: anyModel, type: mutationType) { asyncEvent in
             self.log.verbose("sendMutationToCloud received asyncEvent: \(asyncEvent)")
+            self.validateResponseFromCloud(asyncEvent: asyncEvent)
         }
     }
 
-    private func validateResponseFromCloud(asyncEvent: IncomingAsyncMutationEventSubject.Event) {
+    private func validateResponseFromCloud(asyncEvent: MutationCloudResponse) {
         guard !isCancelled else {
             mutationOperation?.cancel()
             return
         }
 
         // TODO: Wire in actual event validation and retriability
-        publishEventToSubject(asyncEvent: asyncEvent)
-    }
-
-    private func publishEventToSubject(asyncEvent: IncomingAsyncMutationEventSubject.Event) {
-        guard !isCancelled else {
-            mutationOperation?.cancel()
-            return
-        }
-        asyncEventSubject?.send(asyncEvent)
     }
 
 }

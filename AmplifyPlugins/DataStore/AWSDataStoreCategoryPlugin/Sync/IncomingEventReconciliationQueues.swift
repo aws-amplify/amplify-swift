@@ -31,17 +31,6 @@ final class IncomingEventReconciliationQueues {
         reconciliationQueues.values.forEach { $0.start() }
     }
 
-    /// Returns an AsyncEvent listener for mutation events on `modelType`, that subsequently publishes the
-    /// asyncEvent to the appropriate ReconciliationQueue. Used as the Outgoing mutation event listener.
-    ///
-    /// - Parameter modelType: The model type for which to create a listener
-    func incomingMutationEventsSubject(for modelName: String) -> IncomingAsyncMutationEventSubject.Subject? {
-        guard let queue = reconciliationQueues[modelName] else {
-            return nil
-        }
-
-        return queue.incomingAsyncMutationEvents
-    }
 }
 
 /// A queue of reconciliation operations, merged from incoming subscription events and responses to locally-sourced
@@ -57,12 +46,6 @@ final class ReconciliationQueue {
     private let modelName: String
 
     private let incomingSubscriptionEvents: IncomingSubscriptionEventPublisher
-
-    private let incomingMutationEvents: IncomingMutationEventPublisher
-
-    var incomingAsyncMutationEvents: IncomingAsyncMutationEventSubject.Subject {
-        incomingMutationEvents.incomingAsyncMutationEvents
-    }
 
     private var allModels: AnyCancellable?
 
@@ -82,12 +65,8 @@ final class ReconciliationQueue {
         let incomingSubscriptionEvents = IncomingSubscriptionEventPublisher(modelType: modelType, api: api)
         self.incomingSubscriptionEvents = incomingSubscriptionEvents
 
-        let incomingMutationEvents = IncomingMutationEventPublisher(modelType: modelType, api: api)
-        self.incomingMutationEvents = incomingMutationEvents
-
-        self.allModels = Publishers.Merge(incomingMutationEvents.publisher,
-                                          incomingSubscriptionEvents.publisher)
-            .eraseToAnyPublisher()
+        self.allModels = incomingSubscriptionEvents
+            .publisher
             .sink(receiveCompletion: { [weak self] completion in
                 self?.receiveCompletion(completion)
                 }, receiveValue: { [weak self] anyModel in

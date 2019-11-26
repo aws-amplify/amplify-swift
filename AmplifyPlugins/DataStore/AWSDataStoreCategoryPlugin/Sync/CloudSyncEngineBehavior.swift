@@ -30,7 +30,4 @@ protocol CloudSyncEngineBehavior: class {
     /// reconciliation queue
     func submit(_ mutationEvent: MutationEvent) -> Future<MutationEvent, DataStoreError>
 
-    /// Returns a subject used to publish mutation events received from the cloud, to downstream subscribers that
-    /// publish them to the DataStore
-    func asyncMutationEventSubject(for modelName: String) -> IncomingAsyncMutationEventSubject.Subject?
 }
