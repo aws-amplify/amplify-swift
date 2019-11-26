@@ -51,7 +51,8 @@ public struct GraphQLMutation: GraphQLDocument {
         let schema = model.schema
         var fields = schema.graphQLFields.map { $0.graphQLName }
 
-        // All mutation documents should include typename, to support type-erased operations on the client
+        // All mutation documents should include typename in the selection set,
+        // to support type-erased operations on the client
         fields.append("__typename")
 
         let document = """

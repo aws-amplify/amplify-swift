@@ -6,15 +6,17 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Foundation
 import SQLite
 
 /// [SQLite](https://sqlite.org) `StorageEngineAdapter` implementation. This class provides
 /// an integration layer between the AppSyncLocal `StorageEngine` and SQLite for local storage.
-final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
+final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
+
     internal var connection: Connection!
 
-    public convenience init(databaseName: String = "database") throws {
+    convenience init(databaseName: String = "database") throws {
         guard let documentsPath = getDocumentPath() else {
             preconditionFailure("Could not create the database. The `.documentDirectory` is invalid")
         }
@@ -29,10 +31,14 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     internal init(connection: Connection) {
+        // Reinstate once we fix https://github.com/aws-amplify/amplify-ios/issues/161
+        // log.debug("Created database connection at \(connection)")
         self.connection = connection
     }
 
-    public func setUp(models: [Model.Type]) throws {
+    func setUp(models: [Model.Type]) throws {
+        log.debug("Setting up database connection at \(String(describing: connection))")
+
         let createTableStatements = models
             .sortByDependencyOrder()
             .map { CreateTableStatement(modelType: $0).stringValue }
@@ -54,7 +60,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
-    public func save<M: Model>(_ model: M, completion: DataStoreCallback<M>) {
+    func save<M: Model>(_ model: M, completion: DataStoreCallback<M>) {
         do {
             let modelType = type(of: model)
             let shouldUpdate = try exists(modelType, withId: model.id)
@@ -86,9 +92,9 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
-    public func delete<M: Model>(_ modelType: M.Type,
-                                 withId id: Model.Identifier,
-                                 completion: (DataStoreResult<Void>) -> Void) {
+    func delete(_ modelType: Model.Type,
+                withId id: Model.Identifier,
+                completion: (DataStoreResult<Void>) -> Void) {
         do {
             let statement = DeleteStatement(modelType: modelType, withId: id)
             _ = try connection.prepare(statement.stringValue).run(statement.variables)
@@ -99,9 +105,9 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     }
 
-    public func query<M: Model>(_ modelType: M.Type,
-                                predicate: QueryPredicate? = nil,
-                                completion: DataStoreCallback<[M]>) {
+    func query<M: Model>(_ modelType: M.Type,
+                         predicate: QueryPredicate? = nil,
+                         completion: DataStoreCallback<[M]>) {
         do {
             let statement = SelectStatement(from: modelType, predicate: predicate)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
@@ -112,7 +118,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
-    public func exists(_ modelType: Model.Type, withId id: Model.Identifier) throws -> Bool {
+    func exists(_ modelType: Model.Type, withId id: Model.Identifier) throws -> Bool {
         let schema = modelType.schema
         let primaryKey = schema.primaryKey.sqlName
         let sql = "select count(\(primaryKey)) from \(schema.name) where \(primaryKey) = ?"
@@ -139,3 +145,5 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 private func getDocumentPath() -> URL? {
     return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
 }
+
+extension SQLiteStorageEngineAdapter: DefaultLogger { }

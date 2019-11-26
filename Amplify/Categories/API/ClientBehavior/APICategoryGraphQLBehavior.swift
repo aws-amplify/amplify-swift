@@ -6,7 +6,7 @@
 //
 
 /// Behavior of the API category related to GraphQL operations
-public protocol APICategoryGraphQLBehavior {
+public protocol APICategoryGraphQLBehavior: class {
 
     /// Perform a GraphQL query for a single `Model` item. This operation will be asychronous, with the callback
     /// accessible both locally and via the Hub.
@@ -98,4 +98,17 @@ public protocol APICategoryGraphQLBehavior {
     func subscribe<R: Decodable>(request: GraphQLRequest<R>,
                                  listener: GraphQLSubscriptionOperation<R>.EventListener?)
         -> GraphQLSubscriptionOperation<R>
+
+    /// An internal method used by Plugins to perform initial subscriptions on registered model types to keep them in
+    /// sync with DataStore.
+    ///
+    /// - Parameters:
+    ///   - modelType: The type of the model to subscribe to, as the `Model` protocol rather than the concrete type
+    ///   - subscriptionType: The type of subscription (onCreate, onUpdate, onDelete) to subscribe to
+    /// - Returns: The AmplifyOperation being enqueued
+    func subscribe(toAnyModelType modelType: Model.Type,
+                   subscriptionType: GraphQLSubscriptionType,
+                   listener: GraphQLSubscriptionOperation<AnyModel>.EventListener?)
+    -> GraphQLSubscriptionOperation<AnyModel>
+
 }

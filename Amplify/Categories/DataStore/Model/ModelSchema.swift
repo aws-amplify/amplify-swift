@@ -99,12 +99,6 @@ public struct ModelSchema {
 
 }
 
-public extension ModelSchema {
-    var isSyncable: Bool {
-        attributes.contains(.isSyncable)
-    }
-}
-
 extension Dictionary where Key == String, Value == ModelField {
 
     /// Returns an array of the values sorted by some pre-defined rules:

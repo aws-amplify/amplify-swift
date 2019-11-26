@@ -57,11 +57,35 @@ extension Model {
         let modelType = type(of: self)
         let modelFields = fields ?? modelType.schema.sortedFields
         let values: [Binding?] = modelFields.map { field in
-            let value = self[field.name]
             // TODO why are `nil` optional number types not being skipped as expected?
-            if value == nil {
+
+            // self[field.name] subscript accessor returns an Any??, we need to do a few things:
+            // - `guard` to make sure the field name exists on the model
+            // - `guard` to ensure the returned value isn't nil
+            // - Attempt to cast to Persistable to ensure the model value isn't incorrectly assigned to a type we
+            //   can't handle
+            guard let existingFieldValue = self[field.name] else {
                 return nil
             }
+
+            guard let anyValue = existingFieldValue else {
+                return nil
+            }
+
+            // At this point, we have a value: Any. However, remember that Any could itself be an optional, so we're
+            // not quite done yet.
+            // swiftlint:disable syntactic_sugar
+            let value: Any
+            if case Optional<Any>.some(let unwrappedValue) = anyValue {
+                value = unwrappedValue
+            } else {
+                return nil
+            }
+            // swiftlint:enable syntactic_sugar
+
+            // Now `value` is still an Any, but we've assured ourselves that it's not an Optional, which means we can
+            // safely attempt a cast to Persistable below.
+
             // if value is an associated model, get its id
             if let value = value as? Model, field.isForeignKey {
                 let associatedModel: Model.Type = type(of: value)
@@ -76,6 +100,7 @@ extension Model {
 //                """)
             }
         }
+
         return values
     }
 

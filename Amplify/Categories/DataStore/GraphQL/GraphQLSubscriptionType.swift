@@ -11,3 +11,5 @@ public enum GraphQLSubscriptionType: String {
     case onDelete
     case onUpdate
 }
+
+extension GraphQLSubscriptionType: CaseIterable { }

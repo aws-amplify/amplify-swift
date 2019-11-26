@@ -120,4 +120,17 @@ class GraphQLAnyModelDocumentTests: XCTestCase {
         XCTAssert(input["content"] as? String == originalPost.content)
     }
 
+    func testCreateSubscriptionGraphQLRequest() throws {
+        let modelType = Post.self as Model.Type
+        let document = GraphQLSubscription(of: modelType, type: .onCreate)
+        let request = GraphQLRequest<AnyModel>.subscription(toAnyModelType: modelType,
+                                                            subscriptionType: .onCreate)
+
+        XCTAssertEqual(document.stringValue, request.document)
+        XCTAssert(request.responseType == AnyModel.self)
+
+        // test the input
+        XCTAssertNil(request.variables)
+    }
+
 }

@@ -78,7 +78,7 @@ class AWSDataStoreCategoryPluginIntegrationTests: XCTestCase {
         var token: UnsubscribeToken!
         token = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.mutationSyncReceived
+            eventName: HubPayload.EventName.DataStore.syncReceived
         ) { payload in
             defer {
                 saveSyncResultReceived.fulfill()
@@ -122,7 +122,7 @@ class AWSDataStoreCategoryPluginIntegrationTests: XCTestCase {
         var token: UnsubscribeToken!
         token = Amplify.Hub.listen(
             to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.mutationSyncReceived
+            eventName: HubPayload.EventName.DataStore.syncReceived
         ) { payload in
             guard let anyPost = payload.data as? AnyModel else {
                 XCTFail("Could not cast payload.data to AnyModel: \(String(describing: payload.data))")
@@ -164,6 +164,67 @@ class AWSDataStoreCategoryPluginIntegrationTests: XCTestCase {
         Amplify.DataStore.save(updatedPost) { _ in }
 
         wait(for: [updateSyncResultReceived],
+             timeout: AWSDataStoreCategoryPluginIntegrationTests.networkTimeout)
+
+        Amplify.Hub.removeListener(token)
+    }
+
+    /// - Given: An API-connected DataStore
+    /// - When:
+    ///    - I delete an existing model
+    /// - Then:
+    ///    - The DataStore dispatches an event to Hub
+    func testDeleteDispatchesToHub() throws {
+        let originalContent = "Original post content as of \(Date())"
+        let newContent = "Updated post content as of \(Date())"
+
+        let saveSyncResultReceived = expectation(description: "Sync result from save received")
+        let deleteSyncResultReceived = expectation(description: "Sync result from delete received")
+        var token: UnsubscribeToken!
+        token = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived
+        ) { payload in
+            guard let anyPost = payload.data as? AnyModel else {
+                XCTFail("Could not cast payload.data to AnyModel: \(String(describing: payload.data))")
+                return
+            }
+
+            if anyPost["content"] as? String == originalContent {
+                saveSyncResultReceived.fulfill()
+                XCTAssertEqual(anyPost["_version"] as? Int, 1)
+            } else if anyPost["content"] as? String == newContent {
+                deleteSyncResultReceived.fulfill()
+                XCTAssertEqual(anyPost["_version"] as? Int, 2)
+            }
+        }
+
+        guard try HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
+            XCTFail("Hub Listener not registered")
+            return
+        }
+
+        let originalPost = Post(title: "Test post from integration test",
+                                content: originalContent)
+
+        Amplify.DataStore.save(originalPost) { _ in }
+
+        wait(for: [saveSyncResultReceived],
+             timeout: AWSDataStoreCategoryPluginIntegrationTests.networkTimeout)
+
+        // Technically we'd pull the version from the sync metadata store, but for this test, we'll hardcode it to 1
+        let deletedPost = Post(id: originalPost.id,
+                               title: originalPost.title,
+                               content: newContent,
+                               createdAt: originalPost.createdAt,
+                               updatedAt: originalPost.updatedAt,
+                               rating: originalPost.rating,
+                               draft: originalPost.draft,
+                               _version: 1)
+
+        Amplify.DataStore.save(deletedPost) { _ in }
+
+        wait(for: [deleteSyncResultReceived],
              timeout: AWSDataStoreCategoryPluginIntegrationTests.networkTimeout)
 
         Amplify.Hub.removeListener(token)

@@ -34,21 +34,26 @@ class APICategoryDependencyTests: XCTestCase {
         wait(for: [modelSaved], timeout: 1.0)
     }
 
+    /// **NOTE:** We can't put in a meaningful test for this condition because the first call to the unconfigured API
+    /// category happens outside of the block being protected by `catchBadInstruction`. This test can be manually
+    /// run simply by uncommenting it.
+    ///
     /// - Given: An Amplify system configured with a DataStore but no API category
     /// - When:
     ///    - I invoke `save` on a syncable model
     /// - Then:
     ///    - Amplify crashes
-    func testSyncWithoutAPICategoryCrashes() throws {
-        try setUpWithoutAPI()
-
-        let model = MockSynced()
-
-        let exception: BadInstructionException? = catchBadInstruction {
-            Amplify.DataStore.save(model) { _ in }
-        }
-        XCTAssertNotNil(exception)
-    }
+//    func testSyncWithoutAPICategoryCrashes() throws {
+//
+//        try setUpWithoutAPI()
+//
+//        let model = MockSynced()
+//
+//        let exception: BadInstructionException? = catchBadInstruction {
+//            Amplify.DataStore.save(model) { _ in }
+//        }
+//        XCTAssertNotNil(exception)
+//    }
 
 }
 
@@ -63,7 +68,7 @@ extension APICategoryDependencyTests {
         let connection = try Connection(.inMemory)
         storageAdapter = SQLiteStorageEngineAdapter(connection: connection)
 
-        let syncEngineFactory: CloudSyncEngineBehavior.Factory? = { CloudSyncEngine(storageEngine: $0) }
+        let syncEngineFactory: CloudSyncEngineBehavior.Factory? = { CloudSyncEngine() }
         let storageEngine = StorageEngine(adapter: storageAdapter, syncEngineFactory: syncEngineFactory)
 
         let dataStorePublisher = DataStorePublisher()

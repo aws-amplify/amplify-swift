@@ -6,16 +6,60 @@
 //
 
 import XCTest
+import SQLite
+
+import Combine
 @testable import Amplify
 @testable import AmplifyTestCommon
-
-import AWSDataStoreCategoryPlugin
+@testable import AWSDataStoreCategoryPlugin
 
 /// Tests that DataStore invokes proper API methods to fulfill cloud sync
 class CloudSyncTests: XCTestCase {
 
+    /// Convenience property to get easy access to the mock API plugin
+    var apiPlugin: MockAPICategoryPlugin!
+
+    /// Configured in `setUp`, but not actually passed to `Amplify.configure` since we are asserting startup behavior
+    /// and so we need to wait to configure during the actual test.
+    var amplifyConfig: AmplifyConfiguration!
+
     override func setUp() {
+        super.setUp()
+
         Amplify.reset()
+        Amplify.Logging.logLevel = .verbose
+
+        apiPlugin = MockAPICategoryPlugin()
+
+        ModelRegistry.register(modelType: Post.self)
+
+        let storageAdapter: SQLiteStorageEngineAdapter
+        let storageEngine: StorageEngine
+        do {
+            let connection = try Connection(.inMemory)
+            let syncEngineFactory: CloudSyncEngineBehavior.Factory? = { CloudSyncEngine() }
+            storageAdapter = SQLiteStorageEngineAdapter(connection: connection)
+            storageEngine = StorageEngine(adapter: storageAdapter, syncEngineFactory: syncEngineFactory)
+        } catch {
+            XCTFail(String(describing: error))
+            return
+        }
+
+        let dataStorePublisher = DataStorePublisher()
+        let dataStorePlugin = AWSDataStoreCategoryPlugin(storageEngine: storageEngine,
+                                                         dataStorePublisher: dataStorePublisher)
+
+        let apiConfig = APICategoryConfiguration(plugins: [apiPlugin.key: true])
+        let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [dataStorePlugin.key: true])
+        amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: dataStoreConfig)
+
+        do {
+            try Amplify.add(plugin: apiPlugin)
+            try Amplify.add(plugin: dataStorePlugin)
+        } catch {
+            XCTFail(String(describing: error))
+            return
+        }
     }
 
     /// Tests that DataStore subscribes at startup. Test knows about the internals of the subscription--e.g., that
@@ -26,16 +70,82 @@ class CloudSyncTests: XCTestCase {
     ///    - Amplify starts up
     /// - Then:
     ///    - The DataStore category starts subscriptions for each model
-    func testDataStoreSubscribesAtStartup() {
+    func testDataStoreSubscribesAtStartup() throws {
+
+        // Expect 3 subscriptions (create, update, delete) for each registered syncable model
+        let createSubscriptionStarted = expectation(description: "Create subscription started")
+        let updateSubscriptionStarted = expectation(description: "Update subscription started")
+        let deleteSubscriptionStarted = expectation(description: "Delete subscription started")
+
+        apiPlugin.listeners.append { message in
+            switch message {
+            case "subscribe(toAnyModelType:Post,subscriptionType:onCreate,listener:)":
+                createSubscriptionStarted.fulfill()
+            case "subscribe(toAnyModelType:Post,subscriptionType:onUpdate,listener:)":
+                updateSubscriptionStarted.fulfill()
+            case "subscribe(toAnyModelType:Post,subscriptionType:onDelete,listener:)":
+                deleteSubscriptionStarted.fulfill()
+            default:
+                break
+            }
+        }
+
+        try Amplify.configure(amplifyConfig)
+
+        waitForExpectations(timeout: 1.0)
+    }
+
+    /// - Given: Amplify configured with an API
+    /// - When:
+    ///    - API receives an `onCreate` subscription to a model
+    /// - Then:
+    ///    - The listener is notified
+    func testOnCreateNotifiesListener() throws {
         XCTFail("Not yet implemented")
     }
 
-    /// - Given: A configured Amplify DataStore
+    /// - Given: Amplify configured with an API
     /// - When:
-    ///    - I invoke `DataStore.subscribe(to:)`
+    ///    - API receives an `onCreate` subscription to a model
     /// - Then:
-    ///    - I receive mutation events for that model
-    func testSimpleSubscribe() {
+    ///    - The listener is notified
+    func testOnCreateUpdatesLocalStore() throws {
+        XCTFail("Not yet implemented")
+    }
+
+    /// - Given: Amplify configured with an API
+    /// - When:
+    ///    - API receives an `onUpdate` subscription to a model
+    /// - Then:
+    ///    - The listener is notified
+    func testOnUpdateNotifiesListener() throws {
+        XCTFail("Not yet implemented")
+    }
+
+    /// - Given: Amplify configured with an API
+    /// - When:
+    ///    - API receives an `onUpdate` subscription to a model
+    /// - Then:
+    ///    - The listener is notified
+    func testOnUpdateUpdatesLocalStore() throws {
+        XCTFail("Not yet implemented")
+    }
+
+    /// - Given: Amplify configured with an API
+    /// - When:
+    ///    - API receives an `onDelete` subscription to a model
+    /// - Then:
+    ///    - The listener is notified
+    func testOnDeleteNotifiesListener() throws {
+        XCTFail("Not yet implemented")
+    }
+
+    /// - Given: Amplify configured with an API
+    /// - When:
+    ///    - API receives an `onDelete` subscription to a model
+    /// - Then:
+    ///    - The listener is notified
+    func testOnDeleteUpdatesLocalStore() throws {
         XCTFail("Not yet implemented")
     }
 

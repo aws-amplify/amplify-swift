@@ -35,6 +35,11 @@ public struct MutationEvent: Model {
                   mutationType: mutationType)
     }
 
+    public func decodeModel() throws -> Model {
+        let model = try ModelRegistry.decode(modelName: modelName, from: json)
+        return model
+    }
+
     /// Decodes the model instance from the mutation event.
     public func decodeModel<M: Model>(as modelType: M.Type) throws -> M {
         let model = try ModelRegistry.decode(modelName: modelName, from: json)
