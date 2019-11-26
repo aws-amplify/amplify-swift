@@ -18,7 +18,7 @@ class MockRekognitionBehavior: AWSRekognitionBehavior {
     var facesFromCollection: AWSRekognitionSearchFacesByImageResponse?
     var detectLabels: AWSRekognitionDetectLabelsResponse?
     var detectText: AWSRekognitionDetectTextResponse?
-    var error: PredictionsError?
+    var error: Error?
 
     func detectCelebs(request: AWSRekognitionRecognizeCelebritiesRequest)
         -> AWSTask<AWSRekognitionRecognizeCelebritiesResponse> {
@@ -95,7 +95,7 @@ class MockRekognitionBehavior: AWSRekognitionBehavior {
         error = nil
     }
 
-    public func setError(error: PredictionsError) {
+    public func setError(error: Error) {
         celebritiesResponse = nil
         facesResponse = nil
         moderationLabelsResponse = nil
@@ -104,4 +104,5 @@ class MockRekognitionBehavior: AWSRekognitionBehavior {
         detectLabels = nil
         self.error = error
     }
+
 }

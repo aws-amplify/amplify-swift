@@ -71,28 +71,26 @@ class PredictionsServiceRekognitionTests: XCTestCase {
 
     /// Test whether error is correctly propogated
     ///
-    /// - Given: Predictions service with translate behavior
+    /// - Given: Predictions service with rekogniton behavior
     /// - When:
     ///    - I invoke an invalid request
     /// - Then:
     ///    - I should get back a service error
     ///
-//    func testTranslateServiceWithError() {
-//
-//        let mockError = NSError(domain: AWSTranslateErrorDomain,
-//                                code: AWSTranslateErrorType.invalidRequest.rawValue,
-//                                userInfo: [:])
-//        mockTranslate.setError(error: mockError)
-//
-//        predictionsService.translateText(text: "",
-//                                         language: .english,
-//                                         targetLanguage: .italian) { event in
-//                                            switch event {
-//                                            case .completed(let result):
-//                                                XCTFail("Should not produce result: \(result)")
-//                                            case .failed(let error):
-//                                                XCTAssertNotNil(error, "Should produce an error")
-//                                            }
-//        }
-//    }
+    func testIdentifyLabelsServiceWithError() {
+        let mockError = NSError(domain: AWSRekognitionErrorDomain,
+                                code: AWSRekognitionErrorType.invalidImageFormat.rawValue,
+                                userInfo: [:])
+        mockRekognition.setError(error: mockError)
+        let url = URL(fileURLWithPath: "")
+
+        predictionsService.detectLabels(image: url, type: .labels) { event in
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+            }
+        }
+    }
 }
