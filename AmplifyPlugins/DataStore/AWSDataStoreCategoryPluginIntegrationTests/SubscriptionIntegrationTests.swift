@@ -101,11 +101,11 @@ class SubscriptionIntegrationTests: XCTestCase {
         // mutations
         DispatchQueue.global().asyncAfter(deadline: .now() + 5.0) {
             // Simulate another system by creating, updating, and deleting a model directly via the API
-            let newPost = Post(title: "Post title",
-                               content: "Post content")
-            _ = Amplify.API.mutate(of: newPost, type: .create) { event in
-                print("Created event received: \(event)")
-            }
+//            let newPost = Post(title: "Post title",
+//                               content: "Post content")
+//            _ = Amplify.API.mutate(of: newPost, type: .create) { event in
+//                print("Created event received: \(event)")
+//            }
 
 //            let updatedPost = Post(id: newPost.id,
 //                                   title: newPost.title,
