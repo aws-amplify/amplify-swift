@@ -60,11 +60,11 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
         query(modelType, where: predicate) {
             switch $0 {
             case .success(let models):
-                let count = models.count
-                if models.count > 1 {
-                    completion(.failure(.nonUniqueResult(model: modelType.modelName, count: count)))
-                } else {
+                switch models.count {
+                case 0, 1:
                     completion(.success(models.first))
+                default:
+                    completion(.failure(.nonUniqueResult(model: modelType.modelName, count: models.count)))
                 }
             case .failure(let error):
                 completion(.failure(causedBy: error))
@@ -106,11 +106,6 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
         storageEngine.delete(modelType,
                              withId: id,
                              completion: completion)
-    }
-
-    public func reset(onComplete: @escaping (() -> Void)) {
-        //        storageEngine.shutdown()
-        onComplete()
     }
 
 }

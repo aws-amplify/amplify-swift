@@ -69,4 +69,13 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
 
         storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled)
     }
+
+    public func reset(onComplete: @escaping (() -> Void)) {
+        // TODO: Shutdown storage engine
+        // - Cancelling in-process operations
+        // - Unsubscribe from syncable model mutations
+        // - ...?
+        onComplete()
+    }
+
 }

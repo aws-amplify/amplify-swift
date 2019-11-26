@@ -23,6 +23,11 @@ final class IncomingEventReconciliationQueues {
         for modelType in modelTypes {
             let modelName = modelType.modelName
             let queue = ReconciliationQueue(modelType: modelType, storageAdapter: storageAdapter, api: api)
+            guard reconciliationQueues[modelName] == nil else {
+                Amplify.DataStore.log
+                    .warn("Duplicate model name found: \(modelName), not subscribint to skipping \(modelType)")
+                continue
+            }
             reconciliationQueues[modelName] = queue
         }
     }
@@ -45,7 +50,7 @@ final class ReconciliationQueue {
 
     private let modelName: String
 
-    private let incomingSubscriptionEvents: IncomingSubscriptionEventPublisher
+    private let incomingSubscriptionEvents: IncomingMutationEventFacade
 
     private var allModels: AnyCancellable?
 
@@ -62,7 +67,7 @@ final class ReconciliationQueue {
         operationQueue.underlyingQueue = DispatchQueue.global()
         operationQueue.isSuspended = true
 
-        let incomingSubscriptionEvents = IncomingSubscriptionEventPublisher(modelType: modelType, api: api)
+        let incomingSubscriptionEvents = IncomingMutationEventFacade(modelType: modelType, api: api)
         self.incomingSubscriptionEvents = incomingSubscriptionEvents
 
         self.allModels = incomingSubscriptionEvents

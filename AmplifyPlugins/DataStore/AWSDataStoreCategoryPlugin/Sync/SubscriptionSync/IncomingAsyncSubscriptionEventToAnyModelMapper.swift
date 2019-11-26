@@ -10,7 +10,8 @@ import AWSPluginsCore
 import Combine
 
 /// Subscribes to an IncomingSubscriptionAsyncEventQueue, and publishes AnyModel
-final class AsyncSubscriptionEventToAnyModelMapper: Subscriber {
+// swiftlint:disable:next type_name
+final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
     typealias Input = IncomingAsyncSubscriptionEventPublisher.Event
     typealias Failure = DataStoreError
 
@@ -81,4 +82,4 @@ final class AsyncSubscriptionEventToAnyModelMapper: Subscriber {
     }
 }
 
-extension AsyncSubscriptionEventToAnyModelMapper: DefaultLogger { }
+extension IncomingAsyncSubscriptionEventToAnyModelMapper: DefaultLogger { }

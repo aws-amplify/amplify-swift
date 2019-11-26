@@ -11,10 +11,10 @@ import Combine
 
 /// Facade to hide the AsyncEventQueue/ModelMapper structures from the ReconciliationQueue. Provides a publisher for
 /// all incoming subscription types (onCreate, onUpdate, onDelete) for a single Model type.
-final class IncomingSubscriptionEventPublisher {
+final class IncomingMutationEventFacade {
 
     private let asyncEvents: IncomingAsyncSubscriptionEventPublisher
-    private let mapper: AsyncSubscriptionEventToAnyModelMapper
+    private let mapper: IncomingAsyncSubscriptionEventToAnyModelMapper
 
     var publisher: AnyPublisher<AnyModel, DataStoreError> {
         mapper.publisher
@@ -24,7 +24,7 @@ final class IncomingSubscriptionEventPublisher {
         self.asyncEvents = IncomingAsyncSubscriptionEventPublisher(modelType: modelType,
                                                         api: api)
 
-        let mapper = AsyncSubscriptionEventToAnyModelMapper()
+        let mapper = IncomingAsyncSubscriptionEventToAnyModelMapper()
         self.mapper = mapper
 
         asyncEvents.subscribe(subscriber: mapper)
