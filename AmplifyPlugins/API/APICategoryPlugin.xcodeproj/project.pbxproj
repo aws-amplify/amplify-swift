@@ -15,6 +15,9 @@
 		21409C7623850D1D000A53C9 /* BlogPostComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C7523850D1D000A53C9 /* BlogPostComment.swift */; };
 		21409C8123851524000A53C9 /* TestCommonConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C8023851524000A53C9 /* TestCommonConstants.swift */; };
 		21409C8323851796000A53C9 /* AuthHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C8223851796000A53C9 /* AuthHelper.swift */; };
+		2149E6322388C2A000873955 /* QueryPredicateGraphQLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E6312388C2A000873955 /* QueryPredicateGraphQLTests.swift */; };
+		2149E6342388C2BA00873955 /* QueryPredicate+GraphQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E6332388C2BA00873955 /* QueryPredicate+GraphQL.swift */; };
+		2149E697238C5F5000873955 /* DateFormatter+ISO8601.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E696238C5F5000873955 /* DateFormatter+ISO8601.swift */; };
 		217856632380C60400A30D19 /* GraphQLWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 217856622380C60400A30D19 /* GraphQLWithIAMIntegrationTests.swift */; };
 		217856652380C60400A30D19 /* AWSAPICategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSAPICategoryPlugin.framework */; };
 		217856742380C73600A30D19 /* AWSAPICategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSAPICategoryPlugin.framework */; };
@@ -264,6 +267,9 @@
 		21409C7523850D1D000A53C9 /* BlogPostComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlogPostComment.swift; sourceTree = "<group>"; };
 		21409C8023851524000A53C9 /* TestCommonConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestCommonConstants.swift; sourceTree = "<group>"; };
 		21409C8223851796000A53C9 /* AuthHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHelper.swift; sourceTree = "<group>"; };
+		2149E6312388C2A000873955 /* QueryPredicateGraphQLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryPredicateGraphQLTests.swift; sourceTree = "<group>"; };
+		2149E6332388C2BA00873955 /* QueryPredicate+GraphQL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QueryPredicate+GraphQL.swift"; sourceTree = "<group>"; };
+		2149E696238C5F5000873955 /* DateFormatter+ISO8601.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+ISO8601.swift"; sourceTree = "<group>"; };
 		217856602380C60400A30D19 /* GraphQLWithIAMIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GraphQLWithIAMIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		217856622380C60400A30D19 /* GraphQLWithIAMIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLWithIAMIntegrationTests.swift; sourceTree = "<group>"; };
 		217856642380C60400A30D19 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -787,6 +793,7 @@
 				21D7A0C0237B54D90057D00D /* AWSAppSyncRetryStrategy.swift */,
 				21D7A0BF237B54D90057D00D /* ConnectionProviderError.swift */,
 				21D7A0C4237B54D90057D00D /* SubscriptionItem.swift */,
+				2149E696238C5F5000873955 /* DateFormatter+ISO8601.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -913,10 +920,10 @@
 				B4DFA5DF237A611D0013E17B /* AWSAPICategoryPlugin+URLSessionDelegateTests.swift */,
 				B4DFA5CB237A611D0013E17B /* AWSAPICategoryPluginTestBase.swift */,
 				B4DFA5C6237A611D0013E17B /* Configuration */,
-				B9521838237E241D00F53237 /* GraphQL */,
 				B4DFA5DD237A611D0013E17B /* Info.plist */,
 				B4DFA5D9237A611D0013E17B /* Interceptor */,
 				B4DFA5BF237A611D0013E17B /* Mocks */,
+				B9521838237E241D00F53237 /* Model */,
 				B4DFA5C3237A611D0013E17B /* Operation */,
 				B4DFA5D6237A611D0013E17B /* Request */,
 				B4DFA5CE237A611D0013E17B /* Support */,
@@ -994,27 +1001,29 @@
 		B952181E237CE67A00F53237 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				FAC800182386FE0F0048AA88 /* AnyModel+JSONInit.swift */,
 				B9521821237D12EC00F53237 /* GraphQLDocument.swift */,
-				B9521829237DFD2E00F53237 /* GraphQLDocument+Mutation.swift */,
 				FA8EE788238636410097E4F1 /* GraphQLDocument+AnyModel.swift */,
+				B9521829237DFD2E00F53237 /* GraphQLDocument+Mutation.swift */,
 				B952182B237DFDA600F53237 /* GraphQLDocument+Query.swift */,
 				B9521827237DE96300F53237 /* GraphQLDocument+Subscription.swift */,
-				B9FB05E723821A7500DE1FD4 /* GraphQLRequest+Model.swift */,
 				FA8EE78A238639CE0097E4F1 /* GraphQLRequest+AnyModel.swift */,
+				B9FB05E723821A7500DE1FD4 /* GraphQLRequest+Model.swift */,
 				B952181F237CE69800F53237 /* Model+GraphQL.swift */,
-				FAC800182386FE0F0048AA88 /* AnyModel+JSONInit.swift */,
 				B9521825237DE74A00F53237 /* ModelSchema+GraphQL.swift */,
+				2149E6332388C2BA00873955 /* QueryPredicate+GraphQL.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
 		};
-		B9521838237E241D00F53237 /* GraphQL */ = {
+		B9521838237E241D00F53237 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				FA8EE786238634FB0097E4F1 /* GraphQLAnyModelDocumentTests.swift */,
 				B9521839237E251C00F53237 /* GraphQLDocumentTests.swift */,
+				2149E6312388C2A000873955 /* QueryPredicateGraphQLTests.swift */,
 			);
-			path = GraphQL;
+			path = Model;
 			sourceTree = "<group>";
 		};
 		B9988EB08EC62C1E57FB295B /* Pods */ = {
@@ -2019,9 +2028,11 @@
 				21D7A0F7237B54D90057D00D /* AppSyncSubscriptionConnection.swift in Sources */,
 				21D7A0F8237B54D90057D00D /* RetryableConnection.swift in Sources */,
 				21D7A0EE237B54D90057D00D /* StarscreamWebsocketProvider+ConnectionInterceptable.swift in Sources */,
+				2149E6342388C2BA00873955 /* QueryPredicate+GraphQL.swift in Sources */,
 				21D7A11E237B54D90057D00D /* CognitoUserPoolsAuthInterceptor.swift in Sources */,
 				21D7A0F6237B54D90057D00D /* SubscriptionConnection.swift in Sources */,
 				B952182C237DFDA600F53237 /* GraphQLDocument+Query.swift in Sources */,
+				2149E697238C5F5000873955 /* DateFormatter+ISO8601.swift in Sources */,
 				21D7A11B237B54D90057D00D /* IAMAuthInterceptor.swift in Sources */,
 				21D7A0F4237B54D90057D00D /* ConnectionProvider.swift in Sources */,
 				21D7A0F2237B54D90057D00D /* AppSyncConnectionProvider+EventHandler.swift in Sources */,
@@ -2072,6 +2083,7 @@
 				B4DFA5F2237A611D0013E17B /* RESTOperationRequestValidateTests.swift in Sources */,
 				B4DFA5E2237A611D0013E17B /* MockURLSession.swift in Sources */,
 				B4DFA5F5237A611D0013E17B /* APIKeyURLRequestInterceptorTests.swift in Sources */,
+				2149E6322388C2A000873955 /* QueryPredicateGraphQLTests.swift in Sources */,
 				B4DFA5EA237A611D0013E17B /* AWSAPICategoryPlugin+GraphQLBehaviorTests.swift in Sources */,
 				B4DFA5E5237A611D0013E17B /* AWSAPICategoryPluginConfigurationEndpointConfigTests.swift in Sources */,
 				B4DFA5F4237A611D0013E17B /* UserPoolRequestInterceptor.swift in Sources */,

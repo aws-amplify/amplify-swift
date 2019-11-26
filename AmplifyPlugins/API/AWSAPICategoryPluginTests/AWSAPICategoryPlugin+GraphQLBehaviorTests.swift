@@ -36,7 +36,10 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
     // MARK: Mutate API Tests
 
     func testMutate() {
-        let request = GraphQLRequest(apiName: apiName, document: testDocument, variables: nil, responseType: JSONValue.self)
+        let request = GraphQLRequest(apiName: apiName,
+                                     document: testDocument,
+                                     variables: nil,
+                                     responseType: JSONValue.self)
         let operation = apiPlugin.mutate(request: request, listener: nil)
 
         XCTAssertNotNil(operation)
@@ -58,7 +61,10 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
     // MARK: Subscribe API Tests
 
     func testSubscribe() {
-        let request = GraphQLRequest(document: testDocument, variables: nil, responseType: JSONValue.self)
+        let request = GraphQLRequest(apiName: apiName,
+                                     document: testDocument,
+                                     variables: nil,
+                                     responseType: JSONValue.self)
         let operation = apiPlugin.subscribe(request: request, listener: nil)
 
         XCTAssertNotNil(operation)

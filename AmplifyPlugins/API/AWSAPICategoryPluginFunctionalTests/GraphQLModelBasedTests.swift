@@ -7,7 +7,7 @@
 
 import XCTest
 import AWSMobileClient
-import AWSAPICategoryPlugin
+@testable import AWSAPICategoryPlugin
 @testable import Amplify
 import AmplifyTestCommon
 
@@ -191,14 +191,27 @@ class GraphQLModelBasedTests: XCTestCase {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let uniqueTitle = testMethodName + uuid + "Title"
-        guard createPost(id: uuid, title: uniqueTitle) != nil else {
+        let createdPost = Post(id: uuid,
+                               title: uniqueTitle,
+                               content: "content",
+                               rating: 12.3,
+                               draft: true,
+                               _version: 1)
+        guard createPost(post: createdPost) != nil else {
             XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
             return
         }
 
         let completeInvoked = expectation(description: "request completed")
         let post = Post.keys
-        let predicate = post.title == uniqueTitle
+        let predicate = post.id == uuid &&
+            post.title == uniqueTitle &&
+            post.content == "content" &&
+            post.createdAt == createdPost.createdAt &&
+            post.rating == 12.3 &&
+            post.draft == true &&
+            post._version == 1
+
         _ = Amplify.API.query(from: Post.self, where: predicate, listener: { event in
             switch event {
             case .completed(let graphQLResponse):
@@ -211,7 +224,13 @@ class GraphQLModelBasedTests: XCTestCase {
                     XCTFail("Should only have a single post with the unique title")
                     return
                 }
+                XCTAssertEqual(singlePost.id, uuid)
                 XCTAssertEqual(singlePost.title, uniqueTitle)
+                XCTAssertEqual(singlePost.content, "content")
+                XCTAssertEqual(singlePost.createdAt.iso8601, createdPost.createdAt.iso8601)
+                XCTAssertEqual(singlePost.rating, 12.3)
+                XCTAssertEqual(singlePost.draft, true)
+                XCTAssertEqual(singlePost._version, 1)
                 completeInvoked.fulfill()
             case .failed(let error):
                 XCTFail("Unexpected .failed event: \(error)")
@@ -493,10 +512,14 @@ class GraphQLModelBasedTests: XCTestCase {
     // MARK: Helpers
 
     func createPost(id: String, title: String) -> Post? {
+        let post = Post(id: id, title: title, content: "content")
+        return createPost(post: post)
+    }
+
+    func createPost(post: Post) -> Post? {
         var result: Post?
         let completeInvoked = expectation(description: "request completed")
 
-        let post = Post(id: id, title: title, content: "content")
         _ = Amplify.API.mutate(of: post, type: .create, listener: { event in
             switch event {
             case .completed(let data):
