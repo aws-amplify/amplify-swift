@@ -39,6 +39,13 @@ struct AWSTranslateErrorMessage {
         "The size of the text string exceeded the limit. The limit is the first 256 terms in a string of text.",
         "Please send a shorter text string.")
 
+    static let noTranslateTextResult: AWSTranslateErrorMessageString = (
+           "No result was found.",
+           """
+            Please make sure a text string was sent over and that the target language was different
+            from the language sent.
+            """)
+
     static let tooManyRequests: AWSTranslateErrorMessageString = (
         """
         Too many requests made, the limit of requests was exceeded.

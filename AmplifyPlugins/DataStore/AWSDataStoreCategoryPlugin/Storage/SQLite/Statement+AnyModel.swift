@@ -11,9 +11,12 @@ import SQLite
 extension Statement {
     public func convert(toUntypedModel modelType: Model.Type) throws -> [Model] {
         var models = [Model]()
+        var convertedCache: ConvertCache = [:]
 
         for row in self {
-            let modelValues = try mapEach(row: row, to: modelType)
+            let modelValues = try mapEach(row: row,
+                                          to: modelType,
+                                          cache: &convertedCache)
             let untypedModel = try convert(toAnyModel: modelType, modelDictionary: modelValues)
             models.append(untypedModel)
         }

@@ -68,8 +68,6 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
             return
         }
 
-        if #available(iOS 13.0, *) {
-            storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled)
-        }
+        storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled)
     }
 }

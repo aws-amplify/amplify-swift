@@ -31,4 +31,8 @@ struct CoreMLPluginErrorString {
         "Detect labels return with no result",
         "The input might not have enough data points to find labels")
 
+    static let detectEntitiesNoResult: PluginErrorString = (
+        "Detect entities returned with no result",
+        "The input might not have enough data points to find entities")
+
 }

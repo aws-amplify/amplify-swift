@@ -37,12 +37,14 @@ class GraphQLDocumentTests: XCTestCase {
         mutation CreatePost($input: CreatePostInput!) {
           createPost(input: $input) {
             id
+            _version
             content
             createdAt
             draft
             rating
             title
             updatedAt
+            __typename
           }
         }
         """
@@ -68,12 +70,14 @@ class GraphQLDocumentTests: XCTestCase {
         mutation UpdatePost($input: UpdatePostInput!) {
           updatePost(input: $input) {
             id
+            _version
             content
             createdAt
             draft
             rating
             title
             updatedAt
+            __typename
           }
         }
         """
@@ -99,12 +103,14 @@ class GraphQLDocumentTests: XCTestCase {
         mutation DeletePost($input: DeletePostInput!) {
           deletePost(input: $input) {
             id
+            _version
             content
             createdAt
             draft
             rating
             title
             updatedAt
+            __typename
           }
         }
         """
@@ -134,10 +140,11 @@ class GraphQLDocumentTests: XCTestCase {
     func testListGraphQLQueryFromSimpleModel() {
         let document = GraphQLQuery(from: Post.self, type: .list)
         let expected = """
-        query ListPosts($filter: ModelPostFilterInput) {
-          listPosts(filter: $filter) {
+        query ListPosts($filter: ModelPostFilterInput, $limit: Int, $nextToken: String) {
+          listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
             items {
               id
+              _version
               content
               createdAt
               draft
@@ -145,6 +152,7 @@ class GraphQLDocumentTests: XCTestCase {
               title
               updatedAt
             }
+            nextToken
           }
         }
         """
@@ -167,6 +175,7 @@ class GraphQLDocumentTests: XCTestCase {
         query GetPost($id: ID!) {
           getPost(id: $id) {
             id
+            _version
             content
             createdAt
             draft
@@ -194,6 +203,7 @@ class GraphQLDocumentTests: XCTestCase {
         subscription OnCreatePost {
           onCreatePost {
             id
+            _version
             content
             createdAt
             draft
@@ -219,6 +229,7 @@ class GraphQLDocumentTests: XCTestCase {
         subscription OnUpdatePost {
           onUpdatePost {
             id
+            _version
             content
             createdAt
             draft
@@ -244,6 +255,7 @@ class GraphQLDocumentTests: XCTestCase {
         subscription OnDeletePost {
           onDeletePost {
             id
+            _version
             content
             createdAt
             draft
@@ -285,4 +297,19 @@ class GraphQLDocumentTests: XCTestCase {
         XCTAssert(input["content"] as? String == post.content)
     }
 
+    func testListQueryGraphQLRequest() {
+        let post = Post.keys
+        let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
+        let request = GraphQLRequest<Post>.query(from: Post.self, where: predicate)
+        XCTAssert(request.responseType == [Post].self)
+        XCTAssertNotNil(request.variables)
+        guard let variables = request.variables else {
+            XCTFail("Missing variables")
+            return
+        }
+
+        XCTAssertNotNil(variables["limit"])
+        XCTAssertEqual(variables["limit"] as? Int, 1_000)
+        XCTAssertNotNil(variables["filter"])
+    }
 }

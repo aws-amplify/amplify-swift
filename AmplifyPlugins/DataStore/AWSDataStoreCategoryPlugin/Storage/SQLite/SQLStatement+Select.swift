@@ -36,26 +36,28 @@ struct SelectStatement: SQLStatement {
             return field.columnName(forNamespace: "root") + " " + field.columnAlias()
         }
 
-        // eager load many-to-one relationships (simple inner join)
+        // eager load many-to-one/one-to-one relationships
         var joinStatements: [String] = []
         for foreignKey in schema.foreignKeys {
-            let connectedModelType = foreignKey.requiredConnectedModel
-            let connectedSchema = connectedModelType.schema
-            let connectedTableName = connectedModelType.schema.name
+            let associatedModelType = foreignKey.requiredAssociatedModel
+            let associatedSchema = associatedModelType.schema
+            let associatedTableName = associatedModelType.schema.name
 
             // columns
             let alias = foreignKey.name
-            let connectedColumn = connectedSchema.primaryKey.columnName(forNamespace: alias)
+            let associatedColumn = associatedSchema.primaryKey.columnName(forNamespace: alias)
             let foreignKeyName = foreignKey.columnName(forNamespace: "root")
 
             // append columns from relationships
-            columns += connectedSchema.columns.map { field -> String in
+            columns += associatedSchema.columns.map { field -> String in
                 return field.columnName(forNamespace: alias) + " " + field.columnAlias(forNamespace: alias)
             }
 
+            let joinType = foreignKey.isRequired ? "inner" : "left outer"
+
             joinStatements.append("""
-            inner join \(connectedTableName) as \(alias)
-              on \(connectedColumn) = \(foreignKeyName)
+            \(joinType) join \(associatedTableName) as \(alias)
+              on \(associatedColumn) = \(foreignKeyName)
             """)
         }
 

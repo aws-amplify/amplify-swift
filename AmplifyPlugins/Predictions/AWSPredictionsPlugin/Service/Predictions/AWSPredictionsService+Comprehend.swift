@@ -255,7 +255,7 @@ extension Array where Element: AWSComprehendDominantLanguage {
             guard let item2Score = item2.score else {
                 return true
             }
-            return item1Score.doubleValue > item2Score.doubleValue
+            return item1Score.doubleValue < item2Score.doubleValue
         }
     }
 }

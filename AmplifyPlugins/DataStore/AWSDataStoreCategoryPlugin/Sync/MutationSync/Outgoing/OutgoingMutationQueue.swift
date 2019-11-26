@@ -160,9 +160,9 @@ final class OutgoingMutationQueue {
 
         storageAdapter.query(MutationEvent.self, predicate: nil) { result in
             switch result {
-            case .error(let dataStoreError):
+            case .failure(let dataStoreError):
                 self.stateMachine.notify(action: .errored(dataStoreError))
-            case .result(let mutationEvents):
+            case .success(let mutationEvents):
                 self.stateMachine.notify(action: .loadedSavedMutations(mutationEvents))
             }
         }
@@ -207,10 +207,10 @@ final class OutgoingMutationQueue {
 
         storageAdapter.save(mutationEvent) {
             switch $0 {
-            case .error(let dataStoreError):
+            case .failure(let dataStoreError):
                 completionPromise(.failure(dataStoreError))
                 self.stateMachine.notify(action: .errored(dataStoreError))
-            case .result(let savedMutationEvent):
+            case .success(let savedMutationEvent):
                 completionPromise(.success(savedMutationEvent))
                 self.stateMachine.notify(action: .saved(savedMutationEvent))
             }

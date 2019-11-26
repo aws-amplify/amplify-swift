@@ -216,12 +216,12 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
                 XCTFail("Unexpected .completed event: \(result)")
             case .failed(let error):
                 print(error)
-                guard case let .httpStatusError(_, _, httpURLResponse, _) = error else {
+                guard case let .httpStatusError(statusCode, _) = error else {
                     XCTFail("Should be HttpStatusError")
                     return
                 }
 
-                XCTAssertEqual(httpURLResponse.statusCode, 401)
+                XCTAssertEqual(statusCode, 401)
                 failedInvoked.fulfill()
             default:
                 XCTFail("Unexpected event: \(event)")

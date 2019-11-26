@@ -13,17 +13,17 @@ import Foundation
 public struct Post: Model {
 
     public let id: String
-    public let title: String
-    public let content: String
-    public let createdAt: Date
-    public let updatedAt: Date?
-    public let rating: Double?
-    public let draft: Bool?
-    public let comments: [Comment]?
+    public var title: String
+    public var content: String
+    public var createdAt: Date
+    public var updatedAt: Date?
+    public var rating: Double?
+    public var draft: Bool?
+    public var comments: List<Comment>
 
     // TODO: Remove these once we get sync metadata wired up
-    public let _version: Int?
-    public let _deleted: Bool?
+    public var _version: Int?
+    public var _deleted: Bool?
 
     public init(id: String = UUID().uuidString,
                 title: String,
@@ -34,7 +34,7 @@ public struct Post: Model {
                 draft: Bool? = nil,
                 _version: Int? = nil,
                 _deleted: Bool? = nil,
-                comments: [Comment] = []) {
+                comments: List<Comment> = []) {
         self.id = id
         self.title = title
         self.content = content

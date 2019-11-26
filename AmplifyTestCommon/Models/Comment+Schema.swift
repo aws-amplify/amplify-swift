@@ -31,7 +31,7 @@ extension Comment {
             .id(),
             .field(comment.content, is: .required, ofType: .string),
             .field(comment.createdAt, is: .required, ofType: .dateTime),
-            .connected(comment.post, .manyToOne(Post.self), is: .required, withName: "PostComments")
+            .belongsTo(comment.post, ofType: Post.self)
         )
     }
 

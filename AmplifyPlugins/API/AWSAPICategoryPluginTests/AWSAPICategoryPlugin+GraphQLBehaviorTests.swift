@@ -64,7 +64,10 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
     // MARK: Subscribe API Tests
 
     func testSubscribe() {
-        let request = GraphQLRequest(document: testDocument, variables: nil, responseType: JSONValue.self)
+        let request = GraphQLRequest(apiName: apiName,
+                                     document: testDocument,
+                                     variables: nil,
+                                     responseType: JSONValue.self)
         let operation = apiPlugin.subscribe(request: request, listener: nil)
 
         XCTAssertNotNil(operation)

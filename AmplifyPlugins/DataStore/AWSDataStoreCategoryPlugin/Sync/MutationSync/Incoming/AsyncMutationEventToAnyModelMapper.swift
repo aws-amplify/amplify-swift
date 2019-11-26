@@ -67,12 +67,15 @@ final class AsyncMutationEventToAnyModelMapper: Subscriber {
         switch graphQLResponse {
         case .success(let anyModel):
             modelsFromMutation.send(anyModel)
-        case .error(let graphQLErrors):
-            log.error("Received graphql errors: \(graphQLErrors)")
-        case .partial(_, let graphQLErrors):
-            log.error("Received partial response with graphql errors: \(graphQLErrors)")
-        case .transformationError(let rawResponse, let apiError):
-            log.error("Unable to transform raw response into AnyModel: \(apiError)\nRaw response:\n\(rawResponse)")
+        case .failure(let failure):
+            switch failure {
+            case .error(let graphQLErrors):
+                log.error("Received graphql errors: \(graphQLErrors)")
+            case .partial(_, let graphQLErrors):
+                log.error("Received partial response with graphql errors: \(graphQLErrors)")
+            case .transformationError(let rawResponse, let apiError):
+                log.error("Unable to transform raw response into AnyModel: \(apiError)\nRaw response:\n\(rawResponse)")
+            }
         }
     }
 }

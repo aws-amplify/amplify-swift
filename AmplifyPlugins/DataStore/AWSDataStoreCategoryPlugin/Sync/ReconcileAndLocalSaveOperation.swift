@@ -160,10 +160,10 @@ class ReconcileAndLocalSaveOperation: Operation {
         storageAdapter.query(untypedModel: modelType, predicate: predicate()) { queryResult in
             let models: [LocalModel]
             switch queryResult {
-            case .error(let dataStoreError):
+            case .failure(let dataStoreError):
                 self.stateMachine.notify(action: .errored(dataStoreError))
                 return
-            case .result(let result):
+            case .success(let result):
                 models = result
             }
 
@@ -174,7 +174,7 @@ class ReconcileAndLocalSaveOperation: Operation {
             }
 
             guard models.count == 1 else {
-                let dataStoreError = DataStoreError.nonUniqueResult(model: cloudModel.modelName)
+                let dataStoreError = DataStoreError.nonUniqueResult(model: cloudModel.modelName, count: models.count)
                 let errorAction = Action.errored(dataStoreError)
                 self.stateMachine.notify(action: errorAction)
                 return
@@ -245,10 +245,10 @@ class ReconcileAndLocalSaveOperation: Operation {
         storageAdapter.save(untypedModel: cloudModel) { response in
             self.log.verbose("\(#function) - response: \(response)")
             switch response {
-            case .error(let dataStoreError):
+            case .failure(let dataStoreError):
                 let errorAction = Action.errored(dataStoreError)
                 self.stateMachine.notify(action: errorAction)
-            case .result(let savedModel):
+            case .success(let savedModel):
                 self.stateMachine.notify(action: .saved(savedModel))
             }
         }

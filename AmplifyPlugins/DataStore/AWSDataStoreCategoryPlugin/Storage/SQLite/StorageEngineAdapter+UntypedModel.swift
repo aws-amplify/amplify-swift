@@ -29,7 +29,7 @@ extension SQLiteStorageEngineAdapter {
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
 
-            completion(.result(untypedModel))
+            completion(.success(untypedModel))
         } catch {
             completion(.failure(causedBy: error))
         }
@@ -42,7 +42,7 @@ extension SQLiteStorageEngineAdapter {
             let statement = SelectStatement(from: modelType, predicate: predicate)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
             let result: [Model] = try rows.convert(toUntypedModel: modelType)
-            completion(.result(result))
+            completion(.success(result))
         } catch {
             completion(.failure(causedBy: error))
         }

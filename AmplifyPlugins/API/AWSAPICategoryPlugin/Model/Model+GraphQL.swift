@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
 import Foundation
+import Amplify
 
 typealias GraphQLInput = [String: Any?]
 

@@ -48,7 +48,7 @@ final class StorageEngine: StorageEngineBehavior {
             modelExists = try adapter.exists(M.self, withId: model.id)
         } catch {
             let dataStoreError = DataStoreError.invalidOperation(causedBy: error)
-            completion(.error(dataStoreError))
+            completion(.failure(dataStoreError))
             return
         }
 
@@ -60,7 +60,7 @@ final class StorageEngine: StorageEngineBehavior {
                 return
             }
 
-            guard case .result(let savedModel) = result else {
+            guard case .success(let savedModel) = result else {
                 completion(result)
                 return
             }
@@ -82,10 +82,10 @@ final class StorageEngine: StorageEngineBehavior {
                             }
 
                     }, receiveValue: { _ in
-                        completion(.result(savedModel))
+                        completion(.success(savedModel))
                     })
             } catch let dataStoreError as DataStoreError {
-                completion(.error(dataStoreError))
+                completion(.failure(dataStoreError))
             } catch {
                 let dataStoreError = DataStoreError.decodingError(
                     "Could not create MutationEvent from model",
@@ -94,7 +94,7 @@ final class StorageEngine: StorageEngineBehavior {
 
                     \(savedModel)
                     """)
-                completion(.error(dataStoreError))
+                completion(.failure(dataStoreError))
             }
         }
 
