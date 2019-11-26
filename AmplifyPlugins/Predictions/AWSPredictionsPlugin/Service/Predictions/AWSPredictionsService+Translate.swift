@@ -17,14 +17,14 @@ extension AWSPredictionsService: AWSTranslateServiceBehavior {
 
         guard let sourceLanguage = language ?? predictionsConfig.convert.translateText?.sourceLanguage else {
             onEvent(.failed(.configuration(AWSTranslateErrorMessage.sourceLanguageNotProvided.errorDescription,
-                                          AWSTranslateErrorMessage.sourceLanguageNotProvided.errorDescription,
-                                          nil)))
+                                           AWSTranslateErrorMessage.sourceLanguageNotProvided.errorDescription,
+                                           nil)))
             return
         }
         guard let finalTargetLanguage = targetLanguage ?? predictionsConfig.convert.translateText?.targetLanguage else {
             onEvent(.failed(.configuration(AWSTranslateErrorMessage.sourceLanguageNotProvided.errorDescription,
-            AWSTranslateErrorMessage.sourceLanguageNotProvided.errorDescription,
-            nil)))
+                                           AWSTranslateErrorMessage.sourceLanguageNotProvided.errorDescription,
+                                           nil)))
             return
         }
 
@@ -40,7 +40,7 @@ extension AWSPredictionsService: AWSTranslateServiceBehavior {
                 let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                 onEvent(.failed(
                     .network(predictionsErrorString.errorDescription,
-                                  predictionsErrorString.recoverySuggestion)))
+                             predictionsErrorString.recoverySuggestion)))
                 return nil
             }
 
@@ -50,17 +50,18 @@ extension AWSPredictionsService: AWSTranslateServiceBehavior {
             }
 
             guard let translatedText = result.translatedText else {
+                let noResult = AWSTranslateErrorMessage.noTranslateTextResult
                 onEvent(.failed(
-                    .network("No result was found.",
-                             """
-                            Please make sure a text string was sent over and that the target language was different from the language sent.
-                            """)))
+                    .network(noResult.errorDescription, noResult.recoverySuggestion)
+                    )
+                )
                 return nil
             }
 
+            let targetLanguage = LanguageType(rawValue: result.targetLanguageCode ?? "")
             let translateTextResult = TranslateTextResult(
                 text: translatedText,
-                targetLanguage: .italian)
+                targetLanguage: targetLanguage ?? finalTargetLanguage)
 
             onEvent(.completed(translateTextResult))
             return nil

@@ -130,12 +130,119 @@ extension NLLanguage {
 
     func getLanguageType() -> LanguageType {
         switch self {
+        case .amharic:
+            return .amharic
+        case .arabic:
+            return .arabic
+        case .armenian:
+            return .armenian
+        case .bengali:
+            return .bangla
+        case .bulgarian:
+            return .bulgarian
+        case .burmese:
+            return .burmese
+        case .catalan:
+            return .catalan
+        case .cherokee:
+            return .cherokee
+        case .croatian:
+            return .croatian
+        case .czech:
+            return .czech
+        case .danish:
+            return .danish
+        case .dutch:
+            return .dutch
         case .english:
             return .english
+        case .finnish:
+            return .finnish
+        case .french:
+            return .french
+        case .georgian:
+            return .georgian
+        case .german:
+            return .german
+        case .greek:
+            return .greek
+        case .gujarati:
+            return .gujarati
+        case .hebrew:
+            return .hebrew
+        case .hindi:
+            return .hindi
+        case .hungarian:
+            return .hungarian
+        case .icelandic:
+            return .icelandic
+        case .indonesian:
+            return .indonesian
         case .italian:
             return .italian
+        case .japanese:
+            return .japanese
+        case .kannada:
+            return .kannada
+        case .khmer:
+            return .khmer
+        case .korean:
+            return .korean
+        case .lao:
+            return .lao
+        case .malay:
+            return .malay
+        case .malayalam:
+            return .malayalam
+        case .marathi:
+            return .marathi
+        case .mongolian:
+            return .mongolian
+        case .norwegian:
+            return .norwegian
+        case .oriya:
+            return .odia
+        case .persian:
+            return .persian
+        case .polish:
+            return .polish
+        case .portuguese:
+            return .portuguese
+        case .punjabi:
+            return .punjabi
+        case .romanian:
+            return .romanian
+        case .russian:
+            return .russian
+        case .simplifiedChinese:
+            return .chinese
+        case .sinhalese:
+            return .sinhala
+        case .slovak:
+            return .slovak
+        case .spanish:
+            return .spanish
+        case .swedish:
+            return .swedish
+        case .tamil:
+            return .tamil
+        case .telugu:
+            return .telugu
+        case .thai:
+            return .thai
+        case .tibetan:
+            return .tibetan
+        case .traditionalChinese:
+            return .chinese
+        case .turkish:
+            return .turkish
+        case .ukrainian:
+            return .ukrainian
+        case .urdu:
+            return .urdu
+        case .vietnamese:
+            return .vietnamese
         default:
-            // TODO: Add other entities
             return .undetermined
         }
     }

@@ -1,18 +1,33 @@
 //
-// Copyright 2018-2019 Amazon.com,
+// Copyright 2018-2019 Amazon.com
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
 //
 
 public struct Landmark {
-    public let type: String
-    public let xPosition: Double
-    public let yPosition: Double
+    public let type: LandmarkType
+    public let points: [CGPoint]
 
-    public init(type: String, xPosition: Double, yPosition: Double) {
+    public init(type: LandmarkType, points:[CGPoint]) {
         self.type = type
-        self.xPosition = xPosition
-        self.yPosition = yPosition
+        self.points = points
     }
+}
+
+public enum LandmarkType {
+
+    case allPoints
+    case leftEye
+    case rightEye
+    case leftEyebrow
+    case rightEyebrow
+    case nose
+    case noseCrest
+    case medianLine
+    case outerLips
+    case innerLips
+    case leftPupil
+    case rightPupil
+    case faceContour
 }

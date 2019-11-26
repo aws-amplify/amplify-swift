@@ -38,7 +38,7 @@ PredictionsError>, PredictionsIdentifyOperation {
             return
         }
         switch request.identifyType {
-        case .detectCelebrity, .detectEntities:
+        case .detectCelebrity:
             let errorDescription = CoreMLPluginErrorString.operationNotSupported.errorDescription
             let recovery = CoreMLPluginErrorString.operationNotSupported.recoverySuggestion
             let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
@@ -63,8 +63,18 @@ PredictionsError>, PredictionsIdentifyOperation {
                 }
                 dispatch(event: .completed(result))
                 finish()
-
             }
+        case .detectEntities:
+            guard let result = coreMLVisionAdapter.detectEntities(request.image) else {
+                let errorDescription = CoreMLPluginErrorString.detectEntitiesNoResult.errorDescription
+                let recovery = CoreMLPluginErrorString.detectEntitiesNoResult.recoverySuggestion
+                let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
+                dispatch(event: .failed(predictionsError))
+                finish()
+                return
+            }
+            dispatch(event: .completed(result))
+            finish()
         case .detectLabels(let labelType):
             if labelType == .moderation { //coreml does not have an endpoint to detect moderation labels in images
                 let errorDescription = CoreMLPluginErrorString.operationNotSupported.errorDescription
