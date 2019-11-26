@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.homepage     = 'http://aws.amazon.com/mobile/sdk'
   s.license      = 'Apache License, Version 2.0'
   s.author       = { 'Amazon Web Services' => 'amazonwebservices' }
-  s.platform     = :ios, '11.0'
+  s.platform     = :ios, '13.0'
   s.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => s.version}
   
   s.requires_arc = true 
@@ -35,6 +35,7 @@ Pod::Spec.new do |s|
     ss.source_files = 'AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin/**/*.swift'
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'SQLite.swift', '~> 0.12.0'
+    ss.dependency 'ReachabilitySwift', '~> 5.0.0'
   end
 
   s.subspec 'AWSPinpointAnalyticsPlugin' do |ss|

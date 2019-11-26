@@ -59,8 +59,6 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             let modelType = type(of: model)
             let shouldUpdate = try exists(modelType, withId: model.id)
 
-            // TODO serialize result and create a new instance of the model
-            // (some columns might be auto-generated after DB insert/update)
             if shouldUpdate {
                 let statement = UpdateStatement(model: model)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
@@ -69,7 +67,20 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
 
-            completion(.result(model))
+            // load the recent saved instance and pass it back to the callback
+            query(modelType, predicate: field("id").eq(model.id)) {
+                switch $0 {
+                case .success(let result):
+                    if let saved = result.first {
+                        completion(.success(saved))
+                    } else {
+                        completion(.failure(.nonUniqueResult(model: modelType.modelName,
+                                                             count: result.count)))
+                    }
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
         } catch {
             completion(.failure(causedBy: error))
         }
@@ -95,7 +106,7 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             let statement = SelectStatement(from: modelType, predicate: predicate)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
             let result: [M] = try rows.convert(to: modelType)
-            completion(.result(result))
+            completion(.success(result))
         } catch {
             completion(.failure(causedBy: error))
         }
@@ -107,10 +118,14 @@ final public class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         let sql = "select count(\(primaryKey)) from \(schema.name) where \(primaryKey) = ?"
 
         let result = try connection.scalar(sql, [id])
-        guard let count = result as? Int64, count <= 1 else {
-            throw DataStoreError.nonUniqueResult(model: schema.name)
+        if let count = result as? Int64 {
+            if count > 1 {
+                throw DataStoreError.nonUniqueResult(model: modelType.modelName,
+                                                     count: Int(count))
+            }
+            return count == 1
         }
-        return count == 1
+        return false
     }
 
 }

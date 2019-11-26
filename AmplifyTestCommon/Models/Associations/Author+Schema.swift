@@ -8,14 +8,12 @@
 import Amplify
 import Foundation
 
-extension Comment {
+extension Author {
 
     // MARK: - CodingKeys
     public enum CodingKeys: String, ModelKey {
         case id
-        case content
-        case createdAt
-        case post
+        case books
     }
 
     public static let keys = CodingKeys.self
@@ -23,15 +21,13 @@ extension Comment {
     // MARK: - ModelSchema
 
     public static let schema = defineSchema { model in
-        let comment = Comment.keys
-
-        model.attributes(.isSyncable)
+        let author = Author.keys
 
         model.fields(
             .id(),
-            .field(comment.content, is: .required, ofType: .string),
-            .field(comment.createdAt, is: .required, ofType: .dateTime),
-            .belongsTo(comment.post, ofType: Post.self)
+            .hasMany(author.books,
+                     ofType: BookAuthor.self,
+                     associatedWith: BookAuthor.keys.book)
         )
     }
 
