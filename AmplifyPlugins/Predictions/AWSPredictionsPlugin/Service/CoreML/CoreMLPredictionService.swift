@@ -13,9 +13,9 @@ class CoreMLPredictionService: CoreMLPredictionBehavior {
 
     let coreMLPlugin: CoreMLPredictionsPlugin
 
-    init(config: Any) throws {
+    init(configuration: Any) throws {
         self.coreMLPlugin = CoreMLPredictionsPlugin()
-        try coreMLPlugin.configure(using: config)
+        try coreMLPlugin.configure(using: configuration)
     }
 
     func comprehend(text: String, onEvent: @escaping InterpretTextEventHandler) {

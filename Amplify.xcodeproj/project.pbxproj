@@ -107,6 +107,8 @@
 		95DAAB8A237F13B70028544F /* TextToSpeechResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB88237F13B70028544F /* TextToSpeechResult.swift */; };
 		95DAAB8C237F13D10028544F /* PredictionsTextToSpeechRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB8B237F13D10028544F /* PredictionsTextToSpeechRequest.swift */; };
 		AF95761CAC264EAE03B38BC4 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 300CDCA649D7C981322CF480 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework */; };
+		B4083DCB238DA1AC00D42CAC /* ServiceConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4083DC9238DA12800D42CAC /* ServiceConfigurationTests.swift */; };
+		B4083DCC238DA23000D42CAC /* ServiceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4083DC5238D9CEB00D42CAC /* ServiceConfiguration.swift */; };
 		B4340A24238325B900101BBA /* DefaultNetworkPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4340A23238325B900101BBA /* DefaultNetworkPolicy.swift */; };
 		B4BD6B3323708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BD6B3223708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift */; };
 		B4BD6B3523708C1200A1F0A7 /* PredictionsCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BD6B3423708C1200A1F0A7 /* PredictionsCategoryConfigurationTests.swift */; };
@@ -354,13 +356,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = FA131AA92360FE070008381C;
 			remoteInfo = AWSPluginsCore;
-		};
-		FA131AB62360FE070008381C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FAC234C92279F8DA00424678 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 2125E2502319EC3000B3DEB5;
-			remoteInfo = AmplifyTestApp;
 		};
 		FA131ACD2360FEBB0008381C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -653,6 +648,8 @@
 		AB74666B4E8B096CB3305EAE /* Pods-AmplifyAppExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAppExample.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAppExample/Pods-AmplifyAppExample.release.xcconfig"; sourceTree = "<group>"; };
 		AE1BE989582A3F5BB378AF15 /* Pods-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPlugin/Pods-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		B2CF34EB93BFDE1F02457D5E /* Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
+		B4083DC5238D9CEB00D42CAC /* ServiceConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceConfiguration.swift; sourceTree = "<group>"; };
+		B4083DC9238DA12800D42CAC /* ServiceConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceConfigurationTests.swift; sourceTree = "<group>"; };
 		B4340A23238325B900101BBA /* DefaultNetworkPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultNetworkPolicy.swift; sourceTree = "<group>"; };
 		B4BD6B3223708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsCategoryClientAPITests.swift; sourceTree = "<group>"; };
 		B4BD6B3423708C1200A1F0A7 /* PredictionsCategoryConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsCategoryConfigurationTests.swift; sourceTree = "<group>"; };
@@ -1329,6 +1326,22 @@
 			path = Amplify/Categories/Predictions/Result;
 			sourceTree = SOURCE_ROOT;
 		};
+		B4083DC4238D9CD700D42CAC /* ServiceConfiguration */ = {
+			isa = PBXGroup;
+			children = (
+				B4083DC5238D9CEB00D42CAC /* ServiceConfiguration.swift */,
+			);
+			path = ServiceConfiguration;
+			sourceTree = "<group>";
+		};
+		B4083DC8238DA11800D42CAC /* ServiceConfigurationTests */ = {
+			isa = PBXGroup;
+			children = (
+				B4083DC9238DA12800D42CAC /* ServiceConfigurationTests.swift */,
+			);
+			path = ServiceConfigurationTests;
+			sourceTree = "<group>";
+		};
 		B4D38515236C97350014653D /* Predictions */ = {
 			isa = PBXGroup;
 			children = (
@@ -1611,6 +1624,7 @@
 		FA131AAB2360FE070008381C /* AWSPluginsCore */ = {
 			isa = PBXGroup;
 			children = (
+				B4083DC4238D9CD700D42CAC /* ServiceConfiguration */,
 				FA131ACB2360FE470008381C /* Auth */,
 				FA131AAC2360FE070008381C /* AWSPluginsCore.h */,
 				FA131AAD2360FE070008381C /* Info.plist */,
@@ -1621,6 +1635,7 @@
 		FA131AB82360FE070008381C /* AWSPluginsCoreTests */ = {
 			isa = PBXGroup;
 			children = (
+				B4083DC8238DA11800D42CAC /* ServiceConfigurationTests */,
 				FA131AB92360FE070008381C /* AWSPluginsCoreTests.swift */,
 				FA131ABB2360FE070008381C /* Info.plist */,
 			);
@@ -2310,7 +2325,6 @@
 			);
 			dependencies = (
 				FA131AB52360FE070008381C /* PBXTargetDependency */,
-				FA131AB72360FE070008381C /* PBXTargetDependency */,
 			);
 			name = AWSPluginsCoreTests;
 			productName = AWSPluginsCoreTests;
@@ -2448,7 +2462,6 @@
 					};
 					FA131AB12360FE070008381C = {
 						CreatedOnToolsVersion = 11.1;
-						TestTargetID = 2125E2502319EC3000B3DEB5;
 					};
 					FAB2C9992384B108008EE879 = {
 						CreatedOnToolsVersion = 11.1;
@@ -3085,6 +3098,7 @@
 				21420A99237222A900FA140C /* APIKeyProvider.swift in Sources */,
 				21420A90237222A900FA140C /* APIKeyConfiguration.swift in Sources */,
 				21420A9C237222A900FA140C /* AWSAuthService.swift in Sources */,
+				B4083DCC238DA23000D42CAC /* ServiceConfiguration.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3092,6 +3106,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4083DCB238DA1AC00D42CAC /* ServiceConfigurationTests.swift in Sources */,
 				FA131ABA2360FE070008381C /* AWSPluginsCoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3434,11 +3449,6 @@
 			target = FA131AA92360FE070008381C /* AWSPluginsCore */;
 			targetProxy = FA131AB42360FE070008381C /* PBXContainerItemProxy */;
 		};
-		FA131AB72360FE070008381C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 2125E2502319EC3000B3DEB5 /* AmplifyTestApp */;
-			targetProxy = FA131AB62360FE070008381C /* PBXContainerItemProxy */;
-		};
 		FA131ACE2360FEBB0008381C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = FAC234D12279F8DA00424678 /* Amplify */;
@@ -3626,7 +3636,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AmplifyTestApp.app/AmplifyTestApp";
 			};
 			name = Debug;
 		};
@@ -3648,7 +3657,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AmplifyTestApp.app/AmplifyTestApp";
 			};
 			name = Release;
 		};
