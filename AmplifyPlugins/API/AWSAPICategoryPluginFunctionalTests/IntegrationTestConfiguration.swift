@@ -24,11 +24,11 @@ class IntegrationTestConfiguration {
 
     // TODO: Move this to a test credentials file before final merge
     static let apiConfig = APICategoryConfiguration(plugins: [
-        "AWSAPICategoryPlugin": [
+        "awsAPIPlugin": [
             IntegrationTestConfiguration.taskPrivateNoteGraphQLWithUserPool: [
-                "Endpoint": "https://qaobhulmjzg2fjpxh45rpef5i4.appsync-api.us-east-1.amazonaws.com/graphql",
-                "Region": "us-east-1",
-                "AuthorizationType": "AMAZON_COGNITO_USER_POOLS"
+                "endpoint": "https://qaobhulmjzg2fjpxh45rpef5i4.appsync-api.us-east-1.amazonaws.com/graphql",
+                "region": "us-east-1",
+                "authorizationType": "AMAZON_COGNITO_USER_POOLS"
             ]
         ]
     ])

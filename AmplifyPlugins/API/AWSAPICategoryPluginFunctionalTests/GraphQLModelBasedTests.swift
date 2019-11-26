@@ -75,7 +75,7 @@ class GraphQLModelBasedTests: XCTestCase {
                  "ApiUrl": "https://5dxswtkp3favlnw2pvcmsp2mti.appsync-api.us-west-2.amazonaws.com/graphql",
                  "Region": "us-west-2",
                  "AuthMode": "API_KEY",
-                 "ApiKey": "da2-bjcuhxgvgjadfpfh4fddd5lqmm",
+                 "apiKey": "da2-bjcuhxgvgjadfpfh4fddd5lqmm",
                  "ClientDatabasePrefix": "modelbasedapi_API_KEY"
              }
          }
@@ -92,13 +92,13 @@ class GraphQLModelBasedTests: XCTestCase {
         let plugin = AWSAPICategoryPlugin()
 
         let apiConfig = APICategoryConfiguration(plugins: [
-            "AWSAPICategoryPlugin": [
+            "awsAPIPlugin": [
                 GraphQLModelBasedTests.modelBasedGraphQLWithAPIKey: [
-                    "Endpoint": "https://5dxswtkp3favlnw2pvcmsp2mti.appsync-api.us-west-2.amazonaws.com/graphql",
-                    "Region": "us-west-2",
-                    "AuthorizationType": "API_KEY",
-                    "ApiKey": "da2-bjcuhxgvgjadfpfh4fddd5lqmm",
-                    "EndpointType": "GraphQL"
+                    "endpoint": "https://5dxswtkp3favlnw2pvcmsp2mti.appsync-api.us-west-2.amazonaws.com/graphql",
+                    "region": "us-west-2",
+                    "authorizationType": "API_KEY",
+                    "apiKey": "da2-bjcuhxgvgjadfpfh4fddd5lqmm",
+                    "endpointType": "GraphQL"
                 ],
             ]
         ])
