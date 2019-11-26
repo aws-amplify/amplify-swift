@@ -63,6 +63,7 @@ final class AsyncSubscriptionEventToAnyModelMapper: Subscriber {
         log.verbose("dispose(of subscriptionEvent): \(subscriptionEvent)")
         switch subscriptionEvent {
         case .connection(let connectionState):
+            // Connection events are informational only at this level. The terminal state is represented at the AsyncEvent Completion/Error
             log.info("connectionState now \(connectionState)")
         case .data(let graphQLResponse):
             dispose(of: graphQLResponse)
@@ -75,14 +76,7 @@ final class AsyncSubscriptionEventToAnyModelMapper: Subscriber {
         case .success(let anyModel):
             modelsFromSubscription.send(anyModel)
         case .failure(let failure):
-            switch failure {
-                case .error(let graphQLErrors):
-                    log.error("Received graphql errors: \(graphQLErrors)")
-                case .partial(_, let graphQLErrors):
-                    log.error("Received partial response with graphql errors: \(graphQLErrors)")
-                case .transformationError(let rawResponse, let apiError):
-                    log.error("Unable to transform raw response into AnyModel: \(apiError)\nRaw response:\n\(rawResponse)")
-            }
+            log.error(error: failure)
         }
     }
 }
