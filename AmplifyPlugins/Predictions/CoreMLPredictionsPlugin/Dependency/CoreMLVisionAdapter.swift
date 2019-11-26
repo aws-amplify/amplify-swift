@@ -42,29 +42,116 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
         var identifiedLines = [IdentifiedLine]()
         var rawLineText = [String]()
         for observation in observations {
-            let boundingbox = observation.boundingBox
+            let detectedTextX = observation.boundingBox.origin.x
+            let detectedTextY = observation.boundingBox.origin.y
+            let detectedTextWidth = observation.boundingBox.width
+            let detectedTextHeight = observation.boundingBox.height
+
+            // Converting the y coordinate to iOS coordinate space and create a CGrect
+            // out of it.
+            let boundingbox = CGRect(x: detectedTextX,
+                                     y: 1 - detectedTextHeight - detectedTextY,
+                                     width: detectedTextWidth,
+                                     height: detectedTextHeight)
+
             let topPredictions = observation.topCandidates(1)
             let prediction = topPredictions[0]
             let identifiedText = prediction.string
-            let line = IdentifiedLine(text: identifiedText, boundingBox: boundingbox.toBoundingBox())
+            let line = IdentifiedLine(text: identifiedText, boundingBox: boundingbox)
             identifiedLines.append(line)
             rawLineText.append(identifiedText)
         }
         return IdentifyTextResult(fullText: nil, words: nil, rawLineText: rawLineText, identifiedLines: identifiedLines)
     }
-}
 
-extension CGRect {
+    func detectEntities(_ imageURL: URL) -> IdentifyEntitiesResult? {
+        let handler = VNImageRequestHandler(url: imageURL, options: [:])
+        let faceLandmarksRequest = VNDetectFaceLandmarksRequest()
+        try? handler.perform([faceLandmarksRequest])
+        guard let observations = faceLandmarksRequest.results as? [VNFaceObservation] else {
+            return nil
+        }
 
-    func toBoundingBox() -> BoundingBox {
-        let x = origin.x
-        let y = origin.y
-        let width = size.width
-        let height = size.height
-        let boundingBox = BoundingBox(left: Double(x),
-                                      top: Double(y),
-                                      width: Double(width),
-                                      height: Double(height))
-        return boundingBox
+        var entities: [Entity] = []
+        for observation in observations {
+            let pose = Pose(pitch: 0.0, // CoreML doesnot return pitch
+                roll: observation.roll?.doubleValue ?? 0.0,
+                yaw: observation.yaw?.doubleValue ?? 0.0)
+            let entityMetaData = EntityMetadata(confidence: Double(observation.confidence),
+                                                pose: pose)
+            let entity = Entity(boundingBox: observation.boundingBox,
+                                landmarks: mapLandmarks(observation.landmarks),
+                                ageRange: nil,
+                                attributes: nil,
+                                gender: nil,
+                                metadata: entityMetaData,
+                                emotions: nil)
+            entities.append(entity)
+        }
+        return IdentifyEntitiesResult(entities: entities)
     }
+
+    private func mapLandmarks(_ coreMLLandmarks: VNFaceLandmarks2D?) -> [Landmark] {
+        var finalLandmarks: [Landmark] = []
+        guard let landmarks = coreMLLandmarks else {
+            return finalLandmarks
+        }
+
+        if let allPoints = landmarks.allPoints {
+            finalLandmarks.append(Landmark(type: .allPoints,
+                                            points: allPoints.normalizedPoints))
+        }
+        if let faceContour = landmarks.faceContour {
+            finalLandmarks.append(Landmark(type: .faceContour,
+                                            points: faceContour.normalizedPoints))
+        }
+        if let leftEye = landmarks.leftEye {
+            finalLandmarks.append(Landmark(type: .leftEye,
+                                            points: leftEye.normalizedPoints))
+        }
+        if let rightEye = landmarks.rightEye {
+            finalLandmarks.append(Landmark(type: .rightEye,
+                                            points: rightEye.normalizedPoints))
+        }
+        if let leftEyebrow = landmarks.leftEyebrow {
+            finalLandmarks.append(Landmark(type: .leftEyebrow,
+                                            points: leftEyebrow.normalizedPoints))
+        }
+        if let rightEyebrow = landmarks.rightEyebrow {
+            finalLandmarks.append(Landmark(type: .rightEyebrow,
+                                            points: rightEyebrow.normalizedPoints))
+        }
+        if let nose = landmarks.nose {
+            finalLandmarks.append(Landmark(type: .nose,
+                                            points: nose.normalizedPoints))
+        }
+        if let noseCrest = landmarks.noseCrest {
+            finalLandmarks.append(Landmark(type: .noseCrest,
+                                            points: noseCrest.normalizedPoints))
+        }
+        if let medianLine = landmarks.medianLine {
+            finalLandmarks.append(Landmark(type: .medianLine,
+                                            points: medianLine.normalizedPoints))
+        }
+        if let outerLips = landmarks.outerLips {
+            finalLandmarks.append(Landmark(type: .outerLips,
+                                            points: outerLips.normalizedPoints))
+        }
+        if let innerLips = landmarks.innerLips {
+            finalLandmarks.append(Landmark(type: .innerLips,
+                                            points: innerLips.normalizedPoints))
+        }
+        if let leftPupil = landmarks.leftPupil {
+            finalLandmarks.append(Landmark(type: .leftPupil,
+                                            points: leftPupil.normalizedPoints))
+        }
+        if let rightPupil = landmarks.rightPupil {
+            finalLandmarks.append(Landmark(type: .rightPupil,
+                                            points: rightPupil.normalizedPoints))
+        }
+        return finalLandmarks
+    }
+
 }
+
+

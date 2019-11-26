@@ -6,8 +6,8 @@
 //
 
 public struct LanguageDetectionResult {
-    let languageCode: LanguageType
-    let score: Double?
+    public let languageCode: LanguageType
+    public let score: Double?
 
     public init(languageCode: LanguageType, score: Double?) {
         self.languageCode = languageCode

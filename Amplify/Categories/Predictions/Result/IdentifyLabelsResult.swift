@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import CoreGraphics
+
 public struct IdentifyLabelsResult: IdentifyResult {
     public let labels: [Label]
     public let unsafeContent: Bool?
@@ -18,11 +20,11 @@ public struct IdentifyLabelsResult: IdentifyResult {
 public struct Label {
     public let name: String
     public let metadata: LabelMetadata?
-    public let boundingBoxes: [BoundingBox]?
+    public let boundingBoxes: [CGRect]?
 
     public init(name: String,
                 metadata: LabelMetadata? = nil,
-                boundingBoxes: [BoundingBox]? = nil) {
+                boundingBoxes: [CGRect]? = nil) {
         self.name = name
         self.metadata = metadata
         self.boundingBoxes = boundingBoxes
@@ -45,19 +47,4 @@ public struct LabelMetadata {
         self.confidence = confidence
         self.parents = parents
     }
-}
-
-public struct BoundingBox {
-    public let left: Double
-    public let top: Double
-    public let width: Double
-    public let height: Double
-
-    public init(left: Double, top: Double, width: Double, height: Double) {
-        self.height = height
-        self.left = left
-        self.top = top
-        self.width = width
-    }
-
 }

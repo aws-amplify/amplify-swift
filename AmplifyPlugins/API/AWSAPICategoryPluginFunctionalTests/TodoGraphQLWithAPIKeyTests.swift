@@ -130,15 +130,22 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
                                      variables: CreateTodoMutation.variables(id: uuid,
                                                                              name: "",
                                                                              description: description),
-                                     responseType: CreateTodoMutation.Data.self)
+                                     responseType: Todo?.self,
+                                     decodePath: CreateTodoMutation.decodePath)
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
             case .completed(let graphQLResponse):
-                guard case let .partial(data, error) = graphQLResponse else {
+                guard case let .failure(graphQLResponseError) = graphQLResponse else {
+                    XCTFail("Missing failure")
+                    return
+                }
+
+                guard case let .partial(todo, error) = graphQLResponseError else {
                     XCTFail("Missing partial response")
                     return
                 }
-                XCTAssertNil(data.createTodo)
+                print(graphQLResponseError.errorDescription)
+                XCTAssertNil(todo)
                 XCTAssertNotNil(error)
                 completeInvoked.fulfill()
             case .failed(let error):
@@ -169,13 +176,16 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
             case .completed(let graphQLResponse):
-                switch graphQLResponse {
-                case .transformationError(let rawGraphQLResponse, let error):
-                    transformationErrorInvoked.fulfill()
-                default:
-                    XCTFail("Unexpected event: \(event)")
+                guard case let .failure(graphQLResponseError) = graphQLResponse else {
+                    XCTFail("Unexpected event: \(graphQLResponse)")
+                    return
                 }
 
+                guard case .transformationError = graphQLResponseError else {
+                    XCTFail("Should be transformation error")
+                    return
+                }
+                transformationErrorInvoked.fulfill()
             default:
                 XCTFail("Unexpected event: \(event)")
             }

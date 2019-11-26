@@ -76,14 +76,18 @@ class AnyModelIntegrationTests: XCTestCase {
 
         guard case .success(let modelFromResponse) = response else {
             switch response {
-            case .error(let errors):
-                XCTFail("errors: \(errors)")
-            case .partial(let model, let errors):
-                XCTFail("partial: \(model), \(errors)")
-            case .transformationError(let rawResponse, let apiError):
-                XCTFail("transformationError: \(rawResponse), \(apiError)")
             case .success:
                 break
+
+            case .failure(let error):
+                switch error {
+                    case .error(let errors):
+                        XCTFail("errors: \(errors)")
+                    case .partial(let model, let errors):
+                        XCTFail("partial: \(model), \(errors)")
+                    case .transformationError(let rawResponse, let apiError):
+                        XCTFail("transformationError: \(rawResponse), \(apiError)")
+                }
             }
             return
         }
@@ -143,14 +147,17 @@ class AnyModelIntegrationTests: XCTestCase {
 
         guard case .success(let modelFromResponse) = response else {
             switch response {
-            case .error(let errors):
-                XCTFail("errors: \(errors)")
-            case .partial(let model, let errors):
-                XCTFail("partial: \(model), \(errors)")
-            case .transformationError(let rawResponse, let apiError):
-                XCTFail("transformationError: \(rawResponse), \(apiError)")
             case .success:
                 break
+            case .failure(let error):
+                switch error {
+                    case .error(let errors):
+                        XCTFail("errors: \(errors)")
+                    case .partial(let model, let errors):
+                        XCTFail("partial: \(model), \(errors)")
+                    case .transformationError(let rawResponse, let apiError):
+                        XCTFail("transformationError: \(rawResponse), \(apiError)")
+                }
             }
             return
         }

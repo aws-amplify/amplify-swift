@@ -16,7 +16,7 @@ public enum DataStoreError: Error {
     case invalidDatabase(path: String, Error? = nil)
     case invalidModelName(String)
     case invalidOperation(causedBy: Error? = nil)
-    case nonUniqueResult(model: String)
+    case nonUniqueResult(model: String, count: Int)
     case sync(ErrorDescription, RecoverySuggestion, Error? = nil)
 }
 
@@ -38,8 +38,11 @@ extension DataStoreError: AmplifyError {
             return "No model registered with name '\(modelName)'"
         case .invalidOperation(let causedBy):
             return causedBy?.localizedDescription ?? ""
-        case .nonUniqueResult(let model):
-            return "The result of the queried model of type \(model) return more than one result."
+        case .nonUniqueResult(let model, let count):
+            return """
+            The result of the queried model of type \(model) return more than one result.
+            Only a single result was expected and the actual count was \(count).
+            """
         case .sync(let errorDescription, _, _):
             return errorDescription
         }
@@ -63,7 +66,7 @@ extension DataStoreError: AmplifyError {
         case .nonUniqueResult:
             return """
             Check that the condition applied to the query actually guarantees uniqueness, such
-            as unique indexes, primary keys.
+            as unique indexes and primary keys.
             """
         case .sync(_, let recoverySuggestion, _):
             return recoverySuggestion

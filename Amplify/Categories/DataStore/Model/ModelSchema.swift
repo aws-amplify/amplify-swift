@@ -30,7 +30,6 @@ public enum ModelAttribute {
 
 public enum ModelFieldAttribute {
     case primaryKey
-    case connected(name: String)
 }
 
 public struct ModelField {
@@ -41,18 +40,10 @@ public struct ModelField {
     public let isRequired: Bool
     public let isArray: Bool
     public let attributes: [ModelFieldAttribute]
+    public let association: ModelAssociation?
 
     public var isPrimaryKey: Bool {
         return name == "id"
-    }
-
-    public var isConnected: Bool {
-        return attributes.contains {
-            guard case .connected = $0 else {
-                return false
-            }
-            return true
-        }
     }
 
     init(name: String,
@@ -60,13 +51,15 @@ public struct ModelField {
          type: String,
          isRequired: Bool = false,
          isArray: Bool = false,
-         attributes: [ModelFieldAttribute] = []) {
+         attributes: [ModelFieldAttribute] = [],
+         association: ModelAssociation? = nil) {
         self.name = name
         self.targetName = targetName
         self.type = type
         self.isRequired = isRequired
         self.isArray = isArray
         self.attributes = attributes
+        self.association = association
     }
 }
 
@@ -78,7 +71,9 @@ public struct ModelSchema {
     public let targetName: String?
     public let fields: ModelFields
     public let attributes: [ModelAttribute]
+
     public let sortedFields: [ModelField]
+
     public var primaryKey: ModelField {
         guard let primaryKey = fields.first(where: { $1.isPrimaryKey }) else {
             preconditionFailure("Primary Key not defined for `\(name)`")
@@ -114,9 +109,9 @@ extension Dictionary where Key == String, Value == ModelField {
 
     /// Returns an array of the values sorted by some pre-defined rules:
     ///
-    /// 1. primary key comes always first
-    /// 2. foreign keys come always at the end
-    /// 3. the other fields are sorted alphabetically
+    /// 1. primary key always comes first
+    /// 2. foreign keys always come at the end
+    /// 3. the remaining fields are sorted alphabetically
     ///
     /// This is useful so code that uses the fields to generate queries and other
     /// persistence-related operations guarantee that the results are always consistent.
@@ -128,10 +123,10 @@ extension Dictionary where Key == String, Value == ModelField {
             if other.isPrimaryKey {
                 return false
             }
-            if one.isConnected && !other.isConnected {
+            if one.hasAssociation && !other.hasAssociation {
                 return false
             }
-            if !one.isConnected && other.isConnected {
+            if !one.hasAssociation && other.hasAssociation {
                 return true
             }
             return one.name < other.name

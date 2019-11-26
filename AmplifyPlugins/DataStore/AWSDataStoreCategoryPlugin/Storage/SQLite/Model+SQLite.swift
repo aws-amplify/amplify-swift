@@ -62,10 +62,10 @@ extension Model {
             if value == nil {
                 return nil
             }
-            // if value is a connected model, get its primary key
+            // if value is an associated model, get its id
             if let value = value as? Model, field.isForeignKey {
-                let connectedModel: Model.Type = type(of: value)
-                return value[connectedModel.schema.primaryKey.name] as? String
+                let associatedModel: Model.Type = type(of: value)
+                return value[associatedModel.schema.primaryKey.name] as? String
             } else if let value = value as? Persistable {
                 return value.asBinding()
             } else {
@@ -83,7 +83,7 @@ extension Model {
 
 extension Array where Element == Model.Type {
 
-    /// Sort the [PersistentModel.Type] array based on the dependencies between them.
+    /// Sort the [Model.Type] array based on the associations between them.
     ///
     /// The order the tables are created for each model depends on their relationships.
     /// The tables for the models that own the `foreign key` of the relationship can only
@@ -105,19 +105,19 @@ extension Array where Element == Model.Type {
         var sortedKeys: [String] = []
         var sortMap: [String: Model.Type] = [:]
 
-        func walkConnectedModels(of modelType: Model.Type) {
+        func walkAssociatedModels(of modelType: Model.Type) {
             if !sortedKeys.contains(modelType.schema.name) {
-                let connectedModels = modelType.schema.sortedFields
+                let associatedModels = modelType.schema.sortedFields
                     .filter { $0.isForeignKey }
-                    .map { $0.connectedModel! }
-                connectedModels.forEach(walkConnectedModels(of:))
+                    .map { $0.requiredAssociatedModel }
+                associatedModels.forEach(walkAssociatedModels(of:))
 
                 let key = modelType.schema.name
                 sortedKeys.append(key)
                 sortMap[key] = modelType
             }
         }
-        forEach(walkConnectedModels(of:))
+        forEach(walkAssociatedModels(of:))
         return sortedKeys.map { sortMap[$0]! }
     }
 
