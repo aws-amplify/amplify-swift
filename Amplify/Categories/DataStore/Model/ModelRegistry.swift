@@ -8,10 +8,11 @@
 import Foundation
 
 public struct ModelRegistry {
-    private static var modelTypes = [String: Model.Type]()
 
     /// ModelDecoders are used to decode untyped model data, looking up by model name
     private typealias ModelDecoder = (String, JSONDecoder) throws -> Model
+
+    private static var modelTypes = [String: Model.Type]()
 
     private static var modelDecoders = [String: ModelDecoder]()
 

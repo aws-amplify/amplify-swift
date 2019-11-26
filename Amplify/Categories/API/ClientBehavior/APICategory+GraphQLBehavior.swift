@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Combine
-
 extension APICategory: APICategoryGraphQLBehavior {
 
     public func query<M: Model>(from modelType: M.Type,

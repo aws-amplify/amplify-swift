@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 public extension ModelRegistry {
     static var hasSyncableModels: Bool {
         if #available(iOS 13.0, *) {

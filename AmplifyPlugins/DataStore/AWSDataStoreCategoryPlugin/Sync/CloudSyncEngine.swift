@@ -25,6 +25,8 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
     // Assigned at `setUpCloudSubscriptions`
     var reconciliationQueues: IncomingEventReconciliationQueues?
 
+    var isStarted = false
+
     init() {
         self.syncQueue = OperationQueue()
         syncQueue.name = "com.amazonaws.Amplify.\(AWSDataStoreCategoryPlugin.self).CloudSyncEngine"
@@ -34,12 +36,13 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
     func start(api: APICategoryGraphQLBehavior = Amplify.API,
                storageAdapter: StorageEngineAdapter) {
 
+        // TODO: Refactor this into a reactive, state-based process
+
         self.storageAdapter = storageAdapter
         self.api = api
 
         mutationQueue = OutgoingMutationQueue(storageAdapter: storageAdapter)
 
-        // TODO: Refactor this into a reactive, state-based process
         let pauseSubscriptionsOp = BlockOperation {
             self.pauseSubscriptions()
         }
@@ -69,17 +72,32 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
         }
         startMutationQueueOp.addDependency(activateCloudSubscriptionsOp)
 
+        let updateStateOp = BlockOperation {
+            self.isStarted = true
+        }
+        updateStateOp.addDependency(startMutationQueueOp)
+
         syncQueue.addOperations([
             pauseSubscriptionsOp,
             pauseMutationsOp,
             setUpCloudSubscriptionsOp,
             performInitialQueriesOp,
             activateCloudSubscriptionsOp,
-            startMutationQueueOp
+            startMutationQueueOp,
+            updateStateOp
         ], waitUntilFinished: false)
     }
 
     func submit(_ mutationEvent: MutationEvent) -> Future<MutationEvent, DataStoreError> {
+        guard isStarted else {
+            let dataStoreError = DataStoreError.configuration(
+                "Can't submit mutations while CloudSyncEngine not started",
+                "Wait for configuration to complete before submitting events for synchronization to the cloud API"
+            )
+            return Future<MutationEvent, DataStoreError> { promise in
+                promise(.failure(dataStoreError))
+            }
+        }
         log.verbose("submit: \(mutationEvent)")
         return mutationQueue.submit(mutationEvent: mutationEvent)
     }

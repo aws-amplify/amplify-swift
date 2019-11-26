@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Combine
-
 /// Behavior of the API category related to GraphQL operations
 public protocol APICategoryGraphQLBehavior: class {
 

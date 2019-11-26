@@ -264,8 +264,7 @@ class ReconcileAndLocalSaveOperation: Operation {
             return
         }
 
-        // TODO: Create a sync notification payload of <M>
-        let payload = HubPayload(eventName: "SYNC_HAPPENED, YAY! \(savedModel.id)")
+        let payload = HubPayload(eventName: HubPayload.EventName.DataStore.syncReceived, data: savedModel)
         Amplify.Hub.dispatch(to: .dataStore, payload: payload)
         stateMachine.notify(action: .notified)
     }
