@@ -41,7 +41,14 @@ class IdentifyBasicIntegrationTests: XCTestCase {
          predictionsConfig = PredictionsCategoryConfiguration(
             plugins: [
                 "AWSPredictionsPlugin": [
-                    "defaultRegion": region
+                    "defaultRegion": region,
+                    "identify": [
+                        "identifyEntities": [
+                            "collectionId": "TestCollection",
+                            "maxFaces": 50,
+                            "region": region
+                        ]
+                    ]
                 ]
             ]
         )
