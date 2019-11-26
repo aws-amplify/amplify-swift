@@ -17,9 +17,6 @@ import Foundation
 /// terminal failure, publishes the event response to the appropriate ReconciliationQueue subject.
 class SyncMutationToCloudOperation: Operation {
 
-    private let workQueue = DispatchQueue(label: "com.amazonaws.SyncMutationToCloudOperation",
-                                          target: DispatchQueue.global())
-
     private weak var api: APICategoryGraphQLBehavior?
     private weak var asyncEventSubject: IncomingAsyncMutationEventSubject.Subject?
     private let mutationEvent: MutationEvent
