@@ -29,8 +29,10 @@ extension Model {
                 } else {
                     input[name] = value
                 }
-            case .collection(let of):
-                // TODO handle relationships (connected properties)
+            case .model:
+                input[name] = (value as? Model)?.id
+            case .collection:
+                // TODO how to handle associations of type "many" (i.e. cascade save)?
                 break
             default:
                 input[name] = value

@@ -23,13 +23,13 @@ class GraphQLDocumentTests: XCTestCase {
     /// - Given: a `Model` instance
     /// - When:
     ///   - the model is of type `Post`
-    ///   - the model has no eager loaded connections
+    ///   - the model has no required associations
     ///   - the mutation is of type `.create`
     /// - Then:
     ///   - check if the generated GraphQL document is a valid mutation:
     ///     - it is named `createPost`
     ///     - it contains an `input` of type `CreatePostInput`
-    ///     - it has a list of fields with no nested/connected models
+    ///     - it has a list of fields with no nested models
     func testCreateGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content")
         let document = GraphQLMutation(of: post, type: .create)
@@ -44,7 +44,6 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
-            __typename
           }
         }
         """
@@ -55,14 +54,47 @@ class GraphQLDocumentTests: XCTestCase {
 
     /// - Given: a `Model` instance
     /// - When:
+    ///   - the model is of type `Comment`
+    ///   - the model has required associations
+    ///   - the mutation is of type `.create`
+    /// - Then:
+    ///   - check if the generated GraphQL document is a valid mutation:
+    ///     - it is named `createComment`
+    ///     - it contains an `input` of type `CreateCommentInput`
+    ///     - it has a list of fields with a `postId`
+    func testCreateGraphQLMutationFromModelWithAssociation() {
+        let post = Post(title: "title", content: "content")
+        let comment = Comment(content: "comment", post: post)
+        let document = GraphQLMutation(of: comment, type: .create)
+        let expected = """
+        mutation CreateComment($input: CreateCommentInput!) {
+          createComment(input: $input) {
+            id
+            content
+            createdAt
+            postId
+          }
+        }
+        """
+        XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.name, "createComment")
+        guard let input = document.variables["input"] as? GraphQLInput else {
+            XCTFail("Variables should contain a valid input")
+            return
+        }
+        XCTAssertEqual(input["postId"] as? String, post.id)
+    }
+
+    /// - Given: a `Model` instance
+    /// - When:
     ///   - the model is of type `Post`
-    ///   - the model has no eager loaded connections
+    ///   - the model has no required associations
     ///   - the mutation is of type `.update`
     /// - Then:
     ///   - check if the generated GraphQL document is a valid mutation:
     ///     - it is named `updatePost`
     ///     - it contains an `input` of type `UpdatePostInput`
-    ///     - it has a list of fields with no nested/connected models
+    ///     - it has a list of fields with no nested models
     func testUpdateGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content")
         let document = GraphQLMutation(of: post, type: .update)
@@ -77,7 +109,6 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
-            __typename
           }
         }
         """
@@ -89,13 +120,13 @@ class GraphQLDocumentTests: XCTestCase {
     /// - Given: a `Model` instance
     /// - When:
     ///   - the model is of type `Post`
-    ///   - the model has no eager loaded connections
+    ///   - the model has no required associations
     ///   - the mutation is of type `.delete`
     /// - Then:
     ///   - check if the generated GraphQL document is a valid mutation:
     ///     - it is named `deletePost`
     ///     - it contains an `input` of type `ID!`
-    ///     - it has a list of fields with no nested/connected models
+    ///     - it has a list of fields with no nested models
     func testDeleteGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content")
         let document = GraphQLMutation(of: post, type: .delete)
@@ -110,7 +141,6 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
-            __typename
           }
         }
         """
@@ -135,7 +165,7 @@ class GraphQLDocumentTests: XCTestCase {
     ///   - check if the generated GraphQL document is valid query:
     ///     - it contains an `filter` argument of type `ModelPostFilterInput`
     ///     - it is named `listPosts`
-    ///     - it has a list of fields with no nested/connected models
+    ///     - it has a list of fields with no nested models
     ///     - fields are wrapped with `items`
     func testListGraphQLQueryFromSimpleModel() {
         let document = GraphQLQuery(from: Post.self, type: .list)
@@ -151,6 +181,7 @@ class GraphQLDocumentTests: XCTestCase {
               rating
               title
               updatedAt
+              __typename
             }
             nextToken
           }
@@ -168,7 +199,7 @@ class GraphQLDocumentTests: XCTestCase {
     ///   - check if the generated GraphQL document is valid query:
     ///     - it contains an `id` argument of type `ID!`
     ///     - it is named `getPost`
-    ///     - it has a list of fields with no nested/connected models
+    ///     - it has a list of fields with no nested models
     func testGetGraphQLQueryFromSimpleModel() {
         let document = GraphQLQuery(from: Post.self, type: .get)
         let expected = """
@@ -182,6 +213,44 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
+            __typename
+          }
+        }
+        """
+        XCTAssertEqual(document.stringValue, expected)
+    }
+
+
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `Comment`
+    ///   - the model has eager loaded associations
+    ///   - the query is of type `.get`
+    /// - Then:
+    ///   - check if the generated GraphQL document is valid query:
+    ///     - it contains an `id` argument of type `ID!`
+    ///     - it is named `getComment`
+    ///     - it has a list of fields with a nested `post`
+    func testGetGraphQLQueryFromModelWithAssociation() {
+        let document = GraphQLQuery(from: Comment.self, type: .get)
+        let expected = """
+        query GetComment($id: ID!) {
+          getComment(id: $id) {
+            id
+            content
+            createdAt
+            post {
+              id
+              _version
+              content
+              createdAt
+              draft
+              rating
+              title
+              updatedAt
+              __typename
+            }
+            __typename
           }
         }
         """
@@ -192,11 +261,11 @@ class GraphQLDocumentTests: XCTestCase {
 
     /// - Given: a `Model` type
     /// - When:
-    ///   - the model has no eager loaded connections
+    ///   - the model has no eager loaded associations
     ///   - the subscription is of type `.onCreate`
     /// - Then:
     ///   - check if the generated GraphQL document is a valid subscription
-    ///     - it has a list of fields with no nested/connected models
+    ///     - it has a list of fields with no nested models
     func testOnCreateGraphQLSubscriptionFromSimpleModel() {
         let document = GraphQLSubscription(of: Post.self, type: .onCreate)
         let expected = """
@@ -210,6 +279,7 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
+            __typename
           }
         }
         """
@@ -218,11 +288,11 @@ class GraphQLDocumentTests: XCTestCase {
 
     /// - Given: a `Model` type
     /// - When:
-    ///   - the model has no eager loaded connections
+    ///   - the model has no eager loaded associations
     ///   - the subscription is of type `.onUpdate`
     /// - Then:
     ///   - check if the generated GraphQL document is a valid subscription
-    ///     - it has a list of fields with no nested/connected models
+    ///     - it has a list of fields with no nested models
     func testOnUpdateGraphQLSubscriptionFromSimpleModel() {
         let document = GraphQLSubscription(of: Post.self, type: .onUpdate)
         let expected = """
@@ -236,6 +306,7 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
+            __typename
           }
         }
         """
@@ -244,11 +315,11 @@ class GraphQLDocumentTests: XCTestCase {
 
     /// - Given: a `Model` type
     /// - When:
-    ///   - the model has no eager loaded connections
+    ///   - the model has no eager loaded associations
     ///   - the subscription is of type `.onDelete`
     /// - Then:
     ///   - check if the generated GraphQL document is a valid subscription
-    ///     - it has a list of fields with no nested/connected models
+    ///     - it has a list of fields with no nested models
     func testOnDeleteGraphQLSubscriptionFromSimpleModel() {
         let document = GraphQLSubscription(of: Post.self, type: .onDelete)
         let expected = """
@@ -262,6 +333,7 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
+            __typename
           }
         }
         """

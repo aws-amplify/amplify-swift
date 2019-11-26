@@ -47,7 +47,7 @@ public struct GraphQLQuery: GraphQLDocument {
             "id: $id" :
             "filter: $filter, limit: $limit, nextToken: $nextToken"
 
-        let fields = schema.graphQLFields.map { $0.graphQLName }
+        let fields = selectionSet
         var documentFields = fields.joined(separator: "\n    ")
         if queryType == .list {
             documentFields =

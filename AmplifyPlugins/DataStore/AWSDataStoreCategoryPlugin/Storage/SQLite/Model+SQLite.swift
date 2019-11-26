@@ -44,6 +44,8 @@ extension Persistable {
     }
 }
 
+private let logger = Amplify.Logging.logger(forCategory: .dataStore)
+
 extension Model {
 
     /// Get the values of a `Model` for the fields relevant to a SQL query. The order of the
@@ -57,11 +59,16 @@ extension Model {
         let modelType = type(of: self)
         let modelFields = fields ?? modelType.schema.sortedFields
         let values: [Binding?] = modelFields.map { field in
-            let value = self[field.name]
-            // TODO why are `nil` optional number types not being skipped as expected?
-            if value == nil {
+            // unwrap the Any?? to Any?, short-circuit in case of nil
+            guard let value = self[field.name], value != nil else {
                 return nil
             }
+
+            // also return nil for Optional.none
+            if case .none = value {
+                return nil
+            }
+
             // if value is an associated model, get its id
             if let value = value as? Model, field.isForeignKey {
                 let associatedModel: Model.Type = type(of: value)
@@ -69,11 +76,12 @@ extension Model {
             } else if let value = value as? Persistable {
                 return value.asBinding()
             } else {
+                logger.warn("""
+                Field \(field.name) of model \(modelName) has an unsupported value
+                of type \(String(describing: type(of: value))).
+                Refer to types that conform to Persistable.
+                """)
                 return nil
-//                preconditionFailure("""
-//                Type \(String(describing: type(of: value))) from \(modelType) field
-//                \(field.name) is not a compatible type. Refer to types that conform to Persistable.
-//                """)
             }
         }
         return values

@@ -32,10 +32,8 @@ public struct GraphQLSubscription: GraphQLDocument {
     }
 
     public var stringValue: String {
-        let schema = modelType.schema
-
         let subscriptionName = name.toPascalCase()
-        let fields = schema.graphQLFields.map { $0.graphQLName }
+        let fields = selectionSet
         return """
         \(documentType) \(subscriptionName) {
           \(name) {
