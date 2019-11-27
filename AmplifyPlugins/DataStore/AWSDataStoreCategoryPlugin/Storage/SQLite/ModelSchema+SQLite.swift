@@ -40,12 +40,15 @@ protocol SQLColumn {
 extension ModelField: SQLColumn {
 
     var sqlName: String {
-        return isForeignKey ? name + "Id" : name
+        if case let .belongsTo(_, targetName) = association {
+            return targetName ?? name + "Id"
+        }
+        return name
     }
 
     var sqlType: SQLDataType {
         switch typeDefinition {
-        case .string, .enum, .date, .dateTime, .model:
+        case .string, .enum, .date, .dateTime, .time, .model:
             return .text
         case .int, .bool:
             return .integer

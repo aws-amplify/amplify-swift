@@ -70,8 +70,8 @@ class SQLStatementTests: XCTestCase {
           "id" text primary key not null,
           "content" text not null,
           "createdAt" text not null,
-          "postId" text not null,
-          foreign key("postId") references Post("id")
+          "commentPostId" text not null,
+          foreign key("commentPostId") references Post("id")
             on delete cascade
         );
         """
@@ -160,7 +160,7 @@ class SQLStatementTests: XCTestCase {
         let statement = InsertStatement(model: comment)
 
         let expectedStatement = """
-        insert into Comment ("id", "content", "createdAt", "postId")
+        insert into Comment ("id", "content", "createdAt", "commentPostId")
         values (?, ?, ?, ?)
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
@@ -284,13 +284,13 @@ class SQLStatementTests: XCTestCase {
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
-          "root"."postId" as "postId", "post"."id" as "post.id", "post"."_deleted" as "post._deleted",
+          "root"."commentPostId" as "commentPostId", "post"."id" as "post.id", "post"."_deleted" as "post._deleted",
           "post"."_version" as "post._version", "post"."content" as "post.content", "post"."createdAt" as "post.createdAt",
           "post"."draft" as "post.draft", "post"."rating" as "post.rating", "post"."title" as "post.title",
           "post"."updatedAt" as "post.updatedAt"
         from Comment as root
         inner join Post as post
-          on "post"."id" = "root"."postId"
+          on "post"."id" = "root"."commentPostId"
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }

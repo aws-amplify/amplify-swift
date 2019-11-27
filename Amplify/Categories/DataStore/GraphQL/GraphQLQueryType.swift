@@ -11,4 +11,5 @@
 public enum GraphQLQueryType: String {
     case get
     case list
+    case sync
 }

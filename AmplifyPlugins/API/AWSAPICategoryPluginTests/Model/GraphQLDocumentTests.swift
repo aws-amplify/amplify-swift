@@ -241,6 +241,39 @@ class GraphQLDocumentTests: XCTestCase {
         XCTAssertEqual(document.stringValue, expected)
     }
 
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - the model has no eager loaded connections
+    ///   - the query is of type `.sync`
+    /// - Then:
+    ///   - check if the generated GraphQL document is valid query:
+    ///     - - it contains an `filter` argument of type `ModelPostFilterInput`
+    ///     - it is named `syncPosts`
+    ///     - it has a list of fields with no nested models
+    func testSyncGraphQLQueryFromSimpleModel() {
+        let document = GraphQLQuery(from: Post.self, type: .sync)
+        let expected = """
+        query SyncPosts($filter: ModelPostFilterInput, $limit: Int, $nextToken: String) {
+          syncPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+            items {
+              id
+              _deleted
+              _version
+              content
+              createdAt
+              draft
+              rating
+              title
+              updatedAt
+              __typename
+            }
+            nextToken
+          }
+        }
+        """
+        XCTAssertEqual(document.stringValue, expected)
+    }
 
     /// - Given: a `Model` type
     /// - When:

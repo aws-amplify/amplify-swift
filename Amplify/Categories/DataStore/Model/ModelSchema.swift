@@ -35,7 +35,6 @@ public enum ModelFieldAttribute {
 public struct ModelField {
 
     public let name: String
-    public let targetName: String?
     public let type: String
     public let isRequired: Bool
     public let isArray: Bool
@@ -47,14 +46,12 @@ public struct ModelField {
     }
 
     init(name: String,
-         targetName: String? = nil,
          type: String,
          isRequired: Bool = false,
          isArray: Bool = false,
          attributes: [ModelFieldAttribute] = [],
          association: ModelAssociation? = nil) {
         self.name = name
-        self.targetName = targetName
         self.type = type
         self.isRequired = isRequired
         self.isArray = isArray
@@ -68,7 +65,7 @@ public typealias ModelFields = [String: ModelField]
 public struct ModelSchema {
 
     public let name: String
-    public let targetName: String?
+    public let pluralName: String?
     public let fields: ModelFields
     public let attributes: [ModelAttribute]
 
@@ -82,11 +79,11 @@ public struct ModelSchema {
     }
 
     init(name: String,
-         targetName: String? = nil,
+         pluralName: String? = nil,
          attributes: [ModelAttribute] = [],
          fields: ModelFields = [:]) {
         self.name = name
-        self.targetName = targetName
+        self.pluralName = pluralName
         self.attributes = attributes
         self.fields = fields
 

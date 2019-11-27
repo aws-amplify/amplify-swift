@@ -30,8 +30,12 @@ extension Model {
                     input[name] = value
                 }
             case .model:
-                // For Models, append the model name in front, ie. "comment" + "PostId"
-                let fieldName = modelName.camelCased() + name
+                // For Models, append the model name in front in case a targetName is not provided
+                // e.g. "comment" + "PostId"
+                var fieldName = modelName.camelCased() + name
+                if case let .belongsTo(_, targetName) = field.association {
+                    fieldName = targetName ?? fieldName
+                }
                 input[fieldName] = (value as? Model)?.id
             case .collection:
                 // TODO how to handle associations of type "many" (i.e. cascade save)?

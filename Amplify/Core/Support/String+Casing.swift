@@ -15,11 +15,11 @@ extension String {
     /// - Note: this method simply transforms the first character to uppercase.
     ///
     /// - Returns: a string in "PascalCase" converted from "camelCase"
-    internal func pascalCased() -> String {
+    public func pascalCased() -> String {
         return prefix(1).uppercased() + dropFirst()
     }
 
-    /// Converts a "PascalCase" value to "camcelCase". This is a very simple
+    /// Converts a "PascalCase" value to "camelCase". This is a very simple
     /// and naive implementation that assumes the input as a "PascalCase" value
     /// and won't perform complex conversions, such as from "snake_case"
     /// or "dash-case" to "pascalCase".
@@ -27,7 +27,7 @@ extension String {
     /// - Note: this method simply transforms the first character to lowercase.
     ///
     /// - Returns: a string in "pascalCase" converted from "CamelCase"
-    internal func camelCased() -> String {
+    public func camelCased() -> String {
         return prefix(1).lowercased() + dropFirst()
     }
 }
