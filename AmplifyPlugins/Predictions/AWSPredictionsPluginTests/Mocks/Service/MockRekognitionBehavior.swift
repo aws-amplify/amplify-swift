@@ -8,7 +8,6 @@
 import Amplify
 import AWSCore
 import AWSRekognition
-import Foundation
 @testable import AWSPredictionsPlugin
 
 class MockRekognitionBehavior: AWSRekognitionBehavior {
