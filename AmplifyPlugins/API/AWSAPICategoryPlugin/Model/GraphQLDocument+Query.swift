@@ -59,7 +59,7 @@ public struct GraphQLQuery: GraphQLDocument {
             """
         }
 
-        let queryName = name.toPascalCase()
+        let queryName = name.pascalCased()
 
         return """
         \(documentType) \(queryName)(\(input)) {

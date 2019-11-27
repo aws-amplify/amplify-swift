@@ -14,6 +14,6 @@ type Post @model {
 type Comment @model {
     id: ID!
     content: String!
-    createdAt: AWSDate!
+    createdAt: AWSDateTime!
     post: Post @connection(name: "PostComment")
 }

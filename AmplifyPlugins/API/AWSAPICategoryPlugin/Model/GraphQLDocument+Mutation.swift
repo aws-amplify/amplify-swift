@@ -44,7 +44,7 @@ public struct GraphQLMutation: GraphQLDocument {
     }
 
     public var stringValue: String {
-        let mutationName = name.toPascalCase()
+        let mutationName = name.pascalCased()
         let inputName = "input"
         let inputType = "\(mutationName)Input!"
 

@@ -31,7 +31,7 @@ extension Model {
                 }
             case .model:
                 // For Models, append the model name in front, ie. "comment" + "PostId"
-                let fieldName = modelName.lowerCaseFirstLetter() + name
+                let fieldName = modelName.camelCased() + name
                 input[fieldName] = (value as? Model)?.id
             case .collection:
                 // TODO how to handle associations of type "many" (i.e. cascade save)?

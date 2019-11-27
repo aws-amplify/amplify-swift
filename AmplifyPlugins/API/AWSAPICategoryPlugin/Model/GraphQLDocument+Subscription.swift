@@ -32,7 +32,7 @@ public struct GraphQLSubscription: GraphQLDocument {
     }
 
     public var stringValue: String {
-        let subscriptionName = name.toPascalCase()
+        let subscriptionName = name.pascalCased()
 
         let document = """
         \(documentType) \(subscriptionName) {

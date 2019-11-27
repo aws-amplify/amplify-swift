@@ -33,7 +33,7 @@ extension ModelField {
         let name = targetName ?? self.name
         if isAssociationOwner {
             // Generates part of the correct connected field name. ie. "PostId
-            return name.upperCaseFirstLetter() + "Id"
+            return name.pascalCased() + "Id"
         }
         return name
     }

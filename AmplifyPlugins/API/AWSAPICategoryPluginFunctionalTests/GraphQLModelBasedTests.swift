@@ -33,7 +33,7 @@ class GraphQLModelBasedTests: XCTestCase {
      type Comment @model {
          id: ID!
          content: String!
-         createdAt: AWSDate!
+         createdAt: AWSDateTime!
          post: Post @connection(name: "PostComment")
      }
 
@@ -285,7 +285,7 @@ class GraphQLModelBasedTests: XCTestCase {
                 case .success(let comment):
                     XCTAssertEqual(comment.content, "commentContent")
                     XCTAssertNotNil(comment.post)
-                    XCTAssertNotNil(comment.post.id, uuid)
+                    XCTAssertEqual(comment.post.id, uuid)
                     completeInvoked.fulfill()
                 case .failure(let error):
                     XCTFail("Unexpected response with error \(error)")
