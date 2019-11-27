@@ -1,0 +1,24 @@
+# .circleci/config.yml
+
+version: 2
+
+jobs:
+  build:
+    macos:
+      xcode: "11.2.1"
+    steps:
+      - checkout
+      - run:
+          name: install CocoaPods
+          command: |
+            curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+            pod install
+      - run:
+          name: build amplify
+          command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator
+
+workflows:
+  version: 2
+  build: 
+      jobs:
+        - build
