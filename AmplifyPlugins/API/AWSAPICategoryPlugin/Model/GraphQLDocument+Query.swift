@@ -27,9 +27,15 @@ public struct GraphQLQuery: GraphQLDocument {
     }
 
     public var name: String {
-        // TODO better plural handling? (check current CLI implementation)
-        let suffix = queryType == .list ? "s" : ""
-        let modelName = modelType.schema.graphQLName + suffix
+        // Right now plural is not consistent on the GraphQL transformer. The `.list` queries
+        // just append an "s" to resolve the plural. However, `.sync` queries use proper
+        // plural resolution. Change this once the transformer fixes that behavior
+        var modelName = modelType.schema.graphQLName
+        if case .sync = queryType {
+            modelName = modelType.schema.pluralName ?? (modelName + "s")
+        } else if case .list = queryType {
+            modelName += "s"
+        }
         return queryType.rawValue + modelName
     }
 
@@ -49,7 +55,7 @@ public struct GraphQLQuery: GraphQLDocument {
 
         let fields = selectionSetFields
         var documentFields = fields.joined(separator: "\n    ")
-        if queryType == .list {
+        if queryType != .get {
             documentFields =
             """
             items {

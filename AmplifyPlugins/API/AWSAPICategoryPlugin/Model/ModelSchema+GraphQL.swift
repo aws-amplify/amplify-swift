@@ -13,7 +13,7 @@ extension ModelSchema {
 
     /// The GraphQL name of the schema.
     var graphQLName: String {
-        targetName ?? name
+        name
     }
 
     /// The list of fields formatted for GraphQL usage.
@@ -30,11 +30,10 @@ extension ModelField {
 
     /// The GraphQL name of the field.
     var graphQLName: String {
-        let name = targetName ?? self.name
-        if isAssociationOwner {
+        if isAssociationOwner, case let .belongsTo(_, targetName) = association {
             // TODO generate the correct connected field name
             // e.g. Post - Comment: `commentPostId` on the `Comment.post`
-            return name + "Id"
+            return targetName ?? name + "Id"
         }
         return name
     }

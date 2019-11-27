@@ -269,8 +269,8 @@
 		2149E5A72388684F00873955 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
-				FAED5741238B52CE008EBED8 /* ModelStorageBehavior.swift */,
 				2149E5AB2388684F00873955 /* SQLite */,
+				FAED5741238B52CE008EBED8 /* ModelStorageBehavior.swift */,
 				2149E5AA2388684F00873955 /* StorageEngine.swift */,
 				2149E5A92388684F00873955 /* StorageEngineAdapter.swift */,
 				2149E5A82388684F00873955 /* StorageEngineBehavior.swift */,
@@ -283,18 +283,18 @@
 			children = (
 				2149E5AF2388684F00873955 /* Model+SQLite.swift */,
 				2149E5AE2388684F00873955 /* ModelSchema+SQLite.swift */,
+				2149E5B42388684F00873955 /* QueryPredicate+SQLite.swift */,
 				2149E5AC2388684F00873955 /* SQLStatement.swift */,
+				2149E5B62388684F00873955 /* SQLStatement+Condition.swift */,
+				2149E5B22388684F00873955 /* SQLStatement+CreateTable.swift */,
+				2149E5B32388684F00873955 /* SQLStatement+Delete.swift */,
 				2149E5AD2388684F00873955 /* SQLStatement+Insert.swift */,
 				2149E5B02388684F00873955 /* SQLStatement+Select.swift */,
 				2149E5B12388684F00873955 /* SQLStatement+Update.swift */,
-				FAED573D238B4C2F008EBED8 /* StorageEngineAdapter+UntypedModel.swift */,
 				FAED573B238B4B03008EBED8 /* Statement+AnyModel.swift */,
-				2149E5B22388684F00873955 /* SQLStatement+CreateTable.swift */,
-				2149E5B32388684F00873955 /* SQLStatement+Delete.swift */,
-				2149E5B42388684F00873955 /* QueryPredicate+SQLite.swift */,
-				2149E5B62388684F00873955 /* SQLStatement+Condition.swift */,
 				2149E5B72388684F00873955 /* Statement+Model.swift */,
 				2149E5B52388684F00873955 /* StorageEngineAdapter+SQLite.swift */,
+				FAED573D238B4C2F008EBED8 /* StorageEngineAdapter+UntypedModel.swift */,
 			);
 			path = SQLite;
 			sourceTree = "<group>";
