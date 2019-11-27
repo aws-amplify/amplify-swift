@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AWSPluginsCore
 import Combine
 
 /// Facade to hide the AsyncEventQueue/ModelMapper structures from the ReconciliationQueue. Provides a publisher for

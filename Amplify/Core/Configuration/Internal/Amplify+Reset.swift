@@ -63,17 +63,29 @@ extension Amplify {
 
         group.wait()
 
-        // TODO: Remove this once we Logging & Hub are available at all phases of the lifecycle:
-        // https://github.com/aws-amplify/amplify-ios/issues/161
-        Thread.sleep(forTimeInterval: 1.0)
-
-        Analytics = AnalyticsCategory()
-        API = APICategory()
-        DataStore = DataStoreCategory()
-        Hub = HubCategory()
+        // Initialize Logging and Hub first, to ensure their default plugins are registered and available to other
+        // categories during their initialization and configuration phases.
         Logging = LoggingCategory()
-        Predictions = PredictionsCategory()
-        Storage = StorageCategory()
+        Hub = HubCategory()
+
+        // Switch over all category types to ensure we don't forget any
+        for categoryType in CategoryType.allCases.filter({ $0 != .logging && $0 != .hub }) {
+            switch categoryType {
+            case .logging, .hub:
+                // Initialized above
+                break
+            case .analytics:
+                Analytics = AnalyticsCategory()
+            case .api:
+                API = APICategory()
+            case .dataStore:
+                DataStore = DataStoreCategory()
+            case .predictions:
+                Predictions = PredictionsCategory()
+            case .storage:
+                Storage = StorageCategory()
+            }
+        }
 
         isConfigured = false
     }

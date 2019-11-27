@@ -9,56 +9,62 @@ import Foundation
 
 extension LoggingCategory: CategoryConfigurable {
 
-    /// Configures the LoggingCategory using the incoming CategoryConfiguration. If the incoming configuration does
-    /// not specify a Logging plugin, then we will inject the `AWSLoggingCategoryPlugin`.
+    /// Configures the LoggingCategory using the incoming CategoryConfiguration.
     func configure(using configuration: CategoryConfiguration) throws {
-        guard !isConfigured else {
-            let error = ConfigurationError.amplifyAlreadyConfigured(
-                "\(categoryType.displayName) has already been configured.",
-                "Remove the duplicate call to `Amplify.configure()`"
-            )
-            throw error
-        }
-
-        if configuration.plugins.isEmpty && plugins.isEmpty {
-            try configureDefaultPlugin(using: configuration)
-        } else {
-            for (pluginKey, pluginConfiguration) in configuration.plugins {
-                let plugin = try getPlugin(for: pluginKey)
-                try plugin.configure(using: pluginConfiguration)
+        try concurrencyQueue.sync {
+            let plugin: LoggingCategoryPlugin
+            switch configurationState {
+            case .default:
+                // Default plugin is already assigned, and no configuration is applicable, exit early
+                configurationState = .configured
+                return
+            case .pendingConfiguration(let pendingPlugin):
+                plugin = pendingPlugin
+            case .configured:
+                let error = ConfigurationError.amplifyAlreadyConfigured(
+                    "\(categoryType.displayName) has already been configured.",
+                    "Remove the duplicate call to `Amplify.configure()`"
+                )
+                throw error
             }
-        }
 
-        isConfigured = true
+            guard let pluginConfiguration = configuration.plugins[plugin.key] else {
+                throw LoggingError.configuration(
+                    "No configuration found for added plugin `\(plugin.key)`",
+                    """
+                    Either fix the configuration file to specify the plugin's key value of '\(plugin.key)',
+                    or add a plugin with one of the keys specified in the configuration:
+                    \(configuration.plugins.keys.joined(separator: ", "))
+                    """
+                )
+            }
+
+            try plugin.configure(using: pluginConfiguration)
+            self.plugin = plugin
+            configurationState = .configured
+        }
     }
 
     func configure(using amplifyConfiguration: AmplifyConfiguration) throws {
         guard let configuration = categoryConfiguration(from: amplifyConfiguration) else {
-            try configureDefaultPlugin(using: nil)
-            isConfigured = true
             return
         }
         try configure(using: configuration)
     }
 
     func reset(onComplete: @escaping BasicClosure) {
-        let group = DispatchGroup()
+        concurrencyQueue.sync {
+            let group = DispatchGroup()
 
-        for plugin in plugins.values {
             group.enter()
+
             plugin.reset { group.leave() }
+
+            group.wait()
+
+            configurationState = .default
+            onComplete()
         }
-
-        group.wait()
-
-        isConfigured = false
-        onComplete()
     }
 
-    func configureDefaultPlugin(using configuration: CategoryConfiguration?) throws {
-        let pluginConfiguration = configuration?.plugins[AWSUnifiedLoggingPlugin.key] ?? [:]
-        let defaultPlugin = AWSUnifiedLoggingPlugin()
-        try add(plugin: defaultPlugin)
-        try defaultPlugin.configure(using: pluginConfiguration)
-    }
 }

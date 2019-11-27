@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AWSPluginsCore
 import Combine
 
 /// Subscribes to an IncomingSubscriptionAsyncEventQueue, and publishes AnyModel

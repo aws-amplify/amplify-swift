@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
-
 /// Defines a `log` convenience property, and provides a default implementation that returns a Logger for a category
 /// name of `String(describing: self)`
 public protocol DefaultLogger {

@@ -20,10 +20,6 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
     /// The local storage provider. Resolved during configuration phase
     var storageEngine: StorageEngineBehavior!
 
-    private lazy var log: Logger = {
-        Amplify.Logging.logger(forCategory: key)
-    }()
-
     /// No-argument init that uses defaults for all providers
     public init() {
         self.isSyncEnabled = false
