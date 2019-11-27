@@ -136,7 +136,7 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
             }
         }
 
-        guard let plugin = try? Amplify.Hub.getPlugin(for: "AWSHubPlugin") as? AWSHubPlugin else {
+        guard let plugin = try? Amplify.Hub.getPlugin(for: "awsHubPlugin") as? AWSHubPlugin else {
             XCTFail("Can't get plugin as AWSHubPlugin")
             return
         }

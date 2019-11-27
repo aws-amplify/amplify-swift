@@ -165,11 +165,11 @@ class AWSRESTOperationTests: XCTestCase {
         }
 
         let apiConfig = APICategoryConfiguration(plugins: [
-            "AWSAPICategoryPlugin": [
+            "awsAPIPlugin": [
                 "Valid": [
-                    "Endpoint": "http://www.example.com",
-                    "AuthorizationType": "API_KEY",
-                    "ApiKey": "SpecialApiKey33"
+                    "endpoint": "http://www.example.com",
+                    "authorizationType": "API_KEY",
+                    "apiKey": "SpecialApiKey33"
                 ]
             ]
         ])

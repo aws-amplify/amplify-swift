@@ -20,12 +20,12 @@ class StorageRequestUtilsValidatorTests: XCTestCase {
     // MARK: ValidateTargetIdentityId tests
 
     func testValidateTargetIdentityIdForEmptyTargetIdentityIdSuccess() {
-        let result = StorageRequestUtils.validateTargetIdentityId(nil, accessLevel: .public)
+        let result = StorageRequestUtils.validateTargetIdentityId(nil, accessLevel: .guest)
         XCTAssertNil(result)
     }
 
     func testValidateTargetIdentityIdWithPublicAccessLevelReturnsError() {
-        let result = StorageRequestUtils.validateTargetIdentityId(testIdentityId, accessLevel: .public)
+        let result = StorageRequestUtils.validateTargetIdentityId(testIdentityId, accessLevel: .guest)
         XCTAssertNotNil(result)
         XCTAssertTrue(result!.errorDescription.contains(StorageErrorConstants.invalidAccessLevelWithTarget.errorDescription))
     }
@@ -42,7 +42,7 @@ class StorageRequestUtilsValidatorTests: XCTestCase {
     }
 
     func testValidateTargetIdentityIdForEmpyTargetIdReturnsError() {
-        let result = StorageRequestUtils.validateTargetIdentityId("", accessLevel: .public)
+        let result = StorageRequestUtils.validateTargetIdentityId("", accessLevel: .guest)
         XCTAssertNotNil(result)
         XCTAssertTrue(result!.errorDescription.contains(StorageErrorConstants.identityIdIsEmpty.errorDescription))
     }

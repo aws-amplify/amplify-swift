@@ -97,12 +97,12 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         let plugin = AWSAPICategoryPlugin()
 
         let apiConfig = APICategoryConfiguration(plugins: [
-            "AWSAPICategoryPlugin": [
+            "awsAPIPlugin": [
                 GraphQLWithUserPoolIntegrationTests.todoGraphQLWithUserPools: [
-                    "Endpoint": "https://ggp44fsi3fg5hhg5vq6r65a5wu.appsync-api.us-east-1.amazonaws.com/graphql",
-                    "Region": "us-east-1",
-                    "AuthorizationType": "AMAZON_COGNITO_USER_POOLS",
-                    "EndpointType": "GraphQL"
+                    "endpoint": "https://ggp44fsi3fg5hhg5vq6r65a5wu.appsync-api.us-east-1.amazonaws.com/graphql",
+                    "region": "us-east-1",
+                    "authorizationType": "AMAZON_COGNITO_USER_POOLS",
+                    "endpointType": "GraphQL"
                 ]
             ]
         ])

@@ -104,6 +104,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         }
 
         // Begin network task
+        Amplify.API.log.debug("Starting network task for \(request.operationType) \(id)")
         let task = session.dataTaskBehavior(with: finalRequest)
         mapper.addPair(operation: self, task: task)
         task.resume()

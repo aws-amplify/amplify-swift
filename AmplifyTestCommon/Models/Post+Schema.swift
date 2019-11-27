@@ -23,6 +23,7 @@ extension Post {
         case draft
         case comments
         case _version
+        case _deleted
     }
 
     public static let keys = CodingKeys.self
@@ -42,7 +43,11 @@ extension Post {
             .field(post.updatedAt, is: .optional, ofType: .dateTime),
             .field(post.rating, is: .optional, ofType: .double),
             .field(post.draft, is: .optional, ofType: .bool),
+
+            // TODO: Remove these once we get sync metadata wired up
             .field(post._version, is: .optional, ofType: .int),
+            .field(post._deleted, is: .optional, ofType: .bool),
+
             .hasMany(post.comments, ofType: Comment.self, associatedWith: Comment.keys.post)
         )
     }

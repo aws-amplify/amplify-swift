@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Combine
 import Foundation
 
 class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
@@ -22,6 +23,8 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         notify("reset")
         onComplete()
     }
+
+    // MARK: - Model-based GraphQL methods
 
     func query<M>(from modelType: M.Type,
                   byId id: String,
@@ -44,8 +47,36 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     func subscribe<M>(from modelType: M.Type,
                       type: GraphQLSubscriptionType,
                       listener: GraphQLSubscriptionOperation<M>.EventListener?) -> GraphQLSubscriptionOperation<M> {
-        fatalError("Not yet implemented")
+        notify("subscribe(from:\(modelType),type:\(type),listener:)")
+
+        let options = GraphQLOperationRequest<M>.Options()
+        let request = GraphQLOperationRequest<M>(apiName: nil,
+                                                 operationType: .subscription,
+                                                 document: "",
+                                                 variables: nil,
+                                                 responseType: M.self,
+                                                 options: options)
+        let operation = MockSubscriptionGraphQLOperation(request: request, responseType: M.self)
+        return operation
     }
+
+    func subscribe(toAnyModelType modelType: Model.Type,
+                   subscriptionType: GraphQLSubscriptionType,
+                   listener: GraphQLSubscriptionOperation<AnyModel>.EventListener?)
+        -> GraphQLSubscriptionOperation<AnyModel> {
+            notify("subscribe(toAnyModelType:\(modelType),subscriptionType:\(subscriptionType),listener:)")
+            let options = GraphQLOperationRequest<AnyModel>.Options()
+            let request = GraphQLOperationRequest<AnyModel>(apiName: nil,
+                                                            operationType: .subscription,
+                                                            document: "",
+                                                            variables: nil,
+                                                            responseType: AnyModel.self,
+                                                            options: options)
+            let operation = MockSubscriptionGraphQLOperation(request: request, responseType: request.responseType)
+            return operation
+    }
+
+    // MARK: - Request-based GraphQL methods
 
     func mutate<R>(request: GraphQLRequest<R>,
                    listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
@@ -80,7 +111,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     func subscribe<R: Decodable>(request: GraphQLRequest<R>,
                                  listener: GraphQLSubscriptionOperation<R>.EventListener?) ->
         GraphQLSubscriptionOperation<R> {
-            notify("subscribe")
+            notify("subscribe(request:listener:)")
             let options = GraphQLOperationRequest<R>.Options()
             let request = GraphQLOperationRequest<R>(apiName: request.apiName,
                                                      operationType: .subscription,
@@ -92,14 +123,16 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
             return operation
     }
 
+    // MARK: - REST methods
+
     func get(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
         notify("get")
         let operationRequest = RESTOperationRequest(apiName: request.apiName,
-                                           operationType: .get,
-                                           path: request.path,
-                                           queryParameters: request.queryParameters,
-                                           body: request.body,
-                                           options: RESTOperationRequest.Options())
+                                                    operationType: .get,
+                                                    path: request.path,
+                                                    queryParameters: request.queryParameters,
+                                                    body: request.body,
+                                                    options: RESTOperationRequest.Options())
         let operation = MockAPIOperation(request: operationRequest)
         return operation
     }

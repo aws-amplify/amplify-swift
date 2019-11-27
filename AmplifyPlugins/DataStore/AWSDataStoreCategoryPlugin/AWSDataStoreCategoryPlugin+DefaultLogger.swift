@@ -5,10 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
+import AWSPluginsCore
 
-extension SyncEngineMutationSubscriber {
-    var log: Logger {
-        Amplify.DataStore.log
-    }
-}
+extension AWSDataStoreCategoryPlugin: DefaultLogger { }

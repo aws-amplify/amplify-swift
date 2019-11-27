@@ -10,13 +10,13 @@ import Foundation
 /// Configures the Amplify system with sub-configurations for each supported category
 public struct AmplifyConfiguration: Codable {
     enum CodingKeys: String, CodingKey {
-        case analytics = "Analytics"
-        case api = "API"
-        case dataStore = "DataStore"
-        case hub = "Hub"
-        case logging = "Logging"
-        case predictions = "Predictions"
-        case storage = "Storage"
+        case analytics
+        case api
+        case dataStore
+        case hub
+        case logging
+        case predictions
+        case storage
     }
 
     /// Configurations for the Amplify Analytics category

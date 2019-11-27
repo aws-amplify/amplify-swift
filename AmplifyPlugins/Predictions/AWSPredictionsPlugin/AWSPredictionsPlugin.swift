@@ -12,7 +12,7 @@ import AWSCore
 
 final public class AWSPredictionsPlugin: PredictionsCategoryPlugin {
 
-    let awsPredictionsPluginKey = "AWSPredictionsPlugin"
+    let awsPredictionsPluginKey = "awsPredictionsPlugin"
 
     /// A queue that regulates the execution of operations.
     var queue: OperationQueue!

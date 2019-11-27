@@ -75,7 +75,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         let request = StorageDownloadFileRequest(key: testKey,
                                                  local: testURL,
                                                  options: StorageDownloadFileRequest.Options())
-        let expectedServiceKey = StorageAccessLevel.public.rawValue + "/" + testKey
+        let expectedServiceKey = StorageAccessLevel.guest.serviceAccessPrefix + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageDownloadFileOperation(request,
@@ -107,7 +107,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         let request = StorageDownloadFileRequest(key: testKey,
                                                  local: testURL,
                                                  options: StorageDownloadFileRequest.Options())
-        let expectedServiceKey = StorageAccessLevel.public.rawValue + "/" + testKey
+        let expectedServiceKey = StorageAccessLevel.guest.serviceAccessPrefix + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageDownloadFileOperation(request,

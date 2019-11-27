@@ -10,6 +10,14 @@ target 'AWSS3StoragePlugin' do
 	pod 'Amplify', :path => '../../'
   pod 'AWSPluginsCore', :path => '../../'
   pod "AWSS3", "~> #{AWS_SDK_VERSION}"
+
+  target "AWSS3StoragePluginTests" do
+    inherit! :complete
+
+    pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
+    pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+    pod 'AmplifyTestCommon', :path => '../../'
+  end
 end
 
 target "HostApp" do
@@ -19,11 +27,13 @@ target "HostApp" do
   pod 'AmplifyTestCommon', :path => '../../'
   pod 'Amplify', :path => '../../'
   pod 'AWSPluginsCore', :path => '../../'
+  pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
+
   target "AWSS3StoragePluginIntegrationTests" do
     inherit! :complete
   end
 
-  target "AWSS3StoragePluginTests" do
+  target "AWSS3StoragePluginFunctionalTests" do
     inherit! :complete
   end
 end

@@ -29,8 +29,7 @@ public extension StorageRemoveRequest {
         /// key/values
         public let pluginOptions: Any?
 
-        // TODO: Is `public` the correct default?
-        public init(accessLevel: StorageAccessLevel = .public,
+        public init(accessLevel: StorageAccessLevel = .guest,
                     pluginOptions: Any? = nil) {
             self.accessLevel = accessLevel
             self.pluginOptions = pluginOptions

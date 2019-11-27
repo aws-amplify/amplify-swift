@@ -38,20 +38,20 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
         let plugin = AWSAPICategoryPlugin()
 
         let apiConfig = APICategoryConfiguration(plugins: [
-            "AWSAPICategoryPlugin": [
+            "awsAPIPlugin": [
                 BlogPostCommentGraphQLWithAPIKeyTests.blogPostGraphQLWithAPIKey: [
-                    "Endpoint": "https://dtoaraxmjjdbjfmoqwowubiyua.appsync-api.us-east-1.amazonaws.com/graphql",
-                    "Region": "us-east-1",
-                    "AuthorizationType": "API_KEY",
-                    "ApiKey": "da2-4th2pofe7ne4xdm3va23hvovfa",
-                    "EndpointType": "GraphQL"
+                    "endpoint": "https://dtoaraxmjjdbjfmoqwowubiyua.appsync-api.us-east-1.amazonaws.com/graphql",
+                    "region": "us-east-1",
+                    "authorizationType": "API_KEY",
+                    "apiKey": "da2-4th2pofe7ne4xdm3va23hvovfa",
+                    "endpointType": "GraphQL"
                 ],
                 BlogPostCommentGraphQLWithAPIKeyTests.blogPostGraphQLWithInvalidAPIKey: [
-                    "Endpoint": "https://dtoaraxmjjdbjfmoqwowubiyua.appsync-api.us-east-1.amazonaws.com/graphql",
-                    "Region": "us-east-1",
-                    "AuthorizationType": "API_KEY",
-                    "ApiKey": "da2-invalidAPIKey",
-                    "EndpointType": "GraphQL"
+                    "endpoint": "https://dtoaraxmjjdbjfmoqwowubiyua.appsync-api.us-east-1.amazonaws.com/graphql",
+                    "region": "us-east-1",
+                    "authorizationType": "API_KEY",
+                    "apiKey": "da2-invalidAPIKey",
+                    "endpointType": "GraphQL"
                 ],
             ]
         ])

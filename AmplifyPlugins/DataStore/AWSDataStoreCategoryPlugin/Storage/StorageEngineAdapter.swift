@@ -8,22 +8,17 @@
 import Amplify
 import Foundation
 
-protocol ModelStorageBehavior {
-    func setUp(models: [Model.Type]) throws
-
-    func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>)
-
-    func delete<M: Model>(_ modelType: M.Type,
-                          withId id: Model.Identifier,
-                          completion: DataStoreCallback<Void>)
-
-    func query<M: Model>(_ modelType: M.Type,
-                         predicate: QueryPredicate?,
-                         completion: DataStoreCallback<[M]>)
-
-}
-
-protocol StorageEngineAdapter: ModelStorageBehavior {
+protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
     func exists(_ modelType: Model.Type, withId id: Model.Identifier) throws -> Bool
+
+    func save(untypedModel: Model, completion: @escaping DataStoreCallback<Model>)
+
+    func delete(_ modelType: Model.Type,
+                withId id: Model.Identifier,
+                completion: DataStoreCallback<Void>)
+
+    func query(untypedModel modelType: Model.Type,
+               predicate: QueryPredicate?,
+               completion: DataStoreCallback<[Model]>)
 }

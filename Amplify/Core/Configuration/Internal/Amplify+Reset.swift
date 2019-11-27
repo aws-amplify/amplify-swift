@@ -63,6 +63,10 @@ extension Amplify {
 
         group.wait()
 
+        // TODO: Remove this once we Logging & Hub are available at all phases of the lifecycle:
+        // https://github.com/aws-amplify/amplify-ios/issues/161
+        Thread.sleep(forTimeInterval: 1.0)
+
         Analytics = AnalyticsCategory()
         API = APICategory()
         DataStore = DataStoreCategory()
