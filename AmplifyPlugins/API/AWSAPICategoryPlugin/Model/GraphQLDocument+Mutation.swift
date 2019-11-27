@@ -43,20 +43,15 @@ public struct GraphQLMutation: GraphQLDocument {
         name
     }
 
-    public var selectionSet: [String] {
-        return modelType.schema.graphQLFields.map { $0.graphQLName }
-    }
-
     public var stringValue: String {
         let mutationName = name.toPascalCase()
         let inputName = "input"
         let inputType = "\(mutationName)Input!"
 
-        let fields = selectionSet
         let document = """
         \(documentType) \(mutationName)($\(inputName): \(inputType)) {
           \(name)(\(inputName): $\(inputName)) {
-            \(fields.joined(separator: "\n    "))
+            \(selectionSetFields.joined(separator: "\n    "))
           }
         }
         """

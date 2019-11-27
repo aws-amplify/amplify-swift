@@ -33,13 +33,12 @@ public struct GraphQLSubscription: GraphQLDocument {
 
     public var stringValue: String {
         let subscriptionName = name.toPascalCase()
-        let fields = selectionSet
-
+        
+        var fields = selectionSet
         // TODO: Move these conflict resolution fields
         // All subscription documents should include typename in the selection set,
 
         // to support type-erased operations on the client
-        fields.append("__typename")
         fields.append("_deleted")
 
         let document = """

@@ -60,8 +60,8 @@ extension GraphQLDocument {
     ///
     /// - Note: Currently implementation assumes the most common and efficient queries.
     /// Future APIs might allow user customization of the selected fields.
-    public var selectionSet: [String] {
-        var fieldSet = [String].init()
+    public var selectionSetFields: [String] {
+        var fieldSet = [String]()
         let schema = modelType.schema
 
         var indentSize = 0
