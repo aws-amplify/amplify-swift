@@ -29,6 +29,7 @@ class GraphQLAnyModelDocumentTests: XCTestCase {
         mutation CreatePost($input: CreatePostInput!) {
           createPost(input: $input) {
             id
+            _deleted
             _version
             content
             createdAt
@@ -53,6 +54,7 @@ class GraphQLAnyModelDocumentTests: XCTestCase {
         mutation UpdatePost($input: UpdatePostInput!) {
           updatePost(input: $input) {
             id
+            _deleted
             _version
             content
             createdAt
@@ -77,6 +79,7 @@ class GraphQLAnyModelDocumentTests: XCTestCase {
         mutation DeletePost($input: DeletePostInput!) {
           deletePost(input: $input) {
             id
+            _deleted
             _version
             content
             createdAt
