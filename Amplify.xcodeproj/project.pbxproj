@@ -169,6 +169,7 @@
 		B9FAA1272388BE91009414B4 /* List+LazyLoad.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA1262388BE91009414B4 /* List+LazyLoad.swift */; };
 		B9FAA13A238BBADE009414B4 /* List+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA139238BBADE009414B4 /* List+Combine.swift */; };
 		B9FAA13C238BBE67009414B4 /* DataStoreCallback+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA13B238BBE67009414B4 /* DataStoreCallback+Combine.swift */; };
+		B9FAA170238E05F1009414B4 /* ModelSchema+Syncable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA16F238E05F1009414B4 /* ModelSchema+Syncable.swift */; };
 		B9FB05F82383740D00DE1FD4 /* DataStoreStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FB05F72383740D00DE1FD4 /* DataStoreStatement.swift */; };
 		FA0173352375F8A5005DDDFC /* LoggingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173342375F8A5005DDDFC /* LoggingError.swift */; };
 		FA0173372375FAA5005DDDFC /* HubError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0173362375FAA5005DDDFC /* HubError.swift */; };
@@ -718,6 +719,7 @@
 		B9FAA1262388BE91009414B4 /* List+LazyLoad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "List+LazyLoad.swift"; sourceTree = "<group>"; };
 		B9FAA139238BBADE009414B4 /* List+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "List+Combine.swift"; sourceTree = "<group>"; };
 		B9FAA13B238BBE67009414B4 /* DataStoreCallback+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataStoreCallback+Combine.swift"; sourceTree = "<group>"; };
+		B9FAA16F238E05F1009414B4 /* ModelSchema+Syncable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelSchema+Syncable.swift"; sourceTree = "<group>"; };
 		B9FB05F72383740D00DE1FD4 /* DataStoreStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreStatement.swift; sourceTree = "<group>"; };
 		BAFD88194E245D6B82399825 /* Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		BB548811E9281F8547D83681 /* Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-AmplifyAWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -1409,7 +1411,7 @@
 				FA5D4CF2238AFD7B00D2F54A /* ModelRegistry+Syncable.swift */,
 				B92E03A82367CE7A006CEB8D /* ModelSchema.swift */,
 				B92E03AA2367CE7A006CEB8D /* ModelSchema+Definition.swift */,
-				FA82168A238E074F007BB7CA /* ModelSchema+Syncable.swift */,
+				B9FAA16F238E05F1009414B4 /* ModelSchema+Syncable.swift */,
 				FA8EE780238628490097E4F1 /* Persistable.swift */,
 			);
 			path = Model;
@@ -3147,7 +3149,7 @@
 				21D79FE32377F4120057D00D /* SubscriptionConnectionState.swift in Sources */,
 				95DAAB45237E639E0028544F /* IdentifyResult.swift in Sources */,
 				95DAAB21237E63370028544F /* LanguageDetectionResult.swift in Sources */,
-				FA82168B238E074F007BB7CA /* ModelSchema+Syncable.swift in Sources */,
+				B9FAA170238E05F1009414B4 /* ModelSchema+Syncable.swift in Sources */,
 				FAC2351E227A053D00424678 /* APICategory.swift in Sources */,
 				FAC2351B227A053D00424678 /* APICategoryClientBehavior.swift in Sources */,
 				FA5D4CF3238AFD7B00D2F54A /* ModelRegistry+Syncable.swift in Sources */,

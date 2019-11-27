@@ -14,6 +14,10 @@ extension LoggingCategory: LoggingCategoryClientBehavior {
         plugin.logger(forCategory: category)
     }
 
+    public func logger(forCategory category: CategoryType) -> Logger {
+        plugin.logger(forCategory: category.displayName)
+    }
+
     public func logger(forCategory category: String, logLevel: LogLevel) -> Logger {
         plugin.logger(forCategory: category, logLevel: logLevel)
     }

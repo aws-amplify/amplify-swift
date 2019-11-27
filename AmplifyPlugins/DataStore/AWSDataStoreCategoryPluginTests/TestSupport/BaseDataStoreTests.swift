@@ -44,7 +44,7 @@ class BaseDataStoreTests: XCTestCase {
                                                          dataStorePublisher: dataStorePublisher)
 
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
-            "AWSDataStoreCategoryPlugin": true
+            "awsDataStoreCategoryPlugin": true
         ])
         let amplifyConfig = AmplifyConfiguration(dataStore: dataStoreConfig)
         do {

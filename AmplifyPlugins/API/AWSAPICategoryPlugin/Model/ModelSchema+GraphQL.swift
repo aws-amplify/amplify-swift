@@ -23,17 +23,6 @@ extension ModelSchema {
         }
     }
 
-    func findConnectedField(byType type: Model.Type) -> ModelField? {
-        let fields = sortedFields.filter { field in
-            field.hasAssociation && type == field.associatedModel
-        }
-        if fields.count > 1 {
-            // TODO add a validation message. Check with CLI, they do the same validation
-            preconditionFailure("")
-        }
-        return fields.first
-    }
-
 }
 
 /// Extension that adds GraphQL specific utilities to `ModelField`.
