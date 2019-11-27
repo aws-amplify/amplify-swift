@@ -96,6 +96,7 @@ class AWSMutationEventIngesterTests: XCTestCase {
             }
 
             XCTAssert(!mutationEvents.isEmpty)
+            XCTAssert(mutationEvents.first?.json.contains(post.id) ?? false)
         }
 
         wait(for: [mutationEventQueryCompleted], timeout: 1.0)
