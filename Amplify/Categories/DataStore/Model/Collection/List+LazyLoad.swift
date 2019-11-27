@@ -37,8 +37,14 @@ extension List {
             return
         }
 
-        // TODO resolve the correct field name in `ModelField`
-        let name = "\(associatedField.name)Id"
+        // TODO: this is currently done by specific plugin implementations (API or DataStore)
+        // How to add this name resolution to Amplify?
+        let modelName = Element.modelName
+        var name = modelName.camelCased() + associatedField.name.pascalCased() + "Id"
+        if case let .belongsTo(_, targetName) = associatedField.association {
+            name = targetName ?? name
+        }
+
         let predicate: QueryPredicateFactory = { field(name) == associatedId }
         Amplify.DataStore.query(Element.self, where: predicate) {
             switch $0 {
