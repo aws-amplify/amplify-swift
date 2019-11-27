@@ -37,7 +37,9 @@ class CloudSyncTests: XCTestCase {
         let storageEngine: StorageEngine
         do {
             let connection = try Connection(.inMemory)
-            let syncEngineFactory: CloudSyncEngineBehavior.Factory? = { CloudSyncEngine() }
+            let syncEngineFactory: CloudSyncEngineBehavior.Factory? = { adapter in
+                CloudSyncEngine(storageAdapter: adapter)
+            }
             storageAdapter = SQLiteStorageEngineAdapter(connection: connection)
             storageEngine = StorageEngine(adapter: storageAdapter, syncEngineFactory: syncEngineFactory)
         } catch {

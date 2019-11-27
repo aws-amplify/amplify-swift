@@ -11,10 +11,10 @@ class OutgoingMutationQueueTests: XCTestCase {
 
     /// - Given: A sync-configured DataStore
     /// - When:
-    ///    - I invoke DataStore.save()
+    ///    - I invoke DataStore.save() for a new model
     /// - Then:
-    ///    - The mutation queue writes events
-    func testMutationQueueStoresSaveEvents() {
+    ///    - The outgoing mutation queue sends a create mutation
+    func testMutationQueueCreateSendsSync() {
         XCTFail("Not yet implemented")
     }
 

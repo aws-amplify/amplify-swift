@@ -13,10 +13,13 @@ import Foundation
 class CloudSyncEngine: CloudSyncEngineBehavior {
 
     private weak var storageAdapter: StorageEngineAdapter?
-    private weak var api: APICategoryGraphQLBehavior?
 
     // Assigned at `start`
-    private var mutationQueue: OutgoingMutationQueue!
+    private weak var api: APICategoryGraphQLBehavior?
+
+    private let mutationEventIngester: MutationEventIngester
+    private let mutationEventPublisher: MutationEventPublisher
+    private let outgoingMutationQueue: OutgoingMutationQueue
 
     /// Synchronizes startup operations
     let syncQueue: OperationQueue
@@ -24,23 +27,37 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
     // Assigned at `setUpCloudSubscriptions`
     var reconciliationQueues: IncomingEventReconciliationQueues?
 
-    var isStarted = false
+    convenience init(storageAdapter: StorageEngineAdapter) {
+        let awsMutationEventIngester = AWSMutationEventIngester(storageAdapter: storageAdapter)
+        self.init(storageAdapter: storageAdapter,
+                  mutationEventIngester: awsMutationEventIngester,
+                  mutationEventPublisher: awsMutationEventIngester)
+    }
 
-    init() {
+    init(storageAdapter: StorageEngineAdapter,
+         mutationEventIngester: MutationEventIngester,
+         mutationEventPublisher: MutationEventPublisher) {
+        self.storageAdapter = storageAdapter
+        self.mutationEventIngester = mutationEventIngester
+        self.mutationEventPublisher = mutationEventPublisher
+
+        self.outgoingMutationQueue = OutgoingMutationQueue()
+
         self.syncQueue = OperationQueue()
         syncQueue.name = "com.amazonaws.Amplify.\(AWSDataStoreCategoryPlugin.self).CloudSyncEngine"
         syncQueue.maxConcurrentOperationCount = 1
     }
 
-    func start(api: APICategoryGraphQLBehavior = Amplify.API,
-               storageAdapter: StorageEngineAdapter) {
+    func start(api: APICategoryGraphQLBehavior = Amplify.API) {
 
         // TODO: Refactor this into a reactive, state-based process
 
-        self.storageAdapter = storageAdapter
         self.api = api
 
-        mutationQueue = OutgoingMutationQueue(storageAdapter: storageAdapter)
+        guard let storageAdapter = storageAdapter else {
+            // TODO: Fail the operation if storage adapter is for some reason missing
+            return
+        }
 
         let pauseSubscriptionsOp = BlockOperation {
             self.pauseSubscriptions()
@@ -67,12 +84,13 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
         activateCloudSubscriptionsOp.addDependency(performInitialQueriesOp)
 
         let startMutationQueueOp = BlockOperation {
-            self.startMutationQueue()
+            self.startMutationQueue(api: api, mutationEventPublisher: self.mutationEventPublisher)
         }
         startMutationQueueOp.addDependency(activateCloudSubscriptionsOp)
 
         let updateStateOp = BlockOperation {
-            self.isStarted = true
+            Amplify.Hub.dispatch(to: .dataStore,
+                                 payload: HubPayload(eventName: HubPayload.EventName.DataStore.syncStarted))
         }
         updateStateOp.addDependency(startMutationQueueOp)
 
@@ -88,17 +106,7 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
     }
 
     func submit(_ mutationEvent: MutationEvent) -> Future<MutationEvent, DataStoreError> {
-        guard isStarted else {
-            let dataStoreError = DataStoreError.configuration(
-                "Can't submit mutations while CloudSyncEngine not started",
-                "Wait for configuration to complete before submitting events for synchronization to the cloud API"
-            )
-            return Future<MutationEvent, DataStoreError> { promise in
-                promise(.failure(dataStoreError))
-            }
-        }
-        log.verbose("submit: \(mutationEvent)")
-        return mutationQueue.submit(mutationEvent: mutationEvent)
+        return mutationEventIngester.submit(mutationEvent: mutationEvent)
     }
 
     // MARK: - Startup sequence
@@ -109,7 +117,7 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
 
     private func pauseMutations() {
         log.debug(#function)
-        mutationQueue.pauseSyncingToCloud()
+        outgoingMutationQueue.pauseSyncingToCloud()
         // TODO: Implement this
 //        reconciliationQueues.pause()
     }
@@ -133,13 +141,10 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
         reconciliationQueues?.start()
     }
 
-    private func startMutationQueue() {
+    private func startMutationQueue(api: APICategoryGraphQLBehavior,
+                                    mutationEventPublisher: MutationEventPublisher) {
         log.debug(#function)
-        guard let api = api else {
-            log.error(error: OutgoingMutationQueue.Errors.nilStorageAdapter)
-            return
-        }
-        mutationQueue.startSyncingToCloud(syncEngine: self, api: api)
+        outgoingMutationQueue.startSyncingToCloud(api: api, mutationEventPublisher: mutationEventPublisher)
     }
 
 }
