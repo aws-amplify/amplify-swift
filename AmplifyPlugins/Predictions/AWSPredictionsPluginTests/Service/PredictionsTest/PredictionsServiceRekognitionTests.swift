@@ -32,14 +32,14 @@ class PredictionsServiceRekognitionTests: XCTestCase {
             //set test collection id to invoke collection method of rekognition
             mockConfigurationJSON = """
             {
-                "defaultRegion": "us-west-2",
-                "identify": {
-                    "identifyEntities": {
-                        "collectionId": "TestCollection",
-                        "maxFaces": 50,
-                        "region": "us-west-2"
-                    }
-                }
+            "defaultRegion": "us-west-2",
+            "identify": {
+            "identifyEntities": {
+            "collectionId": "TestCollection",
+            "maxFaces": 50,
+            "region": "us-west-2"
+            }
+            }
             }
             """
         }
@@ -76,8 +76,8 @@ class PredictionsServiceRekognitionTests: XCTestCase {
         mockRekognition.setLabelsResponse(result: mockResponse)
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageLabels", withExtension: "jpg") else {
-             XCTFail("Unable to find image")
-             return
+            XCTFail("Unable to find image")
+            return
         }
 
         predictionsService.detectLabels(image: url, type: .labels) { event in
@@ -118,6 +118,212 @@ class PredictionsServiceRekognitionTests: XCTestCase {
         }
     }
 
+    /// Test whether error is correctly propogated
+    ///
+    /// - Given: Predictions service with rekogniton behavior
+    /// - When:
+    ///    - I invoke an invalid request
+    /// - Then:
+    ///    - I should get back a service error
+    ///
+    func testIdentifyLabelsServiceWithNilRequest() {
+        setUpAmplify()
+
+        mockRekognition.setLabelsResponse(result: nil)
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImageLabels", withExtension: "jpg") else {
+            XCTFail("Unable to find image")
+            return
+        }
+
+        predictionsService.detectLabels(image: url, type: .labels) { event in
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+            }
+        }
+    }
+
+    /// Test whether we can make a successful rekognition call to identify moderation labels
+    ///
+    /// - Given: Predictions service with rekognition behavior
+    /// - When:
+    ///    - I invoke rekognition api in predictions service
+    /// - Then:
+    ///    - I should get back a result
+    ///
+    func testIdentifyModerationLabelsService() {
+        setUpAmplify()
+        let mockResponse: AWSRekognitionDetectModerationLabelsResponse = AWSRekognitionDetectModerationLabelsResponse()
+        mockResponse.moderationLabels = [AWSRekognitionModerationLabel]()
+
+        mockRekognition.setModerationLabelsResponse(result: mockResponse)
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImageLabels", withExtension: "jpg") else {
+            XCTFail("Unable to find image")
+            return
+        }
+
+        predictionsService.detectLabels(image: url, type: .moderation) { event in
+            switch event {
+            case .completed(let result):
+                let labelResult = result as? IdentifyLabelsResult
+                let labels = IdentifyLabelsResultTransformers.processModerationLabels(mockResponse.moderationLabels!)
+                XCTAssertEqual(labelResult?.labels, labels, "Labels should be the same")
+                XCTAssertNotNil(labelResult?.unsafeContent, "unsafe content should have a boolean in it since we called moderation labels")
+            case .failed(let error):
+                XCTFail("Should not produce error: \(error)")
+            }
+        }
+    }
+
+    /// Test whether error is prograted correctly when making a rekognition call to identify moderation labels
+    ///
+    /// - Given: Predictions service with rekognition behavior
+    /// - When:
+    ///    - I invoke rekognition api in predictions service
+    /// - Then:
+    ///    - I should get back a service error
+    ///
+    func testIdentifyModerationLabelsServiceWithError() {
+        setUpAmplify()
+        let mockError = NSError(domain: AWSRekognitionErrorDomain,
+                                code: AWSRekognitionErrorType.invalidImageFormat.rawValue,
+                                userInfo: [:])
+        mockRekognition.setError(error: mockError)
+        let url = URL(fileURLWithPath: "")
+
+        predictionsService.detectLabels(image: url, type: .moderation) { event in
+            switch event {
+            case .completed(let result):
+                  XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+            }
+        }
+    }
+
+    /// Test whether we can make a successful rekognition call to identify moderation labels
+    ///
+    /// - Given: Predictions service with rekognition behavior
+    /// - When:
+    ///    - I invoke rekognition api in predictions service
+    /// - Then:
+    ///    - I should get back a result
+    ///
+    func testIdentifyModerationLabelsServiceWithNilRequest() {
+        setUpAmplify()
+
+        mockRekognition.setModerationLabelsResponse(result: nil)
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImageLabels", withExtension: "jpg") else {
+            XCTFail("Unable to find image")
+            return
+        }
+
+        predictionsService.detectLabels(image: url, type: .moderation) { event in
+            switch event {
+            case .completed(let result):
+                  XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+            }
+        }
+    }
+
+    /// Test whether we can make a successful rekognition call to identify all labels
+    ///
+    /// - Given: Predictions service with rekognition behavior
+    /// - When:
+    ///    - I invoke rekognition api in predictions service
+    /// - Then:
+    ///    - I should get back a result
+    ///
+    func testIdentifyAllLabelsService() {
+        setUpAmplify()
+        let mockLabelsResponse: AWSRekognitionDetectLabelsResponse = AWSRekognitionDetectLabelsResponse()
+        mockLabelsResponse.labels = [AWSRekognitionLabel]()
+
+        let mockModerationResponse: AWSRekognitionDetectModerationLabelsResponse =
+            AWSRekognitionDetectModerationLabelsResponse()
+        mockModerationResponse.moderationLabels = [AWSRekognitionModerationLabel]()
+
+        mockRekognition.setAllLabelsResponse(labelsResult: mockLabelsResponse, moderationResult: mockModerationResponse)
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImageLabels", withExtension: "jpg") else {
+            XCTFail("Unable to find image")
+            return
+        }
+
+        predictionsService.detectLabels(image: url, type: .all) { event in
+            switch event {
+            case .completed(let result):
+                let labelResult = result as? IdentifyLabelsResult
+                let labels = IdentifyLabelsResultTransformers.processLabels(mockLabelsResponse.labels!)
+                XCTAssertEqual(labelResult?.labels, labels, "Labels should be the same")
+                XCTAssertNotNil(labelResult?.unsafeContent,
+                                "unsafe content should have a boolean in it since we called all labels")
+            case .failed(let error):
+                XCTFail("Should not produce error: \(error)")
+            }
+        }
+    }
+
+    /// Test whether error is prograted correctly when making a rekognition call to identify all labels
+    ///
+    /// - Given: Predictions service with rekognition behavior
+    /// - When:
+    ///    - I invoke rekognition api in predictions service
+    /// - Then:
+    ///    - I should get back a service error
+    ///
+    func testIdentifyAllLabelsServiceWithNilResponse() {
+        setUpAmplify()
+        mockRekognition.setAllLabelsResponse(labelsResult: nil, moderationResult: nil)
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImageLabels", withExtension: "jpg") else {
+            XCTFail("Unable to find image")
+            return
+        }
+
+        predictionsService.detectLabels(image: url, type: .all) { event in
+            switch event {
+            case .completed(let result):
+                  XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+            }
+        }
+    }
+
+    /// Test whether error is prograted correctly when making a rekognition call to identify all labels
+    ///
+    /// - Given: Predictions service with rekognition behavior
+    /// - When:
+    ///    - I invoke rekognition api in predictions service
+    /// - Then:
+    ///    - I should get back a service error
+    ///
+    func testIdentifyAllLabelsServiceWithError() {
+        setUpAmplify()
+        let mockError = NSError(domain: AWSRekognitionErrorDomain,
+                                code: AWSRekognitionErrorType.invalidImageFormat.rawValue,
+                                userInfo: [:])
+        mockRekognition.setError(error: mockError)
+        let url = URL(fileURLWithPath: "")
+
+        predictionsService.detectLabels(image: url, type: .all) { event in
+            switch event {
+            case .completed(let result):
+                  XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+            }
+        }
+    }
+
     /// Test whether we can make a successfull rekognition call to identify entities
     ///
     /// - Given: Predictions service with rekognition behavior
@@ -134,8 +340,8 @@ class PredictionsServiceRekognitionTests: XCTestCase {
         mockRekognition.setFacesResponse(result: mockResponse)
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageEntities", withExtension: "jpg") else {
-             XCTFail("Unable to find image")
-             return
+            XCTFail("Unable to find image")
+            return
         }
 
         predictionsService.detectEntities(image: url) { event in
@@ -176,6 +382,33 @@ class PredictionsServiceRekognitionTests: XCTestCase {
         }
     }
 
+    /// Test whether error is correctly propogated for detecting entities when given a nil request
+    ///
+    /// - Given: Predictions service with rekogniton behavior
+    /// - When:
+    ///    - I invoke an nil request
+    /// - Then:
+    ///    - I should get back a service error
+    ///
+    func testNilEntitiesService() {
+        setUpAmplify()
+        mockRekognition.setFacesResponse(result: nil)
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImageEntities", withExtension: "jpg") else {
+            XCTFail("Unable to find image")
+            return
+        }
+
+        predictionsService.detectEntities(image: url) { event in
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+            }
+        }
+    }
+
     /// Test whether we can make a successfull rekognition call to identify entities from a collection
     ///
     /// - Given: Predictions service with rekognition behavior
@@ -192,8 +425,8 @@ class PredictionsServiceRekognitionTests: XCTestCase {
         mockRekognition.setFacesFromCollection(result: mockResponse)
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageEntities", withExtension: "jpg") else {
-             XCTFail("Unable to find image")
-             return
+            XCTFail("Unable to find image")
+            return
         }
 
         predictionsService.detectEntities(image: url) { event in
@@ -216,13 +449,40 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     /// - Then:
     ///    - I should get back a service error
     ///
-        func testIdentifyEntityMatchesServiceWithError() {
+    func testIdentifyEntityMatchesServiceWithError() {
         setUpAmplify(withCollection: true)
         let mockError = NSError(domain: AWSRekognitionErrorDomain,
                                 code: AWSRekognitionErrorType.invalidImageFormat.rawValue,
                                 userInfo: [:])
         mockRekognition.setError(error: mockError)
         let url = URL(fileURLWithPath: "")
+
+        predictionsService.detectEntities(image: url) { event in
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+            }
+        }
+    }
+
+    /// Test whether error is correctly propogated for entity matches when request is nil
+    ///
+    /// - Given: Predictions service with rekogniton behavior
+    /// - When:
+    ///    - I invoke an nil request
+    /// - Then:
+    ///    - I should get back a service error
+    ///
+    func testIdentifyEntityMatchesServiceWithNilRequest() {
+        setUpAmplify(withCollection: true)
+        mockRekognition.setFacesFromCollection(result: nil)
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImageEntities", withExtension: "jpg") else {
+            XCTFail("Unable to find image")
+            return
+        }
 
         predictionsService.detectEntities(image: url) { event in
             switch event {
@@ -250,8 +510,8 @@ class PredictionsServiceRekognitionTests: XCTestCase {
         mockRekognition.setText(result: mockResponse)
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
-             XCTFail("Unable to find image")
-             return
+            XCTFail("Unable to find image")
+            return
         }
 
         predictionsService.detectText(image: url, format: .plain) { event in
@@ -275,7 +535,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     /// - Then:
     ///    - I should get back a service error
     ///
-        func testIdentifyPlainTextServiceWithError() {
+    func testIdentifyPlainTextServiceWithError() {
         setUpAmplify()
         let mockError = NSError(domain: AWSRekognitionErrorDomain,
                                 code: AWSRekognitionErrorType.invalidImageFormat.rawValue,
@@ -283,7 +543,35 @@ class PredictionsServiceRekognitionTests: XCTestCase {
         mockRekognition.setError(error: mockError)
         let url = URL(fileURLWithPath: "")
 
-            predictionsService.detectText(image: url, format: .plain) { event in
+        predictionsService.detectText(image: url, format: .plain) { event in
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+            }
+        }
+    }
+
+    /// Test whether error is correctly propogated for text matches with a nil request
+    ///
+    /// - Given: Predictions service with rekogniton behavior
+    /// - When:
+    ///    - I invoke an nil request
+    /// - Then:
+    ///    - I should get back a service error
+    ///
+    func testIdentifyPlainTextServiceWithNilRequest() {
+        setUpAmplify()
+
+        mockRekognition.setText(result: nil)
+        let testBundle = Bundle(for: type(of: self))
+        guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
+            XCTFail("Unable to find image")
+            return
+        }
+
+        predictionsService.detectText(image: url, format: .plain) { event in
             switch event {
             case .completed(let result):
                 XCTFail("Should not produce result: \(result)")

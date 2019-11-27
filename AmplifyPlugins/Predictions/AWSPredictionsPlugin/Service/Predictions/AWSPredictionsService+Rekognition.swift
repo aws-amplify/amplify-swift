@@ -56,7 +56,6 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
             detectModerationLabels(image: imageData, onEvent: onEvent).continueWith { (task) -> Any? in
                 guard task.error == nil else {
                     let error = task.error! as NSError
-
                     let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
                     onEvent(.failed(.network(predictionsErrorString.errorDescription,
                                              predictionsErrorString.recoverySuggestion)))
@@ -91,7 +90,6 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
 
         guard let imageData = try? Data(contentsOf: image) else {
-
             onEvent(.failed(.network(AWSRekognitionErrorMessage.imageNotFound.errorDescription,
                                      AWSRekognitionErrorMessage.imageNotFound.recoverySuggestion)))
             return
@@ -152,7 +150,6 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
 
         guard let imageData = try? Data(contentsOf: image) else {
-
             onEvent(.failed(.network(AWSRekognitionErrorMessage.imageNotFound.errorDescription,
                                      AWSRekognitionErrorMessage.imageNotFound.recoverySuggestion)))
             return
@@ -239,7 +236,6 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
 
         guard let imageData = try? Data(contentsOf: image) else {
-
             onEvent(.failed(.network(AWSRekognitionErrorMessage.imageNotFound.errorDescription,
                                      AWSRekognitionErrorMessage.imageNotFound.recoverySuggestion)))
             return
@@ -268,7 +264,6 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                                          AWSRekognitionErrorMessage.noResultFound.recoverySuggestion)))
                 return nil
             }
-
             let identifyTextResult = IdentifyTextResultTransformers.processText(rekognitionTextDetections)
 
             //if limit of words is under 50 return rekognition response
@@ -305,11 +300,9 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                         let textractResult = IdentifyTextResultTransformers.processText(textractTextDetections)
                         onEvent(.completed(textractResult))
                         return nil
-
                     }
                     return nil
                 }
-
             }
             return nil
         }
@@ -319,10 +312,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         RekognitionServiceEventHandler) -> DetectModerationLabelsCompletedHandler {
         let request: AWSRekognitionDetectModerationLabelsRequest = AWSRekognitionDetectModerationLabelsRequest()
         let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
-
         rekognitionImage.bytes = image
         request.image = rekognitionImage
-
         return awsRekognition.detectModerationLabels(request: request)
     }
 
@@ -330,10 +321,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         RekognitionServiceEventHandler) -> DetectLabelsCompletedHandler {
         let request: AWSRekognitionDetectLabelsRequest = AWSRekognitionDetectLabelsRequest()
         let rekognitionImage: AWSRekognitionImage = AWSRekognitionImage()
-
         rekognitionImage.bytes = image
         request.image = rekognitionImage
-
         return awsRekognition.detectLabels(request: request)
     }
 
@@ -341,27 +330,32 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         let dispatchGroup = DispatchGroup()
         var allLabels = [Label]()
         var unsafeContent: Bool = false
+        var errorOcurred: Bool = false
         dispatchGroup.enter()
         detectRekognitionLabels(image: image, onEvent: onEvent).continueWith { (task) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
-
                 let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
-
                 onEvent(.failed(.network(predictionsErrorString.errorDescription,
                                          predictionsErrorString.recoverySuggestion)))
+                errorOcurred = true
+                dispatchGroup.leave()
                 return nil
             }
 
             guard let result = task.result else {
                 onEvent(.failed(.unknown(AWSRekognitionErrorMessage.noResultFound.errorDescription,
                                          AWSRekognitionErrorMessage.noResultFound.recoverySuggestion)))
+                errorOcurred = true
+                dispatchGroup.leave()
                 return nil
             }
 
             guard let labels = result.labels else {
                 onEvent(.failed(.network(AWSRekognitionErrorMessage.noResultFound.errorDescription,
                                          AWSRekognitionErrorMessage.noResultFound.recoverySuggestion)))
+                errorOcurred = true
+                dispatchGroup.leave()
                 return nil
             }
 
@@ -373,32 +367,34 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         detectModerationLabels(image: image, onEvent: onEvent).continueWith {(task) -> Any? in
             guard task.error == nil else {
                 let error = task.error! as NSError
-
                 let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error)
-
                 onEvent(.failed(.network(predictionsErrorString.errorDescription,
                                          predictionsErrorString.recoverySuggestion)))
+                errorOcurred = true
+                dispatchGroup.leave()
                 return nil
             }
             guard let result = task.result else {
                 onEvent(.failed(.unknown(AWSRekognitionErrorMessage.noResultFound.errorDescription,
                                          AWSRekognitionErrorMessage.noResultFound.recoverySuggestion)))
+                errorOcurred = true
+                dispatchGroup.leave()
                 return nil
             }
-
             guard let moderationRekognitionLabels = result.moderationLabels else {
                 onEvent(.failed(.network(AWSRekognitionErrorMessage.noResultFound.errorDescription,
                                          AWSRekognitionErrorMessage.noResultFound.recoverySuggestion)))
+                errorOcurred = true
+                dispatchGroup.leave()
                 return nil
             }
-
             unsafeContent = !moderationRekognitionLabels.isEmpty
-
             dispatchGroup.leave()
             return nil
         }
         dispatchGroup.wait()
-
+        if !errorOcurred {
         onEvent(.completed(IdentifyLabelsResult(labels: allLabels, unsafeContent: unsafeContent)))
+        }
     }
 }
