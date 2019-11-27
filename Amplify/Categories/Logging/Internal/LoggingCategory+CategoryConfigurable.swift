@@ -18,7 +18,7 @@ extension LoggingCategory: CategoryConfigurable {
                 // Default plugin is already assigned, and no configuration is applicable, exit early
                 configurationState = .configured
                 return
-            case .notConfigured(let pendingPlugin):
+            case .pendingConfiguration(let pendingPlugin):
                 plugin = pendingPlugin
             case .configured:
                 let error = ConfigurationError.amplifyAlreadyConfigured(

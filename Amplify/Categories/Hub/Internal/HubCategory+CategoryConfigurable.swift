@@ -45,7 +45,7 @@ extension HubCategory: CategoryConfigurable {
 
         group.wait()
 
-        configurationState = .notConfigured
+        configurationState = .pendingConfiguration
         onComplete()
     }
 

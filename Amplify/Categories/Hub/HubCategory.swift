@@ -11,12 +11,13 @@
 /// notification of a file download.
 final public class HubCategory: Category {
 
+    // TODO: Finish implementing Hub default plugin. https://github.com/aws-amplify/amplify-ios/issues/161
     enum ConfigurationState {
         /// Default configuration at initialization
         case `default`
 
         /// After a custom plugin is added, but before `configure` was invoked
-        case notConfigured
+        case pendingConfiguration
 
         /// After a custom plugin is added and `configure` is invoked
         case configured
@@ -33,13 +34,13 @@ final public class HubCategory: Category {
     var configurationState = ConfigurationState.default
 
     var isConfigured: Bool {
-        configurationState != .notConfigured
+        configurationState != .pendingConfiguration
     }
 
     /// Returns the plugin added to the category, if only one plugin is added. Accessing this property if no plugins
     /// are added, or if more than one plugin is added, will cause a preconditionFailure.
     var plugin: HubCategoryPlugin {
-        guard configurationState != .notConfigured else {
+        guard configurationState != .pendingConfiguration else {
             preconditionFailure(
                 """
                 \(categoryType.displayName) category is not configured. Call Amplify.configure() before using \
@@ -79,7 +80,7 @@ final public class HubCategory: Category {
     /// - Parameter plugin: The Plugin to add
     public func add(plugin: HubCategoryPlugin) throws {
         if configurationState == .default {
-            configurationState = .notConfigured
+            configurationState = .pendingConfiguration
             plugins[AWSHubPlugin.key] = nil
         }
 

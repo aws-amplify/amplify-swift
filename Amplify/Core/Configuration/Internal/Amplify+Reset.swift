@@ -63,7 +63,8 @@ extension Amplify {
 
         group.wait()
 
-        // Remember to always instantiate Logging, then Hub, then everything else
+        // Initialize Logging and Hub first, to ensure their default plugins are registered and available to other
+        // categories during their initialization and configuration phases.
         Logging = LoggingCategory()
         Hub = HubCategory()
 

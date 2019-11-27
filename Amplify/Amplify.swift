@@ -11,8 +11,11 @@
 /// that plugin.
 ///
 /// - Warning: It is a serious programmer to invoke any of the category APIs (like `Analytics.record()` or
-/// `Logging.debug()`) without first registering plugins via `Amplify.add(plugin:)` and configuring Amplify via
+/// `API.mutate()`) without first registering plugins via `Amplify.add(plugin:)` and configuring Amplify via
 /// `Amplify.configure()`. Such access will cause a preconditionFailure.
+///
+/// There are two exceptions to this. The `Logging` and `Hub` categories are configured with a default plugin that is
+/// available at initialization.
 public class Amplify {
 
     /// If `true`, `configure()` has already been invoked, and subsequent calls to `configure` will throw a
@@ -20,17 +23,13 @@ public class Amplify {
     static var isConfigured = false
 
     // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset.
-    // Initialize Logging and Hub first, to ensure their default plugins are registered and available to other
-    // categories during their initialization and configuration phases.
-    //
-    // It is not supported to mutate these category properties. They are `var` to support the `reset()` method for ease
-    // of testing.
-    public static internal(set) var Logging = LoggingCategory()
-    public static internal(set) var Hub = HubCategory()
-
+    // It is not supported to mutate these category properties. They are `var` to support the `reset()` method for
+    // ease of testing.
     public static internal(set) var Analytics = AnalyticsCategory()
     public static internal(set) var API = APICategory()
     public static internal(set) var DataStore = DataStoreCategory()
+    public static internal(set) var Hub = HubCategory()
+    public static internal(set) var Logging = LoggingCategory()
     public static internal(set) var Predictions = PredictionsCategory()
     public static internal(set) var Storage = StorageCategory()
 

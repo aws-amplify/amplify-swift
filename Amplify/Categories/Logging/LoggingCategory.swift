@@ -14,7 +14,7 @@ final public class LoggingCategory: Category {
         case `default`
 
         /// After a custom plugin is added, but before `configure` was invoked
-        case notConfigured(LoggingCategoryPlugin)
+        case pendingConfiguration(LoggingCategoryPlugin)
 
         /// After a custom plugin is added and `configure` is invoked
         case configured
@@ -77,7 +77,7 @@ final public class LoggingCategory: Category {
                 throw error
             }
 
-            configurationState = .notConfigured(plugin)
+            configurationState = .pendingConfiguration(plugin)
         }
     }
 
