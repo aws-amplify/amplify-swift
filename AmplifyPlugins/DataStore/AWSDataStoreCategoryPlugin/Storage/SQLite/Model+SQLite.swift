@@ -44,6 +44,8 @@ extension Persistable {
     }
 }
 
+private let logger = Amplify.Logging.logger(forCategory: .dataStore)
+
 extension Model {
 
     /// Get the values of a `Model` for the fields relevant to a SQL query. The order of the
@@ -93,11 +95,12 @@ extension Model {
             } else if let value = value as? Persistable {
                 return value.asBinding()
             } else {
+                logger.warn("""
+                Field \(field.name) of model \(modelName) has an unsupported value
+                of type \(String(describing: type(of: value))).
+                Refer to types that conform to Persistable.
+                """)
                 return nil
-//                preconditionFailure("""
-//                Type \(String(describing: type(of: value))) from \(modelType) field
-//                \(field.name) is not a compatible type. Refer to types that conform to Persistable.
-//                """)
             }
         }
 
