@@ -35,12 +35,12 @@ class MockTextractBehavior: AWSTextractBehavior {
         return AWSTextract()
     }
 
-    public func setAnalyzeDocument(result: AWSTextractAnalyzeDocumentResponse) {
+    public func setAnalyzeDocument(result: AWSTextractAnalyzeDocumentResponse?) {
         analyzeDocument = result
         error = nil
     }
 
-    public func setDetectDocumentText(result: AWSTextractDetectDocumentTextResponse) {
+    public func setDetectDocumentText(result: AWSTextractDetectDocumentTextResponse?) {
         detectDocumentText = result
         error = nil
     }

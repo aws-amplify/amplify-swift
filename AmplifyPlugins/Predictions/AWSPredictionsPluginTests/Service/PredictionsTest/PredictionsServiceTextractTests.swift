@@ -46,10 +46,10 @@ class PredictionsServiceTextractTests: XCTest {
     ///    - I should get back a result
     ///
     func testIdentifyTablesService() {
-        let mockResponse: AWSTextractDetectDocumentTextResponse = AWSTextractDetectDocumentTextResponse()
+        let mockResponse: AWSTextractAnalyzeDocumentResponse = AWSTextractAnalyzeDocumentResponse()
         mockResponse.blocks = [AWSTextractBlock]()
 
-        mockTextract.setDetectDocumentText(result: mockResponse)
+        mockTextract.setAnalyzeDocument(result: mockResponse)
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
              XCTFail("Unable to find image")
@@ -94,6 +94,32 @@ class PredictionsServiceTextractTests: XCTest {
         }
     }
 
+    /// Test whether error is correctly propogated for text matches with nil response
+    ///
+    /// - Given: Predictions service with textract behavior
+    /// - When:
+    ///    - I invoke an invalid request
+    /// - Then:
+    ///    - I should get back a service error
+    ///
+    func testIdentifyTablesServiceWithNilResponse() {
+
+        mockTextract.setAnalyzeDocument(result: nil)
+            let testBundle = Bundle(for: type(of: self))
+            guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
+                XCTFail("Unable to find image")
+                return
+            }
+            predictionsService.detectText(image: url, format: .table) { event in
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+            }
+        }
+    }
+
     /// Test whether we can make a successfull textract call to identify forms
     ///
     /// - Given: Predictions service with textract behavior
@@ -103,10 +129,10 @@ class PredictionsServiceTextractTests: XCTest {
     ///    - I should get back a result
     ///
     func testIdentifyFormsService() {
-        let mockResponse: AWSTextractDetectDocumentTextResponse = AWSTextractDetectDocumentTextResponse()
+        let mockResponse: AWSTextractAnalyzeDocumentResponse = AWSTextractAnalyzeDocumentResponse()
         mockResponse.blocks = [AWSTextractBlock]()
 
-        mockTextract.setDetectDocumentText(result: mockResponse)
+        mockTextract.setAnalyzeDocument(result: mockResponse)
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
              XCTFail("Unable to find image")
@@ -151,6 +177,32 @@ class PredictionsServiceTextractTests: XCTest {
         }
     }
 
+    /// Test whether error is correctly propogated for text matches with nil response
+    ///
+    /// - Given: Predictions service with textract behavior
+    /// - When:
+    ///    - I invoke a normal request
+    /// - Then:
+    ///    - I should get back a service error because response is nil
+    ///
+    func testIdentifyFormsServiceWithNilResponse() {
+
+        mockTextract.setAnalyzeDocument(result: nil)
+            let testBundle = Bundle(for: type(of: self))
+            guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
+                XCTFail("Unable to find image")
+                return
+            }
+        predictionsService.detectText(image: url, format: .form) { event in
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+            }
+        }
+    }
+
     /// Test whether we can make a successfull textract call to identify forms and tables
     ///
     /// - Given: Predictions service with textract behavior
@@ -160,10 +212,10 @@ class PredictionsServiceTextractTests: XCTest {
     ///    - I should get back a result
     ///
     func testIdentifyAllTextService() {
-        let mockResponse: AWSTextractDetectDocumentTextResponse = AWSTextractDetectDocumentTextResponse()
+        let mockResponse: AWSTextractAnalyzeDocumentResponse = AWSTextractAnalyzeDocumentResponse()
         mockResponse.blocks = [AWSTextractBlock]()
 
-        mockTextract.setDetectDocumentText(result: mockResponse)
+        mockTextract.setAnalyzeDocument(result: mockResponse)
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
              XCTFail("Unable to find image")
@@ -198,6 +250,32 @@ class PredictionsServiceTextractTests: XCTest {
         mockTextract.setError(error: mockError)
         let url = URL(fileURLWithPath: "")
 
+        predictionsService.detectText(image: url, format: .all) { event in
+            switch event {
+            case .completed(let result):
+                XCTFail("Should not produce result: \(result)")
+            case .failed(let error):
+                XCTAssertNotNil(error, "Should produce an error")
+            }
+        }
+    }
+
+    /// Test whether error is correctly propogated for text matches with nil response
+    ///
+    /// - Given: Predictions service with textract behavior
+    /// - When:
+    ///    - I invoke a normal request
+    /// - Then:
+    ///    - I should get back a service error because response is nil
+    ///
+    func testIdentifyAllTextServiceWithNilResponse() {
+
+        mockTextract.setAnalyzeDocument(result: nil)
+            let testBundle = Bundle(for: type(of: self))
+            guard let url = testBundle.url(forResource: "testImageText", withExtension: "jpg") else {
+                XCTFail("Unable to find image")
+                return
+            }
         predictionsService.detectText(image: url, format: .all) { event in
             switch event {
             case .completed(let result):

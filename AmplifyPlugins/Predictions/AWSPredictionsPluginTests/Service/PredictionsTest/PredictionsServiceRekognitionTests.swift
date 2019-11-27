@@ -124,9 +124,9 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     /// - When:
     ///    - I invoke an invalid request
     /// - Then:
-    ///    - I should get back a service error
+    ///    - I should get back a service error because response was nil
     ///
-    func testIdentifyLabelsServiceWithNilRequest() {
+    func testIdentifyLabelsServiceWithNilResponse() {
         setUpAmplify()
 
         mockRekognition.setLabelsResponse(result: nil)
@@ -205,15 +205,15 @@ class PredictionsServiceRekognitionTests: XCTestCase {
         }
     }
 
-    /// Test whether we can make a successful rekognition call to identify moderation labels
+    /// Test whether we can make a successful rekognition call to identify moderation labels but receive a nil response
     ///
     /// - Given: Predictions service with rekognition behavior
     /// - When:
     ///    - I invoke rekognition api in predictions service
     /// - Then:
-    ///    - I should get back a result
+    ///    - I should get back a service error because response is nil
     ///
-    func testIdentifyModerationLabelsServiceWithNilRequest() {
+    func testIdentifyModerationLabelsServiceWithNilResponse() {
         setUpAmplify()
 
         mockRekognition.setModerationLabelsResponse(result: nil)
@@ -277,7 +277,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     /// - When:
     ///    - I invoke rekognition api in predictions service
     /// - Then:
-    ///    - I should get back a service error
+    ///    - I should get back a service error because response is nil
     ///
     func testIdentifyAllLabelsServiceWithNilResponse() {
         setUpAmplify()
@@ -382,15 +382,15 @@ class PredictionsServiceRekognitionTests: XCTestCase {
         }
     }
 
-    /// Test whether error is correctly propogated for detecting entities when given a nil request
+    /// Test whether error is correctly propogated for detecting entities when a nil response is received
     ///
     /// - Given: Predictions service with rekogniton behavior
     /// - When:
     ///    - I invoke an nil request
     /// - Then:
-    ///    - I should get back a service error
+    ///    - I should get back a service error because response is nil
     ///
-    func testNilEntitiesService() {
+    func testIdentifyEntitiesServiceWithNilResponse() {
         setUpAmplify()
         mockRekognition.setFacesResponse(result: nil)
         let testBundle = Bundle(for: type(of: self))
@@ -471,11 +471,11 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     ///
     /// - Given: Predictions service with rekogniton behavior
     /// - When:
-    ///    - I invoke an nil request
+    ///    - I invoke a valid request
     /// - Then:
-    ///    - I should get back a service error
+    ///    - I should get back a service error and nil response
     ///
-    func testIdentifyEntityMatchesServiceWithNilRequest() {
+    func testIdentifyEntityMatchesServiceWithNilResponse() {
         setUpAmplify(withCollection: true)
         mockRekognition.setFacesFromCollection(result: nil)
         let testBundle = Bundle(for: type(of: self))
@@ -553,15 +553,15 @@ class PredictionsServiceRekognitionTests: XCTestCase {
         }
     }
 
-    /// Test whether error is correctly propogated for text matches with a nil request
+    /// Test whether error is correctly propogated for text matches and receive a nil response
     ///
     /// - Given: Predictions service with rekogniton behavior
     /// - When:
-    ///    - I invoke an nil request
+    ///    - I invoke a valid request
     /// - Then:
-    ///    - I should get back a service error
+    ///    - I should get back a service error because there was a nil response
     ///
-    func testIdentifyPlainTextServiceWithNilRequest() {
+    func testIdentifyPlainTextServiceWithNilResponse() {
         setUpAmplify()
 
         mockRekognition.setText(result: nil)
