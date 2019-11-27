@@ -32,9 +32,8 @@ extension ModelField {
     var graphQLName: String {
         let name = targetName ?? self.name
         if isAssociationOwner {
-            // TODO generate the correct connected field name
-            // e.g. Post - Comment: `commentPostId` on the `Comment.post`
-            return name + "Id"
+            // Generates part of the correct connected field name. ie. "PostId
+            return name.pascalCased() + "Id"
         }
         return name
     }

@@ -46,6 +46,8 @@ class AnyModelIntegrationTests: XCTestCase {
         Amplify.reset()
     }
 
+    // TODO: this test is failing due to provisioned AppSync does not have "_deleted"
+    // Variables is created with "_deleted" field and nil value. Service cannot accept it
     func testCreateAsAnyModel() throws {
         let originalPost = Post(title: "Post title",
                                 content: "Original post content as of \(Date())")
