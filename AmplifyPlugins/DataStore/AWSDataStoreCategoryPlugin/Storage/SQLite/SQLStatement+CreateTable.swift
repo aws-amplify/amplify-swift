@@ -34,6 +34,9 @@ struct CreateTableStatement: SQLStatement {
             if column.isRequired {
                 statement += " not null"
             }
+            if column.isOneToOne && column.isForeignKey {
+                statement += " unique"
+            }
 
             let isNotLastColumn = index < columns.endIndex - 1
             if isNotLastColumn {
@@ -46,13 +49,17 @@ struct CreateTableStatement: SQLStatement {
             statement += ",\n"
         }
 
-        for foreignKey in foreignKeys {
+        for (index, foreignKey) in foreignKeys.enumerated() {
             statement += "  foreign key(\"\(foreignKey.sqlName)\") "
-            let connectedModel = foreignKey.requiredConnectedModel
-            let connectedId = connectedModel.schema.primaryKey
-            let connectedModelName = connectedModel.schema.name
-            statement += "references \(connectedModelName)(\"\(connectedId.sqlName)\")\n"
+            let associatedModel = foreignKey.requiredAssociatedModel
+            let associatedId = associatedModel.schema.primaryKey
+            let associatedModelName = associatedModel.schema.name
+            statement += "references \(associatedModelName)(\"\(associatedId.sqlName)\")\n"
             statement += "    on delete cascade"
+            let isNotLastKey = index < foreignKeys.endIndex - 1
+            if isNotLastKey {
+                statement += "\n"
+            }
         }
 
         statement += "\n);"

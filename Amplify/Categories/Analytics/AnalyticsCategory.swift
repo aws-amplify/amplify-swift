@@ -48,6 +48,7 @@ final public class AnalyticsCategory: Category {
     ///
     /// - Parameter plugin: The Plugin to add
     public func add(plugin: AnalyticsCategoryPlugin) throws {
+        log.debug("Adding plugin: \(String(describing: plugin))")
         let key = plugin.key
         guard !key.isEmpty else {
             let pluginDescription = String(describing: plugin)

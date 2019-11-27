@@ -32,7 +32,7 @@ class IdentifyBasicIntegrationTests: XCTestCase {
         // Set up Amplify predictions configuration
         var predictionsConfig = PredictionsCategoryConfiguration(
             plugins: [
-                "AWSPredictionsPlugin": [
+                "awsPredictionsPlugin": [
                     "defaultRegion": region
                 ]
             ]

@@ -44,6 +44,8 @@ extension Persistable {
     }
 }
 
+private let logger = Amplify.Logging.logger(forCategory: .dataStore)
+
 extension Model {
 
     /// Get the values of a `Model` for the fields relevant to a SQL query. The order of the
@@ -57,25 +59,51 @@ extension Model {
         let modelType = type(of: self)
         let modelFields = fields ?? modelType.schema.sortedFields
         let values: [Binding?] = modelFields.map { field in
-            let value = self[field.name]
             // TODO why are `nil` optional number types not being skipped as expected?
-            if value == nil {
+
+            // self[field.name] subscript accessor returns an Any??, we need to do a few things:
+            // - `guard` to make sure the field name exists on the model
+            // - `guard` to ensure the returned value isn't nil
+            // - Attempt to cast to Persistable to ensure the model value isn't incorrectly assigned to a type we
+            //   can't handle
+            guard let existingFieldValue = self[field.name] else {
                 return nil
             }
-            // if value is a connected model, get its primary key
+
+            guard let anyValue = existingFieldValue else {
+                return nil
+            }
+
+            // At this point, we have a value: Any. However, remember that Any could itself be an optional, so we're
+            // not quite done yet.
+            // swiftlint:disable syntactic_sugar
+            let value: Any
+            if case Optional<Any>.some(let unwrappedValue) = anyValue {
+                value = unwrappedValue
+            } else {
+                return nil
+            }
+            // swiftlint:enable syntactic_sugar
+
+            // Now `value` is still an Any, but we've assured ourselves that it's not an Optional, which means we can
+            // safely attempt a cast to Persistable below.
+
+            // if value is an associated model, get its id
             if let value = value as? Model, field.isForeignKey {
-                let connectedModel: Model.Type = type(of: value)
-                return value[connectedModel.schema.primaryKey.name] as? String
+                let associatedModel: Model.Type = type(of: value)
+                return value[associatedModel.schema.primaryKey.name] as? String
             } else if let value = value as? Persistable {
                 return value.asBinding()
             } else {
+                logger.warn("""
+                Field \(field.name) of model \(modelName) has an unsupported value
+                of type \(String(describing: type(of: value))).
+                Refer to types that conform to Persistable.
+                """)
                 return nil
-//                preconditionFailure("""
-//                Type \(String(describing: type(of: value))) from \(modelType) field
-//                \(field.name) is not a compatible type. Refer to types that conform to Persistable.
-//                """)
             }
         }
+
         return values
     }
 
@@ -83,7 +111,7 @@ extension Model {
 
 extension Array where Element == Model.Type {
 
-    /// Sort the [PersistentModel.Type] array based on the dependencies between them.
+    /// Sort the [Model.Type] array based on the associations between them.
     ///
     /// The order the tables are created for each model depends on their relationships.
     /// The tables for the models that own the `foreign key` of the relationship can only
@@ -105,19 +133,19 @@ extension Array where Element == Model.Type {
         var sortedKeys: [String] = []
         var sortMap: [String: Model.Type] = [:]
 
-        func walkConnectedModels(of modelType: Model.Type) {
+        func walkAssociatedModels(of modelType: Model.Type) {
             if !sortedKeys.contains(modelType.schema.name) {
-                let connectedModels = modelType.schema.sortedFields
+                let associatedModels = modelType.schema.sortedFields
                     .filter { $0.isForeignKey }
-                    .map { $0.connectedModel! }
-                connectedModels.forEach(walkConnectedModels(of:))
+                    .map { $0.requiredAssociatedModel }
+                associatedModels.forEach(walkAssociatedModels(of:))
 
                 let key = modelType.schema.name
                 sortedKeys.append(key)
                 sortMap[key] = modelType
             }
         }
-        forEach(walkConnectedModels(of:))
+        forEach(walkAssociatedModels(of:))
         return sortedKeys.map { sortMap[$0]! }
     }
 

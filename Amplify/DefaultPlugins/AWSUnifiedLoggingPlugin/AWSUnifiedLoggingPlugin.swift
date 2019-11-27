@@ -51,13 +51,16 @@ final public class AWSUnifiedLoggingPlugin: LoggingCategoryPlugin {
 
     /// Removes listeners and empties the message queue
     public func reset(onComplete: @escaping BasicClosure) {
-        registeredLogs = [:]
-        onComplete()
+        concurrencyQueue.sync {
+            registeredLogs = [:]
+            onComplete()
+        }
     }
 
     // MARK: - Log wrapper caching
 
     private func logWrapper(for category: String = AWSUnifiedLoggingPlugin.defaultCategory) -> OSLogWrapper {
+
         let key = cacheKey(for: subsystem, category: category)
 
         return concurrencyQueue.sync {
@@ -87,7 +90,6 @@ extension AWSUnifiedLoggingPlugin {
 
     public func logger(forCategory category: String) -> Logger {
         let wrapper = logWrapper(for: category)
-        wrapper.getLogLevel = { Amplify.Logging.logLevel }
         return wrapper
     }
 

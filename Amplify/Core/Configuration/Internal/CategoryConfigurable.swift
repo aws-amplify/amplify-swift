@@ -8,7 +8,7 @@
 protocol CategoryConfigurable: class, CategoryTypeable {
 
     /// true if the category has already been configured
-    var isConfigured: Bool { get set }
+    var isConfigured: Bool { get }
 
     /// Configures the category and added plugins using `configuration`
     ///

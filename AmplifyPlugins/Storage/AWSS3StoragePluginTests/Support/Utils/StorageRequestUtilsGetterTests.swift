@@ -14,15 +14,15 @@ class StorageRequestUtilsGetterTests: XCTestCase {
     let testIdentityId = "TestIdentityId"
     let testTargetIdentityId = "TestTargetIdentityId"
     let testKey = "TestKey"
-    let publicAccessLevel = StorageAccessLevel.public
+    let guestAccessLevel = StorageAccessLevel.guest
     let protectedAccessLevel = StorageAccessLevel.protected
     let privateAccessLevel = StorageAccessLevel.private
 
     // MARK: GetServiceKey tests
 
     func testGetServiceKeyWithPublic() {
-        let expected = publicAccessLevel.rawValue + "/" + testKey
-        let result = StorageRequestUtils.getServiceKey(accessLevel: publicAccessLevel,
+        let expected = guestAccessLevel.serviceAccessPrefix + "/" + testKey
+        let result = StorageRequestUtils.getServiceKey(accessLevel: guestAccessLevel,
                                                        identityId: testIdentityId,
                                                        key: testKey,
                                                        targetIdentityId: nil)
@@ -30,7 +30,7 @@ class StorageRequestUtilsGetterTests: XCTestCase {
     }
 
     func testGetServiceKeyWithProtected() {
-        let expected = protectedAccessLevel.rawValue + "/" + testIdentityId + "/" + testKey
+        let expected = protectedAccessLevel.serviceAccessPrefix + "/" + testIdentityId + "/" + testKey
         let result = StorageRequestUtils.getServiceKey(accessLevel: protectedAccessLevel,
                                                        identityId: testIdentityId,
                                                        key: testKey,
@@ -39,7 +39,7 @@ class StorageRequestUtilsGetterTests: XCTestCase {
     }
 
     func testGetServiceKeyWithPrivate() {
-        let expected = privateAccessLevel.rawValue + "/" + testIdentityId + "/" + testKey
+        let expected = privateAccessLevel.serviceAccessPrefix + "/" + testIdentityId + "/" + testKey
         let result = StorageRequestUtils.getServiceKey(accessLevel: privateAccessLevel,
                                                        identityId: testIdentityId,
                                                        key: testKey,
@@ -48,8 +48,8 @@ class StorageRequestUtilsGetterTests: XCTestCase {
     }
 
     func testGetServiceKeyWithPublicAndTargetIdentityId() {
-        let expected = publicAccessLevel.rawValue + "/" + testKey
-        let result = StorageRequestUtils.getServiceKey(accessLevel: publicAccessLevel,
+        let expected = guestAccessLevel.serviceAccessPrefix + "/" + testKey
+        let result = StorageRequestUtils.getServiceKey(accessLevel: guestAccessLevel,
                                                        identityId: testIdentityId,
                                                        key: testKey,
                                                        targetIdentityId: testTargetIdentityId)
@@ -57,7 +57,7 @@ class StorageRequestUtilsGetterTests: XCTestCase {
     }
 
     func testGetServiceKeyWithProtectedAndTargetIdentityId() {
-        let expected = protectedAccessLevel.rawValue + "/" + testTargetIdentityId + "/" + testKey
+        let expected = protectedAccessLevel.serviceAccessPrefix + "/" + testTargetIdentityId + "/" + testKey
         let result = StorageRequestUtils.getServiceKey(accessLevel: protectedAccessLevel,
                                                        identityId: testIdentityId,
                                                        key: testKey,
@@ -66,7 +66,7 @@ class StorageRequestUtilsGetterTests: XCTestCase {
     }
 
     func testGetServiceKeywithPrivateAndTargetIdentityId() {
-        let expected = privateAccessLevel.rawValue + "/" + testTargetIdentityId + "/" + testKey
+        let expected = privateAccessLevel.serviceAccessPrefix + "/" + testTargetIdentityId + "/" + testKey
         let result = StorageRequestUtils.getServiceKey(accessLevel: privateAccessLevel,
                                                        identityId: testIdentityId,
                                                        key: testKey,
@@ -77,15 +77,15 @@ class StorageRequestUtilsGetterTests: XCTestCase {
     // MARK: GetAccessLevelPrefix tests
 
     func testGetAccessLevelPrefixWithPublic() {
-        let expected = publicAccessLevel.rawValue + "/"
-        let result = StorageRequestUtils.getAccessLevelPrefix(accessLevel: publicAccessLevel,
+        let expected = guestAccessLevel.serviceAccessPrefix + "/"
+        let result = StorageRequestUtils.getAccessLevelPrefix(accessLevel: guestAccessLevel,
                                                               identityId: testIdentityId,
                                                               targetIdentityId: nil)
         XCTAssertEqual(result, expected)
     }
 
     func testGetAccessLevelPrefixWithProtected() {
-        let expected = protectedAccessLevel.rawValue + "/" + testIdentityId + "/"
+        let expected = protectedAccessLevel.serviceAccessPrefix + "/" + testIdentityId + "/"
         let result = StorageRequestUtils.getAccessLevelPrefix(accessLevel: protectedAccessLevel,
                                                               identityId: testIdentityId,
                                                               targetIdentityId: nil)
@@ -93,7 +93,7 @@ class StorageRequestUtilsGetterTests: XCTestCase {
     }
 
     func testGetAccessLevelPrefixWithPrivate() {
-        let expected = privateAccessLevel.rawValue + "/" + testIdentityId + "/"
+        let expected = privateAccessLevel.serviceAccessPrefix + "/" + testIdentityId + "/"
         let result = StorageRequestUtils.getAccessLevelPrefix(accessLevel: privateAccessLevel,
                                                               identityId: testIdentityId,
                                                               targetIdentityId: nil)
@@ -101,15 +101,15 @@ class StorageRequestUtilsGetterTests: XCTestCase {
     }
 
     func testGetAccessLevelPrefixWithPublicAndTargetIdentityId() {
-        let expected = publicAccessLevel.rawValue + "/"
-        let result = StorageRequestUtils.getAccessLevelPrefix(accessLevel: publicAccessLevel,
+        let expected = guestAccessLevel.serviceAccessPrefix + "/"
+        let result = StorageRequestUtils.getAccessLevelPrefix(accessLevel: guestAccessLevel,
                                                               identityId: testIdentityId,
                                                               targetIdentityId: testTargetIdentityId)
         XCTAssertEqual(result, expected)
     }
 
     func testGetAccessLevelPrefixWithProtectedAndTargetIdentityId() {
-        let expected = protectedAccessLevel.rawValue + "/" + testTargetIdentityId + "/"
+        let expected = protectedAccessLevel.serviceAccessPrefix + "/" + testTargetIdentityId + "/"
         let result = StorageRequestUtils.getAccessLevelPrefix(accessLevel: protectedAccessLevel,
                                                               identityId: testIdentityId,
                                                               targetIdentityId: testTargetIdentityId)
@@ -117,7 +117,7 @@ class StorageRequestUtilsGetterTests: XCTestCase {
     }
 
     func testGetAccessLevelPrefixWithPrivateAndTargetIdentityId() {
-        let expected = privateAccessLevel.rawValue + "/" + testTargetIdentityId + "/"
+        let expected = privateAccessLevel.serviceAccessPrefix + "/" + testTargetIdentityId + "/"
         let result = StorageRequestUtils.getAccessLevelPrefix(accessLevel: privateAccessLevel,
                                                               identityId: testIdentityId,
                                                               targetIdentityId: testTargetIdentityId)

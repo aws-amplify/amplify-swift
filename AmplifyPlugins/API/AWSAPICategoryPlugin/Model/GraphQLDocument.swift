@@ -53,4 +53,36 @@ extension GraphQLDocument {
     public var variables: [String: Any] {
         return [:]
     }
+
+    /// Resolve the fields that should be included in the selection set for the `modelType`.
+    /// Associated models will be included if they are required and they are the owning
+    /// side of the association.
+    ///
+    /// - Note: Currently implementation assumes the most common and efficient queries.
+    /// Future APIs might allow user customization of the selected fields.
+    public var selectionSetFields: [String] {
+        var fieldSet = [String]()
+        let schema = modelType.schema
+
+        var indentSize = 0
+
+        func appendFields(_ fields: [ModelField]) {
+            let indent = indentSize == 0 ? "" : String(repeating: "  ", count: indentSize)
+            fields.forEach { field in
+                let isRequiredAssociation = field.isRequired && field.isAssociationOwner
+                if isRequiredAssociation, let associatedModel = field.associatedModel {
+                    fieldSet.append(indent + field.name + " {")
+                    indentSize += 1
+                    appendFields(associatedModel.schema.graphQLFields)
+                    indentSize -= 1
+                    fieldSet.append(indent + "}")
+                } else {
+                    fieldSet.append(indent + field.graphQLName)
+                }
+            }
+            fieldSet.append(indent + "__typename")
+        }
+        appendFields(schema.graphQLFields)
+        return fieldSet
+    }
 }

@@ -29,10 +29,10 @@ extension StorageRequestUtils {
 
         if accessLevel == .private || accessLevel == .protected {
 
-            return accessLevel.rawValue + "/" + targetIdentityId + "/"
+            return accessLevel.serviceAccessPrefix + "/" + targetIdentityId + "/"
         }
 
-        return accessLevel.rawValue + "/"
+        return accessLevel.serviceAccessPrefix + "/"
     }
 
     static func getServiceMetadata(_ metadata: [String: String]?) -> [String: String]? {
@@ -62,6 +62,19 @@ extension StorageRequestUtils {
             return fileSize
         } catch {
             throw StorageError.unknown("Unexpected error occurred while retrieving attributes of file.", error)
+        }
+    }
+}
+
+extension StorageAccessLevel {
+    public var serviceAccessPrefix: String {
+        switch self {
+        case .guest:
+            return "public"
+        case .protected:
+            return rawValue
+        case .private:
+            return rawValue
         }
     }
 }

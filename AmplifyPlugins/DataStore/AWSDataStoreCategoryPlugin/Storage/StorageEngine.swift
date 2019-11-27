@@ -15,12 +15,13 @@ final class StorageEngine: StorageEngineBehavior {
     let adapter: StorageEngineAdapter
 
     private var syncEngine: CloudSyncEngineBehavior?
+    private weak var api: APICategoryGraphQLBehavior?
 
     // Internal initializer used for testing, to allow lazy initialization of the SyncEngine
     init(adapter: StorageEngineAdapter,
          syncEngineFactory: CloudSyncEngineBehavior.Factory?) {
         self.adapter = adapter
-        let syncEngine = syncEngineFactory?(self)
+        let syncEngine = syncEngineFactory?()
         self.syncEngine = syncEngine
     }
 
@@ -30,16 +31,16 @@ final class StorageEngine: StorageEngineBehavior {
         let adapter = try SQLiteStorageEngineAdapter(databaseName: databaseName ?? "app")
 
         let syncEngineFactory: CloudSyncEngineBehavior.Factory? =
-            isSyncEnabled ? { CloudSyncEngine(storageEngine: $0) } : nil
+            isSyncEnabled ? { CloudSyncEngine() } : nil
 
         self.init(adapter: adapter, syncEngineFactory: syncEngineFactory)
     }
 
-    public func setUp(models: [Model.Type]) throws {
+    func setUp(models: [Model.Type]) throws {
         try adapter.setUp(models: models)
     }
 
-    public func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
+    func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
         // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
         // mutation type
         let modelExists: Bool
@@ -47,7 +48,7 @@ final class StorageEngine: StorageEngineBehavior {
             modelExists = try adapter.exists(M.self, withId: model.id)
         } catch {
             let dataStoreError = DataStoreError.invalidOperation(causedBy: error)
-            completion(.error(dataStoreError))
+            completion(.failure(dataStoreError))
             return
         }
 
@@ -59,7 +60,7 @@ final class StorageEngine: StorageEngineBehavior {
                 return
             }
 
-            guard case .result(let savedModel) = result else {
+            guard case .success(let savedModel) = result else {
                 completion(result)
                 return
             }
@@ -81,10 +82,10 @@ final class StorageEngine: StorageEngineBehavior {
                             }
 
                     }, receiveValue: { _ in
-                        completion(.result(savedModel))
+                        completion(.success(savedModel))
                     })
             } catch let dataStoreError as DataStoreError {
-                completion(.error(dataStoreError))
+                completion(.failure(dataStoreError))
             } catch {
                 let dataStoreError = DataStoreError.decodingError(
                     "Could not create MutationEvent from model",
@@ -93,7 +94,7 @@ final class StorageEngine: StorageEngineBehavior {
 
                     \(savedModel)
                     """)
-                completion(.error(dataStoreError))
+                completion(.failure(dataStoreError))
             }
         }
 
@@ -101,19 +102,19 @@ final class StorageEngine: StorageEngineBehavior {
 
     }
 
-    public func delete<M: Model>(_ modelType: M.Type,
-                                 withId id: Model.Identifier,
-                                 completion: (DataStoreResult<Void>) -> Void) {
+    func delete(_ modelType: Model.Type,
+                withId id: Model.Identifier,
+                completion: (DataStoreResult<Void>) -> Void) {
         adapter.delete(modelType, withId: id, completion: completion)
     }
 
-    public func query<M: Model>(_ modelType: M.Type,
-                                predicate: QueryPredicate? = nil,
-                                completion: DataStoreCallback<[M]>) {
+    func query<M: Model>(_ modelType: M.Type,
+                         predicate: QueryPredicate? = nil,
+                         completion: DataStoreCallback<[M]>) {
         return adapter.query(modelType, predicate: predicate, completion: completion)
     }
 
     func startSync() {
-        syncEngine?.start()
+        syncEngine?.start(api: Amplify.API, storageAdapter: adapter)
     }
 }

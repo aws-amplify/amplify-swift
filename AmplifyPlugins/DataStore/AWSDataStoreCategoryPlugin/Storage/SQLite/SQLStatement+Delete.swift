@@ -38,14 +38,14 @@ struct DeleteStatement: SQLStatement {
     var stringValue: String {
         let schema = modelType.schema
         let sql = """
-        delete from \(schema.name)
+        delete from \(schema.name) as root
         """
 
         if let conditionStatement = conditionStatement {
             return """
             \(sql)
             where 1 = 1
-              \(conditionStatement.stringValue)
+            \(conditionStatement.stringValue)
             """
         }
         return sql

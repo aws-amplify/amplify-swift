@@ -5,8 +5,24 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 /// AWS Amplify writes console logs through Logger. You can use Logger in your apps for the same purpose.
 final public class LoggingCategory: Category {
+    enum ConfigurationState {
+        /// Default configuration at initialization
+        case `default`
+
+        /// After a custom plugin is added, but before `configure` was invoked
+        case pendingConfiguration(LoggingCategoryPlugin)
+
+        /// After a custom plugin is added and `configure` is invoked
+        case configured
+    }
+
+    let concurrencyQueue = DispatchQueue(label: "com.amazonaws.Amplify.Logging.concurrency",
+                                         target: DispatchQueue.global())
+
     public let categoryType = CategoryType.logging
 
     /// The global logLevel. Messages logged at a priority less than or equal to this value will be logged (e.g., if
@@ -24,54 +40,45 @@ final public class LoggingCategory: Category {
     /// ```
     public var logLevel = LogLevel.error
 
-    var plugins = [PluginKey: LoggingCategoryPlugin]()
+    var configurationState = ConfigurationState.default
 
-    /// Returns the plugin added to the category, if only one plugin is added. Accessing this property if no plugins
-    /// are added, or if more than one plugin is added, will cause a preconditionFailure.
-    var plugin: LoggingCategoryPlugin {
-        guard isConfigured else {
-            preconditionFailure(
-                """
-                \(categoryType.displayName) category is not configured. Call Amplify.configure() before using \
-                any methods on the category.
-                """
-            )
-        }
+    /// For any external cases, Logging is always ready to be used. Internal configuration state is tracked via a
+    /// different mechanism
+    let isConfigured = true
 
-        guard !plugins.isEmpty else {
-            preconditionFailure("No plugins added to \(categoryType.displayName) category.")
-        }
-
-        guard plugins.count == 1 else {
-            preconditionFailure(
-                """
-                More than 1 plugin added to \(categoryType.displayName) category. \
-                You must invoke operations on this category by getting the plugin you want, as in:
-                #"Amplify.\(categoryType.displayName).getPlugin(for: "ThePluginKey").foo()
-                """
-            )
-        }
-
-        return plugins.first!.value
-    }
-
-    var isConfigured = false
+    /// Returns the plugin added to the category. Upon creation, the LoggingCategory will have a default plugin and a
+    /// configuration state reflecting that. Customers can still add custom plugins; doing so will remove the default
+    /// plugin.
+    var plugin: LoggingCategoryPlugin = AWSUnifiedLoggingPlugin()
 
     // MARK: - Plugin handling
 
-    /// Adds `plugin` to the list of Plugins that implement functionality for this category.
+    /// Sets `plugin` as the sole provider of functionality for this category. **Note: this is different from other
+    /// category behaviors, which allow multiple plugins to be used to implement functionality.**
+    ///
+    /// The default plugin that is assigned at initialization will function without an explicit call to `configure`.
+    /// However, adding a plugin will cause the Logging category to require `configure` be invoked, and will remove the
+    /// default-configured Logging plugin during configuration. The result is, during initialization and configuration,
+    /// calls to any Logging APIs will be handled by the default plugin, until after `configure` is invoked on logging,
+    /// at which point calls will be handled by the plugin.
+    ///
+    /// Code that invokes Logging APIs should not cache references to the logger, since the underlying plugin may be
+    /// disposed between calls. Instead, use the `Amplify.Logging.logger(for:)` method to get a logger for the specified
+    /// tag.
     ///
     /// - Parameter plugin: The Plugin to add
     public func add(plugin: LoggingCategoryPlugin) throws {
-        let key = plugin.key
-        guard !key.isEmpty else {
-            let pluginDescription = String(describing: plugin)
-            let error = LoggingError.configuration("Plugin \(pluginDescription) has an empty `key`.",
-                "Set the `key` property for \(String(describing: plugin))")
-            throw error
-        }
+        try concurrencyQueue.sync {
+            let key = plugin.key
+            guard !key.isEmpty else {
+                let pluginDescription = String(describing: plugin)
+                let error = LoggingError.configuration("Plugin \(pluginDescription) has an empty `key`.",
+                    "Set the `key` property for \(String(describing: plugin))")
+                throw error
+            }
 
-        plugins[plugin.key] = plugin
+            configurationState = .pendingConfiguration(plugin)
+        }
     }
 
     /// Returns the added plugin with the specified `key` property.
@@ -79,21 +86,25 @@ final public class LoggingCategory: Category {
     /// - Parameter key: The PluginKey (String) of the plugin to retrieve
     /// - Returns: The wrapped plugin
     public func getPlugin(for key: PluginKey) throws -> LoggingCategoryPlugin {
-        guard let plugin = plugins[key] else {
-            let keys = plugins.keys.joined(separator: ", ")
+        guard plugin.key == key else {
             let error = LoggingError.configuration("No plugin has been added for '\(key)'.",
-                "Either add a plugin for '\(key)', or use one of the known keys: \(keys)")
+                "Either add a plugin for '\(key)', or use the installed plugin, which has the key '\(plugin.key)'")
             throw error
         }
         return plugin
     }
 
-    /// Removes the plugin registered for `key` from the list of Plugins that implement functionality for this category.
-    /// If no plugin has been added for `key`, no action is taken, making this method safe to call multiple times.
+    /// Removes the current plugin if its key property matches the provided `key`, and reinstalls the default plugin. If
+    /// the key property of the current plugin is not `key`, takes no action.
     ///
     /// - Parameter key: The key used to `add` the plugin
     public func removePlugin(for key: PluginKey) {
-        plugins.removeValue(forKey: key)
+        concurrencyQueue.sync {
+            guard plugin.key == key else {
+                return
+            }
+            plugin = AWSUnifiedLoggingPlugin()
+        }
     }
 
 }

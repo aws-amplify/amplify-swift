@@ -44,4 +44,14 @@ class OutgoingMutationQueueTests: XCTestCase {
     func testMutationQueueDequeuesSavedEvents() {
         XCTFail("Not yet implemented")
     }
+
+    /// - Given: A sync-configured DataStore
+    /// - When:
+    ///    - I successfully process a mutation
+    /// - Then:
+    ///    - The mutation listener is unsubscribed from Hub
+    func testLocalMutationUnsubcsribesFromCloud() {
+        XCTFail("Not yet implemented")
+    }
+
 }

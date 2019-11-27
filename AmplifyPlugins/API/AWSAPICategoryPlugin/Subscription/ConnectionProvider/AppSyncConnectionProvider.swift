@@ -45,22 +45,26 @@ class AppSyncConnectionProvider: ConnectionProvider {
     /// Begins websocket handshake if it is disconnected.
     /// Signals listener when already connected or connecting
     func connect() {
-        switch state {
-        case .disconnected:
-            websocketProvider.connect()
-        case .connecting, .connected:
-            listener?(.connection(state))
+        serialConnectionQueue.sync {
+            switch state {
+            case .disconnected:
+                websocketProvider.connect()
+            case .connecting, .connected:
+                listener?(.connection(state))
+            }
         }
     }
 
     /// Begins websocket disconnect if it is connected or connecting.
     /// Signals listener if it is disconnected already.
     func disconnect() {
-        switch state {
-        case .connecting, .connected:
-            websocketProvider.disconnect()
-        case .disconnected:
-            listener?(.connection(state))
+        serialConnectionQueue.sync {
+            switch state {
+            case .connecting, .connected:
+                websocketProvider.disconnect()
+            case .disconnected:
+                listener?(.connection(state))
+            }
         }
     }
 

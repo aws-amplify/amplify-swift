@@ -32,17 +32,17 @@ public struct GraphQLSubscription: GraphQLDocument {
     }
 
     public var stringValue: String {
-        let schema = modelType.schema
-
         let subscriptionName = name.toPascalCase()
-        let fields = schema.graphQLFields.map { $0.graphQLName }
-        return """
+
+        let document = """
         \(documentType) \(subscriptionName) {
           \(name) {
-            \(fields.joined(separator: "\n    "))
+            \(selectionSetFields.joined(separator: "\n    "))
           }
         }
         """
+
+        return document
     }
 
 }

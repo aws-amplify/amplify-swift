@@ -44,11 +44,33 @@ public extension AWSAPICategoryPlugin {
             let operationRequest = getOperationRequest(request: request,
                                                        operationType: .subscription)
 
-            let operation = AWSGraphQLSubscriptionOperation(request: operationRequest,
-                                                            pluginConfig: pluginConfig,
-                                                            subscriptionConnectionFactory: subscriptionConnectionFactory,
-                                                            authService: authService,
-                                                            listener: listener)
+            let operation = AWSGraphQLSubscriptionOperation(
+                request: operationRequest,
+                pluginConfig: pluginConfig,
+                subscriptionConnectionFactory: subscriptionConnectionFactory,
+                authService: authService,
+                listener: listener)
+            queue.addOperation(operation)
+            return operation
+    }
+
+    func subscribe(toAnyModelType modelType: Model.Type,
+                   subscriptionType: GraphQLSubscriptionType,
+                   listener: GraphQLSubscriptionOperation<AnyModel>.EventListener?) ->
+        GraphQLSubscriptionOperation<AnyModel> {
+            let request = GraphQLRequest<AnyModel>.subscription(toAnyModelType: modelType,
+                                                                subscriptionType: subscriptionType)
+
+            let operationRequest = getOperationRequest(request: request,
+                                                       operationType: .subscription)
+
+            let operation = AWSGraphQLSubscriptionOperation(
+                request: operationRequest,
+                pluginConfig: pluginConfig,
+                subscriptionConnectionFactory: subscriptionConnectionFactory,
+                authService: authService,
+                listener: listener)
+
             queue.addOperation(operation)
             return operation
     }

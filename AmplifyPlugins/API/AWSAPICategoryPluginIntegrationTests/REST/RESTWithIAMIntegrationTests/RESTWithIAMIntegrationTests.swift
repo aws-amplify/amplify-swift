@@ -20,12 +20,12 @@ class RESTWithIAMIntegrationTests: XCTestCase {
     static let restAPI = "restAPI"
 
     static let apiConfig = APICategoryConfiguration(plugins: [
-        "AWSAPICategoryPlugin": [
+        "awsAPIPlugin": [
             RESTWithIAMIntegrationTests.restAPI: [
-                "Endpoint": "https://crmjcxtcwa.execute-api.us-west-2.amazonaws.com/devo",
-                "Region": "us-west-2",
-                "AuthorizationType": "AWS_IAM",
-                "EndpointType": "REST"
+                "endpoint": "https://crmjcxtcwa.execute-api.us-west-2.amazonaws.com/devo",
+                "region": "us-west-2",
+                "authorizationType": "AWS_IAM",
+                "endpointType": "REST"
             ]
         ]
     ])

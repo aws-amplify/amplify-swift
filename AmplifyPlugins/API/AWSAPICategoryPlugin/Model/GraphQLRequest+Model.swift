@@ -71,7 +71,7 @@ extension GraphQLRequest {
         var variables = [String: Any]()
 
         if let predicate = predicate {
-            // TODO: variables.updateValue(predicate.graphQLFilterVariables, forKey: "filter")
+            variables.updateValue(predicate.graphQLFilterVariables, forKey: "filter")
         }
 
         // TODO: Remove this once we support limit and nextToken passed in from the developer

@@ -106,7 +106,7 @@ public extension AWSAPICategoryPluginConfiguration {
         // MARK: - Configuration file helpers
 
         private static func getBaseURL(from endpointJSON: [String: JSONValue]) throws -> URL {
-            guard case .string(let baseURLString) = endpointJSON["Endpoint"] else {
+            guard case .string(let baseURLString) = endpointJSON["endpoint"] else {
                 throw PluginError.pluginConfigurationError(
                     "Could not get `Endpoint` from plugin configuration",
                     """
@@ -121,7 +121,7 @@ public extension AWSAPICategoryPluginConfiguration {
                 throw PluginError.pluginConfigurationError(
                     "Could not convert `\(baseURLString)` to a URL",
                     """
-                    The "Endpoint" value in the specified configuration cannot be converted to a URL. Review the \
+                    The "endpoint" value in the specified configuration cannot be converted to a URL. Review the \
                     configuration and ensure it contains the expected values:
                     \(endpointJSON)
                     """
@@ -134,7 +134,7 @@ public extension AWSAPICategoryPluginConfiguration {
         private static func getRegion(from endpointJSON: [String: JSONValue]) throws -> AWSRegionType? {
             let region: AWSRegionType?
 
-            if case .string(let endpointRegion) = endpointJSON["Region"] {
+            if case .string(let endpointRegion) = endpointJSON["region"] {
                 let regionType = endpointRegion.aws_regionTypeValue()
                 guard regionType != AWSRegionType.Unknown else {
                     return nil
@@ -151,7 +151,7 @@ public extension AWSAPICategoryPluginConfiguration {
         private static func getEndpointType(from endpointJSON: [String: JSONValue]) throws ->
             AWSAPICategoryPluginEndpointType {
 
-            guard case .string(let endpointTypeValue) = endpointJSON["EndpointType"] else {
+            guard case .string(let endpointTypeValue) = endpointJSON["endpointType"] else {
                 throw PluginError.pluginConfigurationError(
                     "Could not get `EndpointType` from plugin configuration",
                     """
@@ -178,7 +178,7 @@ public extension AWSAPICategoryPluginConfiguration {
         }
 
         private static func getAuthorizationType(from endpointJSON: [String: JSONValue]) throws -> AWSAuthorizationType {
-            guard case .string(let authorizationTypeString) = endpointJSON["AuthorizationType"] else {
+            guard case .string(let authorizationTypeString) = endpointJSON["authorizationType"] else {
                 throw PluginError.pluginConfigurationError(
                     "Could not get `AuthorizationType` from plugin configuration",
                     """
@@ -194,7 +194,7 @@ public extension AWSAPICategoryPluginConfiguration {
                 throw PluginError.pluginConfigurationError(
                     "Could not convert `\(authorizationTypeString)` to an AWSAuthorizationType",
                     """
-                    The "AuthorizationType" value in the specified configuration cannot be converted to an \
+                    The "authorizationType" value in the specified configuration cannot be converted to an \
                     AWSAuthorizationType. Review the configuration and ensure it contains a valid value \
                     (\(authTypes)):
                     \(endpointJSON)
@@ -229,7 +229,7 @@ public extension AWSAPICategoryPluginConfiguration {
         private static func apiKeyAuthorizationConfiguration(from endpointJSON: [String: JSONValue])
             throws -> AWSAuthorizationConfiguration {
 
-                guard case .string(let apiKey) = endpointJSON["ApiKey"] else {
+                guard case .string(let apiKey) = endpointJSON["apiKey"] else {
                     throw PluginError.pluginConfigurationError(
                         "Could not get `ApiKey` from plugin configuration",
                         """

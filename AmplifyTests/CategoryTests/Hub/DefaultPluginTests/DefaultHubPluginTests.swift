@@ -13,8 +13,8 @@ import XCTest
 class DefaultHubPluginTests: XCTestCase {
 
     var plugin: HubCategoryPlugin {
-        guard let plugin = try? Amplify.Hub.getPlugin(for: "AWSHubPlugin"),
-            plugin.key == "AWSHubPlugin" else {
+        guard let plugin = try? Amplify.Hub.getPlugin(for: "awsHubPlugin"),
+            plugin.key == "awsHubPlugin" else {
                 fatalError("Could not access AWSHubPlugin")
         }
         return plugin
@@ -22,6 +22,9 @@ class DefaultHubPluginTests: XCTestCase {
 
     override func setUp() {
         Amplify.reset()
+        // This test suite will have a lot of in-flight messages at the time of the `reset`. Give them time to finis
+        // being delivered before moving to the next step.
+        Thread.sleep(forTimeInterval: 1.0)
         let config = AmplifyConfiguration()
         do {
             try Amplify.configure(config)
@@ -38,9 +41,9 @@ class DefaultHubPluginTests: XCTestCase {
     /// When: I invoke Amplify.configure()
     /// Then: I have access to the framework-provided Hub plugin
     func testDefaultPluginAssigned() throws {
-        let plugin = try? Amplify.Hub.getPlugin(for: "AWSHubPlugin")
+        let plugin = try? Amplify.Hub.getPlugin(for: "awsHubPlugin")
         XCTAssertNotNil(plugin)
-        XCTAssertEqual(plugin?.key, "AWSHubPlugin")
+        XCTAssertEqual(plugin?.key, "awsHubPlugin")
     }
 
     /// Given: The default Hub plugin
@@ -74,6 +77,11 @@ class DefaultHubPluginTests: XCTestCase {
     /// Then: My listener is invoked with the message
     func testDefaultPluginDispatches() throws {
         let messageReceived = expectation(description: "Message was received")
+
+        // We have other tests for multiple message delivery, and since Amplify.reset() is known to leave in-process
+        // messages going, we'll let this test's expectation pass as long as it fulfills at least once
+        messageReceived.assertForOverFulfill = false
+
         let token = plugin.listen(to: .storage, isIncluded: nil) { _ in
             messageReceived.fulfill()
         }

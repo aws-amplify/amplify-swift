@@ -37,17 +37,17 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
 
         let analyticsConfig = AnalyticsCategoryConfiguration(
             plugins: [
-                "AWSPinpointAnalyticsPlugin": [
-                    "PinpointAnalytics": [
-                        "AppId": appId,
-                        "Region": region
+                "awsPinpointAnalyticsPlugin": [
+                    "pinpointAnalytics": [
+                        "appId": appId,
+                        "region": region
                     ],
-                    "PinpointTargeting": [
-                        "Region": targetingRegion
+                    "pinpointTargeting": [
+                        "region": targetingRegion
                     ],
-                    "AutoFlushEventsInterval": 10,
-                    "TrackAppSessions": true,
-                    "AutoSessionTrackingInterval": 2
+                    "autoFlushEventsInterval": 10,
+                    "trackAppSessions": true,
+                    "autoSessionTrackingInterval": 2
             ]
         ])
 

@@ -7,18 +7,6 @@
 
 import Foundation
 
-/// Defines the relationship type between two models. The type of relationship is
-/// important when defining how to store and query them. Each relationship have
-/// its own rules depending on the storage mechanism. For example, on SQL a
-/// `manyToOne`/`oneToMany` relationship has a "foreign key" stored on the "many"
-/// side of the relation.
-public enum ModelRelationship {
-    case manyToMany(Model.Type)
-    case manyToOne(Model.Type)
-    case oneToMany(Model.Type)
-    case oneToOne(Model.Type, name: String)
-}
-
 // TODO: Add the rest of the AppSync scalar types
 // https://docs.aws.amazon.com/appsync/latest/devguide/scalars.html
 public enum ModelFieldType: CustomStringConvertible {
@@ -29,7 +17,7 @@ public enum ModelFieldType: CustomStringConvertible {
     case date
     case dateTime
     case bool
-    case `enum`(type: Any.Type)
+    case `enum`(Any.Type)
     case model(type: Model.Type)
     case collection(of: Model.Type)
 
@@ -37,7 +25,7 @@ public enum ModelFieldType: CustomStringConvertible {
         switch self {
         case .string: return "String"
         case .int: return "Int"
-        case .double: return "Double"
+        case .double: return "Float"
         case .date:  return "AWSDate"
         case .dateTime: return "AWSDateTime"
         case .bool: return "Boolean"
@@ -63,7 +51,7 @@ extension ModelField {
         switch type {
         case "String": return .string
         case "Int": return .int
-        case "Double": return .double
+        case "Float": return .double
         case "Boolean": return .bool
         case "AWSDate": return .date
         case "AWSDateTime": return .dateTime
@@ -75,55 +63,6 @@ extension ModelField {
         }
     }
 
-    /// If the field represents a relationship (aka connected) returns the `Model.Type` of
-    /// the connection. Connected types are represented by `.model(type)` and `.collection(type)`.
-    /// - seealso: `ModelFieldType`
-    public var connectedModel: Model.Type? {
-        switch typeDefinition {
-        case .model(let type), .collection(let type):
-            return type
-        default:
-            return nil
-        }
-    }
-
-    /// This calls `connectedModel` but enforces that the field must represent a relationship.
-    /// In case the field type is not a `Model.Type` is calls `preconditionFailure`. Consumers
-    /// should fix their models in order to recover from it, since connected models are required
-    /// to be of `Model.Type`.
-    ///
-    /// **Note:** as a maintainer, make sure you use this computed property only when context
-    /// allows (i.e. the field is a valid relatioship, such as foreign keys).
-    public var requiredConnectedModel: Model.Type {
-        guard let modelType = connectedModel else {
-            preconditionFailure("""
-            Model fields that are foreign keys must be connected to another Model.
-            Check the `ModelSchema` section of your "\(name)+Schema.swift" file.
-            """)
-        }
-        return modelType
-    }
-
-    public var relatioship: ModelRelationship? {
-        switch typeDefinition {
-        case .collection(let modelType):
-            // TODO find the other side of the relationship and infer the type correctly
-            // it might also be a .manyToMany
-            return .oneToMany(modelType)
-        case .model(let modelType):
-            // TODO find the other side of the relationship and infer the type correctly
-            // it might also be a .oneToOne
-            return .manyToOne(modelType)
-        default:
-            return nil
-        }
-    }
-
-    public var isRelationshipOwner: Bool {
-        // TODO improve connected model ownership (i.e. foreignKey side)
-        // this depends on the relationship type defined by `relationship`
-        return isConnected && !isArray
-    }
 }
 
 public enum ModelFieldNullability {
@@ -136,23 +75,6 @@ public enum ModelFieldNullability {
             return false
         case .required:
             return true
-        }
-    }
-}
-
-public enum ModelFieldRelationship {
-
-    case manyToOne(_ modelType: Model.Type)
-    case manyToMany(_ modelType: Model.Type)
-    case oneToMany(_ modelType: Model.Type)
-    case oneToOne(_ modelType: Model.Type)
-
-    var fieldType: ModelFieldType {
-        switch self {
-        case .oneToMany(let modelType), .manyToMany(let modelType):
-            return .collection(of: modelType)
-        case .manyToOne(let modelType), .oneToOne(let modelType):
-            return .model(type: modelType)
         }
     }
 }
@@ -171,7 +93,7 @@ public struct ModelSchemaDefinition {
 
     public mutating func fields(_ fields: ModelFieldDefinition...) {
         fields.forEach { definition in
-            let field = definition.asModelField
+            let field = definition.modelField
             self.fields[field.name] = field
         }
     }
@@ -188,70 +110,89 @@ public struct ModelSchemaDefinition {
 public enum ModelFieldDefinition {
 
     case field(name: String,
+               targetName: String?,
                type: ModelFieldType,
                nullability: ModelFieldNullability,
+               association: ModelAssociation?,
                attributes: [ModelFieldAttribute])
 
     public static func field(_ key: CodingKey,
-                             is nullability: ModelFieldNullability = .optional,
+                             targetName: String? = nil,
+                             is nullability: ModelFieldNullability = .required,
                              ofType type: ModelFieldType = .string,
-                             _ attributes: ModelFieldAttribute...) -> ModelFieldDefinition {
+                             attributes: [ModelFieldAttribute] = [],
+                             association: ModelAssociation? = nil) -> ModelFieldDefinition {
         return .field(name: key.stringValue,
+                      targetName: key.stringValue,
                       type: type,
                       nullability: nullability,
+                      association: association,
                       attributes: attributes)
     }
 
-    public static func field(name: String,
-                             is nullability: ModelFieldNullability = .optional,
-                             ofType type: ModelFieldType = .string,
-                             _ attributes: ModelFieldAttribute...) -> ModelFieldDefinition {
-        return .field(name: name,
-                      type: type,
-                      nullability: nullability,
-                      attributes: attributes)
+    public static func id(_ key: CodingKey) -> ModelFieldDefinition {
+        return id(key.stringValue)
     }
 
-    public static func id(_ name: CodingKey) -> ModelFieldDefinition {
-        return id(name: name.stringValue)
-    }
-
-    public static func id(name: String = "id") -> ModelFieldDefinition {
+    public static func id(_ name: String = "id") -> ModelFieldDefinition {
         return .field(name: name,
+                      targetName: nil,
                       type: .string,
                       nullability: .required,
+                      association: nil,
                       attributes: [.primaryKey])
     }
 
-    public static func connected(name: String,
-                                 _ relationshipType: ModelFieldRelationship,
-                                 is nullability: ModelFieldNullability = .optional,
-                                 withName connectionName: String) -> ModelFieldDefinition {
-        let type = relationshipType.fieldType
-        return field(name: name,
-                     is: nullability,
-                     ofType: type,
-                     .connected(name: connectionName))
+    public static func hasMany(_ key: CodingKey,
+                               is nullability: ModelFieldNullability = .required,
+                               ofType type: Model.Type,
+                               targetName: String? = nil,
+                               associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
+        return .field(key,
+                      is: nullability,
+                      ofType: .collection(of: type),
+                      association: .hasMany(associatedWith: associatedKey))
     }
 
-    public static func connected(_ key: CodingKey,
-                                 _ relationshipType: ModelFieldRelationship,
-                                 is nullability: ModelFieldNullability = .optional,
-                                 withName connectionName: String) -> ModelFieldDefinition {
-        return connected(name: key.stringValue,
-                         relationshipType,
-                         is: nullability,
-                         withName: connectionName)
+    public static func hasOne(_ key: CodingKey,
+                              is nullability: ModelFieldNullability = .required,
+                              ofType type: Model.Type,
+                              targetName: String? = nil,
+                              associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
+        return .field(key,
+                      targetName: targetName,
+                      is: nullability,
+                      ofType: .model(type: type),
+                      association: .hasOne(associatedWith: associatedKey))
     }
 
-    public var asModelField: ModelField {
-        guard case let .field(name, type, nullability, attributes) = self else {
+    public static func belongsTo(_ key: CodingKey,
+                                 is nullability: ModelFieldNullability = .required,
+                                 ofType type: Model.Type,
+                                 targetName: String? = nil,
+                                 associatedWith associatedKey: CodingKey? = nil) -> ModelFieldDefinition {
+        return .field(key,
+                      targetName: targetName,
+                      is: nullability,
+                      ofType: .model(type: type),
+                      association: .belongsTo(associatedWith: associatedKey))
+    }
+
+    public var modelField: ModelField {
+        guard case let .field(name,
+                              targetName,
+                              type,
+                              nullability,
+                              association,
+                              attributes) = self else {
             preconditionFailure("Unexpected enum value found: \(String(describing: self))")
         }
         return ModelField(name: name,
+                          targetName: targetName,
                           type: type.description,
                           isRequired: nullability.isRequired,
                           isArray: type.isArray,
-                          attributes: attributes)
+                          attributes: attributes,
+                          association: association)
     }
 }

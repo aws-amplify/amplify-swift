@@ -1,15 +1,17 @@
 //
-// Copyright 2018-2019 Amazon.com
+// Copyright 2018-2019 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import CoreGraphics
+
 public struct Landmark {
     public let type: LandmarkType
     public let points: [CGPoint]
 
-    public init(type: LandmarkType, points:[CGPoint]) {
+    public init(type: LandmarkType, points: [CGPoint]) {
         self.type = type
         self.points = points
     }
