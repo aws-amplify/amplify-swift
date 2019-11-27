@@ -96,6 +96,7 @@ class GraphQLDocumentTests: XCTestCase {
             XCTFail("Variables should contain a valid input")
             return
         }
+        XCTAssertNotNil(input["commentPostId"])
         XCTAssertEqual(input["commentPostId"] as? String, post.id)
     }
 
@@ -334,6 +335,41 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
+            __typename
+          }
+        }
+        """
+        XCTAssertEqual(document.stringValue, expected)
+    }
+
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `Comment`
+    ///   - the model has required associations
+    ///   - the subscription is of type `.onCreate`
+    /// - Then:
+    ///   - check if the generated GraphQL document is a valid subscription
+    ///     - it has a list of fields with no nested models
+    func testOnCreateGraphQLSubscriptionFromModelWithAssociation() {
+        let document = GraphQLSubscription(of: Comment.self, type: .onCreate)
+        let expected = """
+        subscription OnCreateComment {
+          onCreateComment {
+            id
+            content
+            createdAt
+            post {
+              id
+              _deleted
+              _version
+              content
+              createdAt
+              draft
+              rating
+              title
+              updatedAt
+              __typename
+            }
             __typename
           }
         }

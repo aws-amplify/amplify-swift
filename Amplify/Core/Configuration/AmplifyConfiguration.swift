@@ -77,6 +77,8 @@ extension Amplify {
     ///
     /// - Parameter configuration: The AmplifyConfiguration for specified Categories
     public static func configure(_ configuration: AmplifyConfiguration? = nil) throws {
+        log.info("Configuring")
+        log.debug("configuration: \(String(describing: configuration))")
         guard !isConfigured else {
             let error = ConfigurationError.amplifyAlreadyConfigured(
                 "Amplify has already been configured.",
@@ -90,8 +92,8 @@ extension Amplify {
         let configuration = try Amplify.resolve(configuration: configuration)
 
         // Always configure Logging and Hub first, so they are available to other categoories.
-        try Hub.configure(using: configuration)
         try Logging.configure(using: configuration)
+        try Hub.configure(using: configuration)
 
         // Looping through all categories to ensure we don't accidentally forget a category at some point in the future
         let remainingCategories = CategoryType.allCases.filter { $0 != .hub && $0 != .logging }

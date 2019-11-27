@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AWSPluginsCore
 import Foundation
 import SQLite
 

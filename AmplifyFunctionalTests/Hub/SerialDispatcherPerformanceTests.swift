@@ -73,21 +73,6 @@ class SerialDispatcherPerformanceTests: XCTestCase {
         }
     }
 
-    func testSingleChannel_10_000() {
-        let listenerCount = 10_000
-        measure {
-            let testObjects = DefaultHubPluginPerformanceTestHelpers
-                .makeTestObjectsForSingleChannel(listenerCount: listenerCount,
-                                                 dispatcherType: dispatcherTypeUnderTest,
-                                                 testCase: self)
-
-            for dispatcher in testObjects.dispatchers {
-                dispatcher.dispatch(to: testObjects.listeners)
-            }
-            wait(for: testObjects.expectations, timeout: 30.0)
-        }
-    }
-
     // MARK: - Performance of multiple channels, multiple listeners
 
     func testMultipleChannel_10() {
@@ -135,21 +120,6 @@ class SerialDispatcherPerformanceTests: XCTestCase {
         }
     }
 
-    func testMultipleChannel_10_000() {
-        let listenerCount = 10_000
-        measure {
-            let testObjects = DefaultHubPluginPerformanceTestHelpers
-                .makeTestObjectsForSingleDispatcher(listenerCount: listenerCount,
-                                                    dispatcherType: dispatcherTypeUnderTest,
-                                                    testCase: self)
-
-            for dispatcher in testObjects.dispatchers {
-                dispatcher.dispatch(to: testObjects.listeners)
-            }
-            wait(for: testObjects.expectations, timeout: 30.0)
-        }
-    }
-
     // MARK: - Performance of multiple dispatchers, multiple channels, multiple listeners
 
     func testMultipleDispatchers_10() {
@@ -184,21 +154,6 @@ class SerialDispatcherPerformanceTests: XCTestCase {
 
     func testMultipleDispatchers_1_000() {
         let listenerCount = 1_000
-        measure {
-            let testObjects = DefaultHubPluginPerformanceTestHelpers
-                .makeTestObjectsForMultipleDispatchers(listenerCount: listenerCount,
-                                                       dispatcherType: dispatcherTypeUnderTest,
-                                                       testCase: self)
-
-            for dispatcher in testObjects.dispatchers {
-                dispatcher.dispatch(to: testObjects.listeners)
-            }
-            wait(for: testObjects.expectations, timeout: 30.0)
-        }
-    }
-
-    func testMultipleDispatchers_10_000() {
-        let listenerCount = 10_000
         measure {
             let testObjects = DefaultHubPluginPerformanceTestHelpers
                 .makeTestObjectsForMultipleDispatchers(listenerCount: listenerCount,
