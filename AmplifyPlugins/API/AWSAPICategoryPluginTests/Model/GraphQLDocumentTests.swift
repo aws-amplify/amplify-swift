@@ -37,6 +37,7 @@ class GraphQLDocumentTests: XCTestCase {
         mutation CreatePost($input: CreatePostInput!) {
           createPost(input: $input) {
             id
+            _deleted
             _version
             content
             createdAt
@@ -44,6 +45,7 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
+            __typename
           }
         }
         """
@@ -72,7 +74,19 @@ class GraphQLDocumentTests: XCTestCase {
             id
             content
             createdAt
-            postId
+            post {
+              id
+              _deleted
+              _version
+              content
+              createdAt
+              draft
+              rating
+              title
+              updatedAt
+              __typename
+            }
+            __typename
           }
         }
         """
@@ -102,6 +116,7 @@ class GraphQLDocumentTests: XCTestCase {
         mutation UpdatePost($input: UpdatePostInput!) {
           updatePost(input: $input) {
             id
+            _deleted
             _version
             content
             createdAt
@@ -109,6 +124,7 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
+            __typename
           }
         }
         """
@@ -134,6 +150,7 @@ class GraphQLDocumentTests: XCTestCase {
         mutation DeletePost($input: DeletePostInput!) {
           deletePost(input: $input) {
             id
+            _deleted
             _version
             content
             createdAt
@@ -141,6 +158,7 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
+            __typename
           }
         }
         """
@@ -174,6 +192,7 @@ class GraphQLDocumentTests: XCTestCase {
           listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
             items {
               id
+              _deleted
               _version
               content
               createdAt
@@ -206,6 +225,7 @@ class GraphQLDocumentTests: XCTestCase {
         query GetPost($id: ID!) {
           getPost(id: $id) {
             id
+            _deleted
             _version
             content
             createdAt
@@ -241,6 +261,7 @@ class GraphQLDocumentTests: XCTestCase {
             createdAt
             post {
               id
+              _deleted
               _version
               content
               createdAt
@@ -272,6 +293,7 @@ class GraphQLDocumentTests: XCTestCase {
         subscription OnCreatePost {
           onCreatePost {
             id
+            _deleted
             _version
             content
             createdAt
@@ -299,6 +321,7 @@ class GraphQLDocumentTests: XCTestCase {
         subscription OnUpdatePost {
           onUpdatePost {
             id
+            _deleted
             _version
             content
             createdAt
@@ -326,6 +349,7 @@ class GraphQLDocumentTests: XCTestCase {
         subscription OnDeletePost {
           onDeletePost {
             id
+            _deleted
             _version
             content
             createdAt
