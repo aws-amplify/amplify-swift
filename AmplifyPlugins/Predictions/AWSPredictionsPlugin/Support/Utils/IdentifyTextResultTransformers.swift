@@ -12,7 +12,7 @@ import AWSTextract
 
 class IdentifyTextResultTransformers: IdentifyResultTransformers {
 
-    static func processText(rekognitionTextBlocks: [AWSRekognitionTextDetection]) -> IdentifyTextResult {
+    static func processText(_ rekognitionTextBlocks: [AWSRekognitionTextDetection]) -> IdentifyTextResult {
         var words = [IdentifiedWord]()
         var lines = [String]()
         var identifiedLines = [IdentifiedLine]()
@@ -52,7 +52,7 @@ class IdentifyTextResultTransformers: IdentifyResultTransformers {
                                   identifiedLines: identifiedLines)
     }
 
-    static func processText(textractTextBlocks: [AWSTextractBlock]) -> IdentifyDocumentTextResult {
+    static func processText(_ textractTextBlocks: [AWSTextractBlock]) -> IdentifyDocumentTextResult {
 
         var words = [IdentifiedWord]()
         var lines = [String]()

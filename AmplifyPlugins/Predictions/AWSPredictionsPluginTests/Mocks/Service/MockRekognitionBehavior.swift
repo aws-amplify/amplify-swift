@@ -18,7 +18,7 @@ class MockRekognitionBehavior: AWSRekognitionBehavior {
     var facesFromCollection: AWSRekognitionSearchFacesByImageResponse?
     var detectLabels: AWSRekognitionDetectLabelsResponse?
     var detectText: AWSRekognitionDetectTextResponse?
-    var error: PredictionsError?
+    var error: Error?
 
     func detectCelebs(request: AWSRekognitionRecognizeCelebritiesRequest)
         -> AWSTask<AWSRekognitionRecognizeCelebritiesResponse> {
@@ -30,40 +30,41 @@ class MockRekognitionBehavior: AWSRekognitionBehavior {
 
     func detectFaces(request: AWSRekognitionDetectFacesRequest)
         -> AWSTask<AWSRekognitionDetectFacesResponse> {
-            if let finalResult = facesResponse {
-                return AWSTask(result: finalResult)
+            guard let finalError = error else {
+                return AWSTask(result: facesResponse)
             }
-            return AWSTask(error: error!)
+
+            return AWSTask(error: finalError)
     }
 
     func detectModerationLabels(request: AWSRekognitionDetectModerationLabelsRequest)
         -> AWSTask<AWSRekognitionDetectModerationLabelsResponse> {
-            if let finalResult = moderationLabelsResponse {
-                return AWSTask(result: finalResult)
+            guard let finalError = error else {
+                return AWSTask(result: moderationLabelsResponse)
             }
-            return AWSTask(error: error!)
+            return AWSTask(error: finalError)
     }
 
     func detectFacesFromCollection(request: AWSRekognitionSearchFacesByImageRequest)
         -> AWSTask<AWSRekognitionSearchFacesByImageResponse> {
-            if let finalResult = facesFromCollection {
-                return AWSTask(result: finalResult)
+            guard let finalError = error else {
+                return AWSTask(result: facesFromCollection)
             }
-            return AWSTask(error: error!)
+            return AWSTask(error: finalError)
     }
 
     func detectLabels(request: AWSRekognitionDetectLabelsRequest) -> AWSTask<AWSRekognitionDetectLabelsResponse> {
-        if let finalResult = detectLabels {
-            return AWSTask(result: finalResult)
+        guard let finalError = error else {
+            return AWSTask(result: detectLabels)
         }
-        return AWSTask(error: error!)
+        return AWSTask(error: finalError)
     }
 
     func detectText(request: AWSRekognitionDetectTextRequest) -> AWSTask<AWSRekognitionDetectTextResponse> {
-        if let finalResult = detectText {
-            return AWSTask(result: finalResult)
+        guard let finalError = error else {
+            return AWSTask(result: detectText)
         }
-        return AWSTask(error: error!)
+        return AWSTask(error: finalError)
     }
 
     func getRekognition() -> AWSRekognition {
@@ -75,22 +76,39 @@ class MockRekognitionBehavior: AWSRekognitionBehavior {
         error = nil
     }
 
-    public func setFacesResponse(result: AWSRekognitionDetectFacesResponse) {
+    public func setFacesResponse(result: AWSRekognitionDetectFacesResponse?) {
         facesResponse = result
         error = nil
     }
 
-    public func setModerationLabelsResponse(result: AWSRekognitionDetectModerationLabelsResponse) {
+    public func setModerationLabelsResponse(result: AWSRekognitionDetectModerationLabelsResponse?) {
         moderationLabelsResponse = result
         error = nil
     }
 
-    public func setFacesFromCollection(result: AWSRekognitionSearchFacesByImageResponse) {
+    public func setLabelsResponse(result: AWSRekognitionDetectLabelsResponse?) {
+        detectLabels = result
+        error = nil
+    }
+
+    public func setAllLabelsResponse(labelsResult: AWSRekognitionDetectLabelsResponse?,
+                                     moderationResult: AWSRekognitionDetectModerationLabelsResponse?) {
+        detectLabels = labelsResult
+        moderationLabelsResponse = moderationResult
+        error = nil
+    }
+
+    public func setFacesFromCollection(result: AWSRekognitionSearchFacesByImageResponse?) {
         facesFromCollection = result
         error = nil
     }
 
-    public func setError(error: PredictionsError) {
+    public func setText(result: AWSRekognitionDetectTextResponse?) {
+        detectText = result
+        error = nil
+    }
+
+    public func setError(error: Error) {
         celebritiesResponse = nil
         facesResponse = nil
         moderationLabelsResponse = nil
@@ -99,4 +117,5 @@ class MockRekognitionBehavior: AWSRekognitionBehavior {
         detectLabels = nil
         self.error = error
     }
+
 }

@@ -65,7 +65,7 @@ extension AWSPredictionsService: AWSTextractServiceBehavior {
                 return nil
             }
 
-            let textResult = IdentifyTextResultTransformers.processText(textractTextBlocks: blocks)
+            let textResult = IdentifyTextResultTransformers.processText(blocks)
             onEvent(.completed(textResult))
             return nil
         }
