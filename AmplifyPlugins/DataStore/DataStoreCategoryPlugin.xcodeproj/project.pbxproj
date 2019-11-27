@@ -50,6 +50,7 @@
 		2149E62D23886D3900873955 /* SyncMetadataIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E62B23886D3900873955 /* SyncMetadataIntegrationTests.swift */; };
 		63499C67A1A6711637CD08AD /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 715777CA4DC182BC96B88C19 /* Pods_HostApp.framework */; };
 		65681A029CC7068D348C585E /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78D7B65396B17E57FDE99E6D /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */; };
+		6B91DEBF238B9CE0004D6BEE /* ReconcileAndLocalSaveOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B91DEBE238B9CE0004D6BEE /* ReconcileAndLocalSaveOperationTests.swift */; };
 		9BDB42C47E6D7F9A113AE558 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C6448DF009E54C11ACE4515 /* Pods_HostApp.framework */; };
 		B9FAA140238C600A009414B4 /* ListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA13F238C600A009414B4 /* ListTests.swift */; };
 		B9FAA142238C6082009414B4 /* BaseDataStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA141238C6082009414B4 /* BaseDataStoreTests.swift */; };
@@ -152,6 +153,7 @@
 		64CD158FEB5A00387A5194DB /* Pods_AWSDataStoreCategoryPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSDataStoreCategoryPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CF3060AE9E227813325029F /* Pods_AWSDataStoreCategoryPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSDataStoreCategoryPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		715777CA4DC182BC96B88C19 /* Pods_HostApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6B91DEBE238B9CE0004D6BEE /* ReconcileAndLocalSaveOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconcileAndLocalSaveOperationTests.swift; sourceTree = "<group>"; };
 		74F804F52DF34831C8F60044 /* Pods-HostApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.debug.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.debug.xcconfig"; sourceTree = "<group>"; };
 		78D7B65396B17E57FDE99E6D /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		84A0848093D62C14AC3C7340 /* Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests/Pods-AWSDataStoreCategoryPlugin-AWSDataStoreCategoryPluginTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -335,6 +337,7 @@
 				2149E5F7238869CF00873955 /* SQLiteStorageEngineAdapterTests.swift */,
 				2149E5F6238869CF00873955 /* SQLStatementTests.swift */,
 				FA3841EC23889D8F0070AD5B /* StateMachineTests.swift */,
+				6B91DEBE238B9CE0004D6BEE /* ReconcileAndLocalSaveOperationTests.swift */,
 				2149E5EE238869CF00873955 /* TestSupport */,
 			);
 			path = AWSDataStoreCategoryPluginTests;
@@ -912,6 +915,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2149E5FD238869CF00873955 /* OutgoingMutationQueueTests.swift in Sources */,
+				6B91DEBF238B9CE0004D6BEE /* ReconcileAndLocalSaveOperationTests.swift in Sources */,
 				FA3841ED23889D8F0070AD5B /* StateMachineTests.swift in Sources */,
 				2149E5FC238869CF00873955 /* LocalSubscriptionTests.swift in Sources */,
 				FA3841EF23889DCC0070AD5B /* MockModels.swift in Sources */,
