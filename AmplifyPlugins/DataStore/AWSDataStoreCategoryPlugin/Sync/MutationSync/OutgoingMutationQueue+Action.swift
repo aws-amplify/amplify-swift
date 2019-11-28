@@ -15,13 +15,7 @@ extension OutgoingMutationQueue {
         // Startup/config actions
         case initialized
         case receivedStart(APICategoryGraphQLBehavior, MutationEventPublisher)
-        case started
         case receivedSubscription
-
-        // Event processing loop
-        case requestedEvent
-        case receivedEvent(MutationEvent)
-        case enqueuedEvent(MutationEvent)
 
         // Terminal actions
         case receivedCancel
@@ -29,24 +23,16 @@ extension OutgoingMutationQueue {
 
         var displayName: String {
             switch self {
-            case .enqueuedEvent:
-                return "enqueuedEvent"
             case .errored:
                 return "errored"
             case .initialized:
                 return "initialized"
             case .receivedCancel:
                 return "receivedCancel"
-            case .receivedEvent:
-                return "receivedEvent"
             case .receivedStart:
                 return "receivedStart"
             case .receivedSubscription:
                 return "receivedSubscription"
-            case .requestedEvent:
-                return "requestedEvent"
-            case .started:
-                return "started"
             }
         }
     }

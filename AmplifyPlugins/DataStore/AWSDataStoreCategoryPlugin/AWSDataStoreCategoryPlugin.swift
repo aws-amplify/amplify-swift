@@ -67,10 +67,21 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
     }
 
     public func reset(onComplete: @escaping (() -> Void)) {
-        // TODO: Shutdown storage engine
-        // - Cancelling in-process operations
+        // TODO: Shutdown storage adapter
         // - Unsubscribe from syncable model mutations
         // - ...?
+
+        let group = DispatchGroup()
+        if let awsStorageEngine = storageEngine as? StorageEngine {
+            group.enter()
+            DispatchQueue.global().async {
+                awsStorageEngine.reset {
+                    group.leave()
+                }
+            }
+        }
+
+        group.wait()
         onComplete()
     }
 

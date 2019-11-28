@@ -21,12 +21,30 @@ final class IncomingMutationEventFacade {
 
     init(modelType: Model.Type, api: APICategoryGraphQLBehavior) {
         self.asyncEvents = IncomingAsyncSubscriptionEventPublisher(modelType: modelType,
-                                                        api: api)
+                                                                   api: api)
 
         let mapper = IncomingAsyncSubscriptionEventToAnyModelMapper()
         self.mapper = mapper
 
         asyncEvents.subscribe(subscriber: mapper)
     }
+
+    func reset(onComplete: () -> Void) {
+        let group = DispatchGroup()
+
+        group.enter()
+        DispatchQueue.global().async {
+            self.asyncEvents.reset { group.leave() }
+        }
+
+        group.enter()
+        DispatchQueue.global().async {
+            self.mapper.reset { group.leave() }
+        }
+
+        group.wait()
+        onComplete()
+    }
+
 
 }

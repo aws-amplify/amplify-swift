@@ -21,7 +21,7 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
                 throw DataStoreError.configuration("Unable to get storage adapter",
                                                    "")
             }
-            modelExists = try engine.adapter.exists(M.self, withId: model.id)
+            modelExists = try engine.storageAdapter.exists(M.self, withId: model.id)
         } catch {
             if let dataStoreError = error as? DataStoreError {
                 completion(.failure(dataStoreError))

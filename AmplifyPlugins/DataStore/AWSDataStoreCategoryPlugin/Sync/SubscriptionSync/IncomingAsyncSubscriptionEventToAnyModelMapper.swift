@@ -79,6 +79,13 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
             log.error(error: failure)
         }
     }
+
+    func reset(onComplete: () -> Void) {
+        modelsFromSubscription.send(completion: .finished)
+        subscription?.cancel()
+        subscription = nil
+        onComplete()
+    }
 }
 
 extension IncomingAsyncSubscriptionEventToAnyModelMapper: DefaultLogger { }

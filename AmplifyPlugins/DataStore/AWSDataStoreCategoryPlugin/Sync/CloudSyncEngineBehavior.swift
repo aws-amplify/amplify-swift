@@ -11,8 +11,6 @@ import Combine
 @available(iOS 13.0, *)
 /// Behavior to sync mutation events to the cloud, and to subscribe to mutations from the cloud
 protocol CloudSyncEngineBehavior: class {
-    /// Used for testing
-    typealias Factory = (StorageEngineAdapter) -> CloudSyncEngineBehavior
 
     /// Start the sync process with a "delta sync" merge
     ///
