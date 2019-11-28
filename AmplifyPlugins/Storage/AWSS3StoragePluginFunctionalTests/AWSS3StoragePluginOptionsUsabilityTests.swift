@@ -17,7 +17,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
     /// Then: Retrieve data successfully when the URL has not expired and fail to after the expiry time
     func testGetRemoteURLWithExpires() {
         let key = "testGetRemoteURLWithExpires"
-        putData(key: key, dataString: key)
+        uploadData(key: key, dataString: key)
 
         var remoteURLOptional: URL?
         let completeInvoked = expectation(description: "Completed is invoked")
@@ -90,17 +90,17 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
     /// Given: An object uploaded with metadata with key `metadataKey` and value `metadataValue`
     /// When: Call the headObject API
     /// Then: The expected metadata should exist on the object
-    func testPutWithMetadata() {
-        let key = "testputwithmetadata"
+    func testuploadExpectationWithMetadata() {
+        let key = "testuploadwithmetadata"
         let value = key + "Value"
         let data = key.data(using: .utf8)!
         let metadataKey = "metadatakey"
         let metadataValue = metadataKey + "Value"
         let metadata = [key: value, metadataKey: metadataValue]
-        let options = StoragePutDataRequest.Options(metadata: metadata)
+        let options = StorageUploadDataRequest.Options(metadata: metadata)
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.putData(key: key, data: data, options: options) { event in
+        let operation = Amplify.Storage.uploadData(key: key, data: data, options: options) { event in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -145,7 +145,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
                 }
             }
         } catch {
-            XCTFail("Failed to get AWSS3StoragePlugin")
+            XCTFail("Failed to get awsS3StoragePlugin")
         }
     }
 

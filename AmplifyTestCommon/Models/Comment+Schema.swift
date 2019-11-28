@@ -25,13 +25,17 @@ extension Comment {
     public static let schema = defineSchema { model in
         let comment = Comment.keys
 
+        model.pluralName = "Comments"
         model.attributes(.isSyncable)
 
         model.fields(
             .id(),
             .field(comment.content, is: .required, ofType: .string),
             .field(comment.createdAt, is: .required, ofType: .dateTime),
-            .belongsTo(comment.post, ofType: Post.self)
+            .belongsTo(comment.post,
+                       is: .required,
+                       ofType: Post.self,
+                       targetName: "commentPostId")
         )
     }
 

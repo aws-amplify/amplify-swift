@@ -11,14 +11,14 @@ import Amplify
 import AWSS3StoragePlugin
 import AWSS3
 
-class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
+class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBase {
 
     /// Given: A large data object in storage
     /// When: Call the get API then pause
     /// Then: The operation is stalled (no progress, completed, or failed event)
-    func testGetLargeDataAndPause() {
+    func testDownloadLargeDataAndPause() {
         let key = "testGetLargeDataAndPause"
-        putData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
+        uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
@@ -28,7 +28,7 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
         failedInvoked.isInverted = true
         let noProgressAfterPause = expectation(description: "Progress after pause is invoked")
         noProgressAfterPause.isInverted = true
-        let operation = Amplify.Storage.getData(key: key, options: nil) { event in
+        let operation = Amplify.Storage.downloadData(key: key, options: nil) { event in
             switch event {
             case .inProcess(let progress):
                 // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
@@ -56,16 +56,16 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
     }
 
     /// Given: A large data object in storage
-    /// When: Call the getData API, pause, and then resume the operation
+    /// When: Call the downloadData API, pause, and then resume the operation
     /// Then: The operation should complete successfully
-    func testGetLargeDataAndPauseThenResume() {
+    func testDownloadLargeDataAndPauseThenResume() {
         let key = "testGetLargeDataAndPauseThenResume"
-        putData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
+        uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
         let completeInvoked = expectation(description: "Complete invoked")
-        let operation = Amplify.Storage.getData(key: key, options: nil) { event in
+        let operation = Amplify.Storage.downloadData(key: key, options: nil) { event in
             switch event {
             case .inProcess(let progress):
                 // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
@@ -91,9 +91,9 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
     /// Given: A large data object in storage
     /// When: Call the get API then cancel the operation,
     /// Then: The operation should not complete or fail.
-    func testGetLargeDataAndCancel() {
+    func testDownloadLargeDataAndCancel() {
         let key = "testGetLargeDataAndCancel"
-        putData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
+        uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
@@ -101,7 +101,7 @@ class AWSS3StoragePluginGetDataResumabilityTests: AWSS3StoragePluginTestBase {
         completedInvoked.isInverted = true
         let failedInvoked = expectation(description: "Failed invoked")
         failedInvoked.isInverted = true
-        let operation = Amplify.Storage.getData(key: key, options: nil) { event in
+        let operation = Amplify.Storage.downloadData(key: key, options: nil) { event in
             switch event {
             case .inProcess(let progress):
                 // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)

@@ -9,17 +9,17 @@ import XCTest
 import Amplify
 @testable import AWSS3StoragePlugin
 
-class StorageGetDataRequestTests: XCTestCase {
+class StorageDownloadDataRequestTests: XCTestCase {
 
     let testTargetIdentityId = "TestTargetIdentityId"
     let testKey = "TestKey"
     let testPluginOptions: Any? = [:]
 
     func testValidateSuccess() {
-        let options = StorageGetDataRequest.Options(accessLevel: .protected,
+        let options = StorageDownloadDataRequest.Options(accessLevel: .protected,
                                                     targetIdentityId: testTargetIdentityId,
                                                     pluginOptions: testPluginOptions)
-        let request = StorageGetDataRequest(key: testKey, options: options)
+        let request = StorageDownloadDataRequest(key: testKey, options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -27,10 +27,10 @@ class StorageGetDataRequestTests: XCTestCase {
     }
 
     func testValidateEmptyTargetIdentityIdError() {
-        let options = StorageGetDataRequest.Options(accessLevel: .protected,
+        let options = StorageDownloadDataRequest.Options(accessLevel: .protected,
                                                     targetIdentityId: "",
                                                     pluginOptions: testPluginOptions)
-        let request = StorageGetDataRequest(key: testKey, options: options)
+        let request = StorageDownloadDataRequest(key: testKey, options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -50,10 +50,10 @@ class StorageGetDataRequestTests: XCTestCase {
     }
 
     func testValidateTargetIdentityIdWithPrivateAccessLevelError() {
-        let options = StorageGetDataRequest.Options(accessLevel: .private,
+        let options = StorageDownloadDataRequest.Options(accessLevel: .private,
                                                     targetIdentityId: testTargetIdentityId,
                                                     pluginOptions: testPluginOptions)
-        let request = StorageGetDataRequest(key: testKey, options: options)
+        let request = StorageDownloadDataRequest(key: testKey, options: options)
 
         let storageErrorOptional = request.validate()
 
@@ -73,10 +73,10 @@ class StorageGetDataRequestTests: XCTestCase {
     }
 
     func testValidateKeyIsEmptyError() {
-        let options = StorageGetDataRequest.Options(accessLevel: .protected,
+        let options = StorageDownloadDataRequest.Options(accessLevel: .protected,
                                                     targetIdentityId: testTargetIdentityId,
                                                     pluginOptions: testPluginOptions)
-        let request = StorageGetDataRequest(key: "", options: options)
+        let request = StorageDownloadDataRequest(key: "", options: options)
 
         let storageErrorOptional = request.validate()
 

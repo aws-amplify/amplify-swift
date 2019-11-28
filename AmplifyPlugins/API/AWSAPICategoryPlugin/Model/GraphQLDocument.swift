@@ -14,21 +14,6 @@ public enum GraphQLDocumentType: String {
     case subscription
 }
 
-extension String {
-
-    /// Converts a "camelCase" value to "PascalCase". This is a very simple
-    /// and naive implementation that assumes the input as a "camelCase" value
-    /// and won't perform complex conversions, such as from "snake_case"
-    /// or "dash-case" to "PascalCase".
-    ///
-    /// - Note: this method simply transforms the first character to uppercase.
-    ///
-    /// - Returns: a string in "PascalCase" converted from "camelCase"
-    internal func toPascalCase() -> String {
-        return prefix(1).uppercased() + dropFirst()
-    }
-}
-
 /// Represents a GraphQL document. Concrete types that conform to this protocol must
 /// define a valid GraphQL operation document.
 ///
@@ -52,5 +37,37 @@ extension GraphQLDocument {
     /// becomes optional to document types that don't need to pass variables.
     public var variables: [String: Any] {
         return [:]
+    }
+
+    /// Resolve the fields that should be included in the selection set for the `modelType`.
+    /// Associated models will be included if they are required and they are the owning
+    /// side of the association.
+    ///
+    /// - Note: Currently implementation assumes the most common and efficient queries.
+    /// Future APIs might allow user customization of the selected fields.
+    public var selectionSetFields: [String] {
+        var fieldSet = [String]()
+        let schema = modelType.schema
+
+        var indentSize = 0
+
+        func appendFields(_ fields: [ModelField]) {
+            let indent = indentSize == 0 ? "" : String(repeating: "  ", count: indentSize)
+            fields.forEach { field in
+                let isRequiredAssociation = field.isRequired && field.isAssociationOwner
+                if isRequiredAssociation, let associatedModel = field.associatedModel {
+                    fieldSet.append(indent + field.name + " {")
+                    indentSize += 1
+                    appendFields(associatedModel.schema.graphQLFields)
+                    indentSize -= 1
+                    fieldSet.append(indent + "}")
+                } else {
+                    fieldSet.append(indent + field.graphQLName)
+                }
+            }
+            fieldSet.append(indent + "__typename")
+        }
+        appendFields(schema.graphQLFields)
+        return fieldSet
     }
 }

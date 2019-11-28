@@ -25,17 +25,17 @@ extension APICategory: APICategoryGraphQLBehavior {
         plugin.mutate(of: model, type: type, listener: listener)
     }
 
-    public func mutate(of model: AnyModel,
+    public func mutate(ofAnyModel anyModel: AnyModel,
                        type: GraphQLMutationType,
                        listener: GraphQLOperation<AnyModel>.EventListener?) -> GraphQLOperation<AnyModel> {
-        plugin.mutate(of: model, type: type, listener: listener)
+        plugin.mutate(ofAnyModel: anyModel, type: type, listener: listener)
     }
 
     public func subscribe<M: Model>(from modelType: M.Type,
                                     type: GraphQLSubscriptionType,
                                     listener: GraphQLSubscriptionOperation<M>.EventListener?)
         -> GraphQLSubscriptionOperation<M> {
-        plugin.subscribe(from: modelType, type: type, listener: listener)
+            plugin.subscribe(from: modelType, type: type, listener: listener)
     }
 
     public func query<R: Decodable>(request: GraphQLRequest<R>,
@@ -51,6 +51,14 @@ extension APICategory: APICategoryGraphQLBehavior {
     public func subscribe<R>(request: GraphQLRequest<R>,
                              listener: GraphQLSubscriptionOperation<R>.EventListener?)
         -> GraphQLSubscriptionOperation<R> {
-        plugin.subscribe(request: request, listener: listener)
+            plugin.subscribe(request: request, listener: listener)
     }
+
+    public func subscribe(toAnyModelType modelType: Model.Type,
+                          subscriptionType: GraphQLSubscriptionType,
+                          listener: GraphQLSubscriptionOperation<AnyModel>.EventListener?)
+        -> GraphQLSubscriptionOperation<AnyModel> {
+            plugin.subscribe(toAnyModelType: modelType, subscriptionType: subscriptionType, listener: listener)
+    }
+
 }

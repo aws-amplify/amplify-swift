@@ -87,9 +87,13 @@ import Foundation
 public enum ModelAssociation {
     case hasMany(associatedWith: CodingKey?)
     case hasOne(associatedWith: CodingKey?)
-    case belongsTo(associatedWith: CodingKey?)
+    case belongsTo(associatedWith: CodingKey?, targetName: String?)
 
-    public static let belongsTo: ModelAssociation = .belongsTo(associatedWith: nil)
+    public static let belongsTo: ModelAssociation = .belongsTo(associatedWith: nil, targetName: nil)
+
+    public static func belongsTo(targetName: String? = nil) -> ModelAssociation {
+        return .belongsTo(associatedWith: nil, targetName: nil)
+    }
 
 }
 
@@ -139,9 +143,13 @@ extension ModelField {
         if hasAssociation {
             let associatedModel = requiredAssociatedModel
             switch association {
-            case .belongsTo(let associatedKey),
-                 .hasOne(let associatedKey),
+            case .belongsTo(let associatedKey, _):
+                // TODO handle modelName casing (convert to camelCase)
+                let key = associatedKey?.stringValue ?? associatedModel.modelName
+                return associatedModel.schema.field(withName: key)
+            case .hasOne(let associatedKey),
                  .hasMany(let associatedKey):
+                // TODO handle modelName casing (convert to camelCase)
                 let key = associatedKey?.stringValue ?? associatedModel.modelName
                 return associatedModel.schema.field(withName: key)
             case .none:

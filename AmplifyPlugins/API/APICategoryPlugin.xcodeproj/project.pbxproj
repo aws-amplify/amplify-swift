@@ -149,6 +149,7 @@
 		FA8EE789238636410097E4F1 /* GraphQLDocument+AnyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE788238636410097E4F1 /* GraphQLDocument+AnyModel.swift */; };
 		FA8EE78B238639CE0097E4F1 /* GraphQLRequest+AnyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE78A238639CE0097E4F1 /* GraphQLRequest+AnyModel.swift */; };
 		FA97F5532386CCF500EE9EFE /* AnyModelIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA97F5522386CCF500EE9EFE /* AnyModelIntegrationTests.swift */; };
+		FAC5F9B1238B70EE00F70F02 /* APICategoryPluginConcurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9554DF238B6C0B00D42A43 /* APICategoryPluginConcurrencyTests.swift */; };
 		FAC800192386FE0F0048AA88 /* AnyModel+JSONInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC800182386FE0F0048AA88 /* AnyModel+JSONInit.swift */; };
 /* End PBXBuildFile section */
 
@@ -446,6 +447,7 @@
 		FA8EE786238634FB0097E4F1 /* GraphQLAnyModelDocumentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLAnyModelDocumentTests.swift; sourceTree = "<group>"; };
 		FA8EE788238636410097E4F1 /* GraphQLDocument+AnyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphQLDocument+AnyModel.swift"; sourceTree = "<group>"; };
 		FA8EE78A238639CE0097E4F1 /* GraphQLRequest+AnyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphQLRequest+AnyModel.swift"; sourceTree = "<group>"; };
+		FA9554DF238B6C0B00D42A43 /* APICategoryPluginConcurrencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICategoryPluginConcurrencyTests.swift; sourceTree = "<group>"; };
 		FA97F5522386CCF500EE9EFE /* AnyModelIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyModelIntegrationTests.swift; sourceTree = "<group>"; };
 		FAC800182386FE0F0048AA88 /* AnyModel+JSONInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnyModel+JSONInit.swift"; sourceTree = "<group>"; };
 		FC6404420A9C03FAB55FA8B3 /* Pods-AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests/Pods-AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -610,9 +612,10 @@
 		217856702380C73600A30D19 /* AWSAPICategoryPluginFunctionalTests */ = {
 			isa = PBXGroup;
 			children = (
+				FA97F5522386CCF500EE9EFE /* AnyModelIntegrationTests.swift */,
+				FA9554DF238B6C0B00D42A43 /* APICategoryPluginConcurrencyTests.swift */,
 				B4DFA609237A61D00013E17B /* AWSAPICategoryPluginGetTests.swift */,
 				B4DFA604237A61D00013E17B /* BlogPostCommentGraphQLWithAPIKeyTests.swift */,
-				FA97F5522386CCF500EE9EFE /* AnyModelIntegrationTests.swift */,
 				217856C12383339D00A30D19 /* GraphQLModelBasedTests.swift */,
 				217856732380C73600A30D19 /* Info.plist */,
 				B4DFA5FD237A61D00013E17B /* IntegrationTestConfiguration.swift */,
@@ -919,6 +922,7 @@
 				B4DFA5D5237A611D0013E17B /* AWSAPICategoryPlugin+URLSessionBehaviorDelegateTests.swift */,
 				B4DFA5DF237A611D0013E17B /* AWSAPICategoryPlugin+URLSessionDelegateTests.swift */,
 				B4DFA5CB237A611D0013E17B /* AWSAPICategoryPluginTestBase.swift */,
+				FA9554E1238B6C1200D42A43 /* Concurrency */,
 				B4DFA5C6237A611D0013E17B /* Configuration */,
 				B4DFA5DD237A611D0013E17B /* Info.plist */,
 				B4DFA5D9237A611D0013E17B /* Interceptor */,
@@ -1074,6 +1078,13 @@
 				7866FCFB5807C2D20219CEBE /* Pods-HostApp-AWSAPICategoryPluginTestCommon-RESTWithIAMIntegrationTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		FA9554E1238B6C1200D42A43 /* Concurrency */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Concurrency;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1960,6 +1971,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAC5F9B1238B70EE00F70F02 /* APICategoryPluginConcurrencyTests.swift in Sources */,
 				217856982380CF1C00A30D19 /* AWSAPICategoryPluginGetTests.swift in Sources */,
 				2178569A2380D1E000A30D19 /* BlogPostCommentGraphQLWithAPIKeyTests.swift in Sources */,
 				217856992380D0A700A30D19 /* TodoGraphQLWithAPIKeyTests.swift in Sources */,

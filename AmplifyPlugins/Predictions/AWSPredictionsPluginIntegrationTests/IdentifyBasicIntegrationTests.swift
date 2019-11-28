@@ -40,8 +40,15 @@ class IdentifyBasicIntegrationTests: XCTestCase {
         if withCollection {
          predictionsConfig = PredictionsCategoryConfiguration(
             plugins: [
-                "awsPredictionsPlugin": [
-                    "defaultRegion": region
+                "AWSPredictionsPlugin": [
+                    "defaultRegion": region,
+                    "identify": [
+                        "identifyEntities": [
+                            "collectionId": "TestCollection",
+                            "maxFaces": 50,
+                            "region": region
+                        ]
+                    ]
                 ]
             ]
         )

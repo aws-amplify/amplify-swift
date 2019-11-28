@@ -13,7 +13,7 @@ extension ModelSchema {
 
     /// The GraphQL name of the schema.
     var graphQLName: String {
-        targetName ?? name
+        name
     }
 
     /// The list of fields formatted for GraphQL usage.
@@ -23,17 +23,6 @@ extension ModelSchema {
         }
     }
 
-    func findConnectedField(byType type: Model.Type) -> ModelField? {
-        let fields = sortedFields.filter { field in
-            field.hasAssociation && type == field.associatedModel
-        }
-        if fields.count > 1 {
-            // TODO add a validation message. Check with CLI, they do the same validation
-            preconditionFailure("")
-        }
-        return fields.first
-    }
-
 }
 
 /// Extension that adds GraphQL specific utilities to `ModelField`.
@@ -41,11 +30,8 @@ extension ModelField {
 
     /// The GraphQL name of the field.
     var graphQLName: String {
-        let name = targetName ?? self.name
-        if isAssociationOwner {
-            // TODO generate the correct connected field name
-            // e.g. Post - Comment: `commentPostId` on the `Comment.post`
-            return name + "Id"
+        if isAssociationOwner, case let .belongsTo(_, targetName) = association {
+            return targetName ?? name.pascalCased() + "Id"
         }
         return name
     }

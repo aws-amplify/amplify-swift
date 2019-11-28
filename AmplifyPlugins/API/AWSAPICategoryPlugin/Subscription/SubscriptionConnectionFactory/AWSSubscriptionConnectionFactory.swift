@@ -11,6 +11,8 @@ import AWSPluginsCore
 import Amplify
 
 class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
+    private let concurrencyQueue = DispatchQueue(label: "com.amazonaws.amplify.AWSSubscriptionConnectionFactory",
+                                                 target: DispatchQueue.global())
 
     let retryStrategy: AWSAppSyncRetryStrategy
     var apiToSubscriptionConnections: [String: SubscriptionConnection] = [:]
@@ -21,19 +23,20 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
 
     func getOrCreateConnection(for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
                                authService: AWSAuthServiceBehavior) throws -> SubscriptionConnection {
+        return try concurrencyQueue.sync {
+            let apiName = endpointConfig.name
+            if let connection = apiToSubscriptionConnections[apiName] {
+                return connection
+            }
 
-        let apiName = endpointConfig.name
-        if let connection = apiToSubscriptionConnections[apiName] {
+            let url = endpointConfig.baseURL
+            let interceptor = try getInterceptor(for: endpointConfig.authorizationConfiguration,
+                                                 authService: authService)
+            let connection = AppSyncSubscriptionConnection(url: url, interceptor: interceptor)
+
+            apiToSubscriptionConnections[apiName] = connection
             return connection
         }
-
-        let url = endpointConfig.baseURL
-        let interceptor = try getInterceptor(for: endpointConfig.authorizationConfiguration,
-                                             authService: authService)
-        let connection = AppSyncSubscriptionConnection(url: url, interceptor: interceptor)
-
-        apiToSubscriptionConnections[apiName] = connection
-        return connection
     }
 
     // MARK: Private methods

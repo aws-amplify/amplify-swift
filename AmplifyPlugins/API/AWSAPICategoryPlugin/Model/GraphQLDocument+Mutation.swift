@@ -44,20 +44,14 @@ public struct GraphQLMutation: GraphQLDocument {
     }
 
     public var stringValue: String {
-        let mutationName = name.toPascalCase()
+        let mutationName = name.pascalCased()
         let inputName = "input"
         let inputType = "\(mutationName)Input!"
-
-        let schema = model.schema
-        var fields = schema.graphQLFields.map { $0.graphQLName }
-
-        // All mutation documents should include typename, to support type-erased operations on the client
-        fields.append("__typename")
 
         let document = """
         \(documentType) \(mutationName)($\(inputName): \(inputType)) {
           \(name)(\(inputName): $\(inputName)) {
-            \(fields.joined(separator: "\n    "))
+            \(selectionSetFields.joined(separator: "\n    "))
           }
         }
         """

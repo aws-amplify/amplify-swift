@@ -46,6 +46,8 @@ class AnyModelIntegrationTests: XCTestCase {
         Amplify.reset()
     }
 
+    // TODO: this test is failing due to provisioned AppSync does not have "_deleted"
+    // Variables is created with "_deleted" field and nil value. Service cannot accept it
     func testCreateAsAnyModel() throws {
         let originalPost = Post(title: "Post title",
                                 content: "Original post content as of \(Date())")
@@ -81,12 +83,12 @@ class AnyModelIntegrationTests: XCTestCase {
 
             case .failure(let error):
                 switch error {
-                    case .error(let errors):
-                        XCTFail("errors: \(errors)")
-                    case .partial(let model, let errors):
-                        XCTFail("partial: \(model), \(errors)")
-                    case .transformationError(let rawResponse, let apiError):
-                        XCTFail("transformationError: \(rawResponse), \(apiError)")
+                case .error(let errors):
+                    XCTFail("errors: \(errors)")
+                case .partial(let model, let errors):
+                    XCTFail("partial: \(model), \(errors)")
+                case .transformationError(let rawResponse, let apiError):
+                    XCTFail("transformationError: \(rawResponse), \(apiError)")
                 }
             }
             return
@@ -151,12 +153,12 @@ class AnyModelIntegrationTests: XCTestCase {
                 break
             case .failure(let error):
                 switch error {
-                    case .error(let errors):
-                        XCTFail("errors: \(errors)")
-                    case .partial(let model, let errors):
-                        XCTFail("partial: \(model), \(errors)")
-                    case .transformationError(let rawResponse, let apiError):
-                        XCTFail("transformationError: \(rawResponse), \(apiError)")
+                case .error(let errors):
+                    XCTFail("errors: \(errors)")
+                case .partial(let model, let errors):
+                    XCTFail("partial: \(model), \(errors)")
+                case .transformationError(let rawResponse, let apiError):
+                    XCTFail("transformationError: \(rawResponse), \(apiError)")
                 }
             }
             return

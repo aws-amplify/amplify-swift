@@ -11,15 +11,20 @@
 /// that plugin.
 ///
 /// - Warning: It is a serious programmer to invoke any of the category APIs (like `Analytics.record()` or
-/// `Logging.debug()`) without first registering plugins via `Amplify.add(plugin:)` and configuring Amplify via
+/// `API.mutate()`) without first registering plugins via `Amplify.add(plugin:)` and configuring Amplify via
 /// `Amplify.configure()`. Such access will cause a preconditionFailure.
+///
+/// There are two exceptions to this. The `Logging` and `Hub` categories are configured with a default plugin that is
+/// available at initialization.
 public class Amplify {
 
     /// If `true`, `configure()` has already been invoked, and subsequent calls to `configure` will throw a
     /// ConfigurationError.amplifyAlreadyConfigured error.
     static var isConfigured = false
 
-    // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset
+    // Storage for the categories themselves, which will be instantiated during configuration, and cleared during reset.
+    // It is not supported to mutate these category properties. They are `var` to support the `reset()` method for
+    // ease of testing.
     public static internal(set) var Analytics = AnalyticsCategory()
     public static internal(set) var API = APICategory()
     public static internal(set) var DataStore = DataStoreCategory()
@@ -32,6 +37,7 @@ public class Amplify {
     ///
     /// - Parameter plugin: The AnalyticsCategoryPlugin to add
     public static func add<P: Plugin>(plugin: P) throws {
+        log.debug("Adding plugin: \(plugin))")
         switch plugin {
         case let plugin as AnalyticsCategoryPlugin:
             try Analytics.add(plugin: plugin)
@@ -55,3 +61,5 @@ public class Amplify {
     }
 
 }
+
+extension Amplify: DefaultLogger { }

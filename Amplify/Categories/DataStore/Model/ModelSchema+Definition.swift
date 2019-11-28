@@ -16,6 +16,7 @@ public enum ModelFieldType: CustomStringConvertible {
     case double
     case date
     case dateTime
+    case time
     case bool
     case `enum`(Any.Type)
     case model(type: Model.Type)
@@ -28,6 +29,7 @@ public enum ModelFieldType: CustomStringConvertible {
         case .double: return "Float"
         case .date:  return "AWSDate"
         case .dateTime: return "AWSDateTime"
+        case .time: return "AWSTime"
         case .bool: return "Boolean"
         case .enum(let anyType): return String(describing: anyType)
         case .model(let modelType): return modelType.modelName
@@ -55,6 +57,7 @@ extension ModelField {
         case "Boolean": return .bool
         case "AWSDate": return .date
         case "AWSDateTime": return .dateTime
+        case "AWSTime": return .time
         default:
             guard let model = ModelRegistry.modelType(from: type) else {
                 preconditionFailure("Model with name \(type) could not be found.")
@@ -82,11 +85,13 @@ public enum ModelFieldNullability {
 public struct ModelSchemaDefinition {
 
     internal let name: String
+    public var pluralName: String?
     internal var fields: ModelFields
     internal var attributes: [ModelAttribute]
 
-    init(name: String, attributes: [ModelAttribute] = []) {
+    init(name: String, pluralName: String? = nil, attributes: [ModelAttribute] = []) {
         self.name = name
+        self.pluralName = pluralName
         self.fields = [:] as ModelFields
         self.attributes = attributes
     }
@@ -103,27 +108,24 @@ public struct ModelSchemaDefinition {
     }
 
     internal func build() -> ModelSchema {
-        return ModelSchema(name: name, attributes: attributes, fields: fields)
+        return ModelSchema(name: name, pluralName: pluralName, attributes: attributes, fields: fields)
     }
 }
 
 public enum ModelFieldDefinition {
 
     case field(name: String,
-               targetName: String?,
                type: ModelFieldType,
                nullability: ModelFieldNullability,
                association: ModelAssociation?,
                attributes: [ModelFieldAttribute])
 
     public static func field(_ key: CodingKey,
-                             targetName: String? = nil,
                              is nullability: ModelFieldNullability = .required,
                              ofType type: ModelFieldType = .string,
                              attributes: [ModelFieldAttribute] = [],
                              association: ModelAssociation? = nil) -> ModelFieldDefinition {
         return .field(name: key.stringValue,
-                      targetName: key.stringValue,
                       type: type,
                       nullability: nullability,
                       association: association,
@@ -136,7 +138,6 @@ public enum ModelFieldDefinition {
 
     public static func id(_ name: String = "id") -> ModelFieldDefinition {
         return .field(name: name,
-                      targetName: nil,
                       type: .string,
                       nullability: .required,
                       association: nil,
@@ -146,7 +147,6 @@ public enum ModelFieldDefinition {
     public static func hasMany(_ key: CodingKey,
                                is nullability: ModelFieldNullability = .required,
                                ofType type: Model.Type,
-                               targetName: String? = nil,
                                associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
@@ -157,10 +157,8 @@ public enum ModelFieldDefinition {
     public static func hasOne(_ key: CodingKey,
                               is nullability: ModelFieldNullability = .required,
                               ofType type: Model.Type,
-                              targetName: String? = nil,
                               associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
         return .field(key,
-                      targetName: targetName,
                       is: nullability,
                       ofType: .model(type: type),
                       association: .hasOne(associatedWith: associatedKey))
@@ -169,18 +167,16 @@ public enum ModelFieldDefinition {
     public static func belongsTo(_ key: CodingKey,
                                  is nullability: ModelFieldNullability = .required,
                                  ofType type: Model.Type,
-                                 targetName: String? = nil,
-                                 associatedWith associatedKey: CodingKey? = nil) -> ModelFieldDefinition {
+                                 associatedWith associatedKey: CodingKey? = nil,
+                                 targetName: String? = nil) -> ModelFieldDefinition {
         return .field(key,
-                      targetName: targetName,
                       is: nullability,
                       ofType: .model(type: type),
-                      association: .belongsTo(associatedWith: associatedKey))
+                      association: .belongsTo(associatedWith: associatedKey, targetName: targetName))
     }
 
     public var modelField: ModelField {
         guard case let .field(name,
-                              targetName,
                               type,
                               nullability,
                               association,
@@ -188,7 +184,6 @@ public enum ModelFieldDefinition {
             preconditionFailure("Unexpected enum value found: \(String(describing: self))")
         }
         return ModelField(name: name,
-                          targetName: targetName,
                           type: type.description,
                           isRequired: nullability.isRequired,
                           isArray: type.isArray,

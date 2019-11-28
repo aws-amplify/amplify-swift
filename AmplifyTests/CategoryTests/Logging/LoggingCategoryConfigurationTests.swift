@@ -79,7 +79,45 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testCanRegisterMultipleLoggingPlugins() throws {
+    /// - Given: An unconfigured system
+    /// - When:
+    ///    - I invoke a logging API before adding plugins or configuring
+    /// - Then:
+    ///    - The system accepts the log message
+    func testDefaultPluginExistsAtStartup() {
+        // Ideally, we'd assert that the default logger actually outputs, but we don't currently have a way to assert
+        XCTAssertNoThrow(Amplify.Logging.info("Test"))
+    }
+
+    /// - Given: An unconfigured system
+    /// - When:
+    ///    - I add a custom plugin
+    /// - Then:
+    ///    - The default plugin is replaced with the custom one
+    func testCustomPluginReplacesDefault() throws {
+        let plugin1 = MockLoggingCategoryPlugin()
+        try Amplify.add(plugin: plugin1)
+
+        let loggingConfig = LoggingCategoryConfiguration(
+            plugins: [
+                "MockLoggingCategoryPlugin": true
+            ]
+        )
+
+        let amplifyConfig = AmplifyConfiguration(logging: loggingConfig)
+
+        try Amplify.configure(amplifyConfig)
+
+        XCTAssertThrowsError(try Amplify.Logging.getPlugin(for: AWSUnifiedLoggingPlugin.key))
+        XCTAssertNotNil(try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin"))
+    }
+
+    /// - Given: An unconfigured system
+    /// - When:
+    ///    - I attempt to add multiple Logging plugins
+    /// - Then:
+    ///    - Only the last one is added
+    func testCannotRegisterMultipleLoggingPlugins() throws {
         let plugin1 = MockLoggingCategoryPlugin()
         try Amplify.add(plugin: plugin1)
 
@@ -88,7 +126,6 @@ class LoggingCategoryConfigurationTests: XCTestCase {
 
         let loggingConfig = LoggingCategoryConfiguration(
             plugins: [
-                "MockLoggingCategoryPlugin": true,
                 "MockSecondLoggingCategoryPlugin": true
             ]
         )
@@ -97,7 +134,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        XCTAssertNotNil(try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin"))
+        XCTAssertThrowsError(try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin"))
         XCTAssertNotNil(try Amplify.Logging.getPlugin(for: "MockSecondLoggingCategoryPlugin"))
     }
 
@@ -119,30 +156,6 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         Amplify.Logging.error("test")
 
         waitForExpectations(timeout: 1.0)
-    }
-
-    func testPreconditionFailureInvokingWithMultiplePlugins() throws {
-        let plugin1 = MockLoggingCategoryPlugin()
-        try Amplify.add(plugin: plugin1)
-
-        let plugin2 = MockSecondLoggingCategoryPlugin()
-        try Amplify.add(plugin: plugin2)
-
-        let loggingConfig = LoggingCategoryConfiguration(
-            plugins: [
-                "MockLoggingCategoryPlugin": true,
-                "MockSecondLoggingCategoryPlugin": true
-            ]
-        )
-
-        let amplifyConfig = AmplifyConfiguration(logging: loggingConfig)
-
-        try Amplify.configure(amplifyConfig)
-
-        let exception: BadInstructionException? = catchBadInstruction {
-            Amplify.Logging.error("test")
-        }
-        XCTAssertNotNil(exception)
     }
 
     func testCanUseSpecifiedPlugin() throws {
@@ -212,17 +225,6 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
         try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin").configure(using: true)
         waitForExpectations(timeout: 1.0)
-    }
-
-    func testPreconditionFailureInvokingBeforeConfig() throws {
-        let plugin = MockLoggingCategoryPlugin()
-        try Amplify.add(plugin: plugin)
-
-        // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
-        let exception: BadInstructionException? = catchBadInstruction {
-            Amplify.Logging.debug("foo")
-        }
-        XCTAssertNotNil(exception)
     }
 
     // MARK: - Test internal config behavior guarantees

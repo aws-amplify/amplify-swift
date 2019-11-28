@@ -153,7 +153,7 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
 
         operation.doMockDispatch(event: .completed(StorageListResult(items: [])))
         operation.doMockDispatch(event: .inProcess(()))
-        wait(for: [listenerWasInvokedForInProcess, listenerWasInvokedForCompleted], timeout: 0.1)
+        wait(for: [listenerWasInvokedForInProcess, listenerWasInvokedForCompleted], timeout: 0.5)
 
         operation.doMockDispatch(event: .failed(StorageError.accessDenied("", "")))
         wait(for: [listenerWasInvokedForFailed], timeout: 0.1)

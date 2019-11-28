@@ -20,4 +20,13 @@ public extension GraphQLRequest {
                                         responseType: AnyModel.self,
                                         decodePath: document.decodePath)
     }
+
+    static func subscription(toAnyModelType modelType: Model.Type,
+                             subscriptionType: GraphQLSubscriptionType) -> GraphQLRequest<AnyModel> {
+        let document = GraphQLSubscription(of: modelType, type: subscriptionType)
+        return GraphQLRequest<AnyModel>(document: document.stringValue,
+                                        responseType: AnyModel.self,
+                                        decodePath: document.decodePath)
+
+    }
 }

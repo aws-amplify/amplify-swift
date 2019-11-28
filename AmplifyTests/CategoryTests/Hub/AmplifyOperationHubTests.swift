@@ -127,14 +127,14 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
         return operation
     }
 
-    func getData(key: String,
-                 options: StorageGetDataRequest.Options? = nil,
-                 listener: StorageGetDataOperation.EventListener? = nil) -> StorageGetDataOperation {
-        let options = options ?? StorageGetDataRequest.Options()
+    func downloadData(key: String,
+                      options: StorageDownloadDataRequest.Options? = nil,
+                      listener: StorageDownloadDataOperation.EventListener? = nil) -> StorageDownloadDataOperation {
+        let options = options ?? StorageDownloadDataRequest.Options()
 
-        let request = StorageGetDataRequest(key: key, options: options)
+        let request = StorageDownloadDataRequest(key: key, options: options)
 
-        let operation = MockDispatchingStorageGetDataOperation(request: request,
+        let operation = MockDispatchingStorageDownloadDataOperation(request: request,
                                                                listener: listener)
 
         let delay = resolveDispatchDelay(options: options.pluginOptions)
@@ -166,15 +166,15 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     }
 
-    func putData(key: String,
-                 data: Data,
-                 options: StoragePutDataRequest.Options? = nil,
-                 listener: StoragePutDataOperation.EventListener? = nil) -> StoragePutDataOperation {
-        let options = options ?? StoragePutDataRequest.Options()
+    func uploadData(key: String,
+                    data: Data,
+                    options: StorageUploadDataRequest.Options? = nil,
+                    listener: StorageUploadDataOperation.EventListener? = nil) -> StorageUploadDataOperation {
+        let options = options ?? StorageUploadDataRequest.Options()
 
-        let request = StoragePutDataRequest(key: key, data: data, options: options)
+        let request = StorageUploadDataRequest(key: key, data: data, options: options)
 
-        let operation = MockDispatchingStoragePutDataOperation(request: request,
+        let operation = MockDispatchingStorageUploadDataOperation(request: request,
                                                                listener: listener)
 
         let delay = resolveDispatchDelay(options: options.pluginOptions)
@@ -270,11 +270,11 @@ Void, StorageError>, StorageDownloadFileOperation {
     }
 }
 
-class MockDispatchingStorageGetDataOperation: AmplifyOperation<StorageGetDataRequest, Progress,
-Data, StorageError>, StorageGetDataOperation {
+class MockDispatchingStorageDownloadDataOperation: AmplifyOperation<StorageDownloadDataRequest, Progress,
+Data, StorageError>, StorageDownloadDataOperation {
     init(request: Request, listener: EventListener? = nil) {
         super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.getData,
+                   eventName: HubPayload.EventName.Storage.downloadData,
                    request: request,
                    listener: listener)
     }
@@ -326,11 +326,11 @@ String, StorageError>, StorageRemoveOperation {
     }
 }
 
-class MockDispatchingStoragePutDataOperation: AmplifyOperation<StoragePutDataRequest, Progress,
-String, StorageError>, StoragePutDataOperation {
+class MockDispatchingStorageUploadDataOperation: AmplifyOperation<StorageUploadDataRequest, Progress,
+String, StorageError>, StorageUploadDataOperation {
     init(request: Request, listener: EventListener? = nil) {
         super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.putData,
+                   eventName: HubPayload.EventName.Storage.uploadData,
                    request: request,
                    listener: listener)
     }

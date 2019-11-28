@@ -19,14 +19,14 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         return MockStorageGetURLOperation(request: request)
     }
 
-    func getData(key: String,
-                 options: StorageGetDataRequest.Options?,
-                 listener: StorageGetDataOperation.EventListener?)
-        -> StorageGetDataOperation {
-        notify("getData")
-            let options = options ?? StorageGetDataRequest.Options()
-            let request = StorageGetDataRequest(key: key, options: options)
-            return MockStorageGetDataOperation(request: request)
+    func downloadData(key: String,
+                      options: StorageDownloadDataRequest.Options?,
+                      listener: StorageDownloadDataOperation.EventListener?)
+        -> StorageDownloadDataOperation {
+        notify("downloadData")
+            let options = options ?? StorageDownloadDataRequest.Options()
+            let request = StorageDownloadDataRequest(key: key, options: options)
+            return MockStorageDownloadDataOperation(request: request)
     }
 
     func downloadFile(key: String,
@@ -40,14 +40,14 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
             return MockStorageDownloadFileOperation(request: request)
     }
 
-    func putData(key: String,
+    func uploadData(key: String,
                  data: Data,
-                 options: StoragePutDataRequest.Options?,
-                 listener: StoragePutDataOperation.EventListener?) -> StoragePutDataOperation {
-        notify("putData")
-        let options = options ?? StoragePutDataRequest.Options()
-        let request = StoragePutDataRequest(key: key, data: data, options: options)
-        return MockStoragePutDataOperation(request: request)
+                 options: StorageUploadDataRequest.Options?,
+                 listener: StorageUploadDataOperation.EventListener?) -> StorageUploadDataOperation {
+        notify("uploadData")
+        let options = options ?? StorageUploadDataRequest.Options()
+        let request = StorageUploadDataRequest(key: key, data: data, options: options)
+        return MockStorageUploadDataOperation(request: request)
     }
 
     func uploadFile(key: String,
@@ -112,8 +112,8 @@ StorageGetURLOperation {
     }
 }
 
-class MockStorageGetDataOperation: AmplifyOperation<StorageGetDataRequest, Progress, Data, StorageError>,
-    StorageGetDataOperation {
+class MockStorageDownloadDataOperation: AmplifyOperation<StorageDownloadDataRequest, Progress, Data, StorageError>,
+    StorageDownloadDataOperation {
     override func pause() {
     }
 
@@ -122,7 +122,7 @@ class MockStorageGetDataOperation: AmplifyOperation<StorageGetDataRequest, Progr
 
     init(request: Request) {
         super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.getData,
+                   eventName: HubPayload.EventName.Storage.downloadData,
                    request: request)
     }
 }
@@ -142,8 +142,8 @@ class MockStorageDownloadFileOperation: AmplifyOperation<StorageDownloadFileRequ
     }
 }
 
-class MockStoragePutDataOperation: AmplifyOperation<StoragePutDataRequest, Progress, String, StorageError>,
-StoragePutDataOperation {
+class MockStorageUploadDataOperation: AmplifyOperation<StorageUploadDataRequest, Progress, String, StorageError>,
+StorageUploadDataOperation {
     override func pause() {
     }
 
@@ -152,7 +152,7 @@ StoragePutDataOperation {
 
     init(request: Request) {
         super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.putData,
+                   eventName: HubPayload.EventName.Storage.uploadData,
                    request: request)
     }
 }

@@ -67,7 +67,6 @@ final class HubChannelDispatcher {
         listenersById.removeAll()
         messageQueue.cancelAllOperations()
         messageQueue.waitUntilAllOperationsAreFinished()
-        Thread.sleep(forTimeInterval: 1.0)
     }
 
 }

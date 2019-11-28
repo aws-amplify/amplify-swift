@@ -27,9 +27,9 @@ public protocol StorageCategoryClientBehavior {
     ///   - options: Options to adjust the behavior of this request, including plugin-options
     ///   - listener: Triggered when event occurs
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
-    func getData(key: String,
-                 options: StorageGetDataOperation.Request.Options?,
-                 listener: StorageGetDataOperation.EventListener?) -> StorageGetDataOperation
+    func downloadData(key: String,
+                      options: StorageDownloadDataOperation.Request.Options?,
+                      listener: StorageDownloadDataOperation.EventListener?) -> StorageDownloadDataOperation
 
     /// Download to file the object from storage.
     ///
@@ -52,10 +52,10 @@ public protocol StorageCategoryClientBehavior {
     ///   - options: Parameters to specific plugin behavior
     ///   - listener: Triggered when event occurs
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
-    func putData(key: String,
-                 data: Data,
-                 options: StoragePutDataOperation.Request.Options?,
-                 listener: StoragePutDataOperation.EventListener?) -> StoragePutDataOperation
+    func uploadData(key: String,
+                    data: Data,
+                    options: StorageUploadDataOperation.Request.Options?,
+                    listener: StorageUploadDataOperation.EventListener?) -> StorageUploadDataOperation
 
     /// Upload local file to storage
     ///

@@ -14,7 +14,10 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
     // MARK: Query API Tests
 
     func testQuery() {
-        let request = GraphQLRequest(apiName: apiName, document: testDocument, variables: nil, responseType: JSONValue.self)
+        let request = GraphQLRequest(apiName: apiName,
+                                     document: testDocument,
+                                     variables: nil,
+                                     responseType: JSONValue.self)
         let operation = apiPlugin.query(request: request, listener: nil)
 
         XCTAssertNotNil(operation)
