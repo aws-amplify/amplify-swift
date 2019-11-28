@@ -29,10 +29,6 @@ target "HostApp" do
   pod 'AWSPluginsCore', :path => '../../'
   pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
 
-  target "AWSS3StoragePluginIntegrationTests" do
-    inherit! :complete
-  end
-
   target "AWSS3StoragePluginFunctionalTests" do
     inherit! :complete
   end

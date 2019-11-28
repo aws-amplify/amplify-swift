@@ -17,27 +17,35 @@ final class StorageEngine: StorageEngineBehavior {
     private var syncEngine: CloudSyncEngineBehavior?
     private weak var api: APICategoryGraphQLBehavior?
 
+    // TODO: Find the right place to do this
+    private static var systemModels: [Model.Type] {
+        return [
+            MutationEvent.self
+        ]
+    }
+
     // Internal initializer used for testing, to allow lazy initialization of the SyncEngine
     init(adapter: StorageEngineAdapter,
          syncEngineFactory: CloudSyncEngineBehavior.Factory?) {
         self.adapter = adapter
-        let syncEngine = syncEngineFactory?()
+        let syncEngine = syncEngineFactory?(adapter)
         self.syncEngine = syncEngine
     }
 
     convenience init(isSyncEnabled: Bool) throws {
         let key = kCFBundleNameKey as String
         let databaseName = Bundle.main.object(forInfoDictionaryKey: key) as? String
-        let adapter = try SQLiteStorageEngineAdapter(databaseName: databaseName ?? "app")
+        let storageAdapter = try SQLiteStorageEngineAdapter(databaseName: databaseName ?? "app")
 
         let syncEngineFactory: CloudSyncEngineBehavior.Factory? =
-            isSyncEnabled ? { CloudSyncEngine() } : nil
+            isSyncEnabled ? { adapter in CloudSyncEngine(storageAdapter: adapter) } : nil
 
-        self.init(adapter: adapter, syncEngineFactory: syncEngineFactory)
+        self.init(adapter: storageAdapter, syncEngineFactory: syncEngineFactory)
     }
 
     func setUp(models: [Model.Type]) throws {
-        try adapter.setUp(models: models)
+        let modelsToSetUp = StorageEngine.systemModels + models
+        try adapter.setUp(models: modelsToSetUp)
     }
 
     func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
@@ -115,6 +123,6 @@ final class StorageEngine: StorageEngineBehavior {
     }
 
     func startSync() {
-        syncEngine?.start(api: Amplify.API, storageAdapter: adapter)
+        syncEngine?.start(api: Amplify.API)
     }
 }

@@ -37,6 +37,7 @@ class SyncMutationToCloudOperation: Operation {
             return
         }
 
+        sendMutationToCloud()
     }
 
     private func sendMutationToCloud() {
@@ -47,7 +48,8 @@ class SyncMutationToCloudOperation: Operation {
 
         log.debug(#function)
         guard let api = api else {
-            log.error(error: OutgoingMutationQueue.Errors.nilStorageAdapter)
+            // TODO: This should be part of our error handling routines
+            log.error("\(#function): API unexpectedly nil")
             return
         }
 
@@ -78,7 +80,7 @@ class SyncMutationToCloudOperation: Operation {
         // let version = mutationEvent.version
         // let mutation = GraphQLMutation()
 
-        mutationOperation = api.mutate(of: anyModel, type: mutationType) { asyncEvent in
+        mutationOperation = api.mutate(ofAnyModel: anyModel, type: mutationType) { asyncEvent in
             self.log.verbose("sendMutationToCloud received asyncEvent: \(asyncEvent)")
             self.validateResponseFromCloud(asyncEvent: asyncEvent)
         }
@@ -91,6 +93,7 @@ class SyncMutationToCloudOperation: Operation {
         }
 
         // TODO: Wire in actual event validation and retriability
+
     }
 
 }

@@ -68,7 +68,10 @@ extension APICategoryDependencyTests {
         let connection = try Connection(.inMemory)
         storageAdapter = SQLiteStorageEngineAdapter(connection: connection)
 
-        let syncEngineFactory: CloudSyncEngineBehavior.Factory? = { CloudSyncEngine() }
+        let syncEngineFactory: CloudSyncEngineBehavior.Factory? = { adapter in
+            CloudSyncEngine(storageAdapter: adapter)
+        }
+
         let storageEngine = StorageEngine(adapter: storageAdapter, syncEngineFactory: syncEngineFactory)
 
         let dataStorePublisher = DataStorePublisher()

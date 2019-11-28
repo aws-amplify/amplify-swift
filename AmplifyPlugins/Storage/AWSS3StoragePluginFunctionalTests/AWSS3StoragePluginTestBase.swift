@@ -154,14 +154,14 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     // MARK: Common Helper functions
 
-    func putData(key: String, dataString: String) {
-        putData(key: key, data: dataString.data(using: .utf8)!)
+    func uploadData(key: String, dataString: String) {
+        uploadData(key: key, data: dataString.data(using: .utf8)!)
     }
 
-    func putData(key: String, data: Data) {
+    func uploadData(key: String, data: Data) {
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.putData(key: key, data: data, options: nil) { event in
+        let operation = Amplify.Storage.uploadData(key: key, data: data, options: nil) { event in
             switch event {
             case .completed:
                 completeInvoked.fulfill()

@@ -14,10 +14,10 @@ extension StorageCategory: StorageCategoryClientBehavior {
         return plugin.getURL(key: key, options: options, listener: listener)
     }
 
-    public func getData(key: String,
-                        options: StorageGetDataRequest.Options? = nil,
-                        listener: StorageGetDataOperation.EventListener?) -> StorageGetDataOperation {
-        return plugin.getData(key: key, options: options, listener: listener)
+    public func downloadData(key: String,
+                             options: StorageDownloadDataRequest.Options? = nil,
+                             listener: StorageDownloadDataOperation.EventListener?) -> StorageDownloadDataOperation {
+        return plugin.downloadData(key: key, options: options, listener: listener)
     }
 
     public func downloadFile(key: String,
@@ -27,11 +27,11 @@ extension StorageCategory: StorageCategoryClientBehavior {
         return plugin.downloadFile(key: key, local: local, options: options, listener: listener)
     }
 
-    public func putData(key: String,
-                        data: Data,
-                        options: StoragePutDataRequest.Options? = nil,
-                        listener: StoragePutDataOperation.EventListener?) -> StoragePutDataOperation {
-        return plugin.putData(key: key, data: data, options: options, listener: listener)
+    public func uploadData(key: String,
+                           data: Data,
+                           options: StorageUploadDataRequest.Options? = nil,
+                           listener: StorageUploadDataOperation.EventListener?) -> StorageUploadDataOperation {
+        return plugin.uploadData(key: key, data: data, options: options, listener: listener)
     }
 
     public func uploadFile(key: String,
