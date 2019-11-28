@@ -81,8 +81,8 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     /// Given: `user1` user uploads some data with protected access level
     /// When: The user retrieves and removes the data
     /// Then: The operations complete successful
-    func testPutToProtectedAndListThenGetThenRemove() {
-        let key = "testPutToProtectedAndListThenGetThenRemove"
+    func testUploadToProtectedAndListThenGetThenRemove() {
+        let key = "testUploadToProtectedAndListThenGetThenRemove"
         let accessLevel: StorageAccessLevel = .protected
         putThenListThenGetThenRemoveForSingleUser(username: user1, key: key, accessLevel: accessLevel)
     }
@@ -90,7 +90,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     /// Given: `user1` user uploads some data with private access level
     /// When: The user retrieves and removes the data
     /// Then: The operations complete successful
-    func testPutToPrivateAndListThenGetThenRemove() {
+    func testUploadToPrivateAndListThenGetThenRemove() {
         let key = #function
         let accessLevel: StorageAccessLevel = .private
         putThenListThenGetThenRemoveForSingleUser(username: user1, key: key, accessLevel: accessLevel)
@@ -99,16 +99,16 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     /// Given: `user1` user uploads some data with public access level
     /// When: `user2` lists, gets, and removes the data for `user1`
     /// Then: The list, get, and remove operations complete successful and data is retrieved then removed.
-    func testPutToPublicAndListThenGetThenRemoveFromOtherUser() {
-        let key = "testPutToPublicAndListThenGetThenRemoveFromOtherUser"
+    func testUploadToPublicAndListThenGetThenRemoveFromOtherUser() {
+        let key = "testUploadToPublicAndListThenGetThenRemoveFromOtherUser"
         let accessLevel: StorageAccessLevel = .guest
 
         // Sign into user1
         signIn(username: user1)
         let user1IdentityId = getIdentityId()
 
-        // Put data
-        put(key: key, data: key, accessLevel: accessLevel)
+        // Upload data
+        upload(key: key, data: key, accessLevel: accessLevel)
 
         // Sign out of user1 and into user2
         AWSMobileClient.default().signOut()
@@ -130,9 +130,9 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
         // get key after removal should return NotFound
         let getFailedExpectation = expectation(description: "Get Operation should fail")
-        let getOptions = StorageGetDataRequest.Options(accessLevel: accessLevel,
+        let getOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel,
                                                targetIdentityId: nil)
-        _ = Amplify.Storage.getData(key: key, options: getOptions) { event in
+        _ = Amplify.Storage.downloadData(key: key, options: getOptions) { event in
             switch event {
             case .completed(let results):
                 XCTFail("Should not have completed with result \(results)")
@@ -152,16 +152,16 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     /// GivenK: `user1` user uploads some data with protected access level
     /// When: `user2` lists, gets, and removes the data for `user1`
     /// Then: The list and get operations complete successful and data is retrieved.
-    func testPutToProtectedAndListThenGetFromOtherUser() {
-        let key = "testPutToProtectedAndListThenGetThenFailRemoveFromOtherUser"
+    func testUploadToProtectedAndListThenGetFromOtherUser() {
+        let key = "testUploadToProtectedAndListThenGetThenFailRemoveFromOtherUser"
         let accessLevel: StorageAccessLevel = .protected
 
         // Sign into user1
         signIn(username: user1)
         let user1IdentityId = getIdentityId()
 
-        // Put
-        put(key: key, data: key, accessLevel: accessLevel)
+        // Upload
+        upload(key: key, data: key, accessLevel: accessLevel)
 
         // Sign out of user1 and into user2
         AWSMobileClient.default().signOut()
@@ -182,16 +182,16 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     /// Given: `user1` user uploads some data with private access level
     /// When: `user2` lists and gets the data for `user1`
     /// Then: The list and get operations fail with validation errors
-    func testPutToPrivateAndFailListThenFailGetFromOtherUser() {
-        let key = "testPutToPrivateAndFailListThenFailGetFromOtherUser"
+    func testUploadToPrivateAndFailListThenFailGetFromOtherUser() {
+        let key = "testUploadToPrivateAndFailListThenFailGetFromOtherUser"
         let accessLevel: StorageAccessLevel = .private
 
         // Sign into user1
         signIn(username: user1)
         let user1IdentityId = getIdentityId()
 
-        // Put
-        put(key: key, data: key, accessLevel: accessLevel)
+        // Upload
+        upload(key: key, data: key, accessLevel: accessLevel)
 
         // Sign out of user1 and into user2
         AWSMobileClient.default().signOut()
@@ -222,9 +222,9 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
         // get key for user1 as user2 - should fail with validation error
         let getFailedExpectation = expectation(description: "Get Operation should fail")
-        let getOptions = StorageGetDataRequest.Options(accessLevel: accessLevel,
+        let getOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel,
                                                targetIdentityId: user1IdentityId)
-        _ = Amplify.Storage.getData(key: key, options: getOptions) { event in
+        _ = Amplify.Storage.downloadData(key: key, options: getOptions) { event in
             switch event {
             case .completed(let results):
                 XCTFail("Should not have completed")
@@ -246,8 +246,8 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     func putThenListThenGetThenRemoveForSingleUser(username: String, key: String, accessLevel: StorageAccessLevel) {
         signIn(username: username)
 
-        // Put
-        put(key: key, data: key, accessLevel: accessLevel)
+        // Upload
+        upload(key: key, data: key, accessLevel: accessLevel)
 
         // List
         let keys = list(path: key, accessLevel: accessLevel)
@@ -263,9 +263,9 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
         // Get key after removal should return NotFound
         let getFailedExpectation = expectation(description: "Get Operation should fail")
-        let getOptions = StorageGetDataRequest.Options(accessLevel: accessLevel,
+        let getOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel,
                                                targetIdentityId: nil)
-        _ = Amplify.Storage.getData(key: key, options: getOptions) { event in
+        _ = Amplify.Storage.downloadData(key: key, options: getOptions) { event in
             switch event {
             case .completed(let results):
                 XCTFail("Should not have completed with result \(results)")
@@ -309,9 +309,9 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     func get(key: String, accessLevel: StorageAccessLevel, targetIdentityId: String? = nil) -> Data? {
         var data: Data?
         let getExpectation = expectation(description: "Get Operation should be successful")
-        let getOptions = StorageGetDataRequest.Options(accessLevel: accessLevel,
+        let getOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel,
                                                targetIdentityId: targetIdentityId)
-        _ = Amplify.Storage.getData(key: key, options: getOptions) { event in
+        _ = Amplify.Storage.downloadData(key: key, options: getOptions) { event in
             switch event {
             case .completed(let result):
                 data = result
@@ -326,13 +326,13 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         return data
     }
 
-    func put(key: String, data: String, accessLevel: StorageAccessLevel) {
-        let putExpectation = expectation(description: "Put operation should be successful")
-        let options = StoragePutDataRequest.Options(accessLevel: accessLevel)
-        _ = Amplify.Storage.putData(key: key, data: data.data(using: .utf8)!, options: options) { event in
+    func upload(key: String, data: String, accessLevel: StorageAccessLevel) {
+        let uploadExpectation = expectation(description: "Upload operation should be successful")
+        let options = StorageUploadDataRequest.Options(accessLevel: accessLevel)
+        _ = Amplify.Storage.uploadData(key: key, data: data.data(using: .utf8)!, options: options) { event in
             switch event {
             case .completed:
-                putExpectation.fulfill()
+                uploadExpectation.fulfill()
             case .failed(let error):
                 XCTFail("Failed to put \(key) with error \(error)")
             default:

@@ -48,19 +48,19 @@ extension AWSS3StoragePlugin {
     ///   - options: Additional parameters to specify API behavior.
     ///   - listener: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
-    public func getData(key: String,
-                        options: StorageGetDataRequest.Options? = nil,
-                        listener: StorageGetDataOperation.EventListener? = nil) -> StorageGetDataOperation {
-        let options = options ?? StorageGetDataRequest.Options()
-        let request = StorageGetDataRequest(key: key, options: options)
-        let getDataOperation = AWSS3StorageGetDataOperation(request,
+    public func downloadData(key: String,
+                             options: StorageDownloadDataRequest.Options? = nil,
+                             listener: StorageDownloadDataOperation.EventListener? = nil) -> StorageDownloadDataOperation {
+        let options = options ?? StorageDownloadDataRequest.Options()
+        let request = StorageDownloadDataRequest(key: key, options: options)
+        let downloadDataOperation = AWSS3StorageDownloadDataOperation(request,
                                                             storageService: storageService,
                                                             authService: authService,
                                                             listener: listener)
 
-        queue.addOperation(getDataOperation)
+        queue.addOperation(downloadDataOperation)
 
-        return getDataOperation
+        return downloadDataOperation
     }
 
     /// Downloads to file of the S3 object.
@@ -102,21 +102,21 @@ extension AWSS3StoragePlugin {
     ///   - options: Additional parameters to specify API behavior.
     ///   - listener: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
-    public func putData(key: String,
-                        data: Data,
-                        options: StoragePutDataRequest.Options? = nil,
-                        listener: StoragePutDataOperation.EventListener? = nil) -> StoragePutDataOperation {
-        let options = options ?? StoragePutDataRequest.Options()
-        let request = StoragePutDataRequest(key: key, data: data, options: options)
+    public func uploadData(key: String,
+                           data: Data,
+                           options: StorageUploadDataRequest.Options? = nil,
+                           listener: StorageUploadDataOperation.EventListener? = nil) -> StorageUploadDataOperation {
+        let options = options ?? StorageUploadDataRequest.Options()
+        let request = StorageUploadDataRequest(key: key, data: data, options: options)
 
-        let putDataOperation = AWSS3StoragePutDataOperation(request,
+        let uploadDataOperation = AWSS3StorageUploadDataOperation(request,
                                                             storageService: storageService,
                                                             authService: authService,
                                                             listener: listener)
 
-        queue.addOperation(putDataOperation)
+        queue.addOperation(uploadDataOperation)
 
-        return putDataOperation
+        return uploadDataOperation
     }
 
     /// Uploads the file located at the local URL with the specified key to the S3 bucket.

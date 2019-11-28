@@ -55,18 +55,18 @@ class AWSS3StoragePluginClientBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(queue.size, 1)
     }
 
-    // MARK: GetData API Tests
+    // MARK: DownloadData API Tests
 
-    func testPluginGetData() {
-        let operation = storagePlugin.getData(key: testKey, options: nil, listener: nil)
+    func testPluginDownloadData() {
+        let operation = storagePlugin.downloadData(key: testKey, options: nil, listener: nil)
 
         XCTAssertNotNil(operation)
-        guard let awss3StorageGetDataOperation = operation as? AWSS3StorageGetDataOperation else {
-            XCTFail("operation could not be cast as AWSS3StorageGetDataOperation")
+        guard let awss3StorageDownloadDataOperation = operation as? AWSS3StorageDownloadDataOperation else {
+            XCTFail("operation could not be cast as AWSS3StorageDownloadDataOperation")
             return
         }
 
-        let request = awss3StorageGetDataOperation.request
+        let request = awss3StorageDownloadDataOperation.request
         XCTAssertNotNil(request)
         XCTAssertEqual(request.options.accessLevel, defaultAccessLevel)
         XCTAssertNil(request.options.targetIdentityId)
@@ -75,18 +75,18 @@ class AWSS3StoragePluginClientBehaviorTests: AWSS3StoragePluginTests {
     }
 
     func testPluginGetWithOptions() {
-        let options = StorageGetDataRequest.Options(accessLevel: .private,
+        let options = StorageDownloadDataRequest.Options(accessLevel: .private,
                                             targetIdentityId: testIdentityId,
                                             pluginOptions: [:])
 
-        let operation = storagePlugin.getData(key: testKey, options: options, listener: nil)
+        let operation = storagePlugin.downloadData(key: testKey, options: options, listener: nil)
 
         XCTAssertNotNil(operation)
-        guard let awss3StorageGetDataOperation = operation as? AWSS3StorageGetDataOperation else {
-            XCTFail("operation could not be cast as AWSS3StorageGetDataOperation")
+        guard let awss3StorageDownloadDataOperation = operation as? AWSS3StorageDownloadDataOperation else {
+            XCTFail("operation could not be cast as AWSS3StorageDownloadDataOperation")
             return
         }
-        let request = awss3StorageGetDataOperation.request
+        let request = awss3StorageDownloadDataOperation.request
         XCTAssertNotNil(request)
         XCTAssertNotEqual(request.options.accessLevel, defaultAccessLevel)
         XCTAssertEqual(request.options.accessLevel, .private)
@@ -137,20 +137,20 @@ class AWSS3StoragePluginClientBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(queue.size, 1)
     }
 
-    // MARK: PutData API tests
+    // MARK: UploadData API tests
 
-    func testPluginPutData() {
-        let operation = storagePlugin.putData(key: testKey,
+    func testPluginUploadData() {
+        let operation = storagePlugin.uploadData(key: testKey,
                                               data: testData,
                                               options: nil,
                                               listener: nil)
 
         XCTAssertNotNil(operation)
-        guard let awss3StoragePutDataOperation = operation as? AWSS3StoragePutDataOperation else {
-            XCTFail("operation could not be cast as AWSS3StoragePutOperation")
+        guard let awss3StorageUploadDataOperation = operation as? AWSS3StorageUploadDataOperation else {
+            XCTFail("operation could not be cast as AWSS3StorageUploadDataOperation")
             return
         }
-        let request = awss3StoragePutDataOperation.request
+        let request = awss3StorageUploadDataOperation.request
         XCTAssertNotNil(request)
         XCTAssertEqual(request.options.accessLevel, defaultAccessLevel)
         XCTAssertEqual(request.key, testKey)
@@ -161,23 +161,23 @@ class AWSS3StoragePluginClientBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(queue.size, 1)
     }
 
-    func testPluginPutDataWithOptions() {
-        let options = StoragePutDataRequest.Options(accessLevel: .private,
+    func testPluginUploadDataWithOptions() {
+        let options = StorageUploadDataRequest.Options(accessLevel: .private,
                                                     metadata: [:],
                                                     contentType: testContentType,
                                                     pluginOptions: [:])
 
-        let operation = storagePlugin.putData(key: testKey,
+        let operation = storagePlugin.uploadData(key: testKey,
                                           data: testData,
                                           options: options,
                                           listener: nil)
 
         XCTAssertNotNil(operation)
-        guard let awss3StoragePutDataOperation = operation as? AWSS3StoragePutDataOperation else {
-            XCTFail("operation could not be cast as AWSS3StoragePutOperation")
+        guard let awss3StorageUploadDataOperation = operation as? AWSS3StorageUploadDataOperation else {
+            XCTFail("operation could not be cast as AWSS3StorageUploadDataOperation")
             return
         }
-        let request = awss3StoragePutDataOperation.request
+        let request = awss3StorageUploadDataOperation.request
         XCTAssertNotNil(request)
         XCTAssertNotEqual(request.options.accessLevel, defaultAccessLevel)
         XCTAssertEqual(request.options.accessLevel, .private)
@@ -200,7 +200,7 @@ class AWSS3StoragePluginClientBehaviorTests: AWSS3StoragePluginTests {
 
         XCTAssertNotNil(operation)
         guard let awss3StorageUploadFileOperation = operation as? AWSS3StorageUploadFileOperation else {
-            XCTFail("operation could not be cast as AWSS3StoragePutOperation")
+            XCTFail("operation could not be cast as AWSS3StorageUploadDataOperation")
             return
         }
         let request = awss3StorageUploadFileOperation.request
@@ -228,7 +228,7 @@ class AWSS3StoragePluginClientBehaviorTests: AWSS3StoragePluginTests {
 
         XCTAssertNotNil(operation)
         guard let awss3StorageUploadFileOperation = operation as? AWSS3StorageUploadFileOperation else {
-            XCTFail("operation could not be cast as AWSS3StoragePutOperation")
+            XCTFail("operation could not be cast as AWSS3StorageUploadDataOperation")
             return
         }
         let request = awss3StorageUploadFileOperation.request

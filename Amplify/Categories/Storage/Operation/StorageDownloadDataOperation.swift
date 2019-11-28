@@ -7,9 +7,9 @@
 
 import Foundation
 
-public protocol StoragePutDataOperation: AmplifyOperation<StoragePutDataRequest, Progress, String, StorageError> {}
+public protocol StorageDownloadDataOperation: AmplifyOperation<StorageDownloadDataRequest, Progress, Data, StorageError> {}
 
 public extension HubPayload.EventName.Storage {
     /// eventName for HubPayloads emitted by this operation
-    static let putData = "Storage.putData"
+    static let downloadData = "Storage.downloadData"
 }

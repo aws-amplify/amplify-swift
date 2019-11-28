@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-extension StorageGetDataRequest {
+extension StorageDownloadDataRequest {
     /// Performs client side validation and returns a `StorageError` for any validation failures.
     func validate() -> StorageError? {
         if let error = StorageRequestUtils.validateTargetIdentityId(options.targetIdentityId,
