@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct StorageGetDataRequest: AmplifyOperationRequest {
+public struct StorageDownloadDataRequest: AmplifyOperationRequest {
     /// The unique identifier for the object in storage
     public let key: String
 
@@ -20,7 +20,7 @@ public struct StorageGetDataRequest: AmplifyOperationRequest {
     }
 }
 
-public extension StorageGetDataRequest {
+public extension StorageDownloadDataRequest {
     /// Options to adjust the behavior of this request, including plugin-options
     struct Options {
         /// Access level of the storage system. Defaults to `public`

@@ -106,7 +106,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let plugin = MockStorageCategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin.listeners.append { message in
-            if message == "getData" {
+            if message == "downloadData" {
                 methodInvokedOnDefaultPlugin.fulfill()
             }
         }
@@ -117,7 +117,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        _ = Amplify.Storage.getData(key: "", options: nil, listener: nil)
+        _ = Amplify.Storage.downloadData(key: "", options: nil, listener: nil)
 
         waitForExpectations(timeout: 1.0)
     }
@@ -128,7 +128,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
             expectation(description: "test method should not be invoked on default plugin")
         methodShouldNotBeInvokedOnDefaultPlugin.isInverted = true
         plugin1.listeners.append { message in
-            if message == "getDatab" {
+            if message == "downloadData" {
                 methodShouldNotBeInvokedOnDefaultPlugin.fulfill()
             }
         }
@@ -138,7 +138,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let methodShouldBeInvokedOnSecondPlugin =
             expectation(description: "test method should be invoked on second plugin")
         plugin2.listeners.append { message in
-            if message == "getData" {
+            if message == "downloadData" {
                 methodShouldBeInvokedOnSecondPlugin.fulfill()
             }
         }
@@ -155,7 +155,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         _ = try Amplify.Storage.getPlugin(for: "MockSecondStorageCategoryPlugin")
-            .getData(key: "", options: nil, listener: nil)
+            .downloadData(key: "", options: nil, listener: nil)
         waitForExpectations(timeout: 1.0)
     }
 
@@ -178,7 +178,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
 
         let exception: BadInstructionException? = catchBadInstruction {
-            _ = Amplify.Storage.getData(key: "", options: nil, listener: nil)
+            _ = Amplify.Storage.downloadData(key: "", options: nil, listener: nil)
         }
         XCTAssertNotNil(exception)
     }
@@ -220,7 +220,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
         let exception: BadInstructionException? = catchBadInstruction {
-            _ = Amplify.Storage.getData(key: "foo", options: nil, listener: nil)
+            _ = Amplify.Storage.downloadData(key: "foo", options: nil, listener: nil)
         }
         XCTAssertNotNil(exception)
     }
