@@ -68,9 +68,6 @@ final class OutgoingMutationQueue {
 
         self.operationQueue = operationQueue
 
-        // TODO: Find the right place to do this
-        ModelRegistry.register(modelType: MutationEvent.self)
-
         self.stateMachine = StateMachine(initialState: .notInitialized,
                                          resolver: OutgoingMutationQueue.resolve(currentState:action:))
 

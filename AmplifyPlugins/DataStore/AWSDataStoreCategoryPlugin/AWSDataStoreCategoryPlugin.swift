@@ -40,6 +40,7 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
     public func configure(using configuration: Any) throws {
         resolveSyncEnabled()
         try resolveStorageEngine()
+        registerSystemModels()
         try storageEngine.setUp(models: ModelRegistry.models)
 
         let filter = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
@@ -51,6 +52,16 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
             }
         }
     }
+
+    public func reset(onComplete: @escaping (() -> Void)) {
+        // TODO: Shutdown storage engine
+        // - Cancelling in-process operations
+        // - Unsubscribe from syncable model mutations
+        // - ...?
+        onComplete()
+    }
+
+    // MARK: Private
 
     private func resolveSyncEnabled() {
         if #available(iOS 13.0, *) {
@@ -66,12 +77,10 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
         storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled)
     }
 
-    public func reset(onComplete: @escaping (() -> Void)) {
-        // TODO: Shutdown storage engine
-        // - Cancelling in-process operations
-        // - Unsubscribe from syncable model mutations
-        // - ...?
-        onComplete()
+    private func registerSystemModels() {
+        // TODO: should this run only when sync is enabled?
+        ModelRegistry.register(modelType: MutationEvent.self)
+        ModelRegistry.register(modelType: MutationSyncMetadata.self)
     }
 
 }

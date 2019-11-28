@@ -21,7 +21,7 @@ final class IncomingMutationEventFacade {
 
     init(modelType: Model.Type, api: APICategoryGraphQLBehavior) {
         self.asyncEvents = IncomingAsyncSubscriptionEventPublisher(modelType: modelType,
-                                                        api: api)
+                                                                   api: api)
 
         let mapper = IncomingAsyncSubscriptionEventToAnyModelMapper()
         self.mapper = mapper

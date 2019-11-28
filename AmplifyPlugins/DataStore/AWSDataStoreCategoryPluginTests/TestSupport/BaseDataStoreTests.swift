@@ -58,7 +58,7 @@ class BaseDataStoreTests: XCTestCase {
 
     // MARK: - Utilities
 
-    func populateData<M: Model>(_ models: M...) {
+    func populateData<M: Model>(_ models: [M]) {
         let semaphore = DispatchSemaphore(value: 0)
 
         func save(model: M, index: Int) {
