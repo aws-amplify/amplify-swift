@@ -76,7 +76,7 @@ class SyncMutationToCloudOperation: Operation {
             return
         }
 
-        mutationOperation = api.mutate(of: anyModel, type: mutationType) { asyncEvent in
+        mutationOperation = api.mutate(ofAnyModel: anyModel, type: mutationType) { asyncEvent in
             self.log.verbose("sendMutationToCloud received asyncEvent: \(asyncEvent)")
             self.validateResponseFromCloud(asyncEvent: asyncEvent)
         }

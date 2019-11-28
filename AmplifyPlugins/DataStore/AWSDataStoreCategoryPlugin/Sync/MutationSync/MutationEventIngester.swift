@@ -65,6 +65,7 @@ final class AWSMutationEventIngester: MutationEventIngester, MutationEventPublis
                     promise(.failure(dataStoreError))
                 case .success(let savedMutationEvent):
                     promise(.success(savedMutationEvent))
+                    self.publish(mutationEvents: [savedMutationEvent])
                 }
             }
         }

@@ -44,6 +44,22 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         fatalError("Not yet implemented")
     }
 
+    func mutate(ofAnyModel anyModel: AnyModel,
+                type: GraphQLMutationType,
+                listener: GraphQLOperation<AnyModel>.EventListener?) -> GraphQLOperation<AnyModel> {
+        notify("mutate(ofAnyModel:\(anyModel.modelName),type:\(type),listener:)")
+
+        let options = GraphQLOperationRequest<AnyModel>.Options()
+        let request = GraphQLOperationRequest<AnyModel>(apiName: nil,
+                                                        operationType: .subscription,
+                                                        document: "",
+                                                        variables: nil,
+                                                        responseType: AnyModel.self,
+                                                        options: options)
+        let operation = MockGraphQLOperation(request: request, responseType: AnyModel.self)
+        return operation
+    }
+
     func subscribe<M>(from modelType: M.Type,
                       type: GraphQLSubscriptionType,
                       listener: GraphQLSubscriptionOperation<M>.EventListener?) -> GraphQLSubscriptionOperation<M> {
