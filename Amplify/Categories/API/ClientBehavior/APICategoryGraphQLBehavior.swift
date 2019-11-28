@@ -52,7 +52,7 @@ public protocol APICategoryGraphQLBehavior: class {
     ///   - type: The type of mutation to apply on the instance of `AnyModel`.
     ///   - listener: The event listener for the operation
     /// - Returns: The AmplifyOperation being enqueued.
-    func mutate(of model: AnyModel,
+    func mutate(ofAnyModel anyModel: AnyModel,
                 type: GraphQLMutationType,
                 listener: GraphQLOperation<AnyModel>.EventListener?) -> GraphQLOperation<AnyModel>
 

@@ -12,7 +12,7 @@ import Combine
 /// Behavior to sync mutation events to the cloud, and to subscribe to mutations from the cloud
 protocol CloudSyncEngineBehavior: class {
     /// Used for testing
-    typealias Factory = () -> CloudSyncEngineBehavior
+    typealias Factory = (StorageEngineAdapter) -> CloudSyncEngineBehavior
 
     /// Start the sync process with a "delta sync" merge
     ///
@@ -24,7 +24,7 @@ protocol CloudSyncEngineBehavior: class {
     ///    the updates in the Datastore
     /// 1. Mutation processor drains messages off the queue in serial and sends to the service, invoking
     ///    any local callbacks on error if necessary
-    func start(api: APICategoryGraphQLBehavior, storageAdapter: StorageEngineAdapter)
+    func start(api: APICategoryGraphQLBehavior)
 
     /// Submits a new mutation for synchronization to the cloud. The response will be handled by the appropriate
     /// reconciliation queue

@@ -6,16 +6,93 @@
 //
 
 import XCTest
+import SQLite
+
+@testable import Amplify
+@testable import AmplifyTestCommon
+@testable import AWSDataStoreCategoryPlugin
 
 class OutgoingMutationQueueTests: XCTestCase {
 
+    var apiPlugin: MockAPICategoryPlugin!
+
+    override func setUp() {
+        Amplify.reset()
+
+        ModelRegistry.register(modelType: Post.self)
+        ModelRegistry.register(modelType: Comment.self)
+
+        let apiConfig = APICategoryConfiguration(plugins: [
+            "MockAPICategoryPlugin": true
+        ])
+
+        let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
+            "awsDataStoreCategoryPlugin": true
+        ])
+
+        let amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: dataStoreConfig)
+
+        apiPlugin = MockAPICategoryPlugin()
+
+        do {
+            let connection = try Connection(.inMemory)
+            let storageAdapter = SQLiteStorageEngineAdapter(connection: connection)
+
+            let syncEngineFactory: CloudSyncEngineBehavior.Factory = { adapter in
+                CloudSyncEngine(storageAdapter: adapter)
+            }
+            let storageEngine = StorageEngine(adapter: storageAdapter,
+                                              syncEngineFactory: syncEngineFactory)
+
+            let publisher = DataStorePublisher()
+            let dataStorePlugin = AWSDataStoreCategoryPlugin(storageEngine: storageEngine,
+                                                             dataStorePublisher: publisher)
+
+            try Amplify.add(plugin: apiPlugin)
+            try Amplify.add(plugin: dataStorePlugin)
+            try Amplify.configure(amplifyConfig)
+        } catch {
+            XCTFail(String(describing: error))
+        }
+    }
+
     /// - Given: A sync-configured DataStore
     /// - When:
-    ///    - I invoke DataStore.save()
+    ///    - I invoke DataStore.save() for a new model
     /// - Then:
-    ///    - The mutation queue writes events
-    func testMutationQueueStoresSaveEvents() {
-        XCTFail("Not yet implemented")
+    ///    - The outgoing mutation queue sends a create mutation
+    func testMutationQueueCreateSendsSync() throws {
+        let syncStarted = expectation(description: "Sync started")
+        let token = Amplify.Hub.listen(to: .dataStore,
+                                       eventName: HubPayload.EventName.DataStore.syncStarted) { _ in
+                                        syncStarted.fulfill()
+        }
+
+        guard try HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
+            XCTFail("Never registered listener for sync started")
+            return
+        }
+
+        wait(for: [syncStarted], timeout: 5.0)
+        Amplify.Hub.removeListener(token)
+
+        let post = Post(title: "Post title",
+                        content: "Post content",
+                        createdAt: Date())
+
+        Amplify.DataStore.save(post) { _ in }
+
+        let createMutationSent = expectation(description: "Create mutation sent to API category")
+        apiPlugin.listeners.append { message in
+            switch message {
+            case "mutate(ofAnyModel:Post,type:create,listener:)":
+                createMutationSent.fulfill()
+            default:
+                break
+            }
+        }
+
+        wait(for: [createMutationSent], timeout: 1.0)
     }
 
     /// - Given: A sync-configured DataStore

@@ -11,6 +11,7 @@ import AWSPluginsCore
 
 class AWSAPICategoryPluginInterceptorBehaviorTests: AWSAPICategoryPluginTestBase {
 
+    // TODO: Fix test failure
     func testAddInterceptor() throws {
         XCTAssertNotNil(apiPlugin.pluginConfig.endpoints[apiName])
         XCTAssertEqual(apiPlugin.pluginConfig.endpoints[apiName]?.interceptors.count, 0)

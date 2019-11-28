@@ -83,12 +83,12 @@ class AnyModelIntegrationTests: XCTestCase {
 
             case .failure(let error):
                 switch error {
-                    case .error(let errors):
-                        XCTFail("errors: \(errors)")
-                    case .partial(let model, let errors):
-                        XCTFail("partial: \(model), \(errors)")
-                    case .transformationError(let rawResponse, let apiError):
-                        XCTFail("transformationError: \(rawResponse), \(apiError)")
+                case .error(let errors):
+                    XCTFail("errors: \(errors)")
+                case .partial(let model, let errors):
+                    XCTFail("partial: \(model), \(errors)")
+                case .transformationError(let rawResponse, let apiError):
+                    XCTFail("transformationError: \(rawResponse), \(apiError)")
                 }
             }
             return
@@ -153,12 +153,12 @@ class AnyModelIntegrationTests: XCTestCase {
                 break
             case .failure(let error):
                 switch error {
-                    case .error(let errors):
-                        XCTFail("errors: \(errors)")
-                    case .partial(let model, let errors):
-                        XCTFail("partial: \(model), \(errors)")
-                    case .transformationError(let rawResponse, let apiError):
-                        XCTFail("transformationError: \(rawResponse), \(apiError)")
+                case .error(let errors):
+                    XCTFail("errors: \(errors)")
+                case .partial(let model, let errors):
+                    XCTFail("partial: \(model), \(errors)")
+                case .transformationError(let rawResponse, let apiError):
+                    XCTFail("transformationError: \(rawResponse), \(apiError)")
                 }
             }
             return
