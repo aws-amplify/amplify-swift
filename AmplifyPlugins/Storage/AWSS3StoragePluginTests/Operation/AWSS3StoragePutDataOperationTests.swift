@@ -13,14 +13,14 @@ import XCTest
 
 import AWSS3
 
-class AWSS3StoragePutDataOperationTests: AWSS3StorageOperationTestBase {
+class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
 
-    func testPutDataOperationValidationError() {
-        let options = StoragePutDataRequest.Options(accessLevel: .protected)
-        let request = StoragePutDataRequest(key: "", data: testData, options: options)
+    func testUploadDataOperationValidationError() {
+        let options = StorageUploadDataRequest.Options(accessLevel: .protected)
+        let request = StorageUploadDataRequest(key: "", data: testData, options: options)
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StoragePutDataOperation(request,
+        let operation = AWSS3StorageUploadDataOperation(request,
                                                      storageService: mockStorageService,
                                                      authService: mockAuthService) { event in
             switch event {
@@ -41,14 +41,14 @@ class AWSS3StoragePutDataOperationTests: AWSS3StorageOperationTestBase {
         XCTAssertTrue(operation.isFinished)
     }
 
-    func testPutDataOperationGetIdentityIdError() {
+    func testUploadDataOperationGetIdentityIdError() {
         mockAuthService.getIdentityIdError = AuthError.identity("", "", "")
 
-        let options = StoragePutDataRequest.Options(accessLevel: .protected)
-        let request = StoragePutDataRequest(key: testKey, data: testData, options: options)
+        let options = StorageUploadDataRequest.Options(accessLevel: .protected)
+        let request = StorageUploadDataRequest(key: testKey, data: testData, options: options)
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StoragePutDataOperation(request,
+        let operation = AWSS3StorageUploadDataOperation(request,
                                                      storageService: mockStorageService,
                                                      authService: mockAuthService) { event in
             switch event {
@@ -69,7 +69,7 @@ class AWSS3StoragePutDataOperationTests: AWSS3StorageOperationTestBase {
         XCTAssertTrue(operation.isFinished)
     }
 
-    func testPutDataOperationUploadSuccess() {
+    func testUploadDataOperationUploadSuccess() {
         mockAuthService.identityId = testIdentityId
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
@@ -80,15 +80,15 @@ class AWSS3StoragePutDataOperationTests: AWSS3StorageOperationTestBase {
         let metadata = ["mykey": "Value"]
         let expectedMetadata = ["x-amz-meta-mykey": "Value"]
 
-        let options = StoragePutDataRequest.Options(accessLevel: .protected,
+        let options = StorageUploadDataRequest.Options(accessLevel: .protected,
                                                 metadata: metadata,
                                                 contentType: testContentType)
-        let request = StoragePutDataRequest(key: testKey, data: testData, options: options)
+        let request = StorageUploadDataRequest(key: testKey, data: testData, options: options)
 
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
-        let operation = AWSS3StoragePutDataOperation(request,
+        let operation = AWSS3StorageUploadDataOperation(request,
                                                      storageService: mockStorageService,
                                                      authService: mockAuthService) { event in
             switch event {
@@ -113,7 +113,7 @@ class AWSS3StoragePutDataOperationTests: AWSS3StorageOperationTestBase {
                                         metadata: expectedMetadata)
     }
 
-    func testPutDataOperationUploadFail() {
+    func testUploadDataOperationUploadFail() {
         mockAuthService.identityId = testIdentityId
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
@@ -122,13 +122,13 @@ class AWSS3StoragePutDataOperationTests: AWSS3StorageOperationTestBase {
 
         let expectedUploadSource = UploadSource.data(testData)
 
-        let options = StoragePutDataRequest.Options(accessLevel: .protected)
-        let request = StoragePutDataRequest(key: testKey, data: testData, options: options)
+        let options = StorageUploadDataRequest.Options(accessLevel: .protected)
+        let request = StorageUploadDataRequest(key: testKey, data: testData, options: options)
 
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let failInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StoragePutDataOperation(request,
+        let operation = AWSS3StorageUploadDataOperation(request,
                                                      storageService: mockStorageService,
                                                      authService: mockAuthService) { event in
             switch event {
@@ -153,7 +153,7 @@ class AWSS3StoragePutDataOperationTests: AWSS3StorageOperationTestBase {
                                         metadata: nil)
     }
 
-    func testPutDataOperationMultiPartUploadSuccess() {
+    func testUploadDataOperationMultiPartUploadSuccess() {
         mockAuthService.identityId = testIdentityId
         mockStorageService.storageServiceMultiPartUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
@@ -165,21 +165,21 @@ class AWSS3StoragePutDataOperationTests: AWSS3StorageOperationTestBase {
             testLargeDataString += testLargeDataString
         }
         let testLargeData = testLargeDataString.data(using: .utf8)!
-        XCTAssertTrue(testLargeData.count > StoragePutDataRequest.Options.multiPartUploadSizeThreshold,
+        XCTAssertTrue(testLargeData.count > StorageUploadDataRequest.Options.multiPartUploadSizeThreshold,
                       "Could not create data object greater than MultiPartUploadSizeThreshold")
         let expectedUploadSource = UploadSource.data(testLargeData)
         let metadata = ["mykey": "Value"]
         let expectedMetadata = ["x-amz-meta-mykey": "Value"]
 
-        let options = StoragePutDataRequest.Options(accessLevel: .protected,
+        let options = StorageUploadDataRequest.Options(accessLevel: .protected,
                                                 metadata: metadata,
                                                 contentType: testContentType)
-        let request = StoragePutDataRequest(key: testKey, data: testLargeData, options: options)
+        let request = StorageUploadDataRequest(key: testKey, data: testLargeData, options: options)
 
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
-        let operation = AWSS3StoragePutDataOperation(request,
+        let operation = AWSS3StorageUploadDataOperation(request,
                                                      storageService: mockStorageService,
                                                      authService: mockAuthService) { event in
             switch event {

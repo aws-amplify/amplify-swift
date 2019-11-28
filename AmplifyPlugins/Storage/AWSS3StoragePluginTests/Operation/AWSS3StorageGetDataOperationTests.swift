@@ -12,12 +12,12 @@ import XCTest
 @testable import AWSPluginsCore
 import AWSS3
 
-class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
+class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
-    func testGetDataOperationValidationError() {
-        let request = StorageGetDataRequest(key: "", options: StorageGetDataRequest.Options())
+    func testDownloadDataOperationValidationError() {
+        let request = StorageDownloadDataRequest(key: "", options: StorageDownloadDataRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageGetDataOperation(request,
+        let operation = AWSS3StorageDownloadDataOperation(request,
                                                      storageService: mockStorageService,
                                                      authService: mockAuthService) { event in
             switch event {
@@ -37,11 +37,11 @@ class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
         XCTAssertTrue(operation.isFinished)
     }
 
-    func testGetDataOperationGetIdentityIdError() {
+    func testDownloadDataOperationGetIdentityIdError() {
         mockAuthService.getIdentityIdError = AuthError.identity("", "", "")
-        let request = StorageGetDataRequest(key: testKey, options: StorageGetDataRequest.Options())
+        let request = StorageDownloadDataRequest(key: testKey, options: StorageDownloadDataRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageGetDataOperation(request,
+        let operation = AWSS3StorageDownloadDataOperation(request,
                                                      storageService: mockStorageService,
                                                      authService: mockAuthService) { event in
             switch event {
@@ -62,16 +62,16 @@ class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
         waitForExpectations(timeout: 1)
     }
 
-    func testGetDataOperationDownloadData() {
+    func testDownloadDataOperationDownloadData() {
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(Data())]
-        let request = StorageGetDataRequest(key: testKey, options: StorageGetDataRequest.Options())
+        let request = StorageDownloadDataRequest(key: testKey, options: StorageDownloadDataRequest.Options())
         let expectedServiceKey = StorageAccessLevel.guest.serviceAccessPrefix + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
-        let operation = AWSS3StorageGetDataOperation(request,
+        let operation = AWSS3StorageDownloadDataOperation(request,
                                                  storageService: mockStorageService,
                                                  authService: mockAuthService) { event in
             switch event {
@@ -91,16 +91,16 @@ class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
 
-    func testGetDataOperationDownloadDataFailed() {
+    func testDownloadDataOperationDownloadDataFailed() {
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.failed(StorageError.service("", ""))]
-        let request = StorageGetDataRequest(key: testKey, options: StorageGetDataRequest.Options())
+        let request = StorageDownloadDataRequest(key: testKey, options: StorageDownloadDataRequest.Options())
         let expectedServiceKey = StorageAccessLevel.guest.serviceAccessPrefix + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let failInvoked = expectation(description: "fail was invoked on operation")
-        let operation = AWSS3StorageGetDataOperation(request,
+        let operation = AWSS3StorageDownloadDataOperation(request,
                                                      storageService: mockStorageService,
                                                      authService: mockAuthService) { event in
             switch event {
@@ -125,13 +125,13 @@ class AWSS3StorageGetDataOperationTests: AWSS3StorageOperationTestBase {
             StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
             StorageEvent.completed(Data())]
-        let options = StorageGetDataRequest.Options(accessLevel: .protected,
+        let options = StorageDownloadDataRequest.Options(accessLevel: .protected,
                                                     targetIdentityId: testTargetIdentityId)
-        let request = StorageGetDataRequest(key: testKey, options: options)
+        let request = StorageDownloadDataRequest(key: testKey, options: options)
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testTargetIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
-        let operation = AWSS3StorageGetDataOperation(request,
+        let operation = AWSS3StorageDownloadDataOperation(request,
                                                      storageService: mockStorageService,
                                                      authService: mockAuthService) { event in
             switch event {

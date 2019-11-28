@@ -10,8 +10,8 @@ import Amplify
 import AWSPluginsCore
 import AWSS3
 
-public class AWSS3StorageGetDataOperation: AmplifyOperation<StorageGetDataRequest, Progress, Data, StorageError>,
-    StorageGetDataOperation {
+public class AWSS3StorageDownloadDataOperation: AmplifyOperation<StorageDownloadDataRequest, Progress, Data, StorageError>,
+    StorageDownloadDataOperation {
 
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
@@ -21,7 +21,7 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<StorageGetDataReques
     /// Serial queue for synchronizing access to `storageTaskReference`.
     private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
-    init(_ request: StorageGetDataRequest,
+    init(_ request: StorageDownloadDataRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
          listener: EventListener?) {
@@ -29,7 +29,7 @@ public class AWSS3StorageGetDataOperation: AmplifyOperation<StorageGetDataReques
         self.storageService = storageService
         self.authService = authService
         super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.getData,
+                   eventName: HubPayload.EventName.Storage.downloadData,
                    request: request,
                    listener: listener)
     }
