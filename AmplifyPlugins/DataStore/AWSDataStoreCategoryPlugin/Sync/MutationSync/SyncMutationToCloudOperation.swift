@@ -76,6 +76,10 @@ class SyncMutationToCloudOperation: Operation {
             return
         }
 
+        // TODO merge the version from mutationEvent with the GraphQL variables
+        // let version = mutationEvent.version
+        // let mutation = GraphQLMutation()
+
         mutationOperation = api.mutate(ofAnyModel: anyModel, type: mutationType) { asyncEvent in
             self.log.verbose("sendMutationToCloud received asyncEvent: \(asyncEvent)")
             self.validateResponseFromCloud(asyncEvent: asyncEvent)

@@ -28,9 +28,6 @@ class OutgoingMutationQueueTests: XCTestCase {
         Amplify.reset()
         Amplify.Logging.logLevel = .verbose
 
-        ModelRegistry.register(modelType: Post.self)
-        ModelRegistry.register(modelType: Comment.self)
-
         let apiConfig = APICategoryConfiguration(plugins: [
             "MockAPICategoryPlugin": true
         ])
@@ -64,7 +61,8 @@ class OutgoingMutationQueueTests: XCTestCase {
                                               isSyncEnabled: true)
 
             let publisher = DataStorePublisher()
-            let dataStorePlugin = AWSDataStoreCategoryPlugin(storageEngine: storageEngine,
+            let dataStorePlugin = AWSDataStoreCategoryPlugin(modelRegistration: TestModelRegistration(),
+                                                             storageEngine: storageEngine,
                                                              dataStorePublisher: publisher)
 
             try Amplify.add(plugin: dataStorePlugin)

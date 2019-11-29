@@ -22,9 +22,6 @@ class LocalSubscriptionTests: XCTestCase {
         Amplify.reset()
         Amplify.Logging.logLevel = .verbose
 
-        ModelRegistry.register(modelType: Post.self)
-        ModelRegistry.register(modelType: Comment.self)
-
         let storageAdapter: SQLiteStorageEngineAdapter
         let storageEngine: StorageEngine
         do {
@@ -42,7 +39,8 @@ class LocalSubscriptionTests: XCTestCase {
         }
 
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStoreCategoryPlugin(storageEngine: storageEngine,
+        let dataStorePlugin = AWSDataStoreCategoryPlugin(modelRegistration: TestModelRegistration(),
+                                                         storageEngine: storageEngine,
                                                          dataStorePublisher: dataStorePublisher)
 
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [

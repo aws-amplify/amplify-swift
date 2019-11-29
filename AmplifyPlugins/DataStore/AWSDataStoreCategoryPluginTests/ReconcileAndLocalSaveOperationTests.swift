@@ -323,6 +323,10 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     func query<M: Model>(_ modelType: M.Type, predicate: QueryPredicate?, completion: DataStoreCallback<[M]>) {
         XCTFail("Not expected to execute")
     }
+    func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>] {
+        XCTFail("Not expected to execute")
+        return []
+    }
     func exists(_ modelType: Model.Type, withId id: Model.Identifier) throws -> Bool {
         XCTFail("Not expected to execute")
         return true
@@ -362,12 +366,11 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
 extension ReconcileAndLocalSaveOperationTests {
     private func setUpCore() throws -> AmplifyConfiguration {
         Amplify.reset()
-        ModelRegistry.register(modelType: MockSynced.self)
-        ModelRegistry.register(modelType: MockUnsynced.self)
 
         let storageEngine = MockStorageEngineBehavior()
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStoreCategoryPlugin(storageEngine: storageEngine,
+        let dataStorePlugin = AWSDataStoreCategoryPlugin(modelRegistration: TestModelRegistration(),
+                                                         storageEngine: storageEngine,
                                                          dataStorePublisher: dataStorePublisher)
         try Amplify.add(plugin: dataStorePlugin)
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [

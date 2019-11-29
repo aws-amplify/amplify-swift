@@ -40,9 +40,7 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
             case .success(let model):
                 // TODO: Differentiate between save & update
                 // TODO: Handle errors from mutation event creation
-                if let mutationEvent = try? MutationEvent(model: model, mutationType: mutationType) {
-                    self.dataStorePublisher.send(input: mutationEvent)
-                }
+                self.publishMutationEvent(from: model, mutationType: mutationType)
             case .failure:
                 break
             }
@@ -60,11 +58,11 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
         query(modelType, where: predicate) {
             switch $0 {
             case .success(let models):
-                switch models.count {
-                case 0, 1:
-                    completion(.success(models.first))
-                default:
-                    completion(.failure(.nonUniqueResult(model: modelType.modelName, count: models.count)))
+                do {
+                    let first = try models.unique()
+                    completion(.success(first))
+                } catch {
+                    completion(.failure(causedBy: error))
                 }
             case .failure(let error):
                 completion(.failure(causedBy: error))
@@ -73,7 +71,7 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
     }
 
     public func query<M: Model>(_ modelType: M.Type,
-                                where predicateFactory: QueryPredicateFactory?,
+                                where predicateFactory: QueryPredicateFactory? = nil,
                                 completion: DataStoreCallback<[M]>) {
         storageEngine.query(modelType,
                             predicate: predicateFactory?(),
@@ -108,5 +106,28 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
                              completion: completion)
     }
 
-}
+    // MARK: Private
 
+    private func publishMutationEvent<M: Model>(from model: M,
+                                                mutationType: MutationEvent.MutationType) {
+        let metadata = MutationSyncMetadata.keys
+        storageEngine.query(MutationSyncMetadata.self,
+                            predicate: metadata.id == model.id) {
+            switch $0 {
+            case .success(let result):
+                do {
+                    let syncMetadata = try result.unique()
+                    let mutationEvent = try MutationEvent(model: model,
+                                                          mutationType: mutationType,
+                                                          version: syncMetadata?.version)
+                    self.dataStorePublisher.send(input: mutationEvent)
+                } catch {
+                    self.log.error(error: error)
+                }
+            case .failure(let error):
+                self.log.error(error: error)
+            }
+        }
+    }
+
+}
