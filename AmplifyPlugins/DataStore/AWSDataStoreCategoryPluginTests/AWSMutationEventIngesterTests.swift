@@ -20,9 +20,6 @@ class AWSMutationEventIngesterTests: XCTestCase {
     override func setUp() {
         Amplify.reset()
 
-        ModelRegistry.register(modelType: Post.self)
-        ModelRegistry.register(modelType: Comment.self)
-
         let apiConfig = APICategoryConfiguration(plugins: [
             "MockAPICategoryPlugin": true
         ])
@@ -46,7 +43,8 @@ class AWSMutationEventIngesterTests: XCTestCase {
                                               syncEngineFactory: syncEngineFactory)
 
             let publisher = DataStorePublisher()
-            let dataStorePlugin = AWSDataStoreCategoryPlugin(storageEngine: storageEngine,
+            let dataStorePlugin = AWSDataStoreCategoryPlugin(modelRegistration: TestModelRegistration(),
+                                                             storageEngine: storageEngine,
                                                              dataStorePublisher: publisher)
 
             try Amplify.add(plugin: apiPlugin)
