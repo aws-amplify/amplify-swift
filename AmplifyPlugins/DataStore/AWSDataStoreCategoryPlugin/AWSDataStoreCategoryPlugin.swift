@@ -15,7 +15,7 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
     var isSyncEnabled: Bool
 
     /// The Publisher that sends mutation events to subscribers
-    let dataStorePublisher: DataStorePublisher
+    let dataStorePublisher: DataStoreSubscribeBehavior?
 
     let modelRegistration: DataStoreModelRegistration
 
@@ -26,13 +26,17 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
     public init(modelRegistration: DataStoreModelRegistration) {
         self.modelRegistration = modelRegistration
         self.isSyncEnabled = false
-        self.dataStorePublisher = DataStorePublisher()
+        if #available(iOS 13, *) {
+            self.dataStorePublisher = DataStorePublisher()
+        } else {
+            self.dataStorePublisher = nil
+        }
     }
 
     /// Internal initializer for testing
     init(modelRegistration: DataStoreModelRegistration,
          storageEngine: StorageEngineBehavior,
-         dataStorePublisher: DataStorePublisher) {
+         dataStorePublisher: DataStoreSubscribeBehavior) {
         self.modelRegistration = modelRegistration
         self.isSyncEnabled = false
         self.storageEngine = storageEngine

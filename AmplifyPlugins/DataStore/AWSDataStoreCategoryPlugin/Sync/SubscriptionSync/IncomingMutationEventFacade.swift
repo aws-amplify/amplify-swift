@@ -10,6 +10,7 @@ import Combine
 
 /// Facade to hide the AsyncEventQueue/ModelMapper structures from the ReconciliationQueue. Provides a publisher for
 /// all incoming subscription types (onCreate, onUpdate, onDelete) for a single Model type.
+@available(iOS 13.0, *)
 final class IncomingMutationEventFacade {
 
     private let asyncEvents: IncomingAsyncSubscriptionEventPublisher
@@ -45,6 +46,5 @@ final class IncomingMutationEventFacade {
         group.wait()
         onComplete()
     }
-
 
 }

@@ -43,10 +43,12 @@ final class StorageEngine: StorageEngineBehavior {
         let storageAdapter = try SQLiteStorageEngineAdapter(databaseName: databaseName ?? "app")
 
         try storageAdapter.setUp(models: StorageEngine.systemModels)
-
-        let syncEngine = isSyncEnabled ? try? CloudSyncEngine(storageAdapter: storageAdapter) : nil
-
-        self.init(storageAdapter: storageAdapter, syncEngine: syncEngine, isSyncEnabled: isSyncEnabled)
+        if #available(iOS 13, *) {
+            let syncEngine = isSyncEnabled ? try? CloudSyncEngine(storageAdapter: storageAdapter) : nil
+            self.init(storageAdapter: storageAdapter, syncEngine: syncEngine, isSyncEnabled: isSyncEnabled)
+        } else {
+            self.init(storageAdapter: storageAdapter, syncEngine: nil, isSyncEnabled: isSyncEnabled)
+        }
     }
 
     func setUp(models: [Model.Type]) throws {
@@ -82,21 +84,23 @@ final class StorageEngine: StorageEngineBehavior {
                 let mutationEvent = try MutationEvent(model: savedModel, mutationType: mutationType)
 
                 // TODO: Refactor this into something actually readable once we get the final sync implementation done
-                _ = syncEngine
-                    .submit(mutationEvent)
-                    .sink(
-                        receiveCompletion: { futureCompletion in
-                            switch futureCompletion {
-                            case .failure(let error):
-                                completion(.failure(causedBy: error))
-                            default:
-                                // Success case handled by receiveValue
-                                break
-                            }
+                if #available(iOS 13, *) {
+                    _ = syncEngine
+                        .submit(mutationEvent)
+                        .sink(
+                            receiveCompletion: { futureCompletion in
+                                switch futureCompletion {
+                                case .failure(let error):
+                                    completion(.failure(causedBy: error))
+                                default:
+                                    // Success case handled by receiveValue
+                                    break
+                                }
 
-                    }, receiveValue: { _ in
-                        completion(.success(savedModel))
-                    })
+                        }, receiveValue: { _ in
+                            completion(.success(savedModel))
+                        })
+                }
             } catch let dataStoreError as DataStoreError {
                 completion(.failure(dataStoreError))
             } catch {
@@ -133,18 +137,18 @@ final class StorageEngine: StorageEngineBehavior {
 
     func reset(onComplete: () -> Void) {
         // TOOD: Perform cleanup on StorageAdapter, including releasing its `Connection` if needed
-
         let group = DispatchGroup()
+        if #available(iOS 13, *) {
 
-        if let cloudSyncEngine = syncEngine as? CloudSyncEngine {
-            group.enter()
-            DispatchQueue.global().async {
-                cloudSyncEngine.reset {
-                    group.leave()
+            if let cloudSyncEngine = syncEngine as? CloudSyncEngine {
+                group.enter()
+                DispatchQueue.global().async {
+                    cloudSyncEngine.reset {
+                        group.leave()
+                    }
                 }
             }
         }
-
         group.wait()
         onComplete()
     }
