@@ -343,7 +343,8 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     func query(untypedModel modelType: Model.Type,
                predicate: QueryPredicate?,
                completion: DataStoreCallback<[Model]>) {
-        completion(resultForQuery!)
+        let result = resultForQuery ?? .failure(DataStoreError.invalidOperation(causedBy: nil))
+        completion(result)
     }
 }
 class MockStorageEngineBehavior: StorageEngineBehavior {
