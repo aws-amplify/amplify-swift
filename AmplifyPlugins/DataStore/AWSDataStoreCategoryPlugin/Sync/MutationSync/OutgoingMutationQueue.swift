@@ -82,7 +82,7 @@ final class OutgoingMutationQueue {
             start(api: api, mutationEventPublisher: mutationEventPublisher)
 
         case .processingEvents:
-            requestEvent()
+            startProcessingEvents()
 
         case .inError(let error):
             // Maybe we have to notify the Hub?
@@ -107,6 +107,32 @@ final class OutgoingMutationQueue {
         mutationEventPublisher.publisher.subscribe(self)
     }
 
+    /// Responder method for `processingEvents`. Requests the next event from the mutation event publisher.
+    /// Notify actions:
+    /// - errored
+    /// - requestedEvent
+    private func startProcessingEvents() {
+        requestEvent()
+    }
+
+    // MARK: - Event loop processing
+
+    private func requestEvent() {
+        log.verbose(#function)
+        guard let subscription = subscription else {
+            let dataStoreError = DataStoreError.unknown(
+                "No subscription when requesting event",
+                """
+                The outgoing mutation queue attempted to request event without an active subscription.
+                \(AmplifyErrorMessages.reportBugToAWS())
+                """
+            )
+            stateMachine.notify(action: .errored(dataStoreError))
+            return
+        }
+        subscription.request(.max(1))
+    }
+
     private func enqueue(_ mutationEvent: MutationEvent) {
         log.verbose(#function)
         guard let api = api else {
@@ -128,25 +154,6 @@ final class OutgoingMutationQueue {
         requestEvent()
     }
 
-    /// Responder method for `requestingEvent`. Requests the next event from the mutation event publisher.
-    /// Notify actions:
-    /// - errored
-    /// - requestedEvent
-    private func requestEvent() {
-        log.verbose(#function)
-        guard let subscription = subscription else {
-            let dataStoreError = DataStoreError.unknown(
-                "No subscription when requesting event",
-                """
-                The outgoing mutation queue attempted to request event without an active subscription.
-                \(AmplifyErrorMessages.reportBugToAWS())
-                """
-            )
-            stateMachine.notify(action: .errored(dataStoreError))
-            return
-        }
-        subscription.request(.max(1))
-    }
 }
 
 extension OutgoingMutationQueue: Subscriber {
