@@ -52,6 +52,7 @@
 		65681A029CC7068D348C585E /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78D7B65396B17E57FDE99E6D /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */; };
 		6B91DEBF238B9CE0004D6BEE /* ReconcileAndLocalSaveOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B91DEBE238B9CE0004D6BEE /* ReconcileAndLocalSaveOperationTests.swift */; };
 		9BDB42C47E6D7F9A113AE558 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C6448DF009E54C11ACE4515 /* Pods_HostApp.framework */; };
+		B9E010E4239167E000DCE8C8 /* TestModelRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E010E3239167E000DCE8C8 /* TestModelRegistration.swift */; };
 		B9E010E02390780900DCE8C8 /* MutationSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E010DD2390780800DCE8C8 /* MutationSync.swift */; };
 		B9E010E12390780900DCE8C8 /* MutationSyncMetadata+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E010DE2390780900DCE8C8 /* MutationSyncMetadata+Schema.swift */; };
 		B9E010E22390780900DCE8C8 /* MutationSyncMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E010DF2390780900DCE8C8 /* MutationSyncMetadata.swift */; };
@@ -169,6 +170,7 @@
 		901B53EACEE953021704BB41 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C6448DF009E54C11ACE4515 /* Pods_HostApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA98AF8502498A6DD04B5B9D /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
+		B9E010E3239167E000DCE8C8 /* TestModelRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestModelRegistration.swift; sourceTree = "<group>"; };
 		B9E010DD2390780800DCE8C8 /* MutationSync.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutationSync.swift; sourceTree = "<group>"; };
 		B9E010DE2390780900DCE8C8 /* MutationSyncMetadata+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MutationSyncMetadata+Schema.swift"; sourceTree = "<group>"; };
 		B9E010DF2390780900DCE8C8 /* MutationSyncMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutationSyncMetadata.swift; sourceTree = "<group>"; };
@@ -364,8 +366,9 @@
 		2149E5EE238869CF00873955 /* TestSupport */ = {
 			isa = PBXGroup;
 			children = (
-				FA3841EE23889DCC0070AD5B /* MockModels.swift */,
 				B9FAA141238C6082009414B4 /* BaseDataStoreTests.swift */,
+				FA3841EE23889DCC0070AD5B /* MockModels.swift */,
+				B9E010E3239167E000DCE8C8 /* TestModelRegistration.swift */,
 			);
 			path = TestSupport;
 			sourceTree = "<group>";
@@ -947,6 +950,7 @@
 				2149E5FD238869CF00873955 /* OutgoingMutationQueueTests.swift in Sources */,
 				6B91DEBF238B9CE0004D6BEE /* ReconcileAndLocalSaveOperationTests.swift in Sources */,
 				FA3841ED23889D8F0070AD5B /* StateMachineTests.swift in Sources */,
+				B9E010E4239167E000DCE8C8 /* TestModelRegistration.swift in Sources */,
 				2149E5FC238869CF00873955 /* LocalSubscriptionTests.swift in Sources */,
 				B9FAA183239030A3009414B4 /* MutationSyncMetadataTests.swift in Sources */,
 				FA3841EF23889DCC0070AD5B /* MockModels.swift in Sources */,

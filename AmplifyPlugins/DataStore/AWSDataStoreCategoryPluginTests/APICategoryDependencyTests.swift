@@ -62,8 +62,6 @@ class APICategoryDependencyTests: XCTestCase {
 extension APICategoryDependencyTests {
     private func setUpCore() throws -> AmplifyConfiguration {
         Amplify.reset()
-        ModelRegistry.register(modelType: MockSynced.self)
-        ModelRegistry.register(modelType: MockUnsynced.self)
 
         let connection = try Connection(.inMemory)
         storageAdapter = SQLiteStorageEngineAdapter(connection: connection)
@@ -75,7 +73,8 @@ extension APICategoryDependencyTests {
         let storageEngine = StorageEngine(adapter: storageAdapter, syncEngineFactory: syncEngineFactory)
 
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStoreCategoryPlugin(storageEngine: storageEngine,
+        let dataStorePlugin = AWSDataStoreCategoryPlugin(modelRegistration: TestModelRegistration(),
+                                                         storageEngine: storageEngine,
                                                          dataStorePublisher: dataStorePublisher)
         try Amplify.add(plugin: dataStorePlugin)
 

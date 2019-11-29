@@ -31,8 +31,6 @@ class CloudSyncTests: XCTestCase {
 
         apiPlugin = MockAPICategoryPlugin()
 
-        ModelRegistry.register(modelType: Post.self)
-
         let storageAdapter: SQLiteStorageEngineAdapter
         let storageEngine: StorageEngine
         do {
@@ -48,7 +46,8 @@ class CloudSyncTests: XCTestCase {
         }
 
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStoreCategoryPlugin(storageEngine: storageEngine,
+        let dataStorePlugin = AWSDataStoreCategoryPlugin(modelRegistration: TestModelRegistration(),
+                                                         storageEngine: storageEngine,
                                                          dataStorePublisher: dataStorePublisher)
 
         let apiConfig = APICategoryConfiguration(plugins: [apiPlugin.key: true])

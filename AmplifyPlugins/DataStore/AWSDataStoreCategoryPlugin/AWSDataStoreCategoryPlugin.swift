@@ -17,18 +17,23 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
     /// The Publisher that sends mutation events to subscribers
     let dataStorePublisher: DataStorePublisher
 
+    let modelRegistration: DataStoreModelRegistration
+
     /// The local storage provider. Resolved during configuration phase
     var storageEngine: StorageEngineBehavior!
 
     /// No-argument init that uses defaults for all providers
-    public init() {
+    public init(modelRegistration: DataStoreModelRegistration) {
+        self.modelRegistration = modelRegistration
         self.isSyncEnabled = false
         self.dataStorePublisher = DataStorePublisher()
     }
 
     /// Internal initializer for testing
-    init(storageEngine: StorageEngineBehavior,
+    init(modelRegistration: DataStoreModelRegistration,
+         storageEngine: StorageEngineBehavior,
          dataStorePublisher: DataStorePublisher) {
+        self.modelRegistration = modelRegistration
         self.isSyncEnabled = false
         self.storageEngine = storageEngine
         self.dataStorePublisher = dataStorePublisher
@@ -38,6 +43,7 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
     /// `DataStoreModelRegistration.registerModels`, so we can inspect those models to derive isSyncEnabled, and pass
     /// them to `StorageEngine.setUp(models:)`
     public func configure(using configuration: Any) throws {
+        modelRegistration.registerModels(registry: ModelRegistry.self)
         resolveSyncEnabled()
         try resolveStorageEngine()
         registerSystemModels()
