@@ -52,10 +52,10 @@
 		65681A029CC7068D348C585E /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78D7B65396B17E57FDE99E6D /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */; };
 		6B91DEBF238B9CE0004D6BEE /* ReconcileAndLocalSaveOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B91DEBE238B9CE0004D6BEE /* ReconcileAndLocalSaveOperationTests.swift */; };
 		9BDB42C47E6D7F9A113AE558 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C6448DF009E54C11ACE4515 /* Pods_HostApp.framework */; };
-		B9E010E4239167E000DCE8C8 /* TestModelRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E010E3239167E000DCE8C8 /* TestModelRegistration.swift */; };
 		B9E010E02390780900DCE8C8 /* MutationSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E010DD2390780800DCE8C8 /* MutationSync.swift */; };
 		B9E010E12390780900DCE8C8 /* MutationSyncMetadata+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E010DE2390780900DCE8C8 /* MutationSyncMetadata+Schema.swift */; };
 		B9E010E22390780900DCE8C8 /* MutationSyncMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E010DF2390780900DCE8C8 /* MutationSyncMetadata.swift */; };
+		B9E010E4239167E000DCE8C8 /* TestModelRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E010E3239167E000DCE8C8 /* TestModelRegistration.swift */; };
 		B9FAA140238C600A009414B4 /* ListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA13F238C600A009414B4 /* ListTests.swift */; };
 		B9FAA142238C6082009414B4 /* BaseDataStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA141238C6082009414B4 /* BaseDataStoreTests.swift */; };
 		B9FAA183239030A3009414B4 /* MutationSyncMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA182239030A3009414B4 /* MutationSyncMetadataTests.swift */; };
@@ -171,10 +171,10 @@
 		901B53EACEE953021704BB41 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C6448DF009E54C11ACE4515 /* Pods_HostApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA98AF8502498A6DD04B5B9D /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
-		B9E010E3239167E000DCE8C8 /* TestModelRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestModelRegistration.swift; sourceTree = "<group>"; };
 		B9E010DD2390780800DCE8C8 /* MutationSync.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutationSync.swift; sourceTree = "<group>"; };
 		B9E010DE2390780900DCE8C8 /* MutationSyncMetadata+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MutationSyncMetadata+Schema.swift"; sourceTree = "<group>"; };
 		B9E010DF2390780900DCE8C8 /* MutationSyncMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutationSyncMetadata.swift; sourceTree = "<group>"; };
+		B9E010E3239167E000DCE8C8 /* TestModelRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestModelRegistration.swift; sourceTree = "<group>"; };
 		B9FAA13F238C600A009414B4 /* ListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTests.swift; sourceTree = "<group>"; };
 		B9FAA141238C6082009414B4 /* BaseDataStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseDataStoreTests.swift; sourceTree = "<group>"; };
 		B9FAA182239030A3009414B4 /* MutationSyncMetadataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationSyncMetadataTests.swift; sourceTree = "<group>"; };
@@ -1081,7 +1081,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1138,7 +1138,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -1162,7 +1162,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "$(SRCROOT)/AWSDataStoreCategoryPlugin/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1188,7 +1188,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "$(SRCROOT)/AWSDataStoreCategoryPlugin/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1210,6 +1210,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W3DRXD72QU;
 				INFOPLIST_FILE = AWSDataStoreCategoryPluginTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1231,6 +1232,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W3DRXD72QU;
 				INFOPLIST_FILE = AWSDataStoreCategoryPluginTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

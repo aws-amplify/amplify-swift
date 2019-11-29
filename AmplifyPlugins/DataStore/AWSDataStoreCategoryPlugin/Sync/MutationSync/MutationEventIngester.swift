@@ -9,10 +9,12 @@ import Amplify
 import Combine
 
 /// Ingests MutationEvents from and writes them to the MutationEvent persistent store
+@available(iOS 13.0, *)
 protocol MutationEventIngester: class {
     func submit(mutationEvent: MutationEvent) -> Future<MutationEvent, DataStoreError>
 }
 
+@available(iOS 13.0, *)
 final class AWSMutationEventIngester: MutationEventIngester {
 
     private weak var storageAdapter: StorageEngineAdapter?
@@ -104,4 +106,5 @@ final class AWSMutationEventIngester: MutationEventIngester {
 
 }
 
+@available(iOS 13.0, *)
 extension AWSMutationEventIngester: DefaultLogger { }

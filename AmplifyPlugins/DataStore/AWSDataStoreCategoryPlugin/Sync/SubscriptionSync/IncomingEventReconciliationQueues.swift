@@ -12,6 +12,7 @@ import Foundation
 /// A collection of queues, one per syncable model type, that reconcile all incoming events for a model: responses
 /// from locally-sourced mutations, and subscription events for create, update, and delete events initiated by remote
 /// systems.
+@available(iOS 13.0, *)
 final class IncomingEventReconciliationQueues {
 
     private var reconciliationQueues = [String: ReconciliationQueue]()
@@ -53,6 +54,7 @@ final class IncomingEventReconciliationQueues {
 ///
 /// Although subscriptions are listened to and enqueued at initialization, you must call `start` on a
 /// ReconciliationQueue to write events to the DataStore.
+@available(iOS 13.0, *)
 final class ReconciliationQueue {
 
     private let operationQueue: OperationQueue
@@ -134,4 +136,5 @@ final class ReconciliationQueue {
 
 }
 
+@available(iOS 13.0, *)
 extension ReconciliationQueue: DefaultLogger { }

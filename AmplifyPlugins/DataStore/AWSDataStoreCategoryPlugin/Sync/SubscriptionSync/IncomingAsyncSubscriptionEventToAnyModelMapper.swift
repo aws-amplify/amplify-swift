@@ -10,6 +10,7 @@ import Combine
 
 /// Subscribes to an IncomingSubscriptionAsyncEventQueue, and publishes AnyModel
 // swiftlint:disable:next type_name
+@available(iOS 13, *)
 final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
     typealias Input = IncomingAsyncSubscriptionEventPublisher.Event
     typealias Failure = DataStoreError
@@ -88,4 +89,5 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
     }
 }
 
+@available(iOS 13, *)
 extension IncomingAsyncSubscriptionEventToAnyModelMapper: DefaultLogger { }
