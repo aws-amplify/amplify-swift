@@ -21,6 +21,8 @@ extension AWSPinpointAnalyticsPlugin {
         }
 
         if autoFlushEventsTimer != nil {
+            autoFlushEventsTimer?.setEventHandler { }
+            autoFlushEventsTimer?.cancel()
             autoFlushEventsTimer = nil
         }
 

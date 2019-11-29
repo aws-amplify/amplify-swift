@@ -38,8 +38,8 @@ final public class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
     }
 
     /// Default logger from Amplify
-    var log: Logger {
-        Amplify.Analytics.log
+    var logger: Logger {
+        Amplify.Logging.logger(forCategory: CategoryType.analytics.displayName)
     }
 
     /// Instantiates an instance of the AWSPinpointAnalyticsPlugin
