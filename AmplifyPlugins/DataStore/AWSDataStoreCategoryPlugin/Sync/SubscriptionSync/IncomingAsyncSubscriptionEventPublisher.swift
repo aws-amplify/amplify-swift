@@ -16,6 +16,7 @@ import Combine
 /// At initialization, the Queue sets up subscriptions, via the provided `APICategoryGraphQLBehavior`, for each type
 /// `GraphQLSubscriptionType` and holds a reference to the returned operation. The operations' listeners enqueue
 /// incoming successful events onto a `Publisher`, that queue processors can subscribe to.
+@available(iOS 13.0, *)
 final class IncomingAsyncSubscriptionEventPublisher {
     typealias Event = AsyncEvent<SubscriptionEvent<GraphQLResponse<AnyModel>>, Void, APIError>
 
@@ -82,4 +83,5 @@ final class IncomingAsyncSubscriptionEventPublisher {
 
 }
 
+@available(iOS 13.0, *)
 extension IncomingAsyncSubscriptionEventPublisher: DefaultLogger { }

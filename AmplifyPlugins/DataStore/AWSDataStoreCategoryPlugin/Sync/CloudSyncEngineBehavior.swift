@@ -8,7 +8,6 @@
 import Amplify
 import Combine
 
-@available(iOS 13.0, *)
 /// Behavior to sync mutation events to the cloud, and to subscribe to mutations from the cloud
 protocol CloudSyncEngineBehavior: class {
 
@@ -26,6 +25,7 @@ protocol CloudSyncEngineBehavior: class {
 
     /// Submits a new mutation for synchronization to the cloud. The response will be handled by the appropriate
     /// reconciliation queue
+    @available(iOS 13.0, *)
     func submit(_ mutationEvent: MutationEvent) -> Future<MutationEvent, DataStoreError>
 
 }

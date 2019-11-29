@@ -81,14 +81,18 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
     public func delete<M: Model>(_ model: M,
                                  completion: DataStoreCallback<Void>) {
         let publishingCompletion: DataStoreCallback<Void> = { result in
-            switch result {
-            case .success:
-                // TODO: Handle errors from mutation event creation
-                if let mutationEvent = try? MutationEvent(model: model, mutationType: .delete) {
-                    self.dataStorePublisher.send(input: mutationEvent)
+            if #available(iOS 13.0, *) {
+                switch result {
+                case .success:
+                    // TODO: Handle errors from mutation event creation
+                    if let mutationEvent = try? MutationEvent(model: model, mutationType: .delete) {
+                        if let publisher = self.dataStorePublisher as? DataStorePublisher {
+                            publisher.send(input: mutationEvent)
+                        }
+                    }
+                case .failure:
+                    break
                 }
-            case .failure:
-                break
             }
             completion(result)
         }
@@ -110,22 +114,26 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
 
     private func publishMutationEvent<M: Model>(from model: M,
                                                 mutationType: MutationEvent.MutationType) {
-        let metadata = MutationSyncMetadata.keys
-        storageEngine.query(MutationSyncMetadata.self,
-                            predicate: metadata.id == model.id) {
-            switch $0 {
-            case .success(let result):
-                do {
-                    let syncMetadata = try result.unique()
-                    let mutationEvent = try MutationEvent(model: model,
-                                                          mutationType: mutationType,
-                                                          version: syncMetadata?.version)
-                    self.dataStorePublisher.send(input: mutationEvent)
-                } catch {
-                    self.log.error(error: error)
-                }
-            case .failure(let error):
-                self.log.error(error: error)
+        if #available(iOS 13.0, *) {
+            let metadata = MutationSyncMetadata.keys
+            storageEngine.query(MutationSyncMetadata.self,
+                                predicate: metadata.id == model.id) {
+                                    switch $0 {
+                                    case .success(let result):
+                                        do {
+                                            let syncMetadata = try result.unique()
+                                            let mutationEvent = try MutationEvent(model: model,
+                                                                                  mutationType: mutationType,
+                                                                                  version: syncMetadata?.version)
+                                            if let publisher = self.dataStorePublisher as? DataStorePublisher {
+                                                publisher.send(input: mutationEvent)
+                                            }
+                                        } catch {
+                                            self.log.error(error: error)
+                                        }
+                                    case .failure(let error):
+                                        self.log.error(error: error)
+                                    }
             }
         }
     }

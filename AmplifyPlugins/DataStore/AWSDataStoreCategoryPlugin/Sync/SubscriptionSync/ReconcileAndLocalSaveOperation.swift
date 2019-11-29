@@ -11,6 +11,7 @@ import Foundation
 
 /// Reconciles an incoming model mutation with the stored model. If there is no conflict (e.g., the incoming model has
 /// a later version than the stored model), then write the new data to the store.
+@available(iOS 13.0, *)
 class ReconcileAndLocalSaveOperation: Operation {
     typealias LocalModel = Model
     typealias CloudModel = Model
@@ -309,4 +310,5 @@ class ReconcileAndLocalSaveOperation: Operation {
 
 }
 
+@available(iOS 13.0, *)
 extension ReconcileAndLocalSaveOperation: DefaultLogger { }

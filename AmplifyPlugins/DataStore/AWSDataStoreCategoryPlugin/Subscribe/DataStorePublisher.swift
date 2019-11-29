@@ -8,9 +8,8 @@
 import Amplify
 import Combine
 
-@available(iOS 13.0, *)
-
 // TODO: Should this be a multicast publisher?
+@available(iOS 13.0, *)
 struct DataStorePublisher: DataStoreSubscribeBehavior {
 
     private let subject = PassthroughSubject<MutationEvent, DataStoreError>()

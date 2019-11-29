@@ -9,10 +9,12 @@ import Amplify
 import Combine
 
 /// Publishes mutation events to downstream subscribers for subsequent sync to the API.
+@available(iOS 13, *)
 protocol MutationEventPublisher: class {
     var publisher: AnyPublisher<MutationEvent, Never> { get }
 }
 
+@available(iOS 13, *)
 protocol MutationEventSubject: class {
     func publish(mutationEvent: MutationEvent)
 }
@@ -21,6 +23,7 @@ protocol MutationEventSubject: class {
 ///
 /// Internally, this class buffers incoming events until a subscription request is received. At that time, a publisher
 /// is created that
+@available(iOS 13, *)
 final class AWSMutationEventPublisher: MutationEventPublisher, MutationEventSubject {
 
     private enum IncomingEventDestination {
@@ -103,4 +106,5 @@ final class AWSMutationEventPublisher: MutationEventPublisher, MutationEventSubj
     }
 }
 
+@available(iOS 13, *)
 extension AWSMutationEventPublisher: DefaultLogger { }

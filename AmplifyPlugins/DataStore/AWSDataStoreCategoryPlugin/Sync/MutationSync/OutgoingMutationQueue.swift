@@ -156,6 +156,7 @@ final class OutgoingMutationQueue {
 
 }
 
+@available(iOS 13.0, *)
 extension OutgoingMutationQueue: Subscriber {
     typealias Input = MutationEvent
     typealias Failure = Never
@@ -181,4 +182,5 @@ extension OutgoingMutationQueue: Subscriber {
     }
 }
 
+@available(iOS 13.0, *)
 extension OutgoingMutationQueue: DefaultLogger { }

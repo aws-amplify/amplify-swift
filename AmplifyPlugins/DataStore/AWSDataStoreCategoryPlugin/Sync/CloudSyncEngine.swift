@@ -200,4 +200,5 @@ final class CancelAwareBlockOperation: Operation {
     }
 }
 
+@available(iOS 13, *)
 extension CloudSyncEngine: DefaultLogger { }
