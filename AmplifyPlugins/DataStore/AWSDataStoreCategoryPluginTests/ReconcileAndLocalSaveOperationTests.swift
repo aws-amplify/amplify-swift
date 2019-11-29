@@ -323,6 +323,10 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     func query<M: Model>(_ modelType: M.Type, predicate: QueryPredicate?, completion: DataStoreCallback<[M]>) {
         XCTFail("Not expected to execute")
     }
+    func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>] {
+        XCTFail("Not expected to execute")
+        return []
+    }
     func exists(_ modelType: Model.Type, withId id: Model.Identifier) throws -> Bool {
         XCTFail("Not expected to execute")
         return true

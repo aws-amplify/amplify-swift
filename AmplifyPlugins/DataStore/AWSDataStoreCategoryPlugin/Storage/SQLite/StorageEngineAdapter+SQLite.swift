@@ -133,6 +133,31 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         return false
     }
 
+    func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>] {
+        let statement = SelectStatement(from: MutationSyncMetadata.self)
+        let primaryKey = MutationSyncMetadata.schema.primaryKey.sqlName
+        // This is a temp workaround since we don't currently support the "in" operator
+        // in query predicates (this avoids the 1 + n query problem). Consider adding "in" support
+        let placeholders = Array(repeating: "?", count: models.count).joined(separator: ", ")
+        let sql = statement.stringValue + "\nwhere \(primaryKey) in (\(placeholders))"
+
+        // group models by id for fast access when creating the tuple
+        let modelById = Dictionary(grouping: models, by: { $0.id }).mapValues { $0.first! }
+        let ids = [String](modelById.keys)
+        let rows = try connection.prepare(sql).bind(ids)
+
+        let syncMetadataList = try rows.convert(to: MutationSyncMetadata.self)
+        let mutationSyncList = try syncMetadataList.map {
+            (syncMetadata: MutationSyncMetadata) -> MutationSync<AnyModel> in
+            guard let model = modelById[syncMetadata.id] else {
+                throw DataStoreError.invalidOperation(causedBy: nil)
+            }
+            let anyModel = try model.eraseToAnyModel()
+            return MutationSync<AnyModel>(model: anyModel, syncMetadata: syncMetadata)
+        }
+        return mutationSyncList
+    }
+
 }
 
 // MARK: - Private Helpers

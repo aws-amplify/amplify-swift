@@ -18,4 +18,14 @@ public extension JSONValue {
         let value = pathComponents.reduce(self) { currVal, nextVal in currVal?[nextVal] }
         return value
     }
+
+    func value(at keyPath: String, withDefault defaultValue: JSONValue) -> JSONValue {
+        guard let jsonValue = value(at: keyPath) else {
+            return defaultValue
+        }
+        if case .null = jsonValue {
+            return defaultValue
+        }
+        return jsonValue
+    }
 }

@@ -21,4 +21,6 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
     func query(untypedModel modelType: Model.Type,
                predicate: QueryPredicate?,
                completion: DataStoreCallback<[Model]>)
+
+    func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>]
 }

@@ -13,26 +13,31 @@ public struct MutationEvent: Model {
     public let json: String
     public let mutationType: String
     public let createdAt: Date
+    public let version: Int?
 
     public init(id: Identifier = UUID().uuidString,
                 modelName: String,
                 data: String,
                 mutationType: MutationType,
-                createdAt: Date = Date()) {
+                createdAt: Date = Date(),
+                version: Int? = nil) {
         self.id = id
         self.modelName = modelName
         self.json = data
         self.mutationType = mutationType.rawValue
         self.createdAt = createdAt
+        self.version = version
     }
 
     public init<M: Model>(model: M,
-                          mutationType: MutationType) throws {
+                          mutationType: MutationType,
+                          version: Int? = nil) throws {
         let modelType = type(of: model)
         let data = try model.toJSON()
         self.init(modelName: modelType.schema.name,
                   data: data,
-                  mutationType: mutationType)
+                  mutationType: mutationType,
+                  version: version)
     }
 
     public func decodeModel() throws -> Model {
