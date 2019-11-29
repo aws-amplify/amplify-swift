@@ -132,6 +132,8 @@ final class StorageEngine: StorageEngineBehavior {
     }
 
     func reset(onComplete: () -> Void) {
+        // TOOD: Perform cleanup on StorageAdapter, including releasing its `Connection` if needed
+
         let group = DispatchGroup()
 
         if let cloudSyncEngine = syncEngine as? CloudSyncEngine {

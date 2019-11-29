@@ -50,7 +50,7 @@ final class AWSMutationEventPublisher: MutationEventPublisher, MutationEventSubj
                 return publisher
             }
 
-            log.verbose("creating publisher")
+            log.verbose("Creating publisher")
             let publisher = Deferred {
                 self.workQueue.sync {
                     self.createPublisher()
@@ -65,7 +65,7 @@ final class AWSMutationEventPublisher: MutationEventPublisher, MutationEventSubj
         self.eventBuffer = [MutationEvent]()
         self.subject = PassthroughSubject<MutationEvent, Never>()
         self.incomingEventDestination = .buffer
-        log.verbose("initialized")
+        log.verbose("Initialized")
     }
 
     /// Publishes a mutationEvent to the PassthroughSubject. If there are no subscribers, this event is silently
@@ -78,10 +78,10 @@ final class AWSMutationEventPublisher: MutationEventPublisher, MutationEventSubj
         workQueue.sync {
             switch incomingEventDestination {
             case .buffer:
-                log.verbose("buffering: \(mutationEvent)")
+                log.verbose("Buffering: \(mutationEvent)")
                 eventBuffer.append(mutationEvent)
             case .subject:
-                log.verbose("passthrough: \(mutationEvent)")
+                log.verbose("Passing through to subject: \(mutationEvent)")
                 subject.send(mutationEvent)
             }
         }
@@ -92,7 +92,6 @@ final class AWSMutationEventPublisher: MutationEventPublisher, MutationEventSubj
         log.verbose("Creating publisher with \(eventBuffer.count) buffered events")
         let eventBufferSequence = Publishers.Sequence<[MutationEvent], Never>(sequence: eventBuffer)
         let publisher = Publishers.Concatenate(prefix: eventBufferSequence, suffix: subject)
-            .print(String(describing: self))
             .eraseToAnyPublisher()
         incomingEventDestination = .subject
         return publisher

@@ -40,14 +40,14 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     static func initializeDatabase(connection: Connection) throws {
         log.debug("Initializing database connection: \(String(describing: connection))")
 
-        let statement = """
+        let databaseInitializationStatement = """
         pragma auto_vacuum = full;
         pragma encoding = "utf-8";
         pragma foreign_keys = on;
         pragma case_sensitive_like = off;
         """
 
-        try connection.execute(statement)
+        try connection.execute(databaseInitializationStatement)
     }
 
     func setUp(models: [Model.Type]) throws {

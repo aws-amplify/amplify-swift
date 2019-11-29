@@ -28,7 +28,7 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
 
     /// Initializes the CloudSyncEngine with the specified storageAdapter as the provider for persistence of
     /// MutationEvents, synce metadata, and conflict resolution metadata. Immediately initializes the incoming mutation
-    /// queue so it can begin accepting incoming mutations from DataStore customers.
+    /// queue so it can begin accepting incoming mutations from DataStore.
     convenience init(storageAdapter: StorageEngineAdapter) throws {
         let awsMutationEventPublisher = AWSMutationEventPublisher()
         let awsMutationEventIngester = try AWSMutationEventIngester(storageAdapter: storageAdapter,

@@ -11,10 +11,16 @@ import XCTest
 // These tests must be run with ThreadSanitizer enabled
 class AtomicValueBoolTests: XCTestCase {
 
-    func testGetAndToggle() {
+    func testGetAndToggleStartingWithTrue() {
         let atomicBool = AtomicValue(initialValue: true)
         XCTAssertEqual(atomicBool.getAndToggle(), true)
         XCTAssertEqual(atomicBool.get(), false)
+    }
+
+    func testGetAndToggleStartingWithFalse() {
+        let atomicBool = AtomicValue(initialValue: false)
+        XCTAssertEqual(atomicBool.getAndToggle(), false)
+        XCTAssertEqual(atomicBool.get(), true)
     }
 
 }

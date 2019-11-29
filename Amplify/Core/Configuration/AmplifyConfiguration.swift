@@ -78,7 +78,7 @@ extension Amplify {
     /// - Parameter configuration: The AmplifyConfiguration for specified Categories
     public static func configure(_ configuration: AmplifyConfiguration? = nil) throws {
         log.info("Configuring")
-        log.debug("configuration: \(String(describing: configuration))")
+        log.debug("Configuration: \(String(describing: configuration))")
         guard !isConfigured else {
             let error = ConfigurationError.amplifyAlreadyConfigured(
                 "Amplify has already been configured.",

@@ -12,7 +12,7 @@ extension AtomicValue where Value == Bool {
     /// Example:
     /// ```swift
     /// let atomicBool = AtomicValue(initialValue: true)
-    /// print(atomicBool.toggle()) // prints "true"
+    /// print(atomicBool.getAndToggle()) // prints "true"
     /// print(atomicBool.get()) // prints "false"
     /// ```
     func getAndToggle() -> Value {

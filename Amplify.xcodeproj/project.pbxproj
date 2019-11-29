@@ -217,7 +217,6 @@
 		FA56F72522B14B6A0039754A /* Resumable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F72422B14B6A0039754A /* Resumable.swift */; };
 		FA56F72722B14BF70039754A /* AmplifyOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F72622B14BF70039754A /* AmplifyOperation.swift */; };
 		FA5BF25F2385A0500070C843 /* Category+Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5BF25E2385A0500070C843 /* Category+Logging.swift */; };
-		FA5D4CF1238AFD5000D2F54A /* ModelSchema+Syncable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5D4CF0238AFD5000D2F54A /* ModelSchema+Syncable.swift */; };
 		FA5D4CF3238AFD7B00D2F54A /* ModelRegistry+Syncable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5D4CF2238AFD7B00D2F54A /* ModelRegistry+Syncable.swift */; };
 		FA607FE2233D131B00DFEA24 /* AmplifyOperationHubTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA607FE1233D131B00DFEA24 /* AmplifyOperationHubTests.swift */; };
 		FA6BC869235F52740001A882 /* APICategoryClientGraphQLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6BC868235F52740001A882 /* APICategoryClientGraphQLTests.swift */; };
@@ -793,6 +792,7 @@
 		FA176ED6238503C200C5C5F9 /* HubListenerTestUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubListenerTestUtilities.swift; sourceTree = "<group>"; };
 		FA176ED823858A3800C5C5F9 /* Amplify+HubPayloadEventName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Amplify+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		FA176EDC2385943000C5C5F9 /* NotificationListeningAnalyticsPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListeningAnalyticsPlugin.swift; sourceTree = "<group>"; };
+		FA2492462391A3BF0004B379 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		FA315294233D634900DE78E7 /* StorageDownloadFileRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StorageDownloadFileRequest.swift; path = Amplify/Categories/Storage/Request/StorageDownloadFileRequest.swift; sourceTree = SOURCE_ROOT; };
 		FA315297233D644F00DE78E7 /* StorageDownloadDataRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageDownloadDataRequest.swift; sourceTree = "<group>"; };
 		FA315299233D645200DE78E7 /* StorageGetURLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageGetURLRequest.swift; sourceTree = "<group>"; };
@@ -812,7 +812,6 @@
 		FA56F72422B14B6A0039754A /* Resumable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resumable.swift; sourceTree = "<group>"; };
 		FA56F72622B14BF70039754A /* AmplifyOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyOperation.swift; sourceTree = "<group>"; };
 		FA5BF25E2385A0500070C843 /* Category+Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Category+Logging.swift"; sourceTree = "<group>"; };
-		FA5D4CF0238AFD5000D2F54A /* ModelSchema+Syncable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelSchema+Syncable.swift"; sourceTree = "<group>"; };
 		FA5D4CF2238AFD7B00D2F54A /* ModelRegistry+Syncable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelRegistry+Syncable.swift"; sourceTree = "<group>"; };
 		FA607FE1233D131B00DFEA24 /* AmplifyOperationHubTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyOperationHubTests.swift; sourceTree = "<group>"; };
 		FA6BC868235F52740001A882 /* APICategoryClientGraphQLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICategoryClientGraphQLTests.swift; sourceTree = "<group>"; };
@@ -1417,7 +1416,6 @@
 				FA5D4CF2238AFD7B00D2F54A /* ModelRegistry+Syncable.swift */,
 				B92E03A82367CE7A006CEB8D /* ModelSchema.swift */,
 				B92E03AA2367CE7A006CEB8D /* ModelSchema+Definition.swift */,
-				FA5D4CF0238AFD5000D2F54A /* ModelSchema+Syncable.swift */,
 				B9FAA16F238E05F1009414B4 /* ModelSchema+Syncable.swift */,
 				FA8EE780238628490097E4F1 /* Persistable.swift */,
 			);
@@ -1519,6 +1517,7 @@
 		C4DBE378379CBB2C3F4536BE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FA2492462391A3BF0004B379 /* XCTest.framework */,
 				FAB2C9DD2384E034008EE879 /* Starscream.framework */,
 				84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */,
 				263EE84D0728C793C6181869 /* Pods_AmplifyAppExample.framework */,
@@ -3308,7 +3307,6 @@
 				FA8EE77D238627350097E4F1 /* Model+Subscript.swift in Sources */,
 				21D79FDA237617C60057D00D /* SubscriptionEvent.swift in Sources */,
 				B92E03B52367CE7A006CEB8D /* Model.swift in Sources */,
-				FA5D4CF1238AFD5000D2F54A /* ModelSchema+Syncable.swift in Sources */,
 				95DAAB31237E63370028544F /* PartOfSpeech.swift in Sources */,
 				B9FAA13A238BBADE009414B4 /* List+Combine.swift in Sources */,
 				FA8EE77B2386271A0097E4F1 /* Model+AnyModel.swift in Sources */,

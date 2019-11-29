@@ -60,7 +60,7 @@ extension StorageError: AmplifyError {
             such as 'protected/<targetIdentityId>/<key>' or 'private/<targetIdentityId>/<key>'.
             """
         case .unknown:
-            return "This should never happen. \(AmplifyErrorMessages.reportBugOnGithub)"
+            return AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
         }
     }
 

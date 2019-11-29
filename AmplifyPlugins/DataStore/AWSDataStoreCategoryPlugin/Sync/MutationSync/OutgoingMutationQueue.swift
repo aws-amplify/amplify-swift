@@ -46,7 +46,7 @@ final class OutgoingMutationQueue {
                 }
         }
 
-        log.verbose("initialized")
+        log.verbose("Initialized")
         stateMachine.notify(action: .initialized)
     }
 
@@ -114,7 +114,7 @@ final class OutgoingMutationQueue {
                 "API is unexpectedly nil",
                 """
                 The reference to storageAdapter has been released while an ongoing mutation was being processed.
-                \(AmplifyErrorMessages.reportBugOnGithub)
+                \(AmplifyErrorMessages.reportBugToAWS())
                 """
             )
             stateMachine.notify(action: .errored(dataStoreError))
@@ -139,7 +139,7 @@ final class OutgoingMutationQueue {
                 "No subscription when requesting event",
                 """
                 The outgoing mutation queue attempted to request event without an active subscription.
-                \(AmplifyErrorMessages.reportBugOnGithub)
+                \(AmplifyErrorMessages.reportBugToAWS())
                 """
             )
             stateMachine.notify(action: .errored(dataStoreError))

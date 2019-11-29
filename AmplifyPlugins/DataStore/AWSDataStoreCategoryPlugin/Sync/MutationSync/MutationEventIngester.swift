@@ -82,7 +82,7 @@ final class AWSMutationEventIngester: MutationEventIngester {
         guard let result = resultFromQuery else {
             let dataStoreError = DataStoreError.unknown(
                 "Return result unexpectedly nil querying mutation events",
-                "This should never happen. \(AmplifyErrorMessages.reportBugOnGithub)"
+                AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
             )
             throw dataStoreError
         }

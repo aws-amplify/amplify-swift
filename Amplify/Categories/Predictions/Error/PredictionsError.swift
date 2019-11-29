@@ -56,7 +56,7 @@ extension PredictionsError: AmplifyError {
             https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
             """
         case .unknown:
-            return "This should never happen. \(AmplifyErrorMessages.reportBugOnGithub)"
+            return AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
         }
     }
 

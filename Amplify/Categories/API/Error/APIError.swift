@@ -68,7 +68,7 @@ extension APIError: AmplifyError {
             return """
             \(recoverySuggestion)
 
-            This should never happen. \(AmplifyErrorMessages.reportBugOnGithub)
+            \(AmplifyErrorMessages.shouldNotHappenReportBugToAWS())
             """
 
         case .invalidConfiguration(_, let recoverySuggestion, _):

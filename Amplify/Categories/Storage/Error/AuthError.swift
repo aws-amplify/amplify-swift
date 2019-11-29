@@ -27,7 +27,7 @@ extension AuthError: AmplifyError {
         case .identity(_, _, let recoverySuggestion, _):
             return recoverySuggestion
         case .unknown:
-            return "This should never happen. \(AmplifyErrorMessages.reportBugOnGithub)"
+            return AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
         }
     }
 

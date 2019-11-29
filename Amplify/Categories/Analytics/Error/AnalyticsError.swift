@@ -27,7 +27,7 @@ extension AnalyticsError: AmplifyError {
         case .configuration(_, let recoverySuggestion, _):
             return recoverySuggestion
         case .unknown:
-            return "This should never happen. \(AmplifyErrorMessages.reportBugOnGithub)"
+            return AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
         }
     }
 
