@@ -15,7 +15,7 @@ import AWSPluginsCore
 
 class AWSAPICategoryPluginTestBase: XCTestCase {
 
-    var apiPlugin: AWSAPICategoryPlugin!
+    var apiPlugin: AWSAPIPlugin!
     var authService: MockAWSAuthService!
     var pluginConfig: AWSAPICategoryPluginConfiguration!
 
@@ -30,7 +30,7 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
     let testPath = "testPath"
 
     override func setUp() {
-        apiPlugin = AWSAPICategoryPlugin()
+        apiPlugin = AWSAPIPlugin()
         authService = MockAWSAuthService()
         do {
             let endpointConfig = [apiName: try AWSAPICategoryPluginConfiguration.EndpointConfig(

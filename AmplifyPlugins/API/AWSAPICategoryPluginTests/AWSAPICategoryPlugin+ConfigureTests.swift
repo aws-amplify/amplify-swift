@@ -17,7 +17,7 @@ class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
     }
 
     func testConfigureSuccess() throws {
-        let apiPlugin = AWSAPICategoryPlugin()
+        let apiPlugin = AWSAPIPlugin()
         let apiPluginConfig: JSONValue = [
             "Test": [
                 "endpoint": "http://www.example.com",

@@ -94,7 +94,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         AuthHelper.initializeMobileClient()
 
         Amplify.reset()
-        let plugin = AWSAPICategoryPlugin()
+        let plugin = AWSAPIPlugin()
 
         let apiConfig = APICategoryConfiguration(plugins: [
             "awsAPIPlugin": [

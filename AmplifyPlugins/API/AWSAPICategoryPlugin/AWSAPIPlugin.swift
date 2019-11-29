@@ -8,7 +8,7 @@
 import Amplify
 import AWSPluginsCore
 
-final public class AWSAPICategoryPlugin: NSObject, APICategoryPlugin {
+final public class AWSAPIPlugin: NSObject, APICategoryPlugin {
 
     /// The unique key of the plugin within the API category.
     public var key: PluginKey {

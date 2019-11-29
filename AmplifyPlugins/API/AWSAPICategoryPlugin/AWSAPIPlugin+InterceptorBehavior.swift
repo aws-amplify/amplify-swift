@@ -7,7 +7,7 @@
 
 import Amplify
 
-public extension AWSAPICategoryPlugin {
+public extension AWSAPIPlugin {
     func add(interceptor: URLRequestInterceptor, for apiName: String) throws {
         let endpointOptional = pluginConfig.endpoints[apiName]
 
