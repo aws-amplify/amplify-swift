@@ -29,8 +29,13 @@ class BaseDataStoreTests: XCTestCase {
 
         do {
             connection = try Connection(.inMemory)
-            storageAdapter = SQLiteStorageEngineAdapter(connection: connection)
-            storageEngine = StorageEngine(adapter: storageAdapter, syncEngineFactory: nil)
+            storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
+            try storageAdapter.setUp(models: StorageEngine.systemModels)
+
+            let syncEngine = try CloudSyncEngine(storageAdapter: storageAdapter)
+            storageEngine = StorageEngine(storageAdapter: storageAdapter,
+                                          syncEngine: syncEngine,
+                                          isSyncEnabled: true)
         } catch {
             XCTFail(String(describing: error))
             return
@@ -44,8 +49,15 @@ class BaseDataStoreTests: XCTestCase {
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
             "awsDataStoreCategoryPlugin": true
         ])
-        let amplifyConfig = AmplifyConfiguration(dataStore: dataStoreConfig)
+
+        // Since these tests use syncable models, we have to set up an API category also
+        let apiConfig = APICategoryConfiguration(plugins: ["MockAPICategoryPlugin": true])
+        let apiPlugin = MockAPICategoryPlugin()
+
+        let amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: dataStoreConfig)
+
         do {
+            try Amplify.add(plugin: apiPlugin)
             try Amplify.add(plugin: dataStorePlugin)
             try Amplify.configure(amplifyConfig)
         } catch {

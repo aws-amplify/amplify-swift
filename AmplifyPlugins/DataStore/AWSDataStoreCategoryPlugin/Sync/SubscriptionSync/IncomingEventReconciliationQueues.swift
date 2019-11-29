@@ -35,6 +35,17 @@ final class IncomingEventReconciliationQueues {
         reconciliationQueues.values.forEach { $0.start() }
     }
 
+    func reset(onComplete: () -> Void) {
+        let group = DispatchGroup()
+        for queue in reconciliationQueues.values {
+            group.enter()
+            DispatchQueue.global().async {
+                queue.reset { group.leave() }
+            }
+        }
+        group.wait()
+        onComplete()
+    }
 }
 
 /// A queue of reconciliation operations, merged from incoming subscription events and responses to locally-sourced
@@ -107,6 +118,20 @@ final class ReconciliationQueue {
             log.error("receiveCompletion: error: \(dataStoreError)")
         }
     }
+
+    func reset(onComplete: () -> Void) {
+        let group = DispatchGroup()
+        group.enter()
+        DispatchQueue.global().async {
+            self.incomingSubscriptionEvents.reset { group.leave() }
+        }
+        allModels?.cancel()
+        operationQueue.cancelAllOperations()
+        operationQueue.waitUntilAllOperationsAreFinished()
+        group.wait()
+        onComplete()
+    }
+
 }
 
 extension ReconciliationQueue: DefaultLogger { }

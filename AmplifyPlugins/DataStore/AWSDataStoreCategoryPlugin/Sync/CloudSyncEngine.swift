@@ -11,7 +11,6 @@ import Foundation
 
 @available(iOS 13.0, *)
 class CloudSyncEngine: CloudSyncEngineBehavior {
-
     private weak var storageAdapter: StorageEngineAdapter?
 
     // Assigned at `start`
@@ -27,11 +26,16 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
     // Assigned at `setUpCloudSubscriptions`
     var reconciliationQueues: IncomingEventReconciliationQueues?
 
-    convenience init(storageAdapter: StorageEngineAdapter) {
-        let awsMutationEventIngester = AWSMutationEventIngester(storageAdapter: storageAdapter)
+    /// Initializes the CloudSyncEngine with the specified storageAdapter as the provider for persistence of
+    /// MutationEvents, synce metadata, and conflict resolution metadata. Immediately initializes the incoming mutation
+    /// queue so it can begin accepting incoming mutations from DataStore.
+    convenience init(storageAdapter: StorageEngineAdapter) throws {
+        let awsMutationEventPublisher = AWSMutationEventPublisher()
+        let awsMutationEventIngester = try AWSMutationEventIngester(storageAdapter: storageAdapter,
+                                                                    mutationEventSubject: awsMutationEventPublisher)
         self.init(storageAdapter: storageAdapter,
                   mutationEventIngester: awsMutationEventIngester,
-                  mutationEventPublisher: awsMutationEventIngester)
+                  mutationEventPublisher: awsMutationEventPublisher)
     }
 
     init(storageAdapter: StorageEngineAdapter,
@@ -59,36 +63,36 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
             return
         }
 
-        let pauseSubscriptionsOp = BlockOperation {
+        let pauseSubscriptionsOp = CancelAwareBlockOperation {
             self.pauseSubscriptions()
         }
 
-        let pauseMutationsOp = BlockOperation {
+        let pauseMutationsOp = CancelAwareBlockOperation {
             self.pauseMutations()
         }
         pauseMutationsOp.addDependency(pauseSubscriptionsOp)
 
-        let setUpCloudSubscriptionsOp = BlockOperation {
+        let setUpCloudSubscriptionsOp = CancelAwareBlockOperation {
             self.setUpCloudSubscriptions(api: api, storageAdapter: storageAdapter)
         }
         setUpCloudSubscriptionsOp.addDependency(pauseMutationsOp)
 
-        let performInitialQueriesOp = BlockOperation {
+        let performInitialQueriesOp = CancelAwareBlockOperation {
             self.performInitialQueries()
         }
         performInitialQueriesOp.addDependency(setUpCloudSubscriptionsOp)
 
-        let activateCloudSubscriptionsOp = BlockOperation {
+        let activateCloudSubscriptionsOp = CancelAwareBlockOperation {
             self.activateCloudSubscriptions()
         }
         activateCloudSubscriptionsOp.addDependency(performInitialQueriesOp)
 
-        let startMutationQueueOp = BlockOperation {
+        let startMutationQueueOp = CancelAwareBlockOperation {
             self.startMutationQueue(api: api, mutationEventPublisher: self.mutationEventPublisher)
         }
         startMutationQueueOp.addDependency(activateCloudSubscriptionsOp)
 
-        let updateStateOp = BlockOperation {
+        let updateStateOp = CancelAwareBlockOperation {
             Amplify.Hub.dispatch(to: .dataStore,
                                  payload: HubPayload(eventName: HubPayload.EventName.DataStore.syncStarted))
         }
@@ -119,7 +123,7 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
         log.debug(#function)
         outgoingMutationQueue.pauseSyncingToCloud()
         // TODO: Implement this
-//        reconciliationQueues.pause()
+        //        reconciliationQueues.pause()
     }
 
     private func setUpCloudSubscriptions(api: APICategoryGraphQLBehavior,
@@ -147,6 +151,53 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
         outgoingMutationQueue.startSyncingToCloud(api: api, mutationEventPublisher: mutationEventPublisher)
     }
 
+    func reset(onComplete: () -> Void) {
+        syncQueue.cancelAllOperations()
+        syncQueue.waitUntilAllOperationsAreFinished()
+
+        let group = DispatchGroup()
+        if let awsMutationEventIngester = mutationEventIngester as? AWSMutationEventIngester {
+            group.enter()
+            DispatchQueue.global().async {
+                awsMutationEventIngester.reset {
+                    group.leave()
+                }
+            }
+        }
+
+        if let awsMutationEventPublisher = mutationEventPublisher as? AWSMutationEventPublisher {
+            group.enter()
+            DispatchQueue.global().async {
+                awsMutationEventPublisher.reset {
+                    group.leave()
+                }
+            }
+        }
+
+        if let reconciliationQueues = reconciliationQueues {
+            group.enter()
+            reconciliationQueues.reset {
+                group.leave()
+            }
+        }
+
+        group.wait()
+        onComplete()
+    }
+}
+
+final class CancelAwareBlockOperation: Operation {
+    private let block: BasicClosure
+    init(block: @escaping BasicClosure) {
+        self.block = block
+    }
+
+    override func main() {
+        guard !isCancelled else {
+            return
+        }
+        block()
+    }
 }
 
 extension CloudSyncEngine: DefaultLogger { }

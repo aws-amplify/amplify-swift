@@ -12,24 +12,29 @@ import Foundation
 final class StorageEngine: StorageEngineBehavior {
 
     // TODO: Make this private once we get a request/response flow with metadata/mutation types figured out
-    let adapter: StorageEngineAdapter
+    let storageAdapter: StorageEngineAdapter
+
+    private let isSyncEnabled: Bool
 
     private var syncEngine: CloudSyncEngineBehavior?
+
     private weak var api: APICategoryGraphQLBehavior?
 
     // TODO: Find the right place to do this
-    private static var systemModels: [Model.Type] {
+    static var systemModels: [Model.Type] {
         return [
             MutationEvent.self
         ]
     }
 
-    // Internal initializer used for testing, to allow lazy initialization of the SyncEngine
-    init(adapter: StorageEngineAdapter,
-         syncEngineFactory: CloudSyncEngineBehavior.Factory?) {
-        self.adapter = adapter
-        let syncEngine = syncEngineFactory?(adapter)
+    // Internal initializer used for testing, to allow lazy initialization of the SyncEngine. Note that the provided
+    // storageAdapter must have already been set up with system models
+    init(storageAdapter: StorageEngineAdapter,
+         syncEngine: CloudSyncEngineBehavior? = nil,
+         isSyncEnabled: Bool) {
+        self.storageAdapter = storageAdapter
         self.syncEngine = syncEngine
+        self.isSyncEnabled = isSyncEnabled
     }
 
     convenience init(isSyncEnabled: Bool) throws {
@@ -37,15 +42,15 @@ final class StorageEngine: StorageEngineBehavior {
         let databaseName = Bundle.main.object(forInfoDictionaryKey: key) as? String
         let storageAdapter = try SQLiteStorageEngineAdapter(databaseName: databaseName ?? "app")
 
-        let syncEngineFactory: CloudSyncEngineBehavior.Factory? =
-            isSyncEnabled ? { adapter in CloudSyncEngine(storageAdapter: adapter) } : nil
+        try storageAdapter.setUp(models: StorageEngine.systemModels)
 
-        self.init(adapter: storageAdapter, syncEngineFactory: syncEngineFactory)
+        let syncEngine = isSyncEnabled ? try? CloudSyncEngine(storageAdapter: storageAdapter) : nil
+
+        self.init(storageAdapter: storageAdapter, syncEngine: syncEngine, isSyncEnabled: isSyncEnabled)
     }
 
     func setUp(models: [Model.Type]) throws {
-        let modelsToSetUp = StorageEngine.systemModels + models
-        try adapter.setUp(models: modelsToSetUp)
+        try storageAdapter.setUp(models: models)
     }
 
     func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
@@ -53,7 +58,7 @@ final class StorageEngine: StorageEngineBehavior {
         // mutation type
         let modelExists: Bool
         do {
-            modelExists = try adapter.exists(M.self, withId: model.id)
+            modelExists = try storageAdapter.exists(M.self, withId: model.id)
         } catch {
             let dataStoreError = DataStoreError.invalidOperation(causedBy: error)
             completion(.failure(dataStoreError))
@@ -106,23 +111,43 @@ final class StorageEngine: StorageEngineBehavior {
             }
         }
 
-        adapter.save(model, completion: saveMutationEventCompletion)
+        storageAdapter.save(model, completion: saveMutationEventCompletion)
 
     }
 
     func delete(_ modelType: Model.Type,
                 withId id: Model.Identifier,
                 completion: (DataStoreResult<Void>) -> Void) {
-        adapter.delete(modelType, withId: id, completion: completion)
+        storageAdapter.delete(modelType, withId: id, completion: completion)
     }
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate? = nil,
                          completion: DataStoreCallback<[M]>) {
-        return adapter.query(modelType, predicate: predicate, completion: completion)
+        return storageAdapter.query(modelType, predicate: predicate, completion: completion)
     }
 
     func startSync() {
         syncEngine?.start(api: Amplify.API)
     }
+
+    func reset(onComplete: () -> Void) {
+        // TOOD: Perform cleanup on StorageAdapter, including releasing its `Connection` if needed
+
+        let group = DispatchGroup()
+
+        if let cloudSyncEngine = syncEngine as? CloudSyncEngine {
+            group.enter()
+            DispatchQueue.global().async {
+                cloudSyncEngine.reset {
+                    group.leave()
+                }
+            }
+        }
+
+        group.wait()
+        onComplete()
+    }
 }
+
+extension StorageEngine: DefaultLogger { }

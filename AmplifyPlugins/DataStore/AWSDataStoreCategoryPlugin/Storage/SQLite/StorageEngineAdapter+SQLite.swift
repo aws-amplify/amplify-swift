@@ -21,39 +21,45 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
         let path = documentsPath.appendingPathComponent("\(databaseName).db").absoluteString
 
+        let connection: Connection
         do {
-            let connection = try Connection(path)
-            self.init(connection: connection)
+            connection = try Connection(path)
         } catch {
             throw DataStoreError.invalidDatabase(path: path, error)
         }
+
+        try self.init(connection: connection)
     }
 
-    internal init(connection: Connection) {
-        // Reinstate once we fix https://github.com/aws-amplify/amplify-ios/issues/161
-        // log.debug("Created database connection at \(connection)")
+    internal init(connection: Connection) throws {
         self.connection = connection
+        try SQLiteStorageEngineAdapter.initializeDatabase(connection: connection)
+        log.verbose("Initialized \(connection)")
+    }
+
+    static func initializeDatabase(connection: Connection) throws {
+        log.debug("Initializing database connection: \(String(describing: connection))")
+
+        let databaseInitializationStatement = """
+        pragma auto_vacuum = full;
+        pragma encoding = "utf-8";
+        pragma foreign_keys = on;
+        pragma case_sensitive_like = off;
+        """
+
+        try connection.execute(databaseInitializationStatement)
     }
 
     func setUp(models: [Model.Type]) throws {
-        log.debug("Setting up database connection at \(String(describing: connection))")
+        log.debug("Setting up \(models.count) models")
 
         let createTableStatements = models
             .sortByDependencyOrder()
             .map { CreateTableStatement(modelType: $0).stringValue }
             .joined(separator: "\n")
 
-        // database setup statement
-        let statement = """
-        pragma auto_vacuum = full;
-        pragma encoding = "utf-8";
-        pragma foreign_keys = on;
-        pragma case_sensitive_like = off;
-        \(createTableStatements)
-        """
-
         do {
-            try connection.execute(statement)
+            try connection.execute(createTableStatements)
         } catch {
             throw DataStoreError.invalidOperation(causedBy: error)
         }

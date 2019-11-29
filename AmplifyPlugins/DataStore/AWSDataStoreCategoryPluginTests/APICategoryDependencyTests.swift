@@ -64,13 +64,13 @@ extension APICategoryDependencyTests {
         Amplify.reset()
 
         let connection = try Connection(.inMemory)
-        storageAdapter = SQLiteStorageEngineAdapter(connection: connection)
+        storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
+        try storageAdapter.setUp(models: StorageEngine.systemModels)
 
-        let syncEngineFactory: CloudSyncEngineBehavior.Factory? = { adapter in
-            CloudSyncEngine(storageAdapter: adapter)
-        }
-
-        let storageEngine = StorageEngine(adapter: storageAdapter, syncEngineFactory: syncEngineFactory)
+        let syncEngine = try CloudSyncEngine(storageAdapter: storageAdapter)
+        let storageEngine = StorageEngine(storageAdapter: storageAdapter,
+                                          syncEngine: syncEngine,
+                                          isSyncEnabled: true)
 
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStoreCategoryPlugin(modelRegistration: TestModelRegistration(),
