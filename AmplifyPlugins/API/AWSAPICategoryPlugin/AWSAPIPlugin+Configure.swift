@@ -8,7 +8,7 @@
 import Amplify
 import AWSPluginsCore
 
-public extension AWSAPICategoryPlugin {
+public extension AWSAPIPlugin {
 
     /// Configures AWSAPICategoryPlugin
     ///
@@ -44,7 +44,7 @@ public extension AWSAPICategoryPlugin {
 
 // MARK: Internal
 
-extension AWSAPICategoryPlugin {
+extension AWSAPIPlugin {
 
     /// Internal configure method to set the properties of the plugin
     ///

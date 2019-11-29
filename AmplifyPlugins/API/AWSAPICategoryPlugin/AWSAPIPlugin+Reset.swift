@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 
-public extension AWSAPICategoryPlugin {
+public extension AWSAPIPlugin {
     func reset(onComplete: @escaping BasicClosure) {
         mapper.reset()
 
