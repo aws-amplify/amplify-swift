@@ -10,8 +10,8 @@ import Amplify
 import AWSPluginsCore
 import AWSS3
 
-public class AWSS3StoragePutDataOperation: AmplifyOperation<StoragePutDataRequest, Progress, String, StorageError>,
-    StoragePutDataOperation {
+public class AWSS3StorageUploadDataOperation: AmplifyOperation<StorageUploadDataRequest, Progress, String, StorageError>,
+    StorageUploadDataOperation {
 
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
@@ -21,7 +21,7 @@ public class AWSS3StoragePutDataOperation: AmplifyOperation<StoragePutDataReques
     /// Serial queue for synchronizing access to `storageTaskReference`.
     private let storageTaskActionQueue = DispatchQueue(label: "com.amazonaws.amplify.StorageTaskActionQueue")
 
-    init(_ request: StoragePutDataRequest,
+    init(_ request: StorageUploadDataRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
          listener: EventListener?) {
@@ -29,7 +29,7 @@ public class AWSS3StoragePutDataOperation: AmplifyOperation<StoragePutDataReques
         self.storageService = storageService
         self.authService = authService
         super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.putData,
+                   eventName: HubPayload.EventName.Storage.uploadData,
                    request: request,
                    listener: listener)
     }
@@ -87,7 +87,7 @@ public class AWSS3StoragePutDataOperation: AmplifyOperation<StoragePutDataReques
             return
         }
 
-        if request.data.count > StoragePutDataRequest.Options.multiPartUploadSizeThreshold {
+        if request.data.count > StorageUploadDataRequest.Options.multiPartUploadSizeThreshold {
             storageService.multiPartUpload(serviceKey: serviceKey,
                                            uploadSource: .data(request.data),
                                            contentType: request.options.contentType,

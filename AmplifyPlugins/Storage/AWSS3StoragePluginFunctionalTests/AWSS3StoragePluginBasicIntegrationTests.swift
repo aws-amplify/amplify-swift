@@ -19,12 +19,12 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Given: An data object
     /// When: Upload the data
     /// Then: The operation completes successfully
-    func testPutData() {
-        let key = "testPutData"
+    func testUploadData() {
+        let key = "testUploadData"
         let data = key.data(using: .utf8)!
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.putData(key: key, data: data, options: nil) { event in
+        let operation = Amplify.Storage.uploadData(key: key, data: data, options: nil) { event in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -42,12 +42,12 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Given: A empty data object
     /// When: Upload the data
     /// Then: The operation completes successfully
-    func testPutEmptyData() {
-        let key = "testPutEmptyData"
+    func testUploadEmptyData() {
+        let key = "testuploadExpectationEmptyData"
         let data = "".data(using: .utf8)!
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.putData(key: key, data: data, options: nil) { event in
+        let operation = Amplify.Storage.uploadData(key: key, data: data, options: nil) { event in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -116,11 +116,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Given: A large  data object
     /// When: Upload the data
     /// Then: The operation completes successfully
-    func testPutLargeData() {
-        let key = "testPutLargeData"
+    func testUploadLargeData() {
+        let key = "testuploadExpectationLargeData"
         let completeInvoked = expectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.putData(key: key,
+        let operation = Amplify.Storage.uploadData(key: key,
                                                 data: AWSS3StoragePluginTestBase.largeDataObject,
                                                 options: nil) { event in
             switch event {
@@ -167,15 +167,15 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     }
 
     /// Given: An object in storage
-    /// When: Call the getData API
+    /// When: Call the downloadData API
     /// Then: The operation completes successfully with the data retrieved
-    func testGetDataToMemory() {
-        let key = "testGetDataToMemory"
-        putData(key: key, data: key.data(using: .utf8)!)
+    func testDownloadDataToMemory() {
+        let key = "testDownloadDataToMemory"
+        uploadData(key: key, data: key.data(using: .utf8)!)
         let completeInvoked = expectation(description: "Completed is invoked")
-        let options = StorageGetDataRequest.Options()
+        let options = StorageDownloadDataRequest.Options()
 
-        let operation = Amplify.Storage.getData(key: key, options: options) { event in
+        let operation = Amplify.Storage.downloadData(key: key, options: options) { event in
             switch event {
             case .completed:
                 completeInvoked.fulfill()
@@ -196,7 +196,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let key = "testDownloadFile"
         let timestamp = String(Date().timeIntervalSince1970)
         let timestampData = timestamp.data(using: .utf8)!
-        putData(key: key, data: timestampData)
+        uploadData(key: key, data: timestampData)
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         removeIfExists(fileURL)
@@ -232,7 +232,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation completes successfully with the URL retrieved
     func testGetRemoteURL() {
         let key = "testGetRemoteURL"
-        putData(key: key, dataString: key)
+        uploadData(key: key, dataString: key)
 
         var remoteURLOptional: URL?
         let completeInvoked = expectation(description: "Completed is invoked")
@@ -287,7 +287,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     func testListFromPublic() {
         let key = "testListFromPublic"
         let expectedMD5Hex = MD5(string: key).map { String(format: "%02hhx", $0) }.joined()
-        putData(key: key, dataString: key)
+        uploadData(key: key, dataString: key)
         let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageListRequest.Options(accessLevel: .guest,
                                                  targetIdentityId: nil,
@@ -354,7 +354,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         for fileIndex in 1 ... 10 {
             let key = folder + "file" + String(fileIndex) + ".txt"
             keys.append(key)
-            putData(key: key, dataString: key)
+            uploadData(key: key, dataString: key)
         }
 
         let completeInvoked = expectation(description: "Completed is invoked")
@@ -393,7 +393,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         for fileIndex in 1 ... 10 {
             let key = folder + "file" + String(fileIndex) + ".txt"
             keys.append(key)
-            putData(key: key, dataString: key)
+            uploadData(key: key, dataString: key)
         }
 
         let completeInvoked = expectation(description: "Completed is invoked")
@@ -425,7 +425,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation completes successfully with the key removed from storage
     func testRemoveKey() {
         let key = "testRemoveKey"
-        putData(key: key, dataString: key)
+        uploadData(key: key, dataString: key)
 
         let completeInvoked = expectation(description: "Completed is invoked")
         let removeOperation = Amplify.Storage.remove(key: key, options: nil) { event in
@@ -468,7 +468,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The request completes successful
     func testEscapeHatchAndGetHeadObject() {
         let key = "testEscapeHatchAndGetHeadObject"
-        putData(key: key, dataString: key)
+        uploadData(key: key, dataString: key)
 
         do {
             let pluginOptional = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin")

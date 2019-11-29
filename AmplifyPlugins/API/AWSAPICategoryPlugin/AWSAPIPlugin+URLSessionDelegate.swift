@@ -9,7 +9,7 @@ import Foundation
 
 public typealias AuthChallengeDispositionHandler = (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
 
-extension AWSAPICategoryPlugin: URLSessionDelegate {
+extension AWSAPIPlugin: URLSessionDelegate {
     @objc public func urlSession(_ session: URLSession,
                                  didReceive challenge: URLAuthenticationChallenge,
                                  completionHandler: @escaping AuthChallengeDispositionHandler) {
@@ -17,7 +17,7 @@ extension AWSAPICategoryPlugin: URLSessionDelegate {
     }
 }
 
-extension AWSAPICategoryPlugin: URLSessionTaskDelegate {
+extension AWSAPIPlugin: URLSessionTaskDelegate {
 
     @objc public func urlSession(_ session: URLSession,
                                  task: URLSessionTask,
@@ -37,7 +37,7 @@ extension AWSAPICategoryPlugin: URLSessionTaskDelegate {
 
 }
 
-extension AWSAPICategoryPlugin: URLSessionDataDelegate {
+extension AWSAPIPlugin: URLSessionDataDelegate {
     //    func urlSession(_ session: URLSession,
     //                    dataTask: URLSessionDataTask,
     //                    didReceive response: URLResponse,

@@ -96,7 +96,8 @@ class GraphQLDocumentTests: XCTestCase {
             XCTFail("Variables should contain a valid input")
             return
         }
-        XCTAssertEqual(input["postId"] as? String, post.id)
+        XCTAssertNotNil(input["commentPostId"])
+        XCTAssertEqual(input["commentPostId"] as? String, post.id)
     }
 
     /// - Given: a `Model` instance
@@ -240,6 +241,39 @@ class GraphQLDocumentTests: XCTestCase {
         XCTAssertEqual(document.stringValue, expected)
     }
 
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - the model has no eager loaded connections
+    ///   - the query is of type `.sync`
+    /// - Then:
+    ///   - check if the generated GraphQL document is valid query:
+    ///     - - it contains an `filter` argument of type `ModelPostFilterInput`
+    ///     - it is named `syncPosts`
+    ///     - it has a list of fields with no nested models
+    func testSyncGraphQLQueryFromSimpleModel() {
+        let document = GraphQLQuery(from: Post.self, type: .sync)
+        let expected = """
+        query SyncPosts($filter: ModelPostFilterInput, $limit: Int, $nextToken: String) {
+          syncPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+            items {
+              id
+              _deleted
+              _version
+              content
+              createdAt
+              draft
+              rating
+              title
+              updatedAt
+              __typename
+            }
+            nextToken
+          }
+        }
+        """
+        XCTAssertEqual(document.stringValue, expected)
+    }
 
     /// - Given: a `Model` type
     /// - When:
@@ -301,6 +335,41 @@ class GraphQLDocumentTests: XCTestCase {
             rating
             title
             updatedAt
+            __typename
+          }
+        }
+        """
+        XCTAssertEqual(document.stringValue, expected)
+    }
+
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `Comment`
+    ///   - the model has required associations
+    ///   - the subscription is of type `.onCreate`
+    /// - Then:
+    ///   - check if the generated GraphQL document is a valid subscription
+    ///     - it has a list of fields with no nested models
+    func testOnCreateGraphQLSubscriptionFromModelWithAssociation() {
+        let document = GraphQLSubscription(of: Comment.self, type: .onCreate)
+        let expected = """
+        subscription OnCreateComment {
+          onCreateComment {
+            id
+            content
+            createdAt
+            post {
+              id
+              _deleted
+              _version
+              content
+              createdAt
+              draft
+              rating
+              title
+              updatedAt
+              __typename
+            }
             __typename
           }
         }

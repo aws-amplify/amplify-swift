@@ -28,10 +28,13 @@ class ListTests: BaseDataStoreTests {
             switch $0 {
             case .success(let result):
                 if let post = result {
-                    let comments = post.comments
-                    XCTAssert(comments.state == .pending)
-                    XCTAssertEqual(comments.count, 2)
-                    XCTAssert(comments.state == .loaded)
+                    if let comments = post.comments {
+                        XCTAssert(comments.state == .pending)
+                        XCTAssertEqual(comments.count, 2)
+                        XCTAssert(comments.state == .loaded)
+                    } else {
+                        XCTFail("post.comments should not be nil")
+                    }
                 } else {
                     XCTFail("Failed to query recently saved post by id")
                 }
@@ -73,8 +76,8 @@ class ListTests: BaseDataStoreTests {
         Amplify.DataStore.query(Post.self, byId: postId) {
             switch $0 {
             case .success(let result):
-                if let post = result {
-                    checkComments(post.comments)
+                if let post = result, let comments = post.comments {
+                    checkComments(comments)
                 } else {
                     XCTFail("Failed to query recently saved post by id")
                 }
@@ -119,8 +122,8 @@ class ListTests: BaseDataStoreTests {
         Amplify.DataStore.query(Post.self, byId: postId) {
             switch $0 {
             case .success(let result):
-                if let post = result {
-                    checkComments(post.comments)
+                if let post = result, let comments = post.comments {
+                    checkComments(comments)
                 } else {
                     XCTFail("Failed to query recently saved post by id")
                 }
@@ -137,11 +140,11 @@ class ListTests: BaseDataStoreTests {
 
     func preparePostDataForTest() -> Model.Identifier {
         let post = Post(title: "title", content: "content")
-        populateData(post)
-        populateData(
+        populateData([post])
+        populateData([
             Comment(content: "Comment 1", post: post),
             Comment(content: "Comment 2", post: post)
-        )
+        ])
         return post.id
     }
 }

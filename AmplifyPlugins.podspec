@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.homepage     = 'http://aws.amazon.com/mobile/sdk'
   s.license      = 'Apache License, Version 2.0'
   s.author       = { 'Amazon Web Services' => 'amazonwebservices' }
-  s.platform     = :ios, '13.0'
+  s.platform     = :ios, '11.0'
   s.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => s.version}
   
   s.requires_arc = true 
@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   AWS_SDK_VERSION = '~> 2.12.0'
   AMPLIFY_VERSION = '0.0.1'
   
-  s.subspec 'AWSAPICategoryPlugin' do |ss|
+  s.subspec 'AWSAPIPlugin' do |ss|
     ss.source_files = 'AmplifyPlugins/API/AWSAPICategoryPlugin/**/*.swift'
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'Starscream', '~> 3.0.2'

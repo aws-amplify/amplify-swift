@@ -195,7 +195,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: largeDataObject, attributes: nil)
-        XCTAssertTrue(largeDataObject.count > StoragePutDataRequest.Options.multiPartUploadSizeThreshold,
+        XCTAssertTrue(largeDataObject.count > StorageUploadDataRequest.Options.multiPartUploadSizeThreshold,
                       "Could not create data object greater than MultiPartUploadSizeThreshold")
         let expectedUploadSource = UploadSource.local(testURL)
         let metadata = ["mykey": "Value"]

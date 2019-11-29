@@ -31,13 +31,13 @@ class CloudSyncTests: XCTestCase {
 
         apiPlugin = MockAPICategoryPlugin()
 
-        ModelRegistry.register(modelType: Post.self)
-
         let storageAdapter: SQLiteStorageEngineAdapter
         let storageEngine: StorageEngine
         do {
             let connection = try Connection(.inMemory)
-            let syncEngineFactory: CloudSyncEngineBehavior.Factory? = { CloudSyncEngine() }
+            let syncEngineFactory: CloudSyncEngineBehavior.Factory? = { adapter in
+                CloudSyncEngine(storageAdapter: adapter)
+            }
             storageAdapter = SQLiteStorageEngineAdapter(connection: connection)
             storageEngine = StorageEngine(adapter: storageAdapter, syncEngineFactory: syncEngineFactory)
         } catch {
@@ -46,7 +46,8 @@ class CloudSyncTests: XCTestCase {
         }
 
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStoreCategoryPlugin(storageEngine: storageEngine,
+        let dataStorePlugin = AWSDataStoreCategoryPlugin(modelRegistration: TestModelRegistration(),
+                                                         storageEngine: storageEngine,
                                                          dataStorePublisher: dataStorePublisher)
 
         let apiConfig = APICategoryConfiguration(plugins: [apiPlugin.key: true])

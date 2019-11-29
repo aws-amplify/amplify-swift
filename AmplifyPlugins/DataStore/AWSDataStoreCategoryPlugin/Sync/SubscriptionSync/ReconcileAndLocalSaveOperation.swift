@@ -52,14 +52,15 @@ class ReconcileAndLocalSaveOperation: Operation {
     private var stateMachineSink: AnyCancellable?
 
     init(anyModel: AnyModel,
-         storageAdapter: StorageEngineAdapter) {
+         storageAdapter: StorageEngineAdapter,
+         stateMachine: StateMachine<State, Action>? = nil) {
         self.anyModel = anyModel
         self.storageAdapter = storageAdapter
-        self.stateMachine = StateMachine(initialState: .waiting,
-                                         resolver: ReconcileAndLocalSaveOperation.resolve(currentState:action:))
+        self.stateMachine = stateMachine ?? StateMachine(initialState: .waiting,
+                                                         resolver: ReconcileAndLocalSaveOperation.resolve(currentState:action:))
         super.init()
 
-        self.stateMachineSink = stateMachine
+        self.stateMachineSink = self.stateMachine
             .$state
             .sink { [weak self] newState in
                 guard let self = self else {
@@ -172,15 +173,12 @@ class ReconcileAndLocalSaveOperation: Operation {
                 return
             }
 
-            guard models.count == 1 else {
+            guard let localModel = models.first, models.count == 1 else {
                 let dataStoreError = DataStoreError.nonUniqueResult(model: cloudModel.modelName, count: models.count)
                 let errorAction = Action.errored(dataStoreError)
                 self.stateMachine.notify(action: errorAction)
                 return
             }
-
-            // We know models has exactly one element, so force-unwrapping is OK here
-            let localModel = models.first!
 
             let queriedAction = Action.queried(cloudModel, localModel)
             self.stateMachine.notify(action: queriedAction)

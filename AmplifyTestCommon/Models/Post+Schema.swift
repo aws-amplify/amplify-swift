@@ -33,6 +33,7 @@ extension Post {
     public static let schema = defineSchema { model in
         let post = Post.keys
 
+        model.pluralName = "Posts"
         model.attributes(.isSyncable)
 
         model.fields(
@@ -48,7 +49,9 @@ extension Post {
             .field(post._version, is: .optional, ofType: .int),
             .field(post._deleted, is: .optional, ofType: .bool),
 
-            .hasMany(post.comments, ofType: Comment.self, associatedWith: Comment.keys.post)
+            .hasMany(post.comments,
+                     ofType: Comment.self,
+                     associatedWith: Comment.keys.post)
         )
     }
 

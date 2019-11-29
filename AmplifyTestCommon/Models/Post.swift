@@ -19,7 +19,7 @@ public struct Post: Model {
     public var updatedAt: Date?
     public var rating: Double?
     public var draft: Bool?
-    public var comments: List<Comment>
+    public var comments: List<Comment>?
 
     // TODO: Remove these once we get sync metadata wired up
     public var _version: Int?
