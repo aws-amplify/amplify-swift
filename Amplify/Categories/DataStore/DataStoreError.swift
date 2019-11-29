@@ -88,7 +88,7 @@ extension DataStoreError: AmplifyError {
     }
 }
 
-extension DataStoreError {
+public extension DataStoreError {
     init(error: Error) {
         if let dataStoreError = error as? DataStoreError {
             self = dataStoreError

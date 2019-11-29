@@ -8,8 +8,7 @@
 import Amplify
 import Foundation
 
-// TODO: Remove once we remove _version
-// swiftlint:disable identifier_name
+// swiftlint:disable all
 public struct Post: Model {
 
     public let id: String
@@ -21,10 +20,6 @@ public struct Post: Model {
     public var draft: Bool?
     public var comments: List<Comment>?
 
-    // TODO: Remove these once we get sync metadata wired up
-    public var _version: Int?
-    public var _deleted: Bool?
-
     public init(id: String = UUID().uuidString,
                 title: String,
                 content: String,
@@ -32,8 +27,6 @@ public struct Post: Model {
                 updatedAt: Date? = nil,
                 rating: Double? = nil,
                 draft: Bool? = nil,
-                _version: Int? = nil,
-                _deleted: Bool? = nil,
                 comments: List<Comment> = []) {
         self.id = id
         self.title = title
@@ -43,8 +36,6 @@ public struct Post: Model {
         self.rating = rating
         self.draft = draft
         self.comments = comments
-        self._version = _version
-        self._deleted = _deleted
     }
 
 }

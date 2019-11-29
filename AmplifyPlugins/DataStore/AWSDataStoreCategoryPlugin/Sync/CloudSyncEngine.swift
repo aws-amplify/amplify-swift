@@ -30,11 +30,10 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
     /// MutationEvents, synce metadata, and conflict resolution metadata. Immediately initializes the incoming mutation
     /// queue so it can begin accepting incoming mutations from DataStore.
     convenience init(storageAdapter: StorageEngineAdapter) throws {
-        let awsMutationEventPublisher = AWSMutationEventPublisher()
-        let awsMutationEventIngester = try AWSMutationEventIngester(storageAdapter: storageAdapter,
-                                                                    mutationEventSubject: awsMutationEventPublisher)
+        let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
+        let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
         self.init(storageAdapter: storageAdapter,
-                  mutationEventIngester: awsMutationEventIngester,
+                  mutationEventIngester: mutationDatabaseAdapter,
                   mutationEventPublisher: awsMutationEventPublisher)
     }
 
@@ -156,7 +155,7 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
         syncQueue.waitUntilAllOperationsAreFinished()
 
         let group = DispatchGroup()
-        if let awsMutationEventIngester = mutationEventIngester as? AWSMutationEventIngester {
+        if let awsMutationEventIngester = mutationEventIngester as? AWSMutationDatabaseAdapter {
             group.enter()
             DispatchQueue.global().async {
                 awsMutationEventIngester.reset {

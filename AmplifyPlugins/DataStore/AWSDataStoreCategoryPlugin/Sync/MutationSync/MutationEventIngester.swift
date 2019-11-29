@@ -15,20 +15,18 @@ protocol MutationEventIngester: class {
 }
 
 @available(iOS 13.0, *)
-final class AWSMutationEventIngester: MutationEventIngester {
+/// Interface for saving and loading MutationEvents from storage
+final class AWSMutationDatabaseAdapter: MutationEventIngester {
 
-    private weak var storageAdapter: StorageEngineAdapter?
-    private weak var mutationEventSubject: MutationEventSubject?
+    weak var storageAdapter: StorageEngineAdapter?
+
+    /// If a request for 'next event' comes in while the queue is empty, this promise will be set, so that the next
+    /// saved event can fulfill it
+    var nextEventPromise: Future<MutationEvent, DataStoreError>.Promise?
 
     /// Loads saved events from the database and delivers them to `mutationEventSubject`
-    init(storageAdapter: StorageEngineAdapter, mutationEventSubject: MutationEventSubject) throws {
+    init(storageAdapter: StorageEngineAdapter) throws {
         self.storageAdapter = storageAdapter
-        self.mutationEventSubject = mutationEventSubject
-
-        let savedMutations = try loadSavedMutationEvents(storageAdapter: storageAdapter)
-        for event in savedMutations {
-            mutationEventSubject.publish(mutationEvent: event)
-        }
         log.verbose("Initialized")
     }
 
@@ -50,61 +48,30 @@ final class AWSMutationEventIngester: MutationEventIngester {
 
             storageAdapter.save(mutationEvent) {
                 if case .success(let savedMutationEvent) = $0 {
-                    self.log.verbose("\(#function): saved \(mutationEvent)")
-                    self.mutationEventSubject?.publish(mutationEvent: savedMutationEvent)
+                    self.log.verbose("\(#function): saved \(savedMutationEvent)")
+                    if let nextEventPromise = self.nextEventPromise {
+                        nextEventPromise(.success(savedMutationEvent))
+                        self.nextEventPromise = nil
+                    }
                 }
                 promise($0)
             }
         }
     }
 
-    /// Loads saved mutation events from the database. This method blocks.
-    func loadSavedMutationEvents(storageAdapter: StorageEngineAdapter) throws -> [MutationEvent] {
-        log.verbose(#function)
-        let mutationsLoaded = DispatchSemaphore(value: 1)
-
-        var resultFromQuery: Result<[MutationEvent], DataStoreError>?
-
-        storageAdapter.query(MutationEvent.self, predicate: nil) { result in
-            defer {
-                mutationsLoaded.signal()
-            }
-            switch result {
-            case .failure(let dataStoreError):
-                resultFromQuery = .failure(dataStoreError)
-            case .success(let mutationEvents):
-                let sortedEvents = mutationEvents.sorted { $0.createdAt < $1.createdAt }
-                resultFromQuery = .success(sortedEvents)
-            }
-        }
-
-        mutationsLoaded.wait()
-
-        // Should never happen, but guarding rather than force-unwrapping, just in case
-        guard let result = resultFromQuery else {
-            let dataStoreError = DataStoreError.unknown(
-                "Return result unexpectedly nil querying mutation events",
-                AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
-            )
-            throw dataStoreError
-        }
-
-        switch result {
-        case .failure(let dataStoreError):
-            throw dataStoreError
-        case .success(let mutationEvents):
-            log.info("Loaded \(mutationEvents.count) previously saved mutation events")
-            return mutationEvents
-        }
+    /// Resolves conflicts for the offered mutationEvent, and either accepts the event, returning a disposition, or
+    /// rejects the event with an error
+    func resolveConflicts(for mutationEvent: MutationEvent,
+                          storageAdapter: StorageEngineAdapter) -> Result<MutationEvent, DataStoreError> {
+        fatalError("Not yet implemented")
     }
 
     func reset(onComplete: () -> Void) {
         storageAdapter = nil
-        mutationEventSubject = nil
         onComplete()
     }
 
 }
 
 @available(iOS 13.0, *)
-extension AWSMutationEventIngester: DefaultLogger { }
+extension AWSMutationDatabaseAdapter: DefaultLogger { }
