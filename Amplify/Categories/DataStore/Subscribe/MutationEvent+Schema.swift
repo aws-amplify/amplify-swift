@@ -14,6 +14,7 @@ extension MutationEvent {
         case json
         case mutationType
         case createdAt
+        case version
     }
 
     public static let keys = CodingKeys.self
@@ -31,7 +32,8 @@ extension MutationEvent {
             .field(mutation.modelName, is: .required, ofType: .string),
             .field(mutation.json, is: .required, ofType: .string),
             .field(mutation.mutationType, is: .required, ofType: .string),
-            .field(mutation.createdAt, is: .required, ofType: .dateTime)
+            .field(mutation.createdAt, is: .required, ofType: .dateTime),
+            .field(mutation.version, is: .optional, ofType: .int)
         )
     }
 }
