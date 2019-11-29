@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   AWS_SDK_VERSION = '~> 2.12.0'
   AMPLIFY_VERSION = '0.0.1'
   
-  s.subspec 'AWSAPICategoryPlugin' do |ss|
+  s.subspec 'AWSAPIPlugin' do |ss|
     ss.source_files = 'AmplifyPlugins/API/AWSAPICategoryPlugin/**/*.swift'
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'Starscream', '~> 3.0.2'

@@ -35,7 +35,7 @@ class SubscriptionIntegrationTests: XCTestCase {
 
         // TODO: Move this to an integ test config file
         let apiConfig = APICategoryConfiguration(plugins: [
-            "awsAPICategoryPlugin": [
+            "awsAPIPlugin": [
                 "default": [
                     "endpoint": "https://ldm7yqjfjngrjckbziumz5fxbe.appsync-api.us-west-2.amazonaws.com/graphql",
                     "region": "us-west-2",
@@ -53,7 +53,7 @@ class SubscriptionIntegrationTests: XCTestCase {
         amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: dataStoreConfig)
 
         do {
-            try Amplify.add(plugin: AWSAPICategoryPlugin())
+            try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.add(plugin: AWSDataStoreCategoryPlugin())
         } catch {
             XCTFail(String(describing: error))

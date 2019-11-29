@@ -91,7 +91,7 @@ class GraphQLModelBasedTests: XCTestCase {
 
     override func setUp() {
         Amplify.reset()
-        let plugin = AWSAPICategoryPlugin()
+        let plugin = AWSAPIPlugin()
 
         let apiConfig = APICategoryConfiguration(plugins: [
             "awsAPIPlugin": [

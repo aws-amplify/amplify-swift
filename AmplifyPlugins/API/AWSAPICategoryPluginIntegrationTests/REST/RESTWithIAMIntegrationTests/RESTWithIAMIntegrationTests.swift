@@ -56,7 +56,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
         AuthHelper.initializeMobileClient()
 
         Amplify.reset()
-        let plugin = AWSAPICategoryPlugin()
+        let plugin = AWSAPIPlugin()
 
         let amplifyConfig = AmplifyConfiguration(api: RESTWithIAMIntegrationTests.apiConfig)
         do {

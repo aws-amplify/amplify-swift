@@ -7,7 +7,7 @@
 
 import Amplify
 
-public extension AWSAPICategoryPlugin {
+public extension AWSAPIPlugin {
 
     func query<M: Model>(from modelType: M.Type,
                          byId id: String,

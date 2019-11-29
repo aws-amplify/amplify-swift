@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension AWSAPICategoryPlugin: URLSessionBehaviorDelegate {
+extension AWSAPIPlugin: URLSessionBehaviorDelegate {
     public func urlSessionBehavior(_ session: URLSessionBehavior,
                                    dataTaskBehavior: URLSessionDataTaskBehavior,
                                    didCompleteWithError error: Error?) {

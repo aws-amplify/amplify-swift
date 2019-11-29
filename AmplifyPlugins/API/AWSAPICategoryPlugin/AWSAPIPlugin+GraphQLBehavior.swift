@@ -7,7 +7,7 @@
 
 import Amplify
 
-public extension AWSAPICategoryPlugin {
+public extension AWSAPIPlugin {
 
     func query<R: Decodable>(request: GraphQLRequest<R>,
                              listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
