@@ -13,7 +13,7 @@ extension AWSPinpointAnalyticsPlugin {
 
     public func identifyUser(_ identityId: String, withProfile userProfile: AnalyticsUserProfile?) {
         if !isEnabled {
-            logger.info("Cannot identify user. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
+            log.warn("Cannot identify user. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
             return
         }
 
@@ -38,7 +38,7 @@ extension AWSPinpointAnalyticsPlugin {
 
     public func record(event: AnalyticsEvent) {
         if !isEnabled {
-            logger.info("Cannot record events. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
+            log.warn("Cannot record events. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
             return
         }
 
@@ -104,7 +104,7 @@ extension AWSPinpointAnalyticsPlugin {
 
     public func flushEvents() {
         if !isEnabled {
-            logger.info("Cannot flushEvents. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
+            log.warn("Cannot flushEvents. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
             return
         }
 

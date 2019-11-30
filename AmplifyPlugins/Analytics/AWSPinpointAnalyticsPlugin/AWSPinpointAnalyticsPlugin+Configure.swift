@@ -51,7 +51,7 @@ extension AWSPinpointAnalyticsPlugin {
             let timeInterval = TimeInterval(configuration.autoFlushEventsInterval)
             autoFlushEventsTimer = RepeatingTimer.createRepeatingTimer(timeInterval: timeInterval,
                                                                        eventHandler: { [weak self] in
-                self?.logger.debug("AutoFlushTimer triggered, flushing events")
+                self?.log.debug("AutoFlushTimer triggered, flushing events")
                 self?.flushEvents()
             })
         }

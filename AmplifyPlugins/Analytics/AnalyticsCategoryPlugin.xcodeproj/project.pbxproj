@@ -10,6 +10,7 @@
 		162EFDD55E53D5A773D62CF6 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4E592238332FBE98A8EFCC /* Pods_HostApp.framework */; };
 		2149E68F238A6D2900873955 /* RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E68E238A6D2900873955 /* RepeatingTimer.swift */; };
 		2149E695238B301500873955 /* RepeatingTimerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E694238B301500873955 /* RepeatingTimerTests.swift */; };
+		216201E523921B2B00AB2E10 /* AWSPinpointAnalyticsPlugin+DefaultLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216201E423921B2B00AB2E10 /* AWSPinpointAnalyticsPlugin+DefaultLogger.swift */; };
 		424A67D7A491ACAA7D14CDC4 /* Pods_HostApp_AWSPinpointAnalyticsPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A60E85A381AF542AD95CB1CA /* Pods_HostApp_AWSPinpointAnalyticsPluginIntegrationTests.framework */; };
 		5C9B991B3AFD22109F283755 /* Pods_HostApp_AWSPinpointAnalyticsPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B04C49F1D8E5EA613BBD5B5B /* Pods_HostApp_AWSPinpointAnalyticsPluginTests.framework */; };
 		B478F64E2374DCE700C4F92B /* AWSPinpointAnalyticsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSPinpointAnalyticsPlugin.framework */; };
@@ -83,6 +84,7 @@
 		1CC23DFF3F8AB7DF86A7A4C2 /* Pods-HostApp-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSPinpointAnalyticsPluginTests/Pods-HostApp-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		2149E68E238A6D2900873955 /* RepeatingTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatingTimer.swift; sourceTree = "<group>"; };
 		2149E694238B301500873955 /* RepeatingTimerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatingTimerTests.swift; sourceTree = "<group>"; };
+		216201E423921B2B00AB2E10 /* AWSPinpointAnalyticsPlugin+DefaultLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSPinpointAnalyticsPlugin+DefaultLogger.swift"; sourceTree = "<group>"; };
 		27E93DA4BD82FC2FD4DF47FF /* Pods-HostApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.debug.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.debug.xcconfig"; sourceTree = "<group>"; };
 		2C4E592238332FBE98A8EFCC /* Pods_HostApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		32FA30478A2D1E3534061E95 /* Pods-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPlugin/Pods-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
@@ -294,6 +296,7 @@
 				B478F7362375014D00C4F92B /* AWSPinpointAnalyticsPlugin.swift */,
 				B478F7282375014D00C4F92B /* AWSPinpointAnalyticsPlugin+ClientBehavior.swift */,
 				B478F7422375014D00C4F92B /* AWSPinpointAnalyticsPlugin+Configure.swift */,
+				216201E423921B2B00AB2E10 /* AWSPinpointAnalyticsPlugin+DefaultLogger.swift */,
 				B478F7252375014D00C4F92B /* AWSPinpointAnalyticsPlugin+Reset.swift */,
 				B478F7262375014D00C4F92B /* Configuration */,
 				B478F72B2375014D00C4F92B /* Dependency */,
@@ -887,6 +890,7 @@
 				B478F7532375014E00C4F92B /* AnalyticsErrorHelper.swift in Sources */,
 				B478F7442375014E00C4F92B /* AWSPinpointAnalyticsPluginConfiguration.swift in Sources */,
 				B478F74C2375014E00C4F92B /* AWSPinpointAdapter.swift in Sources */,
+				216201E523921B2B00AB2E10 /* AWSPinpointAnalyticsPlugin+DefaultLogger.swift in Sources */,
 				B478F7542375014E00C4F92B /* AWSPinpointAnalyticsPlugin+HubCategory.swift in Sources */,
 				B478F74E2375014E00C4F92B /* Tracker.swift in Sources */,
 				B478F7482375014E00C4F92B /* AWSPinpointAdapter+AnalyticsClientBehavior.swift in Sources */,
