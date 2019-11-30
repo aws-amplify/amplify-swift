@@ -35,7 +35,7 @@ class SubscriptionIntegrationTests: XCTestCase {
 
         // TODO: Move this to an integ test config file
         let apiConfig = APICategoryConfiguration(plugins: [
-            "awsAPICategoryPlugin": [
+            "awsAPIPlugin": [
                 "default": [
                     "endpoint": "https://ldm7yqjfjngrjckbziumz5fxbe.appsync-api.us-west-2.amazonaws.com/graphql",
                     "region": "us-west-2",
@@ -53,7 +53,7 @@ class SubscriptionIntegrationTests: XCTestCase {
         amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: dataStoreConfig)
 
         do {
-            try Amplify.add(plugin: AWSAPICategoryPlugin())
+            try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.add(plugin: AWSDataStoreCategoryPlugin())
         } catch {
             XCTFail(String(describing: error))
@@ -99,6 +99,7 @@ class SubscriptionIntegrationTests: XCTestCase {
 
         // TODO: Need a better way of ensuring setup is complete before subscribing and sending syncable
         // mutations
+        XTFail("Not yet implemented")
         DispatchQueue.global().asyncAfter(deadline: .now() + 5.0) {
             // Simulate another system by creating, updating, and deleting a model directly via the API
 //            let newPost = Post(title: "Post title",

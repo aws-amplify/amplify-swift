@@ -7,7 +7,7 @@
 
 import Amplify
 
-extension AWSAPICategoryPlugin {
+extension AWSAPIPlugin {
     var log: Logger {
         Amplify.Logging.logger(forCategory: key)
     }

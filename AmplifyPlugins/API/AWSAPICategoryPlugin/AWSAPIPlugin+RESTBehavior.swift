@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 
-public extension AWSAPICategoryPlugin {
+public extension AWSAPIPlugin {
 
     func get(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
         let operationRequest = RESTOperationRequest(request: request,

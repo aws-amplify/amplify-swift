@@ -13,7 +13,7 @@ final class HubChannelDispatcher {
     private let messageQueue: OperationQueue
 
     /// A dictionary of listeners, keyed by their ID
-    private let listenersById = SynchronizedDictionary<UUID, FilteredListener>()
+    private let listenersById = AtomicDictionary<UUID, FilteredListener>()
 
     init() {
         self.messageQueue = OperationQueue()

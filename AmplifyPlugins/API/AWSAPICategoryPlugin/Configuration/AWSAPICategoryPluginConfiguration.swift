@@ -10,7 +10,7 @@ import Foundation
 import AWSPluginsCore
 
 public struct AWSAPICategoryPluginConfiguration {
-    let endpoints: [String: EndpointConfig]
+    var endpoints: [String: EndpointConfig]
 
     init(endpoints: [String: EndpointConfig]) {
         self.endpoints = endpoints

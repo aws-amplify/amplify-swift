@@ -11,6 +11,7 @@ import Combine
 extension OutgoingMutationQueue {
 
     struct Resolver {
+        // swiftlint:disable:next cyclomatic_complexity
         static func resolve(currentState: State, action: Action) -> State {
             switch (currentState, action) {
 
@@ -22,25 +23,8 @@ extension OutgoingMutationQueue {
             case (.notStarted, .receivedStart(let api, let mutationEventPublisher)):
                 return .starting(api, mutationEventPublisher)
 
-            case (.starting, .started):
-                return .waitingForSubscription
-
-            case (.waitingForSubscription, .receivedSubscription):
-                return .requestingEvent
-
-                // MARK: - Event processing loop
-
-            case (.requestingEvent, .requestedEvent):
-                return .waitingForEvent
-
-            case (.requestingEvent, .receivedEvent(let mutationEvent)),
-                 (.waitingForEvent, .receivedEvent(let mutationEvent)):
-                // The subscription may deliver an event before we transition back to .waiting state, so we'll allow a
-                // transition to .enqueuingEvent from either .requestingEvent or .waiting
-                return .enqueuingEvent(mutationEvent)
-
-            case (.enqueuingEvent, .enqueuedEvent):
-                return .waitingForEvent
+            case (.starting, .receivedSubscription):
+                return .processingEvents
 
                 // MARK: - Actions that always transition state
 

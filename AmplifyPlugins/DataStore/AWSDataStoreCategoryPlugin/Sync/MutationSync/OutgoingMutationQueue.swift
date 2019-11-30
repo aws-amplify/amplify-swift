@@ -46,16 +46,19 @@ final class OutgoingMutationQueue {
                 }
         }
 
+        log.verbose("Initialized")
         stateMachine.notify(action: .initialized)
     }
 
     // MARK: - Public API
 
     func startSyncingToCloud(api: APICategoryGraphQLBehavior, mutationEventPublisher: MutationEventPublisher) {
+        log.verbose(#function)
         stateMachine.notify(action: .receivedStart(api, mutationEventPublisher))
     }
 
     func cancel() {
+        log.verbose(#function)
         // Techncially this should be in a "cancelling" responder, but it's simpler to cancel here and move straight
         // to .finished. If in the future we need to add more work to the teardown state, move it to a separate method.
         operationQueue.cancelAllOperations()
@@ -63,6 +66,7 @@ final class OutgoingMutationQueue {
     }
 
     func pauseSyncingToCloud() {
+        log.verbose(#function)
         operationQueue.isSuspended = true
     }
 
@@ -77,11 +81,8 @@ final class OutgoingMutationQueue {
         case .starting(let api, let mutationEventPublisher):
             start(api: api, mutationEventPublisher: mutationEventPublisher)
 
-        case .requestingEvent:
-            requestEvent()
-
-        case .enqueuingEvent(let mutationEvent):
-            enqueue(mutationEvent: mutationEvent)
+        case .processingEvents:
+            startProcessingEvents()
 
         case .inError(let error):
             // Maybe we have to notify the Hub?
@@ -89,8 +90,6 @@ final class OutgoingMutationQueue {
 
         case .notInitialized,
              .notStarted,
-             .waitingForSubscription,
-             .waitingForEvent,
              .finished:
             break
         }
@@ -100,24 +99,48 @@ final class OutgoingMutationQueue {
     /// Responder method for `starting`. Starts the operation queue and subscribes to the publisher. Return actions:
     /// - started
     private func start(api: APICategoryGraphQLBehavior, mutationEventPublisher: MutationEventPublisher) {
+        log.verbose(#function)
         self.api = api
         operationQueue.isSuspended = false
+
+        // State machine notification to ".receivedSubscription" will be handled in `receive(subscription:)`
         mutationEventPublisher.publisher.subscribe(self)
-        stateMachine.notify(action: .started)
     }
 
-    /// Responder method for `enqueue`. Notify actions:
+    /// Responder method for `processingEvents`. Requests the next event from the mutation event publisher.
+    /// Notify actions:
     /// - errored
-    /// - enqueued
-    private func enqueue(mutationEvent: MutationEvent) {
+    /// - requestedEvent
+    private func startProcessingEvents() {
+        requestEvent()
+    }
+
+    // MARK: - Event loop processing
+
+    private func requestEvent() {
+        log.verbose(#function)
+        guard let subscription = subscription else {
+            let dataStoreError = DataStoreError.unknown(
+                "No subscription when requesting event",
+                """
+                The outgoing mutation queue attempted to request event without an active subscription.
+                \(AmplifyErrorMessages.reportBugToAWS())
+                """
+            )
+            stateMachine.notify(action: .errored(dataStoreError))
+            return
+        }
+        subscription.request(.max(1))
+    }
+
+    private func enqueue(_ mutationEvent: MutationEvent) {
+        log.verbose(#function)
         guard let api = api else {
             let dataStoreError = DataStoreError.configuration(
                 "API is unexpectedly nil",
                 """
                 The reference to storageAdapter has been released while an ongoing mutation was being processed.
-                There is a possibility that there is a bug if this error persists. Please take a look at
-                https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that
-                match your scenario, and file an issue with the details of the bug if there isn't.
+                \(AmplifyErrorMessages.reportBugToAWS())
                 """
             )
             stateMachine.notify(action: .errored(dataStoreError))
@@ -128,24 +151,17 @@ final class OutgoingMutationQueue {
             SyncMutationToCloudOperation(mutationEvent: mutationEvent, api: api)
 
         operationQueue.addOperation(syncMutationToCloudOperation)
-        stateMachine.notify(action: .enqueuedEvent(mutationEvent))
+        requestEvent()
     }
 
-    /// Responder method for `requestingEvent`. Requests the next event from the mutation event publisher.
-    /// Notify actions:
-    /// - errored
-    /// - requestedEvent
-    private func requestEvent() {
-        subscription?.request(.max(1))
-        stateMachine.notify(action: .requestedEvent)
-    }
 }
 
 extension OutgoingMutationQueue: Subscriber {
     typealias Input = MutationEvent
-    typealias Failure = DataStoreError
+    typealias Failure = Never
 
     func receive(subscription: Subscription) {
+        log.verbose(#function)
         // Technically, saving the subscription should probably be done in a separate method, but it seems overkill
         // for a lightweight operation.
         self.subscription = subscription
@@ -153,12 +169,14 @@ extension OutgoingMutationQueue: Subscriber {
     }
 
     func receive(_ mutationEvent: MutationEvent) -> Subscribers.Demand {
-        stateMachine.notify(action: .receivedEvent(mutationEvent))
+        log.verbose(#function)
+        enqueue(mutationEvent)
         return .none
     }
 
     // TODO: Resolve with an appropriate state machine notification
-    func receive(completion: Subscribers.Completion<DataStoreError>) {
+    func receive(completion: Subscribers.Completion<Never>) {
+        log.verbose(#function)
         subscription?.cancel()
     }
 }

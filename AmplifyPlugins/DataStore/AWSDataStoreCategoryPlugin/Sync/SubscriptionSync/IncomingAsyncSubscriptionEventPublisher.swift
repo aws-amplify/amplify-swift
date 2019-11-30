@@ -66,6 +66,20 @@ final class IncomingAsyncSubscriptionEventPublisher {
     func subscribe<S: Subscriber>(subscriber: S) where S.Input == Event, S.Failure == DataStoreError {
         incomingSubscriptionEvents.subscribe(subscriber)
     }
+
+    func reset(onComplete: () -> Void) {
+        onCreateOperation?.cancel()
+        onCreateListener(.completed(()))
+
+        onUpdateOperation?.cancel()
+        onUpdateListener(.completed(()))
+
+        onDeleteOperation?.cancel()
+        onDeleteListener(.completed(()))
+
+        onComplete()
+    }
+
 }
 
 extension IncomingAsyncSubscriptionEventPublisher: DefaultLogger { }

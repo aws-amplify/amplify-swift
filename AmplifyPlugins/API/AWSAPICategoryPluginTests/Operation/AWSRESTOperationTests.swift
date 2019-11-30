@@ -156,12 +156,12 @@ class AWSRESTOperationTests: XCTestCase {
     // MARK: - Utilities
 
     func setUpPlugin(with factory: URLSessionBehaviorFactory? = nil) {
-        let apiPlugin: AWSAPICategoryPlugin
+        let apiPlugin: AWSAPIPlugin
 
         if let factory = factory {
-            apiPlugin = AWSAPICategoryPlugin(sessionFactory: factory)
+            apiPlugin = AWSAPIPlugin(sessionFactory: factory)
         } else {
-            apiPlugin = AWSAPICategoryPlugin()
+            apiPlugin = AWSAPIPlugin()
         }
 
         let apiConfig = APICategoryConfiguration(plugins: [

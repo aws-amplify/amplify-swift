@@ -32,7 +32,7 @@ class APICategoryPluginConcurrencyTests: XCTestCase {
 
         let amplifyConfig = AmplifyConfiguration(api: apiConfig)
         do {
-            try Amplify.add(plugin: AWSAPICategoryPlugin())
+            try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.configure(amplifyConfig)
         } catch {
             XCTFail("Error during setup: \(error)")

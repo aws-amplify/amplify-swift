@@ -173,15 +173,12 @@ class ReconcileAndLocalSaveOperation: Operation {
                 return
             }
 
-            guard models.count == 1 else {
+            guard let localModel = models.first, models.count == 1 else {
                 let dataStoreError = DataStoreError.nonUniqueResult(model: cloudModel.modelName, count: models.count)
                 let errorAction = Action.errored(dataStoreError)
                 self.stateMachine.notify(action: errorAction)
                 return
             }
-
-            // We know models has exactly one element, so force-unwrapping is OK here
-            let localModel = models.first!
 
             let queriedAction = Action.queried(cloudModel, localModel)
             self.stateMachine.notify(action: queriedAction)

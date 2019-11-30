@@ -60,11 +60,7 @@ extension StorageError: AmplifyError {
             such as 'protected/<targetIdentityId>/<key>' or 'private/<targetIdentityId>/<key>'.
             """
         case .unknown:
-            return """
-            This should never happen. There is a possibility that there is a bug if this error persists.
-            Please take a look at https://github.com/aws-amplify/amplify-ios/issues to see if there are any
-            existing issues that match your scenario, and file an issue with the details of the bug if there isn't.
-            """
+            return AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
         }
     }
 

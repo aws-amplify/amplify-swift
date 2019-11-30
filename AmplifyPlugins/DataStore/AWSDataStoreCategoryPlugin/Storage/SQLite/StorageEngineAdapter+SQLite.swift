@@ -21,39 +21,45 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
         let path = documentsPath.appendingPathComponent("\(databaseName).db").absoluteString
 
+        let connection: Connection
         do {
-            let connection = try Connection(path)
-            self.init(connection: connection)
+            connection = try Connection(path)
         } catch {
             throw DataStoreError.invalidDatabase(path: path, error)
         }
+
+        try self.init(connection: connection)
     }
 
-    internal init(connection: Connection) {
-        // Reinstate once we fix https://github.com/aws-amplify/amplify-ios/issues/161
-        // log.debug("Created database connection at \(connection)")
+    internal init(connection: Connection) throws {
         self.connection = connection
+        try SQLiteStorageEngineAdapter.initializeDatabase(connection: connection)
+        log.verbose("Initialized \(connection)")
+    }
+
+    static func initializeDatabase(connection: Connection) throws {
+        log.debug("Initializing database connection: \(String(describing: connection))")
+
+        let databaseInitializationStatement = """
+        pragma auto_vacuum = full;
+        pragma encoding = "utf-8";
+        pragma foreign_keys = on;
+        pragma case_sensitive_like = off;
+        """
+
+        try connection.execute(databaseInitializationStatement)
     }
 
     func setUp(models: [Model.Type]) throws {
-        log.debug("Setting up database connection at \(String(describing: connection))")
+        log.debug("Setting up \(models.count) models")
 
         let createTableStatements = models
             .sortByDependencyOrder()
             .map { CreateTableStatement(modelType: $0).stringValue }
             .joined(separator: "\n")
 
-        // database setup statement
-        let statement = """
-        pragma auto_vacuum = full;
-        pragma encoding = "utf-8";
-        pragma foreign_keys = on;
-        pragma case_sensitive_like = off;
-        \(createTableStatements)
-        """
-
         do {
-            try connection.execute(statement)
+            try connection.execute(createTableStatements)
         } catch {
             throw DataStoreError.invalidOperation(causedBy: error)
         }
@@ -131,6 +137,31 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             return count == 1
         }
         return false
+    }
+
+    func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>] {
+        let statement = SelectStatement(from: MutationSyncMetadata.self)
+        let primaryKey = MutationSyncMetadata.schema.primaryKey.sqlName
+        // This is a temp workaround since we don't currently support the "in" operator
+        // in query predicates (this avoids the 1 + n query problem). Consider adding "in" support
+        let placeholders = Array(repeating: "?", count: models.count).joined(separator: ", ")
+        let sql = statement.stringValue + "\nwhere \(primaryKey) in (\(placeholders))"
+
+        // group models by id for fast access when creating the tuple
+        let modelById = Dictionary(grouping: models, by: { $0.id }).mapValues { $0.first! }
+        let ids = [String](modelById.keys)
+        let rows = try connection.prepare(sql).bind(ids)
+
+        let syncMetadataList = try rows.convert(to: MutationSyncMetadata.self)
+        let mutationSyncList = try syncMetadataList.map {
+            (syncMetadata: MutationSyncMetadata) -> MutationSync<AnyModel> in
+            guard let model = modelById[syncMetadata.id] else {
+                throw DataStoreError.invalidOperation(causedBy: nil)
+            }
+            let anyModel = try model.eraseToAnyModel()
+            return MutationSync<AnyModel>(model: anyModel, syncMetadata: syncMetadata)
+        }
+        return mutationSyncList
     }
 
 }
