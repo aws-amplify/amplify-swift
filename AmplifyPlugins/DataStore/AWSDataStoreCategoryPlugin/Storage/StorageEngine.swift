@@ -70,7 +70,7 @@ final class StorageEngine: StorageEngineBehavior {
 
         let mutationType = modelExists ? MutationEvent.MutationType.update : .create
 
-        let saveMutationEventCompletion: DataStoreCallback<M> = { result in
+        let wrappedCompletion: DataStoreCallback<M> = { result in
             guard type(of: model).schema.isSyncable, let syncEngine = self.syncEngine else {
                 completion(result)
                 return
@@ -81,49 +81,45 @@ final class StorageEngine: StorageEngineBehavior {
                 return
             }
 
-            do {
-                let mutationEvent = try MutationEvent(model: savedModel, mutationType: mutationType)
-
-                // TODO: Refactor this into something actually readable once we get the final sync implementation done
-                if #available(iOS 13, *) {
-                    _ = syncEngine
-                        .submit(mutationEvent)
-                        .sink(
-                            receiveCompletion: { futureCompletion in
-                                switch futureCompletion {
-                                case .failure(let error):
-                                    completion(.failure(causedBy: error))
-                                default:
-                                    // Success case handled by receiveValue
-                                    break
-                                }
-
-                        }, receiveValue: { _ in
-                            completion(.success(savedModel))
-                        })
-                }
-            } catch let dataStoreError as DataStoreError {
-                completion(.failure(dataStoreError))
-            } catch {
-                let dataStoreError = DataStoreError.decodingError(
-                    "Could not create MutationEvent from model",
-                    """
-                    Review the data in the model below and ensure it doesn't contain invalid UTF8 data:
-
-                    \(savedModel)
-                    """)
-                completion(.failure(dataStoreError))
+            if #available(iOS 13, *) {
+                self.log.verbose("\(#function) syncing mutation for \(savedModel)")
+                self.syncMutation(of: savedModel,
+                                  mutationType: mutationType,
+                                  syncEngine: syncEngine,
+                                  completion: completion)
+            } else {
+                completion(result)
             }
         }
 
-        storageAdapter.save(model, completion: saveMutationEventCompletion)
+        storageAdapter.save(model, completion: wrappedCompletion)
 
     }
 
-    func delete(_ modelType: Model.Type,
-                withId id: Model.Identifier,
-                completion: (DataStoreResult<Void>) -> Void) {
-        storageAdapter.delete(modelType, withId: id, completion: completion)
+    func delete<M: Model>(_ modelType: M.Type,
+                          withId id: Model.Identifier,
+                          completion: @escaping (DataStoreResult<Void>) -> Void) {
+        let wrappedCompletion: DataStoreCallback<Void> = { result in
+            guard modelType.schema.isSyncable, let syncEngine = self.syncEngine else {
+                completion(result)
+                return
+            }
+
+            guard case .success = result else {
+                completion(result)
+                return
+            }
+
+            if #available(iOS 13, *) {
+                // TODO: Add a delete-specific APICategory API that allows delete mutations with just sync metadata
+                // like type, ID, and version
+                self.syncDeletion(of: modelType, withId: id, syncEngine: syncEngine, completion: completion)
+            } else {
+                completion(result)
+            }
+        }
+
+        storageAdapter.delete(modelType, withId: id, completion: wrappedCompletion)
     }
 
     func query<M: Model>(_ modelType: M.Type,
@@ -153,6 +149,87 @@ final class StorageEngine: StorageEngineBehavior {
         group.wait()
         onComplete()
     }
+
+    @available(iOS 13, *)
+    private func syncDeletion<M: Model>(of modelType: M.Type,
+                                        withId id: Model.Identifier,
+                                        syncEngine: CloudSyncEngineBehavior,
+                                        completion: @escaping DataStoreCallback<Void>) {
+
+        let mutationEvent = MutationEvent(id: UUID().uuidString,
+                                          modelId: id, modelName: modelType.modelName,
+                                          json: "{}",
+                                          mutationType: .delete,
+                                          createdAt: Date())
+
+        let mutationEventCallback: DataStoreCallback<MutationEvent> = { result in
+            switch result {
+            case .failure(let dataStoreError):
+                completion(.failure(dataStoreError))
+            case .success(let mutationEvent):
+                self.log.verbose("\(#function) successfully submitted to sync engine \(mutationEvent)")
+                completion(.success(()))
+            }
+        }
+
+        submitToSyncEngine(mutationEvent: mutationEvent,
+                           syncEngine: syncEngine,
+                           completion: mutationEventCallback)
+    }
+
+    @available(iOS 13, *)
+    private func syncMutation<M: Model>(of savedModel: M,
+                                        mutationType: MutationEvent.MutationType,
+                                        syncEngine: CloudSyncEngineBehavior,
+                                        completion: @escaping DataStoreCallback<M>) {
+        let mutationEvent: MutationEvent
+        do {
+            mutationEvent = try MutationEvent(model: savedModel, mutationType: mutationType)
+        } catch {
+            let dataStoreError = DataStoreError(error: error)
+            completion(.failure(dataStoreError))
+            return
+        }
+
+        let mutationEventCallback: DataStoreCallback<MutationEvent> = { result in
+            switch result {
+            case .failure(let dataStoreError):
+                completion(.failure(dataStoreError))
+            case .success(let mutationEvent):
+                self.log.verbose("\(#function) successfully submitted to sync engine \(mutationEvent)")
+                completion(.success(savedModel))
+            }
+        }
+
+        submitToSyncEngine(mutationEvent: mutationEvent,
+                           syncEngine: syncEngine,
+                           completion: mutationEventCallback)
+    }
+
+    @available(iOS 13, *)
+    private func submitToSyncEngine(mutationEvent: MutationEvent,
+                                    syncEngine: CloudSyncEngineBehavior,
+                                    completion: @escaping DataStoreCallback<MutationEvent>) {
+        var mutationQueueSink: AnyCancellable?
+        mutationQueueSink = syncEngine
+            .submit(mutationEvent)
+            .sink(
+                receiveCompletion: { futureCompletion in
+                    switch futureCompletion {
+                    case .failure(let error):
+                        completion(.failure(causedBy: error))
+                    case .finished:
+                        self.log.verbose("\(#function) Received successful completion")
+                    }
+                    mutationQueueSink?.cancel()
+                    mutationQueueSink = nil
+
+            }, receiveValue: { mutationEvent in
+                self.log.verbose("\(#function) saved mutation event: \(mutationEvent)")
+                completion(.success(mutationEvent))
+            })
+    }
+
 }
 
 extension StorageEngine: DefaultLogger { }

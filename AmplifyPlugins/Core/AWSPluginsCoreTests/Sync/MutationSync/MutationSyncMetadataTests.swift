@@ -47,7 +47,7 @@ class MutationSyncMetadataTests: XCTestCase {
     func testDecodeMutationSync() {
         do {
             let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
+            decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
 
             guard let data = postSyncJSON.data(using: .utf8) else {
                 XCTFail("JSON could not be converted into data")
@@ -76,7 +76,7 @@ class MutationSyncMetadataTests: XCTestCase {
     func testDecodeAnyModelMutationSync() {
         do {
             let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
+            decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
 
             guard let data = postSyncJSON.data(using: .utf8) else {
                 XCTFail("JSON could not be converted into data")

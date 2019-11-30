@@ -26,11 +26,11 @@ public protocol DataStoreBaseBehavior {
                          completion: DataStoreCallback<[M]>)
 
     func delete<M: Model>(_ model: M,
-                          completion: DataStoreCallback<Void>)
+                          completion: @escaping DataStoreCallback<Void>)
 
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: String,
-                          completion: DataStoreCallback<Void>)
+                          completion: @escaping DataStoreCallback<Void>)
 }
 
 public protocol DataStoreSubscribeBehavior {

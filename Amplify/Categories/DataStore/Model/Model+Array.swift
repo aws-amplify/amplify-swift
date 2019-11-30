@@ -16,3 +16,13 @@ extension Array where Element: Model {
         return first
     }
 }
+
+extension Array where Element == Model {
+    public func unique() throws -> Element? {
+        guard (0 ... 1).contains(count) else {
+            let firstModelName = self[0].modelName
+            throw DataStoreError.nonUniqueResult(model: firstModelName, count: count)
+        }
+        return first
+    }
+}

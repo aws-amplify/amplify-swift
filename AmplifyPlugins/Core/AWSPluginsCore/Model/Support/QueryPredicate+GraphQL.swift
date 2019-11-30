@@ -109,7 +109,7 @@ extension Persistable {
         }
 
         if let value = value as? Date {
-            return value.iso8601
+            return value.iso8601String
         }
 
         if let value = value as? Double {
