@@ -26,8 +26,8 @@ class AWSPinpointAdapter: AWSPinpointBehavior {
         guard let serviceConfiguration = AWSServiceConfiguration(region: pinpointAnalyticsRegion,
                                                                  credentialsProvider: cognitoCredentialsProvider) else {
             throw PluginError.pluginConfigurationError(
-                AnalyticsErrorConstants.pinpointAnalyticsServiceConfigurationError.errorDescription,
-                AnalyticsErrorConstants.pinpointAnalyticsServiceConfigurationError.recoverySuggestion)
+                AnalyticsPluginErrorConstant.pinpointAnalyticsServiceConfigurationError.errorDescription,
+                AnalyticsPluginErrorConstant.pinpointAnalyticsServiceConfigurationError.recoverySuggestion)
         }
 
         guard let targetingServiceConfiguration =
@@ -35,8 +35,8 @@ class AWSPinpointAdapter: AWSPinpointBehavior {
                                     credentialsProvider: cognitoCredentialsProvider) else {
 
             throw PluginError.pluginConfigurationError(
-                AnalyticsErrorConstants.pinpointTargetingServiceConfigurationError.errorDescription,
-                AnalyticsErrorConstants.pinpointTargetingServiceConfigurationError.recoverySuggestion)
+                AnalyticsPluginErrorConstant.pinpointTargetingServiceConfigurationError.errorDescription,
+                AnalyticsPluginErrorConstant.pinpointTargetingServiceConfigurationError.recoverySuggestion)
         }
 
         pinpointConfiguration.serviceConfiguration = serviceConfiguration

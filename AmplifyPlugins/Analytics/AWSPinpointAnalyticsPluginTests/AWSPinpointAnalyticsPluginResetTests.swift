@@ -19,7 +19,7 @@ class AWSPinpointAnalyticsPluginResetTests: AWSPinpointAnalyticsPluginTestBase {
         waitForExpectations(timeout: 1)
         XCTAssertNil(analyticsPlugin.pinpoint)
         XCTAssertNil(analyticsPlugin.authService)
-        XCTAssertNil(analyticsPlugin.flushEventsTracker)
+        XCTAssertNil(analyticsPlugin.autoFlushEventsTimer)
         XCTAssertNil(analyticsPlugin.appSessionTracker)
         XCTAssertNil(analyticsPlugin.globalProperties)
         XCTAssertNil(analyticsPlugin.isEnabled)

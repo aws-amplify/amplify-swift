@@ -10,20 +10,16 @@ import Foundation
 import AWSPinpoint
 
 extension AWSPinpointAnalyticsPlugin {
+
     public func identifyUser(_ identityId: String, withProfile userProfile: AnalyticsUserProfile?) {
         if !isEnabled {
-            amplifyLogging("Cannot identify user. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
+            log.warn("Cannot identify user. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
             return
         }
 
         let currentEndpointProfile = pinpoint.currentEndpointProfile()
         currentEndpointProfile.addIdentityId(identityId)
         if let userProfile = userProfile {
-            if userProfile.location == nil {
-                // TODO: Check if location is set, if it is not set,
-                // see if we can populate it ourselves before adding it.
-            }
-
             currentEndpointProfile.addUserProfile(userProfile)
         }
 
@@ -42,7 +38,7 @@ extension AWSPinpointAnalyticsPlugin {
 
     public func record(event: AnalyticsEvent) {
         if !isEnabled {
-            amplifyLogging("Cannot record events. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
+            log.warn("Cannot record events. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
             return
         }
 
@@ -108,7 +104,7 @@ extension AWSPinpointAnalyticsPlugin {
 
     public func flushEvents() {
         if !isEnabled {
-            amplifyLogging("Cannot flushEvents. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
+            log.warn("Cannot flushEvents. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
             return
         }
 
@@ -137,8 +133,10 @@ extension AWSPinpointAnalyticsPlugin {
         isEnabled = false
     }
 
-    // TODO: replace this with Amplify.Logging
-    private func amplifyLogging(_ message: String) {
-        print(message)
+    /// Retrieve the escape hatch to perform actions directly on AWSPinpoint.
+    ///
+    /// - Returns: AWSPinpoint instance
+    public func getEscapeHatch() -> AWSPinpoint {
+        return pinpoint.getEscapeHatch()
     }
 }

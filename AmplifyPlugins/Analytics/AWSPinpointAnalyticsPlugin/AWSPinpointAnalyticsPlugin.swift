@@ -19,9 +19,6 @@ final public class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
     /// An instance of the authentication service
     var authService: AWSAuthServiceBehavior!
 
-    /// Tracks when events should be submitted
-    var flushEventsTracker: Tracker!
-
     /// Tracks the application sessions
     var appSessionTracker: Tracker!
 
@@ -30,6 +27,10 @@ final public class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
 
     /// Specifies whether the plugin is enabled
     var isEnabled: Bool!
+
+    /// Optional timer is nil when auto flush is disabled
+    /// Otherwise automatically flushes the events that have been recorded on an interval
+    var autoFlushEventsTimer: DispatchSourceTimer?
 
     /// The unique key of the plugin within the analytics category
     public var key: PluginKey {
