@@ -8,31 +8,25 @@
 import Amplify
 import Foundation
 
+public extension GraphQLMutation {
+    convenience init(of anyModel: AnyModel, type mutationType: GraphQLMutationType) {
+        self.init(of: anyModel.instance, type: mutationType)
+    }
+}
+
 /// A concrete implementation of `GraphQLDocument` that represents a data mutation operation.
 /// The type of the operation is defined by `GraphQLMutationType`.
-public struct GraphQLMutation: GraphQLDocument {
+public class GraphQLMutation: GraphQLDocument {
 
     public let documentType = GraphQLDocumentType.mutation
     public let model: Model
     public let modelType: Model.Type
     public let mutationType: GraphQLMutationType
-    public let variables: [String: Any]
 
     public init(of model: Model, type mutationType: GraphQLMutationType) {
         self.model = model
         self.modelType = ModelRegistry.modelType(from: model.modelName) ?? Swift.type(of: model)
         self.mutationType = mutationType
-        if mutationType == .delete {
-            self.variables = [
-                "input": [
-                    "id": model.id
-                ]
-            ]
-        } else {
-            self.variables = [
-                "input": model.graphQLInput
-            ]
-        }
     }
 
     public var name: String {
@@ -59,4 +53,17 @@ public struct GraphQLMutation: GraphQLDocument {
         return document
     }
 
+    public var variables: [String: Any] {
+        if mutationType == .delete {
+            return [
+                "input": [
+                    "id": model.id
+                ]
+            ]
+        } else {
+            return [
+                "input": model.graphQLInput
+            ]
+        }
+    }
 }

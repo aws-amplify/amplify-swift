@@ -44,13 +44,9 @@ extension GraphQLRequest {
     /// - seealso: `GraphQLQuery`, `GraphQLQueryType.get`
     public static func query<M: Model>(from modelType: M.Type,
                                        byId id: String) -> GraphQLRequest<M?> {
-        let document = GraphQLQuery(from: modelType, type: .get)
-        let variables: [String: Any] = [
-            "id": id
-        ]
-
+        let document = GraphQLGetQuery(from: modelType, id: id)
         return GraphQLRequest<M?>(document: document.stringValue,
-                                  variables: variables,
+                                  variables: document.variables,
                                   responseType: M?.self,
                                   decodePath: document.decodePath)
     }
@@ -67,20 +63,9 @@ extension GraphQLRequest {
     /// - seealso: `GraphQLQuery`, `GraphQLQueryType.list`
     public static func query<M: Model>(from modelType: M.Type,
                                        where predicate: QueryPredicate? = nil) -> GraphQLRequest<[M]> {
-        let document = GraphQLQuery(from: modelType, type: .list)
-        var variables = [String: Any]()
-
-        if let predicate = predicate {
-            variables.updateValue(predicate.graphQLFilterVariables, forKey: "filter")
-        }
-
-        // TODO: Remove this once we support limit and nextToken passed in from the developer
-        variables.updateValue(1_000, forKey: "limit")
-
-        // By constructing the query request in this way, we should pass in some options that check for "token"
-        // and keep retrieving items until it's done and populate it back. like `exhaustList`
+        let document = GraphQLListQuery(from: modelType, predicate: predicate)
         return GraphQLRequest<[M]>(document: document.stringValue,
-                                   variables: variables,
+                                   variables: document.variables,
                                    responseType: [M].self,
                                    decodePath: document.decodePath)
     }
