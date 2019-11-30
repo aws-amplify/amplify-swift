@@ -7,14 +7,9 @@
 
 import Foundation
 
-/// Protocol that defines a contract between the consumer and the DataStore plugin.
-/// All models have to be registered and have an associated `version`.
-public protocol DataStoreModelRegistration {
+public protocol DataStoreModelRegistration_ {
 
-    /// Function called during DataStore initialization. Implementations must
-    /// register all the available models here.
-    func registerModels(registry: ModelRegistry.Type)
+    func registerModels(_ register: (ModelRegistry.Type) -> Void)
 
-    /// The version associated with the current schema.
     var version: String { get }
 }

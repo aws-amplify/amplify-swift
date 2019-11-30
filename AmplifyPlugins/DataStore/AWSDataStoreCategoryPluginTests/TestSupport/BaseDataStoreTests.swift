@@ -27,6 +27,9 @@ class BaseDataStoreTests: XCTestCase {
         Amplify.reset()
         Amplify.Logging.logLevel = .warn
 
+        ModelRegistry.register(modelType: Post.self)
+        ModelRegistry.register(modelType: Comment.self)
+
         do {
             connection = try Connection(.inMemory)
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
@@ -42,8 +45,7 @@ class BaseDataStoreTests: XCTestCase {
         }
 
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStoreCategoryPlugin(modelRegistration: TestModelRegistration(),
-                                                         storageEngine: storageEngine,
+        let dataStorePlugin = AWSDataStoreCategoryPlugin(storageEngine: storageEngine,
                                                          dataStorePublisher: dataStorePublisher)
 
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [

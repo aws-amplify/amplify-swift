@@ -367,11 +367,12 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
 extension ReconcileAndLocalSaveOperationTests {
     private func setUpCore() throws -> AmplifyConfiguration {
         Amplify.reset()
+        ModelRegistry.register(modelType: MockSynced.self)
+        ModelRegistry.register(modelType: MockUnsynced.self)
 
         let storageEngine = MockStorageEngineBehavior()
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStoreCategoryPlugin(modelRegistration: TestModelRegistration(),
-                                                         storageEngine: storageEngine,
+        let dataStorePlugin = AWSDataStoreCategoryPlugin(storageEngine: storageEngine,
                                                          dataStorePublisher: dataStorePublisher)
         try Amplify.add(plugin: dataStorePlugin)
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [

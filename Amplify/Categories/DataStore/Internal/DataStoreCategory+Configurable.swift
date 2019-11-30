@@ -18,6 +18,8 @@ extension DataStoreCategory: CategoryConfigurable {
             throw error
         }
 
+        DataStoreModelRegistration.registerModels()
+
         for (pluginKey, pluginConfiguration) in configuration.plugins {
             let plugin = try getPlugin(for: pluginKey)
             try plugin.configure(using: pluginConfiguration)
@@ -49,4 +51,11 @@ extension DataStoreCategory: CategoryConfigurable {
         onComplete()
     }
 
+}
+
+// TODO: Remove this once codegen begins generating this
+struct DataStoreModelRegistration {
+    public static func registerModels() {
+        // Does nothing by default.
+    }
 }
