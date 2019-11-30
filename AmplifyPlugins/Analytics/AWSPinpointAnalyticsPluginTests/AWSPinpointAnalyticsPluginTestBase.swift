@@ -25,8 +25,8 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
     let testAutoSessionTrackingInterval = 10
 
     var plugin: HubCategoryPlugin {
-        guard let plugin = try? Amplify.Hub.getPlugin(for: "AWSHubPlugin"),
-            plugin.key == "AWSHubPlugin" else {
+        guard let plugin = try? Amplify.Hub.getPlugin(for: "awsHubPlugin"),
+            plugin.key == "awsHubPlugin" else {
                 fatalError("Could not access AWSHubPlugin")
         }
         return plugin
@@ -38,10 +38,10 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
         mockPinpoint = MockAWSPinpoint()
         authService = MockAWSAuthService()
         flushEventsTracker =
-            MockFlushEventsTracker(autoFlushEventsInterval: PluginConstants.defaultAutoFlushEventsInterval)
+            MockFlushEventsTracker(autoFlushEventsInterval: AWSPinpointAnalyticsPluginConfiguration.defaultAutoFlushEventsInterval)
         appSessionTracker =
-            MockAppSessionTracker(trackAppSessions: PluginConstants.defaultTrackAppSession,
-                                  autoSessionTrackingInterval: PluginConstants.defaultAutoSessionTrackingInterval)
+            MockAppSessionTracker(trackAppSessions: AWSPinpointAnalyticsPluginConfiguration.defaultTrackAppSession,
+                                  autoSessionTrackingInterval: AWSPinpointAnalyticsPluginConfiguration.defaultAutoSessionTrackingInterval)
 
         analyticsPlugin.configure(pinpoint: mockPinpoint,
                                   authService: authService,
