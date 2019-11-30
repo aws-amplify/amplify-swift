@@ -45,7 +45,7 @@ class GraphQLGetQueryTests: XCTestCase {
             _version
             _deleted
             _lastChangedAt
-          }K
+          }
         }
         """
         XCTAssertEqual(document.name, "getPost")

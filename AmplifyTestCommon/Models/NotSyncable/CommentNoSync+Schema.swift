@@ -33,7 +33,7 @@ extension CommentNoSync {
             .field(comment.createdAt, is: .required, ofType: .dateTime),
             .belongsTo(comment.postNoSync,
                        is: .required,
-                       ofType: Post.self,
+                       ofType: PostNoSync.self,
                        targetName: "commentNoSyncPostNoSyncId")
         )
     }
