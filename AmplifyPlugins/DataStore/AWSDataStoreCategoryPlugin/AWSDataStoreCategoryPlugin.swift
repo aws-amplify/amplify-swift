@@ -46,7 +46,7 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
         modelRegistration.registerModels(registry: ModelRegistry.self)
         resolveSyncEnabled()
         try resolveStorageEngine()
-        registerSystemModels()
+
         try storageEngine.setUp(models: ModelRegistry.models)
 
         let filter = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
@@ -57,14 +57,6 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
                 Amplify.Hub.removeListener(token)
             }
         }
-    }
-
-    public func reset(onComplete: @escaping (() -> Void)) {
-        // TODO: Shutdown storage engine
-        // - Cancelling in-process operations
-        // - Unsubscribe from syncable model mutations
-        // - ...?
-        onComplete()
     }
 
     // MARK: Private
@@ -83,10 +75,19 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
         storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled)
     }
 
-    private func registerSystemModels() {
-        // TODO: should this run only when sync is enabled?
-        ModelRegistry.register(modelType: MutationEvent.self)
-        ModelRegistry.register(modelType: MutationSyncMetadata.self)
+    public func reset(onComplete: @escaping (() -> Void)) {
+        let group = DispatchGroup()
+        if let awsStorageEngine = storageEngine as? StorageEngine {
+            group.enter()
+            DispatchQueue.global().async {
+                awsStorageEngine.reset {
+                    group.leave()
+                }
+            }
+        }
+
+        group.wait()
+        onComplete()
     }
 
 }

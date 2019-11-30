@@ -10,49 +10,36 @@ import Combine
 
 /// Ingests MutationEvents from and writes them to the MutationEvent persistent store
 protocol MutationEventIngester: class {
-    func start() -> Future<Void, DataStoreError>
     func submit(mutationEvent: MutationEvent) -> Future<MutationEvent, DataStoreError>
 }
 
-/// Publishes mutation events to downstream subscribers for subsequent sync to the API.
-protocol MutationEventPublisher: class {
-    var publisher: AnyPublisher<MutationEvent, DataStoreError> { get }
-}
-
-final class AWSMutationEventIngester: MutationEventIngester, MutationEventPublisher {
-    typealias SavedEventPromise = Future<MutationEvent, DataStoreError>.Promise
-
-    // Mutation writes must be serially applied
-    private let workQueue = DispatchQueue(label: "com.amazonaws.MutationEventIngester",
-                                          target: DispatchQueue.global())
+final class AWSMutationEventIngester: MutationEventIngester {
 
     private weak var storageAdapter: StorageEngineAdapter?
+    private weak var mutationEventSubject: MutationEventSubject?
 
-    private let savedEvents: PassthroughSubject<MutationEvent, DataStoreError>
-
-    var publisher: AnyPublisher<MutationEvent, DataStoreError> {
-        return savedEvents.eraseToAnyPublisher()
-    }
-
-    init(storageAdapter: StorageEngineAdapter) {
+    /// Loads saved events from the database and delivers them to `mutationEventSubject`
+    init(storageAdapter: StorageEngineAdapter, mutationEventSubject: MutationEventSubject) throws {
         self.storageAdapter = storageAdapter
-        self.savedEvents = PassthroughSubject()
+        self.mutationEventSubject = mutationEventSubject
+
+        let savedMutations = try loadSavedMutationEvents(storageAdapter: storageAdapter)
+        for event in savedMutations {
+            mutationEventSubject.publish(mutationEvent: event)
+        }
+        log.verbose("Initialized")
     }
 
-    func start() -> Future<Void, DataStoreError> {
-        return loadSavedMutationEvents()
-    }
-
+    /// Accepts a mutation event and writes it to the local database, then submits it to `mutationEventSubject`
     func submit(mutationEvent: MutationEvent) -> Future<MutationEvent, DataStoreError> {
+        log.verbose("\(#function): \(mutationEvent)")
+
         return Future { promise in
             guard let storageAdapter = self.storageAdapter else {
                 let dataStoreError = DataStoreError.configuration(
-                    "storageAdapter is unexpectedly nil",
+                    "storageAdapter is unexpectedly nil in an internal operation",
                     """
                     The reference to storageAdapter has been released while an ongoing mutation was being processed.
-                    There is a possibility that there is a bug if this error persists. Please take a look at
-                    https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that
-                    match your scenario, and file an issue with the details of the bug if there isn't.
                     """
                 )
                 promise(.failure(dataStoreError))
@@ -60,49 +47,61 @@ final class AWSMutationEventIngester: MutationEventIngester, MutationEventPublis
             }
 
             storageAdapter.save(mutationEvent) {
-                switch $0 {
-                case .failure(let dataStoreError):
-                    promise(.failure(dataStoreError))
-                case .success(let savedMutationEvent):
-                    promise(.success(savedMutationEvent))
-                    self.publish(mutationEvents: [savedMutationEvent])
+                if case .success(let savedMutationEvent) = $0 {
+                    self.log.verbose("\(#function): saved \(mutationEvent)")
+                    self.mutationEventSubject?.publish(mutationEvent: savedMutationEvent)
                 }
+                promise($0)
             }
         }
     }
 
-    /// Loads saved mutation events from the database and
-    private func loadSavedMutationEvents() -> Future<Void, DataStoreError> {
-        return Future { promise in
-            guard let storageAdapter = self.storageAdapter else {
-                let dataStoreError = DataStoreError.configuration(
-                    "storageAdapter is unexpectedly nil",
-                    """
-                    The reference to storageAdapter has been released while an ongoing mutation was being processed.
-                    There is a possibility that there is a bug if this error persists. Please take a look at
-                    https://github.com/aws-amplify/amplify-ios/issues to see if there are any existing issues that
-                    match your scenario, and file an issue with the details of the bug if there isn't.
-                    """
-                )
-                promise(.failure(dataStoreError))
-                return
-            }
+    /// Loads saved mutation events from the database. This method blocks.
+    func loadSavedMutationEvents(storageAdapter: StorageEngineAdapter) throws -> [MutationEvent] {
+        log.verbose(#function)
+        let mutationsLoaded = DispatchSemaphore(value: 1)
 
-            storageAdapter.query(MutationEvent.self, predicate: nil) { result in
-                switch result {
-                case .failure(let dataStoreError):
-                    promise(.failure(dataStoreError))
-                case .success(let mutationEvents):
-                    self.publish(mutationEvents: mutationEvents)
-                    promise(.success(()))
-                }
+        var resultFromQuery: Result<[MutationEvent], DataStoreError>?
+
+        storageAdapter.query(MutationEvent.self, predicate: nil) { result in
+            defer {
+                mutationsLoaded.signal()
             }
+            switch result {
+            case .failure(let dataStoreError):
+                resultFromQuery = .failure(dataStoreError)
+            case .success(let mutationEvents):
+                let sortedEvents = mutationEvents.sorted { $0.createdAt < $1.createdAt }
+                resultFromQuery = .success(sortedEvents)
+            }
+        }
+
+        mutationsLoaded.wait()
+
+        // Should never happen, but guarding rather than force-unwrapping, just in case
+        guard let result = resultFromQuery else {
+            let dataStoreError = DataStoreError.unknown(
+                "Return result unexpectedly nil querying mutation events",
+                AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
+            )
+            throw dataStoreError
+        }
+
+        switch result {
+        case .failure(let dataStoreError):
+            throw dataStoreError
+        case .success(let mutationEvents):
+            log.info("Loaded \(mutationEvents.count) previously saved mutation events")
+            return mutationEvents
         }
     }
 
-    private func publish(mutationEvents: [MutationEvent]) {
-        for event in mutationEvents {
-            savedEvents.send(event)
-        }
+    func reset(onComplete: () -> Void) {
+        storageAdapter = nil
+        mutationEventSubject = nil
+        onComplete()
     }
+
 }
+
+extension AWSMutationEventIngester: DefaultLogger { }

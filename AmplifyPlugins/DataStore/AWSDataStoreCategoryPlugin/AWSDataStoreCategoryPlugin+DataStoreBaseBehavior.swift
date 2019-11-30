@@ -11,7 +11,7 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
 
     public func save<M: Model>(_ model: M,
                                completion: @escaping DataStoreCallback<M>) {
-        log.verbose("save: \(model)")
+        log.verbose("Saving: \(model)")
 
         // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
         // mutation type
@@ -21,7 +21,7 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
                 throw DataStoreError.configuration("Unable to get storage adapter",
                                                    "")
             }
-            modelExists = try engine.adapter.exists(M.self, withId: model.id)
+            modelExists = try engine.storageAdapter.exists(M.self, withId: model.id)
         } catch {
             if let dataStoreError = error as? DataStoreError {
                 completion(.failure(dataStoreError))

@@ -99,6 +99,7 @@ class SubscriptionIntegrationTests: XCTestCase {
 
         // TODO: Need a better way of ensuring setup is complete before subscribing and sending syncable
         // mutations
+        XTFail("Not yet implemented")
         DispatchQueue.global().asyncAfter(deadline: .now() + 5.0) {
             // Simulate another system by creating, updating, and deleting a model directly via the API
 //            let newPost = Post(title: "Post title",

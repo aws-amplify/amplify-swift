@@ -34,11 +34,11 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
             return resultWithError
         }
 
-        let task = AWSS3TransferUtilityDownloadTask()
+        let task = MockTransferUtilityDownloadTask()
 
-        //let url = URL(fileURLWithPath: "path")
-        //let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
-        //task.response = response
+        let url = URL(fileURLWithPath: "path")
+        let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
+        task.response = response
 
         if let progressBlock = expression.progressBlock {
             progressBlock(task, Progress())
@@ -219,5 +219,21 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
 
         let result = AWSTask<AWSS3TransferUtilityMultiPartUploadTask>.init(result: task)
         return result
+    }
+}
+
+class MockTransferUtilityDownloadTask: AWSS3TransferUtilityDownloadTask {
+
+    var mockResponse: HTTPURLResponse?
+
+    override var response: HTTPURLResponse? {
+
+        get {
+            return mockResponse
+        }
+
+        set {
+            mockResponse = newValue
+        }
     }
 }

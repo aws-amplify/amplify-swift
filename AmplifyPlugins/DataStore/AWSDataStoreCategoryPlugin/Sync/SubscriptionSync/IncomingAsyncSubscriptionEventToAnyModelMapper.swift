@@ -29,7 +29,7 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
     // MARK: - Subscriber
 
     func receive(subscription: Subscription) {
-        log.info("received subscription: \(subscription)")
+        log.info("Received subscription: \(subscription)")
         self.subscription = subscription
         subscription.request(.max(1))
     }
@@ -39,7 +39,7 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
 
         switch input {
         case .completed:
-            log.debug("received completed event: \(input)")
+            log.debug("Received completed event: \(input)")
             modelsFromSubscription.send(completion: .finished)
         case .failed(let apiError):
             let dataStoreError = DataStoreError.api(apiError)
@@ -54,7 +54,7 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
     }
 
     func receive(completion: Subscribers.Completion<DataStoreError>) {
-        log.info("received completion: \(completion)")
+        log.info("Received completion: \(completion)")
     }
 
     // MARK: - Event processing
@@ -78,6 +78,13 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
         case .failure(let failure):
             log.error(error: failure)
         }
+    }
+
+    func reset(onComplete: () -> Void) {
+        modelsFromSubscription.send(completion: .finished)
+        subscription?.cancel()
+        subscription = nil
+        onComplete()
     }
 }
 

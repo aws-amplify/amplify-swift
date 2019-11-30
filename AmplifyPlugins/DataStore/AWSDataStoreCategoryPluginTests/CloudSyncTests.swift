@@ -35,11 +35,13 @@ class CloudSyncTests: XCTestCase {
         let storageEngine: StorageEngine
         do {
             let connection = try Connection(.inMemory)
-            let syncEngineFactory: CloudSyncEngineBehavior.Factory? = { adapter in
-                CloudSyncEngine(storageAdapter: adapter)
-            }
-            storageAdapter = SQLiteStorageEngineAdapter(connection: connection)
-            storageEngine = StorageEngine(adapter: storageAdapter, syncEngineFactory: syncEngineFactory)
+            storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
+            try storageAdapter.setUp(models: StorageEngine.systemModels)
+
+            let syncEngine = try CloudSyncEngine(storageAdapter: storageAdapter)
+            storageEngine = StorageEngine(storageAdapter: storageAdapter,
+                                          syncEngine: syncEngine,
+                                          isSyncEnabled: true)
         } catch {
             XCTFail(String(describing: error))
             return

@@ -29,4 +29,22 @@ final class IncomingMutationEventFacade {
         asyncEvents.subscribe(subscriber: mapper)
     }
 
+    func reset(onComplete: () -> Void) {
+        let group = DispatchGroup()
+
+        group.enter()
+        DispatchQueue.global().async {
+            self.asyncEvents.reset { group.leave() }
+        }
+
+        group.enter()
+        DispatchQueue.global().async {
+            self.mapper.reset { group.leave() }
+        }
+
+        group.wait()
+        onComplete()
+    }
+
+
 }
