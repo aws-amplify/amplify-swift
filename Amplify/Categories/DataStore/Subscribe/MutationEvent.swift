@@ -9,24 +9,27 @@ import Foundation
 
 public struct MutationEvent: Model {
     public let id: Identifier
-    public let modelName: String
-    public let json: String
-    public let mutationType: String
-    public let createdAt: Date
-    public let version: Int?
+    public var modelName: String
+    public var json: String
+    public var mutationType: String
+    public var createdAt: Date
+    public var version: Int?
+    public var inProcess: Bool
 
     public init(id: Identifier = UUID().uuidString,
                 modelName: String,
                 data: String,
                 mutationType: MutationType,
                 createdAt: Date = Date(),
-                version: Int? = nil) {
+                version: Int? = nil,
+                inProcess: Bool = false) {
         self.id = id
         self.modelName = modelName
         self.json = data
         self.mutationType = mutationType.rawValue
         self.createdAt = createdAt
         self.version = version
+        self.inProcess = inProcess
     }
 
     public init<M: Model>(model: M,

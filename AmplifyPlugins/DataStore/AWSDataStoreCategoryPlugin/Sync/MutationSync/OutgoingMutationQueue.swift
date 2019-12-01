@@ -151,6 +151,8 @@ final class OutgoingMutationQueue {
             SyncMutationToCloudOperation(mutationEvent: mutationEvent, api: api)
 
         operationQueue.addOperation(syncMutationToCloudOperation)
+
+        // TODO: We should only request the next event once the current event has finished
         requestEvent()
     }
 
@@ -159,7 +161,7 @@ final class OutgoingMutationQueue {
 @available(iOS 13.0, *)
 extension OutgoingMutationQueue: Subscriber {
     typealias Input = MutationEvent
-    typealias Failure = Never
+    typealias Failure = DataStoreError
 
     func receive(subscription: Subscription) {
         log.verbose(#function)
@@ -176,7 +178,7 @@ extension OutgoingMutationQueue: Subscriber {
     }
 
     // TODO: Resolve with an appropriate state machine notification
-    func receive(completion: Subscribers.Completion<Never>) {
+    func receive(completion: Subscribers.Completion<DataStoreError>) {
         log.verbose(#function)
         subscription?.cancel()
     }

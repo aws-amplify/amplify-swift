@@ -346,6 +346,13 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         let result = resultForQuery ?? .failure(DataStoreError.invalidOperation(causedBy: nil))
         completion(result)
     }
+    func query<M: Model>(_ modelType: M.Type,
+                         predicate: QueryPredicate?,
+                         additionalStatements: String?,
+                         completion: (Result<[M], DataStoreError>) -> Void) {
+        completion(.failure(DataStoreError.invalidOperation(causedBy: nil)))
+    }
+
 }
 class MockStorageEngineBehavior: StorageEngineBehavior {
     func startSync() {

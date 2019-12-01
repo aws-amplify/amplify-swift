@@ -20,10 +20,10 @@ final class StorageEngine: StorageEngineBehavior {
 
     private weak var api: APICategoryGraphQLBehavior?
 
-    // TODO: Find the right place to do this
     static var systemModels: [Model.Type] {
         return [
-            MutationEvent.self
+            MutationEvent.self,
+            MutationSyncMetadata.self
         ]
     }
 

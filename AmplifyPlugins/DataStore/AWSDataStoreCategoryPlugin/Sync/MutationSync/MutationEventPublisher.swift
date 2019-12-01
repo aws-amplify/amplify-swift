@@ -11,98 +11,83 @@ import Combine
 /// Publishes mutation events to downstream subscribers for subsequent sync to the API.
 @available(iOS 13, *)
 protocol MutationEventPublisher: class {
-    var publisher: AnyPublisher<MutationEvent, Never> { get }
+    var publisher: AnyPublisher<MutationEvent, DataStoreError> { get }
 }
 
+/// Note: This publisher accepts only a single subscriber
 @available(iOS 13, *)
-protocol MutationEventSubject: class {
-    func publish(mutationEvent: MutationEvent)
-}
+final class AWSMutationEventPublisher: Publisher {
+    typealias Output = MutationEvent
+    typealias Failure = DataStoreError
 
-/// Publishes incoming mutation events so downstream subscribers can deliver them to a cloud API
-///
-/// Internally, this class buffers incoming events until a subscription request is received. At that time, a publisher
-/// is created that
-@available(iOS 13, *)
-final class AWSMutationEventPublisher: MutationEventPublisher, MutationEventSubject {
+    private var subscription: MutationEventSubscription?
+    weak var eventSource: MutationEventSource?
 
-    private enum IncomingEventDestination {
-        case buffer
-        case subject
+    init(eventSource: MutationEventSource) {
+        log.verbose(#function)
+        self.eventSource = eventSource
     }
 
-    /// Synchronizes submitting events and creating the publisher
-    private let workQueue = DispatchQueue(label: "com.amazonaws.AWSMutationEventPublisher",
-                                          target: DispatchQueue.global())
+    /// Receives a new subscriber, completing and dropping the old one if present
+    func receive<S>(subscriber: S) where S: Subscriber, Failure == S.Failure, Output == S.Input {
+        log.verbose(#function)
+        subscription?.subscriber.receive(completion: .finished)
 
-    /// Routes incoming events to the appropriate receiver
-    private var incomingEventDestination: IncomingEventDestination
-
-    /// Events received prior to a downstream subscription request are buffered in this array
-    private var eventBuffer: [MutationEvent]
-
-    /// Events received after the subscription are passed through to this subject
-    private let subject: PassthroughSubject<MutationEvent, Never>
-
-    /// Lazily inits a `Deferred` publisher which loads mutation events from the database and delivers them, prior to
-    /// delivering new events via a passthrough subject.
-    private var _publisher: AnyPublisher<MutationEvent, Never>?
-    var publisher: AnyPublisher<MutationEvent, Never> {
-        workQueue.sync {
-            if let publisher = _publisher {
-                return publisher
-            }
-
-            log.verbose("Creating publisher")
-            let publisher = Deferred {
-                self.workQueue.sync {
-                    self.createPublisher()
-                }
-            }.eraseToAnyPublisher()
-            _publisher = publisher
-            return publisher
-        }
+        let subscription = MutationEventSubscription(subscriber: subscriber, publisher: self)
+        self.subscription = subscription
+        subscriber.receive(subscription: subscription)
     }
 
-    init() {
-        self.eventBuffer = [MutationEvent]()
-        self.subject = PassthroughSubject<MutationEvent, Never>()
-        self.incomingEventDestination = .buffer
-        log.verbose("Initialized")
+    func cancel() {
+        subscription = nil
     }
 
-    /// Publishes a mutationEvent to the PassthroughSubject. If there are no subscribers, this event is silently
-    /// dropped, but since it has already been saved to disk, it will be handled whenever the OutgoingMutationQueue
-    /// subscribes to us.
-    ///
-    /// Internally, this method blocks on `workQueue` to ensure synchronization the subscription request and the
-    /// changeover from buffered events to a passthrough subject
-    func publish(mutationEvent: MutationEvent) {
-        workQueue.sync {
-            switch incomingEventDestination {
-            case .buffer:
-                log.verbose("Buffering: \(mutationEvent)")
-                eventBuffer.append(mutationEvent)
-            case .subject:
-                log.verbose("Passing through to subject: \(mutationEvent)")
-                subject.send(mutationEvent)
-            }
-        }
-    }
-
-    /// This method must be invoked from the `workQueue`, exactly once, when the publisher is first created.
-    private func createPublisher() -> AnyPublisher<MutationEvent, Never> {
-        log.verbose("Creating publisher with \(eventBuffer.count) buffered events")
-        let eventBufferSequence = Publishers.Sequence<[MutationEvent], Never>(sequence: eventBuffer)
-        let publisher = Publishers.Concatenate(prefix: eventBufferSequence, suffix: subject)
-            .eraseToAnyPublisher()
-        incomingEventDestination = .subject
-        return publisher
-    }
-
-    func reset(onComplete: () -> Void) {
-        subject.send(completion: .finished)
+    func reset(onComplete: BasicClosure) {
+        subscription = nil
+        eventSource = nil
         onComplete()
+    }
+
+    func request(_ demand: Subscribers.Demand) {
+        guard demand != .none else {
+            return
+        }
+
+        if let max = demand.max, max < 1 {
+            return
+        }
+
+        requestNextEvent()
+    }
+
+    func requestNextEvent() {
+        let promise: DataStoreCallback<MutationEvent> = { [weak self] result in
+            guard let self = self, let subscriber = self.subscription?.subscriber else {
+                return
+            }
+
+            switch result {
+            case .failure(let dataStoreError):
+                subscriber.receive(completion: .failure(dataStoreError))
+            case .success(let mutationEvent):
+                let demand = subscriber.receive(mutationEvent)
+                DispatchQueue.global().async {
+                    self.request(demand)
+                }
+            }
+        }
+
+        DispatchQueue.global().async {
+            self.eventSource?.getNextMutationEvent(completion: promise)
+        }
+    }
+
+}
+
+@available(iOS 13.0, *)
+extension AWSMutationEventPublisher: MutationEventPublisher {
+    var publisher: AnyPublisher<MutationEvent, DataStoreError> {
+        eraseToAnyPublisher()
     }
 }
 

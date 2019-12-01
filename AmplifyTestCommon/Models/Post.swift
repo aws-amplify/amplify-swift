@@ -8,8 +8,7 @@
 import Amplify
 import Foundation
 
-// TODO: Remove once we remove _version
-// swiftlint:disable identifier_name
+// swiftlint:disable all
 public struct Post: Model {
 
     public let id: String
@@ -28,8 +27,6 @@ public struct Post: Model {
                 updatedAt: Date? = nil,
                 rating: Double? = nil,
                 draft: Bool? = nil,
-                _version: Int? = nil,
-                _deleted: Bool? = nil,
                 comments: List<Comment> = []) {
         self.id = id
         self.title = title
