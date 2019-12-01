@@ -33,6 +33,7 @@ jobs:
   unit_test:
     <<: *defaults
     working_directory: ~/amplify-ios/AmplifyPlugins
+    steps:
       - run: ls -alF
       - run: pod --version
 
