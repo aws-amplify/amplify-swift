@@ -18,6 +18,10 @@ class GraphQLSubscriptionTests: XCTestCase {
         ModelRegistry.register(modelType: Post.self)
     }
 
+    override func tearDown() {
+        ModelRegistry.reset()
+    }
+
     // MARK: - Subscriptions
 
     /// - Given: a `Model` type
@@ -29,7 +33,7 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testOnCreateGraphQLSubscriptionFromSimpleModel() {
         let document = GraphQLSubscription(of: Post.self, type: .onCreate)
-        let expected = """
+        let expectedQueryDocument = """
         subscription OnCreatePost {
           onCreatePost {
             id
@@ -48,7 +52,7 @@ class GraphQLSubscriptionTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "onCreatePost")
         XCTAssertEqual(document.decodePath, "onCreatePost")
-        XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.variables.count, 0)
 
     }
@@ -63,7 +67,7 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testOnCreateGraphQLSubscriptionFromModelWithAssociation() {
         let document = GraphQLSubscription(of: Comment.self, type: .onCreate)
-        let expected = """
+        let expectedQueryDocument = """
         subscription OnCreateComment {
           onCreateComment {
             id
@@ -91,7 +95,7 @@ class GraphQLSubscriptionTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "onCreateComment")
         XCTAssertEqual(document.decodePath, "onCreateComment")
-        XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.variables.count, 0)
     }
 
@@ -104,7 +108,7 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testOnUpdateGraphQLSubscriptionFromSimpleModel() {
         let document = GraphQLSubscription(of: Post.self, type: .onUpdate)
-        let expected = """
+        let expectedQueryDocument = """
         subscription OnUpdatePost {
           onUpdatePost {
             id
@@ -123,7 +127,7 @@ class GraphQLSubscriptionTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "onUpdatePost")
         XCTAssertEqual(document.decodePath, "onUpdatePost")
-        XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.variables.count, 0)
     }
 
@@ -136,7 +140,7 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testOnDeleteGraphQLSubscriptionFromSimpleModel() {
         let document = GraphQLSubscription(of: Post.self, type: .onDelete)
-        let expected = """
+        let expectedQueryDocument = """
         subscription OnDeletePost {
           onDeletePost {
             id
@@ -155,7 +159,7 @@ class GraphQLSubscriptionTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "onDeletePost")
         XCTAssertEqual(document.decodePath, "onDeletePost")
-        XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.variables.count, 0)
     }
 

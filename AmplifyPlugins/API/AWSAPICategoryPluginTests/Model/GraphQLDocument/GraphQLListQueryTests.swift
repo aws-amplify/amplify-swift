@@ -18,6 +18,10 @@ class GraphQLListQueryTests: XCTestCase {
         ModelRegistry.register(modelType: Post.self)
     }
 
+    override func tearDown() {
+        ModelRegistry.reset()
+    }
+
     /// - Given: a `Model` type
     /// - When:
     ///   - the model is of type `Post`
@@ -33,7 +37,7 @@ class GraphQLListQueryTests: XCTestCase {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
         let document = GraphQLListQuery(from: Post.self, predicate: predicate)
-        let expected = """
+        let expectedQueryDocument = """
         query ListPosts($filter: ModelPostFilterInput, $limit: Int, $nextToken: String) {
           listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
             items {
@@ -55,7 +59,7 @@ class GraphQLListQueryTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "listPosts")
         XCTAssertEqual(document.decodePath, "listPosts.items")
-        XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertNotNil(document.variables)
         XCTAssertNotNil(document.variables["limit"])
         XCTAssertEqual(document.variables["limit"] as? Int, 1_000)

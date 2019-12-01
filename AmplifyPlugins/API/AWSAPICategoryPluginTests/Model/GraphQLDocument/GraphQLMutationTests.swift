@@ -18,6 +18,10 @@ class GraphQLMutationTests: XCTestCase {
         ModelRegistry.register(modelType: Post.self)
     }
 
+    override func tearDown() {
+        ModelRegistry.reset()
+    }
+
     /// - Given: a `Model` instance
     /// - When:
     ///   - the model is of type `Post`
@@ -31,7 +35,7 @@ class GraphQLMutationTests: XCTestCase {
     func testCreateGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content")
         let document = GraphQLMutation(of: post, type: .create)
-        let expected = """
+        let expectedQueryDocument = """
         mutation CreatePost($input: CreatePostInput!) {
           createPost(input: $input) {
             id
@@ -50,7 +54,7 @@ class GraphQLMutationTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "createPost")
         XCTAssertEqual(document.decodePath, "createPost")
-        XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "createPost")
         XCTAssertNotNil(document.variables["input"])
         guard let input = document.variables["input"] as? [String: Any] else {
@@ -75,7 +79,7 @@ class GraphQLMutationTests: XCTestCase {
         let post = Post(title: "title", content: "content")
         let comment = Comment(content: "comment", post: post)
         let document = GraphQLMutation(of: comment, type: .create)
-        let expected = """
+        let expectedQueryDocument = """
         mutation CreateComment($input: CreateCommentInput!) {
           createComment(input: $input) {
             id
@@ -103,7 +107,7 @@ class GraphQLMutationTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "createComment")
         XCTAssertEqual(document.decodePath, "createComment")
-        XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "createComment")
         guard let input = document.variables["input"] as? GraphQLInput else {
             XCTFail("Variables should contain a valid input")
@@ -125,7 +129,7 @@ class GraphQLMutationTests: XCTestCase {
     func testUpdateGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content")
         let document = GraphQLMutation(of: post, type: .update)
-        let expected = """
+        let expectedQueryDocument = """
         mutation UpdatePost($input: UpdatePostInput!) {
           updatePost(input: $input) {
             id
@@ -144,7 +148,7 @@ class GraphQLMutationTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "updatePost")
         XCTAssertEqual(document.decodePath, "updatePost")
-        XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "updatePost")
         XCTAssertNotNil(document.variables["input"])
         guard let input = document.variables["input"] as? [String: Any] else {
@@ -168,7 +172,7 @@ class GraphQLMutationTests: XCTestCase {
     func testDeleteGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content")
         let document = GraphQLMutation(of: post, type: .delete)
-        let expected = """
+        let expectedQueryDocument = """
         mutation DeletePost($input: DeletePostInput!) {
           deletePost(input: $input) {
             id
@@ -187,7 +191,7 @@ class GraphQLMutationTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "deletePost")
         XCTAssertEqual(document.decodePath, "deletePost")
-        XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "deletePost")
         XCTAssert(document.variables["input"] != nil)
         guard let input = document.variables["input"] as? [String: String] else {

@@ -12,22 +12,25 @@ import XCTest
 
 class GraphQLDocumentTests: XCTestCase {
 
+    override func tearDown() {
+        ModelRegistry.reset()
+    }
+
     func testSelectionSetFieldsForNotSyncableModels() {
         ModelRegistry.register(modelType: CommentNoSync.self)
         ModelRegistry.register(modelType: PostNoSync.self)
 
-        let document = GraphQLGetQuery(from: Post.self, id: "id")
-        let expected = ["id",
-                        "content",
-                        "createdAt",
-                        "draft",
-                        "rating",
-                        "title",
-                        "updatedAt",
-                        "__typename"]
+        let document = GraphQLGetQuery(from: PostNoSync.self, id: "id")
+        let expectedSelectionSet = ["id",
+                                    "content",
+                                    "createdAt",
+                                    "draft",
+                                    "rating",
+                                    "title",
+                                    "updatedAt",
+                                    "__typename"]
 
-        XCTAssertEqual(document.selectionSetFields, expected)
-        ModelRegistry.reset()
+        XCTAssertEqual(document.selectionSetFields, expectedSelectionSet)
     }
 
     func testSelectionSetFieldsForSyncableModels() {
@@ -35,20 +38,18 @@ class GraphQLDocumentTests: XCTestCase {
         ModelRegistry.register(modelType: Post.self)
 
         let document = GraphQLGetQuery(from: Post.self, id: "id")
-        let expected = ["id",
-                        "content",
-                        "createdAt",
-                        "draft",
-                        "rating",
-                        "title",
-                        "updatedAt",
-                        "__typename",
-                        "_version",
-                        "_deleted",
-                        "_lastChangedAt"]
+        let expectedSelectionSet = ["id",
+                                    "content",
+                                    "createdAt",
+                                    "draft",
+                                    "rating",
+                                    "title",
+                                    "updatedAt",
+                                    "__typename",
+                                    "_version",
+                                    "_deleted",
+                                    "_lastChangedAt"]
 
-        XCTAssertEqual(document.selectionSetFields, expected)
-        ModelRegistry.reset()
+        XCTAssertEqual(document.selectionSetFields, expectedSelectionSet)
     }
-
 }

@@ -18,6 +18,10 @@ class GraphQLRequestModelTests: XCTestCase {
         ModelRegistry.register(modelType: Post.self)
     }
 
+    override func tearDown() {
+        ModelRegistry.reset()
+    }
+
     /// - Given: a `Model` instance
     /// - When:
     ///   - the model is a `Post`

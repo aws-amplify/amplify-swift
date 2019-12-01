@@ -18,6 +18,10 @@ class GraphQLSyncQueryTests: XCTestCase {
         ModelRegistry.register(modelType: Post.self)
     }
 
+    override func tearDown() {
+        ModelRegistry.reset()
+    }
+
     /// - Given: a `Model` type
     /// - When:
     ///   - the model is of type `Post`
@@ -32,7 +36,7 @@ class GraphQLSyncQueryTests: XCTestCase {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
         let document = GraphQLSyncQuery(from: Post.self, predicate: predicate, lastSync: 123)
-        let expected = """
+        let expectedQueryDocument = """
         query SyncPosts($filter: ModelPostFilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp) {
           syncPosts(filter: $filter, limit: $limit, nextToken: $nextToken, lastSync: $lastSync) {
             items {
@@ -52,7 +56,7 @@ class GraphQLSyncQueryTests: XCTestCase {
           }
         }
         """
-        XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertNotNil(document.variables)
         XCTAssertNotNil(document.variables["limit"])
         XCTAssertEqual(document.variables["limit"] as? Int, 1_000)

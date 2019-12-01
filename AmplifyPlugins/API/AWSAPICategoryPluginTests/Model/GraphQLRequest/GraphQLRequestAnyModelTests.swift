@@ -17,6 +17,10 @@ class GraphQLRequestAnyModelTests: XCTestCase {
         ModelRegistry.register(modelType: Post.self)
     }
 
+    override func tearDown() {
+        ModelRegistry.reset()
+    }
+
     // MARK: - Mutations
 
     func testCreateGraphQLMutationFromSimpleModel() throws {

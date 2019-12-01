@@ -31,7 +31,7 @@ class GraphQLGetQueryTests: XCTestCase {
     ///     - it has variables containing `id`
     func testGetGraphQLQueryFromSimpleModel() {
         let document = GraphQLGetQuery(from: Post.self, id: "id")
-        let expected = """
+        let expectedQueryDocument = """
         query GetPost($id: ID!) {
           getPost(id: $id) {
             id
@@ -50,7 +50,7 @@ class GraphQLGetQueryTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "getPost")
         XCTAssertEqual(document.decodePath, "getPost")
-        XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.variables["id"] as? String, "id")
     }
 
@@ -66,7 +66,7 @@ class GraphQLGetQueryTests: XCTestCase {
     ///     - it has a list of fields with a nested `post`
     func testGetGraphQLQueryFromModelWithAssociation() {
         let document = GraphQLGetQuery(from: Comment.self, id: "id")
-        let expected = """
+        let expectedQueryDocument = """
         query GetComment($id: ID!) {
           getComment(id: $id) {
             id
@@ -94,7 +94,7 @@ class GraphQLGetQueryTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "getComment")
         XCTAssertEqual(document.decodePath, "getComment")
-        XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.variables["id"] as? String, "id")
     }
 

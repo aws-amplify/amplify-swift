@@ -17,6 +17,10 @@ class GraphQLSyncMutationTests: XCTestCase {
         ModelRegistry.register(modelType: Post.self)
     }
 
+    override func tearDown() {
+        ModelRegistry.reset()
+    }
+
     /// - Given: a `Model` instance
     /// - When:
     ///   - the model is of type `Post`
@@ -30,7 +34,7 @@ class GraphQLSyncMutationTests: XCTestCase {
     func testCreateGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content")
         let document = GraphQLSyncMutation(of: post, type: .create, version: 5)
-        let expected = """
+        let expectedQueryDocument = """
         mutation CreatePost($input: CreatePostInput!) {
           createPost(input: $input) {
             id
@@ -49,7 +53,7 @@ class GraphQLSyncMutationTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "createPost")
         XCTAssertEqual(document.decodePath, "createPost")
-        XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "createPost")
         XCTAssertNotNil(document.variables["input"])
         guard let input = document.variables["input"] as? [String: Any] else {
@@ -75,7 +79,7 @@ class GraphQLSyncMutationTests: XCTestCase {
         let post = Post(title: "title", content: "content")
         let comment = Comment(content: "comment", post: post)
         let document = GraphQLSyncMutation(of: comment, type: .create, version: 5)
-        let expected = """
+        let expectedQueryDocument = """
         mutation CreateComment($input: CreateCommentInput!) {
           createComment(input: $input) {
             id
@@ -103,7 +107,7 @@ class GraphQLSyncMutationTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "createComment")
         XCTAssertEqual(document.decodePath, "createComment")
-        XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "createComment")
         guard let input = document.variables["input"] as? GraphQLInput else {
             XCTFail("Variables should contain a valid input")
@@ -126,7 +130,7 @@ class GraphQLSyncMutationTests: XCTestCase {
     func testUpdateGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content")
         let document = GraphQLSyncMutation(of: post, type: .update, version: 5)
-        let expected = """
+        let expectedQueryDocument = """
         mutation UpdatePost($input: UpdatePostInput!) {
           updatePost(input: $input) {
             id
@@ -145,7 +149,7 @@ class GraphQLSyncMutationTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "updatePost")
         XCTAssertEqual(document.decodePath, "updatePost")
-        XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "updatePost")
         XCTAssertNotNil(document.variables["input"])
         guard let input = document.variables["input"] as? [String: Any] else {
@@ -170,7 +174,7 @@ class GraphQLSyncMutationTests: XCTestCase {
     func testDeleteGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content")
         let document = GraphQLSyncMutation(of: post, type: .delete, version: 5)
-        let expected = """
+        let expectedQueryDocument = """
         mutation DeletePost($input: DeletePostInput!) {
           deletePost(input: $input) {
             id
@@ -189,7 +193,7 @@ class GraphQLSyncMutationTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "deletePost")
         XCTAssertEqual(document.decodePath, "deletePost")
-        XCTAssertEqual(document.stringValue, expected)
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "deletePost")
         XCTAssert(document.variables["input"] != nil)
         guard let input = document.variables["input"] as? [String: Any] else {
