@@ -2,10 +2,24 @@
 
 version: 2.1
 
+defaults: &defaults
+  macos:
+    xcode: "11.2.1"
+
+commands:
+  pre_start_simulator:
+    description: >-
+      pre start simulator, build may fail is simulator is not started
+    steps:
+      - run:
+          name: pre-start simulator
+          command: |
+            bash CircleciScripts/pre_start_simulator.sh
+
 jobs:
-  build:
-    macos:
-      xcode: "11.2.1"
+  build_amplify:
+    <<: *defaults
+    working_directory: ~/amplify-ios
     steps:
       - checkout
       - run:
@@ -13,12 +27,27 @@ jobs:
           command: |
             curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
             pod install
+      - pre_start_simulator
       - run:
           name: build amplify
-          command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator
+          command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
+      - persist_to_workspace:
+          root: /root
+          paths: amplify-ios
+  unit_test:
+    <<: *defaults
+    working_directory: ~/amplify-ios/AmplifyPlugins
+    steps:
+      - attach_workspace:
+          at: /root
+      - run: ls -alF
+
 
 workflows:
   version: 2
-  build: 
-      jobs:
-        - build
+  build_test:
+    jobs:
+      - build_amplify
+      - unit_test:
+          requires:
+              - build_amplify
