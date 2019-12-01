@@ -1,4 +1,4 @@
-type Post @model {
+type PostNoSync @model {
     id: ID!
     title: String!
     content: String!
@@ -6,12 +6,12 @@ type Post @model {
     updatedAt: AWSDateTime
     draft: Boolean
     rating: Float
-    comments: [Comment] @connection(name: "PostComment")
+    commentNoSyncs: [CommentNoSync] @connection(name: "PostNoSyncCommentNoSync")
 }
 
-type Comment @model {
+type CommentNoSync @model {
     id: ID!
     content: String!
     createdAt: AWSDateTime!
-    post: Post @connection(name: "PostComment")
+    postNoSync: PostNoSync @connection(name: "PostNoSyncCommentNoSync")
 }

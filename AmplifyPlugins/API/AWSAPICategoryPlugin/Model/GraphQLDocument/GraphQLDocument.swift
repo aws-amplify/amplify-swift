@@ -66,6 +66,11 @@ extension GraphQLDocument {
                 }
             }
             fieldSet.append(indent + "__typename")
+            if ModelRegistry.hasSyncableModels {
+                fieldSet.append(indent + "_version")
+                fieldSet.append(indent + "_deleted")
+                fieldSet.append(indent + "_lastChangedAt")
+            }
         }
         appendFields(schema.graphQLFields)
         return fieldSet

@@ -15,6 +15,10 @@
 		210DBC142332B3C6009B9E51 /* StorageGetURLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC132332B3C6009B9E51 /* StorageGetURLOperation.swift */; };
 		210DBC162332B3CB009B9E51 /* StorageDownloadDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC152332B3CB009B9E51 /* StorageDownloadDataOperation.swift */; };
 		210DBC472332F0C5009B9E51 /* StorageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC462332F0C5009B9E51 /* StorageError.swift */; };
+		211A38972391FE5D00726AC9 /* PostNoSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A38962391FE5D00726AC9 /* PostNoSync.swift */; };
+		211A38992391FE7900726AC9 /* CommentNoSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A38982391FE7900726AC9 /* CommentNoSync.swift */; };
+		211A389B2391FEA200726AC9 /* CommentNoSync+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A389A2391FEA200726AC9 /* CommentNoSync+Schema.swift */; };
+		211A389D2391FEDD00726AC9 /* PostNoSync+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A389C2391FEDD00726AC9 /* PostNoSync+Schema.swift */; };
 		2125E2542319EC3100B3DEB5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2532319EC3100B3DEB5 /* AppDelegate.swift */; };
 		2125E2562319EC3100B3DEB5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2552319EC3100B3DEB5 /* ViewController.swift */; };
 		2125E2592319EC3100B3DEB5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2125E2572319EC3100B3DEB5 /* Main.storyboard */; };
@@ -45,6 +49,7 @@
 		2144226E234BDE23009357F7 /* StorageUploadFileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2144226D234BDE23009357F7 /* StorageUploadFileOperation.swift */; };
 		21558E3E237BB4BF0032A5BB /* GraphQLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */; };
 		21558E40237CB8640032A5BB /* GraphQLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21558E3F237CB8640032A5BB /* GraphQLError.swift */; };
+		216201E12392031A00AB2E10 /* noSyncSchema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 216201E02392031A00AB2E10 /* noSyncSchema.graphql */; };
 		216879FE23636A0A004A056E /* RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216879FD23636A0A004A056E /* RepeatingTimer.swift */; };
 		21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A3D236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift */; };
 		21687A41236371E1004A056E /* AnalyticsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A40236371E1004A056E /* AnalyticsError.swift */; };
@@ -456,6 +461,10 @@
 		210DBC132332B3C6009B9E51 /* StorageGetURLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageGetURLOperation.swift; sourceTree = "<group>"; };
 		210DBC152332B3CB009B9E51 /* StorageDownloadDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageDownloadDataOperation.swift; sourceTree = "<group>"; };
 		210DBC462332F0C5009B9E51 /* StorageError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageError.swift; sourceTree = "<group>"; };
+		211A38962391FE5D00726AC9 /* PostNoSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostNoSync.swift; sourceTree = "<group>"; };
+		211A38982391FE7900726AC9 /* CommentNoSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentNoSync.swift; sourceTree = "<group>"; };
+		211A389A2391FEA200726AC9 /* CommentNoSync+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CommentNoSync+Schema.swift"; sourceTree = "<group>"; };
+		211A389C2391FEDD00726AC9 /* PostNoSync+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PostNoSync+Schema.swift"; sourceTree = "<group>"; };
 		2125E20D2318CD3900B3DEB5 /* MockAWSMobileClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAWSMobileClient.swift; sourceTree = "<group>"; };
 		2125E2102318D73B00B3DEB5 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		2125E2512319EC3000B3DEB5 /* AmplifyTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmplifyTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -492,6 +501,7 @@
 		21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequest.swift; sourceTree = "<group>"; };
 		21558E3F237CB8640032A5BB /* GraphQLError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLError.swift; sourceTree = "<group>"; };
 		215F4BCAAB89FA54AA121BDE /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
+		216201E02392031A00AB2E10 /* noSyncSchema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = noSyncSchema.graphql; sourceTree = "<group>"; };
 		216879FD23636A0A004A056E /* RepeatingTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepeatingTimer.swift; sourceTree = "<group>"; };
 		21687A3D236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AnalyticsCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		21687A40236371E1004A056E /* AnalyticsError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsError.swift; sourceTree = "<group>"; };
@@ -1033,6 +1043,18 @@
 			path = Event;
 			sourceTree = "<group>";
 		};
+		211A38952391FE4300726AC9 /* NotSyncable */ = {
+			isa = PBXGroup;
+			children = (
+				211A38982391FE7900726AC9 /* CommentNoSync.swift */,
+				211A389A2391FEA200726AC9 /* CommentNoSync+Schema.swift */,
+				211A38962391FE5D00726AC9 /* PostNoSync.swift */,
+				211A389C2391FEDD00726AC9 /* PostNoSync+Schema.swift */,
+				216201E02392031A00AB2E10 /* noSyncSchema.graphql */,
+			);
+			path = NotSyncable;
+			sourceTree = "<group>";
+		};
 		2125E2522319EC3100B3DEB5 /* AmplifyTestApp */ = {
 			isa = PBXGroup;
 			children = (
@@ -1428,6 +1450,7 @@
 		B952182D237E21B900F53237 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				211A38952391FE4300726AC9 /* NotSyncable */,
 				B9FAA10C23878BD6009414B4 /* Associations */,
 				B9521830237E21B900F53237 /* Comment.swift */,
 				B952182E237E21B900F53237 /* Comment+Schema.swift */,
@@ -2564,6 +2587,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				216201E12392031A00AB2E10 /* noSyncSchema.graphql in Resources */,
 				B9521834237E21BA00F53237 /* schema.graphql in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3418,6 +3442,7 @@
 				B4BD6B3723708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift in Sources */,
 				FACA361C2327FC7D000E74F6 /* MockHubCategoryPlugin.swift in Sources */,
 				FAD3937F23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift in Sources */,
+				211A389D2391FEDD00726AC9 /* PostNoSync+Schema.swift in Sources */,
 				FACA361A2327FC69000E74F6 /* MockStorageCategoryPlugin.swift in Sources */,
 				B9521837237E21BA00F53237 /* Post.swift in Sources */,
 				B9FAA11A23879AC8009414B4 /* BookAuthor.swift in Sources */,
@@ -3425,9 +3450,12 @@
 				FACA361B2327FC74000E74F6 /* MockLoggingCategoryPlugin.swift in Sources */,
 				FACF52042329633500646E10 /* TestExtensions.swift in Sources */,
 				B9FAA11823879A57009414B4 /* Author+Schema.swift in Sources */,
+				211A389B2391FEA200726AC9 /* CommentNoSync+Schema.swift in Sources */,
 				B9521836237E21BA00F53237 /* Post+Schema.swift in Sources */,
 				B9FAA11223878C96009414B4 /* UserAccount+Schema.swift in Sources */,
 				FACA36152327FC39000E74F6 /* MessageReporter.swift in Sources */,
+				211A38972391FE5D00726AC9 /* PostNoSync.swift in Sources */,
+				211A38992391FE7900726AC9 /* CommentNoSync.swift in Sources */,
 				B9FAA11C23879B35009414B4 /* Book.swift in Sources */,
 				B9FAA11423878CEA009414B4 /* UserProfile+Schema.swift in Sources */,
 				FACA361D2327FC84000E74F6 /* MockAPICategoryPlugin.swift in Sources */,
