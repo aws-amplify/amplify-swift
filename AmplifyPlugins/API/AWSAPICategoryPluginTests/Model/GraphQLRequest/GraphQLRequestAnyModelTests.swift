@@ -10,13 +10,15 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSAPICategoryPlugin
 
-// TODO: Refactor these tests to share the same execution code
-// Shadows tests in the GraphQLDocumentTests suite, but replaces the original models with type erased models
-class GraphQLAnyModelDocumentTests: XCTestCase {
+class GraphQLRequestAnyModelTests: XCTestCase {
 
     override func setUp() {
         ModelRegistry.register(modelType: Comment.self)
         ModelRegistry.register(modelType: Post.self)
+    }
+
+    override func tearDown() {
+        ModelRegistry.reset()
     }
 
     // MARK: - Mutations
@@ -24,49 +26,24 @@ class GraphQLAnyModelDocumentTests: XCTestCase {
     func testCreateGraphQLMutationFromSimpleModel() throws {
         let originalPost = Post(title: "title", content: "content")
         let anyPost = try originalPost.eraseToAnyModel()
+
         let document = GraphQLMutation(of: anyPost, type: .create)
-        let expected = """
-        mutation CreatePost($input: CreatePostInput!) {
-          createPost(input: $input) {
-            id
-            _deleted
-            _version
-            content
-            createdAt
-            draft
-            rating
-            title
-            updatedAt
-            __typename
-          }
-        }
-        """
-        XCTAssertEqual(document.stringValue, expected)
+
         XCTAssertEqual(document.name, "createPost")
+        XCTAssertEqual(document.decodePath, "createPost")
+        XCTAssertNotNil(document.stringValue)
         XCTAssertNotNil(document.variables["input"])
     }
 
     func testUpdateGraphQLMutationFromSimpleModel() throws {
         let originalPost = Post(title: "title", content: "content")
         let anyPost = try originalPost.eraseToAnyModel()
+
         let document = GraphQLMutation(of: anyPost, type: .update)
-        let expected = """
-        mutation UpdatePost($input: UpdatePostInput!) {
-          updatePost(input: $input) {
-            id
-            _deleted
-            _version
-            content
-            createdAt
-            draft
-            rating
-            title
-            updatedAt
-            __typename
-          }
-        }
-        """
-        XCTAssertEqual(document.stringValue, expected)
+
+        XCTAssertEqual(document.name, "updatePost")
+        XCTAssertEqual(document.decodePath, "updatePost")
+        XCTAssertNotNil(document.stringValue)
         XCTAssertEqual(document.name, "updatePost")
         XCTAssertNotNil(document.variables["input"])
     }
@@ -75,24 +52,11 @@ class GraphQLAnyModelDocumentTests: XCTestCase {
         let originalPost = Post(title: "title", content: "content")
         let anyPost = try originalPost.eraseToAnyModel()
         let document = GraphQLMutation(of: anyPost, type: .delete)
-        let expected = """
-        mutation DeletePost($input: DeletePostInput!) {
-          deletePost(input: $input) {
-            id
-            _deleted
-            _version
-            content
-            createdAt
-            draft
-            rating
-            title
-            updatedAt
-            __typename
-          }
-        }
-        """
-        XCTAssertEqual(document.stringValue, expected)
+
         XCTAssertEqual(document.name, "deletePost")
+        XCTAssertEqual(document.decodePath, "deletePost")
+        XCTAssertNotNil(document.stringValue)
+        XCTAssertNotNil(document.variables["input"])
         XCTAssert(document.variables["input"] != nil)
         guard let input = document.variables["input"] as? [String: String] else {
             XCTFail("Could not get object at `input`")
@@ -101,7 +65,7 @@ class GraphQLAnyModelDocumentTests: XCTestCase {
         XCTAssertEqual(input["id"], originalPost.id)
     }
 
-    // MARK: - GraphQLRequest+Model
+    // MARK: - GraphQLRequest+AnyModel
 
     func testCreateMutationGraphQLRequest() throws {
         let originalPost = Post(title: "title", content: "content")
@@ -114,13 +78,6 @@ class GraphQLAnyModelDocumentTests: XCTestCase {
 
         // test the input
         XCTAssert(request.variables != nil)
-
-        guard let input = request.variables?["input"] as? [String: Any] else {
-            XCTFail("The request variables property doesn't contain a valid input")
-            return
-        }
-        XCTAssert(input["title"] as? String == originalPost.title)
-        XCTAssert(input["content"] as? String == originalPost.content)
     }
 
     func testCreateSubscriptionGraphQLRequest() throws {

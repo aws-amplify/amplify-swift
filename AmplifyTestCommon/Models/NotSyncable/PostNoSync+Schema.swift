@@ -10,7 +10,7 @@ import Foundation
 
 // TODO: Remove once we remove _version
 // swiftlint:disable identifier_name
-extension Post {
+extension PostNoSync {
 
     // MARK: - CodingKeys
     public enum CodingKeys: String, ModelKey {
@@ -21,7 +21,7 @@ extension Post {
         case updatedAt
         case rating
         case draft
-        case comments
+        case commentNoSyncs
     }
 
     public static let keys = CodingKeys.self
@@ -29,10 +29,9 @@ extension Post {
     // MARK: - ModelSchema
 
     public static let schema = defineSchema { model in
-        let post = Post.keys
+        let post = PostNoSync.keys
 
-        model.pluralName = "Posts"
-        model.attributes(.isSyncable)
+        model.pluralName = "PostNoSyncs"
 
         model.fields(
             .id(),
@@ -43,9 +42,9 @@ extension Post {
             .field(post.rating, is: .optional, ofType: .double),
             .field(post.draft, is: .optional, ofType: .bool),
 
-            .hasMany(post.comments,
-                     ofType: Comment.self,
-                     associatedWith: Comment.keys.post)
+            .hasMany(post.commentNoSyncs,
+                     ofType: CommentNoSync.self,
+                     associatedWith: CommentNoSync.keys.postNoSync)
         )
     }
 
