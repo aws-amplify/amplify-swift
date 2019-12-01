@@ -16,7 +16,10 @@ struct SelectStatement: SQLStatement {
     let modelType: Model.Type
     let conditionStatement: ConditionStatement?
 
-    init(from modelType: Model.Type, predicate: QueryPredicate? = nil) {
+    // Used by plugin to order and limit results for system table queries
+    let additionalStatements: String?
+
+    init(from modelType: Model.Type, predicate: QueryPredicate? = nil, additionalStatements: String? = nil) {
         self.modelType = modelType
 
         var conditionStatement: ConditionStatement?
@@ -26,6 +29,8 @@ struct SelectStatement: SQLStatement {
             conditionStatement = statement
         }
         self.conditionStatement = conditionStatement
+
+        self.additionalStatements = additionalStatements
     }
 
     var stringValue: String {
@@ -61,7 +66,7 @@ struct SelectStatement: SQLStatement {
             """)
         }
 
-        let sql = """
+        var sql = """
         select
           \(joinedAsSelectedColumns(columns))
         from \(tableName) as root
@@ -69,10 +74,17 @@ struct SelectStatement: SQLStatement {
         """.trimmingCharacters(in: .whitespacesAndNewlines)
 
         if let conditionStatement = conditionStatement {
-            return """
+            sql = """
             \(sql)
             where 1 = 1
             \(conditionStatement.stringValue)
+            """
+        }
+
+        if let additionalStatements = additionalStatements {
+            sql = """
+            \(sql)
+            \(additionalStatements)
             """
         }
 

@@ -22,5 +22,10 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
                predicate: QueryPredicate?,
                completion: DataStoreCallback<[Model]>)
 
+    func query<M: Model>(_ modelType: M.Type,
+                         predicate: QueryPredicate?,
+                         additionalStatements: String?,
+                         completion: DataStoreCallback<[M]>)
+
     func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>]
 }

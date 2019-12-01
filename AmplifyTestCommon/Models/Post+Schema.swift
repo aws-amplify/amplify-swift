@@ -8,8 +8,7 @@
 import Amplify
 import Foundation
 
-// TODO: Remove once we remove _version
-// swiftlint:disable identifier_name
+// swiftlint:disable all
 extension Post {
 
     // MARK: - CodingKeys
