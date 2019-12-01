@@ -24,23 +24,17 @@ jobs:
       - checkout
       - run:
           name: install CocoaPods
-          command: |
-            curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
-            pod install
+          command: pod install
       - pre_start_simulator
       - run:
           name: build amplify
           command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
-      - persist_to_workspace:
-          root: /root
-          paths: amplify-ios
+  
   unit_test:
     <<: *defaults
     working_directory: ~/amplify-ios/AmplifyPlugins
-    steps:
-      - attach_workspace:
-          at: /root
       - run: ls -alF
+      - run: pod --version
 
 
 workflows:
