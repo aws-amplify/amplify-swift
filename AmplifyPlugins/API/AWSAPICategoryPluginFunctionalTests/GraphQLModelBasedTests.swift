@@ -9,7 +9,7 @@ import XCTest
 import AWSMobileClient
 @testable import AWSAPICategoryPlugin
 @testable import Amplify
-import AmplifyTestCommon
+@testable import AmplifyTestCommon
 
 // swiftlint:disable type_body_length
 class GraphQLModelBasedTests: XCTestCase {
@@ -89,7 +89,7 @@ class GraphQLModelBasedTests: XCTestCase {
 
     override func setUp() {
         Amplify.reset()
-        let plugin = AWSAPIPlugin()
+        let plugin = AWSAPIPlugin(modelRegistration: NotSyncablePostCommentModelRegistration())
 
         let apiConfig = APICategoryConfiguration(plugins: [
             "awsAPIPlugin": [
@@ -107,11 +107,6 @@ class GraphQLModelBasedTests: XCTestCase {
         do {
             try Amplify.add(plugin: plugin)
             try Amplify.configure(amplifyConfig)
-
-            // The API plugin should register the models into the model cache
-            ModelRegistry.register(modelType: CommentNoSync.self)
-            ModelRegistry.register(modelType: PostNoSync.self)
-
         } catch {
             XCTFail("Error during setup: \(error)")
         }

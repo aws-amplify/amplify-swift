@@ -17,13 +17,13 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
     /// The Publisher that sends mutation events to subscribers
     let dataStorePublisher: DataStoreSubscribeBehavior?
 
-    let modelRegistration: DataStoreModelRegistration
+    let modelRegistration: AmplifyModelRegistration
 
     /// The local storage provider. Resolved during configuration phase
     var storageEngine: StorageEngineBehavior!
 
     /// No-argument init that uses defaults for all providers
-    public init(modelRegistration: DataStoreModelRegistration) {
+    public init(modelRegistration: AmplifyModelRegistration) {
         self.modelRegistration = modelRegistration
         self.isSyncEnabled = false
         if #available(iOS 13, *) {
@@ -34,7 +34,7 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
     }
 
     /// Internal initializer for testing
-    init(modelRegistration: DataStoreModelRegistration,
+    init(modelRegistration: AmplifyModelRegistration,
          storageEngine: StorageEngineBehavior,
          dataStorePublisher: DataStoreSubscribeBehavior) {
         self.modelRegistration = modelRegistration
@@ -44,7 +44,7 @@ final public class AWSDataStoreCategoryPlugin: DataStoreCategoryPlugin {
     }
 
     /// By the time this method gets called, DataStore will already have invoked
-    /// `DataStoreModelRegistration.registerModels`, so we can inspect those models to derive isSyncEnabled, and pass
+    /// `AmplifyModelRegistration.registerModels`, so we can inspect those models to derive isSyncEnabled, and pass
     /// them to `StorageEngine.setUp(models:)`
     public func configure(using configuration: Any) throws {
         modelRegistration.registerModels(registry: ModelRegistry.self)

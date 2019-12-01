@@ -38,20 +38,21 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin {
     /// and is clearable by `reset()`. This is implicitly unwrapped to be destroyed when resetting.
     var subscriptionConnectionFactory: SubscriptionConnectionFactory!
 
-    public init(sessionFactory: URLSessionBehaviorFactory) {
-        self.mapper = OperationTaskMapper()
-        super.init()
-        self.session = sessionFactory.makeSession(withDelegate: self)
-        self.queue = OperationQueue()
-    }
+    public init(modelRegistration: AmplifyModelRegistration? = nil,
+                sessionFactory: URLSessionBehaviorFactory? = nil) {
 
-    override public init() {
         self.mapper = OperationTaskMapper()
+        self.queue = OperationQueue()
+        modelRegistration?.registerModels(registry: ModelRegistry.self)
+
         super.init()
 
-        let configuration = URLSessionConfiguration.default
-        let factory = URLSessionFactory(configuration: configuration, delegateQueue: nil)
-        self.session = factory.makeSession(withDelegate: self)
-        self.queue = OperationQueue()
+        if let sessionFactory = sessionFactory {
+            self.session = sessionFactory.makeSession(withDelegate: self)
+        } else {
+            let configuration = URLSessionConfiguration.default
+            let factory = URLSessionFactory(configuration: configuration, delegateQueue: nil)
+            self.session = factory.makeSession(withDelegate: self)
+        }
     }
 }

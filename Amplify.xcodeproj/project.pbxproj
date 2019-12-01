@@ -25,6 +25,8 @@
 		2125E25B2319EC3200B3DEB5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2125E25A2319EC3200B3DEB5 /* Assets.xcassets */; };
 		2125E25E2319EC3200B3DEB5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2125E25C2319EC3200B3DEB5 /* LaunchScreen.storyboard */; };
 		2125E265231C2D3100B3DEB5 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 2125E2102318D73B00B3DEB5 /* awsconfiguration.json */; };
+		2129BDFF23946205006363A1 /* NotSyncablePostCommentModelRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BDFE23946205006363A1 /* NotSyncablePostCommentModelRegistration.swift */; };
+		2129BE012394627B006363A1 /* PostCommentModelRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE002394627B006363A1 /* PostCommentModelRegistration.swift */; };
 		21409C552384C55D000A53C9 /* LabelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C542384C55D000A53C9 /* LabelType.swift */; };
 		21409C5A2384C57D000A53C9 /* GraphQLMutationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C572384C57D000A53C9 /* GraphQLMutationType.swift */; };
 		21409C5B2384C57D000A53C9 /* GraphQLQueryType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C582384C57D000A53C9 /* GraphQLQueryType.swift */; };
@@ -158,7 +160,7 @@
 		B98E9D122372236300934B51 /* QueryField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0A2372236200934B51 /* QueryField.swift */; };
 		B98E9D132372236300934B51 /* QueryOperator+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */; };
 		B98E9D142372236300934B51 /* QueryPredicate+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */; };
-		B9FAA10723865C21009414B4 /* DataStoreModelRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10623865C21009414B4 /* DataStoreModelRegistration.swift */; };
+		B9FAA10723865C21009414B4 /* AmplifyModelRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10623865C21009414B4 /* AmplifyModelRegistration.swift */; };
 		B9FAA10B23878122009414B4 /* ModelField+Association.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10A23878122009414B4 /* ModelField+Association.swift */; };
 		B9FAA10E23878BF3009414B4 /* UserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10D23878BF3009414B4 /* UserAccount.swift */; };
 		B9FAA11023878C5E009414B4 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10F23878C5E009414B4 /* UserProfile.swift */; };
@@ -475,6 +477,8 @@
 		2125E25D2319EC3200B3DEB5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2125E25F2319EC3200B3DEB5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2125E2A72321DCDD00B3DEB5 /* MockAWSAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAWSAuthService.swift; sourceTree = "<group>"; };
+		2129BDFE23946205006363A1 /* NotSyncablePostCommentModelRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotSyncablePostCommentModelRegistration.swift; sourceTree = "<group>"; };
+		2129BE002394627B006363A1 /* PostCommentModelRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCommentModelRegistration.swift; sourceTree = "<group>"; };
 		21409C4C23847E41000A53C9 /* LabelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelType.swift; sourceTree = "<group>"; };
 		21409C542384C55D000A53C9 /* LabelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelType.swift; sourceTree = "<group>"; };
 		21409C572384C57D000A53C9 /* GraphQLMutationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLMutationType.swift; sourceTree = "<group>"; };
@@ -716,7 +720,7 @@
 		B98E9D0A2372236200934B51 /* QueryField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryField.swift; sourceTree = "<group>"; };
 		B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "QueryOperator+Equatable.swift"; sourceTree = "<group>"; };
 		B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "QueryPredicate+Equatable.swift"; sourceTree = "<group>"; };
-		B9FAA10623865C21009414B4 /* DataStoreModelRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreModelRegistration.swift; sourceTree = "<group>"; };
+		B9FAA10623865C21009414B4 /* AmplifyModelRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyModelRegistration.swift; sourceTree = "<group>"; };
 		B9FAA10A23878122009414B4 /* ModelField+Association.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelField+Association.swift"; sourceTree = "<group>"; };
 		B9FAA10D23878BF3009414B4 /* UserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccount.swift; sourceTree = "<group>"; };
 		B9FAA10F23878C5E009414B4 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
@@ -1051,6 +1055,7 @@
 				211A38962391FE5D00726AC9 /* PostNoSync.swift */,
 				211A389C2391FEDD00726AC9 /* PostNoSync+Schema.swift */,
 				216201E02392031A00AB2E10 /* noSyncSchema.graphql */,
+				2129BDFE23946205006363A1 /* NotSyncablePostCommentModelRegistration.swift */,
 			);
 			path = NotSyncable;
 			sourceTree = "<group>";
@@ -1428,6 +1433,7 @@
 		B92E03A62367CE7A006CEB8D /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B9FAA10623865C21009414B4 /* AmplifyModelRegistration.swift */,
 				FA8EE775238626C70097E4F1 /* AnyModel */,
 				B9FAA1232388BE2B009414B4 /* Collection */,
 				B92E03A72367CE7A006CEB8D /* Model.swift */,
@@ -1457,6 +1463,7 @@
 				B9521832237E21B900F53237 /* Post.swift */,
 				B9521831237E21B900F53237 /* Post+Schema.swift */,
 				B952182F237E21B900F53237 /* schema.graphql */,
+				2129BE002394627B006363A1 /* PostCommentModelRegistration.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1507,7 +1514,6 @@
 				B92E03A32367CE79006CEB8D /* DataStoreCategoryConfiguration.swift */,
 				B92E039F2367CE79006CEB8D /* DataStoreCategoryPlugin.swift */,
 				B92E03A22367CE79006CEB8D /* DataStoreError.swift */,
-				B9FAA10623865C21009414B4 /* DataStoreModelRegistration.swift */,
 				B9FB05F72383740D00DE1FD4 /* DataStoreStatement.swift */,
 			);
 			path = DataStore;
@@ -3228,7 +3234,7 @@
 				FAAFAF2D23904ADF002CF932 /* AtomicValue+Numeric.swift in Sources */,
 				FA09B94B2322CBEB000E064D /* LoggingCategoryConfiguration.swift in Sources */,
 				210922572359693900CEC295 /* BasicAnalyticsEvent.swift in Sources */,
-				B9FAA10723865C21009414B4 /* DataStoreModelRegistration.swift in Sources */,
+				B9FAA10723865C21009414B4 /* AmplifyModelRegistration.swift in Sources */,
 				FAC2353F227A055200424678 /* PluginError.swift in Sources */,
 				FA76A2D32342B47100B91ADB /* HubPayloadEventName.swift in Sources */,
 				FA8EE77F2386274A0097E4F1 /* AnyModel+Subscript.swift in Sources */,
@@ -3452,6 +3458,7 @@
 				B9FAA11823879A57009414B4 /* Author+Schema.swift in Sources */,
 				211A389B2391FEA200726AC9 /* CommentNoSync+Schema.swift in Sources */,
 				B9521836237E21BA00F53237 /* Post+Schema.swift in Sources */,
+				2129BDFF23946205006363A1 /* NotSyncablePostCommentModelRegistration.swift in Sources */,
 				B9FAA11223878C96009414B4 /* UserAccount+Schema.swift in Sources */,
 				FACA36152327FC39000E74F6 /* MessageReporter.swift in Sources */,
 				211A38972391FE5D00726AC9 /* PostNoSync.swift in Sources */,
@@ -3463,6 +3470,7 @@
 				B9FAA12023879BD0009414B4 /* BookAuthor+Schema.swift in Sources */,
 				B9521835237E21BA00F53237 /* Comment.swift in Sources */,
 				FACA361E2327FC8E000E74F6 /* MockAnalyticsCategoryPlugin.swift in Sources */,
+				2129BE012394627B006363A1 /* PostCommentModelRegistration.swift in Sources */,
 				B9FAA10E23878BF3009414B4 /* UserAccount.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

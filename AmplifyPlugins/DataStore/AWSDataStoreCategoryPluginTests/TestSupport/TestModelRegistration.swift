@@ -9,7 +9,7 @@ import Amplify
 import AmplifyTestCommon
 import Foundation
 
-struct TestModelRegistration: DataStoreModelRegistration {
+struct TestModelRegistration: AmplifyModelRegistration {
 
     func registerModels(registry: ModelRegistry.Type) {
         // Post and Comment
