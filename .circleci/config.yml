@@ -90,6 +90,7 @@ jobs:
     steps:
       - *restore_repo
       - *restore_pods
+      - pre_start_simulator
       - api_unit_tests
 
 
