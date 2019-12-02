@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Combine
 
 /// Collects all subscription types for a given model into a single subscribable publisher.
@@ -18,16 +19,17 @@ import Combine
 /// incoming successful events onto a `Publisher`, that queue processors can subscribe to.
 @available(iOS 13.0, *)
 final class IncomingAsyncSubscriptionEventPublisher {
-    typealias Event = AsyncEvent<SubscriptionEvent<GraphQLResponse<AnyModel>>, Void, APIError>
+    typealias Payload = MutationSync<AnyModel>
+    typealias Event = AsyncEvent<SubscriptionEvent<GraphQLResponse<Payload>>, Void, APIError>
 
-    private var onCreateOperation: GraphQLSubscriptionOperation<AnyModel>?
-    private let onCreateListener: GraphQLSubscriptionOperation<AnyModel>.EventListener
+    private var onCreateOperation: GraphQLSubscriptionOperation<Payload>?
+    private let onCreateListener: GraphQLSubscriptionOperation<Payload>.EventListener
 
-    private var onUpdateOperation: GraphQLSubscriptionOperation<AnyModel>?
-    private let onUpdateListener: GraphQLSubscriptionOperation<AnyModel>.EventListener
+    private var onUpdateOperation: GraphQLSubscriptionOperation<Payload>?
+    private let onUpdateListener: GraphQLSubscriptionOperation<Payload>.EventListener
 
-    private var onDeleteOperation: GraphQLSubscriptionOperation<AnyModel>?
-    private let onDeleteListener: GraphQLSubscriptionOperation<AnyModel>.EventListener
+    private var onDeleteOperation: GraphQLSubscriptionOperation<Payload>?
+    private let onDeleteListener: GraphQLSubscriptionOperation<Payload>.EventListener
 
     private let incomingSubscriptionEvents: PassthroughSubject<Event, DataStoreError>
 
@@ -36,32 +38,54 @@ final class IncomingAsyncSubscriptionEventPublisher {
         let incomingSubscriptionEvents = PassthroughSubject<Event, DataStoreError>()
         self.incomingSubscriptionEvents = incomingSubscriptionEvents
 
-        let onCreateListener: GraphQLSubscriptionOperation<AnyModel>.EventListener = { event in
+        let onCreateListener: GraphQLSubscriptionOperation<Payload>.EventListener = { event in
             log.verbose("onCreateListener: \(event)")
             incomingSubscriptionEvents.send(event)
         }
         self.onCreateListener = onCreateListener
-        self.onCreateOperation = api.subscribe(toAnyModelType: modelType,
-                                               subscriptionType: .onCreate,
-                                               listener: onCreateListener)
+        self.onCreateOperation = IncomingAsyncSubscriptionEventPublisher.apiSubscription(
+            for: modelType,
+            subscriptionType: .onCreate,
+            api: api,
+            listener: onCreateListener)
 
-        let onUpdateListener: GraphQLSubscriptionOperation<AnyModel>.EventListener = { event in
+        let onUpdateListener: GraphQLSubscriptionOperation<Payload>.EventListener = { event in
             log.verbose("onUpdateListener: \(event)")
             incomingSubscriptionEvents.send(event)
         }
         self.onUpdateListener = onUpdateListener
-        self.onUpdateOperation = api.subscribe(toAnyModelType: modelType,
-                                               subscriptionType: .onUpdate,
-                                               listener: onUpdateListener)
+        self.onUpdateOperation = IncomingAsyncSubscriptionEventPublisher.apiSubscription(
+            for: modelType,
+            subscriptionType: .onUpdate,
+            api: api,
+            listener: onUpdateListener)
 
-        let onDeleteListener: GraphQLSubscriptionOperation<AnyModel>.EventListener = { event in
+        let onDeleteListener: GraphQLSubscriptionOperation<Payload>.EventListener = { event in
             log.verbose("onDeleteListener: \(event)")
             incomingSubscriptionEvents.send(event)
         }
         self.onDeleteListener = onDeleteListener
-        self.onDeleteOperation = api.subscribe(toAnyModelType: modelType,
-                                               subscriptionType: .onDelete,
-                                               listener: onDeleteListener)
+        self.onDeleteOperation = IncomingAsyncSubscriptionEventPublisher.apiSubscription(
+            for: modelType,
+            subscriptionType: .onDelete,
+            api: api,
+            listener: onDeleteListener)
+    }
+
+    static func apiSubscription(for modelType: Model.Type,
+                                subscriptionType: GraphQLSubscriptionType,
+                                api: APICategoryGraphQLBehavior,
+                                listener: @escaping GraphQLSubscriptionOperation<Payload>.EventListener)
+        -> GraphQLSubscriptionOperation<Payload> {
+            let document = GraphQLSubscription(of: modelType, type: subscriptionType)
+
+            let request = GraphQLRequest(document: document.stringValue,
+                                         variables: document.variables,
+                                         responseType: Payload.self,
+                                         decodePath: document.decodePath)
+
+            let operation = api.subscribe(request: request, listener: listener)
+            return operation
     }
 
     func subscribe<S: Subscriber>(subscriber: S) where S.Input == Event, S.Failure == DataStoreError {

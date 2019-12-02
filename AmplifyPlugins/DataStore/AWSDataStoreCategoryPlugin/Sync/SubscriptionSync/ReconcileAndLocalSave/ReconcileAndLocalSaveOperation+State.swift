@@ -13,7 +13,7 @@ extension ReconcileAndLocalSaveOperation {
     /// States are descriptive, they say what is happening in the system right now
     enum State {
         case waiting
-        case deserializing(AnyModel)
+        case deserializing(CloudModel)
         case querying(CloudModel)
         case reconciling(CloudModel, LocalModel?)
         case saving(CloudModel)

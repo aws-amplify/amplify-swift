@@ -12,7 +12,7 @@ extension ReconcileAndLocalSaveOperation {
 
     /// Actions are declarative, they say what I just did
     enum Action {
-        case started(AnyModel)
+        case started(CloudModel)
         case deserialized(CloudModel)
         case queried(CloudModel, LocalModel?)
         case reconciled(CloudModel)

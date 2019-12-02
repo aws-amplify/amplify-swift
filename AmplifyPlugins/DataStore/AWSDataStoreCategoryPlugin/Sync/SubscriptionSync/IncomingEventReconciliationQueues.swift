@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Combine
 import Foundation
 
@@ -86,8 +87,8 @@ final class ReconciliationQueue {
             .publisher
             .sink(receiveCompletion: { [weak self] completion in
                 self?.receiveCompletion(completion)
-                }, receiveValue: { [weak self] anyModel in
-                    self?.receiveValue(anyModel)
+                }, receiveValue: { [weak self] cloudModel in
+                    self?.receiveValue(cloudModel)
             })
 
     }
@@ -101,13 +102,13 @@ final class ReconciliationQueue {
         allModels?.cancel()
     }
 
-    private func receiveValue(_ anyModel: AnyModel) {
+    private func receiveValue(_ cloudModel: MutationSync<AnyModel>) {
         guard let storageAdapter = storageAdapter else {
             log.error("No storage adapter, cannot save received value")
             return
         }
 
-        let reconcileOp = ReconcileAndLocalSaveOperation(anyModel: anyModel,
+        let reconcileOp = ReconcileAndLocalSaveOperation(cloudModel: cloudModel,
                                                          storageAdapter: storageAdapter)
         operationQueue.addOperation(reconcileOp)
     }

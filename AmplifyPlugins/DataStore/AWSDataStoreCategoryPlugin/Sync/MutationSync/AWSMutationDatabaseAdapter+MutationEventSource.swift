@@ -14,13 +14,7 @@ extension AWSMutationDatabaseAdapter: MutationEventSource {
         log.verbose(#function)
 
         guard let storageAdapter = storageAdapter else {
-            let dataStoreError = DataStoreError.configuration(
-                "storageAdapter is unexpectedly nil in an internal operation",
-                """
-                The reference to storageAdapter has been released while an ongoing mutation was being processed.
-                """
-            )
-            completion(.failure(dataStoreError))
+            completion(.failure(DataStoreError.nilStorageAdapter()))
             return
         }
 

@@ -29,4 +29,10 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
                          completion: DataStoreCallback<[M]>)
 
     func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>]
+
+    func queryMutationSync(forModelType modelType: Model.Type,
+                           modelId: Model.Identifier) throws -> MutationSync<AnyModel>?
+
+    func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>?
+
 }
