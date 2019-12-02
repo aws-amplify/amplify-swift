@@ -318,7 +318,8 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
         XCTFail("Not expected to execute")
     }
-    func delete(_ modelType: Model.Type, withId id: Model.Identifier, completion: DataStoreCallback<Void>) {
+    func delete<M: Model>(_ modelType: M.Type, withId id: Model.Identifier,
+                          completion: DataStoreCallback<Void>) {
         XCTFail("Not expected to execute")
     }
     func query<M: Model>(_ modelType: M.Type, predicate: QueryPredicate?, completion: DataStoreCallback<[M]>) {
@@ -351,7 +352,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
                          predicate: QueryPredicate?,
                          additionalStatements: String?,
                          completion: (Result<[M], DataStoreError>) -> Void) {
-        completion(.failure(DataStoreError.invalidOperation(causedBy: nil)))
+        XCTFail("Not expected to execute")
     }
 
 }
@@ -363,9 +364,9 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
         XCTFail("Not expected to execute")
     }
-    func delete(_ modelType: Model.Type,
-                withId id: Model.Identifier,
-                completion: DataStoreCallback<Void>) {
+    func delete<M: Model>(_ modelType: M.Type,
+                          withId id: Model.Identifier,
+                          completion: DataStoreCallback<Void>) {
         XCTFail("Not expected to execute")
     }
     func query<M: Model>(_ modelType: M.Type, predicate: QueryPredicate?, completion: DataStoreCallback<[M]>) {

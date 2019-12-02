@@ -37,6 +37,38 @@
                BlueprintName = "AWSDataStoreCategoryPluginTests"
                ReferencedContainer = "container:DataStoreCategoryPlugin.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "AWSMutationEventIngesterTests/testMutationQueueFailureCausesSaveFailure()">
+               </Test>
+               <Test
+                  Identifier = "CloudSyncTests/testOnCreateNotifiesListener()">
+               </Test>
+               <Test
+                  Identifier = "CloudSyncTests/testOnCreateUpdatesLocalStore()">
+               </Test>
+               <Test
+                  Identifier = "CloudSyncTests/testOnDeleteNotifiesListener()">
+               </Test>
+               <Test
+                  Identifier = "CloudSyncTests/testOnDeleteUpdatesLocalStore()">
+               </Test>
+               <Test
+                  Identifier = "CloudSyncTests/testOnUpdateNotifiesListener()">
+               </Test>
+               <Test
+                  Identifier = "CloudSyncTests/testOnUpdateUpdatesLocalStore()">
+               </Test>
+               <Test
+                  Identifier = "OutgoingMutationQueueTests/testLocalMutationUnsubcsribesFromCloud()">
+               </Test>
+               <Test
+                  Identifier = "OutgoingMutationQueueTests/testMutationQueueDequeuesSavedEvents()">
+               </Test>
+               <Test
+                  Identifier = "OutgoingMutationQueueTests/testMutationQueueStoresDeleteEvents()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

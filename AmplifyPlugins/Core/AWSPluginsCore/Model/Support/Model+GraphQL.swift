@@ -25,7 +25,7 @@ extension Model {
             switch field.typeDefinition {
             case .date, .dateTime:
                 if let date = value as? Date {
-                    input[name] = date.iso8601
+                    input[name] = date.iso8601String
                 } else {
                     input[name] = value
                 }

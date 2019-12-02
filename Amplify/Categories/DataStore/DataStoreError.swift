@@ -12,6 +12,7 @@ import Foundation
 public enum DataStoreError: Error {
     case api(AmplifyError)
     case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
+    case conflict(DataStoreSyncConflict)
     case decodingError(ErrorDescription, RecoverySuggestion)
     case invalidDatabase(path: String, Error? = nil)
     case invalidModelName(String)
@@ -29,6 +30,8 @@ extension DataStoreError: AmplifyError {
         switch self {
         case .api(let error):
             return error.errorDescription
+        case .conflict:
+            return "A conflict occurred syncing a local model with the remote API"
         case .invalidDatabase:
             return "Could not create a new database."
         case .invalidModelName(let modelName):
@@ -52,6 +55,8 @@ extension DataStoreError: AmplifyError {
         switch self {
         case .api(let error):
             return error.recoverySuggestion
+        case .conflict:
+            return "See this error's associated value for the details of the conflict"
         case .invalidDatabase(let path):
             return "Make sure the path \(path) is valid and the device has available storage space."
         case .invalidModelName(let modelName):

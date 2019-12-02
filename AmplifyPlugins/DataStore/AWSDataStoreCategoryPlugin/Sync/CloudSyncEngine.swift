@@ -18,7 +18,7 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
 
     private let mutationEventIngester: MutationEventIngester
     private let mutationEventPublisher: MutationEventPublisher
-    private let outgoingMutationQueue: OutgoingMutationQueue
+    private let outgoingMutationQueue: OutgoingMutationQueueBehavior
 
     /// Synchronizes startup operations
     let syncQueue: OperationQueue
@@ -32,19 +32,21 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
     convenience init(storageAdapter: StorageEngineAdapter) throws {
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
+        let outgoingMutationQueue = OutgoingMutationQueue()
         self.init(storageAdapter: storageAdapter,
+                  outgoingMutationQueue: outgoingMutationQueue,
                   mutationEventIngester: mutationDatabaseAdapter,
                   mutationEventPublisher: awsMutationEventPublisher)
     }
 
     init(storageAdapter: StorageEngineAdapter,
+         outgoingMutationQueue: OutgoingMutationQueueBehavior,
          mutationEventIngester: MutationEventIngester,
          mutationEventPublisher: MutationEventPublisher) {
         self.storageAdapter = storageAdapter
         self.mutationEventIngester = mutationEventIngester
         self.mutationEventPublisher = mutationEventPublisher
-
-        self.outgoingMutationQueue = OutgoingMutationQueue()
+        self.outgoingMutationQueue = outgoingMutationQueue
 
         self.syncQueue = OperationQueue()
         syncQueue.name = "com.amazonaws.Amplify.\(AWSDataStoreCategoryPlugin.self).CloudSyncEngine"

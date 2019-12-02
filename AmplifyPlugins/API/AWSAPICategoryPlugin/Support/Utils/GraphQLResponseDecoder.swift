@@ -86,7 +86,9 @@ struct GraphQLResponseDecoder {
         let json: JSONValue
 
         do {
-            json = try JSONDecoder().decode(JSONValue.self, from: graphQLResponse)
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
+            json = try decoder.decode(JSONValue.self, from: graphQLResponse)
         } catch {
             throw APIError.operationError("Could not deserialize response data",
                                           "Service issue",
@@ -154,7 +156,7 @@ struct GraphQLResponseDecoder {
         }
 
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(DateFormatter.iso8601Full)
+        decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
         return try decoder.decode(responseType, from: serializedJSON)
     }
 
@@ -176,20 +178,26 @@ struct GraphQLResponseDecoder {
 
     private static func decode(graphQLError: JSONValue) throws -> GraphQLError {
         let serializedJSON = try JSONEncoder().encode(graphQLError)
-        return try JSONDecoder().decode(GraphQLError.self, from: serializedJSON)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
+        return try decoder.decode(GraphQLError.self, from: serializedJSON)
     }
 
     private static func serialize(graphQLData: JSONValue,
                                   at decodePath: String?) throws -> Data {
         let modelJSON = try getModelJSONValue(from: graphQLData, at: decodePath)
-        return try JSONEncoder().encode(modelJSON)
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy
+        return try encoder.encode(modelJSON)
     }
 
     private static func serializeAnyModel(from graphQLData: JSONValue,
                                           at decodePath: String?) throws -> Data {
         let modelJSON = try getModelJSONValue(from: graphQLData, at: decodePath)
         let anyModel = try AnyModel(modelJSON: modelJSON)
-        return try JSONEncoder().encode(anyModel)
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy
+        return try encoder.encode(anyModel)
     }
 
     private static func getModelJSONValue(from graphQLData: JSONValue,

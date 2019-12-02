@@ -41,9 +41,9 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
     }
 
     func uploadData(key: String,
-                 data: Data,
-                 options: StorageUploadDataRequest.Options?,
-                 listener: StorageUploadDataOperation.EventListener?) -> StorageUploadDataOperation {
+                    data: Data,
+                    options: StorageUploadDataRequest.Options?,
+                    listener: StorageUploadDataOperation.EventListener?) -> StorageUploadDataOperation {
         notify("uploadData")
         let options = options ?? StorageUploadDataRequest.Options()
         let request = StorageUploadDataRequest(key: key, data: data, options: options)

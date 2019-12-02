@@ -46,8 +46,7 @@ class MutationSyncMetadataTests: XCTestCase {
     ///   - the tuple should contain a valid `Post` and its `MutationSyncMetadata`
     func testDecodeMutationSync() {
         do {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
+            let decoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
 
             guard let data = postSyncJSON.data(using: .utf8) else {
                 XCTFail("JSON could not be converted into data")
@@ -75,8 +74,7 @@ class MutationSyncMetadataTests: XCTestCase {
     ///   - the `AnyModel` should be backed by a `Post`
     func testDecodeAnyModelMutationSync() {
         do {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
+            let decoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
 
             guard let data = postSyncJSON.data(using: .utf8) else {
                 XCTFail("JSON could not be converted into data")
