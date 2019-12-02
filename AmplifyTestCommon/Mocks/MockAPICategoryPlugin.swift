@@ -38,10 +38,19 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         fatalError("Not yet implemented")
     }
 
-    func mutate<M>(of model: M,
-                   type: GraphQLMutationType,
-                   listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M> {
-        fatalError("Not yet implemented")
+    func mutate<M: Model>(of model: M,
+                          type: GraphQLMutationType,
+                          listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M> {
+        notify("mutate(of:\(model.modelName)-\(model.id),type:\(type),listener:)")
+        let options = GraphQLOperationRequest<M>.Options()
+        let request = GraphQLOperationRequest<M>(apiName: nil,
+                                                 operationType: .subscription,
+                                                 document: "",
+                                                 variables: nil,
+                                                 responseType: M.self,
+                                                 options: options)
+        let operation = MockGraphQLOperation(request: request, responseType: M.self)
+        return operation
     }
 
     func mutate(ofAnyModel anyModel: AnyModel,
@@ -96,8 +105,9 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     func mutate<R>(request: GraphQLRequest<R>,
                    listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
-
-        notify("mutate")
+        // This is a really weighty notification message, but needed for tests to be able to assert that a particular
+        // model is being mutated
+        notify("mutate(request) document: \(request.document); variables: \(String(describing: request.variables))")
         let options = GraphQLOperationRequest<R>.Options()
         let request = GraphQLOperationRequest<R>(apiName: request.apiName,
                                                  operationType: .mutation,

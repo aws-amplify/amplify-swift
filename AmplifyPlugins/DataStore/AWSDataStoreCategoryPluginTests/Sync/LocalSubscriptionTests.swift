@@ -20,7 +20,7 @@ class LocalSubscriptionTests: XCTestCase {
         super.setUp()
 
         Amplify.reset()
-        Amplify.Logging.logLevel = .verbose
+        Amplify.Logging.logLevel = .warn
 
         let storageAdapter: SQLiteStorageEngineAdapter
         let storageEngine: StorageEngine

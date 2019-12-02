@@ -13,6 +13,8 @@ import XCTest
 @testable import AWSDataStoreCategoryPlugin
 import AWSPluginsCore
 
+// swiftlint:disable file_length
+// TODO: Refactor this into separate test suites
 class ReconcileAndLocalSaveOperationTests: XCTestCase {
     var storageAdapter: MockSQLiteStorageEngineAdapter!
     var testPost: Post!
@@ -35,7 +37,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         storageAdapter.returnOnQuery(dataStoreResult: .none)
         storageAdapter.returnOnSave(dataStoreResult: .none)
         stateMachine = MockStateMachine(initialState: .waiting,
-                                        resolver: ReconcileAndLocalSaveOperation.resolve(currentState:action:))
+                                        resolver: ReconcileAndLocalSaveOperation.Resolver.resolve(currentState:action:))
         operation = ReconcileAndLocalSaveOperation(anyModel: anyPost,
                                                    storageAdapter: storageAdapter,
                                                    stateMachine: stateMachine)
@@ -237,7 +239,8 @@ class MockStateMachine: StateMachine<ReconcileAndLocalSaveOperation.State, Recon
 }
 
 extension ReconcileAndLocalSaveOperation.State: Equatable {
-    public static func == (lhs: ReconcileAndLocalSaveOperation.State, rhs: ReconcileAndLocalSaveOperation.State) -> Bool {
+    public static func == (lhs: ReconcileAndLocalSaveOperation.State,
+                           rhs: ReconcileAndLocalSaveOperation.State) -> Bool {
         switch (lhs, rhs) {
         case (.waiting, .waiting):
             return true

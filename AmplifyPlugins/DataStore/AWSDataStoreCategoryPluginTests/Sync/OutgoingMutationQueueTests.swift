@@ -26,7 +26,7 @@ class OutgoingMutationQueueTests: XCTestCase {
     /// Tests in this class inject values into the database early in startup, so test setUp is broken into chunks
     override func setUp() {
         Amplify.reset()
-        Amplify.Logging.logLevel = .verbose
+        Amplify.Logging.logLevel = .warn
 
         let apiConfig = APICategoryConfiguration(plugins: [
             "MockAPICategoryPlugin": true
@@ -109,7 +109,7 @@ class OutgoingMutationQueueTests: XCTestCase {
 
         let createMutationSent = expectation(description: "Create mutation sent to API category")
         apiPlugin.listeners.append { message in
-            if message == "mutate(ofAnyModel:Post-\(post.id),type:create,listener:)" {
+            if message.contains("createPost") && message.contains(post.id) {
                 createMutationSent.fulfill()
             }
         }
@@ -171,15 +171,12 @@ class OutgoingMutationQueueTests: XCTestCase {
         let mutation2Sent = expectation(description: "Create mutation 2 sent to API category")
         let mutation3Sent = expectation(description: "Create mutation 3 sent to API category")
         apiPlugin.listeners.append { message in
-            switch message {
-            case "mutate(ofAnyModel:Post-pendingPost-1,type:create,listener:)":
+            if message.contains("createPost") && message.contains("pendingPost-1") {
                 mutation1Sent.fulfill()
-            case "mutate(ofAnyModel:Post-pendingPost-2,type:create,listener:)":
+            } else if message.contains("createPost") && message.contains("pendingPost-2") {
                 mutation2Sent.fulfill()
-            case "mutate(ofAnyModel:Post-pendingPost-3,type:create,listener:)":
+            } else if message.contains("createPost") && message.contains("pendingPost-3") {
                 mutation3Sent.fulfill()
-            default:
-                break
             }
         }
 
@@ -237,13 +234,10 @@ class OutgoingMutationQueueTests: XCTestCase {
             expectation(description: "Create mutation for newly-created post sent to API category")
 
         apiPlugin.listeners.append { message in
-            switch message {
-            case "mutate(ofAnyModel:Post-pendingPost-1,type:create,listener:)":
+            if message.contains("createPost") && message.contains("pendingPost-1") {
                 pendingPostMutationSent.fulfill()
-            case "mutate(ofAnyModel:Post-newPost-1,type:create,listener:)":
+            } else if message.contains("createPost") && message.contains("newPost-1") {
                 newPostMutationSent.fulfill()
-            default:
-                break
             }
         }
 

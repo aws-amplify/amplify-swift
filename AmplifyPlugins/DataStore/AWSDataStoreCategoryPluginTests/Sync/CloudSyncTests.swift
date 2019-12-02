@@ -27,7 +27,7 @@ class CloudSyncTests: XCTestCase {
         super.setUp()
 
         Amplify.reset()
-        Amplify.Logging.logLevel = .verbose
+        Amplify.Logging.logLevel = .warn
 
         apiPlugin = MockAPICategoryPlugin()
 

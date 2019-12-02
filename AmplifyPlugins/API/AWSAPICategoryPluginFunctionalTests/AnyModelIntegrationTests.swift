@@ -18,16 +18,16 @@ class AnyModelIntegrationTests: XCTestCase {
     override func setUp() {
         Amplify.reset()
         Amplify.Logging.logLevel = .verbose
-        ModelRegistry.register(modelType: AmplifyTestCommon.Post.self)
-        ModelRegistry.register(modelType: AmplifyTestCommon.Comment.self)
+        ModelRegistry.register(modelType: AmplifyTestCommon.PostNoSync.self)
+        ModelRegistry.register(modelType: AmplifyTestCommon.CommentNoSync.self)
 
         let apiConfig = APICategoryConfiguration(plugins: [
             "awsAPIPlugin": [
-                "Default": [
-                    "endpoint": "https://ldm7yqjfjngrjckbziumz5fxbe.appsync-api.us-west-2.amazonaws.com/graphql",
+                GraphQLModelBasedTests.modelBasedGraphQLWithAPIKey: [
+                    "endpoint": "https://5dxswtkp3favlnw2pvcmsp2mti.appsync-api.us-west-2.amazonaws.com/graphql",
                     "region": "us-west-2",
                     "authorizationType": "API_KEY",
-                    "apiKey": "da2-7jhi34lssbbmjclftlykznhw5m",
+                    "apiKey": "da2-bjcuhxgvgjadfpfh4fddd5lqmm",
                     "endpointType": "GraphQL"
                 ]
             ]
@@ -46,16 +46,14 @@ class AnyModelIntegrationTests: XCTestCase {
         Amplify.reset()
     }
 
-    // TODO: this test is failing due to provisioned AppSync does not have "_deleted"
-    // Variables is created with "_deleted" field and nil value. Service cannot accept it
     func testCreateAsAnyModel() throws {
-        let originalPost = Post(title: "Post title",
-                                content: "Original post content as of \(Date())")
+        let originalPost = PostNoSync(title: "Post title",
+                                      content: "Original post content as of \(Date())")
         let anyPost = try originalPost.eraseToAnyModel()
 
         let callbackInvoked = expectation(description: "Callback invoked")
         var responseFromOperation: GraphQLResponse<AnyModel>?
-        _ = Amplify.API.mutate(of: anyPost, type: .create) { response in
+        _ = Amplify.API.mutate(ofAnyModel: anyPost, type: .create) { response in
             defer {
                 callbackInvoked.fulfill()
             }
@@ -100,12 +98,12 @@ class AnyModelIntegrationTests: XCTestCase {
     }
 
     func testUpdateAsAnyModel() throws {
-        let originalPost = Post(title: "Post title",
-                                content: "Original post content as of \(Date())")
+        let originalPost = PostNoSync(title: "Post title",
+                                      content: "Original post content as of \(Date())")
         let originalAnyPost = try originalPost.eraseToAnyModel()
 
         let createCallbackInvoked = expectation(description: "Create callback invoked")
-        _ = Amplify.API.mutate(of: originalAnyPost, type: .create) { _ in
+        _ = Amplify.API.mutate(ofAnyModel: originalAnyPost, type: .create) { _ in
             createCallbackInvoked.fulfill()
         }
 
@@ -113,20 +111,13 @@ class AnyModelIntegrationTests: XCTestCase {
 
         let newContent = "Updated post content as of \(Date())"
 
-        // Technically we'd pull the version from the sync metadata store, but for this test, we'll hardcode it to 1
-        let updatedPost = Post(id: originalPost.id,
-                               title: originalPost.title,
-                               content: newContent,
-                               createdAt: originalPost.createdAt,
-                               updatedAt: originalPost.updatedAt,
-                               rating: originalPost.rating,
-                               draft: originalPost.draft
-                               /*_version: 1*/ )
+        var updatedPost = originalPost
+        updatedPost.content = newContent
         let updatedAnyPost = try updatedPost.eraseToAnyModel()
 
         let updateCallbackInvoked = expectation(description: "Update callback invoked")
         var responseFromOperation: GraphQLResponse<AnyModel>?
-        _ = Amplify.API.mutate(of: updatedAnyPost, type: .update) { response in
+        _ = Amplify.API.mutate(ofAnyModel: updatedAnyPost, type: .update) { response in
             defer {
                 updateCallbackInvoked.fulfill()
             }
@@ -166,10 +157,62 @@ class AnyModelIntegrationTests: XCTestCase {
 
         XCTAssertEqual(modelFromResponse["title"] as? String, originalPost.title)
         XCTAssertEqual(modelFromResponse["content"] as? String, updatedPost.content)
-
     }
 
     func testDeleteAsAnyModel() throws {
-        XCTFail("Not yet implemented")
+        let originalPost = PostNoSync(title: "Post title",
+                                      content: "Original post content as of \(Date())")
+        let originalAnyPost = try originalPost.eraseToAnyModel()
+
+        let createCallbackInvoked = expectation(description: "Create callback invoked")
+        _ = Amplify.API.mutate(ofAnyModel: originalAnyPost, type: .create) { _ in
+            createCallbackInvoked.fulfill()
+        }
+
+        wait(for: [createCallbackInvoked], timeout: networkTimeout)
+
+        let newContent = "Updated post content as of \(Date())"
+
+        let deleteCallbackInvoked = expectation(description: "Delete callback invoked")
+        var responseFromOperation: GraphQLResponse<AnyModel>?
+        _ = Amplify.API.mutate(ofAnyModel: originalAnyPost, type: .delete) { response in
+            defer {
+                deleteCallbackInvoked.fulfill()
+            }
+            switch response {
+            case .completed(let graphQLResponse):
+                responseFromOperation = graphQLResponse
+            case .failed(let apiError):
+                XCTFail("\(apiError)")
+            default:
+                break
+            }
+        }
+
+        wait(for: [deleteCallbackInvoked], timeout: networkTimeout)
+
+        guard let response = responseFromOperation else {
+            XCTAssertNotNil(responseFromOperation)
+            return
+        }
+
+        guard case .success(let modelFromResponse) = response else {
+            switch response {
+            case .success:
+                break
+            case .failure(let error):
+                switch error {
+                case .error(let errors):
+                    XCTFail("errors: \(errors)")
+                case .partial(let model, let errors):
+                    XCTFail("partial: \(model), \(errors)")
+                case .transformationError(let rawResponse, let apiError):
+                    XCTFail("transformationError: \(rawResponse), \(apiError)")
+                }
+            }
+            return
+        }
+
+        XCTAssertEqual(modelFromResponse["title"] as? String, originalPost.title)
     }
 }

@@ -12,6 +12,8 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
+// swiftlint:disable type_body_length
+// TODO: Refactor this into separate test suites
 class SQLStatementTests: XCTestCase {
 
     override func setUp() {
