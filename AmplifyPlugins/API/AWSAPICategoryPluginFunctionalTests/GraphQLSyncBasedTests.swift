@@ -8,7 +8,7 @@
 import XCTest
 @testable import AWSAPICategoryPlugin
 @testable import Amplify
-import AmplifyTestCommon
+@testable import AmplifyTestCommon
 import AWSPluginsCore
 
 class GraphQLSyncBasedTests: XCTestCase {
@@ -37,7 +37,7 @@ class GraphQLSyncBasedTests: XCTestCase {
      */
     override func setUp() {
         Amplify.reset()
-        let plugin = AWSAPIPlugin()
+        let plugin = AWSAPIPlugin(modelRegistration: PostCommentModelRegistration())
 
         let apiConfig = APICategoryConfiguration(plugins: [
             "awsAPIPlugin": [
