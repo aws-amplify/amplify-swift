@@ -16,10 +16,10 @@ references:
         - repo
 
   pods_cache_key: &pods_cache_key
-    dependency-pods-{{ checksum "Podfile" }}
+    new-dependency-pods-{{ checksum "Podfile" }}
   
   pods_backup_cache_key: &pods_backup_cache_key
-    dependency-pods
+    new-dependency-pods
 
   restore_pods: &restore_pods
     restore_cache:
