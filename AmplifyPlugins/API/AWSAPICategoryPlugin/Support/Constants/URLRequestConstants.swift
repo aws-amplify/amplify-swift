@@ -23,6 +23,6 @@ struct URLRequestContants {
     }
 
     struct UserAgent {
-        static let amplify = "amplify-ios/0.0.1 Amplify"
+        static let amplify = "amplify-ios/0.9.0 Amplify"
     }
 }

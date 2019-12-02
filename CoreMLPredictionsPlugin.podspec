@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = 'CoreMLPredictionsPlugin'
-  s.version      = '0.0.1'
+  s.version      = '0.9.0'
   s.summary      = 'Amazon Web Services Amplify for iOS.'
 
   s.description  = 'AWS Amplify for iOS provides a declarative library for application development using cloud services'
@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   
   s.requires_arc = true
   s.source_files = 'AmplifyPlugins/Predictions/CoreMLPredictionsPlugin/**/*.swift'
-  s.dependency 'Amplify', '0.0.1'
+  s.dependency 'Amplify', '0.9.0'
 
 end
 
