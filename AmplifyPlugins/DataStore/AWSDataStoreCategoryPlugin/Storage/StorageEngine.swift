@@ -8,6 +8,7 @@
 import Amplify
 import Combine
 import Foundation
+import AWSPluginsCore
 
 final class StorageEngine: StorageEngineBehavior {
 

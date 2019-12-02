@@ -13,7 +13,7 @@ extension DateFormatter {
     // https://useyourloaf.com/blog/swift-codable-with-custom-dates/
     // swiftlint:disable line_length
     // https://stackoverflow.com/questions/46458487/how-to-convert-a-date-string-with-optional-fractional-seconds-using-codable-in-s/46458771#46458771
-    static let iso8601Full: DateFormatter = {
+    public static let iso8601Full: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
         formatter.calendar = Calendar(identifier: .iso8601)
@@ -28,7 +28,7 @@ extension DateFormatter {
 extension Date {
 
     /// Retrieve the ISO 8601 formatted String, like "2019-11-25T00:35:01.746Z", from the Date instance
-    var iso8601: String {
+    public var iso8601: String {
         return DateFormatter.iso8601Full.string(from: self)
     }
 }
@@ -36,7 +36,7 @@ extension Date {
 extension String {
 
     /// Retrieve the ISO 8601 Date for valid String values like "2019-11-25T00:35:01.746Z"
-    var iso8601: Date? {
+    public var iso8601: Date? {
         return DateFormatter.iso8601Full.date(from: self)
     }
 }

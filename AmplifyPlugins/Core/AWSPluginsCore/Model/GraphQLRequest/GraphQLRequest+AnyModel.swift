@@ -15,6 +15,7 @@ public extension GraphQLRequest {
     static func mutation(of anyModel: AnyModel,
                          type: GraphQLMutationType) -> GraphQLRequest<AnyModel> {
         let document = GraphQLMutation(of: anyModel, type: type)
+
         return GraphQLRequest<AnyModel>(document: document.stringValue,
                                         variables: document.variables,
                                         responseType: AnyModel.self,

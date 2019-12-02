@@ -9,6 +9,7 @@ import XCTest
 @testable import AWSAPICategoryPlugin
 @testable import Amplify
 import AmplifyTestCommon
+import AWSPluginsCore
 
 class GraphQLSyncBasedTests: XCTestCase {
 
@@ -77,62 +78,82 @@ class GraphQLSyncBasedTests: XCTestCase {
         }
 
         let completeInvoked = expectation(description: "request completed")
-
+        var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
         let document = GraphQLSyncMutation(of: post, type: .update, version: 2)
         let request = GraphQLRequest(document: document.stringValue,
                                      variables: document.variables,
-                                     responseType: String.self,
+                                     responseType: MutationSync<AnyModel>.self,
                                      decodePath: document.decodePath)
 
         _ = Amplify.API.mutate(request: request) { event in
+            defer {
+                completeInvoked.fulfill()
+            }
             switch event {
-            case .completed(let data):
-                switch data {
-                case .success(let stringResult):
-                    XCTAssertTrue(stringResult.contains("\"_version\":2"))
-                    completeInvoked.fulfill()
-                case .failure(let error):
-                    XCTFail("Unexpected response with error \(error)")
-                }
-            case .failed(let error):
-                print(error)
+            case .completed(let graphQLResponse):
+                responseFromOperation = graphQLResponse
+            case .failed(let apiError):
+                XCTFail("\(apiError)")
             default:
                 XCTFail("Could not get data back")
             }
         }
         wait(for: [completeInvoked], timeout: GraphQLModelBasedTests.networkTimeout)
+
+        guard let response = responseFromOperation else {
+            XCTAssertNotNil(responseFromOperation)
+            return
+        }
+
+        guard case .success(let mutationSync) = response else {
+            switch response {
+            case .success:
+                break
+
+            case .failure(let error):
+                switch error {
+                case .error(let errors):
+                    XCTFail("errors: \(errors)")
+                case .partial(let model, let errors):
+                    XCTFail("partial: \(model), \(errors)")
+                case .transformationError(let rawResponse, let apiError):
+                    XCTFail("transformationError: \(rawResponse), \(apiError)")
+                }
+            }
+            return
+        }
+
+        XCTAssertEqual(mutationSync.model["title"] as? String, post.title)
+        XCTAssertEqual(mutationSync.model["content"] as? String, post.content)
+        XCTAssertEqual(mutationSync.syncMetadata.version, 2)
     }
 
     func testQuerySyncWithLastSyncTime() {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
-        guard createPost(id: uuid, title: title) != nil else {
+        guard let createdPost = createPost(id: uuid, title: title) else {
             XCTFail("Failed to create post")
             return
         }
 
         let completeInvoked = expectation(description: "request completed")
-
+        var responseFromOperation: GraphQLResponse<[MutationSync<AnyModel>]>?
         let post = Post.keys
         let predicate = post.id == uuid
         let document = GraphQLSyncQuery(from: Post.self, predicate: predicate, lastSync: 123)
         let request = GraphQLRequest(document: document.stringValue,
                                      variables: document.variables,
-                                     responseType: String.self,
+                                     responseType: [MutationSync<AnyModel>].self,
                                      decodePath: document.decodePath)
 
-        _ = Amplify.API.mutate(request: request) { event in
+        _ = Amplify.API.query(request: request) { event in
+            defer {
+                completeInvoked.fulfill()
+            }
             switch event {
-            case .completed(let data):
-                switch data {
-                case .success(let stringResultList):
-                    XCTAssertTrue(stringResultList.contains("lastChangedAt"))
-                    print(stringResultList)
-                    completeInvoked.fulfill()
-                case .failure(let error):
-                    XCTFail("Unexpected response with error \(error)")
-                }
+            case .completed(let graphQLResponse):
+                responseFromOperation = graphQLResponse
             case .failed(let error):
                 print(error)
             default:
@@ -140,6 +161,33 @@ class GraphQLSyncBasedTests: XCTestCase {
             }
         }
         wait(for: [completeInvoked], timeout: GraphQLModelBasedTests.networkTimeout)
+
+        guard let response = responseFromOperation else {
+            XCTAssertNotNil(responseFromOperation)
+            return
+        }
+
+        guard case .success(let mutationSync) = response else {
+            switch response {
+            case .success:
+                break
+
+            case .failure(let error):
+                switch error {
+                case .error(let errors):
+                    XCTFail("errors: \(errors)")
+                case .partial(let model, let errors):
+                    XCTFail("partial: \(model), \(errors)")
+                case .transformationError(let rawResponse, let apiError):
+                    XCTFail("transformationError: \(rawResponse), \(apiError)")
+                }
+            }
+            return
+        }
+
+        XCTAssertNotNil(mutationSync[0].model["title"] as? String)
+        XCTAssertNotNil(mutationSync[0].model["content"] as? String)
+        XCTAssert(mutationSync[0].syncMetadata.version != 0)
     }
 
     // MARK: Helpers
