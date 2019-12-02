@@ -1,0 +1,157 @@
+# .circleci/config.yml
+
+version: 2.1
+
+defaults: &defaults
+  macos:
+    xcode: "11.2.1"
+  working_directory: ~/amplify-ios
+
+references:
+  repo_cache_key: &repo_cache_key
+    v1-repo-{{ .Branch }}-{{ .Revision }}
+
+  restore_repo: &restore_repo
+    restore_cache:
+      keys:
+        - *repo_cache_key
+        - v1-repo-{{ .Branch }}
+        - v1-repo
+
+  pods_cache_key: &pods_cache_key
+    v3-dependency-pods-{{ checksum "~/amplify-ios/Podfile" }}
+  
+  pods_backup_cache_key: &pods_backup_cache_key
+    v3-dependency-pods
+
+  restore_pods: &restore_pods
+    restore_cache:
+      keys:
+        - *pods_cache_key
+        - *pods_backup_cache_key
+
+  plugin_pods_cache_key: &plugin_pods_cache_key
+
+commands:
+  pre_start_simulator:
+    description: >-
+      pre start simulator, build may fail if simulator is not started
+    steps:
+      - run:
+          name: pre-start simulator
+          command: bash ~/amplify-ios/CircleciScripts/pre_start_simulator.sh
+
+jobs:
+  checkout_code:
+    <<: *defaults
+    steps:
+      - *restore_repo
+      - checkout
+      - save_cache:
+          key: *repo_cache_key
+          paths: 
+            - ~/amplify-ios
+
+  install_pods:
+    <<: *defaults
+    steps:
+      - *restore_repo
+      - *restore_pods
+      - run: pod install
+      - save_cache:
+          key: *pods_cache_key
+          paths:
+            - ~/amplify-ios/Pods
+      - persist_to_workspace:
+          root: ~/
+          paths: amplify-ios/Amplify.xcworkspace
+
+  build_amplify:
+    <<: *defaults
+    steps:
+      - *restore_repo
+      - *restore_pods      
+      - pre_start_simulator
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: build amplify
+          command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
+      - run:
+          name: test amplify
+          command: xcodebuild test -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
+  
+  plugin_unit_test:
+    <<: *defaults
+    parameters:
+      path:
+        type: string
+      workspace:
+        type: string
+      scheme:
+        type: string
+    working_directory: ~/amplify-ios/AmplifyPlugins/<< parameters.path >>
+    description: << parameters.path >> unit test
+    steps:
+      - *restore_repo
+      - pre_start_simulator
+      - run: pod install
+      - run:
+          name: build << parameters.path >>
+          command: xcodebuild build-for-testing -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}"
+      - run:
+          name: test << parameters.path >>
+          command: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}"
+
+workflows:
+  build_test:
+    jobs:
+      - checkout_code
+      - install_pods:
+          requires:
+              - checkout_code        
+      - build_amplify:
+          requires:
+              - install_pods                
+      - plugin_unit_test:
+          name: unit_test_api
+          path: API
+          workspace: APICategoryPlugin
+          scheme: AWSAPICategoryPlugin
+          requires:
+              - checkout_code
+      - plugin_unit_test:
+          name: unit_test_analytics
+          path: Analytics
+          workspace: AnalyticsCategoryPlugin
+          scheme: AWSPinpointAnalyticsPlugin
+          requires:
+              - checkout_code
+      - plugin_unit_test:
+          name: unit_test_storage
+          path: Storage
+          workspace: StoragePlugin
+          scheme: AWSS3StoragePlugin
+          requires:
+              - checkout_code
+      - plugin_unit_test:
+          name: unit_test_predictions
+          path: Predictions
+          workspace: PredictionsCategoryPlugin
+          scheme: AWSPredictionsPlugin
+          requires:
+              - checkout_code
+      - plugin_unit_test:
+          name: unit_test_predictions_core_ml
+          path: Predictions
+          workspace: PredictionsCategoryPlugin
+          scheme: CoreMLPredictionsPlugin
+          requires:
+              - checkout_code
+      # - plugin_unit_test:
+      #     name: unit_test_datastore
+      #     path: DataStore
+      #     workspace: DataStoreCategoryPlugin
+      #     scheme: AWSDataStoreCategoryPlugin
+      #     requires:
+      #         - checkout_code
