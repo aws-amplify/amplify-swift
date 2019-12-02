@@ -77,12 +77,10 @@ jobs:
       - *restore_repo
       - *restore_pods      
       - pre_start_simulator
-      - run:
-          name: build amplify
-          command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
-      - persist_to_workspace:
-          root: ~/
-          paths: amplify-ios
+      - run: ls -alF
+      # - run:
+      #     name: build amplify
+      #     command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
   
   unit_test:
     <<: *defaults
@@ -91,7 +89,6 @@ jobs:
       - *restore_repo
       - *restore_pods
       - run: ls -alF
-      - run: pod --version
 
 
 workflows:
