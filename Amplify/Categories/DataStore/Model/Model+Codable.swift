@@ -15,19 +15,28 @@ extension Model where Self: Codable {
     ///
     /// - Parameters:
     ///   - json: a valid JSON object as `String`
-    ///   - decoder: an optional JSONDecoder to use to decode the model. Defaults to `JSONDecoder()`
+    ///   - decoder: an optional JSONDecoder to use to decode the model. Defaults to `JSONDecoder()`, using a
+    ///     custom date formatter that decodes ISO8601 dates both with and without fractional seconds
     /// - Returns: an instance of the concrete type conforming to `Model`
     /// - Throws: `DecodingError.dataCorrupted` in case data is not a valid JSON or any
     /// other decoding specific error that `JSONDecoder.decode()` might throw.
     public static func from(json: String,
-                            decoder: JSONDecoder = JSONDecoder()) throws -> Self {
+                            decoder: JSONDecoder? = nil) throws -> Self {
+        let resolvedDecoder: JSONDecoder
+        if let decoder = decoder {
+            resolvedDecoder = decoder
+        } else {
+            resolvedDecoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
+        }
+
         guard let data = json.data(using: .utf8) else {
             throw DataStoreError.decodingError(
                 "Invalid JSON string. Could not convert the passed JSON string into a UTF-8 Data object",
                 "Ensure the JSON doesn't contain any invalid UTF-8 data:\n\n\(json)"
             )
         }
-        return try decoder.decode(Self.self, from: data)
+
+        return try resolvedDecoder.decode(Self.self, from: data)
     }
 
     /// De-serialize a `Dictionary` into an instance of the concrete type that conforms
@@ -39,20 +48,32 @@ extension Model where Self: Codable {
     /// other decoding specific error that `JSONDecoder.decode()` might throw.
     public static func from(dictionary: [String: Any]) throws -> Self {
         let data = try JSONSerialization.data(withJSONObject: dictionary)
-        return try JSONDecoder().decode(Self.self, from: data)
+        let decoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
+        return try decoder.decode(Self.self, from: data)
     }
 
     /// Converts the `Model` instance to a JSON object as `String`.
+    /// - Parameters:
+    ///   - encoder: an optional JSONEncoder to use to encode the model. Defaults to `JSONEncoder()`, using a
+    ///     custom date formatter that encodes ISO8601 dates with fractional seconds
     /// - Returns: the JSON representation of the `Model`
     /// - seealso: https://developer.apple.com/documentation/foundation/jsonencoder/2895034-encode
-    public func toJSON() throws -> String {
-        let data = try JSONEncoder().encode(self)
+    public func toJSON(encoder: JSONEncoder? = nil) throws -> String {
+        let resolvedEncoder: JSONEncoder
+        if let encoder = encoder {
+            resolvedEncoder = encoder
+        } else {
+            resolvedEncoder = JSONEncoder(dateEncodingStrategy: ModelDateFormatting.encodingStrategy)
+        }
+
+        let data = try resolvedEncoder.encode(self)
         guard let json = String(data: data, encoding: .utf8) else {
             throw DataStoreError.decodingError(
                 "Invalid UTF-8 Data object. Could not convert the encoded Model into a valid UTF-8 JSON string",
                 "Check if your Model doesn't contain any value with invalid UTF-8 characters."
             )
         }
+
         return json
     }
 }

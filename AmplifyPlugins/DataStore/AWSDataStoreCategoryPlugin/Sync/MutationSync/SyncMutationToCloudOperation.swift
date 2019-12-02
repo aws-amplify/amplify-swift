@@ -8,6 +8,7 @@
 import Amplify
 import Combine
 import Foundation
+import AWSPluginsCore
 
 // TODO: Evaluate this operation's suitablility for reactive/state machine pattern
 
@@ -17,10 +18,12 @@ import Foundation
 class SyncMutationToCloudOperation: Operation {
 
     typealias MutationCloudResponse = AsyncEvent<Void, GraphQLResponse<AnyModel>, APIError>
+    //typealias MutationCloudResponse = AsyncEvent<Void, GraphQLResponse<MutationSync<AnyModel>>, APIError>
 
     private weak var api: APICategoryGraphQLBehavior?
     private let mutationEvent: MutationEvent
     private var mutationOperation: GraphQLOperation<AnyModel>?
+    //private var mutationOperation: GraphQLOperation<MutationSync<AnyModel>>?
 
     init(mutationEvent: MutationEvent, api: APICategoryGraphQLBehavior) {
         self.mutationEvent = mutationEvent
@@ -84,6 +87,19 @@ class SyncMutationToCloudOperation: Operation {
             self.log.verbose("sendMutationToCloud received asyncEvent: \(asyncEvent)")
             self.validateResponseFromCloud(asyncEvent: asyncEvent)
         }
+
+        // Sync to cloud with version
+        /*
+        let version = mutationEvent.version
+        let document = GraphQLSyncMutation(of: model, type: mutationType, version: version)
+        let request = GraphQLRequest(document: document.stringValue,
+                                     variables: document.variables,
+                                     responseType: MutationSync<AnyModel>.self,
+                                     decodePath: document.decodePath)
+        mutationOperation = api.mutate(request: request) { asyncEvent in
+            self.log.verbose("sendMutationToCloud received asyncEvent: \(asyncEvent)")
+            self.validateResponseFromCloud(asyncEvent: asyncEvent)
+        }*/
     }
 
     private func validateResponseFromCloud(asyncEvent: MutationCloudResponse) {

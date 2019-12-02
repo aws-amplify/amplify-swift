@@ -8,13 +8,13 @@
 import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSAPICategoryPlugin
+@testable import AWSPluginsCore
 
 class QueryPredicateGraphQLTests: XCTestCase {
 
     func testPredicateToGraphQLValues() throws {
         let post = Post.keys
-        guard let date = "2019-11-23T02:06:50.689Z".iso8601 else {
+        guard let date = "2019-11-23T02:06:50.689Z".iso8601Date else {
             XCTFail("Failed to set up date")
             return
         }

@@ -8,6 +8,7 @@
 import Amplify
 import Foundation
 import SQLite
+import AWSPluginsCore
 
 /// [SQLite](https://sqlite.org) `StorageEngineAdapter` implementation. This class provides
 /// an integration layer between the AppSyncLocal `StorageEngine` and SQLite for local storage.
@@ -39,6 +40,10 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     static func initializeDatabase(connection: Connection) throws {
         log.debug("Initializing database connection: \(String(describing: connection))")
+
+        if log.logLevel >= .verbose {
+            connection.trace { self.log.verbose($0) }
+        }
 
         let databaseInitializationStatement = """
         pragma auto_vacuum = full;
@@ -97,9 +102,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
-    func delete(_ modelType: Model.Type,
-                withId id: Model.Identifier,
-                completion: (DataStoreResult<Void>) -> Void) {
+    func delete<M: Model>(_ modelType: M.Type,
+                          withId id: Model.Identifier,
+                          completion: (DataStoreResult<Void>) -> Void) {
         do {
             let statement = DeleteStatement(modelType: modelType, withId: id)
             _ = try connection.prepare(statement.stringValue).run(statement.variables)
@@ -113,8 +118,20 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate? = nil,
                          completion: DataStoreCallback<[M]>) {
+        query(modelType,
+              predicate: predicate,
+              additionalStatements: nil,
+              completion: completion)
+    }
+
+    func query<M: Model>(_ modelType: M.Type,
+                         predicate: QueryPredicate? = nil,
+                         additionalStatements: String? = nil,
+                         completion: DataStoreCallback<[M]>) {
         do {
-            let statement = SelectStatement(from: modelType, predicate: predicate)
+            let statement = SelectStatement(from: modelType,
+                                            predicate: predicate,
+                                            additionalStatements: additionalStatements)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
             let result: [M] = try rows.convert(to: modelType)
             completion(.success(result))

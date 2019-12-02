@@ -13,3 +13,9 @@ public enum LogLevel: Int {
     case debug
     case verbose
 }
+
+extension LogLevel: Comparable {
+    public static func < (lhs: LogLevel, rhs: LogLevel) -> Bool {
+        lhs.rawValue < rhs.rawValue
+    }
+}

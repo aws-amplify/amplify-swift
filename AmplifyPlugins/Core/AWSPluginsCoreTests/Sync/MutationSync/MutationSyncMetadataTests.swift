@@ -10,9 +10,9 @@ import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSPluginsCore
 
-class MutationSyncMetadataTests: BaseDataStoreTests {
+class MutationSyncMetadataTests: XCTestCase {
 
     let postSyncJSON = """
     {
@@ -31,6 +31,14 @@ class MutationSyncMetadataTests: BaseDataStoreTests {
     }
     """
 
+    override func setUp() {
+        ModelRegistry.register(modelType: Post.self)
+    }
+
+    override func tearDown() {
+        ModelRegistry.reset()
+    }
+
     /// - Given: a `Post` json with sync data
     /// - When:
     ///   - the JSON is decoded into `MutationSync<Post>`
@@ -38,8 +46,7 @@ class MutationSyncMetadataTests: BaseDataStoreTests {
     ///   - the tuple should contain a valid `Post` and its `MutationSyncMetadata`
     func testDecodeMutationSync() {
         do {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
+            let decoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
 
             guard let data = postSyncJSON.data(using: .utf8) else {
                 XCTFail("JSON could not be converted into data")
@@ -67,8 +74,7 @@ class MutationSyncMetadataTests: BaseDataStoreTests {
     ///   - the `AnyModel` should be backed by a `Post`
     func testDecodeAnyModelMutationSync() {
         do {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
+            let decoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
 
             guard let data = postSyncJSON.data(using: .utf8) else {
                 XCTFail("JSON could not be converted into data")
@@ -88,43 +94,5 @@ class MutationSyncMetadataTests: BaseDataStoreTests {
             XCTFail(error.localizedDescription)
         }
 
-    }
-
-    /// - Given: a list of `Post` and `MutationSyncMetadata`
-    /// - When:
-    ///   - the `storageAdapter.queryMutationSync(for:)` is called
-    /// - Then:
-    ///   - the result should contain a list of `MutationSync`
-    ///   - each `MutationSync` represents the correct pair of `Post` and `MutationSyncMetadata`
-    func testQueryMutationSync() {
-        let expect = expectation(description: "it should create posts and sync metadata")
-        // insert some posts
-        let posts = stride(from: 0, to: 3, by: 1).map {
-            Post(title: "title \($0)", content: "content \($0)")
-        }
-        populateData(posts)
-
-        // then create sync metadata for them
-        let syncMetadataList = posts.map {
-            MutationSyncMetadata(id: $0.id,
-                                 deleted: false,
-                                 lastChangedAt: Int(Date().timeIntervalSince1970),
-                                 version: 1)
-        }
-        populateData(syncMetadataList)
-
-        do {
-            let mutationSync = try storageAdapter.queryMutationSync(for: posts)
-            mutationSync.forEach {
-                XCTAssertEqual($0.model.id, $0.syncMetadata.id)
-                let post = $0.model.instance as? Post
-                XCTAssertNotNil(post)
-            }
-            expect.fulfill()
-        } catch {
-            XCTFail(error.localizedDescription)
-            expect.fulfill()
-        }
-        wait(for: [expect], timeout: 5)
     }
 }

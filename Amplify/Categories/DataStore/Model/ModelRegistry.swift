@@ -10,7 +10,7 @@ import Foundation
 public struct ModelRegistry {
 
     /// ModelDecoders are used to decode untyped model data, looking up by model name
-    private typealias ModelDecoder = (String, JSONDecoder) throws -> Model
+    private typealias ModelDecoder = (String, JSONDecoder?) throws -> Model
 
     private static var modelTypes = [String: Model.Type]()
 
@@ -37,7 +37,7 @@ public struct ModelRegistry {
 
     public static func decode(modelName: String,
                               from jsonString: String,
-                              jsonDecoder: JSONDecoder = JSONDecoder()) throws -> Model {
+                              jsonDecoder: JSONDecoder? = nil) throws -> Model {
         guard let decoder = modelDecoders[modelName] else {
             throw DataStoreError.decodingError(
                 "No decoder found for model named \(modelName)",

@@ -39,7 +39,7 @@ extension AnyModel {
         }
 
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(DateFormatter.iso8601Full)
+        decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
 
         let model = try ModelRegistry.decode(modelName: typename,
                                              from: underlyingModelString,

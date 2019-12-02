@@ -9,8 +9,15 @@ import Amplify
 import Combine
 import Foundation
 
+/// Submits outgoing mutation events to the provisioned API
 @available(iOS 13.0, *)
-final class OutgoingMutationQueue {
+protocol OutgoingMutationQueueBehavior: class {
+    func pauseSyncingToCloud()
+    func startSyncingToCloud(api: APICategoryGraphQLBehavior, mutationEventPublisher: MutationEventPublisher)
+}
+
+@available(iOS 13.0, *)
+final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     private let stateMachine: StateMachine<State, Action>
     private var stateMachineSink: AnyCancellable?
@@ -151,6 +158,8 @@ final class OutgoingMutationQueue {
             SyncMutationToCloudOperation(mutationEvent: mutationEvent, api: api)
 
         operationQueue.addOperation(syncMutationToCloudOperation)
+
+        // TODO: We should only request the next event once the current event has finished
         requestEvent()
     }
 
@@ -159,7 +168,7 @@ final class OutgoingMutationQueue {
 @available(iOS 13.0, *)
 extension OutgoingMutationQueue: Subscriber {
     typealias Input = MutationEvent
-    typealias Failure = Never
+    typealias Failure = DataStoreError
 
     func receive(subscription: Subscription) {
         log.verbose(#function)
@@ -176,7 +185,7 @@ extension OutgoingMutationQueue: Subscriber {
     }
 
     // TODO: Resolve with an appropriate state machine notification
-    func receive(completion: Subscribers.Completion<Never>) {
+    func receive(completion: Subscribers.Completion<DataStoreError>) {
         log.verbose(#function)
         subscription?.cancel()
     }

@@ -10,11 +10,13 @@ extension MutationEvent {
 
     public enum CodingKeys: String, ModelKey {
         case id
+        case modelId
         case modelName
         case json
         case mutationType
         case createdAt
         case version
+        case inProcess
     }
 
     public static let keys = CodingKeys.self
@@ -29,11 +31,13 @@ extension MutationEvent {
 
         definition.fields(
             .id(),
+            .field(mutation.modelId, is: .required, ofType: .string),
             .field(mutation.modelName, is: .required, ofType: .string),
             .field(mutation.json, is: .required, ofType: .string),
             .field(mutation.mutationType, is: .required, ofType: .string),
             .field(mutation.createdAt, is: .required, ofType: .dateTime),
-            .field(mutation.version, is: .optional, ofType: .int)
+            .field(mutation.version, is: .optional, ofType: .int),
+            .field(mutation.inProcess, is: .optional, ofType: .bool)
         )
     }
 }

@@ -7,6 +7,7 @@
 
 import Amplify
 import Foundation
+import AWSPluginsCore
 
 protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
@@ -14,13 +15,18 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
     func save(untypedModel: Model, completion: @escaping DataStoreCallback<Model>)
 
-    func delete(_ modelType: Model.Type,
-                withId id: Model.Identifier,
-                completion: DataStoreCallback<Void>)
+    func delete<M: Model>(_ modelType: M.Type,
+                          withId id: Model.Identifier,
+                          completion: DataStoreCallback<Void>)
 
     func query(untypedModel modelType: Model.Type,
                predicate: QueryPredicate?,
                completion: DataStoreCallback<[Model]>)
+
+    func query<M: Model>(_ modelType: M.Type,
+                         predicate: QueryPredicate?,
+                         additionalStatements: String?,
+                         completion: DataStoreCallback<[M]>)
 
     func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>]
 }

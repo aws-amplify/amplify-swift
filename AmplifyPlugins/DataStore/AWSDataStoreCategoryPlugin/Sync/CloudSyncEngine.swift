@@ -18,7 +18,7 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
 
     private let mutationEventIngester: MutationEventIngester
     private let mutationEventPublisher: MutationEventPublisher
-    private let outgoingMutationQueue: OutgoingMutationQueue
+    private let outgoingMutationQueue: OutgoingMutationQueueBehavior
 
     /// Synchronizes startup operations
     let syncQueue: OperationQueue
@@ -30,22 +30,23 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
     /// MutationEvents, synce metadata, and conflict resolution metadata. Immediately initializes the incoming mutation
     /// queue so it can begin accepting incoming mutations from DataStore.
     convenience init(storageAdapter: StorageEngineAdapter) throws {
-        let awsMutationEventPublisher = AWSMutationEventPublisher()
-        let awsMutationEventIngester = try AWSMutationEventIngester(storageAdapter: storageAdapter,
-                                                                    mutationEventSubject: awsMutationEventPublisher)
+        let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
+        let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
+        let outgoingMutationQueue = OutgoingMutationQueue()
         self.init(storageAdapter: storageAdapter,
-                  mutationEventIngester: awsMutationEventIngester,
+                  outgoingMutationQueue: outgoingMutationQueue,
+                  mutationEventIngester: mutationDatabaseAdapter,
                   mutationEventPublisher: awsMutationEventPublisher)
     }
 
     init(storageAdapter: StorageEngineAdapter,
+         outgoingMutationQueue: OutgoingMutationQueueBehavior,
          mutationEventIngester: MutationEventIngester,
          mutationEventPublisher: MutationEventPublisher) {
         self.storageAdapter = storageAdapter
         self.mutationEventIngester = mutationEventIngester
         self.mutationEventPublisher = mutationEventPublisher
-
-        self.outgoingMutationQueue = OutgoingMutationQueue()
+        self.outgoingMutationQueue = outgoingMutationQueue
 
         self.syncQueue = OperationQueue()
         syncQueue.name = "com.amazonaws.Amplify.\(AWSDataStoreCategoryPlugin.self).CloudSyncEngine"
@@ -156,7 +157,7 @@ class CloudSyncEngine: CloudSyncEngineBehavior {
         syncQueue.waitUntilAllOperationsAreFinished()
 
         let group = DispatchGroup()
-        if let awsMutationEventIngester = mutationEventIngester as? AWSMutationEventIngester {
+        if let awsMutationEventIngester = mutationEventIngester as? AWSMutationDatabaseAdapter {
             group.enter()
             DispatchQueue.global().async {
                 awsMutationEventIngester.reset {

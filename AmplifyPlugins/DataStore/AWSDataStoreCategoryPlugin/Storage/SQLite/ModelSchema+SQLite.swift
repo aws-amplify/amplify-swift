@@ -112,8 +112,9 @@ extension ModelField: SQLColumn {
             }
         case .date, .dateTime:
             if let value = binding as? String {
-                // The decoder translates Double to Date
-                return Date.fromDatatypeValue(value).timeIntervalSince1970
+                // Converting back & forth between date and string allows us to be a bit more relaxed in the string
+                // values we accept, but always output the same format.
+                return value.iso8601Date?.iso8601String
             }
         case .collection:
             return binding ?? []
