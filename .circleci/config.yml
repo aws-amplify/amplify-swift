@@ -54,7 +54,7 @@ jobs:
       - *restore_repo
       - checkout
       - save_cache:
-          key: repo-{{ .Branch }}-{{ .Revision }}
+          key: v1-repo-{{ .Branch }}-{{ .Revision }}
           paths: 
             - .
 
