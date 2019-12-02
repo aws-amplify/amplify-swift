@@ -76,13 +76,8 @@ jobs:
     <<: *defaults
     steps:
       - *restore_repo
-      - *restore_pods      
       - pre_start_simulator
       - run: pod install
-      - save_cache:
-          key: *pods_cache_key
-          paths:
-            - ~/amplify-ios/Pods
       - run:
           name: build amplify
           command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
