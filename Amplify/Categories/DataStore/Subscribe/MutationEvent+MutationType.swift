@@ -26,4 +26,15 @@ public extension MutationEvent.MutationType {
             return .delete
         }
     }
+
+    init(graphQLMutationType: GraphQLMutationType) {
+        switch graphQLMutationType {
+        case .create:
+            self = .create
+        case .update:
+            self = .update
+        case .delete:
+            self = .delete
+        }
+    }
 }

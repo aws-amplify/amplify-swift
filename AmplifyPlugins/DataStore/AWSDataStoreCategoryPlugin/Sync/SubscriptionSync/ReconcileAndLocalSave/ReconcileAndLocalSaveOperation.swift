@@ -126,14 +126,9 @@ class ReconcileAndLocalSaveOperation: Operation {
             return
         }
 
-        guard let modelType = ModelRegistry.modelType(from: cloudModel.model.modelName) else {
-            stateMachine.notify(action: .errored(DataStoreError.invalidModelName(cloudModel.model.modelName)))
-            return
-        }
-
         let localModel: MutationSync<AnyModel>?
         do {
-            localModel = try storageAdapter.queryMutationSync(forModelType: modelType, modelId: cloudModel.model.id)
+            localModel = try storageAdapter.queryMutationSync(forAnyModel: cloudModel.model)
         } catch {
             stateMachine.notify(action: .errored(DataStoreError(error: error)))
             return
@@ -239,10 +234,21 @@ class ReconcileAndLocalSaveOperation: Operation {
             return
         }
 
-        // TODO: Get the mutationType
+        let mutationType: MutationEvent.MutationType
+        let version = savedModel.syncMetadata.version
+        if savedModel.syncMetadata.deleted {
+            mutationType = .delete
+        } else if version == 1 {
+            mutationType = .create
+        } else {
+            mutationType = .update
+        }
+
         // TODO: Dispatch/notify error if we can't erase to any model? Would imply an error in JSON decoding,
         // which shouldn't be possible this late in the process. Possibly notify global conflict/error handler?
-        guard let mutationEvent = try? MutationEvent(untypedModel: savedModel.model.instance, mutationType: .create)
+        guard let mutationEvent = try? MutationEvent(untypedModel: savedModel.model.instance,
+                                                     mutationType: mutationType,
+                                                     version: version)
             else {
                 log.error("Could not notify mutation event")
                 return

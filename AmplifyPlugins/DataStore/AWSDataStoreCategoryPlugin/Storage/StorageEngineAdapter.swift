@@ -30,9 +30,8 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
     func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>]
 
-    func queryMutationSync(forModelType modelType: Model.Type,
-                           modelId: Model.Identifier) throws -> MutationSync<AnyModel>?
-
     func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>?
+
+    func queryMutationSyncMetadata(for modelId: Model.Identifier) throws -> MutationSyncMetadata?
 
 }

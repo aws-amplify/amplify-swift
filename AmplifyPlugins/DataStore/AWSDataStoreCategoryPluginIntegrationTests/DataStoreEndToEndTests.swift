@@ -40,17 +40,25 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                         return
                 }
 
-                if post.content == newPost.content {
+                if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                    XCTAssertEqual(post.content, post.content)
+                    XCTAssertEqual(mutationEvent.version, 1)
                     createReceived.fulfill()
                     return
                 }
 
-                if post.content == updatedPost.content {
+                if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
+                    XCTAssertEqual(post.content, updatedPost.content)
+                    XCTAssertEqual(mutationEvent.version, 2)
                     updateReceived.fulfill()
                     return
                 }
 
-                // TODO: Fulfill delete once we have sync metadata wired into mutation event
+                if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
+                    deleteReceived.fulfill()
+                    XCTAssertEqual(mutationEvent.version, 3)
+                    return
+                }
         }
 
         guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
@@ -60,10 +68,14 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
         Amplify.DataStore.save(newPost) { _ in }
 
+        wait(for: [createReceived], timeout: networkTimeout)
+
         Amplify.DataStore.save(updatedPost) { _ in }
+
+        wait(for: [updateReceived], timeout: networkTimeout)
 
         Amplify.DataStore.delete(updatedPost) { _ in }
 
-        wait(for: [createReceived, updateReceived, deleteReceived], timeout: networkTimeout)
+        wait(for: [deleteReceived], timeout: networkTimeout)
     }
 }

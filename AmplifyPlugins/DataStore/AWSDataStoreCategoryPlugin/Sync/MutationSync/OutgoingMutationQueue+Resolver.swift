@@ -25,7 +25,13 @@ extension OutgoingMutationQueue {
                 return .starting(api, mutationEventPublisher)
 
             case (.starting, .receivedSubscription):
-                return .processingEvents
+                return .requestingEvent
+
+            case (.requestingEvent, .enqueuedEvent):
+                return .waitingForEventToProcess
+
+            case (.waitingForEventToProcess, .processedEvent):
+                return .requestingEvent
 
                 // MARK: - Actions that always transition state
 

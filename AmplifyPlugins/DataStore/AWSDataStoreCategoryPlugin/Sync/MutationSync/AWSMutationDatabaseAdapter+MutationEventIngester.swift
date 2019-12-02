@@ -11,7 +11,8 @@ import Combine
 @available(iOS 13.0, *)
 extension AWSMutationDatabaseAdapter: MutationEventIngester {
 
-    /// Accepts a mutation event and writes it to the local database, then submits it to `mutationEventSubject`
+    /// Accepts a mutation event without a version, applies the latest version from the MutationSyncMetadata table,
+    /// writes the updated mutation event to the local database, then submits it to `mutationEventSubject`
     func submit(mutationEvent: MutationEvent) -> Future<MutationEvent, DataStoreError> {
         log.verbose("\(#function): \(mutationEvent)")
 
@@ -32,6 +33,18 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
     func resolveConflictsThenSave(mutationEvent: MutationEvent,
                                   storageAdapter: StorageEngineAdapter,
                                   completionPromise: @escaping Future<MutationEvent, DataStoreError>.Promise) {
+
+        // We don't want to query MutationSync<AnyModel> because a) we already have the model, and b) delete mutations
+        // are submitted *after* the delete has already been applied to the local data store, meaning there is no model
+        // to query.
+        var mutationEvent = mutationEvent
+        do {
+            let syncMetadata = try storageAdapter.queryMutationSyncMetadata(for: mutationEvent.modelId)
+            mutationEvent.version = syncMetadata?.version
+        } catch {
+            completionPromise(.failure(DataStoreError(error: error)))
+        }
+
         MutationEvent.pendingMutationEvents(
             forModelId: mutationEvent.modelId,
             storageAdapter: storageAdapter) { result in
