@@ -35,7 +35,7 @@ references:
 commands:
   pre_start_simulator:
     description: >-
-      pre start simulator, build may fail is simulator is not started
+      pre start simulator, build may fail if simulator is not started
     steps:
       - run:
           name: pre-start simulator
@@ -139,6 +139,13 @@ workflows:
           path: Predictions
           workspace: PredictionsCategoryPlugin
           scheme: AWSPredictionsPlugin
+          requires:
+              - checkout_code
+      - plugin_unit_test:
+          name: unit_test_predictions_core_ml
+          path: Predictions
+          workspace: PredictionsCategoryPlugin
+          scheme: CoreMLPredictionsPlugin
           requires:
               - checkout_code
       # - plugin_unit_test:
