@@ -93,6 +93,5 @@ class MutationSyncMetadataTests: XCTestCase {
         } catch {
             XCTFail(error.localizedDescription)
         }
-
     }
 }

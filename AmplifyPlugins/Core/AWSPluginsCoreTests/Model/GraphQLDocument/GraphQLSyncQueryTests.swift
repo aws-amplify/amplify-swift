@@ -35,7 +35,11 @@ class GraphQLSyncQueryTests: XCTestCase {
     func testSyncGraphQLQueryFromSimpleModel() {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
-        let document = GraphQLSyncQuery(from: Post.self, predicate: predicate, lastSync: 123)
+        let document = GraphQLSyncQuery(from: Post.self,
+                                        predicate: predicate,
+                                        limit: 100,
+                                        nextToken: "token",
+                                        lastSync: 123)
         let expectedQueryDocument = """
         query SyncPosts($filter: ModelPostFilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp) {
           syncPosts(filter: $filter, limit: $limit, nextToken: $nextToken, lastSync: $lastSync) {
@@ -53,15 +57,20 @@ class GraphQLSyncQueryTests: XCTestCase {
               _lastChangedAt
             }
             nextToken
+            startedAt
           }
         }
         """
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertEqual(document.decodePath, "syncPosts")
         XCTAssertNotNil(document.variables)
         XCTAssertNotNil(document.variables["limit"])
-        XCTAssertEqual(document.variables["limit"] as? Int, 1_000)
+        XCTAssertEqual(document.variables["limit"] as? Int, 100)
+        XCTAssertNotNil(document.variables["nextToken"])
+        XCTAssertEqual(document.variables["nextToken"] as? String, "token")
         XCTAssertNotNil(document.variables["filter"])
         XCTAssertNotNil(document.variables["lastSync"])
+        XCTAssertEqual(document.variables["lastSync"] as? Int, 123)
     }
 
 }

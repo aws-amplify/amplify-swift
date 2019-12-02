@@ -9,11 +9,17 @@ import Amplify
 import Foundation
 
 public class GraphQLSyncQuery: GraphQLListQuery {
+    public let limit: Int?
+    public let nextToken: String?
     public let lastSync: Int?
 
     public init(from modelType: Model.Type,
                 predicate: QueryPredicate? = nil,
+                limit: Int? = nil,
+                nextToken: String? = nil,
                 lastSync: Int? = nil) {
+        self.limit = limit
+        self.nextToken = nextToken
         self.lastSync = lastSync
         super.init(from: modelType, predicate: predicate)
     }
@@ -26,6 +32,10 @@ public class GraphQLSyncQuery: GraphQLListQuery {
         modelName = modelType.schema.pluralName ?? (modelName + "s")
 
         return "sync" + modelName
+    }
+
+    public override var decodePath: String {
+        return name
     }
 
     public override var stringValue: String {
@@ -43,6 +53,7 @@ public class GraphQLSyncQuery: GraphQLListQuery {
               \(fields.joined(separator: "\n      "))
             }
             nextToken
+            startedAt
         """
 
         let queryName = name.pascalCased()
@@ -57,7 +68,18 @@ public class GraphQLSyncQuery: GraphQLListQuery {
     }
 
     public override var variables: [String: Any] {
-        var variables = super.variables
+        var variables = [String: Any]()
+        if let predicate = predicate {
+            variables.updateValue(predicate.graphQLFilterVariables, forKey: "filter")
+        }
+
+        if let limit = limit {
+            variables.updateValue(limit, forKey: "limit")
+        }
+
+        if let nextToken = nextToken {
+            variables.updateValue(nextToken, forKey: "nextToken")
+        }
 
         if let lastSync = lastSync {
             variables.updateValue(lastSync, forKey: "lastSync")
