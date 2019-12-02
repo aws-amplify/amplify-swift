@@ -40,14 +40,14 @@ commands:
     steps:
       - run:
           name: pre-start simulator
-          command: bash CircleciScripts/pre_start_simulator.sh
+          command: bash ~/amplify-ios/CircleciScripts/pre_start_simulator.sh
 
   api_unit_tests:
     steps:
-      - run: cd API
+      - run: cd ./API
       - run: ls -alF
       - run: pod install
-      - run: xcodebuild -workspace APICategoryPlugin.xcworkspace -scheme AWSAPICategoryPlugin -sdk iphonesimulator -destination "${destination}"
+      - run: xcodebuild build-for-testing -workspace APICategoryPlugin.xcworkspace -scheme AWSAPICategoryPlugin -sdk iphonesimulator -destination "${destination}"
       - run: xcodebuild test -workspace APICategoryPlugin.xcworkspace -scheme AWSAPICategoryPlugin -sdk iphonesimulator -destination "${destination}"
 
 
