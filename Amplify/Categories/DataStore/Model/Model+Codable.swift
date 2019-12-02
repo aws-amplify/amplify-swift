@@ -26,8 +26,7 @@ extension Model where Self: Codable {
         if let decoder = decoder {
             resolvedDecoder = decoder
         } else {
-            resolvedDecoder = JSONDecoder()
-            resolvedDecoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
+            resolvedDecoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
         }
 
         guard let data = json.data(using: .utf8) else {
@@ -49,8 +48,7 @@ extension Model where Self: Codable {
     /// other decoding specific error that `JSONDecoder.decode()` might throw.
     public static func from(dictionary: [String: Any]) throws -> Self {
         let data = try JSONSerialization.data(withJSONObject: dictionary)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
+        let decoder = JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
         return try decoder.decode(Self.self, from: data)
     }
 
@@ -65,8 +63,7 @@ extension Model where Self: Codable {
         if let encoder = encoder {
             resolvedEncoder = encoder
         } else {
-            resolvedEncoder = JSONEncoder()
-            resolvedEncoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy
+            resolvedEncoder = JSONEncoder(dateEncodingStrategy: ModelDateFormatting.encodingStrategy)
         }
 
         let data = try resolvedEncoder.encode(self)

@@ -69,3 +69,17 @@ public extension String {
         return ModelDateFormatting.iso8601WithoutFractionalSeconds.date(from: self)
     }
 }
+
+public extension JSONDecoder {
+    convenience init(dateDecodingStrategy: JSONDecoder.DateDecodingStrategy) {
+        self.init()
+        self.dateDecodingStrategy = dateDecodingStrategy
+    }
+}
+
+public extension JSONEncoder {
+    convenience init(dateEncodingStrategy: JSONEncoder.DateEncodingStrategy) {
+        self.init()
+        self.dateEncodingStrategy = dateEncodingStrategy
+    }
+}
