@@ -9,9 +9,9 @@ import Foundation
 
 /// Protocol that defines a contract between the consumer and the DataStore plugin.
 /// All models have to be registered and have an associated `version`.
-public protocol DataStoreModelRegistration {
+public protocol AmplifyModelRegistration {
 
-    /// Function called during DataStore initialization. Implementations must
+    /// Function called during plugin initialization. Implementations must
     /// register all the available models here.
     func registerModels(registry: ModelRegistry.Type)
 

@@ -41,6 +41,8 @@ extension APICategory: CategoryConfigurable {
             plugin.reset { group.leave() }
         }
 
+        ModelRegistry.reset()
+
         group.wait()
 
         isConfigured = false
