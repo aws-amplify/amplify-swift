@@ -64,7 +64,7 @@ jobs:
       - *restore_repo
       - *restore_pods
       - run: pod install
-      - ls -alF
+      - run: ls -alF
       - save_cache:
           key: *pods_cache_key
           paths:
