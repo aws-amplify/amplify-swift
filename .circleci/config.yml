@@ -8,15 +8,18 @@ defaults: &defaults
   working_directory: ~/amplify-ios
 
 references:
+  repo_cache_key: &repo_cache_key
+    v1-repo-{{ .Branch }}-{{ .Revision }}
+
   restore_repo: &restore_repo
     restore_cache:
       keys:
-        - v1-repo-{{ .Branch }}-{{ .Revision }}
+        - *repo_cache_key
         - v1-repo-{{ .Branch }}
         - v1-repo
 
   pods_cache_key: &pods_cache_key
-    v1-dependency-pods-{{ checksum "Podfile" }}
+    v1-dependency-pods-{{ checksum "~/amplify-ios/Podfile" }}
   
   pods_backup_cache_key: &pods_backup_cache_key
     v1-dependency-pods
@@ -47,6 +50,7 @@ commands:
           command: |
             bash CircleciScripts/pre_start_simulator.sh
 
+
 jobs:
   checkout_code:
     <<: *defaults
@@ -54,9 +58,9 @@ jobs:
       - *restore_repo
       - checkout
       - save_cache:
-          key: v1-repo-{{ .Branch }}-{{ .Revision }}
+          key: *repo_cache_key
           paths: 
-            - .
+            - ~/amplify-ios
 
   install_pods:
     <<: *defaults
@@ -69,7 +73,6 @@ jobs:
           paths:
             - ~/amplify-ios/Pods
             - ~/amplify-ios/Amplify.xcworkspace
-
 
   build_amplify:
     <<: *defaults
