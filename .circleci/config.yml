@@ -5,8 +5,39 @@ version: 2.1
 defaults: &defaults
   macos:
     xcode: "11.2.1"
+  working_directory: ~/amplify-ios
+
+references:
+  restore_repo: &restore_repo
+    restore_cache:
+      keys:
+        - repo-{{ .Branch }}-{{ .Revision }}
+        - repo-{{ .Branch }}
+        - repo
+
+  pods_cache_key: &pods_cache_key
+    dependency-pods-{{ checksum "Podfile" }}
+  
+  pods_backup_cache_key: &pods_backup_cache_key
+    dependency-pods
+
+  restore_pods: &restore_pods
+    restore_cache:
+      keys:
+        - *pods_cache_key
+        - *pods_backup_cache_key
 
 commands:
+  pod_install:
+    steps:
+      - run:
+          name: install dependencies
+          command: |
+            if [ ! -d Pods ]; then
+              set -exu
+              pod install
+            fi      
+
   pre_start_simulator:
     description: >-
       pre start simulator, build may fail is simulator is not started
@@ -17,29 +48,52 @@ commands:
             bash CircleciScripts/pre_start_simulator.sh
 
 jobs:
+  checkout_code:
+    <<: *defaults
+    steps:
+      - *restore_repo
+      - checkout
+      - save_cache:
+          key: repo-{{ .Branch }}-{{ .Revision }}
+          paths: 
+            - .
+
+  install_pods:
+    <<: *defaults
+    steps:
+      - *restore_repo
+      - *restore_pods
+      - pod_install
+      - save_cache:
+          key: *pods_cache_key
+          paths:
+            - ~/amplify-ios/Pods
+
+
   build_amplify:
     <<: *defaults
-    working_directory: ~/amplify-ios
     steps:
-      - checkout
-      - run:
-          name: install CocoaPods
-          command: pod install
+      - *restore_repo
+      - *restore_pods      
       - pre_start_simulator
       - run:
           name: build amplify
           command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
+      - persist_to_workspace:
+          root: ~/
+          paths: amplify-ios
   
   unit_test:
     <<: *defaults
     working_directory: ~/amplify-ios/AmplifyPlugins
     steps:
+      - *restore_repo
+      - *restore_pods
       - run: ls -alF
       - run: pod --version
 
 
 workflows:
-  version: 2
   build_test:
     jobs:
       - build_amplify
