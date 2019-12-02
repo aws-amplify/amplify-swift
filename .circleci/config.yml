@@ -68,6 +68,7 @@ jobs:
           key: *pods_cache_key
           paths:
             - ~/amplify-ios/Pods
+            - ~/amplify-ios/Amplify.xcworkspace
 
 
   build_amplify:
