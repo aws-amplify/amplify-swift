@@ -54,8 +54,9 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     func publisher<M: Model>(for modelType: M.Type)
         -> AnyPublisher<MutationEvent, DataStoreError> {
             let mutationEvent = MutationEvent(id: "testevent",
+                                              modelId: "123",
                                               modelName: modelType.modelName,
-                                              data: "",
+                                              json: "",
                                               mutationType: .create,
                                               createdAt: Date())
             notify("publisher")

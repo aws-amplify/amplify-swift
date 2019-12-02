@@ -79,36 +79,31 @@ extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
                             completion: completion)
     }
 
+    public func delete<M: Model>(_ modelType: M.Type,
+                                 withId id: String,
+                                 completion: @escaping DataStoreCallback<Void>) {
+        storageEngine.delete(modelType,
+                             withId: id,
+                             completion: completion)
+    }
+
     public func delete<M: Model>(_ model: M,
-                                 completion: DataStoreCallback<Void>) {
+                                 completion: @escaping DataStoreCallback<Void>) {
         let publishingCompletion: DataStoreCallback<Void> = { result in
-            if #available(iOS 13.0, *) {
-                switch result {
-                case .success:
-                    // TODO: Handle errors from mutation event creation
-                    if let mutationEvent = try? MutationEvent(model: model, mutationType: .delete) {
-                        if let publisher = self.dataStorePublisher as? DataStorePublisher {
-                            publisher.send(input: mutationEvent)
-                        }
-                    }
-                case .failure:
-                    break
-                }
+            switch result {
+            case .success:
+                // TODO: Handle errors from mutation event creation
+                self.publishMutationEvent(from: model, mutationType: .delete)
+            case .failure:
+                break
             }
+
             completion(result)
         }
 
         delete(type(of: model),
                withId: model.id,
                completion: publishingCompletion)
-    }
-
-    public func delete<M: Model>(_ modelType: M.Type,
-                                 withId id: String,
-                                 completion: DataStoreCallback<Void>) {
-        storageEngine.delete(modelType,
-                             withId: id,
-                             completion: completion)
     }
 
     // MARK: Private

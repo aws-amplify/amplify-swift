@@ -41,6 +41,10 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     static func initializeDatabase(connection: Connection) throws {
         log.debug("Initializing database connection: \(String(describing: connection))")
 
+        if log.logLevel >= .verbose {
+            connection.trace { self.log.verbose($0) }
+        }
+
         let databaseInitializationStatement = """
         pragma auto_vacuum = full;
         pragma encoding = "utf-8";
@@ -98,9 +102,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
-    func delete(_ modelType: Model.Type,
-                withId id: Model.Identifier,
-                completion: (DataStoreResult<Void>) -> Void) {
+    func delete<M: Model>(_ modelType: M.Type,
+                          withId id: Model.Identifier,
+                          completion: (DataStoreResult<Void>) -> Void) {
         do {
             let statement = DeleteStatement(modelType: modelType, withId: id)
             _ = try connection.prepare(statement.stringValue).run(statement.variables)

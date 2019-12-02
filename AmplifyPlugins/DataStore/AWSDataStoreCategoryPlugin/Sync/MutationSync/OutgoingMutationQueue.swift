@@ -9,8 +9,15 @@ import Amplify
 import Combine
 import Foundation
 
+/// Submits outgoing mutation events to the provisioned API
 @available(iOS 13.0, *)
-final class OutgoingMutationQueue {
+protocol OutgoingMutationQueueBehavior: class {
+    func pauseSyncingToCloud()
+    func startSyncingToCloud(api: APICategoryGraphQLBehavior, mutationEventPublisher: MutationEventPublisher)
+}
+
+@available(iOS 13.0, *)
+final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     private let stateMachine: StateMachine<State, Action>
     private var stateMachineSink: AnyCancellable?

@@ -10,6 +10,7 @@ extension MutationEvent {
 
     public enum CodingKeys: String, ModelKey {
         case id
+        case modelId
         case modelName
         case json
         case mutationType
@@ -30,6 +31,7 @@ extension MutationEvent {
 
         definition.fields(
             .id(),
+            .field(mutation.modelId, is: .required, ofType: .string),
             .field(mutation.modelName, is: .required, ofType: .string),
             .field(mutation.json, is: .required, ofType: .string),
             .field(mutation.mutationType, is: .required, ofType: .string),

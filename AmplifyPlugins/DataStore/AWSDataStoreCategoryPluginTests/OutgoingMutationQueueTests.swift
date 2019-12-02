@@ -140,15 +140,17 @@ class OutgoingMutationQueueTests: XCTestCase {
         let mutationEventSaved = expectation(description: "Preloaded mutation event saved")
         mutationEventSaved.expectedFulfillmentCount = 3
         for id in 1 ... 3 {
-            let pendingPost = Post(id: "pendingPost-\(id)",
-                title: "pendingPost-\(id) title",
+            let postId = "pendingPost-\(id)"
+            let pendingPost = Post(id: postId,
+                                   title: "pendingPost-\(id) title",
                 content: "pendingPost-\(id) content",
                 createdAt: Date())
 
             let pendingPostJSON = try pendingPost.toJSON()
             let event = MutationEvent(id: "mutation-\(id)",
+                modelId: "pendingPost-\(id)",
                 modelName: Post.modelName,
-                data: pendingPostJSON,
+                json: pendingPostJSON,
                 mutationType: .create,
                 createdAt: Date())
 
@@ -201,15 +203,17 @@ class OutgoingMutationQueueTests: XCTestCase {
         // pre-load the MutationEvent table with mutation data
         let mutationEventSaved = expectation(description: "Preloaded mutation event saved")
         for id in 1 ... 1 {
-            let pendingPost = Post(id: "pendingPost-\(id)",
-                title: "pendingPost-\(id) title",
+            let postId = "pendingPost-\(id)"
+            let pendingPost = Post(id: postId,
+                                   title: "pendingPost-\(id) title",
                 content: "pendingPost-\(id) content",
                 createdAt: Date())
 
             let pendingPostJSON = try pendingPost.toJSON()
             let event = MutationEvent(id: "mutation-\(id)",
+                modelId: postId,
                 modelName: Post.modelName,
-                data: pendingPostJSON,
+                json: pendingPostJSON,
                 mutationType: .create,
                 createdAt: Date())
 

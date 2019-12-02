@@ -34,7 +34,7 @@ extension Persistable {
         }
 
         if let value = value as? Date {
-            return value.datatypeValue
+            return value.iso8601String
         }
 
         preconditionFailure("""
@@ -59,7 +59,6 @@ extension Model {
         let modelType = type(of: self)
         let modelFields = fields ?? modelType.schema.sortedFields
         let values: [Binding?] = modelFields.map { field in
-            // TODO why are `nil` optional number types not being skipped as expected?
 
             // self[field.name] subscript accessor returns an Any??, we need to do a few things:
             // - `guard` to make sure the field name exists on the model
