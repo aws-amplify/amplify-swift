@@ -21,6 +21,25 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
         XCTAssertNoThrow(try Amplify.add(plugin: plugin))
     }
 
+    func testCanConfigureFirstWithEmptyConfiguration() throws {
+        let plugin = MockDataStoreCategoryPlugin()
+        let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
+        plugin.listeners.append { message in
+            if message == "configure(using:)" {
+                methodInvokedOnDefaultPlugin.fulfill()
+            }
+        }
+
+        try Amplify.add(plugin: plugin)
+
+        let amplifyConfig = AmplifyConfiguration()
+        try Amplify.configure(amplifyConfig)
+
+        XCTAssertNotNil(Amplify.DataStore)
+        XCTAssertNotNil(Amplify.DataStore.plugin)
+        wait(for: [methodInvokedOnDefaultPlugin], timeout: 1.0)
+    }
+
     func testCanConfigureDataStorePlugin() throws {
         let plugin = MockDataStoreCategoryPlugin()
         try Amplify.add(plugin: plugin)
