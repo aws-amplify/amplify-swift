@@ -2,10 +2,12 @@
 
 version: 2.1
 
+
 defaults: &defaults
   macos:
     xcode: "11.2.1"
   working_directory: ~/amplify-ios
+
 
 references:
   repo_cache_key: &repo_cache_key
@@ -30,25 +32,19 @@ references:
         - *pods_cache_key
         - *pods_backup_cache_key
 
-commands:
-  pod_install:
-    steps:
-      - run:
-          name: install dependencies
-          command: |
-            if [ ! -d Pods ]; then
-              set -exu
-              pod install
-            fi      
 
+commands:
   pre_start_simulator:
     description: >-
       pre start simulator, build may fail is simulator is not started
     steps:
       - run:
           name: pre-start simulator
-          command: |
-            bash CircleciScripts/pre_start_simulator.sh
+          command: bash CircleciScripts/pre_start_simulator.sh
+
+  api_unit_tests:
+    steps:
+      - run: ls -alF
 
 
 jobs:
@@ -79,8 +75,7 @@ jobs:
     steps:
       - *restore_repo
       - *restore_pods      
-      - pre_start_simulator
-      - run: ls -alF      
+      - pre_start_simulator   
       - run:
           name: build amplify
           command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
@@ -91,7 +86,7 @@ jobs:
     steps:
       - *restore_repo
       - *restore_pods
-      - run: ls -alF
+      - api_unit_tests
 
 
 workflows:
