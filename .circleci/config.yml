@@ -44,7 +44,11 @@ commands:
 
   api_unit_tests:
     steps:
+      - run: cd API
       - run: ls -alF
+      - run: pod install
+      - run: xcodebuild -workspace APICategoryPlugin.xcworkspace -scheme AWSAPICategoryPlugin -sdk iphonesimulator -destination "${destination}"
+      - run: xcodebuild test -workspace APICategoryPlugin.xcworkspace -scheme AWSAPICategoryPlugin -sdk iphonesimulator -destination "${destination}"
 
 
 jobs:
