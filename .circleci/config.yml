@@ -21,10 +21,10 @@ references:
         - v1-repo
 
   pods_cache_key: &pods_cache_key
-    v1-dependency-pods-{{ checksum "~/amplify-ios/Podfile" }}
+    v3-dependency-pods-{{ checksum "~/amplify-ios/Podfile" }}
   
   pods_backup_cache_key: &pods_backup_cache_key
-    v1-dependency-pods
+    v3-dependency-pods
 
   restore_pods: &restore_pods
     restore_cache:
@@ -41,15 +41,6 @@ commands:
       - run:
           name: pre-start simulator
           command: bash ~/amplify-ios/CircleciScripts/pre_start_simulator.sh
-
-  api_unit_tests:
-    steps:
-      - run: |
-          cd ./API
-          ls -alF
-          pod install
-          xcodebuild build-for-testing -workspace APICategoryPlugin.xcworkspace -scheme AWSAPICategoryPlugin -sdk iphonesimulator -destination "${destination}"
-          xcodebuild test -workspace APICategoryPlugin.xcworkspace -scheme AWSAPICategoryPlugin -sdk iphonesimulator -destination "${destination}"
 
 
 jobs:
@@ -73,26 +64,43 @@ jobs:
           key: *pods_cache_key
           paths:
             - ~/amplify-ios/Pods
-            - ~/amplify-ios/Amplify.xcworkspace
+      - persist_to_workspace:
+          root: ~/
+          paths: amplify-ios/Amplify.xcworkspace
 
   build_amplify:
     <<: *defaults
     steps:
       - *restore_repo
       - *restore_pods      
-      - pre_start_simulator   
+      - pre_start_simulator
+      - attach_workspace:
+          at: ~/
       - run:
           name: build amplify
           command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
+      - run:
+          name: test amplify
+          command: xcodebuild test -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
   
-  unit_test:
+  plugin_unit_test:
     <<: *defaults
-    working_directory: ~/amplify-ios/AmplifyPlugins
+    parameters:
+      path:
+        type: string
+      workspace:
+        type: string
+      scheme:
+        type: string
+    working_directory: ~/amplify-ios/AmplifyPlugins/<< parameters.path >>
+    description: << parameters.path >> unit test
     steps:
       - *restore_repo
       - *restore_pods
       - pre_start_simulator
-      - api_unit_tests
+      - run: pod install
+      - run: xcodebuild build-for-testing -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}"
+      - run: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}"
 
 
 workflows:
@@ -105,6 +113,38 @@ workflows:
       - build_amplify:
           requires:
               - install_pods                
-      - unit_test:
+      - plugin_unit_test:
+          name: unit_test_api
+          path: API
+          workspace: APICategoryPlugin
+          scheme: AWSAPICategoryPlugin
           requires:
               - build_amplify
+      - plugin_unit_test:
+          name: unit_test_analytics
+          path: Analytics
+          workspace: AnalyticsCategoryPlugin
+          scheme: AWSPinpointAnalyticsPlugin
+          requires:
+              - build_amplify
+      - plugin_unit_test:
+          name: unit_test_storage
+          path: Storage
+          workspace: StoragePlugin
+          scheme: AWSS3StoragePlugin
+          requires:
+              - build_amplify
+      - plugin_unit_test:
+          name: unit_test_predictions
+          path: Predictions
+          workspace: PredictionsCategoryPlugin
+          scheme: AWSPredictionsPlugin
+          requires:
+              - build_amplify
+      # - plugin_unit_test:
+      #     name: unit_test_datastore
+      #     path: DataStore
+      #     workspace: DataStoreCategoryPlugin
+      #     scheme: AWSDataStoreCategoryPlugin
+      #     requires:
+      #         - build_amplify
