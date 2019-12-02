@@ -120,8 +120,8 @@ class AnyModelIntegrationTests: XCTestCase {
                                createdAt: originalPost.createdAt,
                                updatedAt: originalPost.updatedAt,
                                rating: originalPost.rating,
-                               draft: originalPost.draft,
-                               _version: 1)
+                               draft: originalPost.draft
+                               /*_version: 1*/ )
         let updatedAnyPost = try updatedPost.eraseToAnyModel()
 
         let updateCallbackInvoked = expectation(description: "Update callback invoked")

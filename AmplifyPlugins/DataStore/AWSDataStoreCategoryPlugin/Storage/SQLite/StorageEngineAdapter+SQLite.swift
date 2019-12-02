@@ -8,6 +8,7 @@
 import Amplify
 import Foundation
 import SQLite
+import AWSPluginsCore
 
 /// [SQLite](https://sqlite.org) `StorageEngineAdapter` implementation. This class provides
 /// an integration layer between the AppSyncLocal `StorageEngine` and SQLite for local storage.

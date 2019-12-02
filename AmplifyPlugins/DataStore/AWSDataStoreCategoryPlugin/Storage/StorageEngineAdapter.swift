@@ -7,6 +7,7 @@
 
 import Amplify
 import Foundation
+import AWSPluginsCore
 
 protocol StorageEngineAdapter: class, ModelStorageBehavior {
 

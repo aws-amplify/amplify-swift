@@ -6,12 +6,11 @@
 //
 
 import XCTest
-
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSAPICategoryPlugin
+@testable import AWSPluginsCore
 
-class GraphQLMutationTests: XCTestCase {
+class GraphQLSyncMutationTests: XCTestCase {
 
     override func setUp() {
         ModelRegistry.register(modelType: Comment.self)
@@ -34,7 +33,7 @@ class GraphQLMutationTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testCreateGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content")
-        let document = GraphQLMutation(of: post, type: .create)
+        let document = GraphQLSyncMutation(of: post, type: .create, version: 5)
         let expectedQueryDocument = """
         mutation CreatePost($input: CreatePostInput!) {
           createPost(input: $input) {
@@ -63,6 +62,7 @@ class GraphQLMutationTests: XCTestCase {
         }
         XCTAssert(input["title"] as? String == post.title)
         XCTAssert(input["content"] as? String == post.content)
+        XCTAssert(input["_version"] as? Int == 5)
     }
 
     /// - Given: a `Model` instance
@@ -78,7 +78,7 @@ class GraphQLMutationTests: XCTestCase {
     func testCreateGraphQLMutationFromModelWithAssociation() {
         let post = Post(title: "title", content: "content")
         let comment = Comment(content: "comment", post: post)
-        let document = GraphQLMutation(of: comment, type: .create)
+        let document = GraphQLSyncMutation(of: comment, type: .create, version: 5)
         let expectedQueryDocument = """
         mutation CreateComment($input: CreateCommentInput!) {
           createComment(input: $input) {
@@ -114,6 +114,7 @@ class GraphQLMutationTests: XCTestCase {
             return
         }
         XCTAssertEqual(input["commentPostId"] as? String, post.id)
+        XCTAssert(input["_version"] as? Int == 5)
     }
 
     /// - Given: a `Model` instance
@@ -128,7 +129,7 @@ class GraphQLMutationTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testUpdateGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content")
-        let document = GraphQLMutation(of: post, type: .update)
+        let document = GraphQLSyncMutation(of: post, type: .update, version: 5)
         let expectedQueryDocument = """
         mutation UpdatePost($input: UpdatePostInput!) {
           updatePost(input: $input) {
@@ -157,6 +158,7 @@ class GraphQLMutationTests: XCTestCase {
         }
         XCTAssert(input["title"] as? String == post.title)
         XCTAssert(input["content"] as? String == post.content)
+        XCTAssert(input["_version"] as? Int == 5)
     }
 
     /// - Given: a `Model` instance
@@ -171,7 +173,7 @@ class GraphQLMutationTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testDeleteGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content")
-        let document = GraphQLMutation(of: post, type: .delete)
+        let document = GraphQLSyncMutation(of: post, type: .delete, version: 5)
         let expectedQueryDocument = """
         mutation DeletePost($input: DeletePostInput!) {
           deletePost(input: $input) {
@@ -194,10 +196,11 @@ class GraphQLMutationTests: XCTestCase {
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "deletePost")
         XCTAssert(document.variables["input"] != nil)
-        guard let input = document.variables["input"] as? [String: String] else {
+        guard let input = document.variables["input"] as? [String: Any] else {
             XCTFail("Could not get object at `input`")
             return
         }
-        XCTAssertEqual(input["id"], post.id)
+        XCTAssert(input["id"] as? String == post.id)
+        XCTAssert(input["_version"] as? Int == 5)
     }
 }
