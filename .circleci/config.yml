@@ -11,15 +11,15 @@ references:
   restore_repo: &restore_repo
     restore_cache:
       keys:
-        - repo-{{ .Branch }}-{{ .Revision }}
-        - repo-{{ .Branch }}
-        - repo
+        - v1-repo-{{ .Branch }}-{{ .Revision }}
+        - v1-repo-{{ .Branch }}
+        - v1-repo
 
   pods_cache_key: &pods_cache_key
-    new-dependency-pods-{{ checksum "Podfile" }}
+    v1-dependency-pods-{{ checksum "Podfile" }}
   
   pods_backup_cache_key: &pods_backup_cache_key
-    new-dependency-pods
+    v1-dependency-pods
 
   restore_pods: &restore_pods
     restore_cache:
@@ -64,7 +64,6 @@ jobs:
       - *restore_repo
       - *restore_pods
       - run: pod install
-      - run: ls -alF
       - save_cache:
           key: *pods_cache_key
           paths:
@@ -78,10 +77,10 @@ jobs:
       - *restore_repo
       - *restore_pods      
       - pre_start_simulator
-      - run: ls -alF
-      # - run:
-      #     name: build amplify
-      #     command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
+      - run: ls -alF      
+      - run:
+          name: build amplify
+          command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
   
   unit_test:
     <<: *defaults
