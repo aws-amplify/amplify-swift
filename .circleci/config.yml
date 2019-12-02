@@ -96,7 +96,13 @@ jobs:
 workflows:
   build_test:
     jobs:
-      - build_amplify
+      - checkout_code
+      - install_pods:
+          requires:
+              - checkout_code        
+      - build_amplify:
+          requires:
+              - install_pods                
       - unit_test:
           requires:
               - build_amplify
