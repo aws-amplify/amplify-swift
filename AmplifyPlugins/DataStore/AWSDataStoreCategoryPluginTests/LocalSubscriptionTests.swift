@@ -29,7 +29,15 @@ class LocalSubscriptionTests: XCTestCase {
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
             try storageAdapter.setUp(models: StorageEngine.systemModels)
 
-            let syncEngine = try CloudSyncEngine(storageAdapter: storageAdapter)
+            let outgoingMutationQueue = NoOpMutationQueue()
+            let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
+            let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
+
+            let syncEngine = CloudSyncEngine(storageAdapter: storageAdapter,
+                                             outgoingMutationQueue: outgoingMutationQueue,
+                                             mutationEventIngester: mutationDatabaseAdapter,
+                                             mutationEventPublisher: awsMutationEventPublisher)
+
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           syncEngine: syncEngine,
                                           isSyncEnabled: true)
