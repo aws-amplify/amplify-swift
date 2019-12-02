@@ -30,6 +30,8 @@ references:
         - *pods_cache_key
         - *pods_backup_cache_key
 
+  plugin_pods_cache_key: &plugin_pods_cache_key
+
 commands:
   pre_start_simulator:
     description: >-
@@ -92,7 +94,6 @@ jobs:
     description: << parameters.path >> unit test
     steps:
       - *restore_repo
-      - *restore_pods
       - pre_start_simulator
       - run: pod install
       - run:
@@ -118,32 +119,32 @@ workflows:
           workspace: APICategoryPlugin
           scheme: AWSAPICategoryPlugin
           requires:
-              - build_amplify
+              - checkout_code
       - plugin_unit_test:
           name: unit_test_analytics
           path: Analytics
           workspace: AnalyticsCategoryPlugin
           scheme: AWSPinpointAnalyticsPlugin
           requires:
-              - build_amplify
+              - checkout_code
       - plugin_unit_test:
           name: unit_test_storage
           path: Storage
           workspace: StoragePlugin
           scheme: AWSS3StoragePlugin
           requires:
-              - build_amplify
+              - checkout_code
       - plugin_unit_test:
           name: unit_test_predictions
           path: Predictions
           workspace: PredictionsCategoryPlugin
           scheme: AWSPredictionsPlugin
           requires:
-              - build_amplify
+              - checkout_code
       # - plugin_unit_test:
       #     name: unit_test_datastore
       #     path: DataStore
       #     workspace: DataStoreCategoryPlugin
       #     scheme: AWSDataStoreCategoryPlugin
       #     requires:
-      #         - build_amplify
+      #         - checkout_code
