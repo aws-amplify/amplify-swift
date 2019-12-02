@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = 'AWSPluginsCore'
-  s.version      = '0.0.1'
+  s.version      = '0.9.0'
   s.summary      = 'Amazon Web Services Amplify for iOS.'
 
   s.description  = 'AWS Amplify for iOS provides a declarative library for application development using cloud services'
@@ -22,10 +22,10 @@ Pod::Spec.new do |s|
   
   s.requires_arc = true
   
-  AWS_SDK_VERSION = "~> 2.12.0"
+  AWS_SDK_VERSION = "~> 2.12.2"
 
   s.source_files = 'AmplifyPlugins/Core/AWSPluginsCore/**/*.swift'
-  s.dependency 'Amplify', '0.0.1'
+  s.dependency 'Amplify', '0.9.0'
   s.dependency 'AWSMobileClient', AWS_SDK_VERSION
 
 end
