@@ -11,6 +11,7 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
+import AWSPluginsCore
 
 class ReconcileAndLocalSaveOperationTests: XCTestCase {
     var storageAdapter: MockSQLiteStorageEngineAdapter!

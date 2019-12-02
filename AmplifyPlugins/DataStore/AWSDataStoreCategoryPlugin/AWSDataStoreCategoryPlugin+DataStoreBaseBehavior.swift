@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSPluginsCore
 
 extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
 
