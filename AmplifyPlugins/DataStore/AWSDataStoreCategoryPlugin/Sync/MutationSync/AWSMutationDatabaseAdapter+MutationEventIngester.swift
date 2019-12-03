@@ -39,6 +39,8 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
         // to query.
         var mutationEvent = mutationEvent
         do {
+            // TODO: Refactor this so that it's clear that the storage engine is not responsible for setting the version
+            // perhaps as simple as renaming to `submit(unversionedMutationEvent:)` or similar
             let syncMetadata = try storageAdapter.queryMutationSyncMetadata(for: mutationEvent.modelId)
             mutationEvent.version = syncMetadata?.version
         } catch {

@@ -161,6 +161,12 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         return false
     }
 
+    func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>? {
+        let model = anyModel.instance
+        let results = try queryMutationSync(for: [model])
+        return results.first
+    }
+
     func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>] {
         let statement = SelectStatement(from: MutationSyncMetadata.self)
         let primaryKey = MutationSyncMetadata.schema.primaryKey.sqlName
@@ -184,12 +190,6 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             return MutationSync<AnyModel>(model: anyModel, syncMetadata: syncMetadata)
         }
         return mutationSyncList
-    }
-
-    func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>? {
-        let model = anyModel.instance
-        let results = try queryMutationSync(for: [model])
-        return results.first
     }
 
     func queryMutationSyncMetadata(for modelId: Model.Identifier) throws -> MutationSyncMetadata? {
