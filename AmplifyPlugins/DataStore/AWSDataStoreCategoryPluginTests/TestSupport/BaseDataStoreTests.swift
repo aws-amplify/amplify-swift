@@ -42,12 +42,12 @@ class BaseDataStoreTests: XCTestCase {
         }
 
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStoreCategoryPlugin(modelRegistration: TestModelRegistration(),
+        let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                          storageEngine: storageEngine,
                                                          dataStorePublisher: dataStorePublisher)
 
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
-            "awsDataStoreCategoryPlugin": true
+            "awsDataStorePlugin": true
         ])
 
         // Since these tests use syncable models, we have to set up an API category also

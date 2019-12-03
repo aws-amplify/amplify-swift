@@ -8,7 +8,7 @@
 import Amplify
 import Combine
 
-extension AWSDataStoreCategoryPlugin: DataStoreSubscribeBehavior {
+extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
     @available(iOS 13.0, *)
     public func publisher<M: Model>(for modelType: M.Type)
         -> AnyPublisher<MutationEvent, DataStoreError> {

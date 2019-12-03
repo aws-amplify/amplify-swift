@@ -49,7 +49,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         self.outgoingMutationQueue = outgoingMutationQueue
 
         self.syncQueue = OperationQueue()
-        syncQueue.name = "com.amazonaws.Amplify.\(AWSDataStoreCategoryPlugin.self).CloudSyncEngine"
+        syncQueue.name = "com.amazonaws.Amplify.\(AWSDataStorePlugin.self).CloudSyncEngine"
         syncQueue.maxConcurrentOperationCount = 1
     }
 
