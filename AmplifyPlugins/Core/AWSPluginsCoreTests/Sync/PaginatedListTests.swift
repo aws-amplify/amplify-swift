@@ -93,8 +93,9 @@ class PaginatedListTests: XCTestCase {
             let paginatedList = try decoder.decode(PaginatedList<Post>.self, from: data)
             XCTAssertNotNil(paginatedList)
             XCTAssertNotNil(paginatedList.startedAt)
+            XCTAssert(paginatedList.startedAt == 1_575_322_600_038)
             XCTAssertNotNil(paginatedList.nextToken)
-            XCTAssertNotNil(paginatedList.items)
+            XCTAssert(paginatedList.nextToken == "token")
             XCTAssert(paginatedList.items.isEmpty)
         } catch {
             XCTFail(error.localizedDescription)

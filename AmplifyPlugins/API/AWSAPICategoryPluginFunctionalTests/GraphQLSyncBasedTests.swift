@@ -69,7 +69,8 @@ class GraphQLSyncBasedTests: XCTestCase {
     }
 
     // Given: A newly created post will have version 1
-    // When: Call update mutation with with an updated title, passing in the correct version (version 1)
+    // When: Call update mutation with with an updated title
+    //       passing in version 1, which is the correct unmodified version
     // Then: The mutation result should be the post with the updated title.
     //       MutationSync metadata contains version 2
     func testCreatePostThenUpdatePostShouldHaveNewVersion() {
@@ -220,7 +221,7 @@ class GraphQLSyncBasedTests: XCTestCase {
         let connectedInvoked = expectation(description: "Connection established")
         let disconnectedInvoked = expectation(description: "Connection disconnected")
         let completedInvoked = expectation(description: "Completed invoked")
-        let progressInvoked = expectation(description: "progress invoked")
+        let progressInvoked = expectation(description: "Progress invoked")
 
         let document = GraphQLSubscription(of: Post.self, type: .onCreate)
         let request = GraphQLRequest(document: document.stringValue,
@@ -230,7 +231,6 @@ class GraphQLSyncBasedTests: XCTestCase {
         let operation = Amplify.API.subscribe(request: request) { event in
             switch event {
             case .inProcess(let graphQLResponse):
-                print(graphQLResponse)
                 switch graphQLResponse {
                 case .connection(let state):
                     switch state {
