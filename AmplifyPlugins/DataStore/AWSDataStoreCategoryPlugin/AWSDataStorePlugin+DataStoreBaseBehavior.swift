@@ -8,7 +8,7 @@
 import Amplify
 import AWSPluginsCore
 
-extension AWSDataStoreCategoryPlugin: DataStoreBaseBehavior {
+extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func save<M: Model>(_ model: M,
                                completion: @escaping DataStoreCallback<M>) {

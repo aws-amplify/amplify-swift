@@ -390,7 +390,7 @@ import AWSPluginsCore
 //                                                         dataStorePublisher: dataStorePublisher)
 //        try Amplify.add(plugin: dataStorePlugin)
 //        let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
-//            "awsDataStoreCategoryPlugin": true
+//            "awsDataStorePlugin": true
 //        ])
 //
 //        let amplifyConfig = AmplifyConfiguration(dataStore: dataStoreConfig)

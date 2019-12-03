@@ -26,7 +26,7 @@ class SyncEngineIntegrationTestBase: XCTestCase {
     // swiftlint:disable force_try
     // swiftlint:disable force_cast
     var storageAdapter: SQLiteStorageEngineAdapter {
-        let plugin = try! Amplify.DataStore.getPlugin(for: "awsDataStoreCategoryPlugin") as! AWSDataStoreCategoryPlugin
+        let plugin = try! Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as! AWSDataStorePlugin
         let storageEngine = plugin.storageEngine as! StorageEngine
         let storageAdapter = storageEngine.storageAdapter as! SQLiteStorageEngineAdapter
         return storageAdapter
@@ -56,14 +56,14 @@ class SyncEngineIntegrationTestBase: XCTestCase {
         ])
 
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
-            "awsDataStoreCategoryPlugin": true
+            "awsDataStorePlugin": true
         ])
 
         amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: dataStoreConfig)
 
         do {
             try Amplify.add(plugin: AWSAPIPlugin())
-            try Amplify.add(plugin: AWSDataStoreCategoryPlugin(modelRegistration: TestModelRegistration()))
+            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: TestModelRegistration()))
         } catch {
             XCTFail(String(describing: error))
             return

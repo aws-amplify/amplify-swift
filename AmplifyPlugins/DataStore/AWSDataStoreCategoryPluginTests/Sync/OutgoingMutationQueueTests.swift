@@ -33,7 +33,7 @@ class OutgoingMutationQueueTests: XCTestCase {
         ])
 
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
-            "awsDataStoreCategoryPlugin": true
+            "awsDataStorePlugin": true
         ])
 
         amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: dataStoreConfig)
@@ -61,7 +61,7 @@ class OutgoingMutationQueueTests: XCTestCase {
                                               isSyncEnabled: true)
 
             let publisher = DataStorePublisher()
-            let dataStorePlugin = AWSDataStoreCategoryPlugin(modelRegistration: TestModelRegistration(),
+            let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                              storageEngine: storageEngine,
                                                              dataStorePublisher: publisher)
 

@@ -25,7 +25,7 @@ class AWSMutationEventIngesterTests: XCTestCase {
         ])
 
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
-            "awsDataStoreCategoryPlugin": true
+            "awsDataStorePlugin": true
         ])
 
         let amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: dataStoreConfig)
@@ -44,7 +44,7 @@ class AWSMutationEventIngesterTests: XCTestCase {
                                               isSyncEnabled: true)
 
             let publisher = DataStorePublisher()
-            let dataStorePlugin = AWSDataStoreCategoryPlugin(modelRegistration: TestModelRegistration(),
+            let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                              storageEngine: storageEngine,
                                                              dataStorePublisher: publisher)
 

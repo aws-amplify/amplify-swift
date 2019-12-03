@@ -7,4 +7,4 @@
 
 import Amplify
 
-extension AWSDataStoreCategoryPlugin: DefaultLogger { }
+extension AWSDataStorePlugin: DefaultLogger { }

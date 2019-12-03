@@ -31,7 +31,7 @@ Pod::Spec.new do |s|
     ss.dependency 'Starscream', '~> 3.0.2'
   end
 
-  s.subspec 'AWSDataStoreCategoryPlugin' do |ss|
+  s.subspec 'AWSDataStorePlugin' do |ss|
     ss.source_files = 'AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin/**/*.swift'
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'SQLite.swift', '~> 0.12.0'
