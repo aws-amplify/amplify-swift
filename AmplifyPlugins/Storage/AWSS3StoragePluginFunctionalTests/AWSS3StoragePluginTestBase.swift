@@ -78,7 +78,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
          }
      }
      */
-    let bucket: JSONValue = "amplifystoragesample376a67475b8e41af863024fee02fc443-devo"
+    let bucket: JSONValue = "xxxxxxx-devo"
     let region: JSONValue = "us-east-1"
     let networkTimeout = TimeInterval(180) // 180 seconds to wait before network timeouts
     static let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * 6) // 6MB
