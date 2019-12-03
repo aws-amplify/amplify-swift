@@ -6,6 +6,10 @@ defaults: &defaults
   macos:
     xcode: "11.2.1"
   working_directory: /Users/distiller/project
+  environment:
+      FL_OUTPUT_DIR: output
+      FASTLANE_LANE: test
+      BUNDLE_PATH: vendor/bundle
 
 references:
   repo_cache_key: &repo_cache_key 1-repo-{{ .Branch }}-{{ .Revision }}
@@ -56,8 +60,6 @@ jobs:
 
   install_gems:
     <<: *defaults
-    environment:
-      BUNDLE_PATH: vendor/bundle
     steps:
       - *restore_repo
       - restore_gems
@@ -75,14 +77,9 @@ jobs:
   
   build_test_amplify:
     <<: *defaults
-    environment:
-      FL_OUTPUT_DIR: output
-      FASTLANE_LANE: test
-      BUNDLE_PATH: vendor/bundle
     shell: /bin/bash --login -o pipefail
     steps:
       - *restore_repo
-      - checkout
       - save_cache:
           key: *repo_cache_key
           paths:
@@ -99,9 +96,39 @@ jobs:
           path: output
       - store_test_results:
           path: output/scan
+  
+  plugin_unit_test:
+    <<: *defaults
+    parameters:
+      path:
+        type: string
+      workspace:
+        type: string
+      scheme:
+        type: string
+    working_directory: /Users/distiller/project/AmplifyPlugins/<< parameters.path >>
+    description: << parameters.path >> unit test
+    steps:
+      - *restore_repo
+      - restore_gems
+      - restore_plugin_pods:
+          prefix: << parameters.path >>
+      - run: pod install
+      - save_plugin_pods:
+          prefix: << parameters.path >>
+      - run:
+          name: Bundle check
+          command: bundle check --path $BUNDLE_PATH || bundle install --path $BUNDLE_PATH
+      - run:
+          name: fastlane test
+          command: bundle exec fastlane $FASTLANE_LANE
+      - store_artifacts:
+          path: output
+      - store_test_results:
+          path: output/scan          
 
 workflows:
-  build_test:
+  build:
     jobs:
       - checkout_code
       - install_gems:
@@ -110,3 +137,10 @@ workflows:
       - build_test_amplify:
           requires:
             - install_gems
+      - plugin_unit_test:
+          name: unit_test_api
+          path: API
+          workspace: APICategoryPlugin
+          scheme: AWSAPICategoryPlugin
+          requires:
+              - checkout_code
