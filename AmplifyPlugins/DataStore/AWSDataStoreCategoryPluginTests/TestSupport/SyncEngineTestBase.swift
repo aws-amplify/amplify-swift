@@ -59,7 +59,7 @@ class SyncEngineTestBase: XCTestCase {
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
         let outgoingMutationQueue = NoOpMutationQueue()
 
-        let syncEngine = CloudSyncEngine(storageAdapter: storageAdapter,
+        let syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
                                          outgoingMutationQueue: outgoingMutationQueue,
                                          mutationEventIngester: mutationDatabaseAdapter,
                                          mutationEventPublisher: awsMutationEventPublisher)

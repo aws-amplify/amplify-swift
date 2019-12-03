@@ -10,13 +10,13 @@ public extension HubPayload.EventName {
 }
 
 public extension HubPayload.EventName.DataStore {
-    /// Dispatched when DataStore begins syncing to the cloud via the API category
+    /// Dispatched when DataStore begins syncing to the remote API via the API category
     static let syncStarted = "DataStore.syncStarted"
 
-    /// Dispatched when DataStore receives a sync response from the cloud via the API category. This event does not
+    /// Dispatched when DataStore receives a sync response from the remote API via the API category. This event does not
     /// define the source of the event--it could be in response to either a subscription or a locally-sourced mutation.
     /// Regardless of source, incoming sync updates always have the possibility of updating local data, so listeners
     /// who are interested in model updates must be notified in any case of a sync received. The HubPayload will be a
-    /// `MutationEvent` instance containing the newly mutated data from the cloud API.
+    /// `MutationEvent` instance containing the newly mutated data from the remote API.
     static let syncReceived = "DataStore.syncReceived"
 }

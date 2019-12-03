@@ -37,7 +37,7 @@ class AWSMutationEventIngesterTests: XCTestCase {
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
             try storageAdapter.setUp(models: StorageEngine.systemModels)
 
-            let syncEngine = try CloudSyncEngine(storageAdapter: storageAdapter)
+            let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter)
 
             let storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                               syncEngine: syncEngine,

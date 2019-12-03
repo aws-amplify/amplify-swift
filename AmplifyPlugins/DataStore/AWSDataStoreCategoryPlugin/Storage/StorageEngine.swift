@@ -17,7 +17,7 @@ final class StorageEngine: StorageEngineBehavior {
 
     private let isSyncEnabled: Bool
 
-    private var syncEngine: CloudSyncEngineBehavior?
+    private var syncEngine: RemoteSyncEngineBehavior?
 
     private weak var api: APICategoryGraphQLBehavior?
 
@@ -31,7 +31,7 @@ final class StorageEngine: StorageEngineBehavior {
     // Internal initializer used for testing, to allow lazy initialization of the SyncEngine. Note that the provided
     // storageAdapter must have already been set up with system models
     init(storageAdapter: StorageEngineAdapter,
-         syncEngine: CloudSyncEngineBehavior? = nil,
+         syncEngine: RemoteSyncEngineBehavior? = nil,
          isSyncEnabled: Bool) {
         self.storageAdapter = storageAdapter
         self.syncEngine = syncEngine
@@ -45,7 +45,7 @@ final class StorageEngine: StorageEngineBehavior {
 
         try storageAdapter.setUp(models: StorageEngine.systemModels)
         if #available(iOS 13, *) {
-            let syncEngine = isSyncEnabled ? try? CloudSyncEngine(storageAdapter: storageAdapter) : nil
+            let syncEngine = isSyncEnabled ? try? RemoteSyncEngine(storageAdapter: storageAdapter) : nil
             self.init(storageAdapter: storageAdapter, syncEngine: syncEngine, isSyncEnabled: isSyncEnabled)
         } else {
             self.init(storageAdapter: storageAdapter, syncEngine: nil, isSyncEnabled: isSyncEnabled)
@@ -137,10 +137,10 @@ final class StorageEngine: StorageEngineBehavior {
         let group = DispatchGroup()
         if #available(iOS 13, *) {
 
-            if let cloudSyncEngine = syncEngine as? CloudSyncEngine {
+            if let remoteSyncEngine = syncEngine as? RemoteSyncEngine {
                 group.enter()
                 DispatchQueue.global().async {
-                    cloudSyncEngine.reset {
+                    remoteSyncEngine.reset {
                         group.leave()
                     }
                 }
@@ -153,7 +153,7 @@ final class StorageEngine: StorageEngineBehavior {
     @available(iOS 13, *)
     private func syncDeletion<M: Model>(of modelType: M.Type,
                                         withId id: Model.Identifier,
-                                        syncEngine: CloudSyncEngineBehavior,
+                                        syncEngine: RemoteSyncEngineBehavior,
                                         completion: @escaping DataStoreCallback<Void>) {
 
         let mutationEvent = MutationEvent(id: UUID().uuidString,
@@ -180,7 +180,7 @@ final class StorageEngine: StorageEngineBehavior {
     @available(iOS 13, *)
     private func syncMutation<M: Model>(of savedModel: M,
                                         mutationType: MutationEvent.MutationType,
-                                        syncEngine: CloudSyncEngineBehavior,
+                                        syncEngine: RemoteSyncEngineBehavior,
                                         completion: @escaping DataStoreCallback<M>) {
         let mutationEvent: MutationEvent
         do {
@@ -208,7 +208,7 @@ final class StorageEngine: StorageEngineBehavior {
 
     @available(iOS 13, *)
     private func submitToSyncEngine(mutationEvent: MutationEvent,
-                                    syncEngine: CloudSyncEngineBehavior,
+                                    syncEngine: RemoteSyncEngineBehavior,
                                     completion: @escaping DataStoreCallback<MutationEvent>) {
         var mutationQueueSink: AnyCancellable?
         mutationQueueSink = syncEngine
