@@ -23,7 +23,7 @@ class BaseDataStoreTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-
+        sleep(2)
         Amplify.reset()
         Amplify.Logging.logLevel = .warn
 

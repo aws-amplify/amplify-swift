@@ -107,8 +107,8 @@ class PredictionsServiceTranslateTests: XCTestCase {
             "convert": {
                 "translateText": {
                     "region": "us_east_1",
-                    "sourceLanguage": "en",
-                    "targetLanguage": "it"
+                    "sourceLang": "en",
+                    "targetLang": "it"
                 }
             }
         }
