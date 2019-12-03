@@ -70,7 +70,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
      },
      "AppSync": {
          "Default": { // this is `todoGraphQLWithIAMWithGuestAccess`
-             "ApiUrl": "https://fsdfgjw5ojdanhivobrnmw54s4.appsync-api.us-east-1.amazonaws.com/graphql",
+             "ApiUrl": "https://xxxx.appsync-api.us-east-1.amazonaws.com/graphql",
              "Region": "us-east-1",
              "AuthMode": "AWS_IAM",
              "ClientDatabasePrefix": "api3_AWS_IAM"
@@ -79,16 +79,16 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
      "CredentialsProvider": {
          "CognitoIdentity": {
              "Default": {
-                 "PoolId": "us-east-1:35d7a505-675c-440e-969f-82d0773b586b",
+                 "PoolId": "us-east-1:xxxxx-xxxx-xx-xx-xxxxxxxx",
                  "Region": "us-east-1"
              }
          }
      },
      "CognitoUserPool": {
          "Default": {
-             "PoolId": "us-east-1_PdSfW6IgE",
-             "AppClientId": "5gf44rm3rv8ar0o9spcuols1g4",
-             "AppClientSecret": "11343jpcqhj7dqvacjkq5hlrcrlauqka56jg7lhi00vq1ra1b57i",
+             "PoolId": "us-east-xxxx",
+             "AppClientId": "5gf4xxxxxxxxr0o9spcuols1g4",
+             "AppClientSecret": "xxxxxxxxxxxxxxcrlauqka56jg7lhi00vq1ra1b57i",
              "Region": "us-east-1"
          }
      }

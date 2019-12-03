@@ -46,16 +46,16 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
          "CredentialsProvider": {
              "CognitoIdentity": {
                  "Default": {
-                     "PoolId": "us-east-1:574af171-0ced-4b7b-8157-762cdd1ffffc",
+                     "PoolId": "us-east-1:xx-xx-4b7b-8157-xx",
                      "Region": "us-east-1"
                  }
              }
          },
          "CognitoUserPool": {
              "Default": {
-                 "PoolId": "us-east-1_6FWhDURBi",
-                 "AppClientId": "1mptkb7veup5ujlqbngpcmg06d",
-                 "AppClientSecret": "1qq2vo5rv9oc1th3bulsv8hlll8djqkc9on0j7d7gi4c8lfisoei",
+                 "PoolId": "us-east-1_xxxxx",
+                 "AppClientId": "1mptkxxxxxxxxqbngpcmg06d",
+                 "AppClientSecret": "1qq2xxxxxxbulsv8hlll8djqkc9on0j7d7gi4c8lfisoei",
                  "Region": "us-east-1"
              }
          },
