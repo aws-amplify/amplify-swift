@@ -25,13 +25,16 @@ class PredictionsPluginConfigurationTests: XCTestCase {
         "defaultRegion": "us-west-2",
         "convert": {
             "translateText": {
-                "region": "us-west-2",
-                "sourceLanguage": "en",
-                "targetLanguage": "it"
+                "targetLang": "nl",
+                "sourceLang": "fi",
+                "region": "us-east-1",
+                "defaultNetworkPolicy": "auto"
             },
             "speechGenerator": {
+                "voice": "Justin",
+                "language": "en-US",
                 "region": "us-west-2",
-                "voiceId": "Justin"
+                "defaultNetworkPolicy": "auto"
             }
         },
         "interpret": {
@@ -47,6 +50,13 @@ class PredictionsPluginConfigurationTests: XCTestCase {
             "identifyText": {
                 "region": "us-west-2",
                 "format": "ALL"
+            },
+            "identifyEntities": {
+                "maxEntities": "50",
+                "celebrityDetectionEnabled": "true",
+                "region": "us-east-1",
+                "collectionId": "identifyEntities7561c236-beta",
+                "defaultNetworkPolicy": "auto"
             }
         }
         }
@@ -56,6 +66,10 @@ class PredictionsPluginConfigurationTests: XCTestCase {
             XCTAssertNotNil(configuration, "Configuration should not be nil")
             XCTAssertEqual(configuration.defaultRegion, .USWest2, "Default value should be equal to the input")
             XCTAssertEqual(configuration.identify.identifyLabels?.type, LabelType.labels, "Label type should match")
+
+            XCTAssertEqual(configuration.convert.translateText?.sourceLanguage, LanguageType.finnish)
+            XCTAssertEqual(configuration.convert.translateText?.targetLanguage, LanguageType.dutch)
+            XCTAssertEqual(Int((configuration.identify.identifyEntities?.maxEntities)!), 50)
         } catch {
             XCTFail("Decoding the json data should not produce any error \(error)")
         }
@@ -76,12 +90,12 @@ class PredictionsPluginConfigurationTests: XCTestCase {
         "convert": {
             "translateText": {
                 "region": "us-west-2",
-                "sourceLanguage": "en",
-                "targetLanguage": "it"
+                "sourceLang": "en",
+                "targetLang": "it"
             },
             "speechGenerator": {
                 "region": "us-west-2",
-                "voiceId": "Justin"
+                "voice": "Justin"
             }
         }
         }
