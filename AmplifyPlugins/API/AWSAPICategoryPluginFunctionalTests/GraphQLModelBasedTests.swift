@@ -221,9 +221,7 @@ class GraphQLModelBasedTests: XCTestCase {
                 XCTAssertEqual(singlePost.id, uuid)
                 XCTAssertEqual(singlePost.title, uniqueTitle)
                 XCTAssertEqual(singlePost.content, "content")
-                // TODO: use new code which can turn Date to iSO8601 formatted string
-                // Keeping this commented out for now is fine since we are already verifying a lot of the other fields.
-                //XCTAssertEqual(singlePost.createdAt.iso8601, createdPost.createdAt.iso8601)
+                XCTAssertEqual(singlePost.createdAt.iso8601String, createdPost.createdAt.iso8601String)
                 XCTAssertEqual(singlePost.rating, 12.3)
                 XCTAssertEqual(singlePost.draft, true)
                 completeInvoked.fulfill()

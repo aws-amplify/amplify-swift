@@ -21,6 +21,14 @@
                BlueprintName = "AWSAPICategoryPluginFunctionalTests"
                ReferencedContainer = "container:APICategoryPlugin.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "APICategoryPluginConcurrencyTests">
+               </Test>
+               <Test
+                  Identifier = "AnyModelIntegrationTests/testDeleteAsAnyModel()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

@@ -7,7 +7,15 @@
 
 import XCTest
 
-class SyncMetadataIntegrationTests: XCTestCase {
+import AmplifyPlugins
+import AWSMobileClient
+import SQLite
+
+@testable import Amplify
+@testable import AmplifyTestCommon
+@testable import AWSDataStoreCategoryPlugin
+
+class SyncMetadataTests: SyncEngineIntegrationTestBase {
 
     /// - Given: An API-connected DataStore
     /// - When:

@@ -20,33 +20,6 @@ class ReconcileAndLocalSaveOperation: Operation {
     private let workQueue = DispatchQueue(label: "com.amazonaws.ReconcileAndLocalSaveOperation",
                                           target: DispatchQueue.global())
 
-    /// States are descriptive, they say what is happening in the system right now
-    enum State {
-        case waiting
-        case deserializing(AnyModel)
-        case querying(CloudModel)
-        case reconciling(CloudModel, LocalModel?)
-        case saving(CloudModel)
-        case notifying(SavedModel)
-
-        // Terminal states
-        case finished
-        case inError(AmplifyError)
-    }
-
-    /// Actions are declarative, they say what I just did
-    enum Action {
-        case started(AnyModel)
-        case deserialized(CloudModel)
-        case queried(CloudModel, LocalModel?)
-        case reconciled(CloudModel)
-        case cancelled
-        case conflicted(CloudModel, LocalModel)
-        case saved(SavedModel)
-        case notified
-        case errored(AmplifyError)
-    }
-
     private weak var storageAdapter: StorageEngineAdapter?
     private let stateMachine: StateMachine<State, Action>
     private let anyModel: AnyModel
@@ -58,7 +31,7 @@ class ReconcileAndLocalSaveOperation: Operation {
         self.anyModel = anyModel
         self.storageAdapter = storageAdapter
         self.stateMachine = stateMachine ?? StateMachine(initialState: .waiting,
-                                                         resolver: ReconcileAndLocalSaveOperation.resolve(currentState:action:))
+                                                         resolver: Resolver.resolve(currentState:action:))
         super.init()
 
         self.stateMachineSink = self.stateMachine
@@ -262,50 +235,24 @@ class ReconcileAndLocalSaveOperation: Operation {
             return
         }
 
-        let payload = HubPayload(eventName: HubPayload.EventName.DataStore.syncReceived, data: savedModel)
-        Amplify.Hub.dispatch(to: .dataStore, payload: payload)
-        stateMachine.notify(action: .notified)
-    }
-
-    // MARK: - Resolver
-
-    /// It's not absolutely required to make `resolve` a static, but it helps in two ways:
-    /// 1. It makes it easier to avoid retain cycles, since the reducer can't close over the state machine's owning
-    ///    instance
-    /// 2. It helps enforce "pure function" behavior since `resolve` can only make decisions about the current state
-    ///    and the action, rather than peeking out to some other state of the instance.
-    static func resolve(currentState: State, action: Action) -> State {
-        switch (currentState, action) {
-
-        case (.waiting, .started(let anyModel)):
-            return .deserializing(anyModel)
-
-        case (.deserializing, .deserialized(let model)):
-            return .querying(model)
-
-        case (.querying, .queried(let cloudModel, let localModel)):
-            return .reconciling(cloudModel, localModel)
-
-        case (.reconciling, .reconciled(let cloudModel)):
-            return .saving(cloudModel)
-
-        case (.saving, .saved(let savedModel)):
-            return .notifying(savedModel)
-
-        case (.notifying, .notified):
-            return .finished
-
-        case (_, .errored(let amplifyError)):
-            return .inError(amplifyError)
-
-        case (.finished, _):
-            return .finished
-
-        default:
-            log.warn("Unexpected state transition. In \(currentState), got \(action)")
-            return currentState
+        // TODO: Dispatch/notify error if we can't erase to any model? Would imply an error in JSON decoding,
+        // which shouldn't be possible this late in the process. Possibly notify global conflict/error handler?
+        guard let anyModel = try? savedModel.eraseToAnyModel() else {
+            log.error("Could not notify mutatione vent")
+            return
         }
 
+        // TODO: Get the mutationType
+        let mutationEvent = try! MutationEvent(model: anyModel, mutationType: .create)
+        
+        let payload = HubPayload(eventName: HubPayload.EventName.DataStore.syncReceived,
+                                 data: anyModel)
+        Amplify.Hub.dispatch(to: .dataStore, payload: payload)
+
+        // TODO: Add publisher
+        // publisher?.send(input: mutationEvent)
+
+        stateMachine.notify(action: .notified)
     }
 
 }

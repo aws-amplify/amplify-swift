@@ -12,46 +12,14 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
+// swiftlint:disable file_length
 // swiftlint:disable type_body_length
 // TODO: Split these tests into separate suites
 
 /// Tests in this class have a naming convention of `test_<existing>_<candidate>`, which is to say: given that the
 /// mutation queue has an existing record of type `<existing>`, assert the behavior when candidate a mutation of
 /// type `<candidate>`.
-class MutationIngesterConflictResolutionTests: XCTestCase {
-
-    /// Mock used to listen for API calls; this is how we assert that syncEngine is delivering events to the API
-    var apiPlugin: MockAPICategoryPlugin!
-
-    /// Used for DB manipulation to mock starting data for tests
-    var storageAdapter: SQLiteStorageEngineAdapter!
-
-    /// Populated during setUp, used in each test during `Amplify.configure()`
-    var amplifyConfig: AmplifyConfiguration!
-
-    override func setUp() {
-        continueAfterFailure = false
-
-        Amplify.reset()
-        Amplify.Logging.logLevel = .verbose
-        ModelRegistry.register(modelType: Post.self)
-        ModelRegistry.register(modelType: Comment.self)
-
-        let apiConfig = APICategoryConfiguration(plugins: [
-            "MockAPICategoryPlugin": true
-        ])
-
-        let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
-            "awsDataStoreCategoryPlugin": true
-        ])
-
-        amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: dataStoreConfig)
-
-        apiPlugin = MockAPICategoryPlugin()
-        tryOrFail {
-            try Amplify.add(plugin: apiPlugin)
-        }
-    }
+class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
 
     // MARK: - Existing == .create
 
@@ -61,16 +29,17 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
     /// - Then:
     ///    - I receive an error
     ///    - The mutation queue retains the original event
-    func test_create_create() throws {
-        setUpStorageAdapter()
-
+    func test_create_create() {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
                         createdAt: Date())
-        try saveMutationEvent(of: .create, for: post)
 
-        try startAmplifyAndWaitForSync()
+        tryOrFail {
+            try setUpStorageAdapter()
+            try saveMutationEvent(of: .create, for: post)
+            try startAmplifyAndWaitForSync()
+        }
 
         let saveResultReceived = expectation(description: "Save result received")
         Amplify.DataStore.save(post) { result in
@@ -86,8 +55,9 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
         wait(for: [saveResultReceived], timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
+        let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
-                             predicate: MutationEvent.keys.id == mutationEventId(for: post)) { result in
+                             predicate: predicate) { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
@@ -107,18 +77,18 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
     /// - Then:
     ///    - The update is saved to DataStore
     ///    - The mutation event is updated with the new values
-    func test_create_update() throws {
-        setUpStorageAdapter()
-
+    func test_create_update() {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
                         createdAt: Date())
-        try saveMutationEvent(of: .create, for: post)
 
-        try savePost(post)
-
-        try startAmplifyAndWaitForSync()
+        tryOrFail {
+            try setUpStorageAdapter()
+            try saveMutationEvent(of: .create, for: post)
+            try savePost(post)
+            try startAmplifyAndWaitForSync()
+        }
 
         var mutatedPost = post
         mutatedPost.content = "UPDATED CONTENT"
@@ -136,8 +106,9 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
         wait(for: [saveResultReceived], timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
+        let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
-                             predicate: MutationEvent.keys.id == mutationEventId(for: post)) { result in
+                             predicate: predicate) { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
@@ -158,18 +129,18 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
     /// - Then:
     ///    - The delete is saved to DataStore
     ///    - The mutation event is removed from the mutation queue
-    func test_create_delete() throws {
-        setUpStorageAdapter()
-
+    func test_create_delete() {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
                         createdAt: Date())
-        try saveMutationEvent(of: .create, for: post)
 
-        try savePost(post)
-
-        try startAmplifyAndWaitForSync()
+        tryOrFail {
+            try setUpStorageAdapter()
+            try saveMutationEvent(of: .create, for: post)
+            try savePost(post)
+            try startAmplifyAndWaitForSync()
+        }
 
         let deleteResultReceived = expectation(description: "Delete result received")
         Amplify.DataStore.delete(post) { result in
@@ -186,8 +157,9 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
         wait(for: [deleteResultReceived], timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
+        let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
-                             predicate: MutationEvent.keys.id == mutationEventId(for: post)) { result in
+                             predicate: predicate) { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
@@ -208,16 +180,17 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
     /// - Then:
     ///    - I receive an error
     ///    - The mutation queue retains the original event
-    func test_update_create() throws {
-        setUpStorageAdapter()
-
+    func test_update_create() {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
                         createdAt: Date())
-        try saveMutationEvent(of: .update, for: post)
 
-        try startAmplifyAndWaitForSync()
+        tryOrFail {
+            try setUpStorageAdapter()
+            try saveMutationEvent(of: .update, for: post)
+            try startAmplifyAndWaitForSync()
+        }
 
         let saveResultReceived = expectation(description: "Save result received")
         Amplify.DataStore.save(post) { result in
@@ -233,8 +206,9 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
         wait(for: [saveResultReceived], timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
+        let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
-                             predicate: MutationEvent.keys.id == mutationEventId(for: post)) { result in
+                             predicate: predicate) { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
@@ -256,18 +230,18 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
     /// - Then:
     ///    - The update is saved to DataStore
     ///    - The mutation event is updated with the new values
-    func test_update_update() throws {
-        setUpStorageAdapter()
-
+    func test_update_update() {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
                         createdAt: Date())
-        try saveMutationEvent(of: .update, for: post)
 
-        try savePost(post)
-
-        try startAmplifyAndWaitForSync()
+        tryOrFail {
+            try setUpStorageAdapter()
+            try saveMutationEvent(of: .update, for: post)
+            try savePost(post)
+            try startAmplifyAndWaitForSync()
+        }
 
         var mutatedPost = post
         mutatedPost.content = "UPDATED CONTENT"
@@ -285,8 +259,9 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
         wait(for: [saveResultReceived], timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
+        let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
-                             predicate: MutationEvent.keys.id == mutationEventId(for: post)) { result in
+                             predicate: predicate) { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
@@ -307,18 +282,18 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
     /// - Then:
     ///    - The delete is saved to DataStore
     ///    - The mutation event is updated to a .delete type
-    func test_update_delete() throws {
-        setUpStorageAdapter()
-
+    func test_update_delete() {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
                         createdAt: Date())
-        try saveMutationEvent(of: .update, for: post)
 
-        try savePost(post)
-
-        try startAmplifyAndWaitForSync()
+        tryOrFail {
+            try setUpStorageAdapter()
+            try saveMutationEvent(of: .update, for: post)
+            try savePost(post)
+            try startAmplifyAndWaitForSync()
+        }
 
         let saveResultReceived = expectation(description: "Delete result received")
         Amplify.DataStore.delete(post) { result in
@@ -335,8 +310,9 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
         wait(for: [saveResultReceived], timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
+        let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
-                             predicate: MutationEvent.keys.id == mutationEventId(for: post)) { result in
+                             predicate: predicate) { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
@@ -358,16 +334,17 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
     /// - Then:
     ///    - I receive an error
     ///    - The mutation queue retains the original event
-    func test_delete_create() throws {
-        setUpStorageAdapter()
-
+    func test_delete_create() {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
                         createdAt: Date())
-        try saveMutationEvent(of: .delete, for: post)
 
-        try startAmplifyAndWaitForSync()
+        tryOrFail {
+            try setUpStorageAdapter()
+            try saveMutationEvent(of: .delete, for: post)
+            try startAmplifyAndWaitForSync()
+        }
 
         let saveResultReceived = expectation(description: "Save result received")
         Amplify.DataStore.save(post) { result in
@@ -383,8 +360,9 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
         wait(for: [saveResultReceived], timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
+        let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
-                             predicate: MutationEvent.keys.id == mutationEventId(for: post)) { result in
+                             predicate: predicate) { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
@@ -405,18 +383,18 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
     /// - Then:
     ///    - I receive an error
     ///    - The mutation queue retains the original event
-    func test_delete_update() throws {
-        setUpStorageAdapter()
-
+    func test_delete_update() {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
                         createdAt: Date())
-        try saveMutationEvent(of: .delete, for: post)
 
-        try savePost(post)
-
-        try startAmplifyAndWaitForSync()
+        tryOrFail {
+            try setUpStorageAdapter()
+            try saveMutationEvent(of: .delete, for: post)
+            try savePost(post)
+            try startAmplifyAndWaitForSync()
+        }
 
         var mutatedPost = post
         mutatedPost.content = "UPDATED CONTENT"
@@ -434,8 +412,9 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
         wait(for: [saveResultReceived], timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
+        let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
-                             predicate: MutationEvent.keys.id == mutationEventId(for: post)) { result in
+                             predicate: predicate) { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
@@ -457,15 +436,16 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
     /// - Then:
     ///    - The update is saved to DataStore
     ///    - The mutation event is appended to the queue
-    func testCreateMutationAppendedToEmptyQueue() throws {
-        setUpStorageAdapter()
-
+    func testCreateMutationAppendedToEmptyQueue() {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
                         createdAt: Date())
 
-        try startAmplifyAndWaitForSync()
+        tryOrFail {
+            try setUpStorageAdapter()
+            try startAmplifyAndWaitForSync()
+        }
 
         let saveResultReceived = expectation(description: "Save result received")
         Amplify.DataStore.save(post) { result in
@@ -502,17 +482,17 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
     /// - Then:
     ///    - The update is saved to DataStore
     ///    - The mutation event is appended to the queue
-    func testUpdateMutationAppendedToEmptyQueue() throws {
-        setUpStorageAdapter()
-
+    func testUpdateMutationAppendedToEmptyQueue() {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
                         createdAt: Date())
 
-        try savePost(post)
-
-        try startAmplifyAndWaitForSync()
+        tryOrFail {
+            try setUpStorageAdapter()
+            try savePost(post)
+            try startAmplifyAndWaitForSync()
+        }
 
         let saveResultReceived = expectation(description: "Save result received")
         Amplify.DataStore.save(post) { result in
@@ -549,17 +529,17 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
     /// - Then:
     ///    - The update is saved to DataStore
     ///    - The mutation event is appended to the queue
-    func testDeleteMutationAppendedToEmptyQueue() throws {
-        setUpStorageAdapter()
-
+    func testDeleteMutationAppendedToEmptyQueue() {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
                         createdAt: Date())
 
-        try savePost(post)
-
-        try startAmplifyAndWaitForSync()
+        tryOrFail {
+            try setUpStorageAdapter()
+            try savePost(post)
+            try startAmplifyAndWaitForSync()
+        }
 
         let saveResultReceived = expectation(description: "Save result received")
         Amplify.DataStore.delete(post) { result in
@@ -599,16 +579,17 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
     /// - Then:
     ///    - The update is saved to DataStore
     ///    - The mutation event is appended to the queue, even though it would normally have thrown an error
-    func testCreateMutationAppendedToInProcessQueue() throws {
-        setUpStorageAdapter()
-
+    func testCreateMutationAppendedToInProcessQueue() {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
                         createdAt: Date())
-        try saveMutationEvent(of: .create, for: post, inProcess: true)
 
-        try startAmplifyAndWaitForSync()
+        tryOrFail {
+            try setUpStorageAdapter()
+            try saveMutationEvent(of: .create, for: post, inProcess: true)
+            try startAmplifyAndWaitForSync()
+        }
 
         let saveResultReceived = expectation(description: "Save result received")
         Amplify.DataStore.save(post) { result in
@@ -646,18 +627,18 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
     ///    - The update is saved to DataStore
     ///    - The mutation event is appended to the queue, even though it would normally have overwritten the existing
     ///      create
-    func testUpdateMutationAppendedToInProcessQueue() throws {
-        setUpStorageAdapter()
-
+    func testUpdateMutationAppendedToInProcessQueue() {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
                         createdAt: Date())
-        try saveMutationEvent(of: .create, for: post, inProcess: true)
 
-        try savePost(post)
-
-        try startAmplifyAndWaitForSync()
+        tryOrFail {
+            try setUpStorageAdapter()
+            try saveMutationEvent(of: .create, for: post, inProcess: true)
+            try savePost(post)
+            try startAmplifyAndWaitForSync()
+        }
 
         var mutatedPost = post
         mutatedPost.content = "UPDATED CONTENT"
@@ -699,16 +680,17 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
     /// - Then:
     ///    - The update is saved to DataStore
     ///    - The mutation event is appended to the queue, even though it would normally have thrown an error
-    func testDeleteMutationAppendedToInProcessQueue() throws {
-        setUpStorageAdapter()
-
+    func testDeleteMutationAppendedToInProcessQueue() {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
                         createdAt: Date())
-        try saveMutationEvent(of: .create, for: post, inProcess: true)
 
-        try startAmplifyAndWaitForSync()
+        tryOrFail {
+            try setUpStorageAdapter()
+            try saveMutationEvent(of: .create, for: post, inProcess: true)
+            try startAmplifyAndWaitForSync()
+        }
 
         let deleteResultReceived = expectation(description: "Delete result received")
         Amplify.DataStore.delete(post) { result in
@@ -740,106 +722,4 @@ class MutationIngesterConflictResolutionTests: XCTestCase {
         wait(for: [mutationEventVerified], timeout: 1.0)
     }
 
-    // MARK: - Helpers
-
-    /// Sets up a StorageAdapter backed by an in-memory SQLite database
-    func setUpStorageAdapter() {
-        tryOrFail {
-            let connection = try Connection(.inMemory)
-            storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
-            try storageAdapter.setUp(models: StorageEngine.systemModels + [Post.self, Comment.self])
-        }
-    }
-
-    func setUpDataStore() {
-        tryOrFail {
-
-            let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
-            let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
-            let outgoingMutationQueue = NoOpMutationQueue()
-
-            let syncEngine = CloudSyncEngine(storageAdapter: storageAdapter,
-                                             outgoingMutationQueue: outgoingMutationQueue,
-                                             mutationEventIngester: mutationDatabaseAdapter,
-                                             mutationEventPublisher: awsMutationEventPublisher)
-
-            let storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                              syncEngine: syncEngine,
-                                              isSyncEnabled: true)
-
-            let publisher = DataStorePublisher()
-            let dataStorePlugin = AWSDataStoreCategoryPlugin(modelRegistration: TestModelRegistration(),
-                                                             storageEngine: storageEngine,
-                                                             dataStorePublisher: publisher)
-
-            try Amplify.add(plugin: dataStorePlugin)
-        }
-    }
-
-    func startAmplify() {
-        tryOrFail {
-            try Amplify.configure(amplifyConfig)
-        }
-    }
-
-    func mutationEventId(for post: Post) -> String {
-        "mutation-of-\(post.id)"
-    }
-
-    func saveMutationEvent(of mutationType: MutationEvent.MutationType,
-                           for post: Post,
-                           inProcess: Bool = false) throws {
-        let mutationEvent = try MutationEvent(id: mutationEventId(for: post),
-                                              modelId: post.id,
-                                              modelName: post.modelName,
-                                              json: post.toJSON(),
-                                              mutationType: mutationType,
-                                              createdAt: Date(),
-                                              inProcess: inProcess)
-
-        let mutationEventSaved = expectation(description: "Preloaded mutation event saved")
-        storageAdapter.save(mutationEvent) { result in
-            switch result {
-            case .failure(let dataStoreError):
-                XCTFail(String(describing: dataStoreError))
-            case .success:
-                mutationEventSaved.fulfill()
-            }
-        }
-        wait(for: [mutationEventSaved], timeout: 1.0)
-    }
-
-    // Several tests require there to be a post in the database prior to starting. This utility supports that.
-    func savePost(_ post: Post) throws {
-        let postSaved = expectation(description: "Preloaded mutation event saved")
-        storageAdapter.save(post) { result in
-            switch result {
-            case .failure(let dataStoreError):
-                XCTFail(String(describing: dataStoreError))
-            case .success:
-                postSaved.fulfill()
-            }
-        }
-        wait(for: [postSaved], timeout: 1.0)
-    }
-
-    func startAmplifyAndWaitForSync() throws {
-        setUpDataStore()
-
-        let syncStarted = expectation(description: "Sync started")
-        let token = Amplify.Hub.listen(to: .dataStore,
-                                       eventName: HubPayload.EventName.DataStore.syncStarted) { _ in
-                                        syncStarted.fulfill()
-        }
-
-        guard try HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
-            XCTFail("Never registered listener for sync started")
-            return
-        }
-
-        startAmplify()
-
-        wait(for: [syncStarted], timeout: 5.0)
-        Amplify.Hub.removeListener(token)
-    }
 }

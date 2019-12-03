@@ -16,51 +16,7 @@ import AWSMobileClient
 
 // TODO: Delete mutation events from the database so that this can be run multiple times without having to remove the
 // app from the device/simulator
-// swiftlint:disable:next type_name
-class AWSDataStoreCategoryPluginIntegrationTests: XCTestCase {
-    static let networkTimeout = TimeInterval(180)
-
-    override func setUp() {
-        super.setUp()
-
-        Amplify.reset()
-        Amplify.Logging.logLevel = .verbose
-
-        ModelRegistry.register(modelType: AmplifyTestCommon.Post.self)
-        ModelRegistry.register(modelType: AmplifyTestCommon.Comment.self)
-
-        // TODO: Move this to an integ test config file
-        let apiConfig = APICategoryConfiguration(plugins: [
-            "awsAPIPlugin": [
-                "Default": [
-                    "endpoint": "https://ldm7yqjfjngrjckbziumz5fxbe.appsync-api.us-west-2.amazonaws.com/graphql",
-                    "region": "us-west-2",
-                    "authorizationType": "API_KEY",
-                    "apiKey": "da2-7jhi34lssbbmjclftlykznhw5m",
-                    "endpointType": "GraphQL"
-                ]
-            ]
-        ])
-
-        let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
-            "awsDataStoreCategoryPlugin": true
-        ])
-
-        let amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: dataStoreConfig)
-
-        do {
-            try Amplify.add(plugin: AWSAPIPlugin())
-            try Amplify.add(plugin: AWSDataStoreCategoryPlugin())
-            try Amplify.configure(amplifyConfig)
-        } catch {
-            XCTFail(String(describing: error))
-            return
-        }
-    }
-
-    override func tearDown() {
-        Amplify.reset()
-    }
+class DataStoreHubTests: SyncEngineIntegrationTestBase {
 
     /// - Given: An API-connected DataStore
     /// - When:
@@ -68,6 +24,8 @@ class AWSDataStoreCategoryPluginIntegrationTests: XCTestCase {
     /// - Then:
     ///    - The DataStore dispatches an event to Hub
     func testCreateDispatchesToHub() throws {
+        try startAmplifyAndWaitForSync()
+
         let content = "Original post content as of \(Date())"
 
         let originalPost = Post(title: "Test post from integration test",
@@ -97,15 +55,14 @@ class AWSDataStoreCategoryPluginIntegrationTests: XCTestCase {
         }
 
         guard try HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
-            XCTFail("Hub Listener not registered")
+            XCTFail("Never registered listener for sync started")
             return
         }
 
         Amplify.DataStore.save(originalPost) { _ in }
 
         wait(for: [saveSyncResultReceived],
-             timeout: AWSDataStoreCategoryPluginIntegrationTests.networkTimeout)
-
+             timeout: networkTimeout)
     }
 
     /// - Given: An API-connected DataStore
@@ -114,13 +71,14 @@ class AWSDataStoreCategoryPluginIntegrationTests: XCTestCase {
     /// - Then:
     ///    - The DataStore dispatches an event to Hub
     func testUpdateDispatchesToHub() throws {
+        try startAmplifyAndWaitForSync()
+
         let originalContent = "Original post content as of \(Date())"
         let newContent = "Updated post content as of \(Date())"
 
         let saveSyncResultReceived = expectation(description: "Sync result from save received")
         let updateSyncResultReceived = expectation(description: "Sync result from update received")
-        var token: UnsubscribeToken!
-        token = Amplify.Hub.listen(
+        let token = Amplify.Hub.listen(
             to: .dataStore,
             eventName: HubPayload.EventName.DataStore.syncReceived
         ) { payload in
@@ -149,22 +107,15 @@ class AWSDataStoreCategoryPluginIntegrationTests: XCTestCase {
         Amplify.DataStore.save(originalPost) { _ in }
 
         wait(for: [saveSyncResultReceived],
-             timeout: AWSDataStoreCategoryPluginIntegrationTests.networkTimeout)
+             timeout: networkTimeout)
 
-        // Technically we'd pull the version from the sync metadata store, but for this test, we'll hardcode it to 1
-        let updatedPost = Post(id: originalPost.id,
-                               title: originalPost.title,
-                               content: newContent,
-                               createdAt: originalPost.createdAt,
-                               updatedAt: originalPost.updatedAt,
-                               rating: originalPost.rating,
-                               draft: originalPost.draft,
-                               _version: 1)
+        var updatedPost = originalPost
+        updatedPost.content = newContent
 
         Amplify.DataStore.save(updatedPost) { _ in }
 
         wait(for: [updateSyncResultReceived],
-             timeout: AWSDataStoreCategoryPluginIntegrationTests.networkTimeout)
+             timeout: networkTimeout)
 
         Amplify.Hub.removeListener(token)
     }
@@ -210,22 +161,12 @@ class AWSDataStoreCategoryPluginIntegrationTests: XCTestCase {
         Amplify.DataStore.save(originalPost) { _ in }
 
         wait(for: [saveSyncResultReceived],
-             timeout: AWSDataStoreCategoryPluginIntegrationTests.networkTimeout)
+             timeout: networkTimeout)
 
-        // Technically we'd pull the version from the sync metadata store, but for this test, we'll hardcode it to 1
-        let deletedPost = Post(id: originalPost.id,
-                               title: originalPost.title,
-                               content: newContent,
-                               createdAt: originalPost.createdAt,
-                               updatedAt: originalPost.updatedAt,
-                               rating: originalPost.rating,
-                               draft: originalPost.draft,
-                               _version: 1)
-
-        Amplify.DataStore.save(deletedPost) { _ in }
+        Amplify.DataStore.delete(originalPost) { _ in }
 
         wait(for: [deleteSyncResultReceived],
-             timeout: AWSDataStoreCategoryPluginIntegrationTests.networkTimeout)
+             timeout: networkTimeout)
 
         Amplify.Hub.removeListener(token)
     }
