@@ -19,7 +19,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
     static let appIdConfigKey = "appId"
     static let regionConfigKey = "region"
 
-    static let defaultAutoFlushEventsInterval = 10
+    static let defaultAutoFlushEventsInterval = 60
     static let defaultTrackAppSession = true
     static let defaultAutoSessionTrackingInterval = 5
 
