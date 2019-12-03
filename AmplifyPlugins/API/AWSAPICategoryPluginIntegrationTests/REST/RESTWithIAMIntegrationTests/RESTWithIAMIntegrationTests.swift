@@ -22,7 +22,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
     static let apiConfig = APICategoryConfiguration(plugins: [
         "awsAPIPlugin": [
             RESTWithIAMIntegrationTests.restAPI: [
-                "endpoint": "https://crmjcxtcwa.execute-api.us-west-2.amazonaws.com/devo",
+                "endpoint": "https://xxx.execute-api.us-west-2.amazonaws.com/devo",
                 "region": "us-west-2",
                 "authorizationType": "AWS_IAM",
                 "endpointType": "REST"
@@ -36,16 +36,16 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             "CredentialsProvider": [
                 "CognitoIdentity": [
                     "Default": [
-                        "PoolId": "us-west-2:6254b084-a9cd-407c-ade2-fd8b881f87ce",
+                        "PoolId": "us-west-2:xxxx",
                         "Region": "us-west-2"
                     ]
                 ]
             ],
             "CognitoUserPool": [
                 "Default": [
-                    "PoolId": "us-west-2_VnaF2mqfl",
-                    "AppClientId": "2a90rcn2s10im86ef0756fvf0h",
-                    "AppClientSecret": "mk6lbnvbr6d84g2nffnghhnr4td04v971teniqtiu6ap29kjsgb",
+                    "PoolId": "us-west-xxx",
+                    "AppClientId": "xxx",
+                    "AppClientSecret": "xxx",
                     "Region": "us-west-2"
                 ]
             ]

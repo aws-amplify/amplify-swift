@@ -61,7 +61,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
          },
          "AppSync": {
              "Default": {
-                 "ApiUrl": "https://ggp44fsi3fg5hhg5vq6r65a5wu.appsync-api.us-east-1.amazonaws.com/graphql",
+                 "ApiUrl": "https://xxxx.appsync-api.us-east-1.amazonaws.com/graphql",
                  "Region": "us-east-1",
                  "AuthMode": "AMAZON_COGNITO_USER_POOLS",
                  "ClientDatabasePrefix": "api4_AMAZON_COGNITO_USER_POOLS"
@@ -75,16 +75,16 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
             "CredentialsProvider": [
                 "CognitoIdentity": [
                     "Default": [
-                        "PoolId": "us-east-1:574af171-0ced-4b7b-8157-762cdd1ffffc",
+                        "PoolId": "us-east-1:xxx",
                         "Region": "us-east-1"
                     ]
                 ]
             ],
             "CognitoUserPool": [
                 "Default": [
-                    "PoolId": "us-east-1_6FWhDURBi",
-                    "AppClientId": "1mptkb7veup5ujlqbngpcmg06d",
-                    "AppClientSecret": "1qq2vo5rv9oc1th3bulsv8hlll8djqkc9on0j7d7gi4c8lfisoei",
+                    "PoolId": "us-east-xx",
+                    "AppClientId": "xxxx",
+                    "AppClientSecret": "xxxx",
                     "Region": "us-east-1"
                 ]
             ]
@@ -99,7 +99,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         let apiConfig = APICategoryConfiguration(plugins: [
             "awsAPIPlugin": [
                 GraphQLWithUserPoolIntegrationTests.todoGraphQLWithUserPools: [
-                    "endpoint": "https://ggp44fsi3fg5hhg5vq6r65a5wu.appsync-api.us-east-1.amazonaws.com/graphql",
+                    "endpoint": "https://xxxx.appsync-api.us-east-1.amazonaws.com/graphql",
                     "region": "us-east-1",
                     "authorizationType": "AMAZON_COGNITO_USER_POOLS",
                     "endpointType": "GraphQL"

@@ -21,16 +21,16 @@ class AWSAPICategoryPluginGetTests: XCTestCase {
         let apiConfig = APICategoryConfiguration(plugins: [
             "awsAPIPlugin": [
                 "none": [
-                    "endpoint": "https://0idx6yjn11.execute-api.us-east-1.amazonaws.com/beta",
+                    "endpoint": "https://xxx.execute-api.us-east-1.amazonaws.com/beta",
                     "region": "us-east-1",
                     "authorizationType": "NONE",
                     "endpointType": "REST"
                 ],
                 "apiKey": [
-                    "endpoint": "https://rqdxvfh3ue.execute-api.us-east-1.amazonaws.com/Prod",
+                    "endpoint": "https://xx.execute-api.us-east-1.amazonaws.com/Prod",
                     "region": "us-east-1",
                     "authorizationType": "API_KEY",
-                    "apiKey": "KjbPeqbh9F7hc2n2UVkpfD8WKF1kkYX3ydrkyHq6",
+                    "apiKey": "xxxx",
                     "endpointType": "REST"
                 ]
             ]

@@ -26,7 +26,7 @@ class IntegrationTestConfiguration {
     static let apiConfig = APICategoryConfiguration(plugins: [
         "awsAPIPlugin": [
             IntegrationTestConfiguration.taskPrivateNoteGraphQLWithUserPool: [
-                "endpoint": "https://qaobhulmjzg2fjpxh45rpef5i4.appsync-api.us-east-1.amazonaws.com/graphql",
+                "endpoint": "https://xxx.appsync-api.us-east-1.amazonaws.com/graphql",
                 "region": "us-east-1",
                 "authorizationType": "AMAZON_COGNITO_USER_POOLS"
             ]

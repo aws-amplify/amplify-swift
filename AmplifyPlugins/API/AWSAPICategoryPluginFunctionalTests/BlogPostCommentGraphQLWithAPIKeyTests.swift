@@ -40,14 +40,14 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
         let apiConfig = APICategoryConfiguration(plugins: [
             "awsAPIPlugin": [
                 BlogPostCommentGraphQLWithAPIKeyTests.blogPostGraphQLWithAPIKey: [
-                    "endpoint": "https://dtoaraxmjjdbjfmoqwowubiyua.appsync-api.us-east-1.amazonaws.com/graphql",
+                    "endpoint": "https://xxx.appsync-api.us-east-1.amazonaws.com/graphql",
                     "region": "us-east-1",
                     "authorizationType": "API_KEY",
-                    "apiKey": "da2-4th2pofe7ne4xdm3va23hvovfa",
+                    "apiKey": "da2-xxx",
                     "endpointType": "GraphQL"
                 ],
                 BlogPostCommentGraphQLWithAPIKeyTests.blogPostGraphQLWithInvalidAPIKey: [
-                    "endpoint": "https://dtoaraxmjjdbjfmoqwowubiyua.appsync-api.us-east-1.amazonaws.com/graphql",
+                    "endpoint": "https://xxx.appsync-api.us-east-1.amazonaws.com/graphql",
                     "region": "us-east-1",
                     "authorizationType": "API_KEY",
                     "apiKey": "da2-invalidAPIKey",

@@ -94,10 +94,10 @@ class GraphQLModelBasedTests: XCTestCase {
         let apiConfig = APICategoryConfiguration(plugins: [
             "awsAPIPlugin": [
                 GraphQLModelBasedTests.modelBasedGraphQLWithAPIKey: [
-                    "endpoint": "https://5dxswtkp3favlnw2pvcmsp2mti.appsync-api.us-west-2.amazonaws.com/graphql",
+                    "endpoint": "https://xxxx.appsync-api.us-west-2.amazonaws.com/graphql",
                     "region": "us-west-2",
                     "authorizationType": "API_KEY",
-                    "apiKey": "da2-bjcuhxgvgjadfpfh4fddd5lqmm",
+                    "apiKey": "da2-xx",
                     "endpointType": "GraphQL"
                 ]
             ]

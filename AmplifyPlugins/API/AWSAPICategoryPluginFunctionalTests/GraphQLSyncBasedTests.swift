@@ -43,10 +43,10 @@ class GraphQLSyncBasedTests: XCTestCase {
             "awsAPIPlugin": [
                 "modelBasedSyncAPI": [
                     "endpointType": "GraphQL",
-                    "endpoint": "https://3p5dcoozobblvawqfozyqkc2k4.appsync-api.us-west-2.amazonaws.com/graphql",
+                    "endpoint": "https://xxxx.appsync-api.us-west-2.amazonaws.com/graphql",
                     "region": "us-west-2",
                     "authorizationType": "API_KEY",
-                    "apiKey": "da2-6x6j4sp4w5eyfmiuuvapehd6yi"
+                    "apiKey": "da2-xxx"
                 ]
             ]
         ])
