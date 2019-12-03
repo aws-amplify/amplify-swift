@@ -38,13 +38,13 @@ Amplify requires Xcode 11 or higher to build.
 
 ### CocoaPods
 
-Coming soon, will be live by EOW. You can use manually in the mean time per instructions under Frameworks below.
+Coming soon, will be live by December 6. You can use manually in the mean time per instructions under Frameworks below.
 
 ### Carthage
 
-Coming soon, will be live by EOW. You can use manually in the mean time per instructions under Frameworks below.
+Coming soon, will be live by December 6. You can use manually in the mean time per instructions under Frameworks below.
 
-### Frameworks
+### Development Pods
 
 You can manually install the library by cloning this repo and creating a Podfile that references your local clone of it like below:
 
