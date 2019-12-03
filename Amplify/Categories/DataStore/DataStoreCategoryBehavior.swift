@@ -13,7 +13,7 @@ public typealias DataStoreCategoryBehavior = DataStoreBaseBehavior & DataStoreSu
 
 public protocol DataStoreBaseBehavior {
 
-    /// Saves the model to storage. If sync is enabled, also initiates a sync of the mutation to the cloud API
+    /// Saves the model to storage. If sync is enabled, also initiates a sync of the mutation to the remote API
     func save<M: Model>(_ model: M,
                         completion: @escaping DataStoreCallback<M>)
 

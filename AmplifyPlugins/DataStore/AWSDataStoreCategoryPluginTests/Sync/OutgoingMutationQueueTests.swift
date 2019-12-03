@@ -55,7 +55,7 @@ class OutgoingMutationQueueTests: XCTestCase {
 
     func setUpDataStore() {
         tryOrFail {
-            let syncEngine = try CloudSyncEngine(storageAdapter: storageAdapter)
+            let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter)
             let storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                               syncEngine: syncEngine,
                                               isSyncEnabled: true)

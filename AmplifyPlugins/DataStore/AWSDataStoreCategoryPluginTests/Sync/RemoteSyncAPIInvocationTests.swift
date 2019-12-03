@@ -13,8 +13,8 @@ import Combine
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
-/// Tests that DataStore invokes proper API methods to fulfill cloud sync
-class CloudSyncTests: XCTestCase {
+/// Tests that DataStore invokes proper API methods to fulfill remote sync
+class RemoteSyncAPIInvocationTests: XCTestCase {
 
     /// Convenience property to get easy access to the mock API plugin
     var apiPlugin: MockAPICategoryPlugin!
@@ -38,7 +38,7 @@ class CloudSyncTests: XCTestCase {
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
             try storageAdapter.setUp(models: StorageEngine.systemModels)
 
-            let syncEngine = try CloudSyncEngine(storageAdapter: storageAdapter)
+            let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter)
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           syncEngine: syncEngine,
                                           isSyncEnabled: true)
