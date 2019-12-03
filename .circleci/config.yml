@@ -41,6 +41,26 @@ commands:
           name: pre-start simulator
           command: bash ~/amplify-ios/CircleciScripts/pre_start_simulator.sh
 
+  save_plugin_pods:
+    parameters:
+      prefix:
+        type: string
+    steps:
+      - save_cache:
+          key: v1-<< parameters.prefix >>-dependency-pods-{{ checksum "Podfile" }}
+          paths:
+            - ./Pods 
+  
+  restore_plugin_pods:
+    parameters:
+      prefix:
+        type: string
+    steps:
+      - restore_cache:
+          keys: 
+            - v1-<< parameters.prefix >>-dependency-pods-{{ checksum "Podfile" }}
+            - v1-<< parameters.prefix >>-dependency-pods
+            
 jobs:
   checkout_code:
     <<: *defaults
@@ -52,34 +72,18 @@ jobs:
           paths: 
             - ~/amplify-ios
 
-  install_pods:
+  build_test_amplify:
     <<: *defaults
     steps:
       - *restore_repo
-      - *restore_pods
-      - run: pod install
-      - save_cache:
-          key: *pods_cache_key
-          paths:
-            - ~/amplify-ios/Pods
-      - persist_to_workspace:
-          root: ~/
-          paths: amplify-ios/Amplify.xcworkspace
-
-  build_amplify:
-    <<: *defaults
-    steps:
-      - *restore_repo
-      - *restore_pods      
       - pre_start_simulator
-      - attach_workspace:
-          at: ~/
+      - run: pod install
       - run:
           name: build amplify
           command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
       - run:
           name: test amplify
-          command: xcodebuild test -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
+          command: xcodebuild test -enableThreadSanitizer NO -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
   
   plugin_unit_test:
     <<: *defaults
@@ -94,8 +98,13 @@ jobs:
     description: << parameters.path >> unit test
     steps:
       - *restore_repo
+      - restore_plugin_pods:
+          prefix: << parameters.path >>
       - pre_start_simulator
       - run: pod install
+      - save_plugin_pods:
+          prefix: << parameters.path >>
+
       - run:
           name: build << parameters.path >>
           command: xcodebuild build-for-testing -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}"
@@ -107,12 +116,12 @@ workflows:
   build_test:
     jobs:
       - checkout_code
-      - install_pods:
+      # Running all the tests in parallel leads to threading issues
+      # Breaking them up into 2 groups:
+      # Group 1
+      - build_test_amplify:
           requires:
-              - checkout_code        
-      - build_amplify:
-          requires:
-              - install_pods                
+              - checkout_code                
       - plugin_unit_test:
           name: unit_test_api
           path: API
@@ -133,25 +142,34 @@ workflows:
           workspace: StoragePlugin
           scheme: AWSS3StoragePlugin
           requires:
-              - checkout_code
+              - build_test_amplify
+              - unit_test_api
+              - unit_test_analytics
       - plugin_unit_test:
           name: unit_test_predictions
           path: Predictions
           workspace: PredictionsCategoryPlugin
           scheme: AWSPredictionsPlugin
           requires:
-              - checkout_code
+              - build_test_amplify
+              - unit_test_api
+              - unit_test_analytics
       - plugin_unit_test:
           name: unit_test_predictions_core_ml
           path: Predictions
           workspace: PredictionsCategoryPlugin
           scheme: CoreMLPredictionsPlugin
           requires:
-              - checkout_code
+              - build_test_amplify
+              - unit_test_api
+              - unit_test_analytics
       # - plugin_unit_test:
       #     name: unit_test_datastore
       #     path: DataStore
       #     workspace: DataStoreCategoryPlugin
       #     scheme: AWSDataStoreCategoryPlugin
       #     requires:
-      #         - checkout_code
+      #         - build_test_amplify
+      #         - unit_test_api
+      #         - unit_test_analytics
+      #         - unit_test_storage
