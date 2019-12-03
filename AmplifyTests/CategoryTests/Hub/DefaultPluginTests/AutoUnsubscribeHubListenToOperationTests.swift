@@ -152,13 +152,9 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
         }
 
         operation.doMockDispatch(event: .inProcess(()))
-<<<<<<< HEAD
         wait(for: [listenerWasInvokedForInProcess], timeout: 0.1)
         operation.doMockDispatch(event: .completed(StorageListResult(items: [])))
         wait(for: [listenerWasInvokedForCompleted], timeout: 0.1)
-=======
-        wait(for: [listenerWasInvokedForInProcess, listenerWasInvokedForCompleted], timeout: 5)
->>>>>>> Trying build/test with fastlane
 
         operation.doMockDispatch(event: .failed(StorageError.accessDenied("", "")))
         wait(for: [listenerWasInvokedForFailed], timeout: 0.1)
