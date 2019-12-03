@@ -5,62 +5,44 @@ version: 2.1
 defaults: &defaults
   macos:
     xcode: "11.2.1"
-  working_directory: ~/amplify-ios
+  working_directory: /Users/distiller/project
 
 references:
-  repo_cache_key: &repo_cache_key
-    v1-repo-{{ .Branch }}-{{ .Revision }}
-
+  repo_cache_key: &repo_cache_key 1-repo-{{ .Branch }}-{{ .Revision }}
+  
   restore_repo: &restore_repo
     restore_cache:
       keys:
         - *repo_cache_key
-        - v1-repo-{{ .Branch }}
-        - v1-repo
-
-  pods_cache_key: &pods_cache_key
-    v3-dependency-pods-{{ checksum "~/amplify-ios/Podfile" }}
-  
-  pods_backup_cache_key: &pods_backup_cache_key
-    v3-dependency-pods
-
-  restore_pods: &restore_pods
-    restore_cache:
-      keys:
-        - *pods_cache_key
-        - *pods_backup_cache_key
-
-  plugin_pods_cache_key: &plugin_pods_cache_key
+        - 1-repo-{{ .Branch }}
+        - 1-repo-
 
 commands:
-  pre_start_simulator:
-    description: >-
-      pre start simulator, build may fail if simulator is not started
+  restore_gems:
     steps:
-      - run:
-          name: pre-start simulator
-          command: bash ~/amplify-ios/CircleciScripts/pre_start_simulator.sh
-
+      - restore_cache:
+          keys:
+            - 1-gems-{{ checksum "/Users/distiller/project/Gemfile.lock" }}
+            - 1-gems-
   save_plugin_pods:
     parameters:
       prefix:
         type: string
     steps:
       - save_cache:
-          key: v1-<< parameters.prefix >>-dependency-pods-{{ checksum "Podfile" }}
+          key: 1-<< parameters.prefix >>-dependency-pods-{{ checksum "Podfile" }}
           paths:
-            - ./Pods 
-  
+            - ./Pods
   restore_plugin_pods:
     parameters:
       prefix:
         type: string
     steps:
       - restore_cache:
-          keys: 
-            - v1-<< parameters.prefix >>-dependency-pods-{{ checksum "Podfile" }}
-            - v1-<< parameters.prefix >>-dependency-pods
-            
+          keys:
+            - 1-<< parameters.prefix >>-dependency-pods-{{ checksum "Podfile" }}
+            - 1-<< parameters.prefix >>-dependency-pods-
+
 jobs:
   checkout_code:
     <<: *defaults
@@ -69,107 +51,63 @@ jobs:
       - checkout
       - save_cache:
           key: *repo_cache_key
-          paths: 
-            - ~/amplify-ios
+          paths:
+            - /Users/distiller/project
 
+  install_gems:
+    <<: *defaults
+    environment:
+      BUNDLE_PATH: vendor/bundle
+    steps:
+      - *restore_repo
+      - restore_gems
+      - run:
+          name: Bundle install
+          # bundle ignores BUNDLE_PATH unless it's explicitly passed in
+          command: bundle check --path $BUNDLE_PATH || bundle install --path $BUNDLE_PATH
+          environment:
+            BUNDLE_JOBS: 4
+            BUNDLE_RETRY: 3
+      - save_cache:
+          key: 1-gems-{{ checksum "/Users/distiller/project/Gemfile.lock" }}
+          paths:
+            - vendor/bundle         
+  
   build_test_amplify:
     <<: *defaults
+    environment:
+      FL_OUTPUT_DIR: output
+      FASTLANE_LANE: test
+      BUNDLE_PATH: vendor/bundle
+    shell: /bin/bash --login -o pipefail
     steps:
       - *restore_repo
-      - pre_start_simulator
+      - checkout
+      - save_cache:
+          key: *repo_cache_key
+          paths:
+            - /Users/distiller/project
+      - restore_gems
       - run: pod install
       - run:
-          name: build amplify
-          command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
+          name: Bundle check
+          command: bundle check --path $BUNDLE_PATH || bundle install --path $BUNDLE_PATH
       - run:
-          name: test amplify
-          command: xcodebuild test -enableThreadSanitizer NO -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
-  
-  plugin_unit_test:
-    <<: *defaults
-    parameters:
-      path:
-        type: string
-      workspace:
-        type: string
-      scheme:
-        type: string
-    working_directory: ~/amplify-ios/AmplifyPlugins/<< parameters.path >>
-    description: << parameters.path >> unit test
-    steps:
-      - *restore_repo
-      - restore_plugin_pods:
-          prefix: << parameters.path >>
-      - pre_start_simulator
-      - run: pod install
-      - save_plugin_pods:
-          prefix: << parameters.path >>
-
-      - run:
-          name: build << parameters.path >>
-          command: xcodebuild build-for-testing -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}"
-      - run:
-          name: test << parameters.path >>
-          command: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}"
+          name: fastlane test
+          command: bundle exec fastlane $FASTLANE_LANE
+      - store_artifacts:
+          path: output
+      - store_test_results:
+          path: output/scan
 
 workflows:
   build_test:
     jobs:
+      - set_environment_variables
       - checkout_code
-      # Running all the tests in parallel leads to threading issues
-      # Breaking them up into 2 groups:
-      # Group 1
+      - install_gems:
+          requires:
+            - checkout_code
       - build_test_amplify:
           requires:
-              - checkout_code                
-      - plugin_unit_test:
-          name: unit_test_api
-          path: API
-          workspace: APICategoryPlugin
-          scheme: AWSAPICategoryPlugin
-          requires:
-              - checkout_code
-      - plugin_unit_test:
-          name: unit_test_analytics
-          path: Analytics
-          workspace: AnalyticsCategoryPlugin
-          scheme: AWSPinpointAnalyticsPlugin
-          requires:
-              - checkout_code
-      - plugin_unit_test:
-          name: unit_test_storage
-          path: Storage
-          workspace: StoragePlugin
-          scheme: AWSS3StoragePlugin
-          requires:
-              - build_test_amplify
-              - unit_test_api
-              - unit_test_analytics
-      - plugin_unit_test:
-          name: unit_test_predictions
-          path: Predictions
-          workspace: PredictionsCategoryPlugin
-          scheme: AWSPredictionsPlugin
-          requires:
-              - build_test_amplify
-              - unit_test_api
-              - unit_test_analytics
-      - plugin_unit_test:
-          name: unit_test_predictions_core_ml
-          path: Predictions
-          workspace: PredictionsCategoryPlugin
-          scheme: CoreMLPredictionsPlugin
-          requires:
-              - build_test_amplify
-              - unit_test_api
-              - unit_test_analytics
-      # - plugin_unit_test:
-      #     name: unit_test_datastore
-      #     path: DataStore
-      #     workspace: DataStoreCategoryPlugin
-      #     scheme: AWSDataStoreCategoryPlugin
-      #     requires:
-      #         - build_test_amplify
-      #         - unit_test_api
-      #         - unit_test_analytics
-      #         - unit_test_storage
+            - install_gems
