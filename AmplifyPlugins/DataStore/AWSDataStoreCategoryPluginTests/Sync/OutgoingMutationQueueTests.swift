@@ -105,16 +105,14 @@ class OutgoingMutationQueueTests: XCTestCase {
                         content: "Post content",
                         createdAt: Date())
 
-        Amplify.DataStore.save(post) { _ in }
-
         let createMutationSent = expectation(description: "Create mutation sent to API category")
         apiPlugin.listeners.append { message in
             if message.contains("createPost") && message.contains(post.id) {
                 createMutationSent.fulfill()
             }
         }
-
-        wait(for: [createMutationSent], timeout: 1.0)
+        Amplify.DataStore.save(post) { _ in }
+        wait(for: [createMutationSent], timeout: 5.0)
     }
 
     /// - Given: A sync-configured DataStore
