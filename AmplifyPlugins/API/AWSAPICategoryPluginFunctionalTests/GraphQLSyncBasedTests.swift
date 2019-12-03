@@ -68,7 +68,12 @@ class GraphQLSyncBasedTests: XCTestCase {
         Amplify.reset()
     }
 
-    func testCreatePostThenUpdatePostWithNewVersion() {
+    // Given: A newly created post will have version 1
+    // When: Call update mutation with with an updated title
+    //       passing in version 1, which is the correct unmodified version
+    // Then: The mutation result should be the post with the updated title.
+    //       MutationSync metadata contains version 2
+    func testCreatePostThenUpdatePostShouldHaveNewVersion() {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
@@ -76,10 +81,12 @@ class GraphQLSyncBasedTests: XCTestCase {
             XCTFail("Failed to create post with version 1")
             return
         }
+        let updatedTitle = title + "Updated"
+        let modifiedPost = Post(id: post.id, title: updatedTitle, content: post.content)
 
         let completeInvoked = expectation(description: "request completed")
         var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
-        let document = GraphQLSyncMutation(of: post, type: .update, version: 2)
+        let document = GraphQLSyncMutation(of: modifiedPost, type: .update, version: 1)
         let request = GraphQLRequest(document: document.stringValue,
                                      variables: document.variables,
                                      responseType: MutationSync<AnyModel>.self,
@@ -123,28 +130,36 @@ class GraphQLSyncBasedTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(mutationSync.model["title"] as? String, post.title)
+        XCTAssertEqual(mutationSync.model["title"] as? String, updatedTitle)
         XCTAssertEqual(mutationSync.model["content"] as? String, post.content)
         XCTAssertEqual(mutationSync.syncMetadata.version, 2)
     }
 
+    // Given: Two newly created posts
+    // When: Call sync query with limit of 1, to ensure that we get a nextToken back
+    // Then: The result should be a PaginatedList contain all fields populated (items, startedAt, nextToken)
     func testQuerySyncWithLastSyncTime() {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
-        guard let createdPost = createPost(id: uuid, title: title) else {
+        guard createPost(id: uuid, title: title) != nil else {
+            XCTFail("Failed to create post")
+            return
+        }
+        let uuid2 = UUID().uuidString
+        guard createPost(id: uuid2, title: title) != nil else {
             XCTFail("Failed to create post")
             return
         }
 
         let completeInvoked = expectation(description: "request completed")
-        var responseFromOperation: GraphQLResponse<[MutationSync<AnyModel>]>?
+        var responseFromOperation: GraphQLResponse<PaginatedList<AnyModel>>?
         let post = Post.keys
-        let predicate = post.id == uuid
-        let document = GraphQLSyncQuery(from: Post.self, predicate: predicate, lastSync: 123)
+        let predicate = post.title == title
+        let document = GraphQLSyncQuery(from: Post.self, predicate: predicate, limit: 1, lastSync: 123)
         let request = GraphQLRequest(document: document.stringValue,
                                      variables: document.variables,
-                                     responseType: [MutationSync<AnyModel>].self,
+                                     responseType: PaginatedList<AnyModel>.self,
                                      decodePath: document.decodePath)
 
         _ = Amplify.API.query(request: request) { event in
@@ -167,7 +182,7 @@ class GraphQLSyncBasedTests: XCTestCase {
             return
         }
 
-        guard case .success(let mutationSync) = response else {
+        guard case .success(let paginatedList) = response else {
             switch response {
             case .success:
                 break
@@ -185,9 +200,78 @@ class GraphQLSyncBasedTests: XCTestCase {
             return
         }
 
-        XCTAssertNotNil(mutationSync[0].model["title"] as? String)
-        XCTAssertNotNil(mutationSync[0].model["content"] as? String)
-        XCTAssert(mutationSync[0].syncMetadata.version != 0)
+        XCTAssertNotNil(paginatedList)
+        XCTAssertNotNil(paginatedList.startedAt)
+        XCTAssertNotNil(paginatedList.nextToken)
+        XCTAssertNotNil(paginatedList.items)
+        XCTAssert(!paginatedList.items.isEmpty)
+        XCTAssert(paginatedList.items[0].model["title"] as? String == title)
+        XCTAssertNotNil(paginatedList.items[0].model["content"] as? String)
+        XCTAssert(paginatedList.items[0].syncMetadata.version != 0)
+    }
+
+    // Given: A subscription document created from a Syncable Model (Post), and responseType of MutationSync<AnyModel>
+    // When: Create posts to trigger subscriptions
+    // Then: The result should be the mutationSync objeect containing model and metadataSync
+    func testSubscribeToSyncableModels() {
+        let uuid = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let title = testMethodName + "Title"
+
+        let connectedInvoked = expectation(description: "Connection established")
+        let disconnectedInvoked = expectation(description: "Connection disconnected")
+        let completedInvoked = expectation(description: "Completed invoked")
+        let progressInvoked = expectation(description: "Progress invoked")
+
+        let document = GraphQLSubscription(of: Post.self, type: .onCreate)
+        let request = GraphQLRequest(document: document.stringValue,
+                                     variables: document.variables,
+                                     responseType: MutationSync<AnyModel>.self,
+                                     decodePath: document.decodePath)
+        let operation = Amplify.API.subscribe(request: request) { event in
+            switch event {
+            case .inProcess(let graphQLResponse):
+                switch graphQLResponse {
+                case .connection(let state):
+                    switch state {
+                    case .connecting:
+                        break
+                    case .connected:
+                        connectedInvoked.fulfill()
+                    case .disconnected:
+                        disconnectedInvoked.fulfill()
+                    }
+
+                case .data(let graphQLResponse):
+                    switch graphQLResponse {
+                    case .success(let mutationSync):
+                        XCTAssertEqual(mutationSync.model["title"] as? String, title)
+                        XCTAssertEqual(mutationSync.syncMetadata.version, 1)
+                    case .failure(let error):
+                        XCTFail(error.errorDescription)
+                    }
+                    progressInvoked.fulfill()
+                }
+            case .failed(let error):
+                print("Unexpected .failed event: \(error)")
+            case .completed:
+                completedInvoked.fulfill()
+            default:
+                XCTFail("Unexpected event: \(event)")
+            }
+        }
+        XCTAssertNotNil(operation)
+        wait(for: [connectedInvoked], timeout: GraphQLModelBasedTests.networkTimeout)
+
+        guard createPost(id: uuid, title: title) != nil else {
+            XCTFail("Failed to create post")
+            return
+        }
+
+        wait(for: [progressInvoked], timeout: GraphQLModelBasedTests.networkTimeout)
+        operation.cancel()
+        wait(for: [disconnectedInvoked, completedInvoked], timeout: GraphQLModelBasedTests.networkTimeout)
+        XCTAssertTrue(operation.isFinished)
     }
 
     // MARK: Helpers

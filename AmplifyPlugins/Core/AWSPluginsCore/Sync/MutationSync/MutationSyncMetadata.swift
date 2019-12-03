@@ -14,5 +14,4 @@ public struct MutationSyncMetadata: Model {
     public var deleted: Bool
     public var lastChangedAt: Int
     public var version: Int
-
 }

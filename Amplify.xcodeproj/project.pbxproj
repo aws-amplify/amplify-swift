@@ -54,6 +54,8 @@
 		2129BE48239489AC006363A1 /* MutationSyncMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE47239489AC006363A1 /* MutationSyncMetadataTests.swift */; };
 		2129BE4F23949F1B006363A1 /* MutationSyncMetadata+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE4B23948C54006363A1 /* MutationSyncMetadata+Schema.swift */; };
 		2129BE512395A66F006363A1 /* AmplifyModelRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */; };
+		2129BE552395CAEF006363A1 /* PaginatedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE542395CAEF006363A1 /* PaginatedList.swift */; };
+		2129BE562395CAF9006363A1 /* PaginatedListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE522395CA05006363A1 /* PaginatedListTests.swift */; };
 		21409C552384C55D000A53C9 /* LabelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C542384C55D000A53C9 /* LabelType.swift */; };
 		21409C5A2384C57D000A53C9 /* GraphQLMutationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C572384C57D000A53C9 /* GraphQLMutationType.swift */; };
 		21409C5B2384C57D000A53C9 /* GraphQLQueryType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C582384C57D000A53C9 /* GraphQLQueryType.swift */; };
@@ -535,6 +537,8 @@
 		2129BE47239489AC006363A1 /* MutationSyncMetadataTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutationSyncMetadataTests.swift; sourceTree = "<group>"; };
 		2129BE4B23948C54006363A1 /* MutationSyncMetadata+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MutationSyncMetadata+Schema.swift"; sourceTree = "<group>"; };
 		2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyModelRegistration.swift; sourceTree = "<group>"; };
+		2129BE522395CA05006363A1 /* PaginatedListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListTests.swift; sourceTree = "<group>"; };
+		2129BE542395CAEF006363A1 /* PaginatedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedList.swift; sourceTree = "<group>"; };
 		21409C4C23847E41000A53C9 /* LabelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelType.swift; sourceTree = "<group>"; };
 		21409C542384C55D000A53C9 /* LabelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelType.swift; sourceTree = "<group>"; };
 		21409C572384C57D000A53C9 /* GraphQLMutationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLMutationType.swift; sourceTree = "<group>"; };
@@ -1221,6 +1225,7 @@
 			isa = PBXGroup;
 			children = (
 				2129BE4023948912006363A1 /* MutationSync */,
+				2129BE542395CAEF006363A1 /* PaginatedList.swift */,
 			);
 			path = Sync;
 			sourceTree = "<group>";
@@ -1239,6 +1244,7 @@
 			isa = PBXGroup;
 			children = (
 				2129BE4623948985006363A1 /* MutationSync */,
+				2129BE522395CA05006363A1 /* PaginatedListTests.swift */,
 			);
 			path = Sync;
 			sourceTree = "<group>";
@@ -1831,9 +1837,9 @@
 		FA131AB82360FE070008381C /* AWSPluginsCoreTests */ = {
 			isa = PBXGroup;
 			children = (
-				2129BE4523948975006363A1 /* Sync */,
-				2129BE2223948085006363A1 /* Model */,
 				FA131ABB2360FE070008381C /* Info.plist */,
+				2129BE2223948085006363A1 /* Model */,
+				2129BE4523948975006363A1 /* Sync */,
 			);
 			path = AWSPluginsCoreTests;
 			sourceTree = "<group>";
@@ -3317,6 +3323,7 @@
 				21420A97237222A900FA140C /* IAMCredentialProvider.swift in Sources */,
 				21420A99237222A900FA140C /* APIKeyProvider.swift in Sources */,
 				21420A90237222A900FA140C /* APIKeyConfiguration.swift in Sources */,
+				2129BE552395CAEF006363A1 /* PaginatedList.swift in Sources */,
 				2129BE212394806B006363A1 /* ModelSchema+GraphQL.swift in Sources */,
 				2129BE1123948005006363A1 /* GraphQLDocument+GetQuery.swift in Sources */,
 				2129BE4223948924006363A1 /* MutationSync.swift in Sources */,
@@ -3335,6 +3342,7 @@
 				2129BE3A2394828B006363A1 /* QueryPredicateGraphQLTests.swift in Sources */,
 				2129BE48239489AC006363A1 /* MutationSyncMetadataTests.swift in Sources */,
 				2129BE3B2394828B006363A1 /* GraphQLRequestAnyModelTests.swift in Sources */,
+				2129BE562395CAF9006363A1 /* PaginatedListTests.swift in Sources */,
 				2129BE372394828B006363A1 /* GraphQLSyncQueryTests.swift in Sources */,
 				2129BE342394828B006363A1 /* GraphQLMutationTests.swift in Sources */,
 				2129BE392394828B006363A1 /* GraphQLSyncMutationTests.swift in Sources */,
