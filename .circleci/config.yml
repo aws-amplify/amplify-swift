@@ -125,39 +125,39 @@ workflows:
           workspace: APICategoryPlugin
           scheme: AWSAPICategoryPlugin
           requires:
-              - checkout_code
+              - build_test_amplify
       - plugin_unit_test:
           name: unit_test_analytics
           path: Analytics
           workspace: AnalyticsCategoryPlugin
           scheme: AWSPinpointAnalyticsPlugin
           requires:
-              - checkout_code
+              - unit_test_api
       - plugin_unit_test:
           name: unit_test_storage
           path: Storage
           workspace: StoragePlugin
           scheme: AWSS3StoragePlugin
           requires:
-              - checkout_code
+              - unit_test_analytics
       - plugin_unit_test:
           name: unit_test_predictions
           path: Predictions
           workspace: PredictionsCategoryPlugin
           scheme: AWSPredictionsPlugin
           requires:
-              - checkout_code
+              - unit_test_storage
       - plugin_unit_test:
           name: unit_test_predictions_core_ml
           path: Predictions
           workspace: PredictionsCategoryPlugin
           scheme: CoreMLPredictionsPlugin
           requires:
-              - checkout_code
+              - unit_test_predictions
       - plugin_unit_test:
           name: unit_test_datastore
           path: DataStore
           workspace: DataStoreCategoryPlugin
           scheme: AWSDataStoreCategoryPlugin
           requires:
-              - checkout_code
+              - unit_test_predictions_core_ml
