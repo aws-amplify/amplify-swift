@@ -154,10 +154,10 @@ workflows:
           scheme: CoreMLPredictionsPlugin
           requires:
               - checkout_code
-      # - plugin_unit_test:
-      #     name: unit_test_datastore
-      #     path: DataStore
-      #     workspace: DataStoreCategoryPlugin
-      #     scheme: AWSDataStoreCategoryPlugin
-      #     requires:
-      #         - checkout_code
+      - plugin_unit_test:
+          name: unit_test_datastore
+          path: DataStore
+          workspace: DataStoreCategoryPlugin
+          scheme: AWSDataStoreCategoryPlugin
+          requires:
+              - checkout_code
