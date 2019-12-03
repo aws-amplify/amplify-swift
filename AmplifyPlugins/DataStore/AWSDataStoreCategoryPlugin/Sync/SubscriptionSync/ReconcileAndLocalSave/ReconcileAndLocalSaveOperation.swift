@@ -8,27 +8,28 @@
 import Amplify
 import Combine
 import Foundation
+import AWSPluginsCore
 
 /// Reconciles an incoming model mutation with the stored model. If there is no conflict (e.g., the incoming model has
 /// a later version than the stored model), then write the new data to the store.
 @available(iOS 13.0, *)
 class ReconcileAndLocalSaveOperation: Operation {
-    typealias LocalModel = Model
-    typealias CloudModel = Model
-    typealias SavedModel = Model
+    typealias LocalModel = MutationSync<AnyModel>
+    typealias CloudModel = MutationSync<AnyModel>
+    typealias SavedModel = MutationSync<AnyModel>
 
     private let workQueue = DispatchQueue(label: "com.amazonaws.ReconcileAndLocalSaveOperation",
                                           target: DispatchQueue.global())
 
     private weak var storageAdapter: StorageEngineAdapter?
     private let stateMachine: StateMachine<State, Action>
-    private let anyModel: AnyModel
+    private let cloudModel: CloudModel
     private var stateMachineSink: AnyCancellable?
 
-    init(anyModel: AnyModel,
+    init(cloudModel: CloudModel,
          storageAdapter: StorageEngineAdapter,
          stateMachine: StateMachine<State, Action>? = nil) {
-        self.anyModel = anyModel
+        self.cloudModel = cloudModel
         self.storageAdapter = storageAdapter
         self.stateMachine = stateMachine ?? StateMachine(initialState: .waiting,
                                                          resolver: Resolver.resolve(currentState:action:))
@@ -55,7 +56,7 @@ class ReconcileAndLocalSaveOperation: Operation {
             return
         }
 
-        stateMachine.notify(action: .started(anyModel))
+        stateMachine.notify(action: .started(cloudModel))
     }
 
     /// Listens to incoming state changes and invokes the appropriate asynchronous methods in response.
@@ -66,8 +67,8 @@ class ReconcileAndLocalSaveOperation: Operation {
         case .waiting:
             break
 
-        case .deserializing(let anyModel):
-            deserialize(anyModel: anyModel)
+        case .deserializing(let cloudModel):
+            deserialize(cloudModel: cloudModel)
 
         case .querying(let cloudModel):
             query(cloudModel: cloudModel)
@@ -94,10 +95,11 @@ class ReconcileAndLocalSaveOperation: Operation {
 
     // MARK: - Responder methods
 
+    // TODO: Remove this; we get a CloudModel (MutationSync<AnyModel>) from the subscription
     /// Responder method for `deserializing`. Notify actions:
     /// - deserialized
     /// - error
-    func deserialize(anyModel: AnyModel) {
+    func deserialize(cloudModel: CloudModel) {
         log.verbose(#function)
 
         guard !isCancelled else {
@@ -105,7 +107,7 @@ class ReconcileAndLocalSaveOperation: Operation {
             return
         }
 
-        let action = Action.deserialized(anyModel.instance)
+        let action = Action.deserialized(cloudModel)
         stateMachine.notify(action: action)
     }
 
@@ -115,48 +117,25 @@ class ReconcileAndLocalSaveOperation: Operation {
     func query(cloudModel: CloudModel) {
         log.verbose("query: \(cloudModel)")
         guard !isCancelled else {
-            log.verbose("\(#function) - cancelled, aborting")
+            log.info("\(#function) - cancelled, aborting")
             return
         }
 
         guard let storageAdapter = storageAdapter else {
-            Amplify.Logging.log.warn("No storageAdapter, aborting")
+            stateMachine.notify(action: .errored(DataStoreError.nilStorageAdapter()))
             return
         }
 
-        guard let modelType = ModelRegistry.modelType(from: cloudModel.modelName) else {
-            Amplify.Logging.log.warn("No model for \(cloudModel.modelName), aborting")
+        let localModel: MutationSync<AnyModel>?
+        do {
+            localModel = try storageAdapter.queryMutationSync(forAnyModel: cloudModel.model)
+        } catch {
+            stateMachine.notify(action: .errored(DataStoreError(error: error)))
             return
         }
 
-        let predicate: QueryPredicateFactory = { field("id") == cloudModel.id }
-
-        storageAdapter.query(untypedModel: modelType, predicate: predicate()) { queryResult in
-            let models: [LocalModel]
-            switch queryResult {
-            case .failure(let dataStoreError):
-                self.stateMachine.notify(action: .errored(dataStoreError))
-                return
-            case .success(let result):
-                models = result
-            }
-
-            guard !models.isEmpty else {
-                let emptyQueriedAction = Action.queried(cloudModel, nil)
-                self.stateMachine.notify(action: emptyQueriedAction)
-                return
-            }
-
-            guard let localModel = models.first, models.count == 1 else {
-                let dataStoreError = DataStoreError.nonUniqueResult(model: cloudModel.modelName, count: models.count)
-                let errorAction = Action.errored(dataStoreError)
-                self.stateMachine.notify(action: errorAction)
-                return
-            }
-
-            let queriedAction = Action.queried(cloudModel, localModel)
-            self.stateMachine.notify(action: queriedAction)
-        }
+        let queriedAction = Action.queried(cloudModel, localModel)
+        stateMachine.notify(action: queriedAction)
     }
 
     /// Responder method for `reconciling`. Notify actions:
@@ -170,27 +149,21 @@ class ReconcileAndLocalSaveOperation: Operation {
             return
         }
 
-        guard let localModel = localModel else {
-            log.verbose("\(#function) - saving new model")
-            let reconciledAction = Action.reconciled(cloudModel)
-            stateMachine.notify(action: reconciledAction)
+        guard let storageAdapter = storageAdapter else {
+            stateMachine.notify(action: .errored(DataStoreError.nilStorageAdapter()))
             return
         }
 
-        // TODO: Reenable this once we add version/conflict state to DataStore system
+        let reconciler = RemoteSyncReconciler(cloudModel: cloudModel,
+                                              to: localModel,
+                                              storageAdapter: storageAdapter)
+
+        let disposition = reconciler.reconcile()
+
         let reconciledAction = Action.reconciled(cloudModel)
         log.verbose("\(#function) - Cloud model newer than local model, saving")
         stateMachine.notify(action: reconciledAction)
-//        if cloudModel.version > localModel.version {
-//            let reconciledAction = Action.reconciled(cloudModel)
-//            stateMachine.notify(action: reconciledAction)
-//        } else if cloudModel.version < localModel.version {
-//            let conflictAction = Actions.conflicted(cloudModel, localModel)
-//            stateMachine.notify(action: conflictAction)
-//        } else {
-//            let duplicateEventAction = ???
-//            stateMachine.notify(action: duplicateEventAction)
-//        }
+
     }
 
     /// Responder method for `save`. Notify actions:
@@ -213,16 +186,42 @@ class ReconcileAndLocalSaveOperation: Operation {
             return
         }
 
-        storageAdapter.save(untypedModel: cloudModel) { response in
+        // TODO: Wrap this in a transaction
+        let anyModel = cloudModel.model
+        let syncMetadata = cloudModel.syncMetadata
+
+        log.verbose("Saving cloud model")
+        storageAdapter.save(untypedModel: anyModel.instance) { response in
             self.log.verbose("\(#function) - response: \(response)")
             switch response {
             case .failure(let dataStoreError):
                 let errorAction = Action.errored(dataStoreError)
                 self.stateMachine.notify(action: errorAction)
             case .success(let savedModel):
-                self.stateMachine.notify(action: .saved(savedModel))
+                // TODO: move this into a separate call when we get transaction support in DataStore
+                let anyModel: AnyModel
+                do {
+                    anyModel = try savedModel.eraseToAnyModel()
+                } catch {
+                    self.stateMachine.notify(action: .errored(DataStoreError(error: error)))
+                    return
+                }
+
+                storageAdapter.save(syncMetadata) { result in
+                    switch result {
+                    case .failure(let dataStoreError):
+                        let errorAction = Action.errored(dataStoreError)
+                        self.stateMachine.notify(action: errorAction)
+                    case .success(let syncMetadata):
+                        let mutationSync = MutationSync(model: anyModel, syncMetadata: syncMetadata)
+                        self.stateMachine.notify(action: .saved(mutationSync))
+                    }
+                }
             }
         }
+
+        log.verbose("Saving cloud syncMetadata")
+
     }
 
     /// Responder method for `notifying`. Notify actions:
@@ -235,18 +234,28 @@ class ReconcileAndLocalSaveOperation: Operation {
             return
         }
 
-        // TODO: Dispatch/notify error if we can't erase to any model? Would imply an error in JSON decoding,
-        // which shouldn't be possible this late in the process. Possibly notify global conflict/error handler?
-        guard let anyModel = try? savedModel.eraseToAnyModel() else {
-            log.error("Could not notify mutatione vent")
-            return
+        let mutationType: MutationEvent.MutationType
+        let version = savedModel.syncMetadata.version
+        if savedModel.syncMetadata.deleted {
+            mutationType = .delete
+        } else if version == 1 {
+            mutationType = .create
+        } else {
+            mutationType = .update
         }
 
-        // TODO: Get the mutationType
-        let mutationEvent = try! MutationEvent(model: anyModel, mutationType: .create)
-        
+        // TODO: Dispatch/notify error if we can't erase to any model? Would imply an error in JSON decoding,
+        // which shouldn't be possible this late in the process. Possibly notify global conflict/error handler?
+        guard let mutationEvent = try? MutationEvent(untypedModel: savedModel.model.instance,
+                                                     mutationType: mutationType,
+                                                     version: version)
+            else {
+                log.error("Could not notify mutation event")
+                return
+        }
+
         let payload = HubPayload(eventName: HubPayload.EventName.DataStore.syncReceived,
-                                 data: anyModel)
+                                 data: mutationEvent)
         Amplify.Hub.dispatch(to: .dataStore, payload: payload)
 
         // TODO: Add publisher

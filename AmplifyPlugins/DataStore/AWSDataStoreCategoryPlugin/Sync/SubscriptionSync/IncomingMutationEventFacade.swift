@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Combine
 
 /// Facade to hide the AsyncEventQueue/ModelMapper structures from the ReconciliationQueue. Provides a publisher for
@@ -16,7 +17,7 @@ final class IncomingMutationEventFacade {
     private let asyncEvents: IncomingAsyncSubscriptionEventPublisher
     private let mapper: IncomingAsyncSubscriptionEventToAnyModelMapper
 
-    var publisher: AnyPublisher<AnyModel, DataStoreError> {
+    var publisher: AnyPublisher<MutationSync<AnyModel>, DataStoreError> {
         mapper.publisher
     }
 

@@ -181,6 +181,21 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         return mutationSyncList
     }
 
+    func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>? {
+        let model = anyModel.instance
+        let results = try queryMutationSync(for: [model])
+        return results.first
+    }
+
+    func queryMutationSyncMetadata(for modelId: Model.Identifier) throws -> MutationSyncMetadata? {
+        // Get model
+        let modelType = MutationSyncMetadata.self
+        let statement = SelectStatement(from: modelType, predicate: field("id").eq(modelId))
+        let rows = try connection.prepare(statement.stringValue).run(statement.variables)
+        let result = try rows.convert(to: modelType)
+        return try result.unique()
+    }
+
 }
 
 // MARK: - Private Helpers

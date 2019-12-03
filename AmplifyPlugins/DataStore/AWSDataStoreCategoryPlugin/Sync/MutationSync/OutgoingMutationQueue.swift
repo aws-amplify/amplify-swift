@@ -88,8 +88,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         case .starting(let api, let mutationEventPublisher):
             start(api: api, mutationEventPublisher: mutationEventPublisher)
 
-        case .processingEvents:
-            startProcessingEvents()
+        case .requestingEvent:
+            requestEvent()
 
         case .inError(let error):
             // Maybe we have to notify the Hub?
@@ -97,7 +97,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
         case .notInitialized,
              .notStarted,
-             .finished:
+             .finished,
+             .waitingForEventToProcess:
             break
         }
 
@@ -114,16 +115,11 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         mutationEventPublisher.publisher.subscribe(self)
     }
 
-    /// Responder method for `processingEvents`. Requests the next event from the mutation event publisher.
-    /// Notify actions:
-    /// - errored
-    /// - requestedEvent
-    private func startProcessingEvents() {
-        requestEvent()
-    }
-
     // MARK: - Event loop processing
 
+    /// Responder method for `requestingEvent`. Requests an event from the subscription, and lets the subscription
+    /// handler enqueue it. Return actions:
+    /// - error
     private func requestEvent() {
         log.verbose(#function)
         guard let subscription = subscription else {
@@ -140,6 +136,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         subscription.request(.max(1))
     }
 
+    /// Invoked when the subscription receives an event, not as part of the state machine transition
     private func enqueue(_ mutationEvent: MutationEvent) {
         log.verbose(#function)
         guard let api = api else {
@@ -155,12 +152,14 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         }
 
         let syncMutationToCloudOperation =
-            SyncMutationToCloudOperation(mutationEvent: mutationEvent, api: api)
+            SyncMutationToCloudOperation(mutationEvent: mutationEvent, api: api) { result in
+                self.log.verbose("mutationEvent finished: \(mutationEvent); result: \(result)")
+                self.stateMachine.notify(action: .processedEvent)
+        }
 
         operationQueue.addOperation(syncMutationToCloudOperation)
 
-        // TODO: We should only request the next event once the current event has finished
-        requestEvent()
+        stateMachine.notify(action: .enqueuedEvent)
     }
 
 }
@@ -173,7 +172,8 @@ extension OutgoingMutationQueue: Subscriber {
     func receive(subscription: Subscription) {
         log.verbose(#function)
         // Technically, saving the subscription should probably be done in a separate method, but it seems overkill
-        // for a lightweight operation.
+        // for a lightweight operation, not to mention that the transition from "receiving subscription" to "receiving
+        // event" happens so quickly that state management becomes difficult.
         self.subscription = subscription
         stateMachine.notify(action: .receivedSubscription)
     }

@@ -11,19 +11,14 @@ import Combine
 @available(iOS 13.0, *)
 extension AWSMutationDatabaseAdapter: MutationEventIngester {
 
-    /// Accepts a mutation event and writes it to the local database, then submits it to `mutationEventSubject`
+    /// Accepts a mutation event without a version, applies the latest version from the MutationSyncMetadata table,
+    /// writes the updated mutation event to the local database, then submits it to `mutationEventSubject`
     func submit(mutationEvent: MutationEvent) -> Future<MutationEvent, DataStoreError> {
         log.verbose("\(#function): \(mutationEvent)")
 
         return Future<MutationEvent, DataStoreError> { promise in
             guard let storageAdapter = self.storageAdapter else {
-                let dataStoreError = DataStoreError.configuration(
-                    "storageAdapter is unexpectedly nil in an internal operation",
-                    """
-                        The reference to storageAdapter has been released while an ongoing mutation was being processed.
-                        """
-                )
-                promise(.failure(dataStoreError))
+                promise(.failure(DataStoreError.nilStorageAdapter()))
                 return
             }
 
@@ -38,30 +33,33 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
     func resolveConflictsThenSave(mutationEvent: MutationEvent,
                                   storageAdapter: StorageEngineAdapter,
                                   completionPromise: @escaping Future<MutationEvent, DataStoreError>.Promise) {
-        // Get mutation events in order of ascending creation date
-        let orderByCreatedAt = """
-        ORDER BY \(MutationEvent.keys.createdAt.stringValue) ASC
-        """
 
-        let fields = MutationEvent.keys
-        let predicate = fields.modelId == mutationEvent.modelId
-            && (fields.inProcess == false || fields.inProcess == nil)
+        // We don't want to query MutationSync<AnyModel> because a) we already have the model, and b) delete mutations
+        // are submitted *after* the delete has already been applied to the local data store, meaning there is no model
+        // to query.
+        var mutationEvent = mutationEvent
+        do {
+            let syncMetadata = try storageAdapter.queryMutationSyncMetadata(for: mutationEvent.modelId)
+            mutationEvent.version = syncMetadata?.version
+        } catch {
+            completionPromise(.failure(DataStoreError(error: error)))
+        }
 
-        storageAdapter.query(MutationEvent.self,
-                             predicate: predicate,
-                             additionalStatements: orderByCreatedAt) { result in
-                                switch result {
-                                case .failure(let dataStoreError):
-                                    completionPromise(.failure(dataStoreError))
-                                case .success(let localMutationEvents):
-                                    let mutationDisposition = disposition(for: mutationEvent,
-                                                                          given: localMutationEvents)
-                                    resolve(candidate: mutationEvent,
-                                            localEvents: localMutationEvents,
-                                            per: mutationDisposition,
-                                            storageAdapter: storageAdapter,
-                                            completionPromise: completionPromise)
-                                }
+        MutationEvent.pendingMutationEvents(
+            forModelId: mutationEvent.modelId,
+            storageAdapter: storageAdapter) { result in
+                switch result {
+                case .failure(let dataStoreError):
+                    completionPromise(.failure(dataStoreError))
+                case .success(let localMutationEvents):
+                    let mutationDisposition = disposition(for: mutationEvent,
+                                                          given: localMutationEvents)
+                    resolve(candidate: mutationEvent,
+                            localEvents: localMutationEvents,
+                            per: mutationDisposition,
+                            storageAdapter: storageAdapter,
+                            completionPromise: completionPromise)
+                }
         }
     }
 

@@ -47,7 +47,6 @@
 		2149E61123886C7F00873955 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2149E61023886C7F00873955 /* Assets.xcassets */; };
 		2149E61423886C7F00873955 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2149E61223886C7F00873955 /* LaunchScreen.storyboard */; };
 		2149E62223886CEE00873955 /* AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2149E59B238867E100873955 /* AWSDataStoreCategoryPlugin.framework */; };
-		2149E62C23886D3900873955 /* DataStoreHubTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E62A23886D3900873955 /* DataStoreHubTests.swift */; };
 		2149E62D23886D3900873955 /* SyncMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E62B23886D3900873955 /* SyncMetadataTests.swift */; };
 		63499C67A1A6711637CD08AD /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 715777CA4DC182BC96B88C19 /* Pods_HostApp.framework */; };
 		65681A029CC7068D348C585E /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78D7B65396B17E57FDE99E6D /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */; };
@@ -72,14 +71,18 @@
 		FA3B3F09238F39DE002EFDB3 /* AWSMutationEventIngesterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3B3F08238F39DE002EFDB3 /* AWSMutationEventIngesterTests.swift */; };
 		FA4B8E942391C2CD009FC10F /* MutationIngesterConflictResolutionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4B8E932391C2CD009FC10F /* MutationIngesterConflictResolutionTests.swift */; };
 		FA4B8E962391C609009FC10F /* XCTest+AmplifyExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4B8E952391C609009FC10F /* XCTest+AmplifyExtensions.swift */; };
+		FA4FB5B42396034000FC0462 /* MinimalGraphQLDeleteMutation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4FB5B32396034000FC0462 /* MinimalGraphQLDeleteMutation.swift */; };
 		FA55A5492391EA89002AFF2D /* MutationEventSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA55A5482391EA89002AFF2D /* MutationEventSubscription.swift */; };
 		FA55A54B2391EAB5002AFF2D /* MutationEventSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA55A54A2391EAB5002AFF2D /* MutationEventSubscriber.swift */; };
 		FA55A54D2391F96E002AFF2D /* AWSMutationDatabaseAdapter+MutationEventSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA55A54C2391F96E002AFF2D /* AWSMutationDatabaseAdapter+MutationEventSource.swift */; };
 		FA5D4CED238AFC4D00D2F54A /* AWSDataStoreCategoryPlugin+DefaultLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5D4CEC238AFC4D00D2F54A /* AWSDataStoreCategoryPlugin+DefaultLogger.swift */; };
 		FA5D4CEF238AFCBC00D2F54A /* AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5D4CEE238AFCBC00D2F54A /* AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift */; };
 		FA5D76AB2394752900489864 /* AWSMutationDatabaseAdapter+MutationEventIngester.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5D76AA2394752900489864 /* AWSMutationDatabaseAdapter+MutationEventIngester.swift */; };
+		FA8F4D1E2395AF7600861D91 /* DataStoreError+Plugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8F4D1D2395AF7600861D91 /* DataStoreError+Plugin.swift */; };
+		FA8F4D222395B11700861D91 /* MutationEvent+Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8F4D212395B11700861D91 /* MutationEvent+Query.swift */; };
 		FAAFAF3923905F35002CF932 /* MutationEventPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAFAF3823905F35002CF932 /* MutationEventPublisher.swift */; };
 		FAB5714023958C210006A5F8 /* SyncEngineIntegrationTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB5713F23958C210006A5F8 /* SyncEngineIntegrationTestBase.swift */; };
+		FAB571422395A3E80006A5F8 /* DataStoreEndToEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB571412395A3E80006A5F8 /* DataStoreEndToEndTests.swift */; };
 		FAC010E823956CF400FCE7BB /* ReconcileAndLocalSaveOperation+State.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC010E723956CF400FCE7BB /* ReconcileAndLocalSaveOperation+State.swift */; };
 		FAC010EA23956D2500FCE7BB /* ReconcileAndLocalSaveOperation+Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC010E923956D2500FCE7BB /* ReconcileAndLocalSaveOperation+Action.swift */; };
 		FAC010EC23956D5800FCE7BB /* ReconcileAndLocalSaveOperation+Resolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC010EB23956D5800FCE7BB /* ReconcileAndLocalSaveOperation+Resolver.swift */; };
@@ -170,7 +173,6 @@
 		2149E61523886C7F00873955 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2149E61D23886CEE00873955 /* AWSDataStoreCategoryPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSDataStoreCategoryPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2149E62123886CEE00873955 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2149E62A23886D3900873955 /* DataStoreHubTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreHubTests.swift; sourceTree = "<group>"; };
 		2149E62B23886D3900873955 /* SyncMetadataTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncMetadataTests.swift; sourceTree = "<group>"; };
 		2F7EE0BE289FD9000DB970AB /* Pods-AWSDataStoreCategoryPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSDataStoreCategoryPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSDataStoreCategoryPlugin/Pods-AWSDataStoreCategoryPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		4402752860B9CC02A9A6BD8E /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -205,14 +207,18 @@
 		FA3B3F08238F39DE002EFDB3 /* AWSMutationEventIngesterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSMutationEventIngesterTests.swift; sourceTree = "<group>"; };
 		FA4B8E932391C2CD009FC10F /* MutationIngesterConflictResolutionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationIngesterConflictResolutionTests.swift; sourceTree = "<group>"; };
 		FA4B8E952391C609009FC10F /* XCTest+AmplifyExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTest+AmplifyExtensions.swift"; sourceTree = "<group>"; };
+		FA4FB5B32396034000FC0462 /* MinimalGraphQLDeleteMutation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimalGraphQLDeleteMutation.swift; sourceTree = "<group>"; };
 		FA55A5482391EA89002AFF2D /* MutationEventSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationEventSubscription.swift; sourceTree = "<group>"; };
 		FA55A54A2391EAB5002AFF2D /* MutationEventSubscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationEventSubscriber.swift; sourceTree = "<group>"; };
 		FA55A54C2391F96E002AFF2D /* AWSMutationDatabaseAdapter+MutationEventSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSMutationDatabaseAdapter+MutationEventSource.swift"; sourceTree = "<group>"; };
 		FA5D4CEC238AFC4D00D2F54A /* AWSDataStoreCategoryPlugin+DefaultLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSDataStoreCategoryPlugin+DefaultLogger.swift"; sourceTree = "<group>"; };
 		FA5D4CEE238AFCBC00D2F54A /* AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSDataStoreCategoryPlugin+DataStoreSubscribeBehavior.swift"; sourceTree = "<group>"; };
 		FA5D76AA2394752900489864 /* AWSMutationDatabaseAdapter+MutationEventIngester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSMutationDatabaseAdapter+MutationEventIngester.swift"; sourceTree = "<group>"; };
+		FA8F4D1D2395AF7600861D91 /* DataStoreError+Plugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataStoreError+Plugin.swift"; sourceTree = "<group>"; };
+		FA8F4D212395B11700861D91 /* MutationEvent+Query.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MutationEvent+Query.swift"; sourceTree = "<group>"; };
 		FAAFAF3823905F35002CF932 /* MutationEventPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationEventPublisher.swift; sourceTree = "<group>"; };
 		FAB5713F23958C210006A5F8 /* SyncEngineIntegrationTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngineIntegrationTestBase.swift; sourceTree = "<group>"; };
+		FAB571412395A3E80006A5F8 /* DataStoreEndToEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreEndToEndTests.swift; sourceTree = "<group>"; };
 		FAC010E723956CF400FCE7BB /* ReconcileAndLocalSaveOperation+State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReconcileAndLocalSaveOperation+State.swift"; sourceTree = "<group>"; };
 		FAC010E923956D2500FCE7BB /* ReconcileAndLocalSaveOperation+Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReconcileAndLocalSaveOperation+Action.swift"; sourceTree = "<group>"; };
 		FAC010EB23956D5800FCE7BB /* ReconcileAndLocalSaveOperation+Resolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReconcileAndLocalSaveOperation+Resolver.swift"; sourceTree = "<group>"; };
@@ -360,13 +366,13 @@
 		2149E5BA2388684F00873955 /* Sync */ = {
 			isa = PBXGroup;
 			children = (
-				FAED5736238B2DFA008EBED8 /* MutationSync */,
-				FAED5735238B2DEC008EBED8 /* SubscriptionSync */,
 				2149E5BE2388684F00873955 /* CloudSyncEngine.swift */,
 				FAF7CECE238C93A50095547B /* CloudSyncEngineBehavior.swift */,
 				2149E5C12388684F00873955 /* NetworkReachability.swift */,
 				2149E5BD2388684F00873955 /* NetworkReachabilityNotifier.swift */,
-				FA3841E823889D440070AD5B /* StateMachine.swift */,
+				FAED5736238B2DFA008EBED8 /* MutationSync */,
+				FAED5735238B2DEC008EBED8 /* SubscriptionSync */,
+				FA8F4D1C2395AF5E00861D91 /* Support */,
 			);
 			path = Sync;
 			sourceTree = "<group>";
@@ -413,8 +419,8 @@
 			isa = PBXGroup;
 			children = (
 				2149E62123886CEE00873955 /* Info.plist */,
-				2149E62A23886D3900873955 /* DataStoreHubTests.swift */,
 				FA3841EA23889D6C0070AD5B /* SubscriptionTests.swift */,
+				FAB571412395A3E80006A5F8 /* DataStoreEndToEndTests.swift */,
 				2149E62B23886D3900873955 /* SyncMetadataTests.swift */,
 				FAD2BDF7239583B5006EB065 /* TestSupport */,
 			);
@@ -445,6 +451,16 @@
 				18669A1BE454F2AE676FBEA4 /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		FA8F4D1C2395AF5E00861D91 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				FA8F4D212395B11700861D91 /* MutationEvent+Query.swift */,
+				FA3841E823889D440070AD5B /* StateMachine.swift */,
+				FA8F4D1D2395AF7600861D91 /* DataStoreError+Plugin.swift */,
+			);
+			path = Support;
 			sourceTree = "<group>";
 		};
 		FA9C743C238CB493009DAFCF /* Recovered References */ = {
@@ -523,12 +539,13 @@
 		FAED5736238B2DFA008EBED8 /* MutationSync */ = {
 			isa = PBXGroup;
 			children = (
-				FA5D76AA2394752900489864 /* AWSMutationDatabaseAdapter+MutationEventIngester.swift */,
 				FACBA78E23949C75006349C8 /* AWSMutationDatabaseAdapter.swift */,
+				FA5D76AA2394752900489864 /* AWSMutationDatabaseAdapter+MutationEventIngester.swift */,
+				FA55A54C2391F96E002AFF2D /* AWSMutationDatabaseAdapter+MutationEventSource.swift */,
+				FA4FB5B32396034000FC0462 /* MinimalGraphQLDeleteMutation.swift */,
 				FA3B3EFE238F13B2002EFDB3 /* MutationEventIngester.swift */,
 				FAAFAF3823905F35002CF932 /* MutationEventPublisher.swift */,
 				FACBA78A2394950C006349C8 /* MutationEventSource.swift */,
-				FA55A54C2391F96E002AFF2D /* AWSMutationDatabaseAdapter+MutationEventSource.swift */,
 				FA55A54A2391EAB5002AFF2D /* MutationEventSubscriber.swift */,
 				FA55A5482391EA89002AFF2D /* MutationEventSubscription.swift */,
 				FAF7CECA238C72830095547B /* OutgoingMutationQueue.swift */,
@@ -988,6 +1005,7 @@
 				2149E5CA2388684F00873955 /* ModelSchema+SQLite.swift in Sources */,
 				2149E5CD2388684F00873955 /* SQLStatement+Update.swift in Sources */,
 				FAF7CEC9238C6A940095547B /* SyncMutationToCloudOperation.swift in Sources */,
+				FA8F4D1E2395AF7600861D91 /* DataStoreError+Plugin.swift in Sources */,
 				2149E5D02388684F00873955 /* QueryPredicate+SQLite.swift in Sources */,
 				FA55A54B2391EAB5002AFF2D /* MutationEventSubscriber.swift in Sources */,
 				FA3B3F07238F23CA002EFDB3 /* OutgoingMutationQueue+Resolver.swift in Sources */,
@@ -1006,6 +1024,7 @@
 				2149E5C72388684F00873955 /* StorageEngine.swift in Sources */,
 				FA3B3F05238F22F5002EFDB3 /* OutgoingMutationQueue+Action.swift in Sources */,
 				FAED573E238B4C2F008EBED8 /* StorageEngineAdapter+UntypedModel.swift in Sources */,
+				FA8F4D222395B11700861D91 /* MutationEvent+Query.swift in Sources */,
 				FAF7CECB238C72830095547B /* OutgoingMutationQueue.swift in Sources */,
 				2149E5CC2388684F00873955 /* SQLStatement+Select.swift in Sources */,
 				FADD7291238B19CB005AA69A /* IncomingAsyncSubscriptionEventToAnyModelMapper.swift in Sources */,
@@ -1020,6 +1039,7 @@
 				FA55A5492391EA89002AFF2D /* MutationEventSubscription.swift in Sources */,
 				FA5D76AB2394752900489864 /* AWSMutationDatabaseAdapter+MutationEventIngester.swift in Sources */,
 				FAED5738238B3A2A008EBED8 /* IncomingMutationEventFacade.swift in Sources */,
+				FA4FB5B42396034000FC0462 /* MinimalGraphQLDeleteMutation.swift in Sources */,
 				FACBA78F23949C75006349C8 /* AWSMutationDatabaseAdapter.swift in Sources */,
 				FA55A54D2391F96E002AFF2D /* AWSMutationDatabaseAdapter+MutationEventSource.swift in Sources */,
 				2149E5CE2388684F00873955 /* SQLStatement+CreateTable.swift in Sources */,
@@ -1071,9 +1091,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				2149E62D23886D3900873955 /* SyncMetadataTests.swift in Sources */,
-				2149E62C23886D3900873955 /* DataStoreHubTests.swift in Sources */,
 				FAD2BDF6239583B2006EB065 /* TestModelRegistration.swift in Sources */,
 				FA3841EB23889D6C0070AD5B /* SubscriptionTests.swift in Sources */,
+				FAB571422395A3E80006A5F8 /* DataStoreEndToEndTests.swift in Sources */,
 				FAB5714023958C210006A5F8 /* SyncEngineIntegrationTestBase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

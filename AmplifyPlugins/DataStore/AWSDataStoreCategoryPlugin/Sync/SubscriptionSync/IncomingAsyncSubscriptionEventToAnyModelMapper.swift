@@ -6,25 +6,28 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Combine
 
+// swiftlint:disable type_name
 /// Subscribes to an IncomingSubscriptionAsyncEventQueue, and publishes AnyModel
-// swiftlint:disable:next type_name
 @available(iOS 13, *)
 final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
+    // swiftlint:enable type_name
+
     typealias Input = IncomingAsyncSubscriptionEventPublisher.Event
     typealias Failure = DataStoreError
 
     var subscription: Subscription?
 
-    private let modelsFromSubscription: PassthroughSubject<AnyModel, DataStoreError>
+    private let modelsFromSubscription: PassthroughSubject<MutationSync<AnyModel>, DataStoreError>
 
-    var publisher: AnyPublisher<AnyModel, DataStoreError> {
+    var publisher: AnyPublisher<MutationSync<AnyModel>, DataStoreError> {
         modelsFromSubscription.eraseToAnyPublisher()
     }
 
     init() {
-        self.modelsFromSubscription = PassthroughSubject<AnyModel, DataStoreError>()
+        self.modelsFromSubscription = PassthroughSubject<MutationSync<AnyModel>, DataStoreError>()
     }
 
     // MARK: - Subscriber
@@ -60,22 +63,23 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
 
     // MARK: - Event processing
 
-    private func dispose(of subscriptionEvent: SubscriptionEvent<GraphQLResponse<AnyModel>>) {
+    private func dispose(of subscriptionEvent: SubscriptionEvent<GraphQLResponse<MutationSync<AnyModel>>>) {
         log.verbose("dispose(of subscriptionEvent): \(subscriptionEvent)")
         switch subscriptionEvent {
         case .connection(let connectionState):
-            // Connection events are informational only at this level. The terminal state is represented at the AsyncEvent Completion/Error
+            // Connection events are informational only at this level. The terminal state is represented at the
+            // AsyncEvent Completion/Error
             log.info("connectionState now \(connectionState)")
         case .data(let graphQLResponse):
             dispose(of: graphQLResponse)
         }
     }
 
-    private func dispose(of graphQLResponse: GraphQLResponse<AnyModel>) {
+    private func dispose(of graphQLResponse: GraphQLResponse<MutationSync<AnyModel>>) {
         log.verbose("dispose(of graphQLResponse): \(graphQLResponse)")
         switch graphQLResponse {
-        case .success(let anyModel):
-            modelsFromSubscription.send(anyModel)
+        case .success(let mutationSync):
+            modelsFromSubscription.send(mutationSync)
         case .failure(let failure):
             log.error(error: failure)
         }

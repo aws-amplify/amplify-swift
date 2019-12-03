@@ -130,7 +130,7 @@ class OutgoingMutationQueueTests: XCTestCase {
     /// - When:
     ///    - I start syncing with mutation events already in the database
     /// - Then:
-    ///    - The mutation queue delivers previously loaded events
+    ///    - The mutation queue delivers the first previously loaded event
     func testMutationQueueLoadsPendingMutations() throws {
         continueAfterFailure = false
 
@@ -138,8 +138,8 @@ class OutgoingMutationQueueTests: XCTestCase {
 
         // pre-load the MutationEvent table with mutation data
         let mutationEventSaved = expectation(description: "Preloaded mutation event saved")
-        mutationEventSaved.expectedFulfillmentCount = 3
-        for id in 1 ... 3 {
+        mutationEventSaved.expectedFulfillmentCount = 2
+        for id in 1 ... 2 {
             let postId = "pendingPost-\(id)"
             let pendingPost = Post(id: postId,
                                    title: "pendingPost-\(id) title",
@@ -169,21 +169,19 @@ class OutgoingMutationQueueTests: XCTestCase {
 
         let mutation1Sent = expectation(description: "Create mutation 1 sent to API category")
         let mutation2Sent = expectation(description: "Create mutation 2 sent to API category")
-        let mutation3Sent = expectation(description: "Create mutation 3 sent to API category")
+        mutation2Sent.isInverted = true
         apiPlugin.listeners.append { message in
             if message.contains("createPost") && message.contains("pendingPost-1") {
                 mutation1Sent.fulfill()
             } else if message.contains("createPost") && message.contains("pendingPost-2") {
                 mutation2Sent.fulfill()
-            } else if message.contains("createPost") && message.contains("pendingPost-3") {
-                mutation3Sent.fulfill()
             }
         }
 
         setUpDataStore()
         startAmplify()
 
-        waitForExpectations(timeout: 5.0, handler: nil)
+        waitForExpectations(timeout: 2.0, handler: nil)
     }
 
     /// - Given: A sync-configured DataStore
@@ -192,80 +190,8 @@ class OutgoingMutationQueueTests: XCTestCase {
     ///    - I add mutations before the pending mutations have been processed
     /// - Then:
     ///    - The mutation queue delivers events in FIFO order
-    func testMutationQueueDeliversPendingMutationsFirst() throws {
-        continueAfterFailure = false
-
-        setUpStorageAdapter()
-
-        // pre-load the MutationEvent table with mutation data
-        let mutationEventSaved = expectation(description: "Preloaded mutation event saved")
-        for id in 1 ... 1 {
-            let postId = "pendingPost-\(id)"
-            let pendingPost = Post(id: postId,
-                                   title: "pendingPost-\(id) title",
-                content: "pendingPost-\(id) content",
-                createdAt: Date())
-
-            let pendingPostJSON = try pendingPost.toJSON()
-            let event = MutationEvent(id: "mutation-\(id)",
-                modelId: postId,
-                modelName: Post.modelName,
-                json: pendingPostJSON,
-                mutationType: .create,
-                createdAt: Date())
-
-            storageAdapter.save(event) { result in
-                switch result {
-                case .failure(let dataStoreError):
-                    XCTFail(String(describing: dataStoreError))
-                case .success:
-                    mutationEventSaved.fulfill()
-                }
-            }
-
-        }
-
-        wait(for: [mutationEventSaved], timeout: 1.0)
-
-        let pendingPostMutationSent =
-            expectation(description: "Create mutation for pending post sent to API category")
-
-        let newPostMutationSent =
-            expectation(description: "Create mutation for newly-created post sent to API category")
-
-        apiPlugin.listeners.append { message in
-            if message.contains("createPost") && message.contains("pendingPost-1") {
-                pendingPostMutationSent.fulfill()
-            } else if message.contains("createPost") && message.contains("newPost-1") {
-                newPostMutationSent.fulfill()
-            }
-        }
-
-        setUpDataStore()
-
-        let syncStarted = expectation(description: "Sync started")
-        let syncStartedToken = Amplify.Hub.listen(to: .dataStore,
-                                                  eventName: HubPayload.EventName.DataStore.syncStarted) { _ in
-                                                    syncStarted.fulfill()
-        }
-
-        guard try HubListenerTestUtilities.waitForListener(with: syncStartedToken, timeout: 5.0) else {
-            XCTFail("Didn't register token for sync started")
-            return
-        }
-
-        startAmplify()
-
-        wait(for: [syncStarted], timeout: 5.0)
-
-        let newPost = Post(id: "newPost-1",
-                           title: "newPost title",
-                           content: "newPost content",
-                           createdAt: Date())
-
-        Amplify.DataStore.save(newPost) { _ in }
-
-        wait(for: [pendingPostMutationSent, newPostMutationSent], timeout: 5.0, enforceOrder: true)
+    func testMutationQueueDeliversPendingMutationsFirst() {
+        XCTFail("Not yet implemented")
     }
 
     /// - Given: A sync-configured DataStore

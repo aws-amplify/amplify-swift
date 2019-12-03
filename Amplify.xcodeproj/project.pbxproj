@@ -273,6 +273,7 @@
 		FA8EE77F2386274A0097E4F1 /* AnyModel+Subscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE77E2386274A0097E4F1 /* AnyModel+Subscript.swift */; };
 		FA8EE781238628490097E4F1 /* Persistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE780238628490097E4F1 /* Persistable.swift */; };
 		FA8EE78323862DDB0097E4F1 /* AnyModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE78223862DDB0097E4F1 /* AnyModel+Schema.swift */; };
+		FA8F4D242395B1B600861D91 /* MutationEvent+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8F4D232395B1B600861D91 /* MutationEvent+Model.swift */; };
 		FA9D6C1B238DEEEB00C7DD9F /* ConcurrentDispatcherPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B8872339633C007F1435 /* ConcurrentDispatcherPerformanceTests.swift */; };
 		FA9D6C1E238DEF0E00C7DD9F /* DefaultHubPluginPerformanceTestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B88A23397791007F1435 /* DefaultHubPluginPerformanceTestHelpers.swift */; };
 		FA9D6C1F238DEF1100C7DD9F /* SerialDispatcherPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA317107232AE8DF009BC140 /* SerialDispatcherPerformanceTests.swift */; };
@@ -907,6 +908,7 @@
 		FA8EE77E2386274A0097E4F1 /* AnyModel+Subscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnyModel+Subscript.swift"; sourceTree = "<group>"; };
 		FA8EE780238628490097E4F1 /* Persistable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistable.swift; sourceTree = "<group>"; };
 		FA8EE78223862DDB0097E4F1 /* AnyModel+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnyModel+Schema.swift"; sourceTree = "<group>"; };
+		FA8F4D232395B1B600861D91 /* MutationEvent+Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MutationEvent+Model.swift"; sourceTree = "<group>"; };
 		FA9FB7782329D4D400C04D32 /* HubFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubFilter.swift; sourceTree = "<group>"; };
 		FA9FB77A2329D4FB00C04D32 /* UnsubscribeToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnsubscribeToken.swift; sourceTree = "<group>"; };
 		FA9FB77C232AA0D800C04D32 /* FilteredListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteredListener.swift; sourceTree = "<group>"; };
@@ -2412,6 +2414,7 @@
 			children = (
 				FAD393702381FD3C00463F5E /* DataStoreCategory+Subscribe.swift */,
 				FA9FD2332381CD0000A7CAF5 /* MutationEvent.swift */,
+				FA8F4D232395B1B600861D91 /* MutationEvent+Model.swift */,
 				FACBAD4F2386101100E29E56 /* MutationEvent+MutationType.swift */,
 				FA9FD2322381CD0000A7CAF5 /* MutationEvent+Schema.swift */,
 			);
@@ -3531,6 +3534,7 @@
 				95DAAB1D237E63370028544F /* IdentifiedWord.swift in Sources */,
 				B92E03B62367CE7A006CEB8D /* ModelSchema.swift in Sources */,
 				FAB3CA15238D9BE400F59BD0 /* DefaultLogger.swift in Sources */,
+				FA8F4D242395B1B600861D91 /* MutationEvent+Model.swift in Sources */,
 				95DAAB38237E63370028544F /* Landmark.swift in Sources */,
 				21FFF988230B7B2C005878EA /* AsychronousOperation.swift in Sources */,
 				95DAAB49237E639E0028544F /* IdentifyDocumentTextResult.swift in Sources */,

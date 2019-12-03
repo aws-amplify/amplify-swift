@@ -17,7 +17,10 @@ extension OutgoingMutationQueue {
         case notInitialized
         case notStarted
         case starting(APICategoryGraphQLBehavior, MutationEventPublisher)
-        case processingEvents
+
+        // Event loop
+        case requestingEvent
+        case waitingForEventToProcess
 
         // Terminal states
         case finished
@@ -33,10 +36,12 @@ extension OutgoingMutationQueue {
                 return "notInitialized"
             case .notStarted:
                 return "notStarted"
-            case .processingEvents:
-                return "processingEvents"
+            case .requestingEvent:
+                return "requestingEvent"
             case .starting:
                 return "starting"
+            case .waitingForEventToProcess:
+                return "waitingForEventToProcess"
             }
         }
     }

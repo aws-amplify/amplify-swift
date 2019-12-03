@@ -12,18 +12,18 @@ PODS:
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
-  - SwiftFormat/CLI (0.40.14)
+  - SwiftFormat/CLI (0.42.0)
   - SwiftLint (0.37.0)
 
 DEPENDENCIES:
-  - AWSMobileClient (~> 2.12.0)
+  - AWSMobileClient (~> 2.12.2)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
   - SwiftFormat/CLI
   - SwiftLint
 
 SPEC REPOS:
-  https://cdn.cocoapods.org/:
+  trunk:
     - AWSAuthCore
     - AWSCognitoIdentityProvider
     - AWSCognitoIdentityProviderASF
@@ -56,9 +56,9 @@ SPEC CHECKSUMS:
   AWSMobileClient: ed6cd3c6ecb935406bf392df81fc5b40f4660845
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
-  SwiftFormat: 21c9c3c748d5fcece493d8610eee23df15393458
+  SwiftFormat: 5faa819600268dfaa5c19f1359730883db151678
   SwiftLint: c078a14d7d7ade75e5507795d185e3da41d844d2
 
-PODFILE CHECKSUM: a97a2ad9fd3e0e021dff2170fac729f3448cd4a8
+PODFILE CHECKSUM: 0c144356acc2a927e176dfefc297fd42009b4748
 
 COCOAPODS: 1.8.4
