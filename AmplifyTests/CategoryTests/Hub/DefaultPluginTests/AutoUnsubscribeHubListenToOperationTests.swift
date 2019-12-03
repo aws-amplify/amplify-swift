@@ -126,10 +126,8 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
         let token = Amplify.Hub.listen(to: amplifyOperation) { event in
             switch event {
             case .inProcess:
-                print("Amplify: inprocess")
                 listenerWasInvokedForInProcess.fulfill()
             case .completed:
-                print("Amplify: completed")
                 listenerWasInvokedForCompleted.fulfill()
             case .failed:
                 listenerWasInvokedForFailed.fulfill()
