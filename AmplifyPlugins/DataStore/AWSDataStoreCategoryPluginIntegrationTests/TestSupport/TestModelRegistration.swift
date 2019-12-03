@@ -8,7 +8,7 @@
 import Amplify
 import AmplifyTestCommon
 
-struct TestModelRegistration: DataStoreModelRegistration {
+struct TestModelRegistration: AmplifyModelRegistration {
 
     func registerModels(registry: ModelRegistry.Type) {
         registry.register(modelType: Post.self)
