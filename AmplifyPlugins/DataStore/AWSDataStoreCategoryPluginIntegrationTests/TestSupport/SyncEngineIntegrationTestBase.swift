@@ -46,10 +46,10 @@ class SyncEngineIntegrationTestBase: XCTestCase {
         let apiConfig = APICategoryConfiguration(plugins: [
             "awsAPIPlugin": [
                 "Default": [
-                    "endpoint": "https://ldm7yqjfjngrjckbziumz5fxbe.appsync-api.us-west-2.amazonaws.com/graphql",
+                    "endpoint": "https://xxxx.appsync-api.us-west-2.amazonaws.com/graphql",
                     "region": "us-west-2",
                     "authorizationType": "API_KEY",
-                    "apiKey": "da2-7jhi34lssbbmjclftlykznhw5m",
+                    "apiKey": "da2-xxx",
                     "endpointType": "GraphQL"
                 ]
             ]

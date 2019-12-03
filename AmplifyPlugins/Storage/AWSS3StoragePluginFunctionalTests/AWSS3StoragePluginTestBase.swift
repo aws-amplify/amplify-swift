@@ -42,22 +42,22 @@ class AWSS3StoragePluginTestBase: XCTestCase {
          "CredentialsProvider": {
              "CognitoIdentity": {
                  "Default": {
-                     "PoolId": "us-west-2:5eed512d-00bd-4d4b-a398-40e0eee8d1d8",
+                     "PoolId": "us-west-2:xxx",
                      "Region": "us-west-2"
                  }
              }
          },
          "CognitoUserPool": {
              "Default": {
-                 "PoolId": "us-west-2_HjINbPLHp",
-                 "AppClientId": "1hpov6246ng77bvfj1uhg2ulah",
-                 "AppClientSecret": "bktd98c6qnjibvqeq81bm83bl45p7g2t0j0997o5j59iit06qru",
+                 "PoolId": "us-west-2_xx",
+                 "AppClientId": "xxx",
+                 "AppClientSecret": "xxx",
                  "Region": "us-west-2"
              }
          },
          "S3TransferUtility": {
              "Default": {
-                 "Bucket": "storage6e54d3cf8ff042e18d59639bdb4f1664151034-devo",
+                 "Bucket": "xxx-devo",
                  "Region": "us-west-2"
              }
          }
@@ -70,7 +70,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
          "storage": {
              "plugins": {
                  "awsS3StoragePlugin": {
-                     "bucket": "storage6e54d3cf8ff042e18d59639bdb4f1664151034-devo",
+                     "bucket": "xx-devo",
                      "region": "us-west-2",
                      "defaultAccessLevel": "guest"
                  }
@@ -88,16 +88,16 @@ class AWSS3StoragePluginTestBase: XCTestCase {
             "CredentialsProvider": [
                 "CognitoIdentity": [
                     "Default": [
-                        "PoolId": "us-east-1:e80d0cb9-84b1-4d34-84e1-04ee17d576f5",
+                        "PoolId": "us-east-1:xxxx",
                         "Region": "us-east-1"
                     ]
                 ]
             ],
             "CognitoUserPool": [
                 "Default": [
-                    "PoolId": "us-east-1_W4yPiPDfC",
-                    "AppClientId": "49gnirp7oej6oa7ghbbpr0tjdb",
-                    "AppClientSecret": "3uhb11mgra4gfjlgvtjf3069ovak0n8ol2ss0alatnkjcajenbq",
+                    "PoolId": "us-east-1_xxx",
+                    "AppClientId": "xx",
+                    "AppClientSecret": "xxx",
                     "Region": "us-east-1"
                 ]
             ]
