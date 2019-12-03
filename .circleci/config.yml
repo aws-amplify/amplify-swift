@@ -116,6 +116,9 @@ workflows:
   build_test:
     jobs:
       - checkout_code
+      # Running all the tests in parallel leads to threading issues
+      # Breaking them up into 2 groups:
+      # Group 1
       - build_test_amplify:
           requires:
               - checkout_code                
@@ -125,27 +128,30 @@ workflows:
           workspace: APICategoryPlugin
           scheme: AWSAPICategoryPlugin
           requires:
-              - build_test_amplify
+              - checkout_code
       - plugin_unit_test:
           name: unit_test_analytics
           path: Analytics
           workspace: AnalyticsCategoryPlugin
           scheme: AWSPinpointAnalyticsPlugin
           requires:
-              - unit_test_api
+              - checkout_code
       - plugin_unit_test:
           name: unit_test_storage
           path: Storage
           workspace: StoragePlugin
           scheme: AWSS3StoragePlugin
           requires:
-              - unit_test_analytics
+              - checkout_code
       - plugin_unit_test:
           name: unit_test_predictions
           path: Predictions
           workspace: PredictionsCategoryPlugin
           scheme: AWSPredictionsPlugin
           requires:
+              - build_test_amplify
+              - unit_test_api
+              - unit_test_analytics
               - unit_test_storage
       - plugin_unit_test:
           name: unit_test_predictions_core_ml
@@ -153,11 +159,17 @@ workflows:
           workspace: PredictionsCategoryPlugin
           scheme: CoreMLPredictionsPlugin
           requires:
-              - unit_test_predictions
+              - build_test_amplify
+              - unit_test_api
+              - unit_test_analytics
+              - unit_test_storage
       - plugin_unit_test:
           name: unit_test_datastore
           path: DataStore
           workspace: DataStoreCategoryPlugin
           scheme: AWSDataStoreCategoryPlugin
           requires:
-              - unit_test_predictions_core_ml
+              - build_test_amplify
+              - unit_test_api
+              - unit_test_analytics
+              - unit_test_storage
