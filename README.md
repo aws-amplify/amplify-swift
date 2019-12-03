@@ -38,11 +38,11 @@ Amplify requires Xcode 11 or higher to build.
 
 ### CocoaPods
 
-Coming soon, will be live by December 6. You can use manually in the mean time per instructions under Frameworks below.
+Coming soon, will be live by December 6. You can use manually in the mean time per instructions under Development Pods below.
 
 ### Carthage
 
-Coming soon, will be live by December 6. You can use manually in the mean time per instructions under Frameworks below.
+Coming soon, will be live by December 6. You can use manually in the mean time per instructions under Development Pods below.
 
 ### Development Pods
 
