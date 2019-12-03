@@ -50,10 +50,10 @@ class TodoGraphQLWithAPIKeyTests: XCTestCase {
         let apiConfig = APICategoryConfiguration(plugins: [
             "awsAPIPlugin": [
                 TodoGraphQLWithAPIKeyTests.todoGraphQLWithAPIKey: [
-                    "endpoint": "https://akeljq43xfcvpj4hh55fafcrm4.appsync-api.us-west-2.amazonaws.com/graphql",
+                    "endpoint": "https://xxx.appsync-api.us-west-2.amazonaws.com/graphql",
                     "region": "us-west-2",
                     "authorizationType": "API_KEY",
-                    "apiKey": "da2-6m3mowpbavh55kscoikywhqova",
+                    "apiKey": "da2-xxx",
                     "endpointType": "GraphQL"
                 ],
             ]

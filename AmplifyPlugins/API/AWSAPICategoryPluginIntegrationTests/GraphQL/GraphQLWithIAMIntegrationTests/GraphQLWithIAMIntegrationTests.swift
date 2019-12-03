@@ -102,16 +102,16 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
             "CredentialsProvider": [
                 "CognitoIdentity": [
                     "Default": [
-                        "PoolId": "us-east-1:35d7a505-675c-440e-969f-82d0773b586b",
+                        "PoolId": "us-east-1:xxxx",
                         "Region": "us-east-1"
                     ]
                 ]
             ],
             "CognitoUserPool": [
                 "Default": [
-                    "PoolId": "us-east-1_PdSfW6IgE",
-                    "AppClientId": "5gf44rm3rv8ar0o9spcuols1g4",
-                    "AppClientSecret": "11343jpcqhj7dqvacjkq5hlrcrlauqka56jg7lhi00vq1ra1b57i",
+                    "PoolId": "us-east-1_xxx",
+                    "AppClientId": "xxxx",
+                    "AppClientSecret": "xxxx",
                     "Region": "us-east-1"
                 ]
             ]
@@ -126,7 +126,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         let apiConfig = APICategoryConfiguration(plugins: [
             "awsAPIPlugin": [
                 "todoGraphQLWithIAM": [
-                    "endpoint": "https://fsdfgjw5ojdanhivobrnmw54s4.appsync-api.us-east-1.amazonaws.com/graphql",
+                    "endpoint": "https://xxxx.appsync-api.us-east-1.amazonaws.com/graphql",
                     "region": "us-east-1",
                     "authorizationType": "AWS_IAM",
                     "endpointType": "GraphQL"
