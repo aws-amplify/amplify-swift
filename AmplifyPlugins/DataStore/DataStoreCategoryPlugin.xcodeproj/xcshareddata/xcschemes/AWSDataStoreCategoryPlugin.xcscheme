@@ -63,6 +63,9 @@
                   Identifier = "OutgoingMutationQueueTests/testLocalMutationUnsubcsribesFromCloud()">
                </Test>
                <Test
+                  Identifier = "OutgoingMutationQueueTests/testMutationQueueDeliversPendingMutationsFirst()">
+               </Test>
+               <Test
                   Identifier = "OutgoingMutationQueueTests/testMutationQueueDequeuesSavedEvents()">
                </Test>
                <Test

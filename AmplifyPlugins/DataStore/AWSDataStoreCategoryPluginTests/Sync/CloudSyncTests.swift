@@ -81,15 +81,16 @@ class CloudSyncTests: XCTestCase {
         let deleteSubscriptionStarted = expectation(description: "Delete subscription started")
 
         apiPlugin.listeners.append { message in
-            switch message {
-            case "subscribe(toAnyModelType:Post,subscriptionType:onCreate,listener:)":
+            guard message.contains("subscribe(request:listener:)") else {
+                return
+            }
+
+            if message.contains("onCreatePost") {
                 createSubscriptionStarted.fulfill()
-            case "subscribe(toAnyModelType:Post,subscriptionType:onUpdate,listener:)":
+            } else if message.contains("onUpdatePost") {
                 updateSubscriptionStarted.fulfill()
-            case "subscribe(toAnyModelType:Post,subscriptionType:onDelete,listener:)":
+            } else if message.contains("onDeletePost") {
                 deleteSubscriptionStarted.fulfill()
-            default:
-                break
             }
         }
 
