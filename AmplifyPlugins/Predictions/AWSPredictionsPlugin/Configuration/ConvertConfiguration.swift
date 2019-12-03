@@ -80,8 +80,8 @@ extension ConvertConfiguration: Decodable {
 extension TranslateTextConfiguration: Decodable {
 
     enum CodingKeys: String, CodingKey {
-        case sourceLanguage
-        case targetLanguage
+        case sourceLanguage = "sourceLang"
+        case targetLanguage = "targetLang"
     }
 
     public init(from decoder: Decoder) throws {
@@ -95,7 +95,7 @@ extension LanguageType: Decodable {}
 
 extension SpeechGeneratorConfiguration: Decodable {
     enum CodingKeys: String, CodingKey {
-        case voiceID = "voiceId"
+        case voiceID = "voice"
     }
 
     public init(from decoder: Decoder) throws {

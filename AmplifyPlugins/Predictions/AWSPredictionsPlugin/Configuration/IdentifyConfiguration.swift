@@ -33,7 +33,7 @@ public struct IdentifyTextConfiguration {
 
 public struct IdentifyEntitiesConfiguration {
     public let collectionId: String?
-    public let maxEntities: Int?
+    public let maxEntities: String?
 }
 
 extension IdentifyConfiguration: Decodable {

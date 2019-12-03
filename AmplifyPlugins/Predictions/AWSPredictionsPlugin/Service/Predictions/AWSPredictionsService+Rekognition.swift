@@ -200,7 +200,8 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
         rekognitionImage.bytes = imageData
         request.image = rekognitionImage
         request.collectionId = collectionId
-        request.maxFaces = predictionsConfig.identify.identifyEntities?.maxEntities as NSNumber?
+        let maxEntities = Int(predictionsConfig.identify.identifyEntities?.maxEntities ?? "50") ?? 50
+        request.maxFaces = NSNumber(value: maxEntities)
 
         awsRekognition.detectFacesFromCollection(request: request).continueWith { (task) -> Any? in
             guard task.error == nil else {
