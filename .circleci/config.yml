@@ -142,7 +142,9 @@ workflows:
           workspace: StoragePlugin
           scheme: AWSS3StoragePlugin
           requires:
-              - checkout_code
+              - build_test_amplify
+              - unit_test_api
+              - unit_test_analytics
       - plugin_unit_test:
           name: unit_test_predictions
           path: Predictions
@@ -152,7 +154,6 @@ workflows:
               - build_test_amplify
               - unit_test_api
               - unit_test_analytics
-              - unit_test_storage
       - plugin_unit_test:
           name: unit_test_predictions_core_ml
           path: Predictions
@@ -162,14 +163,13 @@ workflows:
               - build_test_amplify
               - unit_test_api
               - unit_test_analytics
-              - unit_test_storage
-      - plugin_unit_test:
-          name: unit_test_datastore
-          path: DataStore
-          workspace: DataStoreCategoryPlugin
-          scheme: AWSDataStoreCategoryPlugin
-          requires:
-              - build_test_amplify
-              - unit_test_api
-              - unit_test_analytics
-              - unit_test_storage
+      # - plugin_unit_test:
+      #     name: unit_test_datastore
+      #     path: DataStore
+      #     workspace: DataStoreCategoryPlugin
+      #     scheme: AWSDataStoreCategoryPlugin
+      #     requires:
+      #         - build_test_amplify
+      #         - unit_test_api
+      #         - unit_test_analytics
+      #         - unit_test_storage
