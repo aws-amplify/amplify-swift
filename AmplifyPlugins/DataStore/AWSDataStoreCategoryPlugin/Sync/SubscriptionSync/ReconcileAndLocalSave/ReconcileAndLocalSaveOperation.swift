@@ -14,22 +14,30 @@ import AWSPluginsCore
 /// a later version than the stored model), then write the new data to the store.
 @available(iOS 13.0, *)
 class ReconcileAndLocalSaveOperation: Operation {
+
+    /// Disambiguation for the version of the model incoming from the remote API
+    typealias RemoteModel = MutationSync<AnyModel>
+
+    /// Disambiguation for the version of the model stored in local datastore
     typealias LocalModel = MutationSync<AnyModel>
-    typealias CloudModel = MutationSync<AnyModel>
-    typealias SavedModel = MutationSync<AnyModel>
+
+    /// Disambiguation for the version of the model that was applied to the local datastore. In the case of a create or
+    /// update mutation, this represents the saved model. In the case of a delete mutation, this is the data that was
+    /// sent from the remote API as part of the mutation.
+    typealias AppliedModel = MutationSync<AnyModel>
 
     private let workQueue = DispatchQueue(label: "com.amazonaws.ReconcileAndLocalSaveOperation",
                                           target: DispatchQueue.global())
 
     private weak var storageAdapter: StorageEngineAdapter?
     private let stateMachine: StateMachine<State, Action>
-    private let cloudModel: CloudModel
+    private let remoteModel: RemoteModel
     private var stateMachineSink: AnyCancellable?
 
-    init(cloudModel: CloudModel,
+    init(remoteModel: RemoteModel,
          storageAdapter: StorageEngineAdapter,
          stateMachine: StateMachine<State, Action>? = nil) {
-        self.cloudModel = cloudModel
+        self.remoteModel = remoteModel
         self.storageAdapter = storageAdapter
         self.stateMachine = stateMachine ?? StateMachine(initialState: .waiting,
                                                          resolver: Resolver.resolve(currentState:action:))
@@ -56,7 +64,7 @@ class ReconcileAndLocalSaveOperation: Operation {
             return
         }
 
-        stateMachine.notify(action: .started(cloudModel))
+        stateMachine.notify(action: .started(remoteModel))
     }
 
     /// Listens to incoming state changes and invokes the appropriate asynchronous methods in response.
@@ -67,17 +75,14 @@ class ReconcileAndLocalSaveOperation: Operation {
         case .waiting:
             break
 
-        case .deserializing(let cloudModel):
-            deserialize(cloudModel: cloudModel)
+        case .querying(let remoteModel):
+            query(remoteModel: remoteModel)
 
-        case .querying(let cloudModel):
-            query(cloudModel: cloudModel)
+        case .reconciling(let remoteModel, let localModel):
+            reconcile(remoteModel: remoteModel, to: localModel)
 
-        case .reconciling(let cloudModel, let localModel):
-            reconcile(cloudModel: cloudModel, to: localModel)
-
-        case .saving(let cloudModel):
-            save(cloudModel: cloudModel)
+        case .executing(let disposition):
+            execute(disposition: disposition)
 
         case .notifying(let savedModel):
             notify(savedModel: savedModel)
@@ -89,33 +94,18 @@ class ReconcileAndLocalSaveOperation: Operation {
         case .finished:
             // Maybe we have to notify the Hub?
             break
+
         }
 
     }
 
     // MARK: - Responder methods
 
-    // TODO: Remove this; we get a CloudModel (MutationSync<AnyModel>) from the subscription
-    /// Responder method for `deserializing`. Notify actions:
-    /// - deserialized
-    /// - error
-    func deserialize(cloudModel: CloudModel) {
-        log.verbose(#function)
-
-        guard !isCancelled else {
-            log.verbose("\(#function) - cancelled, aborting")
-            return
-        }
-
-        let action = Action.deserialized(cloudModel)
-        stateMachine.notify(action: action)
-    }
-
     /// Responder method for `querying`. Notify actions:
     /// - queried
     /// - errored
-    func query(cloudModel: CloudModel) {
-        log.verbose("query: \(cloudModel)")
+    func query(remoteModel: RemoteModel) {
+        log.verbose("query: \(remoteModel)")
         guard !isCancelled else {
             log.info("\(#function) - cancelled, aborting")
             return
@@ -128,13 +118,13 @@ class ReconcileAndLocalSaveOperation: Operation {
 
         let localModel: MutationSync<AnyModel>?
         do {
-            localModel = try storageAdapter.queryMutationSync(forAnyModel: cloudModel.model)
+            localModel = try storageAdapter.queryMutationSync(forAnyModel: remoteModel.model)
         } catch {
             stateMachine.notify(action: .errored(DataStoreError(error: error)))
             return
         }
 
-        let queriedAction = Action.queried(cloudModel, localModel)
+        let queriedAction = Action.queried(remoteModel, localModel)
         stateMachine.notify(action: queriedAction)
     }
 
@@ -142,7 +132,7 @@ class ReconcileAndLocalSaveOperation: Operation {
     /// - reconciled
     /// - conflict
     /// - errored
-    func reconcile(cloudModel: CloudModel, to localModel: LocalModel?) {
+    func reconcile(remoteModel: RemoteModel, to localModel: LocalModel?) {
         log.verbose(#function)
         guard !isCancelled else {
             log.verbose("\(#function) - cancelled, aborting")
@@ -154,24 +144,35 @@ class ReconcileAndLocalSaveOperation: Operation {
             return
         }
 
-        let reconciler = RemoteSyncReconciler(cloudModel: cloudModel,
-                                              to: localModel,
-                                              storageAdapter: storageAdapter)
+        let disposition = RemoteSyncReconciler.reconcile(remoteModel: remoteModel,
+                                                         to: localModel,
+                                                         storageAdapter: storageAdapter)
 
-        let disposition = reconciler.reconcile()
-
-        let reconciledAction = Action.reconciled(cloudModel)
-        log.verbose("\(#function) - Cloud model newer than local model, saving")
-        stateMachine.notify(action: reconciledAction)
-
+        stateMachine.notify(action: .reconciled(disposition))
     }
 
-    /// Responder method for `save`. Notify actions:
-    /// - saved
+    /// Responder method for `executing`. Applies the appropriate disposition. Either invokes `apply`, or directly
+    /// notifies the state machine for:
     /// - errored
-    func save(cloudModel: CloudModel) {
+    /// - dropped
+    func execute(disposition: RemoteSyncReconciler.Disposition) {
+        switch disposition {
+        case .applyRemoteModel(let remoteModel):
+            apply(remoteModel: remoteModel)
+        case .dropRemoteModel:
+            stateMachine.notify(action: .dropped)
+        case .error(let dataStoreError):
+            stateMachine.notify(action: .errored(dataStoreError))
+        }
+    }
+
+    /// Execution method for the `applyRemoteModel` disposition. Does not notify directly, but delegates to save or
+    /// delete methods, which eventually notify with:
+    /// - applied
+    /// - errored
+    private func apply(remoteModel: RemoteModel) {
         if log.logLevel == .verbose {
-            log.verbose("\(#function): cloudModel")
+            log.verbose("\(#function): remoteModel")
         } else if log.logLevel == .debug {
             log.debug(#function)
         }
@@ -187,64 +188,72 @@ class ReconcileAndLocalSaveOperation: Operation {
         }
 
         // TODO: Wrap this in a transaction
-        if cloudModel.syncMetadata.deleted {
-            saveDeleteMutation(storageAdapter: storageAdapter, cloudModel: cloudModel)
+        if remoteModel.syncMetadata.deleted {
+            saveDeleteMutation(storageAdapter: storageAdapter, remoteModel: remoteModel)
         } else {
-            saveCreateOrUpdateMutation(storageAdapter: storageAdapter, cloudModel: cloudModel)
+            saveCreateOrUpdateMutation(storageAdapter: storageAdapter, remoteModel: remoteModel)
         }
 
     }
 
-    private func saveCreateOrUpdateMutation(storageAdapter: StorageEngineAdapter, cloudModel: CloudModel) {
-        storageAdapter.save(untypedModel: cloudModel.model.instance) { response in
-            self.log.verbose("\(#function) - save response: \(response)")
+    private func saveCreateOrUpdateMutation(storageAdapter: StorageEngineAdapter, remoteModel: RemoteModel) {
+        log.verbose(#function)
+        storageAdapter.save(untypedModel: remoteModel.model.instance) { response in
             switch response {
             case .failure(let dataStoreError):
                 let errorAction = Action.errored(dataStoreError)
                 self.stateMachine.notify(action: errorAction)
-            case .success:
-                self.saveMetadata(storageAdapter: storageAdapter,
-                                  cloudModel: cloudModel)
+            case .success(let savedModel):
+                let anyModel: AnyModel
+                do {
+                    anyModel = try savedModel.eraseToAnyModel()
+                } catch {
+                    self.stateMachine.notify(action: .errored(DataStoreError(error: error)))
+                    return
+                }
+                let inProcessModel = MutationSync(model: anyModel, syncMetadata: remoteModel.syncMetadata)
+                self.saveMetadata(storageAdapter: storageAdapter, inProcessModel: inProcessModel)
             }
         }
     }
 
-    private func saveDeleteMutation(storageAdapter: StorageEngineAdapter, cloudModel: CloudModel) {
-        guard let modelType = ModelRegistry.modelType(from: cloudModel.model.modelName) else {
-            let error = DataStoreError.invalidModelName(cloudModel.model.modelName)
+    private func saveDeleteMutation(storageAdapter: StorageEngineAdapter, remoteModel: RemoteModel) {
+        log.verbose(#function)
+        guard let modelType = ModelRegistry.modelType(from: remoteModel.model.modelName) else {
+            let error = DataStoreError.invalidModelName(remoteModel.model.modelName)
             stateMachine.notify(action: .errored(error))
             return
         }
 
-        storageAdapter.delete(untypedModelType: modelType, withId: cloudModel.model.id) { response in
-            self.log.verbose("\(#function) - delete response: \(response)")
+        storageAdapter.delete(untypedModelType: modelType, withId: remoteModel.model.id) { response in
             switch response {
             case .failure(let dataStoreError):
                 let errorAction = Action.errored(dataStoreError)
                 self.stateMachine.notify(action: errorAction)
             case .success:
-                self.saveMetadata(storageAdapter: storageAdapter,
-                                  cloudModel: cloudModel)
+                self.saveMetadata(storageAdapter: storageAdapter, inProcessModel: remoteModel)
             }
         }
     }
 
     private func saveMetadata(storageAdapter: StorageEngineAdapter,
-                              cloudModel: CloudModel) {
-        storageAdapter.save(cloudModel.syncMetadata) { result in
+                              inProcessModel: AppliedModel) {
+        log.verbose(#function)
+        storageAdapter.save(remoteModel.syncMetadata) { result in
             switch result {
             case .failure(let dataStoreError):
                 let errorAction = Action.errored(dataStoreError)
                 self.stateMachine.notify(action: errorAction)
-            case .success:
-                self.stateMachine.notify(action: .saved(cloudModel))
+            case .success(let syncMetadata):
+                let appliedModel = MutationSync(model: inProcessModel.model, syncMetadata: syncMetadata)
+                self.stateMachine.notify(action: .applied(appliedModel))
             }
         }
     }
 
     /// Responder method for `notifying`. Notify actions:
     /// - notified
-    func notify(savedModel: SavedModel) {
+    func notify(savedModel: AppliedModel) {
         log.verbose(#function)
 
         guard !isCancelled else {

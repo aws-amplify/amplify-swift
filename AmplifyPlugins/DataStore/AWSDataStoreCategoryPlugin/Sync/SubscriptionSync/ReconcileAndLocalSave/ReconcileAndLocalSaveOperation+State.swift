@@ -12,15 +12,25 @@ extension ReconcileAndLocalSaveOperation {
 
     /// States are descriptive, they say what is happening in the system right now
     enum State {
+        /// Waiting to be started by the queue
         case waiting
-        case deserializing(CloudModel)
-        case querying(CloudModel)
-        case reconciling(CloudModel, LocalModel?)
-        case saving(CloudModel)
-        case notifying(SavedModel)
 
-        // Terminal states
+        /// Querying the local database for model data and sync metadata
+        case querying(RemoteModel)
+
+        /// Reconciling incoming remote model with local model and sync metadata
+        case reconciling(RemoteModel, LocalModel?)
+
+        /// Executing the reconciled disposition
+        case executing(RemoteSyncReconciler.Disposition)
+
+        /// Notifying listeners and callbacks of completion
+        case notifying(AppliedModel)
+
+        /// Operation has successfully completed
         case finished
+
+        /// Operation completed with an unexpected error
         case inError(AmplifyError)
     }
 }

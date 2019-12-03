@@ -21,7 +21,7 @@ public enum ModelAttribute {
     /// TODO: What does this mean?
     case index
 
-    /// Instances of this model are syncable to the cloud via the API category
+    /// Instances of this model are syncable to the remote API via the API category
     case isSyncable
 
     /// This model is used by the Amplify system or a plugin, and should not be used by the app developer

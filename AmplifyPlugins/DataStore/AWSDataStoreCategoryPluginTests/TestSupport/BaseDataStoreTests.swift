@@ -32,7 +32,7 @@ class BaseDataStoreTests: XCTestCase {
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
             try storageAdapter.setUp(models: StorageEngine.systemModels)
 
-            let syncEngine = try CloudSyncEngine(storageAdapter: storageAdapter)
+            let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter)
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           syncEngine: syncEngine,
                                           isSyncEnabled: true)

@@ -87,8 +87,8 @@ final class ReconciliationQueue {
             .publisher
             .sink(receiveCompletion: { [weak self] completion in
                 self?.receiveCompletion(completion)
-                }, receiveValue: { [weak self] cloudModel in
-                    self?.receiveValue(cloudModel)
+                }, receiveValue: { [weak self] remoteModel in
+                    self?.receiveValue(remoteModel)
             })
 
     }
@@ -102,13 +102,13 @@ final class ReconciliationQueue {
         allModels?.cancel()
     }
 
-    private func receiveValue(_ cloudModel: MutationSync<AnyModel>) {
+    private func receiveValue(_ remoteModel: MutationSync<AnyModel>) {
         guard let storageAdapter = storageAdapter else {
             log.error("No storage adapter, cannot save received value")
             return
         }
 
-        let reconcileOp = ReconcileAndLocalSaveOperation(cloudModel: cloudModel,
+        let reconcileOp = ReconcileAndLocalSaveOperation(remoteModel: remoteModel,
                                                          storageAdapter: storageAdapter)
         operationQueue.addOperation(reconcileOp)
     }

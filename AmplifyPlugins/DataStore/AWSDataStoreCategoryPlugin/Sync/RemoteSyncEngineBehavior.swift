@@ -8,8 +8,8 @@
 import Amplify
 import Combine
 
-/// Behavior to sync mutation events to the cloud, and to subscribe to mutations from the cloud
-protocol CloudSyncEngineBehavior: class {
+/// Behavior to sync mutation events to the remote API, and to subscribe to mutations from the remote API
+protocol RemoteSyncEngineBehavior: class {
 
     /// Start the sync process with a "delta sync" merge
     ///
@@ -23,7 +23,7 @@ protocol CloudSyncEngineBehavior: class {
     ///    any local callbacks on error if necessary
     func start(api: APICategoryGraphQLBehavior)
 
-    /// Submits a new mutation for synchronization to the cloud. The response will be handled by the appropriate
+    /// Submits a new mutation for synchronization to the remote API. The response will be handled by the appropriate
     /// reconciliation queue
     @available(iOS 13.0, *)
     func submit(_ mutationEvent: MutationEvent) -> Future<MutationEvent, DataStoreError>

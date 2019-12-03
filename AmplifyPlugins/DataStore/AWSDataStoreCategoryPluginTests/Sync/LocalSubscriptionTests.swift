@@ -13,7 +13,7 @@ import Combine
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
-/// Tests behavior of local DataStore subscriptions (as opposed to cloud subscription behaviors)
+/// Tests behavior of local DataStore subscriptions (as opposed to remote API subscription behaviors)
 class LocalSubscriptionTests: XCTestCase {
 
     override func setUp() {
@@ -33,7 +33,7 @@ class LocalSubscriptionTests: XCTestCase {
             let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
             let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
 
-            let syncEngine = CloudSyncEngine(storageAdapter: storageAdapter,
+            let syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
                                              outgoingMutationQueue: outgoingMutationQueue,
                                              mutationEventIngester: mutationDatabaseAdapter,
                                              mutationEventPublisher: awsMutationEventPublisher)

@@ -10,7 +10,7 @@ import Combine
 import Foundation
 
 @available(iOS 13.0, *)
-class CloudSyncEngine: CloudSyncEngineBehavior {
+class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private weak var storageAdapter: StorageEngineAdapter?
 
     // Assigned at `start`
@@ -202,4 +202,4 @@ final class CancelAwareBlockOperation: Operation {
 }
 
 @available(iOS 13, *)
-extension CloudSyncEngine: DefaultLogger { }
+extension RemoteSyncEngine: DefaultLogger { }
