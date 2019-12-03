@@ -16,7 +16,7 @@ Our default implementation works with Amazon Web Services (AWS), but AWS Amplify
 - [**Storage**](https://aws-amplify.github.io/docs/ios/storage): Provides a simple mechanism for managing user content for your app in public, protected or private storage buckets.
 - [**Predictions**](https://aws-amplify.github.io/docs/ios/predictions): Provides a solution for using AI and ML cloud services to enhance your application.
 
-All services and features not listed above are supported via the Escape Hatch with the [iOS SDK](https://github.com/aws-amplify/aws-sdk-ios) like below:
+All services and features not listed above are supported via the [iOS SDK](https://github.com/aws-amplify/aws-sdk-ios) or if supported by a category can be accessed via the Escape Hatch like below:
 
 ``` swift
 let rekognitionService = Amplify.Predictions.getEscapeHatch(key: .rekognition) as! AWSRekognition
