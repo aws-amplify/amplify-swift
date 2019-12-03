@@ -26,7 +26,7 @@ final class IncomingEventReconciliationQueues {
             let queue = ReconciliationQueue(modelType: modelType, storageAdapter: storageAdapter, api: api)
             guard reconciliationQueues[modelName] == nil else {
                 Amplify.DataStore.log
-                    .warn("Duplicate model name found: \(modelName), not subscribint to skipping \(modelType)")
+                    .warn("Duplicate model name found: \(modelName), not subscribing")
                 continue
             }
             reconciliationQueues[modelName] = queue
@@ -35,6 +35,15 @@ final class IncomingEventReconciliationQueues {
 
     func start() {
         reconciliationQueues.values.forEach { $0.start() }
+    }
+
+    func offer(_ remoteModel: MutationSync<AnyModel>) {
+        guard let queue = reconciliationQueues[remoteModel.model.modelName] else {
+            // TODO: Error handling
+            return
+        }
+
+        queue.enqueue(remoteModel)
     }
 
     func reset(onComplete: () -> Void) {
@@ -49,93 +58,3 @@ final class IncomingEventReconciliationQueues {
         onComplete()
     }
 }
-
-/// A queue of reconciliation operations, merged from incoming subscription events and responses to locally-sourced
-/// mutations for a single model type.
-///
-/// Although subscriptions are listened to and enqueued at initialization, you must call `start` on a
-/// ReconciliationQueue to write events to the DataStore.
-@available(iOS 13.0, *)
-final class ReconciliationQueue {
-
-    private let operationQueue: OperationQueue
-    private weak var storageAdapter: StorageEngineAdapter?
-
-    private let modelName: String
-
-    private let incomingSubscriptionEvents: IncomingMutationEventFacade
-
-    private var allModels: AnyCancellable?
-
-    init(modelType: Model.Type,
-         storageAdapter: StorageEngineAdapter,
-         api: APICategoryGraphQLBehavior) {
-        self.storageAdapter = storageAdapter
-
-        self.modelName = modelType.modelName
-
-        self.operationQueue = OperationQueue()
-        operationQueue.name = "com.amazonaws.DataStore.ReconciliationQueue.\(modelType)"
-        operationQueue.maxConcurrentOperationCount = 1
-        operationQueue.underlyingQueue = DispatchQueue.global()
-        operationQueue.isSuspended = true
-
-        let incomingSubscriptionEvents = IncomingMutationEventFacade(modelType: modelType, api: api)
-        self.incomingSubscriptionEvents = incomingSubscriptionEvents
-
-        self.allModels = incomingSubscriptionEvents
-            .publisher
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.receiveCompletion(completion)
-                }, receiveValue: { [weak self] remoteModel in
-                    self?.receiveValue(remoteModel)
-            })
-
-    }
-
-    func start() {
-        operationQueue.isSuspended = false
-    }
-
-    func cancel() {
-        operationQueue.cancelAllOperations()
-        allModels?.cancel()
-    }
-
-    private func receiveValue(_ remoteModel: MutationSync<AnyModel>) {
-        guard let storageAdapter = storageAdapter else {
-            log.error("No storage adapter, cannot save received value")
-            return
-        }
-
-        let reconcileOp = ReconcileAndLocalSaveOperation(remoteModel: remoteModel,
-                                                         storageAdapter: storageAdapter)
-        operationQueue.addOperation(reconcileOp)
-    }
-
-    private func receiveCompletion(_ completion: Subscribers.Completion<DataStoreError>) {
-        switch completion {
-        case .finished:
-            log.info("receivedCompletion: finished")
-        case .failure(let dataStoreError):
-            log.error("receiveCompletion: error: \(dataStoreError)")
-        }
-    }
-
-    func reset(onComplete: () -> Void) {
-        let group = DispatchGroup()
-        group.enter()
-        DispatchQueue.global().async {
-            self.incomingSubscriptionEvents.reset { group.leave() }
-        }
-        allModels?.cancel()
-        operationQueue.cancelAllOperations()
-        operationQueue.waitUntilAllOperationsAreFinished()
-        group.wait()
-        onComplete()
-    }
-
-}
-
-@available(iOS 13.0, *)
-extension ReconciliationQueue: DefaultLogger { }

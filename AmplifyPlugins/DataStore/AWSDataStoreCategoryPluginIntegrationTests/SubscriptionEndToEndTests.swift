@@ -87,6 +87,8 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         XCTAssertNil(deleteSyncData)
     }
 
+    // MARK: - Utilities
+
     func sendCreateRequest(withId id: Model.Identifier, content: String) {
         // Note: The hand-written documents must include the sync/conflict resolution fields in order for the
         // subscription to get them

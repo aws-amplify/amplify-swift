@@ -15,7 +15,7 @@ extension AtomicValue where Value == Bool {
     /// print(atomicBool.getAndToggle()) // prints "true"
     /// print(atomicBool.get()) // prints "false"
     /// ```
-    func getAndToggle() -> Value {
+    public func getAndToggle() -> Value {
         queue.sync {
             let oldValue = value
             value.toggle()

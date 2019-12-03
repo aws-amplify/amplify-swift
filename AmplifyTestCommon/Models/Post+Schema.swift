@@ -31,7 +31,6 @@ extension Post {
         let post = Post.keys
 
         model.pluralName = "Posts"
-        model.attributes(.isSyncable)
 
         model.fields(
             .id(),

@@ -26,7 +26,6 @@ extension Comment {
         let comment = Comment.keys
 
         model.pluralName = "Comments"
-        model.attributes(.isSyncable)
 
         model.fields(
             .id(),

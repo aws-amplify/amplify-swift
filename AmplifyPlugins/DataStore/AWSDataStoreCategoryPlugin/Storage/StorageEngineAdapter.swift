@@ -11,8 +11,7 @@ import AWSPluginsCore
 
 protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
-    func exists(_ modelType: Model.Type, withId id: Model.Identifier) throws -> Bool
-
+    // MARK: - Async APIs
     func save(untypedModel: Model, completion: @escaping DataStoreCallback<Model>)
 
     func delete<M: Model>(_ modelType: M.Type,
@@ -32,10 +31,16 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
                          additionalStatements: String?,
                          completion: DataStoreCallback<[M]>)
 
+    // MARK: - Synchronous APIs
+
+    func exists(_ modelType: Model.Type, withId id: Model.Identifier) throws -> Bool
+
     func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>]
 
     func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>?
 
     func queryMutationSyncMetadata(for modelId: Model.Identifier) throws -> MutationSyncMetadata?
+
+    func queryModelSyncMetadata(for modelType: Model.Type) throws -> ModelSyncMetadata?
 
 }

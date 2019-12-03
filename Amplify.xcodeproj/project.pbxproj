@@ -204,7 +204,6 @@
 		B9FAA1272388BE91009414B4 /* List+LazyLoad.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA1262388BE91009414B4 /* List+LazyLoad.swift */; };
 		B9FAA13A238BBADE009414B4 /* List+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA139238BBADE009414B4 /* List+Combine.swift */; };
 		B9FAA13C238BBE67009414B4 /* DataStoreCallback+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA13B238BBE67009414B4 /* DataStoreCallback+Combine.swift */; };
-		B9FAA170238E05F1009414B4 /* ModelSchema+Syncable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA16F238E05F1009414B4 /* ModelSchema+Syncable.swift */; };
 		B9FAA175238EFC5A009414B4 /* String+Casing.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA174238EFC59009414B4 /* String+Casing.swift */; };
 		B9FAA180238FBB5D009414B4 /* Model+Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA17F238FBB5D009414B4 /* Model+Array.swift */; };
 		B9FB05F82383740D00DE1FD4 /* DataStoreStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FB05F72383740D00DE1FD4 /* DataStoreStatement.swift */; };
@@ -282,6 +281,9 @@
 		FA9FB77D232AA0D800C04D32 /* FilteredListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FB77C232AA0D800C04D32 /* FilteredListener.swift */; };
 		FA9FB780232AA11A00C04D32 /* HubChannelDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FB77F232AA11A00C04D32 /* HubChannelDispatcher.swift */; };
 		FA9FB782232AA26500C04D32 /* DefaultHubPluginCustomChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FB781232AA26500C04D32 /* DefaultHubPluginCustomChannelTests.swift */; };
+		FAA64FC32397294600B9C3C6 /* ModelSchema+Attributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA64FC22397294500B9C3C6 /* ModelSchema+Attributes.swift */; };
+		FAA64FC52397344D00B9C3C6 /* AtomicValue+RangeReplaceableCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA64FC42397344D00B9C3C6 /* AtomicValue+RangeReplaceableCollection.swift */; };
+		FAA64FC72397347B00B9C3C6 /* AtomicValue+RangeReplaceableCollectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA64FC62397347B00B9C3C6 /* AtomicValue+RangeReplaceableCollectionTests.swift */; };
 		FAA98B02239214A30039EE71 /* DataStoreConflict.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA98B01239214A30039EE71 /* DataStoreConflict.swift */; };
 		FAA9FC3B23620CE50012638A /* URLRequestInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA9FC3A23620CE50012638A /* URLRequestInterceptor.swift */; };
 		FAA9FC3E236210840012638A /* APICategoryClientInterceptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA9FC3D236210840012638A /* APICategoryClientInterceptorTests.swift */; };
@@ -796,7 +798,6 @@
 		B9FAA1262388BE91009414B4 /* List+LazyLoad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "List+LazyLoad.swift"; sourceTree = "<group>"; };
 		B9FAA139238BBADE009414B4 /* List+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "List+Combine.swift"; sourceTree = "<group>"; };
 		B9FAA13B238BBE67009414B4 /* DataStoreCallback+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataStoreCallback+Combine.swift"; sourceTree = "<group>"; };
-		B9FAA16F238E05F1009414B4 /* ModelSchema+Syncable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelSchema+Syncable.swift"; sourceTree = "<group>"; };
 		B9FAA174238EFC59009414B4 /* String+Casing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Casing.swift"; sourceTree = "<group>"; };
 		B9FAA17F238FBB5D009414B4 /* Model+Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+Array.swift"; sourceTree = "<group>"; };
 		B9FB05F72383740D00DE1FD4 /* DataStoreStatement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreStatement.swift; sourceTree = "<group>"; };
@@ -916,6 +917,9 @@
 		FA9FB781232AA26500C04D32 /* DefaultHubPluginCustomChannelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHubPluginCustomChannelTests.swift; sourceTree = "<group>"; };
 		FA9FD2322381CD0000A7CAF5 /* MutationEvent+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MutationEvent+Schema.swift"; sourceTree = "<group>"; };
 		FA9FD2332381CD0000A7CAF5 /* MutationEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutationEvent.swift; sourceTree = "<group>"; };
+		FAA64FC22397294500B9C3C6 /* ModelSchema+Attributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelSchema+Attributes.swift"; sourceTree = "<group>"; };
+		FAA64FC42397344D00B9C3C6 /* AtomicValue+RangeReplaceableCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AtomicValue+RangeReplaceableCollection.swift"; sourceTree = "<group>"; };
+		FAA64FC62397347B00B9C3C6 /* AtomicValue+RangeReplaceableCollectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AtomicValue+RangeReplaceableCollectionTests.swift"; sourceTree = "<group>"; };
 		FAA98B01239214A30039EE71 /* DataStoreConflict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConflict.swift; sourceTree = "<group>"; };
 		FAA9FC3A23620CE50012638A /* URLRequestInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequestInterceptor.swift; sourceTree = "<group>"; };
 		FAA9FC3D236210840012638A /* APICategoryClientInterceptorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICategoryClientInterceptorTests.swift; sourceTree = "<group>"; };
@@ -1618,8 +1622,6 @@
 			isa = PBXGroup;
 			children = (
 				2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */,
-				FA8EE775238626C70097E4F1 /* AnyModel */,
-				B9FAA1232388BE2B009414B4 /* Collection */,
 				B92E03A72367CE7A006CEB8D /* Model.swift */,
 				B9FAA17F238FBB5D009414B4 /* Model+Array.swift */,
 				B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */,
@@ -1631,9 +1633,11 @@
 				B92E03A92367CE7A006CEB8D /* ModelRegistry.swift */,
 				FA5D4CF2238AFD7B00D2F54A /* ModelRegistry+Syncable.swift */,
 				B92E03A82367CE7A006CEB8D /* ModelSchema.swift */,
+				FAA64FC22397294500B9C3C6 /* ModelSchema+Attributes.swift */,
 				B92E03AA2367CE7A006CEB8D /* ModelSchema+Definition.swift */,
-				B9FAA16F238E05F1009414B4 /* ModelSchema+Syncable.swift */,
 				FA8EE780238628490097E4F1 /* Persistable.swift */,
+				FA8EE775238626C70097E4F1 /* AnyModel */,
+				B9FAA1232388BE2B009414B4 /* Collection */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1927,6 +1931,7 @@
 				FAC6792C2329B267004DDFE8 /* AtomicValue.swift */,
 				FAAFAF2E23904B14002CF932 /* AtomicValue+Bool.swift */,
 				FAAFAF2C23904ADF002CF932 /* AtomicValue+Numeric.swift */,
+				FAA64FC42397344D00B9C3C6 /* AtomicValue+RangeReplaceableCollection.swift */,
 				FADB3A6723612940006D6FE9 /* BasicClosure.swift */,
 				FA56F72222B14B420039754A /* Cancellable.swift */,
 				FA09B9402321BB78000E064D /* JSONValue.swift */,
@@ -2260,6 +2265,7 @@
 				FACF520823298C1200646E10 /* AtomicDictionaryTests.swift */,
 				FAAFAF3023904B75002CF932 /* AtomicValue+BoolTests.swift */,
 				FAAFAF3223904BA4002CF932 /* AtomicValue+NumericTests.swift */,
+				FAA64FC62397347B00B9C3C6 /* AtomicValue+RangeReplaceableCollectionTests.swift */,
 				FAAFAF2523903BFE002CF932 /* AtomicValueTests.swift */,
 				FAC23571227A056B00424678 /* ConfigurationTests.swift */,
 				FAC23572227A056B00424678 /* FoundationUtilsTests.swift */,
@@ -3397,6 +3403,7 @@
 				216879FE23636A0A004A056E /* RepeatingTimer.swift in Sources */,
 				FAC23542227A055200424678 /* Foundation+Utils.swift in Sources */,
 				FAD393712381FD3C00463F5E /* DataStoreCategory+Subscribe.swift in Sources */,
+				FAA64FC32397294600B9C3C6 /* ModelSchema+Attributes.swift in Sources */,
 				FAC0A2AF22B4400100B50912 /* LoggingCategory+ClientBehavior.swift in Sources */,
 				95DAAB28237E63370028544F /* Celebrity.swift in Sources */,
 				FA0933812384749A00C2FD5F /* LoggingCategory+Logger.swift in Sources */,
@@ -3412,7 +3419,6 @@
 				21D79FE32377F4120057D00D /* SubscriptionConnectionState.swift in Sources */,
 				95DAAB45237E639E0028544F /* IdentifyResult.swift in Sources */,
 				95DAAB21237E63370028544F /* LanguageDetectionResult.swift in Sources */,
-				B9FAA170238E05F1009414B4 /* ModelSchema+Syncable.swift in Sources */,
 				FAC2351E227A053D00424678 /* APICategory.swift in Sources */,
 				FAC2351B227A053D00424678 /* APICategoryClientBehavior.swift in Sources */,
 				FA5D4CF3238AFD7B00D2F54A /* ModelRegistry+Syncable.swift in Sources */,
@@ -3599,6 +3605,7 @@
 				95DAAB8A237F13B70028544F /* TextToSpeechResult.swift in Sources */,
 				B98E9D122372236300934B51 /* QueryField.swift in Sources */,
 				B98E9D0F2372236300934B51 /* QueryOperator.swift in Sources */,
+				FAA64FC52397344D00B9C3C6 /* AtomicValue+RangeReplaceableCollection.swift in Sources */,
 				FACBAD532386160100E29E56 /* AnyModel.swift in Sources */,
 				B98E9D132372236300934B51 /* QueryOperator+Equatable.swift in Sources */,
 				21409C5A2384C57D000A53C9 /* GraphQLMutationType.swift in Sources */,
@@ -3644,6 +3651,7 @@
 				B4BD6B3323708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift in Sources */,
 				FA47B8382350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift in Sources */,
 				FAC23574227A056B00424678 /* ConfigurationTests.swift in Sources */,
+				FAA64FC72397347B00B9C3C6 /* AtomicValue+RangeReplaceableCollectionTests.swift in Sources */,
 				FA09B9432321CB0C000E064D /* JSONValueTests.swift in Sources */,
 				FAC235A1227A5D8C00424678 /* DefaultHubPluginConcurrencyTests.swift in Sources */,
 				FAC2356C227A056600424678 /* LoggingCategoryClientAPITests.swift in Sources */,

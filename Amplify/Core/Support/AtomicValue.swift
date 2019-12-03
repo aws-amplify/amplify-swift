@@ -7,25 +7,25 @@
 
 import Foundation
 
-final class AtomicValue<Value> {
+public final class AtomicValue<Value> {
     let queue = DispatchQueue(label: "com.amazonaws.AtomicValue", target: DispatchQueue.global())
 
     var value: Value
 
-    init(initialValue: Value) {
+    public init(initialValue: Value) {
         self.value = initialValue
     }
 
-    func get() -> Value {
+    public func get() -> Value {
         queue.sync { value }
     }
 
-    func set(_ newValue: Value) {
+    public func set(_ newValue: Value) {
         queue.sync { value = newValue }
     }
 
     /// Sets AtomicValue to `newValue` and returns the old value
-    func getAndSet(_ newValue: Value) -> Value {
+    public func getAndSet(_ newValue: Value) -> Value {
         return queue.sync {
             let oldValue = value
             value = newValue
@@ -34,7 +34,7 @@ final class AtomicValue<Value> {
     }
 
     /// Performs `block` with the current value, preventing other access until the block exits.
-    func atomicallyPerform(block: (Value) -> Void) {
+    public func atomicallyPerform(block: (Value) -> Void) {
         queue.sync {
             block(value)
         }

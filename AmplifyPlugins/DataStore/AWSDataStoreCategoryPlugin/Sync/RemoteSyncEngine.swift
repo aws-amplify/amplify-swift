@@ -27,7 +27,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     var reconciliationQueues: IncomingEventReconciliationQueues?
 
     /// Initializes the CloudSyncEngine with the specified storageAdapter as the provider for persistence of
-    /// MutationEvents, synce metadata, and conflict resolution metadata. Immediately initializes the incoming mutation
+    /// MutationEvents, sync metadata, and conflict resolution metadata. Immediately initializes the incoming mutation
     /// queue so it can begin accepting incoming mutations from DataStore.
     convenience init(storageAdapter: StorageEngineAdapter) throws {
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
@@ -54,8 +54,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     func start(api: APICategoryGraphQLBehavior = Amplify.API) {
-
-        // TODO: Refactor this into a reactive, state-based process
 
         self.api = api
 
@@ -184,20 +182,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
         group.wait()
         onComplete()
-    }
-}
-
-final class CancelAwareBlockOperation: Operation {
-    private let block: BasicClosure
-    init(block: @escaping BasicClosure) {
-        self.block = block
-    }
-
-    override func main() {
-        guard !isCancelled else {
-            return
-        }
-        block()
     }
 }
 

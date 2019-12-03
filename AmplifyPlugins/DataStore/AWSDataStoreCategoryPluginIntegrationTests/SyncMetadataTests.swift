@@ -22,7 +22,7 @@ class SyncMetadataTests: SyncEngineIntegrationTestBase {
     ///    - I sync a new model from the remote API
     /// - Then:
     ///    - The local model is updated with updated remote API information
-    func testCreateSyncsCloudToLocal() throws {
+    func testCreateSyncsRemoteToLocal() throws {
         XCTFail("Not yet implemented")
     }
 
@@ -40,7 +40,7 @@ class SyncMetadataTests: SyncEngineIntegrationTestBase {
     ///    - I sync an updated model from the remote API
     /// - Then:
     ///    - The local model is updated with updated remote API information
-    func testUpdateSyncsCloudToLocal() throws {
+    func testUpdateSyncsRemoteToLocal() throws {
         XCTFail("Not yet implemented")
     }
 
@@ -50,6 +50,24 @@ class SyncMetadataTests: SyncEngineIntegrationTestBase {
     /// - Then:
     ///    - Local sync metadata (e.g., _version) is updated
     func testUpdateUpdatesSyncMetadata() throws {
+        XCTFail("Not yet implemented")
+    }
+
+    /// - Given: An API-connected DataStore
+    /// - When:
+    ///    - I sync a deleted model from the remote API
+    /// - Then:
+    ///    - The local model is removed from the main table
+    func testDeleteSyncsRemoteToLocal() throws {
+        XCTFail("Not yet implemented")
+    }
+
+    /// - Given: An API-connected DataStore
+    /// - When:
+    ///    - I sync a deleted model from the remote API
+    /// - Then:
+    ///    - Local sync metadata (e.g., _version and _deleted) is updated
+    func testDeleteUpdatesSyncMetadata() throws {
         XCTFail("Not yet implemented")
     }
 
