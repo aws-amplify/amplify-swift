@@ -21,6 +21,14 @@
                BlueprintName = "AWSDataStoreCategoryPluginIntegrationTests"
                ReferencedContainer = "container:DataStoreCategoryPlugin.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "SubscriptionTests/testSubscribeAtStartup()">
+               </Test>
+               <Test
+                  Identifier = "SyncMetadataTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>
