@@ -17,17 +17,18 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
 
     typealias Input = IncomingAsyncSubscriptionEventPublisher.Event
     typealias Failure = DataStoreError
+    typealias Payload = MutationSync<AnyModel>
 
     var subscription: Subscription?
 
-    private let modelsFromSubscription: PassthroughSubject<MutationSync<AnyModel>, DataStoreError>
+    private let modelsFromSubscription: PassthroughSubject<Payload, DataStoreError>
 
-    var publisher: AnyPublisher<MutationSync<AnyModel>, DataStoreError> {
+    var publisher: AnyPublisher<Payload, DataStoreError> {
         modelsFromSubscription.eraseToAnyPublisher()
     }
 
     init() {
-        self.modelsFromSubscription = PassthroughSubject<MutationSync<AnyModel>, DataStoreError>()
+        self.modelsFromSubscription = PassthroughSubject<Payload, DataStoreError>()
     }
 
     // MARK: - Subscriber
@@ -63,7 +64,7 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
 
     // MARK: - Event processing
 
-    private func dispose(of subscriptionEvent: SubscriptionEvent<GraphQLResponse<MutationSync<AnyModel>>>) {
+    private func dispose(of subscriptionEvent: SubscriptionEvent<GraphQLResponse<Payload>>) {
         log.verbose("dispose(of subscriptionEvent): \(subscriptionEvent)")
         switch subscriptionEvent {
         case .connection(let connectionState):
@@ -75,7 +76,7 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
         }
     }
 
-    private func dispose(of graphQLResponse: GraphQLResponse<MutationSync<AnyModel>>) {
+    private func dispose(of graphQLResponse: GraphQLResponse<Payload>) {
         log.verbose("dispose(of graphQLResponse): \(graphQLResponse)")
         switch graphQLResponse {
         case .success(let mutationSync):

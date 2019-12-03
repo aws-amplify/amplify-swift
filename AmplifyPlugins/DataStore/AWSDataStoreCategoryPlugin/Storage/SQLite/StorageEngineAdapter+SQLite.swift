@@ -105,6 +105,12 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: Model.Identifier,
                           completion: (DataStoreResult<Void>) -> Void) {
+        delete(untypedModelType: modelType, withId: id, completion: completion)
+    }
+
+    func delete(untypedModelType modelType: Model.Type,
+                withId id: Model.Identifier,
+                completion: DataStoreCallback<Void>) {
         do {
             let statement = DeleteStatement(modelType: modelType, withId: id)
             _ = try connection.prepare(statement.stringValue).run(statement.variables)
@@ -112,7 +118,6 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         } catch {
             completion(.failure(causedBy: error))
         }
-
     }
 
     func query<M: Model>(_ modelType: M.Type,
@@ -156,6 +161,12 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         return false
     }
 
+    func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>? {
+        let model = anyModel.instance
+        let results = try queryMutationSync(for: [model])
+        return results.first
+    }
+
     func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>] {
         let statement = SelectStatement(from: MutationSyncMetadata.self)
         let primaryKey = MutationSyncMetadata.schema.primaryKey.sqlName
@@ -179,12 +190,6 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             return MutationSync<AnyModel>(model: anyModel, syncMetadata: syncMetadata)
         }
         return mutationSyncList
-    }
-
-    func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>? {
-        let model = anyModel.instance
-        let results = try queryMutationSync(for: [model])
-        return results.first
     }
 
     func queryMutationSyncMetadata(for modelId: Model.Identifier) throws -> MutationSyncMetadata? {

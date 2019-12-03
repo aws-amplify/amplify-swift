@@ -94,12 +94,15 @@ final class IncomingAsyncSubscriptionEventPublisher {
 
     func reset(onComplete: () -> Void) {
         onCreateOperation?.cancel()
+        onCreateOperation = nil
         onCreateListener(.completed(()))
 
         onUpdateOperation?.cancel()
+        onUpdateOperation = nil
         onUpdateListener(.completed(()))
 
         onDeleteOperation?.cancel()
+        onDeleteOperation = nil
         onDeleteListener(.completed(()))
 
         onComplete()

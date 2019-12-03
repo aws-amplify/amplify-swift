@@ -12,18 +12,17 @@ import Foundation
 /// A convenience implementation of `GraphQLDocument` that represents a delete operation, requiring no model data
 public class MinimalGraphQLDeleteMutation: GraphQLDocument {
     public let documentType = GraphQLDocumentType.mutation
+    public let mutationType = GraphQLMutationType.delete
+
     public let modelName: String
     public let modelType: Model.Type
     public let id: Model.Identifier
-    public let mutationType: GraphQLMutationType
     public let version: Int?
 
     public init(of modelName: String, id: Model.Identifier, version: Int?) throws {
         self.modelName = modelName
         self.id = id
         self.version = version
-
-        self.mutationType = .delete
 
         guard let modelType = ModelRegistry.modelType(from: modelName) else {
             throw DataStoreError.invalidModelName(modelName)

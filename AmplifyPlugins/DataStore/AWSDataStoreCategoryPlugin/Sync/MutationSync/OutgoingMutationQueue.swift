@@ -119,7 +119,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     /// Responder method for `requestingEvent`. Requests an event from the subscription, and lets the subscription
     /// handler enqueue it. Return actions:
-    /// - error
+    /// - errored
     private func requestEvent() {
         log.verbose(#function)
         guard let subscription = subscription else {

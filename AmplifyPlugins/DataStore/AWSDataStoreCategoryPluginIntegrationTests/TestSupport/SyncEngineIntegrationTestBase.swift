@@ -15,10 +15,24 @@ import AWSMobileClient
 @testable import AWSDataStoreCategoryPlugin
 
 class SyncEngineIntegrationTestBase: XCTestCase {
+
     static let networkTimeout = TimeInterval(180)
     let networkTimeout = SyncEngineIntegrationTestBase.networkTimeout
 
     var amplifyConfig: AmplifyConfiguration!
+
+    // Convenience property to obtain a handle to the underlying storage adapter implementation, for use in asserting
+    // database behaviors. Full of force-unwrapped badness.
+    // swiftlint:disable force_try
+    // swiftlint:disable force_cast
+    var storageAdapter: SQLiteStorageEngineAdapter {
+        let plugin = try! Amplify.DataStore.getPlugin(for: "awsDataStoreCategoryPlugin") as! AWSDataStoreCategoryPlugin
+        let storageEngine = plugin.storageEngine as! StorageEngine
+        let storageAdapter = storageEngine.storageAdapter as! SQLiteStorageEngineAdapter
+        return storageAdapter
+    }
+    // swiftlint:enable force_try
+    // swiftlint:enable force_cast
 
     override func setUp() {
         super.setUp()
@@ -72,7 +86,13 @@ class SyncEngineIntegrationTestBase: XCTestCase {
             return
         }
 
-        try Amplify.configure(amplifyConfig)
+        DispatchQueue.global().async {
+            do {
+                try Amplify.configure(self.amplifyConfig)
+            } catch {
+                XCTFail(String(describing: error))
+            }
+        }
 
         wait(for: [syncStarted], timeout: 5.0)
 
