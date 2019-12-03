@@ -72,10 +72,10 @@ class GraphQLModelBasedTests: XCTestCase {
          },
          "AppSync": {
              "Default": {
-                 "ApiUrl": "https://5dxswtkp3favlnw2pvcmsp2mti.appsync-api.us-west-2.amazonaws.com/graphql",
+                 "ApiUrl": "https://xxxx.appsync-api.us-west-2.amazonaws.com/graphql",
                  "Region": "us-west-2",
                  "AuthMode": "API_KEY",
-                 "apiKey": "da2-bjcuhxgvgjadfpfh4fddd5lqmm",
+                 "apiKey": "da2-xxx",
                  "ClientDatabasePrefix": "modelbasedapi_API_KEY"
              }
          }

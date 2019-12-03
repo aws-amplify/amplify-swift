@@ -22,7 +22,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
      `amplify push`
 
      Pinpoint URL to track events
-     https://us-west-2.console.aws.amazon.com/pinpoint/home/?region=us-west-2#/apps/8149446537de48eea84ec94e2a41390d/analytics/overview
+     https://us-west-2.console.aws.amazon.com/pinpoint/home/?region=us-west-2#/apps/xxx/analytics/overview
 
      awsconfiguration.json
      {
@@ -34,14 +34,14 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
          "CredentialsProvider": {
              "CognitoIdentity": {
                  "Default": {
-                     "PoolId": "us-west-2:1e5ecb37-6936-4968-b093-92716dde98ac",
+                     "PoolId": "us-west-2:xxx",
                      "Region": "us-west-2"
                  }
              }
          },
          "PinpointAnalytics": {
              "Default": {
-                 "AppId": "8149446537de48eea84ec94e2a41390d",
+                 "AppId": "xxx",
                  "Region": "us-west-2"
              }
          },
@@ -60,7 +60,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
              "plugins": {
                  "awsPinpointAnalyticsPlugin": {
                      "pinpointAnalytics": {
-                         "appId": "8149446537de48eea84ec94e2a41390d",
+                         "appId": "xxxx",
                          "region": "us-west-2"
                      },
                      "pinpointTargeting": {
@@ -78,7 +78,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
             "CredentialsProvider": [
                 "CognitoIdentity": [
                     "Default": [
-                        "PoolId": "us-west-2:1e5ecb37-6936-4968-b093-92716dde98ac",
+                        "PoolId": "us-west-2:xxx",
                         "Region": "us-west-2"
                     ]
                 ]
@@ -108,7 +108,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
             plugins: [
                 "awsPinpointAnalyticsPlugin": [
                     "pinpointAnalytics": [
-                        "appId": "8149446537de48eea84ec94e2a41390d",
+                        "appId": "xxxxx",
                         "region": "us-west-2"
                     ],
                     "pinpointTargeting": [
