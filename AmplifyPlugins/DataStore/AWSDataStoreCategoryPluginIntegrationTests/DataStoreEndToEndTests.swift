@@ -22,9 +22,11 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     func testCreateMutateDelete() throws {
         try startAmplifyAndWaitForSync()
 
-        let newPost = Post(title: "This is a new post I created", content: "Original content at \(Date())")
+        let newPost = Post(title: "This is a new post I created",
+                           content: "Original content from DataStoreEndToEndTests at \(Date())")
+
         var updatedPost = newPost
-        updatedPost.content = "UPDATED CONTENT at \(Date())"
+        updatedPost.content = "UPDATED CONTENT from DataStoreEndToEndTests at \(Date())"
 
         let createReceived = expectation(description: "Create notification received")
         let updateReceived = expectation(description: "Create notification received")

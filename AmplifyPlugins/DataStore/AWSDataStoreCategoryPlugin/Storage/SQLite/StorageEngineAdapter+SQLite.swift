@@ -105,6 +105,12 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: Model.Identifier,
                           completion: (DataStoreResult<Void>) -> Void) {
+        delete(untypedModelType: modelType, withId: id, completion: completion)
+    }
+
+    func delete(untypedModelType modelType: Model.Type,
+                withId id: Model.Identifier,
+                completion: DataStoreCallback<Void>) {
         do {
             let statement = DeleteStatement(modelType: modelType, withId: id)
             _ = try connection.prepare(statement.stringValue).run(statement.variables)
@@ -112,7 +118,6 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         } catch {
             completion(.failure(causedBy: error))
         }
-
     }
 
     func query<M: Model>(_ modelType: M.Type,

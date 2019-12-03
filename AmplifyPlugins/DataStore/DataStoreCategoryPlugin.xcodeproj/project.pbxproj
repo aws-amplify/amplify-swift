@@ -61,7 +61,7 @@
 		FA3841E523889D280070AD5B /* IncomingEventReconciliationQueues.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841E423889D280070AD5B /* IncomingEventReconciliationQueues.swift */; };
 		FA3841E723889D340070AD5B /* ReconcileAndLocalSaveOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841E623889D340070AD5B /* ReconcileAndLocalSaveOperation.swift */; };
 		FA3841E923889D440070AD5B /* StateMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841E823889D440070AD5B /* StateMachine.swift */; };
-		FA3841EB23889D6C0070AD5B /* SubscriptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841EA23889D6C0070AD5B /* SubscriptionTests.swift */; };
+		FA3841EB23889D6C0070AD5B /* SubscriptionEndToEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841EA23889D6C0070AD5B /* SubscriptionEndToEndTests.swift */; };
 		FA3841ED23889D8F0070AD5B /* StateMachineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841EC23889D8F0070AD5B /* StateMachineTests.swift */; };
 		FA3841EF23889DCC0070AD5B /* MockModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841EE23889DCC0070AD5B /* MockModels.swift */; };
 		FA3B3EFF238F13B2002EFDB3 /* MutationEventIngester.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3B3EFE238F13B2002EFDB3 /* MutationEventIngester.swift */; };
@@ -197,7 +197,7 @@
 		FA3841E423889D280070AD5B /* IncomingEventReconciliationQueues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncomingEventReconciliationQueues.swift; sourceTree = "<group>"; };
 		FA3841E623889D340070AD5B /* ReconcileAndLocalSaveOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReconcileAndLocalSaveOperation.swift; sourceTree = "<group>"; };
 		FA3841E823889D440070AD5B /* StateMachine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StateMachine.swift; sourceTree = "<group>"; };
-		FA3841EA23889D6C0070AD5B /* SubscriptionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionTests.swift; sourceTree = "<group>"; };
+		FA3841EA23889D6C0070AD5B /* SubscriptionEndToEndTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionEndToEndTests.swift; sourceTree = "<group>"; };
 		FA3841EC23889D8F0070AD5B /* StateMachineTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StateMachineTests.swift; sourceTree = "<group>"; };
 		FA3841EE23889DCC0070AD5B /* MockModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockModels.swift; sourceTree = "<group>"; };
 		FA3B3EFE238F13B2002EFDB3 /* MutationEventIngester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationEventIngester.swift; sourceTree = "<group>"; };
@@ -419,8 +419,8 @@
 			isa = PBXGroup;
 			children = (
 				2149E62123886CEE00873955 /* Info.plist */,
-				FA3841EA23889D6C0070AD5B /* SubscriptionTests.swift */,
 				FAB571412395A3E80006A5F8 /* DataStoreEndToEndTests.swift */,
+				FA3841EA23889D6C0070AD5B /* SubscriptionEndToEndTests.swift */,
 				2149E62B23886D3900873955 /* SyncMetadataTests.swift */,
 				FAD2BDF7239583B5006EB065 /* TestSupport */,
 			);
@@ -1092,7 +1092,7 @@
 			files = (
 				2149E62D23886D3900873955 /* SyncMetadataTests.swift in Sources */,
 				FAD2BDF6239583B2006EB065 /* TestModelRegistration.swift in Sources */,
-				FA3841EB23889D6C0070AD5B /* SubscriptionTests.swift in Sources */,
+				FA3841EB23889D6C0070AD5B /* SubscriptionEndToEndTests.swift in Sources */,
 				FAB571422395A3E80006A5F8 /* DataStoreEndToEndTests.swift in Sources */,
 				FAB5714023958C210006A5F8 /* SyncEngineIntegrationTestBase.swift in Sources */,
 			);

@@ -187,41 +187,59 @@ class ReconcileAndLocalSaveOperation: Operation {
         }
 
         // TODO: Wrap this in a transaction
-        let anyModel = cloudModel.model
-        let syncMetadata = cloudModel.syncMetadata
+        if cloudModel.syncMetadata.deleted {
+            saveDeleteMutation(storageAdapter: storageAdapter, cloudModel: cloudModel)
+        } else {
+            saveCreateOrUpdateMutation(storageAdapter: storageAdapter, cloudModel: cloudModel)
+        }
 
-        log.verbose("Saving cloud model")
-        storageAdapter.save(untypedModel: anyModel.instance) { response in
-            self.log.verbose("\(#function) - response: \(response)")
+    }
+
+    private func saveCreateOrUpdateMutation(storageAdapter: StorageEngineAdapter, cloudModel: CloudModel) {
+        storageAdapter.save(untypedModel: cloudModel.model.instance) { response in
+            self.log.verbose("\(#function) - save response: \(response)")
             switch response {
             case .failure(let dataStoreError):
                 let errorAction = Action.errored(dataStoreError)
                 self.stateMachine.notify(action: errorAction)
-            case .success(let savedModel):
-                // TODO: move this into a separate call when we get transaction support in DataStore
-                let anyModel: AnyModel
-                do {
-                    anyModel = try savedModel.eraseToAnyModel()
-                } catch {
-                    self.stateMachine.notify(action: .errored(DataStoreError(error: error)))
-                    return
-                }
-
-                storageAdapter.save(syncMetadata) { result in
-                    switch result {
-                    case .failure(let dataStoreError):
-                        let errorAction = Action.errored(dataStoreError)
-                        self.stateMachine.notify(action: errorAction)
-                    case .success(let syncMetadata):
-                        let mutationSync = MutationSync(model: anyModel, syncMetadata: syncMetadata)
-                        self.stateMachine.notify(action: .saved(mutationSync))
-                    }
-                }
+            case .success:
+                self.saveMetadata(storageAdapter: storageAdapter,
+                                  cloudModel: cloudModel)
             }
         }
+    }
 
-        log.verbose("Saving cloud syncMetadata")
+    private func saveDeleteMutation(storageAdapter: StorageEngineAdapter, cloudModel: CloudModel) {
+        guard let modelType = ModelRegistry.modelType(from: cloudModel.model.modelName) else {
+            let error = DataStoreError.invalidModelName(cloudModel.model.modelName)
+            stateMachine.notify(action: .errored(error))
+            return
+        }
 
+        storageAdapter.delete(untypedModelType: modelType, withId: cloudModel.model.id) { response in
+            self.log.verbose("\(#function) - delete response: \(response)")
+            switch response {
+            case .failure(let dataStoreError):
+                let errorAction = Action.errored(dataStoreError)
+                self.stateMachine.notify(action: errorAction)
+            case .success:
+                self.saveMetadata(storageAdapter: storageAdapter,
+                                  cloudModel: cloudModel)
+            }
+        }
+    }
+
+    private func saveMetadata(storageAdapter: StorageEngineAdapter,
+                              cloudModel: CloudModel) {
+        storageAdapter.save(cloudModel.syncMetadata) { result in
+            switch result {
+            case .failure(let dataStoreError):
+                let errorAction = Action.errored(dataStoreError)
+                self.stateMachine.notify(action: errorAction)
+            case .success:
+                self.stateMachine.notify(action: .saved(cloudModel))
+            }
+        }
     }
 
     /// Responder method for `notifying`. Notify actions:
