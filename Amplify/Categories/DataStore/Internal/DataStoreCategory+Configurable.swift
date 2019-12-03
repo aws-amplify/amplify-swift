@@ -9,6 +9,14 @@ import Foundation
 
 extension DataStoreCategory: CategoryConfigurable {
 
+    func configure(using amplifyConfiguration: AmplifyConfiguration) throws {
+        if let configuration = categoryConfiguration(from: amplifyConfiguration) {
+            try configure(using: configuration)
+        } else {
+            try configureFirstWithEmptyConfiguration()
+        }
+    }
+
     func configure(using configuration: CategoryConfiguration) throws {
         guard !isConfigured else {
             let error = ConfigurationError.amplifyAlreadyConfigured(
@@ -40,14 +48,6 @@ extension DataStoreCategory: CategoryConfigurable {
 
         try dataStorePlugin.value.configure(using: [])
         isConfigured = true
-    }
-
-    func configure(using amplifyConfiguration: AmplifyConfiguration) throws {
-        if let configuration = categoryConfiguration(from: amplifyConfiguration) {
-            try configure(using: configuration)
-        } else {
-            try configureFirstWithEmptyConfiguration()
-        }
     }
 
     func reset(onComplete: @escaping BasicClosure) {
