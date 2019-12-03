@@ -126,8 +126,10 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
         let token = Amplify.Hub.listen(to: amplifyOperation) { event in
             switch event {
             case .inProcess:
+                print("Amplify: inprocess")
                 listenerWasInvokedForInProcess.fulfill()
             case .completed:
+                print("Amplify: completed")
                 listenerWasInvokedForCompleted.fulfill()
             case .failed:
                 listenerWasInvokedForFailed.fulfill()
@@ -151,9 +153,10 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
             return
         }
 
-        operation.doMockDispatch(event: .completed(StorageListResult(items: [])))
         operation.doMockDispatch(event: .inProcess(()))
-        wait(for: [listenerWasInvokedForInProcess, listenerWasInvokedForCompleted], timeout: 0.5)
+        wait(for: [listenerWasInvokedForInProcess], timeout: 0.1)
+        operation.doMockDispatch(event: .completed(StorageListResult(items: [])))
+        wait(for: [listenerWasInvokedForCompleted], timeout: 0.1)
 
         operation.doMockDispatch(event: .failed(StorageError.accessDenied("", "")))
         wait(for: [listenerWasInvokedForFailed], timeout: 0.1)
