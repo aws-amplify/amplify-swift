@@ -93,6 +93,7 @@ RESTOperation {
         // Construct URL Request with url and request body
         let urlRequest = RESTOperationRequestUtils.constructURLRequest(with: url,
                                                                        operationType: request.operationType,
+                                                                       headers: request.headers,
                                                                        requestPayload: request.body)
 
         // Intercept request
