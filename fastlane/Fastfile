@@ -35,7 +35,7 @@ platform :ios do
   desc "Release pods"
   lane :release_pods do
 
-    pods.each { |pod| pod_push(path: pod) }
+    pods.each { |pod| pod_push(path: pod, allow_warnings: true) }
 
   end
 
