@@ -8,10 +8,10 @@ Our default implementation works with Amazon Web Services (AWS), but AWS Amplify
   https://aws-amplify.github.io/docs/ios/start
 
 ## Features/APIs
-*Note: Amplify docs are still being updated and will go live by EOW. The below links will take you to the SDK documentation currently.
+The below links will take you to the SDK documentation currently.
 
 - [**Analytics**](https://aws-amplify.github.io/docs/ios/analytics): Easily collect analytics data for your app. Analytics data includes user sessions and other custom events that you want to track in your app.
-- [**API**](https://aws-amplify.github.io/docs/ios/api): Interact with your AWS AppSync API or make HTTP requests to your API Gateway endpoint with the Amplify API client. It provides a GraphQL client interface to use with Amplify's model generation and automatic signing process which complies with AWS Signature Version 4.
+- [**API**](https://aws-amplify.github.io/docs/ios/api): Interact with your AWS AppSync API or make HTTP requests to your API Gateway endpoint with Amplify API. It provides a GraphQL client interface to use with Amplify Tool's model generation and automatic signing process to authenticate your requests.
 - [**Storage**](https://aws-amplify.github.io/docs/ios/storage): Provides a simple mechanism for managing user content for your app in guest, protected or private storage buckets.
 - [**Predictions**](https://aws-amplify.github.io/docs/ios/predictions): Provides a solution for using AI and ML cloud services to enhance your application.
 
