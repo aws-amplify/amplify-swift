@@ -10,8 +10,8 @@ import Foundation
 
 final public class PostCommentModelRegistration: AmplifyModelRegistration {
     public func registerModels(registry: ModelRegistry.Type) {
-        ModelRegistry.register(modelType: PostNoSync.self)
-        ModelRegistry.register(modelType: CommentNoSync.self)
+        ModelRegistry.register(modelType: Post.self)
+        ModelRegistry.register(modelType: Comment.self)
     }
 
   public let version: String = "1"

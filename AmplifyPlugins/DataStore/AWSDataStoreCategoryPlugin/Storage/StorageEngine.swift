@@ -12,7 +12,8 @@ import AWSPluginsCore
 
 final class StorageEngine: StorageEngineBehavior {
 
-    private let storageAdapter: StorageEngineAdapter
+    // TODO: Make this private once we get a mutation flow that passes the type of mutation as needed
+    let storageAdapter: StorageEngineAdapter
 
     private var syncEngine: RemoteSyncEngineBehavior?
 
@@ -67,7 +68,7 @@ final class StorageEngine: StorageEngineBehavior {
         let mutationType = modelExists ? MutationEvent.MutationType.update : .create
 
         let wrappedCompletion: DataStoreCallback<M> = { result in
-            guard !type(of: model).schema.isSyncable, let syncEngine = self.syncEngine else {
+            guard type(of: model).schema.isSyncable, let syncEngine = self.syncEngine else {
                 completion(result)
                 return
             }

@@ -12,7 +12,6 @@ import Combine
 extension OutgoingMutationQueue {
 
     struct Resolver {
-        // swiftlint:disable:next cyclomatic_complexity
         static func resolve(currentState: State, action: Action) -> State {
             switch (currentState, action) {
 

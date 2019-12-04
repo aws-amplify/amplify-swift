@@ -12,7 +12,11 @@ import XCTest
 
 class SyncEngineStartupTests: SyncEngineTestBase {
 
-    func test() throws {
+    func testShouldQueryAtStartup() throws {
+        XCTFail("Not yet implemented")
+    }
+
+    func testShouldBufferSubscriptionsAtStartup() throws {
         XCTFail("Not yet implemented")
     }
 

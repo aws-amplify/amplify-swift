@@ -12,68 +12,7 @@ import SQLite
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
-class OutgoingMutationQueueTests: XCTestCase {
-
-    /// Mock used to listen for API calls; this is how we assert that syncEngine is delivering events to the API
-    var apiPlugin: MockAPICategoryPlugin!
-
-    /// Used for DB manipulation to mock starting data for tests
-    var storageAdapter: SQLiteStorageEngineAdapter!
-
-    /// Populated during setUp, used in each test during `Amplify.configure()`
-    var amplifyConfig: AmplifyConfiguration!
-
-    /// Tests in this class inject values into the database early in startup, so test setUp is broken into chunks
-    override func setUp() {
-        Amplify.reset()
-        Amplify.Logging.logLevel = .warn
-
-        let apiConfig = APICategoryConfiguration(plugins: [
-            "MockAPICategoryPlugin": true
-        ])
-
-        let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
-            "awsDataStorePlugin": true
-        ])
-
-        amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: dataStoreConfig)
-
-        apiPlugin = MockAPICategoryPlugin()
-        tryOrFail {
-            try Amplify.add(plugin: apiPlugin)
-        }
-    }
-
-    /// Sets up a StorageAdapter backed by an in-memory SQLite database
-    func setUpStorageAdapter() {
-        tryOrFail {
-            let connection = try Connection(.inMemory)
-            storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
-            try storageAdapter.setUp(models: StorageEngine.systemModels)
-        }
-    }
-
-    func setUpDataStore() {
-        tryOrFail {
-            let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter)
-            let storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                              syncEngine: syncEngine,
-                                              isSyncEnabled: true)
-
-            let publisher = DataStorePublisher()
-            let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                                             storageEngine: storageEngine,
-                                                             dataStorePublisher: publisher)
-
-            try Amplify.add(plugin: dataStorePlugin)
-        }
-    }
-
-    func startAmplify() {
-        tryOrFail {
-            try Amplify.configure(amplifyConfig)
-        }
-    }
+class OutgoingMutationQueueTests: SyncEngineTestBase {
 
     /// - Given: A sync-configured DataStore
     /// - When:
@@ -81,25 +20,11 @@ class OutgoingMutationQueueTests: XCTestCase {
     /// - Then:
     ///    - The outgoing mutation queue sends a create mutation
     func testMutationQueueCreateSendsSync() throws {
-        continueAfterFailure = false
 
-        setUpStorageAdapter()
-        setUpDataStore()
-        startAmplify()
-
-        let syncStarted = expectation(description: "Sync started")
-        let token = Amplify.Hub.listen(to: .dataStore,
-                                       eventName: HubPayload.EventName.DataStore.syncStarted) { _ in
-                                        syncStarted.fulfill()
+        tryOrFail {
+            try setUpStorageAdapter()
+            try setUpDataStore(mutationQueue: OutgoingMutationQueue())
         }
-
-        guard try HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
-            XCTFail("Never registered listener for sync started")
-            return
-        }
-
-        wait(for: [syncStarted], timeout: 5.0)
-        Amplify.Hub.removeListener(token)
 
         let post = Post(title: "Post title",
                         content: "Post content",
@@ -111,6 +36,9 @@ class OutgoingMutationQueueTests: XCTestCase {
                 createMutationSent.fulfill()
             }
         }
+
+        try startAmplifyAndWaitForSync()
+
         Amplify.DataStore.save(post) { _ in }
         wait(for: [createMutationSent], timeout: 5.0)
     }
@@ -130,9 +58,10 @@ class OutgoingMutationQueueTests: XCTestCase {
     /// - Then:
     ///    - The mutation queue delivers the first previously loaded event
     func testMutationQueueLoadsPendingMutations() throws {
-        continueAfterFailure = false
 
-        setUpStorageAdapter()
+        tryOrFail {
+            try setUpStorageAdapter()
+        }
 
         // pre-load the MutationEvent table with mutation data
         let mutationEventSaved = expectation(description: "Preloaded mutation event saved")
@@ -176,10 +105,12 @@ class OutgoingMutationQueueTests: XCTestCase {
             }
         }
 
-        setUpDataStore()
-        startAmplify()
+        tryOrFail {
+            try setUpDataStore(mutationQueue: OutgoingMutationQueue())
+            try startAmplify()
+        }
 
-        waitForExpectations(timeout: 2.0, handler: nil)
+        waitForExpectations(timeout: 5.0, handler: nil)
     }
 
     /// - Given: A sync-configured DataStore

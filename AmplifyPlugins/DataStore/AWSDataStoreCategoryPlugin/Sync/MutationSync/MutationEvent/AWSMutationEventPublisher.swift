@@ -8,12 +8,6 @@
 import Amplify
 import Combine
 
-/// Publishes mutation events to downstream subscribers for subsequent sync to the API.
-@available(iOS 13, *)
-protocol MutationEventPublisher: class {
-    var publisher: AnyPublisher<MutationEvent, DataStoreError> { get }
-}
-
 /// Note: This publisher accepts only a single subscriber
 @available(iOS 13, *)
 final class AWSMutationEventPublisher: Publisher {
@@ -40,12 +34,6 @@ final class AWSMutationEventPublisher: Publisher {
 
     func cancel() {
         subscription = nil
-    }
-
-    func reset(onComplete: BasicClosure) {
-        subscription = nil
-        eventSource = nil
-        onComplete()
     }
 
     func request(_ demand: Subscribers.Demand) {
@@ -93,3 +81,12 @@ extension AWSMutationEventPublisher: MutationEventPublisher {
 
 @available(iOS 13, *)
 extension AWSMutationEventPublisher: DefaultLogger { }
+
+@available(iOS 13.0, *)
+extension AWSMutationEventPublisher: Resettable {
+    func reset(onComplete: BasicClosure) {
+        subscription = nil
+        eventSource = nil
+        onComplete()
+    }
+}

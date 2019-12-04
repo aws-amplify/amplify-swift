@@ -41,7 +41,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             description: "it should save and select a Post from the database")
 
         // insert a post
-        let post = Post(title: "title", content: "content")
+        let post = Post(title: "title", content: "content", createdAt: Date())
         storageAdapter.save(post) { saveResult in
             switch saveResult {
             case .success:
@@ -80,7 +80,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             description: "it should save and select a Post from the database")
 
         // insert a post
-        let post = Post(title: "title", content: "content")
+        let post = Post(title: "title", content: "content", createdAt: Date())
         storageAdapter.save(post) { saveResult in
             switch saveResult {
             case .success:
@@ -137,7 +137,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        var post = Post(title: "title", content: "content")
+        var post = Post(title: "title", content: "content", createdAt: Date())
         storageAdapter.save(post) { insertResult in
             switch insertResult {
             case .success:
@@ -187,7 +187,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        let post = Post(title: "title", content: "content")
+        let post = Post(title: "title", content: "content", createdAt: Date())
         storageAdapter.save(post) { insertResult in
             switch insertResult {
             case .success:

@@ -12,24 +12,25 @@ import AWSPluginsCore
 final class InitialSyncOperation: Operation {
     typealias SyncQueryResult = PaginatedList<AnyModel>
 
-    private weak var storageAdapter: StorageEngineAdapter?
     private weak var api: APICategoryGraphQLBehavior?
-    private weak var reconciliationQueues: IncomingEventReconciliationQueues?
+    private weak var reconciliationQueue: IncomingEventReconciliationQueue?
+    private weak var storageAdapter: StorageEngineAdapter?
 
     private let modelType: Model.Type
-    private let completion: InitialSyncOrchestrator.SyncOperationResultHandler
+    private let completion: AWSInitialSyncOrchestrator.SyncOperationResultHandler
 
     private var lastSyncTime: Int?
 
     private var isCompleted: DispatchSemaphore
 
     init(modelType: Model.Type,
-         api: APICategoryGraphQLBehavior,
-         reconiliationQueues: IncomingEventReconciliationQueues,
-         storageAdapter: StorageEngineAdapter,
-         completion: @escaping InitialSyncOrchestrator.SyncOperationResultHandler) {
+         api: APICategoryGraphQLBehavior?,
+         reconciliationQueue: IncomingEventReconciliationQueue?,
+         storageAdapter: StorageEngineAdapter?,
+         completion: @escaping AWSInitialSyncOrchestrator.SyncOperationResultHandler) {
         self.modelType = modelType
         self.api = api
+        self.reconciliationQueue = reconciliationQueue
         self.storageAdapter = storageAdapter
         self.completion = completion
 
@@ -41,6 +42,7 @@ final class InitialSyncOperation: Operation {
 
         let lastSyncMetadata = getLastSyncMetadata()
         lastSyncTime = lastSyncMetadata?.lastSync
+
         DispatchQueue.global().async {
             self.query()
         }
@@ -49,7 +51,7 @@ final class InitialSyncOperation: Operation {
 
     private func getLastSyncMetadata() -> ModelSyncMetadata? {
         guard let storageAdapter = storageAdapter else {
-            finish(result: .failure(DataStoreError.nilStorageAdapter()))
+            log.error(error: DataStoreError.nilStorageAdapter())
             return nil
         }
 
@@ -62,6 +64,11 @@ final class InitialSyncOperation: Operation {
         }
 
     }
+
+    // MARK: - Async processes
+
+    // This section marks the asynchronous processing part of the operation. Each exit condition of this proces must
+    // call `finish` when exiting, to signal the semaphore and allow the overally operation to complete
 
     private func query(nextToken: String? = nil) {
         guard let api = api else {
@@ -92,7 +99,7 @@ final class InitialSyncOperation: Operation {
     /// Disposes of the query results: Stops if error, reconciles results if success, and kick off a new query if there
     /// is a next token
     private func handleQueryResults(graphQLResult: Result<SyncQueryResult, GraphQLResponseError<SyncQueryResult>>) {
-        guard let reconciliationQueues = reconciliationQueues else {
+        guard let reconciliationQueue = reconciliationQueue else {
             finish(result: .failure(DataStoreError.nilReconciliationQueues()))
             return
         }
@@ -108,7 +115,7 @@ final class InitialSyncOperation: Operation {
 
         let items = syncQueryResult.items
         for item in items {
-            reconciliationQueues.offer(item)
+            reconciliationQueue.offer(item)
         }
 
         if let nextToken = syncQueryResult.nextToken {
@@ -121,7 +128,7 @@ final class InitialSyncOperation: Operation {
 
     }
 
-    private func finish(result: InitialSyncOrchestrator.SyncOperationResult) {
+    private func finish(result: AWSInitialSyncOrchestrator.SyncOperationResult) {
         completion(result)
         isCompleted.signal()
     }

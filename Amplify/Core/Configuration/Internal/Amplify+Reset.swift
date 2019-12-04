@@ -7,6 +7,7 @@
 
 import Foundation
 
+// swiftlint:disable cyclomatic_complexity
 extension Amplify {
 
     /// Resets the state of the Amplify framework.

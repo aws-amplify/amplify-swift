@@ -40,8 +40,7 @@ class AWSMutationEventIngesterTests: XCTestCase {
             let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter)
 
             let storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                              syncEngine: syncEngine,
-                                              isSyncEnabled: true)
+                                              syncEngine: syncEngine)
 
             let publisher = DataStorePublisher()
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),

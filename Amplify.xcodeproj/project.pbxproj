@@ -15,17 +15,12 @@
 		210DBC142332B3C6009B9E51 /* StorageGetURLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC132332B3C6009B9E51 /* StorageGetURLOperation.swift */; };
 		210DBC162332B3CB009B9E51 /* StorageDownloadDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC152332B3CB009B9E51 /* StorageDownloadDataOperation.swift */; };
 		210DBC472332F0C5009B9E51 /* StorageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC462332F0C5009B9E51 /* StorageError.swift */; };
-		211A38972391FE5D00726AC9 /* PostNoSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A38962391FE5D00726AC9 /* PostNoSync.swift */; };
-		211A38992391FE7900726AC9 /* CommentNoSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A38982391FE7900726AC9 /* CommentNoSync.swift */; };
-		211A389B2391FEA200726AC9 /* CommentNoSync+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A389A2391FEA200726AC9 /* CommentNoSync+Schema.swift */; };
-		211A389D2391FEDD00726AC9 /* PostNoSync+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A389C2391FEDD00726AC9 /* PostNoSync+Schema.swift */; };
 		2125E2542319EC3100B3DEB5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2532319EC3100B3DEB5 /* AppDelegate.swift */; };
 		2125E2562319EC3100B3DEB5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2552319EC3100B3DEB5 /* ViewController.swift */; };
 		2125E2592319EC3100B3DEB5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2125E2572319EC3100B3DEB5 /* Main.storyboard */; };
 		2125E25B2319EC3200B3DEB5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2125E25A2319EC3200B3DEB5 /* Assets.xcassets */; };
 		2125E25E2319EC3200B3DEB5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2125E25C2319EC3200B3DEB5 /* LaunchScreen.storyboard */; };
 		2125E265231C2D3100B3DEB5 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 2125E2102318D73B00B3DEB5 /* awsconfiguration.json */; };
-		2129BDFF23946205006363A1 /* NotSyncablePostCommentModelRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BDFE23946205006363A1 /* NotSyncablePostCommentModelRegistration.swift */; };
 		2129BE012394627B006363A1 /* PostCommentModelRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE002394627B006363A1 /* PostCommentModelRegistration.swift */; };
 		2129BE0D23948005006363A1 /* GraphQLDocument+Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE0623948005006363A1 /* GraphQLDocument+Subscription.swift */; };
 		2129BE0E23948005006363A1 /* GraphQLDocument+SyncMutation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE0723948005006363A1 /* GraphQLDocument+SyncMutation.swift */; };
@@ -80,7 +75,6 @@
 		2144226E234BDE23009357F7 /* StorageUploadFileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2144226D234BDE23009357F7 /* StorageUploadFileOperation.swift */; };
 		21558E3E237BB4BF0032A5BB /* GraphQLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */; };
 		21558E40237CB8640032A5BB /* GraphQLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21558E3F237CB8640032A5BB /* GraphQLError.swift */; };
-		216201E12392031A00AB2E10 /* noSyncSchema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 216201E02392031A00AB2E10 /* noSyncSchema.graphql */; };
 		216879FE23636A0A004A056E /* RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216879FD23636A0A004A056E /* RepeatingTimer.swift */; };
 		21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A3D236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift */; };
 		21687A41236371E1004A056E /* AnalyticsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21687A40236371E1004A056E /* AnalyticsError.swift */; };
@@ -234,6 +228,7 @@
 		FA176ED7238503C200C5C5F9 /* HubListenerTestUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA176ED6238503C200C5C5F9 /* HubListenerTestUtilities.swift */; };
 		FA176ED923858A3800C5C5F9 /* Amplify+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA176ED823858A3800C5C5F9 /* Amplify+HubPayloadEventName.swift */; };
 		FA176EDD2385943000C5C5F9 /* NotificationListeningAnalyticsPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA176EDC2385943000C5C5F9 /* NotificationListeningAnalyticsPlugin.swift */; };
+		FA1846EE23998E44009B9D01 /* MockAPIResponders.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1846ED23998E43009B9D01 /* MockAPIResponders.swift */; };
 		FA315295233D634900DE78E7 /* StorageDownloadFileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA315294233D634900DE78E7 /* StorageDownloadFileRequest.swift */; };
 		FA315298233D644F00DE78E7 /* StorageDownloadDataRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA315297233D644F00DE78E7 /* StorageDownloadDataRequest.swift */; };
 		FA31529A233D645200DE78E7 /* StorageGetURLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA315299233D645200DE78E7 /* StorageGetURLRequest.swift */; };
@@ -245,7 +240,7 @@
 		FA4B38AB238482B100E20DAB /* DefaultLoggingPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4B38AA238482B100E20DAB /* DefaultLoggingPluginTests.swift */; };
 		FA4E730A232828EA003B8EEB /* Amplify+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E7309232828EA003B8EEB /* Amplify+Reset.swift */; };
 		FA4E730C23282917003B8EEB /* Amplify+Resolve.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E730B23282917003B8EEB /* Amplify+Resolve.swift */; };
-		FA4E730E232829F1003B8EEB /* Plugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E730D232829F1003B8EEB /* Plugin+Reset.swift */; };
+		FA4E730E232829F1003B8EEB /* Resettable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E730D232829F1003B8EEB /* Resettable.swift */; };
 		FA4E731623294B6E003B8EEB /* AWSHubPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4E731523294B6E003B8EEB /* AWSHubPlugin.swift */; };
 		FA56F71E22B144F80039754A /* AsyncEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F71D22B144F80039754A /* AsyncEvent.swift */; };
 		FA56F72322B14B420039754A /* Cancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56F72222B14B420039754A /* Cancellable.swift */; };
@@ -385,6 +380,7 @@
 		FADB3A6823612940006D6FE9 /* BasicClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADB3A6723612940006D6FE9 /* BasicClosure.swift */; };
 		FAF1B88423392F7C007F1435 /* ConcurrentDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B88323392F7C007F1435 /* ConcurrentDispatcher.swift */; };
 		FAF1B88623392F96007F1435 /* SerialDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF1B88523392F96007F1435 /* SerialDispatcher.swift */; };
+		FAF512AE23986791001ADF4E /* AmplifyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF512AD23986791001ADF4E /* AmplifyModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -497,10 +493,6 @@
 		210DBC132332B3C6009B9E51 /* StorageGetURLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageGetURLOperation.swift; sourceTree = "<group>"; };
 		210DBC152332B3CB009B9E51 /* StorageDownloadDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageDownloadDataOperation.swift; sourceTree = "<group>"; };
 		210DBC462332F0C5009B9E51 /* StorageError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageError.swift; sourceTree = "<group>"; };
-		211A38962391FE5D00726AC9 /* PostNoSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostNoSync.swift; sourceTree = "<group>"; };
-		211A38982391FE7900726AC9 /* CommentNoSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentNoSync.swift; sourceTree = "<group>"; };
-		211A389A2391FEA200726AC9 /* CommentNoSync+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CommentNoSync+Schema.swift"; sourceTree = "<group>"; };
-		211A389C2391FEDD00726AC9 /* PostNoSync+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PostNoSync+Schema.swift"; sourceTree = "<group>"; };
 		2125E20D2318CD3900B3DEB5 /* MockAWSMobileClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAWSMobileClient.swift; sourceTree = "<group>"; };
 		2125E2102318D73B00B3DEB5 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		2125E2512319EC3000B3DEB5 /* AmplifyTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmplifyTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -511,7 +503,6 @@
 		2125E25D2319EC3200B3DEB5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2125E25F2319EC3200B3DEB5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2125E2A72321DCDD00B3DEB5 /* MockAWSAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAWSAuthService.swift; sourceTree = "<group>"; };
-		2129BDFE23946205006363A1 /* NotSyncablePostCommentModelRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotSyncablePostCommentModelRegistration.swift; sourceTree = "<group>"; };
 		2129BE002394627B006363A1 /* PostCommentModelRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCommentModelRegistration.swift; sourceTree = "<group>"; };
 		2129BE0623948005006363A1 /* GraphQLDocument+Subscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GraphQLDocument+Subscription.swift"; sourceTree = "<group>"; };
 		2129BE0723948005006363A1 /* GraphQLDocument+SyncMutation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GraphQLDocument+SyncMutation.swift"; sourceTree = "<group>"; };
@@ -568,7 +559,6 @@
 		21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequest.swift; sourceTree = "<group>"; };
 		21558E3F237CB8640032A5BB /* GraphQLError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLError.swift; sourceTree = "<group>"; };
 		215F4BCAAB89FA54AA121BDE /* Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin/Pods-AmplifyAWSPlugins-AWSPluginsCore-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
-		216201E02392031A00AB2E10 /* noSyncSchema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = noSyncSchema.graphql; sourceTree = "<group>"; };
 		216879FD23636A0A004A056E /* RepeatingTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepeatingTimer.swift; sourceTree = "<group>"; };
 		21687A3D236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AnalyticsCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		21687A40236371E1004A056E /* AnalyticsError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsError.swift; sourceTree = "<group>"; };
@@ -869,6 +859,7 @@
 		FA176ED6238503C200C5C5F9 /* HubListenerTestUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubListenerTestUtilities.swift; sourceTree = "<group>"; };
 		FA176ED823858A3800C5C5F9 /* Amplify+HubPayloadEventName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Amplify+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		FA176EDC2385943000C5C5F9 /* NotificationListeningAnalyticsPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListeningAnalyticsPlugin.swift; sourceTree = "<group>"; };
+		FA1846ED23998E43009B9D01 /* MockAPIResponders.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAPIResponders.swift; sourceTree = "<group>"; };
 		FA2492462391A3BF0004B379 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		FA315294233D634900DE78E7 /* StorageDownloadFileRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StorageDownloadFileRequest.swift; path = Amplify/Categories/Storage/Request/StorageDownloadFileRequest.swift; sourceTree = SOURCE_ROOT; };
 		FA315297233D644F00DE78E7 /* StorageDownloadDataRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageDownloadDataRequest.swift; sourceTree = "<group>"; };
@@ -882,7 +873,7 @@
 		FA4B38AA238482B100E20DAB /* DefaultLoggingPluginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLoggingPluginTests.swift; sourceTree = "<group>"; };
 		FA4E7309232828EA003B8EEB /* Amplify+Reset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Amplify+Reset.swift"; sourceTree = "<group>"; };
 		FA4E730B23282917003B8EEB /* Amplify+Resolve.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Amplify+Resolve.swift"; sourceTree = "<group>"; };
-		FA4E730D232829F1003B8EEB /* Plugin+Reset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Plugin+Reset.swift"; sourceTree = "<group>"; };
+		FA4E730D232829F1003B8EEB /* Resettable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resettable.swift; sourceTree = "<group>"; };
 		FA4E731523294B6E003B8EEB /* AWSHubPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSHubPlugin.swift; sourceTree = "<group>"; };
 		FA56F71D22B144F80039754A /* AsyncEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncEvent.swift; sourceTree = "<group>"; };
 		FA56F72222B14B420039754A /* Cancellable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cancellable.swift; sourceTree = "<group>"; };
@@ -1025,6 +1016,7 @@
 		FAF1B88523392F96007F1435 /* SerialDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialDispatcher.swift; sourceTree = "<group>"; };
 		FAF1B8872339633C007F1435 /* ConcurrentDispatcherPerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentDispatcherPerformanceTests.swift; sourceTree = "<group>"; };
 		FAF1B88A23397791007F1435 /* DefaultHubPluginPerformanceTestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHubPluginPerformanceTestHelpers.swift; sourceTree = "<group>"; };
+		FAF512AD23986791001ADF4E /* AmplifyModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyModels.swift; sourceTree = "<group>"; };
 		FB27CE76D3C7526F86D611E4 /* Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin/Pods-Amplify-AmplifyAWSPlugins-AWSPluginsCore-AWSS3StoragePlugin.debug.xcconfig"; sourceTree = "<group>"; };
 		FE19AE082A70778C6F19B605 /* Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-CoreMLPredictionsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-CoreMLPredictionsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-CoreMLPredictionsPluginTests/Pods-Amplify-AWSPluginsCore-AWSPluginsTestConfigs-CoreMLPredictionsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		FE200974D381DEE6E0C3EFC3 /* Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests/Pods-Amplify-AmplifyAWSPlugins-AWSAPICategoryPlugin-AWSAPICategoryPluginTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -1113,19 +1105,6 @@
 				210922562359693800CEC295 /* BasicAnalyticsEvent.swift */,
 			);
 			path = Event;
-			sourceTree = "<group>";
-		};
-		211A38952391FE4300726AC9 /* NotSyncable */ = {
-			isa = PBXGroup;
-			children = (
-				211A38982391FE7900726AC9 /* CommentNoSync.swift */,
-				211A389A2391FEA200726AC9 /* CommentNoSync+Schema.swift */,
-				211A38962391FE5D00726AC9 /* PostNoSync.swift */,
-				211A389C2391FEDD00726AC9 /* PostNoSync+Schema.swift */,
-				216201E02392031A00AB2E10 /* noSyncSchema.graphql */,
-				2129BDFE23946205006363A1 /* NotSyncablePostCommentModelRegistration.swift */,
-			);
-			path = NotSyncable;
 			sourceTree = "<group>";
 		};
 		2125E2522319EC3100B3DEB5 /* AmplifyTestApp */ = {
@@ -1645,14 +1624,14 @@
 		B952182D237E21B900F53237 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				211A38952391FE4300726AC9 /* NotSyncable */,
-				B9FAA10C23878BD6009414B4 /* Associations */,
+				B952182F237E21B900F53237 /* schema.graphql */,
+				FAF512AD23986791001ADF4E /* AmplifyModels.swift */,
 				B9521830237E21B900F53237 /* Comment.swift */,
 				B952182E237E21B900F53237 /* Comment+Schema.swift */,
 				B9521832237E21B900F53237 /* Post.swift */,
 				B9521831237E21B900F53237 /* Post+Schema.swift */,
-				B952182F237E21B900F53237 /* schema.graphql */,
 				2129BE002394627B006363A1 /* PostCommentModelRegistration.swift */,
+				B9FAA10C23878BD6009414B4 /* Associations */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1903,7 +1882,7 @@
 		FA4E730F23282A3D003B8EEB /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				FA4E730D232829F1003B8EEB /* Plugin+Reset.swift */,
+				FA4E730D232829F1003B8EEB /* Resettable.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -2283,6 +2262,7 @@
 				FAC23578227A056F00424678 /* MessageReporter.swift */,
 				FAC2355E227A056600424678 /* MockAnalyticsCategoryPlugin.swift */,
 				FAC23557227A056600424678 /* MockAPICategoryPlugin.swift */,
+				FA1846ED23998E43009B9D01 /* MockAPIResponders.swift */,
 				FAD3937E23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift */,
 				FAC23589227A45D500424678 /* MockHubCategoryPlugin.swift */,
 				FAC0A2BB22B4603800B50912 /* MockLoggingCategoryPlugin.swift */,
@@ -2382,12 +2362,12 @@
 		FACA36052327FBD4000E74F6 /* AmplifyTestCommon */ = {
 			isa = PBXGroup;
 			children = (
-				FA9D6C20238DF06B00C7DD9F /* Helpers */,
-				FAC23577227A056F00424678 /* Mocks */,
-				B952182D237E21B900F53237 /* Models */,
 				FACA36062327FBD4000E74F6 /* AmplifyTestCommon.h */,
 				FACA36072327FBD4000E74F6 /* Info.plist */,
 				FACF52032329633500646E10 /* TestExtensions.swift */,
+				FA9D6C20238DF06B00C7DD9F /* Helpers */,
+				FAC23577227A056F00424678 /* Mocks */,
+				B952182D237E21B900F53237 /* Models */,
 			);
 			path = AmplifyTestCommon;
 			sourceTree = "<group>";
@@ -2791,7 +2771,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				216201E12392031A00AB2E10 /* noSyncSchema.graphql in Resources */,
 				B9521834237E21BA00F53237 /* schema.graphql in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2895,7 +2874,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/AmplifyTests\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyTests\"\n";
 		};
 		21578BF2234D45BF00FF0F03 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2913,7 +2892,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/AmplifyFunctionalTests\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyFunctionalTests\"\n";
 		};
 		215A84AA234D330400109930 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2931,7 +2910,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/AmplifyTestCommon\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyTestCommon\"\n";
 		};
 		215A84AB234D332D00109930 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3167,7 +3146,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsCoreTests\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsCoreTests\"\n";
 		};
 		FA131AD02360FEF20008381C /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3203,7 +3182,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsCore\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsCore\"\n";
 		};
 		FA131AD22360FF320008381C /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3239,7 +3218,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsTestCommon\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsTestCommon\"\n";
 		};
 		FAB2C9A32384B131008EE879 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3293,7 +3272,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/Amplify\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/Amplify\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -3580,7 +3559,7 @@
 				210DBC162332B3CB009B9E51 /* StorageDownloadDataOperation.swift in Sources */,
 				FAC235A3227A5ED000424678 /* HubChannel.swift in Sources */,
 				FAC23516227A053D00424678 /* StorageCategoryClientBehavior.swift in Sources */,
-				FA4E730E232829F1003B8EEB /* Plugin+Reset.swift in Sources */,
+				FA4E730E232829F1003B8EEB /* Resettable.swift in Sources */,
 				FAC23518227A053D00424678 /* StorageCategoryPlugin.swift in Sources */,
 				FA31529A233D645200DE78E7 /* StorageGetURLRequest.swift in Sources */,
 				95DAAB32237E63370028544F /* EntityType.swift in Sources */,
@@ -3680,7 +3659,6 @@
 				B4BD6B3723708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift in Sources */,
 				FACA361C2327FC7D000E74F6 /* MockHubCategoryPlugin.swift in Sources */,
 				FAD3937F23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift in Sources */,
-				211A389D2391FEDD00726AC9 /* PostNoSync+Schema.swift in Sources */,
 				FACA361A2327FC69000E74F6 /* MockStorageCategoryPlugin.swift in Sources */,
 				B9521837237E21BA00F53237 /* Post.swift in Sources */,
 				B9FAA11A23879AC8009414B4 /* BookAuthor.swift in Sources */,
@@ -3688,13 +3666,10 @@
 				FACA361B2327FC74000E74F6 /* MockLoggingCategoryPlugin.swift in Sources */,
 				FACF52042329633500646E10 /* TestExtensions.swift in Sources */,
 				B9FAA11823879A57009414B4 /* Author+Schema.swift in Sources */,
-				211A389B2391FEA200726AC9 /* CommentNoSync+Schema.swift in Sources */,
 				B9521836237E21BA00F53237 /* Post+Schema.swift in Sources */,
-				2129BDFF23946205006363A1 /* NotSyncablePostCommentModelRegistration.swift in Sources */,
 				B9FAA11223878C96009414B4 /* UserAccount+Schema.swift in Sources */,
 				FACA36152327FC39000E74F6 /* MessageReporter.swift in Sources */,
-				211A38972391FE5D00726AC9 /* PostNoSync.swift in Sources */,
-				211A38992391FE7900726AC9 /* CommentNoSync.swift in Sources */,
+				FAF512AE23986791001ADF4E /* AmplifyModels.swift in Sources */,
 				B9FAA11C23879B35009414B4 /* Book.swift in Sources */,
 				B9FAA11423878CEA009414B4 /* UserProfile+Schema.swift in Sources */,
 				FACA361D2327FC84000E74F6 /* MockAPICategoryPlugin.swift in Sources */,
@@ -3704,6 +3679,7 @@
 				FACA361E2327FC8E000E74F6 /* MockAnalyticsCategoryPlugin.swift in Sources */,
 				2129BE012394627B006363A1 /* PostCommentModelRegistration.swift in Sources */,
 				B9FAA10E23878BF3009414B4 /* UserAccount.swift in Sources */,
+				FA1846EE23998E44009B9D01 /* MockAPIResponders.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

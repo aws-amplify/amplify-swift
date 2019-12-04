@@ -38,8 +38,9 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
         self.operationQueue = operationQueue
 
-        self.stateMachine = stateMachine ?? StateMachine(initialState: .notInitialized,
-                                                         resolver: OutgoingMutationQueue.Resolver.resolve(currentState:action:))
+        self.stateMachine = stateMachine ??
+            StateMachine(initialState: .notInitialized,
+                         resolver: OutgoingMutationQueue.Resolver.resolve(currentState:action:))
 
         self.stateMachineSink = self.stateMachine
             .$state

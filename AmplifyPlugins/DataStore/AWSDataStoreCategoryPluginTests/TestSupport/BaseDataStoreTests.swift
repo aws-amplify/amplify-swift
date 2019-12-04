@@ -13,6 +13,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
+/// Base class for Local data store tests
 class BaseDataStoreTests: XCTestCase {
 
     var connection: Connection!
@@ -34,8 +35,7 @@ class BaseDataStoreTests: XCTestCase {
 
             let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter)
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          syncEngine: syncEngine,
-                                          isSyncEnabled: true)
+                                          syncEngine: syncEngine)
         } catch {
             XCTFail(String(describing: error))
             return
@@ -43,8 +43,8 @@ class BaseDataStoreTests: XCTestCase {
 
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                                         storageEngine: storageEngine,
-                                                         dataStorePublisher: dataStorePublisher)
+                                                 storageEngine: storageEngine,
+                                                 dataStorePublisher: dataStorePublisher)
 
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
             "awsDataStorePlugin": true

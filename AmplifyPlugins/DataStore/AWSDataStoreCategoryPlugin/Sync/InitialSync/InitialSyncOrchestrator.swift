@@ -8,30 +8,33 @@
 import Amplify
 import AWSPluginsCore
 
+protocol InitialSyncOrchestrator {
+    func sync()
+}
+
 @available(iOS 13.0, *)
-final class InitialSyncOrchestrator {
+final class AWSInitialSyncOrchestrator {
     typealias SyncOperationResult = Result<Void, DataStoreError>
     typealias SyncOperationResultHandler = (SyncOperationResult) -> Void
 
     private weak var api: APICategoryGraphQLBehavior?
-    private weak var reconiliationQueues: IncomingEventReconciliationQueues?
+    private weak var reconciliationQueue: IncomingEventReconciliationQueue?
     private weak var storageAdapter: StorageEngineAdapter?
-    private var completion: (SyncOperationResult) -> Void
 
-    private var syncErrors: AtomicValue<[DataStoreError]>
+    private var completion: SyncOperationResultHandler?
+
+    private var syncErrors: [DataStoreError]
 
     // Future optimization: can perform sync on each root in parallel, since we know they won't have any
     // interdependencies
     private let syncOperationQueue: OperationQueue
 
-    init(api: APICategoryGraphQLBehavior,
-         reconiliationQueues: IncomingEventReconciliationQueues,
-         storageAdapter: StorageEngineAdapter,
-         completion: @escaping (Result<Void, DataStoreError>) -> Void) {
+    init(api: APICategoryGraphQLBehavior?,
+         reconciliationQueue: IncomingEventReconciliationQueue?,
+         storageAdapter: StorageEngineAdapter?) {
         self.api = api
-        self.reconiliationQueues = reconiliationQueues
+        self.reconciliationQueue = reconciliationQueue
         self.storageAdapter = storageAdapter
-        self.completion = completion
 
         let syncOperationQueue = OperationQueue()
         syncOperationQueue.name = "com.amazon.InitialSyncOrchestrator"
@@ -39,12 +42,13 @@ final class InitialSyncOrchestrator {
         syncOperationQueue.isSuspended = true
         self.syncOperationQueue = syncOperationQueue
 
-        self.syncErrors = AtomicValue(initialValue: [])
+        self.syncErrors = []
     }
 
-    /// Performs an initial sync on all models. This method blocks the current queue until all sync operations have
-    /// completed.
-    func sync() {
+    /// Performs an initial sync on all models
+    func sync(completion: @escaping SyncOperationResultHandler) {
+        self.completion = completion
+
         log.info("Beginning initial sync")
         let roots = getModelRoots()
 
@@ -52,22 +56,13 @@ final class InitialSyncOrchestrator {
             enqueueSyncOperation(for: root)
         }
 
-        syncOperationQueue.isSuspended = false
-        syncOperationQueue.waitUntilAllOperationsAreFinished()
-
-        // TODO: How to usefully report errors from multiple sync operations?
-        let errors = syncErrors.get()
-        guard errors.isEmpty else {
-            let allMessages = errors.map { String(describing: $0) }
-            let syncError = DataStoreError.sync(
-                "One or more errors occurred syncing models. See below for detailed error description.",
-                allMessages.joined(separator: "\n")
-            )
-            completion(.failure(syncError))
-            return
+        // This operation is intentionally not cancel-aware; we always want resolveCompletion to execute
+        // as the last item
+        syncOperationQueue.addOperation {
+            self.resolveCompletion()
         }
 
-        completion(.success(()))
+        syncOperationQueue.isSuspended = false
     }
 
     /// Creates a graph of registered models and returns the roots.
@@ -80,22 +75,7 @@ final class InitialSyncOrchestrator {
 
     /// Recursively enqueues sync operations for models and downstream dependencies
     private func enqueueSyncOperation(for root: DirectedGraphNode<Model.Type>) {
-        guard let api = api else {
-            completion(.failure(DataStoreError.nilAPIHandle()))
-            return
-        }
-
-        guard let storageAdapter = storageAdapter else {
-            completion(.failure(DataStoreError.nilStorageAdapter()))
-            return
-        }
-
-        guard let reconiliationQueues = reconiliationQueues else {
-            completion(.failure(DataStoreError.nilStorageAdapter()))
-            return
-        }
-
-        let completion: SyncOperationResultHandler = { result in
+        let syncOperationCompletion: SyncOperationResultHandler = { result in
             if case .failure(let dataStoreError) = result {
                 let syncError = DataStoreError.sync(
                     "An error occurred syncing \(root.value.modelName)",
@@ -107,9 +87,9 @@ final class InitialSyncOrchestrator {
 
         let initialSyncForModel = InitialSyncOperation(modelType: root.value,
                                                        api: api,
-                                                       reconiliationQueues: reconiliationQueues,
+                                                       reconciliationQueue: reconciliationQueue,
                                                        storageAdapter: storageAdapter,
-                                                       completion: completion)
+                                                       completion: syncOperationCompletion)
 
         syncOperationQueue.addOperation(initialSyncForModel)
 
@@ -117,7 +97,23 @@ final class InitialSyncOrchestrator {
             enqueueSyncOperation(for: downstream)
         }
     }
+
+    private func resolveCompletion() {
+        // TODO: How to usefully report errors from multiple sync operations?
+        guard syncErrors.isEmpty else {
+            let allMessages = syncErrors.map { String(describing: $0) }
+            let syncError = DataStoreError.sync(
+                "One or more errors occurred syncing models. See below for detailed error description.",
+                allMessages.joined(separator: "\n")
+            )
+            completion?(.failure(syncError))
+            return
+        }
+
+        completion?(.success(()))
+    }
+
 }
 
 @available(iOS 13.0, *)
-extension InitialSyncOrchestrator: DefaultLogger { }
+extension AWSInitialSyncOrchestrator: DefaultLogger { }

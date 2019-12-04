@@ -69,8 +69,7 @@ extension APICategoryDependencyTests {
 
         let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter)
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          syncEngine: syncEngine,
-                                          isSyncEnabled: true)
+                                          syncEngine: syncEngine)
 
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),

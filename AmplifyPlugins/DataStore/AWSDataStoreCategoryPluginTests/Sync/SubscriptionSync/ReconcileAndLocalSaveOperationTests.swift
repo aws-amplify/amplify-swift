@@ -31,7 +31,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         }
         ModelRegistry.register(modelType: Post.self)
 
-        let testPost = Post(id: "1", title: "post1", content: "content")
+        let testPost = Post(id: "1", title: "post1", content: "content", createdAt: Date())
         let anyPost = AnyModel(testPost)
         let anyPostMetadata = MutationSyncMetadata(id: "1",
                                                    deleted: false,
@@ -39,7 +39,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                                                    version: 1)
         anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
 
-        let testDelete = Post(id: "2", title: "post2", content: "content2")
+        let testDelete = Post(id: "2", title: "post2", content: "content2", createdAt: Date())
         let anyPostDelete = AnyModel(testDelete)
         let anyPostDeleteMetadata = MutationSyncMetadata(id: "2",
                                                          deleted: true,
@@ -322,7 +322,8 @@ extension RemoteSyncReconciler.Disposition: Equatable {
 }
 
 extension ReconcileAndLocalSaveOperation.Action: Equatable {
-    public static func == (lhs: ReconcileAndLocalSaveOperation.Action, rhs: ReconcileAndLocalSaveOperation.Action) -> Bool {
+    public static func == (lhs: ReconcileAndLocalSaveOperation.Action,
+                           rhs: ReconcileAndLocalSaveOperation.Action) -> Bool {
         switch (lhs, rhs) {
         case (.started(let model1), .started(let model2)):
             return model1.model.id == model2.model.id
@@ -358,6 +359,9 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     var errorToThrowOnMutationSync: DataStoreError?
     var shouldReturnErrorOnSaveMetadata: Bool
     var shouldReturnErrorOnDeleteMutation: Bool
+
+    var resultForQueryModelSyncMetadata: ModelSyncMetadata?
+    var listenerForModelSyncMetadata: BasicClosure?
 
     init() {
         self.resultForQuery = nil
@@ -421,6 +425,12 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     func throwOnQueryMutationSync(error: DataStoreError) {
         errorToThrowOnMutationSync = error
     }
+
+    func returnOnQueryModelSyncMetadata(_ metadata: ModelSyncMetadata?, listener: BasicClosure? = nil) {
+        resultForQueryModelSyncMetadata = metadata
+        listenerForModelSyncMetadata = listener
+    }
+
     func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>? {
         if let err = self.errorToThrowOnMutationSync {
             errorToThrowOnMutationSync = nil
@@ -438,6 +448,11 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     func queryMutationSyncMetadata(for modelId: String) throws -> MutationSyncMetadata? {
         XCTFail("not expected to execute")
         return nil
+    }
+
+    func queryModelSyncMetadata(for modelType: Model.Type) throws -> ModelSyncMetadata? {
+        listenerForModelSyncMetadata?()
+        return resultForQueryModelSyncMetadata
     }
 }
 class MockStorageEngineBehavior: StorageEngineBehavior {

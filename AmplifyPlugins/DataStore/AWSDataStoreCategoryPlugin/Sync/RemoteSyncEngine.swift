@@ -24,7 +24,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     let syncQueue: OperationQueue
 
     // Assigned at `setUpCloudSubscriptions`
-    var reconciliationQueues: IncomingEventReconciliationQueues?
+    var reconciliationQueue: IncomingEventReconciliationQueue?
 
     /// Initializes the CloudSyncEngine with the specified storageAdapter as the provider for persistence of
     /// MutationEvents, sync metadata, and conflict resolution metadata. Immediately initializes the incoming mutation
@@ -58,7 +58,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         self.api = api
 
         guard let storageAdapter = storageAdapter else {
-            // TODO: Fail the operation if storage adapter is for some reason missing
+            // TODO: Error handling
+            log.error(error: DataStoreError.nilStorageAdapter())
             return
         }
 
@@ -77,7 +78,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         setUpCloudSubscriptionsOp.addDependency(pauseMutationsOp)
 
         let performInitialQueriesOp = CancelAwareBlockOperation {
-            self.performInitialQueries()
+            self.performInitialQueries(api: api, storageAdapter: storageAdapter)
         }
         performInitialQueriesOp.addDependency(setUpCloudSubscriptionsOp)
 
@@ -116,32 +117,49 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     private func pauseSubscriptions() {
         log.debug(#function)
+        reconciliationQueue?.pause()
     }
 
     private func pauseMutations() {
         log.debug(#function)
         outgoingMutationQueue.pauseSyncingToCloud()
-        // TODO: Implement this
-        //        reconciliationQueues.pause()
     }
 
     private func setUpCloudSubscriptions(api: APICategoryGraphQLBehavior,
                                          storageAdapter: StorageEngineAdapter) {
         log.debug(#function)
         let syncableModelTypes = ModelRegistry.models.filter { $0.schema.isSyncable }
-        reconciliationQueues = IncomingEventReconciliationQueues(modelTypes: syncableModelTypes,
-                                                                 api: api,
-                                                                 storageAdapter: storageAdapter)
+        reconciliationQueue = AWSIncomingEventReconciliationQueue(modelTypes: syncableModelTypes,
+                                                                  api: api,
+                                                                  storageAdapter: storageAdapter)
     }
 
-    private func performInitialQueries() {
+    private func performInitialQueries(api: APICategoryGraphQLBehavior,
+                                       storageAdapter: StorageEngineAdapter) {
         log.debug(#function)
-        // TODO: Implement this
+
+        let initialSyncOrchestrator = AWSInitialSyncOrchestrator(api: api,
+                                                                 reconciliationQueue: reconciliationQueue,
+                                                                 storageAdapter: storageAdapter)
+
+        let semaphore = DispatchSemaphore(value: 1)
+
+        initialSyncOrchestrator.sync { result in
+            if case .failure(let dataStoreError) = result {
+                // TODO: Error handling
+                self.log.error(error: dataStoreError)
+            } else {
+                self.log.info("Successfully finished sync")
+            }
+            semaphore.signal()
+        }
+
+        semaphore.wait()
     }
 
     private func activateCloudSubscriptions() {
         log.debug(#function)
-        reconciliationQueues?.start()
+        reconciliationQueue?.start()
     }
 
     private func startMutationQueue(api: APICategoryGraphQLBehavior,
@@ -155,28 +173,30 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         syncQueue.waitUntilAllOperationsAreFinished()
 
         let group = DispatchGroup()
-        if let awsMutationEventIngester = mutationEventIngester as? AWSMutationDatabaseAdapter {
+        if let resettable = mutationEventIngester as? Resettable {
             group.enter()
             DispatchQueue.global().async {
-                awsMutationEventIngester.reset {
+                resettable.reset {
                     group.leave()
                 }
             }
         }
 
-        if let awsMutationEventPublisher = mutationEventPublisher as? AWSMutationEventPublisher {
+        if let resettable = mutationEventPublisher as? Resettable {
             group.enter()
             DispatchQueue.global().async {
-                awsMutationEventPublisher.reset {
+                resettable.reset {
                     group.leave()
                 }
             }
         }
 
-        if let reconciliationQueues = reconciliationQueues {
+        if let resettable = reconciliationQueue as? Resettable {
             group.enter()
-            reconciliationQueues.reset {
-                group.leave()
+            DispatchQueue.global().async {
+                resettable.reset {
+                    group.leave()
+                }
             }
         }
 

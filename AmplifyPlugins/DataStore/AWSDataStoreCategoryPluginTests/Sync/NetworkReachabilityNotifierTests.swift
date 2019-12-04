@@ -35,6 +35,7 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         NotificationCenter.default.post(notification)
 
         waitForExpectations(timeout: 1)
+        cancellable.cancel()
     }
 
     func testCellularConnectivity() {
@@ -50,6 +51,7 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         NotificationCenter.default.post(notification)
 
         waitForExpectations(timeout: 1)
+        cancellable.cancel()
     }
 
     func testNoConnectivity() {
@@ -65,6 +67,7 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         NotificationCenter.default.post(notification)
 
         waitForExpectations(timeout: 1)
+        cancellable.cancel()
     }
 
     func testWifiConnectivity_publisherGoesOutOfScope() {
@@ -83,12 +86,13 @@ class NetworkReachabilityNotifierTests: XCTestCase {
         NotificationCenter.default.post(notification)
 
         waitForExpectations(timeout: 1)
+        cancellable.cancel()
     }
 }
 
 class MockNetworkReachabilityProvidingFactory: NetworkReachabilityProvidingFactory {
     public static func make(for hostname: String) -> NetworkReachabilityProviding? {
-        return try? MockReachability()
+        return MockReachability()
     }
 }
 

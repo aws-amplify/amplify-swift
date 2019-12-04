@@ -9,7 +9,7 @@ import Amplify
 import AWSPluginsCore
 import Combine
 
-/// Facade to hide the AsyncEventQueue/ModelMapper structures from the ReconciliationQueue. Provides a publisher for
+/// Facade to hide the AsyncEventQueue/ModelMapper structures from the ModelSpecificReconciliationQueue. Provides a publisher for
 /// all incoming subscription types (onCreate, onUpdate, onDelete) for a single Model type.
 @available(iOS 13.0, *)
 final class IncomingSubscriptionEventFacade {

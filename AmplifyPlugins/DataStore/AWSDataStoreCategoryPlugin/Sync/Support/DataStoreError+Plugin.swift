@@ -24,8 +24,8 @@ extension DataStoreError {
     }
 
     static func nilReconciliationQueues(file: StaticString = #file,
-                             function: StaticString = #function,
-                             line: UInt = #line) -> DataStoreError {
+                                        function: StaticString = #function,
+                                        line: UInt = #line) -> DataStoreError {
         .internalOperation(
             "The reference to IncomingReconciliationQueues is unexpectedly nil in an internal operation",
             """

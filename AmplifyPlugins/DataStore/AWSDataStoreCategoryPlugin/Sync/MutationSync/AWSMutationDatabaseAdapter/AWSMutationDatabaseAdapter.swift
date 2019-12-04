@@ -38,6 +38,14 @@ final class AWSMutationDatabaseAdapter {
         log.verbose("Initialized")
     }
 
+}
+
+@available(iOS 13.0, *)
+extension AWSMutationDatabaseAdapter: DefaultLogger { }
+
+@available(iOS 13.0, *)
+extension AWSMutationDatabaseAdapter: Resettable {
+
     func reset(onComplete: () -> Void) {
         storageAdapter = nil
         nextEventPromise = nil
@@ -45,6 +53,3 @@ final class AWSMutationDatabaseAdapter {
     }
 
 }
-
-@available(iOS 13.0, *)
-extension AWSMutationDatabaseAdapter: DefaultLogger { }

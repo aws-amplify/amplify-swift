@@ -31,7 +31,7 @@ extension MockSynced {
 
     // MARK: - ModelSchema
 
-    public static let schema = defineSchema(attributes: .isSyncable) { model in
+    public static let schema = defineSchema { model in
         let post = MockSynced.keys
 
         model.fields(
@@ -66,10 +66,21 @@ extension MockUnsynced {
 
     public static let schema = defineSchema { model in
         let post = MockUnsynced.keys
-
+        model.attributes(.isSystem)
         model.fields(
             .id()
         )
     }
+
+}
+
+struct MockModelRegistration: AmplifyModelRegistration {
+
+    func registerModels(registry: ModelRegistry.Type) {
+        registry.register(modelType: MockSynced.self)
+        registry.register(modelType: MockUnsynced.self)
+    }
+
+    let version: String = "1"
 
 }

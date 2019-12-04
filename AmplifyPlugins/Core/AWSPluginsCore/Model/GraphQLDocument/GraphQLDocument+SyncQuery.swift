@@ -41,7 +41,9 @@ public class GraphQLSyncQuery: GraphQLListQuery {
     public override var stringValue: String {
         let schema = modelType.schema
 
-        let input = "$filter: Model\(schema.graphQLName)FilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp"
+        let input = """
+        $filter: Model\(schema.graphQLName)FilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp
+        """
 
         let inputName = "filter: $filter, limit: $limit, nextToken: $nextToken, lastSync: $lastSync"
 

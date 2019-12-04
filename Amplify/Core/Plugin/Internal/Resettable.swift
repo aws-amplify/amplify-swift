@@ -7,7 +7,7 @@
 
 /// Note that although this protocol is public, the `reset` method is intended only
 /// for internal use, and should not be invoked by host applications.
-public protocol PluginResettable {
+public protocol Resettable {
 
     /// Called when the client calls `Amplify.reset()` during testing. When invoked,
     /// the plugin must release resources and reset shared state. Shortly after calling

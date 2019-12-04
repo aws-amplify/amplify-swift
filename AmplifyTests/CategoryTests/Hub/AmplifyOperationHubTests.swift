@@ -256,6 +256,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
 }
 
+// swiftlint:disable:next type_name
 class MockDispatchingStorageDownloadFileOperation: AmplifyOperation<StorageDownloadFileRequest, Progress,
 Void, StorageError>, StorageDownloadFileOperation {
     init(request: Request, listener: EventListener? = nil) {
@@ -270,6 +271,7 @@ Void, StorageError>, StorageDownloadFileOperation {
     }
 }
 
+// swiftlint:disable:next type_name
 class MockDispatchingStorageDownloadDataOperation: AmplifyOperation<StorageDownloadDataRequest, Progress,
 Data, StorageError>, StorageDownloadDataOperation {
     init(request: Request, listener: EventListener? = nil) {
@@ -326,6 +328,7 @@ String, StorageError>, StorageRemoveOperation {
     }
 }
 
+// swiftlint:disable:next type_name
 class MockDispatchingStorageUploadDataOperation: AmplifyOperation<StorageUploadDataRequest, Progress,
 String, StorageError>, StorageUploadDataOperation {
     init(request: Request, listener: EventListener? = nil) {
@@ -340,6 +343,7 @@ String, StorageError>, StorageUploadDataOperation {
     }
 }
 
+// swiftlint:disable:next type_name
 class MockDispatchingStorageUploadFileOperation: AmplifyOperation<StorageUploadFileRequest, Progress,
 String, StorageError>, StorageUploadFileOperation {
     init(request: Request, listener: EventListener? = nil) {

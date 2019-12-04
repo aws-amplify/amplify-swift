@@ -29,7 +29,7 @@ class APICategoryClientGraphQLTests: XCTestCase {
         let plugin = try makeAndAddMockPlugin()
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
         plugin.listeners.append { message in
-            if message == "query" {
+            if message.hasPrefix("query(request:listener:)") {
                 methodWasInvokedOnPlugin.fulfill()
             }
         }

@@ -14,16 +14,16 @@ import Foundation
 /// mutations for a single model type.
 ///
 /// Although subscriptions are listened to and enqueued at initialization, you must call `start` on a
-/// ReconciliationQueue to write events to the DataStore.
+/// AWSModelReconciliationQueue to write events to the DataStore.
 ///
-/// Internally, a ReconciliationQueue manages different operation queues:
+/// Internally, a AWSModelReconciliationQueue manages different operation queues:
 /// - A queue to buffer incoming remote events (e.g., subscriptions, mutation results)
 /// - A queue to reconcile & save mutation sync events to local storage
 /// These queues are required because each of these actions have different points in the sync lifecycle at which they
 /// may be activated.
 ///
 /// Flow:
-/// - `ReconciliationQueue` init()
+/// - `AWSModelReconciliationQueue` init()
 ///   - `reconcileAndSaveQueue` created and activated
 ///   - `incomingSubscriptionEventQueue` created, but suspended
 ///   - `incomingEventsSink` listener set up for incoming remote events
@@ -36,7 +36,7 @@ import Foundation
 /// - `incomingRemoteEventQueue` processes its operations, which are simply to call `enqueue` for each received remote
 ///   event.
 @available(iOS 13.0, *)
-final class ReconciliationQueue {
+final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 
     /// Exposes a publisher for incoming subscription events
     private let incomingSubscriptionEvents: IncomingSubscriptionEventFacade
@@ -50,7 +50,7 @@ final class ReconciliationQueue {
     /// is always active.
     private let reconcileAndSaveQueue: OperationQueue
 
-    private weak var storageAdapter: StorageEngineAdapter?
+    weak var storageAdapter: StorageEngineAdapter?
 
     private let modelName: String
 
@@ -90,14 +90,23 @@ final class ReconciliationQueue {
 
     }
 
+    /// (Re)starts the incoming subscription event queue.
     func start() {
         incomingSubscriptionEventQueue.isSuspended = false
     }
 
+    /// Pauses only the incoming subscription event queue. Events submitted via `enqueue` will still be processed
+    func pause() {
+        incomingSubscriptionEventQueue.isSuspended = true
+    }
+
+    /// Cancels all outstanding operations on both the incoming subscription event queue and the reconcile queue, and
+    /// unsubscribes from the incoming events publisher. The queue may not be restarted after cancelling.
     func cancel() {
+        incomingEventsSink?.cancel()
+        incomingEventsSink = nil
         reconcileAndSaveQueue.cancelAllOperations()
         incomingSubscriptionEventQueue.cancelAllOperations()
-        incomingEventsSink?.cancel()
     }
 
     func enqueue(_ remoteModel: MutationSync<AnyModel>) {
@@ -119,6 +128,14 @@ final class ReconciliationQueue {
             log.error("receiveCompletion: error: \(dataStoreError)")
         }
     }
+
+}
+
+@available(iOS 13.0, *)
+extension AWSModelReconciliationQueue: DefaultLogger { }
+
+@available(iOS 13.0, *)
+extension AWSModelReconciliationQueue: Resettable {
 
     func reset(onComplete: () -> Void) {
         let group = DispatchGroup()
@@ -150,6 +167,3 @@ final class ReconciliationQueue {
     }
 
 }
-
-@available(iOS 13.0, *)
-extension ReconciliationQueue: DefaultLogger { }

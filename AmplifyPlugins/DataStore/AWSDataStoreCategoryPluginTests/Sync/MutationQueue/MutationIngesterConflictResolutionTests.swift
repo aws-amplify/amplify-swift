@@ -38,6 +38,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         tryOrFail {
             try setUpStorageAdapter()
             try saveMutationEvent(of: .create, for: post)
+            try setUpDataStore()
             try startAmplifyAndWaitForSync()
         }
 
@@ -87,6 +88,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             try setUpStorageAdapter()
             try saveMutationEvent(of: .create, for: post)
             try savePost(post)
+            try setUpDataStore()
             try startAmplifyAndWaitForSync()
         }
 
@@ -113,7 +115,10 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
                                 case .success(let mutationEvents):
-                                    let mutationEvent = mutationEvents.first!
+                                    guard let mutationEvent = mutationEvents.first else {
+                                        XCTFail("mutationEvents empty or nil")
+                                        return
+                                    }
                                     XCTAssertEqual(mutationEvent.json, try? mutatedPost.toJSON())
                                     XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.create.rawValue)
                                 }
@@ -139,6 +144,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             try setUpStorageAdapter()
             try saveMutationEvent(of: .create, for: post)
             try savePost(post)
+            try setUpDataStore()
             try startAmplifyAndWaitForSync()
         }
 
@@ -189,6 +195,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         tryOrFail {
             try setUpStorageAdapter()
             try saveMutationEvent(of: .update, for: post)
+            try setUpDataStore()
             try startAmplifyAndWaitForSync()
         }
 
@@ -240,6 +247,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             try setUpStorageAdapter()
             try saveMutationEvent(of: .update, for: post)
             try savePost(post)
+            try setUpDataStore()
             try startAmplifyAndWaitForSync()
         }
 
@@ -266,7 +274,10 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
                                 case .success(let mutationEvents):
-                                    let mutationEvent = mutationEvents.first!
+                                    guard let mutationEvent = mutationEvents.first else {
+                                        XCTFail("mutationEvents empty or nil")
+                                        return
+                                    }
                                     XCTAssertEqual(mutationEvent.json, try? mutatedPost.toJSON())
                                     XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.update.rawValue)
                                 }
@@ -292,6 +303,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             try setUpStorageAdapter()
             try saveMutationEvent(of: .update, for: post)
             try savePost(post)
+            try setUpDataStore()
             try startAmplifyAndWaitForSync()
         }
 
@@ -317,7 +329,10 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
                                 case .success(let mutationEvents):
-                                    let mutationEvent = mutationEvents.first!
+                                    guard let mutationEvent = mutationEvents.first else {
+                                        XCTFail("mutationEvents empty or nil")
+                                        return
+                                    }
                                     XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.delete.rawValue)
                                 }
                                 mutationEventVerified.fulfill()
@@ -343,6 +358,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         tryOrFail {
             try setUpStorageAdapter()
             try saveMutationEvent(of: .delete, for: post)
+            try setUpDataStore()
             try startAmplifyAndWaitForSync()
         }
 
@@ -367,7 +383,10 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
                                 case .success(let mutationEvents):
-                                    let mutationEvent = mutationEvents.first!
+                                    guard let mutationEvent = mutationEvents.first else {
+                                        XCTFail("mutationEvents empty or nil")
+                                        return
+                                    }
                                     XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.delete.rawValue)
                                 }
                                 mutationEventVerified.fulfill()
@@ -393,6 +412,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             try setUpStorageAdapter()
             try saveMutationEvent(of: .delete, for: post)
             try savePost(post)
+            try setUpDataStore()
             try startAmplifyAndWaitForSync()
         }
 
@@ -419,7 +439,10 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                 case .failure(let dataStoreError):
                                     XCTAssertNil(dataStoreError)
                                 case .success(let mutationEvents):
-                                    let mutationEvent = mutationEvents.first!
+                                    guard let mutationEvent = mutationEvents.first else {
+                                        XCTFail("mutationEvents empty or nil")
+                                        return
+                                    }
                                     XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.delete.rawValue)
                                 }
                                 mutationEventVerified.fulfill()
@@ -444,6 +467,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
 
         tryOrFail {
             try setUpStorageAdapter()
+            try setUpDataStore()
             try startAmplifyAndWaitForSync()
         }
 
@@ -466,7 +490,10 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             case .failure(let dataStoreError):
                 XCTAssertNil(dataStoreError)
             case .success(let mutationEvents):
-                let mutationEvent = mutationEvents.first!
+                guard let mutationEvent = mutationEvents.first else {
+                    XCTFail("mutationEvents empty or nil")
+                    return
+                }
                 XCTAssertEqual(mutationEvent.json, try? post.toJSON())
                 XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.create.rawValue)
             }
@@ -491,6 +518,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         tryOrFail {
             try setUpStorageAdapter()
             try savePost(post)
+            try setUpDataStore()
             try startAmplifyAndWaitForSync()
         }
 
@@ -513,7 +541,10 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             case .failure(let dataStoreError):
                 XCTAssertNil(dataStoreError)
             case .success(let mutationEvents):
-                let mutationEvent = mutationEvents.first!
+                guard let mutationEvent = mutationEvents.first else {
+                    XCTFail("mutationEvents empty or nil")
+                    return
+                }
                 XCTAssertEqual(mutationEvent.json, try? post.toJSON())
                 XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.update.rawValue)
             }
@@ -538,6 +569,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         tryOrFail {
             try setUpStorageAdapter()
             try savePost(post)
+            try setUpDataStore()
             try startAmplifyAndWaitForSync()
         }
 
@@ -561,7 +593,10 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             case .failure(let dataStoreError):
                 XCTAssertNil(dataStoreError)
             case .success(let mutationEvents):
-                let mutationEvent = mutationEvents.first!
+                guard let mutationEvent = mutationEvents.first else {
+                    XCTFail("mutationEvents empty or nil")
+                    return
+                }
                 XCTAssertEqual(mutationEvent.modelId, post.id)
                 XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.delete.rawValue)
             }
@@ -588,6 +623,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         tryOrFail {
             try setUpStorageAdapter()
             try saveMutationEvent(of: .create, for: post, inProcess: true)
+            try setUpDataStore()
             try startAmplifyAndWaitForSync()
         }
 
@@ -637,6 +673,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             try setUpStorageAdapter()
             try saveMutationEvent(of: .create, for: post, inProcess: true)
             try savePost(post)
+            try setUpDataStore()
             try startAmplifyAndWaitForSync()
         }
 
@@ -689,6 +726,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         tryOrFail {
             try setUpStorageAdapter()
             try saveMutationEvent(of: .create, for: post, inProcess: true)
+            try setUpDataStore()
             try startAmplifyAndWaitForSync()
         }
 

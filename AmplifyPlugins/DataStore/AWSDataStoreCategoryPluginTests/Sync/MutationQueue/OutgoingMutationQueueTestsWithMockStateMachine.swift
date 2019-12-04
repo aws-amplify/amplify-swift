@@ -147,7 +147,7 @@ class MockMutationEventSource: MutationEventSource {
 
     func getNextMutationEvent(completion: @escaping DataStoreCallback<MutationEvent>) {
         //TODO: Make generic to handle the error cases
-        var mutationEvent = MutationEvent(modelId: "1",
+        let mutationEvent = MutationEvent(modelId: "1",
                                           modelName: "Post",
                                           json: "{}",
                                           mutationType: MutationEvent.MutationType.create)

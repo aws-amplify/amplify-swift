@@ -40,8 +40,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
 
             let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter)
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          syncEngine: syncEngine,
-                                          isSyncEnabled: true)
+                                          syncEngine: syncEngine)
         } catch {
             XCTFail(String(describing: error))
             return
