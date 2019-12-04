@@ -12,6 +12,7 @@ extension RESTOperationRequest {
         self = RESTOperationRequest(apiName: request.apiName,
                                     operationType: operationType,
                                     path: request.path,
+                                    headers: request.headers,
                                     queryParameters: request.queryParameters,
                                     body: request.body,
                                     options: RESTOperationRequest.Options())

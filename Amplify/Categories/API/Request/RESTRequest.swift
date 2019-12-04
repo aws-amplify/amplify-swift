@@ -16,6 +16,9 @@ public class RESTRequest {
     /// Path of the resource
     public let path: String?
 
+    /// Headers
+    public let headers: [String: String]?
+
     /// Query parameters
     public let queryParameters: [String: String]?
 
@@ -24,10 +27,12 @@ public class RESTRequest {
 
     public init(apiName: String? = nil,
                 path: String? = nil,
+                headers: [String: String]? = nil,
                 queryParameters: [String: String]? = nil,
                 body: Data? = nil) {
         self.apiName = apiName
         self.path = path
+        self.headers = headers
         self.queryParameters = queryParameters
         self.body = body
     }

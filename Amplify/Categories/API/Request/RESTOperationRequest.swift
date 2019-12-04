@@ -18,6 +18,9 @@ public struct RESTOperationRequest: AmplifyOperationRequest {
     /// path of the resource
     public let path: String?
 
+    /// Request headers
+    public let headers: [String: String]?
+
     /// Query parameters
     public let queryParameters: [String: String]?
 
@@ -30,12 +33,14 @@ public struct RESTOperationRequest: AmplifyOperationRequest {
     public init(apiName: String?,
                 operationType: RESTOperationType,
                 path: String? = nil,
+                headers: [String: String]? = nil,
                 queryParameters: [String: String]? = nil,
                 body: Data? = nil,
                 options: Options) {
         self.apiName = apiName
         self.operationType = operationType
         self.path = path
+        self.headers = headers
         self.queryParameters = queryParameters
         self.body = body
         self.options = options
