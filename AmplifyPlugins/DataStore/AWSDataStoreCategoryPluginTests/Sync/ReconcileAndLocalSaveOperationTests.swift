@@ -21,7 +21,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     var anyPostDeletedMutationSync: MutationSync<AnyModel>!
 
     var operation: ReconcileAndLocalSaveOperation!
-    var stateMachine: MockStateMachine!
+    var stateMachine: MockStateMachine<ReconcileAndLocalSaveOperation.State, ReconcileAndLocalSaveOperation.Action>!
 
     override func setUp() {
         do {
@@ -65,7 +65,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     func testQuerying() throws {
         let expect = expectation(description: "action .queried notified")
         storageAdapter.returnOnQueryMutationSync(mutationSync: anyPostMutationSync)
-        stateMachine.setExpectActionCriteria { action in
+        stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action,
                            ReconcileAndLocalSaveOperation.Action.queried(self.anyPostMutationSync,
                                                                          self.anyPostMutationSync))
@@ -93,7 +93,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 */
     func testQueryingWithInvalidStorageAdapter_error() throws {
         let expect = expectation(description: "action .errored nil storage adapter")
-        stateMachine.setExpectActionCriteria { action in
+        stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action,
                            ReconcileAndLocalSaveOperation.Action.errored(DataStoreError.nilStorageAdapter()))
             expect.fulfill()
@@ -109,7 +109,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let expect = expectation(description: "action .errored notified")
         let error = DataStoreError.invalidModelName("invalidModelName")
         storageAdapter.throwOnQueryMutationSync(error: error)
-        stateMachine.setExpectActionCriteria { action in
+        stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.errored(error))
             expect.fulfill()
         }
@@ -122,7 +122,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     func testQueryingWithEmptyLocalStore() throws {
         let expect = expectation(description: "action .queried notified with local data == nil")
         storageAdapter.returnOnQueryMutationSync(mutationSync: nil)
-        stateMachine.setExpectActionCriteria { action in
+        stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.queried(self.anyPostMutationSync, nil))
             expect.fulfill()
         }
@@ -135,7 +135,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     func testReconcilingWithoutLocalModel() throws {
         let expect = expectation(description: "action .reconciled notified")
         let expectedDisposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync)
-        stateMachine.setExpectActionCriteria { action in
+        stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.reconciled(expectedDisposition))
             expect.fulfill()
         }
@@ -148,7 +148,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let expect = expectation(description: "action .execute applyRemoteModel")
         let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync)
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostMutationSync.model))
-        stateMachine.setExpectActionCriteria { action in
+        stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostMutationSync))
             expect.fulfill()
         }
@@ -162,7 +162,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostMutationSync)
         let error = DataStoreError.invalidModelName("invModelName")
         storageAdapter.returnOnSave(dataStoreResult: .failure(error))
-        stateMachine.setExpectActionCriteria { action in
+        stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.errored(error))
             expect.fulfill()
         }
@@ -178,7 +178,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let error = DataStoreError.invalidModelName("forceError")
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostMutationSync.model))
         storageAdapter.shouldReturnErrorOnSaveMetadata = true
-        stateMachine.setExpectActionCriteria { action in
+        stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.errored(error))
             expect.fulfill()
         }
@@ -191,7 +191,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let expect = expectation(description: "action .execute applyRemoteModel delete success case")
         let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostDeletedMutationSync)
         storageAdapter.returnOnSave(dataStoreResult: .success(anyPostDeletedMutationSync.model))
-        stateMachine.setExpectActionCriteria { action in
+        stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.applied(self.anyPostDeletedMutationSync))
             expect.fulfill()
         }
@@ -205,7 +205,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let disposition = RemoteSyncReconciler.Disposition.applyRemoteModel(anyPostDeletedMutationSync)
         let error = DataStoreError.invalidModelName("DelMutate")
         storageAdapter.shouldReturnErrorOnDeleteMutation = true
-        stateMachine.setExpectActionCriteria { action in
+        stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.errored(error))
             expect.fulfill()
         }
@@ -221,7 +221,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let error = DataStoreError.invalidModelName("forceError")
         storageAdapter.shouldReturnErrorOnSaveMetadata = true
         storageAdapter.returnOnSave(dataStoreResult: .failure(error))
-        stateMachine.setExpectActionCriteria { action in
+        stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.errored(error))
             expect.fulfill()
         }
@@ -233,7 +233,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     func testExecuteDropRemoteModel() throws {
         let expect = expectation(description: "action .execute dropRemoteModel")
         let disposition = RemoteSyncReconciler.Disposition.dropRemoteModel
-        stateMachine.setExpectActionCriteria { action in
+        stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.dropped)
             expect.fulfill()
         }
@@ -247,7 +247,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let expect = expectation(description: "action .execute error")
         let error = DataStoreError.invalidModelName("invModelName")
         let disposition = RemoteSyncReconciler.Disposition.error(error)
-        stateMachine.setExpectActionCriteria { action in
+        stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.errored(error))
             expect.fulfill()
         }
@@ -264,7 +264,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             XCTAssertEqual(payload.eventName, "DataStore.syncReceived")
             hubExpect.fulfill()
         }
-        stateMachine.setExpectActionCriteria { action in
+        stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.notified)
             notifyExpect.fulfill()
         }
@@ -275,22 +275,6 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         Amplify.Hub.removeListener(hubListener)
     }
 }
-
-class MockStateMachine: StateMachine<ReconcileAndLocalSaveOperation.State, ReconcileAndLocalSaveOperation.Action> {
-    typealias ExpectActionCriteria = (_ action: ReconcileAndLocalSaveOperation.Action) -> Void
-    var expectActionCriteria: ExpectActionCriteria?
-
-    override func notify(action: ReconcileAndLocalSaveOperation.Action) {
-        if let expectActionCriteria = expectActionCriteria {
-            expectActionCriteria(action)
-        }
-    }
-
-    func setExpectActionCriteria(expectActionCriteria: @escaping ExpectActionCriteria) {
-        self.expectActionCriteria = expectActionCriteria
-    }
-}
-
 extension ReconcileAndLocalSaveOperation.State: Equatable {
     public static func == (lhs: ReconcileAndLocalSaveOperation.State,
                            rhs: ReconcileAndLocalSaveOperation.State) -> Bool {
