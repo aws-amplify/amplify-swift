@@ -11,9 +11,8 @@ Our default implementation works with Amazon Web Services (AWS), but AWS Amplify
 *Note: Amplify docs are still being updated and will go live by EOW. The below links will take you to the SDK documentation currently.
 
 - [**Analytics**](https://aws-amplify.github.io/docs/ios/analytics): Easily collect analytics data for your app. Analytics data includes user sessions and other custom events that you want to track in your app.
-- [**API**](https://aws-amplify.github.io/docs/ios/api): Provides a simple solution when making HTTP requests. It provides an automatic, lightweight signing process which complies with AWS Signature Version 4.
-- [**GraphQL Client**](https://aws.github.io/aws-amplify/media/api_guide#configuration-for-graphql-server): Interact with your GraphQL server or AWS AppSync API with an easy-to-use & configured GraphQL client.
-- [**Storage**](https://aws-amplify.github.io/docs/ios/storage): Provides a simple mechanism for managing user content for your app in public, protected or private storage buckets.
+- [**API**](https://aws-amplify.github.io/docs/ios/api): Interact with your AWS AppSync API or make HTTP requests to your API Gateway endpoint with the Amplify API client. It provides a GraphQL client interface to use with Amplify's model generation and automatic signing process which complies with AWS Signature Version 4.
+- [**Storage**](https://aws-amplify.github.io/docs/ios/storage): Provides a simple mechanism for managing user content for your app in guest, protected or private storage buckets.
 - [**Predictions**](https://aws-amplify.github.io/docs/ios/predictions): Provides a solution for using AI and ML cloud services to enhance your application.
 
 All services and features not listed above are supported via the [iOS SDK](https://github.com/aws-amplify/aws-sdk-ios) or if supported by a category can be accessed via the Escape Hatch like below:
@@ -49,9 +48,13 @@ Coming soon, will be live by December 6. You can use manually in the mean time p
 You can manually install the library by cloning this repo and creating a Podfile that references your local clone of it like below:
 
 ``` ruby
-  pod 'Amplify', :path => '~/Projects/Amplify/amplify-ios'
-  pod 'AWSPluginsCore', :path => '~/Projects/Amplify/amplify-ios'
-  pod 'CoreMLPredictionsPlugin', :path => '~/Projects/Amplify/amplify-ios'
-  pod 'AmplifyPlugins/AWSPredictionsPlugin', :path => '~/Projects/Amplify/amplify-ios'
+  pod 'Amplify', :path => '~/amplify-ios'
+  pod 'AWSPluginsCore', :path => '~/amplify-ios'
+  pod 'CoreMLPredictionsPlugin', :path => '~/amplify-ios'
+  pod 'AmplifyPlugins/AWSPredictionsPlugin', :path => '~/amplify-ios'
 ```
-You also need to go to your target project by clicking the top level project in Xcode and then clicking under Targets on your project. Then head to Build Phases -> Link Binary with Libraries -> Add Amplify Frameworks and any others you need for the category or categories you would like to use.
+
+Then, install the dependencies:
+```
+pod install
+```
