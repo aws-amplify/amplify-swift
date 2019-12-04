@@ -165,7 +165,7 @@ jobs:
           command: bundle exec fastlane release_pods
 
 workflows:
-  build_test:
+  build_test_deploy:
     jobs:
       - checkout_code
       - install_gems:
@@ -200,6 +200,13 @@ workflows:
           path: Predictions
           workspace: PredictionsCategoryPlugin
           scheme: AWSPredictionsPlugin
+          requires:
+            - install_gems
+      - plugin_unit_test:
+          name: unit_test_core_ml
+          path: Predictions
+          workspace: PredictionsCategoryPlugin
+          scheme: CoreMLPredictionsPlugin
           requires:
             - install_gems
       - plugin_unit_test:
