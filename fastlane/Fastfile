@@ -39,4 +39,11 @@ platform :ios do
     pods.each { |pod| pod_push(path: pod) }
 
   end
+
+  desc "Test fastlane"
+  lane :release_pods do
+
+    pods.each { |pod| puts "${pod}" }
+
+  end
 end

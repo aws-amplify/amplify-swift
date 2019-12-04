@@ -40,7 +40,7 @@ commands:
       pre start simulator, build may fail if simulator is not started
     steps:
       - run:
-          name: pre-start simulator
+          name: Pre-start simulator
           command: bash ~/amplify-ios/CircleciScripts/pre_start_simulator.sh
 
   restore_gems:
@@ -112,10 +112,10 @@ jobs:
       - restore_gems
       - check_bundle
       - run:
-          name: build amplify
-          command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}" | xcpretty
+          name: Build amplify
+          command: xcodebuild build-for-testing -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}" | xcpretty
       - run:
-          name: test amplify
+          name: Test amplify
           command: xcodebuild test -enableThreadSanitizer NO -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}" | xcpretty --simple --color --report junit
       - store_test_results:
           path: build/reports
@@ -142,10 +142,10 @@ jobs:
       - restore_gems
       - check_bundle
       - run:
-          name: build << parameters.path >>
+          name: Build << parameters.path >>
           command: xcodebuild build-for-testing -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | xcpretty
       - run:
-          name: test << parameters.path >>
+          name: Test << parameters.path >>
           command: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | xcpretty --simple --color --report junit
       - store_test_results:
           path: build/reports
@@ -158,11 +158,21 @@ jobs:
       - restore_gems
       - check_bundle
       # - run:
-      #     name: bump pod versions
+      #     name: Bump pod versions
       #     command: bundle exec fastlane bump_podspecs_patch
       - run:
-          name: release pods
+          name: Release pods
           command: bundle exec fastlane release_pods
+
+  test_fastlane:
+    <<: *defaults
+    description: deploy pods to trunk
+    steps: 
+      - *restore_repo
+      - restore_gems
+      - check_bundle
+      - run: bundle exec fastlane release_pods
+
 
 workflows:
   build_test_deploy:
@@ -174,57 +184,60 @@ workflows:
       - build_test_amplify:
           requires:
             - install_gems
-      - plugin_unit_test:
-          name: unit_test_api
-          path: API
-          workspace: APICategoryPlugin
-          scheme: AWSAPICategoryPlugin
+      - test_fastlane:
           requires:
             - install_gems
-      - plugin_unit_test:
-          name: unit_test_analytics
-          path: Analytics
-          workspace: AnalyticsCategoryPlugin
-          scheme: AWSPinpointAnalyticsPlugin
-          requires:
-            - install_gems
-      - plugin_unit_test:
-          name: unit_test_storage
-          path: Storage
-          workspace: StoragePlugin
-          scheme: AWSS3StoragePlugin
-          requires:
-            - install_gems
-      - plugin_unit_test:
-          name: unit_test_predictions
-          path: Predictions
-          workspace: PredictionsCategoryPlugin
-          scheme: AWSPredictionsPlugin
-          requires:
-            - install_gems
-      - plugin_unit_test:
-          name: unit_test_core_ml
-          path: Predictions
-          workspace: PredictionsCategoryPlugin
-          scheme: CoreMLPredictionsPlugin
-          requires:
-            - install_gems
-      - plugin_unit_test:
-          name: unit_test_datastore
-          path: DataStore
-          workspace: DataStoreCategoryPlugin
-          scheme: AWSDataStoreCategoryPlugin
-          requires:
-            - install_gems
-      - deploy:
-          filters:
-            branches:
-              only:
-                - release
-          requires:
-            - build_test_amplify
-            - unit_test_api
-            - unit_test_analytics
-            - unit_test_storage
-            - unit_test_predictions
-            - unit_test_datastore
+      # - plugin_unit_test:
+      #     name: unit_test_api
+      #     path: API
+      #     workspace: APICategoryPlugin
+      #     scheme: AWSAPICategoryPlugin
+      #     requires:
+      #       - install_gems
+      # - plugin_unit_test:
+      #     name: unit_test_analytics
+      #     path: Analytics
+      #     workspace: AnalyticsCategoryPlugin
+      #     scheme: AWSPinpointAnalyticsPlugin
+      #     requires:
+      #       - install_gems
+      # - plugin_unit_test:
+      #     name: unit_test_storage
+      #     path: Storage
+      #     workspace: StoragePlugin
+      #     scheme: AWSS3StoragePlugin
+      #     requires:
+      #       - install_gems
+      # - plugin_unit_test:
+      #     name: unit_test_predictions
+      #     path: Predictions
+      #     workspace: PredictionsCategoryPlugin
+      #     scheme: AWSPredictionsPlugin
+      #     requires:
+      #       - install_gems
+      # - plugin_unit_test:
+      #     name: unit_test_core_ml
+      #     path: Predictions
+      #     workspace: PredictionsCategoryPlugin
+      #     scheme: CoreMLPredictionsPlugin
+      #     requires:
+      #       - install_gems
+      # - plugin_unit_test:
+      #     name: unit_test_datastore
+      #     path: DataStore
+      #     workspace: DataStoreCategoryPlugin
+      #     scheme: AWSDataStoreCategoryPlugin
+      #     requires:
+      #       - install_gems
+      # - deploy:
+      #     filters:
+      #       branches:
+      #         only:
+      #           - release
+      #     requires:
+      #       - build_test_amplify
+      #       - unit_test_api
+      #       - unit_test_analytics
+      #       - unit_test_storage
+      #       - unit_test_predictions
+      #       - unit_test_datastore
