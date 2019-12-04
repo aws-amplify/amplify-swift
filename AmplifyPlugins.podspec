@@ -25,41 +25,52 @@ Pod::Spec.new do |s|
   AWS_SDK_VERSION = '~> 2.12.2'
   AMPLIFY_VERSION = '0.9.0'
   
+  s.subspec 'AWSPluginsCore' do |ss|
+    ss.source_files = 'AmplifyPlugins/Core/AWSPluginsCore/**/*.swift'
+    ss.dependency 'Amplify', AMPLIFY_VERSION
+    ss.dependency 'AWSMobileClient', AWS_SDK_VERSION
+  end
+
+  s.subspec 'CoreMLPredictionsPlugin' do |ss|
+    ss.source_files = 'AmplifyPlugins/Predictions/CoreMLPredictionsPlugin/**/*.swift'
+    ss.dependency 'AmplifyPlugins/AWSPluginsCore', AMPLIFY_VERSION
+  end
+
   s.subspec 'AWSAPIPlugin' do |ss|
     ss.source_files = 'AmplifyPlugins/API/AWSAPICategoryPlugin/**/*.swift'
-    ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
+    ss.dependency 'AmplifyPlugins/AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'Starscream', '~> 3.0.2'
   end
 
   s.subspec 'AWSDataStorePlugin' do |ss|
     ss.source_files = 'AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin/**/*.swift'
-    ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
+    ss.dependency 'AmplifyPlugins/AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'SQLite.swift', '~> 0.12.0'
     ss.dependency 'ReachabilitySwift', '~> 5.0.0'
   end
 
   s.subspec 'AWSPinpointAnalyticsPlugin' do |ss|
     ss.source_files = 'AmplifyPlugins/Analytics/AWSPinpointAnalyticsPlugin/**/*.swift'
+    ss.dependency 'AmplifyPlugins/AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'AWSPinpoint', AWS_SDK_VERSION
-    ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
   end
 
   s.subspec 'AWSPredictionsPlugin' do |ss|
     ss.platform = :ios, '13.0'
     ss.source_files = 'AmplifyPlugins/Predictions/AWSPredictionsPlugin/**/*.swift'
+    ss.dependency 'AmplifyPlugins/AWSPluginsCore', AMPLIFY_VERSION
+    ss.dependency 'AmplifyPlugins/CoreMLPredictionsPlugin', AMPLIFY_VERSION
     ss.dependency 'AWSComprehend', AWS_SDK_VERSION
-    ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'AWSPolly', AWS_SDK_VERSION
     ss.dependency 'AWSRekognition', AWS_SDK_VERSION
     ss.dependency 'AWSTextract', AWS_SDK_VERSION
     ss.dependency 'AWSTranscribe', AWS_SDK_VERSION
     ss.dependency 'AWSTranslate', AWS_SDK_VERSION
-    ss.dependency 'CoreMLPredictionsPlugin', AMPLIFY_VERSION
   end
 
   s.subspec 'AWSS3StoragePlugin' do |ss|
     ss.source_files = 'AmplifyPlugins/Storage/AWSS3StoragePlugin/**/*.swift'
-    ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
+    ss.dependency 'AmplifyPlugins/AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'AWSS3', AWS_SDK_VERSION
   end
 

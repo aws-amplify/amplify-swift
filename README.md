@@ -50,8 +50,7 @@ You can manually install the library by cloning this repo and creating a Podfile
 
 ``` ruby
   pod 'Amplify', :path => '~/Projects/Amplify/amplify-ios'
-  pod 'AWSPluginsCore', :path => '~/Projects/Amplify/amplify-ios'
-  pod 'CoreMLPredictionsPlugin', :path => '~/Projects/Amplify/amplify-ios'
+  pod 'AmplifyPlugins/CoreMLPredictionsPlugin', :path => '~/Projects/Amplify/amplify-ios'
   pod 'AmplifyPlugins/AWSPredictionsPlugin', :path => '~/Projects/Amplify/amplify-ios'
 ```
 You also need to go to your target project by clicking the top level project in Xcode and then clicking under Targets on your project. Then head to Build Phases -> Link Binary with Libraries -> Add Amplify Frameworks and any others you need for the category or categories you would like to use.

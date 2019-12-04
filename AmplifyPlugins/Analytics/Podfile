@@ -10,6 +10,14 @@ target 'AWSPinpointAnalyticsPlugin' do
 	pod 'Amplify', :path => '../../'
   pod 'AWSPluginsCore', :path => '../../'
   pod "AWSPinpoint", "~> #{AWS_SDK_VERSION}"
+
+  target "AWSPinpointAnalyticsPluginTests" do
+    inherit! :complete
+    
+    pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
+    pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+    pod 'AmplifyTestCommon', :path => '../../'
+  end
 end
 
 target "HostApp" do
@@ -22,7 +30,4 @@ target "HostApp" do
     inherit! :complete
   end
 
-  target "AWSPinpointAnalyticsPluginTests" do
-    inherit! :complete
-  end
 end
