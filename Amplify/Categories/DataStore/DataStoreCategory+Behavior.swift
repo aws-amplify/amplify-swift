@@ -17,7 +17,7 @@ extension DataStoreCategory: DataStoreBaseBehavior {
     }
 
     public func query<M: Model>(_ modelType: M.Type,
-                                where predicate: QueryPredicateFactory?,
+                                where predicate: QueryPredicateFactory? = nil,
                                 completion: DataStoreCallback<[M]>) {
         plugin.query(modelType, where: predicate, completion: completion)
     }
