@@ -19,7 +19,7 @@ public struct RESTOperationRequest: AmplifyOperationRequest {
     public let path: String?
 
     /// Request headers
-    public let headers: [String: String]
+    public let headers: [String: String]?
 
     /// Query parameters
     public let queryParameters: [String: String]?
@@ -33,7 +33,7 @@ public struct RESTOperationRequest: AmplifyOperationRequest {
     public init(apiName: String?,
                 operationType: RESTOperationType,
                 path: String? = nil,
-                headers: [String: String] = [:],
+                headers: [String: String]? = nil,
                 queryParameters: [String: String]? = nil,
                 body: Data? = nil,
                 options: Options) {
