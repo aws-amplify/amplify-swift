@@ -1,0 +1,43 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+opt_out_usage
+
+default_platform(:ios)
+
+pods = [
+  "Amplify.podspec",
+  "AmplifyPlugins.podspec",
+  "AmplifyTestCommon.podspec",
+  "AWSPluginsCore.podspec",
+  "CoreMLPredictionsPlugin.podspec"
+]
+
+platform :ios do
+  desc "Bump pod versions"
+  lane :bump_podspecs_patch do
+
+    pods.each { |pod| version_bump_podspec(path: pod, bump_type: "patch") }
+
+  end
+
+  desc "Release pods"
+  lane :release_pods do
+
+    pods.each { |pod| pod_push(path: pod) }
+
+  end
+
+end
