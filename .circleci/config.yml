@@ -164,15 +164,6 @@ jobs:
           name: Release pods
           command: bundle exec fastlane release_pods
 
-  test_fastlane:
-    <<: *defaults
-    description: deploy pods to trunk
-    steps: 
-      - *restore_repo
-      - restore_gems
-      - check_bundle
-      - run: bundle exec fastlane test_fastlane
-
 
 workflows:
   build_test_deploy:
@@ -184,60 +175,57 @@ workflows:
       - build_test_amplify:
           requires:
             - install_gems
-      - test_fastlane:
+      - plugin_unit_test:
+          name: unit_test_api
+          path: API
+          workspace: APICategoryPlugin
+          scheme: AWSAPICategoryPlugin
+          requires:
+            - install_gems
+      - plugin_unit_test:
+          name: unit_test_analytics
+          path: Analytics
+          workspace: AnalyticsCategoryPlugin
+          scheme: AWSPinpointAnalyticsPlugin
+          requires:
+            - install_gems
+      - plugin_unit_test:
+          name: unit_test_storage
+          path: Storage
+          workspace: StoragePlugin
+          scheme: AWSS3StoragePlugin
+          requires:
+            - install_gems
+      - plugin_unit_test:
+          name: unit_test_predictions
+          path: Predictions
+          workspace: PredictionsCategoryPlugin
+          scheme: AWSPredictionsPlugin
+          requires:
+            - install_gems
+      - plugin_unit_test:
+          name: unit_test_core_ml
+          path: Predictions
+          workspace: PredictionsCategoryPlugin
+          scheme: CoreMLPredictionsPlugin
+          requires:
+            - install_gems
+      - plugin_unit_test:
+          name: unit_test_datastore
+          path: DataStore
+          workspace: DataStoreCategoryPlugin
+          scheme: AWSDataStoreCategoryPlugin
+          requires:
+            - install_gems
+      - deploy:
+          filters:
+            branches:
+              only:
+                - release
           requires:
             - build_test_amplify
-      # - plugin_unit_test:
-      #     name: unit_test_api
-      #     path: API
-      #     workspace: APICategoryPlugin
-      #     scheme: AWSAPICategoryPlugin
-      #     requires:
-      #       - install_gems
-      # - plugin_unit_test:
-      #     name: unit_test_analytics
-      #     path: Analytics
-      #     workspace: AnalyticsCategoryPlugin
-      #     scheme: AWSPinpointAnalyticsPlugin
-      #     requires:
-      #       - install_gems
-      # - plugin_unit_test:
-      #     name: unit_test_storage
-      #     path: Storage
-      #     workspace: StoragePlugin
-      #     scheme: AWSS3StoragePlugin
-      #     requires:
-      #       - install_gems
-      # - plugin_unit_test:
-      #     name: unit_test_predictions
-      #     path: Predictions
-      #     workspace: PredictionsCategoryPlugin
-      #     scheme: AWSPredictionsPlugin
-      #     requires:
-      #       - install_gems
-      # - plugin_unit_test:
-      #     name: unit_test_core_ml
-      #     path: Predictions
-      #     workspace: PredictionsCategoryPlugin
-      #     scheme: CoreMLPredictionsPlugin
-      #     requires:
-      #       - install_gems
-      # - plugin_unit_test:
-      #     name: unit_test_datastore
-      #     path: DataStore
-      #     workspace: DataStoreCategoryPlugin
-      #     scheme: AWSDataStoreCategoryPlugin
-      #     requires:
-      #       - install_gems
-      # - deploy:
-      #     filters:
-      #       branches:
-      #         only:
-      #           - release
-      #     requires:
-      #       - build_test_amplify
-      #       - unit_test_api
-      #       - unit_test_analytics
-      #       - unit_test_storage
-      #       - unit_test_predictions
-      #       - unit_test_datastore
+            - unit_test_api
+            - unit_test_analytics
+            - unit_test_storage
+            - unit_test_predictions
+            - unit_test_datastore
