@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Amplify
 
 struct AppSyncJSONHelper {
 
@@ -13,10 +14,10 @@ struct AppSyncJSONHelper {
         let jsonEncoder = JSONEncoder()
         do {
             let jsonHeader = try jsonEncoder.encode(header)
-            print("Header - \(String(describing: String(data: jsonHeader, encoding: .utf8)))")
+            Amplify.API.log.verbose("Header - \(String(describing: String(data: jsonHeader, encoding: .utf8)))")
             return jsonHeader.base64EncodedString()
         } catch {
-            print(error)
+            Amplify.API.log.error(error: error)
         }
         return ""
     }

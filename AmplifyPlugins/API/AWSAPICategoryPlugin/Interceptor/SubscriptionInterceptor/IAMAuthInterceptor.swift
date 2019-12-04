@@ -8,6 +8,7 @@
 import Foundation
 import AWSCore
 import AWSPluginsCore
+import Amplify
 
 class IAMAuthInterceptor: AuthInterceptor {
 
@@ -30,8 +31,7 @@ class IAMAuthInterceptor: AuthInterceptor {
                                                type: message.messageType)
             return signedMessage
         default:
-            // TODO: Log.verbose
-            print("Message type does not need signing - \(message.messageType)")
+            Amplify.API.log.verbose("Message type does not need signing - \(message.messageType)")
         }
         return message
     }
@@ -62,7 +62,7 @@ class IAMAuthInterceptor: AuthInterceptor {
 
     final private func getAuthHeader(_ url: URL, with payload: String) -> IAMAuthenticationHeader? {
         guard let host = url.host else {
-            print("[IAMAuthInterceptor] getAuthHeader missing host")
+            Amplify.API.log.warn("[IAMAuthInterceptor] getAuthHeader missing host")
             return nil
         }
         let amzDate =  NSDate.aws_clockSkewFixed() as NSDate

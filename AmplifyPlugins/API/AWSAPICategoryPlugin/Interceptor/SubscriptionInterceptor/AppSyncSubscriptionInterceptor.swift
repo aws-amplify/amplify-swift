@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Amplify
 
 /// Converts a connection request created with a standard endpoint configuration, to an AppSync Realtime Gateway
 /// request by rewriting the URL.
@@ -14,7 +15,7 @@ class AppSyncSubscriptionInterceptor: ConnectionInterceptor {
     func interceptConnection(_ request: AppSyncConnectionRequest,
                              for url: URL) -> AppSyncConnectionRequest {
         guard let host = url.host else {
-            print("[AppSyncSubscriptionInterceptor] interceptConnection missing host")
+            Amplify.API.log.warn("[AppSyncSubscriptionInterceptor] interceptConnection missing host")
             return request
         }
         guard var urlComponents = URLComponents(url: request.url, resolvingAgainstBaseURL: false) else {
