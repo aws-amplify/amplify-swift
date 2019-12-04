@@ -30,7 +30,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     private weak var api: APICategoryGraphQLBehavior?
     private var subscription: Subscription?
 
-    init() {
+    init(_ stateMachine: StateMachine<State, Action>? = nil) {
         let operationQueue = OperationQueue()
         operationQueue.name = "com.amazonaws.OutgoingMutationOperationQueue"
         operationQueue.maxConcurrentOperationCount = 1
@@ -38,10 +38,10 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
         self.operationQueue = operationQueue
 
-        self.stateMachine = StateMachine(initialState: .notInitialized,
-                                         resolver: OutgoingMutationQueue.Resolver.resolve(currentState:action:))
+        self.stateMachine = stateMachine ?? StateMachine(initialState: .notInitialized,
+                                                         resolver: OutgoingMutationQueue.Resolver.resolve(currentState:action:))
 
-        self.stateMachineSink = stateMachine
+        self.stateMachineSink = self.stateMachine
             .$state
             .sink { [weak self] newState in
                 guard let self = self else {
@@ -54,7 +54,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         }
 
         log.verbose("Initialized")
-        stateMachine.notify(action: .initialized)
+        self.stateMachine.notify(action: .initialized)
     }
 
     // MARK: - Public API
