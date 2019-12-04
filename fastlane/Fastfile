@@ -41,7 +41,7 @@ platform :ios do
   end
 
   desc "Test fastlane"
-  lane :release_pods do
+  lane :test_fastlane do
 
     pods.each { |pod| puts "${pod}" }
 

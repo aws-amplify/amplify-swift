@@ -171,7 +171,7 @@ jobs:
       - *restore_repo
       - restore_gems
       - check_bundle
-      - run: bundle exec fastlane release_pods
+      - run: bundle exec fastlane test_fastlane
 
 
 workflows:
