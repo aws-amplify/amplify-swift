@@ -21,6 +21,7 @@ pods = [
   # "Amplify.podspec",
   # "AWSPluginsCore.podspec",
   # "CoreMLPredictionsPlugin.podspec",
+  "AWSPredictionsPlugin.podspec",
   "AmplifyPlugins.podspec"
 ]
 
