@@ -7,6 +7,7 @@
 
 import Foundation
 import AWSPluginsCore
+import Amplify
 
 class CognitoUserPoolsAuthInterceptor: AuthInterceptor {
 
@@ -18,7 +19,7 @@ class CognitoUserPoolsAuthInterceptor: AuthInterceptor {
 
     func interceptMessage(_ message: AppSyncMessage, for url: URL) -> AppSyncMessage {
         guard let host = url.host else {
-            print("[CognitoUserPoolsAuthInterceptor] interceptMessage missing host")
+            Amplify.API.log.warn("[CognitoUserPoolsAuthInterceptor] interceptMessage missing host")
             return message
         }
 
@@ -40,15 +41,14 @@ class CognitoUserPoolsAuthInterceptor: AuthInterceptor {
                                                type: message.messageType)
             return signedMessage
         default:
-            // TODO: Log.verbose
-            print("Message type does not need signing - \(message.messageType)")
+            Amplify.API.log.verbose("Message type does not need signing - \(message.messageType)")
         }
         return message
     }
 
     func interceptConnection(_ request: AppSyncConnectionRequest, for url: URL) -> AppSyncConnectionRequest {
         guard let host = url.host else {
-            print("[CognitoUserPoolsAuthInterceptor] interceptConnection missing host")
+            Amplify.API.log.warn("[CognitoUserPoolsAuthInterceptor] interceptConnection missing host")
             return request
         }
 

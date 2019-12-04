@@ -8,6 +8,7 @@
 import Foundation
 import AWSCore
 import AWSPluginsCore
+import Amplify
 
 /// Auth interceptor for API Key based authentication
 class APIKeyAuthInterceptor: AuthInterceptor {
@@ -29,7 +30,7 @@ class APIKeyAuthInterceptor: AuthInterceptor {
     func interceptConnection(_ request: AppSyncConnectionRequest,
                              for url: URL) -> AppSyncConnectionRequest {
         guard let host = url.host else {
-            print("[APIKeyAuthInterceptor] interceptConnection missing host")
+            Amplify.API.log.warn("[APIKeyAuthInterceptor] interceptConnection missing host")
             return request
         }
 
@@ -55,7 +56,7 @@ class APIKeyAuthInterceptor: AuthInterceptor {
 
     func interceptMessage(_ message: AppSyncMessage, for url: URL) -> AppSyncMessage {
         guard let host = url.host else {
-            print("[APIKeyAuthInterceptor] interceptMessage missing host")
+            Amplify.API.log.warn("[APIKeyAuthInterceptor] interceptMessage missing host")
             return message
         }
 
@@ -71,8 +72,7 @@ class APIKeyAuthInterceptor: AuthInterceptor {
                                                type: message.messageType)
             return signedMessage
         default:
-            // TODO: Log.verbose
-            print("Message type does not need signing - \(message.messageType)")
+            Amplify.API.log.verbose("Message type does not need signing - \(message.messageType)")
         }
         return message
     }

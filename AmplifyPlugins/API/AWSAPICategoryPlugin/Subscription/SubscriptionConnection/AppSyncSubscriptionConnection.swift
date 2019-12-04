@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Amplify
 
 class AppSyncSubscriptionConnection: SubscriptionConnection, RetryableConnection {
 
@@ -60,7 +61,7 @@ class AppSyncSubscriptionConnection: SubscriptionConnection, RetryableConnection
     }
 
     func unsubscribe(item: SubscriptionItem) {
-        print("Unsubscribe - \(item.identifier)")
+        Amplify.API.log.verbose("Unsubscribe - \(item.identifier)")
         connectionProvider.unsubscribe(item.identifier)
     }
 

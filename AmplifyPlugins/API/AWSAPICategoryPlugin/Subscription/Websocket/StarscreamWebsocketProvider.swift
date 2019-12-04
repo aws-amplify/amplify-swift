@@ -7,6 +7,7 @@
 
 import Foundation
 import Starscream
+import Amplify
 
 class StarscreamWebsocketProvider: WebsocketProvider {
 
@@ -31,7 +32,7 @@ class StarscreamWebsocketProvider: WebsocketProvider {
     }
 
     func connect() {
-        print("Connecting to url ...")
+        Amplify.API.log.verbose("Connecting to url ...")
         let signedRequest = interceptConnection(request, for: url)
         socket = WebSocket(url: signedRequest.url, protocols: protocols)
         socket?.delegate = self
@@ -43,7 +44,7 @@ class StarscreamWebsocketProvider: WebsocketProvider {
     }
 
     func write(_ message: String) {
-        print("Websocket write - \(message)")
+        Amplify.API.log.verbose("Websocket write - \(message)")
         socket?.write(string: message)
     }
 

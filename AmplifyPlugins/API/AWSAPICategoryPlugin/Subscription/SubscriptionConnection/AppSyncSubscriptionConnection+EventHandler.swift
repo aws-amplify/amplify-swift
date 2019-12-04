@@ -34,13 +34,13 @@ extension AppSyncSubscriptionConnection {
         case .subscriptionError(let identifier, let error):
             handleSubscriptionError(identifier: identifier, error: error)
         case .error(let error):
-            print("Connection received error unmappable to any specific subscriber \(error)")
+            Amplify.API.log.error("Connection received error unmappable to any specific subscriber \(error)")
         }
 
     }
 
     func handleConnectionState(connectionState: ConnectionState) {
-        print("Connection state - \(connectionState)")
+        Amplify.API.log.verbose("Connection state - \(connectionState)")
 
         switch connectionState {
         case .connecting:
@@ -50,7 +50,7 @@ extension AppSyncSubscriptionConnection {
                 self?.subscriptionItems.forEach { identifier, subscriptionItem in
                     switch subscriptionItem.subscriptionConnectionState {
                     case .disconnected:
-                        print("Start subscription for identifier: \(subscriptionItem.identifier)")
+                        Amplify.API.log.verbose("Start subscription for identifier: \(subscriptionItem.identifier)")
                         subscriptionItem.setState(.connecting)
                         self?.connectionProvider.subscribe(subscriptionItem)
                     case .connecting, .connected:
@@ -87,7 +87,7 @@ extension AppSyncSubscriptionConnection {
             let data = try JSONEncoder().encode(payload)
             subscriptionItem.dispatch(data: data)
         } catch {
-            print(error)
+            Amplify.API.log.error(error: error)
             let jsonParserError = ConnectionProviderError.jsonParse(identifier, error)
             subscriptionItem.dispatch(error: APIError.pluginError(jsonParserError))
         }
@@ -96,7 +96,7 @@ extension AppSyncSubscriptionConnection {
     // MARK: Error Handling
 
     func handleSubscriptionError(identifier: String, error: ConnectionProviderError) {
-        print("Handle Subscription Error \(error)")
+        Amplify.API.log.verbose("Handle Subscription Error \(error)")
         guard let subscriptionItem = subscriptionItems[identifier] else {
             return
         }
@@ -108,21 +108,20 @@ extension AppSyncSubscriptionConnection {
     ///
     func tryReconnectOnError(error: ConnectionProviderError) {
         guard let retryHandler = retryHandler else {
-            // dispatch the error on one of the subscriptionItems
-            // or all of them?
-            print("1.no retry handler, dispatch to who?")
+            // TODO: dispatch the error on one of the subscriptionItems or all of them
+            Amplify.API.log.warn("[tryReconnectOnError] 1. no retry handler to reconnect on Error \(error)")
             return
         }
 
         let retryAdvice = retryHandler.shouldRetryRequest(for: error)
         if retryAdvice.shouldRetry, let retryInterval = retryAdvice.retryInterval {
-            // print("Retrying subscription \(subscriptionItem.identifier) after \(retryInterval)")
+            Amplify.API.log.verbose("Retrying websocket connect after retryInterval: \(retryInterval)")
             DispatchQueue.global().asyncAfter(deadline: .now() + retryInterval) {
                 self.connectionProvider.connect()
             }
         } else {
-            // just dispatch error to who?
-            print("2.no retry handler, dispatch to who?")
+            // TODO: dispatch the error on one of the subscriptionItems or all of them
+            Amplify.API.log.warn("[tryReconnectOnError] Error \(error)")
         }
     }
 }

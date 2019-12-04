@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Amplify
 
 /// Appsync Real time connection that connects to subscriptions
 /// through websocket.
@@ -69,7 +70,7 @@ class AppSyncConnectionProvider: ConnectionProvider {
     }
 
     func subscribe(_ subscriptionItem: SubscriptionItem) {
-        print("subscribe, sending start subscription message...")
+        Amplify.API.log.verbose("subscribe, sending start subscription message...")
         let payload: AppSyncMessage.Payload
         do {
             payload = try convertToPayload(for: subscriptionItem.requestString,
@@ -92,7 +93,7 @@ class AppSyncConnectionProvider: ConnectionProvider {
     }
 
     func unsubscribe(_ identifier: String) {
-        print("sendStartSubscriptionMessage, sending start subscription message...")
+        Amplify.API.log.verbose("sendStartSubscriptionMessage, sending start subscription message...")
         let message = AppSyncMessage(id: identifier, type: .unsubscribe)
         do {
             try write(message)
@@ -120,7 +121,7 @@ class AppSyncConnectionProvider: ConnectionProvider {
     func sendConnectionInitMessage() {
         switch state {
         case .connecting:
-            print("sendConnectionInitMessage, sending init message...")
+            Amplify.API.log.verbose("sendConnectionInitMessage, sending init message...")
             let message = AppSyncMessage(type: .connectionInit)
             do {
                 try write(message)
@@ -146,7 +147,7 @@ class AppSyncConnectionProvider: ConnectionProvider {
         guard case .connected = state else {
             return
         }
-        print("Validating connection")
+        Amplify.API.log.verbose("Validating connection")
         let staleThreshold = lastKeepAliveTime + staleConnectionTimeout
         let currentTime = DispatchTime.now()
         if staleThreshold < currentTime {
@@ -157,7 +158,7 @@ class AppSyncConnectionProvider: ConnectionProvider {
                 }
                 self.state = .disconnected(error: nil)
                 self.websocketProvider.disconnect()
-                print("Realtime connection is stale, disconnecting.")
+                Amplify.API.log.verbose("Realtime connection is stale, disconnecting.")
                 self.listener?(.connection(self.state))
             }
 
@@ -193,7 +194,7 @@ class AppSyncConnectionProvider: ConnectionProvider {
             let jsonData = try JSONSerialization.data(withJSONObject: dataDict)
             payload.data = String(data: jsonData, encoding: .utf8)
         } catch {
-            print(error)
+            Amplify.API.log.error(error: error)
             let jsonError = ConnectionProviderError.jsonParse(nil, error)
             throw jsonError
         }

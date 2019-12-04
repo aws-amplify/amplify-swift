@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Amplify
 
 extension AppSyncConnectionProvider {
 
@@ -39,7 +40,7 @@ extension AppSyncConnectionProvider {
         case .data(let websocketResponse):
             handleResponse(websocketResponse)
         case .error(let error):
-            print("Got error bac")
+            Amplify.API.log.error("Websocket Error: \(error)")
         }
     }
 
@@ -61,7 +62,8 @@ extension AppSyncConnectionProvider {
                         self.listener?(.connection(self.state))
                     }
                 case .connected, .disconnected:
-                    print("[AppSyncConnectionProvider] connectionAck recieved while connection is \(state)")
+                    Amplify.API.log.verbose(
+                        "[AppSyncConnectionProvider] connectionAck recieved while connection is \(state)")
             }
 
         case .error:
