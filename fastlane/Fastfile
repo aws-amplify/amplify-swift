@@ -19,10 +19,9 @@ default_platform(:ios)
 
 pods = [
   "Amplify.podspec",
-  "AmplifyPlugins.podspec",
-  "AmplifyTestCommon.podspec",
   "AWSPluginsCore.podspec",
   "CoreMLPredictionsPlugin.podspec"
+  "AmplifyPlugins.podspec"
 ]
 
 platform :ios do
