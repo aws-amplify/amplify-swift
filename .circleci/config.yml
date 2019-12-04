@@ -186,7 +186,7 @@ workflows:
             - install_gems
       - test_fastlane:
           requires:
-            - install_gems
+            - build_test_amplify
       # - plugin_unit_test:
       #     name: unit_test_api
       #     path: API
