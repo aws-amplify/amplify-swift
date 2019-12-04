@@ -6,6 +6,8 @@ defaults: &defaults
   macos:
     xcode: "11.2.1"
   working_directory: ~/amplify-ios
+  environment:
+      BUNDLE_PATH: vendor/bundle
 
 references:
   repo_cache_key: &repo_cache_key
@@ -41,6 +43,13 @@ commands:
           name: pre-start simulator
           command: bash ~/amplify-ios/CircleciScripts/pre_start_simulator.sh
 
+  restore_gems:
+    steps:
+      - restore_cache:
+          keys:
+            - v1-gems-{{ checksum "Gemfile.lock" }}
+            - v1-gems-
+
   save_plugin_pods:
     parameters:
       prefix:
@@ -71,6 +80,22 @@ jobs:
           key: *repo_cache_key
           paths: 
             - ~/amplify-ios
+  
+  install_gems:
+    <<: *defaults
+    steps:
+      - *restore_repo
+      - restore_gems
+      - run:
+          name: Bundle install
+          command: bundle check --path $BUNDLE_PATH || bundle install --path $BUNDLE_PATH
+          environment:
+            BUNDLE_JOBS: 4
+            BUNDLE_RETRY: 3
+      - save_cache:
+          key: v1-gems-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
 
   build_test_amplify:
     <<: *defaults
@@ -78,13 +103,19 @@ jobs:
       - *restore_repo
       - pre_start_simulator
       - run: pod install
+      - restore_gems
+      - run:
+          name: Check bundle
+          command: bundle check --path $BUNDLE_PATH || bundle install --path $BUNDLE_PATH
       - run:
           name: build amplify
-          command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
+          command: xcodebuild build -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}" | xcpretty
       - run:
           name: test amplify
-          command: xcodebuild test -enableThreadSanitizer NO -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}"
-  
+          command: xcodebuild test -enableThreadSanitizer NO -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}" | xcpretty --simple --color --report junit
+      - store_test_results:
+          path: build/reports
+
   plugin_unit_test:
     <<: *defaults
     parameters:
@@ -104,72 +135,59 @@ jobs:
       - run: pod install
       - save_plugin_pods:
           prefix: << parameters.path >>
-
+      - restore_gems
+      - run:
+          name: Check bundle
+          command: bundle check --path $BUNDLE_PATH || bundle install --path $BUNDLE_PATH
       - run:
           name: build << parameters.path >>
-          command: xcodebuild build-for-testing -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}"
+          command: xcodebuild build-for-testing -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | xcpretty
       - run:
           name: test << parameters.path >>
-          command: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}"
+          command: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | xcpretty --simple --color --report junit
 
 workflows:
   build_test:
     jobs:
       - checkout_code
-      # Running all the tests in parallel leads to threading issues
-      # Breaking them up into 2 groups:
-      # Group 1
+      - install_gems:
+          requires:
+            - checkout_code
       - build_test_amplify:
           requires:
-              - checkout_code                
+            - install_gems
       - plugin_unit_test:
           name: unit_test_api
           path: API
           workspace: APICategoryPlugin
           scheme: AWSAPICategoryPlugin
           requires:
-              - checkout_code
+              - install_gems
       - plugin_unit_test:
           name: unit_test_analytics
           path: Analytics
           workspace: AnalyticsCategoryPlugin
           scheme: AWSPinpointAnalyticsPlugin
           requires:
-              - checkout_code
+              - install_gems
       - plugin_unit_test:
           name: unit_test_storage
           path: Storage
           workspace: StoragePlugin
           scheme: AWSS3StoragePlugin
           requires:
-              - build_test_amplify
-              - unit_test_api
-              - unit_test_analytics
+              - install_gems
       - plugin_unit_test:
           name: unit_test_predictions
           path: Predictions
           workspace: PredictionsCategoryPlugin
           scheme: AWSPredictionsPlugin
           requires:
-              - build_test_amplify
-              - unit_test_api
-              - unit_test_analytics
+              - install_gems
       - plugin_unit_test:
-          name: unit_test_predictions_core_ml
-          path: Predictions
-          workspace: PredictionsCategoryPlugin
-          scheme: CoreMLPredictionsPlugin
+          name: unit_test_datastore
+          path: DataStore
+          workspace: DataStoreCategoryPlugin
+          scheme: AWSDataStoreCategoryPlugin
           requires:
-              - build_test_amplify
-              - unit_test_api
-              - unit_test_analytics
-      # - plugin_unit_test:
-      #     name: unit_test_datastore
-      #     path: DataStore
-      #     workspace: DataStoreCategoryPlugin
-      #     scheme: AWSDataStoreCategoryPlugin
-      #     requires:
-      #         - build_test_amplify
-      #         - unit_test_api
-      #         - unit_test_analytics
-      #         - unit_test_storage
+              - install_gems
