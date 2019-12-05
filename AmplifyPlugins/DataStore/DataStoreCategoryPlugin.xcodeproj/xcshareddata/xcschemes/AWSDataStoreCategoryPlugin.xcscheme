@@ -86,6 +86,9 @@
                <Test
                   Identifier = "OutgoingMutationQueueTests/testMutationQueueStoresDeleteEvents()">
                </Test>
+               <Test
+                  Identifier = "SyncEngineStartupTests">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

@@ -14,5 +14,5 @@ final public class PostCommentModelRegistration: AmplifyModelRegistration {
         ModelRegistry.register(modelType: Comment.self)
     }
 
-  public let version: String = "1"
+    public let version: String = "1"
 }

@@ -142,12 +142,17 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                                                                  reconciliationQueue: reconciliationQueue,
                                                                  storageAdapter: storageAdapter)
 
+        // TODO: This should be an AsynchronousOperation, not a semaphore-waited block
         let semaphore = DispatchSemaphore(value: 1)
 
         initialSyncOrchestrator.sync { result in
             if case .failure(let dataStoreError) = result {
                 // TODO: Error handling
-                self.log.error(error: dataStoreError)
+                self.log.error(dataStoreError.errorDescription)
+                self.log.error(dataStoreError.recoverySuggestion)
+                if let underlyingError = dataStoreError.underlyingError {
+                    self.log.error("\(underlyingError)")
+                }
             } else {
                 self.log.info("Successfully finished sync")
             }

@@ -9,11 +9,11 @@ import Amplify
 import AWSPluginsCore
 
 protocol InitialSyncOrchestrator {
-    func sync()
+    func sync(completion: @escaping (Result<Void, DataStoreError>) -> Void)
 }
 
 @available(iOS 13.0, *)
-final class AWSInitialSyncOrchestrator {
+final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     typealias SyncOperationResult = Result<Void, DataStoreError>
     typealias SyncOperationResultHandler = (SyncOperationResult) -> Void
 
@@ -99,7 +99,7 @@ final class AWSInitialSyncOrchestrator {
     }
 
     private func resolveCompletion() {
-        // TODO: How to usefully report errors from multiple sync operations?
+        // TODO: Invoke error callback for sync errors
         guard syncErrors.isEmpty else {
             let allMessages = syncErrors.map { String(describing: $0) }
             let syncError = DataStoreError.sync(
@@ -110,7 +110,7 @@ final class AWSInitialSyncOrchestrator {
             return
         }
 
-        completion?(.success(()))
+        completion?(.successfulVoid)
     }
 
 }

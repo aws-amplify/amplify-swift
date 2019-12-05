@@ -19,8 +19,6 @@ class SyncEngineIntegrationTestBase: XCTestCase {
     static let networkTimeout = TimeInterval(180)
     let networkTimeout = SyncEngineIntegrationTestBase.networkTimeout
 
-    var amplifyConfig: AmplifyConfiguration!
-
     // Convenience property to obtain a handle to the underlying storage adapter implementation, for use in asserting
     // database behaviors. Full of force-unwrapped badness.
     // swiftlint:disable force_try
@@ -42,25 +40,6 @@ class SyncEngineIntegrationTestBase: XCTestCase {
         Amplify.reset()
         Amplify.Logging.logLevel = .verbose
 
-        // TODO: Move this to an integ test config file
-        let apiConfig = APICategoryConfiguration(plugins: [
-            "awsAPIPlugin": [
-                "Default": [
-                    "endpoint": "https://xxxx.appsync-api.us-west-2.amazonaws.com/graphql",
-                    "region": "us-west-2",
-                    "authorizationType": "API_KEY",
-                    "apiKey": "da2-xxx",
-                    "endpointType": "GraphQL"
-                ]
-            ]
-        ])
-
-        let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
-            "awsDataStorePlugin": true
-        ])
-
-        amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: dataStoreConfig)
-
         do {
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: TestModelRegistration()))
@@ -71,6 +50,16 @@ class SyncEngineIntegrationTestBase: XCTestCase {
     }
 
     func startAmplifyAndWaitForSync() throws {
+
+        let bundle = Bundle(for: type(of: self))
+        guard let configFile = bundle.url(forResource: "amplifyconfiguration", withExtension: "json") else {
+            XCTFail("Could not get URL for amplifyconfiguration.json from \(bundle)")
+            return
+        }
+
+        let configData = try Data(contentsOf: configFile)
+        let amplifyConfig = try JSONDecoder().decode(AmplifyConfiguration.self, from: configData)
+
         let syncStarted = expectation(description: "Sync started")
 
         var token: UnsubscribeToken!
@@ -88,7 +77,7 @@ class SyncEngineIntegrationTestBase: XCTestCase {
 
         DispatchQueue.global().async {
             do {
-                try Amplify.configure(self.amplifyConfig)
+                try Amplify.configure(amplifyConfig)
             } catch {
                 XCTFail(String(describing: error))
             }

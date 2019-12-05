@@ -21,8 +21,9 @@ open class AsynchronousOperation: Operation {
         case finished
     }
 
-    /// Concurrent queue for synchronizing access to `state`.
-    private let stateQueue = DispatchQueue(label: "com.amazonaws.amplify.AsyncOperation", attributes: .concurrent)
+    /// Synchronizes access to `state`.
+    private let stateQueue = DispatchQueue(label: "com.amazonaws.amplify.AsyncOperation.state",
+                                           target: DispatchQueue.global())
 
     /// Private backing stored property for `state`.
     private var _state: OperationState = .notExecuting
@@ -30,7 +31,7 @@ open class AsynchronousOperation: Operation {
     /// The state of the operation
     @objc private dynamic var state: OperationState {
         get { return stateQueue.sync { _state } }
-        set { stateQueue.async(flags: .barrier) { self._state = newValue } }
+        set { stateQueue.sync { self._state = newValue } }
     }
 
     // MARK: - Various `Operation` properties

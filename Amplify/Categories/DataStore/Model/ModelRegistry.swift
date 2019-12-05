@@ -24,7 +24,7 @@ public struct ModelRegistry {
         }
     }
 
-    public static func register<M: Model>(modelType: M.Type) {
+    public static func register(modelType: Model.Type) {
         concurrencyQueue.sync {
             let modelDecoder: ModelDecoder = { jsonString, jsonDecoder in
                 let model = try modelType.from(json: jsonString, decoder: jsonDecoder)

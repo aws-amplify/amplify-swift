@@ -25,7 +25,7 @@ extension DataStoreResult {
     }
 
     public static var emptyResult: DataStoreResult<Void> {
-        .success(())
+        .successfulVoid
     }
 
 }

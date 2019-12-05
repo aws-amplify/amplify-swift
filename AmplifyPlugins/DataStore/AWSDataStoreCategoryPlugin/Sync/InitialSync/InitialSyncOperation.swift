@@ -9,7 +9,7 @@ import Amplify
 import AWSPluginsCore
 
 @available(iOS 13.0, *)
-final class InitialSyncOperation: Operation {
+final class InitialSyncOperation: AsynchronousOperation {
     typealias SyncQueryResult = PaginatedList<AnyModel>
 
     private weak var api: APICategoryGraphQLBehavior?
@@ -21,8 +21,6 @@ final class InitialSyncOperation: Operation {
 
     private var lastSyncTime: Int?
 
-    private var isCompleted: DispatchSemaphore
-
     init(modelType: Model.Type,
          api: APICategoryGraphQLBehavior?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
@@ -33,23 +31,35 @@ final class InitialSyncOperation: Operation {
         self.reconciliationQueue = reconciliationQueue
         self.storageAdapter = storageAdapter
         self.completion = completion
-
-        self.isCompleted = DispatchSemaphore(value: 1)
     }
 
     override func main() {
+        guard !isCancelled else {
+            super.finish()
+            return
+        }
+
         log.info("Beginning sync for \(modelType.modelName)")
+        setUpLastSyncTime()
+        query()
+    }
+
+    private func setUpLastSyncTime() {
+        guard !isCancelled else {
+            super.finish()
+            return
+        }
 
         let lastSyncMetadata = getLastSyncMetadata()
         lastSyncTime = lastSyncMetadata?.lastSync
-
-        DispatchQueue.global().async {
-            self.query()
-        }
-        isCompleted.wait()
     }
 
     private func getLastSyncMetadata() -> ModelSyncMetadata? {
+        guard !isCancelled else {
+            super.finish()
+            return nil
+        }
+
         guard let storageAdapter = storageAdapter else {
             log.error(error: DataStoreError.nilStorageAdapter())
             return nil
@@ -65,12 +75,12 @@ final class InitialSyncOperation: Operation {
 
     }
 
-    // MARK: - Async processes
-
-    // This section marks the asynchronous processing part of the operation. Each exit condition of this proces must
-    // call `finish` when exiting, to signal the semaphore and allow the overally operation to complete
-
     private func query(nextToken: String? = nil) {
+        guard !isCancelled else {
+            super.finish()
+            return
+        }
+
         guard let api = api else {
             finish(result: .failure(DataStoreError.nilAPIHandle()))
             return
@@ -81,7 +91,9 @@ final class InitialSyncOperation: Operation {
                                         lastSync: lastSyncTime)
 
         let request = GraphQLRequest(document: document.stringValue,
-                                     responseType: SyncQueryResult.self)
+                                     variables: document.variables,
+                                     responseType: SyncQueryResult.self,
+                                     decodePath: document.decodePath)
 
         _ = api.query(request: request) { asyncEvent in
             switch asyncEvent {
@@ -99,6 +111,11 @@ final class InitialSyncOperation: Operation {
     /// Disposes of the query results: Stops if error, reconciles results if success, and kick off a new query if there
     /// is a next token
     private func handleQueryResults(graphQLResult: Result<SyncQueryResult, GraphQLResponseError<SyncQueryResult>>) {
+        guard !isCancelled else {
+            super.finish()
+            return
+        }
+
         guard let reconciliationQueue = reconciliationQueue else {
             finish(result: .failure(DataStoreError.nilReconciliationQueues()))
             return
@@ -114,6 +131,8 @@ final class InitialSyncOperation: Operation {
         }
 
         let items = syncQueryResult.items
+        lastSyncTime = syncQueryResult.startedAt
+
         for item in items {
             reconciliationQueue.offer(item)
         }
@@ -123,20 +142,38 @@ final class InitialSyncOperation: Operation {
                 self.query(nextToken: nextToken)
             }
         } else {
-            finish(result: Result.successful)
+            updateModelSyncMetadata()
         }
 
     }
 
-    private func finish(result: AWSInitialSyncOrchestrator.SyncOperationResult) {
-        completion(result)
-        isCompleted.signal()
+    private func updateModelSyncMetadata() {
+        guard !isCancelled else {
+            super.finish()
+            return
+        }
+
+        guard let storageAdapter = storageAdapter else {
+            finish(result: .failure(DataStoreError.nilStorageAdapter()))
+            return
+        }
+
+        let syncMetadata = ModelSyncMetadata(id: modelType.modelName, lastSync: lastSyncTime)
+        storageAdapter.save(syncMetadata) { result in
+            switch result {
+            case .failure(let dataStoreError):
+                self.finish(result: .failure(dataStoreError))
+            case .success:
+                self.finish(result: .successfulVoid)
+            }
+        }
     }
 
-}
+    private func finish(result: AWSInitialSyncOrchestrator.SyncOperationResult) {
+        completion(result)
+        super.finish()
+    }
 
-extension Result where Success == Void {
-    static var successful: Result<Void, Failure> { .success(()) }
 }
 
 @available(iOS 13.0, *)

@@ -201,10 +201,10 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func queryModelSyncMetadata(for modelType: Model.Type) throws -> ModelSyncMetadata? {
-        let modelType = ModelSyncMetadata.self
-        let statement = SelectStatement(from: modelType, predicate: field("id").eq(modelType.modelName))
+        let statement = SelectStatement(from: ModelSyncMetadata.self,
+                                        predicate: field("id").eq(modelType.modelName))
         let rows = try connection.prepare(statement.stringValue).run(statement.variables)
-        let result = try rows.convert(to: modelType)
+        let result = try rows.convert(to: ModelSyncMetadata.self)
         return try result.unique()
     }
 }

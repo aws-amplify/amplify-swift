@@ -15,7 +15,6 @@ extension ModelSyncMetadata {
     public enum CodingKeys: String, ModelKey {
         case id
         case lastSync
-        case startedAt
     }
 
     public static let keys = CodingKeys.self
@@ -28,8 +27,7 @@ extension ModelSyncMetadata {
 
         definition.fields(
             .id(),
-            .field(keys.lastSync, is: .optional, ofType: .int),
-            .field(keys.startedAt, is: .optional, ofType: .date)
+            .field(keys.lastSync, is: .optional, ofType: .int)
         )
     }
 }
