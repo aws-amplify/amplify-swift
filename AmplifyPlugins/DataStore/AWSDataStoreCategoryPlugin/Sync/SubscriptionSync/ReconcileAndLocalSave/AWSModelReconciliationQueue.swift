@@ -39,7 +39,9 @@ import Foundation
 final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 
     /// Exposes a publisher for incoming subscription events
-    private let incomingSubscriptionEvents: IncomingSubscriptionEventFacade
+    private let incomingSubscriptionEvents: IncomingSubscriptionEventPublisher
+
+    weak var storageAdapter: StorageEngineAdapter?
 
     /// A buffer queue for incoming subsscription events, waiting for this ReconciliationQueue to be `start`ed. Once
     /// the ReconciliationQueue is started, each event in the `incomingRemoveEventQueue` will be submitted to the
@@ -50,18 +52,18 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     /// is always active.
     private let reconcileAndSaveQueue: OperationQueue
 
-    weak var storageAdapter: StorageEngineAdapter?
-
     private let modelName: String
 
     private var incomingEventsSink: AnyCancellable?
 
     init(modelType: Model.Type,
-         storageAdapter: StorageEngineAdapter,
-         api: APICategoryGraphQLBehavior) {
-        self.storageAdapter = storageAdapter
+         storageAdapter: StorageEngineAdapter?,
+         api: APICategoryGraphQLBehavior,
+         incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
 
         self.modelName = modelType.modelName
+
+        self.storageAdapter = storageAdapter
 
         self.reconcileAndSaveQueue = OperationQueue()
         reconcileAndSaveQueue.name = "com.amazonaws.DataStore.\(modelType).reconcile"
@@ -75,10 +77,11 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         incomingSubscriptionEventQueue.underlyingQueue = DispatchQueue.global()
         incomingSubscriptionEventQueue.isSuspended = true
 
-        let incomingSubscriptionEvents = IncomingSubscriptionEventFacade(modelType: modelType, api: api)
-        self.incomingSubscriptionEvents = incomingSubscriptionEvents
+        let resolvedIncomingSubscriptionEvents = incomingSubscriptionEvents ??
+            AWSIncomingSubscriptionEventPublisher(modelType: modelType, api: api)
+        self.incomingSubscriptionEvents = resolvedIncomingSubscriptionEvents
 
-        self.incomingEventsSink = incomingSubscriptionEvents
+        self.incomingEventsSink = resolvedIncomingSubscriptionEvents
             .publisher
             .sink(receiveCompletion: { [weak self] completion in
                 self?.receiveCompletion(completion)
@@ -110,11 +113,6 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     }
 
     func enqueue(_ remoteModel: MutationSync<AnyModel>) {
-        guard let storageAdapter = storageAdapter else {
-            log.error("No storage adapter, cannot save received value")
-            return
-        }
-
         let reconcileOp = ReconcileAndLocalSaveOperation(remoteModel: remoteModel,
                                                          storageAdapter: storageAdapter)
         reconcileAndSaveQueue.addOperation(reconcileOp)
@@ -142,9 +140,11 @@ extension AWSModelReconciliationQueue: Resettable {
 
         incomingEventsSink?.cancel()
 
-        group.enter()
-        DispatchQueue.global().async {
-            self.incomingSubscriptionEvents.reset { group.leave() }
+        if let resettable = incomingSubscriptionEvents as? Resettable {
+            group.enter()
+            DispatchQueue.global().async {
+                resettable.reset { group.leave() }
+            }
         }
 
         group.enter()

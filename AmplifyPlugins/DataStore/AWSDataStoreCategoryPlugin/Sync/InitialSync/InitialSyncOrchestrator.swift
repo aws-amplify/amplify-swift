@@ -12,6 +12,11 @@ protocol InitialSyncOrchestrator {
     func sync(completion: @escaping (Result<Void, DataStoreError>) -> Void)
 }
 
+// For testing
+@available(iOS 13.0, *)
+typealias InitialSyncOrchestratorFactory =
+    (APICategoryGraphQLBehavior?, IncomingEventReconciliationQueue?, StorageEngineAdapter?) -> InitialSyncOrchestrator
+
 @available(iOS 13.0, *)
 final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     typealias SyncOperationResult = Result<Void, DataStoreError>
@@ -50,11 +55,8 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         self.completion = completion
 
         log.info("Beginning initial sync")
-        let roots = getModelRoots()
 
-        for root in roots {
-            enqueueSyncOperation(for: root)
-        }
+        enqueueSyncableModels()
 
         // This operation is intentionally not cancel-aware; we always want resolveCompletion to execute
         // as the last item
@@ -65,37 +67,33 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         syncOperationQueue.isSuspended = false
     }
 
-    /// Creates a graph of registered models and returns the roots.
-    private func getModelRoots() -> [DirectedGraphNode<Model.Type>] {
-        let syncableModels = ModelRegistry.models.filter { !$0.schema.isSystem }
-        let modelGraphs = ModelGraphs(models: syncableModels)
-        let roots = modelGraphs.roots
-        return roots
+    private func enqueueSyncableModels() {
+        let syncableModels = ModelRegistry.models.filter { $0.schema.isSyncable }
+        let sortedModels = syncableModels.sortByDependencyOrder()
+        for model in sortedModels {
+            enqueueSyncOperation(for: model)
+        }
     }
 
-    /// Recursively enqueues sync operations for models and downstream dependencies
-    private func enqueueSyncOperation(for root: DirectedGraphNode<Model.Type>) {
+    /// Enqueues sync operations for models and downstream dependencies
+    private func enqueueSyncOperation(for modelType: Model.Type) {
         let syncOperationCompletion: SyncOperationResultHandler = { result in
             if case .failure(let dataStoreError) = result {
                 let syncError = DataStoreError.sync(
-                    "An error occurred syncing \(root.value.modelName)",
+                    "An error occurred syncing \(modelType.modelName)",
                     "",
                     dataStoreError)
                 self.syncErrors.append(syncError)
             }
         }
 
-        let initialSyncForModel = InitialSyncOperation(modelType: root.value,
+        let initialSyncForModel = InitialSyncOperation(modelType: modelType,
                                                        api: api,
                                                        reconciliationQueue: reconciliationQueue,
                                                        storageAdapter: storageAdapter,
                                                        completion: syncOperationCompletion)
 
         syncOperationQueue.addOperation(initialSyncForModel)
-
-        for downstream in root.downstream {
-            enqueueSyncOperation(for: downstream)
-        }
     }
 
     private func resolveCompletion() {
@@ -117,3 +115,12 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
 @available(iOS 13.0, *)
 extension AWSInitialSyncOrchestrator: DefaultLogger { }
+
+@available(iOS 13.0, *)
+extension AWSInitialSyncOrchestrator: Resettable {
+    func reset(onComplete: @escaping BasicClosure) {
+        syncOperationQueue.cancelAllOperations()
+        syncOperationQueue.waitUntilAllOperationsAreFinished()
+        onComplete()
+    }
+}

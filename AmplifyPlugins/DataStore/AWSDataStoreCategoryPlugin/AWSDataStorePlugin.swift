@@ -26,7 +26,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     public init(modelRegistration: AmplifyModelRegistration) {
         self.modelRegistration = modelRegistration
         self.isSyncEnabled = false
-        if #available(iOS 13, *) {
+        if #available(iOS 13.0, *) {
             self.dataStorePublisher = DataStorePublisher()
         } else {
             self.dataStorePublisher = nil
@@ -81,10 +81,10 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     public func reset(onComplete: @escaping (() -> Void)) {
         let group = DispatchGroup()
-        if let awsStorageEngine = storageEngine as? StorageEngine {
+        if let resettable = storageEngine as? Resettable {
             group.enter()
             DispatchQueue.global().async {
-                awsStorageEngine.reset {
+                resettable.reset {
                     group.leave()
                 }
             }

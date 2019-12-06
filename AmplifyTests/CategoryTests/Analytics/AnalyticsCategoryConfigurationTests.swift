@@ -252,7 +252,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Analytics.configure(using: categoryConfig)
 
-        let semaphore = DispatchSemaphore(value: 1)
+        let semaphore = DispatchSemaphore(value: 0)
         Amplify.Analytics.reset { semaphore.signal() }
         semaphore.wait()
 

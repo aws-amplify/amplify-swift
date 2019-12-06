@@ -16,6 +16,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     // Assigned at `start`
     private weak var api: APICategoryGraphQLBehavior?
 
+    // Assigned and released inside `performInitialQueries`, but we maintain a reference so we can `reset`
+    private var initialSyncOrchestrator: InitialSyncOrchestrator?
+    private let initialSyncOrchestratorFactory: InitialSyncOrchestratorFactory
+
     private let mutationEventIngester: MutationEventIngester
     private let mutationEventPublisher: MutationEventPublisher
     private let outgoingMutationQueue: OutgoingMutationQueueBehavior
@@ -33,20 +37,24 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
         let outgoingMutationQueue = OutgoingMutationQueue()
+        let initialSyncOrchestratorFactory = AWSInitialSyncOrchestrator.init(api:reconciliationQueue:storageAdapter:)
         self.init(storageAdapter: storageAdapter,
                   outgoingMutationQueue: outgoingMutationQueue,
                   mutationEventIngester: mutationDatabaseAdapter,
-                  mutationEventPublisher: awsMutationEventPublisher)
+                  mutationEventPublisher: awsMutationEventPublisher,
+                  initialSyncOrchestratorFactory: initialSyncOrchestratorFactory)
     }
 
     init(storageAdapter: StorageEngineAdapter,
          outgoingMutationQueue: OutgoingMutationQueueBehavior,
          mutationEventIngester: MutationEventIngester,
-         mutationEventPublisher: MutationEventPublisher) {
+         mutationEventPublisher: MutationEventPublisher,
+         initialSyncOrchestratorFactory: @escaping InitialSyncOrchestratorFactory) {
         self.storageAdapter = storageAdapter
         self.mutationEventIngester = mutationEventIngester
         self.mutationEventPublisher = mutationEventPublisher
         self.outgoingMutationQueue = outgoingMutationQueue
+        self.initialSyncOrchestratorFactory = initialSyncOrchestratorFactory
 
         self.syncQueue = OperationQueue()
         syncQueue.name = "com.amazonaws.Amplify.\(AWSDataStorePlugin.self).CloudSyncEngine"
@@ -78,7 +86,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         setUpCloudSubscriptionsOp.addDependency(pauseMutationsOp)
 
         let performInitialQueriesOp = CancelAwareBlockOperation {
-            self.performInitialQueries(api: api, storageAdapter: storageAdapter)
+            self.performInitialQueries()
         }
         performInitialQueriesOp.addDependency(setUpCloudSubscriptionsOp)
 
@@ -134,16 +142,16 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                                                                   storageAdapter: storageAdapter)
     }
 
-    private func performInitialQueries(api: APICategoryGraphQLBehavior,
-                                       storageAdapter: StorageEngineAdapter) {
+    private func performInitialQueries() {
         log.debug(#function)
 
-        let initialSyncOrchestrator = AWSInitialSyncOrchestrator(api: api,
-                                                                 reconciliationQueue: reconciliationQueue,
-                                                                 storageAdapter: storageAdapter)
+        let initialSyncOrchestrator = initialSyncOrchestratorFactory(api, reconciliationQueue, storageAdapter)
+
+        // Hold a reference so we can `reset` while initial sync is in process
+        self.initialSyncOrchestrator = initialSyncOrchestrator
 
         // TODO: This should be an AsynchronousOperation, not a semaphore-waited block
-        let semaphore = DispatchSemaphore(value: 1)
+        let semaphore = DispatchSemaphore(value: 0)
 
         initialSyncOrchestrator.sync { result in
             if case .failure(let dataStoreError) = result {
@@ -160,6 +168,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         }
 
         semaphore.wait()
+
+        self.initialSyncOrchestrator = nil
     }
 
     private func activateCloudSubscriptions() {
@@ -174,33 +184,22 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     func reset(onComplete: () -> Void) {
-        syncQueue.cancelAllOperations()
-        syncQueue.waitUntilAllOperationsAreFinished()
-
         let group = DispatchGroup()
-        if let resettable = mutationEventIngester as? Resettable {
-            group.enter()
-            DispatchQueue.global().async {
-                resettable.reset {
-                    group.leave()
-                }
-            }
+
+        group.enter()
+
+        DispatchQueue.global().async {
+            self.syncQueue.cancelAllOperations()
+            self.syncQueue.waitUntilAllOperationsAreFinished()
         }
 
-        if let resettable = mutationEventPublisher as? Resettable {
-            group.enter()
-            DispatchQueue.global().async {
-                resettable.reset {
-                    group.leave()
-                }
-            }
-        }
-
-        if let resettable = reconciliationQueue as? Resettable {
-            group.enter()
-            DispatchQueue.global().async {
-                resettable.reset {
-                    group.leave()
+        let mirror = Mirror(reflecting: self)
+        for child in mirror.children {
+            if let resettable = child.value as? Resettable {
+                DispatchQueue.global().async {
+                    resettable.reset {
+                        group.leave()
+                    }
                 }
             }
         }
@@ -210,5 +209,5 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 }
 
-@available(iOS 13, *)
+@available(iOS 13.0, *)
 extension RemoteSyncEngine: DefaultLogger { }

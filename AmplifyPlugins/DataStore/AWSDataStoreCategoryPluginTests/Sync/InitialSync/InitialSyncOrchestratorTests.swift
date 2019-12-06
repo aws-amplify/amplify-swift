@@ -37,7 +37,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let apiPlugin = MockAPICategoryPlugin()
         apiPlugin.responders[.queryRequestListener] = responder
 
-        let storageAdapter = MockSQLiteStorageEngineAdapter()
+        let storageAdapter = MockSQLiteStorageEngineAdapter(testCase: self)
         storageAdapter.returnOnQueryModelSyncMetadata(nil)
 
         let reconciliationQueue = MockReconciliationQueue()
@@ -82,7 +82,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let apiPlugin = MockAPICategoryPlugin()
         apiPlugin.responders[.queryRequestListener] = responder
 
-        let storageAdapter = MockSQLiteStorageEngineAdapter()
+        let storageAdapter = MockSQLiteStorageEngineAdapter(testCase: self)
         storageAdapter.returnOnQueryModelSyncMetadata(nil)
 
         let reconciliationQueue = MockReconciliationQueue()
@@ -133,7 +133,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let apiPlugin = MockAPICategoryPlugin()
         apiPlugin.responders[.queryRequestListener] = responder
 
-        let storageAdapter = MockSQLiteStorageEngineAdapter()
+        let storageAdapter = MockSQLiteStorageEngineAdapter(testCase: self)
         storageAdapter.returnOnQueryModelSyncMetadata(nil)
 
         let reconciliationQueue = MockReconciliationQueue()

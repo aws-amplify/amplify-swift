@@ -41,7 +41,7 @@ final class StorageEngine: StorageEngineBehavior {
         let storageAdapter = try SQLiteStorageEngineAdapter(databaseName: databaseName ?? "app")
 
         try storageAdapter.setUp(models: StorageEngine.systemModels)
-        if #available(iOS 13, *) {
+        if #available(iOS 13.0, *) {
             let syncEngine = isSyncEnabled ? try? RemoteSyncEngine(storageAdapter: storageAdapter) : nil
             self.init(storageAdapter: storageAdapter, syncEngine: syncEngine)
         } else {
@@ -78,7 +78,7 @@ final class StorageEngine: StorageEngineBehavior {
                 return
             }
 
-            if #available(iOS 13, *) {
+            if #available(iOS 13.0, *) {
                 self.log.verbose("\(#function) syncing mutation for \(savedModel)")
                 self.syncMutation(of: savedModel,
                                   mutationType: mutationType,
@@ -107,7 +107,7 @@ final class StorageEngine: StorageEngineBehavior {
                 return
             }
 
-            if #available(iOS 13, *) {
+            if #available(iOS 13.0, *) {
                 // TODO: Add a delete-specific APICategory API that allows delete mutations with just sync metadata
                 // like type, ID, and version
                 self.syncDeletion(of: modelType, withId: id, syncEngine: syncEngine, completion: completion)
@@ -132,12 +132,12 @@ final class StorageEngine: StorageEngineBehavior {
     func reset(onComplete: () -> Void) {
         // TOOD: Perform cleanup on StorageAdapter, including releasing its `Connection` if needed
         let group = DispatchGroup()
-        if #available(iOS 13, *) {
+        if #available(iOS 13.0, *) {
 
-            if let remoteSyncEngine = syncEngine as? RemoteSyncEngine {
+            if let resettable = syncEngine as? Resettable {
                 group.enter()
                 DispatchQueue.global().async {
-                    remoteSyncEngine.reset {
+                    resettable.reset {
                         group.leave()
                     }
                 }
@@ -147,7 +147,7 @@ final class StorageEngine: StorageEngineBehavior {
         onComplete()
     }
 
-    @available(iOS 13, *)
+    @available(iOS 13.0, *)
     private func syncDeletion<M: Model>(of modelType: M.Type,
                                         withId id: Model.Identifier,
                                         syncEngine: RemoteSyncEngineBehavior,
@@ -174,7 +174,7 @@ final class StorageEngine: StorageEngineBehavior {
                            completion: mutationEventCallback)
     }
 
-    @available(iOS 13, *)
+    @available(iOS 13.0, *)
     private func syncMutation<M: Model>(of savedModel: M,
                                         mutationType: MutationEvent.MutationType,
                                         syncEngine: RemoteSyncEngineBehavior,
@@ -203,7 +203,7 @@ final class StorageEngine: StorageEngineBehavior {
                            completion: mutationEventCallback)
     }
 
-    @available(iOS 13, *)
+    @available(iOS 13.0, *)
     private func submitToSyncEngine(mutationEvent: MutationEvent,
                                     syncEngine: RemoteSyncEngineBehavior,
                                     completion: @escaping DataStoreCallback<MutationEvent>) {

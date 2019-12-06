@@ -11,7 +11,7 @@ import Combine
 
 // swiftlint:disable type_name
 /// Subscribes to an IncomingSubscriptionAsyncEventQueue, and publishes AnyModel
-@available(iOS 13, *)
+@available(iOS 13.0, *)
 final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
     // swiftlint:enable type_name
 
@@ -94,5 +94,5 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
     }
 }
 
-@available(iOS 13, *)
+@available(iOS 13.0, *)
 extension IncomingAsyncSubscriptionEventToAnyModelMapper: DefaultLogger { }

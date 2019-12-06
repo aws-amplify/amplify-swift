@@ -84,9 +84,6 @@ class SyncEngineIntegrationTestBase: XCTestCase {
         }
 
         wait(for: [syncStarted], timeout: 5.0)
-
-        // TODO: remove this once we get sync startup properly operationalized
-        Thread.sleep(forTimeInterval: 5.0)
     }
 
 }

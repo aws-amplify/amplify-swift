@@ -252,7 +252,7 @@ class APICategoryConfigurationTests: XCTestCase {
 
         try Amplify.API.configure(using: categoryConfig)
 
-        let semaphore = DispatchSemaphore(value: 1)
+        let semaphore = DispatchSemaphore(value: 0)
         Amplify.API.reset { semaphore.signal() }
         semaphore.wait()
 

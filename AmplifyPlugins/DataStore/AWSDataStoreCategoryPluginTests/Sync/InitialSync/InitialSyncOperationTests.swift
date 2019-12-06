@@ -36,7 +36,7 @@ class InitialSyncOperationTests: XCTestCase {
         let apiPlugin = MockAPICategoryPlugin()
         apiPlugin.responders[.queryRequestListener] = responder
 
-        let storageAdapter = MockSQLiteStorageEngineAdapter()
+        let storageAdapter = MockSQLiteStorageEngineAdapter(testCase: self)
         let metadataQueryReceived = expectation(description: "Metadata query received by storage adapter")
         storageAdapter.returnOnQueryModelSyncMetadata(nil) {
             metadataQueryReceived.fulfill()
@@ -73,7 +73,7 @@ class InitialSyncOperationTests: XCTestCase {
         let apiPlugin = MockAPICategoryPlugin()
         apiPlugin.responders[.queryRequestListener] = responder
 
-        let storageAdapter = MockSQLiteStorageEngineAdapter()
+        let storageAdapter = MockSQLiteStorageEngineAdapter(testCase: self)
         storageAdapter.returnOnQueryModelSyncMetadata(nil)
 
         let reconciliationQueue = MockReconciliationQueue()
@@ -105,7 +105,7 @@ class InitialSyncOperationTests: XCTestCase {
         let apiPlugin = MockAPICategoryPlugin()
         apiPlugin.responders[.queryRequestListener] = responder
 
-        let storageAdapter = MockSQLiteStorageEngineAdapter()
+        let storageAdapter = MockSQLiteStorageEngineAdapter(testCase: self)
         storageAdapter.returnOnQueryModelSyncMetadata(nil)
 
         let reconciliationQueue = MockReconciliationQueue()
@@ -147,7 +147,7 @@ class InitialSyncOperationTests: XCTestCase {
         let apiPlugin = MockAPICategoryPlugin()
         apiPlugin.responders[.queryRequestListener] = responder
 
-        let storageAdapter = MockSQLiteStorageEngineAdapter()
+        let storageAdapter = MockSQLiteStorageEngineAdapter(testCase: self)
         storageAdapter.returnOnQueryModelSyncMetadata(nil)
 
         let reconciliationQueue = MockReconciliationQueue()
@@ -186,7 +186,7 @@ class InitialSyncOperationTests: XCTestCase {
         let apiPlugin = MockAPICategoryPlugin()
         apiPlugin.responders[.queryRequestListener] = responder
 
-        let storageAdapter = MockSQLiteStorageEngineAdapter()
+        let storageAdapter = MockSQLiteStorageEngineAdapter(testCase: self)
         storageAdapter.returnOnQueryModelSyncMetadata(nil)
 
         let itemSubmitted = expectation(description: "Item submitted to reconciliation queue")

@@ -22,7 +22,7 @@ open class AsynchronousOperation: Operation {
     }
 
     /// Synchronizes access to `state`.
-    private let stateQueue = DispatchQueue(label: "com.amazonaws.amplify.AsyncOperation.state",
+    private let stateQueue = DispatchQueue(label: "com.amazonaws.amplify.AsynchronousOperation.state",
                                            target: DispatchQueue.global())
 
     /// Private backing stored property for `state`.

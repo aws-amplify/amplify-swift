@@ -13,13 +13,13 @@ import AWSPluginsCore
 /// Reconciles an incoming model mutation with the stored model. If there is no conflict (e.g., the incoming model has
 /// a later version than the stored model), then write the new data to the store.
 @available(iOS 13.0, *)
-class ReconcileAndLocalSaveOperation: Operation {
+class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
     /// Disambiguation for the version of the model incoming from the remote API
     typealias RemoteModel = MutationSync<AnyModel>
 
-    /// Disambiguation for the version of the model stored in local datastore
-    typealias LocalModel = MutationSync<AnyModel>
+    /// Disambiguation for the sync metadata for the model stored in local datastore
+    typealias LocalMetadata = MutationSyncMetadata
 
     /// Disambiguation for the version of the model that was applied to the local datastore. In the case of a create or
     /// update mutation, this represents the saved model. In the case of a delete mutation, this is the data that was
@@ -35,7 +35,7 @@ class ReconcileAndLocalSaveOperation: Operation {
     private var stateMachineSink: AnyCancellable?
 
     init(remoteModel: RemoteModel,
-         storageAdapter: StorageEngineAdapter,
+         storageAdapter: StorageEngineAdapter?,
          stateMachine: StateMachine<State, Action>? = nil) {
         self.remoteModel = remoteModel
         self.storageAdapter = storageAdapter
@@ -78,8 +78,8 @@ class ReconcileAndLocalSaveOperation: Operation {
         case .querying(let remoteModel):
             query(remoteModel: remoteModel)
 
-        case .reconciling(let remoteModel, let localModel):
-            reconcile(remoteModel: remoteModel, to: localModel)
+        case .reconciling(let remoteModel, let localMetadata):
+            reconcile(remoteModel: remoteModel, to: localMetadata)
 
         case .executing(let disposition):
             execute(disposition: disposition)
@@ -90,10 +90,11 @@ class ReconcileAndLocalSaveOperation: Operation {
         case .inError(let error):
             // Maybe we have to notify the Hub?
             log.error(error: error)
+            finish()
 
         case .finished:
             // Maybe we have to notify the Hub?
-            break
+            finish()
 
         }
 
@@ -116,15 +117,15 @@ class ReconcileAndLocalSaveOperation: Operation {
             return
         }
 
-        let localModel: MutationSync<AnyModel>?
+        let localMetadata: MutationSyncMetadata?
         do {
-            localModel = try storageAdapter.queryMutationSync(forAnyModel: remoteModel.model)
+            localMetadata = try storageAdapter.queryMutationSyncMetadata(for: remoteModel.model.id)
         } catch {
             stateMachine.notify(action: .errored(DataStoreError(error: error)))
             return
         }
 
-        let queriedAction = Action.queried(remoteModel, localModel)
+        let queriedAction = Action.queried(remoteModel, localMetadata)
         stateMachine.notify(action: queriedAction)
     }
 
@@ -132,21 +133,25 @@ class ReconcileAndLocalSaveOperation: Operation {
     /// - reconciled
     /// - conflict
     /// - errored
-    func reconcile(remoteModel: RemoteModel, to localModel: LocalModel?) {
+    func reconcile(remoteModel: RemoteModel, to localMetadata: LocalMetadata?) {
         log.verbose(#function)
         guard !isCancelled else {
             log.verbose("\(#function) - cancelled, aborting")
             return
         }
 
-        guard let storageAdapter = storageAdapter else {
-            stateMachine.notify(action: .errored(DataStoreError.nilStorageAdapter()))
+        let pendingMutations: [MutationEvent]
+        switch getPendingMutations(forModelId: remoteModel.model.id) {
+        case .failure(let dataStoreError):
+            stateMachine.notify(action: .errored(dataStoreError))
             return
+        case .success(let mutationEvents):
+            pendingMutations = mutationEvents
         }
 
         let disposition = RemoteSyncReconciler.reconcile(remoteModel: remoteModel,
-                                                         to: localModel,
-                                                         storageAdapter: storageAdapter)
+                                                         to: localMetadata,
+                                                         pendingMutations: pendingMutations)
 
         stateMachine.notify(action: .reconciled(disposition))
     }
@@ -196,6 +201,25 @@ class ReconcileAndLocalSaveOperation: Operation {
 
     }
 
+    private func saveDeleteMutation(storageAdapter: StorageEngineAdapter, remoteModel: RemoteModel) {
+        log.verbose(#function)
+        guard let modelType = ModelRegistry.modelType(from: remoteModel.model.modelName) else {
+            let error = DataStoreError.invalidModelName(remoteModel.model.modelName)
+            stateMachine.notify(action: .errored(error))
+            return
+        }
+
+        storageAdapter.delete(untypedModelType: modelType, withId: remoteModel.model.id) { response in
+            switch response {
+            case .failure(let dataStoreError):
+                let errorAction = Action.errored(dataStoreError)
+                self.stateMachine.notify(action: errorAction)
+            case .success:
+                self.saveMetadata(storageAdapter: storageAdapter, inProcessModel: remoteModel)
+            }
+        }
+    }
+
     private func saveCreateOrUpdateMutation(storageAdapter: StorageEngineAdapter, remoteModel: RemoteModel) {
         log.verbose(#function)
         storageAdapter.save(untypedModel: remoteModel.model.instance) { response in
@@ -213,25 +237,6 @@ class ReconcileAndLocalSaveOperation: Operation {
                 }
                 let inProcessModel = MutationSync(model: anyModel, syncMetadata: remoteModel.syncMetadata)
                 self.saveMetadata(storageAdapter: storageAdapter, inProcessModel: inProcessModel)
-            }
-        }
-    }
-
-    private func saveDeleteMutation(storageAdapter: StorageEngineAdapter, remoteModel: RemoteModel) {
-        log.verbose(#function)
-        guard let modelType = ModelRegistry.modelType(from: remoteModel.model.modelName) else {
-            let error = DataStoreError.invalidModelName(remoteModel.model.modelName)
-            stateMachine.notify(action: .errored(error))
-            return
-        }
-
-        storageAdapter.delete(untypedModelType: modelType, withId: remoteModel.model.id) { response in
-            switch response {
-            case .failure(let dataStoreError):
-                let errorAction = Action.errored(dataStoreError)
-                self.stateMachine.notify(action: errorAction)
-            case .success:
-                self.saveMetadata(storageAdapter: storageAdapter, inProcessModel: remoteModel)
             }
         }
     }
@@ -289,6 +294,29 @@ class ReconcileAndLocalSaveOperation: Operation {
         // publisher?.send(input: mutationEvent)
 
         stateMachine.notify(action: .notified)
+    }
+
+    private func getPendingMutations(forModelId modelId: Model.Identifier) -> DataStoreResult<[MutationEvent]> {
+        guard let storageAdapter = storageAdapter else {
+            return .failure(DataStoreError.nilStorageAdapter())
+        }
+
+        let semaphore = DispatchSemaphore(value: 0)
+        var pendingMutationResultFromQuery: DataStoreResult<[MutationEvent]>?
+        MutationEvent.pendingMutationEvents(forModelId: modelId,
+                                            storageAdapter: storageAdapter) {
+                                                pendingMutationResultFromQuery = $0
+                                                semaphore.signal()
+        }
+        semaphore.wait()
+
+        guard let pendingMutationResult = pendingMutationResultFromQuery else {
+            let dataStoreError = DataStoreError.unknown("Unable to query pending mutation events",
+                                                        AmplifyErrorMessages.shouldNotHappenReportBugToAWS())
+            return .failure(dataStoreError)
+        }
+
+        return pendingMutationResult
     }
 
 }

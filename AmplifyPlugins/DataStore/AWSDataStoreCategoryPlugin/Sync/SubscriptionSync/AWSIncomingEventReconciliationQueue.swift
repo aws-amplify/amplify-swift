@@ -21,8 +21,8 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         for modelType in modelTypes {
             let modelName = modelType.modelName
             let queue = AWSModelReconciliationQueue(modelType: modelType,
-                                                            storageAdapter: storageAdapter,
-                                                            api: api)
+                                                    storageAdapter: storageAdapter,
+                                                    api: api)
             guard reconciliationQueues[modelName] == nil else {
                 Amplify.DataStore.log
                     .warn("Duplicate model name found: \(modelName), not subscribing")

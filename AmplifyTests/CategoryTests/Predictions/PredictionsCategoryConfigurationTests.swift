@@ -364,7 +364,7 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Predictions.configure(using: config)
 
-        let semaphore = DispatchSemaphore(value: 1)
+        let semaphore = DispatchSemaphore(value: 0)
         Amplify.Predictions.reset { semaphore.signal() }
         semaphore.wait()
 

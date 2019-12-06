@@ -255,7 +255,7 @@ class HubCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Hub.configure(using: categoryConfig)
 
-        let semaphore = DispatchSemaphore(value: 1)
+        let semaphore = DispatchSemaphore(value: 0)
         Amplify.Hub.reset { semaphore.signal() }
         semaphore.wait()
 

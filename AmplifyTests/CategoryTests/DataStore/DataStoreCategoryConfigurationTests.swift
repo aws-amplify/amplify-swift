@@ -271,7 +271,7 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
 
         try Amplify.DataStore.configure(using: categoryConfig)
 
-        let semaphore = DispatchSemaphore(value: 1)
+        let semaphore = DispatchSemaphore(value: 0)
         Amplify.DataStore.reset { semaphore.signal() }
         semaphore.wait()
 

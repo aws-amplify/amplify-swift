@@ -36,7 +36,8 @@ class LocalSubscriptionTests: XCTestCase {
             let syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
                                              outgoingMutationQueue: outgoingMutationQueue,
                                              mutationEventIngester: mutationDatabaseAdapter,
-                                             mutationEventPublisher: awsMutationEventPublisher)
+                                             mutationEventPublisher: awsMutationEventPublisher,
+                                             initialSyncOrchestratorFactory: NoOpInitialSyncOrchestrator.factory)
 
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           syncEngine: syncEngine)

@@ -10,17 +10,13 @@ import Combine
 import Foundation
 
 class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
-    enum MethodToObserve {
-        case queryRequestListener
-    }
+    var responders = [ResponderKeys: Any]()
 
     // MARK: - Properties
 
     var key: String {
         return "MockAPICategoryPlugin"
     }
-
-    var responders = [MethodToObserve: Any]()
 
     func configure(using configuration: Any) throws {
         notify("configure")
@@ -132,7 +128,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         notify("query(request:listener:) request: \(request)")
 
         if let responder = responders[.queryRequestListener] as? QueryRequestListenerResponder<R> {
-            if let operation = responder.callback(request, listener) {
+            if let operation = responder.callback((request, listener)) {
                 return operation
             }
         }
@@ -152,12 +148,21 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     func subscribe<R: Decodable>(request: GraphQLRequest<R>,
                                  listener: GraphQLSubscriptionOperation<R>.EventListener?) ->
         GraphQLSubscriptionOperation<R> {
+            print("R.Type: \(R.self)")
+
             notify(
                 """
                 subscribe(request:listener:) document: \(request.document); \
                 variables: \(String(describing: request.variables))
                 """
             )
+
+            if let responder = responders[.subscribeRequestListener] as? SubscribeRequestListenerResponder<R> {
+                if let operation = responder.callback((request, listener)) {
+                    return operation
+                }
+            }
+
             let options = GraphQLOperationRequest<R>.Options()
             let request = GraphQLOperationRequest<R>(apiName: request.apiName,
                                                      operationType: .subscription,

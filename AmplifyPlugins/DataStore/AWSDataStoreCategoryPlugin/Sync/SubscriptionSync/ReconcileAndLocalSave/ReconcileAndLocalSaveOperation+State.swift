@@ -19,7 +19,7 @@ extension ReconcileAndLocalSaveOperation {
         case querying(RemoteModel)
 
         /// Reconciling incoming remote model with local model and sync metadata
-        case reconciling(RemoteModel, LocalModel?)
+        case reconciling(RemoteModel, LocalMetadata?)
 
         /// Executing the reconciled disposition
         case executing(RemoteSyncReconciler.Disposition)

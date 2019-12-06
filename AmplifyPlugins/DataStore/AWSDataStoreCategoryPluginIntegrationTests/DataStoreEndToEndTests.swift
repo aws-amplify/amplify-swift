@@ -20,10 +20,12 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     func testCreateMutateDelete() throws {
         try startAmplifyAndWaitForSync()
 
+        let date = Date()
+
         let newPost = Post(
             title: "This is a new post I created",
-            content: "Original content from DataStoreEndToEndTests at \(Date())",
-            createdAt: Date())
+            content: "Original content from DataStoreEndToEndTests at \(date)",
+            createdAt: date)
 
         var updatedPost = newPost
         updatedPost.content = "UPDATED CONTENT from DataStoreEndToEndTests at \(Date())"

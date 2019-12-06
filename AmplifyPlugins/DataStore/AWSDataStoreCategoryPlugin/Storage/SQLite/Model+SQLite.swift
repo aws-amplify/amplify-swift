@@ -144,7 +144,9 @@ extension Array where Element == Model.Type {
                 sortMap[key] = modelType
             }
         }
-        forEach(walkAssociatedModels(of:))
+
+        let sortedStartList = sorted { $0.modelName < $1.modelName }
+        sortedStartList.forEach(walkAssociatedModels(of:))
         return sortedKeys.map { sortMap[$0]! }
     }
 

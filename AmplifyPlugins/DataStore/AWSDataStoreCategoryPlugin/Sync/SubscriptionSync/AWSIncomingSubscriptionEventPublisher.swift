@@ -9,10 +9,10 @@ import Amplify
 import AWSPluginsCore
 import Combine
 
-/// Facade to hide the AsyncEventQueue/ModelMapper structures from the ModelSpecificReconciliationQueue. Provides a publisher for
-/// all incoming subscription types (onCreate, onUpdate, onDelete) for a single Model type.
+/// Facade to hide the AsyncEventQueue/ModelMapper structures from the ModelReconciliationQueue.
+/// Provides a publisher for all incoming subscription types (onCreate, onUpdate, onDelete) for a single Model type.
 @available(iOS 13.0, *)
-final class IncomingSubscriptionEventFacade {
+final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPublisher {
 
     private let asyncEvents: IncomingAsyncSubscriptionEventPublisher
     private let mapper: IncomingAsyncSubscriptionEventToAnyModelMapper
@@ -30,6 +30,11 @@ final class IncomingSubscriptionEventFacade {
 
         asyncEvents.subscribe(subscriber: mapper)
     }
+
+}
+
+@available(iOS 13.0, *)
+extension AWSIncomingSubscriptionEventPublisher: Resettable {
 
     func reset(onComplete: () -> Void) {
         let group = DispatchGroup()
