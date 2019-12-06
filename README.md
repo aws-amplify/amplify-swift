@@ -8,7 +8,6 @@ Our default implementation works with Amazon Web Services (AWS), but AWS Amplify
   https://aws-amplify.github.io/docs/ios/start
 
 ## Features/APIs
-The below links will take you to the SDK documentation currently.
 
 - [**Analytics**](https://aws-amplify.github.io/docs/ios/analytics): Easily collect analytics data for your app. Analytics data includes user sessions and other custom events that you want to track in your app.
 - [**API**](https://aws-amplify.github.io/docs/ios/api): Interact with your AWS AppSync API or make HTTP requests to your API Gateway endpoint with Amplify API. It provides a GraphQL client interface to use with Amplify Tool's model generation and automatic signing process to authenticate your requests.
@@ -51,10 +50,13 @@ You can manually install the library by cloning this repo and creating a Podfile
   pod 'Amplify', :path => '~/amplify-ios'
   pod 'AWSPluginsCore', :path => '~/amplify-ios'
   pod 'CoreMLPredictionsPlugin', :path => '~/amplify-ios'
-  pod 'AmplifyPlugins/AWSPredictionsPlugin', :path => '~/amplify-ios'
+  pod 'AWSPredictionsPlugin', :path => '~/amplify-ios'
+  pod 'AmplifyPlugins/AWSAPIPlugin', :path => '~/amplify-ios'
 ```
 
 Then, install the dependencies:
 ```
 pod install
 ```
+
+Open your project using ./YOUR-PROJECT-NAME.xcworkspace file. Remember to always use ./YOUR-PROJECT-NAME.xcworkspace to open your Xcode project from now on.
