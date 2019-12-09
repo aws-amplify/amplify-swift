@@ -11,6 +11,7 @@ import Foundation
 ///
 /// The associated value represents the iso language code.
 
+// swiftlint:disable file_length
 // swiftlint:disable type_body_length
 public enum LanguageType: String {
     case afar = "aa"
@@ -181,6 +182,7 @@ public enum LanguageType: String {
     case friulian = "fur"
     case westernFrisian = "fy"
     case irish = "ga"
+    // swiftlint:disable:next identifier_name
     case ga = "gaa"
     case gagauz = "gag"
     case ganChinese = "gan"

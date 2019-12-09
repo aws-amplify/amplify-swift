@@ -14,6 +14,7 @@ public enum DataStoreError: Error {
     case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
     case conflict(DataStoreSyncConflict)
     case decodingError(ErrorDescription, RecoverySuggestion)
+    case internalOperation(ErrorDescription, RecoverySuggestion, Error? = nil)
     case invalidDatabase(path: String, Error? = nil)
     case invalidModelName(String)
     case invalidOperation(causedBy: Error? = nil)
@@ -45,6 +46,7 @@ extension DataStoreError: AmplifyError {
             """
         case .configuration(let errorDescription, _, _),
              .decodingError(let errorDescription, _),
+             .internalOperation(let errorDescription, _, _),
              .sync(let errorDescription, _, _),
              .unknown(let errorDescription, _, _):
             return errorDescription
@@ -71,6 +73,7 @@ extension DataStoreError: AmplifyError {
             """
         case .configuration(_, let recoverySuggestion, _),
              .decodingError(_, let recoverySuggestion),
+             .internalOperation(_, let recoverySuggestion, _),
              .sync(_, let recoverySuggestion, _),
              .unknown(_, let recoverySuggestion, _):
             return recoverySuggestion
@@ -82,6 +85,7 @@ extension DataStoreError: AmplifyError {
         case .api(let amplifyError):
             return amplifyError
         case .configuration(_, _, let underlyingError),
+             .internalOperation(_, _, let underlyingError),
              .invalidDatabase(_, let underlyingError),
              .invalidOperation(let underlyingError),
              .sync(_, _, let underlyingError),

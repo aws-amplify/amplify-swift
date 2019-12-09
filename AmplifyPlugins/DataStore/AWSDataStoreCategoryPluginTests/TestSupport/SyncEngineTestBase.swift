@@ -12,14 +12,17 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
+/// Base class for SyncEngine and sync-enabled DataStore tests
 class SyncEngineTestBase: XCTestCase {
+
+    /// Populated during setUp, used in each test during `Amplify.configure()`
+    var amplifyConfig: AmplifyConfiguration!
 
     /// Mock used to listen for API calls; this is how we assert that syncEngine is delivering events to the API
     var apiPlugin: MockAPICategoryPlugin!
 
-    var amplifyConfig: AmplifyConfiguration!
-
-    var storageAdapter: StorageEngineAdapter!
+    /// Used for DB manipulation to mock starting data for tests
+    var storageAdapter: SQLiteStorageEngineAdapter!
 
     // MARK: - Setup
 
@@ -28,8 +31,6 @@ class SyncEngineTestBase: XCTestCase {
 
         Amplify.reset()
         Amplify.Logging.logLevel = .verbose
-        ModelRegistry.register(modelType: Post.self)
-        ModelRegistry.register(modelType: Comment.self)
 
         let apiConfig = APICategoryConfiguration(plugins: [
             "MockAPICategoryPlugin": true
@@ -47,41 +48,47 @@ class SyncEngineTestBase: XCTestCase {
         }
     }
 
-    /// Sets up a StorageAdapter backed by an in-memory SQLite database
-    func setUpStorageAdapter() throws {
+    /// Sets up a StorageAdapter backed by an in-memory SQLite database. Optionally registers and sets up models in
+    /// `models`.
+    func setUpStorageAdapter(preCreating models: [Model.Type] = []) throws {
+        models.forEach { ModelRegistry.register(modelType: $0) }
         let connection = try Connection(.inMemory)
         storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
-        try storageAdapter.setUp(models: StorageEngine.systemModels + [Post.self, Comment.self])
+        try storageAdapter.setUp(models: StorageEngine.systemModels + models)
     }
 
-    func setUpDataStore() throws {
+    /// Sets up a DataStorePlugin backed by the storageAdapter created in `setUpStorageAdapter()`, and an optional
+    /// `mutationQueue`. If no mutationQueue is specified, uses  NoOpMutationQueue, meaning that incoming subscription
+    /// events will never be delivered to the sync engine.
+    func setUpDataStore(mutationQueue: OutgoingMutationQueueBehavior = NoOpMutationQueue(),
+                        modelRegistration: AmplifyModelRegistration = TestModelRegistration()) throws {
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
-        let outgoingMutationQueue = NoOpMutationQueue()
 
         let syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
-                                         outgoingMutationQueue: outgoingMutationQueue,
-                                         mutationEventIngester: mutationDatabaseAdapter,
-                                         mutationEventPublisher: awsMutationEventPublisher)
+                                          outgoingMutationQueue: mutationQueue,
+                                          mutationEventIngester: mutationDatabaseAdapter,
+                                          mutationEventPublisher: awsMutationEventPublisher)
 
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          syncEngine: syncEngine,
-                                          isSyncEnabled: true)
+                                          syncEngine: syncEngine)
 
         let publisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                                         storageEngine: storageEngine,
-                                                         dataStorePublisher: publisher)
+        let dataStorePlugin = AWSDataStorePlugin(modelRegistration: modelRegistration,
+                                                 storageEngine: storageEngine,
+                                                 dataStorePublisher: publisher)
 
         try Amplify.add(plugin: dataStorePlugin)
     }
 
+    /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`
     func startAmplify() throws {
         try Amplify.configure(amplifyConfig)
     }
 
+    /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message
+    /// before returning.
     func startAmplifyAndWaitForSync() throws {
-        try setUpDataStore()
 
         let syncStarted = expectation(description: "Sync started")
         let token = Amplify.Hub.listen(to: .dataStore,
@@ -102,6 +109,7 @@ class SyncEngineTestBase: XCTestCase {
 
     // MARK: - Data methods
 
+    /// Saves a mutation event directly to StorageAdapter. Used for pre-populating database before tests
     func saveMutationEvent(of mutationType: MutationEvent.MutationType,
                            for post: Post,
                            inProcess: Bool = false) throws {
@@ -125,7 +133,7 @@ class SyncEngineTestBase: XCTestCase {
         wait(for: [mutationEventSaved], timeout: 1.0)
     }
 
-    // Several tests require there to be a post in the database prior to starting. This utility supports that.
+    /// Saves a Post record directly to StorageAdapter. Used for pre-populating database before tests
     func savePost(_ post: Post) throws {
         let postSaved = expectation(description: "Preloaded mutation event saved")
         storageAdapter.save(post) { result in

@@ -12,10 +12,8 @@ import AWSPluginsCore
 
 final class StorageEngine: StorageEngineBehavior {
 
-    // TODO: Make this private once we get a request/response flow with metadata/mutation types figured out
+    // TODO: Make this private once we get a mutation flow that passes the type of mutation as needed
     let storageAdapter: StorageEngineAdapter
-
-    private let isSyncEnabled: Bool
 
     private var syncEngine: RemoteSyncEngineBehavior?
 
@@ -23,6 +21,7 @@ final class StorageEngine: StorageEngineBehavior {
 
     static var systemModels: [Model.Type] {
         return [
+            ModelSyncMetadata.self,
             MutationEvent.self,
             MutationSyncMetadata.self
         ]
@@ -31,11 +30,9 @@ final class StorageEngine: StorageEngineBehavior {
     // Internal initializer used for testing, to allow lazy initialization of the SyncEngine. Note that the provided
     // storageAdapter must have already been set up with system models
     init(storageAdapter: StorageEngineAdapter,
-         syncEngine: RemoteSyncEngineBehavior? = nil,
-         isSyncEnabled: Bool) {
+         syncEngine: RemoteSyncEngineBehavior?) {
         self.storageAdapter = storageAdapter
         self.syncEngine = syncEngine
-        self.isSyncEnabled = isSyncEnabled
     }
 
     convenience init(isSyncEnabled: Bool) throws {
@@ -46,9 +43,9 @@ final class StorageEngine: StorageEngineBehavior {
         try storageAdapter.setUp(models: StorageEngine.systemModels)
         if #available(iOS 13, *) {
             let syncEngine = isSyncEnabled ? try? RemoteSyncEngine(storageAdapter: storageAdapter) : nil
-            self.init(storageAdapter: storageAdapter, syncEngine: syncEngine, isSyncEnabled: isSyncEnabled)
+            self.init(storageAdapter: storageAdapter, syncEngine: syncEngine)
         } else {
-            self.init(storageAdapter: storageAdapter, syncEngine: nil, isSyncEnabled: isSyncEnabled)
+            self.init(storageAdapter: storageAdapter, syncEngine: nil)
         }
     }
 
@@ -168,7 +165,7 @@ final class StorageEngine: StorageEngineBehavior {
                 completion(.failure(dataStoreError))
             case .success(let mutationEvent):
                 self.log.verbose("\(#function) successfully submitted to sync engine \(mutationEvent)")
-                completion(.success(()))
+                completion(.successfulVoid)
             }
         }
 

@@ -14,23 +14,23 @@ import AWSMobileClient
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
-// TODO: Delete mutation events from the database so that this can be run multiple times without having to remove the
-// app from the device/simulator
 @available(iOS 13.0, *)
 class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
     func testCreateMutateDelete() throws {
         try startAmplifyAndWaitForSync()
 
-        let newPost = Post(title: "This is a new post I created",
-                           content: "Original content from DataStoreEndToEndTests at \(Date())")
+        let newPost = Post(
+            title: "This is a new post I created",
+            content: "Original content from DataStoreEndToEndTests at \(Date())",
+            createdAt: Date())
 
         var updatedPost = newPost
         updatedPost.content = "UPDATED CONTENT from DataStoreEndToEndTests at \(Date())"
 
         let createReceived = expectation(description: "Create notification received")
-        let updateReceived = expectation(description: "Create notification received")
-        let deleteReceived = expectation(description: "Create notification received")
+        let updateReceived = expectation(description: "Update notification received")
+        let deleteReceived = expectation(description: "Delete notification received")
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,

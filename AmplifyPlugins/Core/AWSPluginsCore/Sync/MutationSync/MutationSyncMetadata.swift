@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import Foundation
 
 public struct MutationSyncMetadata: Model {
 

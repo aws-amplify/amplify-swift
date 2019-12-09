@@ -39,8 +39,7 @@ class LocalSubscriptionTests: XCTestCase {
                                              mutationEventPublisher: awsMutationEventPublisher)
 
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          syncEngine: syncEngine,
-                                          isSyncEnabled: true)
+                                          syncEngine: syncEngine)
         } catch {
             XCTFail(String(describing: error))
             return
@@ -96,8 +95,8 @@ class LocalSubscriptionTests: XCTestCase {
                          content: "Test Post Content",
                          createdAt: Date(),
                          updatedAt: nil,
-                         rating: nil,
                          draft: false,
+                         rating: nil,
                          comments: [])
 
         Amplify.DataStore.save(model) { _ in }
@@ -132,8 +131,8 @@ class LocalSubscriptionTests: XCTestCase {
                          content: "Test Post Content",
                          createdAt: Date(),
                          updatedAt: nil,
-                         rating: nil,
                          draft: false,
+                         rating: nil,
                          comments: [])
 
         Amplify.DataStore.save(model) { _ in }
@@ -154,8 +153,8 @@ class LocalSubscriptionTests: XCTestCase {
                          content: originalContent,
                          createdAt: Date(),
                          updatedAt: nil,
-                         rating: nil,
                          draft: false,
+                         rating: nil,
                          comments: [])
 
         let saveCompleted = expectation(description: "Save complete")
@@ -166,13 +165,9 @@ class LocalSubscriptionTests: XCTestCase {
         wait(for: [saveCompleted], timeout: 5.0)
 
         let newContent = "Updated content as of \(Date())"
-        let newModel = Post(id: model.id,
-                            title: model.title,
-                            content: newContent,
-                            createdAt: model.createdAt,
-                            updatedAt: Date(),
-                            rating: model.rating,
-                            draft: model.draft)
+        var newModel = model
+        newModel.content = newContent
+        newModel.updatedAt = Date()
 
         let receivedMutationEvent = expectation(description: "Received mutation event")
 
@@ -220,7 +215,8 @@ class LocalSubscriptionTests: XCTestCase {
         })
 
         let model = Post(title: "Test Post",
-                         content: "Test Post Content")
+                         content: "Test Post Content",
+                         createdAt: Date())
 
         Amplify.DataStore.save(model) { _ in }
         Amplify.DataStore.delete(model) { _ in }

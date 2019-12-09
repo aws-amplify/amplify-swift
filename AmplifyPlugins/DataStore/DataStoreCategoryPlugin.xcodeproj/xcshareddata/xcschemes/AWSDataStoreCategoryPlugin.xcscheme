@@ -60,6 +60,21 @@
                   Identifier = "CloudSyncTests/testOnUpdateUpdatesLocalStore()">
                </Test>
                <Test
+                  Identifier = "DataStoreHubTests/testDataStoreDispatchesConflictToHub()">
+               </Test>
+               <Test
+                  Identifier = "DataStoreHubTests/testDataStoreDispatchesCreateToHub()">
+               </Test>
+               <Test
+                  Identifier = "DataStoreHubTests/testDataStoreDispatchesDeleteToHub()">
+               </Test>
+               <Test
+                  Identifier = "DataStoreHubTests/testDataStoreDispatchesErrorToHub()">
+               </Test>
+               <Test
+                  Identifier = "DataStoreHubTests/testDataStoreDispatchesUpdateToHub()">
+               </Test>
+               <Test
                   Identifier = "OutgoingMutationQueueTests/testLocalMutationUnsubcsribesFromCloud()">
                </Test>
                <Test
@@ -70,6 +85,9 @@
                </Test>
                <Test
                   Identifier = "OutgoingMutationQueueTests/testMutationQueueStoresDeleteEvents()">
+               </Test>
+               <Test
+                  Identifier = "SyncEngineStartupTests">
                </Test>
             </SkippedTests>
          </TestableReference>

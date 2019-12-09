@@ -10,10 +10,17 @@ import Combine
 import Foundation
 
 class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
+    enum MethodToObserve {
+        case queryRequestListener
+    }
+
+    // MARK: - Properties
 
     var key: String {
         return "MockAPICategoryPlugin"
     }
+
+    var responders = [MethodToObserve: Any]()
 
     func configure(using configuration: Any) throws {
         notify("configure")
@@ -21,6 +28,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     func reset(onComplete: @escaping BasicClosure) {
         notify("reset")
+        listeners = []
         onComplete()
     }
 
@@ -121,8 +129,14 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     func query<R: Decodable>(request: GraphQLRequest<R>,
                              listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
+        notify("query(request:listener:) request: \(request)")
 
-        notify("query")
+        if let responder = responders[.queryRequestListener] as? QueryRequestListenerResponder<R> {
+            if let operation = responder.callback(request, listener) {
+                return operation
+            }
+        }
+
         let options = GraphQLOperationRequest<R>.Options()
         let request = GraphQLOperationRequest<R>(apiName: request.apiName,
                                                  operationType: .query,
@@ -131,6 +145,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
                                                  responseType: request.responseType,
                                                  options: options)
         let operation = MockGraphQLOperation(request: request, responseType: request.responseType)
+
         return operation
     }
 

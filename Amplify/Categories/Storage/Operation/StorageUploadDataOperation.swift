@@ -7,7 +7,8 @@
 
 import Foundation
 
-public protocol StorageUploadDataOperation: AmplifyOperation<StorageUploadDataRequest, Progress, String, StorageError> {}
+public protocol StorageUploadDataOperation: AmplifyOperation<StorageUploadDataRequest,
+Progress, String, StorageError> {}
 
 public extension HubPayload.EventName.Storage {
     /// eventName for HubPayloads emitted by this operation
