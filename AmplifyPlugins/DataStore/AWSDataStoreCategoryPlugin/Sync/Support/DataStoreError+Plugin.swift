@@ -23,14 +23,14 @@ extension DataStoreError {
         )
     }
 
-    static func nilReconciliationQueues(file: StaticString = #file,
-                                        function: StaticString = #function,
-                                        line: UInt = #line) -> DataStoreError {
+    static func nilReconciliationQueue(file: StaticString = #file,
+                                       function: StaticString = #function,
+                                       line: UInt = #line) -> DataStoreError {
         .internalOperation(
-            "The reference to IncomingReconciliationQueues is unexpectedly nil in an internal operation",
+            "The reference to IncomingEventReconciliationQueue is unexpectedly nil in an internal operation",
             """
             \(AmplifyErrorMessages.reportBugToAWS()) \
-            The reference to IncomingReconciliationQueues has been released while the DataStore was attempting to \
+            The reference to IncomingEventReconciliationQueue has been released while the DataStore was attempting to \
             enqueue a remote subscription or mutation event. \
             \(file), \(function), \(line)
             """

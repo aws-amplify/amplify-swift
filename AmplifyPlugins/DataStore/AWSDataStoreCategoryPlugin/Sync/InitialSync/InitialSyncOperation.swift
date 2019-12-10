@@ -117,7 +117,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
 
         guard let reconciliationQueue = reconciliationQueue else {
-            finish(result: .failure(DataStoreError.nilReconciliationQueues()))
+            finish(result: .failure(DataStoreError.nilReconciliationQueue()))
             return
         }
 

@@ -7,13 +7,15 @@
 
 import Amplify
 
-struct QueryRequestListenerResponder<R: Decodable> {
-
-    typealias Callback = (GraphQLRequest<R>, GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R>?
-
-    let callback: Callback
-
-    init(callback: @escaping Callback) {
-        self.callback = callback
+extension MockAPICategoryPlugin {
+    enum ResponderKeys {
+        case queryRequestListener
+        case subscribeRequestListener
     }
 }
+
+typealias QueryRequestListenerResponder<R: Decodable> =
+    MockResponder<(GraphQLRequest<R>, GraphQLOperation<R>.EventListener?), GraphQLOperation<R>?>
+
+typealias SubscribeRequestListenerResponder<R: Decodable> =
+    MockResponder<(GraphQLRequest<R>, GraphQLSubscriptionOperation<R>.EventListener?), GraphQLSubscriptionOperation<R>?>

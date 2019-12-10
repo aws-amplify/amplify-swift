@@ -15,8 +15,8 @@ extension ReconcileAndLocalSaveOperation {
         /// Operation has been started by the queue
         case started(RemoteModel)
 
-        /// Operation has retrieved RemoteModel's corresponding model data and sync metadata from local database
-        case queried(RemoteModel, LocalModel?)
+        /// Operation has retrieved RemoteModel's corresponding sync metadata from local database
+        case queried(RemoteModel, LocalMetadata?)
 
         /// Operation has reconciled the incoming remote model with local model and sync metadata
         case reconciled(RemoteSyncReconciler.Disposition)

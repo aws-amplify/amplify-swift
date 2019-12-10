@@ -156,6 +156,7 @@ class MockMutationEventSource: MutationEventSource {
 }
 
 extension OutgoingMutationQueueMockStateTest {
+
     private func setUpCore() throws -> AmplifyConfiguration {
         Amplify.reset()
 
@@ -171,6 +172,7 @@ extension OutgoingMutationQueueMockStateTest {
         let amplifyConfig = AmplifyConfiguration(dataStore: dataStoreConfig)
         return amplifyConfig
     }
+
     private func setUpAPICategory(config: AmplifyConfiguration) throws -> AmplifyConfiguration {
         let apiPlugin = MockAPICategoryPlugin()
         try Amplify.add(plugin: apiPlugin)
@@ -181,9 +183,11 @@ extension OutgoingMutationQueueMockStateTest {
         let amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: config.dataStore)
         return amplifyConfig
     }
+
     private func setUpWithAPI() throws {
         let configWithoutAPI = try setUpCore()
         let configWithAPI = try setUpAPICategory(config: configWithoutAPI)
         try Amplify.configure(configWithAPI)
     }
+
 }

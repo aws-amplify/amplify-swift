@@ -255,7 +255,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Logging.configure(using: categoryConfig)
 
-        let semaphore = DispatchSemaphore(value: 1)
+        let semaphore = DispatchSemaphore(value: 0)
         Amplify.Logging.reset { semaphore.signal() }
         semaphore.wait()
 

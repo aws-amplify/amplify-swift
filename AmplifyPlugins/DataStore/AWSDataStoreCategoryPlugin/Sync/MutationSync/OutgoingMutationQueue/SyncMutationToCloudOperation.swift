@@ -12,7 +12,7 @@ import AWSPluginsCore
 
 /// Publishes a mutation event to the specified Cloud API. Upon receipt of the API response, validates to ensure it is
 /// not a retriable error. If it is, attempts a retry until either success or terminal failure. Upon success or
-/// terminal failure, publishes the event response to the appropriate ModelSpecificReconciliationQueue subject.
+/// terminal failure, publishes the event response to the appropriate ModelReconciliationQueue subject.
 class SyncMutationToCloudOperation: Operation {
 
     private weak var api: APICategoryGraphQLBehavior?

@@ -60,15 +60,19 @@ class SyncEngineTestBase: XCTestCase {
     /// Sets up a DataStorePlugin backed by the storageAdapter created in `setUpStorageAdapter()`, and an optional
     /// `mutationQueue`. If no mutationQueue is specified, uses  NoOpMutationQueue, meaning that incoming subscription
     /// events will never be delivered to the sync engine.
-    func setUpDataStore(mutationQueue: OutgoingMutationQueueBehavior = NoOpMutationQueue(),
-                        modelRegistration: AmplifyModelRegistration = TestModelRegistration()) throws {
+    func setUpDataStore(
+        mutationQueue: OutgoingMutationQueueBehavior = NoOpMutationQueue(),
+        initialSyncOrchestratorFactory: @escaping InitialSyncOrchestratorFactory = NoOpInitialSyncOrchestrator.factory,
+        modelRegistration: AmplifyModelRegistration = TestModelRegistration()
+    ) throws {
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
 
         let syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
                                           outgoingMutationQueue: mutationQueue,
                                           mutationEventIngester: mutationDatabaseAdapter,
-                                          mutationEventPublisher: awsMutationEventPublisher)
+                                          mutationEventPublisher: awsMutationEventPublisher,
+                                          initialSyncOrchestratorFactory: initialSyncOrchestratorFactory)
 
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           syncEngine: syncEngine)

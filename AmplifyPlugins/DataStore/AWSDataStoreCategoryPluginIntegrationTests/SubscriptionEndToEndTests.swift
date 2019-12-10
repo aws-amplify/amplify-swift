@@ -207,7 +207,7 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
     }
 
     func getMutationSync(forPostWithId id: Model.Identifier) -> MutationSync<AnyModel>? {
-        let semaphore = DispatchSemaphore(value: 1)
+        let semaphore = DispatchSemaphore(value: 0)
         var postFromQuery: Post?
         storageAdapter.query(Post.self, predicate: Post.keys.id == id) { result in
             switch result {

@@ -181,8 +181,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         let rows = try connection.prepare(sql).bind(ids)
 
         let syncMetadataList = try rows.convert(to: MutationSyncMetadata.self)
-        let mutationSyncList = try syncMetadataList.map {
-            (syncMetadata: MutationSyncMetadata) -> MutationSync<AnyModel> in
+        let mutationSyncList = try syncMetadataList.map { syncMetadata -> MutationSync<AnyModel> in
             guard let model = modelById[syncMetadata.id] else {
                 throw DataStoreError.invalidOperation(causedBy: nil)
             }

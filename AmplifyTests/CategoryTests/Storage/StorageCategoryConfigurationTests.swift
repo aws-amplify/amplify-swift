@@ -253,7 +253,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Storage.configure(using: categoryConfig)
 
-        let semaphore = DispatchSemaphore(value: 1)
+        let semaphore = DispatchSemaphore(value: 0)
         Amplify.Storage.reset { semaphore.signal() }
         semaphore.wait()
 

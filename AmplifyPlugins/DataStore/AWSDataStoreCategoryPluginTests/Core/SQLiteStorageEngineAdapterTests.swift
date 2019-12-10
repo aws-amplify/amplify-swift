@@ -13,24 +13,6 @@ import XCTest
 
 class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
 
-    // MARK: - Utilities
-
-    /// - Given: a list of `Model` types
-    /// - When:
-    ///   - the list is not in the correct order: `[Comment, Post]`
-    /// - Then:
-    ///   - check if `sortByDependencyOrder()` sorts the list to `[Post, Comment]`
-    func testModelDependencySortOrder() {
-        let models: [Model.Type] = [Comment.self, Post.self]
-        let sorted = models.sortByDependencyOrder()
-
-        XCTAssert(models.count == sorted.count)
-        XCTAssert(models[0].schema.name == sorted[1].schema.name)
-        XCTAssert(models[1].schema.name == sorted[0].schema.name)
-    }
-
-    // MARK: - Operations
-
     /// - Given: a list a `Post` instance
     /// - When:
     ///   - the `save(post)` is called

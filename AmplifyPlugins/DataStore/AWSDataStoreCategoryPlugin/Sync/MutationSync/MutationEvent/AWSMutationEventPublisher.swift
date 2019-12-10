@@ -9,7 +9,7 @@ import Amplify
 import Combine
 
 /// Note: This publisher accepts only a single subscriber
-@available(iOS 13, *)
+@available(iOS 13.0, *)
 final class AWSMutationEventPublisher: Publisher {
     typealias Output = MutationEvent
     typealias Failure = DataStoreError
@@ -79,7 +79,7 @@ extension AWSMutationEventPublisher: MutationEventPublisher {
     }
 }
 
-@available(iOS 13, *)
+@available(iOS 13.0, *)
 extension AWSMutationEventPublisher: DefaultLogger { }
 
 @available(iOS 13.0, *)
