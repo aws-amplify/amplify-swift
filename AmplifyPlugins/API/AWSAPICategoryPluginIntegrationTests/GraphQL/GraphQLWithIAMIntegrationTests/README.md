@@ -1,4 +1,13 @@
+## GraphQL with IAM Auth Integration Tests
 
+The following steps show how to set up an GraphQL endpoint with AppSync. The auth configured will be IAM. This set up is used to run the tests in `GraphQLWithIAMIntegrationTests.swift`.
+
+### Set-up
+
+TODO: Figure out how to use Amplify CLI to  `amplify add api` and select `IAM` auth. Currently it does not set up correct IAM policies. 
+
+
+### Old notes
 
 // MARK: set up
     /*
@@ -56,7 +65,7 @@
      },
      "AppSync": {
          "Default": { // this is `todoGraphQLWithIAMWithGuestAccess`
-             "ApiUrl": "https://fsdfgjw5ojdanhivobrnmw54s4.appsync-api.us-east-1.amazonaws.com/graphql",
+             "ApiUrl": "https://xxxxxxx.appsync-api.us-east-1.amazonaws.com/graphql",
              "Region": "us-east-1",
              "AuthMode": "AWS_IAM",
              "ClientDatabasePrefix": "api3_AWS_IAM"
@@ -65,7 +74,7 @@
      "CredentialsProvider": {
          "CognitoIdentity": {
              "Default": {
-                 "PoolId": "us-east-1:35d7a505-675c-440e-969f-82d0773b586b",
+                 "PoolId": "us-east-1:22222-675c-440e-969f-82d0773b586b",
                  "Region": "us-east-1"
              }
          }
@@ -73,8 +82,8 @@
      "CognitoUserPool": {
          "Default": {
              "PoolId": "us-east-1_PdSfW6IgE",
-             "AppClientId": "5gf44rm3rv8ar0o9spcuols1g4",
-             "AppClientSecret": "11343jpcqhj7dqvacjkq5hlrcrlauqka56jg7lhi00vq1ra1b57i",
+             "AppClientId": "xxxxx",
+             "AppClientSecret": "xxxxxxx",
              "Region": "us-east-1"
          }
      }
