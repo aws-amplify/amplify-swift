@@ -32,7 +32,7 @@ class GraphQLRequestModelTests: XCTestCase {
     ///     - the `responseType` is correct
     ///     - the `variables` is non-nil
     func testCreateMutationGraphQLRequest() {
-        let post = Post(title: "title", content: "content")
+        let post = Post(title: "title", content: "content", createdAt: Date())
         let document = GraphQLMutation(of: post, type: .create)
 
         let request = GraphQLRequest<Post>.mutation(of: post, type: .create)
@@ -43,7 +43,7 @@ class GraphQLRequestModelTests: XCTestCase {
     }
 
     func testUpdateMutationGraphQLRequest() {
-        let post = Post(title: "title", content: "content")
+        let post = Post(title: "title", content: "content", createdAt: Date())
         let document = GraphQLMutation(of: post, type: .update)
 
         let request = GraphQLRequest<Post>.mutation(of: post, type: .update)
@@ -54,7 +54,7 @@ class GraphQLRequestModelTests: XCTestCase {
     }
 
     func testDeleteMutationGraphQLRequest() {
-        let post = Post(title: "title", content: "content")
+        let post = Post(title: "title", content: "content", createdAt: Date())
         let document = GraphQLMutation(of: post, type: .delete)
 
         let request = GraphQLRequest<Post>.mutation(of: post, type: .delete)

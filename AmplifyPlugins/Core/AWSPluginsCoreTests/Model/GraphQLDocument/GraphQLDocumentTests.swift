@@ -17,17 +17,10 @@ class GraphQLDocumentTests: XCTestCase {
     }
 
     func testSelectionSetFieldsForNotSyncableModels() {
-        ModelRegistry.register(modelType: CommentNoSync.self)
-        ModelRegistry.register(modelType: PostNoSync.self)
+        ModelRegistry.register(modelType: MockUnsynced.self)
 
-        let document = GraphQLGetQuery(from: PostNoSync.self, id: "id")
+        let document = GraphQLGetQuery(from: MockUnsynced.self, id: "id")
         let expectedSelectionSet = ["id",
-                                    "content",
-                                    "createdAt",
-                                    "draft",
-                                    "rating",
-                                    "title",
-                                    "updatedAt",
                                     "__typename"]
 
         XCTAssertEqual(document.selectionSetFields, expectedSelectionSet)

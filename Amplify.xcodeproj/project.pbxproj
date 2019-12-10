@@ -277,6 +277,7 @@
 		FA9FB77D232AA0D800C04D32 /* FilteredListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FB77C232AA0D800C04D32 /* FilteredListener.swift */; };
 		FA9FB780232AA11A00C04D32 /* HubChannelDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FB77F232AA11A00C04D32 /* HubChannelDispatcher.swift */; };
 		FA9FB782232AA26500C04D32 /* DefaultHubPluginCustomChannelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FB781232AA26500C04D32 /* DefaultHubPluginCustomChannelTests.swift */; };
+		FAA2E8BC239FFC7700E420EA /* MockModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA2E8BB239FFC7700E420EA /* MockModels.swift */; };
 		FAA64FC32397294600B9C3C6 /* ModelSchema+Attributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA64FC22397294500B9C3C6 /* ModelSchema+Attributes.swift */; };
 		FAA64FC52397344D00B9C3C6 /* AtomicValue+RangeReplaceableCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA64FC42397344D00B9C3C6 /* AtomicValue+RangeReplaceableCollection.swift */; };
 		FAA64FC72397347B00B9C3C6 /* AtomicValue+RangeReplaceableCollectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA64FC62397347B00B9C3C6 /* AtomicValue+RangeReplaceableCollectionTests.swift */; };
@@ -912,6 +913,7 @@
 		FA9FB781232AA26500C04D32 /* DefaultHubPluginCustomChannelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHubPluginCustomChannelTests.swift; sourceTree = "<group>"; };
 		FA9FD2322381CD0000A7CAF5 /* MutationEvent+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MutationEvent+Schema.swift"; sourceTree = "<group>"; };
 		FA9FD2332381CD0000A7CAF5 /* MutationEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutationEvent.swift; sourceTree = "<group>"; };
+		FAA2E8BB239FFC7700E420EA /* MockModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockModels.swift; sourceTree = "<group>"; };
 		FAA64FC22397294500B9C3C6 /* ModelSchema+Attributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelSchema+Attributes.swift"; sourceTree = "<group>"; };
 		FAA64FC42397344D00B9C3C6 /* AtomicValue+RangeReplaceableCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AtomicValue+RangeReplaceableCollection.swift"; sourceTree = "<group>"; };
 		FAA64FC62397347B00B9C3C6 /* AtomicValue+RangeReplaceableCollectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AtomicValue+RangeReplaceableCollectionTests.swift"; sourceTree = "<group>"; };
@@ -1634,6 +1636,7 @@
 				FAF512AD23986791001ADF4E /* AmplifyModels.swift */,
 				B9521830237E21B900F53237 /* Comment.swift */,
 				B952182E237E21B900F53237 /* Comment+Schema.swift */,
+				FAA2E8BB239FFC7700E420EA /* MockModels.swift */,
 				B9521832237E21B900F53237 /* Post.swift */,
 				B9521831237E21B900F53237 /* Post+Schema.swift */,
 				2129BE002394627B006363A1 /* PostCommentModelRegistration.swift */,
@@ -2847,7 +2850,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyTests\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/.swiftlint.yml\" --path \"${SRCROOT}/AmplifyTests\"\n";
 		};
 		21578BEF234D43E600FF0F03 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2865,7 +2868,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyFunctionalTests\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/.swiftlint.yml\" --path \"${SRCROOT}/AmplifyFunctionalTests\"\n";
 		};
 		21578BF1234D459B00FF0F03 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2883,7 +2886,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyTests\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyTests\"\n";
 		};
 		21578BF2234D45BF00FF0F03 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2901,7 +2904,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyFunctionalTests\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyFunctionalTests\"\n";
 		};
 		215A84AA234D330400109930 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2919,7 +2922,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyTestCommon\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyTestCommon\"\n";
 		};
 		215A84AB234D332D00109930 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2937,7 +2940,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyTestCommon\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/.swiftlint.yml\" --path \"${SRCROOT}/AmplifyTestCommon\"\n";
 		};
 		2F8DAE72BD3C0F67BA5CAD60 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3155,7 +3158,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsCoreTests\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsCoreTests\"\n";
 		};
 		FA131AD02360FEF20008381C /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3173,7 +3176,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsCoreTests\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/.swiftlint.yml\" --path \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsCoreTests\"\n";
 		};
 		FA131AD12360FF310008381C /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3191,7 +3194,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsCore\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsCore\"\n";
 		};
 		FA131AD22360FF320008381C /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3209,7 +3212,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsCore\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/.swiftlint.yml\" --path \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsCore\"\n";
 		};
 		FAB2C9A22384B11B008EE879 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3227,7 +3230,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsTestCommon\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsTestCommon\"\n";
 		};
 		FAB2C9A32384B131008EE879 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3245,7 +3248,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsTestCommon\" --config \"${SRCROOT}/.swiftlint.yml\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/.swiftlint.yml\" --path \"${SRCROOT}/AmplifyPlugins/Core/AWSPluginsTestCommon\"\n";
 		};
 		FAC23581227A2D8C00424678 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3263,7 +3266,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/Amplify\" --config \"${SRCROOT}/.swiftlint.yml\"\n\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/.swiftlint.yml\" --path \"${SRCROOT}/Amplify\"\n";
 		};
 		FAF8AC86233AB5CF009FBF97 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3281,7 +3284,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/Amplify\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/Amplify\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -3673,6 +3676,7 @@
 				FACA361A2327FC69000E74F6 /* MockStorageCategoryPlugin.swift in Sources */,
 				B9521837237E21BA00F53237 /* Post.swift in Sources */,
 				B9FAA11A23879AC8009414B4 /* BookAuthor.swift in Sources */,
+				FAA2E8BC239FFC7700E420EA /* MockModels.swift in Sources */,
 				B9FAA11E23879B9F009414B4 /* Book+Schema.swift in Sources */,
 				FACA361B2327FC74000E74F6 /* MockLoggingCategoryPlugin.swift in Sources */,
 				FACF52042329633500646E10 /* TestExtensions.swift in Sources */,
