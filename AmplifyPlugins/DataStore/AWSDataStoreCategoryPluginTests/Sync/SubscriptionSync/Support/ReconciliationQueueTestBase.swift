@@ -25,7 +25,7 @@ class ReconciliationQueueTestBase: XCTestCase {
 
         apiPlugin = MockAPICategoryPlugin()
 
-        storageAdapter = MockSQLiteStorageEngineAdapter(testCase: self)
+        storageAdapter = MockSQLiteStorageEngineAdapter()
         subscriptionEventsPublisher = MockIncomingSubscriptionEventPublisher()
         subscriptionEventsSubject = subscriptionEventsPublisher.subject
     }

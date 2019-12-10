@@ -26,19 +26,13 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     var resultForQueryModelSyncMetadata: ModelSyncMetadata?
     var listenerForModelSyncMetadata: BasicClosure?
 
-    let testCase: XCTestCase
-
-    init(testCase: XCTestCase) {
-        self.testCase = testCase
+    init() {
         self.shouldReturnErrorOnSaveMetadata = false
         self.shouldReturnErrorOnDeleteMutation = false
     }
 
     func setUp(models: [Model.Type]) throws {
-        testCase.recordFailure(withDescription: "Not expected to execute",
-                               inFile: #file,
-                               atLine: #line,
-                               expected: true)
+        XCTFail("Not expected to execute")
     }
 
     // MARK: - Responses
@@ -69,10 +63,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: Model.Identifier,
                           completion: DataStoreCallback<Void>) {
-        testCase.recordFailure(withDescription: "Not expected to execute",
-        inFile: #file,
-        atLine: #line,
-        expected: true)
+        XCTFail("Not expected to execute")
     }
 
     func delete(untypedModelType modelType: Model.Type,
@@ -91,16 +82,16 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func query<M: Model>(_ modelType: M.Type, predicate: QueryPredicate?, completion: DataStoreCallback<[M]>) {
-        testCase.recordFailure(withDescription: "Not expected to execute", inFile: #file, atLine: #line, expected: true)
+        XCTFail("Not expected to execute")
     }
 
     func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>] {
-        testCase.recordFailure(withDescription: "Not expected to execute", inFile: #file, atLine: #line, expected: true)
+        XCTFail("Not expected to execute")
         return []
     }
 
     func exists(_ modelType: Model.Type, withId id: Model.Identifier) throws -> Bool {
-        testCase.recordFailure(withDescription: "Not expected to execute", inFile: #file, atLine: #line, expected: true)
+        XCTFail("Not expected to execute")
         return true
     }
 
@@ -125,7 +116,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>? {
-        testCase.recordFailure(withDescription: "Not expected to execute", inFile: #file, atLine: #line, expected: true)
+        XCTFail("Not expected to execute")
         return nil
     }
 
@@ -162,11 +153,6 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 }
 
 class MockStorageEngineBehavior: StorageEngineBehavior {
-    let testCase: XCTestCase
-
-    init(testCase: XCTestCase) {
-        self.testCase = testCase
-    }
 
     func startSync() {
     }
@@ -175,16 +161,16 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     }
 
     func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
-        testCase.recordFailure(withDescription: "Not expected to execute", inFile: #file, atLine: #line, expected: true)
+        XCTFail("Not expected to execute")
     }
 
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: Model.Identifier,
                           completion: DataStoreCallback<Void>) {
-        testCase.recordFailure(withDescription: "Not expected to execute", inFile: #file, atLine: #line, expected: true)
+        XCTFail("Not expected to execute")
     }
 
     func query<M: Model>(_ modelType: M.Type, predicate: QueryPredicate?, completion: DataStoreCallback<[M]>) {
-        testCase.recordFailure(withDescription: "Not expected to execute", inFile: #file, atLine: #line, expected: true)
+        XCTFail("Not expected to execute")
     }
 }

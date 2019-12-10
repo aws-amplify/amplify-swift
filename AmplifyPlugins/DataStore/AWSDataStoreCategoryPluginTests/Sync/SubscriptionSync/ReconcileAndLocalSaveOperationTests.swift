@@ -44,7 +44,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                                                          version: 2)
         anyPostDeletedMutationSync = MutationSync<AnyModel>(model: anyPostDelete, syncMetadata: anyPostDeleteMetadata)
 
-        storageAdapter = MockSQLiteStorageEngineAdapter(testCase: self)
+        storageAdapter = MockSQLiteStorageEngineAdapter()
         storageAdapter.returnOnQuery(dataStoreResult: .none)
         storageAdapter.returnOnSave(dataStoreResult: .none)
         stateMachine = MockStateMachine(initialState: .waiting,
@@ -277,7 +277,7 @@ extension ReconcileAndLocalSaveOperationTests {
     private func setUpCore() throws -> AmplifyConfiguration {
         Amplify.reset()
 
-        let storageEngine = MockStorageEngineBehavior(testCase: self)
+        let storageEngine = MockStorageEngineBehavior()
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                  storageEngine: storageEngine,

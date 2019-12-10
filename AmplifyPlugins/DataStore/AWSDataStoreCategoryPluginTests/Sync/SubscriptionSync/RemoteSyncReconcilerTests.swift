@@ -175,7 +175,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
     func testMutatedOnRemote_withLocalLowerVersion_withPendingMutations() throws {
         let remoteModel = makeRemoteModel(deleted: false, version: 2)
         let localSyncMetadata = makeMutationSyncMetadata(deleted: false, version: 1)
-       let pendingMutations: [MutationEvent] = [mutationEvent]
+        let pendingMutations: [MutationEvent] = [mutationEvent]
 
         let disposition = RemoteSyncReconciler.reconcile(remoteModel: remoteModel,
                                                          to: localSyncMetadata,
@@ -187,7 +187,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
     func testDeletedOnRemote_withLocalLowerVersion_withPendingMutations() throws {
         let remoteModel = makeRemoteModel(deleted: true, version: 2)
         let localSyncMetadata = makeMutationSyncMetadata(deleted: false, version: 1)
-       let pendingMutations: [MutationEvent] = [mutationEvent]
+        let pendingMutations: [MutationEvent] = [mutationEvent]
 
         let disposition = RemoteSyncReconciler.reconcile(remoteModel: remoteModel,
                                                          to: localSyncMetadata,
@@ -202,7 +202,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
     func testMutatedOnRemote_withLocalHigherVersion_withPendingMutations() throws {
         let remoteModel = makeRemoteModel(deleted: false, version: 2)
         let localSyncMetadata = makeMutationSyncMetadata(deleted: false, version: 3)
-       let pendingMutations: [MutationEvent] = [mutationEvent]
+        let pendingMutations: [MutationEvent] = [mutationEvent]
 
         let disposition = RemoteSyncReconciler.reconcile(remoteModel: remoteModel,
                                                          to: localSyncMetadata,

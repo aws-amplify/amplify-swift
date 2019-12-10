@@ -19,7 +19,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
 
     override func setUp() {
         do {
-            let mockStorageAdapter = MockSQLiteStorageEngineAdapter(testCase: self)
+            let mockStorageAdapter = MockSQLiteStorageEngineAdapter()
             databaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: mockStorageAdapter)
         } catch {
             XCTFail("Failed to setup system under test")
