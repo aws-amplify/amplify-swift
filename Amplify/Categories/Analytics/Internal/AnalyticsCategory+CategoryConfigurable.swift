@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 extension AnalyticsCategory: CategoryConfigurable {
 
     func configure(using configuration: CategoryConfiguration) throws {
@@ -31,20 +29,6 @@ extension AnalyticsCategory: CategoryConfigurable {
             return
         }
         try configure(using: configuration)
-    }
-
-    func reset(onComplete: @escaping BasicClosure) {
-        let group = DispatchGroup()
-
-        for plugin in plugins.values {
-            group.enter()
-            plugin.reset { group.leave() }
-        }
-
-        group.wait()
-
-        isConfigured = false
-        onComplete()
     }
 
 }

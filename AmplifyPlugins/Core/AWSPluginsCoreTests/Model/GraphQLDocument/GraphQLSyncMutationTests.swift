@@ -32,7 +32,7 @@ class GraphQLSyncMutationTests: XCTestCase {
     ///     - it contains an `input` of type `CreatePostInput`
     ///     - it has a list of fields with no nested models
     func testCreateGraphQLMutationFromSimpleModel() {
-        let post = Post(title: "title", content: "content")
+        let post = Post(title: "title", content: "content", createdAt: Date())
         let document = GraphQLSyncMutation(of: post, type: .create, version: 5)
         let expectedQueryDocument = """
         mutation CreatePost($input: CreatePostInput!) {
@@ -76,8 +76,8 @@ class GraphQLSyncMutationTests: XCTestCase {
     ///     - it contains an `input` of type `CreateCommentInput`
     ///     - it has a list of fields with a `postId`
     func testCreateGraphQLMutationFromModelWithAssociation() {
-        let post = Post(title: "title", content: "content")
-        let comment = Comment(content: "comment", post: post)
+        let post = Post(title: "title", content: "content", createdAt: Date())
+        let comment = Comment(content: "comment", createdAt: Date(), post: post)
         let document = GraphQLSyncMutation(of: comment, type: .create, version: 5)
         let expectedQueryDocument = """
         mutation CreateComment($input: CreateCommentInput!) {
@@ -128,7 +128,7 @@ class GraphQLSyncMutationTests: XCTestCase {
     ///     - it contains an `input` of type `UpdatePostInput`
     ///     - it has a list of fields with no nested models
     func testUpdateGraphQLMutationFromSimpleModel() {
-        let post = Post(title: "title", content: "content")
+        let post = Post(title: "title", content: "content", createdAt: Date())
         let document = GraphQLSyncMutation(of: post, type: .update, version: 5)
         let expectedQueryDocument = """
         mutation UpdatePost($input: UpdatePostInput!) {
@@ -172,7 +172,7 @@ class GraphQLSyncMutationTests: XCTestCase {
     ///     - it contains an `input` of type `ID!`
     ///     - it has a list of fields with no nested models
     func testDeleteGraphQLMutationFromSimpleModel() {
-        let post = Post(title: "title", content: "content")
+        let post = Post(title: "title", content: "content", createdAt: Date())
         let document = GraphQLSyncMutation(of: post, type: .delete, version: 5)
         let expectedQueryDocument = """
         mutation DeletePost($input: DeletePostInput!) {

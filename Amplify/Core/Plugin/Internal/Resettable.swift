@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 /// Note that although this protocol is public, the `reset` method is intended only
 /// for internal use, and should not be invoked by host applications.
 public protocol Resettable {
