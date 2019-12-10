@@ -38,7 +38,7 @@
 		21D7A0E4237B54D90057D00D /* APIOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A092237B54D90057D00D /* APIOperation.swift */; };
 		21D7A0E5237B54D90057D00D /* AWSAPICategoryPluginConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A094237B54D90057D00D /* AWSAPICategoryPluginConfiguration.swift */; };
 		21D7A0E6237B54D90057D00D /* AWSAPICategoryPluginConfiguration+EndpointConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A095237B54D90057D00D /* AWSAPICategoryPluginConfiguration+EndpointConfig.swift */; };
-		21D7A0E7237B54D90057D00D /* AWSAPIPlugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A096237B54D90057D00D /* AWSAPIPlugin+Reset.swift */; };
+		21D7A0E7237B54D90057D00D /* AWSAPIPlugin+Resettable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A096237B54D90057D00D /* AWSAPIPlugin+Resettable.swift */; };
 		21D7A0E8237B54D90057D00D /* AWSAPIPlugin+Configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A098237B54D90057D00D /* AWSAPIPlugin+Configure.swift */; };
 		21D7A0E9237B54D90057D00D /* AWSAPIPlugin+InterceptorBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A099237B54D90057D00D /* AWSAPIPlugin+InterceptorBehavior.swift */; };
 		21D7A0EA237B54D90057D00D /* AWSAPIPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A09A237B54D90057D00D /* AWSAPIPlugin.swift */; };
@@ -278,7 +278,7 @@
 		21D7A092237B54D90057D00D /* APIOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIOperation.swift; sourceTree = "<group>"; };
 		21D7A094237B54D90057D00D /* AWSAPICategoryPluginConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginConfiguration.swift; sourceTree = "<group>"; };
 		21D7A095237B54D90057D00D /* AWSAPICategoryPluginConfiguration+EndpointConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSAPICategoryPluginConfiguration+EndpointConfig.swift"; sourceTree = "<group>"; };
-		21D7A096237B54D90057D00D /* AWSAPIPlugin+Reset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSAPIPlugin+Reset.swift"; sourceTree = "<group>"; };
+		21D7A096237B54D90057D00D /* AWSAPIPlugin+Resettable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSAPIPlugin+Resettable.swift"; sourceTree = "<group>"; };
 		21D7A098237B54D90057D00D /* AWSAPIPlugin+Configure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSAPIPlugin+Configure.swift"; sourceTree = "<group>"; };
 		21D7A099237B54D90057D00D /* AWSAPIPlugin+InterceptorBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSAPIPlugin+InterceptorBehavior.swift"; sourceTree = "<group>"; };
 		21D7A09A237B54D90057D00D /* AWSAPIPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAPIPlugin.swift; sourceTree = "<group>"; };
@@ -620,18 +620,18 @@
 		21D7A08B237B54D90057D00D /* AWSAPICategoryPlugin */ = {
 			isa = PBXGroup;
 			children = (
+				21D7A0DE237B54D90057D00D /* Info.plist */,
 				21D7A09A237B54D90057D00D /* AWSAPIPlugin.swift */,
 				21D7A098237B54D90057D00D /* AWSAPIPlugin+Configure.swift */,
 				21D7A0B1237B54D90057D00D /* AWSAPIPlugin+GraphQLBehavior.swift */,
 				21409C5D2384DE2C000A53C9 /* AWSAPIPlugin+GraphQLModelBehavior.swift */,
 				21D7A099237B54D90057D00D /* AWSAPIPlugin+InterceptorBehavior.swift */,
 				FA8EE784238632620097E4F1 /* AWSAPIPlugin+Log.swift */,
-				21D7A096237B54D90057D00D /* AWSAPIPlugin+Reset.swift */,
+				21D7A096237B54D90057D00D /* AWSAPIPlugin+Resettable.swift */,
 				21D7A0D0237B54D90057D00D /* AWSAPIPlugin+RESTBehavior.swift */,
 				21D7A0D1237B54D90057D00D /* AWSAPIPlugin+URLSessionBehaviorDelegate.swift */,
 				21D7A09B237B54D90057D00D /* AWSAPIPlugin+URLSessionDelegate.swift */,
 				21D7A093237B54D90057D00D /* Configuration */,
-				21D7A0DE237B54D90057D00D /* Info.plist */,
 				21D7A0D2237B54D90057D00D /* Interceptor */,
 				21D7A08C237B54D90057D00D /* Operation */,
 				21D7A09C237B54D90057D00D /* Subscription */,
@@ -1964,7 +1964,7 @@
 				21D7A0E1237B54D90057D00D /* AWSRESTOperation.swift in Sources */,
 				21D7A10C237B54D90057D00D /* RESTOperationRequest+Validate.swift in Sources */,
 				21D7A0FB237B54D90057D00D /* AWSAPIPlugin+GraphQLBehavior.swift in Sources */,
-				21D7A0E7237B54D90057D00D /* AWSAPIPlugin+Reset.swift in Sources */,
+				21D7A0E7237B54D90057D00D /* AWSAPIPlugin+Resettable.swift in Sources */,
 				21D7A115237B54D90057D00D /* AWSAPIPlugin+RESTBehavior.swift in Sources */,
 				21D7A0F9237B54D90057D00D /* SubscriptionConnectionFactory.swift in Sources */,
 				21D7A0EA237B54D90057D00D /* AWSAPIPlugin.swift in Sources */,

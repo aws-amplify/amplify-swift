@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 extension LoggingCategory: CategoryConfigurable {
 
     /// Configures the LoggingCategory using the incoming CategoryConfiguration.
@@ -50,21 +48,6 @@ extension LoggingCategory: CategoryConfigurable {
             return
         }
         try configure(using: configuration)
-    }
-
-    func reset(onComplete: @escaping BasicClosure) {
-        concurrencyQueue.sync {
-            let group = DispatchGroup()
-
-            group.enter()
-
-            plugin.reset { group.leave() }
-
-            group.wait()
-
-            configurationState = .default
-            onComplete()
-        }
     }
 
 }

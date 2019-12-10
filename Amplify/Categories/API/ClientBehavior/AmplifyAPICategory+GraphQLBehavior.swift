@@ -5,7 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension APICategory: APICategoryGraphQLBehavior {
+extension AmplifyAPICategory: APICategoryGraphQLBehavior {
+
+    // MARK: - Model-based GraphQL Operations
 
     public func query<M: Model>(from modelType: M.Type,
                                 byId id: String,
@@ -25,18 +27,14 @@ extension APICategory: APICategoryGraphQLBehavior {
         plugin.mutate(of: model, type: type, listener: listener)
     }
 
-    public func mutate(ofAnyModel anyModel: AnyModel,
-                       type: GraphQLMutationType,
-                       listener: GraphQLOperation<AnyModel>.EventListener?) -> GraphQLOperation<AnyModel> {
-        plugin.mutate(ofAnyModel: anyModel, type: type, listener: listener)
-    }
-
     public func subscribe<M: Model>(from modelType: M.Type,
                                     type: GraphQLSubscriptionType,
                                     listener: GraphQLSubscriptionOperation<M>.EventListener?)
         -> GraphQLSubscriptionOperation<M> {
             plugin.subscribe(from: modelType, type: type, listener: listener)
     }
+
+    // MARK: - Request-based GraphQL operations
 
     public func query<R: Decodable>(request: GraphQLRequest<R>,
                                     listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
@@ -52,6 +50,14 @@ extension APICategory: APICategoryGraphQLBehavior {
                              listener: GraphQLSubscriptionOperation<R>.EventListener?)
         -> GraphQLSubscriptionOperation<R> {
             plugin.subscribe(request: request, listener: listener)
+    }
+
+    // MARK: - GraphQL operations without a specified type
+
+    public func mutate(ofAnyModel anyModel: AnyModel,
+                       type: GraphQLMutationType,
+                       listener: GraphQLOperation<AnyModel>.EventListener?) -> GraphQLOperation<AnyModel> {
+        plugin.mutate(ofAnyModel: anyModel, type: type, listener: listener)
     }
 
     public func subscribe(toAnyModelType modelType: Model.Type,

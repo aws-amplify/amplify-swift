@@ -233,8 +233,14 @@ class APICategoryConfigurationTests: XCTestCase {
             plugins: ["MockAPICategoryPlugin": true]
         )
 
-        try Amplify.API.configure(using: categoryConfig)
-        XCTAssertThrowsError(try Amplify.API.configure(using: categoryConfig),
+        guard let api = Amplify.API as? CategoryConfigurable else {
+            XCTFail("API is not CategoryConfigurable")
+            return
+        }
+
+        try api.configure(using: categoryConfig)
+
+        XCTAssertThrowsError(try api.configure(using: categoryConfig),
                              "configure() an already configured plugin should throw") { error in
                                 guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                                     XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
@@ -250,13 +256,64 @@ class APICategoryConfigurationTests: XCTestCase {
             plugins: ["MockAPICategoryPlugin": true]
         )
 
-        try Amplify.API.configure(using: categoryConfig)
+        guard let api = Amplify.API as? CategoryConfigurable & Resettable else {
+            XCTFail("API is not CategoryConfigurable and Resettable")
+            return
+        }
+
+        try api.configure(using: categoryConfig)
 
         let semaphore = DispatchSemaphore(value: 0)
-        Amplify.API.reset { semaphore.signal() }
+        api.reset { semaphore.signal() }
         semaphore.wait()
 
-        XCTAssertNoThrow(try Amplify.API.configure(using: categoryConfig))
+        XCTAssertNoThrow(try api.configure(using: categoryConfig))
+    }
+
+    func testIsConfiguredIsFalseBeforeConfig() {
+        guard let category = Amplify.API as? AmplifyAPICategory else {
+            XCTFail("Could not cast Amplify.API as AmplifyAPICategory")
+            return
+        }
+        XCTAssertFalse(category.isConfigured)
+    }
+
+    func testIsConfiguredIsTrueAfterConfig() throws {
+        let plugin = MockAPICategoryPlugin()
+        try Amplify.add(plugin: plugin)
+        let categoryConfig = APICategoryConfiguration(
+            plugins: ["MockAPICategoryPlugin": true]
+        )
+
+        let amplifyConfig = AmplifyConfiguration(api: categoryConfig)
+        try Amplify.configure(amplifyConfig)
+
+        guard let category = Amplify.API as? AmplifyAPICategory else {
+            XCTFail("Could not cast Amplify.API as AmplifyAPICategory")
+            return
+        }
+
+        XCTAssertTrue(category.isConfigured)
+    }
+
+    func testIsConfiguredIsFalseAfterReset() throws {
+        let plugin = MockAPICategoryPlugin()
+        try Amplify.add(plugin: plugin)
+        let categoryConfig = APICategoryConfiguration(
+            plugins: ["MockAPICategoryPlugin": true]
+        )
+
+        let amplifyConfig = AmplifyConfiguration(api: categoryConfig)
+        try Amplify.configure(amplifyConfig)
+
+        Amplify.reset()
+
+        guard let category = Amplify.API as? AmplifyAPICategory else {
+            XCTFail("Could not cast Amplify.API as AmplifyAPICategory")
+            return
+        }
+
+        XCTAssertFalse(category.isConfigured)
     }
 
 }

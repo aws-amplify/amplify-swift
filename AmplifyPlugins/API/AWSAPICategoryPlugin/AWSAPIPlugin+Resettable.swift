@@ -8,8 +8,9 @@
 import Amplify
 import Foundation
 
-public extension AWSAPIPlugin {
-    func reset(onComplete: @escaping BasicClosure) {
+extension AWSAPIPlugin: Resettable {
+
+    public func reset(onComplete: @escaping BasicClosure) {
         mapper.reset()
 
         mapper = OperationTaskMapper()
@@ -28,4 +29,5 @@ public extension AWSAPIPlugin {
 
         onComplete()
     }
+
 }
