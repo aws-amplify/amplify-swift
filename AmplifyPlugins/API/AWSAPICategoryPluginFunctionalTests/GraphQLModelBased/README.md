@@ -2,6 +2,8 @@
 
 provisioned without Sync
 
+TODO: These tests are currently not going to work until we introduce the isConfigured check and allow APICategory to check if DataStore plugin isConfigured. Currently it defaults to true.
+
 /*
  The backend is set up using this schema:
  ```

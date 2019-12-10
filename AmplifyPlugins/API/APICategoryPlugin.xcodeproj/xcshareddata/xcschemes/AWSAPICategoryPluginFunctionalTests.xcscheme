@@ -26,7 +26,13 @@
                   Identifier = "APICategoryPluginConcurrencyTests">
                </Test>
                <Test
+                  Identifier = "AnyModelIntegrationTests">
+               </Test>
+               <Test
                   Identifier = "AnyModelIntegrationTests/testDeleteAsAnyModel()">
+               </Test>
+               <Test
+                  Identifier = "BlogPostCommentGraphQLWithAPIKeyTests">
                </Test>
             </SkippedTests>
          </TestableReference>

@@ -2,6 +2,9 @@
 
 provisioned with sync
 
+TODO: Currently these tests work because it is checking that the models are syncable. 
+This will be updated to check if the datastore plugin is configured.
+
 /*
 1. Set up with this schema
 ```
