@@ -25,40 +25,19 @@ extension Amplify {
         for categoryType in CategoryType.allCases {
             switch categoryType {
             case .analytics:
-                group.enter()
-                DispatchQueue.global().async {
-                    Analytics.reset { group.leave() }
-                }
+                reset(Analytics, in: group) { group.leave() }
             case .api:
-                group.enter()
-                DispatchQueue.global().async {
-                    API.reset { group.leave() }
-                }
+                reset(API, in: group) { group.leave() }
             case .dataStore:
-                group.enter()
-                DispatchQueue.global().async {
-                    DataStore.reset { group.leave() }
-                }
+                reset(DataStore, in: group) { group.leave() }
             case .hub:
-                group.enter()
-                DispatchQueue.global().async {
-                    Hub.reset { group.leave() }
-                }
+                reset(Hub, in: group) { group.leave() }
             case .logging:
-                group.enter()
-                DispatchQueue.global().async {
-                    Logging.reset { group.leave() }
-                }
+                reset(Logging, in: group) { group.leave() }
             case .storage:
-                group.enter()
-                DispatchQueue.global().async {
-                    Storage.reset { group.leave() }
-                }
+                reset(Storage, in: group) { group.leave() }
             case .predictions:
-                group.enter()
-                DispatchQueue.global().async {
-                    Predictions.reset { group.leave() }
-                }
+                reset(Predictions, in: group) { group.leave() }
             }
         }
 
@@ -78,7 +57,7 @@ extension Amplify {
             case .analytics:
                 Analytics = AnalyticsCategory()
             case .api:
-                API = APICategory()
+                API = AmplifyAPICategory()
             case .dataStore:
                 DataStore = DataStoreCategory()
             case .predictions:
@@ -89,6 +68,19 @@ extension Amplify {
         }
 
         isConfigured = false
+    }
+
+    /// If `candidate` is `Resettable`, `enter()`s `group`, then invokes `candidate.reset(onComplete)` on a background
+    /// queue. If `candidate` is not resettable, exits without invoking `onComplete`.
+    private static func reset(_ candidate: Any, in group: DispatchGroup, onComplete: @escaping BasicClosure) {
+        guard let resettable = candidate as? Resettable else {
+            return
+        }
+
+        group.enter()
+        DispatchQueue.global().async {
+            resettable.reset(onComplete: onComplete)
+        }
     }
 
 }

@@ -148,8 +148,6 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     func subscribe<R: Decodable>(request: GraphQLRequest<R>,
                                  listener: GraphQLSubscriptionOperation<R>.EventListener?) ->
         GraphQLSubscriptionOperation<R> {
-            print("R.Type: \(R.self)")
-
             notify(
                 """
                 subscribe(request:listener:) document: \(request.document); \

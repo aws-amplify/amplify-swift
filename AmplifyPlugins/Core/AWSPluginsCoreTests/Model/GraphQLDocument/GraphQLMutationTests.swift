@@ -33,7 +33,7 @@ class GraphQLMutationTests: XCTestCase {
     ///     - it contains an `input` of type `CreatePostInput`
     ///     - it has a list of fields with no nested models
     func testCreateGraphQLMutationFromSimpleModel() {
-        let post = Post(title: "title", content: "content")
+        let post = Post(title: "title", content: "content", createdAt: Date())
         let document = GraphQLMutation(of: post, type: .create)
         let expectedQueryDocument = """
         mutation CreatePost($input: CreatePostInput!) {
@@ -76,8 +76,8 @@ class GraphQLMutationTests: XCTestCase {
     ///     - it contains an `input` of type `CreateCommentInput`
     ///     - it has a list of fields with a `postId`
     func testCreateGraphQLMutationFromModelWithAssociation() {
-        let post = Post(title: "title", content: "content")
-        let comment = Comment(content: "comment", post: post)
+        let post = Post(title: "title", content: "content", createdAt: Date())
+        let comment = Comment(content: "comment", createdAt: Date(), post: post)
         let document = GraphQLMutation(of: comment, type: .create)
         let expectedQueryDocument = """
         mutation CreateComment($input: CreateCommentInput!) {
@@ -127,7 +127,7 @@ class GraphQLMutationTests: XCTestCase {
     ///     - it contains an `input` of type `UpdatePostInput`
     ///     - it has a list of fields with no nested models
     func testUpdateGraphQLMutationFromSimpleModel() {
-        let post = Post(title: "title", content: "content")
+        let post = Post(title: "title", content: "content", createdAt: Date())
         let document = GraphQLMutation(of: post, type: .update)
         let expectedQueryDocument = """
         mutation UpdatePost($input: UpdatePostInput!) {
@@ -170,7 +170,7 @@ class GraphQLMutationTests: XCTestCase {
     ///     - it contains an `input` of type `ID!`
     ///     - it has a list of fields with no nested models
     func testDeleteGraphQLMutationFromSimpleModel() {
-        let post = Post(title: "title", content: "content")
+        let post = Post(title: "title", content: "content", createdAt: Date())
         let document = GraphQLMutation(of: post, type: .delete)
         let expectedQueryDocument = """
         mutation DeletePost($input: DeletePostInput!) {

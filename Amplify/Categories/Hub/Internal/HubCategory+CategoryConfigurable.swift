@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 extension HubCategory: CategoryConfigurable {
 
     /// Configures the HubCategory using the incoming CategoryConfiguration. If the incoming configuration does not
@@ -33,20 +31,6 @@ extension HubCategory: CategoryConfigurable {
             return
         }
         try configure(using: configuration)
-    }
-
-    func reset(onComplete: @escaping BasicClosure) {
-        let group = DispatchGroup()
-
-        for plugin in plugins.values {
-            group.enter()
-            plugin.reset { group.leave() }
-        }
-
-        group.wait()
-
-        configurationState = .pendingConfiguration
-        onComplete()
     }
 
 }

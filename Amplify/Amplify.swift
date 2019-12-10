@@ -26,7 +26,7 @@ public class Amplify {
     // It is not supported to mutate these category properties. They are `var` to support the `reset()` method for
     // ease of testing.
     public static internal(set) var Analytics = AnalyticsCategory()
-    public static internal(set) var API = APICategory()
+    public static internal(set) var API: APICategory = AmplifyAPICategory()
     public static internal(set) var DataStore = DataStoreCategory()
     public static internal(set) var Hub = HubCategory()
     public static internal(set) var Logging = LoggingCategory()

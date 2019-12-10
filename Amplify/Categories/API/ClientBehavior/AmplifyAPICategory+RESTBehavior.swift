@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension APICategory: APICategoryRESTBehavior {
+extension AmplifyAPICategory: APICategoryRESTBehavior {
     public func get(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
         plugin.get(request: request, listener: listener)
     }

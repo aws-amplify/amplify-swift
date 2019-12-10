@@ -5,9 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
-extension APICategory: CategoryConfigurable {
+extension AmplifyAPICategory: CategoryConfigurable {
 
     func configure(using configuration: CategoryConfiguration) throws {
         guard !isConfigured else {
@@ -31,22 +29,6 @@ extension APICategory: CategoryConfigurable {
             return
         }
         try configure(using: configuration)
-    }
-
-    func reset(onComplete: @escaping BasicClosure) {
-        let group = DispatchGroup()
-
-        for plugin in plugins.values {
-            group.enter()
-            plugin.reset { group.leave() }
-        }
-
-        ModelRegistry.reset()
-
-        group.wait()
-
-        isConfigured = false
-        onComplete()
     }
 
 }

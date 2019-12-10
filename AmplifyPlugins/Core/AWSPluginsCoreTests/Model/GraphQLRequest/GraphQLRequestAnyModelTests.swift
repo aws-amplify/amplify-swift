@@ -24,7 +24,7 @@ class GraphQLRequestAnyModelTests: XCTestCase {
     // MARK: - Mutations
 
     func testCreateGraphQLMutationFromSimpleModel() throws {
-        let originalPost = Post(title: "title", content: "content")
+        let originalPost = Post(title: "title", content: "content", createdAt: Date())
         let anyPost = try originalPost.eraseToAnyModel()
 
         let document = GraphQLMutation(of: anyPost, type: .create)
@@ -36,7 +36,7 @@ class GraphQLRequestAnyModelTests: XCTestCase {
     }
 
     func testUpdateGraphQLMutationFromSimpleModel() throws {
-        let originalPost = Post(title: "title", content: "content")
+        let originalPost = Post(title: "title", content: "content", createdAt: Date())
         let anyPost = try originalPost.eraseToAnyModel()
 
         let document = GraphQLMutation(of: anyPost, type: .update)
@@ -49,7 +49,7 @@ class GraphQLRequestAnyModelTests: XCTestCase {
     }
 
     func testDeleteGraphQLMutationFromSimpleModel() throws {
-        let originalPost = Post(title: "title", content: "content")
+        let originalPost = Post(title: "title", content: "content", createdAt: Date())
         let anyPost = try originalPost.eraseToAnyModel()
         let document = GraphQLMutation(of: anyPost, type: .delete)
 
@@ -68,7 +68,7 @@ class GraphQLRequestAnyModelTests: XCTestCase {
     // MARK: - GraphQLRequest+AnyModel
 
     func testCreateMutationGraphQLRequest() throws {
-        let originalPost = Post(title: "title", content: "content")
+        let originalPost = Post(title: "title", content: "content", createdAt: Date())
         let anyPost = try originalPost.eraseToAnyModel()
         let document = GraphQLMutation(of: anyPost, type: .create)
         let request = GraphQLRequest<AnyModel>.mutation(of: anyPost, type: .create)

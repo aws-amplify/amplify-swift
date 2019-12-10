@@ -71,7 +71,6 @@
 		FA3841E923889D440070AD5B /* StateMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841E823889D440070AD5B /* StateMachine.swift */; };
 		FA3841EB23889D6C0070AD5B /* SubscriptionEndToEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841EA23889D6C0070AD5B /* SubscriptionEndToEndTests.swift */; };
 		FA3841ED23889D8F0070AD5B /* StateMachineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841EC23889D8F0070AD5B /* StateMachineTests.swift */; };
-		FA3841EF23889DCC0070AD5B /* MockModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3841EE23889DCC0070AD5B /* MockModels.swift */; };
 		FA3B3EFF238F13B2002EFDB3 /* MutationEventIngester.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3B3EFE238F13B2002EFDB3 /* MutationEventIngester.swift */; };
 		FA3B3F03238F22CF002EFDB3 /* OutgoingMutationQueue+State.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3B3F02238F22CF002EFDB3 /* OutgoingMutationQueue+State.swift */; };
 		FA3B3F05238F22F5002EFDB3 /* OutgoingMutationQueue+Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3B3F04238F22F5002EFDB3 /* OutgoingMutationQueue+Action.swift */; };
@@ -233,7 +232,6 @@
 		FA3841E823889D440070AD5B /* StateMachine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StateMachine.swift; sourceTree = "<group>"; };
 		FA3841EA23889D6C0070AD5B /* SubscriptionEndToEndTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionEndToEndTests.swift; sourceTree = "<group>"; };
 		FA3841EC23889D8F0070AD5B /* StateMachineTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StateMachineTests.swift; sourceTree = "<group>"; };
-		FA3841EE23889DCC0070AD5B /* MockModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockModels.swift; sourceTree = "<group>"; };
 		FA3B3EFE238F13B2002EFDB3 /* MutationEventIngester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationEventIngester.swift; sourceTree = "<group>"; };
 		FA3B3F02238F22CF002EFDB3 /* OutgoingMutationQueue+State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OutgoingMutationQueue+State.swift"; sourceTree = "<group>"; };
 		FA3B3F04238F22F5002EFDB3 /* OutgoingMutationQueue+Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OutgoingMutationQueue+Action.swift"; sourceTree = "<group>"; };
@@ -713,7 +711,6 @@
 		FAF101A62398807100D5ECC9 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
-				FA3841EE23889DCC0070AD5B /* MockModels.swift */,
 				FAF5287A2399814F0053A717 /* MockReconciliationQueue.swift */,
 				6B4E3DF52397327E00AD962B /* MockStateMachine.swift */,
 				FA8D932E239EA5C4001ED336 /* NoOpInitialSyncOrchestrator.swift */,
@@ -1237,7 +1234,6 @@
 				2129BE4A23948A97006363A1 /* StorageAdapterMutationSyncTests.swift in Sources */,
 				FAABC227239B1B9100740F9F /* ReconciliationQueueTestBase.swift in Sources */,
 				FA0427CC2396C7E400D25AB0 /* InitialSyncOrchestratorTests.swift in Sources */,
-				FA3841EF23889DCC0070AD5B /* MockModels.swift in Sources */,
 				FAE4146F239AA71300CE94C2 /* EquatableExtensions.swift in Sources */,
 				2149E5FF238869CF00873955 /* SQLStatementTests.swift in Sources */,
 				FA0427D02396CDD800D25AB0 /* DataStoreHubTests.swift in Sources */,
