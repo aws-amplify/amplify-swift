@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension APICategory: APICategoryInterceptorBehavior {
+extension AmplifyAPICategory: APICategoryInterceptorBehavior {
 
     public func add(interceptor: URLRequestInterceptor, for apiName: String) throws {
         try plugin.add(interceptor: interceptor, for: apiName)

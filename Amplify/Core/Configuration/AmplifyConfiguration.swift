@@ -92,23 +92,23 @@ extension Amplify {
         let configuration = try Amplify.resolve(configuration: configuration)
 
         // Always configure Logging and Hub first, so they are available to other categoories.
-        try Logging.configure(using: configuration)
-        try Hub.configure(using: configuration)
+        try configure(Logging, using: configuration)
+        try configure(Hub, using: configuration)
 
         // Looping through all categories to ensure we don't accidentally forget a category at some point in the future
         let remainingCategories = CategoryType.allCases.filter { $0 != .hub && $0 != .logging }
         for categoryType in remainingCategories {
             switch categoryType {
             case .analytics:
-                try Analytics.configure(using: configuration)
+                try configure(Analytics, using: configuration)
             case .api:
-                try API.configure(using: configuration)
+                try configure(API, using: configuration)
             case .dataStore:
-                try DataStore.configure(using: configuration)
+                try configure(DataStore, using: configuration)
             case .predictions:
-                try Predictions.configure(using: configuration)
+                try configure(Predictions, using: configuration)
             case .storage:
-                try Storage.configure(using: configuration)
+                try configure(Storage, using: configuration)
 
             case .hub, .logging:
                 // Already configured
@@ -127,5 +127,14 @@ extension Amplify {
         for channel in HubChannel.amplifyChannels {
             Hub.plugins.values.forEach { $0.dispatch(to: channel, payload: payload) }
         }
+    }
+
+    /// If `candidate` is `CategoryConfigurable`, then invokes `candidate.configure(using: configuration)`.
+    private static func configure(_ candidate: Category, using configuration: AmplifyConfiguration) throws {
+        guard let configurable = candidate as? CategoryConfigurable else {
+            return
+        }
+
+        try configurable.configure(using: configuration)
     }
 }

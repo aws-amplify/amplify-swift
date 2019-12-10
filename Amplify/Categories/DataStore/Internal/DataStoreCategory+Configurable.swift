@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
 extension DataStoreCategory: CategoryConfigurable {
 
     func configure(using amplifyConfiguration: AmplifyConfiguration) throws {
@@ -48,22 +46,6 @@ extension DataStoreCategory: CategoryConfigurable {
 
         try dataStorePlugin.value.configure(using: [])
         isConfigured = true
-    }
-
-    func reset(onComplete: @escaping BasicClosure) {
-        let group = DispatchGroup()
-
-        for plugin in plugins.values {
-            group.enter()
-            plugin.reset { group.leave() }
-        }
-
-        ModelRegistry.reset()
-
-        group.wait()
-
-        isConfigured = false
-        onComplete()
     }
 
 }

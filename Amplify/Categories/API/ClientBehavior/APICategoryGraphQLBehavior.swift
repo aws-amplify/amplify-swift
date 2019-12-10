@@ -8,6 +8,8 @@
 /// Behavior of the API category related to GraphQL operations
 public protocol APICategoryGraphQLBehavior: class {
 
+    // MARK: - Model-based GraphQL Operations
+
     /// Perform a GraphQL query for a single `Model` item. This operation will be asychronous, with the callback
     /// accessible both locally and via the Hub.
     ///
@@ -44,18 +46,6 @@ public protocol APICategoryGraphQLBehavior: class {
                           type: GraphQLMutationType,
                           listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M>
 
-    /// Performs a GraphQL mutate for the `AnyModel` item. This operation will be asynchronous, with the callback
-    /// accessible both locally and via the Hub.
-    ///
-    /// - Parameters:
-    ///   - model: The instance of the `AnyModel`.
-    ///   - type: The type of mutation to apply on the instance of `AnyModel`.
-    ///   - listener: The event listener for the operation
-    /// - Returns: The AmplifyOperation being enqueued.
-    func mutate(ofAnyModel anyModel: AnyModel,
-                type: GraphQLMutationType,
-                listener: GraphQLOperation<AnyModel>.EventListener?) -> GraphQLOperation<AnyModel>
-
     /// Performs a GraphQL subscribe operation for `Model` items.
     ///
     /// - Parameters:
@@ -67,6 +57,8 @@ public protocol APICategoryGraphQLBehavior: class {
                              type: GraphQLSubscriptionType,
                              listener: GraphQLSubscriptionOperation<M>.EventListener?)
         -> GraphQLSubscriptionOperation<M>
+
+    // MARK: - Request-based GraphQL Operations
 
     /// Perform a GraphQL query operation against a previously configured API. This operation
     /// will be asynchronous, with the callback accessible both locally and via the Hub.
@@ -98,6 +90,20 @@ public protocol APICategoryGraphQLBehavior: class {
     func subscribe<R: Decodable>(request: GraphQLRequest<R>,
                                  listener: GraphQLSubscriptionOperation<R>.EventListener?)
         -> GraphQLSubscriptionOperation<R>
+
+    // MARK: - GraphQL operations without a specified type
+
+    /// Performs a GraphQL mutate for the `AnyModel` item. This operation will be asynchronous, with the callback
+    /// accessible both locally and via the Hub.
+    ///
+    /// - Parameters:
+    ///   - model: The instance of the `AnyModel`.
+    ///   - type: The type of mutation to apply on the instance of `AnyModel`.
+    ///   - listener: The event listener for the operation
+    /// - Returns: The AmplifyOperation being enqueued.
+    func mutate(ofAnyModel anyModel: AnyModel,
+                type: GraphQLMutationType,
+                listener: GraphQLOperation<AnyModel>.EventListener?) -> GraphQLOperation<AnyModel>
 
     /// An internal method used by Plugins to perform initial subscriptions on registered model types to keep them in
     /// sync with DataStore.
