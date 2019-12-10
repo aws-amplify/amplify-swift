@@ -13,103 +13,23 @@ import AWSAPICategoryPlugin
 
 class GraphQLWithUserPoolIntegrationTests: XCTestCase {
 
-    /* Instructions for `todoGraphQLWithUserPools`
-     `amplify add api`
-        * Please select from one of the below mentioned services GraphQL
-        * Provide API name: api4
-        * Choose the default authorization type for the API Amazon Cognito User Pool
-     Using service: Cognito, provided by: awscloudformation
-
-      The current configured provider is Amazon Cognito.
-
-      Do you want to use the default authentication and security configuration? Default configuration
-      Warning: you will not be able to edit these selections.
-      How do you want users to be able to sign in? Email
-      Do you want to configure advanced settings? No, I am done.
-     Successfully added auth resource
-        * Do you want to configure advanced settings for the GraphQL API `No, I am done.`
-        * Do you have an annotated GraphQL schema? `No`
-        * Do you want a guided schema creation? `Yes`
-        * What best describes your project: `Single object with fields (e.g., “Todo” with ID, name, description)`
-        * Do you want to edit the schema now? `No`
-     */
-    static let todoGraphQLWithUserPools = "todoGraphQLWithUserPools"
-
-    /*
-     Make sure to override AmplifyTestApp's with this cognitoUserPool/CrdentialsProvider
-     {
-         "UserAgent": "aws-amplify/cli",
-         "Version": "0.1.0",
-         "IdentityManager": {
-             "Default": {}
-         },
-         "CredentialsProvider": {
-             "CognitoIdentity": {
-                 "Default": {
-                     "PoolId": "us-east-1:574af171-0ced-4b7b-8157-762cdd1ffffc",
-                     "Region": "us-east-1"
-                 }
-             }
-         },
-         "CognitoUserPool": {
-             "Default": {
-                 "PoolId": "us-east-1_6FWhDURBi",
-                 "AppClientId": "1mptkb7veup5ujlqbngpcmg06d",
-                 "AppClientSecret": "1qq2vo5rv9oc1th3bulsv8hlll8djqkc9on0j7d7gi4c8lfisoei",
-                 "Region": "us-east-1"
-             }
-         },
-         "AppSync": {
-             "Default": {
-                 "ApiUrl": "https://xxxx.appsync-api.us-east-1.amazonaws.com/graphql",
-                 "Region": "us-east-1",
-                 "AuthMode": "AMAZON_COGNITO_USER_POOLS",
-                 "ClientDatabasePrefix": "api4_AMAZON_COGNITO_USER_POOLS"
-             }
-         }
-     }
-     */
+    static let amplifyConfiguration = "GraphQLWithUserPoolIntegrationTests-amplifyconfiguration"
+    static let awsconfiguration = "GraphQLWithUserPoolIntegrationTests-awsconfiguration"
 
     override func setUp() {
-        let config = [
-            "CredentialsProvider": [
-                "CognitoIdentity": [
-                    "Default": [
-                        "PoolId": "us-east-1:xxx",
-                        "Region": "us-east-1"
-                    ]
-                ]
-            ],
-            "CognitoUserPool": [
-                "Default": [
-                    "PoolId": "us-east-xx",
-                    "AppClientId": "xxxx",
-                    "AppClientSecret": "xxxx",
-                    "Region": "us-east-1"
-                ]
-            ]
-        ]
-        AWSInfo.configureDefaultAWSInfo(config)
-
-        AuthHelper.initializeMobileClient()
-
-        Amplify.reset()
-        let plugin = AWSAPIPlugin()
-
-        let apiConfig = APICategoryConfiguration(plugins: [
-            "awsAPIPlugin": [
-                GraphQLWithUserPoolIntegrationTests.todoGraphQLWithUserPools: [
-                    "endpoint": "https://xxxx.appsync-api.us-east-1.amazonaws.com/graphql",
-                    "region": "us-east-1",
-                    "authorizationType": "AMAZON_COGNITO_USER_POOLS",
-                    "endpointType": "GraphQL"
-                ]
-            ]
-        ])
-
-        let amplifyConfig = AmplifyConfiguration(api: apiConfig)
         do {
-            try Amplify.add(plugin: plugin)
+            let awsConfiguration = try TestConfigHelper.retrieveAWSConfiguration(
+                forResource: GraphQLWithUserPoolIntegrationTests.awsconfiguration)
+            AWSInfo.configureDefaultAWSInfo(awsConfiguration)
+
+            AuthHelper.initializeMobileClient()
+
+            Amplify.reset()
+
+            try Amplify.add(plugin: AWSAPIPlugin())
+
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
+                forResource: GraphQLWithUserPoolIntegrationTests.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
         } catch {
             XCTFail("Error during setup: \(error)")
@@ -120,7 +40,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         Amplify.reset()
     }
 
-    let user1 = "storageUser1@testing.com"
+    let user1 = "user1@GraphQLWithUserPoolIntegrationTests.com"
     let password = "Abc123@@!!"
     // This is a run once function to set up users then use console to verify and run rest of these tests.
     func testSetUpOnce() {
@@ -136,8 +56,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
         let expectedDescription = "testCreateTodoMutationDescription"
-        let request = GraphQLRequest(apiName: GraphQLWithUserPoolIntegrationTests.todoGraphQLWithUserPools,
-                                     document: CreateTodoMutation.document,
+        let request = GraphQLRequest(document: CreateTodoMutation.document,
                                      variables: CreateTodoMutation.variables(id: expectedId,
                                                                              name: expectedName,
                                                                              description: expectedDescription),
@@ -173,14 +92,13 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// Given: GraphQL with userPool, no user signed in, Cognito configured with no guest access.
     /// When: Call mutate API
     /// Then: The operation fails with error, user not signed in.
-    func testCreateTodoMutationWithIAMWithoutGuestAccessFailWithError() {
+    func testCreateTodoMutationWithUserPoolWithoutSignedInUserFailsWithError() {
         AWSMobileClient.default().signOut()
         let failedInvoked = expectation(description: "request failed")
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"
         let expectedDescription = "testCreateTodoMutationDescription"
-        let request = GraphQLRequest(apiName: GraphQLWithUserPoolIntegrationTests.todoGraphQLWithUserPools,
-                                     document: CreateTodoMutation.document,
+        let request = GraphQLRequest(document: CreateTodoMutation.document,
                                      variables: CreateTodoMutation.variables(id: expectedId,
                                                                              name: expectedName,
                                                                              description: expectedDescription),

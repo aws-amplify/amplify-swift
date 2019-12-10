@@ -14,7 +14,6 @@ import AWSMobileClient
 class RESTWithIAMIntegrationTests: XCTestCase {
 
     static let amplifyConfiguration = "RESTWithIAMIntegrationTests-amplifyconfiguration"
-
     static let awsconfiguration = "RESTWithIAMIntegrationTests-awsconfiguration"
 
     override func setUp() {

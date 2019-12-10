@@ -1,9 +1,8 @@
-
 ## REST API with IAM Auth Integration Tests
 
 The following steps show how to set up an API endpoint with APIGateway and Lambda source. The auth configured will be IAM. This set up is used to run the tests in `RESTWithIAMIntegrationTests.swift`.
 
-### Set up
+### Set-up
 
 1. `amplify init`
 
