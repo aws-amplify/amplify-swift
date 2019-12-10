@@ -18,8 +18,8 @@ class AnyModelIntegrationTests: XCTestCase {
     override func setUp() {
         Amplify.reset()
         Amplify.Logging.logLevel = .verbose
-        ModelRegistry.register(modelType: AmplifyTestCommon.PostNoSync.self)
-        ModelRegistry.register(modelType: AmplifyTestCommon.CommentNoSync.self)
+        ModelRegistry.register(modelType: AmplifyTestCommon.Post.self)
+        ModelRegistry.register(modelType: AmplifyTestCommon.Comment.self)
 
         let apiConfig = APICategoryConfiguration(plugins: [
             "awsAPIPlugin": [
@@ -47,8 +47,10 @@ class AnyModelIntegrationTests: XCTestCase {
     }
 
     func testCreateAsAnyModel() throws {
-        let originalPost = PostNoSync(title: "Post title",
-                                      content: "Original post content as of \(Date())")
+
+        let originalPost = Post(title: "Post title",
+                                content: "Original post content as of \(Date())",
+                                createdAt: Date())
         let anyPost = try originalPost.eraseToAnyModel()
 
         let callbackInvoked = expectation(description: "Callback invoked")
@@ -98,8 +100,9 @@ class AnyModelIntegrationTests: XCTestCase {
     }
 
     func testUpdateAsAnyModel() throws {
-        let originalPost = PostNoSync(title: "Post title",
-                                      content: "Original post content as of \(Date())")
+        let originalPost = Post(title: "Post title",
+                                content: "Original post content as of \(Date())",
+                                createdAt: Date())
         let originalAnyPost = try originalPost.eraseToAnyModel()
 
         let createCallbackInvoked = expectation(description: "Create callback invoked")
@@ -160,8 +163,9 @@ class AnyModelIntegrationTests: XCTestCase {
     }
 
     func testDeleteAsAnyModel() throws {
-        let originalPost = PostNoSync(title: "Post title",
-                                      content: "Original post content as of \(Date())")
+        let originalPost = Post(title: "Post title",
+                                content: "Original post content as of \(Date())",
+                                createdAt: Date())
         let originalAnyPost = try originalPost.eraseToAnyModel()
 
         let createCallbackInvoked = expectation(description: "Create callback invoked")

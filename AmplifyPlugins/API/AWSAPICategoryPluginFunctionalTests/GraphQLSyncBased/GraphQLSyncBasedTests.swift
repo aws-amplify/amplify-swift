@@ -13,28 +13,6 @@ import AWSPluginsCore
 
 class GraphQLSyncBasedTests: XCTestCase {
 
-    /*
-     1. Set up with this schema
-     ```
-     type Post @model {
-         id: ID!
-         title: String!
-         content: String!
-         createdAt: AWSDateTime!
-         updatedAt: AWSDateTime
-         draft: Boolean
-         rating: Float
-         comments: [Comment] @connection(name: "PostComment")
-     }
-
-     type Comment @model {
-         id: ID!
-         content: String!
-         createdAt: AWSDateTime!
-         post: Post @connection(name: "PostComment")
-     }
-     2. Sync Enabled
-     */
     override func setUp() {
         Amplify.reset()
         let plugin = AWSAPIPlugin(modelRegistration: PostCommentModelRegistration())
@@ -82,7 +60,7 @@ class GraphQLSyncBasedTests: XCTestCase {
             return
         }
         let updatedTitle = title + "Updated"
-        let modifiedPost = Post(id: post.id, title: updatedTitle, content: post.content)
+        let modifiedPost = Post(id: post.id, title: updatedTitle, content: post.content, createdAt: Date())
 
         let completeInvoked = expectation(description: "request completed")
         var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
@@ -277,7 +255,7 @@ class GraphQLSyncBasedTests: XCTestCase {
     // MARK: Helpers
 
     func createPost(id: String, title: String) -> Post? {
-        let post = Post(id: id, title: title, content: "content")
+        let post = Post(id: id, title: title, content: "content", createdAt: Date())
         return createPost(post: post)
     }
 
