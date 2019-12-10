@@ -9,29 +9,22 @@ import XCTest
 @testable import AWSAPICategoryPlugin
 @testable import Amplify
 @testable import AmplifyTestCommon
+@testable import AWSAPICategoryPluginTestCommon
 import AWSPluginsCore
 
 class GraphQLSyncBasedTests: XCTestCase {
+
+    static let amplifyConfiguration = "GraphQLSyncBasedTests-amplifyconfiguration"
 
     override func setUp() {
         Amplify.reset()
         let plugin = AWSAPIPlugin(modelRegistration: PostCommentModelRegistration())
 
-        let apiConfig = APICategoryConfiguration(plugins: [
-            "awsAPIPlugin": [
-                "modelBasedSyncAPI": [
-                    "endpointType": "GraphQL",
-                    "endpoint": "https://xxxx.appsync-api.us-west-2.amazonaws.com/graphql",
-                    "region": "us-west-2",
-                    "authorizationType": "API_KEY",
-                    "apiKey": "da2-xxx"
-                ]
-            ]
-        ])
-
-        let amplifyConfig = AmplifyConfiguration(api: apiConfig)
         do {
             try Amplify.add(plugin: plugin)
+
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
+                forResource: GraphQLSyncBasedTests.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
 
             ModelRegistry.register(modelType: Comment.self)
@@ -254,13 +247,13 @@ class GraphQLSyncBasedTests: XCTestCase {
 
     // MARK: Helpers
 
-    func createPost(id: String, title: String) -> Post? {
+    func createPost(id: String, title: String) -> AmplifyTestCommon.Post? {
         let post = Post(id: id, title: title, content: "content", createdAt: Date())
         return createPost(post: post)
     }
 
-    func createPost(post: Post) -> Post? {
-        var result: Post?
+    func createPost(post: AmplifyTestCommon.Post) -> AmplifyTestCommon.Post? {
+        var result: AmplifyTestCommon.Post?
         let completeInvoked = expectation(description: "request completed")
 
         _ = Amplify.API.mutate(of: post, type: .create, listener: { event in
