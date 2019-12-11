@@ -76,7 +76,7 @@ class GraphQLSyncBasedTests: XCTestCase {
                 XCTFail("Could not get data back")
             }
         }
-        wait(for: [completeInvoked], timeout: GraphQLModelBasedTests.networkTimeout)
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
 
         guard let response = responseFromOperation else {
             XCTAssertNotNil(responseFromOperation)
@@ -146,7 +146,7 @@ class GraphQLSyncBasedTests: XCTestCase {
                 XCTFail("Could not get data back")
             }
         }
-        wait(for: [completeInvoked], timeout: GraphQLModelBasedTests.networkTimeout)
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
 
         guard let response = responseFromOperation else {
             XCTAssertNotNil(responseFromOperation)
@@ -232,16 +232,16 @@ class GraphQLSyncBasedTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        wait(for: [connectedInvoked], timeout: GraphQLModelBasedTests.networkTimeout)
+        wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
 
         guard createPost(id: uuid, title: title) != nil else {
             XCTFail("Failed to create post")
             return
         }
 
-        wait(for: [progressInvoked], timeout: GraphQLModelBasedTests.networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         operation.cancel()
-        wait(for: [disconnectedInvoked, completedInvoked], timeout: GraphQLModelBasedTests.networkTimeout)
+        wait(for: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
         XCTAssertTrue(operation.isFinished)
     }
 
@@ -272,7 +272,7 @@ class GraphQLSyncBasedTests: XCTestCase {
                 XCTFail("Could not get data back")
             }
         })
-        wait(for: [completeInvoked], timeout: GraphQLModelBasedTests.networkTimeout)
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
