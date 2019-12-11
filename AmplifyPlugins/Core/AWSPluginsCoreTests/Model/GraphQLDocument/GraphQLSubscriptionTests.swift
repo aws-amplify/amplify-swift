@@ -32,7 +32,7 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///   - check if the generated GraphQL document is a valid subscription
     ///     - it has a list of fields with no nested models
     func testOnCreateGraphQLSubscriptionFromSimpleModel() {
-        let document = GraphQLSubscription(of: Post.self, type: .onCreate)
+        let document = GraphQLSubscription(of: Post.self, type: .onCreate, syncEnabled: true)
         let expectedQueryDocument = """
         subscription OnCreatePost {
           onCreatePost {
@@ -66,7 +66,7 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///   - check if the generated GraphQL document is a valid subscription
     ///     - it has a list of fields with no nested models
     func testOnCreateGraphQLSubscriptionFromModelWithAssociation() {
-        let document = GraphQLSubscription(of: Comment.self, type: .onCreate)
+        let document = GraphQLSubscription(of: Comment.self, type: .onCreate, syncEnabled: true)
         let expectedQueryDocument = """
         subscription OnCreateComment {
           onCreateComment {
@@ -107,7 +107,7 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///   - check if the generated GraphQL document is a valid subscription
     ///     - it has a list of fields with no nested models
     func testOnUpdateGraphQLSubscriptionFromSimpleModel() {
-        let document = GraphQLSubscription(of: Post.self, type: .onUpdate)
+        let document = GraphQLSubscription(of: Post.self, type: .onUpdate, syncEnabled: true)
         let expectedQueryDocument = """
         subscription OnUpdatePost {
           onUpdatePost {
@@ -139,7 +139,7 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///   - check if the generated GraphQL document is a valid subscription
     ///     - it has a list of fields with no nested models
     func testOnDeleteGraphQLSubscriptionFromSimpleModel() {
-        let document = GraphQLSubscription(of: Post.self, type: .onDelete)
+        let document = GraphQLSubscription(of: Post.self, type: .onDelete, syncEnabled: true)
         let expectedQueryDocument = """
         subscription OnDeletePost {
           onDeletePost {

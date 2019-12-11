@@ -17,6 +17,10 @@ public class GraphQLSyncMutation: GraphQLMutation {
         super.init(of: model, type: mutationType)
     }
 
+    public override var hasSyncableModels: Bool {
+        return true
+    }
+
     public override var variables: [String: Any] {
 
         if mutationType == .delete {

@@ -12,25 +12,31 @@ import XCTest
 
 class GraphQLDocumentTests: XCTestCase {
 
+    override func setUp() {
+         ModelRegistry.register(modelType: Comment.self)
+         ModelRegistry.register(modelType: Post.self)
+    }
+
     override func tearDown() {
         ModelRegistry.reset()
     }
 
     func testSelectionSetFieldsForNotSyncableModels() {
-        ModelRegistry.register(modelType: MockUnsynced.self)
-
-        let document = GraphQLGetQuery(from: MockUnsynced.self, id: "id")
+        let document = GraphQLGetQuery(from: Post.self, id: "id", syncEnabled: false)
         let expectedSelectionSet = ["id",
+                                    "content",
+                                    "createdAt",
+                                    "draft",
+                                    "rating",
+                                    "title",
+                                    "updatedAt",
                                     "__typename"]
 
         XCTAssertEqual(document.selectionSetFields, expectedSelectionSet)
     }
 
     func testSelectionSetFieldsForSyncableModels() {
-        ModelRegistry.register(modelType: Comment.self)
-        ModelRegistry.register(modelType: Post.self)
-
-        let document = GraphQLGetQuery(from: Post.self, id: "id")
+        let document = GraphQLGetQuery(from: Post.self, id: "id", syncEnabled: true)
         let expectedSelectionSet = ["id",
                                     "content",
                                     "createdAt",

@@ -77,7 +77,9 @@ final class IncomingAsyncSubscriptionEventPublisher {
                                 api: APICategoryGraphQLBehavior,
                                 listener: @escaping GraphQLSubscriptionOperation<Payload>.EventListener)
         -> GraphQLSubscriptionOperation<Payload> {
-            let document = GraphQLSubscription(of: modelType, type: subscriptionType)
+            let document = GraphQLSubscription(of: modelType,
+                                               type: subscriptionType,
+                                               syncEnabled: true)
 
             let request = GraphQLRequest(document: document.stringValue,
                                          variables: document.variables,
