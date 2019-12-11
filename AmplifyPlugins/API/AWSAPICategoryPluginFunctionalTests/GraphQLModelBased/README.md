@@ -42,28 +42,3 @@ type Comment @model {
 ```
 
 3.  `amplify push`
-
-TODO: These tests are currently not going to work until we introduce the isConfigured check and allow APICategory to check if DataStore plugin isConfigured. Currently it defaults to true.
-
-/*
- The backend is set up using this schema:
- ```
- type Post @model {
-     id: ID!
-     title: String!
-     content: String!
-     createdAt: AWSDateTime!
-     updatedAt: AWSDateTime
-     draft: Boolean
-     rating: Float
-     commentNoSyncs: [Comment] @connection(name: "PostComment")
- }
-
- type Comment @model {
-     id: ID!
-     content: String!
-     createdAt: AWSDateTime!
-     post: Post @connection(name: "PostComment")
- }
-
- ```
