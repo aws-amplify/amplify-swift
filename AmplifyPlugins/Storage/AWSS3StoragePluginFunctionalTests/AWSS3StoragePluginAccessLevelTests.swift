@@ -11,6 +11,7 @@ import Amplify
 @testable import AWSS3StoragePlugin
 import AWSS3
 import AWSCognitoIdentityProvider
+@testable import AmplifyTestCommon
 
 class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     let user1 = "storageUser1@testing.com"
@@ -19,8 +20,8 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
     // This is a run once function to set up users then use console to verify and run rest of these tests.
     func testSetUpOnce() {
-        signUpUser(username: user1)
-        signUpUser(username: user2)
+        AuthHelper.signUpUser(username: user1, password: password)
+        AuthHelper.signUpUser(username: user2, password: password)
     }
 
     /// Given: An unauthenticated user
@@ -46,7 +47,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: An unauthenticated user
@@ -75,7 +76,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: `user1` user uploads some data with protected access level
@@ -104,16 +105,16 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let accessLevel: StorageAccessLevel = .guest
 
         // Sign into user1
-        signIn(username: user1)
-        let user1IdentityId = getIdentityId()
+        AuthHelper.signIn(username: user1, password: password)
+        let user1IdentityId = AuthHelper.getIdentityId()
 
         // Upload data
         upload(key: key, data: key, accessLevel: accessLevel)
 
         // Sign out of user1 and into user2
-        AWSMobileClient.default().signOut()
-        signIn(username: user2)
-        let user2IdentityId = getIdentityId()
+        AuthHelper.signOut()
+        AuthHelper.signIn(username: user2, password: password)
+        let user2IdentityId = AuthHelper.getIdentityId()
         XCTAssertNotEqual(user1IdentityId, user2IdentityId)
 
         // list keys as user2
@@ -146,7 +147,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// GivenK: `user1` user uploads some data with protected access level
@@ -157,16 +158,16 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let accessLevel: StorageAccessLevel = .protected
 
         // Sign into user1
-        signIn(username: user1)
-        let user1IdentityId = getIdentityId()
+        AuthHelper.signIn(username: user1, password: password)
+        let user1IdentityId = AuthHelper.getIdentityId()
 
         // Upload
         upload(key: key, data: key, accessLevel: accessLevel)
 
         // Sign out of user1 and into user2
-        AWSMobileClient.default().signOut()
-        signIn(username: user2)
-        let user2IdentityId = getIdentityId()
+        AuthHelper.signOut()
+        AuthHelper.signIn(username: user2, password: password)
+        let user2IdentityId = AuthHelper.getIdentityId()
         XCTAssertNotEqual(user1IdentityId, user2IdentityId)
 
         // list keys for user1 as user2
@@ -187,16 +188,16 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let accessLevel: StorageAccessLevel = .private
 
         // Sign into user1
-        signIn(username: user1)
-        let user1IdentityId = getIdentityId()
+        AuthHelper.signIn(username: user1, password: password)
+        let user1IdentityId = AuthHelper.getIdentityId()
 
         // Upload
         upload(key: key, data: key, accessLevel: accessLevel)
 
         // Sign out of user1 and into user2
-        AWSMobileClient.default().signOut()
-        signIn(username: user2)
-        let user2IdentityId = getIdentityId()
+        AuthHelper.signOut()
+        AuthHelper.signIn(username: user2, password: password)
+        let user2IdentityId = AuthHelper.getIdentityId()
         XCTAssertNotEqual(user1IdentityId, user2IdentityId)
 
         // list keys for user1 as user2 - should fail with validation error
@@ -218,7 +219,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
 
         // get key for user1 as user2 - should fail with validation error
         let getFailedExpectation = expectation(description: "Get Operation should fail")
@@ -238,13 +239,13 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     // MARK: - Common test functions
 
     func putThenListThenGetThenRemoveForSingleUser(username: String, key: String, accessLevel: StorageAccessLevel) {
-        signIn(username: username)
+        AuthHelper.signIn(username: username, password: password)
 
         // Upload
         upload(key: key, data: key, accessLevel: accessLevel)
@@ -279,7 +280,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     // MARK: StoragePlugin Helper functions
@@ -302,7 +303,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
         return items
     }
 
@@ -322,7 +323,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
         return data
     }
 
@@ -339,7 +340,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     func remove(key: String, accessLevel: StorageAccessLevel) {
@@ -355,52 +356,6 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 break
             }
         }
-        waitForExpectations(timeout: networkTimeout)
-    }
-
-    // MARK: Auth Helper functions
-
-    func signIn(username: String) {
-        let signInWasSuccessful = expectation(description: "signIn was successful")
-        AWSMobileClient.sharedInstance().signIn(username: username, password: password) { result, error in
-            if let error = error {
-                XCTFail("Sign in failed: \(error.localizedDescription)")
-                return
-            }
-
-            guard let result = result else {
-                XCTFail("No result from SignIn")
-                return
-            }
-            XCTAssertEqual(result.signInState, .signedIn)
-            signInWasSuccessful.fulfill()
-        }
-        waitForExpectations(timeout: networkTimeout)
-    }
-
-    func signUpUser(username: String) {
-        let signUpExpectation = expectation(description: "successful sign up expectation.")
-        AWSMobileClient.default().signUp(username: username, password: password) { result, error in
-            guard error == nil else {
-                let error = error
-                XCTFail("Failed to sign up user with error: \(error?.localizedDescription)")
-                return
-            }
-
-            guard result != nil else {
-                XCTFail("result from signUp should not be nil")
-                return
-            }
-
-            signUpExpectation.fulfill()
-        }
-
-        waitForExpectations(timeout: networkTimeout)
-    }
-
-    func getIdentityId() -> String {
-        let getIdentityIdForUser2Task = AWSMobileClient.default().getIdentityId()
-        getIdentityIdForUser2Task.waitUntilFinished()
-        return getIdentityIdForUser2Task.result! as String
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 }

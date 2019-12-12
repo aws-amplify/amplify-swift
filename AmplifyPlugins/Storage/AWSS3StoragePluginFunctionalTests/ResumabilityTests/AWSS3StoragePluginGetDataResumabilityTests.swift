@@ -10,6 +10,7 @@ import AWSMobileClient
 import Amplify
 import AWSS3StoragePlugin
 import AWSS3
+@testable import AmplifyTestCommon
 
 class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBase {
 
@@ -50,7 +51,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
         }
 
         XCTAssertNotNil(operation)
-        wait(for: [progressInvoked], timeout: networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         operation.pause()
         wait(for: [completeInvoked, failedInvoked, noProgressAfterPause], timeout: 30)
     }
@@ -82,10 +83,10 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
         }
 
         XCTAssertNotNil(operation)
-        wait(for: [progressInvoked], timeout: networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         operation.pause()
         operation.resume()
-        wait(for: [completeInvoked], timeout: networkTimeout)
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A large data object in storage
@@ -118,7 +119,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
         }
 
         XCTAssertNotNil(operation)
-        wait(for: [progressInvoked], timeout: networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         operation.cancel()
         wait(for: [completedInvoked, failedInvoked], timeout: 30)
     }

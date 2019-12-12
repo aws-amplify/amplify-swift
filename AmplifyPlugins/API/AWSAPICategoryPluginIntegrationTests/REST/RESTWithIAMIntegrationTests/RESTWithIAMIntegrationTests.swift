@@ -9,7 +9,7 @@ import XCTest
 @testable import Amplify
 import AWSAPICategoryPlugin
 import AWSMobileClient
-@testable import AWSAPICategoryPluginTestCommon
+@testable import AmplifyTestCommon
 
 class RESTWithIAMIntegrationTests: XCTestCase {
 

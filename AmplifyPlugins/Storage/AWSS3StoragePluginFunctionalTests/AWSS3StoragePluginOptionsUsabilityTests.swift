@@ -10,6 +10,8 @@ import AWSMobileClient
 import Amplify
 import AWSS3StoragePlugin
 import AWSS3
+@testable import AmplifyTestCommon
+
 class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
 
     /// Given: An object in storage
@@ -36,7 +38,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
         guard let remoteURL = remoteURLOptional else {
             XCTFail("Failed to get remoteURL")
             return
@@ -64,7 +66,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             dataTaskCompleteInvoked.fulfill()
         }
         task.resume()
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
 
         sleep(15)
 
@@ -84,7 +86,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             urlExpired.fulfill()
         }
         task2.resume()
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: An object uploaded with metadata with key `metadataKey` and value `metadataValue`
@@ -112,7 +114,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
 
         do {
             let pluginOptional = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin")
@@ -124,9 +126,8 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
 
             let awsS3 = plugin.getEscapeHatch()
             let request: AWSS3HeadObjectRequest = AWSS3HeadObjectRequest()
-            if case let .string(bucket) = bucket {
-                request.bucket = bucket
-            }
+            request.bucket = try AWSS3StoragePluginTestBase.getBucketFromConfig(
+                forResource: AWSS3StoragePluginTestBase.amplifyConfiguration)
             request.key = "public/" + key
 
             let task = awsS3.headObject(request)

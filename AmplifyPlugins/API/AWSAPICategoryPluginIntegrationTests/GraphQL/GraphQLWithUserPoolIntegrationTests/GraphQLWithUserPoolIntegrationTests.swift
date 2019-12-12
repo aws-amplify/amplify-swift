@@ -10,6 +10,7 @@ import XCTest
 import AWSMobileClient
 import AWSAPICategoryPlugin
 @testable import AWSAPICategoryPluginTestCommon
+@testable import AmplifyTestCommon
 
 // swiftlint:disable type_body_length
 class GraphQLWithUserPoolIntegrationTests: XCTestCase {
@@ -94,7 +95,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// When: Call mutate API
     /// Then: The operation fails with error, user not signed in.
     func testCreateTodoMutationWithUserPoolWithoutSignedInUserFailsWithError() {
-        AWSMobileClient.default().signOut()
+        AuthHelper.signOut()
         let failedInvoked = expectation(description: "request failed")
         let expectedId = UUID().uuidString
         let expectedName = "testCreateTodoMutationName"

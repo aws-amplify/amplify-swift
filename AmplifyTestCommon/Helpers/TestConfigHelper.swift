@@ -35,5 +35,3 @@ class TestConfigHelper {
         return try Data(contentsOf: url)
     }
 }
-
-extension String: Error { }

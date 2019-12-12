@@ -11,6 +11,7 @@ import AWSMobileClient
 import AWSAPICategoryPlugin
 @testable import Amplify
 @testable import AWSAPICategoryPluginTestCommon
+@testable import AmplifyTestCommon
 
 // These test cover the more complex scenarios, compared to the Todo graphQL endpoint
 class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
@@ -248,8 +249,8 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
         return blog
     }
 
-    func createPost(postBlogId: String, title: String) -> Post? {
-        var post: Post?
+    func createPost(postBlogId: String, title: String) -> AWSAPICategoryPluginTestCommon.Post? {
+        var post: AWSAPICategoryPluginTestCommon.Post?
         let completeInvoked = expectation(description: "request completed")
         let request = GraphQLRequest(apiName: BlogPostCommentGraphQLWithAPIKeyTests.blogPostGraphQLWithAPIKey,
                                      document: CreatePostMutation.document,
@@ -280,8 +281,8 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
         return post
     }
 
-    func createComment(commentPostId: String, content: String) -> Comment? {
-        var comment: Comment?
+    func createComment(commentPostId: String, content: String) -> AWSAPICategoryPluginTestCommon.Comment? {
+        var comment: AWSAPICategoryPluginTestCommon.Comment?
         let completeInvoked = expectation(description: "request completed")
         let request = GraphQLRequest(apiName: BlogPostCommentGraphQLWithAPIKeyTests.blogPostGraphQLWithAPIKey,
                                      document: CreateCommentMutation.document,

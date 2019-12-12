@@ -10,6 +10,8 @@ import AWSMobileClient
 import Amplify
 @testable import AWSS3StoragePlugin
 import AWSS3
+@testable import AmplifyTestCommon
+
 class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
 
     /// Given: Object with key `key` does not exist in storage
@@ -38,7 +40,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A path to file that does not exist
@@ -66,7 +68,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     // TODO: possibly after understanding content-type
