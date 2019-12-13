@@ -167,10 +167,10 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: Model.Identifier,
                           completion: DataStoreCallback<Void>) {
-        XCTFail("Not expected to execute")
+        completion(.successfulVoid)
     }
 
     func query<M: Model>(_ modelType: M.Type, predicate: QueryPredicate?, completion: DataStoreCallback<[M]>) {
-        XCTFail("Not expected to execute")
+        //TODO: Find way to mock this
     }
 }
