@@ -19,11 +19,14 @@ class NetworkReachabilityNotifier {
     private var reachability: NetworkReachabilityProviding?
     private var allowsCellularAccess = true
 
-    let reachabilityPublisher = PassthroughSubject<ReachabilityUpdate, Never>()
+    let reachabilityPublisher = PassthroughSubject<ReachabilityUpdate, DataStoreError>()
+    var publisher: AnyPublisher<ReachabilityUpdate, DataStoreError> {
+        return reachabilityPublisher.eraseToAnyPublisher()
+    }
 
     public init(host: String,
                 allowsCellularAccess: Bool,
-                reachabilityFactory: NetworkReachabilityProvidingFactory.Type = Reachability.self) {
+                reachabilityFactory: NetworkReachabilityProvidingFactory.Type) {
         self.reachability = reachabilityFactory.make(for: host)
         self.allowsCellularAccess = allowsCellularAccess
 
@@ -43,12 +46,7 @@ class NetworkReachabilityNotifier {
     deinit {
         reachability?.stopNotifier()
         NotificationCenter.default.removeObserver(self)
-        reachabilityPublisher.send(completion: Subscribers.Completion<Never>.finished)
-    }
-
-    func publisher() -> AnyPublisher<ReachabilityUpdate, Never> {
-        return reachabilityPublisher
-            .eraseToAnyPublisher()
+        reachabilityPublisher.send(completion: Subscribers.Completion<DataStoreError>.finished)
     }
 
     // MARK: - Notifications
@@ -67,7 +65,7 @@ class NetworkReachabilityNotifier {
             isReachable = false
         }
 
-        let reachabilityMessageUpdate =  ReachabilityUpdate(isOnline: isReachable)
+        let reachabilityMessageUpdate = ReachabilityUpdate(isOnline: isReachable)
         reachabilityPublisher.send(reachabilityMessageUpdate)
     }
 

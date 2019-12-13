@@ -7,10 +7,11 @@
 
 import Foundation
 import XCTest
+@testable import AWSDataStoreCategoryPlugin
 
 class RequestRetryablePolicyTests: XCTestCase {
     var retryPolicy: RequestRetryablePolicy!
-
+    let defaultTimeout = DispatchTimeInterval.seconds(60)
     override func setUp() {
         super.setUp()
         retryPolicy = RequestRetryablePolicy()
@@ -22,7 +23,7 @@ class RequestRetryablePolicyTests: XCTestCase {
                                                          attemptNumber: 1)
 
         XCTAssertFalse(retryAdvice.shouldRetry)
-        XCTAssertNil(retryAdvice.retryInterval)
+        XCTAssertEqual(retryAdvice.retryInterval, defaultTimeout)
     }
 
     func testNoErrorWithHttpURLResponseWithRetryAfterInHeader() {
@@ -79,7 +80,7 @@ class RequestRetryablePolicyTests: XCTestCase {
                                                          httpURLResponse: httpURLResponse,
                                                          attemptNumber: 12)
         XCTAssertFalse(retryAdvice.shouldRetry)
-        XCTAssertNil(retryAdvice.retryInterval)
+        XCTAssertEqual(retryAdvice.retryInterval, defaultTimeout)
     }
 
     func testNoErrorWithHttpURLResponseNotRetryable() {
@@ -93,7 +94,7 @@ class RequestRetryablePolicyTests: XCTestCase {
                                                          httpURLResponse: httpURLResponse,
                                                          attemptNumber: 1)
         XCTAssertFalse(retryAdvice.shouldRetry)
-        XCTAssertNil(retryAdvice.retryInterval)
+        XCTAssertEqual(retryAdvice.retryInterval, defaultTimeout)
     }
 
     func testNotConnectedToInternetErrorCode() {
@@ -184,7 +185,7 @@ class RequestRetryablePolicyTests: XCTestCase {
                                                          attemptNumber: 1)
 
         XCTAssertFalse(retryAdvice.shouldRetry)
-        XCTAssertNil(retryAdvice.retryInterval)
+        XCTAssertEqual(retryAdvice.retryInterval, defaultTimeout)
     }
 
     func assertMilliseconds(_ retryInterval: DispatchTimeInterval?, greaterThan: Int, lessThan: Int) {

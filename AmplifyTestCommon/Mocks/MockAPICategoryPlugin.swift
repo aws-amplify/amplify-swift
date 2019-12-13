@@ -112,6 +112,12 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         // This is a really weighty notification message, but needed for tests to be able to assert that a particular
         // model is being mutated
         notify("mutate(request) document: \(request.document); variables: \(String(describing: request.variables))")
+
+        if let responder = responders[.mutateRequestListener] as? MutateRequestListenerResponder<R> {
+            if let operation = responder.callback((request, listener)) {
+                return operation
+            }
+        }
         let options = GraphQLOperationRequest<R>.Options()
         let request = GraphQLOperationRequest<R>(apiName: request.apiName,
                                                  operationType: .mutation,

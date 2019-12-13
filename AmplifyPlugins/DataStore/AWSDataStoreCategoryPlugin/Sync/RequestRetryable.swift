@@ -9,7 +9,12 @@ import Foundation
 
 struct RequestRetryAdvice {
     let shouldRetry: Bool
-    let retryInterval: DispatchTimeInterval?
+    let retryInterval: DispatchTimeInterval
+    init(shouldRetry: Bool,
+         retryInterval: DispatchTimeInterval = .seconds(60)) {
+        self.shouldRetry = shouldRetry
+        self.retryInterval = retryInterval
+    }
 
 }
 

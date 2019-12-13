@@ -13,19 +13,30 @@ import AWSPluginsCore
 /// Publishes a mutation event to the specified Cloud API. Upon receipt of the API response, validates to ensure it is
 /// not a retriable error. If it is, attempts a retry until either success or terminal failure. Upon success or
 /// terminal failure, publishes the event response to the appropriate ModelReconciliationQueue subject.
+@available(iOS 13.0, *)
 class SyncMutationToCloudOperation: Operation {
 
     private weak var api: APICategoryGraphQLBehavior?
     private let mutationEvent: MutationEvent
     private var mutationOperation: GraphQLOperation<MutationSync<AnyModel>>?
+    private let networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, DataStoreError>?
     private let completion: GraphQLOperation<MutationSync<AnyModel>>.EventListener
+    private var mutationRetryNotifier: MutationRetryNotifier?
+    private var requestRetryablePolicy: RequestRetryablePolicy
+    private var currentAttemptNumber: Int
 
-    init(mutationEvent: MutationEvent, api: APICategoryGraphQLBehavior,
+    init(mutationEvent: MutationEvent,
+         api: APICategoryGraphQLBehavior,
+         networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, DataStoreError>?,
+         currentAttemptNumber: Int = 1,
+         requestRetryablePolicy: RequestRetryablePolicy? = RequestRetryablePolicy(),
          completion: @escaping GraphQLOperation<MutationSync<AnyModel>>.EventListener) {
         self.mutationEvent = mutationEvent
         self.api = api
+        self.networkReachabilityPublisher = networkReachabilityPublisher
         self.completion = completion
-
+        self.currentAttemptNumber = currentAttemptNumber
+        self.requestRetryablePolicy = requestRetryablePolicy ?? RequestRetryablePolicy()
         super.init()
     }
 
@@ -42,6 +53,13 @@ class SyncMutationToCloudOperation: Operation {
         sendMutationToCloud()
     }
 
+    override func cancel() {
+        mutationOperation?.cancel()
+        mutationRetryNotifier?.cancel()
+        let apiError = APIError.unknown("Operation cancelled", "")
+        finish(result: .failed(apiError))
+    }
+
     private func sendMutationToCloud() {
         guard !isCancelled else {
             mutationOperation?.cancel()
@@ -51,14 +69,6 @@ class SyncMutationToCloudOperation: Operation {
         }
 
         log.debug(#function)
-        guard let api = api else {
-            // TODO: This should be part of our error handling routines
-            log.error("\(#function): API unexpectedly nil")
-            let apiError = APIError.unknown("API unexpectedly nil", "")
-            finish(result: .failed(apiError))
-            return
-        }
-
         guard let mutationType = GraphQLMutationType(rawValue: mutationEvent.mutationType) else {
             let dataStoreError = DataStoreError.decodingError(
                 "Invalid mutation type",
@@ -67,11 +77,19 @@ class SyncMutationToCloudOperation: Operation {
                 match any known GraphQL mutation type. Ensure you only send valid mutation types:
                 \(GraphQLMutationType.allCases)
                 """
-                )
+            )
             log.error(error: dataStoreError)
+            let apiError = APIError.unknown("Invalid mutation type", "", dataStoreError)
+            finish(result: .failed(apiError))
             return
         }
 
+        if let apiRequest = createAPIRequest(mutationType: mutationType) {
+            makeAPIRequest(apiRequest)
+        }
+    }
+
+    func createAPIRequest(mutationType: GraphQLMutationType) -> GraphQLRequest<MutationSync<AnyModel>>? {
         let request: GraphQLRequest<MutationSync<AnyModel>>
         do {
             if mutationType == .delete {
@@ -82,11 +100,21 @@ class SyncMutationToCloudOperation: Operation {
         } catch {
             let apiError = APIError.unknown("Couldn't decode model", "", error)
             finish(result: .failed(apiError))
+            return nil
+        }
+        return request
+    }
+
+    func makeAPIRequest(_ apiRequest: GraphQLRequest<MutationSync<AnyModel>>) {
+        guard let api = api else {
+            // TODO: This should be part of our error handling routines
+            log.error("\(#function): API unexpectedly nil")
+            let apiError = APIError.unknown("API unexpectedly nil", "")
+            finish(result: .failed(apiError))
             return
         }
-
-        log.verbose("\(#function) sending mutation with sync data: \(request)")
-        mutationOperation = api.mutate(request: request) { asyncEvent in
+        log.verbose("\(#function) sending mutation with sync data: \(apiRequest)")
+        mutationOperation = api.mutate(request: apiRequest) { asyncEvent in
             self.log.verbose("sendMutationToCloud received asyncEvent: \(asyncEvent)")
             self.validateResponseFromCloud(asyncEvent: asyncEvent)
         }
@@ -126,7 +154,17 @@ class SyncMutationToCloudOperation: Operation {
             return
         }
 
-        // TODO: Wire in actual event validation and retriability
+        if case .failed(let error) = asyncEvent {
+            let advice = getRetryAdviceIfRetryable(error: error)
+            if advice.shouldRetry {
+                self.scheduleRetry(advice: advice)
+            } else {
+                self.finish(result: .failed(error))
+            }
+            return
+        }
+
+        // TODO: Wire in actual event validation
 
         // This doesn't belong here--need to add a `delete` API to the MutationEventSource and pass a
         // reference into the mutation queue.
@@ -139,7 +177,36 @@ class SyncMutationToCloudOperation: Operation {
                 self.finish(result: asyncEvent)
             }
         }
+    }
 
+    private func getRetryAdviceIfRetryable(error: APIError) -> RequestRetryAdvice {
+        var advice = RequestRetryAdvice(shouldRetry: false, retryInterval: DispatchTimeInterval.never)
+
+        switch error {
+        case .networkError(_, _, let error):
+            //currently expecting APIOperationResponse to be an URLError
+            let urlError = error as? URLError
+            advice = requestRetryablePolicy.retryRequestAdvice(urlError: urlError,
+                                                               httpURLResponse: nil,
+                                                               attemptNumber: currentAttemptNumber)
+        case .httpStatusError(_, let httpURLResponse):
+            advice = requestRetryablePolicy.retryRequestAdvice(urlError: nil,
+                                                               httpURLResponse: httpURLResponse,
+                                                               attemptNumber: currentAttemptNumber)
+        default:
+            break
+        }
+        return advice
+    }
+
+    private func scheduleRetry(advice: RequestRetryAdvice) {
+        log.verbose("\(#function) scheduling retry for mutation")
+        mutationRetryNotifier = MutationRetryNotifier(advice: advice,
+                                                      networkReachabilityPublisher: networkReachabilityPublisher) {
+                                                        self.sendMutationToCloud()
+                                                        self.mutationRetryNotifier = nil
+        }
+        currentAttemptNumber += 1
     }
 
     private func finish(result: AsyncEvent<Void, GraphQLResponse<MutationSync<AnyModel>>, APIError>) {
@@ -152,4 +219,5 @@ class SyncMutationToCloudOperation: Operation {
     }
 }
 
+@available(iOS 13.0, *)
 extension SyncMutationToCloudOperation: DefaultLogger { }
