@@ -1,6 +1,6 @@
 ## GraphQL with UserPool Auth Integration Tests
 
-The following steps show how to set up an GraphQL endpoint with AppSync. The auth configured will be Cognito UserPools. This set up is used to run the tests in `GraphQLWithUserPoolIntegrationTests.swift`.
+The following steps demonstrate how to set up an GraphQL endpoint with AppSync. The auth configured will be Cognito UserPools. This set up is used to run the tests in `GraphQLWithUserPoolIntegrationTests.swift`.
 
 ### Set-up
 
@@ -37,7 +37,7 @@ type Todo @model {
 ? Do you want to generate code for your newly created GraphQL API `No`
 ```
 
-4.  Enable  `testSetUpOnce()`  and run it to sign up a new user.
+4. Enable `testSetUpOnce()` and run it to sign up a new user.
 
 5. `amplify console auth`
 ```perl

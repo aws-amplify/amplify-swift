@@ -1,14 +1,14 @@
 ## Sync Based GraphQL
 
-The following steps show how to set up an GraphQL endpoint with AppSync that is provisioned with conflict resolution (Sync-based API). The auth configured will be API key. The set up is used to run the tests in `GraphQLSyncBasedTests.swift`.
+The following steps demonstrate how to set up an GraphQL endpoint with AppSync that is provisioned with conflict resolution (Sync-based API). The auth configured will be API key. The set up is used to run the tests in `GraphQLSyncBasedTests.swift`.
 
 ### Set-up
 
-1.  `amplify init`
+1. `amplify init`
 
-2.  `export AMPLIFY_DATASTORE_SYNC=true`
+2. `export AMPLIFY_DATASTORE_SYNC=true`
 
-3.  `amplify add api`
+3. `amplify add api`
 
 ```perl
 ? Please select from one of the below mentioned services: `GraphQL`

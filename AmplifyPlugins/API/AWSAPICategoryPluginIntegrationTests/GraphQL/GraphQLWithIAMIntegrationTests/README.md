@@ -1,6 +1,6 @@
 ## GraphQL with IAM Auth Integration Tests
 
-The following steps show how to set up an GraphQL endpoint with AppSync. The auth configured will be IAM. This set up is used to run the tests in `GraphQLWithIAMIntegrationTests.swift`.
+The following steps demonstrate how to set up an GraphQL endpoint with AppSync. The auth configured will be IAM. This set up is used to run the tests in `GraphQLWithIAMIntegrationTests.swift`.
 
 ### Set-up
 

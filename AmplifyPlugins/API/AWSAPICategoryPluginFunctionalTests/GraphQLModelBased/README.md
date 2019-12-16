@@ -1,11 +1,11 @@
 ## Model Based GraphQL 
 
-The following steps show how ot set up a GraphQL endpoint with AppSync. The auth configured will be API key. The set up is used to run the tests in `GraphQLModelBasedTests.swift`
+The following steps demonstrate how to set up a GraphQL endpoint with AppSync. The auth configured will be API key. The set up is used to run the tests in `GraphQLModelBasedTests.swift`
 
 
 ### Set-up
 
-1.  `amplify-init`
+1. `amplify-init`
 
 2. `amplify add api`
 
