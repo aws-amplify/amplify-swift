@@ -11,6 +11,7 @@ import AWSAPICategoryPlugin
 
 @testable import Amplify
 @testable import AmplifyTestCommon
+@testable import AWSAPICategoryPluginTestCommon
 
 class AnyModelIntegrationTests: XCTestCase {
     let networkTimeout: TimeInterval = 180.0
@@ -18,25 +19,19 @@ class AnyModelIntegrationTests: XCTestCase {
     override func setUp() {
         Amplify.reset()
         Amplify.Logging.logLevel = .verbose
-        ModelRegistry.register(modelType: AmplifyTestCommon.PostNoSync.self)
-        ModelRegistry.register(modelType: AmplifyTestCommon.CommentNoSync.self)
 
-        let apiConfig = APICategoryConfiguration(plugins: [
-            "awsAPIPlugin": [
-                GraphQLModelBasedTests.modelBasedGraphQLWithAPIKey: [
-                    "endpoint": "https://xxx.appsync-api.us-west-2.amazonaws.com/graphql",
-                    "region": "us-west-2",
-                    "authorizationType": "API_KEY",
-                    "apiKey": "xxxx",
-                    "endpointType": "GraphQL"
-                ]
-            ]
-        ])
+        let plugin = AWSAPIPlugin(modelRegistration: PostCommentModelRegistration())
 
-        let amplifyConfig = AmplifyConfiguration(api: apiConfig)
         do {
-            try Amplify.add(plugin: AWSAPIPlugin())
+            try Amplify.add(plugin: plugin)
+
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
+                forResource: GraphQLModelBasedTests.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
+
+            ModelRegistry.register(modelType: Comment.self)
+            ModelRegistry.register(modelType: Post.self)
+
         } catch {
             XCTFail("Error during setup: \(error)")
         }
@@ -47,8 +42,10 @@ class AnyModelIntegrationTests: XCTestCase {
     }
 
     func testCreateAsAnyModel() throws {
-        let originalPost = PostNoSync(title: "Post title",
-                                      content: "Original post content as of \(Date())")
+
+        let originalPost = Post(title: "Post title",
+                                content: "Original post content as of \(Date())",
+                                createdAt: Date())
         let anyPost = try originalPost.eraseToAnyModel()
 
         let callbackInvoked = expectation(description: "Callback invoked")
@@ -98,8 +95,9 @@ class AnyModelIntegrationTests: XCTestCase {
     }
 
     func testUpdateAsAnyModel() throws {
-        let originalPost = PostNoSync(title: "Post title",
-                                      content: "Original post content as of \(Date())")
+        let originalPost = Post(title: "Post title",
+                                content: "Original post content as of \(Date())",
+                                createdAt: Date())
         let originalAnyPost = try originalPost.eraseToAnyModel()
 
         let createCallbackInvoked = expectation(description: "Create callback invoked")
@@ -160,8 +158,9 @@ class AnyModelIntegrationTests: XCTestCase {
     }
 
     func testDeleteAsAnyModel() throws {
-        let originalPost = PostNoSync(title: "Post title",
-                                      content: "Original post content as of \(Date())")
+        let originalPost = Post(title: "Post title",
+                                content: "Original post content as of \(Date())",
+                                createdAt: Date())
         let originalAnyPost = try originalPost.eraseToAnyModel()
 
         let createCallbackInvoked = expectation(description: "Create callback invoked")

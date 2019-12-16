@@ -13,54 +13,24 @@ import AWSMobileClient
 
 class RESTWithIAMIntegrationTests: XCTestCase {
 
-    /*
-     Folow these instructions to get this set up: https://aws-amplify.github.io/docs/ios/api#rest-api
-     */
-
-    static let restAPI = "restAPI"
-
-    static let apiConfig = APICategoryConfiguration(plugins: [
-        "awsAPIPlugin": [
-            RESTWithIAMIntegrationTests.restAPI: [
-                "endpoint": "https://xxx.execute-api.us-west-2.amazonaws.com/devo",
-                "region": "us-west-2",
-                "authorizationType": "AWS_IAM",
-                "endpointType": "REST"
-            ]
-        ]
-    ])
+    static let amplifyConfiguration = "RESTWithIAMIntegrationTests-amplifyconfiguration"
+    static let awsconfiguration = "RESTWithIAMIntegrationTests-awsconfiguration"
 
     override func setUp() {
 
-        let config = [
-            "CredentialsProvider": [
-                "CognitoIdentity": [
-                    "Default": [
-                        "PoolId": "us-west-2:xxxx",
-                        "Region": "us-west-2"
-                    ]
-                ]
-            ],
-            "CognitoUserPool": [
-                "Default": [
-                    "PoolId": "us-west-xxx",
-                    "AppClientId": "xxx",
-                    "AppClientSecret": "xxx",
-                    "Region": "us-west-2"
-                ]
-            ]
-        ]
-
-        AWSInfo.configureDefaultAWSInfo(config)
-
-        AuthHelper.initializeMobileClient()
-
-        Amplify.reset()
-        let plugin = AWSAPIPlugin()
-
-        let amplifyConfig = AmplifyConfiguration(api: RESTWithIAMIntegrationTests.apiConfig)
         do {
-            try Amplify.add(plugin: plugin)
+            let awsConfiguration = try TestConfigHelper.retrieveAWSConfiguration(
+                forResource: RESTWithIAMIntegrationTests.awsconfiguration)
+            AWSInfo.configureDefaultAWSInfo(awsConfiguration)
+
+            AuthHelper.initializeMobileClient()
+
+            Amplify.reset()
+
+            try Amplify.add(plugin: AWSAPIPlugin())
+
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
+                forResource: RESTWithIAMIntegrationTests.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
         } catch {
             XCTFail("Error during setup: \(error)")
@@ -73,8 +43,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
 
     func testGetAPISuccess() {
         let completeInvoked = expectation(description: "request completed")
-        let request = RESTRequest(apiName: RESTWithIAMIntegrationTests.restAPI,
-                                  path: "/items")
+        let request = RESTRequest(path: "/items")
         _ = Amplify.API.get(request: request) { event in
             switch event {
             case .completed(let data):
@@ -93,8 +62,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
 
     func testGetAPIFailedAccessDenied() {
         let failedInvoked = expectation(description: "request failed")
-        let request = RESTRequest(apiName: RESTWithIAMIntegrationTests.restAPI,
-                                  path: "/invalidPath")
+        let request = RESTRequest(path: "/invalidPath")
         _ = Amplify.API.get(request: request) { event in
             switch event {
             case .completed(let data):
@@ -117,8 +85,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
 
     func testPutAPISuccess() {
         let completeInvoked = expectation(description: "request completed")
-        let request = RESTRequest(apiName: RESTWithIAMIntegrationTests.restAPI,
-                                  path: "/items")
+        let request = RESTRequest(path: "/items")
         _ = Amplify.API.put(request: request) { event in
             switch event {
             case .completed(let data):
@@ -137,8 +104,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
 
     func testPostAPISuccess() {
         let completeInvoked = expectation(description: "request completed")
-        let request = RESTRequest(apiName: RESTWithIAMIntegrationTests.restAPI,
-                                  path: "/items")
+        let request = RESTRequest(path: "/items")
         _ = Amplify.API.post(request: request) { event in
             switch event {
             case .completed(let data):
@@ -157,8 +123,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
 
     func testDeleteAPISuccess() {
         let completeInvoked = expectation(description: "request completed")
-        let request = RESTRequest(apiName: RESTWithIAMIntegrationTests.restAPI,
-                                  path: "/items")
+        let request = RESTRequest(path: "/items")
         _ = Amplify.API.delete(request: request) { event in
             switch event {
             case .completed(let data):
@@ -177,8 +142,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
 
     func testHeadAPIAccessDenied() {
         let failedInvoked = expectation(description: "request completed")
-        let request = RESTRequest(apiName: RESTWithIAMIntegrationTests.restAPI,
-                                  path: "/items")
+        let request = RESTRequest(path: "/items")
         _ = Amplify.API.head(request: request) { event in
             switch event {
             case .completed(let data):
@@ -201,8 +165,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
 
     func testPatchAPINotFound() {
         let failedInvoked = expectation(description: "request completed")
-        let request = RESTRequest(apiName: RESTWithIAMIntegrationTests.restAPI,
-                                  path: "/items")
+        let request = RESTRequest(path: "/items")
         _ = Amplify.API.patch(request: request) { event in
             switch event {
             case .completed(let data):

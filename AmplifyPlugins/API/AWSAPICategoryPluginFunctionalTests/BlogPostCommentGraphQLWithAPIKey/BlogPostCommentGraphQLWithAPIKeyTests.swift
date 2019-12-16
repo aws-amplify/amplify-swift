@@ -52,7 +52,7 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
                     "authorizationType": "API_KEY",
                     "apiKey": "da2-invalidAPIKey",
                     "endpointType": "GraphQL"
-                ],
+                ]
             ]
         ])
 
