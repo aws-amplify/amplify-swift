@@ -23,7 +23,8 @@ public class GraphQLMutation: GraphQLDocument {
     public let modelType: Model.Type
     public let mutationType: GraphQLMutationType
 
-    public init(of model: Model, type mutationType: GraphQLMutationType) {
+    public init(of model: Model,
+                type mutationType: GraphQLMutationType) {
         self.model = model
         self.modelType = ModelRegistry.modelType(from: model.modelName) ?? Swift.type(of: model)
         self.mutationType = mutationType
@@ -35,6 +36,10 @@ public class GraphQLMutation: GraphQLDocument {
 
     public var decodePath: String {
         name
+    }
+
+    public var hasSyncableModels: Bool {
+        false
     }
 
     public var stringValue: String {

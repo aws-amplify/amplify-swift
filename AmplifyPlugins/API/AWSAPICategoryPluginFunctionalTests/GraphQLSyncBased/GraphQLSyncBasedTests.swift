@@ -48,12 +48,17 @@ class GraphQLSyncBasedTests: XCTestCase {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
-        guard let post = createPost(id: uuid, title: title) else {
+        guard let createdPost = createPost(id: uuid, title: title) else {
             XCTFail("Failed to create post with version 1")
             return
         }
+
         let updatedTitle = title + "Updated"
-        let modifiedPost = Post(id: post.id, title: updatedTitle, content: post.content, createdAt: Date())
+
+        let modifiedPost = Post(id: createdPost.model.id,
+                                title: updatedTitle,
+                                content: createdPost.model.content,
+                                createdAt: Date())
 
         let completeInvoked = expectation(description: "request completed")
         var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
@@ -102,7 +107,7 @@ class GraphQLSyncBasedTests: XCTestCase {
         }
 
         XCTAssertEqual(mutationSync.model["title"] as? String, updatedTitle)
-        XCTAssertEqual(mutationSync.model["content"] as? String, post.content)
+        XCTAssertEqual(mutationSync.model["content"] as? String, createdPost.model.content)
         XCTAssertEqual(mutationSync.syncMetadata.version, 2)
     }
 
@@ -194,7 +199,7 @@ class GraphQLSyncBasedTests: XCTestCase {
         let completedInvoked = expectation(description: "Completed invoked")
         let progressInvoked = expectation(description: "Progress invoked")
 
-        let document = GraphQLSubscription(of: Post.self, type: .onCreate)
+        let document = GraphQLSubscription(of: Post.self, type: .onCreate, syncEnabled: true)
         let request = GraphQLRequest(document: document.stringValue,
                                      variables: document.variables,
                                      responseType: MutationSync<AnyModel>.self,
@@ -247,23 +252,28 @@ class GraphQLSyncBasedTests: XCTestCase {
 
     // MARK: Helpers
 
-    func createPost(id: String, title: String) -> AmplifyTestCommon.Post? {
+    func createPost(id: String, title: String) -> MutationSync<AmplifyTestCommon.Post>? {
         let post = Post(id: id, title: title, content: "content", createdAt: Date())
         return createPost(post: post)
     }
 
-    func createPost(post: AmplifyTestCommon.Post) -> AmplifyTestCommon.Post? {
-        var result: AmplifyTestCommon.Post?
+    func createPost(post: AmplifyTestCommon.Post) -> MutationSync<AmplifyTestCommon.Post>? {
+        var result: MutationSync<AmplifyTestCommon.Post>?
         let completeInvoked = expectation(description: "request completed")
 
-        _ = Amplify.API.mutate(of: post, type: .create, listener: { event in
+        let document = GraphQLSyncMutation(of: post, type: .create)
+        let request = GraphQLRequest(document: document.stringValue,
+                                     variables: document.variables,
+                                     responseType: MutationSync<AmplifyTestCommon.Post>.self,
+                                     decodePath: document.decodePath)
+        _ = Amplify.API.mutate(request: request, listener: { event in
             switch event {
             case .completed(let data):
                 switch data {
                 case .success(let post):
                     result = post
-                default:
-                    XCTFail("Could not get data back")
+                case .failure(let error):
+                    XCTFail("Failed to create post \(error)")
                 }
                 completeInvoked.fulfill()
             case .failed(let error):

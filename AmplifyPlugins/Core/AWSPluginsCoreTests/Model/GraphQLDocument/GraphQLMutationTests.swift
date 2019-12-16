@@ -46,9 +46,6 @@ class GraphQLMutationTests: XCTestCase {
             title
             updatedAt
             __typename
-            _version
-            _deleted
-            _lastChangedAt
           }
         }
         """
@@ -94,14 +91,8 @@ class GraphQLMutationTests: XCTestCase {
               title
               updatedAt
               __typename
-              _version
-              _deleted
-              _lastChangedAt
             }
             __typename
-            _version
-            _deleted
-            _lastChangedAt
           }
         }
         """
@@ -140,9 +131,6 @@ class GraphQLMutationTests: XCTestCase {
             title
             updatedAt
             __typename
-            _version
-            _deleted
-            _lastChangedAt
           }
         }
         """
@@ -183,9 +171,6 @@ class GraphQLMutationTests: XCTestCase {
             title
             updatedAt
             __typename
-            _version
-            _deleted
-            _lastChangedAt
           }
         }
         """

@@ -6,11 +6,10 @@
 //
 
 import Amplify
-import AWSPluginsCore
 import Foundation
 
 /// A convenience implementation of `GraphQLDocument` that represents a delete operation, requiring no model data
-public class MinimalGraphQLDeleteMutation: GraphQLDocument {
+public class GraphQLDeleteSyncMutation: GraphQLDocument {
     public let documentType = GraphQLDocumentType.mutation
     public let mutationType = GraphQLMutationType.delete
 
@@ -36,6 +35,10 @@ public class MinimalGraphQLDeleteMutation: GraphQLDocument {
 
     public var decodePath: String {
         name
+    }
+
+    public var hasSyncableModels: Bool {
+        true
     }
 
     public var stringValue: String {

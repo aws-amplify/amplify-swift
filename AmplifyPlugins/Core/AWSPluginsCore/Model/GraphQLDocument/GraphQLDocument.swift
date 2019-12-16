@@ -29,6 +29,9 @@ public protocol GraphQLDocument: DataStoreStatement where Variables == [String: 
     /// The name of the document. This is useful to inspect the response, since it will
     /// contain the name of the document as the key to the response value.
     var name: String { get }
+
+    /// The state of the model's backend provisioning, whether it is provisioned with conflict resolution or not.
+    var hasSyncableModels: Bool { get }
 }
 
 extension GraphQLDocument {
@@ -66,7 +69,7 @@ extension GraphQLDocument {
                 }
             }
             fieldSet.append(indent + "__typename")
-            if ModelRegistry.hasSyncableModels {
+            if hasSyncableModels {
                 fieldSet.append(indent + "_version")
                 fieldSet.append(indent + "_deleted")
                 fieldSet.append(indent + "_lastChangedAt")

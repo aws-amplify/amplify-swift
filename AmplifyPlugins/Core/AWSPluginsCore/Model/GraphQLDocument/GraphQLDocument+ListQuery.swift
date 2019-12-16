@@ -16,11 +16,20 @@ public class GraphQLListQuery: GraphQLDocument {
     public let documentType = GraphQLDocumentType.query
     public let modelType: Model.Type
     public let predicate: QueryPredicate?
+    public let limit: Int?
+    public let nextToken: String?
+    public let syncEnabled: Bool
 
     public init(from modelType: Model.Type,
-                predicate: QueryPredicate? = nil) {
+                predicate: QueryPredicate? = nil,
+                limit: Int? = nil,
+                nextToken: String? = nil,
+                syncEnabled: Bool = false) {
         self.modelType = modelType
         self.predicate = predicate
+        self.limit = limit
+        self.nextToken = nextToken
+        self.syncEnabled = syncEnabled
     }
 
     public var name: String {
@@ -29,6 +38,10 @@ public class GraphQLListQuery: GraphQLDocument {
 
     public var decodePath: String {
         return name + ".items"
+    }
+
+    public var hasSyncableModels: Bool {
+        return syncEnabled
     }
 
     public var stringValue: String {
@@ -65,8 +78,16 @@ public class GraphQLListQuery: GraphQLDocument {
             variables.updateValue(predicate.graphQLFilterVariables, forKey: "filter")
         }
 
-        // TODO: Remove this once we support limit and nextToken passed in from the developer
-        variables.updateValue(1_000, forKey: "limit")
+        if let limit = limit {
+            variables.updateValue(limit, forKey: "limit")
+        } else {
+            // TODO: Remove this once we support limit and nextToken passed in from the developer
+            variables.updateValue(1_000, forKey: "limit")
+        }
+
+        if let nextToken = nextToken {
+            variables.updateValue(nextToken, forKey: "nextToken")
+        }
 
         return variables
     }

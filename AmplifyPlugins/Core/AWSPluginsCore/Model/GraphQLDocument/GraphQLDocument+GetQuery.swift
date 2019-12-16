@@ -16,11 +16,14 @@ public struct GraphQLGetQuery: GraphQLDocument {
     public let documentType = GraphQLDocumentType.query
     public let modelType: Model.Type
     public let id: String
+    public let syncEnabled: Bool
 
     public init(from modelType: Model.Type,
-                id: String) {
+                id: String,
+                syncEnabled: Bool = false) {
         self.modelType = modelType
         self.id = id
+        self.syncEnabled = syncEnabled
     }
 
     public var name: String {
@@ -29,6 +32,10 @@ public struct GraphQLGetQuery: GraphQLDocument {
 
     public var decodePath: String {
         return name
+    }
+
+    public var hasSyncableModels: Bool {
+        return syncEnabled
     }
 
     public var stringValue: String {

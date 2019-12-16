@@ -83,6 +83,7 @@
 		21D79FDA237617C60057D00D /* SubscriptionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FD9237617C60057D00D /* SubscriptionEvent.swift */; };
 		21D79FE12377BF4B0057D00D /* AuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FE02377BF4B0057D00D /* AuthProvider.swift */; };
 		21D79FE32377F4120057D00D /* SubscriptionConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FE22377F4120057D00D /* SubscriptionConnectionState.swift */; };
+		21F40A3223A160FC0074678E /* GraphQLDocument+DeleteSyncMutation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3123A160FC0074678E /* GraphQLDocument+DeleteSyncMutation.swift */; };
 		21FFF988230B7B2C005878EA /* AsychronousOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF986230B7A5D005878EA /* AsychronousOperation.swift */; };
 		21FFF98E230C81E6005878EA /* StorageAccessLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF98D230C81E6005878EA /* StorageAccessLevel.swift */; };
 		21FFF994230C96CB005878EA /* StorageUploadDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF98F230C96CA005878EA /* StorageUploadDataOperation.swift */; };
@@ -582,6 +583,7 @@
 		21D79FD9237617C60057D00D /* SubscriptionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionEvent.swift; sourceTree = "<group>"; };
 		21D79FE02377BF4B0057D00D /* AuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthProvider.swift; sourceTree = "<group>"; };
 		21D79FE22377F4120057D00D /* SubscriptionConnectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionConnectionState.swift; sourceTree = "<group>"; };
+		21F40A3123A160FC0074678E /* GraphQLDocument+DeleteSyncMutation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GraphQLDocument+DeleteSyncMutation.swift"; sourceTree = "<group>"; };
 		21FFF986230B7A5D005878EA /* AsychronousOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsychronousOperation.swift; sourceTree = "<group>"; };
 		21FFF98D230C81E6005878EA /* StorageAccessLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageAccessLevel.swift; sourceTree = "<group>"; };
 		21FFF98F230C96CA005878EA /* StorageUploadDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageUploadDataOperation.swift; sourceTree = "<group>"; };
@@ -1161,13 +1163,14 @@
 		2129BE0523948005006363A1 /* GraphQLDocument */ = {
 			isa = PBXGroup;
 			children = (
-				2129BE0623948005006363A1 /* GraphQLDocument+Subscription.swift */,
-				2129BE0723948005006363A1 /* GraphQLDocument+SyncMutation.swift */,
 				2129BE0823948005006363A1 /* GraphQLDocument.swift */,
-				2129BE0923948005006363A1 /* GraphQLDocument+SyncQuery.swift */,
+				21F40A3123A160FC0074678E /* GraphQLDocument+DeleteSyncMutation.swift */,
 				2129BE0A23948005006363A1 /* GraphQLDocument+GetQuery.swift */,
 				2129BE0B23948005006363A1 /* GraphQLDocument+ListQuery.swift */,
 				2129BE0C23948005006363A1 /* GraphQLDocument+Mutation.swift */,
+				2129BE0623948005006363A1 /* GraphQLDocument+Subscription.swift */,
+				2129BE0723948005006363A1 /* GraphQLDocument+SyncMutation.swift */,
+				2129BE0923948005006363A1 /* GraphQLDocument+SyncQuery.swift */,
 			);
 			path = GraphQLDocument;
 			sourceTree = "<group>";
@@ -3348,6 +3351,7 @@
 				21420A98237222A900FA140C /* AuthTokenProvider.swift in Sources */,
 				21420A91237222A900FA140C /* AWSAuthorizationConfiguration.swift in Sources */,
 				21420A97237222A900FA140C /* IAMCredentialProvider.swift in Sources */,
+				21F40A3223A160FC0074678E /* GraphQLDocument+DeleteSyncMutation.swift in Sources */,
 				21420A99237222A900FA140C /* APIKeyProvider.swift in Sources */,
 				21420A90237222A900FA140C /* APIKeyConfiguration.swift in Sources */,
 				2129BE552395CAEF006363A1 /* PaginatedList.swift in Sources */,

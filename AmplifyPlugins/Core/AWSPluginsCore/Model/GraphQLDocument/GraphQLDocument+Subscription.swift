@@ -16,11 +16,14 @@ public struct GraphQLSubscription: GraphQLDocument {
     public let documentType = GraphQLDocumentType.subscription
     public let modelType: Model.Type
     public let subscriptionType: GraphQLSubscriptionType
+    public let syncEnabled: Bool
 
     public init(of modelType: Model.Type,
-                type subscriptionType: GraphQLSubscriptionType) {
+                type subscriptionType: GraphQLSubscriptionType,
+                syncEnabled: Bool = false) {
         self.modelType = modelType
         self.subscriptionType = subscriptionType
+        self.syncEnabled = syncEnabled
     }
 
     public var name: String {
@@ -29,6 +32,10 @@ public struct GraphQLSubscription: GraphQLDocument {
 
     public var decodePath: String {
         name
+    }
+
+    public var hasSyncableModels: Bool {
+        return syncEnabled
     }
 
     public var stringValue: String {
@@ -44,5 +51,4 @@ public struct GraphQLSubscription: GraphQLDocument {
 
         return document
     }
-
 }

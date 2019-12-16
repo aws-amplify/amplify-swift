@@ -94,9 +94,9 @@ class SyncMutationToCloudOperation: Operation {
 
     private func deleteRequest(for mutationEvent: MutationEvent)
         throws -> GraphQLRequest<MutationSync<AnyModel>> {
-            let document = try MinimalGraphQLDeleteMutation(of: mutationEvent.modelName,
-                                                            id: mutationEvent.modelId,
-                                                            version: mutationEvent.version)
+            let document = try GraphQLDeleteSyncMutation(of: mutationEvent.modelName,
+                                                         id: mutationEvent.modelId,
+                                                         version: mutationEvent.version)
             let request = GraphQLRequest(document: document.stringValue,
                                          variables: document.variables,
                                          responseType: MutationSync<AnyModel>.self,

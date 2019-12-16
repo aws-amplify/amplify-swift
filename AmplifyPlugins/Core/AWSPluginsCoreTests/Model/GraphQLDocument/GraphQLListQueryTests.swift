@@ -36,7 +36,7 @@ class GraphQLListQueryTests: XCTestCase {
     func testListGraphQLQueryFromSimpleModel() {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
-        let document = GraphQLListQuery(from: Post.self, predicate: predicate)
+        let document = GraphQLListQuery(from: Post.self, predicate: predicate, syncEnabled: true)
         let expectedQueryDocument = """
         query ListPosts($filter: ModelPostFilterInput, $limit: Int, $nextToken: String) {
           listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {

@@ -82,7 +82,6 @@
 		FA4A955D239AD810008E876E /* MockSQLiteStorageEngineAdapterResponders.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4A955C239AD810008E876E /* MockSQLiteStorageEngineAdapterResponders.swift */; };
 		FA4B8E942391C2CD009FC10F /* MutationIngesterConflictResolutionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4B8E932391C2CD009FC10F /* MutationIngesterConflictResolutionTests.swift */; };
 		FA4B8E962391C609009FC10F /* XCTest+AmplifyExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4B8E952391C609009FC10F /* XCTest+AmplifyExtensions.swift */; };
-		FA4FB5B42396034000FC0462 /* MinimalGraphQLDeleteMutation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4FB5B32396034000FC0462 /* MinimalGraphQLDeleteMutation.swift */; };
 		FA4FF13C239B218000056633 /* SortByDependencyOrderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4FF13B239B218000056633 /* SortByDependencyOrderTests.swift */; };
 		FA55A5492391EA89002AFF2D /* MutationEventSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA55A5482391EA89002AFF2D /* MutationEventSubscription.swift */; };
 		FA55A54B2391EAB5002AFF2D /* MutationEventSubscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA55A54A2391EAB5002AFF2D /* MutationEventSubscriber.swift */; };
@@ -243,7 +242,6 @@
 		FA4A955C239AD810008E876E /* MockSQLiteStorageEngineAdapterResponders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSQLiteStorageEngineAdapterResponders.swift; sourceTree = "<group>"; };
 		FA4B8E932391C2CD009FC10F /* MutationIngesterConflictResolutionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationIngesterConflictResolutionTests.swift; sourceTree = "<group>"; };
 		FA4B8E952391C609009FC10F /* XCTest+AmplifyExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTest+AmplifyExtensions.swift"; sourceTree = "<group>"; };
-		FA4FB5B32396034000FC0462 /* MinimalGraphQLDeleteMutation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimalGraphQLDeleteMutation.swift; sourceTree = "<group>"; };
 		FA4FF13B239B218000056633 /* SortByDependencyOrderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortByDependencyOrderTests.swift; sourceTree = "<group>"; };
 		FA55A5482391EA89002AFF2D /* MutationEventSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationEventSubscription.swift; sourceTree = "<group>"; };
 		FA55A54A2391EAB5002AFF2D /* MutationEventSubscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationEventSubscriber.swift; sourceTree = "<group>"; };
@@ -516,7 +514,6 @@
 		FA6C3FEF2398942500A73110 /* OutgoingMutationQueue */ = {
 			isa = PBXGroup;
 			children = (
-				FA4FB5B32396034000FC0462 /* MinimalGraphQLDeleteMutation.swift */,
 				FAF7CECA238C72830095547B /* OutgoingMutationQueue.swift */,
 				FA3B3F04238F22F5002EFDB3 /* OutgoingMutationQueue+Action.swift */,
 				FA3B3F06238F23CA002EFDB3 /* OutgoingMutationQueue+Resolver.swift */,
@@ -1211,7 +1208,6 @@
 				FA5D76AB2394752900489864 /* AWSMutationDatabaseAdapter+MutationEventIngester.swift in Sources */,
 				FA0427CA2396C35500D25AB0 /* InitialSyncOrchestrator.swift in Sources */,
 				FAED5738238B3A2A008EBED8 /* AWSIncomingSubscriptionEventPublisher.swift in Sources */,
-				FA4FB5B42396034000FC0462 /* MinimalGraphQLDeleteMutation.swift in Sources */,
 				FACBA78F23949C75006349C8 /* AWSMutationDatabaseAdapter.swift in Sources */,
 				FA55A54D2391F96E002AFF2D /* AWSMutationDatabaseAdapter+MutationEventSource.swift in Sources */,
 				2149E5CE2388684F00873955 /* SQLStatement+CreateTable.swift in Sources */,

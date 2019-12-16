@@ -30,7 +30,7 @@ class GraphQLGetQueryTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     ///     - it has variables containing `id`
     func testGetGraphQLQueryFromSimpleModel() {
-        let document = GraphQLGetQuery(from: Post.self, id: "id")
+        let document = GraphQLGetQuery(from: Post.self, id: "id", syncEnabled: true)
         let expectedQueryDocument = """
         query GetPost($id: ID!) {
           getPost(id: $id) {
@@ -65,7 +65,7 @@ class GraphQLGetQueryTests: XCTestCase {
     ///     - it is named `getComment`
     ///     - it has a list of fields with a nested `post`
     func testGetGraphQLQueryFromModelWithAssociation() {
-        let document = GraphQLGetQuery(from: Comment.self, id: "id")
+        let document = GraphQLGetQuery(from: Comment.self, id: "id", syncEnabled: true)
         let expectedQueryDocument = """
         query GetComment($id: ID!) {
           getComment(id: $id) {
