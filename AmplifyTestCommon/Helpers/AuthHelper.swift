@@ -82,6 +82,11 @@ class AuthHelper {
         if let error = task.error {
             fatalError("Could not get identityId, with error \(error)")
         }
-        return task.result! as String
+
+        if let result = task.result {
+            return result as String
+        }
+
+        fatalError("Could not get identityId from result")
     }
 }

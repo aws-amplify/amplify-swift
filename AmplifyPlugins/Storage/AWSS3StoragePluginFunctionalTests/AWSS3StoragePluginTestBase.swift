@@ -18,7 +18,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     static let amplifyConfiguration = "AWSS3StoragePluginTests-amplifyconfiguration"
     static let awsconfiguration = "AWSS3StoragePluginTests-awsconfiguration"
 
-    static let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * 6) // 6MBb
+    static let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * 6) // 6MB
 
     override func setUp() {
         do {
@@ -75,8 +75,8 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         let json = try JSONDecoder().decode(JSONValue.self, from: data)
         guard let bucket = json["storage"]?["plugins"]?["awsS3StoragePlugin"]?["bucket"] else {
             throw "Could not retrieve bucket from config"
-
         }
+
         guard case let .string(bucketValue) = bucket else {
             throw "bucket is not a string value"
         }
