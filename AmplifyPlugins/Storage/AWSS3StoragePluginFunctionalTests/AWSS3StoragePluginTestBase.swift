@@ -17,11 +17,27 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     static let amplifyConfiguration = "AWSS3StoragePluginTests-amplifyconfiguration"
     static let awsconfiguration = "AWSS3StoragePluginTests-awsconfiguration"
+    static let credentials = "AWSS3StoragePluginTests-credentials"
 
     static let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * 6) // 6MB
 
+    static var user1: String!
+    static var user2: String!
+    static var password: String!
+
     override func setUp() {
         do {
+
+            let credentials = try TestConfigHelper.retrieveCredentials(forResource: AWSS3StoragePluginTestBase.credentials)
+
+            if credentials["user1"] == nil || credentials["user2"] == nil || credentials["password"] == nil {
+                XCTFail("Missing credentials.json data")
+            }
+
+            AWSS3StoragePluginTestBase.user1 = credentials["user1"]
+            AWSS3StoragePluginTestBase.user2 = credentials["user2"]
+            AWSS3StoragePluginTestBase.password = credentials["password"]
+
             let awsConfiguration = try TestConfigHelper.retrieveAWSConfiguration(
                 forResource: AWSS3StoragePluginTestBase.awsconfiguration)
             AWSInfo.configureDefaultAWSInfo(awsConfiguration)

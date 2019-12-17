@@ -18,7 +18,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
     /// When: Call the GetURL API with 10 second expiry time
     /// Then: Retrieve data successfully when the URL has not expired and fail to after the expiry time
     func testGetRemoteURLWithExpires() {
-        let key = "testGetRemoteURLWithExpires"
+        let key = UUID().uuidString
         uploadData(key: key, dataString: key)
 
         var remoteURLOptional: URL?
@@ -93,12 +93,11 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
     /// When: Call the headObject API
     /// Then: The expected metadata should exist on the object
     func testuploadExpectationWithMetadata() {
-        let key = "testuploadwithmetadata"
-        let value = key + "Value"
+        let key = UUID().uuidString
         let data = key.data(using: .utf8)!
         let metadataKey = "metadatakey"
         let metadataValue = metadataKey + "Value"
-        let metadata = [key: value, metadataKey: metadataValue]
+        let metadata = [metadataKey: metadataValue]
         let options = StorageUploadDataRequest.Options(metadata: metadata)
         let completeInvoked = expectation(description: "Completed is invoked")
 
@@ -141,7 +140,6 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
                 XCTAssertNotNil(headObjectOutput)
                 XCTAssertNotNil(headObjectOutput.metadata)
                 if let metadata = headObjectOutput.metadata {
-                    XCTAssertEqual(metadata[key], value)
                     XCTAssertEqual(metadata[metadataKey], metadataValue)
                 }
             }

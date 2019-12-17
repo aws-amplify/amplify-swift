@@ -18,7 +18,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
     /// When: Call the get API
     /// Then: The operation fails with StorageError.keyNotFound
     func testGetNonexistentKey() {
-        let key = "testGetNonexistentKey"
+        let key = UUID().uuidString
         let expectedKey = "public/" + key
         let failInvoked = expectation(description: "Failed is invoked")
         let options = StorageDownloadDataRequest.Options()
@@ -47,7 +47,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
     /// When: Upload the file
     /// Then: The operation fails with StorageError.missingLocalFile
     func testUploadFileFromMissingFile() {
-        let key = "testUploadFileFromMissingFile"
+        let key = UUID().uuidString
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         let failedInvoked = expectation(description: "Failed is invoked")

@@ -28,11 +28,21 @@ Successfully added auth resource
 
 4. Copy `awsconfiguration.json` as `AWSS3StoragePluginTests-awsconfiguration.json` and `amplifyconfiguration.json` as `AWSS3StoragePluginTests-amplifyconfiguration.json`
 
-5. You can now run most of the integration tests. 
+5. Create `AWSS3StoragePluginTests-credentials.json` with a json object containing `user1`, `user2`, and `password`, used to create the cognito user in the userpool. In step 2, the cognito userpool is configured to allow users to sign up with their email as the username.
 
-6. To successfully run AWSS3StoragePluginAccessLevelTests, run `testSetUpOnce()` to sign up two users.
+```json
+{
+    "user1": "<USER1 EMAIL>",
+    "user2": "<USER1 EMAIL>",
+    "password": "<PASSWORD>"
+}
+```
 
-7. `amplify console auth` 
+6. You can now run most of the integration tests. 
+
+7. To successfully run AWSS3StoragePluginAccessLevelTests, run `testSetUpOnce()` to sign up two users.
+
+8. `amplify console auth` 
 ```perl
 ? Which console `User Pool`
 ```

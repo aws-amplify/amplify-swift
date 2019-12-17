@@ -18,7 +18,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
     /// When: Call the get API then pause
     /// Then: The operation is stalled (no progress, completed, or failed event)
     func testDownloadLargeDataAndPause() {
-        let key = "testGetLargeDataAndPause"
+        let key = UUID().uuidString
         uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
         let progressInvoked = expectation(description: "Progress invoked")
@@ -60,7 +60,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
     /// When: Call the downloadData API, pause, and then resume the operation
     /// Then: The operation should complete successfully
     func testDownloadLargeDataAndPauseThenResume() {
-        let key = "testGetLargeDataAndPauseThenResume"
+        let key = UUID().uuidString
         uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
         let progressInvoked = expectation(description: "Progress invoked")
@@ -93,7 +93,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
     /// When: Call the get API then cancel the operation,
     /// Then: The operation should not complete or fail.
     func testDownloadLargeDataAndCancel() {
-        let key = "testGetLargeDataAndCancel"
+        let key = UUID().uuidString
         uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
         let progressInvoked = expectation(description: "Progress invoked")

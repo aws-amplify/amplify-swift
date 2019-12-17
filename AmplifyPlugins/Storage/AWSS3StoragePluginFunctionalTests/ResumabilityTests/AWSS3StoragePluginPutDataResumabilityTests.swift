@@ -18,7 +18,7 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
     /// When: Call the put API and pause the operation
     /// Then: The operation is stalled (no progress, completed, or failed event)
     func testUploadLargeDataThenPause() {
-        let key = "testUploadLargeDataAndPauseThenResume"
+        let key = UUID().uuidString
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
         let completeInvoked = expectation(description: "Completion invoked")
@@ -60,7 +60,7 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
     /// When: Call the put API, pause, and then resume tthe operation,
     /// Then: The operation should complete successfully
     func testUploadLargeDataAndPauseThenResume() {
-        let key = "testUploadLargeDataAndPauseThenResume"
+        let key = UUID().uuidString
         let completeInvoked = expectation(description: "Completed is invoked")
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
@@ -93,7 +93,7 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
     /// When: Call the put API, pause, and then resume tthe operation,
     /// Then: The operation should complete successfully
     func testUploadLargeDataAndCancel() {
-        let key = "testUploadLargeDataAndCancel"
+        let key = UUID().uuidString
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
         let completedInvoked = expectation(description: "Completion invoked")
