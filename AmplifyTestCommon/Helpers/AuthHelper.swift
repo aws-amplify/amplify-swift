@@ -13,8 +13,12 @@ class AuthHelper {
         let callbackInvoked = DispatchSemaphore(value: 0)
 
         AWSMobileClient.default().initialize { userState, error in
-            if let error = error as? AWSMobileClientError {
-                fatalError("Error initializing AWSMobileClient. Error: \(error.message)")
+            if let error = error {
+                if let awsMobileClientError = error as? AWSMobileClientError {
+                    fatalError("Error initializing AWSMobileClient. Error: \(awsMobileClientError.message)")
+                } else {
+                    fatalError("Error initializing AWSMobileClient. Error: \(error.localizedDescription)")
+                }
             }
 
             guard let userState = userState else {
@@ -37,9 +41,12 @@ class AuthHelper {
         AWSMobileClient.default().signUp(username: username,
                                          password: password,
                                          userAttributes: userAttributes) { result, error in
-
-            if let error = error as? AWSMobileClientError {
-                fatalError("Failed to sign up user with error: \(error.message)")
+            if let error = error {
+                if let awsMobileClientError = error as? AWSMobileClientError {
+                    fatalError("Failed to sign up user with error: \(awsMobileClientError.message)")
+                } else {
+                    fatalError("Failed to sign up user with error: \(error.localizedDescription)")
+                }
             }
 
             guard result != nil else {
@@ -56,8 +63,12 @@ class AuthHelper {
         let callbackInvoked = DispatchSemaphore(value: 0)
 
         AWSMobileClient.default().signIn(username: username, password: password) { result, error in
-            if let error = error as? AWSMobileClientError {
-                fatalError("Sign in failed: \(error.message)")
+            if let error = error {
+                if let awsMobileClientError = error as? AWSMobileClientError {
+                    fatalError("Sign in failed: \(awsMobileClientError.message)")
+                } else {
+                    fatalError("awsMobileClientError: \(error.localizedDescription)")
+                }
             }
 
             guard let result = result else {
