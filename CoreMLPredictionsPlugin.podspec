@@ -12,9 +12,13 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '13.0'
   s.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => s.version}
   
-  s.requires_arc = true
+  s.requires_arc   = true
+  s.swift_versions = '5.1'
+
+  AMPLIFY_VERSION = '0.9.0'
+
   s.source_files = 'AmplifyPlugins/Predictions/CoreMLPredictionsPlugin/**/*.swift'
-  s.dependency 'Amplify', '0.9.0'
+  s.dependency 'Amplify', AMPLIFY_VERSION
 
 end
 

@@ -6,26 +6,29 @@
 #  To see working Podspecs in the CocoaPods repo see https://github.com/CocoaPods/Specs/
 #
 
-Pod::Spec.new do |spec|
+Pod::Spec.new do |s|
+  s.name         = "AmplifyTestCommon"
+  s.version      = "0.9.0"
+  s.summary      = "Test resources used by different targets"
+  s.description  = "Provides different test resources and mock methods"
 
-  spec.name         = "AmplifyTestCommon"
-  spec.version      = "0.9.0"
-  spec.summary      = "Test resources used by different targets"
-  spec.description  = "Provides different test resources and mock methods"
-
-  spec.homepage     = "https://aws.amazon.com/amplify/"
-  spec.license      = 'Apache License, Version 2.0'
-  spec.author       = { 'Amazon Web Services' => 'amazonwebservices' }
-  spec.platform     = :ios, '11.0'
-  spec.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => spec.version}
+  s.homepage     = "https://aws.amazon.com/amplify/"
+  s.license      = 'Apache License, Version 2.0'
+  s.author       = { 'Amazon Web Services' => 'amazonwebservices' }
+  s.platform     = :ios, '11.0'
+  s.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => s.version}
   
-  spec.requires_arc = true
+  s.requires_arc   = true
+  s.swift_versions = '5.1'
 
-  spec.source_files = 'AmplifyTestCommon/**/*.swift'
-  spec.dependency 'Amplify', '0.9.0'
+  AMPLIFY_VERSION = '0.9.0'
+  AMPLIFY_PLUGINS_CORE_VERSION = '0.9.0'
 
-  spec.subspec 'AWSPluginsTestCommon' do |subspec|
-    subspec.source_files = 'AmplifyPlugins/Core/AWSPluginsTestCommon/**/*.swift'
-    spec.dependency 'AWSPluginsCore', '0.9.0'
+  s.source_files = 'AmplifyTestCommon/**/*.swift'
+  s.dependency 'Amplify', AMPLIFY_VERSION
+
+  s.subspec 'AWSPluginsTestCommon' do |ss|
+    ss.source_files = 'AmplifyPlugins/Core/AWSPluginsTestCommon/**/*.swift'
+    s.dependency 'AWSPluginsCore', AMPLIFY_PLUGINS_CORE_VERSION
   end
 end

@@ -21,6 +21,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => s.version}
   
   s.requires_arc = true 
+  s.swift_versions = '5.1'
 
   AWS_SDK_VERSION = '~> 2.12.2'
   AMPLIFY_VERSION = '0.9.0'
