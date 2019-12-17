@@ -13,31 +13,108 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
-opt_out_usage
+require_relative './amplify_pods.rb'
 
+opt_out_usage
 default_platform(:ios)
 
-pods = [
-  # "Amplify.podspec",
-  # "AWSPluginsCore.podspec",
-  # "CoreMLPredictionsPlugin.podspec",
-  "AWSPredictionsPlugin.podspec",
-  "AmplifyPlugins.podspec"
-]
+plist_key = "CFBundleShortVersionString"
 
+# This file also contains a version. Should it be incremented as well?
+# AmplifyPlugins/API/AWSAPICategoryPlugin/Support/Constants/URLRequestConstants.swift
+
+# .jazzy.yaml ?
+
+# Unstable - release with unstable tag but don't commit/push version changes
 platform :ios do
-  desc "Bump pod versions"
-  lane :bump_podspecs_patch do
+  desc "Unstable"
+  lane :unstable do 
+    tag_prefix = '*'
 
-    pods.each { |pod| version_bump_podspec(path: pod, bump_type: "patch") }
+    analyze_commits_canary(match: tag_prefix, canary: true, preid: 'unstable')
 
+    # Increment all specs and plists
+    increment_versions()
+
+    # Create tag and push to origin
+    add_tag()
+
+    # Push pods
+    release_pods()
+  end
+
+  # Stable - commit, tag, and push to origin
+  desc "Release"
+  lane :release do
+    tag_prefix = '*'
+    
+    analyze_commits_canary(match: tag_prefix, canary: true, preid: 'unstable')
+
+    # Increment all specs and plists
+    increment_versions()
+
+    # TODO: Generate changelog
+
+    # Commit and push
+    release_commit()
+
+    # Create tag and push to origin
+    add_tag()
+
+    # Push pods
+    release_pods()
+  end
+
+  desc "Increment versions"
+  private_lane :increment_versions do |options|
+    AmplifyPods.pods.each { |pod| increment_pod(pod) }
+  end
+  
+  desc "Increment versions for pod"
+  private_lane :increment_pod do |options|
+    spec, push, constants, plist_paths = options.values
+    next_version = lane_context[SharedValues::RELEASE_NEXT_VERSION]
+
+    version_bump_podspec(path: spec, version_number: next_version)
+
+    constants.each { |constant| podspec_constant_versioning(podspec: spec, constant: constant, value: next_version) }
+    
+    plist_paths.each { |plist| set_info_plist_value(path: plist, key: plist_key, value: next_version) }
+  end
+
+  desc "Commit and push"
+  private_lane :release_commit do
+    next_version = lane_context[SharedValues::RELEASE_NEXT_VERSION]
+
+    sh("git config --global user.email $GITHUB_EMAIL")
+    sh("git config --global user.name $GITHUB_USER")
+
+    # We don't want this commit to trigger another build
+    commit_message = "chore(release): #{next_version} [skip ci]"
+    sh("git commit -am '#{commit_message}'")
+    sh("git push origin")
+  end
+
+  desc "Tag in git"
+  private_lane :add_tag do
+    next_version = lane_context[SharedValues::RELEASE_NEXT_VERSION]
+
+    add_git_tag(tag: next_version)
+    push_git_tags(tag: next_version)
   end
 
   desc "Release pods"
-  lane :release_pods do
+  private_lane :release_pods do
 
-    pods.each { |pod| pod_push(path: pod, allow_warnings: true, swift_version: "5.1") }
+    AmplifyPods.pods.each { 
+      |pod|
 
+        if !pod[:push]
+          next
+        end
+        
+        pod_push(path: pod[:spec], allow_warnings: true)
+        Actions.sh('pod repo update')
+    }
   end
-
 end

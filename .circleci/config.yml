@@ -150,6 +150,25 @@ jobs:
       - store_test_results:
           path: build/reports
   
+  deploy_unstable:
+    <<: *defaults
+    description: deploy pods to trunk
+    steps: 
+      - *restore_repo
+      - restore_gems
+      - check_bundle
+      - run:
+          # without this step, the pipeline hangs during `pod repo update` after pushing (see Fastfile -> :release_pods)
+          # TODO: look into caching this 
+          name: Clone CocoaPods Repo
+          command: |
+            curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+      - run:
+          name: Release pods with unstable tag
+          command: bundle exec fastlane unstable
+      - store_artifacts:
+          path: fastlane/report.xml
+
   deploy:
     <<: *defaults
     description: deploy pods to trunk
@@ -157,13 +176,16 @@ jobs:
       - *restore_repo
       - restore_gems
       - check_bundle
-      # - run:
-      #     name: Bump pod versions
-      #     command: bundle exec fastlane bump_podspecs_patch
+      - run:
+          # without this step, the pipeline hangs during `pod repo update` after pushing (see Fastfile -> :release_pods)
+          name: Clone CocoaPods Repo
+          command: |
+            curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
       - run:
           name: Release pods
-          command: bundle exec fastlane release_pods
-
+          command: bundle exec fastlane release
+      - store_artifacts:
+          path: fastlane/report.xml
 
 workflows:
   build_test_deploy:
@@ -217,11 +239,11 @@ workflows:
           scheme: AWSDataStoreCategoryPlugin
           requires:
             - install_gems
-      - deploy:
+      - deploy_unstable:
           filters:
             branches:
               only:
-                - release
+                - master
           requires:
             - build_test_amplify
             - unit_test_api
