@@ -47,13 +47,11 @@ type Todo @model {
 
 ```
 
-5. Enable `testSetUpOnce()` and run it to sign up a new user.
-
-6. `amplify console auth`
+5. `amplify console auth`
 ```perl
 ? Which console `User Pool`
 ```
 
-Click on `Users and groups`, select the user that was created, and click on Confirm User.
+6. Click on `Users and groups`, Sign up a new user with the email and password specified in step 4, and click on Confirm User.
 
-7. Disable `testSetUpOnce()` test and run the rest of the tests.
+7. Run the rest of the tests.

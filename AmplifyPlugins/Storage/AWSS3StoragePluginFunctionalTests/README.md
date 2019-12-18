@@ -40,13 +40,15 @@ Successfully added auth resource
 
 6. You can now run most of the integration tests. 
 
-7. To successfully run AWSS3StoragePluginAccessLevelTests, run `testSetUpOnce()` to sign up two users.
+7. To successfully run AWSS3StoragePluginAccessLevelTests, sign up two users.
 
-8. `amplify console auth` 
+8. `amplify console auth`
 ```perl
 ? Which console `User Pool`
 ```
 
-Click on `Users and groups`, select the both users that were created and click Confirm User.
+9. Click on `Users and groups`, Sign up a new user with the email and password specified in step 4, and click on Confirm User.
+
+10. Run the rest of the tests.
 
 You should now be able to run all of the tests from AWSS3StoragePluginAccessLevelTests 

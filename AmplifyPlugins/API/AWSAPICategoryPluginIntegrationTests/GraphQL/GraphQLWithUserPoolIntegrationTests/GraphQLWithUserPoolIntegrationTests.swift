@@ -21,23 +21,30 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     static var user1: String!
     static var password: String!
 
-    override func setUp() {
+    static override func setUp() {
         do {
 
             let credentials = try TestConfigHelper.retrieveCredentials(
                 forResource: GraphQLWithUserPoolIntegrationTests.credentials)
 
-            if credentials["user1"] == nil || credentials["password"] == nil {
+            guard let user1 = credentials["user1"], let password = credentials["password"] else {
                 XCTFail("Missing credentials.json data")
+                return
             }
 
-            GraphQLWithUserPoolIntegrationTests.user1 = credentials["user1"]
-            GraphQLWithUserPoolIntegrationTests.password = credentials["password"]
+            GraphQLWithUserPoolIntegrationTests.user1 = user1
+            GraphQLWithUserPoolIntegrationTests.password = password
 
             let awsConfiguration = try TestConfigHelper.retrieveAWSConfiguration(
                 forResource: GraphQLWithUserPoolIntegrationTests.awsconfiguration)
             AWSInfo.configureDefaultAWSInfo(awsConfiguration)
+        } catch {
+            XCTFail("Error during setup: \(error)")
+        }
+    }
 
+    override func setUp() {
+        do {
             AuthHelper.initializeMobileClient()
 
             Amplify.reset()
@@ -54,13 +61,6 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
 
     override func tearDown() {
         Amplify.reset()
-    }
-
-
-    // This is a run once function to set up users then use console to verify and run rest of these tests.
-    func testSetUpOnce() {
-        AuthHelper.signUpUser(username: GraphQLWithUserPoolIntegrationTests.user1,
-                              password: GraphQLWithUserPoolIntegrationTests.password)
     }
 
     /// Given: A CreateTodo mutation request, and user signed in, graphql has userpools as auth mode.

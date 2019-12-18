@@ -25,22 +25,32 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     static var user2: String!
     static var password: String!
 
-    override func setUp() {
+    static override func setUp() {
         do {
-
             let credentials = try TestConfigHelper.retrieveCredentials(forResource: AWSS3StoragePluginTestBase.credentials)
 
-            if credentials["user1"] == nil || credentials["user2"] == nil || credentials["password"] == nil {
+            guard let user1 = credentials["user1"],
+                let user2 = credentials["user2"],
+                let password = credentials["password"] else {
                 XCTFail("Missing credentials.json data")
+                return
             }
 
-            AWSS3StoragePluginTestBase.user1 = credentials["user1"]
-            AWSS3StoragePluginTestBase.user2 = credentials["user2"]
-            AWSS3StoragePluginTestBase.password = credentials["password"]
+            AWSS3StoragePluginTestBase.user1 = user1
+            AWSS3StoragePluginTestBase.user2 = user2
+            AWSS3StoragePluginTestBase.password = password
 
             let awsConfiguration = try TestConfigHelper.retrieveAWSConfiguration(
                 forResource: AWSS3StoragePluginTestBase.awsconfiguration)
             AWSInfo.configureDefaultAWSInfo(awsConfiguration)
+
+        } catch {
+            XCTFail("Failed to initialize test set up \(error)")
+        }
+    }
+
+    override func setUp() {
+        do {
             AuthHelper.initializeMobileClient()
             Amplify.reset()
 

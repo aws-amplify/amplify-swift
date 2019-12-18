@@ -15,14 +15,6 @@ import AWSCognitoIdentityProvider
 
 class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
-    // This is a run once function to set up users then use console to verify and run rest of these tests.
-    func testSetUpOnce() {
-        AuthHelper.signUpUser(username: AWSS3StoragePluginTestBase.user1,
-                              password: AWSS3StoragePluginTestBase.password)
-        AuthHelper.signUpUser(username: AWSS3StoragePluginTestBase.user2,
-                              password: AWSS3StoragePluginTestBase.password)
-    }
-
     /// Given: An unauthenticated user
     /// When: List API with protected access level
     /// Then: Operation completes successfully with no items since there are no keys at that location.
