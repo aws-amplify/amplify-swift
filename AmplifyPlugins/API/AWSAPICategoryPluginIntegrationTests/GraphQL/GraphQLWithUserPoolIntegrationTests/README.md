@@ -37,13 +37,21 @@ type Todo @model {
 ? Do you want to generate code for your newly created GraphQL API `No`
 ```
 
-4. Enable `testSetUpOnce()` and run it to sign up a new user.
+4. Create `GraphQLWithUserPoolIntegrationTests-credentials.json` with a json object containing `user1`, and `password`, used to create the cognito user in the userpool. In step 2, the cognito userpool is configured to allow users to sign up with their email as the username.
+
+```json
+{
+    "user1": "<USER EMAIL>",
+    "password": "<PASSWORD>"
+}
+
+```
 
 5. `amplify console auth`
 ```perl
 ? Which console `User Pool`
 ```
 
-Click on `Users and groups`, select the user that was created, and click on Confirm User.
+6. Click on `Users and groups`, Sign up a new user with the email and password specified in step 4, and click on Confirm User.
 
-6. Disable `testSetUpOnce()` test and run the rest of the tests.
+7. Run the rest of the tests.

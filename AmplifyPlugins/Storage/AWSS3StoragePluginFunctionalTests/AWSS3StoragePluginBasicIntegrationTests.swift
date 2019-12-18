@@ -7,12 +7,14 @@
 
 import XCTest
 import AWSMobileClient
-import Amplify
+@testable import Amplify
 import AWSS3StoragePlugin
 import AWSS3
 import var CommonCrypto.CC_MD5_DIGEST_LENGTH
 import func CommonCrypto.CC_MD5
 import typealias CommonCrypto.CC_LONG
+@testable import AmplifyTestCommon
+
 
 class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
@@ -20,7 +22,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// When: Upload the data
     /// Then: The operation completes successfully
     func testUploadData() {
-        let key = "testUploadData"
+        let key = UUID().uuidString
         let data = key.data(using: .utf8)!
         let completeInvoked = expectation(description: "Completed is invoked")
 
@@ -36,14 +38,14 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A empty data object
     /// When: Upload the data
     /// Then: The operation completes successfully
     func testUploadEmptyData() {
-        let key = "testuploadExpectationEmptyData"
+        let key = UUID().uuidString
         let data = "".data(using: .utf8)!
         let completeInvoked = expectation(description: "Completed is invoked")
 
@@ -59,14 +61,14 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A file with contents
     /// When: Upload the file
     /// Then: The operation completes successfully
     func testUploadFile() {
-        let key = "testUploadFile"
+        let key = UUID().uuidString
         let filePath = NSTemporaryDirectory() + key + ".tmp"
 
         let fileURL = URL(fileURLWithPath: filePath)
@@ -85,14 +87,14 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A file with empty contents
     /// When: Upload the file
     /// Then: The operation completes successfully
     func testUploadFileEmptyData() {
-        let key = "testUploadFileEmptyData"
+        let key = UUID().uuidString
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: "".data(using: .utf8), attributes: nil)
@@ -110,14 +112,14 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A large  data object
     /// When: Upload the data
     /// Then: The operation completes successfully
     func testUploadLargeData() {
-        let key = "testuploadExpectationLargeData"
+        let key = UUID().uuidString
         let completeInvoked = expectation(description: "Completed is invoked")
 
         let operation = Amplify.Storage.uploadData(key: key,
@@ -134,14 +136,14 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A large file
     /// When: Upload the file
     /// Then: The operation completes successfully
     func testUploadLargeFile() {
-        let key = "testUploadLargeFile"
+        let key = UUID().uuidString
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
 
@@ -163,14 +165,14 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: 600)
     }
 
     /// Given: An object in storage
     /// When: Call the downloadData API
     /// Then: The operation completes successfully with the data retrieved
     func testDownloadDataToMemory() {
-        let key = "testDownloadDataToMemory"
+        let key = UUID().uuidString
         uploadData(key: key, data: key.data(using: .utf8)!)
         let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageDownloadDataRequest.Options()
@@ -186,14 +188,14 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: An object in storage
     /// When: Call the downloadFile API
     /// Then: The operation completes successfully the local file containing the data from the object
     func testDownloadFile() {
-        let key = "testDownloadFile"
+        let key = UUID().uuidString
         let timestamp = String(Date().timeIntervalSince1970)
         let timestampData = timestamp.data(using: .utf8)!
         uploadData(key: key, data: timestampData)
@@ -214,7 +216,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
 
         let fileExists = FileManager.default.fileExists(atPath: fileURL.path)
         XCTAssertTrue(fileExists)
@@ -231,7 +233,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// When: Call the getURL API
     /// Then: The operation completes successfully with the URL retrieved
     func testGetRemoteURL() {
-        let key = "testGetRemoteURL"
+        let key = UUID().uuidString
         uploadData(key: key, dataString: key)
 
         var remoteURLOptional: URL?
@@ -249,7 +251,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
         guard let remoteURL = remoteURLOptional else {
             XCTFail("Failed to get remoteURL")
             return
@@ -278,14 +280,14 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
         task.resume()
 
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: An object in storage
     /// When: Call the list API
     /// Then: The operation completes successfully with the key retrieved
     func testListFromPublic() {
-        let key = "testListFromPublic"
+        let key = UUID().uuidString
         let expectedMD5Hex = MD5(string: key).map { String(format: "%02hhx", $0) }.joined()
         uploadData(key: key, dataString: key)
         let completeInvoked = expectation(description: "Completed is invoked")
@@ -315,14 +317,14 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: No object in storage for the key
     /// When: Call the list API
     /// Then: The operation completes successfully with empty list of keys returned
     func testListEmpty() {
-        let key = "testListEmpty"
+        let key = UUID().uuidString
         let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageListRequest.Options(accessLevel: .guest,
                                                  targetIdentityId: nil,
@@ -341,14 +343,14 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: No object in storage for the key
     /// When: Call the list API
     /// Then: The operation completes successfully with empty list of keys returned
     func testListWithPathUsingFolderNameWithForwardSlash() {
-        let key = "testListWithPathUsingFolderNameWithForwardSlash"
+        let key = UUID().uuidString
         let folder = key + "/"
         var keys: [String] = []
         for fileIndex in 1 ... 10 {
@@ -379,14 +381,14 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: Objects with identifiers specified in `keys` array stored in folder named (`key1`+`key2`)
     /// When: Call the list API using the path `key1`
     /// Then: The operation completes successfully with list of keys returned from the folder.
     func testListWithPathUsingIncompleteFolderName() {
-        let key1 = "testListWithPathUsingIncomp"
+        let key1 = UUID().uuidString + "testListWithPathUsingIncomp"
         let key2 = "leteFolderName"
         let folder = key1 + key2 + "/"
         var keys: [String] = []
@@ -417,14 +419,14 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: An object in storage
     /// When: Call the remove API
     /// Then: The operation completes successfully with the key removed from storage
     func testRemoveKey() {
-        let key = "testRemoveKey"
+        let key = UUID().uuidString
         uploadData(key: key, dataString: key)
 
         let completeInvoked = expectation(description: "Completed is invoked")
@@ -439,14 +441,14 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(removeOperation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: Object with key `key` does not exist in storage
     /// When: Call the remove API
     /// Then: The operation completes successfully.
     func testRemoveNonExistentKey() {
-        let key = "testRemoveNonExistentKey"
+        let key = UUID().uuidString
 
         let completeInvoked = expectation(description: "Completed is invoked")
         let removeOperation = Amplify.Storage.remove(key: key, options: nil) { event in
@@ -460,14 +462,14 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(removeOperation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: Object with key `key` in storage
     /// When: Using the escape hatch and calling headObject API  using the key "public/`key`"
     /// Then: The request completes successful
     func testEscapeHatchAndGetHeadObject() {
-        let key = "testEscapeHatchAndGetHeadObject"
+        let key = UUID().uuidString
         uploadData(key: key, dataString: key)
 
         do {
@@ -480,9 +482,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
             let awsS3 = plugin.getEscapeHatch()
             let request: AWSS3HeadObjectRequest = AWSS3HeadObjectRequest()
-            if case let .string(bucket) = bucket {
-                request.bucket = bucket
-            }
+
+            request.bucket = try AWSS3StoragePluginTestBase.getBucketFromConfig(
+                forResource: AWSS3StoragePluginTestBase.amplifyConfiguration)
             request.key = "public/" + key
 
             let task = awsS3.headObject(request)

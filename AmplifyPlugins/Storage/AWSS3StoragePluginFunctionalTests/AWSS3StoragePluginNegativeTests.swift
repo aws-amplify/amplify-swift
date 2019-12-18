@@ -10,13 +10,15 @@ import AWSMobileClient
 import Amplify
 @testable import AWSS3StoragePlugin
 import AWSS3
+@testable import AmplifyTestCommon
+
 class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
 
     /// Given: Object with key `key` does not exist in storage
     /// When: Call the get API
     /// Then: The operation fails with StorageError.keyNotFound
     func testGetNonexistentKey() {
-        let key = "testGetNonexistentKey"
+        let key = UUID().uuidString
         let expectedKey = "public/" + key
         let failInvoked = expectation(description: "Failed is invoked")
         let options = StorageDownloadDataRequest.Options()
@@ -38,14 +40,14 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A path to file that does not exist
     /// When: Upload the file
     /// Then: The operation fails with StorageError.missingLocalFile
     func testUploadFileFromMissingFile() {
-        let key = "testUploadFileFromMissingFile"
+        let key = UUID().uuidString
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         let failedInvoked = expectation(description: "Failed is invoked")
@@ -66,7 +68,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     // TODO: possibly after understanding content-type

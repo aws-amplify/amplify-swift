@@ -26,6 +26,17 @@ class TestConfigHelper {
         return try AmplifyConfiguration.decodeAmplifyConfiguration(from: data)
     }
 
+    static func retrieveCredentials(forResource: String) throws -> [String: String] {
+        let data = try retrieve(forResource: forResource)
+
+        let jsonOptional = try JSONSerialization.jsonObject(with: data, options: []) as? [String: String]
+        guard let json = jsonOptional else {
+            throw "Could not deserialize `\(forResource)` into JSON object"
+        }
+
+        return json
+    }
+
     private static func retrieve(forResource: String) throws -> Data {
         guard let path = Bundle.main.path(forResource: forResource, ofType: "json") else {
             throw "Could not retrieve configuration file: \(forResource)"
@@ -35,5 +46,3 @@ class TestConfigHelper {
         return try Data(contentsOf: url)
     }
 }
-
-extension String: Error { }

@@ -10,6 +10,7 @@ import AWSMobileClient
 import Amplify
 import AWSS3StoragePlugin
 import AWSS3
+@testable import AmplifyTestCommon
 
 class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBase {
 
@@ -17,7 +18,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
     /// When: Call the get API then pause
     /// Then: The operation is stalled (no progress, completed, or failed event)
     func testDownloadLargeDataAndPause() {
-        let key = "testGetLargeDataAndPause"
+        let key = UUID().uuidString
         uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
         let progressInvoked = expectation(description: "Progress invoked")
@@ -50,7 +51,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
         }
 
         XCTAssertNotNil(operation)
-        wait(for: [progressInvoked], timeout: networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         operation.pause()
         wait(for: [completeInvoked, failedInvoked, noProgressAfterPause], timeout: 30)
     }
@@ -59,7 +60,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
     /// When: Call the downloadData API, pause, and then resume the operation
     /// Then: The operation should complete successfully
     func testDownloadLargeDataAndPauseThenResume() {
-        let key = "testGetLargeDataAndPauseThenResume"
+        let key = UUID().uuidString
         uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
         let progressInvoked = expectation(description: "Progress invoked")
@@ -82,17 +83,17 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
         }
 
         XCTAssertNotNil(operation)
-        wait(for: [progressInvoked], timeout: networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         operation.pause()
         operation.resume()
-        wait(for: [completeInvoked], timeout: networkTimeout)
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A large data object in storage
     /// When: Call the get API then cancel the operation,
     /// Then: The operation should not complete or fail.
     func testDownloadLargeDataAndCancel() {
-        let key = "testGetLargeDataAndCancel"
+        let key = UUID().uuidString
         uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
         let progressInvoked = expectation(description: "Progress invoked")
@@ -118,7 +119,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
         }
 
         XCTAssertNotNil(operation)
-        wait(for: [progressInvoked], timeout: networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         operation.cancel()
         wait(for: [completedInvoked, failedInvoked], timeout: 30)
     }

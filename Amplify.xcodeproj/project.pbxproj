@@ -84,6 +84,10 @@
 		21D79FE12377BF4B0057D00D /* AuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FE02377BF4B0057D00D /* AuthProvider.swift */; };
 		21D79FE32377F4120057D00D /* SubscriptionConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FE22377F4120057D00D /* SubscriptionConnectionState.swift */; };
 		21F40A3223A160FC0074678E /* GraphQLDocument+DeleteSyncMutation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3123A160FC0074678E /* GraphQLDocument+DeleteSyncMutation.swift */; };
+		21F40A3A23A294770074678E /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3923A294770074678E /* TestConfigHelper.swift */; };
+		21F40A3C23A2952C0074678E /* AuthHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3B23A2952C0074678E /* AuthHelper.swift */; };
+		21F40A3E23A295390074678E /* AWSMobileClient+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3D23A295390074678E /* AWSMobileClient+Message.swift */; };
+		21F40A4023A295470074678E /* TestCommonConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3F23A295470074678E /* TestCommonConstants.swift */; };
 		21FFF988230B7B2C005878EA /* AsychronousOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF986230B7A5D005878EA /* AsychronousOperation.swift */; };
 		21FFF98E230C81E6005878EA /* StorageAccessLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF98D230C81E6005878EA /* StorageAccessLevel.swift */; };
 		21FFF994230C96CB005878EA /* StorageUploadDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF98F230C96CA005878EA /* StorageUploadDataOperation.swift */; };
@@ -585,6 +589,10 @@
 		21D79FE02377BF4B0057D00D /* AuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthProvider.swift; sourceTree = "<group>"; };
 		21D79FE22377F4120057D00D /* SubscriptionConnectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionConnectionState.swift; sourceTree = "<group>"; };
 		21F40A3123A160FC0074678E /* GraphQLDocument+DeleteSyncMutation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GraphQLDocument+DeleteSyncMutation.swift"; sourceTree = "<group>"; };
+		21F40A3923A294770074678E /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
+		21F40A3B23A2952C0074678E /* AuthHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthHelper.swift; sourceTree = "<group>"; };
+		21F40A3D23A295390074678E /* AWSMobileClient+Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSMobileClient+Message.swift"; sourceTree = "<group>"; };
+		21F40A3F23A295470074678E /* TestCommonConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestCommonConstants.swift; sourceTree = "<group>"; };
 		21FFF986230B7A5D005878EA /* AsychronousOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsychronousOperation.swift; sourceTree = "<group>"; };
 		21FFF98D230C81E6005878EA /* StorageAccessLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageAccessLevel.swift; sourceTree = "<group>"; };
 		21FFF98F230C96CA005878EA /* StorageUploadDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageUploadDataOperation.swift; sourceTree = "<group>"; };
@@ -2031,7 +2039,10 @@
 		FA9D6C20238DF06B00C7DD9F /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				21F40A3B23A2952C0074678E /* AuthHelper.swift */,
+				21F40A3D23A295390074678E /* AWSMobileClient+Message.swift */,
 				FA176ED6238503C200C5C5F9 /* HubListenerTestUtilities.swift */,
+				21F40A3923A294770074678E /* TestConfigHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -2406,11 +2417,12 @@
 			isa = PBXGroup;
 			children = (
 				FACA36062327FBD4000E74F6 /* AmplifyTestCommon.h */,
-				FACA36072327FBD4000E74F6 /* Info.plist */,
-				FACF52032329633500646E10 /* TestExtensions.swift */,
 				FA9D6C20238DF06B00C7DD9F /* Helpers */,
+				FACA36072327FBD4000E74F6 /* Info.plist */,
 				FAC23577227A056F00424678 /* Mocks */,
 				B952182D237E21B900F53237 /* Models */,
+				21F40A3F23A295470074678E /* TestCommonConstants.swift */,
+				FACF52032329633500646E10 /* TestExtensions.swift */,
 			);
 			path = AmplifyTestCommon;
 			sourceTree = "<group>";
@@ -3714,12 +3726,14 @@
 				B9FAA116238799D3009414B4 /* Author.swift in Sources */,
 				B9521833237E21BA00F53237 /* Comment+Schema.swift in Sources */,
 				FA176ED7238503C200C5C5F9 /* HubListenerTestUtilities.swift in Sources */,
+				21F40A3A23A294770074678E /* TestConfigHelper.swift in Sources */,
 				B4BD6B3723708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift in Sources */,
 				FACA361C2327FC7D000E74F6 /* MockHubCategoryPlugin.swift in Sources */,
 				FAD3937F23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift in Sources */,
 				FACA361A2327FC69000E74F6 /* MockStorageCategoryPlugin.swift in Sources */,
 				B9521837237E21BA00F53237 /* Post.swift in Sources */,
 				B9FAA11A23879AC8009414B4 /* BookAuthor.swift in Sources */,
+				21F40A3E23A295390074678E /* AWSMobileClient+Message.swift in Sources */,
 				FAA2E8BC239FFC7700E420EA /* MockModels.swift in Sources */,
 				B9FAA11E23879B9F009414B4 /* Book+Schema.swift in Sources */,
 				FACA361B2327FC74000E74F6 /* MockLoggingCategoryPlugin.swift in Sources */,
@@ -3735,10 +3749,12 @@
 				FACA361D2327FC84000E74F6 /* MockAPICategoryPlugin.swift in Sources */,
 				B9FAA11023878C5E009414B4 /* UserProfile.swift in Sources */,
 				B9FAA12023879BD0009414B4 /* BookAuthor+Schema.swift in Sources */,
+				21F40A4023A295470074678E /* TestCommonConstants.swift in Sources */,
 				B9521835237E21BA00F53237 /* Comment.swift in Sources */,
 				FACA361E2327FC8E000E74F6 /* MockAnalyticsCategoryPlugin.swift in Sources */,
 				2129BE012394627B006363A1 /* PostCommentModelRegistration.swift in Sources */,
 				B9FAA10E23878BF3009414B4 /* UserAccount.swift in Sources */,
+				21F40A3C23A2952C0074678E /* AuthHelper.swift in Sources */,
 				FA1846EE23998E44009B9D01 /* MockAPIResponders.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

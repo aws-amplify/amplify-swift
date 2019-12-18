@@ -10,13 +10,15 @@ import AWSMobileClient
 import Amplify
 import AWSS3StoragePlugin
 import AWSS3
+@testable import AmplifyTestCommon
+
 class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
 
     /// Given: An object in storage
     /// When: Call the GetURL API with 10 second expiry time
     /// Then: Retrieve data successfully when the URL has not expired and fail to after the expiry time
     func testGetRemoteURLWithExpires() {
-        let key = "testGetRemoteURLWithExpires"
+        let key = UUID().uuidString
         uploadData(key: key, dataString: key)
 
         var remoteURLOptional: URL?
@@ -36,7 +38,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
         guard let remoteURL = remoteURLOptional else {
             XCTFail("Failed to get remoteURL")
             return
@@ -64,7 +66,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             dataTaskCompleteInvoked.fulfill()
         }
         task.resume()
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
 
         sleep(15)
 
@@ -84,19 +86,18 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             urlExpired.fulfill()
         }
         task2.resume()
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: An object uploaded with metadata with key `metadataKey` and value `metadataValue`
     /// When: Call the headObject API
     /// Then: The expected metadata should exist on the object
     func testuploadExpectationWithMetadata() {
-        let key = "testuploadwithmetadata"
-        let value = key + "Value"
+        let key = UUID().uuidString
         let data = key.data(using: .utf8)!
         let metadataKey = "metadatakey"
         let metadataValue = metadataKey + "Value"
-        let metadata = [key: value, metadataKey: metadataValue]
+        let metadata = [metadataKey: metadataValue]
         let options = StorageUploadDataRequest.Options(metadata: metadata)
         let completeInvoked = expectation(description: "Completed is invoked")
 
@@ -112,7 +113,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
 
         do {
             let pluginOptional = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin")
@@ -124,9 +125,8 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
 
             let awsS3 = plugin.getEscapeHatch()
             let request: AWSS3HeadObjectRequest = AWSS3HeadObjectRequest()
-            if case let .string(bucket) = bucket {
-                request.bucket = bucket
-            }
+            request.bucket = try AWSS3StoragePluginTestBase.getBucketFromConfig(
+                forResource: AWSS3StoragePluginTestBase.amplifyConfiguration)
             request.key = "public/" + key
 
             let task = awsS3.headObject(request)
@@ -140,7 +140,6 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
                 XCTAssertNotNil(headObjectOutput)
                 XCTAssertNotNil(headObjectOutput.metadata)
                 if let metadata = headObjectOutput.metadata {
-                    XCTAssertEqual(metadata[key], value)
                     XCTAssertEqual(metadata[metadataKey], metadataValue)
                 }
             }

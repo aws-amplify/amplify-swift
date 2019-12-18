@@ -13,7 +13,8 @@ target "Amplify" do
   abstract_target "AmplifyTestConfigs" do
     pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
     pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
-
+    pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
+    
     target "AmplifyTestCommon" do
     end
 
