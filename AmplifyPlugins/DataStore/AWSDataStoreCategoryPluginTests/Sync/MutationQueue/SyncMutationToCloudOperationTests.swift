@@ -20,13 +20,13 @@ class SyncMutationToCloudOperationTests: XCTestCase {
     let secondsInADay = 60 * 60 * 24
     var mockAPIPlugin: MockAPICategoryPlugin!
 
-    var reachabilityPublisher: PassthroughSubject<ReachabilityUpdate, DataStoreError>!
-    var publisher: AnyPublisher<ReachabilityUpdate, DataStoreError> {
+    var reachabilityPublisher: PassthroughSubject<ReachabilityUpdate, Never>!
+    var publisher: AnyPublisher<ReachabilityUpdate, Never> {
         return reachabilityPublisher.eraseToAnyPublisher()
     }
 
     override func setUp() {
-        reachabilityPublisher = PassthroughSubject<ReachabilityUpdate, DataStoreError>()
+        reachabilityPublisher = PassthroughSubject<ReachabilityUpdate, Never>()
         tryOrFail {
             try setUpWithAPI()
         }
