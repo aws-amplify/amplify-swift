@@ -29,13 +29,13 @@ Pod::Spec.new do |s|
     ss.source_files = 'AmplifyPlugins/API/AWSAPICategoryPlugin/**/*.swift'
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'Starscream', '~> 3.0.2'
+    ss.dependency 'ReachabilitySwift', '~> 5.0.0'
   end
 
   s.subspec 'AWSDataStorePlugin' do |ss|
     ss.source_files = 'AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin/**/*.swift'
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'SQLite.swift', '~> 0.12.0'
-    ss.dependency 'ReachabilitySwift', '~> 5.0.0'
   end
 
   s.subspec 'AWSPinpointAnalyticsPlugin' do |ss|
