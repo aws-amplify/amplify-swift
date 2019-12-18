@@ -19,12 +19,14 @@ class SyncMutationToCloudOperationTests: XCTestCase {
     let defaultAsyncWaitTimeout = 2.0
     let secondsInADay = 60 * 60 * 24
     var mockAPIPlugin: MockAPICategoryPlugin!
-    var networkReachability: NetworkReachabilityNotifier!
+
+    var reachabilityPublisher: PassthroughSubject<ReachabilityUpdate, DataStoreError>!
+    var publisher: AnyPublisher<ReachabilityUpdate, DataStoreError> {
+        return reachabilityPublisher.eraseToAnyPublisher()
+    }
 
     override func setUp() {
-        networkReachability = NetworkReachabilityNotifier(host: "localhost",
-                                                          allowsCellularAccess: true,
-                                                          reachabilityFactory: MockNetworkReachabilityProvidingFactory.self)
+        reachabilityPublisher = PassthroughSubject<ReachabilityUpdate, DataStoreError>()
         tryOrFail {
             try setUpWithAPI()
         }
@@ -33,7 +35,6 @@ class SyncMutationToCloudOperationTests: XCTestCase {
     }
 
     func testRetryOnTimeoutOfWaiting() throws {
-        MockReachability.iConnection = .wifi
         let expectMutationRequestCompletion = expectation(description: "Expect to complete mutation request")
         let expectFirstCallToAPIMutate = expectation(description: "First call to API.mutate")
         let expectSecondCallToAPIMutate = expectation(description: "Second call to API.mutate")
@@ -69,7 +70,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
 
         let operation = SyncMutationToCloudOperation(mutationEvent: mutationEvent,
                                                      api: mockAPIPlugin,
-                                                     networkReachabilityPublisher: networkReachability.publisher,
+                                                     networkReachabilityPublisher: publisher,
                                                      currentAttemptNumber: 1,
                                                      completion: completion)
         let queue = OperationQueue()
@@ -102,7 +103,6 @@ class SyncMutationToCloudOperationTests: XCTestCase {
     }
 
     func testRetryOnChangeReachability() throws {
-        MockReachability.iConnection = .unavailable
         let mockRequestRetryPolicy = MockRequestRetryablePolicy()
         let waitForeverToRetry = RequestRetryAdvice(shouldRetry: true, retryInterval: .seconds(secondsInADay))
         mockRequestRetryPolicy.pushOnRetryRequestAdvice(response: waitForeverToRetry)
@@ -140,7 +140,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         }
         let operation = SyncMutationToCloudOperation(mutationEvent: mutationEvent,
                                                      api: mockAPIPlugin,
-                                                     networkReachabilityPublisher: networkReachability.publisher,
+                                                     networkReachabilityPublisher: publisher,
                                                      currentAttemptNumber: 1,
                                                      requestRetryablePolicy: mockRequestRetryPolicy,
                                                      completion: completion)
@@ -154,9 +154,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
 
         let urlError = URLError(URLError.notConnectedToInternet)
         listenerFromFirstRequest(.failed(APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
-        let notification = Notification(name: .reachabilityChanged, object: nil)
-        MockReachability.iConnection = .wifi
-        NotificationCenter.default.post(notification)
+        reachabilityPublisher.send(ReachabilityUpdate(isOnline: true))
 
         wait(for: [expectSecondCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
         guard let listenerFromSecondRequest = listenerFromSecondRequestOptional else {
@@ -176,7 +174,6 @@ class SyncMutationToCloudOperationTests: XCTestCase {
     }
 
     func testAbilityToCancel() throws {
-        MockReachability.iConnection = .unavailable
         let mockRequestRetryPolicy = MockRequestRetryablePolicy()
         let waitForeverToRetry = RequestRetryAdvice(shouldRetry: true, retryInterval: .seconds(secondsInADay))
         mockRequestRetryPolicy.pushOnRetryRequestAdvice(response: waitForeverToRetry)
@@ -214,7 +211,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         }
         let operation = SyncMutationToCloudOperation(mutationEvent: mutationEvent,
                                                      api: mockAPIPlugin,
-                                                     networkReachabilityPublisher: networkReachability.publisher,
+                                                     networkReachabilityPublisher: publisher,
                                                      currentAttemptNumber: 1,
                                                      requestRetryablePolicy: mockRequestRetryPolicy,
                                                      completion: completion)

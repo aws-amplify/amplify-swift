@@ -9,8 +9,9 @@ import Foundation
 import XCTest
 import Reachability
 import Combine
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSAPICategoryPlugin
 
+@available(iOS 13.0, *)
 class NetworkReachabilityNotifierTests: XCTestCase {
     var notification: Notification!
     var notifier: NetworkReachabilityNotifier!
@@ -87,36 +88,5 @@ class NetworkReachabilityNotifierTests: XCTestCase {
 
         waitForExpectations(timeout: 1.0)
         cancellable.cancel()
-    }
-}
-
-class MockNetworkReachabilityProvidingFactory: NetworkReachabilityProvidingFactory {
-    public static func make(for hostname: String) -> NetworkReachabilityProviding? {
-        return MockReachability()
-    }
-}
-
-class MockReachability: NetworkReachabilityProviding {
-    var allowsCellularConnection = true
-    static var iConnection = Reachability.Connection.wifi
-    var connection: Reachability.Connection {
-        get {
-            return MockReachability.iConnection
-        }
-        set(conn) {
-            MockReachability.iConnection = conn
-        }
-    }
-
-    var notificationCenter: NotificationCenter = .default
-
-    func setConnection(connection: Reachability.Connection) {
-        self.connection = connection
-    }
-
-    func startNotifier() throws {
-    }
-
-    func stopNotifier() {
     }
 }
