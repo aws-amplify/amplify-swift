@@ -11,6 +11,7 @@ extension MockAPICategoryPlugin {
     enum ResponderKeys {
         case queryRequestListener
         case subscribeRequestListener
+        case mutateRequestListener
     }
 }
 
@@ -19,3 +20,6 @@ typealias QueryRequestListenerResponder<R: Decodable> =
 
 typealias SubscribeRequestListenerResponder<R: Decodable> =
     MockResponder<(GraphQLRequest<R>, GraphQLSubscriptionOperation<R>.EventListener?), GraphQLSubscriptionOperation<R>?>
+
+typealias MutateRequestListenerResponder<R: Decodable> =
+    MockResponder<(GraphQLRequest<R>, GraphQLOperation<R>.EventListener?), GraphQLOperation<R>?>

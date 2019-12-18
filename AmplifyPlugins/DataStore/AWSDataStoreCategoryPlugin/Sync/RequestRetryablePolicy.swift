@@ -41,14 +41,14 @@ class RequestRetryablePolicy: RequestRetryable {
         default:
             break
         }
-        return RequestRetryAdvice(shouldRetry: false, retryInterval: nil)
+        return RequestRetryAdvice(shouldRetry: false)
     }
 
     private func determineRetryRequestAdvice(basedOn httpURLResponse: HTTPURLResponse?,
                                              attemptNumber: Int) -> RequestRetryAdvice {
         /// If there was no error and no response, then we should not retry.
         guard let httpURLResponse = httpURLResponse else {
-            return RequestRetryAdvice(shouldRetry: false, retryInterval: nil)
+            return RequestRetryAdvice(shouldRetry: false)
         }
 
         if let retryAfterValueInSeconds = getRetryAfterHeaderValue(from: httpURLResponse) {
@@ -64,7 +64,7 @@ class RequestRetryablePolicy: RequestRetryable {
         default:
             break
         }
-        return RequestRetryAdvice(shouldRetry: false, retryInterval: nil)
+        return RequestRetryAdvice(shouldRetry: false)
     }
 
     /// Returns a delay in milliseconds for the current attempt number. The delay includes random jitter as

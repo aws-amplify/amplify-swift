@@ -152,8 +152,9 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             return
         }
 
+        //TODO: Find a way to resolve networkReachabilityPublisher
         let syncMutationToCloudOperation =
-            SyncMutationToCloudOperation(mutationEvent: mutationEvent, api: api) { result in
+            SyncMutationToCloudOperation(mutationEvent: mutationEvent, api: api, networkReachabilityPublisher: nil) { result in
                 self.log.verbose("mutationEvent finished: \(mutationEvent); result: \(result)")
                 self.stateMachine.notify(action: .processedEvent)
         }

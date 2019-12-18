@@ -12,80 +12,80 @@ import Combine
 @testable import AWSDataStoreCategoryPlugin
 
 class NetworkReachabilityNotifierTests: XCTestCase {
-    var networkReach: NetworkReachabilityNotifier!
     var notification: Notification!
+    var notifier: NetworkReachabilityNotifier!
 
     override func setUp() {
-        networkReach = NetworkReachabilityNotifier(host: "localhost",
-                                                   allowsCellularAccess: true,
-                                                   reachabilityFactory: MockNetworkReachabilityProvidingFactory.self)
+        notifier = NetworkReachabilityNotifier(host: "localhost",
+                                               allowsCellularAccess: true,
+                                               reachabilityFactory: MockNetworkReachabilityProvidingFactory.self)
         MockReachability.iConnection = .wifi
     }
 
     func testWifiConnectivity() {
         MockReachability.iConnection = .wifi
         let expect = expectation(description: ".sink receives value")
-        let cancellable = networkReach.publisher()
-            .sink { value in
-                XCTAssert(value.isOnline)
-                expect.fulfill()
-        }
-
+        let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
+            XCTFail("Not expecting any error")
+        }, receiveValue: { value in
+            XCTAssert(value.isOnline)
+            expect.fulfill()
+        })
         notification = Notification.init(name: .reachabilityChanged)
         NotificationCenter.default.post(notification)
 
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: 1.0)
         cancellable.cancel()
     }
-
     func testCellularConnectivity() {
-        MockReachability.iConnection = .cellular
+        MockReachability.iConnection = .wifi
         let expect = expectation(description: ".sink receives value")
-        let cancellable = networkReach.publisher()
-            .sink { value in
-                XCTAssert(value.isOnline)
-                expect.fulfill()
-        }
+        let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
+            XCTFail("Not expecting any error")
+        }, receiveValue: { value in
+            XCTAssert(value.isOnline)
+            expect.fulfill()
+        })
 
         notification = Notification.init(name: .reachabilityChanged)
         NotificationCenter.default.post(notification)
 
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: 1.0)
         cancellable.cancel()
+
     }
 
     func testNoConnectivity() {
         MockReachability.iConnection = .unavailable
         let expect = expectation(description: ".sink receives value")
-        let cancellable = networkReach.publisher()
-            .sink { value in
-                XCTAssertFalse(value.isOnline)
-                expect.fulfill()
-        }
+        let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
+            XCTFail("Not expecting any error")
+        }, receiveValue: { value in
+            XCTAssertFalse(value.isOnline)
+            expect.fulfill()
+        })
 
         notification = Notification.init(name: .reachabilityChanged)
         NotificationCenter.default.post(notification)
 
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: 1.0)
         cancellable.cancel()
     }
 
     func testWifiConnectivity_publisherGoesOutOfScope() {
         MockReachability.iConnection = .wifi
         let expect = expectation(description: ".sink receives value")
-        let cancellable = networkReach.publisher()
-            .print()
-            .sink(receiveCompletion: { _ in
-                expect.fulfill()
-            }, receiveValue: { _ in
-                XCTAssertFalse(true)
-            })
+        let cancellable = notifier.publisher.sink(receiveCompletion: { _ in
+            expect.fulfill()
+        }, receiveValue: { _ in
+            XCTAssertFalse(true)
+        })
 
-        networkReach = nil
+        notifier = nil
         notification = Notification.init(name: .reachabilityChanged)
         NotificationCenter.default.post(notification)
 
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: 1.0)
         cancellable.cancel()
     }
 }
