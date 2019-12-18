@@ -18,7 +18,7 @@ final class MutationRetryNotifier {
     private var reachabilitySubscription: Subscription?
 
     init(advice: RequestRetryAdvice,
-         networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, DataStoreError>?,
+         networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?,
          retryMutationCallback: @escaping BasicClosure) {
         self.retryMutationCallback = retryMutationCallback
 
@@ -67,7 +67,7 @@ extension MutationRetryNotifier: Subscriber {
         return .unlimited
     }
 
-    func receive(completion: Subscribers.Completion<DataStoreError>) {
+    func receive(completion: Subscribers.Completion<Never>) {
         log.verbose(#function)
         reachabilitySubscription?.cancel()
     }

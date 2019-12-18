@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2019 Amazon.com,
+// Copyright 2018-2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -19,7 +19,7 @@ class SyncMutationToCloudOperation: Operation {
     private weak var api: APICategoryGraphQLBehavior?
     private let mutationEvent: MutationEvent
     private var mutationOperation: GraphQLOperation<MutationSync<AnyModel>>?
-    private let networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, DataStoreError>?
+    private var networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?
     private let completion: GraphQLOperation<MutationSync<AnyModel>>.EventListener
     private var mutationRetryNotifier: MutationRetryNotifier?
     private var requestRetryablePolicy: RequestRetryablePolicy
@@ -27,7 +27,7 @@ class SyncMutationToCloudOperation: Operation {
 
     init(mutationEvent: MutationEvent,
          api: APICategoryGraphQLBehavior,
-         networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, DataStoreError>?,
+         networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
          currentAttemptNumber: Int = 1,
          requestRetryablePolicy: RequestRetryablePolicy? = RequestRetryablePolicy(),
          completion: @escaping GraphQLOperation<MutationSync<AnyModel>>.EventListener) {
@@ -116,7 +116,7 @@ class SyncMutationToCloudOperation: Operation {
         log.verbose("\(#function) sending mutation with sync data: \(apiRequest)")
         mutationOperation = api.mutate(request: apiRequest) { asyncEvent in
             self.log.verbose("sendMutationToCloud received asyncEvent: \(asyncEvent)")
-            self.validateResponseFromCloud(asyncEvent: asyncEvent)
+            self.validateResponseFromCloud(asyncEvent: asyncEvent, request: apiRequest)
         }
     }
 
@@ -146,7 +146,8 @@ class SyncMutationToCloudOperation: Operation {
     }
 
     private func validateResponseFromCloud(asyncEvent: AsyncEvent<Void,
-        GraphQLResponse<MutationSync<AnyModel>>, APIError>) {
+        GraphQLResponse<MutationSync<AnyModel>>, APIError>,
+                                           request: GraphQLRequest<MutationSync<AnyModel>>) {
         guard !isCancelled else {
             mutationOperation?.cancel()
             let apiError = APIError.unknown("Operation cancelled", "")
@@ -157,6 +158,7 @@ class SyncMutationToCloudOperation: Operation {
         if case .failed(let error) = asyncEvent {
             let advice = getRetryAdviceIfRetryable(error: error)
             if advice.shouldRetry {
+                resolveReachabilityPublisher(request: request)
                 self.scheduleRetry(advice: advice)
             } else {
                 self.finish(result: .failed(error))
@@ -175,6 +177,18 @@ class SyncMutationToCloudOperation: Operation {
                 self.finish(result: .failed(apiError))
             case .success:
                 self.finish(result: asyncEvent)
+            }
+        }
+    }
+
+    private func resolveReachabilityPublisher(request: GraphQLRequest<MutationSync<AnyModel>>) {
+        if networkReachabilityPublisher == nil {
+            if let reachability = api as? APICategoryReachabilityBehavior {
+                do {
+                    networkReachabilityPublisher = try reachability.reachabilityPublisher(for: request.apiName)
+                } catch {
+                    log.error("\(#function): Unable to listen on reachability: \(error)")
+                }
             }
         }
     }
