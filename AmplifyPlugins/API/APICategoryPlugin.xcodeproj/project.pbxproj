@@ -137,7 +137,6 @@
 		B4DFA5F8237A611D0013E17B /* AWSAPICategoryPlugin+ConfigureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5DE237A611D0013E17B /* AWSAPICategoryPlugin+ConfigureTests.swift */; };
 		B4DFA5F9237A611D0013E17B /* AWSAPICategoryPlugin+URLSessionDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DFA5DF237A611D0013E17B /* AWSAPICategoryPlugin+URLSessionDelegateTests.swift */; };
 		FA8EE785238632620097E4F1 /* AWSAPIPlugin+Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8EE784238632620097E4F1 /* AWSAPIPlugin+Log.swift */; };
-		FA97F5532386CCF500EE9EFE /* AnyModelIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA97F5522386CCF500EE9EFE /* AnyModelIntegrationTests.swift */; };
 		FAC5F9B1238B70EE00F70F02 /* APICategoryPluginConcurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9554DF238B6C0B00D42A43 /* APICategoryPluginConcurrencyTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -430,7 +429,6 @@
 		F2E34DE129C74003DCC9F6A2 /* Pods-AWSAPICategoryHostAppWithIAM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAPICategoryHostAppWithIAM.release.xcconfig"; path = "Target Support Files/Pods-AWSAPICategoryHostAppWithIAM/Pods-AWSAPICategoryHostAppWithIAM.release.xcconfig"; sourceTree = "<group>"; };
 		FA8EE784238632620097E4F1 /* AWSAPIPlugin+Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAPIPlugin+Log.swift"; sourceTree = "<group>"; };
 		FA9554DF238B6C0B00D42A43 /* APICategoryPluginConcurrencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICategoryPluginConcurrencyTests.swift; sourceTree = "<group>"; };
-		FA97F5522386CCF500EE9EFE /* AnyModelIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyModelIntegrationTests.swift; sourceTree = "<group>"; };
 		FC6404420A9C03FAB55FA8B3 /* Pods-AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests/Pods-AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -619,7 +617,6 @@
 		217856702380C73600A30D19 /* AWSAPICategoryPluginFunctionalTests */ = {
 			isa = PBXGroup;
 			children = (
-				FA97F5522386CCF500EE9EFE /* AnyModelIntegrationTests.swift */,
 				FA9554DF238B6C0B00D42A43 /* APICategoryPluginConcurrencyTests.swift */,
 				21598CED23A008F600529F29 /* BlogPostCommentGraphQLWithAPIKey */,
 				21598CEC23A008DB00529F29 /* GraphQLModelBased */,
@@ -1960,7 +1957,6 @@
 				FAC5F9B1238B70EE00F70F02 /* APICategoryPluginConcurrencyTests.swift in Sources */,
 				2178569A2380D1E000A30D19 /* BlogPostCommentGraphQLWithAPIKeyTests.swift in Sources */,
 				216201E323920A6200AB2E10 /* GraphQLSyncBasedTests.swift in Sources */,
-				FA97F5532386CCF500EE9EFE /* AnyModelIntegrationTests.swift in Sources */,
 				217856C22383339D00A30D19 /* GraphQLModelBasedTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

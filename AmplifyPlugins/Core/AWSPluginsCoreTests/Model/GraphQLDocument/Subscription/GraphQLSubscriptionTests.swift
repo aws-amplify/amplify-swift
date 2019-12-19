@@ -51,7 +51,6 @@ class GraphQLSubscriptionTests: XCTestCase {
         }
         """
         XCTAssertEqual(document.name, "onCreatePost")
-        XCTAssertEqual(document.decodePath, "onCreatePost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.variables.count, 0)
 
@@ -94,7 +93,6 @@ class GraphQLSubscriptionTests: XCTestCase {
         }
         """
         XCTAssertEqual(document.name, "onCreateComment")
-        XCTAssertEqual(document.decodePath, "onCreateComment")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.variables.count, 0)
     }
@@ -126,7 +124,6 @@ class GraphQLSubscriptionTests: XCTestCase {
         }
         """
         XCTAssertEqual(document.name, "onUpdatePost")
-        XCTAssertEqual(document.decodePath, "onUpdatePost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.variables.count, 0)
     }
@@ -158,7 +155,6 @@ class GraphQLSubscriptionTests: XCTestCase {
         }
         """
         XCTAssertEqual(document.name, "onDeletePost")
-        XCTAssertEqual(document.decodePath, "onDeletePost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.variables.count, 0)
     }

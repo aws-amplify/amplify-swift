@@ -58,7 +58,6 @@ class GraphQLListQueryTests: XCTestCase {
         }
         """
         XCTAssertEqual(document.name, "listPosts")
-        XCTAssertEqual(document.decodePath, "listPosts.items")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertNotNil(document.variables)
         XCTAssertNotNil(document.variables["limit"])

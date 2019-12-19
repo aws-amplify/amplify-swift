@@ -30,10 +30,6 @@ public struct GraphQLGetQuery: GraphQLDocument {
         return "get" + modelType.schema.graphQLName
     }
 
-    public var decodePath: String {
-        return name
-    }
-
     public var hasSyncableModels: Bool {
         return syncEnabled
     }

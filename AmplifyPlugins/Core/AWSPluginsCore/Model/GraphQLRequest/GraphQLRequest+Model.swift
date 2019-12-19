@@ -24,12 +24,28 @@ extension GraphQLRequest {
     ///
     /// - seealso: `GraphQLMutation`, `GraphQLMutationType`
     public static func mutation<M: Model>(of model: M,
+                                          where predicate: QueryPredicate? = nil,
                                           type: GraphQLMutationType) -> GraphQLRequest<M> {
-        let document = GraphQLMutation(of: model, type: type)
-        return GraphQLRequest<M>(document: document.stringValue,
-                                 variables: document.variables,
-                                 responseType: M.self,
-                                 decodePath: document.decodePath)
+        switch type {
+        case .create:
+            let document = GraphQLCreateMutation(of: model, where: predicate)
+            return GraphQLRequest<M>(document: document.stringValue,
+                                     variables: document.variables,
+                                     responseType: M.self,
+                                     decodePath: document.name)
+        case .update:
+            let document = GraphQLUpdateMutation(of: model, where: predicate)
+            return GraphQLRequest<M>(document: document.stringValue,
+                                     variables: document.variables,
+                                     responseType: M.self,
+                                     decodePath: document.name)
+        case .delete:
+            let document = GraphQLDeleteMutation(of: model, where: predicate)
+            return GraphQLRequest<M>(document: document.stringValue,
+                                     variables: document.variables,
+                                     responseType: M.self,
+                                     decodePath: document.name)
+        }
     }
 
     /// Creates a `GraphQLRequest` that represents a query that expects a single value as a result.
@@ -48,7 +64,7 @@ extension GraphQLRequest {
         return GraphQLRequest<M?>(document: document.stringValue,
                                   variables: document.variables,
                                   responseType: M?.self,
-                                  decodePath: document.decodePath)
+                                  decodePath: document.name)
     }
 
     /// Creates a `GraphQLRequest` that represents a query that expects multiple values as a result.
@@ -64,10 +80,11 @@ extension GraphQLRequest {
     public static func query<M: Model>(from modelType: M.Type,
                                        where predicate: QueryPredicate? = nil) -> GraphQLRequest<[M]> {
         let document = GraphQLListQuery(from: modelType, predicate: predicate)
+        // TODO: decodePath should just be document.name and return `GraphQLRequest<GraphQLListResponse<M>>`
         return GraphQLRequest<[M]>(document: document.stringValue,
                                    variables: document.variables,
-                                   responseType: [M].self,
-                                   decodePath: document.decodePath)
+                                   responseType: [M].self, // TODO: should be `GraphQLListResponse<M>`
+                                   decodePath: document.name + ".items")
     }
 
     /// Creates a `GraphQLRequest` that represents a subscription of a given `type` for a `model` type.
@@ -84,7 +101,7 @@ extension GraphQLRequest {
         let document = GraphQLSubscription(of: modelType, type: type)
         return GraphQLRequest<M>(document: document.stringValue,
                                  responseType: modelType,
-                                 decodePath: document.decodePath)
+                                 decodePath: document.name)
     }
 
 }

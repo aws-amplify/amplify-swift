@@ -43,6 +43,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     }
 
     func mutate<M: Model>(of model: M,
+                          where predicate: QueryPredicate? = nil,
                           type: GraphQLMutationType,
                           listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M> {
         notify("mutate(of:\(model.modelName)-\(model.id),type:\(type),listener:)")
@@ -54,22 +55,6 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
                                                  responseType: M.self,
                                                  options: options)
         let operation = MockGraphQLOperation(request: request, responseType: M.self)
-        return operation
-    }
-
-    func mutate(ofAnyModel anyModel: AnyModel,
-                type: GraphQLMutationType,
-                listener: GraphQLOperation<AnyModel>.EventListener?) -> GraphQLOperation<AnyModel> {
-        notify("mutate(ofAnyModel:\(anyModel.modelName)-\(anyModel.id),type:\(type),listener:)")
-
-        let options = GraphQLOperationRequest<AnyModel>.Options()
-        let request = GraphQLOperationRequest<AnyModel>(apiName: nil,
-                                                        operationType: .subscription,
-                                                        document: "",
-                                                        variables: nil,
-                                                        responseType: AnyModel.self,
-                                                        options: options)
-        let operation = MockGraphQLOperation(request: request, responseType: AnyModel.self)
         return operation
     }
 
@@ -87,22 +72,6 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
                                                  options: options)
         let operation = MockSubscriptionGraphQLOperation(request: request, responseType: M.self)
         return operation
-    }
-
-    func subscribe(toAnyModelType modelType: Model.Type,
-                   subscriptionType: GraphQLSubscriptionType,
-                   listener: GraphQLSubscriptionOperation<AnyModel>.EventListener?)
-        -> GraphQLSubscriptionOperation<AnyModel> {
-            notify("subscribe(toAnyModelType:\(modelType),subscriptionType:\(subscriptionType),listener:)")
-            let options = GraphQLOperationRequest<AnyModel>.Options()
-            let request = GraphQLOperationRequest<AnyModel>(apiName: nil,
-                                                            operationType: .subscription,
-                                                            document: "",
-                                                            variables: nil,
-                                                            responseType: AnyModel.self,
-                                                            options: options)
-            let operation = MockSubscriptionGraphQLOperation(request: request, responseType: request.responseType)
-            return operation
     }
 
     // MARK: - Request-based GraphQL methods

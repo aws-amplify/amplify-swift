@@ -12,7 +12,7 @@ public extension AWSAPIPlugin {
     func query<M: Model>(from modelType: M.Type,
                          byId id: String,
                          listener: GraphQLOperation<M?>.EventListener?) -> GraphQLOperation<M?> {
-        let request = GraphQLRequest<M>.query(from: modelType, byId: id)
+        let request = GraphQLRequest<M?>.query(from: modelType, byId: id)
         return query(request: request, listener: listener)
     }
 
@@ -24,16 +24,10 @@ public extension AWSAPIPlugin {
     }
 
     func mutate<M: Model>(of model: M,
+                          where predicate: QueryPredicate? = nil,
                           type: GraphQLMutationType,
                           listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M> {
-        let request = GraphQLRequest<M>.mutation(of: model, type: type)
-        return mutate(request: request, listener: listener)
-    }
-
-    func mutate(ofAnyModel anyModel: AnyModel,
-                type: GraphQLMutationType,
-                listener: GraphQLOperation<AnyModel>.EventListener?) -> GraphQLOperation<AnyModel> {
-        let request = GraphQLRequest<AnyModel>.mutation(of: anyModel, type: type)
+        let request = GraphQLRequest<M>.mutation(of: model, where: predicate, type: type)
         return mutate(request: request, listener: listener)
     }
 

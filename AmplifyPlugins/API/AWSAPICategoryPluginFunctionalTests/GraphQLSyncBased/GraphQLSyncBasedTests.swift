@@ -62,11 +62,11 @@ class GraphQLSyncBasedTests: XCTestCase {
 
         let completeInvoked = expectation(description: "request completed")
         var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
-        let document = GraphQLSyncMutation(of: modifiedPost, type: .update, version: 1)
+        let document = GraphQLUpdateMutation(of: modifiedPost, syncEnabledVersion: 1)
         let request = GraphQLRequest(document: document.stringValue,
                                      variables: document.variables,
                                      responseType: MutationSync<AnyModel>.self,
-                                     decodePath: document.decodePath)
+                                     decodePath: document.name)
 
         _ = Amplify.API.mutate(request: request) { event in
             defer {
@@ -136,7 +136,7 @@ class GraphQLSyncBasedTests: XCTestCase {
         let request = GraphQLRequest(document: document.stringValue,
                                      variables: document.variables,
                                      responseType: PaginatedList<AnyModel>.self,
-                                     decodePath: document.decodePath)
+                                     decodePath: document.name)
 
         _ = Amplify.API.query(request: request) { event in
             defer {
@@ -203,7 +203,7 @@ class GraphQLSyncBasedTests: XCTestCase {
         let request = GraphQLRequest(document: document.stringValue,
                                      variables: document.variables,
                                      responseType: MutationSync<AnyModel>.self,
-                                     decodePath: document.decodePath)
+                                     decodePath: document.name)
         let operation = Amplify.API.subscribe(request: request) { event in
             switch event {
             case .inProcess(let graphQLResponse):
@@ -261,11 +261,11 @@ class GraphQLSyncBasedTests: XCTestCase {
         var result: MutationSync<AmplifyTestCommon.Post>?
         let completeInvoked = expectation(description: "request completed")
 
-        let document = GraphQLSyncMutation(of: post, type: .create)
+        let document = GraphQLCreateMutation(of: post, syncEnabled: true)
         let request = GraphQLRequest(document: document.stringValue,
                                      variables: document.variables,
                                      responseType: MutationSync<AmplifyTestCommon.Post>.self,
-                                     decodePath: document.decodePath)
+                                     decodePath: document.name)
         _ = Amplify.API.mutate(request: request, listener: { event in
             switch event {
             case .completed(let data):

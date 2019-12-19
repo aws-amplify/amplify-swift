@@ -92,10 +92,13 @@ class SyncMutationToCloudOperation: Operation {
     func createAPIRequest(mutationType: GraphQLMutationType) -> GraphQLRequest<MutationSync<AnyModel>>? {
         let request: GraphQLRequest<MutationSync<AnyModel>>
         do {
-            if mutationType == .delete {
+            switch mutationType {
+            case .create:
+                request = try createRequest(for: mutationEvent)
+            case .update:
+                request = try updateRequest(for: mutationEvent)
+            case .delete:
                 request = try deleteRequest(for: mutationEvent)
-            } else {
-                request = try createOrUpdateRequest(for: mutationEvent, mutationType: mutationType)
             }
         } catch {
             let apiError = APIError.unknown("Couldn't decode model", "", error)
@@ -122,27 +125,41 @@ class SyncMutationToCloudOperation: Operation {
 
     private func deleteRequest(for mutationEvent: MutationEvent)
         throws -> GraphQLRequest<MutationSync<AnyModel>> {
-            let document = try GraphQLDeleteSyncMutation(of: mutationEvent.modelName,
-                                                         id: mutationEvent.modelId,
-                                                         version: mutationEvent.version)
+            let document = GraphQLDeleteMutation(of: mutationEvent.modelName,
+                                                 id: mutationEvent.modelId,
+                                                 syncEnabledVersion: mutationEvent.version)
+
             let request = GraphQLRequest(document: document.stringValue,
                                          variables: document.variables,
                                          responseType: MutationSync<AnyModel>.self,
-                                         decodePath: document.decodePath)
+                                         decodePath: document.name)
             return request
     }
 
-    private func createOrUpdateRequest(for mutationEvent: MutationEvent, mutationType: GraphQLMutationType)
-        throws -> GraphQLRequest<MutationSync<AnyModel>> {
-            let model = try mutationEvent.decodeModel()
-            let document = GraphQLSyncMutation(of: model,
-                                               type: mutationType,
-                                               version: mutationEvent.version)
-            let request = GraphQLRequest(document: document.stringValue,
-                                         variables: document.variables,
-                                         responseType: MutationSync<AnyModel>.self,
-                                         decodePath: document.decodePath)
-            return request
+    private func createRequest(for mutationEvent: MutationEvent) throws -> GraphQLRequest<MutationSync<AnyModel>> {
+        let model = try mutationEvent.decodeModel()
+
+        let document = GraphQLCreateMutation(of: model,
+                                             syncEnabledVersion: mutationEvent.version)
+
+        let request = GraphQLRequest(document: document.stringValue,
+                                     variables: document.variables,
+                                     responseType: MutationSync<AnyModel>.self,
+                                     decodePath: document.name)
+        return request
+    }
+
+    private func updateRequest(for mutationEvent: MutationEvent) throws -> GraphQLRequest<MutationSync<AnyModel>> {
+        let model = try mutationEvent.decodeModel()
+
+        let document = GraphQLUpdateMutation(of: model,
+                                             syncEnabledVersion: mutationEvent.version)
+
+        let request = GraphQLRequest(document: document.stringValue,
+                                     variables: document.variables,
+                                     responseType: MutationSync<AnyModel>.self,
+                                     decodePath: document.name)
+        return request
     }
 
     private func validateResponseFromCloud(asyncEvent: AsyncEvent<Void,

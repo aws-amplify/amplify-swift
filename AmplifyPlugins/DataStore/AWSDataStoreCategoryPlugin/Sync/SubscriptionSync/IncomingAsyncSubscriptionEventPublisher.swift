@@ -84,7 +84,7 @@ final class IncomingAsyncSubscriptionEventPublisher {
             let request = GraphQLRequest(document: document.stringValue,
                                          variables: document.variables,
                                          responseType: Payload.self,
-                                         decodePath: document.decodePath)
+                                         decodePath: document.name)
 
             let operation = api.subscribe(request: request, listener: listener)
             return operation

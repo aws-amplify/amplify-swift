@@ -22,9 +22,10 @@ extension AmplifyAPICategory: APICategoryGraphQLBehavior {
     }
 
     public func mutate<M: Model>(of model: M,
+                                 where predicate: QueryPredicate? = nil,
                                  type: GraphQLMutationType,
                                  listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M> {
-        plugin.mutate(of: model, type: type, listener: listener)
+        plugin.mutate(of: model, where: predicate, type: type, listener: listener)
     }
 
     public func subscribe<M: Model>(from modelType: M.Type,
@@ -51,20 +52,4 @@ extension AmplifyAPICategory: APICategoryGraphQLBehavior {
         -> GraphQLSubscriptionOperation<R> {
             plugin.subscribe(request: request, listener: listener)
     }
-
-    // MARK: - GraphQL operations without a specified type
-
-    public func mutate(ofAnyModel anyModel: AnyModel,
-                       type: GraphQLMutationType,
-                       listener: GraphQLOperation<AnyModel>.EventListener?) -> GraphQLOperation<AnyModel> {
-        plugin.mutate(ofAnyModel: anyModel, type: type, listener: listener)
-    }
-
-    public func subscribe(toAnyModelType modelType: Model.Type,
-                          subscriptionType: GraphQLSubscriptionType,
-                          listener: GraphQLSubscriptionOperation<AnyModel>.EventListener?)
-        -> GraphQLSubscriptionOperation<AnyModel> {
-            plugin.subscribe(toAnyModelType: modelType, subscriptionType: subscriptionType, listener: listener)
-    }
-
 }

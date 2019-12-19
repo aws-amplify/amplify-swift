@@ -34,10 +34,6 @@ public class GraphQLSyncQuery: GraphQLListQuery {
         return "sync" + modelName
     }
 
-    public override var decodePath: String {
-        return name
-    }
-
     public override var hasSyncableModels: Bool {
         true
     }

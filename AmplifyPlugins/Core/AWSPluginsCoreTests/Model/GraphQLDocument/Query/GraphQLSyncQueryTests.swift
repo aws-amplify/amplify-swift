@@ -62,7 +62,7 @@ class GraphQLSyncQueryTests: XCTestCase {
         }
         """
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.decodePath, "syncPosts")
+        XCTAssertEqual(document.name, "syncPosts")
         XCTAssertNotNil(document.variables)
         XCTAssertNotNil(document.variables["limit"])
         XCTAssertEqual(document.variables["limit"] as? Int, 100)

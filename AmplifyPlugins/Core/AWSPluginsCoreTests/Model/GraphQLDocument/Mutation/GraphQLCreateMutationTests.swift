@@ -6,11 +6,12 @@
 //
 
 import XCTest
+
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 
-class GraphQLSyncMutationTests: XCTestCase {
+class GraphQLCreateMutationTests: XCTestCase {
 
     override func setUp() {
         ModelRegistry.register(modelType: Comment.self)
@@ -33,10 +34,10 @@ class GraphQLSyncMutationTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testCreateGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content", createdAt: Date())
-        let document = GraphQLSyncMutation(of: post, type: .create, version: 5)
+        let document = GraphQLCreateMutation(of: post)
         let expectedQueryDocument = """
-        mutation CreatePost($input: CreatePostInput!) {
-          createPost(input: $input) {
+        mutation CreatePost($input: CreatePostInput!, $condition: ModelPostConditionInput) {
+          createPost(input: $input, condition: $condition) {
             id
             content
             createdAt
@@ -45,14 +46,10 @@ class GraphQLSyncMutationTests: XCTestCase {
             title
             updatedAt
             __typename
-            _version
-            _deleted
-            _lastChangedAt
           }
         }
         """
         XCTAssertEqual(document.name, "createPost")
-        XCTAssertEqual(document.decodePath, "createPost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "createPost")
         XCTAssertNotNil(document.variables["input"])
@@ -62,7 +59,6 @@ class GraphQLSyncMutationTests: XCTestCase {
         }
         XCTAssert(input["title"] as? String == post.title)
         XCTAssert(input["content"] as? String == post.content)
-        XCTAssert(input["_version"] as? Int == 5)
     }
 
     /// - Given: a `Model` instance
@@ -78,10 +74,96 @@ class GraphQLSyncMutationTests: XCTestCase {
     func testCreateGraphQLMutationFromModelWithAssociation() {
         let post = Post(title: "title", content: "content", createdAt: Date())
         let comment = Comment(content: "comment", createdAt: Date(), post: post)
-        let document = GraphQLSyncMutation(of: comment, type: .create, version: 5)
+        let document = GraphQLCreateMutation(of: comment)
         let expectedQueryDocument = """
-        mutation CreateComment($input: CreateCommentInput!) {
-          createComment(input: $input) {
+        mutation CreateComment($input: CreateCommentInput!, $condition: ModelCommentConditionInput) {
+          createComment(input: $input, condition: $condition) {
+            id
+            content
+            createdAt
+            post {
+              id
+              content
+              createdAt
+              draft
+              rating
+              title
+              updatedAt
+              __typename
+            }
+            __typename
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "createComment")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertEqual(document.name, "createComment")
+        guard let input = document.variables["input"] as? GraphQLInput else {
+            XCTFail("Variables should contain a valid input")
+            return
+        }
+        XCTAssertEqual(input["commentPostId"] as? String, post.id)
+    }
+
+    /// - Given: a `Model` instance
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - the model has no required associations
+    ///   - the mutation is of type `.create`
+    /// - Then:
+    ///   - check if the generated GraphQL document is a valid mutation:
+    ///     - it is named `createPost`
+    ///     - it contains an `input` of type `CreatePostInput`
+    ///     - it has a list of fields with no nested models
+    func testCreateGraphQLMutationFromSimpleModelWithSyncEnabled() {
+        let post = Post(title: "title", content: "content", createdAt: Date())
+        let document = GraphQLCreateMutation(of: post, syncEnabled: true)
+        let expectedQueryDocument = """
+        mutation CreatePost($input: CreatePostInput!, $condition: ModelPostConditionInput) {
+          createPost(input: $input, condition: $condition) {
+            id
+            content
+            createdAt
+            draft
+            rating
+            title
+            updatedAt
+            __typename
+            _version
+            _deleted
+            _lastChangedAt
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "createPost")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertEqual(document.name, "createPost")
+        XCTAssertNotNil(document.variables["input"])
+        guard let input = document.variables["input"] as? [String: Any] else {
+            XCTFail("The document variables property doesn't contain a valid input")
+            return
+        }
+        XCTAssert(input["title"] as? String == post.title)
+        XCTAssert(input["content"] as? String == post.content)
+    }
+
+    /// - Given: a `Model` instance
+    /// - When:
+    ///   - the model is of type `Comment`
+    ///   - the model has required associations
+    ///   - the mutation is of type `.create`
+    /// - Then:
+    ///   - check if the generated GraphQL document is a valid mutation:
+    ///     - it is named `createComment`
+    ///     - it contains an `input` of type `CreateCommentInput`
+    ///     - it has a list of fields with a `postId`
+    func testCreateGraphQLMutationFromModelWithAssociationWithSyncEnabled() {
+        let post = Post(title: "title", content: "content", createdAt: Date())
+        let comment = Comment(content: "comment", createdAt: Date(), post: post)
+        let document = GraphQLCreateMutation(of: comment, syncEnabled: true)
+        let expectedQueryDocument = """
+        mutation CreateComment($input: CreateCommentInput!, $condition: ModelCommentConditionInput) {
+          createComment(input: $input, condition: $condition) {
             id
             content
             createdAt
@@ -106,7 +188,6 @@ class GraphQLSyncMutationTests: XCTestCase {
         }
         """
         XCTAssertEqual(document.name, "createComment")
-        XCTAssertEqual(document.decodePath, "createComment")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "createComment")
         guard let input = document.variables["input"] as? GraphQLInput else {
@@ -114,93 +195,5 @@ class GraphQLSyncMutationTests: XCTestCase {
             return
         }
         XCTAssertEqual(input["commentPostId"] as? String, post.id)
-        XCTAssert(input["_version"] as? Int == 5)
-    }
-
-    /// - Given: a `Model` instance
-    /// - When:
-    ///   - the model is of type `Post`
-    ///   - the model has no required associations
-    ///   - the mutation is of type `.update`
-    /// - Then:
-    ///   - check if the generated GraphQL document is a valid mutation:
-    ///     - it is named `updatePost`
-    ///     - it contains an `input` of type `UpdatePostInput`
-    ///     - it has a list of fields with no nested models
-    func testUpdateGraphQLMutationFromSimpleModel() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
-        let document = GraphQLSyncMutation(of: post, type: .update, version: 5)
-        let expectedQueryDocument = """
-        mutation UpdatePost($input: UpdatePostInput!) {
-          updatePost(input: $input) {
-            id
-            content
-            createdAt
-            draft
-            rating
-            title
-            updatedAt
-            __typename
-            _version
-            _deleted
-            _lastChangedAt
-          }
-        }
-        """
-        XCTAssertEqual(document.name, "updatePost")
-        XCTAssertEqual(document.decodePath, "updatePost")
-        XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.name, "updatePost")
-        XCTAssertNotNil(document.variables["input"])
-        guard let input = document.variables["input"] as? [String: Any] else {
-            XCTFail("The document variables property doesn't contain a valid input")
-            return
-        }
-        XCTAssert(input["title"] as? String == post.title)
-        XCTAssert(input["content"] as? String == post.content)
-        XCTAssert(input["_version"] as? Int == 5)
-    }
-
-    /// - Given: a `Model` instance
-    /// - When:
-    ///   - the model is of type `Post`
-    ///   - the model has no required associations
-    ///   - the mutation is of type `.delete`
-    /// - Then:
-    ///   - check if the generated GraphQL document is a valid mutation:
-    ///     - it is named `deletePost`
-    ///     - it contains an `input` of type `ID!`
-    ///     - it has a list of fields with no nested models
-    func testDeleteGraphQLMutationFromSimpleModel() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
-        let document = GraphQLSyncMutation(of: post, type: .delete, version: 5)
-        let expectedQueryDocument = """
-        mutation DeletePost($input: DeletePostInput!) {
-          deletePost(input: $input) {
-            id
-            content
-            createdAt
-            draft
-            rating
-            title
-            updatedAt
-            __typename
-            _version
-            _deleted
-            _lastChangedAt
-          }
-        }
-        """
-        XCTAssertEqual(document.name, "deletePost")
-        XCTAssertEqual(document.decodePath, "deletePost")
-        XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.name, "deletePost")
-        XCTAssert(document.variables["input"] != nil)
-        guard let input = document.variables["input"] as? [String: Any] else {
-            XCTFail("Could not get object at `input`")
-            return
-        }
-        XCTAssert(input["id"] as? String == post.id)
-        XCTAssert(input["_version"] as? Int == 5)
     }
 }

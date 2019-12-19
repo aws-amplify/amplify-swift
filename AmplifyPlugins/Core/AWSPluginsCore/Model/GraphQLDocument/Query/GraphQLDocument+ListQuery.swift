@@ -36,10 +36,6 @@ public class GraphQLListQuery: GraphQLDocument {
         return "list" + modelType.schema.graphQLName + "s"
     }
 
-    public var decodePath: String {
-        return name + ".items"
-    }
-
     public var hasSyncableModels: Bool {
         return syncEnabled
     }

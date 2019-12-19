@@ -49,7 +49,6 @@ class GraphQLGetQueryTests: XCTestCase {
         }
         """
         XCTAssertEqual(document.name, "getPost")
-        XCTAssertEqual(document.decodePath, "getPost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.variables["id"] as? String, "id")
     }
@@ -93,7 +92,6 @@ class GraphQLGetQueryTests: XCTestCase {
         }
         """
         XCTAssertEqual(document.name, "getComment")
-        XCTAssertEqual(document.decodePath, "getComment")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.variables["id"] as? String, "id")
     }

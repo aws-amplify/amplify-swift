@@ -30,10 +30,6 @@ public struct GraphQLSubscription: GraphQLDocument {
         subscriptionType.rawValue + modelType.schema.graphQLName
     }
 
-    public var decodePath: String {
-        name
-    }
-
     public var hasSyncableModels: Bool {
         return syncEnabled
     }

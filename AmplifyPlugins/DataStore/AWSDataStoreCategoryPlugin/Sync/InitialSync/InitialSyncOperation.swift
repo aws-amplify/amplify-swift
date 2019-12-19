@@ -93,7 +93,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         let request = GraphQLRequest(document: document.stringValue,
                                      variables: document.variables,
                                      responseType: SyncQueryResult.self,
-                                     decodePath: document.decodePath)
+                                     decodePath: document.name)
 
         _ = api.query(request: request) { asyncEvent in
             switch asyncEvent {
