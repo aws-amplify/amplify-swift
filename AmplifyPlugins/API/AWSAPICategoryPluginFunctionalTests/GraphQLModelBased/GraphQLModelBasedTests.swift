@@ -308,8 +308,29 @@ class GraphQLModelBasedTests: XCTestCase {
                                content: createdPost.content,
                                createdAt: createdPost.createdAt)
         let post = Post.keys
-        let predicate = post.content == "test"
-        let completeInvoked = expectation(description: "request completed")
+        var predicate = post.title == "incorrectPreviousTitle"
+        let completedWithErrorInvoked = expectation(description: "request completed with error")
+        _ = Amplify.API.mutate(of: updatedPost, where: predicate, type: .update, listener: { event in
+            switch event {
+            case .completed(let data):
+                switch data {
+                case .success(let post):
+                    XCTFail("Should have been conditional request failed error")
+                case .failure(let error):
+                    XCTAssertTrue(error.errorDescription.contains("Status Code: 400"))
+                }
+                completedWithErrorInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("\(error)")
+
+            default:
+                XCTFail("Could not get data back")
+            }
+        })
+        wait(for: [completedWithErrorInvoked], timeout: TestCommonConstants.networkTimeout)
+
+        let completedWithSuccessInvoked = expectation(description: "request completed with success")
+        predicate = post.title == title
         _ = Amplify.API.mutate(of: updatedPost, where: predicate, type: .update, listener: { event in
             switch event {
             case .completed(let data):
@@ -317,17 +338,17 @@ class GraphQLModelBasedTests: XCTestCase {
                 case .success(let post):
                     XCTAssertEqual(post.title, updatedTitle)
                 case .failure(let error):
-                    print(error)
-                    XCTFai
+                    XCTFail("\(error)")
                 }
-                completeInvoked.fulfill()
+                completedWithSuccessInvoked.fulfill()
             case .failed(let error):
-                print(error)
+                XCTFail("\(error)")
+
             default:
                 XCTFail("Could not get data back")
             }
         })
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [completedWithSuccessInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testOnCreatePostSubscriptionWithModel() {
