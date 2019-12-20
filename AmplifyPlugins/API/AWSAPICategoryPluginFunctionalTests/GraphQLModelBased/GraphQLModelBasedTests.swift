@@ -318,8 +318,8 @@ class GraphQLModelBasedTests: XCTestCase {
                     XCTFail("Should have been conditional request failed error")
                 case .failure(let error):
                     XCTAssertTrue(error.errorDescription.contains("Status Code: 400"))
+                    completedWithErrorInvoked.fulfill()
                 }
-                completedWithErrorInvoked.fulfill()
             case .failed(let error):
                 XCTFail("\(error)")
 
@@ -337,10 +337,10 @@ class GraphQLModelBasedTests: XCTestCase {
                 switch data {
                 case .success(let post):
                     XCTAssertEqual(post.title, updatedTitle)
+                    completedWithSuccessInvoked.fulfill()
                 case .failure(let error):
                     XCTFail("\(error)")
                 }
-                completedWithSuccessInvoked.fulfill()
             case .failed(let error):
                 XCTFail("\(error)")
 

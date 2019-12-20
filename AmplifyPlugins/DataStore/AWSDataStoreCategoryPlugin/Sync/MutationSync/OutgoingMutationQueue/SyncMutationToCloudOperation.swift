@@ -140,7 +140,7 @@ class SyncMutationToCloudOperation: Operation {
         let model = try mutationEvent.decodeModel()
 
         let document = GraphQLCreateMutation(of: model,
-                                             syncEnabledVersion: mutationEvent.version)
+                                             syncEnabled: true)
 
         let request = GraphQLRequest(document: document.stringValue,
                                      variables: document.variables,
