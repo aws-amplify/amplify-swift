@@ -11,6 +11,7 @@ import AWSTranslate
 import AWSTextract
 import AWSComprehend
 import AWSPolly
+import AWSPluginsCore
 
 class AWSPredictionsService {
 
@@ -22,44 +23,37 @@ class AWSPredictionsService {
     var awsComprehend: AWSComprehendBehavior!
     var awsTextract: AWSTextractBehavior!
     var predictionsConfig: PredictionsPluginConfiguration!
-    var rekognitionWordLimit = 50
+    let rekognitionWordLimit = 50
 
-    convenience init(config: PredictionsPluginConfiguration,
+    convenience init(configuration: PredictionsPluginConfiguration,
                      cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
                      identifier: String) throws {
 
-        guard let identifyServiceConfiguration = AWSPredictionsService.makeIdentifyAWSServiceConfiguration(
-            fromConfig: config,
-            cognitoCredentialsProvider: cognitoCredentialsProvider),
-            let convertServiceConfiguration = AWSPredictionsService.makeConvertAWSServiceConfiguration(
-                fromConfig: config,
-                cognitoCredentialsProvider: cognitoCredentialsProvider),
-            let interpretServiceConfiguration = AWSPredictionsService.makeInterpretAWSServiceConfiguration(
-                fromConfig: config,
-                cognitoCredentialsProvider: cognitoCredentialsProvider) else {
-                    throw PluginError.pluginConfigurationError(
-                        PluginErrorMessage.serviceConfigurationInitializationError.errorDescription,
-                        PluginErrorMessage.serviceConfigurationInitializationError.recoverySuggestion)
-        }
+        let interpretServiceConfiguration = AmplifyAWSServiceConfiguration(region: configuration.interpret.region,
+                                                                           credentialsProvider: cognitoCredentialsProvider)
+        let identifyServiceConfiguration = AmplifyAWSServiceConfiguration(region: configuration.identify.region,
+                                                                          credentialsProvider: cognitoCredentialsProvider)
+        let convertServiceConfiguration =  AmplifyAWSServiceConfiguration(region: configuration.convert.region,
+                                                                          credentialsProvider: cognitoCredentialsProvider)
 
         let awsTranslateAdapter = AWSPredictionsService.makeAWSTranslate(
-            convertServiceConfiguration: convertServiceConfiguration,
+            serviceConfiguration: convertServiceConfiguration,
             identifier: identifier)
 
         let awsRekognitionAdapter = AWSPredictionsService.makeRekognition(
-            identifyServiceConfiguration: identifyServiceConfiguration,
+            serviceConfiguration: identifyServiceConfiguration,
             identifier: identifier)
 
         let awsTextractAdapter = AWSPredictionsService.makeTextract(
-            identifyServiceConfiguration: identifyServiceConfiguration,
+            serviceConfiguration: identifyServiceConfiguration,
             identifier: identifier)
 
         let awsComprehendAdapter = AWSPredictionsService.makeComprehend(
-            interpretServiceConfiguration: interpretServiceConfiguration,
+            serviceConfiguration: interpretServiceConfiguration,
             identifier: identifier)
 
         let awsPollyAdapter = AWSPredictionsService.makePolly(
-            convertServiceConfiguration: convertServiceConfiguration,
+            serviceConfiguration: convertServiceConfiguration,
             identifier: identifier)
 
         self.init(identifier: identifier,
@@ -68,7 +62,7 @@ class AWSPredictionsService {
                   awsTextract: awsTextractAdapter,
                   awsComprehend: awsComprehendAdapter,
                   awsPolly: awsPollyAdapter,
-                  config: config)
+                  configuration: configuration)
 
     }
 
@@ -78,7 +72,7 @@ class AWSPredictionsService {
          awsTextract: AWSTextractBehavior,
          awsComprehend: AWSComprehendBehavior,
          awsPolly: AWSPollyBehavior,
-         config: PredictionsPluginConfiguration) {
+         configuration: PredictionsPluginConfiguration) {
 
         self.identifier = identifier
         self.awsTranslate = awsTranslate
@@ -86,7 +80,7 @@ class AWSPredictionsService {
         self.awsTextract = awsTextract
         self.awsComprehend = awsComprehend
         self.awsPolly = awsPolly
-        self.predictionsConfig = config
+        self.predictionsConfig = configuration
 
     }
 
@@ -126,74 +120,34 @@ class AWSPredictionsService {
             return awsTextract.getTextract()
         }
     }
-
-    private static func makeConvertAWSServiceConfiguration(
-        fromConfig config: PredictionsPluginConfiguration,
-        cognitoCredentialsProvider: AWSCognitoCredentialsProvider) -> AWSServiceConfiguration? {
-        let convertServiceConfigurationOptional = AWSServiceConfiguration(
-            region: config.convert.region,
-            credentialsProvider: cognitoCredentialsProvider)
-
-        return convertServiceConfigurationOptional
-    }
-
-    private static func makeIdentifyAWSServiceConfiguration(
-        fromConfig config: PredictionsPluginConfiguration,
-        cognitoCredentialsProvider: AWSCognitoCredentialsProvider) -> AWSServiceConfiguration? {
-        let identifyServiceConfigurationOptional = AWSServiceConfiguration(
-            region: config.identify.region,
-            credentialsProvider: cognitoCredentialsProvider)
-
-        return identifyServiceConfigurationOptional
-    }
-
-    private static func makeInterpretAWSServiceConfiguration(
-        fromConfig config: PredictionsPluginConfiguration,
-        cognitoCredentialsProvider: AWSCognitoCredentialsProvider) -> AWSServiceConfiguration? {
-        let interpretServiceConfigurationOptional = AWSServiceConfiguration(
-            region: config.interpret.region,
-            credentialsProvider: cognitoCredentialsProvider)
-
-        return interpretServiceConfigurationOptional
-    }
-
-    private static func makeAWSTranslate(
-        convertServiceConfiguration: AWSServiceConfiguration,
-        identifier: String) -> AWSTranslateAdapter {
-
-        AWSTranslate.register(with: convertServiceConfiguration, forKey: identifier)
+    private static func makeAWSTranslate(serviceConfiguration: AmplifyAWSServiceConfiguration,
+                                         identifier: String) -> AWSTranslateAdapter {
+        AWSTranslate.register(with: serviceConfiguration, forKey: identifier)
         let awsTranslate = AWSTranslate(forKey: identifier)
         return AWSTranslateAdapter(awsTranslate)
     }
 
-    private static func makeRekognition(
-        identifyServiceConfiguration: AWSServiceConfiguration,
-        identifier: String) -> AWSRekognitionAdapter {
-        AWSRekognition.register(with: identifyServiceConfiguration, forKey: identifier)
+    private static func makeRekognition(serviceConfiguration: AmplifyAWSServiceConfiguration,
+                                        identifier: String) -> AWSRekognitionAdapter {
+        AWSRekognition.register(with: serviceConfiguration, forKey: identifier)
         let awsRekognition = AWSRekognition(forKey: identifier)
         return AWSRekognitionAdapter(awsRekognition)
     }
-
-    private static func makeTextract(
-        identifyServiceConfiguration: AWSServiceConfiguration,
-        identifier: String) -> AWSTextractAdapter {
-        AWSTextract.register(with: identifyServiceConfiguration, forKey: identifier)
+    private static func makeTextract(serviceConfiguration: AmplifyAWSServiceConfiguration,
+                                     identifier: String) -> AWSTextractAdapter {
+        AWSTextract.register(with: serviceConfiguration, forKey: identifier)
         let awsTextract = AWSTextract(forKey: identifier)
         return AWSTextractAdapter(awsTextract)
     }
-
-    private static func makePolly(
-        convertServiceConfiguration: AWSServiceConfiguration,
-        identifier: String) -> AWSPollyAdapter {
-        AWSPolly.register(with: convertServiceConfiguration, forKey: identifier)
+    private static func makePolly(serviceConfiguration: AmplifyAWSServiceConfiguration,
+                                  identifier: String) -> AWSPollyAdapter {
+        AWSPolly.register(with: serviceConfiguration, forKey: identifier)
         let awsPolly = AWSPolly(forKey: identifier)
         return AWSPollyAdapter(awsPolly)
     }
-
-    private static func makeComprehend(
-        interpretServiceConfiguration: AWSServiceConfiguration,
-        identifier: String) -> AWSComprehendAdapter {
-        AWSComprehend.register(with: interpretServiceConfiguration, forKey: identifier)
+    private static func makeComprehend(serviceConfiguration: AmplifyAWSServiceConfiguration,
+                                       identifier: String) -> AWSComprehendAdapter {
+        AWSComprehend.register(with: serviceConfiguration, forKey: identifier)
         let awsComprehend = AWSComprehend(forKey: identifier)
         return AWSComprehendAdapter(awsComprehend)
     }

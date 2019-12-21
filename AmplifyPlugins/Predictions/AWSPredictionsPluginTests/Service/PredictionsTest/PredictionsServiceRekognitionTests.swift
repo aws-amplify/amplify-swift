@@ -53,7 +53,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                                                        awsTextract: MockTextractBehavior(),
                                                        awsComprehend: MockComprehendBehavior(),
                                                        awsPolly: MockPollyBehavior(),
-                                                       config: mockConfiguration)
+                                                       configuration: mockConfiguration)
         } catch {
             print(error)
             XCTFail("Initialization of the text failed")

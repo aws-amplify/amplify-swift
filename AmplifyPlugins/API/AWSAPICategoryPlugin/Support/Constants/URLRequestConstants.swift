@@ -8,7 +8,7 @@
 import Foundation
 
 // TODO: remove this https://github.com/aws-amplify/amplify-ios/issues/75
-struct URLRequestContants {
+struct URLRequestConstants {
     static let appSyncServiceName = "appsync"
 
     struct Header {
@@ -20,9 +20,5 @@ struct URLRequestContants {
 
     struct ContentType {
         static let applicationJson = "application/json"
-    }
-
-    struct UserAgent {
-        static let amplify = "amplify-ios/0.9.0 Amplify"
     }
 }
