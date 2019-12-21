@@ -9,6 +9,7 @@ import Foundation
 import AWSS3
 import Amplify
 import AWSMobileClient
+import AWSPluginsCore
 
 class AWSS3StorageService: AWSS3StorageServiceBehaviour {
 
@@ -22,14 +23,8 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour {
                      bucket: String,
                      cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
                      identifier: String) throws {
-        let serviceConfigurationOptional = AWSServiceConfiguration(region: region,
-                                                                   credentialsProvider: cognitoCredentialsProvider)
-
-        guard let serviceConfiguration = serviceConfigurationOptional else {
-            throw PluginError.pluginConfigurationError(
-                PluginErrorConstants.serviceConfigurationInitializationError.errorDescription,
-                PluginErrorConstants.serviceConfigurationInitializationError.recoverySuggestion)
-        }
+        let serviceConfiguration = AmplifyAWSServiceConfiguration(region: region,
+                                                                  credentialsProvider: cognitoCredentialsProvider)
 
         AWSS3TransferUtility.register(with: serviceConfiguration, forKey: identifier)
         AWSS3PreSignedURLBuilder.register(with: serviceConfiguration, forKey: identifier)

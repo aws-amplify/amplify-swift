@@ -21,7 +21,10 @@ struct APIKeyURLRequestInterceptor: URLRequestInterceptor {
         var modifiedRequest = request
         let apiKey = apiKeyProvider.getAPIKey()
         modifiedRequest.addValue(apiKey,
-                                 forHTTPHeaderField: URLRequestContants.Header.xApiKey)
+                                 forHTTPHeaderField: URLRequestConstants.Header.xApiKey)
+        modifiedRequest.setValue(AmplifyAWSServiceConfiguration.baseUserAgent(),
+                                 forHTTPHeaderField: URLRequestConstants.Header.userAgent)
+
         return modifiedRequest
     }
 

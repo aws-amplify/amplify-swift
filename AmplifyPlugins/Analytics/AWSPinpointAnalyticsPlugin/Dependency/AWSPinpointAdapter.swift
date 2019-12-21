@@ -9,6 +9,7 @@ import Foundation
 import Amplify
 import AWSPinpoint
 import AWSMobileClient
+import AWSPluginsCore
 
 /// Conforms to `AWSPinpointBehavior` by storing an instance of the `AWSPinpoint` to expose AWS Pinpoint functionality
 class AWSPinpointAdapter: AWSPinpointBehavior {
@@ -22,22 +23,10 @@ class AWSPinpointAdapter: AWSPinpointBehavior {
                      cognitoCredentialsProvider: AWSCognitoCredentialsProvider) throws {
 
         let pinpointConfiguration = AWSPinpointConfiguration(appId: pinpointAnalyticsAppId, launchOptions: nil)
-
-        guard let serviceConfiguration = AWSServiceConfiguration(region: pinpointAnalyticsRegion,
-                                                                 credentialsProvider: cognitoCredentialsProvider) else {
-            throw PluginError.pluginConfigurationError(
-                AnalyticsPluginErrorConstant.pinpointAnalyticsServiceConfigurationError.errorDescription,
-                AnalyticsPluginErrorConstant.pinpointAnalyticsServiceConfigurationError.recoverySuggestion)
-        }
-
-        guard let targetingServiceConfiguration =
-            AWSServiceConfiguration(region: pinpointTargetingRegion,
-                                    credentialsProvider: cognitoCredentialsProvider) else {
-
-            throw PluginError.pluginConfigurationError(
-                AnalyticsPluginErrorConstant.pinpointTargetingServiceConfigurationError.errorDescription,
-                AnalyticsPluginErrorConstant.pinpointTargetingServiceConfigurationError.recoverySuggestion)
-        }
+        let serviceConfiguration = AmplifyAWSServiceConfiguration(region: pinpointAnalyticsRegion,
+                                                                  credentialsProvider: cognitoCredentialsProvider)
+        let targetingServiceConfiguration = AmplifyAWSServiceConfiguration(region: pinpointTargetingRegion,
+                                                                           credentialsProvider: cognitoCredentialsProvider)
 
         pinpointConfiguration.serviceConfiguration = serviceConfiguration
         pinpointConfiguration.targetingServiceConfiguration = targetingServiceConfiguration

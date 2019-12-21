@@ -30,7 +30,7 @@ class PredictionsServiceTranslateTests: XCTestCase {
                                                        awsTextract: MockTextractBehavior(),
                                                        awsComprehend: MockComprehendBehavior(),
                                                        awsPolly: MockPollyBehavior(),
-                                                       config: mockConfiguration)
+                                                       configuration: mockConfiguration)
         } catch {
             XCTFail("Initialization of the text failed")
         }
@@ -122,7 +122,7 @@ class PredictionsServiceTranslateTests: XCTestCase {
                                             awsTextract: MockTextractBehavior(),
                                             awsComprehend: MockComprehendBehavior(),
                                             awsPolly: MockPollyBehavior(),
-                                            config: mockConfiguration)
+                                            configuration: mockConfiguration)
         } catch {
             XCTFail("Initialization of the text failed. \(error)")
         }
