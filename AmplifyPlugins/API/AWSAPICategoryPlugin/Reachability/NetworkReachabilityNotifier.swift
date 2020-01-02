@@ -10,10 +10,6 @@ import Foundation
 import Reachability
 import Combine
 
-struct ReachabilityUpdate {
-    let isOnline: Bool
-}
-
 @available(iOS 13.0, *)
 class NetworkReachabilityNotifier {
     private var reachability: NetworkReachabilityProviding?
