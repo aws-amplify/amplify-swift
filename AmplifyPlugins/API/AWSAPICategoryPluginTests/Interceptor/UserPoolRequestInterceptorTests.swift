@@ -7,7 +7,7 @@
 
 import XCTest
 
-class RESTRequestUtilsTests: XCTestCase {
+class UserPoolRequestInterceptorTests: XCTestCase {
     func testClassMustNotBeEmptyOrSwiftFormatWillCrash() {
         //TODO implement code
     }
