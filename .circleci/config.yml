@@ -133,12 +133,12 @@ jobs:
     description: << parameters.path >> unit test
     steps:
       - *restore_repo
-#      - restore_plugin_pods:
-#          prefix: << parameters.path >>
+      - restore_plugin_pods:
+          prefix: << parameters.path >>
       - pre_start_simulator
       - run: pod install
-#      - save_plugin_pods:
-#          prefix: << parameters.path >>
+      - save_plugin_pods:
+          prefix: << parameters.path >>
       - restore_gems
       - check_bundle
       - run:
