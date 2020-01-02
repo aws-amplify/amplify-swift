@@ -143,10 +143,10 @@ jobs:
       - check_bundle
       - run:
           name: Build << parameters.path >>
-          command: xcodebuild build-for-testing -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | xcpretty
+          command: xcodebuild build-for-testing -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}"
       - run:
           name: Test << parameters.path >>
-          command: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | xcpretty --simple --color --report junit
+          command: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}"
       - store_test_results:
           path: build/reports
   

@@ -985,7 +985,7 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
+			shellPath = "/bin/sh -x";
 			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AWSDataStoreCategoryPlugin\" --config \"${SRCROOT}/../../.swiftformat\"\n";
 		};
 		50B9D3566132A3E54BA4C2F8 /* [CP] Embed Pods Frameworks */ = {
@@ -1098,7 +1098,7 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
+			shellPath = "/bin/sh -x";
 			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AWSDataStoreCategoryPluginIntegrationTests\" --config \"${SRCROOT}/../../.swiftformat\"\n\n";
 		};
 		FA9EB2C6238894A800BAADBD /* SwiftLint */ = {
@@ -1134,7 +1134,7 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
+			shellPath = "/bin/sh -x";
 			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AWSDataStoreCategoryPluginTests\" --config \"${SRCROOT}/../../.swiftformat\"\n\n";
 		};
 		FA9EB2C8238894CB00BAADBD /* SwiftLint */ = {
