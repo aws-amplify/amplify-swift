@@ -29,19 +29,20 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
         guard let mutableRequest = (request as NSURLRequest).mutableCopy() as? NSMutableURLRequest else {
             throw APIError.unknown("Could not get mutable request", "")
         }
-
         mutableRequest.setValue(NSDate().aws_stringValue(AWSDateISO8601DateFormat2),
-                                forHTTPHeaderField: URLRequestContants.Header.xAmzDate)
-        mutableRequest.setValue(URLRequestContants.ContentType.applicationJson,
-                                forHTTPHeaderField: URLRequestContants.Header.contentType)
-        mutableRequest.setValue(URLRequestContants.UserAgent.amplify,
-                                forHTTPHeaderField: URLRequestContants.Header.userAgent)
+                                forHTTPHeaderField: URLRequestConstants.Header.xAmzDate)
+        mutableRequest.setValue(URLRequestConstants.ContentType.applicationJson,
+                                forHTTPHeaderField: URLRequestConstants.Header.contentType)
+        let serviceConfiguration = AmplifyAWSServiceConfiguration(region: region,
+                                                                  credentialsProvider: iamCredentialsProvider.getCredentialsProvider())
+        mutableRequest.setValue(serviceConfiguration.userAgent,
+                                forHTTPHeaderField: URLRequestConstants.Header.userAgent)
 
         let endpoint: AWSEndpoint
         switch endpointType {
         case .graphQL:
             endpoint = AWSEndpoint(region: region,
-                                   serviceName: URLRequestContants.appSyncServiceName,
+                                   serviceName: URLRequestConstants.appSyncServiceName,
                                    url: mutableRequest.url)
         case .rest:
             endpoint = AWSEndpoint(region: region,

@@ -147,6 +147,16 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
             return operation
     }
 
+    @available(iOS 13.0, *)
+    public func reachabilityPublisher(for apiName: String?) -> AnyPublisher<ReachabilityUpdate, Never>? {
+        return nil
+    }
+
+    @available(iOS 13.0, *)
+    public func reachabilityPublisher() -> AnyPublisher<ReachabilityUpdate, Never>? {
+        return nil
+    }
+
     // MARK: - REST methods
 
     func get(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {

@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
     s.name         = 'AWSPredictionsPlugin'
-    s.version      = '0.9.0'
+    s.version      = '0.10.0'
     s.summary      = 'Amazon Web Services Amplify for iOS.'
   
     s.description  = 'AWS Amplify for iOS provides a declarative library for application development using cloud services'
@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
     s.requires_arc = true
 
     AWS_SDK_VERSION = '~> 2.12.2'
-    AMPLIFY_VERSION = '0.9.0'
+    AMPLIFY_VERSION = '0.10.0'
     
     s.source_files = 'AmplifyPlugins/Predictions/AWSPredictionsPlugin/**/*.swift'
     s.dependency 'AWSComprehend', AWS_SDK_VERSION

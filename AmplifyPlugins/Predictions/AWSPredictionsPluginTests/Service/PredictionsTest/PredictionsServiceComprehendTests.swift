@@ -32,7 +32,7 @@ class PredictionsServiceComprehendTests: XCTestCase {
                                                        awsTextract: MockTextractBehavior(),
                                                        awsComprehend: mockComprehend,
                                                        awsPolly: MockPollyBehavior(),
-                                                       config: mockConfiguration)
+                                                       configuration: mockConfiguration)
         } catch {
             XCTFail("Initialization of the text failed")
         }

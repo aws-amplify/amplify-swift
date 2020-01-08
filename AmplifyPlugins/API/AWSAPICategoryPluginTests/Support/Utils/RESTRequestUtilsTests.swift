@@ -8,4 +8,7 @@
 import XCTest
 
 class RESTRequestUtilsTests: XCTestCase {
+    func testClassMustNotBeEmptyOrSwiftFormatWillCrash() {
+        //TODO implement code
+    }
 }

@@ -10,6 +10,7 @@ target 'AWSAPICategoryPlugin' do
 	pod 'Amplify', :path => '../../'
   pod 'AWSPluginsCore', :path => '../../'
   pod "Starscream", "~> 3.0.2"
+  pod "ReachabilitySwift", "~> 5.0.0"
 
   target "AWSAPICategoryPluginTests" do
     inherit! :complete
@@ -17,6 +18,7 @@ target 'AWSAPICategoryPlugin' do
     pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
     pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
     pod 'AmplifyTestCommon', :path => '../../'
+    pod "ReachabilitySwift", "~> 5.0.0"
   end
 end
 

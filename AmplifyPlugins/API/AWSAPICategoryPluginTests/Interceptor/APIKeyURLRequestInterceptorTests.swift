@@ -8,4 +8,7 @@
 import XCTest
 
 class APIKeyURLRequestInterceptorTests: XCTestCase {
+    func testClassMustNotBeEmptyOrSwiftFormatWillCrash() {
+        //TODO implement code
+    }
 }

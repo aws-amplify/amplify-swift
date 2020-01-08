@@ -8,4 +8,7 @@
 import XCTest
 
 class GraphQLRequestUtilsTests: XCTestCase {
+    func testClassMustNotBeEmptyOrSwiftFormatWillCrash() {
+        //TODO implement code
+    }
 }

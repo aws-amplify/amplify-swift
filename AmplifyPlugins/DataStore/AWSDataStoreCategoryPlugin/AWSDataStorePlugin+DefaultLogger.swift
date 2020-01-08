@@ -7,4 +7,7 @@
 
 import Amplify
 
-extension AWSDataStorePlugin: DefaultLogger { }
+extension AWSDataStorePlugin: DefaultLogger {
+    // This is intentionally blank (if left out, it will crash swiftformat
+    // with an Illegal instruction: 4 error)
+}

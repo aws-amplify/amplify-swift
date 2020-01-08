@@ -18,9 +18,9 @@ opt_out_usage
 default_platform(:ios)
 
 pods = [
-  # "Amplify.podspec",
-  # "AWSPluginsCore.podspec",
-  # "CoreMLPredictionsPlugin.podspec",
+  "Amplify.podspec",
+  "AWSPluginsCore.podspec",
+  "CoreMLPredictionsPlugin.podspec",
   "AWSPredictionsPlugin.podspec",
   "AmplifyPlugins.podspec"
 ]
@@ -36,7 +36,10 @@ platform :ios do
   desc "Release pods"
   lane :release_pods do
 
-    pods.each { |pod| pod_push(path: pod, allow_warnings: true, swift_version: "5.1") }
+    pods.each { |pod|
+      pod_push(path: pod, allow_warnings: true, swift_version: "5.1")
+      Actions.sh('pod repo update')
+    }
 
   end
 

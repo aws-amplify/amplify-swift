@@ -8,4 +8,7 @@
 import XCTest
 
 class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase {
+    func testClassMustNotBeEmptyOrSwiftFormatWillCrash() {
+        //TODO implement code
+    }
 }

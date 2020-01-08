@@ -10,23 +10,19 @@ import Foundation
 import Reachability
 import Combine
 
-struct ReachabilityUpdate {
-    let isOnline: Bool
-}
-
 @available(iOS 13.0, *)
 class NetworkReachabilityNotifier {
     private var reachability: NetworkReachabilityProviding?
     private var allowsCellularAccess = true
 
-    let reachabilityPublisher = PassthroughSubject<ReachabilityUpdate, DataStoreError>()
-    var publisher: AnyPublisher<ReachabilityUpdate, DataStoreError> {
+    let reachabilityPublisher = PassthroughSubject<ReachabilityUpdate, Never>()
+    var publisher: AnyPublisher<ReachabilityUpdate, Never> {
         return reachabilityPublisher.eraseToAnyPublisher()
     }
 
     public init(host: String,
                 allowsCellularAccess: Bool,
-                reachabilityFactory: NetworkReachabilityProvidingFactory.Type) {
+                reachabilityFactory: NetworkReachabilityProvidingFactory.Type) throws {
         self.reachability = reachabilityFactory.make(for: host)
         self.allowsCellularAccess = allowsCellularAccess
 
@@ -38,15 +34,14 @@ class NetworkReachabilityNotifier {
         do {
             try reachability?.startNotifier()
         } catch {
-            //TODO: Test effects of inability to start ReachabilitySwift
-            Amplify.DataStore.log.error("Unable to start notifier from ReachabilitySwift")
+            throw error
         }
     }
 
     deinit {
         reachability?.stopNotifier()
         NotificationCenter.default.removeObserver(self)
-        reachabilityPublisher.send(completion: Subscribers.Completion<DataStoreError>.finished)
+        reachabilityPublisher.send(completion: Subscribers.Completion<Never>.finished)
     }
 
     // MARK: - Notifications

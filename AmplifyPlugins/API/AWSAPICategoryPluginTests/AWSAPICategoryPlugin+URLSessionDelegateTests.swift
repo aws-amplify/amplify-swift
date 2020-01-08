@@ -8,4 +8,7 @@
 import XCTest
 
 class AWSAPICategoryPluginURLSessionDelegateTests: AWSAPICategoryPluginTestBase {
+    func testClassMustNotBeEmptyOrSwiftFormatWillCrash() {
+        //TODO implement code
+    }
 }
