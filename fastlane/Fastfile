@@ -18,9 +18,9 @@ opt_out_usage
 default_platform(:ios)
 
 pods = [
-  # "Amplify.podspec",
-  # "AWSPluginsCore.podspec",
-  # "CoreMLPredictionsPlugin.podspec",
+  "Amplify.podspec",
+  "AWSPluginsCore.podspec",
+  "CoreMLPredictionsPlugin.podspec",
   "AWSPredictionsPlugin.podspec",
   "AmplifyPlugins.podspec"
 ]
