@@ -47,7 +47,7 @@ public class GraphQLDeleteMutation: GraphQLDocument {
     }
 
     public var inputTypes: String? {
-        return "$input: \(name.pascalCased())Input!, $condition: Model\(modelType.schema.graphQLName)ConditionInput"
+        "$input: \(name.pascalCased())Input!, $condition: Model\(modelType.schema.graphQLName)ConditionInput"
     }
 
     public var inputParameters: String? {

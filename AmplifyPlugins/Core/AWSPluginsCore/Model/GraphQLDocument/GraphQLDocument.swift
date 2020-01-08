@@ -31,11 +31,13 @@ public protocol GraphQLDocument: DataStoreStatement where Variables == [String: 
     var name: String { get }
 
     /// The input variables and types for the document
-    /// This should be in the format of "$input: InputType, $id: ID!"
+    /// This should be in the format of `<input parameter variable>: <input parameter type>" and comma separated like
+    /// "$input: InputType, $id: ID!"
     var inputTypes: String? { get }
 
     /// The input parameters and the variables for the document
-    /// This should be in the format of "input: $input, id: $id"
+    /// This should be in the format of `<input parameter name>: <input parameter variable>` and comma separated like
+    /// "input: $input, id: $id"
     var inputParameters: String? { get }
 
     /// The selection set for the document.

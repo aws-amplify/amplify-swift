@@ -30,7 +30,7 @@ public class GraphQLListQuery: GraphQLDocument {
     }
 
     public var name: String {
-        return "list" + modelType.schema.graphQLName + "s"
+        "list" + modelType.schema.graphQLName + "s"
     }
 
     public var inputTypes: String? {

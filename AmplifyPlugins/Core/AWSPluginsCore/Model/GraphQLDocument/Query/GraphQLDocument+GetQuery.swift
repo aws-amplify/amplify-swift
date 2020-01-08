@@ -24,7 +24,7 @@ public struct GraphQLGetQuery: GraphQLDocument {
     }
 
     public var name: String {
-        return "get" + modelType.schema.graphQLName
+        "get" + modelType.schema.graphQLName
     }
 
     public var inputTypes: String? {
