@@ -294,6 +294,42 @@ class GraphQLModelBasedTests: XCTestCase {
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
+    func testUpdatePostWithIncorrectPredicateValue() {
+        let uuid = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let title = testMethodName + "Title"
+        guard let createdPost = createPost(id: uuid, title: title) else {
+            XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
+            return
+        }
+        let updatedTitle = title + "Updated"
+        let updatedPost = Post(id: uuid,
+                               title: updatedTitle,
+                               content: createdPost.content,
+                               createdAt: createdPost.createdAt)
+        let post = Post.keys
+        let predicate = post.title == "incorrectPreviousTitle"
+        let completedWithErrorInvoked = expectation(description: "request completed with error")
+        _ = Amplify.API.mutate(of: updatedPost, where: predicate, type: .update, listener: { event in
+            switch event {
+            case .completed(let data):
+                switch data {
+                case .success:
+                    XCTFail("Should have been conditional request failed error")
+                case .failure(let error):
+                    XCTAssertTrue(error.errorDescription.contains("Status Code: 400"))
+                    completedWithErrorInvoked.fulfill()
+                }
+            case .failed(let error):
+                XCTFail("\(error)")
+
+            default:
+                XCTFail("Could not get data back")
+            }
+        })
+        wait(for: [completedWithErrorInvoked], timeout: TestCommonConstants.networkTimeout)
+    }
+
     func testUpdatePostWithPredicate() {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -308,29 +344,8 @@ class GraphQLModelBasedTests: XCTestCase {
                                content: createdPost.content,
                                createdAt: createdPost.createdAt)
         let post = Post.keys
-        var predicate = post.title == "incorrectPreviousTitle"
-        let completedWithErrorInvoked = expectation(description: "request completed with error")
-        _ = Amplify.API.mutate(of: updatedPost, where: predicate, type: .update, listener: { event in
-            switch event {
-            case .completed(let data):
-                switch data {
-                case .success(let post):
-                    XCTFail("Should have been conditional request failed error")
-                case .failure(let error):
-                    XCTAssertTrue(error.errorDescription.contains("Status Code: 400"))
-                    completedWithErrorInvoked.fulfill()
-                }
-            case .failed(let error):
-                XCTFail("\(error)")
-
-            default:
-                XCTFail("Could not get data back")
-            }
-        })
-        wait(for: [completedWithErrorInvoked], timeout: TestCommonConstants.networkTimeout)
-
-        let completedWithSuccessInvoked = expectation(description: "request completed with success")
-        predicate = post.title == title
+        let predicate = post.title == title
+        let completedWithSuccessInvoked = expectation(description: "request completed successfully")
         _ = Amplify.API.mutate(of: updatedPost, where: predicate, type: .update, listener: { event in
             switch event {
             case .completed(let data):

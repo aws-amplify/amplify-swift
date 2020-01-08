@@ -52,18 +52,9 @@ struct GraphQLResponseDecoder {
             return GraphQLResponse<R>.failure(.error(responseErrors))
 
         case (.some(let data), .some(let errors)):
+            let responseErrors: [GraphQLError]
             do {
-                let responseErrors = try decodeErrors(graphQLErrors: errors)
-
-                do {
-                    let jsonValue = JSONValue.object(data)
-                    let responseData = try decode(graphQLData: jsonValue,
-                                                  into: responseType,
-                                                  at: decodePath)
-                    return GraphQLResponse<R>.failure(.partial(responseData, responseErrors))
-                } catch let decodingError as DecodingError {
-                    return GraphQLResponse<R>.failure(.error(responseErrors))
-                }
+                responseErrors = try decodeErrors(graphQLErrors: errors)
             } catch let decodingError as DecodingError {
                 let error = APIError(error: decodingError)
                 guard let rawGraphQLResponseString = String(data: rawGraphQLResponse, encoding: .utf8) else {
@@ -73,6 +64,16 @@ struct GraphQLResponseDecoder {
                 return GraphQLResponse<R>.failure(.transformationError(rawGraphQLResponseString, error))
             } catch {
                 throw error
+            }
+
+            do {
+                let jsonValue = JSONValue.object(data)
+                let responseData = try decode(graphQLData: jsonValue,
+                                              into: responseType,
+                                              at: decodePath)
+                return GraphQLResponse<R>.failure(.partial(responseData, responseErrors))
+            } catch {
+                return GraphQLResponse<R>.failure(.error(responseErrors))
             }
         }
     }
