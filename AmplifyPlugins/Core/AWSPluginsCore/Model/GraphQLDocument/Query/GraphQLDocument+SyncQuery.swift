@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2019 Amazon.com,
+// Copyright 2018-2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -8,8 +8,13 @@
 import Amplify
 import Foundation
 
-public class GraphQLSyncQuery: GraphQLListQuery {
+public class GraphQLSyncQuery: GraphQLDocument {
 
+    public let documentType = GraphQLDocumentType.query
+    public let modelType: Model.Type
+    public let predicate: QueryPredicate?
+    public let limit: Int?
+    public let nextToken: String?
     public let lastSync: Int?
 
     public init(from modelType: Model.Type,
@@ -17,14 +22,14 @@ public class GraphQLSyncQuery: GraphQLListQuery {
                 limit: Int? = nil,
                 nextToken: String? = nil,
                 lastSync: Int? = nil) {
+        self.modelType = modelType
+        self.predicate = predicate
+        self.limit = limit
+        self.nextToken = nextToken
         self.lastSync = lastSync
-        super.init(from: modelType,
-                   predicate: predicate,
-                   limit: limit,
-                   nextToken: nextToken)
     }
 
-    public override var name: String {
+    public var name: String {
         // Right now plural is not consistent on the GraphQL transformer.
         // `.sync` queries use proper plural resolution.
         // Change this once the transformer fixes that behavior
@@ -34,43 +39,39 @@ public class GraphQLSyncQuery: GraphQLListQuery {
         return "sync" + modelName
     }
 
-    public override var hasSyncableModels: Bool {
-        true
+    public var inputTypes: String? {
+        let graphQLName = modelType.schema.graphQLName
+        return "$filter: Model\(graphQLName)FilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp"
     }
 
-    public override var stringValue: String {
-        let schema = modelType.schema
+    public var inputParameters: String? {
+        "filter: $filter, limit: $limit, nextToken: $nextToken, lastSync: $lastSync"
+    }
 
-        let input = """
-        $filter: Model\(schema.graphQLName)FilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp
-        """
+    public var selectionSetFields: [SelectionSetField] {
+        return [SelectionSetField(value: "items",
+                                  innerFields: modelType.schema.graphQLFields.toSelectionSets(syncEnabled: true)),
+                SelectionSetField(value: "nextToken"),
+                SelectionSetField(value: "startedAt")]
+    }
 
-        let inputName = "filter: $filter, limit: $limit, nextToken: $nextToken, lastSync: $lastSync"
+    public var variables: [String: Any] {
+        var variables = [String: Any]()
 
-        let fields = selectionSetFields
-        var documentFields = fields.joined(separator: "\n    ")
-        documentFields =
-        """
-        items {
-              \(fields.joined(separator: "\n      "))
-            }
-            nextToken
-            startedAt
-        """
-
-        let queryName = name.pascalCased()
-
-        return """
-        \(documentType) \(queryName)(\(input)) {
-          \(name)(\(inputName)) {
-            \(documentFields)
-          }
+        if let predicate = predicate {
+            variables.updateValue(predicate.graphQLFilterVariables, forKey: "filter")
         }
-        """
-    }
 
-    public override var variables: [String: Any] {
-        var variables = super.variables
+        if let limit = limit {
+            variables.updateValue(limit, forKey: "limit")
+        } else {
+            // TODO: Remove this once we support limit and nextToken passed in from the developer
+            variables.updateValue(1_000, forKey: "limit")
+        }
+
+        if let nextToken = nextToken {
+            variables.updateValue(nextToken, forKey: "nextToken")
+        }
 
         if let lastSync = lastSync {
             variables.updateValue(lastSync, forKey: "lastSync")

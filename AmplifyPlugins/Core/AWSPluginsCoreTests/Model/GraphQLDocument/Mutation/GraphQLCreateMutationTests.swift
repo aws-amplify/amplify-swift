@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2019 Amazon.com,
+// Copyright 2018-2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -117,7 +117,8 @@ class GraphQLCreateMutationTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testCreateGraphQLMutationFromSimpleModelWithSyncEnabled() {
         let post = Post(title: "title", content: "content", createdAt: Date())
-        let document = GraphQLCreateMutation(of: post, syncEnabled: true)
+        let document = GraphQLCreateMutation(of: post)
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document)
         let expectedQueryDocument = """
         mutation CreatePost($input: CreatePostInput!, $condition: ModelPostConditionInput) {
           createPost(input: $input, condition: $condition) {
@@ -135,11 +136,11 @@ class GraphQLCreateMutationTests: XCTestCase {
           }
         }
         """
-        XCTAssertEqual(document.name, "createPost")
-        XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.name, "createPost")
-        XCTAssertNotNil(document.variables["input"])
-        guard let input = document.variables["input"] as? [String: Any] else {
+        XCTAssertEqual(syncEnabledDocument.name, "createPost")
+        XCTAssertEqual(syncEnabledDocument.stringValue, expectedQueryDocument)
+        XCTAssertEqual(syncEnabledDocument.name, "createPost")
+        XCTAssertNotNil(syncEnabledDocument.variables["input"])
+        guard let input = syncEnabledDocument.variables["input"] as? [String: Any] else {
             XCTFail("The document variables property doesn't contain a valid input")
             return
         }
@@ -160,7 +161,8 @@ class GraphQLCreateMutationTests: XCTestCase {
     func testCreateGraphQLMutationFromModelWithAssociationWithSyncEnabled() {
         let post = Post(title: "title", content: "content", createdAt: Date())
         let comment = Comment(content: "comment", createdAt: Date(), post: post)
-        let document = GraphQLCreateMutation(of: comment, syncEnabled: true)
+        let document = GraphQLCreateMutation(of: comment)
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document)
         let expectedQueryDocument = """
         mutation CreateComment($input: CreateCommentInput!, $condition: ModelCommentConditionInput) {
           createComment(input: $input, condition: $condition) {
@@ -187,10 +189,10 @@ class GraphQLCreateMutationTests: XCTestCase {
           }
         }
         """
-        XCTAssertEqual(document.name, "createComment")
-        XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.name, "createComment")
-        guard let input = document.variables["input"] as? GraphQLInput else {
+        XCTAssertEqual(syncEnabledDocument.name, "createComment")
+        XCTAssertEqual(syncEnabledDocument.stringValue, expectedQueryDocument)
+        XCTAssertEqual(syncEnabledDocument.name, "createComment")
+        guard let input = syncEnabledDocument.variables["input"] as? GraphQLInput else {
             XCTFail("Variables should contain a valid input")
             return
         }

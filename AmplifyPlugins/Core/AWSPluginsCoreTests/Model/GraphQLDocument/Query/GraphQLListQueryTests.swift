@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2019 Amazon.com,
+// Copyright 2018-2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -36,7 +36,37 @@ class GraphQLListQueryTests: XCTestCase {
     func testListGraphQLQueryFromSimpleModel() {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
-        let document = GraphQLListQuery(from: Post.self, predicate: predicate, syncEnabled: true)
+        let document = GraphQLListQuery(from: Post.self, predicate: predicate)
+        let expectedQueryDocument = """
+        query ListPosts($filter: ModelPostFilterInput, $limit: Int, $nextToken: String) {
+          listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+            items {
+              id
+              content
+              createdAt
+              draft
+              rating
+              title
+              updatedAt
+              __typename
+            }
+            nextToken
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "listPosts")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertNotNil(document.variables)
+        XCTAssertNotNil(document.variables["limit"])
+        XCTAssertEqual(document.variables["limit"] as? Int, 1_000)
+        XCTAssertNotNil(document.variables["filter"])
+    }
+
+    func testListGraphQLQueryFromSimpleModelWithSyncEnabled() {
+        let post = Post.keys
+        let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
+        let document = GraphQLListQuery(from: Post.self, predicate: predicate)
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document)
         let expectedQueryDocument = """
         query ListPosts($filter: ModelPostFilterInput, $limit: Int, $nextToken: String) {
           listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
@@ -57,12 +87,11 @@ class GraphQLListQueryTests: XCTestCase {
           }
         }
         """
-        XCTAssertEqual(document.name, "listPosts")
-        XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertNotNil(document.variables)
-        XCTAssertNotNil(document.variables["limit"])
-        XCTAssertEqual(document.variables["limit"] as? Int, 1_000)
-        XCTAssertNotNil(document.variables["filter"])
+        XCTAssertEqual(syncEnabledDocument.name, "listPosts")
+        XCTAssertEqual(syncEnabledDocument.stringValue, expectedQueryDocument)
+        XCTAssertNotNil(syncEnabledDocument.variables)
+        XCTAssertNotNil(syncEnabledDocument.variables["limit"])
+        XCTAssertEqual(syncEnabledDocument.variables["limit"] as? Int, 1_000)
+        XCTAssertNotNil(syncEnabledDocument.variables["filter"])
     }
-
 }

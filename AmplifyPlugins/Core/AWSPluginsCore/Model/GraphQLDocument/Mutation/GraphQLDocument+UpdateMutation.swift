@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2019 Amazon.com,
+// Copyright 2018-2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -24,42 +24,24 @@ public class GraphQLUpdateMutation: GraphQLDocument {
     public let modelType: Model.Type
     public let predicate: QueryPredicate?
     public let mutationType = GraphQLMutationType.update
-    public let syncEnabledVersion: Int?
 
     public init(of model: Model,
-                where predicate: QueryPredicate? = nil,
-                syncEnabledVersion: Int? = nil) {
+                where predicate: QueryPredicate? = nil) {
         self.model = model
         self.modelType = ModelRegistry.modelType(from: model.modelName) ?? Swift.type(of: model)
         self.predicate = predicate
-        self.syncEnabledVersion = syncEnabledVersion
     }
 
     public var name: String {
         mutationType.rawValue + model.schema.graphQLName
     }
 
-    public var hasSyncableModels: Bool {
-        syncEnabledVersion != nil
+    public var inputTypes: String? {
+        return "$input: \(name.pascalCased())Input!, $condition: Model\(modelType.schema.graphQLName)ConditionInput"
     }
 
-    public var stringValue: String {
-        let mutationName = name.pascalCased()
-        let inputName = "input"
-        let inputType = "\(mutationName)Input!"
-
-        let conditionInputName = "condition"
-        let conditionInputType = "Model\(modelType.schema.graphQLName)ConditionInput"
-
-        let document = """
-        \(documentType) \(mutationName)($\(inputName): \(inputType), $\(conditionInputName): \(conditionInputType)) {
-          \(name)(\(inputName): $\(inputName), \(conditionInputName): $\(conditionInputName)) {
-            \(selectionSetFields.joined(separator: "\n    "))
-          }
-        }
-        """
-
-        return document
+    public var inputParameters: String? {
+        "input: $input, condition: $condition"
     }
 
     public var variables: [String: Any] {
@@ -68,10 +50,7 @@ public class GraphQLUpdateMutation: GraphQLDocument {
             variables.updateValue(condition.graphQLFilterVariables, forKey: "condition")
         }
 
-        var graphQLInput = model.graphQLInput
-        if let version = syncEnabledVersion {
-            graphQLInput.updateValue(version, forKey: "_version")
-        }
+        let graphQLInput = model.graphQLInput
         variables.updateValue(graphQLInput, forKey: "input")
 
         return variables

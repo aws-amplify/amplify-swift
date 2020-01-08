@@ -21,34 +21,61 @@ class GraphQLDocumentTests: XCTestCase {
         ModelRegistry.reset()
     }
 
-    func testSelectionSetFieldsForNotSyncableModels() {
-        let document = GraphQLGetQuery(from: Post.self, id: "id", syncEnabled: false)
-        let expectedSelectionSet = ["id",
-                                    "content",
-                                    "createdAt",
-                                    "draft",
-                                    "rating",
-                                    "title",
-                                    "updatedAt",
-                                    "__typename"]
+    func testDefaultGraphQLDocument() {
+        let document = MockGraphQLDocument(documentType: .mutation,
+                                           name: "name",
+                                           modelType: Post.self)
 
-        XCTAssertEqual(document.selectionSetFields, expectedSelectionSet)
+        let expectedQueryDocument = """
+        mutation Name {
+          name {
+            id
+            content
+            createdAt
+            draft
+            rating
+            title
+            updatedAt
+            __typename
+          }
+        }
+        """
+
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertTrue(document.variables.isEmpty)
+        XCTAssertEqual(document.documentType, .mutation)
+        XCTAssertEqual(document.name, "name")
+        XCTAssertNil(document.inputTypes)
+        XCTAssertNil(document.inputParameters)
     }
 
-    func testSelectionSetFieldsForSyncableModels() {
-        let document = GraphQLGetQuery(from: Post.self, id: "id", syncEnabled: true)
-        let expectedSelectionSet = ["id",
-                                    "content",
-                                    "createdAt",
-                                    "draft",
-                                    "rating",
-                                    "title",
-                                    "updatedAt",
-                                    "__typename",
-                                    "_version",
-                                    "_deleted",
-                                    "_lastChangedAt"]
+    func testDefaultGraphQLDocumentWithInput() {
+        let document = MockGraphQLDocument(documentType: .mutation,
+                                           name: "name",
+                                           inputTypes: "$input: InputType, $id: ID!",
+                                           inputParameters: "input: $input, id: $id!",
+                                           modelType: Post.self)
 
-        XCTAssertEqual(document.selectionSetFields, expectedSelectionSet)
+        let expectedQueryDocument = """
+        mutation Name($input: InputType, $id: ID!) {
+          name(input: $input, id: $id!) {
+            id
+            content
+            createdAt
+            draft
+            rating
+            title
+            updatedAt
+            __typename
+          }
+        }
+        """
+
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertTrue(document.variables.isEmpty)
+        XCTAssertEqual(document.documentType, .mutation)
+        XCTAssertEqual(document.name, "name")
+        XCTAssertEqual(document.inputTypes, "$input: InputType, $id: ID!")
+        XCTAssertEqual(document.inputParameters, "input: $input, id: $id!")
     }
 }

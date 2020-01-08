@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2019 Amazon.com,
+// Copyright 2018-2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -32,7 +32,29 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///   - check if the generated GraphQL document is a valid subscription
     ///     - it has a list of fields with no nested models
     func testOnCreateGraphQLSubscriptionFromSimpleModel() {
-        let document = GraphQLSubscription(of: Post.self, type: .onCreate, syncEnabled: true)
+        let document = GraphQLSubscription(of: Post.self, type: .onCreate)
+        let expectedQueryDocument = """
+        subscription OnCreatePost {
+          onCreatePost {
+            id
+            content
+            createdAt
+            draft
+            rating
+            title
+            updatedAt
+            __typename
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "onCreatePost")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertEqual(document.variables.count, 0)
+    }
+
+    func testOnCreateGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
+        let document = GraphQLSubscription(of: Post.self, type: .onCreate)
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document)
         let expectedQueryDocument = """
         subscription OnCreatePost {
           onCreatePost {
@@ -50,10 +72,9 @@ class GraphQLSubscriptionTests: XCTestCase {
           }
         }
         """
-        XCTAssertEqual(document.name, "onCreatePost")
-        XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables.count, 0)
-
+        XCTAssertEqual(syncEnabledDocument.name, "onCreatePost")
+        XCTAssertEqual(syncEnabledDocument.stringValue, expectedQueryDocument)
+        XCTAssertEqual(syncEnabledDocument.variables.count, 0)
     }
 
     /// - Given: a `Model` type
@@ -65,7 +86,35 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///   - check if the generated GraphQL document is a valid subscription
     ///     - it has a list of fields with no nested models
     func testOnCreateGraphQLSubscriptionFromModelWithAssociation() {
-        let document = GraphQLSubscription(of: Comment.self, type: .onCreate, syncEnabled: true)
+        let document = GraphQLSubscription(of: Comment.self, type: .onCreate)
+        let expectedQueryDocument = """
+        subscription OnCreateComment {
+          onCreateComment {
+            id
+            content
+            createdAt
+            post {
+              id
+              content
+              createdAt
+              draft
+              rating
+              title
+              updatedAt
+              __typename
+            }
+            __typename
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "onCreateComment")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertEqual(document.variables.count, 0)
+    }
+
+    func testOnCreateGraphQLSubscriptionFromModelWithAssociationWithSyncEnabled() {
+        let document = GraphQLSubscription(of: Comment.self, type: .onCreate)
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document)
         let expectedQueryDocument = """
         subscription OnCreateComment {
           onCreateComment {
@@ -92,9 +141,9 @@ class GraphQLSubscriptionTests: XCTestCase {
           }
         }
         """
-        XCTAssertEqual(document.name, "onCreateComment")
-        XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables.count, 0)
+        XCTAssertEqual(syncEnabledDocument.name, "onCreateComment")
+        XCTAssertEqual(syncEnabledDocument.stringValue, expectedQueryDocument)
+        XCTAssertEqual(syncEnabledDocument.variables.count, 0)
     }
 
     /// - Given: a `Model` type
@@ -105,7 +154,29 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///   - check if the generated GraphQL document is a valid subscription
     ///     - it has a list of fields with no nested models
     func testOnUpdateGraphQLSubscriptionFromSimpleModel() {
-        let document = GraphQLSubscription(of: Post.self, type: .onUpdate, syncEnabled: true)
+        let document = GraphQLSubscription(of: Post.self, type: .onUpdate)
+        let expectedQueryDocument = """
+        subscription OnUpdatePost {
+          onUpdatePost {
+            id
+            content
+            createdAt
+            draft
+            rating
+            title
+            updatedAt
+            __typename
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "onUpdatePost")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertEqual(document.variables.count, 0)
+    }
+
+    func testOnUpdateGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
+        let document = GraphQLSubscription(of: Post.self, type: .onUpdate)
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document)
         let expectedQueryDocument = """
         subscription OnUpdatePost {
           onUpdatePost {
@@ -123,9 +194,9 @@ class GraphQLSubscriptionTests: XCTestCase {
           }
         }
         """
-        XCTAssertEqual(document.name, "onUpdatePost")
-        XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables.count, 0)
+        XCTAssertEqual(syncEnabledDocument.name, "onUpdatePost")
+        XCTAssertEqual(syncEnabledDocument.stringValue, expectedQueryDocument)
+        XCTAssertEqual(syncEnabledDocument.variables.count, 0)
     }
 
     /// - Given: a `Model` type
@@ -136,7 +207,29 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///   - check if the generated GraphQL document is a valid subscription
     ///     - it has a list of fields with no nested models
     func testOnDeleteGraphQLSubscriptionFromSimpleModel() {
-        let document = GraphQLSubscription(of: Post.self, type: .onDelete, syncEnabled: true)
+        let document = GraphQLSubscription(of: Post.self, type: .onDelete)
+        let expectedQueryDocument = """
+        subscription OnDeletePost {
+          onDeletePost {
+            id
+            content
+            createdAt
+            draft
+            rating
+            title
+            updatedAt
+            __typename
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "onDeletePost")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertEqual(document.variables.count, 0)
+    }
+
+    func testOnDeleteGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
+        let document = GraphQLSubscription(of: Post.self, type: .onDelete)
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document)
         let expectedQueryDocument = """
         subscription OnDeletePost {
           onDeletePost {
@@ -154,9 +247,8 @@ class GraphQLSubscriptionTests: XCTestCase {
           }
         }
         """
-        XCTAssertEqual(document.name, "onDeletePost")
-        XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables.count, 0)
+        XCTAssertEqual(syncEnabledDocument.name, "onDeletePost")
+        XCTAssertEqual(syncEnabledDocument.stringValue, expectedQueryDocument)
+        XCTAssertEqual(syncEnabledDocument.variables.count, 0)
     }
-
 }

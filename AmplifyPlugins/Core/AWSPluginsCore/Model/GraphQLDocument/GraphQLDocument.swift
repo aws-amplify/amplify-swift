@@ -30,8 +30,16 @@ public protocol GraphQLDocument: DataStoreStatement where Variables == [String: 
     /// contain the name of the document as the key to the response value.
     var name: String { get }
 
-    /// The state of the model's backend provisioning, whether it is provisioned with conflict resolution or not.
-    var hasSyncableModels: Bool { get }
+    /// The input variables and types for the document
+    /// This should be in the format of "$input: InputType, $id: ID!"
+    var inputTypes: String? { get }
+
+    /// The input parameters and the variables for the document
+    /// This should be in the format of "input: $input, id: $id"
+    var inputParameters: String? { get }
+
+    /// The selection set for the document.
+    var selectionSetFields: [SelectionSetField] { get }
 }
 
 extension GraphQLDocument {
@@ -42,40 +50,35 @@ extension GraphQLDocument {
         return [:]
     }
 
+    /// Provides default construction of the graphQL document based on values set
+    public var stringValue: String {
+        let selectionSetString = selectionSetFields.map { $0.toString() }.joined(separator: "\n    ")
+        if let inputTypes = inputTypes, let inputParameters = inputParameters {
+            return """
+            \(documentType) \(name.pascalCased())(\(inputTypes)) {
+              \(name)(\(inputParameters)) {
+                \(selectionSetString)
+              }
+            }
+            """
+        }
+
+        return """
+        \(documentType) \(name.pascalCased()) {
+          \(name) {
+            \(selectionSetString)
+          }
+        }
+        """
+    }
+
     /// Resolve the fields that should be included in the selection set for the `modelType`.
     /// Associated models will be included if they are required and they are the owning
     /// side of the association.
     ///
     /// - Note: Currently implementation assumes the most common and efficient queries.
     /// Future APIs might allow user customization of the selected fields.
-    public var selectionSetFields: [String] {
-        var fieldSet = [String]()
-        let schema = modelType.schema
-
-        var indentSize = 0
-
-        func appendFields(_ fields: [ModelField]) {
-            let indent = indentSize == 0 ? "" : String(repeating: "  ", count: indentSize)
-            fields.forEach { field in
-                let isRequiredAssociation = field.isRequired && field.isAssociationOwner
-                if isRequiredAssociation, let associatedModel = field.associatedModel {
-                    fieldSet.append(indent + field.name + " {")
-                    indentSize += 1
-                    appendFields(associatedModel.schema.graphQLFields)
-                    indentSize -= 1
-                    fieldSet.append(indent + "}")
-                } else {
-                    fieldSet.append(indent + field.graphQLName)
-                }
-            }
-            fieldSet.append(indent + "__typename")
-            if hasSyncableModels {
-                fieldSet.append(indent + "_version")
-                fieldSet.append(indent + "_deleted")
-                fieldSet.append(indent + "_lastChangedAt")
-            }
-        }
-        appendFields(schema.graphQLFields)
-        return fieldSet
+    public var selectionSetFields: [SelectionSetField] {
+        return modelType.schema.graphQLFields.toSelectionSets()
     }
 }

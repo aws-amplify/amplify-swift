@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2019 Amazon.com,
+// Copyright 2018-2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -10,13 +10,11 @@ import Foundation
 
 public extension GraphQLDeleteMutation {
     convenience init(of model: Model,
-                     where predicate: QueryPredicate? = nil,
-                     syncEnabledVersion: Int? = nil) {
+                     where predicate: QueryPredicate? = nil) {
 
         self.init(of: model.modelName,
                   id: model.id,
-                  where: predicate,
-                  syncEnabledVersion: syncEnabledVersion)
+                  where: predicate)
     }
 }
 
@@ -28,20 +26,16 @@ public class GraphQLDeleteMutation: GraphQLDocument {
     public let mutationType = GraphQLMutationType.delete
 
     public let modelName: String
+    public let modelType: Model.Type
     public let id: Model.Identifier
     public let predicate: QueryPredicate?
-    public let syncEnabledVersion: Int?
-
-    public let modelType: Model.Type
 
     public init(of modelName: String,
                 id: Model.Identifier,
-                where predicate: QueryPredicate? = nil,
-                syncEnabledVersion: Int? = nil) {
+                where predicate: QueryPredicate? = nil) {
         self.modelName = modelName
         self.id = id
         self.predicate = predicate
-        self.syncEnabledVersion = syncEnabledVersion
         guard let modelType = ModelRegistry.modelType(from: modelName) else {
             preconditionFailure("Model with name \(modelName) could not be found.")
         }
@@ -52,27 +46,12 @@ public class GraphQLDeleteMutation: GraphQLDocument {
         mutationType.rawValue + modelName
     }
 
-    public var hasSyncableModels: Bool {
-        syncEnabledVersion != nil
+    public var inputTypes: String? {
+        return "$input: \(name.pascalCased())Input!, $condition: Model\(modelType.schema.graphQLName)ConditionInput"
     }
 
-    public var stringValue: String {
-        let mutationName = name.pascalCased()
-        let inputName = "input"
-        let inputType = "\(mutationName)Input!"
-
-        let conditionInputName = "condition"
-        let conditionInputType = "Model\(modelType.schema.graphQLName)ConditionInput"
-
-        let document = """
-        \(documentType) \(mutationName)($\(inputName): \(inputType), $\(conditionInputName): \(conditionInputType)) {
-          \(name)(\(inputName): $\(inputName), \(conditionInputName): $\(conditionInputName)) {
-            \(selectionSetFields.joined(separator: "\n    "))
-          }
-        }
-        """
-
-        return document
+    public var inputParameters: String? {
+        "input: $input, condition: $condition"
     }
 
     public var variables: [String: Any] {
@@ -82,10 +61,7 @@ public class GraphQLDeleteMutation: GraphQLDocument {
             variables.updateValue(condition.graphQLFilterVariables, forKey: "condition")
         }
 
-        var graphQLInput = ["id": id] as [String: Any]
-        if let version = syncEnabledVersion {
-            graphQLInput.updateValue(version, forKey: "_version")
-        }
+        let graphQLInput = ["id": id] as [String: Any]
 
         variables.updateValue(graphQLInput, forKey: "input")
 

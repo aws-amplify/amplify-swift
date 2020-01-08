@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2019 Amazon.com,
+// Copyright 2018-2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -18,53 +18,33 @@ public class GraphQLListQuery: GraphQLDocument {
     public let predicate: QueryPredicate?
     public let limit: Int?
     public let nextToken: String?
-    public let syncEnabled: Bool
 
     public init(from modelType: Model.Type,
                 predicate: QueryPredicate? = nil,
                 limit: Int? = nil,
-                nextToken: String? = nil,
-                syncEnabled: Bool = false) {
+                nextToken: String? = nil) {
         self.modelType = modelType
         self.predicate = predicate
         self.limit = limit
         self.nextToken = nextToken
-        self.syncEnabled = syncEnabled
     }
 
     public var name: String {
         return "list" + modelType.schema.graphQLName + "s"
     }
 
-    public var hasSyncableModels: Bool {
-        return syncEnabled
+    public var inputTypes: String? {
+        "$filter: Model\(modelType.schema.graphQLName)FilterInput, $limit: Int, $nextToken: String"
     }
 
-    public var stringValue: String {
-        let schema = modelType.schema
+    public var inputParameters: String? {
+        "filter: $filter, limit: $limit, nextToken: $nextToken"
+    }
 
-        let input = "$filter: Model\(schema.graphQLName)FilterInput, $limit: Int, $nextToken: String"
-        let inputName = "filter: $filter, limit: $limit, nextToken: $nextToken"
-
-        let fields = selectionSetFields
-        var documentFields = fields.joined(separator: "\n    ")
-        documentFields =
-        """
-        items {
-              \(fields.joined(separator: "\n      "))
-            }
-            nextToken
-        """
-
-        let queryName = name.pascalCased()
-
-        return """
-        \(documentType) \(queryName)(\(input)) {
-          \(name)(\(inputName)) {
-            \(documentFields)
-          }
-        }
-        """
+    public var selectionSetFields: [SelectionSetField] {
+        return [SelectionSetField(value: "items",
+                                  innerFields: modelType.schema.graphQLFields.toSelectionSets()),
+                SelectionSetField(value: "nextToken")]
     }
 
     public var variables: [String: Any] {

@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2019 Amazon.com,
+// Copyright 2018-2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -30,7 +30,29 @@ class GraphQLGetQueryTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     ///     - it has variables containing `id`
     func testGetGraphQLQueryFromSimpleModel() {
-        let document = GraphQLGetQuery(from: Post.self, id: "id", syncEnabled: true)
+        let document = GraphQLGetQuery(from: Post.self, id: "id")
+        let expectedQueryDocument = """
+        query GetPost($id: ID!) {
+          getPost(id: $id) {
+            id
+            content
+            createdAt
+            draft
+            rating
+            title
+            updatedAt
+            __typename
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "getPost")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertEqual(document.variables["id"] as? String, "id")
+    }
+
+    func testGetGraphQLQueryFromSimpleModelWithSyncEnabled() {
+        let document = GraphQLGetQuery(from: Post.self, id: "id")
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document)
         let expectedQueryDocument = """
         query GetPost($id: ID!) {
           getPost(id: $id) {
@@ -48,9 +70,9 @@ class GraphQLGetQueryTests: XCTestCase {
           }
         }
         """
-        XCTAssertEqual(document.name, "getPost")
-        XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables["id"] as? String, "id")
+        XCTAssertEqual(syncEnabledDocument.name, "getPost")
+        XCTAssertEqual(syncEnabledDocument.stringValue, expectedQueryDocument)
+        XCTAssertEqual(syncEnabledDocument.variables["id"] as? String, "id")
     }
 
     /// - Given: a `Model` type
@@ -64,7 +86,35 @@ class GraphQLGetQueryTests: XCTestCase {
     ///     - it is named `getComment`
     ///     - it has a list of fields with a nested `post`
     func testGetGraphQLQueryFromModelWithAssociation() {
-        let document = GraphQLGetQuery(from: Comment.self, id: "id", syncEnabled: true)
+        let document = GraphQLGetQuery(from: Comment.self, id: "id")
+        let expectedQueryDocument = """
+        query GetComment($id: ID!) {
+          getComment(id: $id) {
+            id
+            content
+            createdAt
+            post {
+              id
+              content
+              createdAt
+              draft
+              rating
+              title
+              updatedAt
+              __typename
+            }
+            __typename
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "getComment")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertEqual(document.variables["id"] as? String, "id")
+    }
+
+    func testGetGraphQLQueryFromModelWithAssociationAndSyncEnabled() {
+        let document = GraphQLGetQuery(from: Comment.self, id: "id")
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document)
         let expectedQueryDocument = """
         query GetComment($id: ID!) {
           getComment(id: $id) {
@@ -91,9 +141,8 @@ class GraphQLGetQueryTests: XCTestCase {
           }
         }
         """
-        XCTAssertEqual(document.name, "getComment")
-        XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables["id"] as? String, "id")
+        XCTAssertEqual(syncEnabledDocument.name, "getComment")
+        XCTAssertEqual(syncEnabledDocument.stringValue, expectedQueryDocument)
+        XCTAssertEqual(syncEnabledDocument.variables["id"] as? String, "id")
     }
-
 }

@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2019 Amazon.com,
+// Copyright 2018-2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -73,7 +73,8 @@ class GraphQLUpdateMutationTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testUpdateGraphQLMutationFromSimpleModelWithVersion() {
         let post = Post(title: "title", content: "content", createdAt: Date())
-        let document = GraphQLUpdateMutation(of: post, syncEnabledVersion: 5)
+        let document = GraphQLUpdateMutation(of: post)
+        let syncEnabledVersion = SyncEnabledGraphQLDocument(graphqQLDocument: document, version: 5)
         let expectedQueryDocument = """
         mutation UpdatePost($input: UpdatePostInput!, $condition: ModelPostConditionInput) {
           updatePost(input: $input, condition: $condition) {
@@ -91,11 +92,11 @@ class GraphQLUpdateMutationTests: XCTestCase {
           }
         }
         """
-        XCTAssertEqual(document.name, "updatePost")
-        XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.name, "updatePost")
-        XCTAssertNotNil(document.variables["input"])
-        guard let input = document.variables["input"] as? [String: Any] else {
+        XCTAssertEqual(syncEnabledVersion.name, "updatePost")
+        XCTAssertEqual(syncEnabledVersion.stringValue, expectedQueryDocument)
+        XCTAssertEqual(syncEnabledVersion.name, "updatePost")
+        XCTAssertNotNil(syncEnabledVersion.variables["input"])
+        guard let input = syncEnabledVersion.variables["input"] as? [String: Any] else {
             XCTFail("The document variables property doesn't contain a valid input")
             return
         }
