@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2019 Amazon.com,
+// Copyright 2018-2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -77,9 +77,8 @@ final class IncomingAsyncSubscriptionEventPublisher {
                                 api: APICategoryGraphQLBehavior,
                                 listener: @escaping GraphQLSubscriptionOperation<Payload>.EventListener)
         -> GraphQLSubscriptionOperation<Payload> {
-            let document = GraphQLSubscription(of: modelType,
-                                               type: subscriptionType,
-                                               syncEnabled: true)
+            let document = SyncEnabledGraphQLDocument(GraphQLSubscription(of: modelType,
+                                                                          type: subscriptionType))
 
             let request = GraphQLRequest(document: document.stringValue,
                                          variables: document.variables,

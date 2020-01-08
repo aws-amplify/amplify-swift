@@ -13,7 +13,7 @@ public class SyncEnabledGraphQLDocument<Document: GraphQLDocument>: GraphQLDocum
     private let graphQLDocument: Document
     private let version: Int?
 
-    init(graphqQLDocument: Document, version: Int? = nil) {
+    public init(_ graphqQLDocument: Document, version: Int? = nil) {
         self.graphQLDocument = graphqQLDocument
         self.version = version
     }

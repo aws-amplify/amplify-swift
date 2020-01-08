@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2019 Amazon.com,
+// Copyright 2018-2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -52,6 +52,7 @@ class GraphQLSyncBasedTests: XCTestCase {
             XCTFail("Failed to create post with version 1")
             return
         }
+        XCTAssertEqual(createdPost.syncMetadata.version, 1)
 
         let updatedTitle = title + "Updated"
 
@@ -62,7 +63,8 @@ class GraphQLSyncBasedTests: XCTestCase {
 
         let completeInvoked = expectation(description: "request completed")
         var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
-        let document = GraphQLUpdateMutation(of: modifiedPost, syncEnabledVersion: 1)
+        let document = SyncEnabledGraphQLDocument(GraphQLUpdateMutation(of: modifiedPost),
+                                                  version: createdPost.syncMetadata.version)
         let request = GraphQLRequest(document: document.stringValue,
                                      variables: document.variables,
                                      responseType: MutationSync<AnyModel>.self,
@@ -199,7 +201,7 @@ class GraphQLSyncBasedTests: XCTestCase {
         let completedInvoked = expectation(description: "Completed invoked")
         let progressInvoked = expectation(description: "Progress invoked")
 
-        let document = GraphQLSubscription(of: Post.self, type: .onCreate, syncEnabled: true)
+        let document = SyncEnabledGraphQLDocument(GraphQLSubscription(of: Post.self, type: .onCreate))
         let request = GraphQLRequest(document: document.stringValue,
                                      variables: document.variables,
                                      responseType: MutationSync<AnyModel>.self,
@@ -261,7 +263,7 @@ class GraphQLSyncBasedTests: XCTestCase {
         var result: MutationSync<AmplifyTestCommon.Post>?
         let completeInvoked = expectation(description: "request completed")
 
-        let document = GraphQLCreateMutation(of: post, syncEnabled: true)
+        let document = SyncEnabledGraphQLDocument(GraphQLCreateMutation(of: post))
         let request = GraphQLRequest(document: document.stringValue,
                                      variables: document.variables,
                                      responseType: MutationSync<AmplifyTestCommon.Post>.self,

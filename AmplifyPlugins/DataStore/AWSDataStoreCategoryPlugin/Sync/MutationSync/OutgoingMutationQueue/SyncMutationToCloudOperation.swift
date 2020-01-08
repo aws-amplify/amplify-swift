@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2019 Amazon.com,
+// Copyright 2018-2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -126,21 +126,21 @@ class SyncMutationToCloudOperation: Operation {
     private func deleteRequest(for mutationEvent: MutationEvent)
         throws -> GraphQLRequest<MutationSync<AnyModel>> {
             let document = GraphQLDeleteMutation(of: mutationEvent.modelName,
-                                                 id: mutationEvent.modelId,
-                                                 syncEnabledVersion: mutationEvent.version)
+                                                 id: mutationEvent.modelId)
 
-            let request = GraphQLRequest(document: document.stringValue,
-                                         variables: document.variables,
+            let syncEnabledDocument = SyncEnabledGraphQLDocument(document, version: mutationEvent.version)
+
+            let request = GraphQLRequest(document: syncEnabledDocument.stringValue,
+                                         variables: syncEnabledDocument.variables,
                                          responseType: MutationSync<AnyModel>.self,
-                                         decodePath: document.name)
+                                         decodePath: syncEnabledDocument.name)
             return request
     }
 
     private func createRequest(for mutationEvent: MutationEvent) throws -> GraphQLRequest<MutationSync<AnyModel>> {
         let model = try mutationEvent.decodeModel()
 
-        let document = GraphQLCreateMutation(of: model,
-                                             syncEnabled: true)
+        let document = SyncEnabledGraphQLDocument(GraphQLCreateMutation(of: model))
 
         let request = GraphQLRequest(document: document.stringValue,
                                      variables: document.variables,
@@ -152,8 +152,7 @@ class SyncMutationToCloudOperation: Operation {
     private func updateRequest(for mutationEvent: MutationEvent) throws -> GraphQLRequest<MutationSync<AnyModel>> {
         let model = try mutationEvent.decodeModel()
 
-        let document = GraphQLUpdateMutation(of: model,
-                                             syncEnabledVersion: mutationEvent.version)
+        let document = SyncEnabledGraphQLDocument(GraphQLUpdateMutation(of: model), version: mutationEvent.version)
 
         let request = GraphQLRequest(document: document.stringValue,
                                      variables: document.variables,
