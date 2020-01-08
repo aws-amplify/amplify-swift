@@ -54,7 +54,7 @@ class GraphQLSubscriptionTests: XCTestCase {
 
     func testOnCreateGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
         let document = GraphQLSubscription(of: Post.self, type: .onCreate)
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document)
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
         let expectedQueryDocument = """
         subscription OnCreatePost {
           onCreatePost {
@@ -114,7 +114,7 @@ class GraphQLSubscriptionTests: XCTestCase {
 
     func testOnCreateGraphQLSubscriptionFromModelWithAssociationWithSyncEnabled() {
         let document = GraphQLSubscription(of: Comment.self, type: .onCreate)
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document)
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
         let expectedQueryDocument = """
         subscription OnCreateComment {
           onCreateComment {
@@ -176,7 +176,7 @@ class GraphQLSubscriptionTests: XCTestCase {
 
     func testOnUpdateGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
         let document = GraphQLSubscription(of: Post.self, type: .onUpdate)
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document)
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
         let expectedQueryDocument = """
         subscription OnUpdatePost {
           onUpdatePost {
@@ -229,7 +229,7 @@ class GraphQLSubscriptionTests: XCTestCase {
 
     func testOnDeleteGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
         let document = GraphQLSubscription(of: Post.self, type: .onDelete)
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document)
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
         let expectedQueryDocument = """
         subscription OnDeletePost {
           onDeletePost {

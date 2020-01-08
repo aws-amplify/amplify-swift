@@ -74,7 +74,7 @@ class GraphQLUpdateMutationTests: XCTestCase {
     func testUpdateGraphQLMutationFromSimpleModelWithVersion() {
         let post = Post(title: "title", content: "content", createdAt: Date())
         let document = GraphQLUpdateMutation(of: post)
-        let syncEnabledVersion = SyncEnabledGraphQLDocument(graphqQLDocument: document, version: 5)
+        let syncEnabledVersion = SyncEnabledGraphQLDocument(document, version: 5)
         let expectedQueryDocument = """
         mutation UpdatePost($input: UpdatePostInput!, $condition: ModelPostConditionInput) {
           updatePost(input: $input, condition: $condition) {

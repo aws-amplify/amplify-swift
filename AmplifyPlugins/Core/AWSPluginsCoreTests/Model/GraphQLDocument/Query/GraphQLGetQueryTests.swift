@@ -52,7 +52,7 @@ class GraphQLGetQueryTests: XCTestCase {
 
     func testGetGraphQLQueryFromSimpleModelWithSyncEnabled() {
         let document = GraphQLGetQuery(from: Post.self, id: "id")
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document)
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
         let expectedQueryDocument = """
         query GetPost($id: ID!) {
           getPost(id: $id) {
@@ -114,7 +114,7 @@ class GraphQLGetQueryTests: XCTestCase {
 
     func testGetGraphQLQueryFromModelWithAssociationAndSyncEnabled() {
         let document = GraphQLGetQuery(from: Comment.self, id: "id")
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document)
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
         let expectedQueryDocument = """
         query GetComment($id: ID!) {
           getComment(id: $id) {

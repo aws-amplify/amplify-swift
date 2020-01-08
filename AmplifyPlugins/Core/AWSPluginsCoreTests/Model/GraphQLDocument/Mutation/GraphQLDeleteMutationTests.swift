@@ -73,7 +73,7 @@ class GraphQLDeleteMutationTests: XCTestCase {
     func testDeleteGraphQLMutationFromSimpleModelWithVersion() {
         let post = Post(title: "title", content: "content", createdAt: Date())
         let document = GraphQLDeleteMutation(of: post)
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document,
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(document,
                                                              version: 5)
         let expectedQueryDocument = """
         mutation DeletePost($input: DeletePostInput!, $condition: ModelPostConditionInput) {

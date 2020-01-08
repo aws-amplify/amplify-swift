@@ -118,7 +118,7 @@ class GraphQLCreateMutationTests: XCTestCase {
     func testCreateGraphQLMutationFromSimpleModelWithSyncEnabled() {
         let post = Post(title: "title", content: "content", createdAt: Date())
         let document = GraphQLCreateMutation(of: post)
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document)
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
         let expectedQueryDocument = """
         mutation CreatePost($input: CreatePostInput!, $condition: ModelPostConditionInput) {
           createPost(input: $input, condition: $condition) {
@@ -162,7 +162,7 @@ class GraphQLCreateMutationTests: XCTestCase {
         let post = Post(title: "title", content: "content", createdAt: Date())
         let comment = Comment(content: "comment", createdAt: Date(), post: post)
         let document = GraphQLCreateMutation(of: comment)
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(graphqQLDocument: document)
+        let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
         let expectedQueryDocument = """
         mutation CreateComment($input: CreateCommentInput!, $condition: ModelCommentConditionInput) {
           createComment(input: $input, condition: $condition) {
