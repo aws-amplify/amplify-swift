@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import AWSTranscribe
+import AWSTranscribeStreaming
 
 protocol AWSTranscribeBehavior {
-    func getTranscribe() -> AWSTranscribe
+    func getTranscribe() -> AWSTranscribeStreaming
 }
