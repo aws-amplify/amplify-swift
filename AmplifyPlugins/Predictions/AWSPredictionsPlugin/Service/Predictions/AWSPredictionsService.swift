@@ -12,6 +12,7 @@ import AWSTextract
 import AWSComprehend
 import AWSPolly
 import AWSPluginsCore
+import AWSTranscribeStreaming
 
 class AWSPredictionsService {
 
@@ -19,7 +20,7 @@ class AWSPredictionsService {
     var awsTranslate: AWSTranslateBehavior!
     var awsRekognition: AWSRekognitionBehavior!
     var awsPolly: AWSPollyBehavior!
-    var awsTranscribe: AWSTranscribeBehavior!
+    var awsTranscribeStreaming: AWSTranscribeStreamingBehavior!
     var awsComprehend: AWSComprehendBehavior!
     var awsTextract: AWSTextractBehavior!
     var predictionsConfig: PredictionsPluginConfiguration!
@@ -113,7 +114,7 @@ class AWSPredictionsService {
         case .polly:
             return awsPolly.getPolly()
         case .transcribe:
-            return awsTranscribe.getTranscribe()
+            return awsTranscribeStreaming.getTranscribeStreaming()
         case .comprehend:
             return awsComprehend.getComprehend()
         case .textract:

@@ -46,6 +46,14 @@ extension AWSPredictionsPlugin {
 
     }
 
+    public func convert(speechToText: URL,
+                        options: PredictionsSpeechToTextRequest.Options?,
+                        listener: PredictionsSpeechToTextOperation.EventListener?) -> PredictionsSpeechToTextOperation {
+        let request = PredictionsSpeechToTextRequest(speechToText: speechToText, options: options ?? PredictionsSpeechToTextRequest.Options())
+
+       // let convertOperation =
+    }
+
     public func identify(type: IdentifyAction,
                          image: URL,
                          options: PredictionsIdentifyRequest.Options?,

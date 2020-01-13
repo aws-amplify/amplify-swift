@@ -8,6 +8,11 @@
 import Foundation
 import AWSTranscribeStreaming
 
-protocol AWSTranscribeStramingBehavior {
+protocol AWSTranscribeStreamingBehavior {
+
     func getTranscribeStreaming() -> AWSTranscribeStreaming
+
+    func setDelegate(delegate: AWSTranscribeStreamingClientDelegate, callbackQueue: DispatchQueue)
+
+    func startTranscriptionWSS(request: AWSTranscribeStreamingStartStreamTranscriptionRequest)
 }
