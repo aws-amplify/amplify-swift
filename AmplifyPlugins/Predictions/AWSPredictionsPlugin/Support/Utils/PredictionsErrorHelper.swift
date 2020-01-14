@@ -12,6 +12,7 @@ import AWSTextract
 import AWSPolly
 import AWSTranslate
 import AWSComprehend
+import AWSTranscribeStreaming
 
 class PredictionsErrorHelper {
 
@@ -84,6 +85,11 @@ class PredictionsErrorHelper {
                 return defaultError
             }
             return AWSTranslateErrorMessage.map(errorType) ?? defaultError
+        case AWSTranscribeStreamingErrorDomain:
+            guard let errorType = AWSTranscribeStreamingErrorType.init(rawValue: error.code) else {
+                return defaultError
+            }
+            return AWSTranscribeStreamingErrorMessage.map(errorType) ?? defaultError
         default:
             return defaultError
         }

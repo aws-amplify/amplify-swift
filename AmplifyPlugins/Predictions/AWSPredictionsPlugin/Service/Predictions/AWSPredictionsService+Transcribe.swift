@@ -12,7 +12,8 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
 
     func speechToText(audio: Data, onEvent: @escaping TranscribeServiceEventHandler) {
 
-        let request: AWSTranscribeStreamingStartStreamTranscriptionRequest = AWSTranscribeStreamingStartStreamTranscriptionRequest()
+        let request: AWSTranscribeStreamingStartStreamTranscriptionRequest =
+            AWSTranscribeStreamingStartStreamTranscriptionRequest()
         request.languageCode = .enUS
         request.mediaEncoding = .pcm
         request.mediaSampleRateHertz = 8_000
@@ -33,51 +34,52 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
                 }
             }
 
-            if status == .closed && error == nil {
-
+            if status == .closed && error != nil {
+                let conflict = AWSTranscribeStreamingErrorMessage.conflict
+                onEvent(.failed(.network(conflict.errorDescription, conflict.recoverySuggestion)))
             }
         }
 
         delegate.receiveEventCallback = { event, error in
-            if let error = error {
+           guard error == nil else {
+            let error = error as NSError?
+            let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error!)
+            onEvent(.failed(.network(
+                predictionsErrorString.errorDescription,
+                predictionsErrorString.recoverySuggestion)))
+            return
+            }
 
+            guard let event = event, let transcriptEvent = event.transcriptEvent else {
+                onEvent(.failed(.unknown("No result was found. An unknown error occurred.", "Please try again.")))
                 return
             }
 
-            guard let event = event else {
-
+            guard let transcribedResults = transcriptEvent.transcript?.results else {
+                let badRequest = AWSTranscribeStreamingErrorMessage.badRequest
+                onEvent(.failed(.network(badRequest.errorDescription, badRequest.recoverySuggestion)))
                 return
             }
 
-            guard let transcriptEvent = event.transcriptEvent else {
-
-                return
-            }
-
-            guard let results = transcriptEvent.transcript?.results else {
-                print("No results, waiting for next event")
-                return
-            }
-
-            guard let firstResult = results.first else {
+            guard let firstResult = transcribedResults.first else {
                 print("firstResult nil--possibly a partial result: \(event)")
                 return
             }
 
             guard let isPartial = firstResult.isPartial as? Bool else {
-
                 return
             }
 
             guard !isPartial else {
-                print("Partial result received, waiting for next event (results: \(results))")
+                print("Partial result received, waiting for next event (results: \(transcribedResults))")
                 return
             }
 
-            print("Received final transcription event (results: \(results))")
-            DispatchQueue.main.async {
-                self.awsTranscribeStreaming.endTranscription()
-            }
+            print("Received final transcription event (results: \(transcribedResults))")
+            let transcribeResult = ConvertSpeechToTextTransformers.processTranscription(transcribedResults)
+            onEvent(.completed(transcribeResult))
+            self.awsTranscribeStreaming.endTranscription()
+
         }
         let callbackQueue = DispatchQueue(label: "TranscribeStreamingAmplify")
         awsTranscribeStreaming.setDelegate(delegate: delegate, callbackQueue: callbackQueue)
