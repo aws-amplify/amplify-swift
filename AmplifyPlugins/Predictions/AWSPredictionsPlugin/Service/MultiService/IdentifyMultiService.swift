@@ -175,7 +175,7 @@ extension Label: Hashable {
     }
 
     func higherConfidence(compareTo: Label) -> Label {
-        guard let firstMetadata = self.metadata,
+        guard let firstMetadata = metadata,
             let secondMetadata = compareTo.metadata else {
                 return self
         }

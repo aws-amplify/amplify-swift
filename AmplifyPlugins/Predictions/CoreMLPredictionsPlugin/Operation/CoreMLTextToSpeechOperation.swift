@@ -8,17 +8,17 @@
 import Foundation
 import Amplify
 
-public class CoreMLTextToSpeechOperation: AmplifyOperation<PredictionsTextToSpeechRequest,
+public class CoreMLTextToSpeechOperation: AmplifyOperation<PredictionsConvertRequest,
     Void,
-    TextToSpeechResult,
-PredictionsError>, PredictionsTextToSpeechOperation {
+    ConvertResult,
+PredictionsError>, PredictionsConvertOperation {
 
 
     init(_ request: PredictionsTextToSpeechRequest,
          listener: EventListener?) {
 
         super.init(categoryType: .predictions,
-                   eventName: HubPayload.EventName.Predictions.textToSpeech,
+                   eventName: HubPayload.EventName.Predictions.convert,
                    request: request,
                    listener: listener)
     }

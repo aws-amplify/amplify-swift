@@ -14,6 +14,8 @@ extension CoreMLPredictionsPlugin {
 
         queue = nil
         coreMLNaturalLanguage = nil
+        coreMLSpeech = nil
+        coreMLVision = nil
         onComplete()
     }
 }

@@ -12,6 +12,7 @@ import AWSTextract
 import AWSComprehend
 import AWSPolly
 import AWSPluginsCore
+import AWSTranscribeStreaming
 
 class AWSPredictionsService {
 
@@ -19,7 +20,7 @@ class AWSPredictionsService {
     var awsTranslate: AWSTranslateBehavior!
     var awsRekognition: AWSRekognitionBehavior!
     var awsPolly: AWSPollyBehavior!
-    var awsTranscribe: AWSTranscribeBehavior!
+    var awsTranscribeStreaming: AWSTranscribeStreamingBehavior!
     var awsComprehend: AWSComprehendBehavior!
     var awsTextract: AWSTextractBehavior!
     var predictionsConfig: PredictionsPluginConfiguration!
@@ -56,12 +57,17 @@ class AWSPredictionsService {
             serviceConfiguration: convertServiceConfiguration,
             identifier: identifier)
 
+        let awsTranscribeStreamingAdapter = AWSPredictionsService.makeTranscribeStreaming(
+            serviceConfiguration: convertServiceConfiguration,
+            identifier: identifier)
+
         self.init(identifier: identifier,
                   awsTranslate: awsTranslateAdapter,
                   awsRekognition: awsRekognitionAdapter,
                   awsTextract: awsTextractAdapter,
                   awsComprehend: awsComprehendAdapter,
                   awsPolly: awsPollyAdapter,
+                  awsTranscribeStreaming: awsTranscribeStreamingAdapter,
                   configuration: configuration)
 
     }
@@ -72,6 +78,7 @@ class AWSPredictionsService {
          awsTextract: AWSTextractBehavior,
          awsComprehend: AWSComprehendBehavior,
          awsPolly: AWSPollyBehavior,
+         awsTranscribeStreaming: AWSTranscribeStreamingBehavior,
          configuration: PredictionsPluginConfiguration) {
 
         self.identifier = identifier
@@ -80,6 +87,7 @@ class AWSPredictionsService {
         self.awsTextract = awsTextract
         self.awsComprehend = awsComprehend
         self.awsPolly = awsPolly
+        self.awsTranscribeStreaming = awsTranscribeStreaming
         self.predictionsConfig = configuration
 
     }
@@ -101,6 +109,9 @@ class AWSPredictionsService {
         AWSPolly.remove(forKey: identifier)
         awsPolly = nil
 
+        AWSTranscribeStreaming.remove(forKey: identifier)
+        awsTranscribeStreaming = nil
+
         identifier = nil
     }
 
@@ -113,7 +124,7 @@ class AWSPredictionsService {
         case .polly:
             return awsPolly.getPolly()
         case .transcribe:
-            return awsTranscribe.getTranscribe()
+            return awsTranscribeStreaming.getTranscribeStreaming()
         case .comprehend:
             return awsComprehend.getComprehend()
         case .textract:
@@ -150,5 +161,12 @@ class AWSPredictionsService {
         AWSComprehend.register(with: serviceConfiguration, forKey: identifier)
         let awsComprehend = AWSComprehend(forKey: identifier)
         return AWSComprehendAdapter(awsComprehend)
+    }
+
+    private static func makeTranscribeStreaming(serviceConfiguration: AmplifyAWSServiceConfiguration,
+                                                identifier: String) -> AWSTranscribeStreamingAdapter {
+        AWSTranscribeStreaming.register(with: serviceConfiguration, forKey: identifier, webSocketProvider: NativeWebSocketProvider())
+        let awsTranscribeStreaming = AWSTranscribeStreaming(forKey: identifier)
+        return AWSTranscribeStreamingAdapter(awsTranscribeStreaming)
     }
 }

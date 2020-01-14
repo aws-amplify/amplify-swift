@@ -15,11 +15,18 @@ protocol CoreMLPredictionBehavior: class {
     typealias IdentifyEventHandler = (IdentifyEvent) -> Void
     typealias IdentifyEvent = PredictionsEvent<IdentifyResult, PredictionsError>
 
+    typealias ConvertEventHandler = (ConvertEvent) -> Void
+    typealias ConvertEvent = PredictionsEvent<ConvertResult, PredictionsError>
+
     func comprehend(text: String,
                     onEvent: @escaping InterpretTextEventHandler)
 
     func identify(_ imageURL: URL,
                   type: IdentifyAction,
                   onEvent: @escaping IdentifyEventHandler)
+
+    func convert(_ speechToText: URL,
+                 type: ConvertAction,
+                 onEvent: @escaping ConvertEventHandler)
 
 }

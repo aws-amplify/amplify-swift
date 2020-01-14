@@ -6,8 +6,9 @@
 //
 
 import Foundation
-import AWSTranscribe
+import Amplify
 
-protocol AWSTranscribeBehavior {
-    func getTranscribe() -> AWSTranscribe
+protocol CoreMLSpeechBehavior: class {
+
+    func getTranscription(_ audioData: URL) -> SpeechToTextResult?
 }

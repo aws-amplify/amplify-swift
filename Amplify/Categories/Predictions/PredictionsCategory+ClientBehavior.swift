@@ -11,7 +11,7 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
 
     public func convert(textToSpeech: String,
                         options: PredictionsTextToSpeechRequest.Options? = nil,
-                        listener: PredictionsTextToSpeechOperation.EventListener?) -> PredictionsTextToSpeechOperation {
+                        listener: PredictionsConvertOperation.EventListener?) -> PredictionsConvertOperation {
         plugin.convert(textToSpeech: textToSpeech,
                        options: options,
                        listener: listener)
@@ -21,13 +21,19 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
                         language: LanguageType?,
                         targetLanguage: LanguageType?,
                         options: PredictionsTranslateTextRequest.Options? = nil,
-                        listener: PredictionsTranslateTextOperation.EventListener?)
-        -> PredictionsTranslateTextOperation {
+                        listener: PredictionsConvertOperation.EventListener?)
+        -> PredictionsConvertOperation {
         plugin.convert(textToTranslate: textToTranslate,
                        language: language,
                        targetLanguage: targetLanguage,
                        options: options,
                        listener: listener)
+    }
+    
+    public func convert(speechToText: URL,
+    options: PredictionsSpeechToTextRequest.Options?,
+    listener: PredictionsConvertOperation.EventListener?) -> PredictionsConvertOperation {
+        plugin.convert(speechToText: speechToText, options: options, listener: listener)
     }
 
     public func identify(type: IdentifyAction,

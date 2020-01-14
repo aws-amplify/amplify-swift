@@ -15,7 +15,7 @@ extension CoreMLPredictionsPlugin {
                         language: LanguageType?,
                         targetLanguage: LanguageType?,
                         options: PredictionsTranslateTextRequest.Options?,
-                        listener: PredictionsTranslateTextOperation.EventListener?) -> PredictionsTranslateTextOperation {
+                        listener: PredictionsConvertOperation.EventListener?) -> PredictionsConvertOperation {
 
         let options = options ?? PredictionsTranslateTextRequest.Options()
         let request = PredictionsTranslateTextRequest(textToTranslate: textToTranslate,
@@ -29,11 +29,21 @@ extension CoreMLPredictionsPlugin {
 
     public func convert(textToSpeech: String,
                         options: PredictionsTextToSpeechRequest.Options? = nil,
-                        listener: PredictionsTextToSpeechOperation.EventListener?) -> PredictionsTextToSpeechOperation {
+                        listener: PredictionsConvertOperation.EventListener?) -> PredictionsConvertOperation {
         let options = options ?? PredictionsTextToSpeechRequest.Options()
         let request = PredictionsTextToSpeechRequest(textToSpeech: textToSpeech,
                                                      options: options)
         let operation = CoreMLTextToSpeechOperation(request, listener: listener)
+        queue.addOperation(operation)
+        return operation
+    }
+
+    public func convert(speechToText: URL,
+                        options: PredictionsSpeechToTextRequest.Options?,
+                        listener: PredictionsConvertOperation.EventListener?) -> PredictionsConvertOperation {
+        let options = options ?? PredictionsSpeechToTextRequest.Options()
+        let request = PredictionsSpeechToTextRequest(speechToText: speechToText, options: options)
+        let operation = CoreMLSpeechToTextOperation(request, coreMLSpeech: coreMLSpeech, listener: listener)
         queue.addOperation(operation)
         return operation
     }

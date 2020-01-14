@@ -35,4 +35,12 @@ struct CoreMLPluginErrorString {
         "Detect entities returned with no result",
         "The input might not have enough data points to find entities")
 
+    static let transcriptionNoResult: PluginErrorString = (
+        "Speech to text returned with no result",
+        "The audio file may be corrupt or hard to understand.")
+
+    static let requestObjectExpected: PluginErrorString = (
+        "The object sent over doesn't match the request object for this type of request",
+        "Make sure you are sending over the correct type for the data needed for this request.")
+
 }

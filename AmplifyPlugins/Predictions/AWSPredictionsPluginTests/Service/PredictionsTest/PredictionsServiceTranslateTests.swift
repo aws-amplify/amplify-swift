@@ -30,6 +30,7 @@ class PredictionsServiceTranslateTests: XCTestCase {
                                                        awsTextract: MockTextractBehavior(),
                                                        awsComprehend: MockComprehendBehavior(),
                                                        awsPolly: MockPollyBehavior(),
+                                                       awsTranscribeStreaming: MockTranscribeBehavior(),
                                                        configuration: mockConfiguration)
         } catch {
             XCTFail("Initialization of the text failed")
@@ -54,7 +55,8 @@ class PredictionsServiceTranslateTests: XCTestCase {
                                          targetLanguage: .italian) { event in
                                             switch event {
                                             case .completed(let result):
-                                                XCTAssertEqual(result.text,
+                                                 let translateTextResult = result as? TranslateTextResult
+                                                XCTAssertEqual(translateTextResult?.text,
                                                                mockResponse.translatedText,
                                                                "Translated text should be same")
                                             case .failed(let error):
@@ -122,6 +124,7 @@ class PredictionsServiceTranslateTests: XCTestCase {
                                             awsTextract: MockTextractBehavior(),
                                             awsComprehend: MockComprehendBehavior(),
                                             awsPolly: MockPollyBehavior(),
+                                            awsTranscribeStreaming: MockTranscribeBehavior(),
                                             configuration: mockConfiguration)
         } catch {
             XCTFail("Initialization of the text failed. \(error)")
@@ -136,7 +139,8 @@ class PredictionsServiceTranslateTests: XCTestCase {
                               targetLanguage: nil) { event in
                                 switch event {
                                 case .completed(let result):
-                                    XCTAssertEqual(result.text,
+                                    let translateTextResult = result as? TranslateTextResult
+                                    XCTAssertEqual(translateTextResult?.text,
                                                    mockResponse.translatedText,
                                                    "Translated text should be same")
                                 case .failed(let error):
@@ -258,10 +262,11 @@ class PredictionsServiceTranslateTests: XCTestCase {
                                          targetLanguage: .malayalam) { event in
                                             switch event {
                                             case .completed(let result):
-                                                XCTAssertEqual(result.text,
+                                                 let translateTextResult = result as? TranslateTextResult
+                                                XCTAssertEqual(translateTextResult?.text,
                                                                mockResponse.translatedText,
                                                                "Translated text should be same")
-                                                XCTAssertEqual(result.targetLanguage, .malayalam)
+                                                 XCTAssertEqual(translateTextResult?.targetLanguage, .malayalam)
                                             case .failed(let error):
                                                 XCTFail("Should not produce error: \(error)")
                                             }
