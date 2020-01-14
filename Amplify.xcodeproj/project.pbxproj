@@ -106,6 +106,7 @@
 		7D5ED6C78E25246DDAF2F2EC /* Pods_Amplify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F3A76FB68CEFA45F4BB1BB /* Pods_Amplify.framework */; platformFilter = ios; };
 		7F27B1DCE59C1E674172CCD6 /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 976D972EC2BBCAAD023694EB /* Pods_Amplify_AmplifyTestConfigs_AmplifyTests.framework */; };
 		881246F5DCC59436DC932469 /* Pods_Amplify_AWSPluginsCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35D92182B8445C8F9B0FAE94 /* Pods_Amplify_AWSPluginsCore.framework */; };
+		950A26A723CE6CE300D92B19 /* PredictionsConvertOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26A623CE6CE300D92B19 /* PredictionsConvertOperation.swift */; };
 		95DAAB1D237E63370028544F /* IdentifiedWord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB01237E63370028544F /* IdentifiedWord.swift */; };
 		95DAAB1E237E63370028544F /* TextFormatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB02237E63370028544F /* TextFormatType.swift */; };
 		95DAAB20237E63370028544F /* SyntaxToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB04237E63370028544F /* SyntaxToken.swift */; };
@@ -144,7 +145,6 @@
 		95DAAB4C237E639E0028544F /* IdentifyEntitiesResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB42237E639E0028544F /* IdentifyEntitiesResult.swift */; };
 		95DAAB83237F13940028544F /* EntityMatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB81237F13940028544F /* EntityMatch.swift */; };
 		95DAAB84237F13940028544F /* VoiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB82237F13940028544F /* VoiceType.swift */; };
-		95DAAB86237F13A10028544F /* PredictionsTextToSpeechOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB85237F13A10028544F /* PredictionsTextToSpeechOperation.swift */; };
 		95DAAB89237F13B70028544F /* IdentifyEntityMatchesResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB87237F13B70028544F /* IdentifyEntityMatchesResult.swift */; };
 		95DAAB8A237F13B70028544F /* TextToSpeechResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB88237F13B70028544F /* TextToSpeechResult.swift */; };
 		95DAAB8C237F13D10028544F /* PredictionsTextToSpeechRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB8B237F13D10028544F /* PredictionsTextToSpeechRequest.swift */; };
@@ -155,7 +155,6 @@
 		B4BD6B3723708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BD6B3623708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift */; };
 		B4BD6B392370932300A1F0A7 /* PredictionsIdentifyRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BD6B382370932300A1F0A7 /* PredictionsIdentifyRequest.swift */; };
 		B4D3852E236C97360014653D /* PredictionsIdentifyOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D38517236C97350014653D /* PredictionsIdentifyOperation.swift */; };
-		B4D3852F236C97360014653D /* PredictionsTranslateTextOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D38518236C97350014653D /* PredictionsTranslateTextOperation.swift */; };
 		B4D38530236C97360014653D /* PredictionsInterpretOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D38519236C97350014653D /* PredictionsInterpretOperation.swift */; };
 		B4D38531236C97360014653D /* PredictionsCategoryClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D3851A236C97350014653D /* PredictionsCategoryClientBehavior.swift */; };
 		B4D38535236C97360014653D /* PredictionsCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D3851F236C97350014653D /* PredictionsCategory.swift */; };
@@ -699,6 +698,7 @@
 		907D65D1445983A5B10AED95 /* Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin/Pods-AWSPlugins-AWSAuthService-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		934ECFB4BB156267C1BC067A /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		941C4FA7EED42C093243D628 /* Pods-Amplify-AmplifyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AmplifyTests.debug.xcconfig"; path = "Target Support Files/Pods-Amplify-AmplifyTests/Pods-Amplify-AmplifyTests.debug.xcconfig"; sourceTree = "<group>"; };
+		950A26A623CE6CE300D92B19 /* PredictionsConvertOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PredictionsConvertOperation.swift; path = Amplify/Categories/Predictions/Operation/PredictionsConvertOperation.swift; sourceTree = "<group>"; };
 		95DAAB01237E63370028544F /* IdentifiedWord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifiedWord.swift; sourceTree = "<group>"; };
 		95DAAB02237E63370028544F /* TextFormatType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFormatType.swift; sourceTree = "<group>"; };
 		95DAAB04237E63370028544F /* SyntaxToken.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxToken.swift; sourceTree = "<group>"; };
@@ -1520,6 +1520,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		6B33896623AAAC9600561E5B /* Reachability */ = {
+			isa = PBXGroup;
+			children = (
+				6B33896723AAACC900561E5B /* ReachabilityUpdate.swift */,
+			);
+			path = Reachability;
+			sourceTree = "<group>";
+		};
 		6BBECD6F23ADA7C100C8DFBE /* ServiceConfiguration */ = {
 			isa = PBXGroup;
 			children = (
@@ -1534,14 +1542,6 @@
 				6BBECD7323ADA9D100C8DFBE /* AmplifyAWSServiceConfigurationTests.swift */,
 			);
 			path = ServiceConfiguration;
-			sourceTree = "<group>";
-		};
-		6B33896623AAAC9600561E5B /* Reachability */ = {
-			isa = PBXGroup;
-			children = (
-				6B33896723AAACC900561E5B /* ReachabilityUpdate.swift */,
-			);
-			path = Reachability;
 			sourceTree = "<group>";
 		};
 		95DAAB00237E63370028544F /* Models */ = {
@@ -2116,6 +2116,7 @@
 		FAC234C82279F8DA00424678 = {
 			isa = PBXGroup;
 			children = (
+				950A26A623CE6CE300D92B19 /* PredictionsConvertOperation.swift */,
 				FAC234D42279F8DA00424678 /* Amplify */,
 				FAC234DF2279F8DA00424678 /* AmplifyTests */,
 				FACA36052327FBD4000E74F6 /* AmplifyTestCommon */,
@@ -3454,6 +3455,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				950A26A723CE6CE300D92B19 /* PredictionsConvertOperation.swift in Sources */,
 				B92E03AE2367CE7A006CEB8D /* DataStoreCategoryPlugin.swift in Sources */,
 				FAD3936B2381F91100463F5E /* MutationEvent.swift in Sources */,
 				FAC0A29B22B3DEEE00B50912 /* HubPayload.swift in Sources */,
@@ -3571,7 +3573,6 @@
 				FA4E731623294B6E003B8EEB /* AWSHubPlugin.swift in Sources */,
 				FAC23543227A055200424678 /* Category+Configuration.swift in Sources */,
 				FA09B9452322C9E8000E064D /* AnalyticsCategoryConfiguration.swift in Sources */,
-				B4D3852F236C97360014653D /* PredictionsTranslateTextOperation.swift in Sources */,
 				FA09B9472322CBA7000E064D /* APICategoryConfiguration.swift in Sources */,
 				21FFF995230C96CB005878EA /* StorageListOperation.swift in Sources */,
 				95DAAB33237E63370028544F /* KeyPhrase.swift in Sources */,
@@ -3692,7 +3693,6 @@
 				FAC23522227A053D00424678 /* LoggingCategory.swift in Sources */,
 				FAC2358F227A4A6E00424678 /* HubCategory.swift in Sources */,
 				B98E9D0E2372236300934B51 /* ModelKey.swift in Sources */,
-				95DAAB86237F13A10028544F /* PredictionsTextToSpeechOperation.swift in Sources */,
 				B9FAA13C238BBE67009414B4 /* DataStoreCallback+Combine.swift in Sources */,
 				95DAAB8A237F13B70028544F /* TextToSpeechResult.swift in Sources */,
 				B98E9D122372236300934B51 /* QueryField.swift in Sources */,
