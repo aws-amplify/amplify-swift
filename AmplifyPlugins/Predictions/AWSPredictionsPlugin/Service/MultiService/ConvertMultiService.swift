@@ -39,7 +39,9 @@ class ConvertMultiService: MultiServiceBehavior {
 
         switch request.type {
         case .speechToText:
-            break
+            if let castedRequest = request as? PredictionsSpeechToTextRequest {
+                onlineService.transcribe(speechToText: castedRequest.speechToText, onEvent: callback)
+            }
         case .textToSpeech:
             if let castedRequest = request as? PredictionsTextToSpeechRequest {
                 let voiceId = reconcileVoiceId(voicePassedIn: castedRequest.options.voiceType,
@@ -65,7 +67,14 @@ class ConvertMultiService: MultiServiceBehavior {
             callback(.failed(predictionError))
             return
         }
-
+        guard let castedRequest = request as? PredictionsSpeechToTextRequest else {
+            let message = ConvertMultiServiceErrorMessage.inputNotFoundToConvert.errorDescription
+            let recoveryMessage = ConvertMultiServiceErrorMessage.inputNotFoundToConvert.recoverySuggestion
+            let predictionsError = PredictionsError.service(message, recoveryMessage)
+            callback(.failed(predictionsError))
+            return
+        }
+        offlineService.convert(castedRequest.speechToText, type: .speechToText, onEvent: callback)
     }
 
     // MARK: -
@@ -93,7 +102,6 @@ class ConvertMultiService: MultiServiceBehavior {
         }
 
         //TODO: merge results
-
 
         // At this point we decided not to merge the result and return the non-nil online
         // result back.

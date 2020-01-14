@@ -43,7 +43,7 @@ extension CoreMLPredictionsPlugin {
                         listener: PredictionsConvertOperation.EventListener?) -> PredictionsConvertOperation {
         let options = options ?? PredictionsSpeechToTextRequest.Options()
         let request = PredictionsSpeechToTextRequest(speechToText: speechToText, options: options)
-        let operation = CoreMLSpeechToTextOperation(request, listener: listener)
+        let operation = CoreMLSpeechToTextOperation(request, coreMLSpeech: coreMLSpeech, listener: listener)
         queue.addOperation(operation)
         return operation
     }

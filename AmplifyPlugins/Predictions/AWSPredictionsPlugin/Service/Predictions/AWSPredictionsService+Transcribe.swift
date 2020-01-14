@@ -10,7 +10,14 @@ import AWSTranscribeStreaming
 
 extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
 
-    func speechToText(audio: Data, onEvent: @escaping TranscribeServiceEventHandler) {
+    func transcribe(speechToText: URL, onEvent: @escaping TranscribeServiceEventHandler) {
+
+        guard let audioData = try? Data(contentsOf: speechToText) else {
+
+            onEvent(.failed(.network(AWSTranscribeStreamingErrorMessage.badRequest.errorDescription,
+                                     AWSTranscribeStreamingErrorMessage.badRequest.recoverySuggestion)))
+                   return
+        }
 
         let request: AWSTranscribeStreamingStartStreamTranscriptionRequest =
             AWSTranscribeStreamingStartStreamTranscriptionRequest()
@@ -29,7 +36,7 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
                        ":event-type": "AudioEvent"
                    ]
 
-                    self.awsTranscribeStreaming.send(data: audio, headers: headers)
+                    self.awsTranscribeStreaming.send(data: audioData, headers: headers)
                     self.awsTranscribeStreaming.sendEndFrame()
                 }
             }

@@ -35,4 +35,3 @@ struct ConvertMultiServiceErrorMessage {
         "No result found for the text or audio",
         "Convert text or audio did not produce any result")
 }
-

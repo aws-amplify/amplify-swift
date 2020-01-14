@@ -13,5 +13,5 @@ protocol AWSTranscribeStreamingServiceBehavior {
     typealias TranscribeServiceEventHandler = (TranscribeServiceEvent) -> Void
     typealias TranscribeServiceEvent = PredictionsEvent<ConvertResult, PredictionsError>
 
-    func speechToText(audio: Data, onEvent: @escaping TranscribeServiceEventHandler)
+    func transcribe(speechToText: URL, onEvent: @escaping TranscribeServiceEventHandler)
 }
