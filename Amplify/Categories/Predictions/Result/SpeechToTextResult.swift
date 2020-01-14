@@ -1,8 +1,16 @@
 //
-//  SpeechToTextResult.swift
-//  Amplify
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
 //
-//  Created by Stone, Nicki on 1/10/20.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
+
+public struct SpeechToTextResult: ConvertResult {
+     public let text: String
+
+    public init(text: String) {
+        self.text = text
+    }
+}
