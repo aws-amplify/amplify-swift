@@ -18,7 +18,7 @@ PredictionsError>, PredictionsConvertOperation {
          listener: EventListener?) {
 
         super.init(categoryType: .predictions,
-                   eventName: HubPayload.EventName.Predictions.textToSpeech,
+                   eventName: HubPayload.EventName.Predictions.convert,
                    request: request,
                    listener: listener)
     }

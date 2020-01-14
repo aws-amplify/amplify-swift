@@ -23,7 +23,7 @@ PredictionsConvertOperation {
          listener: EventListener?) {
         self.multiService = multiService
         super.init(categoryType: .predictions,
-                   eventName: HubPayload.EventName.Predictions.translate,
+                   eventName: HubPayload.EventName.Predictions.convert,
                    request: request,
                    listener: listener)
     }

@@ -97,7 +97,7 @@ PredictionsError>, PredictionsConvertOperation {
 
     init(request: Request) {
         super.init(categoryType: .predictions,
-                   eventName: HubPayload.EventName.Predictions.translate,
+                   eventName: HubPayload.EventName.Predictions.convert,
                    request: request)
     }
 
@@ -116,7 +116,7 @@ PredictionsError>, PredictionsConvertOperation {
 
     init(request: Request) {
         super.init(categoryType: .predictions,
-                   eventName: HubPayload.EventName.Predictions.speechToText,
+                   eventName: HubPayload.EventName.Predictions.convert,
                    request: request)
     }
 
