@@ -8,9 +8,9 @@
 import Foundation
 import Amplify
 
-public extension PredictionsTextToSpeechRequest {
+public extension PredictionsConvertRequest {
     /// Performs client side validation and returns a `PredictionsError` for any validation failures.
-    func validate() throws -> PredictionsError? {
+    func validate() -> PredictionsError? {
 
         return nil
     }

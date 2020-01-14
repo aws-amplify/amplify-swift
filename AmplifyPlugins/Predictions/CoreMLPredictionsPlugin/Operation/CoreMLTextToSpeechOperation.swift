@@ -8,10 +8,10 @@
 import Foundation
 import Amplify
 
-public class CoreMLTextToSpeechOperation: AmplifyOperation<PredictionsTextToSpeechRequest,
+public class CoreMLTextToSpeechOperation: AmplifyOperation<PredictionsConvertRequest,
     Void,
-    TextToSpeechResult,
-PredictionsError>, PredictionsTextToSpeechOperation {
+    ConvertResult,
+PredictionsError>, PredictionsConvertOperation {
 
 
     init(_ request: PredictionsTextToSpeechRequest,

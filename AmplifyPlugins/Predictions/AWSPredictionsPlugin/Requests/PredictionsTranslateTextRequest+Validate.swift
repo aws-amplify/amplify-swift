@@ -8,10 +8,10 @@
 import Foundation
 import Amplify
 
-public extension PredictionsTranslateTextRequest {
-    /// Performs client side validation and returns a `PredictionsError` for any validation failures.
-    func validate() -> PredictionsError? {
-
-        return nil
-    }
-}
+//public extension PredictionsTranslateTextRequest {
+//    /// Performs client side validation and returns a `PredictionsError` for any validation failures.
+//    func validate() -> PredictionsError? {
+//
+//        return nil
+//    }
+//}

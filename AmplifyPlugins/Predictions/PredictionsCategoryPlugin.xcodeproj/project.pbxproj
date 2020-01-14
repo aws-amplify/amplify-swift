@@ -21,6 +21,9 @@
 		95A422BB23C8EE2600D534C7 /* AWSTranscribeStreamingAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A422BA23C8EE2600D534C7 /* AWSTranscribeStreamingAdapter.swift */; };
 		95A422C123CCDFE600D534C7 /* NativeWebSocketProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A422C023CCDFE600D534C7 /* NativeWebSocketProvider.swift */; };
 		95A422C323CCEB8600D534C7 /* CoreMLSpeechToTextOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A422C223CCEB8600D534C7 /* CoreMLSpeechToTextOperation.swift */; };
+		95A422C523CD469800D534C7 /* ConvertOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A422C423CD469800D534C7 /* ConvertOperation.swift */; };
+		95A422C723CD470B00D534C7 /* ConvertMultiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A422C623CD470B00D534C7 /* ConvertMultiService.swift */; };
+		95A422C923CD481800D534C7 /* ConvertMultiServiceErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A422C823CD481800D534C7 /* ConvertMultiServiceErrorMessage.swift */; };
 		95CF45042385EEAC00479D24 /* testImageText.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 95CF45002385EEAB00479D24 /* testImageText.jpg */; };
 		95CF45052385EEAC00479D24 /* testImageLabels.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 95CF45012385EEAB00479D24 /* testImageLabels.jpg */; };
 		95CF45062385EEAC00479D24 /* testImageEntities.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 95CF45022385EEAB00479D24 /* testImageEntities.jpg */; };
@@ -71,7 +74,7 @@
 		95DAAAE9237DFD180028544F /* AWSPollyOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAAE8237DFD180028544F /* AWSPollyOperation.swift */; };
 		95DAAAEC237DFDB00028544F /* AWSPollyServiceBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAAEA237DFDAF0028544F /* AWSPollyServiceBehavior.swift */; };
 		95DAAAED237DFDB00028544F /* AWSPredictionsService+Polly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAAEB237DFDB00028544F /* AWSPredictionsService+Polly.swift */; };
-		95DAAAEF237DFDC70028544F /* PredictionsTextToSpeechRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAAEE237DFDC70028544F /* PredictionsTextToSpeechRequest+Validate.swift */; };
+		95DAAAEF237DFDC70028544F /* PredictionsConvertRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAAEE237DFDC70028544F /* PredictionsConvertRequest+Validate.swift */; };
 		95DAAAF1237DFE5F0028544F /* VoiceType+AWSExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAAF0237DFE5F0028544F /* VoiceType+AWSExtension.swift */; };
 		95DAAB94237F53C50028544F /* AWSPollyVoiceId+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB93237F53C50028544F /* AWSPollyVoiceId+Extension.swift */; };
 		95DAABB92384B6CF0028544F /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 95DAABB72384B6CF0028544F /* amplifyconfiguration.json */; };
@@ -216,6 +219,9 @@
 		95A422BA23C8EE2600D534C7 /* AWSTranscribeStreamingAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSTranscribeStreamingAdapter.swift; sourceTree = "<group>"; };
 		95A422C023CCDFE600D534C7 /* NativeWebSocketProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeWebSocketProvider.swift; sourceTree = "<group>"; };
 		95A422C223CCEB8600D534C7 /* CoreMLSpeechToTextOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLSpeechToTextOperation.swift; sourceTree = "<group>"; };
+		95A422C423CD469800D534C7 /* ConvertOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvertOperation.swift; sourceTree = "<group>"; };
+		95A422C623CD470B00D534C7 /* ConvertMultiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvertMultiService.swift; sourceTree = "<group>"; };
+		95A422C823CD481800D534C7 /* ConvertMultiServiceErrorMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvertMultiServiceErrorMessage.swift; sourceTree = "<group>"; };
 		95CF45002385EEAB00479D24 /* testImageText.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageText.jpg; sourceTree = "<group>"; };
 		95CF45012385EEAB00479D24 /* testImageLabels.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageLabels.jpg; sourceTree = "<group>"; };
 		95CF45022385EEAB00479D24 /* testImageEntities.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageEntities.jpg; sourceTree = "<group>"; };
@@ -267,7 +273,7 @@
 		95DAAAE8237DFD180028544F /* AWSPollyOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPollyOperation.swift; sourceTree = "<group>"; };
 		95DAAAEA237DFDAF0028544F /* AWSPollyServiceBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPollyServiceBehavior.swift; sourceTree = "<group>"; };
 		95DAAAEB237DFDB00028544F /* AWSPredictionsService+Polly.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSPredictionsService+Polly.swift"; sourceTree = "<group>"; };
-		95DAAAEE237DFDC70028544F /* PredictionsTextToSpeechRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PredictionsTextToSpeechRequest+Validate.swift"; sourceTree = "<group>"; };
+		95DAAAEE237DFDC70028544F /* PredictionsConvertRequest+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PredictionsConvertRequest+Validate.swift"; sourceTree = "<group>"; };
 		95DAAAF0237DFE5F0028544F /* VoiceType+AWSExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VoiceType+AWSExtension.swift"; sourceTree = "<group>"; };
 		95DAAB93237F53C50028544F /* AWSPollyVoiceId+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSPollyVoiceId+Extension.swift"; sourceTree = "<group>"; };
 		95DAABB72384B6CF0028544F /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
@@ -486,6 +492,7 @@
 				B45B067B237F143C00DC9122 /* InterpretTextOperation.swift */,
 				95DAAA32237B8ED30028544F /* IdentifyOperation.swift */,
 				95DAAA33237B8ED30028544F /* AWSTranslateOperation.swift */,
+				95A422C423CD469800D534C7 /* ConvertOperation.swift */,
 			);
 			path = Operation;
 			sourceTree = "<group>";
@@ -531,7 +538,7 @@
 		95DAAA45237B8ED30028544F /* Requests */ = {
 			isa = PBXGroup;
 			children = (
-				95DAAAEE237DFDC70028544F /* PredictionsTextToSpeechRequest+Validate.swift */,
+				95DAAAEE237DFDC70028544F /* PredictionsConvertRequest+Validate.swift */,
 				95DAAA46237B8ED30028544F /* PredictionsIdentifyRequest+Validate.swift */,
 				95DAAA47237B8ED30028544F /* PredictionsTranslateTextRequest+Validate.swift */,
 				95A422B823C8ED3B00D534C7 /* PredictionsSpeechToTextRequest+Validate.swift */,
@@ -630,6 +637,7 @@
 				B42094A62384A46B000F98A3 /* IdentifyMultiServiceErrorMessage.swift */,
 				B42094A82384A46B000F98A3 /* InterpretMultiServiceErrorMessage.swift */,
 				B42094A92384A46B000F98A3 /* PluginErrorMessage.swift */,
+				95A422C823CD481800D534C7 /* ConvertMultiServiceErrorMessage.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -657,6 +665,7 @@
 				B4E26A792383D9EA00739926 /* IdentifyMultiService.swift */,
 				B45B0675237F13EB00DC9122 /* InterpretTextMultiService.swift */,
 				B45B0676237F13EB00DC9122 /* MultiServiceBehavior.swift */,
+				95A422C623CD470B00D534C7 /* ConvertMultiService.swift */,
 			);
 			path = MultiService;
 			sourceTree = "<group>";
@@ -1728,6 +1737,7 @@
 				95DAAA75237B8ED40028544F /* AWSRekognitionBehavior.swift in Sources */,
 				95DAAAED237DFDB00028544F /* AWSPredictionsService+Polly.swift in Sources */,
 				B45B0678237F13EB00DC9122 /* CoreMLPredictionService.swift in Sources */,
+				95A422C923CD481800D534C7 /* ConvertMultiServiceErrorMessage.swift in Sources */,
 				95DAAA91237B8ED40028544F /* AWSPredictionsService+Textract.swift in Sources */,
 				95DAAA89237B8ED40028544F /* IdentifyTextResultTransformers.swift in Sources */,
 				95DAAA6F237B8ED40028544F /* AWSTranscribeStreamingBehavior.swift in Sources */,
@@ -1738,6 +1748,7 @@
 				B42094B12384A46B000F98A3 /* InterpretMultiServiceErrorMessage.swift in Sources */,
 				95DAAA8E237B8ED40028544F /* AWSTextractServiceBehavior.swift in Sources */,
 				B42094AE2384A46B000F98A3 /* AWSComprehendErrorMessage.swift in Sources */,
+				95A422C723CD470B00D534C7 /* ConvertMultiService.swift in Sources */,
 				95DAAA8F237B8ED40028544F /* AWSPredictionsService+Comprehend.swift in Sources */,
 				95DAAA6E237B8ED40028544F /* AWSPredictionsPlugin+Reset.swift in Sources */,
 				95DAAAEC237DFDB00028544F /* AWSPollyServiceBehavior.swift in Sources */,
@@ -1752,13 +1763,14 @@
 				95DAAA70237B8ED40028544F /* AWSPollyBehavior.swift in Sources */,
 				95DAAA84237B8ED40028544F /* IdentifyResultTransformers.swift in Sources */,
 				B42094B72384A5EF000F98A3 /* AWSComprehendEntityTypeExtension.swift in Sources */,
-				95DAAAEF237DFDC70028544F /* PredictionsTextToSpeechRequest+Validate.swift in Sources */,
+				95DAAAEF237DFDC70028544F /* PredictionsConvertRequest+Validate.swift in Sources */,
 				B42094B42384A46B000F98A3 /* AWSRekognitionErrorMessage.swift in Sources */,
 				95DAAAE9237DFD180028544F /* AWSPollyOperation.swift in Sources */,
 				95DAAACF237CBE040028544F /* FormatType+AWSExtension.swift in Sources */,
 				B42094AF2384A46B000F98A3 /* IdentifyMultiServiceErrorMessage.swift in Sources */,
 				B42094B22384A46B000F98A3 /* PluginErrorMessage.swift in Sources */,
 				95DAAA71237B8ED40028544F /* AWSTextractBehavior.swift in Sources */,
+				95A422C523CD469800D534C7 /* ConvertOperation.swift in Sources */,
 				95DAAA90237B8ED40028544F /* AWSRekognitionServiceBehavior.swift in Sources */,
 				B45B0677237F13EB00DC9122 /* CoreMLPredictionBehavior.swift in Sources */,
 				B45B067A237F13EB00DC9122 /* MultiServiceBehavior.swift in Sources */,
