@@ -28,4 +28,16 @@ class AWSTranscribeStreamingAdapter: AWSTranscribeStreamingBehavior {
         return awsTranscribeStreaming.startTranscriptionWSS(request)
     }
 
+    func send(data: Data, headers: [String: String]) {
+        return awsTranscribeStreaming.send(data, headers: headers)
+    }
+
+    func sendEndFrame() {
+        return awsTranscribeStreaming.sendEndFrame()
+    }
+
+    func endTranscription() {
+        return awsTranscribeStreaming.endTranscription()
+    }
+
 }

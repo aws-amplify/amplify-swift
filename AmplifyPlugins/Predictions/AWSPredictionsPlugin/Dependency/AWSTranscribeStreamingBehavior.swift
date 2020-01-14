@@ -15,4 +15,10 @@ protocol AWSTranscribeStreamingBehavior {
     func setDelegate(delegate: AWSTranscribeStreamingClientDelegate, callbackQueue: DispatchQueue)
 
     func startTranscriptionWSS(request: AWSTranscribeStreamingStartStreamTranscriptionRequest)
+
+    func send(data: Data, headers: [String: String])
+
+    func sendEndFrame()
+
+    func endTranscription()
 }

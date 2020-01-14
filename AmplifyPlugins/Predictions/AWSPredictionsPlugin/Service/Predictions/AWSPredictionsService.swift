@@ -57,12 +57,17 @@ class AWSPredictionsService {
             serviceConfiguration: convertServiceConfiguration,
             identifier: identifier)
 
+        let awsTranscribeStreamingAdapter = AWSPredictionsService.makeTranscribeStreaming(
+            serviceConfiguration: convertServiceConfiguration,
+            identifier: identifier)
+
         self.init(identifier: identifier,
                   awsTranslate: awsTranslateAdapter,
                   awsRekognition: awsRekognitionAdapter,
                   awsTextract: awsTextractAdapter,
                   awsComprehend: awsComprehendAdapter,
                   awsPolly: awsPollyAdapter,
+                  awsTranscribeStreaming: awsTranscribeStreamingAdapter,
                   configuration: configuration)
 
     }
@@ -73,6 +78,7 @@ class AWSPredictionsService {
          awsTextract: AWSTextractBehavior,
          awsComprehend: AWSComprehendBehavior,
          awsPolly: AWSPollyBehavior,
+         awsTranscribeStreaming: AWSTranscribeStreamingBehavior,
          configuration: PredictionsPluginConfiguration) {
 
         self.identifier = identifier
@@ -81,6 +87,7 @@ class AWSPredictionsService {
         self.awsTextract = awsTextract
         self.awsComprehend = awsComprehend
         self.awsPolly = awsPolly
+        self.awsTranscribeStreaming = awsTranscribeStreaming
         self.predictionsConfig = configuration
 
     }
@@ -101,6 +108,9 @@ class AWSPredictionsService {
 
         AWSPolly.remove(forKey: identifier)
         awsPolly = nil
+
+        AWSTranscribeStreaming.remove(forKey: identifier)
+        awsTranscribeStreaming = nil
 
         identifier = nil
     }
@@ -151,5 +161,12 @@ class AWSPredictionsService {
         AWSComprehend.register(with: serviceConfiguration, forKey: identifier)
         let awsComprehend = AWSComprehend(forKey: identifier)
         return AWSComprehendAdapter(awsComprehend)
+    }
+
+    private static func makeTranscribeStreaming(serviceConfiguration: AmplifyAWSServiceConfiguration,
+                                                identifier: String) -> AWSTranscribeStreamingAdapter {
+        AWSTranscribeStreaming.register(with: serviceConfiguration, forKey: identifier, webSocketProvider: NativeWebSocketProvider())
+        let awsTranscribeStreaming = AWSTranscribeStreaming(forKey: identifier)
+        return AWSTranscribeStreamingAdapter(awsTranscribeStreaming)
     }
 }

@@ -24,6 +24,9 @@
 		95A422C523CD469800D534C7 /* ConvertOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A422C423CD469800D534C7 /* ConvertOperation.swift */; };
 		95A422C723CD470B00D534C7 /* ConvertMultiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A422C623CD470B00D534C7 /* ConvertMultiService.swift */; };
 		95A422C923CD481800D534C7 /* ConvertMultiServiceErrorMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A422C823CD481800D534C7 /* ConvertMultiServiceErrorMessage.swift */; };
+		95A422D123CD6FD600D534C7 /* AWSPredictionsService+Transcribe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A422D023CD6FD600D534C7 /* AWSPredictionsService+Transcribe.swift */; };
+		95A422D323CD700600D534C7 /* AWSTranscribeStreamingServiceBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A422D223CD700600D534C7 /* AWSTranscribeStreamingServiceBehavior.swift */; };
+		95A422D523CD773F00D534C7 /* MockTranscribeStreamingBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A422D423CD773F00D534C7 /* MockTranscribeStreamingBehavior.swift */; };
 		95CF45042385EEAC00479D24 /* testImageText.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 95CF45002385EEAB00479D24 /* testImageText.jpg */; };
 		95CF45052385EEAC00479D24 /* testImageLabels.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 95CF45012385EEAB00479D24 /* testImageLabels.jpg */; };
 		95CF45062385EEAC00479D24 /* testImageEntities.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 95CF45022385EEAB00479D24 /* testImageEntities.jpg */; };
@@ -222,6 +225,9 @@
 		95A422C423CD469800D534C7 /* ConvertOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvertOperation.swift; sourceTree = "<group>"; };
 		95A422C623CD470B00D534C7 /* ConvertMultiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvertMultiService.swift; sourceTree = "<group>"; };
 		95A422C823CD481800D534C7 /* ConvertMultiServiceErrorMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvertMultiServiceErrorMessage.swift; sourceTree = "<group>"; };
+		95A422D023CD6FD600D534C7 /* AWSPredictionsService+Transcribe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSPredictionsService+Transcribe.swift"; sourceTree = "<group>"; };
+		95A422D223CD700600D534C7 /* AWSTranscribeStreamingServiceBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSTranscribeStreamingServiceBehavior.swift; sourceTree = "<group>"; };
+		95A422D423CD773F00D534C7 /* MockTranscribeStreamingBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTranscribeStreamingBehavior.swift; sourceTree = "<group>"; };
 		95CF45002385EEAB00479D24 /* testImageText.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageText.jpg; sourceTree = "<group>"; };
 		95CF45012385EEAB00479D24 /* testImageLabels.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageLabels.jpg; sourceTree = "<group>"; };
 		95CF45022385EEAB00479D24 /* testImageEntities.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageEntities.jpg; sourceTree = "<group>"; };
@@ -606,12 +612,14 @@
 				95DAAA61237B8ED30028544F /* AWSTextractServiceBehavior.swift */,
 				95DAAA5E237B8ED30028544F /* AWSTranslateServiceBehavior.swift */,
 				95DAAA63237B8ED30028544F /* AWSRekognitionServiceBehavior.swift */,
+				95A422D223CD700600D534C7 /* AWSTranscribeStreamingServiceBehavior.swift */,
 				95DAAA60237B8ED30028544F /* AWSPredictionsService.swift */,
 				95DAAA62237B8ED30028544F /* AWSPredictionsService+Comprehend.swift */,
 				95DAAAEB237DFDB00028544F /* AWSPredictionsService+Polly.swift */,
 				95DAAA65237B8ED30028544F /* AWSPredictionsService+Rekognition.swift */,
 				95DAAA64237B8ED30028544F /* AWSPredictionsService+Textract.swift */,
 				95DAAA66237B8ED30028544F /* AWSPredictionsService+Translate.swift */,
+				95A422D023CD6FD600D534C7 /* AWSPredictionsService+Transcribe.swift */,
 			);
 			path = Predictions;
 			sourceTree = "<group>";
@@ -705,6 +713,7 @@
 				B461DF97238C3DD1004DED35 /* MockPollyBehavior.swift */,
 				B461DF99238C3DE5004DED35 /* MockRekognitionBehavior.swift */,
 				B461DF9B238C3DF0004DED35 /* MockTextractBehavior.swift */,
+				95A422D423CD773F00D534C7 /* MockTranscribeStreamingBehavior.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -1742,6 +1751,7 @@
 				95DAAA89237B8ED40028544F /* IdentifyTextResultTransformers.swift in Sources */,
 				95DAAA6F237B8ED40028544F /* AWSTranscribeStreamingBehavior.swift in Sources */,
 				95DAAA6B237B8ED40028544F /* PredictionsPluginConfiguration.swift in Sources */,
+				95A422D323CD700600D534C7 /* AWSTranscribeStreamingServiceBehavior.swift in Sources */,
 				B4215C1D2385A3480057CF0E /* InterpretConfiguration.swift in Sources */,
 				95DAAA83237B8ED40028544F /* FetchDominantLanguageEvent.swift in Sources */,
 				95DAAA6C237B8ED40028544F /* AWSPredictionsPlugin.swift in Sources */,
@@ -1767,6 +1777,7 @@
 				B42094B42384A46B000F98A3 /* AWSRekognitionErrorMessage.swift in Sources */,
 				95DAAAE9237DFD180028544F /* AWSPollyOperation.swift in Sources */,
 				95DAAACF237CBE040028544F /* FormatType+AWSExtension.swift in Sources */,
+				95A422D123CD6FD600D534C7 /* AWSPredictionsService+Transcribe.swift in Sources */,
 				B42094AF2384A46B000F98A3 /* IdentifyMultiServiceErrorMessage.swift in Sources */,
 				B42094B22384A46B000F98A3 /* PluginErrorMessage.swift in Sources */,
 				95DAAA71237B8ED40028544F /* AWSTextractBehavior.swift in Sources */,
@@ -1819,6 +1830,7 @@
 				B42094C32384B5FB000F98A3 /* PredictionsPluginConfigurationTests.swift in Sources */,
 				B461DF98238C3DD1004DED35 /* MockPollyBehavior.swift in Sources */,
 				B442E039238C724000FA6F3E /* PredictionsServiceComprehendTests.swift in Sources */,
+				95A422D523CD773F00D534C7 /* MockTranscribeStreamingBehavior.swift in Sources */,
 				B49D1437237B665E00856777 /* AWSPredictionsPluginTests.swift in Sources */,
 				B461DF94238C3D85004DED35 /* PredictionsServiceTranslateTests.swift in Sources */,
 				B461DF96238C3DC3004DED35 /* MockComprehendBehavior.swift in Sources */,
