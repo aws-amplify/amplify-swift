@@ -31,7 +31,7 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
     }
     
     public func convert(speechToText: URL,
-    options: PredictionsSpeechToTextRequest.Options?,
+    options: PredictionsConvertRequest.Options?,
     listener: PredictionsConvertOperation.EventListener?) -> PredictionsConvertOperation {
         plugin.convert(speechToText: speechToText, options: options, listener: listener)
     }

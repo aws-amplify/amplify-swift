@@ -33,7 +33,7 @@ public protocol PredictionsCategoryClientBehavior {
     /// - Parameter listener: Triggered when the event occurs
     /// - Parameter options: Parameters to specific plugin behavior
     func convert(speechToText: URL,
-                 options: PredictionsSpeechToTextRequest.Options?,
+                 options: PredictionsConvertRequest.Options?,
                  listener: PredictionsConvertOperation.EventListener?) -> PredictionsConvertOperation
 
     /// Translate the text to the language specified.
