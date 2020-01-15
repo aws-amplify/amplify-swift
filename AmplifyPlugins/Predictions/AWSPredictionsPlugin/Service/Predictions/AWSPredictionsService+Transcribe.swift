@@ -23,7 +23,7 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
             AWSTranscribeStreamingStartStreamTranscriptionRequest()
         request.languageCode = .enUS
         request.mediaEncoding = .pcm
-        request.mediaSampleRateHertz = 8000
+        request.mediaSampleRateHertz = 8_000
 
         let delegate = NativeWSTranscribeStreamingClientDelegate()
 
