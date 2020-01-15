@@ -23,27 +23,30 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
             AWSTranscribeStreamingStartStreamTranscriptionRequest()
         request.languageCode = .enUS
         request.mediaEncoding = .pcm
-        request.mediaSampleRateHertz = 8_000
+        request.mediaSampleRateHertz = 8000
 
         let delegate = NativeWSTranscribeStreamingClientDelegate()
 
         delegate.connectionStatusCallback = { status, error in
             if status == .connected {
-                DispatchQueue.main.async {
-                   let headers = [
-                       ":content-type": "audio/wav",
-                       ":message-type": "event",
-                       ":event-type": "AudioEvent"
-                   ]
-
-                    self.awsTranscribeStreaming.send(data: audioData, headers: headers)
-                    self.awsTranscribeStreaming.sendEndFrame()
+                let headers = [
+                    ":content-type": "audio/wav",
+                    ":message-type": "event",
+                    ":event-type": "AudioEvent"
+                ]
+                let chunkSize = 4096
+                let audioDataSize = audioData.count
+                var currentStart = 0
+                var currentEnd = min(chunkSize, audioDataSize - currentStart)
+                
+                while currentStart < audioDataSize {
+                    let dataChunk = audioData[currentStart ..< currentEnd]
+                    self.awsTranscribeStreaming.send(data: dataChunk, headers: headers)
+                    
+                    currentStart = currentEnd
+                    currentEnd = min(currentStart + chunkSize, audioDataSize)
                 }
-            }
-
-            if status == .closed && error != nil {
-                let conflict = AWSTranscribeStreamingErrorMessage.conflict
-                onEvent(.failed(.network(conflict.errorDescription, conflict.recoverySuggestion)))
+                self.awsTranscribeStreaming.sendEndFrame()
             }
         }
 
