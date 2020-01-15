@@ -30,19 +30,19 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     // MARK: - Model-based GraphQL methods
 
-    func query<M>(from modelType: M.Type,
+    func query<M>(_ modelType: M.Type,
                   byId id: String,
                   listener: GraphQLOperation<M?>.EventListener?) -> GraphQLOperation<M?> {
         fatalError("Not yet implemented")
     }
 
-    func query<M>(from modelType: M.Type,
+    func query<M>(_ modelType: M.Type,
                   where predicate: QueryPredicate?,
                   listener: GraphQLOperation<[M]>.EventListener?) -> GraphQLOperation<[M]> {
         fatalError("Not yet implemented")
     }
 
-    func mutate<M: Model>(of model: M,
+    func mutate<M: Model>(_ model: M,
                           where predicate: QueryPredicate? = nil,
                           type: GraphQLMutationType,
                           listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M> {
@@ -58,7 +58,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         return operation
     }
 
-    func subscribe<M>(from modelType: M.Type,
+    func subscribe<M>(to modelType: M.Type,
                       type: GraphQLSubscriptionType,
                       listener: GraphQLSubscriptionOperation<M>.EventListener?) -> GraphQLSubscriptionOperation<M> {
         notify("subscribe(from:\(modelType),type:\(type),listener:)")

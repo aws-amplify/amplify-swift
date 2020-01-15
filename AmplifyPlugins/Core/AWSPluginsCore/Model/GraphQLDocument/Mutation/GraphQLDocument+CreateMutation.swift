@@ -11,7 +11,7 @@ import Foundation
 public extension GraphQLCreateMutation {
     convenience init(of anyModel: AnyModel,
                      where predicate: QueryPredicate? = nil) {
-        self.init(of: anyModel.instance, where: predicate)
+        self.init(of: anyModel.instance)
     }
 }
 
@@ -23,13 +23,10 @@ public class GraphQLCreateMutation: GraphQLDocument {
     public let mutationType = GraphQLMutationType.create
     public let model: Model
     public let modelType: Model.Type
-    public let predicate: QueryPredicate?
 
-    public init(of model: Model,
-                where predicate: QueryPredicate? = nil) {
+    public init(of model: Model) {
         self.model = model
         self.modelType = ModelRegistry.modelType(from: model.modelName) ?? Swift.type(of: model)
-        self.predicate = predicate
     }
 
     public var name: String {
@@ -37,18 +34,15 @@ public class GraphQLCreateMutation: GraphQLDocument {
     }
 
     public var inputTypes: String? {
-        "$input: \(name.pascalCased())Input!, $condition: Model\(modelType.schema.graphQLName)ConditionInput"
+        "$input: \(name.pascalCased())Input!"
     }
 
     public var inputParameters: String? {
-        "input: $input, condition: $condition"
+        "input: $input"
     }
 
     public var variables: [String: Any] {
         var variables = [String: Any]()
-        if let condition = predicate {
-            variables.updateValue(condition.graphQLFilterVariables, forKey: "condition")
-        }
 
         variables.updateValue(model.graphQLInput, forKey: "input")
 

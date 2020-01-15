@@ -18,7 +18,7 @@ public protocol APICategoryGraphQLBehavior: class {
     ///   - id: Unique identifier of the item to retrieve
     ///   - listener: The event listener for the operation
     /// - Returns: The AmplifyOperation being enqueued.
-    func query<M: Model>(from modelType: M.Type,
+    func query<M: Model>(_ modelType: M.Type,
                          byId id: String,
                          listener: GraphQLOperation<M?>.EventListener?) -> GraphQLOperation<M?>
 
@@ -30,7 +30,7 @@ public protocol APICategoryGraphQLBehavior: class {
     ///   - predicate: The filter for which items to query
     ///   - listener: The event listener for the operation
     /// - Returns: The AmplifyOperation being enqueued.
-    func query<M: Model>(from modelType: M.Type,
+    func query<M: Model>(_ modelType: M.Type,
                          where predicate: QueryPredicate?,
                          listener: GraphQLOperation<[M]>.EventListener?) -> GraphQLOperation<[M]>
 
@@ -43,7 +43,7 @@ public protocol APICategoryGraphQLBehavior: class {
     ///   - type: The type of mutation to apply on the instance of `Model`.
     ///   - listener: The event listener for the operation
     /// - Returns: The AmplifyOperation being enqueued.
-    func mutate<M: Model>(of model: M,
+    func mutate<M: Model>(_ model: M,
                           where predicate: QueryPredicate?,
                           type: GraphQLMutationType,
                           listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M>
@@ -55,7 +55,7 @@ public protocol APICategoryGraphQLBehavior: class {
     ///   - type: The type of subscription for the items
     ///   - listener: The event listener for the operation
     /// - Returns: The AmplifyOperation being enqueued.
-    func subscribe<M: Model>(from modelType: M.Type,
+    func subscribe<M: Model>(to modelType: M.Type,
                              type: GraphQLSubscriptionType,
                              listener: GraphQLSubscriptionOperation<M>.EventListener?)
         -> GraphQLSubscriptionOperation<M>

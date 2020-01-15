@@ -28,7 +28,7 @@ extension GraphQLRequest {
                                           type: GraphQLMutationType) -> GraphQLRequest<M> {
         switch type {
         case .create:
-            let document = GraphQLCreateMutation(of: model, where: predicate)
+            let document = GraphQLCreateMutation(of: model)
             return GraphQLRequest<M>(document: document.stringValue,
                                      variables: document.variables,
                                      responseType: M.self,

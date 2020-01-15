@@ -49,10 +49,9 @@ public class GraphQLSyncQuery: GraphQLDocument {
     }
 
     public var selectionSetFields: [SelectionSetField] {
-        return [SelectionSetField(value: "items",
-                                  innerFields: modelType.schema.graphQLFields.toSelectionSets(syncEnabled: true)),
-                SelectionSetField(value: "nextToken"),
-                SelectionSetField(value: "startedAt")]
+        var selectionSets = modelType.schema.graphQLFields.toSelectionSets(syncEnabled: true).paginate()
+        selectionSets.append(SelectionSetField(value: "startedAt"))
+        return selectionSets
     }
 
     public var variables: [String: Any] {

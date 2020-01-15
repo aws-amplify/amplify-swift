@@ -9,21 +9,21 @@ import Amplify
 
 public extension AWSAPIPlugin {
 
-    func query<M: Model>(from modelType: M.Type,
+    func query<M: Model>(_ modelType: M.Type,
                          byId id: String,
                          listener: GraphQLOperation<M?>.EventListener?) -> GraphQLOperation<M?> {
         let request = GraphQLRequest<M?>.query(from: modelType, byId: id)
         return query(request: request, listener: listener)
     }
 
-    func query<M: Model>(from modelType: M.Type,
+    func query<M: Model>(_ modelType: M.Type,
                          where predicate: QueryPredicate?,
                          listener: GraphQLOperation<[M]>.EventListener?) -> GraphQLOperation<[M]> {
         let request = GraphQLRequest<[M]>.query(from: modelType, where: predicate)
         return query(request: request, listener: listener)
     }
 
-    func mutate<M: Model>(of model: M,
+    func mutate<M: Model>(_ model: M,
                           where predicate: QueryPredicate? = nil,
                           type: GraphQLMutationType,
                           listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M> {
@@ -31,7 +31,7 @@ public extension AWSAPIPlugin {
         return mutate(request: request, listener: listener)
     }
 
-    func subscribe<M: Model>(from modelType: M.Type,
+    func subscribe<M: Model>(to modelType: M.Type,
                              type: GraphQLSubscriptionType,
                              listener: GraphQLSubscriptionOperation<M>.EventListener?)
         -> GraphQLSubscriptionOperation<M> {

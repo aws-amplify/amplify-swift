@@ -71,10 +71,8 @@ public class SyncEnabledGraphQLDocument<Document: GraphQLDocument>: GraphQLDocum
     }
 
     public var selectionSetFields: [SelectionSetField] {
-        if graphQLDocument.name.contains("list") {
-            return [SelectionSetField(value: "items",
-                                      innerFields: modelType.schema.graphQLFields.toSelectionSets(syncEnabled: true)),
-                    SelectionSetField(value: "nextToken")]
+        if graphQLDocument.selectionSetFields.isPaginated() {
+            return modelType.schema.graphQLFields.toSelectionSets(syncEnabled: true).paginate()
         }
 
         return modelType.schema.graphQLFields.toSelectionSets(syncEnabled: true)

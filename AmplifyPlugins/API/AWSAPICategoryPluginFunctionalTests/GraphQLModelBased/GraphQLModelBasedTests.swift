@@ -50,7 +50,7 @@ class GraphQLModelBasedTests: XCTestCase {
         }
 
         let completeInvoked = expectation(description: "request completed")
-        _ = Amplify.API.query(from: Post.self, byId: uuid, listener: { event in
+        _ = Amplify.API.query(Post.self, byId: uuid, listener: { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
@@ -86,7 +86,7 @@ class GraphQLModelBasedTests: XCTestCase {
 
         let completeInvoked = expectation(description: "request completed")
 
-        _ = Amplify.API.query(from: Post.self, where: nil, listener: { event in
+        _ = Amplify.API.query(Post.self, where: nil, listener: { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(posts) = graphQLResponse else {
@@ -130,7 +130,7 @@ class GraphQLModelBasedTests: XCTestCase {
             post.rating == 12.3 &&
             post.draft == true
 
-        _ = Amplify.API.query(from: Post.self, where: predicate, listener: { event in
+        _ = Amplify.API.query(Post.self, where: predicate, listener: { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(posts) = graphQLResponse else {
@@ -163,7 +163,7 @@ class GraphQLModelBasedTests: XCTestCase {
         let completeInvoked = expectation(description: "request completed")
         let post = Post(title: "title", content: "content", createdAt: Date())
 
-        _ = Amplify.API.mutate(of: post, where: nil, type: .create, listener: { event in
+        _ = Amplify.API.mutate(post, where: nil, type: .create, listener: { event in
             switch event {
             case .completed(let data):
                 switch data {
@@ -193,7 +193,7 @@ class GraphQLModelBasedTests: XCTestCase {
 
         let completeInvoked = expectation(description: "request completed")
         let comment = Comment(content: "commentContent", createdAt: Date(), post: createdPost)
-        _ = Amplify.API.mutate(of: comment, where: nil, type: .create, listener: { event in
+        _ = Amplify.API.mutate(comment, where: nil, type: .create, listener: { event in
             switch event {
             case .completed(let data):
                 switch data {
@@ -225,7 +225,7 @@ class GraphQLModelBasedTests: XCTestCase {
 
         let completeInvoked = expectation(description: "request completed")
 
-        _ = Amplify.API.mutate(of: post, where: nil, type: .delete, listener: { event in
+        _ = Amplify.API.mutate(post, where: nil, type: .delete, listener: { event in
             switch event {
             case .completed(let data):
                 switch data {
@@ -245,7 +245,7 @@ class GraphQLModelBasedTests: XCTestCase {
 
         let queryComplete = expectation(description: "query complete")
 
-        _ = Amplify.API.query(from: Post.self, byId: uuid, listener: { event in
+        _ = Amplify.API.query(Post.self, byId: uuid, listener: { event in
             switch event {
             case .completed(let graphQLResponse):
                 guard case let .success(post) = graphQLResponse else {
@@ -275,7 +275,7 @@ class GraphQLModelBasedTests: XCTestCase {
         let updatedTitle = title + "Updated"
         let updatedPost = Post(id: uuid, title: updatedTitle, content: post.content, createdAt: post.createdAt)
         let completeInvoked = expectation(description: "request completed")
-        _ = Amplify.API.mutate(of: updatedPost, where: nil, type: .update, listener: { event in
+        _ = Amplify.API.mutate(updatedPost, where: nil, type: .update, listener: { event in
             switch event {
             case .completed(let data):
                 switch data {
@@ -310,7 +310,7 @@ class GraphQLModelBasedTests: XCTestCase {
         let post = Post.keys
         let predicate = post.title == "incorrectPreviousTitle"
         let completedWithErrorInvoked = expectation(description: "request completed with error")
-        _ = Amplify.API.mutate(of: updatedPost, where: predicate, type: .update, listener: { event in
+        _ = Amplify.API.mutate(updatedPost, where: predicate, type: .update, listener: { event in
             switch event {
             case .completed(let data):
                 switch data {
@@ -346,7 +346,7 @@ class GraphQLModelBasedTests: XCTestCase {
         let post = Post.keys
         let predicate = post.title == title
         let completedWithSuccessInvoked = expectation(description: "request completed successfully")
-        _ = Amplify.API.mutate(of: updatedPost, where: predicate, type: .update, listener: { event in
+        _ = Amplify.API.mutate(updatedPost, where: predicate, type: .update, listener: { event in
             switch event {
             case .completed(let data):
                 switch data {
@@ -373,7 +373,7 @@ class GraphQLModelBasedTests: XCTestCase {
         let progressInvoked = expectation(description: "progress invoked")
         progressInvoked.expectedFulfillmentCount = 2
 
-        let operation = Amplify.API.subscribe(from: Post.self, type: .onCreate) { event in
+        let operation = Amplify.API.subscribe(to: Post.self, type: .onCreate) { event in
             switch event {
             case .inProcess(let graphQLResponse):
                 print(graphQLResponse)
@@ -428,7 +428,7 @@ class GraphQLModelBasedTests: XCTestCase {
         let completedInvoked = expectation(description: "Completed invoked")
         let progressInvoked = expectation(description: "progress invoked")
 
-        let operation = Amplify.API.subscribe(from: Post.self, type: .onUpdate) { event in
+        let operation = Amplify.API.subscribe(to: Post.self, type: .onUpdate) { event in
             switch event {
             case .inProcess(let graphQLResponse):
                 print(graphQLResponse)
@@ -482,7 +482,7 @@ class GraphQLModelBasedTests: XCTestCase {
         let completedInvoked = expectation(description: "Completed invoked")
         let progressInvoked = expectation(description: "progress invoked")
 
-        let operation = Amplify.API.subscribe(from: Post.self, type: .onDelete) { event in
+        let operation = Amplify.API.subscribe(to: Post.self, type: .onDelete) { event in
             switch event {
             case .inProcess(let graphQLResponse):
                 print(graphQLResponse)
@@ -536,7 +536,7 @@ class GraphQLModelBasedTests: XCTestCase {
         let completedInvoked = expectation(description: "Completed invoked")
         let progressInvoked = expectation(description: "progress invoked")
 
-        let operation = Amplify.API.subscribe(from: Comment.self, type: .onCreate) { event in
+        let operation = Amplify.API.subscribe(to: Comment.self, type: .onCreate) { event in
             switch event {
             case .inProcess(let graphQLResponse):
                 print(graphQLResponse)
@@ -600,7 +600,7 @@ class GraphQLModelBasedTests: XCTestCase {
         var result: AmplifyTestCommon.Post?
         let completeInvoked = expectation(description: "request completed")
 
-        _ = Amplify.API.mutate(of: post, where: nil, type: .create, listener: { event in
+        _ = Amplify.API.mutate(post, where: nil, type: .create, listener: { event in
             switch event {
             case .completed(let data):
                 switch data {
@@ -624,7 +624,7 @@ class GraphQLModelBasedTests: XCTestCase {
         var result: AmplifyTestCommon.Comment?
         let completeInvoked = expectation(description: "request completed")
 
-        _ = Amplify.API.mutate(of: comment, where: nil, type: .create, listener: { event in
+        _ = Amplify.API.mutate(comment, where: nil, type: .create, listener: { event in
             switch event {
             case .completed(let data):
                 switch data {
@@ -649,7 +649,7 @@ class GraphQLModelBasedTests: XCTestCase {
         let completeInvoked = expectation(description: "request completed")
 
         let post = Post(id: id, title: title, content: "content", createdAt: Date())
-        _ = Amplify.API.mutate(of: post, where: nil, type: .update, listener: { event in
+        _ = Amplify.API.mutate(post, where: nil, type: .update, listener: { event in
             switch event {
             case .completed(let data):
                 switch data {
@@ -673,7 +673,7 @@ class GraphQLModelBasedTests: XCTestCase {
         var result: AmplifyTestCommon.Post?
         let completeInvoked = expectation(description: "request completed")
 
-        _ = Amplify.API.mutate(of: post, where: nil, type: .delete, listener: { event in
+        _ = Amplify.API.mutate(post, where: nil, type: .delete, listener: { event in
             switch event {
             case .completed(let data):
                 switch data {

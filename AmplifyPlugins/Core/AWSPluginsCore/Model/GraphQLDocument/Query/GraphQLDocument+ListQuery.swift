@@ -42,9 +42,7 @@ public class GraphQLListQuery: GraphQLDocument {
     }
 
     public var selectionSetFields: [SelectionSetField] {
-        return [SelectionSetField(value: "items",
-                                  innerFields: modelType.schema.graphQLFields.toSelectionSets()),
-                SelectionSetField(value: "nextToken")]
+        return modelType.schema.graphQLFields.toSelectionSets().paginate()
     }
 
     public var variables: [String: Any] {

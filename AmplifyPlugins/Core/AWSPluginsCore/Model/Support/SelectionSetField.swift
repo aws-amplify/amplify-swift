@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class SelectionSetField {
+public struct SelectionSetField {
     var value: String
     var innerFields: [SelectionSetField]
 
@@ -30,5 +30,19 @@ public class SelectionSetField {
             result.append(indent + value)
         }
         return result.joined(separator: "\n    ")
+    }
+}
+
+extension Array where Element == SelectionSetField {
+    func isPaginated() -> Bool {
+        if let first = self.first, let last = self.last {
+            return first.value == "items" && last.value == "nextToken"
+        }
+
+        return false
+    }
+
+    func paginate() -> [SelectionSetField] {
+        return [SelectionSetField(value: "items", innerFields: self), SelectionSetField(value: "nextToken")]
     }
 }

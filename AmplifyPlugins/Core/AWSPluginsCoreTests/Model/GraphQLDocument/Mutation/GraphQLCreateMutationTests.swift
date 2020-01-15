@@ -36,8 +36,8 @@ class GraphQLCreateMutationTests: XCTestCase {
         let post = Post(title: "title", content: "content", createdAt: Date())
         let document = GraphQLCreateMutation(of: post)
         let expectedQueryDocument = """
-        mutation CreatePost($input: CreatePostInput!, $condition: ModelPostConditionInput) {
-          createPost(input: $input, condition: $condition) {
+        mutation CreatePost($input: CreatePostInput!) {
+          createPost(input: $input) {
             id
             content
             createdAt
@@ -76,8 +76,8 @@ class GraphQLCreateMutationTests: XCTestCase {
         let comment = Comment(content: "comment", createdAt: Date(), post: post)
         let document = GraphQLCreateMutation(of: comment)
         let expectedQueryDocument = """
-        mutation CreateComment($input: CreateCommentInput!, $condition: ModelCommentConditionInput) {
-          createComment(input: $input, condition: $condition) {
+        mutation CreateComment($input: CreateCommentInput!) {
+          createComment(input: $input) {
             id
             content
             createdAt
@@ -120,8 +120,8 @@ class GraphQLCreateMutationTests: XCTestCase {
         let document = GraphQLCreateMutation(of: post)
         let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
         let expectedQueryDocument = """
-        mutation CreatePost($input: CreatePostInput!, $condition: ModelPostConditionInput) {
-          createPost(input: $input, condition: $condition) {
+        mutation CreatePost($input: CreatePostInput!) {
+          createPost(input: $input) {
             id
             content
             createdAt
@@ -164,8 +164,8 @@ class GraphQLCreateMutationTests: XCTestCase {
         let document = GraphQLCreateMutation(of: comment)
         let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
         let expectedQueryDocument = """
-        mutation CreateComment($input: CreateCommentInput!, $condition: ModelCommentConditionInput) {
-          createComment(input: $input, condition: $condition) {
+        mutation CreateComment($input: CreateCommentInput!) {
+          createComment(input: $input) {
             id
             content
             createdAt
