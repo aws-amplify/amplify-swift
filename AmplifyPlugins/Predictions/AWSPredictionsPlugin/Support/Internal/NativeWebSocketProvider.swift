@@ -40,9 +40,9 @@ class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider
                     didOpenWithProtocol protocol: String?) {
         let status = AWSTranscribeStreamingClientConnectionStatus.connected
 
-       callbackQueue.async {
-           self.clientDelegate.connectionStatusDidChange(status, withError: nil)
-       }
+        callbackQueue.async {
+            self.clientDelegate.connectionStatusDidChange(status, withError: nil)
+        }
     }
 
     func urlSession(_ session: URLSession,
@@ -50,9 +50,10 @@ class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider
                     didCloseWith closeCode: URLSessionWebSocketTask.CloseCode,
                     reason: Data?) {
         let status = AWSTranscribeStreamingClientConnectionStatus.closed
+        let error = NSError(domain: AWSTranscribeStreamingClientErrorDomain, code: closeCode.rawValue, userInfo: nil)
 
         callbackQueue.async {
-            self.clientDelegate.connectionStatusDidChange(status, withError: nil)
+            self.clientDelegate.connectionStatusDidChange(status, withError: error)
         }
     }
 
@@ -117,7 +118,9 @@ class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider
                         self.clientDelegate.didReceiveEvent(result, decodingError: error)
                     }
                 } catch {
-                    print(error)
+                    self.callbackQueue.async {
+                        self.clientDelegate.didReceiveEvent(nil, decodingError: error)
+                    }
                 }
             }
         }

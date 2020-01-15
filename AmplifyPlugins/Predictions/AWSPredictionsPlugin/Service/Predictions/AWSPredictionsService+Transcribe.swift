@@ -23,7 +23,7 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
             AWSTranscribeStreamingStartStreamTranscriptionRequest()
         request.languageCode = .enUS
         request.mediaEncoding = .pcm
-        request.mediaSampleRateHertz = 8000
+        request.mediaSampleRateHertz = 8_000
 
         let delegate = NativeWSTranscribeStreamingClientDelegate()
 
@@ -34,15 +34,15 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
                     ":message-type": "event",
                     ":event-type": "AudioEvent"
                 ]
-                let chunkSize = 4096
+                let chunkSize = 4_096
                 let audioDataSize = audioData.count
                 var currentStart = 0
                 var currentEnd = min(chunkSize, audioDataSize - currentStart)
-                
+
                 while currentStart < audioDataSize {
                     let dataChunk = audioData[currentStart ..< currentEnd]
                     self.awsTranscribeStreaming.send(data: dataChunk, headers: headers)
-                    
+
                     currentStart = currentEnd
                     currentEnd = min(currentStart + chunkSize, audioDataSize)
                 }
