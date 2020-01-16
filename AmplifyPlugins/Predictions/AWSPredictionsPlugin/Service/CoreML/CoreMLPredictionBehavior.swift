@@ -15,8 +15,8 @@ protocol CoreMLPredictionBehavior: class {
     typealias IdentifyEventHandler = (IdentifyEvent) -> Void
     typealias IdentifyEvent = PredictionsEvent<IdentifyResult, PredictionsError>
 
-    typealias ConvertEventHandler = (ConvertEvent) -> Void
-    typealias ConvertEvent = PredictionsEvent<ConvertResult, PredictionsError>
+    typealias TranscribeEventHandler = (TranscribeEvent) -> Void
+    typealias TranscribeEvent = PredictionsEvent<SpeechToTextResult, PredictionsError>
 
     func comprehend(text: String,
                     onEvent: @escaping InterpretTextEventHandler)
@@ -25,8 +25,8 @@ protocol CoreMLPredictionBehavior: class {
                   type: IdentifyAction,
                   onEvent: @escaping IdentifyEventHandler)
 
-    func convert(_ speechToText: URL,
+    func transcribe(_ speechToText: URL,
                  type: ConvertAction,
-                 onEvent: @escaping ConvertEventHandler)
+                 onEvent: @escaping TranscribeEventHandler)
 
 }

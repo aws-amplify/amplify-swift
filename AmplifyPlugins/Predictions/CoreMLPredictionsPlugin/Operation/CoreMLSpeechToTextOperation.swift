@@ -8,10 +8,10 @@
 import Foundation
 import Amplify
 
-public class CoreMLSpeechToTextOperation: AmplifyOperation<PredictionsConvertRequest,
+public class CoreMLSpeechToTextOperation: AmplifyOperation<PredictionsSpeechToTextRequest,
     Void,
-    ConvertResult,
-PredictionsError>, PredictionsConvertOperation {
+    SpeechToTextResult,
+PredictionsError>, PredictionsSpeechToTextOperation {
 
        weak var coreMLSpeech: CoreMLSpeechBehavior?
 
@@ -21,7 +21,7 @@ PredictionsError>, PredictionsConvertOperation {
 
         self.coreMLSpeech = coreMLSpeech
         super.init(categoryType: .predictions,
-                   eventName: HubPayload.EventName.Predictions.convert,
+                   eventName: HubPayload.EventName.Predictions.speechToText,
                    request: request,
                    listener: listener)
     }
@@ -37,45 +37,19 @@ PredictionsError>, PredictionsConvertOperation {
             return
         }
 
-        switch request.type {
-        case .speechToText:
-            guard let request = request as? PredictionsSpeechToTextRequest else {
-                let errorDescription = CoreMLPluginErrorString.requestObjectExpected.errorDescription
-                let recovery = CoreMLPluginErrorString.requestObjectExpected.recoverySuggestion
-                let predictionsError = PredictionsError.service(errorDescription, recovery)
-                dispatch(event: .failed(predictionsError))
-                finish()
+        coreMLSpeechAdapter.getTranscription(request.speechToText) { result in
+            guard let result = result else {
+                let errorDescription = CoreMLPluginErrorString.transcriptionNoResult.errorDescription
+                let recovery = CoreMLPluginErrorString.transcriptionNoResult.recoverySuggestion
+                let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
+                self.dispatch(event: .failed(predictionsError))
+                self.finish()
                 return
             }
 
-            coreMLSpeechAdapter.getTranscription(request.speechToText) { result in
-                guard let result = result else {
-                    let errorDescription = CoreMLPluginErrorString.transcriptionNoResult.errorDescription
-                    let recovery = CoreMLPluginErrorString.transcriptionNoResult.recoverySuggestion
-                    let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
-                    self.dispatch(event: .failed(predictionsError))
-                    self.finish()
-                    return
-                }
-
-                self.dispatch(event: .completed(result))
-                self.finish()
-            }
-
-        case .textToSpeech:
-            let errorDescription = CoreMLPluginErrorString.operationNotSupported.errorDescription
-            let recovery = CoreMLPluginErrorString.operationNotSupported.recoverySuggestion
-            let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
-            dispatch(event: .failed(predictionsError))
-            finish()
-        case .translateText:
-            let errorDescription = CoreMLPluginErrorString.operationNotSupported.errorDescription
-            let recovery = CoreMLPluginErrorString.operationNotSupported.recoverySuggestion
-            let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
-            dispatch(event: .failed(predictionsError))
-            finish()
+            self.dispatch(event: .completed(result))
+            self.finish()
         }
-
 
     }
 }

@@ -31,13 +31,15 @@ class PredictionsServiceTranslateTests: XCTestCase {
                                                        awsComprehend: MockComprehendBehavior(),
                                                        awsPolly: MockPollyBehavior(),
                                                        awsTranscribeStreaming: MockTranscribeBehavior(),
+                                                       transcribeDelegate: NativeWSTranscribeStreamingClientDelegate(),
+                                                       transcribeCallbackQueue: DispatchQueue(label: "TranscribeTestQueue"),
                                                        configuration: mockConfiguration)
         } catch {
-            XCTFail("Initialization of the text failed")
+            XCTFail("Initialization of the test failed")
         }
     }
 
-    /// Test whether we can make a successfull translate call
+    /// Test whether we can make a successful translate call
     ///
     /// - Given: Predictions service with translate behavior
     /// - When:
@@ -125,6 +127,8 @@ class PredictionsServiceTranslateTests: XCTestCase {
                                             awsComprehend: MockComprehendBehavior(),
                                             awsPolly: MockPollyBehavior(),
                                             awsTranscribeStreaming: MockTranscribeBehavior(),
+                                            transcribeDelegate: NativeWSTranscribeStreamingClientDelegate(),
+                                            transcribeCallbackQueue: DispatchQueue(label: "TranscribeTestQueue"),
                                             configuration: mockConfiguration)
         } catch {
             XCTFail("Initialization of the text failed. \(error)")

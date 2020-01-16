@@ -8,10 +8,10 @@
 import Foundation
 import Amplify
 
-public class CoreMLTranslateTextOperation: AmplifyOperation<PredictionsConvertRequest,
+public class CoreMLTranslateTextOperation: AmplifyOperation<PredictionsTranslateTextRequest,
     Void,
-    ConvertResult,
-PredictionsError>, PredictionsConvertOperation {
+    TranslateTextResult,
+PredictionsError>, PredictionsTranslateTextOperation {
 
 
     init(_ request: PredictionsTranslateTextRequest,

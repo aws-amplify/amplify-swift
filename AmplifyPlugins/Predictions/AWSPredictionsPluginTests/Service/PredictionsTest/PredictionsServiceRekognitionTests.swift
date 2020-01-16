@@ -54,6 +54,8 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                                                        awsComprehend: MockComprehendBehavior(),
                                                        awsPolly: MockPollyBehavior(),
                                                        awsTranscribeStreaming: MockTranscribeBehavior(),
+                                                       transcribeDelegate: NativeWSTranscribeStreamingClientDelegate(),
+                                                       transcribeCallbackQueue: DispatchQueue(label: "TranscribeTestQueue"),
                                                        configuration: mockConfiguration)
         } catch {
             print(error)

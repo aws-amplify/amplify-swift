@@ -49,7 +49,7 @@ class CoreMLPredictionService: CoreMLPredictionBehavior {
         }
     }
 
-    func convert(_ speechToText: URL, type: ConvertAction, onEvent: @escaping ConvertEventHandler) {
+    func transcribe(_ speechToText: URL, type: ConvertAction, onEvent: @escaping TranscribeEventHandler) {
         _ = coreMLPlugin.convert(speechToText: speechToText, options: PredictionsSpeechToTextRequest.Options()) { event in
             switch event {
             case .completed(let result):

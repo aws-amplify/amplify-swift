@@ -19,7 +19,7 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
 
     func convert(textToSpeech: String,
                  options: PredictionsTextToSpeechRequest.Options?,
-                 listener: PredictionsConvertOperation.EventListener?) -> PredictionsConvertOperation {
+                 listener: PredictionsTextToSpeechOperation.EventListener?) -> PredictionsTextToSpeechOperation {
         notify("textToSpeech")
         fatalError("Add the rest of implementation")
     }
@@ -28,7 +28,7 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
                  language: LanguageType?,
                  targetLanguage: LanguageType?,
                  options: PredictionsTranslateTextRequest.Options?,
-                 listener: PredictionsConvertOperation.EventListener?) -> PredictionsConvertOperation {
+                 listener: PredictionsTranslateTextOperation.EventListener?) -> PredictionsTranslateTextOperation {
         notify("textToTranslate")
         let request = PredictionsTranslateTextRequest(textToTranslate: textToTranslate,
                                                       targetLanguage: targetLanguage ?? .italian,
@@ -38,7 +38,7 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
 
     }
     
-    func convert(speechToText: URL, options: PredictionsSpeechToTextRequest.Options?, listener: PredictionsConvertOperation.EventListener?) -> PredictionsConvertOperation {
+    func convert(speechToText: URL, options: PredictionsSpeechToTextRequest.Options?, listener: PredictionsSpeechToTextOperation.EventListener?) -> PredictionsSpeechToTextOperation {
         notify("speechToText")
         let request = PredictionsSpeechToTextRequest(speechToText: speechToText, options: options ?? PredictionsSpeechToTextRequest.Options())
         return MockPredictionsSpeechToTextOperation(request: request)
@@ -84,10 +84,10 @@ class MockSecondPredictionsCategoryPlugin: MockPredictionsCategoryPlugin {
     }
 }
 
-class MockPredictionsTranslateTextOperation: AmplifyOperation<PredictionsConvertRequest,
+class MockPredictionsTranslateTextOperation: AmplifyOperation<PredictionsTranslateTextRequest,
     Void,
-    ConvertResult,
-PredictionsError>, PredictionsConvertOperation {
+    TranslateTextResult,
+PredictionsError>, PredictionsTranslateTextOperation {
 
     override func pause() {
     }
@@ -97,16 +97,16 @@ PredictionsError>, PredictionsConvertOperation {
 
     init(request: Request) {
         super.init(categoryType: .predictions,
-                   eventName: HubPayload.EventName.Predictions.convert,
+                   eventName: HubPayload.EventName.Predictions.translate,
                    request: request)
     }
 
 }
 
-class MockPredictionsSpeechToTextOperation: AmplifyOperation<PredictionsConvertRequest,
+class MockPredictionsSpeechToTextOperation: AmplifyOperation<PredictionsSpeechToTextRequest,
     Void,
-    ConvertResult,
-PredictionsError>, PredictionsConvertOperation {
+    SpeechToTextResult,
+PredictionsError>, PredictionsSpeechToTextOperation {
 
     override func pause() {
     }
@@ -116,7 +116,7 @@ PredictionsError>, PredictionsConvertOperation {
 
     init(request: Request) {
         super.init(categoryType: .predictions,
-                   eventName: HubPayload.EventName.Predictions.convert,
+                   eventName: HubPayload.EventName.Predictions.speechToText,
                    request: request)
     }
 

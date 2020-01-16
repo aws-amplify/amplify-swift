@@ -10,20 +10,20 @@ import Amplify
 import AWSMobileClient
 import AWSPluginsCore
 
-public class ConvertOperation: AmplifyOperation<PredictionsConvertRequest,
+public class AWSTranscribeOperation: AmplifyOperation<PredictionsSpeechToTextRequest,
     Void,
-    ConvertResult,
+    SpeechToTextResult,
     PredictionsError>,
-PredictionsConvertOperation {
+PredictionsSpeechToTextOperation {
 
-    let multiService: ConvertMultiService
+    let multiService: TranscribeMultiService
 
-    init(request: PredictionsConvertRequest,
-         multiService: ConvertMultiService,
+    init(request: PredictionsSpeechToTextRequest,
+         multiService: TranscribeMultiService,
          listener: EventListener?) {
         self.multiService = multiService
         super.init(categoryType: .predictions,
-                   eventName: HubPayload.EventName.Predictions.convert,
+                   eventName: HubPayload.EventName.Predictions.speechToText,
                    request: request,
                    listener: listener)
     }
@@ -48,7 +48,7 @@ PredictionsConvertOperation {
         }
     }
 
-    private func onServiceEvent(event: PredictionsEvent<ConvertResult, PredictionsError>) {
+    private func onServiceEvent(event: PredictionsEvent<SpeechToTextResult, PredictionsError>) {
         switch event {
         case .completed(let result):
             dispatch(event: .completed(result))

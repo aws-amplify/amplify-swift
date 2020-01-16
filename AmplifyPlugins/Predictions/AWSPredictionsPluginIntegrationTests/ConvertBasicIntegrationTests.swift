@@ -12,6 +12,10 @@ import AWSCore
 
 class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
 
+    // this test only tests online functionality.
+    // offline functionality cannot be tested through an
+    // integration test because speech recognition through
+    // CoreML has to be run on device only.
     func testConvertSpeechToText() {
         let testBundle = Bundle(for: type(of: self))
         guard let url = testBundle.url(forResource: "audio", withExtension: "wav") else {
@@ -19,15 +23,13 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
         }
 
         let convertInvoked = expectation(description: "Convert operation invoked")
-        let options = PredictionsConvertRequest.Options()
+        let options = PredictionsSpeechToTextRequest.Options()
         let operation = Amplify.Predictions.convert(speechToText: url,
                                                     options: options) { event in
             switch event {
             case .completed(let result):
-               // DispatchQueue.main.async {
                 convertInvoked.fulfill()
-                XCTAssertNil(result, "Result should contain value")
-               // }
+                XCTAssertNotNil(result, "Result should contain value")
             case .failed(let error):
                 DispatchQueue.main.async {
                 XCTFail("Should not receieve error \(error)")
@@ -41,31 +43,4 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
         XCTAssertNotNil(operation)
         waitForExpectations(timeout: networkTimeout)
     }
-
-    func testConvertSpeechToTextOffline() {
-        let testBundle = Bundle(for: type(of: self))
-        guard let url = testBundle.url(forResource: "audio", withExtension: "wav") else {
-            return
-        }
-
-        let convertInvoked = expectation(description: "Convert operation invoked")
-        let options = PredictionsConvertRequest.Options(defaultNetworkPolicy: .offline, voiceType: nil, pluginOptions: nil)
-        let operation = Amplify.Predictions.convert(speechToText: url,
-                                                    options: options) { event in
-            switch event {
-            case .completed(let result):
-                convertInvoked.fulfill()
-                XCTAssertNil(result, "Result should contain value")
-            case .failed(let error):
-                XCTFail("Should not receieve error \(error)")
-            default:
-                break
-            }
-
-        }
-
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: networkTimeout)
-    }
-
 }

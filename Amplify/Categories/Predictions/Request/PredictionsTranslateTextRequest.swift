@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class PredictionsTranslateTextRequest: PredictionsConvertRequest {
+public class PredictionsTranslateTextRequest: AmplifyOperationRequest {
 
     /// The text to translate.
     public let textToTranslate: String
@@ -17,6 +17,11 @@ public class PredictionsTranslateTextRequest: PredictionsConvertRequest {
 
     /// Source language of the text given.
     public let language: LanguageType?
+    
+    /// Options to adjust the behavior of this request, including plugin options
+    public let options: Options
+    
+    public let type: ConvertAction
 
     public init(textToTranslate: String,
                 targetLanguage: LanguageType?,
@@ -25,7 +30,26 @@ public class PredictionsTranslateTextRequest: PredictionsConvertRequest {
         self.textToTranslate = textToTranslate
         self.language = language
         self.targetLanguage = targetLanguage
-        super.init(type: .translateText, options: options)
+        self.options = options
+        self.type = .translateText
     }
 }
 
+extension PredictionsTranslateTextRequest {
+    public class Options {
+
+            /// The default NetworkPolicy for the operation. The default value will be `auto`.
+            public let defaultNetworkPolicy: DefaultNetworkPolicy
+        
+            /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
+            /// a way to utilize the underlying storage system's functionality. See plugin documentation for expected
+            /// key/values
+            public let pluginOptions: Any?
+
+            public init(defaultNetworkPolicy: DefaultNetworkPolicy = .auto,
+                        pluginOptions: Any? = nil) {
+                self.defaultNetworkPolicy = defaultNetworkPolicy
+                self.pluginOptions = pluginOptions
+            }
+    }
+}

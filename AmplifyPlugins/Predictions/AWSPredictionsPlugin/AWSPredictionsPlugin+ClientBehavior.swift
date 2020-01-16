@@ -14,45 +14,47 @@ extension AWSPredictionsPlugin {
                         language: LanguageType?,
                         targetLanguage: LanguageType?,
                         options: PredictionsTranslateTextRequest.Options?,
-                        listener: PredictionsConvertOperation.EventListener? = nil)
-        -> PredictionsConvertOperation {
+                        listener: PredictionsTranslateTextOperation.EventListener? = nil)
+        -> PredictionsTranslateTextOperation {
 
             let request = PredictionsTranslateTextRequest(textToTranslate: textToTranslate,
                                                           targetLanguage: targetLanguage,
                                                           language: language,
                                                           options: options ?? PredictionsTranslateTextRequest.Options())
-            let multiService = ConvertMultiService(coreMLService: coreMLService, predictionsService: predictionsService)
-            let operation = ConvertOperation(request: request, multiService: multiService, listener: listener)
-            queue.addOperation(operation)
-            return operation
+            let convertOperation = AWSTranslateOperation(request,
+                                                         predictionsService: predictionsService,
+                                                         listener: listener)
+            queue.addOperation(convertOperation)
+            return convertOperation
     }
 
     public func convert(textToSpeech: String,
                         options: PredictionsTextToSpeechRequest.Options?,
-                        listener: PredictionsConvertOperation.EventListener? = nil)
-        -> PredictionsConvertOperation {
+                        listener: PredictionsTextToSpeechOperation.EventListener? = nil)
+        -> PredictionsTextToSpeechOperation {
             let request = PredictionsTextToSpeechRequest(
                 textToSpeech: textToSpeech,
                 options: options ?? PredictionsTextToSpeechRequest.Options())
 
-            let multiService = ConvertMultiService(coreMLService: coreMLService, predictionsService: predictionsService)
+            let convertOperation = AWSPollyOperation(request,
+                                                     predictionsService: predictionsService,
+                                                     authService: authService,
+                                                     listener: listener)
 
-            let operation = ConvertOperation(request: request, multiService: multiService, listener: listener)
-
-            queue.addOperation(operation)
-            return operation
+            queue.addOperation(convertOperation)
+            return convertOperation
 
     }
 
     public func convert(speechToText: URL,
                         options: PredictionsSpeechToTextRequest.Options?,
-                        listener: PredictionsConvertOperation.EventListener?) -> PredictionsConvertOperation {
+                        listener: PredictionsSpeechToTextOperation.EventListener?) -> PredictionsSpeechToTextOperation {
         let request = PredictionsSpeechToTextRequest(speechToText: speechToText,
                                                      options: options ?? PredictionsSpeechToTextRequest.Options())
 
-        let multiService = ConvertMultiService(coreMLService: coreMLService, predictionsService: predictionsService)
+        let multiService = TranscribeMultiService(coreMLService: coreMLService, predictionsService: predictionsService)
 
-        let operation = ConvertOperation(request: request, multiService: multiService, listener: listener)
+        let operation = AWSTranscribeOperation(request: request, multiService: multiService, listener: listener)
 
         queue.addOperation(operation)
         return operation

@@ -13,7 +13,7 @@ import AWSPolly
 protocol AWSPollyServiceBehavior {
 
     typealias TextToSpeechServiceEventHandler = (TextToSpeechServiceEvent) -> Void
-    typealias TextToSpeechServiceEvent = PredictionsEvent<ConvertResult, PredictionsError>
+    typealias TextToSpeechServiceEvent = PredictionsEvent<TextToSpeechResult, PredictionsError>
 
     func synthesizeText(text: String,
                         voiceId: AWSPollyVoiceId,

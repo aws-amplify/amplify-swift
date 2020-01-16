@@ -7,15 +7,38 @@
 
 import Foundation
 
-public class PredictionsSpeechToTextRequest: PredictionsConvertRequest {
+public class PredictionsSpeechToTextRequest: AmplifyOperationRequest {
     
     /// The text to synthesize to speech
     public let speechToText: URL
+    
+    public let type: ConvertAction
+    
+    public let options: Options
 
     public init(speechToText: URL,
                 options: Options) {
         self.speechToText = speechToText
-        super.init(type: .speechToText, options: options)
+        self.options = options
+        self.type = .speechToText
     }
 }
 
+extension PredictionsSpeechToTextRequest {
+    public class Options {
+
+            /// The default NetworkPolicy for the operation. The default value will be `auto`.
+            public let defaultNetworkPolicy: DefaultNetworkPolicy
+
+            /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
+            /// a way to utilize the underlying storage system's functionality. See plugin documentation for expected
+            /// key/values
+            public let pluginOptions: Any?
+
+            public init(defaultNetworkPolicy: DefaultNetworkPolicy = .auto,
+                        pluginOptions: Any? = nil) {
+                self.defaultNetworkPolicy = defaultNetworkPolicy
+                self.pluginOptions = pluginOptions
+            }
+    }
+}
