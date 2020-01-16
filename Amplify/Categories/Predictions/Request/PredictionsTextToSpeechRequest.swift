@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class PredictionsTextToSpeechRequest: AmplifyOperationRequest {
+public struct PredictionsTextToSpeechRequest: AmplifyOperationRequest {
     
     /// The text to synthesize to speech
     public let textToSpeech: String
@@ -23,7 +23,7 @@ public class PredictionsTextToSpeechRequest: AmplifyOperationRequest {
 }
 
 extension PredictionsTextToSpeechRequest {
-    public class Options {
+    struct Options {
 
             /// The default NetworkPolicy for the operation. The default value will be `auto`.
             public let defaultNetworkPolicy: DefaultNetworkPolicy
