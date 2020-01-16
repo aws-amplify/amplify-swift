@@ -1,8 +1,8 @@
 //
-//  ConvertAction.swift
-//  Amplify
+// Copyright 2018-2019 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
 //
-//  Created by Stone, Nicki on 1/13/20.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 public enum ConvertAction {

@@ -48,16 +48,20 @@ PredictionsError>, PredictionsConvertOperation {
                 return
             }
 
-            guard let result = coreMLSpeechAdapter.getTranscription(request.speechToText) else {
-                let errorDescription = CoreMLPluginErrorString.transcriptionNoResult.errorDescription
-                let recovery = CoreMLPluginErrorString.transcriptionNoResult.recoverySuggestion
-                let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
-                dispatch(event: .failed(predictionsError))
-                finish()
-                return
+            coreMLSpeechAdapter.getTranscription(request.speechToText) { result in
+                guard let result = result else {
+                    let errorDescription = CoreMLPluginErrorString.transcriptionNoResult.errorDescription
+                    let recovery = CoreMLPluginErrorString.transcriptionNoResult.recoverySuggestion
+                    let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
+                    self.dispatch(event: .failed(predictionsError))
+                    self.finish()
+                    return
+                }
+
+                self.dispatch(event: .completed(result))
+                self.finish()
             }
-            dispatch(event: .completed(result))
-            finish()
+
         case .textToSpeech:
             let errorDescription = CoreMLPluginErrorString.operationNotSupported.errorDescription
             let recovery = CoreMLPluginErrorString.operationNotSupported.recoverySuggestion

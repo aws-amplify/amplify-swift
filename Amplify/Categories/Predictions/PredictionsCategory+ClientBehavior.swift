@@ -8,7 +8,7 @@
 import Foundation
 
 extension PredictionsCategory: PredictionsCategoryClientBehavior {
-
+    
     public func convert(textToSpeech: String,
                         options: PredictionsTextToSpeechRequest.Options? = nil,
                         listener: PredictionsConvertOperation.EventListener?) -> PredictionsConvertOperation {
@@ -16,26 +16,26 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
                        options: options,
                        listener: listener)
     }
-
+    
     public func convert(textToTranslate: String,
                         language: LanguageType?,
                         targetLanguage: LanguageType?,
                         options: PredictionsTranslateTextRequest.Options? = nil,
                         listener: PredictionsConvertOperation.EventListener?)
         -> PredictionsConvertOperation {
-        plugin.convert(textToTranslate: textToTranslate,
-                       language: language,
-                       targetLanguage: targetLanguage,
-                       options: options,
-                       listener: listener)
+            plugin.convert(textToTranslate: textToTranslate,
+                           language: language,
+                           targetLanguage: targetLanguage,
+                           options: options,
+                           listener: listener)
     }
     
     public func convert(speechToText: URL,
-    options: PredictionsConvertRequest.Options?,
-    listener: PredictionsConvertOperation.EventListener?) -> PredictionsConvertOperation {
+                        options: PredictionsConvertRequest.Options?,
+                        listener: PredictionsConvertOperation.EventListener?) -> PredictionsConvertOperation {
         plugin.convert(speechToText: speechToText, options: options, listener: listener)
     }
-
+    
     public func identify(type: IdentifyAction,
                          image: URL,
                          options: PredictionsIdentifyRequest.Options? = nil,
@@ -45,7 +45,7 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
                         options: options,
                         listener: listener)
     }
-
+    
     public func interpret(text: String,
                           options: PredictionsInterpretRequest.Options? = nil,
                           listener: PredictionsInterpretOperation.EventListener?) -> PredictionsInterpretOperation {

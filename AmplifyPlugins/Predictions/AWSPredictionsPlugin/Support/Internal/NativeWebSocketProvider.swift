@@ -9,6 +9,7 @@ import Foundation
 import AWSTranscribeStreaming
 
 class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider, URLSessionWebSocketDelegate {
+
     //swiftlint:disable weak_delegate
     var clientDelegate: AWSTranscribeStreamingClientDelegate
     var webSocketTask: URLSessionWebSocketTask!
@@ -17,8 +18,9 @@ class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider
     var callbackQueue: DispatchQueue!
     private var pingTimer: Timer?
 
-    override init() {
-        self.clientDelegate = NativeWSTranscribeStreamingClientDelegate()
+    init(clientDelegate: NativeWSTranscribeStreamingClientDelegate, callbackQueue: DispatchQueue) {
+        self.clientDelegate = clientDelegate
+        self.callbackQueue = callbackQueue
         super.init()
         self.urlSession = URLSession(configuration: .default, delegate: self, delegateQueue: delegateQueue)
 
@@ -26,13 +28,12 @@ class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider
 
     func configure(with urlRequest: URLRequest) {
         if let url = urlRequest.url {
-        webSocketTask = urlSession.webSocketTask(with: url)
+            webSocketTask = urlSession.webSocketTask(with: url)
         }
     }
-
+    //required by protocol but not needed
     func setDelegate(_ delegate: AWSTranscribeStreamingClientDelegate, dispatchQueue: DispatchQueue) {
-        clientDelegate = delegate
-        callbackQueue = dispatchQueue
+
     }
 
     func urlSession(_ session: URLSession,
@@ -72,16 +73,16 @@ class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider
         webSocketTask.receive { result in
             switch result {
             case .failure(let error):
-               let status = AWSTranscribeStreamingClientConnectionStatus.closed
+                let status = AWSTranscribeStreamingClientConnectionStatus.closed
 
-               self.callbackQueue.async {
-                   self.clientDelegate.connectionStatusDidChange(status, withError: error)
-               }
+                self.callbackQueue.async {
+                    self.clientDelegate.connectionStatusDidChange(status, withError: error)
+                }
             case .success(let message):
                 switch message {
                 case .data(let data):
                     do {
-                    let result = try AWSTranscribeStreamingEventDecoder.decodeEvent(data)
+                        let result = try AWSTranscribeStreamingEventDecoder.decodeEvent(data)
                         self.callbackQueue.async {
                             self.clientDelegate.didReceiveEvent(result, decodingError: nil)
                         }
@@ -126,7 +127,7 @@ class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider
         }
     }
 }
-
+//swiftlint:disable type_name
 class NativeWSTranscribeStreamingClientDelegate: NSObject, AWSTranscribeStreamingClientDelegate {
     var receiveEventCallback: ((AWSTranscribeStreamingTranscriptResultStream?, Error?) -> Void)?
     var connectionStatusCallback: ((AWSTranscribeStreamingClientConnectionStatus, Error?) -> Void)?

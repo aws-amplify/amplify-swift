@@ -24,12 +24,14 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
                                                     options: options) { event in
             switch event {
             case .completed(let result):
-                DispatchQueue.main.async {
+               // DispatchQueue.main.async {
                 convertInvoked.fulfill()
                 XCTAssertNil(result, "Result should contain value")
-                }
+               // }
             case .failed(let error):
+                DispatchQueue.main.async {
                 XCTFail("Should not receieve error \(error)")
+                }
             default:
                 break
             }

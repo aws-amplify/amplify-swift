@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSTranscribeStreaming
+import AWSPluginsCore
 
 extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
 
@@ -25,9 +26,7 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
         request.mediaEncoding = .pcm
         request.mediaSampleRateHertz = 8_000
 
-        let delegate = NativeWSTranscribeStreamingClientDelegate()
-
-        delegate.connectionStatusCallback = { status, error in
+        transcribeDelegate.connectionStatusCallback = { status, error in
             if status == .connected {
                 let headers = [
                     ":content-type": "audio/wav",
@@ -50,7 +49,7 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
             }
         }
 
-        delegate.receiveEventCallback = { event, error in
+        transcribeDelegate.receiveEventCallback = { event, error in
            guard error == nil else {
             let error = error as NSError?
             let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error!)
@@ -71,28 +70,25 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
                 return
             }
 
-            guard let firstResult = transcribedResults.first else {
-                print("firstResult nil--possibly a partial result: \(event)")
-                return
-            }
-
-            guard let isPartial = firstResult.isPartial as? Bool else {
-                return
+            guard let firstResult = transcribedResults.first,
+                let isPartial = firstResult.isPartial as? Bool else {
+                    return
             }
 
             guard !isPartial else {
-                print("Partial result received, waiting for next event (results: \(transcribedResults))")
+                self.log.verbose("Partial result received, waiting for next event (results: \(transcribedResults))")
                 return
             }
 
-            print("Received final transcription event (results: \(transcribedResults))")
-            let transcribeResult = ConvertSpeechToTextTransformers.processTranscription(transcribedResults)
-            onEvent(.completed(transcribeResult))
+            self.log.verbose("Received final transcription event (results: \(transcribedResults))")
             self.awsTranscribeStreaming.endTranscription()
+            if let transcribeResult = ConvertSpeechToTextTransformers.processTranscription(transcribedResults) {
 
+            onEvent(.completed(transcribeResult))
+            return
+            }
         }
-        let callbackQueue = DispatchQueue(label: "TranscribeStreamingAmplify")
-        awsTranscribeStreaming.setDelegate(delegate: delegate, callbackQueue: callbackQueue)
+
         awsTranscribeStreaming.startTranscriptionWSS(request: request)
 
     }

@@ -10,5 +10,5 @@ import Amplify
 
 protocol CoreMLSpeechBehavior: class {
 
-    func getTranscription(_ audioData: URL) -> SpeechToTextResult?
+    func getTranscription(_ audioData: URL, callback: @escaping (SpeechToTextResult?) -> Void)
 }

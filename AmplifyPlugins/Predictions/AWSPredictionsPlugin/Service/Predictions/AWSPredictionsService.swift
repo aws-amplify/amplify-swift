@@ -25,6 +25,8 @@ class AWSPredictionsService {
     var awsTextract: AWSTextractBehavior!
     var predictionsConfig: PredictionsPluginConfiguration!
     let rekognitionWordLimit = 50
+    let transcribeDelegate: NativeWSTranscribeStreamingClientDelegate!
+    let transcribeCallbackQueue: DispatchQueue!
 
     convenience init(configuration: PredictionsPluginConfiguration,
                      cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
@@ -57,9 +59,14 @@ class AWSPredictionsService {
             serviceConfiguration: convertServiceConfiguration,
             identifier: identifier)
 
-        let awsTranscribeStreamingAdapter = AWSPredictionsService.makeTranscribeStreaming(
-            serviceConfiguration: convertServiceConfiguration,
-            identifier: identifier)
+        let transcribeCallbackQueue = DispatchQueue(label: "TranscribeStreamingQueue")
+
+        let transcribeDelegate = NativeWSTranscribeStreamingClientDelegate()
+
+        let awsTranscribeStreamingAdapter = AWSPredictionsService.makeTranscribeStreaming(callbackQueue: transcribeCallbackQueue,
+                                                                                          transcribeDelegate: transcribeDelegate,
+                                                                                          serviceConfiguration: convertServiceConfiguration,
+                                                                                          identifier: identifier)
 
         self.init(identifier: identifier,
                   awsTranslate: awsTranslateAdapter,
@@ -68,6 +75,8 @@ class AWSPredictionsService {
                   awsComprehend: awsComprehendAdapter,
                   awsPolly: awsPollyAdapter,
                   awsTranscribeStreaming: awsTranscribeStreamingAdapter,
+                  transcribeDelegate: transcribeDelegate,
+                  transcribeCallbackQueue: transcribeCallbackQueue,
                   configuration: configuration)
 
     }
@@ -79,6 +88,8 @@ class AWSPredictionsService {
          awsComprehend: AWSComprehendBehavior,
          awsPolly: AWSPollyBehavior,
          awsTranscribeStreaming: AWSTranscribeStreamingBehavior,
+         transcribeDelegate: NativeWSTranscribeStreamingClientDelegate,
+         transcribeCallbackQueue: DispatchQueue,
          configuration: PredictionsPluginConfiguration) {
 
         self.identifier = identifier
@@ -88,6 +99,8 @@ class AWSPredictionsService {
         self.awsComprehend = awsComprehend
         self.awsPolly = awsPolly
         self.awsTranscribeStreaming = awsTranscribeStreaming
+        self.transcribeDelegate = transcribeDelegate
+        self.transcribeCallbackQueue = transcribeCallbackQueue
         self.predictionsConfig = configuration
 
     }
@@ -163,10 +176,17 @@ class AWSPredictionsService {
         return AWSComprehendAdapter(awsComprehend)
     }
 
-    private static func makeTranscribeStreaming(serviceConfiguration: AmplifyAWSServiceConfiguration,
+    private static func makeTranscribeStreaming(callbackQueue: DispatchQueue,
+                                                transcribeDelegate: NativeWSTranscribeStreamingClientDelegate,
+                                                serviceConfiguration: AmplifyAWSServiceConfiguration,
                                                 identifier: String) -> AWSTranscribeStreamingAdapter {
-        AWSTranscribeStreaming.register(with: serviceConfiguration, forKey: identifier, webSocketProvider: NativeWebSocketProvider())
+       let webSocketProvider = NativeWebSocketProvider(clientDelegate: transcribeDelegate, callbackQueue: callbackQueue)
+        AWSTranscribeStreaming.register(with: serviceConfiguration,
+                                        forKey: identifier,
+                                        webSocketProvider: webSocketProvider)
         let awsTranscribeStreaming = AWSTranscribeStreaming(forKey: identifier)
         return AWSTranscribeStreamingAdapter(awsTranscribeStreaming)
     }
 }
+
+extension AWSPredictionsService: DefaultLogger { }

@@ -10,25 +10,21 @@ import Speech
 
 class CoreMLSpeechAdapter: CoreMLSpeechBehavior {
 
-    func getTranscription(_ audioData: URL) -> SpeechToTextResult? {
+    func getTranscription(_ audioData: URL, callback: @escaping (SpeechToTextResult?) -> Void) {
         let request = SFSpeechURLRecognitionRequest(url: audioData)
         request.requiresOnDeviceRecognition = true
-        var transcriptions = [String]()
         let recognizer = SFSpeechRecognizer()
-        let semaphore = DispatchSemaphore(value: 0)
         recognizer?.recognitionTask(with: request) { result, _ in
             guard let result = result else {
                 print("There was an error transcribing that file")
+                callback(nil)
                 return
             }
 
             if result.isFinal {
-                transcriptions.append(result.bestTranscription.formattedString)
-                semaphore.signal()
+                let speechToTextResult = SpeechToTextResult(transcription: result.bestTranscription.formattedString)
+                callback(speechToTextResult)
             }
         }
-        semaphore.wait()
-        return SpeechToTextResult(transcriptions: transcriptions)
-
     }
 }

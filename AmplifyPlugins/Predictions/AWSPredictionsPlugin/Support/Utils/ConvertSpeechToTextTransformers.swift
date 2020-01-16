@@ -9,19 +9,20 @@ import AWSTranscribeStreaming
 import Amplify
 
 class ConvertSpeechToTextTransformers {
-    static func processTranscription(_ transcribeResultBlocks: [AWSTranscribeStreamingResult]) -> SpeechToTextResult {
-        var transcriptions = [String]()
+    static func processTranscription(_ transcribeResultBlocks: [AWSTranscribeStreamingResult]) -> SpeechToTextResult? {
+        var transcription = ""
 
-        for transcribeResult in transcribeResultBlocks {
-            if let alternatives = transcribeResult.alternatives {
-                for alternative in alternatives {
-                    if let transcript = alternative.transcript {
-                    transcriptions.append(transcript)
-                    }
-                }
-            }
+        guard let firstResult = transcribeResultBlocks.first,
+            let isPartial = firstResult.isPartial as? Bool else {
+                return nil
         }
 
-        return SpeechToTextResult(transcriptions: transcriptions)
+        guard !isPartial else {
+            return nil
+        }
+
+        transcription = firstResult.alternatives?.first?.transcript ?? ""
+
+        return SpeechToTextResult(transcription: transcription)
     }
 }

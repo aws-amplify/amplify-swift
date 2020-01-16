@@ -8,9 +8,9 @@
 import Foundation
 
 public struct SpeechToTextResult: ConvertResult {
-     public let transcriptions: [String]
+     public let transcription: String
 
-    public init(transcriptions: [String]) {
-        self.transcriptions = transcriptions
+    public init(transcription: String) {
+        self.transcription = transcription
     }
 }
