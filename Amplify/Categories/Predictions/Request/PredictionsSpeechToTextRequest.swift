@@ -12,15 +12,13 @@ public class PredictionsSpeechToTextRequest: AmplifyOperationRequest {
     /// The text to synthesize to speech
     public let speechToText: URL
     
-    public let type: ConvertAction
-    
+    /// Options to adjust the behavior of this request, including plugin options
     public let options: Options
 
     public init(speechToText: URL,
                 options: Options) {
         self.speechToText = speechToText
         self.options = options
-        self.type = .speechToText
     }
 }
 

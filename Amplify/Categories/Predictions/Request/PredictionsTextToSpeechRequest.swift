@@ -12,16 +12,13 @@ public class PredictionsTextToSpeechRequest: AmplifyOperationRequest {
     /// The text to synthesize to speech
     public let textToSpeech: String
     
-     /// Options to adjust the behavior of this request, including plugin options
+    /// Options to adjust the behavior of this request, including plugin options
     public let options: Options
-    
-    public let type: ConvertAction
 
     public init(textToSpeech: String,
                 options: Options) {
         self.textToSpeech = textToSpeech
         self.options = options
-        self.type = .textToSpeech
     }
 }
 

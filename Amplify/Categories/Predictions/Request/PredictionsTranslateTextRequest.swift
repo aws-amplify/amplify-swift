@@ -20,8 +20,6 @@ public class PredictionsTranslateTextRequest: AmplifyOperationRequest {
     
     /// Options to adjust the behavior of this request, including plugin options
     public let options: Options
-    
-    public let type: ConvertAction
 
     public init(textToTranslate: String,
                 targetLanguage: LanguageType?,
@@ -31,7 +29,6 @@ public class PredictionsTranslateTextRequest: AmplifyOperationRequest {
         self.language = language
         self.targetLanguage = targetLanguage
         self.options = options
-        self.type = .translateText
     }
 }
 
