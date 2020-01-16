@@ -101,8 +101,6 @@ class ConvertMultiService: MultiServiceBehavior {
             return
         }
 
-        //TODO: merge results
-
         // At this point we decided not to merge the result and return the non-nil online
         // result back.
         callback(.completed(finalOnlineResult))

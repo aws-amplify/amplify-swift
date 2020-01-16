@@ -21,7 +21,7 @@ class CoreMLSpeechAdapter: CoreMLSpeechBehavior {
                 print("There was an error transcribing that file")
                 return
             }
-            
+
             if result.isFinal {
                 transcriptions.append(result.bestTranscription.formattedString)
                 semaphore.signal()
@@ -29,6 +29,6 @@ class CoreMLSpeechAdapter: CoreMLSpeechBehavior {
         }
         semaphore.wait()
         return SpeechToTextResult(transcriptions: transcriptions)
-        
+
     }
 }
