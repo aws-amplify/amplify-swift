@@ -15,6 +15,10 @@
 		950A26A123CE3DCF00D92B19 /* ConvertSpeechToTextTransformers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26A023CE3DCF00D92B19 /* ConvertSpeechToTextTransformers.swift */; };
 		950A26A323CE411500D92B19 /* CoreMLSpeechBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26A223CE411500D92B19 /* CoreMLSpeechBehavior.swift */; };
 		950A26A523CE421700D92B19 /* CoreMLSpeechAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26A423CE421700D92B19 /* CoreMLSpeechAdapter.swift */; };
+		950A26B723CFED3800D92B19 /* people.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 950A26B623CFED3800D92B19 /* people.jpg */; };
+		950A26B923CFEE2F00D92B19 /* audio.wav in Resources */ = {isa = PBXBuildFile; fileRef = 950A26B823CFEE2E00D92B19 /* audio.wav */; };
+		950A26BB23CFEEC100D92B19 /* ConvertBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26BA23CFEEC100D92B19 /* ConvertBasicIntegrationTests.swift */; };
+		950A26BD23CFEEF600D92B19 /* audio.wav in Resources */ = {isa = PBXBuildFile; fileRef = 950A26BC23CFEEF600D92B19 /* audio.wav */; };
 		950EB1FC238C584F0002FF54 /* PredictionsServiceRekognitionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950EB1FB238C584F0002FF54 /* PredictionsServiceRekognitionTests.swift */; };
 		950EB202238CB0A70002FF54 /* testImageText.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 950EB1FE238CB0A70002FF54 /* testImageText.jpg */; };
 		950EB203238CB0A70002FF54 /* testImageLabels.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 950EB1FF238CB0A70002FF54 /* testImageLabels.jpg */; };
@@ -216,6 +220,10 @@
 		950A26A023CE3DCF00D92B19 /* ConvertSpeechToTextTransformers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvertSpeechToTextTransformers.swift; sourceTree = "<group>"; };
 		950A26A223CE411500D92B19 /* CoreMLSpeechBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLSpeechBehavior.swift; sourceTree = "<group>"; };
 		950A26A423CE421700D92B19 /* CoreMLSpeechAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLSpeechAdapter.swift; sourceTree = "<group>"; };
+		950A26B623CFED3800D92B19 /* people.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = people.jpg; sourceTree = "<group>"; };
+		950A26B823CFEE2E00D92B19 /* audio.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = audio.wav; sourceTree = "<group>"; };
+		950A26BA23CFEEC100D92B19 /* ConvertBasicIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvertBasicIntegrationTests.swift; sourceTree = "<group>"; };
+		950A26BC23CFEEF600D92B19 /* audio.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = audio.wav; sourceTree = "<group>"; };
 		950EB1FB238C584F0002FF54 /* PredictionsServiceRekognitionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsServiceRekognitionTests.swift; sourceTree = "<group>"; };
 		950EB1FE238CB0A70002FF54 /* testImageText.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageText.jpg; sourceTree = "<group>"; };
 		950EB1FF238CB0A70002FF54 /* testImageLabels.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageLabels.jpg; sourceTree = "<group>"; };
@@ -813,6 +821,7 @@
 				B42094B82384A749000F98A3 /* IdentifyBasicIntegrationTests.swift */,
 				B42094B92384A74A000F98A3 /* AWSPredictionsPluginTestBase.swift */,
 				B42094BA2384A74A000F98A3 /* InterpretBasicIntegrationTests.swift */,
+				950A26BA23CFEEC100D92B19 /* ConvertBasicIntegrationTests.swift */,
 				95DAABBC2384B74B0028544F /* Configuration */,
 				B4DFA66F237B577B0013E17B /* Resources */,
 			);
@@ -822,6 +831,7 @@
 		B4DFA66F237B577B0013E17B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				950A26BC23CFEEF600D92B19 /* audio.wav */,
 				95CF44FF2385EEAB00479D24 /* TestImages */,
 				B4DFA670237B577B0013E17B /* Info.plist */,
 			);
@@ -955,6 +965,8 @@
 		B4DFA6A3237B5A290013E17B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				950A26B823CFEE2E00D92B19 /* audio.wav */,
+				950A26B623CFED3800D92B19 /* people.jpg */,
 				B4DFA6A4237B5A290013E17B /* Info.plist */,
 			);
 			path = Resources;
@@ -1237,6 +1249,7 @@
 				95CF45042385EEAC00479D24 /* testImageText.jpg in Resources */,
 				95CF45062385EEAC00479D24 /* testImageEntities.jpg in Resources */,
 				95DAABBE2384B76D0028544F /* amplifyconfiguration.json in Resources */,
+				950A26BD23CFEEF600D92B19 /* audio.wav in Resources */,
 				95CF45072385EEAC00479D24 /* testImageCeleb.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1262,6 +1275,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				950A26B723CFED3800D92B19 /* people.jpg in Resources */,
+				950A26B923CFEE2F00D92B19 /* audio.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1845,6 +1860,7 @@
 				B42094BE2384A74B000F98A3 /* AWSPredictionsPluginTestBase.swift in Sources */,
 				B42094BF2384A74B000F98A3 /* InterpretBasicIntegrationTests.swift in Sources */,
 				B42094BD2384A74B000F98A3 /* IdentifyBasicIntegrationTests.swift in Sources */,
+				950A26BB23CFEEC100D92B19 /* ConvertBasicIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

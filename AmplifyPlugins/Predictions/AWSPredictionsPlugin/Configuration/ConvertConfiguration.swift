@@ -12,11 +12,13 @@ public struct ConvertConfiguration {
     public let region: AWSRegionType
     public var translateText: TranslateTextConfiguration?
     public var speechGenerator: SpeechGeneratorConfiguration?
+    public var transcription: TranscriptionConfiguration?
 
     init(_ region: AWSRegionType) {
         self.region = region
         self.translateText = nil
         self.speechGenerator = nil
+        self.transcription = nil
     }
 }
 
@@ -29,10 +31,15 @@ public struct SpeechGeneratorConfiguration {
     public let voiceID: String?
 }
 
+public struct TranscriptionConfiguration {
+    public let language: LanguageType
+}
+
 extension ConvertConfiguration: Decodable {
     enum CodingKeys: String, CodingKey {
         case translateText
         case speechGenerator
+        case transcription
     }
 
     enum SubRegion: String, CodingKey {
@@ -62,6 +69,15 @@ extension ConvertConfiguration: Decodable {
         } else {
             self.speechGenerator = nil
         }
+
+        if let configuration = try values.decodeIfPresent(TranscriptionConfiguration.self, forKey: .transcription) {
+            self.transcription = configuration
+            let nestedContainer = try values.nestedContainer(keyedBy: SubRegion.self, forKey: .transcription)
+            awsRegion = awsRegion ?? ConvertConfiguration.getRegionIfPresent(nestedContainer)
+        } else {
+            self.transcription = nil
+        }
+
         guard  let region = awsRegion else {
             throw PluginError.pluginConfigurationError(PluginErrorMessage.missingRegion.errorDescription,
                                                        PluginErrorMessage.missingRegion.recoverySuggestion)
@@ -101,5 +117,16 @@ extension SpeechGeneratorConfiguration: Decodable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         self.voiceID = try values.decode(String.self, forKey: .voiceID)
+    }
+}
+
+extension TranscriptionConfiguration: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case language
+    }
+
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        self.language = try values.decode(LanguageType.self, forKey: .language)
     }
 }

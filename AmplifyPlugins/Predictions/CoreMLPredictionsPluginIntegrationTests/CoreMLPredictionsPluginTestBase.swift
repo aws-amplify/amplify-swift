@@ -29,8 +29,7 @@ class AWSPredictionsPluginTestBase: XCTestCase {
         // Set up Amplify predictions configuration
         let predictionsConfig = PredictionsCategoryConfiguration(
             plugins: [
-                "awsPredictionsPlugin": [
-                    "defaultRegion": region
+                "CoreMLPredictionsPlugin": [
                 ]
             ]
         )
