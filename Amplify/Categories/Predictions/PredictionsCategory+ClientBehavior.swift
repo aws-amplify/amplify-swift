@@ -23,7 +23,7 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
                         options: PredictionsTranslateTextRequest.Options? = nil,
                         listener: PredictionsTranslateTextOperation.EventListener?)
         -> PredictionsTranslateTextOperation {
-            plugin.convert(textToTranslate: textToTranslate,
+        plugin.convert(textToTranslate: textToTranslate,
                            language: language,
                            targetLanguage: targetLanguage,
                            options: options,

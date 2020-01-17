@@ -24,7 +24,7 @@ class TranscribeMultiService: MultiServiceBehavior {
         self.predictionsService = predictionsService
     }
 
-    func setRequest<T: PredictionsSpeechToTextRequest>(_ request: T) {
+    func setRequest(_ request: PredictionsSpeechToTextRequest) {
         self.request = request
     }
 
@@ -37,7 +37,9 @@ class TranscribeMultiService: MultiServiceBehavior {
             return
         }
 
-        onlineService.transcribe(speechToText: request.speechToText, onEvent: callback)
+        onlineService.transcribe(speechToText: request.speechToText,
+                                 language: request.options.language,
+                                 onEvent: callback)
     }
 
     func fetchOfflineResult(callback: @escaping ConvertEventHandler) {
@@ -48,7 +50,7 @@ class TranscribeMultiService: MultiServiceBehavior {
             callback(.failed(predictionError))
             return
         }
-        offlineService.transcribe(request.speechToText, type: .speechToText, onEvent: callback)
+        offlineService.transcribe(request.speechToText, onEvent: callback)
     }
 
     // MARK: -

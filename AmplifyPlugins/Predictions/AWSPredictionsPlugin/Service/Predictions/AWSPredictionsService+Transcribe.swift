@@ -11,7 +11,7 @@ import AWSPluginsCore
 
 extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
 
-    func transcribe(speechToText: URL, onEvent: @escaping TranscribeServiceEventHandler) {
+    func transcribe(speechToText: URL, language: LanguageType?, onEvent: @escaping TranscribeServiceEventHandler) {
 
         guard let audioData = try? Data(contentsOf: speechToText) else {
 
@@ -22,7 +22,12 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
 
         let request: AWSTranscribeStreamingStartStreamTranscriptionRequest =
             AWSTranscribeStreamingStartStreamTranscriptionRequest()
-        request.languageCode = .enUS
+        let languageCode = language?.toTranscribeLanguage()
+        if let languageCode = languageCode {
+            request.languageCode = languageCode
+        } else {
+            request.languageCode = predictionsConfig.convert.transcription?.language.toTranscribeLanguage() ?? .enUS
+        }
         request.mediaEncoding = .pcm
         request.mediaSampleRateHertz = 8_000
 

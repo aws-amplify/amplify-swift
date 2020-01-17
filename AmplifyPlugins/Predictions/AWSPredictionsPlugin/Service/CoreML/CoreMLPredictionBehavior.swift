@@ -26,7 +26,6 @@ protocol CoreMLPredictionBehavior: class {
                   onEvent: @escaping IdentifyEventHandler)
 
     func transcribe(_ speechToText: URL,
-                 type: ConvertAction,
                  onEvent: @escaping TranscribeEventHandler)
 
 }

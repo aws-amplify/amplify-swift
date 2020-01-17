@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSComprehend
+import AWSTranscribeStreaming
 
 extension LanguageType {
 
@@ -43,6 +44,23 @@ extension LanguageType {
             return .de
         case .portuguese:
             return .pt
+        default:
+            return .unknown
+        }
+    }
+
+    func toTranscribeLanguage() -> AWSTranscribeStreamingLanguageCode {
+        switch self {
+        case .english:
+            return .enUS
+        case .french:
+            return .frFR
+        case .canadianFrench:
+            return .frCA
+        case .britishEnglish:
+            return .enGB
+        case .usSpanish:
+            return .esUS
         default:
             return .unknown
         }
