@@ -36,11 +36,43 @@ Amplify requires Xcode 11 or higher to build.
 
 ### CocoaPods
 
-Coming soon, will be live by December 6. You can use manually in the mean time per instructions under Development Pods below.
+1. Amplify for iOS is available through [CocoaPods](http://cocoapods.org). If you have not installed CocoaPods, install CocoaPods by running the command:
+
+        $ gem install cocoapods
+        $ pod setup
+
+    Depending on your system settings, you may have to use `sudo` for installing `cocoapods` as follows:
+
+        $ sudo gem install cocoapods
+        $ pod setup
+2. In your project directory (the directory where your `*.xcodeproj` file is), type `pod init` and open the Podfile that was created. Add the `Amplify` pod and any plugins you would like to use. Below is an example of what a podfile might look like if you were going to use the Predictions plugin.
+
+        source 'https://github.com/CocoaPods/Specs.git'
+        
+        platform :ios, '13.0'
+        use_frameworks!
+        
+        target :'YourTarget' do
+            pod 'Amplify'
+            pod 'AmplifyPlugins'
+            pod 'AWSPluginsCore'
+            pod 'AWSPredictionsPlugin'
+            pod 'CoreMLPredictionsPlugin'
+            pod 'AWSMobileClient'
+        end
+        
+3. Then run the following command:
+    
+        $ pod install
+4. Open up `*.xcworkspace` with Xcode and start using Amplify.
+
+    ![image](readme-images/cocoapods-setup-02.png?raw=true)
+
+    **Note**: Do **NOT** use `*.xcodeproj`. If you open up a project file instead of a workspace, you will receive an error.
 
 ### Carthage
 
-Coming soon, will be live by December 6. You can use manually in the mean time per instructions under Development Pods below.
+Support for Carthage coming soon.
 
 ### Development Pods
 
