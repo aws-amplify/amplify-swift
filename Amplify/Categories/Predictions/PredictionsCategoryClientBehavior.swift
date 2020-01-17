@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2019 Amazon.com,
+// Copyright 2018-2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -28,7 +28,7 @@ public protocol PredictionsCategoryClientBehavior {
     func convert(textToSpeech: String,
                  options: PredictionsTextToSpeechRequest.Options?,
                  listener: PredictionsTextToSpeechOperation.EventListener?) -> PredictionsTextToSpeechOperation
-    
+
     /// - Parameter speechToText: The url of the audio to be transcribed
     /// - Parameter listener: Triggered when the event occurs
     /// - Parameter options: Parameters to specific plugin behavior

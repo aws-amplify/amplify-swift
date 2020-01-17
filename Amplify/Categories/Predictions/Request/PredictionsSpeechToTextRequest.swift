@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2019 Amazon.com,
+// Copyright 2018-2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -8,10 +8,10 @@
 import Foundation
 
 public struct PredictionsSpeechToTextRequest: AmplifyOperationRequest {
-    
+
     /// The text to synthesize to speech
     public let speechToText: URL
-    
+
     /// Options to adjust the behavior of this request, including plugin options
     public let options: Options
 
@@ -27,7 +27,7 @@ extension PredictionsSpeechToTextRequest {
 
             /// The default NetworkPolicy for the operation. The default value will be `auto`.
             public let defaultNetworkPolicy: DefaultNetworkPolicy
-        
+
             ///the language of the audio file you are transcribing
             public let language: LanguageType?
 

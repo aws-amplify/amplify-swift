@@ -1,5 +1,5 @@
 //
-// Copyright 2018-2019 Amazon.com,
+// Copyright 2018-2020 Amazon.com,
 // Inc. or its affiliates. All Rights Reserved.
 //
 // SPDX-License-Identifier: Apache-2.0
@@ -8,7 +8,7 @@
 import Foundation
 
 extension PredictionsCategory: PredictionsCategoryClientBehavior {
-    
+
     public func convert(textToSpeech: String,
                         options: PredictionsTextToSpeechRequest.Options? = nil,
                         listener: PredictionsTextToSpeechOperation.EventListener?) -> PredictionsTextToSpeechOperation {
@@ -16,7 +16,7 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
                        options: options,
                        listener: listener)
     }
-    
+
     public func convert(textToTranslate: String,
                         language: LanguageType?,
                         targetLanguage: LanguageType?,
@@ -29,13 +29,13 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
                            options: options,
                            listener: listener)
     }
-    
+
     public func convert(speechToText: URL,
                         options: PredictionsSpeechToTextRequest.Options?,
                         listener: PredictionsSpeechToTextOperation.EventListener?) -> PredictionsSpeechToTextOperation {
         plugin.convert(speechToText: speechToText, options: options, listener: listener)
     }
-    
+
     public func identify(type: IdentifyAction,
                          image: URL,
                          options: PredictionsIdentifyRequest.Options? = nil,
@@ -45,7 +45,7 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
                         options: options,
                         listener: listener)
     }
-    
+
     public func interpret(text: String,
                           options: PredictionsInterpretRequest.Options? = nil,
                           listener: PredictionsInterpretOperation.EventListener?) -> PredictionsInterpretOperation {
