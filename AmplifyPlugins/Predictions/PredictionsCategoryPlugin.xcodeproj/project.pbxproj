@@ -20,11 +20,11 @@
 		950A26BB23CFEEC100D92B19 /* ConvertBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26BA23CFEEC100D92B19 /* ConvertBasicIntegrationTests.swift */; };
 		950A26BD23CFEEF600D92B19 /* audio.wav in Resources */ = {isa = PBXBuildFile; fileRef = 950A26BC23CFEEF600D92B19 /* audio.wav */; };
 		950A26BF23D111A500D92B19 /* audio.wav in Resources */ = {isa = PBXBuildFile; fileRef = 950A26BE23D111A500D92B19 /* audio.wav */; };
-		950A26C123D111B700D92B19 /* PredictionsServiceTransribeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26C023D111B700D92B19 /* PredictionsServiceTransribeTests.swift */; };
 		950A26C923D127A900D92B19 /* AWSPollyOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26C823D127A900D92B19 /* AWSPollyOperation.swift */; };
 		950A26CB23D127E900D92B19 /* AWSTranslateOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26CA23D127E900D92B19 /* AWSTranslateOperation.swift */; };
 		950A26CD23D129B100D92B19 /* PredictionsTextToSpeechRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26CC23D129B100D92B19 /* PredictionsTextToSpeechRequest+Validate.swift */; };
 		950A26CF23D129C200D92B19 /* PredictionsTranslateTextRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26CE23D129C200D92B19 /* PredictionsTranslateTextRequest+Validate.swift */; };
+		950A26D123D158B100D92B19 /* PredictionsServiceTranscribeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950A26D023D158B100D92B19 /* PredictionsServiceTranscribeTests.swift */; };
 		950EB1FC238C584F0002FF54 /* PredictionsServiceRekognitionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950EB1FB238C584F0002FF54 /* PredictionsServiceRekognitionTests.swift */; };
 		950EB202238CB0A70002FF54 /* testImageText.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 950EB1FE238CB0A70002FF54 /* testImageText.jpg */; };
 		950EB203238CB0A70002FF54 /* testImageLabels.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 950EB1FF238CB0A70002FF54 /* testImageLabels.jpg */; };
@@ -231,11 +231,11 @@
 		950A26BA23CFEEC100D92B19 /* ConvertBasicIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvertBasicIntegrationTests.swift; sourceTree = "<group>"; };
 		950A26BC23CFEEF600D92B19 /* audio.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = audio.wav; sourceTree = "<group>"; };
 		950A26BE23D111A500D92B19 /* audio.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = audio.wav; sourceTree = "<group>"; };
-		950A26C023D111B700D92B19 /* PredictionsServiceTransribeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsServiceTransribeTests.swift; sourceTree = "<group>"; };
 		950A26C823D127A900D92B19 /* AWSPollyOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSPollyOperation.swift; sourceTree = "<group>"; };
 		950A26CA23D127E900D92B19 /* AWSTranslateOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSTranslateOperation.swift; sourceTree = "<group>"; };
 		950A26CC23D129B100D92B19 /* PredictionsTextToSpeechRequest+Validate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PredictionsTextToSpeechRequest+Validate.swift"; sourceTree = "<group>"; };
 		950A26CE23D129C200D92B19 /* PredictionsTranslateTextRequest+Validate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PredictionsTranslateTextRequest+Validate.swift"; sourceTree = "<group>"; };
+		950A26D023D158B100D92B19 /* PredictionsServiceTranscribeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsServiceTranscribeTests.swift; sourceTree = "<group>"; };
 		950EB1FB238C584F0002FF54 /* PredictionsServiceRekognitionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsServiceRekognitionTests.swift; sourceTree = "<group>"; };
 		950EB1FE238CB0A70002FF54 /* testImageText.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageText.jpg; sourceTree = "<group>"; };
 		950EB1FF238CB0A70002FF54 /* testImageLabels.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImageLabels.jpg; sourceTree = "<group>"; };
@@ -545,18 +545,18 @@
 		95DAAA3A237B8ED30028544F /* Dependency */ = {
 			isa = PBXGroup;
 			children = (
-				95DAAAE6237DFC440028544F /* AWSPollyAdapter.swift */,
-				95DAAA3B237B8ED30028544F /* AWSTranscribeStreamingBehavior.swift */,
-				95DAAA3C237B8ED30028544F /* AWSPollyBehavior.swift */,
-				95DAAA3D237B8ED30028544F /* AWSTextractBehavior.swift */,
 				95DAAA3E237B8ED30028544F /* AWSComprehendAdapter.swift */,
-				95DAAA3F237B8ED30028544F /* AWSTranslateAdapter.swift */,
-				95DAAA40237B8ED30028544F /* AWSTextractAdapter.swift */,
-				95DAAA41237B8ED30028544F /* AWSRekognitionBehavior.swift */,
-				95DAAA42237B8ED30028544F /* AWSTranslateBehavior.swift */,
 				95DAAA43237B8ED30028544F /* AWSComprehendBehavior.swift */,
+				95DAAAE6237DFC440028544F /* AWSPollyAdapter.swift */,
+				95DAAA3C237B8ED30028544F /* AWSPollyBehavior.swift */,
 				95DAAA44237B8ED30028544F /* AWSRekognitionAdapter.swift */,
+				95DAAA41237B8ED30028544F /* AWSRekognitionBehavior.swift */,
+				95DAAA40237B8ED30028544F /* AWSTextractAdapter.swift */,
+				95DAAA3D237B8ED30028544F /* AWSTextractBehavior.swift */,
 				95A422BA23C8EE2600D534C7 /* AWSTranscribeStreamingAdapter.swift */,
+				95DAAA3B237B8ED30028544F /* AWSTranscribeStreamingBehavior.swift */,
+				95DAAA3F237B8ED30028544F /* AWSTranslateAdapter.swift */,
+				95DAAA42237B8ED30028544F /* AWSTranslateBehavior.swift */,
 			);
 			path = Dependency;
 			sourceTree = "<group>";
@@ -592,11 +592,11 @@
 				95DAAA53237B8ED30028544F /* FetchDominantLanguageEvent.swift */,
 				95DAAACE237CBE040028544F /* FormatType+AWSExtension.swift */,
 				95DAAA4E237B8ED30028544F /* LanguageTypeExtension.swift */,
+				95A422C023CCDFE600D534C7 /* NativeWebSocketProvider.swift */,
 				95DAAACC237C778A0028544F /* PredictionsAction.swift */,
 				95DAAA50237B8ED30028544F /* PredictionsAWSServices.swift */,
 				95DAAA51237B8ED30028544F /* PredictionsEvent.swift */,
 				95DAAAF0237DFE5F0028544F /* VoiceType+AWSExtension.swift */,
-				95A422C023CCDFE600D534C7 /* NativeWebSocketProvider.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -604,13 +604,13 @@
 		95DAAA54237B8ED30028544F /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				95DAAA57237B8ED30028544F /* PredictionsErrorHelper.swift */,
-				95DAAA55237B8ED30028544F /* IdentifyResultTransformers.swift */,
+				950A26A023CE3DCF00D92B19 /* ConvertSpeechToTextTransformers.swift */,
+				95DAAA59237B8ED30028544F /* IdentifyCelebritiesResultTransformers.swift */,
 				95DAAA56237B8ED30028544F /* IdentifyEntitiesResultTransformers.swift */,
 				95DAAA58237B8ED30028544F /* IdentifyLabelsResultTransformers.swift */,
-				95DAAA59237B8ED30028544F /* IdentifyCelebritiesResultTransformers.swift */,
+				95DAAA55237B8ED30028544F /* IdentifyResultTransformers.swift */,
 				95DAAA5A237B8ED30028544F /* IdentifyTextResultTransformers.swift */,
-				950A26A023CE3DCF00D92B19 /* ConvertSpeechToTextTransformers.swift */,
+				95DAAA57237B8ED30028544F /* PredictionsErrorHelper.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -711,11 +711,11 @@
 		B461DF8B238C3B6A004DED35 /* PredictionsTest */ = {
 			isa = PBXGroup;
 			children = (
+				950A26D023D158B100D92B19 /* PredictionsServiceTranscribeTests.swift */,
 				B461DF93238C3D85004DED35 /* PredictionsServiceTranslateTests.swift */,
 				950EB1FB238C584F0002FF54 /* PredictionsServiceRekognitionTests.swift */,
 				B442E038238C724000FA6F3E /* PredictionsServiceComprehendTests.swift */,
 				950EB206238DEEF30002FF54 /* PredictionsServiceTextractTests.swift */,
-				950A26C023D111B700D92B19 /* PredictionsServiceTransribeTests.swift */,
 			);
 			path = PredictionsTest;
 			sourceTree = "<group>";
@@ -1870,8 +1870,8 @@
 				B49D1437237B665E00856777 /* AWSPredictionsPluginTests.swift in Sources */,
 				B461DF94238C3D85004DED35 /* PredictionsServiceTranslateTests.swift in Sources */,
 				B461DF96238C3DC3004DED35 /* MockComprehendBehavior.swift in Sources */,
+				950A26D123D158B100D92B19 /* PredictionsServiceTranscribeTests.swift in Sources */,
 				B461DF9C238C3DF0004DED35 /* MockTextractBehavior.swift in Sources */,
-				950A26C123D111B700D92B19 /* PredictionsServiceTransribeTests.swift in Sources */,
 				950EB1FC238C584F0002FF54 /* PredictionsServiceRekognitionTests.swift in Sources */,
 				B461DF9A238C3DE5004DED35 /* MockRekognitionBehavior.swift in Sources */,
 			);

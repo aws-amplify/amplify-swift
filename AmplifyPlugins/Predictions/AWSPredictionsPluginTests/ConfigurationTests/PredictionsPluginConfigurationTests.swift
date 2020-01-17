@@ -35,6 +35,11 @@ class PredictionsPluginConfigurationTests: XCTestCase {
                 "language": "en-US",
                 "region": "us-west-2",
                 "defaultNetworkPolicy": "auto"
+            },
+            "transcription": {
+                "region": "us-west-2",
+                "language": "en-US",
+                "defaultNetworkPolicy": "auto"
             }
         },
         "interpret": {
@@ -96,6 +101,11 @@ class PredictionsPluginConfigurationTests: XCTestCase {
             "speechGenerator": {
                 "region": "us-west-2",
                 "voice": "Justin"
+            },
+            "transcription": {
+                "region": "us-west-2",
+                "language": "en-US",
+                "defaultNetworkPolicy": "auto"
             }
         }
         }

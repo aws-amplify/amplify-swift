@@ -57,8 +57,7 @@ class PredictionsServiceTranslateTests: XCTestCase {
                                          targetLanguage: .italian) { event in
                                             switch event {
                                             case .completed(let result):
-                                                 let translateTextResult = result as? TranslateTextResult
-                                                XCTAssertEqual(translateTextResult?.text,
+                                                XCTAssertEqual(result.text,
                                                                mockResponse.translatedText,
                                                                "Translated text should be same")
                                             case .failed(let error):
@@ -107,10 +106,10 @@ class PredictionsServiceTranslateTests: XCTestCase {
         var service: AWSPredictionsService!
         let mockConfigurationJSON = """
         {
-            "defaultRegion": "us_east_1",
+            "defaultRegion": "us-east-1",
             "convert": {
                 "translateText": {
-                    "region": "us_east_1",
+                    "region": "us-east-1",
                     "sourceLang": "en",
                     "targetLang": "it"
                 }
@@ -143,8 +142,7 @@ class PredictionsServiceTranslateTests: XCTestCase {
                               targetLanguage: nil) { event in
                                 switch event {
                                 case .completed(let result):
-                                    let translateTextResult = result as? TranslateTextResult
-                                    XCTAssertEqual(translateTextResult?.text,
+                                    XCTAssertEqual(result.text,
                                                    mockResponse.translatedText,
                                                    "Translated text should be same")
                                 case .failed(let error):
@@ -266,11 +264,10 @@ class PredictionsServiceTranslateTests: XCTestCase {
                                          targetLanguage: .malayalam) { event in
                                             switch event {
                                             case .completed(let result):
-                                                 let translateTextResult = result as? TranslateTextResult
-                                                XCTAssertEqual(translateTextResult?.text,
+                                                XCTAssertEqual(result.text,
                                                                mockResponse.translatedText,
                                                                "Translated text should be same")
-                                                 XCTAssertEqual(translateTextResult?.targetLanguage, .malayalam)
+                                                 XCTAssertEqual(result.targetLanguage, .malayalam)
                                             case .failed(let error):
                                                 XCTFail("Should not produce error: \(error)")
                                             }
