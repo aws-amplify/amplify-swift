@@ -25,8 +25,8 @@ class AWSPredictionsService {
     var awsTextract: AWSTextractBehavior!
     var predictionsConfig: PredictionsPluginConfiguration!
     let rekognitionWordLimit = 50
-    let transcribeDelegate: NativeWSTranscribeStreamingClientDelegate!
-    let transcribeCallbackQueue: DispatchQueue!
+    let nativeWebSocketProvider: NativeWebSocketProvider!
+    let transcribeClientDelegate: NativeWSTranscribeStreamingClientDelegate!
 
     convenience init(configuration: PredictionsPluginConfiguration,
                      cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
@@ -61,10 +61,11 @@ class AWSPredictionsService {
 
         let transcribeCallbackQueue = DispatchQueue(label: "TranscribeStreamingQueue")
 
-        let transcribeDelegate = NativeWSTranscribeStreamingClientDelegate()
+        let transcribeClientDelegate = NativeWSTranscribeStreamingClientDelegate()
+        
+        let nativeWebSocketProvider = NativeWebSocketProvider(clientDelegate: transcribeClientDelegate, callbackQueue: transcribeCallbackQueue)
 
-        let awsTranscribeStreamingAdapter = AWSPredictionsService.makeTranscribeStreaming(callbackQueue: transcribeCallbackQueue,
-                                                                                          transcribeDelegate: transcribeDelegate,
+        let awsTranscribeStreamingAdapter = AWSPredictionsService.makeTranscribeStreaming(nativeWebSocketProvider: nativeWebSocketProvider,
                                                                                           serviceConfiguration: convertServiceConfiguration,
                                                                                           identifier: identifier)
 
@@ -75,8 +76,8 @@ class AWSPredictionsService {
                   awsComprehend: awsComprehendAdapter,
                   awsPolly: awsPollyAdapter,
                   awsTranscribeStreaming: awsTranscribeStreamingAdapter,
-                  transcribeDelegate: transcribeDelegate,
-                  transcribeCallbackQueue: transcribeCallbackQueue,
+                  nativeWebSocketProvider: nativeWebSocketProvider,
+                  transcribeClientDelegate: transcribeClientDelegate,
                   configuration: configuration)
 
     }
@@ -88,8 +89,8 @@ class AWSPredictionsService {
          awsComprehend: AWSComprehendBehavior,
          awsPolly: AWSPollyBehavior,
          awsTranscribeStreaming: AWSTranscribeStreamingBehavior,
-         transcribeDelegate: NativeWSTranscribeStreamingClientDelegate,
-         transcribeCallbackQueue: DispatchQueue,
+         nativeWebSocketProvider: NativeWebSocketProvider,
+         transcribeClientDelegate: NativeWSTranscribeStreamingClientDelegate,
          configuration: PredictionsPluginConfiguration) {
 
         self.identifier = identifier
@@ -99,8 +100,8 @@ class AWSPredictionsService {
         self.awsComprehend = awsComprehend
         self.awsPolly = awsPolly
         self.awsTranscribeStreaming = awsTranscribeStreaming
-        self.transcribeDelegate = transcribeDelegate
-        self.transcribeCallbackQueue = transcribeCallbackQueue
+        self.nativeWebSocketProvider = nativeWebSocketProvider
+        self.transcribeClientDelegate = transcribeClientDelegate
         self.predictionsConfig = configuration
 
     }
@@ -176,14 +177,13 @@ class AWSPredictionsService {
         return AWSComprehendAdapter(awsComprehend)
     }
 
-    private static func makeTranscribeStreaming(callbackQueue: DispatchQueue,
-                                                transcribeDelegate: NativeWSTranscribeStreamingClientDelegate,
+    private static func makeTranscribeStreaming(nativeWebSocketProvider: NativeWebSocketProvider,
                                                 serviceConfiguration: AmplifyAWSServiceConfiguration,
                                                 identifier: String) -> AWSTranscribeStreamingAdapter {
-       let webSocketProvider = NativeWebSocketProvider(clientDelegate: transcribeDelegate, callbackQueue: callbackQueue)
+       
         AWSTranscribeStreaming.register(with: serviceConfiguration,
                                         forKey: identifier,
-                                        webSocketProvider: webSocketProvider)
+                                        webSocketProvider: nativeWebSocketProvider)
         let awsTranscribeStreaming = AWSTranscribeStreaming(forKey: identifier)
         return AWSTranscribeStreamingAdapter(awsTranscribeStreaming)
     }

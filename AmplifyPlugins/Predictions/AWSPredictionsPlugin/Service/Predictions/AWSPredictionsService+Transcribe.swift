@@ -31,7 +31,7 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
         request.mediaEncoding = .pcm
         request.mediaSampleRateHertz = 8_000
 
-        transcribeDelegate.connectionStatusCallback = { status, error in
+        transcribeClientDelegate.connectionStatusCallback = { status, error in
             if status == .connected {
                 let headers = [
                     ":content-type": "audio/wav",
@@ -50,11 +50,11 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
                     currentStart = currentEnd
                     currentEnd = min(currentStart + chunkSize, audioDataSize)
                 }
-                self.awsTranscribeStreaming.sendEndFrame()
+               // self.awsTranscribeStreaming.sendEndFrame()
             }
         }
 
-        transcribeDelegate.receiveEventCallback = { event, error in
+        transcribeClientDelegate.receiveEventCallback = { event, error in
            guard error == nil else {
             let error = error as NSError?
             let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error!)
@@ -86,7 +86,7 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
             }
 
             self.log.verbose("Received final transcription event (results: \(transcribedResults))")
-            self.awsTranscribeStreaming.endTranscription()
+            //self.awsTranscribeStreaming.endTranscription()
             if let transcribeResult = ConvertSpeechToTextTransformers.processTranscription(transcribedResults) {
 
             onEvent(.completed(transcribeResult))
