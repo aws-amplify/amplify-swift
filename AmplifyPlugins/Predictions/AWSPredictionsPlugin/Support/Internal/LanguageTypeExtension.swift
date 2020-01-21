@@ -51,7 +51,8 @@ extension LanguageType {
 
     func toTranscribeLanguage() -> AWSTranscribeStreamingLanguageCode {
         switch self {
-        case .english:
+        case .usEnglish,
+             .english:
             return .enUS
         case .french:
             return .frFR

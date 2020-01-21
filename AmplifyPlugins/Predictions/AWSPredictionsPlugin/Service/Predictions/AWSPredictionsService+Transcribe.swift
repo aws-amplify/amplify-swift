@@ -26,7 +26,12 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
         if let languageCode = languageCode {
             request.languageCode = languageCode
         } else {
-            request.languageCode = predictionsConfig.convert.transcription?.language.toTranscribeLanguage() ?? .enUS
+            if let languageCode = predictionsConfig.convert.transcription?.language {
+                request.languageCode = languageCode.toTranscribeLanguage()
+            }
+            else {
+                request.languageCode = .enUS
+            }
         }
         request.mediaEncoding = .pcm
         request.mediaSampleRateHertz = 8_000
@@ -50,7 +55,7 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
                     currentStart = currentEnd
                     currentEnd = min(currentStart + chunkSize, audioDataSize)
                 }
-               // self.awsTranscribeStreaming.sendEndFrame()
+                self.awsTranscribeStreaming.sendEndFrame()
             }
         }
 
@@ -86,7 +91,7 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
             }
 
             self.log.verbose("Received final transcription event (results: \(transcribedResults))")
-            //self.awsTranscribeStreaming.endTranscription()
+           
             if let transcribeResult = ConvertSpeechToTextTransformers.processTranscription(transcribedResults) {
 
             onEvent(.completed(transcribeResult))
