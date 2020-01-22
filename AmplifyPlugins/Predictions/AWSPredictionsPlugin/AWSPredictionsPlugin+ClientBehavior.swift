@@ -54,10 +54,19 @@ extension AWSPredictionsPlugin {
 
         let multiService = TranscribeMultiService(coreMLService: coreMLService, predictionsService: predictionsService)
 
-        let operation = AWSTranscribeOperation(request: request, multiService: multiService, listener: listener)
-
-        queue.addOperation(operation)
-        return operation
+        
+        if !queue.operations.contains(where: { $0 is AWSTranscribeOperation}) {
+            let operation = AWSTranscribeOperation(request: request, multiService: multiService, requestInProcess: false, listener: listener)
+            queue.addOperation(operation)
+            return operation
+        }
+        else {
+            let operation = AWSTranscribeOperation(request: request, multiService: multiService, requestInProcess: true, listener: listener)
+           
+            return operation
+        }
+       
+        
     }
 
     public func identify(type: IdentifyAction,

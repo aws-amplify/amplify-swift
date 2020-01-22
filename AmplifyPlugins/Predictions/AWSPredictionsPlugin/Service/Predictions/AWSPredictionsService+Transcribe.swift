@@ -69,8 +69,13 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
             return
             }
 
-            guard let event = event, let transcriptEvent = event.transcriptEvent else {
+            guard let event = event else {
                 onEvent(.failed(.unknown("No result was found. An unknown error occurred.", "Please try again.")))
+                return
+            }
+            
+            guard let transcriptEvent = event.transcriptEvent else {
+                onEvent(.failed(.unknown("No transcript event, an unknown error occurred.", "Please try again")))
                 return
             }
 
@@ -93,7 +98,7 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
             self.log.verbose("Received final transcription event (results: \(transcribedResults))")
            
             if let transcribeResult = ConvertSpeechToTextTransformers.processTranscription(transcribedResults) {
-
+            self.awsTranscribeStreaming.endTranscription()
             onEvent(.completed(transcribeResult))
             return
             }

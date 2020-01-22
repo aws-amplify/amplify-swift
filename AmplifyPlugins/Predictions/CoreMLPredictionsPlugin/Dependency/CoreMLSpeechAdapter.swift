@@ -16,7 +16,6 @@ class CoreMLSpeechAdapter: CoreMLSpeechBehavior {
         let recognizer = SFSpeechRecognizer()
         recognizer?.recognitionTask(with: request) { result, _ in
             guard let result = result else {
-                print("There was an error transcribing that file")
                 callback(nil)
                 return
             }
