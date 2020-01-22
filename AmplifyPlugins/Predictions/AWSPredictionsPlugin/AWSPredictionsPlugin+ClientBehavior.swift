@@ -54,7 +54,7 @@ extension AWSPredictionsPlugin {
 
         let multiService = TranscribeMultiService(coreMLService: coreMLService, predictionsService: predictionsService)
 
-        // only one transcription request can be sent at a time
+        // only one transcription request can be sent at a time otherwise you receive an error
         let requestInProcess = queue.operations.contains(where: { $0 is AWSTranscribeOperation})
 
         let operation = AWSTranscribeOperation(request: request,
