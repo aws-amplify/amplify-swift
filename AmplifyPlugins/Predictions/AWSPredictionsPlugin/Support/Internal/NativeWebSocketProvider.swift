@@ -16,7 +16,6 @@ class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider
     var urlSession: URLSession!
     let delegateQueue = OperationQueue()
     var callbackQueue: DispatchQueue!
-    private var pingTimer: Timer?
 
     init(clientDelegate: NativeWSTranscribeStreamingClientDelegate, callbackQueue: DispatchQueue) {
         self.clientDelegate = clientDelegate
@@ -66,7 +65,6 @@ class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider
 
     func disconnect() {
         webSocketTask.cancel(with: .normalClosure, reason: nil)
-        pingTimer?.invalidate()
     }
 
     func listen() {
@@ -96,17 +94,6 @@ class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider
                 }
             }
             self.listen()
-        }
-    }
-
-    func sendPing() {
-        webSocketTask.sendPing { error in
-            if let error = error {
-                print("Sending PING failed: \(error)")
-            }
-            self.pingTimer = Timer.scheduledTimer(withTimeInterval: 25.0, repeats: true) { _ in
-                self.sendPing()
-            }
         }
     }
 

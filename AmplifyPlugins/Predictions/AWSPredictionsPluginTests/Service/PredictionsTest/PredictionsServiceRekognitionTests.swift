@@ -45,6 +45,10 @@ class PredictionsServiceRekognitionTests: XCTestCase {
         }
 
         do {
+            let clientDelegate = NativeWSTranscribeStreamingClientDelegate()
+            let dispatchQueue = DispatchQueue(label: "TranscribeStreamingTests")
+            let nativeWebSocketProvider = NativeWebSocketProvider(clientDelegate: clientDelegate,
+                                                                  callbackQueue: dispatchQueue)
             let mockConfiguration = try JSONDecoder().decode(PredictionsPluginConfiguration.self,
                                                              from: mockConfigurationJSON.data(using: .utf8)!)
             predictionsService = AWSPredictionsService(identifier: "",
@@ -54,8 +58,8 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                                                        awsComprehend: MockComprehendBehavior(),
                                                        awsPolly: MockPollyBehavior(),
                                                        awsTranscribeStreaming: MockTranscribeBehavior(),
-                                                       transcribeDelegate: NativeWSTranscribeStreamingClientDelegate(),
-                                                       transcribeCallbackQueue: DispatchQueue(label: "TranscribeTestQueue"),
+                                                       nativeWebSocketProvider: nativeWebSocketProvider,
+                                                       transcribeClientDelegate: clientDelegate,
                                                        configuration: mockConfiguration)
         } catch {
             print(error)

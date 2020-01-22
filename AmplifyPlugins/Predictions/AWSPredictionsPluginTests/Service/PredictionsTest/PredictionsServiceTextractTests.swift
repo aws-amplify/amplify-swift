@@ -23,6 +23,10 @@ class PredictionsServiceTextractTests: XCTest {
         }
         """.data(using: .utf8)!
         do {
+            let clientDelegate = NativeWSTranscribeStreamingClientDelegate()
+            let dispatchQueue = DispatchQueue(label: "TranscribeStreamingTests")
+            let nativeWebSocketProvider = NativeWebSocketProvider(clientDelegate: clientDelegate,
+                                                                  callbackQueue: dispatchQueue)
             let mockConfiguration = try JSONDecoder().decode(PredictionsPluginConfiguration.self,
                                                              from: mockConfigurationJSON)
             predictionsService = AWSPredictionsService(identifier: "",
@@ -32,8 +36,8 @@ class PredictionsServiceTextractTests: XCTest {
                                                        awsComprehend: MockComprehendBehavior(),
                                                        awsPolly: MockPollyBehavior(),
                                                        awsTranscribeStreaming: MockTranscribeBehavior(),
-                                                       transcribeDelegate: NativeWSTranscribeStreamingClientDelegate(),
-                                                       transcribeCallbackQueue: DispatchQueue(label: "TranscribeTestQueue"),
+                                                       nativeWebSocketProvider: nativeWebSocketProvider,
+                                                       transcribeClientDelegate: clientDelegate,
                                                        configuration: mockConfiguration)
         } catch {
             XCTFail("Initialization of the text failed")

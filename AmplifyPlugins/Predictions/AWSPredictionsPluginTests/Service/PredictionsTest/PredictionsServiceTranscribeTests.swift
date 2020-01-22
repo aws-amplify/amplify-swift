@@ -24,9 +24,12 @@ class PredictionsServiceTranscribeTests: XCTestCase {
         """.data(using: .utf8)!
 
         do {
+            let clientDelegate = NativeWSTranscribeStreamingClientDelegate()
+            let dispatchQueue = DispatchQueue(label: "TranscribeStreamingTests")
+            let nativeWebSocketProvider = NativeWebSocketProvider(clientDelegate: clientDelegate,
+                                                                  callbackQueue: dispatchQueue)
             let mockConfiguration = try JSONDecoder().decode(PredictionsPluginConfiguration.self,
                                                              from: mockConfigurationJSON)
-
             predictionsService = AWSPredictionsService(identifier: "",
                                                        awsTranslate: MockTranslateBehavior(),
                                                        awsRekognition: MockRekognitionBehavior(),
@@ -34,8 +37,8 @@ class PredictionsServiceTranscribeTests: XCTestCase {
                                                        awsComprehend: MockComprehendBehavior(),
                                                        awsPolly: MockPollyBehavior(),
                                                        awsTranscribeStreaming: MockTranscribeBehavior(),
-                                                       transcribeDelegate: NativeWSTranscribeStreamingClientDelegate(),
-                                                       transcribeCallbackQueue: DispatchQueue(label: "TranscribeStreamingTestQueue"),
+                                                       nativeWebSocketProvider: nativeWebSocketProvider,
+                                                       transcribeClientDelegate: clientDelegate,
                                                        configuration: mockConfiguration)
 
             let testBundle = Bundle(for: type(of: self))
@@ -118,7 +121,6 @@ class PredictionsServiceTranscribeTests: XCTestCase {
     ///    - I should get a successful result
     ///
     func testLanguageFromConfiguration() {
-        var service: AWSPredictionsService!
         let mockConfigurationJSON = """
         {
             "defaultRegion": "us-east-1",
@@ -131,18 +133,22 @@ class PredictionsServiceTranscribeTests: XCTestCase {
         }
         """.data(using: .utf8)!
         do {
+            let clientDelegate = NativeWSTranscribeStreamingClientDelegate()
+            let dispatchQueue = DispatchQueue(label: "TranscribeStreamingTests")
+            let nativeWebSocketProvider = NativeWebSocketProvider(clientDelegate: clientDelegate,
+                                                                  callbackQueue: dispatchQueue)
             let mockConfiguration = try JSONDecoder().decode(PredictionsPluginConfiguration.self,
                                                              from: mockConfigurationJSON)
-            service = AWSPredictionsService(identifier: "",
-                                            awsTranslate: MockTranslateBehavior(),
-                                            awsRekognition: MockRekognitionBehavior(),
-                                            awsTextract: MockTextractBehavior(),
-                                            awsComprehend: MockComprehendBehavior(),
-                                            awsPolly: MockPollyBehavior(),
-                                            awsTranscribeStreaming: mockTranscribe,
-                                            transcribeDelegate: NativeWSTranscribeStreamingClientDelegate(),
-                                            transcribeCallbackQueue: DispatchQueue(label: "TranscribeTestQueue"),
-                                            configuration: mockConfiguration)
+            predictionsService = AWSPredictionsService(identifier: "",
+                                                       awsTranslate: MockTranslateBehavior(),
+                                                       awsRekognition: MockRekognitionBehavior(),
+                                                       awsTextract: MockTextractBehavior(),
+                                                       awsComprehend: MockComprehendBehavior(),
+                                                       awsPolly: MockPollyBehavior(),
+                                                       awsTranscribeStreaming: mockTranscribe,
+                                                       nativeWebSocketProvider: nativeWebSocketProvider,
+                                                       transcribeClientDelegate: clientDelegate,
+                                                       configuration: mockConfiguration)
         } catch {
             XCTFail("Initialization of the service failed. \(error)")
         }
@@ -150,7 +156,7 @@ class PredictionsServiceTranscribeTests: XCTestCase {
         let mockResponse = createMockTranscribeResponse()
         mockTranscribe.setResult(result: mockResponse)
 
-        service.transcribe(speechToText: audioFile, language: nil) {event in
+        predictionsService.transcribe(speechToText: audioFile, language: nil) {event in
             switch event {
             case .completed(let result):
                 XCTAssertEqual(result.transcription, "This is a test", "Transcribed text should be the same")

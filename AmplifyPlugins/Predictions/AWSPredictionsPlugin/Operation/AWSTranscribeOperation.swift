@@ -36,14 +36,15 @@ PredictionsSpeechToTextOperation {
              finish()
              return
          }
-        
+
         if requestInProcess {
-            let error = PredictionsError.network("There is already a transcription request in process.", "Please wait for that to finish before calling another transcription request")
+            let error = PredictionsError.network("There is already a transcription request in process.",
+                                                 "Please wait for that to finish before calling another transcription request")
             dispatch(event: .failed(error))
             finish()
             return
         }
-        
+
         if let error = request.validate() {
             dispatch(event: .failed(error))
             finish()
@@ -63,12 +64,12 @@ PredictionsSpeechToTextOperation {
     }
 
     private func onServiceEvent(event: PredictionsEvent<SpeechToTextResult, PredictionsError>) {
-        
+
         if isCancelled {
             finish()
             return
         }
-        
+
         switch event {
         case .completed(let result):
             dispatch(event: .completed(result))

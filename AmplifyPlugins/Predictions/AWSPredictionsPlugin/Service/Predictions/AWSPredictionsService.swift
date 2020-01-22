@@ -62,7 +62,7 @@ class AWSPredictionsService {
         let transcribeCallbackQueue = DispatchQueue(label: "TranscribeStreamingQueue")
 
         let transcribeClientDelegate = NativeWSTranscribeStreamingClientDelegate()
-        
+
         let nativeWebSocketProvider = NativeWebSocketProvider(clientDelegate: transcribeClientDelegate, callbackQueue: transcribeCallbackQueue)
 
         let awsTranscribeStreamingAdapter = AWSPredictionsService.makeTranscribeStreaming(nativeWebSocketProvider: nativeWebSocketProvider,
@@ -180,7 +180,7 @@ class AWSPredictionsService {
     private static func makeTranscribeStreaming(nativeWebSocketProvider: NativeWebSocketProvider,
                                                 serviceConfiguration: AmplifyAWSServiceConfiguration,
                                                 identifier: String) -> AWSTranscribeStreamingAdapter {
-       
+
         AWSTranscribeStreaming.register(with: serviceConfiguration,
                                         forKey: identifier,
                                         webSocketProvider: nativeWebSocketProvider)

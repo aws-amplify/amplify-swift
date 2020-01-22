@@ -17,21 +17,15 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
 
             onEvent(.failed(.network(AWSTranscribeStreamingErrorMessage.badRequest.errorDescription,
                                      AWSTranscribeStreamingErrorMessage.badRequest.recoverySuggestion)))
-                   return
+            return
         }
 
         let request: AWSTranscribeStreamingStartStreamTranscriptionRequest =
             AWSTranscribeStreamingStartStreamTranscriptionRequest()
-        let languageCode = language?.toTranscribeLanguage()
-        if let languageCode = languageCode {
+        if let languageCode = language?.toTranscribeLanguage() {
             request.languageCode = languageCode
         } else {
-            if let languageCode = predictionsConfig.convert.transcription?.language {
-                request.languageCode = languageCode.toTranscribeLanguage()
-            }
-            else {
-                request.languageCode = .enUS
-            }
+            request.languageCode = predictionsConfig.convert.transcription?.language.toTranscribeLanguage() ?? .enUS
         }
         request.mediaEncoding = .pcm
         request.mediaSampleRateHertz = 8_000
@@ -60,20 +54,20 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
         }
 
         transcribeClientDelegate.receiveEventCallback = { event, error in
-           guard error == nil else {
-            let error = error as NSError?
-            let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error!)
-            onEvent(.failed(.network(
-                predictionsErrorString.errorDescription,
-                predictionsErrorString.recoverySuggestion)))
-            return
+            guard error == nil else {
+                let error = error as NSError?
+                let predictionsErrorString = PredictionsErrorHelper.mapPredictionsServiceError(error!)
+                onEvent(.failed(.network(
+                    predictionsErrorString.errorDescription,
+                    predictionsErrorString.recoverySuggestion)))
+                return
             }
 
             guard let event = event else {
                 onEvent(.failed(.unknown("No result was found. An unknown error occurred.", "Please try again.")))
                 return
             }
-            
+
             guard let transcriptEvent = event.transcriptEvent else {
                 onEvent(.failed(.unknown("No transcript event, an unknown error occurred.", "Please try again")))
                 return
@@ -96,11 +90,11 @@ extension AWSPredictionsService: AWSTranscribeStreamingServiceBehavior {
             }
 
             self.log.verbose("Received final transcription event (results: \(transcribedResults))")
-           
+
             if let transcribeResult = ConvertSpeechToTextTransformers.processTranscription(transcribedResults) {
-            self.awsTranscribeStreaming.endTranscription()
-            onEvent(.completed(transcribeResult))
-            return
+                self.awsTranscribeStreaming.endTranscription()
+                onEvent(.completed(transcribeResult))
+                return
             }
         }
 

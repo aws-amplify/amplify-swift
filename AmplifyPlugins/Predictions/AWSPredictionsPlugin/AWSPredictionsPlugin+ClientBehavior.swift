@@ -56,7 +56,7 @@ extension AWSPredictionsPlugin {
 
         // only one transcription request can be sent at a time
         let requestInProcess = queue.operations.contains(where: { $0 is AWSTranscribeOperation})
-   
+
         let operation = AWSTranscribeOperation(request: request,
                                                multiService: multiService,
                                                requestInProcess: requestInProcess,
