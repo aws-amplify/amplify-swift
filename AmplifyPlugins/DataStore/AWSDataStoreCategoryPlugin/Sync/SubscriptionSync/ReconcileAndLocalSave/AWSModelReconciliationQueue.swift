@@ -54,16 +54,23 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 
     private let modelName: String
 
+    ///  todo fill this in
+    ///
+    private let dataStorePublisher: DataStorePublisherBehavior
+
     private var incomingEventsSink: AnyCancellable?
 
     init(modelType: Model.Type,
          storageAdapter: StorageEngineAdapter?,
          api: APICategoryGraphQLBehavior,
+         dataStorePublisher: DataStorePublisherBehavior,
          incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
 
         self.modelName = modelType.modelName
 
         self.storageAdapter = storageAdapter
+
+        self.dataStorePublisher = dataStorePublisher
 
         self.reconcileAndSaveQueue = OperationQueue()
         reconcileAndSaveQueue.name = "com.amazonaws.DataStore.\(modelType).reconcile"
@@ -114,7 +121,8 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 
     func enqueue(_ remoteModel: MutationSync<AnyModel>) {
         let reconcileOp = ReconcileAndLocalSaveOperation(remoteModel: remoteModel,
-                                                         storageAdapter: storageAdapter)
+                                                         storageAdapter: storageAdapter,
+                                                         dataStorePublisher: dataStorePublisher)
         reconcileAndSaveQueue.addOperation(reconcileOp)
     }
 

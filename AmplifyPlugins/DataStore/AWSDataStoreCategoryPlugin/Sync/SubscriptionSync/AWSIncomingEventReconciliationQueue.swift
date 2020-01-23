@@ -17,12 +17,14 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
 
     init(modelTypes: [Model.Type],
          api: APICategoryGraphQLBehavior,
-         storageAdapter: StorageEngineAdapter) {
+         storageAdapter: StorageEngineAdapter,
+         dataStorePublisher: DataStorePublisherBehavior) {
         for modelType in modelTypes {
             let modelName = modelType.modelName
             let queue = AWSModelReconciliationQueue(modelType: modelType,
                                                     storageAdapter: storageAdapter,
-                                                    api: api)
+                                                    api: api,
+                                                    dataStorePublisher: dataStorePublisher)
             guard reconciliationQueues[modelName] == nil else {
                 Amplify.DataStore.log
                     .warn("Duplicate model name found: \(modelName), not subscribing")

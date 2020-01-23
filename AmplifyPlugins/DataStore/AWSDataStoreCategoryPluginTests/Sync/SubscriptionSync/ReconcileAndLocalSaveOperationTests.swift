@@ -18,6 +18,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     var anyPostMetadata: MutationSyncMetadata!
     var anyPostMutationSync: MutationSync<AnyModel>!
     var anyPostDeletedMutationSync: MutationSync<AnyModel>!
+    var dataStorePublisher: DataStorePublisherBehavior!
 
     var operation: ReconcileAndLocalSaveOperation!
     var stateMachine: MockStateMachine<ReconcileAndLocalSaveOperation.State, ReconcileAndLocalSaveOperation.Action>!
@@ -49,9 +50,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         storageAdapter.returnOnSave(dataStoreResult: .none)
         stateMachine = MockStateMachine(initialState: .waiting,
                                         resolver: ReconcileAndLocalSaveOperation.Resolver.resolve(currentState:action:))
-
+        dataStorePublisher = DataStorePublisher() as? DataStorePublisherBehavior
         operation = ReconcileAndLocalSaveOperation(remoteModel: anyPostMutationSync,
                                                    storageAdapter: storageAdapter,
+                                                   dataStorePublisher: dataStorePublisher,
                                                    stateMachine: stateMachine)
     }
 

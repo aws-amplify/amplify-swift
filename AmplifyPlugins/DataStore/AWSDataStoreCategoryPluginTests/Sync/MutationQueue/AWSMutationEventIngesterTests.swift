@@ -32,15 +32,18 @@ class AWSMutationEventIngesterTests: XCTestCase {
 
         let apiPlugin = MockAPICategoryPlugin()
 
+        let dataStorePublisher = DataStorePublisher()
         do {
             let connection = try Connection(.inMemory)
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
             try storageAdapter.setUp(models: StorageEngine.systemModels)
 
-            let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter)
+            let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
+                                                  dataStorePublisher: dataStorePublisher)
 
             let storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                              syncEngine: syncEngine)
+                                              syncEngine: syncEngine,
+                                              dataStorePublisher: dataStorePublisher)
 
             let publisher = DataStorePublisher()
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),

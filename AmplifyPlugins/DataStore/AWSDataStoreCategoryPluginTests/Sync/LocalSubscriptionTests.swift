@@ -32,15 +32,18 @@ class LocalSubscriptionTests: XCTestCase {
             let outgoingMutationQueue = NoOpMutationQueue()
             let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
             let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
+            let dataStorePublisher = DataStorePublisher() //as! DataStorePublisherBehavior
 
             let syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
                                              outgoingMutationQueue: outgoingMutationQueue,
                                              mutationEventIngester: mutationDatabaseAdapter,
                                              mutationEventPublisher: awsMutationEventPublisher,
+                                             dataStorePublisher: dataStorePublisher,
                                              initialSyncOrchestratorFactory: NoOpInitialSyncOrchestrator.factory)
 
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          syncEngine: syncEngine)
+                                          syncEngine: syncEngine,
+                                          dataStorePublisher: dataStorePublisher)
         } catch {
             XCTFail(String(describing: error))
             return

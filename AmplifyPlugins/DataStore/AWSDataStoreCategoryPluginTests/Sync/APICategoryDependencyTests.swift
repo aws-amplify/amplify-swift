@@ -66,12 +66,13 @@ extension APICategoryDependencyTests {
         let connection = try Connection(.inMemory)
         storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
         try storageAdapter.setUp(models: StorageEngine.systemModels)
-
-        let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter)
-        let storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          syncEngine: syncEngine)
-
         let dataStorePublisher = DataStorePublisher()
+        let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
+                                              dataStorePublisher: dataStorePublisher)
+        let storageEngine = StorageEngine(storageAdapter: storageAdapter,
+                                          syncEngine: syncEngine,
+                                          dataStorePublisher: dataStorePublisher)
+
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                          storageEngine: storageEngine,
                                                          dataStorePublisher: dataStorePublisher)

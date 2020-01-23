@@ -32,10 +32,13 @@ class BaseDataStoreTests: XCTestCase {
             connection = try Connection(.inMemory)
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
             try storageAdapter.setUp(models: StorageEngine.systemModels)
+            let dataStorePublisher = DataStorePublisher()
 
-            let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter)
+            let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
+                                                  dataStorePublisher: dataStorePublisher)
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          syncEngine: syncEngine)
+                                          syncEngine: syncEngine,
+                                          dataStorePublisher: dataStorePublisher)
         } catch {
             XCTFail(String(describing: error))
             return

@@ -67,15 +67,17 @@ class SyncEngineTestBase: XCTestCase {
     ) throws {
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
-
+        let dataStorePublisher = DataStorePublisher()
         let syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
                                           outgoingMutationQueue: mutationQueue,
                                           mutationEventIngester: mutationDatabaseAdapter,
                                           mutationEventPublisher: awsMutationEventPublisher,
+                                          dataStorePublisher: dataStorePublisher,
                                           initialSyncOrchestratorFactory: initialSyncOrchestratorFactory)
 
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          syncEngine: syncEngine)
+                                          syncEngine: syncEngine,
+                                          dataStorePublisher: dataStorePublisher)
 
         let publisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: modelRegistration,

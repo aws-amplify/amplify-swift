@@ -30,15 +30,18 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                                           target: DispatchQueue.global())
 
     private weak var storageAdapter: StorageEngineAdapter?
+    private let dataStorePublisher: DataStorePublisherBehavior
     private let stateMachine: StateMachine<State, Action>
     private let remoteModel: RemoteModel
     private var stateMachineSink: AnyCancellable?
 
     init(remoteModel: RemoteModel,
          storageAdapter: StorageEngineAdapter?,
+         dataStorePublisher: DataStorePublisherBehavior,
          stateMachine: StateMachine<State, Action>? = nil) {
         self.remoteModel = remoteModel
         self.storageAdapter = storageAdapter
+        self.dataStorePublisher = dataStorePublisher
         self.stateMachine = stateMachine ?? StateMachine(initialState: .waiting,
                                                          resolver: Resolver.resolve(currentState:action:))
         super.init()
@@ -290,7 +293,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                                  data: mutationEvent)
         Amplify.Hub.dispatch(to: .dataStore, payload: payload)
 
-        // TODO: Add publisher
+        dataStorePublisher.send(input: mutationEvent)
         // publisher?.send(input: mutationEvent)
 
         stateMachine.notify(action: .notified)

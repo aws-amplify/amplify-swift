@@ -17,6 +17,8 @@ final class StorageEngine: StorageEngineBehavior {
 
     private var syncEngine: RemoteSyncEngineBehavior?
 
+    private let dataStorePublisher: DataStorePublisherBehavior?
+
     private weak var api: APICategoryGraphQLBehavior?
 
     static var systemModels: [Model.Type] {
@@ -30,22 +32,27 @@ final class StorageEngine: StorageEngineBehavior {
     // Internal initializer used for testing, to allow lazy initialization of the SyncEngine. Note that the provided
     // storageAdapter must have already been set up with system models
     init(storageAdapter: StorageEngineAdapter,
-         syncEngine: RemoteSyncEngineBehavior?) {
+         syncEngine: RemoteSyncEngineBehavior?,
+         dataStorePublisher: DataStorePublisherBehavior?) {
         self.storageAdapter = storageAdapter
         self.syncEngine = syncEngine
+        self.dataStorePublisher = dataStorePublisher
     }
 
-    convenience init(isSyncEnabled: Bool) throws {
+    convenience init(isSyncEnabled: Bool, dataStorePublisher: DataStorePublisherBehavior?) throws {
         let key = kCFBundleNameKey as String
         let databaseName = Bundle.main.object(forInfoDictionaryKey: key) as? String
         let storageAdapter = try SQLiteStorageEngineAdapter(databaseName: databaseName ?? "app")
 
         try storageAdapter.setUp(models: StorageEngine.systemModels)
         if #available(iOS 13.0, *) {
-            let syncEngine = isSyncEnabled ? try? RemoteSyncEngine(storageAdapter: storageAdapter) : nil
-            self.init(storageAdapter: storageAdapter, syncEngine: syncEngine)
+            // dataStorePublisher is required to operate when using the RemoteSyncEngine
+            // for the purposes of notifying the caller of any subscriptions for a specific model
+            let syncEngine = isSyncEnabled ? try? RemoteSyncEngine(storageAdapter: storageAdapter,
+                                                                   dataStorePublisher: dataStorePublisher!) : nil
+            self.init(storageAdapter: storageAdapter, syncEngine: syncEngine, dataStorePublisher: dataStorePublisher)
         } else {
-            self.init(storageAdapter: storageAdapter, syncEngine: nil)
+            self.init(storageAdapter: storageAdapter, syncEngine: nil, dataStorePublisher: dataStorePublisher)
         }
     }
 

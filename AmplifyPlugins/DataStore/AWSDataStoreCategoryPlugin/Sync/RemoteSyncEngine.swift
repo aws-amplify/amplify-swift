@@ -23,6 +23,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private let mutationEventIngester: MutationEventIngester
     private let mutationEventPublisher: MutationEventPublisher
     private let outgoingMutationQueue: OutgoingMutationQueueBehavior
+    private let dataStorePublisher: DataStorePublisherBehavior
 
     /// Synchronizes startup operations
     let syncQueue: OperationQueue
@@ -33,7 +34,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     /// Initializes the CloudSyncEngine with the specified storageAdapter as the provider for persistence of
     /// MutationEvents, sync metadata, and conflict resolution metadata. Immediately initializes the incoming mutation
     /// queue so it can begin accepting incoming mutations from DataStore.
-    convenience init(storageAdapter: StorageEngineAdapter) throws {
+    convenience init(storageAdapter: StorageEngineAdapter,
+                     dataStorePublisher: DataStorePublisherBehavior) throws {
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
         let outgoingMutationQueue = OutgoingMutationQueue()
@@ -42,6 +44,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                   outgoingMutationQueue: outgoingMutationQueue,
                   mutationEventIngester: mutationDatabaseAdapter,
                   mutationEventPublisher: awsMutationEventPublisher,
+                  dataStorePublisher: dataStorePublisher,
                   initialSyncOrchestratorFactory: initialSyncOrchestratorFactory)
     }
 
@@ -49,13 +52,14 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
          outgoingMutationQueue: OutgoingMutationQueueBehavior,
          mutationEventIngester: MutationEventIngester,
          mutationEventPublisher: MutationEventPublisher,
+         dataStorePublisher: DataStorePublisherBehavior,
          initialSyncOrchestratorFactory: @escaping InitialSyncOrchestratorFactory) {
         self.storageAdapter = storageAdapter
         self.mutationEventIngester = mutationEventIngester
         self.mutationEventPublisher = mutationEventPublisher
         self.outgoingMutationQueue = outgoingMutationQueue
         self.initialSyncOrchestratorFactory = initialSyncOrchestratorFactory
-
+        self.dataStorePublisher = dataStorePublisher
         self.syncQueue = OperationQueue()
         syncQueue.name = "com.amazonaws.Amplify.\(AWSDataStorePlugin.self).CloudSyncEngine"
         syncQueue.maxConcurrentOperationCount = 1
@@ -139,7 +143,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         let syncableModelTypes = ModelRegistry.models.filter { $0.schema.isSyncable }
         reconciliationQueue = AWSIncomingEventReconciliationQueue(modelTypes: syncableModelTypes,
                                                                   api: api,
-                                                                  storageAdapter: storageAdapter)
+                                                                  storageAdapter: storageAdapter,
+                                                                  dataStorePublisher: dataStorePublisher)
     }
 
     private func performInitialQueries() {

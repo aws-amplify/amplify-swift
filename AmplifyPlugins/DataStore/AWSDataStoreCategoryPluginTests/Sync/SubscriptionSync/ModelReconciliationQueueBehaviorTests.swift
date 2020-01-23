@@ -25,10 +25,11 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { _, _ in
             eventsNotSaved.fulfill()
         }
-
+        let dataStorePublisher = DataStorePublisher()
         let queue = AWSModelReconciliationQueue(modelType: MockSynced.self,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
+                                                dataStorePublisher: dataStorePublisher,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
 
         // We know this won't be nil, but we need to keep a reference to the queue in memory for the duration of the
@@ -71,10 +72,11 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
             completion(.success(model))
         }
-
+        let dataStorePublisher = DataStorePublisher()
         let queue = AWSModelReconciliationQueue(modelType: MockSynced.self,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
+                                                dataStorePublisher: dataStorePublisher,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
 
         for iteration in 1 ... 3 {
@@ -139,9 +141,11 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                 completion(.success(model))
         }
 
+        let dataStorePublisher = DataStorePublisher()
         let queue = AWSModelReconciliationQueue(modelType: MockSynced.self,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
+                                                dataStorePublisher: dataStorePublisher,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
         for iteration in 1 ... 3 {
             let model = try MockSynced(id: "id-\(iteration)").eraseToAnyModel()
@@ -184,9 +188,11 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                 completion(.success(model))
         }
 
+        let dataStorePublisher = DataStorePublisher()
         let queue = AWSModelReconciliationQueue(modelType: MockSynced.self,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
+                                                dataStorePublisher: dataStorePublisher,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
         for iteration in 1 ... 2 {
             let model = try MockSynced(id: "id-\(iteration)").eraseToAnyModel()

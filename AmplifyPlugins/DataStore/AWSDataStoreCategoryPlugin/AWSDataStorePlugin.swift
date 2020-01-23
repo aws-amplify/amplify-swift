@@ -76,7 +76,11 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             return
         }
 
-        storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled)
+        storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled, dataStorePublisher: resolveDataStorePublisher())
+    }
+
+    private func resolveDataStorePublisher() -> DataStorePublisherBehavior? {
+        return dataStorePublisher as? DataStorePublisherBehavior
     }
 
     public func reset(onComplete: @escaping (() -> Void)) {

@@ -10,7 +10,7 @@ import Combine
 
 // TODO: Should this be a multicast publisher?
 @available(iOS 13.0, *)
-struct DataStorePublisher: DataStoreSubscribeBehavior {
+struct DataStorePublisher: DataStoreSubscribeBehavior, DataStorePublisherBehavior {
 
     private let subject = PassthroughSubject<MutationEvent, DataStoreError>()
 

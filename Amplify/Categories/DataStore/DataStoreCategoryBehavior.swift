@@ -39,3 +39,10 @@ public protocol DataStoreSubscribeBehavior {
     @available(iOS 13.0, *)
     func publisher<M: Model>(for modelType: M.Type) -> AnyPublisher<MutationEvent, DataStoreError>
 }
+
+public protocol DataStorePublisherBehavior {
+    /// Protocol for sending a mutation event to subscription based mutation events
+    /// - Parameter input: a mutation event that will be sent to all subscribers
+    @available(iOS 13.0, *)
+    func send(input: MutationEvent)
+}
