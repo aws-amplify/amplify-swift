@@ -171,6 +171,11 @@
 		B4D3853F236C97360014653D /* PredictionsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D3852C236C97350014653D /* PredictionsError.swift */; };
 		B4D38540236C97360014653D /* PredictionsCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D3852D236C97350014653D /* PredictionsCategoryPlugin.swift */; };
 		B8E8D759314BE9D6BD462E87 /* Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B868B395CBEDBAE5565C25D5 /* Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework */; };
+		B91A879C23D125A50049A12F /* DateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A879B23D125A50049A12F /* DateTime.swift */; };
+		B91A879E23D12B730049A12F /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A879D23D12B730049A12F /* Time.swift */; };
+		B91A87A023D18A320049A12F /* DateScalar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A879F23D18A320049A12F /* DateScalar.swift */; };
+		B91A87A223D641570049A12F /* Time+Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A87A123D641570049A12F /* Time+Comparable.swift */; };
+		B91A87A423D64B0F0049A12F /* DateScalarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91A87A323D64B0F0049A12F /* DateScalarTests.swift */; };
 		B92E03AD2367CE7A006CEB8D /* DataStoreCategory+Behavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E039E2367CE79006CEB8D /* DataStoreCategory+Behavior.swift */; };
 		B92E03AE2367CE7A006CEB8D /* DataStoreCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E039F2367CE79006CEB8D /* DataStoreCategoryPlugin.swift */; };
 		B92E03AF2367CE7A006CEB8D /* DataStoreCategoryBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03A02367CE79006CEB8D /* DataStoreCategoryBehavior.swift */; };
@@ -196,6 +201,12 @@
 		B98E9D122372236300934B51 /* QueryField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0A2372236200934B51 /* QueryField.swift */; };
 		B98E9D132372236300934B51 /* QueryOperator+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */; };
 		B98E9D142372236300934B51 /* QueryPredicate+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */; };
+		B9AE8FD923D8C609002742F9 /* DateScalarFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AE8FD823D8C609002742F9 /* DateScalarFormat.swift */; };
+		B9AE8FDB23D8C643002742F9 /* DateScalarFormat+Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AE8FDA23D8C643002742F9 /* DateScalarFormat+Time.swift */; };
+		B9B50DC223D9179F0086F1E1 /* DateScalarFormat+DateTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC123D9179F0086F1E1 /* DateScalarFormat+DateTime.swift */; };
+		B9B50DC423D917BB0086F1E1 /* DateScalarFormat+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC323D917BB0086F1E1 /* DateScalarFormat+Date.swift */; };
+		B9B50DC623D918020086F1E1 /* Date+DateScalar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC523D918020086F1E1 /* Date+DateScalar.swift */; };
+		B9B50DC823DA15890086F1E1 /* DataStoreError+DateScalar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC723DA15890086F1E1 /* DataStoreError+DateScalar.swift */; };
 		B9FAA10B23878122009414B4 /* ModelField+Association.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10A23878122009414B4 /* ModelField+Association.swift */; };
 		B9FAA10E23878BF3009414B4 /* UserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10D23878BF3009414B4 /* UserAccount.swift */; };
 		B9FAA11023878C5E009414B4 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10F23878C5E009414B4 /* UserProfile.swift */; };
@@ -780,6 +791,11 @@
 		B6F4EFBF6DBF29A324CC0A27 /* Pods-AWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		B7871B77B520892E343E9F0A /* Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.release.xcconfig"; path = "Target Support Files/Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin/Pods-Amplify-AWSPluginsCore-CoreMLPredictionsPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		B868B395CBEDBAE5565C25D5 /* Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Amplify_AmplifyTestConfigs_AmplifyFunctionalTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B91A879B23D125A50049A12F /* DateTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTime.swift; sourceTree = "<group>"; };
+		B91A879D23D12B730049A12F /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
+		B91A879F23D18A320049A12F /* DateScalar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateScalar.swift; sourceTree = "<group>"; };
+		B91A87A123D641570049A12F /* Time+Comparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Time+Comparable.swift"; sourceTree = "<group>"; };
+		B91A87A323D64B0F0049A12F /* DateScalarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateScalarTests.swift; sourceTree = "<group>"; };
 		B922E267236A029C00D09250 /* Query.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Query.swift; sourceTree = "<group>"; };
 		B922E268236A029C00D09250 /* ModelKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelKey.swift; sourceTree = "<group>"; };
 		B922E269236A029C00D09250 /* QueryPredicate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryPredicate.swift; sourceTree = "<group>"; };
@@ -812,6 +828,12 @@
 		B98E9D0A2372236200934B51 /* QueryField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryField.swift; sourceTree = "<group>"; };
 		B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "QueryOperator+Equatable.swift"; sourceTree = "<group>"; };
 		B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "QueryPredicate+Equatable.swift"; sourceTree = "<group>"; };
+		B9AE8FD823D8C609002742F9 /* DateScalarFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateScalarFormat.swift; sourceTree = "<group>"; };
+		B9AE8FDA23D8C643002742F9 /* DateScalarFormat+Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateScalarFormat+Time.swift"; sourceTree = "<group>"; };
+		B9B50DC123D9179F0086F1E1 /* DateScalarFormat+DateTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateScalarFormat+DateTime.swift"; sourceTree = "<group>"; };
+		B9B50DC323D917BB0086F1E1 /* DateScalarFormat+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateScalarFormat+Date.swift"; sourceTree = "<group>"; };
+		B9B50DC523D918020086F1E1 /* Date+DateScalar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+DateScalar.swift"; sourceTree = "<group>"; };
+		B9B50DC723DA15890086F1E1 /* DataStoreError+DateScalar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataStoreError+DateScalar.swift"; sourceTree = "<group>"; };
 		B9FAA10A23878122009414B4 /* ModelField+Association.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelField+Association.swift"; sourceTree = "<group>"; };
 		B9FAA10D23878BF3009414B4 /* UserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccount.swift; sourceTree = "<group>"; };
 		B9FAA10F23878C5E009414B4 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
@@ -1677,6 +1699,23 @@
 			path = Predictions;
 			sourceTree = "<group>";
 		};
+		B91A879A23D1256B0049A12F /* DataType */ = {
+			isa = PBXGroup;
+			children = (
+				B9B50DC723DA15890086F1E1 /* DataStoreError+DateScalar.swift */,
+				B9B50DC523D918020086F1E1 /* Date+DateScalar.swift */,
+				B91A879F23D18A320049A12F /* DateScalar.swift */,
+				B9AE8FD823D8C609002742F9 /* DateScalarFormat.swift */,
+				B9B50DC323D917BB0086F1E1 /* DateScalarFormat+Date.swift */,
+				B9B50DC123D9179F0086F1E1 /* DateScalarFormat+DateTime.swift */,
+				B9AE8FDA23D8C643002742F9 /* DateScalarFormat+Time.swift */,
+				B91A879B23D125A50049A12F /* DateTime.swift */,
+				B91A879D23D12B730049A12F /* Time.swift */,
+				B91A87A123D641570049A12F /* Time+Comparable.swift */,
+			);
+			path = DataType;
+			sourceTree = "<group>";
+		};
 		B92E03A62367CE7A006CEB8D /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -1697,6 +1736,7 @@
 				FA8EE780238628490097E4F1 /* Persistable.swift */,
 				FA8EE775238626C70097E4F1 /* AnyModel */,
 				B9FAA1232388BE2B009414B4 /* Collection */,
+				B91A879A23D1256B0049A12F /* DataType */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2462,12 +2502,12 @@
 			isa = PBXGroup;
 			children = (
 				FACA36062327FBD4000E74F6 /* AmplifyTestCommon.h */,
-				FA9D6C20238DF06B00C7DD9F /* Helpers */,
 				FACA36072327FBD4000E74F6 /* Info.plist */,
-				FAC23577227A056F00424678 /* Mocks */,
-				B952182D237E21B900F53237 /* Models */,
 				21F40A3F23A295470074678E /* TestCommonConstants.swift */,
 				FACF52032329633500646E10 /* TestExtensions.swift */,
+				FA9D6C20238DF06B00C7DD9F /* Helpers */,
+				FAC23577227A056F00424678 /* Mocks */,
+				B952182D237E21B900F53237 /* Models */,
 			);
 			path = AmplifyTestCommon;
 			sourceTree = "<group>";
@@ -2511,9 +2551,10 @@
 			isa = PBXGroup;
 			children = (
 				FA8EE772238621320097E4F1 /* AnyModelTests.swift */,
-				FAE414602399A6A500CE94C2 /* ModelRegistryTests.swift */,
 				FAD3937923820CDB00463F5E /* DataStoreCategoryClientAPITests.swift */,
 				FAD3937C23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift */,
+				B91A87A323D64B0F0049A12F /* DateScalarTests.swift */,
+				FAE414602399A6A500CE94C2 /* ModelRegistryTests.swift */,
 			);
 			path = DataStore;
 			sourceTree = "<group>";
@@ -3475,6 +3516,7 @@
 				FAA98B02239214A30039EE71 /* DataStoreConflict.swift in Sources */,
 				FA093386238480EB00C2FD5F /* OSLogWrapper.swift in Sources */,
 				FAC23544227A055200424678 /* ConfigurationError.swift in Sources */,
+				B91A879C23D125A50049A12F /* DateTime.swift in Sources */,
 				95DAAB44237E639E0028544F /* ConvertResult.swift in Sources */,
 				FAC428A4235F802A0000F221 /* AmplifyAPICategory+InterceptorBehavior.swift in Sources */,
 				95DAAB47237E639E0028544F /* IdentifyLabelsResult.swift in Sources */,
@@ -3511,6 +3553,7 @@
 				95DAAB45237E639E0028544F /* IdentifyResult.swift in Sources */,
 				95DAAB21237E63370028544F /* LanguageDetectionResult.swift in Sources */,
 				FAC2351E227A053D00424678 /* APICategory.swift in Sources */,
+				B9B50DC223D9179F0086F1E1 /* DateScalarFormat+DateTime.swift in Sources */,
 				FAC2351B227A053D00424678 /* APICategoryClientBehavior.swift in Sources */,
 				FA5D4CF3238AFD7B00D2F54A /* ModelRegistry+Syncable.swift in Sources */,
 				FAAFAF37239051E6002CF932 /* AtomicDictionary.swift in Sources */,
@@ -3521,6 +3564,7 @@
 				B4D3853A236C97360014653D /* PredictionsInterpretRequest.swift in Sources */,
 				2144226C234BDD9B009357F7 /* StorageUploadFileRequest.swift in Sources */,
 				FAA2E8CA23A02A2600E420EA /* DataStoreCategory+Resettable.swift in Sources */,
+				B9B50DC423D917BB0086F1E1 /* DateScalarFormat+Date.swift in Sources */,
 				FA3152A0233D645B00DE78E7 /* StorageRemoveRequest.swift in Sources */,
 				21687A3E236371C4004A056E /* AnalyticsCategory+HubPayloadEventName.swift in Sources */,
 				FAC428A0235F7F980000F221 /* AmplifyAPICategory+RESTBehavior.swift in Sources */,
@@ -3569,6 +3613,7 @@
 				FAAFAF3D2390D4A6002CF932 /* AmplifyErrorMessages.swift in Sources */,
 				B92E03B32367CE7A006CEB8D /* DataStoreCategory.swift in Sources */,
 				FA9FB77D232AA0D800C04D32 /* FilteredListener.swift in Sources */,
+				B9AE8FDB23D8C643002742F9 /* DateScalarFormat+Time.swift in Sources */,
 				FAC2352D227A053D00424678 /* AnalyticsCategoryPlugin.swift in Sources */,
 				2142099723721F4400FA140C /* RESTOperationType.swift in Sources */,
 				FA56F71E22B144F80039754A /* AsyncEvent.swift in Sources */,
@@ -3609,6 +3654,7 @@
 				95DAAB2D237E63370028544F /* EmotionType.swift in Sources */,
 				B4BD6B392370932300A1F0A7 /* PredictionsIdentifyRequest.swift in Sources */,
 				21409C5B2384C57D000A53C9 /* GraphQLQueryType.swift in Sources */,
+				B91A87A223D641570049A12F /* Time+Comparable.swift in Sources */,
 				95DAAB29237E63370028544F /* EntityDetectionResult.swift in Sources */,
 				FA31529E233D645800DE78E7 /* StorageUploadDataRequest.swift in Sources */,
 				B4D38538236C97360014653D /* PredictionsCategoryConfiguration.swift in Sources */,
@@ -3661,6 +3707,7 @@
 				B9FAA1272388BE91009414B4 /* List+LazyLoad.swift in Sources */,
 				B4340A24238325B900101BBA /* DefaultNetworkPolicy.swift in Sources */,
 				B4D38537236C97360014653D /* PredictionsCategory+CategoryConfigurable.swift in Sources */,
+				B9AE8FD923D8C609002742F9 /* DateScalarFormat.swift in Sources */,
 				FA4E730C23282917003B8EEB /* Amplify+Resolve.swift in Sources */,
 				FA8EE779238627040097E4F1 /* Model+ModelName.swift in Sources */,
 				FAB9D811233BF5F600928AA9 /* AmplifyOperationContext.swift in Sources */,
@@ -3669,6 +3716,7 @@
 				B92E03B52367CE7A006CEB8D /* Model.swift in Sources */,
 				95DAAB31237E63370028544F /* PartOfSpeech.swift in Sources */,
 				B9FAA13A238BBADE009414B4 /* List+Combine.swift in Sources */,
+				B91A87A023D18A320049A12F /* DateScalar.swift in Sources */,
 				FA8EE77B2386271A0097E4F1 /* Model+AnyModel.swift in Sources */,
 				FA56F72522B14B6A0039754A /* Resumable.swift in Sources */,
 				FAA2E8C023A00C6500E420EA /* AmplifyAPICategory+APICategory.swift in Sources */,
@@ -3690,6 +3738,7 @@
 				95DAAB36237E63370028544F /* Selection.swift in Sources */,
 				FAC0A2AD22B43FE700B50912 /* HubCategory+ClientBehavior.swift in Sources */,
 				FAAFAF2F23904B14002CF932 /* AtomicValue+Bool.swift in Sources */,
+				B9B50DC823DA15890086F1E1 /* DataStoreError+DateScalar.swift in Sources */,
 				FACD26502386E9410068FBE6 /* JSONValue+Subscript.swift in Sources */,
 				FAC23523227A053D00424678 /* LoggingCategoryPlugin.swift in Sources */,
 				B9FB05F82383740D00DE1FD4 /* DataStoreStatement.swift in Sources */,
@@ -3701,11 +3750,14 @@
 				FAC23522227A053D00424678 /* LoggingCategory.swift in Sources */,
 				FAC2358F227A4A6E00424678 /* HubCategory.swift in Sources */,
 				B98E9D0E2372236300934B51 /* ModelKey.swift in Sources */,
+				95DAAB86237F13A10028544F /* PredictionsTextToSpeechOperation.swift in Sources */,
+				B91A879E23D12B730049A12F /* Time.swift in Sources */,
 				B9FAA13C238BBE67009414B4 /* DataStoreCallback+Combine.swift in Sources */,
 				95DAAB8A237F13B70028544F /* TextToSpeechResult.swift in Sources */,
 				B98E9D122372236300934B51 /* QueryField.swift in Sources */,
 				B98E9D0F2372236300934B51 /* QueryOperator.swift in Sources */,
 				FAA64FC52397344D00B9C3C6 /* AtomicValue+RangeReplaceableCollection.swift in Sources */,
+				B9B50DC623D918020086F1E1 /* Date+DateScalar.swift in Sources */,
 				FACBAD532386160100E29E56 /* AnyModel.swift in Sources */,
 				B98E9D132372236300934B51 /* QueryOperator+Equatable.swift in Sources */,
 				21409C5A2384C57D000A53C9 /* GraphQLMutationType.swift in Sources */,
@@ -3744,6 +3796,7 @@
 				FAD3937D23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift in Sources */,
 				FA607FE2233D131B00DFEA24 /* AmplifyOperationHubTests.swift in Sources */,
 				FAC2356A227A056600424678 /* LoggingCategoryConfigurationTests.swift in Sources */,
+				B91A87A423D64B0F0049A12F /* DateScalarTests.swift in Sources */,
 				FA5D76AF23947E9C00489864 /* Model+CodableTests.swift in Sources */,
 				FAAFAF3323904BA4002CF932 /* AtomicValue+NumericTests.swift in Sources */,
 				FA176EDD2385943000C5C5F9 /* NotificationListeningAnalyticsPlugin.swift in Sources */,
