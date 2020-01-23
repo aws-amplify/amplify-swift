@@ -17,14 +17,17 @@ extension CoreMLPredictionsPlugin {
             throw PluginError.pluginConfigurationError(errorDescription, recoverySuggestion)
         }
         configure(naturalLanguageBehavior: CoreMLNaturalLanguageAdapter(),
-                  visionBehavior: CoreMLVisionAdapter())
+                  visionBehavior: CoreMLVisionAdapter(),
+                  speechBehavior: CoreMLSpeechAdapter())
     }
 
     func configure(naturalLanguageBehavior: CoreMLNaturalLanguageBehavior,
                    visionBehavior: CoreMLVisionBehavior,
+                   speechBehavior: CoreMLSpeechBehavior,
                    queue: OperationQueue = OperationQueue()) {
         coreMLNaturalLanguage = naturalLanguageBehavior
         coreMLVision = visionBehavior
+        coreMLSpeech = speechBehavior
         self.queue = queue
     }
 }

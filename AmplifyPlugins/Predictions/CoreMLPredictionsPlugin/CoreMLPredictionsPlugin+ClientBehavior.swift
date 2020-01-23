@@ -38,6 +38,16 @@ extension CoreMLPredictionsPlugin {
         return operation
     }
 
+    public func convert(speechToText: URL,
+                        options: PredictionsSpeechToTextRequest.Options?,
+                        listener: PredictionsSpeechToTextOperation.EventListener?) -> PredictionsSpeechToTextOperation {
+        let options = options ?? PredictionsSpeechToTextRequest.Options()
+        let request = PredictionsSpeechToTextRequest(speechToText: speechToText, options: options)
+        let operation = CoreMLSpeechToTextOperation(request, coreMLSpeech: coreMLSpeech, listener: listener)
+        queue.addOperation(operation)
+        return operation
+    }
+
     public func identify(type: IdentifyAction,
                          image: URL,
                          options: PredictionsIdentifyRequest.Options?,

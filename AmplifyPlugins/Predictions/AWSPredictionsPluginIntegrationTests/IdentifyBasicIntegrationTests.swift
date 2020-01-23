@@ -40,13 +40,15 @@ class IdentifyBasicIntegrationTests: XCTestCase {
         if withCollection {
          predictionsConfig = PredictionsCategoryConfiguration(
             plugins: [
-                "AWSPredictionsPlugin": [
+                "awsPredictionsPlugin": [
                     "defaultRegion": region,
                     "identify": [
                         "identifyEntities": [
                             "collectionId": "TestCollection",
+                            "celebrityDetectionEnabled": "true",
                             "maxFaces": 50,
-                            "region": region
+                            "region": region,
+                            "defaultNetworkPolicy": "auto"
                         ]
                     ]
                 ]
@@ -57,8 +59,9 @@ class IdentifyBasicIntegrationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(predictions: predictionsConfig)
 
         // Set up Amplify
+        let predictionsPlugin = AWSPredictionsPlugin()
         do {
-            try Amplify.add(plugin: AWSPredictionsPlugin())
+            try Amplify.add(plugin: predictionsPlugin)
             try Amplify.configure(amplifyConfig)
         } catch {
             XCTFail("Failed to initialize and configure Amplify")

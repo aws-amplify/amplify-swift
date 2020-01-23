@@ -24,10 +24,16 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
                         listener: PredictionsTranslateTextOperation.EventListener?)
         -> PredictionsTranslateTextOperation {
         plugin.convert(textToTranslate: textToTranslate,
-                       language: language,
-                       targetLanguage: targetLanguage,
-                       options: options,
-                       listener: listener)
+                           language: language,
+                           targetLanguage: targetLanguage,
+                           options: options,
+                           listener: listener)
+    }
+
+    public func convert(speechToText: URL,
+                        options: PredictionsSpeechToTextRequest.Options?,
+                        listener: PredictionsSpeechToTextOperation.EventListener?) -> PredictionsSpeechToTextOperation {
+        plugin.convert(speechToText: speechToText, options: options, listener: listener)
     }
 
     public func identify(type: IdentifyAction,

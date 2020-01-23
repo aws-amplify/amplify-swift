@@ -46,6 +46,26 @@ extension AWSPredictionsPlugin {
 
     }
 
+    public func convert(speechToText: URL,
+                        options: PredictionsSpeechToTextRequest.Options?,
+                        listener: PredictionsSpeechToTextOperation.EventListener?) -> PredictionsSpeechToTextOperation {
+        let request = PredictionsSpeechToTextRequest(speechToText: speechToText,
+                                                     options: options ?? PredictionsSpeechToTextRequest.Options())
+
+        let multiService = TranscribeMultiService(coreMLService: coreMLService, predictionsService: predictionsService)
+
+        // only one transcription request can be sent at a time otherwise you receive an error
+        let requestInProcess = queue.operations.contains(where: { $0 is AWSTranscribeOperation})
+
+        let operation = AWSTranscribeOperation(request: request,
+                                               multiService: multiService,
+                                               requestInProcess: requestInProcess,
+                                               listener: listener)
+        queue.addOperation(operation)
+        return operation
+
+    }
+
     public func identify(type: IdentifyAction,
                          image: URL,
                          options: PredictionsIdentifyRequest.Options?,

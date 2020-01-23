@@ -17,15 +17,19 @@ class CoreMLPredictionsPluginTestBase: XCTestCase {
 
     var visionBehavior: MockCoreMLVisionAdapter!
 
+    var speechBehavior: MockCoreMLSpeechAdapter!
+
     var queue: MockOperationQueue!
 
     override func setUp() {
         coreMLPredictionsPlugin = CoreMLPredictionsPlugin()
         naturalLanguageBehavior = MockCoreMLNaturalLanguageAdapter()
         visionBehavior = MockCoreMLVisionAdapter()
+        speechBehavior = MockCoreMLSpeechAdapter()
         queue = MockOperationQueue()
         coreMLPredictionsPlugin.configure(naturalLanguageBehavior: naturalLanguageBehavior,
                                           visionBehavior: visionBehavior,
+                                          speechBehavior: speechBehavior,
                                           queue: queue)
     }
 }

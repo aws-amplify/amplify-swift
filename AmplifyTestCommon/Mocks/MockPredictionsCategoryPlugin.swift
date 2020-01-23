@@ -35,6 +35,15 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
         return MockPredictionsTranslateTextOperation(request: request)
 
     }
+    
+    func convert(speechToText: URL,
+                 options: PredictionsSpeechToTextRequest.Options?,
+                 listener: PredictionsSpeechToTextOperation.EventListener?) -> PredictionsSpeechToTextOperation {
+        notify("speechToText")
+        let request = PredictionsSpeechToTextRequest(speechToText: speechToText, options: options ?? PredictionsSpeechToTextRequest.Options())
+        return MockPredictionsSpeechToTextOperation(request: request)
+        
+    }
 
     func identify(type: IdentifyAction,
                   image: URL,
@@ -89,6 +98,25 @@ PredictionsError>, PredictionsTranslateTextOperation {
     init(request: Request) {
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.translate,
+                   request: request)
+    }
+
+}
+
+class MockPredictionsSpeechToTextOperation: AmplifyOperation<PredictionsSpeechToTextRequest,
+    Void,
+    SpeechToTextResult,
+PredictionsError>, PredictionsSpeechToTextOperation {
+
+    override func pause() {
+    }
+
+    override func resume() {
+    }
+
+    init(request: Request) {
+        super.init(categoryType: .predictions,
+                   eventName: HubPayload.EventName.Predictions.speechToText,
                    request: request)
     }
 

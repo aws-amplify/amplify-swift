@@ -1,7 +1,7 @@
 platform :ios, '13.0'
 use_frameworks!
 
-AWS_SDK_VERSION = "2.12.2"
+AWS_SDK_VERSION = "2.12.6"
 
 pod 'SwiftFormat/CLI'
 pod 'SwiftLint'
@@ -13,7 +13,7 @@ target 'AWSPredictionsPlugin' do
   pod "AWSRekognition", "~> #{AWS_SDK_VERSION}"
   pod "AWSPolly", "~> #{AWS_SDK_VERSION}"
   pod "AWSComprehend", "~> #{AWS_SDK_VERSION}"
-  pod "AWSTranscribe", "~> #{AWS_SDK_VERSION}"
+  pod "AWSTranscribeStreaming", "~> #{AWS_SDK_VERSION}"
   pod "AWSTextract", "~> #{AWS_SDK_VERSION}"
 end
 

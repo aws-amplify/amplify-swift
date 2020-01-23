@@ -23,4 +23,3 @@ struct IdentifyMultiServiceErrorMessage {
         "Not able to fetch result for identify operation",
         "Please try with a different input")
 }
-

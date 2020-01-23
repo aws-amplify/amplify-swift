@@ -38,6 +38,13 @@ class AWSPredictionsPluginTestBase: XCTestCase {
                         "collectionId": "", //no collectionid
                         "region": region
                         ]
+                    ],
+                    "convert": [
+                        "transcription": [
+                            "language": "en",
+                            "region": region,
+                            "defaultNetworkPolicy": "auto"
+                        ]
                     ]
                 ]
             ]

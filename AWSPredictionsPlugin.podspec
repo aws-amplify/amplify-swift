@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
     
     s.requires_arc = true
 
-    AWS_SDK_VERSION = '~> 2.12.2'
+    AWS_SDK_VERSION = '~> 2.12.6'
     AMPLIFY_VERSION = '0.10.0'
     
     s.source_files = 'AmplifyPlugins/Predictions/AWSPredictionsPlugin/**/*.swift'
@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
     s.dependency 'AWSPolly', AWS_SDK_VERSION
     s.dependency 'AWSRekognition', AWS_SDK_VERSION
     s.dependency 'AWSTextract', AWS_SDK_VERSION
-    s.dependency 'AWSTranscribe', AWS_SDK_VERSION
+    s.dependency 'AWSTranscribeStreaming', AWS_SDK_VERSION
     s.dependency 'AWSTranslate', AWS_SDK_VERSION
     s.dependency 'CoreMLPredictionsPlugin', AMPLIFY_VERSION
   end

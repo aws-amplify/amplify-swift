@@ -6,7 +6,9 @@
 //
 
 import Foundation
+import Amplify
 
-public protocol PredictionsConvertRequest {
+protocol CoreMLSpeechBehavior: class {
 
+    func getTranscription(_ audioData: URL, callback: @escaping (SpeechToTextResult?) -> Void)
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct PredictionsTranslateTextRequest: AmplifyOperationRequest, PredictionsConvertRequest {
+public struct PredictionsTranslateTextRequest: AmplifyOperationRequest {
 
     /// The text to translate.
     public let textToTranslate: String
@@ -32,9 +32,8 @@ public struct PredictionsTranslateTextRequest: AmplifyOperationRequest, Predicti
     }
 }
 
-public extension PredictionsTranslateTextRequest {
-
-    struct Options {
+extension PredictionsTranslateTextRequest {
+    public struct Options {
 
         /// The default NetworkPolicy for the operation. The default value will be `auto`.
         public let defaultNetworkPolicy: DefaultNetworkPolicy

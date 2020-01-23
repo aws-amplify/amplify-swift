@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct PredictionsTextToSpeechRequest: AmplifyOperationRequest, PredictionsConvertRequest {
+public struct PredictionsTextToSpeechRequest: AmplifyOperationRequest {
 
     /// The text to synthesize to speech
     public let textToSpeech: String
@@ -22,26 +22,26 @@ public struct PredictionsTextToSpeechRequest: AmplifyOperationRequest, Predictio
     }
 }
 
-public extension PredictionsTextToSpeechRequest {
-
-    struct Options {
+extension PredictionsTextToSpeechRequest {
+    public struct Options {
 
         /// The default NetworkPolicy for the operation. The default value will be `auto`.
         public let defaultNetworkPolicy: DefaultNetworkPolicy
 
+        ///the voice type selected for synthesizing text to speech
         public let voiceType: VoiceType?
 
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
         /// a way to utilize the underlying storage system's functionality. See plugin documentation for expected
         /// key/values
-        public let pluginOptions: [String: Any]?
+        public let pluginOptions: Any?
 
         public init(defaultNetworkPolicy: DefaultNetworkPolicy = .auto,
                     voiceType: VoiceType? = nil,
-                    pluginOptions: [String: Any]? = nil) {
+                    pluginOptions: Any? = nil) {
             self.defaultNetworkPolicy = defaultNetworkPolicy
-            self.voiceType = voiceType
             self.pluginOptions = pluginOptions
+            self.voiceType = voiceType
         }
     }
 }
