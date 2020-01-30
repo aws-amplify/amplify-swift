@@ -7,7 +7,12 @@
 
 import Foundation
 
-public struct Time: DateScalar {
+/// `Time` is an immutable `DateScalar` object that represents a time, often viewed
+/// as hour-minute-second (`HH:mm:ss`). Time can be represented to nanosecond precision.
+/// For example, the value "13:45.30.1234". It can also hold a reference to a TimeZone.
+///
+/// As all Date scalars, `Time` relies on the ISO8601 calendar and fixed format.
+public struct Time: DateScalar, Comparable {
 
     public static var iso8601DateComponents: Set<Calendar.Component> {
         [.hour, .minute, .second, .nanosecond, .timeZone]
@@ -22,6 +27,10 @@ public struct Time: DateScalar {
     public init(_ date: Date) {
         let calendar = Time.iso8601Calendar
         let components = calendar.dateComponents(Time.iso8601DateComponents, from: date)
+        print("======================")
+        print(components)
+        print(components.date)
+        print("======================")
         self.date = components.date ?? date
     }
 

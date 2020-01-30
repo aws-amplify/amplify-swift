@@ -20,32 +20,10 @@ public struct ModelDateFormatting {
         return formatter
     }()
 
-    static let iso8601WithoutTime: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.calendar = Calendar(identifier: .iso8601)
-        formatter.dateFormat = "yyyy-MM-dd"
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.timeStyle = .none
-        return formatter
-    }()
-
     public static let decodingStrategy: JSONDecoder.DateDecodingStrategy = {
         let strategy = JSONDecoder.DateDecodingStrategy.custom { decoder -> Date in
             let container = try decoder.singleValueContainer()
             let dateString = try container.decode(String.self)
-
-//            if let date = iso8601WithFractionalSeconds.date(from: dateString) {
-//                return date
-//            }
-//
-//            if let date = iso8601WithoutFractionalSeconds.date(from: dateString) {
-//                return date
-//            }
-//
-//            if let date = iso8601WithoutTime.date(from: dateString) {
-//                return date
-//            }
             return try Date(iso8601String: dateString)
         }
 
@@ -61,14 +39,6 @@ public struct ModelDateFormatting {
     }()
 
 }
-
-//public extension Date {
-//
-//    /// Retrieve the ISO 8601 formatted String, like "2019-11-25T00:35:01.746Z", from the Date instance
-//    var iso8601String: String {
-//        return ModelDateFormatting.iso8601WithFractionalSeconds.string(from: self)
-//    }
-//}
 
 public extension String {
 

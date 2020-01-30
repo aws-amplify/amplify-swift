@@ -7,10 +7,15 @@
 
 import Foundation
 
-public struct DateTime: DateScalar {
+/// `DateTime` is an immutable `DateScalar` object that represents a date with a time,
+/// often viewed as `yyyy-MM-dd'T'HH:mm:ss.SSSSZZZZZ`.
+///
+/// `DateTime` can be represented to nanosecond precision and it also holds a reference
+/// to a TimeZone. As all Date scalars, `DateTime` relies on the ISO8601 calendar.
+public struct DateTime: DateScalar, Comparable {
 
     public static var iso8601DateComponents: Set<Calendar.Component> {
-        [.hour, .minute, .second, .nanosecond, .timeZone]
+        [.year, .month, .day, .hour, .minute, .second, .nanosecond, .timeZone]
     }
 
     public static var now: DateTime {
@@ -18,6 +23,10 @@ public struct DateTime: DateScalar {
     }
 
     public let date: Date
+
+    public var time: Time {
+        Time(date)
+    }
 
     public init(_ date: Date) {
         let calendar = DateTime.iso8601Calendar
