@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSPluginsCore
+import Combine
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
@@ -21,6 +22,10 @@ final class MockReconciliationQueue: MessageReporter, IncomingEventReconciliatio
 
     func offer(_ remoteModel: MutationSync<AnyModel>) {
         notify("offer(_:) remoteModel: \(remoteModel)")
+    }
+
+    func publisher() -> AnyPublisher<IncomingEventReconciliationQueueEvent, Error> {
+        return PassthroughSubject<IncomingEventReconciliationQueueEvent, Error>().eraseToAnyPublisher()
     }
 
 }

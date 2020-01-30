@@ -8,6 +8,17 @@
 import Amplify
 import Combine
 
+enum RemoteSyncEngineEvent {
+    case storageAdapterAvailable
+    case subscriptionsPaused
+    case mutationsPaused
+    case subscriptionsInitialized
+    case performedInitialSync
+    case subscriptionsActivated
+    case mutationQueueStarted
+    case syncStarted
+}
+
 /// Behavior to sync mutation events to the remote API, and to subscribe to mutations from the remote API
 protocol RemoteSyncEngineBehavior: class {
 

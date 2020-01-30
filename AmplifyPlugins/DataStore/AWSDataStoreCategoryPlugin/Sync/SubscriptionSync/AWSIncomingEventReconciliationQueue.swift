@@ -10,14 +10,28 @@ import AWSPluginsCore
 import Combine
 import Foundation
 
+//Used for testing:
+@available(iOS 13.0, *)
+typealias IncomingEventReconciliationQueueFactory =
+    ([Model.Type], APICategoryGraphQLBehavior, StorageEngineAdapter) -> IncomingEventReconciliationQueue
+
 @available(iOS 13.0, *)
 final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
+
+    static let factory: IncomingEventReconciliationQueueFactory = { modelTypes, api, storageAdapter in
+        AWSIncomingEventReconciliationQueue(modelTypes: modelTypes, api: api, storageAdapter: storageAdapter)
+    }
+
+    private let incomingEventReconciliationQueueTopic: PassthroughSubject<IncomingEventReconciliationQueueEvent, Error>
+    private var incomingEventReconciliationQueueCancellable = [String: AnyCancellable]()
 
     private var reconciliationQueues = [String: ModelReconciliationQueue]()
 
     init(modelTypes: [Model.Type],
          api: APICategoryGraphQLBehavior,
          storageAdapter: StorageEngineAdapter) {
+
+        self.incomingEventReconciliationQueueTopic = PassthroughSubject<IncomingEventReconciliationQueueEvent, Error>()
         for modelType in modelTypes {
             let modelName = modelType.modelName
             let queue = AWSModelReconciliationQueue(modelType: modelType,
@@ -29,15 +43,29 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                 continue
             }
             reconciliationQueues[modelName] = queue
+
+            let cancellable = queue.publisher().sink(receiveCompletion: { completed in
+                switch completed {
+                case .failure(let error):
+                    self.incomingEventReconciliationQueueTopic.send(completion: .failure(error))
+                case .finished:
+                    self.incomingEventReconciliationQueueTopic.send(completion: .finished)
+                }
+            }, receiveValue: { _ in
+                //no-op
+            })
+            incomingEventReconciliationQueueCancellable[modelName] = cancellable
         }
     }
 
     func start() {
         reconciliationQueues.values.forEach { $0.start() }
+        incomingEventReconciliationQueueTopic.send(.started)
     }
 
     func pause() {
         reconciliationQueues.values.forEach { $0.pause() }
+        incomingEventReconciliationQueueTopic.send(.paused)
     }
 
     func offer(_ remoteModel: MutationSync<AnyModel>) {
@@ -47,6 +75,10 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         }
 
         queue.enqueue(remoteModel)
+    }
+
+    func publisher() -> AnyPublisher<IncomingEventReconciliationQueueEvent, Error> {
+        incomingEventReconciliationQueueTopic.eraseToAnyPublisher()
     }
 
 }

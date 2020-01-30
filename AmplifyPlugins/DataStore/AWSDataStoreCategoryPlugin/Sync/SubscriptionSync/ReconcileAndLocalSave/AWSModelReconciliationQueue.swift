@@ -56,6 +56,8 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 
     private var incomingEventsSink: AnyCancellable?
 
+    private let modelReconciliationQueueSubject: PassthroughSubject<ModelReconciliationQueueEvent, Error>
+
     init(modelType: Model.Type,
          storageAdapter: StorageEngineAdapter?,
          api: APICategoryGraphQLBehavior,
@@ -64,6 +66,8 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         self.modelName = modelType.modelName
 
         self.storageAdapter = storageAdapter
+
+        self.modelReconciliationQueueSubject = PassthroughSubject<ModelReconciliationQueueEvent, Error>()
 
         self.reconcileAndSaveQueue = OperationQueue()
         reconcileAndSaveQueue.name = "com.amazonaws.DataStore.\(modelType).reconcile"
@@ -96,11 +100,13 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     /// (Re)starts the incoming subscription event queue.
     func start() {
         incomingSubscriptionEventQueue.isSuspended = false
+        modelReconciliationQueueSubject.send(.started)
     }
 
     /// Pauses only the incoming subscription event queue. Events submitted via `enqueue` will still be processed
     func pause() {
         incomingSubscriptionEventQueue.isSuspended = true
+        modelReconciliationQueueSubject.send(.paused)
     }
 
     /// Cancels all outstanding operations on both the incoming subscription event queue and the reconcile queue, and
@@ -118,12 +124,18 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         reconcileAndSaveQueue.addOperation(reconcileOp)
     }
 
+    func publisher() -> AnyPublisher<ModelReconciliationQueueEvent, Error> {
+        return modelReconciliationQueueSubject.eraseToAnyPublisher()
+    }
+
     private func receiveCompletion(_ completion: Subscribers.Completion<DataStoreError>) {
         switch completion {
         case .finished:
             log.info("receivedCompletion: finished")
+            modelReconciliationQueueSubject.send(completion: .finished)
         case .failure(let dataStoreError):
             log.error("receiveCompletion: error: \(dataStoreError)")
+            modelReconciliationQueueSubject.send(completion: .failure(dataStoreError))
         }
     }
 

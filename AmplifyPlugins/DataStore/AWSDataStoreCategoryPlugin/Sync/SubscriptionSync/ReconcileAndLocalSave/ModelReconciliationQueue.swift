@@ -7,6 +7,12 @@
 
 import Amplify
 import AWSPluginsCore
+import Combine
+
+enum ModelReconciliationQueueEvent {
+    case started
+    case paused
+}
 
 @available(iOS 13.0, *)
 protocol ModelReconciliationQueue {
@@ -14,5 +20,5 @@ protocol ModelReconciliationQueue {
     func pause()
     func cancel()
     func enqueue(_ remoteModel: MutationSync<AnyModel>)
-
+    func publisher() -> AnyPublisher<ModelReconciliationQueueEvent, Error>
 }
