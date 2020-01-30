@@ -30,7 +30,7 @@ class GraphQLGetQueryTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     ///     - it has variables containing `id`
     func testGetGraphQLQueryFromSimpleModel() {
-        let document = GraphQLGetQuery(from: Post.self, id: "id")
+        let document = GraphQLGetQuery(modelType: Post.self, id: "id")
         let expectedQueryDocument = """
         query GetPost($id: ID!) {
           getPost(id: $id) {
@@ -51,8 +51,8 @@ class GraphQLGetQueryTests: XCTestCase {
     }
 
     func testGetGraphQLQueryFromSimpleModelWithSyncEnabled() {
-        let document = GraphQLGetQuery(from: Post.self, id: "id")
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
+        let document = GraphQLGetQuery(modelType: Post.self, id: "id")
+        let syncEnabledDocument = SyncEnabledDecorator(document)
         let expectedQueryDocument = """
         query GetPost($id: ID!) {
           getPost(id: $id) {
@@ -86,7 +86,7 @@ class GraphQLGetQueryTests: XCTestCase {
     ///     - it is named `getComment`
     ///     - it has a list of fields with a nested `post`
     func testGetGraphQLQueryFromModelWithAssociation() {
-        let document = GraphQLGetQuery(from: Comment.self, id: "id")
+        let document = GraphQLGetQuery(modelType: Comment.self, id: "id")
         let expectedQueryDocument = """
         query GetComment($id: ID!) {
           getComment(id: $id) {
@@ -113,8 +113,8 @@ class GraphQLGetQueryTests: XCTestCase {
     }
 
     func testGetGraphQLQueryFromModelWithAssociationAndSyncEnabled() {
-        let document = GraphQLGetQuery(from: Comment.self, id: "id")
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
+        let document = GraphQLGetQuery(modelType: Comment.self, id: "id")
+        let syncEnabledDocument = SyncEnabledDecorator(document)
         let expectedQueryDocument = """
         query GetComment($id: ID!) {
           getComment(id: $id) {

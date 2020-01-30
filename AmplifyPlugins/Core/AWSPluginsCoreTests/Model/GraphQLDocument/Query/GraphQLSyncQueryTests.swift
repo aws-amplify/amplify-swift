@@ -35,14 +35,13 @@ class GraphQLSyncQueryTests: XCTestCase {
     func testSyncGraphQLQueryFromSimpleModel() {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
-        let document = GraphQLSyncQuery(from: Post.self,
-                                        predicate: predicate,
+        let document = GraphQLSyncQuery(modelType: Post.self,
                                         limit: 100,
                                         nextToken: "token",
-                                        lastSync: 123)
+                                        lastSync: 123).withPredicate(predicate, modelName: Post.modelName)
         let expectedQueryDocument = """
-        query SyncPosts($filter: ModelPostFilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp) {
-          syncPosts(filter: $filter, limit: $limit, nextToken: $nextToken, lastSync: $lastSync) {
+        query SyncPosts($filter: ModelPostFilterInput, $lastSync: AWSTimestamp, $limit: Int, $nextToken: String) {
+          syncPosts(filter: $filter, lastSync: $lastSync, limit: $limit, nextToken: $nextToken) {
             items {
               id
               content

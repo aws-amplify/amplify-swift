@@ -9,22 +9,22 @@ import Amplify
 import Foundation
 @testable import AWSPluginsCore
 
-class MockGraphQLDocument: GraphQLDocument {
-    var documentType: GraphQLDocumentType
+class MockGraphQLDocument: SingleDirectiveGraphQLDocument {
+    var operationType: AWSPluginsCore.GraphQLOperationType
+    var inputs: [GraphQLParameterName: GraphQLDocumentInput]
+    var selectionSetFields: [SelectionSetField]
     var name: String
-    var inputTypes: String?
-    var inputParameters: String?
     var modelType: Model.Type
 
-    init(documentType: GraphQLDocumentType,
+    init(operationType: AWSPluginsCore.GraphQLOperationType,
          name: String,
-         inputTypes: String? = nil,
-         inputParameters: String? = nil,
+         inputs: [GraphQLParameterName: GraphQLDocumentInput] = [:],
+         selectionSetFields: [SelectionSetField] = [SelectionSetField](),
          modelType: Model.Type) {
-        self.documentType = documentType
+        self.operationType = operationType
         self.name = name
-        self.inputTypes = inputTypes
-        self.inputParameters = inputParameters
+        self.inputs = inputs
+        self.selectionSetFields = selectionSetFields
         self.modelType = modelType
     }
 }

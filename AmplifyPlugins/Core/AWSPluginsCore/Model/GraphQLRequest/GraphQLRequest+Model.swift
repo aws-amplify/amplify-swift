@@ -26,26 +26,22 @@ extension GraphQLRequest {
     public static func mutation<M: Model>(of model: M,
                                           where predicate: QueryPredicate? = nil,
                                           type: GraphQLMutationType) -> GraphQLRequest<M> {
+        let document: SingleDirectiveGraphQLDocument
         switch type {
         case .create:
-            let document = GraphQLCreateMutation(of: model)
-            return GraphQLRequest<M>(document: document.stringValue,
-                                     variables: document.variables,
-                                     responseType: M.self,
-                                     decodePath: document.name)
+            document = GraphQLCreateMutation(model: model)
         case .update:
-            let document = GraphQLUpdateMutation(of: model, where: predicate)
-            return GraphQLRequest<M>(document: document.stringValue,
-                                     variables: document.variables,
-                                     responseType: M.self,
-                                     decodePath: document.name)
+            document = GraphQLUpdateMutation(model: model).withPredicate(predicate, modelName: model.modelName)
         case .delete:
-            let document = GraphQLDeleteMutation(of: model, where: predicate)
-            return GraphQLRequest<M>(document: document.stringValue,
-                                     variables: document.variables,
-                                     responseType: M.self,
-                                     decodePath: document.name)
+            document = GraphQLDeleteMutation(modelName: model.modelName, id: model.id)
+                .withPredicate(predicate, modelName: model.modelName)
         }
+
+        return GraphQLRequest<M>(document: document.stringValue,
+                                 variables: document.variables,
+                                 responseType: M.self,
+                                 decodePath: document.name)
+
     }
 
     /// Creates a `GraphQLRequest` that represents a query that expects a single value as a result.
@@ -60,7 +56,7 @@ extension GraphQLRequest {
     /// - seealso: `GraphQLQuery`, `GraphQLQueryType.get`
     public static func query<M: Model>(from modelType: M.Type,
                                        byId id: String) -> GraphQLRequest<M?> {
-        let document = GraphQLGetQuery(from: modelType, id: id)
+        let document = GraphQLGetQuery(modelType: modelType, id: id)
         return GraphQLRequest<M?>(document: document.stringValue,
                                   variables: document.variables,
                                   responseType: M?.self,
@@ -79,11 +75,10 @@ extension GraphQLRequest {
     /// - seealso: `GraphQLQuery`, `GraphQLQueryType.list`
     public static func query<M: Model>(from modelType: M.Type,
                                        where predicate: QueryPredicate? = nil) -> GraphQLRequest<[M]> {
-        let document = GraphQLListQuery(from: modelType, predicate: predicate)
-        // TODO: decodePath should just be document.name and return `GraphQLRequest<GraphQLListResponse<M>>`
+        let document = GraphQLListQuery(modelType: modelType).withPredicate(predicate, modelName: modelType.schema.name)
         return GraphQLRequest<[M]>(document: document.stringValue,
                                    variables: document.variables,
-                                   responseType: [M].self, // TODO: should be `GraphQLListResponse<M>`
+                                   responseType: [M].self,
                                    decodePath: document.name + ".items")
     }
 
@@ -98,7 +93,7 @@ extension GraphQLRequest {
     /// - seealso: `GraphQLSubscription`, `GraphQLSubscriptionType`
     public static func subscription<M: Model>(of modelType: M.Type,
                                               type: GraphQLSubscriptionType) -> GraphQLRequest<M> {
-        let document = GraphQLSubscription(of: modelType, type: type)
+        let document = GraphQLSubscription(modelType: modelType, type: type)
         return GraphQLRequest<M>(document: document.stringValue,
                                  responseType: modelType,
                                  decodePath: document.name)

@@ -36,8 +36,8 @@ class GraphQLDeleteMutationTests: XCTestCase {
         let post = Post(title: "title", content: "content", createdAt: Date())
         let document = GraphQLDeleteMutation(of: post)
         let expectedQueryDocument = """
-        mutation DeletePost($input: DeletePostInput!, $condition: ModelPostConditionInput) {
-          deletePost(input: $input, condition: $condition) {
+        mutation DeletePost($input: DeletePostInput!) {
+          deletePost(input: $input) {
             id
             content
             createdAt
@@ -73,11 +73,10 @@ class GraphQLDeleteMutationTests: XCTestCase {
     func testDeleteGraphQLMutationFromSimpleModelWithVersion() {
         let post = Post(title: "title", content: "content", createdAt: Date())
         let document = GraphQLDeleteMutation(of: post)
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(document,
-                                                             version: 5)
+        let syncEnabledDocument = SyncEnabledDecorator(document, version: 5)
         let expectedQueryDocument = """
-        mutation DeletePost($input: DeletePostInput!, $condition: ModelPostConditionInput) {
-          deletePost(input: $input, condition: $condition) {
+        mutation DeletePost($input: DeletePostInput!) {
+          deletePost(input: $input) {
             id
             content
             createdAt

@@ -36,10 +36,10 @@ class GraphQLListQueryTests: XCTestCase {
     func testListGraphQLQueryFromSimpleModel() {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
-        let document = GraphQLListQuery(from: Post.self, predicate: predicate)
+        let document = GraphQLListQuery(modelType: Post.self).withPredicate(predicate, modelName: Post.modelName)
         let expectedQueryDocument = """
-        query ListPosts($filter: ModelPostFilterInput, $limit: Int, $nextToken: String) {
-          listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+        query ListPosts($filter: ModelPostFilterInput, $limit: Int) {
+          listPosts(filter: $filter, limit: $limit) {
             items {
               id
               content
@@ -65,11 +65,11 @@ class GraphQLListQueryTests: XCTestCase {
     func testListGraphQLQueryFromSimpleModelWithSyncEnabled() {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
-        let document = GraphQLListQuery(from: Post.self, predicate: predicate)
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
+        let document = GraphQLListQuery(modelType: Post.self).withPredicate(predicate, modelName: Post.modelName)
+        let syncEnabledDocument = SyncEnabledDecorator(document)
         let expectedQueryDocument = """
-        query ListPosts($filter: ModelPostFilterInput, $limit: Int, $nextToken: String) {
-          listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+        query ListPosts($filter: ModelPostFilterInput, $limit: Int) {
+          listPosts(filter: $filter, limit: $limit) {
             items {
               id
               content
@@ -84,6 +84,7 @@ class GraphQLListQueryTests: XCTestCase {
               _lastChangedAt
             }
             nextToken
+            startedAt
           }
         }
         """

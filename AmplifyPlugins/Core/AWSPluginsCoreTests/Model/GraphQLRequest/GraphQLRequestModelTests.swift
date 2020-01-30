@@ -33,7 +33,7 @@ class GraphQLRequestModelTests: XCTestCase {
     ///     - the `variables` is non-nil
     func testCreateMutationGraphQLRequest() {
         let post = Post(title: "title", content: "content", createdAt: Date())
-        let document = GraphQLCreateMutation(of: post)
+        let document = GraphQLCreateMutation(model: post)
 
         let request = GraphQLRequest<Post>.mutation(of: post, type: .create)
 
@@ -44,7 +44,7 @@ class GraphQLRequestModelTests: XCTestCase {
 
     func testUpdateMutationGraphQLRequest() {
         let post = Post(title: "title", content: "content", createdAt: Date())
-        let document = GraphQLUpdateMutation(of: post)
+        let document = GraphQLUpdateMutation(model: post)
 
         let request = GraphQLRequest<Post>.mutation(of: post, type: .update)
 
@@ -65,7 +65,7 @@ class GraphQLRequestModelTests: XCTestCase {
     }
 
     func testQueryByIdGraphQLRequest() {
-        let document = GraphQLGetQuery(from: Post.self, id: "id")
+        let document = GraphQLGetQuery(modelType: Post.self, id: "id")
 
         let request = GraphQLRequest<Post>.query(from: Post.self, byId: "id")
 
@@ -85,7 +85,7 @@ class GraphQLRequestModelTests: XCTestCase {
     }
 
     func testOnCreateSubscriptionGraphQLRequest() {
-        let document = GraphQLSubscription(of: Post.self, type: .onCreate)
+        let document = GraphQLSubscription(modelType: Post.self, type: .onCreate)
 
         let request = GraphQLRequest<Post>.subscription(of: Post.self, type: .onCreate)
 
@@ -95,7 +95,7 @@ class GraphQLRequestModelTests: XCTestCase {
     }
 
     func testOnUpdateSubscriptionGraphQLRequest() {
-        let document = GraphQLSubscription(of: Post.self, type: .onUpdate)
+        let document = GraphQLSubscription(modelType: Post.self, type: .onUpdate)
 
         let request = GraphQLRequest<Post>.subscription(of: Post.self, type: .onUpdate)
 
@@ -104,7 +104,7 @@ class GraphQLRequestModelTests: XCTestCase {
     }
 
     func testOnDeleteSubscriptionGraphQLRequest() {
-        let document = GraphQLSubscription(of: Post.self, type: .onDelete)
+        let document = GraphQLSubscription(modelType: Post.self, type: .onDelete)
 
         let request = GraphQLRequest<Post>.subscription(of: Post.self, type: .onDelete)
 

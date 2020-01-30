@@ -34,10 +34,10 @@ class GraphQLUpdateMutationTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testUpdateGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content", createdAt: Date())
-        let document = GraphQLUpdateMutation(of: post)
+        let document = GraphQLUpdateMutation(model: post)
         let expectedQueryDocument = """
-        mutation UpdatePost($input: UpdatePostInput!, $condition: ModelPostConditionInput) {
-          updatePost(input: $input, condition: $condition) {
+        mutation UpdatePost($input: UpdatePostInput!) {
+          updatePost(input: $input) {
             id
             content
             createdAt
@@ -73,11 +73,11 @@ class GraphQLUpdateMutationTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testUpdateGraphQLMutationFromSimpleModelWithVersion() {
         let post = Post(title: "title", content: "content", createdAt: Date())
-        let document = GraphQLUpdateMutation(of: post)
-        let syncEnabledVersion = SyncEnabledGraphQLDocument(document, version: 5)
+        let document = GraphQLUpdateMutation(model: post)
+        let syncEnabledVersion = SyncEnabledDecorator(document, version: 5)
         let expectedQueryDocument = """
-        mutation UpdatePost($input: UpdatePostInput!, $condition: ModelPostConditionInput) {
-          updatePost(input: $input, condition: $condition) {
+        mutation UpdatePost($input: UpdatePostInput!) {
+          updatePost(input: $input) {
             id
             content
             createdAt

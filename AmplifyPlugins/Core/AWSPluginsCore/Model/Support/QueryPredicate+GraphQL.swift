@@ -25,6 +25,17 @@ extension QueryPredicate {
         preconditionFailure(
             "Could not find QueryPredicateOperation or QueryPredicateGroup for \(String(describing: self))")
     }
+
+    var graphQLVariables: [String: Any] {
+        if let operation = self as? QueryPredicateOperation {
+            return operation.graphQLFilter
+        } else if let group = self as? QueryPredicateGroup {
+            return group.graphQLFilter
+        }
+
+        preconditionFailure(
+            "Could not find QueryPredicateOperation or QueryPredicateGroup for \(String(describing: self))")
+    }
 }
 
 extension QueryPredicateOperation: GraphQLFilterConvertible {

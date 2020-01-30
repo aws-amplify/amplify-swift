@@ -32,7 +32,7 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///   - check if the generated GraphQL document is a valid subscription
     ///     - it has a list of fields with no nested models
     func testOnCreateGraphQLSubscriptionFromSimpleModel() {
-        let document = GraphQLSubscription(of: Post.self, type: .onCreate)
+        let document = GraphQLSubscription(modelType: Post.self, type: .onCreate)
         let expectedQueryDocument = """
         subscription OnCreatePost {
           onCreatePost {
@@ -53,8 +53,8 @@ class GraphQLSubscriptionTests: XCTestCase {
     }
 
     func testOnCreateGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
-        let document = GraphQLSubscription(of: Post.self, type: .onCreate)
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
+        let document = GraphQLSubscription(modelType: Post.self, type: .onCreate)
+        let syncEnabledDocument = SyncEnabledDecorator(document)
         let expectedQueryDocument = """
         subscription OnCreatePost {
           onCreatePost {
@@ -86,7 +86,7 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///   - check if the generated GraphQL document is a valid subscription
     ///     - it has a list of fields with no nested models
     func testOnCreateGraphQLSubscriptionFromModelWithAssociation() {
-        let document = GraphQLSubscription(of: Comment.self, type: .onCreate)
+        let document = GraphQLSubscription(modelType: Comment.self, type: .onCreate)
         let expectedQueryDocument = """
         subscription OnCreateComment {
           onCreateComment {
@@ -113,8 +113,8 @@ class GraphQLSubscriptionTests: XCTestCase {
     }
 
     func testOnCreateGraphQLSubscriptionFromModelWithAssociationWithSyncEnabled() {
-        let document = GraphQLSubscription(of: Comment.self, type: .onCreate)
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
+        let document = GraphQLSubscription(modelType: Comment.self, type: .onCreate)
+        let syncEnabledDocument = SyncEnabledDecorator(document)
         let expectedQueryDocument = """
         subscription OnCreateComment {
           onCreateComment {
@@ -154,7 +154,7 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///   - check if the generated GraphQL document is a valid subscription
     ///     - it has a list of fields with no nested models
     func testOnUpdateGraphQLSubscriptionFromSimpleModel() {
-        let document = GraphQLSubscription(of: Post.self, type: .onUpdate)
+        let document = GraphQLSubscription(modelType: Post.self, type: .onUpdate)
         let expectedQueryDocument = """
         subscription OnUpdatePost {
           onUpdatePost {
@@ -175,8 +175,8 @@ class GraphQLSubscriptionTests: XCTestCase {
     }
 
     func testOnUpdateGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
-        let document = GraphQLSubscription(of: Post.self, type: .onUpdate)
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
+        let document = GraphQLSubscription(modelType: Post.self, type: .onUpdate)
+        let syncEnabledDocument = SyncEnabledDecorator(document)
         let expectedQueryDocument = """
         subscription OnUpdatePost {
           onUpdatePost {
@@ -207,7 +207,7 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///   - check if the generated GraphQL document is a valid subscription
     ///     - it has a list of fields with no nested models
     func testOnDeleteGraphQLSubscriptionFromSimpleModel() {
-        let document = GraphQLSubscription(of: Post.self, type: .onDelete)
+        let document = GraphQLSubscription(modelType: Post.self, type: .onDelete)
         let expectedQueryDocument = """
         subscription OnDeletePost {
           onDeletePost {
@@ -228,8 +228,8 @@ class GraphQLSubscriptionTests: XCTestCase {
     }
 
     func testOnDeleteGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
-        let document = GraphQLSubscription(of: Post.self, type: .onDelete)
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
+        let document = GraphQLSubscription(modelType: Post.self, type: .onDelete)
+        let syncEnabledDocument = SyncEnabledDecorator(document)
         let expectedQueryDocument = """
         subscription OnDeletePost {
           onDeletePost {

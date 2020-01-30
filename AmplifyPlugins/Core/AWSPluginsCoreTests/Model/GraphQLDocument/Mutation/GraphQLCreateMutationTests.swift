@@ -34,7 +34,7 @@ class GraphQLCreateMutationTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testCreateGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content", createdAt: Date())
-        let document = GraphQLCreateMutation(of: post)
+        let document = GraphQLCreateMutation(model: post)
         let expectedQueryDocument = """
         mutation CreatePost($input: CreatePostInput!) {
           createPost(input: $input) {
@@ -74,7 +74,7 @@ class GraphQLCreateMutationTests: XCTestCase {
     func testCreateGraphQLMutationFromModelWithAssociation() {
         let post = Post(title: "title", content: "content", createdAt: Date())
         let comment = Comment(content: "comment", createdAt: Date(), post: post)
-        let document = GraphQLCreateMutation(of: comment)
+        let document = GraphQLCreateMutation(model: comment)
         let expectedQueryDocument = """
         mutation CreateComment($input: CreateCommentInput!) {
           createComment(input: $input) {
@@ -117,8 +117,8 @@ class GraphQLCreateMutationTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testCreateGraphQLMutationFromSimpleModelWithSyncEnabled() {
         let post = Post(title: "title", content: "content", createdAt: Date())
-        let document = GraphQLCreateMutation(of: post)
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
+        let document = GraphQLCreateMutation(model: post)
+        let syncEnabledDocument = SyncEnabledDecorator(document)
         let expectedQueryDocument = """
         mutation CreatePost($input: CreatePostInput!) {
           createPost(input: $input) {
@@ -161,8 +161,8 @@ class GraphQLCreateMutationTests: XCTestCase {
     func testCreateGraphQLMutationFromModelWithAssociationWithSyncEnabled() {
         let post = Post(title: "title", content: "content", createdAt: Date())
         let comment = Comment(content: "comment", createdAt: Date(), post: post)
-        let document = GraphQLCreateMutation(of: comment)
-        let syncEnabledDocument = SyncEnabledGraphQLDocument(document)
+        let document = GraphQLCreateMutation(model: comment)
+        let syncEnabledDocument = SyncEnabledDecorator(document)
         let expectedQueryDocument = """
         mutation CreateComment($input: CreateCommentInput!) {
           createComment(input: $input) {

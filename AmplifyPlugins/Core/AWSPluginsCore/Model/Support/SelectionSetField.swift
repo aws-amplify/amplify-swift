@@ -6,14 +6,19 @@
 //
 
 import Foundation
+import Amplify
 
 public struct SelectionSetField {
-    var value: String
-    var innerFields: [SelectionSetField]
+    public var value: String
+    public var innerFields: [SelectionSetField]
 
     public init(value: String, innerFields: [SelectionSetField] = [SelectionSetField]()) {
         self.value = value
         self.innerFields = innerFields
+    }
+
+    mutating func updateInnerFields(_ fields: [SelectionSetField]) {
+        innerFields = fields
     }
 
     public func toString(indentSize: Int = 0) -> String {
@@ -33,16 +38,30 @@ public struct SelectionSetField {
     }
 }
 
+// Provide the Amplify specific way to paginate and to sync enabled
 extension Array where Element == SelectionSetField {
-    func isPaginated() -> Bool {
-        if let first = self.first, let last = self.last {
-            return first.value == "items" && last.value == "nextToken"
-        }
-
-        return false
+    var paginated: [SelectionSetField] {
+        [SelectionSetField(value: "items", innerFields: self), SelectionSetField(value: "nextToken")]
     }
 
-    func paginate() -> [SelectionSetField] {
-        return [SelectionSetField(value: "items", innerFields: self), SelectionSetField(value: "nextToken")]
+    var syncEnabled: [SelectionSetField] {
+        appendSyncFields(self)
+    }
+
+    func appendSyncFields(_ fields: [SelectionSetField]) -> [SelectionSetField] {
+        var fields = fields
+        fields.append(SelectionSetField(value: "_version"))
+        fields.append(SelectionSetField(value: "_deleted"))
+        fields.append(SelectionSetField(value: "_lastChangedAt"))
+
+        for (index, field) in fields.enumerated() {
+            var newField = field
+            if !field.innerFields.isEmpty {
+                newField.updateInnerFields(appendSyncFields(field.innerFields))
+                fields[index] = newField
+            }
+        }
+
+        return fields
     }
 }

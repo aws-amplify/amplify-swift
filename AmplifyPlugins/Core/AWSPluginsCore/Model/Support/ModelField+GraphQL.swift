@@ -21,25 +21,20 @@ extension ModelField {
 }
 
 extension Array where Element == ModelField {
-    func toSelectionSets(syncEnabled: Bool = false) -> [SelectionSetField] {
+    var toSelectionSet: [SelectionSetField] {
         var selectionSets = [SelectionSetField]()
         forEach { field in
             let isRequiredAssociation = field.isRequired && field.isAssociationOwner
             if isRequiredAssociation, let associatedModel = field.associatedModel {
                 selectionSets.append(SelectionSetField(
                     value: field.name,
-                    innerFields: associatedModel.schema.graphQLFields.toSelectionSets(syncEnabled: syncEnabled)))
+                    innerFields: associatedModel.schema.graphQLFields.toSelectionSet))
             } else {
                 selectionSets.append(SelectionSetField(value: field.graphQLName))
             }
         }
 
         selectionSets.append(SelectionSetField(value: "__typename"))
-        if syncEnabled {
-            selectionSets.append(SelectionSetField(value: "_version"))
-            selectionSets.append(SelectionSetField(value: "_deleted"))
-            selectionSets.append(SelectionSetField(value: "_lastChangedAt"))
-        }
 
         return selectionSets
     }
