@@ -23,4 +23,12 @@ struct DataStorePublisher: DataStoreSubscribeBehavior {
     func send(input: MutationEvent) {
         subject.send(input)
     }
+
+    func send(dataStoreError: DataStoreError) {
+        subject.send(completion: .failure(dataStoreError))
+    }
+
+    func sendFinished() {
+        subject.send(completion: .finished)
+    }
 }

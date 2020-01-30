@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Combine
 
 final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
@@ -21,6 +22,21 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     /// The local storage provider. Resolved during configuration phase
     var storageEngine: StorageEngineBehavior!
+
+    var iCancellable: Any?
+
+    @available(iOS 13.0, *)
+    var cancellable: AnyCancellable? {
+        get {
+            if let iCancellable = iCancellable {
+                return (iCancellable as! AnyCancellable) //swiftlint:disable:this force_cast
+            }
+            return nil
+        }
+        set {
+            iCancellable = newValue
+        }
+    }
 
     /// No-argument init that uses defaults for all providers
     public init(modelRegistration: AmplifyModelRegistration) {
@@ -77,6 +93,29 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
 
         storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled)
+        if #available(iOS 13.0, *) {
+            cancellable = storageEngine.publisher.sink(receiveCompletion: { completion in
+                guard let dataStorePublisher = self.dataStorePublisher as? DataStorePublisher else {
+                    self.log.error("Data store publisher not initalized")
+                    return
+                }
+                switch completion {
+                case .failure(let dataStoreError):
+                    dataStorePublisher.send(dataStoreError: dataStoreError)
+                case .finished:
+                    dataStorePublisher.sendFinished()
+                }
+
+            }, receiveValue: { event in
+                guard let dataStorePublisher = self.dataStorePublisher as? DataStorePublisher else {
+                    self.log.error("Data store publisher not initalized")
+                    return
+                }
+                if case .mutationEvent(let mutationEvent) = event {
+                    dataStorePublisher.send(input: mutationEvent)
+                }
+            })
+        }
     }
 
     public func reset(onComplete: @escaping (() -> Void)) {

@@ -11,13 +11,46 @@ import Foundation
 import AWSPluginsCore
 
 final class StorageEngine: StorageEngineBehavior {
-
     // TODO: Make this private once we get a mutation flow that passes the type of mutation as needed
     let storageAdapter: StorageEngineAdapter
 
     private var syncEngine: RemoteSyncEngineBehavior?
 
     private weak var api: APICategoryGraphQLBehavior?
+
+    var iStorageEnginePublisher: Any?
+
+    var iCancellable: Any?
+    @available(iOS 13.0, *)
+    var cancellable: AnyCancellable? {
+        get {
+            if let iCancellable = iCancellable {
+                return (iCancellable as! AnyCancellable) //swiftlint:disable:this force_cast
+            }
+            return nil
+        }
+        set {
+            iCancellable = newValue
+        }
+    }
+
+    @available(iOS 13.0, *)
+    var storageEnginePublisher: PassthroughSubject<StorageEngineEvent, DataStoreError> {
+        get {
+            if iStorageEnginePublisher == nil {
+                iStorageEnginePublisher = PassthroughSubject<StorageEngineEvent, DataStoreError>()
+            }
+            return iStorageEnginePublisher as! PassthroughSubject<StorageEngineEvent, DataStoreError> // swiftlint:disable:this force_cast
+        }
+        set {
+            iStorageEnginePublisher = newValue
+        }
+    }
+
+    @available(iOS 13.0, *)
+    var publisher: AnyPublisher<StorageEngineEvent, DataStoreError> {
+        return storageEnginePublisher.eraseToAnyPublisher()
+    }
 
     static var systemModels: [Model.Type] {
         return [
@@ -44,6 +77,19 @@ final class StorageEngine: StorageEngineBehavior {
         if #available(iOS 13.0, *) {
             let syncEngine = isSyncEnabled ? try? RemoteSyncEngine(storageAdapter: storageAdapter) : nil
             self.init(storageAdapter: storageAdapter, syncEngine: syncEngine)
+            self.storageEnginePublisher = PassthroughSubject<StorageEngineEvent, DataStoreError>()
+            cancellable = syncEngine?.publisher.sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let dataStoreError):
+                    self.storageEnginePublisher.send(completion: .failure(dataStoreError))
+                case .finished:
+                    self.storageEnginePublisher.send(completion: .finished)
+                }
+            }, receiveValue: { event in
+                if case .mutationEvent(let mutationEvent) = event {
+                    self.storageEnginePublisher.send(.mutationEvent(mutationEvent))
+                }
+            })
         } else {
             self.init(storageAdapter: storageAdapter, syncEngine: nil)
         }
