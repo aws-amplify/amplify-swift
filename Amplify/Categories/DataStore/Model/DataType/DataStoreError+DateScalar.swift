@@ -16,7 +16,7 @@ extension DataStoreError {
             """,
             """
             Check if the format used to parse the date is the correct one. Check
-            `DateScalarFormar` for all the options.
+            `DateScalarFormat` for all the options.
             """)
     }
 
