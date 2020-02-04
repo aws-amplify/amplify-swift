@@ -157,7 +157,7 @@ final class StorageEngine: StorageEngineBehavior {
                                           modelId: id, modelName: modelType.modelName,
                                           json: "{}",
                                           mutationType: .delete,
-                                          createdAt: Date())
+                                          createdAt: .now)
 
         let mutationEventCallback: DataStoreCallback<MutationEvent> = { result in
             switch result {

@@ -94,7 +94,7 @@ class LocalSubscriptionTests: XCTestCase {
         let model = Post(id: UUID().uuidString,
                          title: "Test Post",
                          content: "Test Post Content",
-                         createdAt: Date(),
+                         createdAt: .now,
                          updatedAt: nil,
                          draft: false,
                          rating: nil,
@@ -130,7 +130,7 @@ class LocalSubscriptionTests: XCTestCase {
         let model = Post(id: UUID().uuidString,
                          title: "Test Post",
                          content: "Test Post Content",
-                         createdAt: Date(),
+                         createdAt: .now,
                          updatedAt: nil,
                          draft: false,
                          rating: nil,
@@ -152,7 +152,7 @@ class LocalSubscriptionTests: XCTestCase {
         let model = Post(id: UUID().uuidString,
                          title: "Test Post",
                          content: originalContent,
-                         createdAt: Date(),
+                         createdAt: .now,
                          updatedAt: nil,
                          draft: false,
                          rating: nil,
@@ -168,7 +168,7 @@ class LocalSubscriptionTests: XCTestCase {
         let newContent = "Updated content as of \(Date())"
         var newModel = model
         newModel.content = newContent
-        newModel.updatedAt = Date()
+        newModel.updatedAt = .now
 
         let receivedMutationEvent = expectation(description: "Received mutation event")
 
@@ -217,7 +217,7 @@ class LocalSubscriptionTests: XCTestCase {
 
         let model = Post(title: "Test Post",
                          content: "Test Post Content",
-                         createdAt: Date())
+                         createdAt: .now)
 
         Amplify.DataStore.save(model) { _ in }
         Amplify.DataStore.delete(model) { _ in }

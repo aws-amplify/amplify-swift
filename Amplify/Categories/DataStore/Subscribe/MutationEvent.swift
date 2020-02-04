@@ -13,7 +13,7 @@ public struct MutationEvent: Model {
     public var modelName: String
     public var json: String
     public var mutationType: String
-    public var createdAt: Date
+    public var createdAt: DateTime
     public var version: Int?
     public var inProcess: Bool
 
@@ -22,7 +22,7 @@ public struct MutationEvent: Model {
                 modelName: String,
                 json: String,
                 mutationType: MutationType,
-                createdAt: Date = Date(),
+                createdAt: DateTime = .now,
                 version: Int? = nil,
                 inProcess: Bool = false) {
         self.id = id

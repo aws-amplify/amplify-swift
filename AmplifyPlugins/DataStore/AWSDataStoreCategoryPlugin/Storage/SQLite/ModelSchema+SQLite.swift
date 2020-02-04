@@ -110,12 +110,14 @@ extension ModelField: SQLColumn {
             if let value = binding as? Int64 {
                 return Bool.fromDatatypeValue(value)
             }
-        case .date, .dateTime:
+        case .date:
             if let value = binding as? String {
                 // Converting back & forth between date and string allows us to be a bit more relaxed in the string
                 // values we accept, but always output the same format.
-                return value.iso8601Date?.iso8601String
+                return try? Date(iso8601String: value).iso8601String
             }
+        case .string, .dateTime, .time:
+            return binding as? String
         case .collection:
             return binding ?? []
         default:

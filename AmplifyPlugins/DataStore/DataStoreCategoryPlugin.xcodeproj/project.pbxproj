@@ -765,9 +765,9 @@
 			buildConfigurationList = 2149E5ED2388692E00873955 /* Build configuration list for PBXNativeTarget "AWSDataStoreCategoryPluginTests" */;
 			buildPhases = (
 				08289990D5BB11284752D2DC /* [CP] Check Pods Manifest.lock */,
+				2149E5DF2388692E00873955 /* Sources */,
 				FA9EB2C7238894B400BAADBD /* SwiftFormat */,
 				FA9EB2C8238894CB00BAADBD /* SwiftLint */,
-				2149E5DF2388692E00873955 /* Sources */,
 				2149E5E02388692E00873955 /* Frameworks */,
 				2149E5E12388692E00873955 /* Resources */,
 				C01946720C8E68541B329579 /* [CP] Embed Pods Frameworks */,

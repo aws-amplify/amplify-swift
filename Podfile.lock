@@ -1,14 +1,14 @@
 PODS:
-  - AWSAuthCore (2.12.2):
-    - AWSCore (= 2.12.2)
-  - AWSCognitoIdentityProvider (2.12.2):
+  - AWSAuthCore (2.12.6):
+    - AWSCore (= 2.12.6)
+  - AWSCognitoIdentityProvider (2.12.6):
     - AWSCognitoIdentityProviderASF (= 1.0.1)
-    - AWSCore (= 2.12.2)
+    - AWSCore (= 2.12.6)
   - AWSCognitoIdentityProviderASF (1.0.1)
-  - AWSCore (2.12.2)
-  - AWSMobileClient (2.12.2):
-    - AWSAuthCore (= 2.12.2)
-    - AWSCognitoIdentityProvider (= 2.12.2)
+  - AWSCore (2.12.6)
+  - AWSMobileClient (2.12.6):
+    - AWSAuthCore (= 2.12.6)
+    - AWSCognitoIdentityProvider (= 2.12.6)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
@@ -16,7 +16,7 @@ PODS:
   - SwiftLint (0.37.0)
 
 DEPENDENCIES:
-  - AWSMobileClient (~> 2.12.2)
+  - AWSMobileClient (~> 2.12.6)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
   - SwiftFormat/CLI
@@ -49,16 +49,16 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  AWSAuthCore: a67ecbfe4dfdb8470f85c31f9594476d5ed988a5
-  AWSCognitoIdentityProvider: 5ac7b7af7877e7a47585c08d6a0ef58bcd6314b6
+  AWSAuthCore: d981abe8fb987a1caa7ac6c76c428de12387dcf4
+  AWSCognitoIdentityProvider: 9502438e528185a2c61b97baf66e2fd2ac6833f3
   AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
-  AWSCore: bdc0933bcb1aca4a9af3352a9e6ec75b339faf71
-  AWSMobileClient: ed6cd3c6ecb935406bf392df81fc5b40f4660845
+  AWSCore: 48bb8d477d8137377e86b2ade9eb34a761f42df5
+  AWSMobileClient: d752ed540a75d45516c8d5b2054b3f3b6b9e7e65
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SwiftFormat: 5faa819600268dfaa5c19f1359730883db151678
   SwiftLint: c078a14d7d7ade75e5507795d185e3da41d844d2
 
-PODFILE CHECKSUM: 83398094b5ea63b7c181cccf545ad368c69588ec
+PODFILE CHECKSUM: 052b557087c76e48d6c09130d48e484e6b7ed701
 
 COCOAPODS: 1.8.4

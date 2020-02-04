@@ -28,13 +28,13 @@ extension Persistable {
             return Int(value.datatypeValue)
         }
 
+        if let value = value as? DateScalar {
+            return value.iso8601String
+        }
+
         // if value conforms to binding, resolve it
         if let value = value as? Binding {
             return value
-        }
-
-        if let value = value as? Date {
-            return value.iso8601String
         }
 
         preconditionFailure("""

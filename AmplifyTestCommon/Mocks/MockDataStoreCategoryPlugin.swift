@@ -58,7 +58,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
                                               modelName: modelType.modelName,
                                               json: "",
                                               mutationType: .create,
-                                              createdAt: Date())
+                                              createdAt: .now)
             notify("publisher")
             return Result.Publisher(mutationEvent).eraseToAnyPublisher()
     }

@@ -173,7 +173,7 @@ class DateScalarComparableTests: XCTestCase {
         do {
             let time1 = try Time(iso8601String: "08:00")
             let time2 = try Time(iso8601String: "09:00")
-            XCTAssertTrue(time1 != time2)
+            XCTAssertNotEqual(time1, time2)
             XCTAssertFalse(time1 > time2)
             XCTAssertFalse(time1 >= time2)
             XCTAssertTrue(time1 < time2)
@@ -201,4 +201,19 @@ class DateScalarComparableTests: XCTestCase {
             XCTFail(error.localizedDescription)
         }
     }
+
+    // Coding/Decoding
+
+    func testDecodedDateTimeEquality() {
+        do {
+            let time1 = DateTime.now
+            let time2 = try DateTime(iso8601String: time1.iso8601String)
+            XCTAssertEqual(time1.iso8601String, time2.iso8601String)
+            // TODO: truncate DataScalar precision properly
+            // XCTAssertEqual(time1, time2)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
+
 }

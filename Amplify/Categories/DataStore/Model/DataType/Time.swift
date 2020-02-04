@@ -12,7 +12,7 @@ import Foundation
 /// For example, the value "13:45.30.1234". It can also hold a reference to a TimeZone.
 ///
 /// As all Date scalars, `Time` relies on the ISO8601 calendar and fixed format.
-public struct Time: DateScalar, Comparable {
+public struct Time: DateScalar, TimeUnitOperable {
 
     public static var iso8601DateComponents: Set<Calendar.Component> {
         [.hour, .minute, .second, .nanosecond, .timeZone]
@@ -27,10 +27,6 @@ public struct Time: DateScalar, Comparable {
     public init(_ date: Date) {
         let calendar = Time.iso8601Calendar
         let components = calendar.dateComponents(Time.iso8601DateComponents, from: date)
-        print("======================")
-        print(components)
-        print(components.date)
-        print("======================")
         self.date = components.date ?? date
     }
 

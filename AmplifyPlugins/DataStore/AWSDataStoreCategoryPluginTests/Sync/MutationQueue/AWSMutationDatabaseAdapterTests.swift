@@ -15,7 +15,7 @@ import XCTest
 class AWSMutationDatabaseAdapterTests: XCTestCase {
     var databaseAdapter: AWSMutationDatabaseAdapter!
 
-    let model1 = Post(title: "model1", content: "content1", createdAt: Date())
+    let model1 = Post(title: "model1", content: "content1", createdAt: .now)
 
     override func setUp() {
         do {

@@ -11,10 +11,10 @@ import Foundation
 /// When used in persistence operations, the granularity of the different date representations
 /// is set by using different scalar types: `Date`, `DateTime` and `Time`.
 ///
-/// In those scenarios, the standard `Date` is formatted to ISO8601 without the time.
+/// In those scenarios, the standard `Date` is formatted to ISO-8601 without the time.
 /// When the full date information is required, use `DateTime` instead.
 ///
-extension Date: DateScalar {
+extension Date: DateScalar, DateUnitOperable {
 
     public static var iso8601DateComponents: Set<Calendar.Component> {
         [.year, .month, .day, .timeZone]
@@ -36,6 +36,10 @@ extension Date: DateScalar {
         guard let date = Date.iso8601Date(from: iso8601String) else {
             throw DataStoreError.invalidDateFormat(iso8601String)
         }
+        self = date
+    }
+
+    public init(_ date: Date) {
         self = date
     }
 

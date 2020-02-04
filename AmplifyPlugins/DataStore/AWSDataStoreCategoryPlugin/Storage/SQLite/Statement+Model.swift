@@ -23,6 +23,9 @@ struct StatementResult<M: Model>: Decodable {
     let elements: [M]
 
     public static func from(dictionary: ModelValues) throws -> Self {
+        print("=================================")
+        print(String(describing: dictionary))
+        print("=================================")
         let data = try JSONSerialization.data(withJSONObject: dictionary)
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy

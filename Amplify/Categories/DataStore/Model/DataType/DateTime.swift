@@ -8,11 +8,11 @@
 import Foundation
 
 /// `DateTime` is an immutable `DateScalar` object that represents a date with a time,
-/// often viewed as `yyyy-MM-dd'T'HH:mm:ss.SSSSZZZZZ`.
+/// often viewed as `yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ`.
 ///
 /// `DateTime` can be represented to nanosecond precision and it also holds a reference
-/// to a TimeZone. As all Date scalars, `DateTime` relies on the ISO8601 calendar.
-public struct DateTime: DateScalar, Comparable {
+/// to a TimeZone. As all Date scalars, `DateTime` relies on the ISO-8601 calendar.
+public struct DateTime: DateScalar, DateUnitOperable, TimeUnitOperable {
 
     public static var iso8601DateComponents: Set<Calendar.Component> {
         [.year, .month, .day, .hour, .minute, .second, .nanosecond, .timeZone]

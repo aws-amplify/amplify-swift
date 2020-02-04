@@ -1,9 +1,9 @@
 platform :ios, '11.0'
 use_frameworks!
 
-AWS_SDK_VERSION = "2.12.2"
+AWS_SDK_VERSION = "2.12.6"
 
-pod 'SwiftFormat/CLI'
+pod 'SwiftFormat/CLI', '~> 0.42.0'
 pod 'SwiftLint'
 
 target 'AWSDataStoreCategoryPlugin' do

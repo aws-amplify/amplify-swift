@@ -16,9 +16,9 @@ extension DateScalarFormat {
         case .medium:
             return "HH:mm:ss"
         case .long:
-            return "HH:mm:ss.SSSS"
+            return "HH:mm:ss.SSS"
         case .full:
-            return "HH:mm:ss.SSSSZZZZZ"
+            return "HH:mm:ss.SSSZZZZZ"
         }
     }
 }

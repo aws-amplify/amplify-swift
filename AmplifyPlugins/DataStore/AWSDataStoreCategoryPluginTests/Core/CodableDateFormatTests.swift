@@ -1,9 +1,8 @@
 //
-//  CodableDateFormatTests.swift
-//  AWSDataStoreCategoryPluginTests
+// Copyright 2018-2020 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
 //
-//  Created by Rochetti, Daniel on 1/14/20.
-//  Copyright © 2020 Amazon Web Services. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation

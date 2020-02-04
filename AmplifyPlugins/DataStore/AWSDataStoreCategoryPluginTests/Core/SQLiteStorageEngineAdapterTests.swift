@@ -23,7 +23,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             description: "it should save and select a Post from the database")
 
         // insert a post
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now)
         storageAdapter.save(post) { saveResult in
             switch saveResult {
             case .success:
@@ -31,10 +31,11 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                     switch queryResult {
                     case .success(let posts):
                         XCTAssert(posts.count == 1)
-                        if let post = posts.first {
-                            XCTAssert(post.id == post.id)
-                            XCTAssert(post.title == post.title)
-                            XCTAssert(post.content == post.content)
+                        if let savedPost = posts.first {
+                            XCTAssert(post.id == savedPost.id)
+                            XCTAssert(post.title == savedPost.title)
+                            XCTAssert(post.content == savedPost.content)
+                            XCTAssertEqual(post.createdAt.iso8601String, savedPost.createdAt.iso8601String)
                         }
                         expectation.fulfill()
                     case .failure(let error):
@@ -62,7 +63,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             description: "it should save and select a Post from the database")
 
         // insert a post
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now)
         storageAdapter.save(post) { saveResult in
             switch saveResult {
             case .success:
@@ -71,10 +72,11 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                     switch queryResult {
                     case .success(let posts):
                         XCTAssertEqual(posts.count, 1)
-                        if let post = posts.first {
-                            XCTAssert(post.id == post.id)
-                            XCTAssert(post.title == post.title)
-                            XCTAssert(post.content == post.content)
+                        if let savedPost = posts.first {
+                            XCTAssert(post.id == savedPost.id)
+                            XCTAssert(post.title == savedPost.title)
+                            XCTAssert(post.content == savedPost.content)
+                            XCTAssertEqual(post.createdAt.iso8601String, savedPost.createdAt.iso8601String)
                         }
                         expectation.fulfill()
                     case .failure(let error):
@@ -119,7 +121,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        var post = Post(title: "title", content: "content", createdAt: Date())
+        var post = Post(title: "title", content: "content", createdAt: .now)
         storageAdapter.save(post) { insertResult in
             switch insertResult {
             case .success:
@@ -169,7 +171,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             }
         }
 
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now)
         storageAdapter.save(post) { insertResult in
             switch insertResult {
             case .success:

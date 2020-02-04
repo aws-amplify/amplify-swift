@@ -20,6 +20,8 @@ public protocol Persistable {}
 
 extension Bool: Persistable {}
 extension Date: Persistable {}
+extension DateTime: Persistable {}
+extension Time: Persistable {}
 extension Double: Persistable {}
 extension Int: Persistable {}
 extension String: Persistable {}
@@ -44,6 +46,10 @@ struct PersistableHelper {
         case let (lhs, rhs) as (Bool, Bool):
             return lhs == rhs
         case let (lhs, rhs) as (Date, Date):
+            return lhs == rhs
+        case let (lhs, rhs) as (DateTime, DateTime):
+            return lhs == rhs
+        case let (lhs, rhs) as (Time, Time):
             return lhs == rhs
         case let (lhs, rhs) as (Double, Double):
             return lhs == rhs

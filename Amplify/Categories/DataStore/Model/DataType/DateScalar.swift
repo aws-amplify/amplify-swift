@@ -29,6 +29,11 @@ public protocol DateScalar {
     /// formatted as expected by the scalar type.
     init(iso8601String: String) throws
 
+    /// Constructs a `DateScalar` from a `Date` object.
+    /// - Parameter date: the `Date` instance that will be used as the reference of the
+    /// `DateScalar` instance.
+    init(_ date: Date)
+
     /// A string representation of the underlying date formatted using ISO8601 rules.
     ///
     /// - Parameters:
