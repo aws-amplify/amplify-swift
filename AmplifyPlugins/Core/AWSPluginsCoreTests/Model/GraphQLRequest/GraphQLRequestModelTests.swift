@@ -33,7 +33,10 @@ class GraphQLRequestModelTests: XCTestCase {
     ///     - the `variables` is non-nil
     func testCreateMutationGraphQLRequest() {
         let post = Post(title: "title", content: "content", createdAt: Date())
-        let document = GraphQLMutation(of: post, type: .create)
+        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
+        documentBuilder.add(decorator: DirectiveDecorator(type: .create))
+        documentBuilder.add(decorator: ModelDecorator(model: post))
+        let document = documentBuilder.build()
 
         let request = GraphQLRequest<Post>.mutation(of: post, type: .create)
 
@@ -44,7 +47,10 @@ class GraphQLRequestModelTests: XCTestCase {
 
     func testUpdateMutationGraphQLRequest() {
         let post = Post(title: "title", content: "content", createdAt: Date())
-        let document = GraphQLMutation(of: post, type: .update)
+        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
+        documentBuilder.add(decorator: DirectiveDecorator(type: .update))
+        documentBuilder.add(decorator: ModelDecorator(model: post))
+        let document = documentBuilder.build()
 
         let request = GraphQLRequest<Post>.mutation(of: post, type: .update)
 
@@ -55,7 +61,10 @@ class GraphQLRequestModelTests: XCTestCase {
 
     func testDeleteMutationGraphQLRequest() {
         let post = Post(title: "title", content: "content", createdAt: Date())
-        let document = GraphQLMutation(of: post, type: .delete)
+        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
+        documentBuilder.add(decorator: DirectiveDecorator(type: .delete))
+        documentBuilder.add(decorator: ModelDecorator(model: post))
+        let document = documentBuilder.build()
 
         let request = GraphQLRequest<Post>.mutation(of: post, type: .delete)
 
@@ -65,7 +74,10 @@ class GraphQLRequestModelTests: XCTestCase {
     }
 
     func testQueryByIdGraphQLRequest() {
-        let document = GraphQLGetQuery(from: Post.self, id: "id")
+        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
+        documentBuilder.add(decorator: DirectiveDecorator(type: .get))
+        documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
+        let document = documentBuilder.build()
 
         let request = GraphQLRequest<Post>.query(from: Post.self, byId: "id")
 
@@ -78,14 +90,23 @@ class GraphQLRequestModelTests: XCTestCase {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
 
+        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
+        documentBuilder.add(decorator: DirectiveDecorator(type: .list))
+        documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))
+        documentBuilder.add(decorator: PaginationDecorator())
+        let document = documentBuilder.build()
+
         let request = GraphQLRequest<Post>.query(from: Post.self, where: predicate)
 
+        XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == [Post].self)
         XCTAssertNotNil(request.variables)
     }
 
     func testOnCreateSubscriptionGraphQLRequest() {
-        let document = GraphQLSubscription(of: Post.self, type: .onCreate)
+        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
+        documentBuilder.add(decorator: DirectiveDecorator(type: .onCreate))
+        let document = documentBuilder.build()
 
         let request = GraphQLRequest<Post>.subscription(of: Post.self, type: .onCreate)
 
@@ -95,7 +116,9 @@ class GraphQLRequestModelTests: XCTestCase {
     }
 
     func testOnUpdateSubscriptionGraphQLRequest() {
-        let document = GraphQLSubscription(of: Post.self, type: .onUpdate)
+        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
+        documentBuilder.add(decorator: DirectiveDecorator(type: .onUpdate))
+        let document = documentBuilder.build()
 
         let request = GraphQLRequest<Post>.subscription(of: Post.self, type: .onUpdate)
 
@@ -104,7 +127,9 @@ class GraphQLRequestModelTests: XCTestCase {
     }
 
     func testOnDeleteSubscriptionGraphQLRequest() {
-        let document = GraphQLSubscription(of: Post.self, type: .onDelete)
+        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
+        documentBuilder.add(decorator: DirectiveDecorator(type: .onDelete))
+        let document = documentBuilder.build()
 
         let request = GraphQLRequest<Post>.subscription(of: Post.self, type: .onDelete)
 

@@ -14,6 +14,7 @@ protocol GraphQLFilterConvertible {
     var graphQLFilter: GraphQLFilter { get }
 }
 
+/// Extension to translate a `QueryPredicate` into a GraphQL query variables object
 extension QueryPredicate {
     var graphQLFilterVariables: [String: Any] {
         if let operation = self as? QueryPredicateOperation {

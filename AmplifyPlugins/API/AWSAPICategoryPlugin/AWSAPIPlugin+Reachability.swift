@@ -36,7 +36,7 @@ extension AWSAPIPlugin {
 
     private func determineHostName(apiName: String?) throws -> String {
         if let apiName = apiName {
-            guard let baseUrl = self.pluginConfig.endpoints[apiName]?.baseURL,
+            guard let baseUrl = pluginConfig.endpoints[apiName]?.baseURL,
                 let host = baseUrl.host else {
                     let error = APIError.invalidConfiguration("Invalid endpoint configuration for \(apiName)",
                                                               """
@@ -59,7 +59,7 @@ extension AWSAPIPlugin {
             throw error
         }
 
-        guard let configEntry = self.pluginConfig.endpoints.first else {
+        guard let configEntry = pluginConfig.endpoints.first else {
             let error = APIError.invalidConfiguration("No API configurations found",
                                                       """
                                                       Review how the API category is being instantiated and

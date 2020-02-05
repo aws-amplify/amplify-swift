@@ -11,9 +11,26 @@ import Foundation
 /// Extension that adds GraphQL specific utilities to `ModelSchema`.
 extension ModelSchema {
 
-    /// The GraphQL name of the schema.
-    var graphQLName: String {
-        name
+    /// The GraphQL directive name translated from the GraphQL operation and model schema data
+    func graphQLName(operationSubType: GraphQLOperationSubType) -> String {
+        let graphQLName: String
+        switch operationSubType {
+        case .mutation(let mutationType):
+            graphQLName = mutationType.rawValue + name
+        case .query(let queryType):
+            switch queryType {
+            case .list:
+                graphQLName = queryType.rawValue + name + "s"
+            case .sync:
+                graphQLName = queryType.rawValue + (pluralName ?? (name + "s"))
+            case .get:
+                graphQLName = queryType.rawValue + name
+            }
+        case .subscription(let subscriptionType):
+            graphQLName = subscriptionType.rawValue + name
+        }
+
+        return graphQLName
     }
 
     /// The list of fields formatted for GraphQL usage.
@@ -21,18 +38,5 @@ extension ModelSchema {
         sortedFields.filter { field in
             !field.hasAssociation || field.isAssociationOwner
         }
-    }
-
-}
-
-/// Extension that adds GraphQL specific utilities to `ModelField`.
-extension ModelField {
-
-    /// The GraphQL name of the field.
-    var graphQLName: String {
-        if isAssociationOwner, case let .belongsTo(_, targetName) = association {
-            return targetName ?? name.pascalCased() + "Id"
-        }
-        return name
     }
 }
