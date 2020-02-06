@@ -166,11 +166,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                 self.remoteSyncTopicPublisher.send(completion: .failure(error))
             }
             if case .finished = completionMode {
-                self.log.error("reconciliationQueue was finished.  This is unexpected")
-                let unexpectedFinish = DataStoreError.unknown("ReconcilationQueue finished unexpectedly",
-                                                              "Restart the sync queue",
-                                                              nil)
-                self.remoteSyncTopicPublisher.send(completion: .failure(unexpectedFinish))
+                let unexpectedFinishError = DataStoreError.unknown("ReconcilationQueue sent .finished message",
+                                                                   AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
+                                                                   nil)
+                self.remoteSyncTopicPublisher.send(completion: .failure(unexpectedFinishError))
             }
         }, receiveValue: { event in
             switch event {

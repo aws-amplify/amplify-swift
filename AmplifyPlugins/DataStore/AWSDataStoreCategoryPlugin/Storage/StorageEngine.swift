@@ -24,8 +24,8 @@ final class StorageEngine: StorageEngineBehavior {
     @available(iOS 13.0, *)
     var cancellable: AnyCancellable? {
         get {
-            if let iCancellable = iCancellable {
-                return (iCancellable as! AnyCancellable) //swiftlint:disable:this force_cast
+            if let iCancellable = iCancellable as? AnyCancellable {
+                return iCancellable
             }
             return nil
         }
