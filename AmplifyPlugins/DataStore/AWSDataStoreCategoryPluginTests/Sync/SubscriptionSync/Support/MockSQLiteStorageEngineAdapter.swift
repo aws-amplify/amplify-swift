@@ -7,6 +7,7 @@
 
 import XCTest
 import AWSPluginsCore
+import Combine
 
 @testable import Amplify
 @testable import AWSDataStoreCategoryPlugin
@@ -153,6 +154,14 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 }
 
 class MockStorageEngineBehavior: StorageEngineBehavior {
+    func setupPublisher() {
+
+    }
+
+    var publisher: AnyPublisher<StorageEngineEvent, DataStoreError> {
+        return PassthroughSubject<StorageEngineEvent, DataStoreError>().eraseToAnyPublisher()
+    }
+
 
     func startSync() {
     }

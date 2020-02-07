@@ -7,6 +7,13 @@
 
 import Amplify
 import AWSPluginsCore
+import Combine
+
+enum IncomingEventReconciliationQueueEvent {
+    case started
+    case paused
+    case mutationEvent(MutationEvent)
+}
 
 /// A queue that reconciles all incoming events for a model: responses from locally-sourced mutations, and subscription
 /// events for create, update, and delete events initiated by remote systems. In addition to pausing and resuming
@@ -17,4 +24,5 @@ protocol IncomingEventReconciliationQueue: class {
     func start()
     func pause()
     func offer(_ remoteModel: MutationSync<AnyModel>)
+    var publisher: AnyPublisher<IncomingEventReconciliationQueueEvent, DataStoreError> { get }
 }

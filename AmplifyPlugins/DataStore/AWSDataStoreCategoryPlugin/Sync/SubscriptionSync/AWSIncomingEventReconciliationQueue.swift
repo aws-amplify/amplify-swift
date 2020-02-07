@@ -10,14 +10,33 @@ import AWSPluginsCore
 import Combine
 import Foundation
 
+//Used for testing:
+@available(iOS 13.0, *)
+typealias IncomingEventReconciliationQueueFactory =
+    ([Model.Type], APICategoryGraphQLBehavior, StorageEngineAdapter) -> IncomingEventReconciliationQueue
+
 @available(iOS 13.0, *)
 final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
 
-    private var reconciliationQueues = [String: ModelReconciliationQueue]()
+    static let factory: IncomingEventReconciliationQueueFactory = { modelTypes, api, storageAdapter in
+        AWSIncomingEventReconciliationQueue(modelTypes: modelTypes, api: api, storageAdapter: storageAdapter)
+    }
+    private var modelReconciliationQueueSinks: [String: AnyCancellable]
+
+    private let eventReconciliationQueueTopic: PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>
+    var publisher: AnyPublisher<IncomingEventReconciliationQueueEvent, DataStoreError> {
+        return eventReconciliationQueueTopic.eraseToAnyPublisher()
+    }
+
+    private var reconciliationQueues: [String: ModelReconciliationQueue]
 
     init(modelTypes: [Model.Type],
          api: APICategoryGraphQLBehavior,
          storageAdapter: StorageEngineAdapter) {
+        self.modelReconciliationQueueSinks = [:]
+        self.eventReconciliationQueueTopic = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
+        self.reconciliationQueues = [:]
+
         for modelType in modelTypes {
             let modelName = modelType.modelName
             let queue = AWSModelReconciliationQueue(modelType: modelType,
@@ -29,15 +48,20 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                 continue
             }
             reconciliationQueues[modelName] = queue
+            let modelReconciliationQueueSink = queue.publisher.sink(receiveCompletion: onReceiveCompletion(completed:),
+                                                                    receiveValue: onRecieveValue(receiveValue:))
+            modelReconciliationQueueSinks[modelName] = modelReconciliationQueueSink
         }
     }
 
     func start() {
         reconciliationQueues.values.forEach { $0.start() }
+        eventReconciliationQueueTopic.send(.started)
     }
 
     func pause() {
         reconciliationQueues.values.forEach { $0.pause() }
+        eventReconciliationQueueTopic.send(.paused)
     }
 
     func offer(_ remoteModel: MutationSync<AnyModel>) {
@@ -49,6 +73,20 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         queue.enqueue(remoteModel)
     }
 
+    private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
+        switch completed {
+        case .failure(let error):
+            eventReconciliationQueueTopic.send(completion: .failure(error))
+        case .finished:
+            eventReconciliationQueueTopic.send(completion: .finished)
+        }
+    }
+
+    private func onRecieveValue(receiveValue: ModelReconciliationQueueEvent) {
+        if case .mutationEvent(let event) = receiveValue {
+            self.eventReconciliationQueueTopic.send(.mutationEvent(event))
+        }
+    }
 }
 
 @available(iOS 13.0, *)

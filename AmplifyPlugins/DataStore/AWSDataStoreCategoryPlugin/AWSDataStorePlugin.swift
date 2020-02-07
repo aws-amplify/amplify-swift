@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Combine
 
 final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
@@ -21,6 +22,20 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     /// The local storage provider. Resolved during configuration phase
     var storageEngine: StorageEngineBehavior!
+
+    var iStorageEngineSink: Any?
+    @available(iOS 13.0, *)
+    var storageEngineSink: AnyCancellable? {
+        get {
+            if let iStorageEngineSink = iStorageEngineSink as? AnyCancellable {
+                return iStorageEngineSink
+            }
+            return nil
+        }
+        set {
+            iStorageEngineSink = newValue
+        }
+    }
 
     /// No-argument init that uses defaults for all providers
     public init(modelRegistration: AmplifyModelRegistration) {
@@ -77,6 +92,41 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
 
         storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled)
+        if #available(iOS 13.0, *) {
+            setupStorageSink()
+        }
+    }
+
+    @available(iOS 13.0, *)
+    private func setupStorageSink() {
+        storageEngineSink = storageEngine.publisher.sink(receiveCompletion: onReceiveCompletion(completed:),
+                                                         receiveValue: onRecieveValue(receiveValue:))
+    }
+
+    @available(iOS 13.0, *)
+    private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
+        guard let dataStorePublisher = self.dataStorePublisher as? DataStorePublisher else {
+            log.error("Data store publisher not initalized")
+            return
+        }
+        switch completed {
+        case .failure(let dataStoreError):
+            dataStorePublisher.send(dataStoreError: dataStoreError)
+        case .finished:
+            dataStorePublisher.sendFinished()
+        }
+    }
+
+    @available(iOS 13.0, *)
+    private func onRecieveValue(receiveValue: StorageEngineEvent) {
+        guard let dataStorePublisher = self.dataStorePublisher as? DataStorePublisher else {
+            log.error("Data store publisher not initalized")
+            return
+        }
+
+        if case .mutationEvent(let mutationEvent) = receiveValue {
+            dataStorePublisher.send(input: mutationEvent)
+        }
     }
 
     public func reset(onComplete: @escaping (() -> Void)) {

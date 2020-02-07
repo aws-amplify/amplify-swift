@@ -14,7 +14,6 @@ import AWSPluginsCore
 /// a later version than the stored model), then write the new data to the store.
 @available(iOS 13.0, *)
 class ReconcileAndLocalSaveOperation: AsynchronousOperation {
-
     /// Disambiguation for the version of the model incoming from the remote API
     typealias RemoteModel = MutationSync<AnyModel>
 
@@ -34,6 +33,11 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     private let remoteModel: RemoteModel
     private var stateMachineSink: AnyCancellable?
 
+    private let mutationEventPublisher: PassthroughSubject<MutationEvent, DataStoreError>
+    public var publisher: AnyPublisher<MutationEvent, DataStoreError> {
+        return mutationEventPublisher.eraseToAnyPublisher()
+    }
+
     init(remoteModel: RemoteModel,
          storageAdapter: StorageEngineAdapter?,
          stateMachine: StateMachine<State, Action>? = nil) {
@@ -41,6 +45,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         self.storageAdapter = storageAdapter
         self.stateMachine = stateMachine ?? StateMachine(initialState: .waiting,
                                                          resolver: Resolver.resolve(currentState:action:))
+        self.mutationEventPublisher = PassthroughSubject<MutationEvent, DataStoreError>()
+
         super.init()
 
         self.stateMachineSink = self.stateMachine
@@ -290,8 +296,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                                  data: mutationEvent)
         Amplify.Hub.dispatch(to: .dataStore, payload: payload)
 
-        // TODO: Add publisher
-        // publisher?.send(input: mutationEvent)
+        mutationEventPublisher.send(mutationEvent)
 
         stateMachine.notify(action: .notified)
     }

@@ -37,7 +37,6 @@ import Foundation
 ///   event.
 @available(iOS 13.0, *)
 final class AWSModelReconciliationQueue: ModelReconciliationQueue {
-
     /// Exposes a publisher for incoming subscription events
     private let incomingSubscriptionEvents: IncomingSubscriptionEventPublisher
 
@@ -55,6 +54,12 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     private let modelName: String
 
     private var incomingEventsSink: AnyCancellable?
+    private var reconcileAndLocalSaveOperationSink: AnyCancellable?
+
+    private let modelReconciliationQueueSubject: PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>
+    var publisher: AnyPublisher<ModelReconciliationQueueEvent, DataStoreError> {
+        return modelReconciliationQueueSubject.eraseToAnyPublisher()
+    }
 
     init(modelType: Model.Type,
          storageAdapter: StorageEngineAdapter?,
@@ -64,6 +69,8 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         self.modelName = modelType.modelName
 
         self.storageAdapter = storageAdapter
+
+        self.modelReconciliationQueueSubject = PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>()
 
         self.reconcileAndSaveQueue = OperationQueue()
         reconcileAndSaveQueue.name = "com.amazonaws.DataStore.\(modelType).reconcile"
@@ -90,17 +97,18 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                         self?.enqueue(remoteModel)
                     })
             })
-
     }
 
     /// (Re)starts the incoming subscription event queue.
     func start() {
         incomingSubscriptionEventQueue.isSuspended = false
+        modelReconciliationQueueSubject.send(.started)
     }
 
     /// Pauses only the incoming subscription event queue. Events submitted via `enqueue` will still be processed
     func pause() {
         incomingSubscriptionEventQueue.isSuspended = true
+        modelReconciliationQueueSubject.send(.paused)
     }
 
     /// Cancels all outstanding operations on both the incoming subscription event queue and the reconcile queue, and
@@ -115,6 +123,11 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     func enqueue(_ remoteModel: MutationSync<AnyModel>) {
         let reconcileOp = ReconcileAndLocalSaveOperation(remoteModel: remoteModel,
                                                          storageAdapter: storageAdapter)
+        reconcileAndLocalSaveOperationSink = reconcileOp.publisher.sink(receiveCompletion: { error in
+            self.modelReconciliationQueueSubject.send(completion: error)
+        }, receiveValue: { mutationEvent in
+            self.modelReconciliationQueueSubject.send(.mutationEvent(mutationEvent))
+        })
         reconcileAndSaveQueue.addOperation(reconcileOp)
     }
 
@@ -122,11 +135,12 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         switch completion {
         case .finished:
             log.info("receivedCompletion: finished")
+            modelReconciliationQueueSubject.send(completion: .finished)
         case .failure(let dataStoreError):
             log.error("receiveCompletion: error: \(dataStoreError)")
+            modelReconciliationQueueSubject.send(completion: .failure(dataStoreError))
         }
     }
-
 }
 
 @available(iOS 13.0, *)
