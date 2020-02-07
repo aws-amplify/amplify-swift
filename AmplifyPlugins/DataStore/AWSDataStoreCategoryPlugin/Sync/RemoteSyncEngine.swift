@@ -25,7 +25,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private let mutationEventPublisher: MutationEventPublisher
     private let outgoingMutationQueue: OutgoingMutationQueueBehavior
 
-    private var reconciliationQueueCancellable: AnyCancellable?
+    private var reconciliationQueueSink: AnyCancellable?
 
     private let remoteSyncTopicPublisher: PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>
     var publisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError> {
@@ -161,27 +161,35 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         log.debug(#function)
         let syncableModelTypes = ModelRegistry.models.filter { $0.schema.isSyncable }
         reconciliationQueue = reconciliationQueueFactory(syncableModelTypes, api, storageAdapter)
-        reconciliationQueueCancellable = reconciliationQueue?.publisher.sink(receiveCompletion: { completionMode in
-            if case .failure(let error) = completionMode {
-                self.remoteSyncTopicPublisher.send(completion: .failure(error))
-            }
-            if case .finished = completionMode {
-                let unexpectedFinishError = DataStoreError.unknown("ReconcilationQueue sent .finished message",
-                                                                   AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
-                                                                   nil)
-                self.remoteSyncTopicPublisher.send(completion: .failure(unexpectedFinishError))
-            }
-        }, receiveValue: { event in
-            switch event {
-            case .started:
-                self.remoteSyncTopicPublisher.send(.subscriptionsActivated)
-            case .paused:
-                self.remoteSyncTopicPublisher.send(.subscriptionsPaused)
-            case .mutationEvent(let mutationEvent):
-                self.remoteSyncTopicPublisher.send(.mutationEvent(mutationEvent))
-            }
-        })
+        reconciliationQueueSink = reconciliationQueue?.publisher.sink(
+            receiveCompletion: onReceiveCompletion(receiveCompletion:),
+            receiveValue: onReceive(receiveValue:))
         remoteSyncTopicPublisher.send(.subscriptionsInitialized)
+    }
+
+    @available(iOS 13.0, *)
+    private func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
+        if case .failure(let error) = receiveCompletion {
+            self.remoteSyncTopicPublisher.send(completion: .failure(error))
+        }
+        if case .finished = receiveCompletion {
+            let unexpectedFinishError = DataStoreError.unknown("ReconcilationQueue sent .finished message",
+                                                               AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
+                                                               nil)
+            self.remoteSyncTopicPublisher.send(completion: .failure(unexpectedFinishError))
+        }
+    }
+
+    @available(iOS 13.0, *)
+    private func onReceive(receiveValue: IncomingEventReconciliationQueueEvent) {
+        switch receiveValue {
+        case .started:
+            remoteSyncTopicPublisher.send(.subscriptionsActivated)
+        case .paused:
+            remoteSyncTopicPublisher.send(.subscriptionsPaused)
+        case .mutationEvent(let mutationEvent):
+            remoteSyncTopicPublisher.send(.mutationEvent(mutationEvent))
+        }
     }
 
     private func performInitialQueries() {

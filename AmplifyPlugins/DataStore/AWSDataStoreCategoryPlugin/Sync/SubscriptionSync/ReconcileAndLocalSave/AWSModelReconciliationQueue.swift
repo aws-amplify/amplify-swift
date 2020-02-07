@@ -54,13 +54,13 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     private let modelName: String
 
     private var incomingEventsSink: AnyCancellable?
+    private var reconcileAndLocalSaveOperationSink: AnyCancellable?
 
     private let modelReconciliationQueueSubject: PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>
     var publisher: AnyPublisher<ModelReconciliationQueueEvent, DataStoreError> {
         return modelReconciliationQueueSubject.eraseToAnyPublisher()
     }
 
-    private var cancellableSubscription: AnyCancellable?
     init(modelType: Model.Type,
          storageAdapter: StorageEngineAdapter?,
          api: APICategoryGraphQLBehavior,
@@ -123,7 +123,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     func enqueue(_ remoteModel: MutationSync<AnyModel>) {
         let reconcileOp = ReconcileAndLocalSaveOperation(remoteModel: remoteModel,
                                                          storageAdapter: storageAdapter)
-        cancellableSubscription = reconcileOp.publisher.sink(receiveCompletion: { error in
+        reconcileAndLocalSaveOperationSink = reconcileOp.publisher.sink(receiveCompletion: { error in
             self.modelReconciliationQueueSubject.send(completion: error)
         }, receiveValue: { mutationEvent in
             self.modelReconciliationQueueSubject.send(.mutationEvent(mutationEvent))

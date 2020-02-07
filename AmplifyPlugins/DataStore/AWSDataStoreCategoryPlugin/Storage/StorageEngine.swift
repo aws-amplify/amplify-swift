@@ -18,22 +18,21 @@ final class StorageEngine: StorageEngineBehavior {
 
     private weak var api: APICategoryGraphQLBehavior?
 
-    var iStorageEnginePublisher: Any?
-
-    var iCancellable: Any?
+    var iSyncEngineSink: Any?
     @available(iOS 13.0, *)
-    var cancellable: AnyCancellable? {
+    var sinkEngineSink: AnyCancellable? {
         get {
-            if let iCancellable = iCancellable as? AnyCancellable {
-                return iCancellable
+            if let iSyncEngineSink = iSyncEngineSink as? AnyCancellable {
+                return iSyncEngineSink
             }
             return nil
         }
         set {
-            iCancellable = newValue
+            iSyncEngineSink = newValue
         }
     }
 
+    var iStorageEnginePublisher: Any?
     @available(iOS 13.0, *)
     var storageEnginePublisher: PassthroughSubject<StorageEngineEvent, DataStoreError> {
         get {
@@ -78,20 +77,27 @@ final class StorageEngine: StorageEngineBehavior {
             let syncEngine = isSyncEnabled ? try? RemoteSyncEngine(storageAdapter: storageAdapter) : nil
             self.init(storageAdapter: storageAdapter, syncEngine: syncEngine)
             self.storageEnginePublisher = PassthroughSubject<StorageEngineEvent, DataStoreError>()
-            cancellable = syncEngine?.publisher.sink(receiveCompletion: { completion in
-                switch completion {
-                case .failure(let dataStoreError):
-                    self.storageEnginePublisher.send(completion: .failure(dataStoreError))
-                case .finished:
-                    self.storageEnginePublisher.send(completion: .finished)
-                }
-            }, receiveValue: { event in
-                if case .mutationEvent(let mutationEvent) = event {
-                    self.storageEnginePublisher.send(.mutationEvent(mutationEvent))
-                }
-            })
+            sinkEngineSink = syncEngine?.publisher.sink(receiveCompletion: onReceiveCompletion(receiveCompletion:),
+                                                        receiveValue: onReceive(receiveValue:))
         } else {
             self.init(storageAdapter: storageAdapter, syncEngine: nil)
+        }
+    }
+
+    @available(iOS 13.0, *)
+    private func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
+        switch receiveCompletion {
+        case .failure(let dataStoreError):
+            storageEnginePublisher.send(completion: .failure(dataStoreError))
+        case .finished:
+            storageEnginePublisher.send(completion: .finished)
+        }
+    }
+
+    @available(iOS 13.0, *)
+    private func onReceive(receiveValue: RemoteSyncEngineEvent) {
+        if case .mutationEvent(let mutationEvent) = receiveValue {
+            self.storageEnginePublisher.send(.mutationEvent(mutationEvent))
         }
     }
 

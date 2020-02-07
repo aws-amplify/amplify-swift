@@ -33,10 +33,10 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     private let remoteModel: RemoteModel
     private var stateMachineSink: AnyCancellable?
 
+    private let mutationEventPublisher: PassthroughSubject<MutationEvent, DataStoreError>
     public var publisher: AnyPublisher<MutationEvent, DataStoreError> {
         return mutationEventPublisher.eraseToAnyPublisher()
     }
-    private let mutationEventPublisher: PassthroughSubject<MutationEvent, DataStoreError>
 
     init(remoteModel: RemoteModel,
          storageAdapter: StorageEngineAdapter?,

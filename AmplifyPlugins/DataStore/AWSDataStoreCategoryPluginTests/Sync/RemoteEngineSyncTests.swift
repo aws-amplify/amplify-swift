@@ -41,7 +41,7 @@ class RemoteEngineSyncTests: XCTestCase {
         let failureOnStorageAdapter = expectation(description: "Expect receiveCompletion on storageAdapterFailure")
 
         storageAdapter = nil
-        let cancellable = remoteSyncEngine
+        let remoteSyncEngineSink = remoteSyncEngine
             .publisher
             .sink(receiveCompletion: { _ in
                 failureOnStorageAdapter.fulfill()
@@ -60,7 +60,7 @@ class RemoteEngineSyncTests: XCTestCase {
         let subscriptionsInitialized = expectation(description: "subscriptionsInitialized")
         let failureOnInitialSync = expectation(description: "failureOnInitialSync")
 
-        let cancellable = remoteSyncEngine
+        let remoteSyncEngineSink = remoteSyncEngine
             .publisher
             .sink(receiveCompletion: { _ in
                 failureOnInitialSync.fulfill()
@@ -99,7 +99,7 @@ class RemoteEngineSyncTests: XCTestCase {
         let mutationQueueStarted = expectation(description: "mutationQueueStarted")
         let syncStarted = expectation(description: "sync started")
 
-        let cancellable = remoteSyncEngine
+        let remoteSyncEngineSink = remoteSyncEngine
             .publisher
             .sink(receiveCompletion: { _ in
                 XCTFail("Completion should never happen")
@@ -147,7 +147,7 @@ class RemoteEngineSyncTests: XCTestCase {
         let syncStarted = expectation(description: "sync started")
         let failureOnEventReconciliationQueue = expectation(description: "reconciliationQueue failed")
 
-        let cancellable = remoteSyncEngine
+        let remoteSyncEngineSink = remoteSyncEngine
             .publisher
             .sink(receiveCompletion: { _ in
                 failureOnEventReconciliationQueue.fulfill()

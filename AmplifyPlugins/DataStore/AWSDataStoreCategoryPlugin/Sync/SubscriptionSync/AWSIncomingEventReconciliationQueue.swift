@@ -21,20 +21,21 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     static let factory: IncomingEventReconciliationQueueFactory = { modelTypes, api, storageAdapter in
         AWSIncomingEventReconciliationQueue(modelTypes: modelTypes, api: api, storageAdapter: storageAdapter)
     }
+    private var modelReconciliationQueueSinks: [String: AnyCancellable]
 
-    private let reconciliationQueueTopic: PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>
-    private var reconciliationQueueTopicCancellable = [String: AnyCancellable]()
+    private let eventReconciliationQueueTopic: PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>
     var publisher: AnyPublisher<IncomingEventReconciliationQueueEvent, DataStoreError> {
-        return reconciliationQueueTopic.eraseToAnyPublisher()
+        return eventReconciliationQueueTopic.eraseToAnyPublisher()
     }
 
-    private var reconciliationQueues = [String: ModelReconciliationQueue]()
+    private var reconciliationQueues: [String: ModelReconciliationQueue]
 
     init(modelTypes: [Model.Type],
          api: APICategoryGraphQLBehavior,
          storageAdapter: StorageEngineAdapter) {
-
-        self.reconciliationQueueTopic = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
+        self.modelReconciliationQueueSinks = [:]
+        self.eventReconciliationQueueTopic = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
+        self.reconciliationQueues = [:]
 
         for modelType in modelTypes {
             let modelName = modelType.modelName
@@ -47,31 +48,20 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                 continue
             }
             reconciliationQueues[modelName] = queue
-
-            let cancellable = queue.publisher.sink(receiveCompletion: { completed in
-                switch completed {
-                case .failure(let error):
-                    self.reconciliationQueueTopic.send(completion: .failure(error))
-                case .finished:
-                    self.reconciliationQueueTopic.send(completion: .finished)
-                }
-            }, receiveValue: { mutationEvent in
-                if case .mutationEvent(let event) = mutationEvent {
-                    self.reconciliationQueueTopic.send(.mutationEvent(event))
-                }
-            })
-            reconciliationQueueTopicCancellable[modelName] = cancellable
+            let modelReconciliationQueueSink = queue.publisher.sink(receiveCompletion: onReceiveCompletion(completed:),
+                                                                    receiveValue: onRecieveValue(receiveValue:))
+            modelReconciliationQueueSinks[modelName] = modelReconciliationQueueSink
         }
     }
 
     func start() {
         reconciliationQueues.values.forEach { $0.start() }
-        reconciliationQueueTopic.send(.started)
+        eventReconciliationQueueTopic.send(.started)
     }
 
     func pause() {
         reconciliationQueues.values.forEach { $0.pause() }
-        reconciliationQueueTopic.send(.paused)
+        eventReconciliationQueueTopic.send(.paused)
     }
 
     func offer(_ remoteModel: MutationSync<AnyModel>) {
@@ -81,6 +71,21 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         }
 
         queue.enqueue(remoteModel)
+    }
+
+    private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
+        switch completed {
+        case .failure(let error):
+            eventReconciliationQueueTopic.send(completion: .failure(error))
+        case .finished:
+            eventReconciliationQueueTopic.send(completion: .finished)
+        }
+    }
+
+    private func onRecieveValue(receiveValue: ModelReconciliationQueueEvent) {
+        if case .mutationEvent(let event) = receiveValue {
+            self.eventReconciliationQueueTopic.send(.mutationEvent(event))
+        }
     }
 }
 

@@ -23,18 +23,17 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// The local storage provider. Resolved during configuration phase
     var storageEngine: StorageEngineBehavior!
 
-    var iCancellable: Any?
-
+    var iStorageEngineSink: Any?
     @available(iOS 13.0, *)
-    var cancellable: AnyCancellable? {
+    var storageEngineSink: AnyCancellable? {
         get {
-            if let iCancellable = iCancellable as? AnyCancellable {
-                return iCancellable
+            if let iStorageEngineSink = iStorageEngineSink as? AnyCancellable {
+                return iStorageEngineSink
             }
             return nil
         }
         set {
-            iCancellable = newValue
+            iStorageEngineSink = newValue
         }
     }
 
@@ -94,27 +93,39 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
         storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled)
         if #available(iOS 13.0, *) {
-            cancellable = storageEngine.publisher.sink(receiveCompletion: { completion in
-                guard let dataStorePublisher = self.dataStorePublisher as? DataStorePublisher else {
-                    self.log.error("Data store publisher not initalized")
-                    return
-                }
-                switch completion {
-                case .failure(let dataStoreError):
-                    dataStorePublisher.send(dataStoreError: dataStoreError)
-                case .finished:
-                    dataStorePublisher.sendFinished()
-                }
+            setupStorageSink()
+        }
+    }
 
-            }, receiveValue: { event in
-                guard let dataStorePublisher = self.dataStorePublisher as? DataStorePublisher else {
-                    self.log.error("Data store publisher not initalized")
-                    return
-                }
-                if case .mutationEvent(let mutationEvent) = event {
-                    dataStorePublisher.send(input: mutationEvent)
-                }
-            })
+    @available(iOS 13.0, *)
+    private func setupStorageSink() {
+        storageEngineSink = storageEngine.publisher.sink(receiveCompletion: onReceiveCompletion(completed:),
+                                                         receiveValue: onRecieveValue(receiveValue:))
+    }
+
+    @available(iOS 13.0, *)
+    private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
+        guard let dataStorePublisher = self.dataStorePublisher as? DataStorePublisher else {
+            log.error("Data store publisher not initalized")
+            return
+        }
+        switch completed {
+        case .failure(let dataStoreError):
+            dataStorePublisher.send(dataStoreError: dataStoreError)
+        case .finished:
+            dataStorePublisher.sendFinished()
+        }
+    }
+
+    @available(iOS 13.0, *)
+    private func onRecieveValue(receiveValue: StorageEngineEvent) {
+        guard let dataStorePublisher = self.dataStorePublisher as? DataStorePublisher else {
+            log.error("Data store publisher not initalized")
+            return
+        }
+
+        if case .mutationEvent(let mutationEvent) = receiveValue {
+            dataStorePublisher.send(input: mutationEvent)
         }
     }
 
