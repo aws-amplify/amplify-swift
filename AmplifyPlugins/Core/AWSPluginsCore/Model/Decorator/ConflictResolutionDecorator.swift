@@ -37,7 +37,7 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
         }
 
         if let lastSync = lastSync, case .query = document.operationType {
-            inputs["lastSync"] = GraphQLDocumentInput(type: "AWSTimestamp", value: .scalarOrString(lastSync))
+            inputs["lastSync"] = GraphQLDocumentInput(type: "AWSTimestamp", value: .scalar(lastSync))
         }
 
         if let selectionSet = document.selectionSet {
@@ -54,11 +54,11 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
         case .value:
             break
         case .model:
-            selectionSet.add(child: .init(value: .init(name: "_version", fieldType: .value)))
-            selectionSet.add(child: .init(value: .init(name: "_deleted", fieldType: .value)))
-            selectionSet.add(child: .init(value: .init(name: "_lastChangedAt", fieldType: .value)))
+            selectionSet.addChild(settingParentOf: .init(value: .init(name: "_version", fieldType: .value)))
+            selectionSet.addChild(settingParentOf: .init(value: .init(name: "_deleted", fieldType: .value)))
+            selectionSet.addChild(settingParentOf: .init(value: .init(name: "_lastChangedAt", fieldType: .value)))
         case .pagination:
-            selectionSet.add(child: .init(value: .init(name: "startedAt", fieldType: .value)))
+            selectionSet.addChild(settingParentOf: .init(value: .init(name: "startedAt", fieldType: .value)))
         }
 
         selectionSet.children.forEach { child in

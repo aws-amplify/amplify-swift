@@ -273,5 +273,4 @@ class GraphQLSyncBasedTests: XCTestCase {
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
-
 }

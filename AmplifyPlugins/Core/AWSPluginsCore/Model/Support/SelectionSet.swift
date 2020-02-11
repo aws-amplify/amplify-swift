@@ -8,22 +8,7 @@
 import Foundation
 import Amplify
 
-public typealias SelectionSet = TreeNode<SelectionSetField>
-
-public class TreeNode<E> {
-    var value: E
-    var children: [TreeNode<E>] = []
-    weak var parent: TreeNode<E>?
-
-    init(value: E) {
-        self.value = value
-    }
-
-    func add(child: TreeNode) {
-        children.append(child)
-        child.parent = self
-    }
-}
+public typealias SelectionSet = Tree<SelectionSetField>
 
 public enum SelectionSetFieldType {
     case pagination
@@ -54,13 +39,13 @@ extension SelectionSet {
             if isRequiredAssociation, let associatedModel = field.associatedModel {
                 let child = SelectionSet(value: .init(name: field.name, fieldType: .model))
                 child.withModelFields(associatedModel.schema.graphQLFields)
-                self.add(child: child)
+                self.addChild(settingParentOf: child)
             } else {
-                self.add(child: .init(value: .init(name: field.graphQLName, fieldType: .value)))
+                self.addChild(settingParentOf: .init(value: .init(name: field.graphQLName, fieldType: .value)))
             }
         }
 
-        add(child: .init(value: .init(name: "__typename", fieldType: .value)))
+        addChild(settingParentOf: .init(value: .init(name: "__typename", fieldType: .value)))
     }
 
     /// Generate the string value of the `SelectionSet` used in the GraphQL query document

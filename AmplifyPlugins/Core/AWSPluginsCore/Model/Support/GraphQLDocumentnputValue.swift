@@ -10,19 +10,34 @@ import Foundation
 /// A container to hold either an object or a value, useful for storing document inputs and allowing manipulation at
 /// the first level of the object
 public enum GraphQLDocumentInputValue {
-    case scalarOrString(Any)
+    case scalar(GraphQLDocumentValueRepresentable)
     case object([String: Any?])
 }
 
-/// Contains the `type` of the GraphQL document input parameter as a string value and `GraphQLDocumentInputValue`
-public struct GraphQLDocumentInput {
+public protocol GraphQLDocumentValueRepresentable {
+    var graphQLDocumentValue: String { get }
+}
 
-    public var type: String
+extension Int: GraphQLDocumentValueRepresentable {
+    public var graphQLDocumentValue: String {
+        return "\(self)"
+    }
+}
 
-    public var value: GraphQLDocumentInputValue
+extension String: GraphQLDocumentValueRepresentable {
+    public var graphQLDocumentValue: String {
+        return self
+    }
+}
 
-    public init(type: String, value: GraphQLDocumentInputValue) {
-        self.type = type
-        self.value = value
+extension Bool: GraphQLDocumentValueRepresentable {
+    public var graphQLDocumentValue: String {
+        return "\(self)"
+    }
+}
+
+extension Decimal: GraphQLDocumentValueRepresentable {
+    public var graphQLDocumentValue: String {
+        return "\(self)"
     }
 }

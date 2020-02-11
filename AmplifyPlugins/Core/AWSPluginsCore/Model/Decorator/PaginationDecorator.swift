@@ -24,13 +24,13 @@ public struct PaginationDecorator: ModelBasedGraphQLDocumentDecorator {
         var inputs = document.inputs
 
         if let limit = limit {
-            inputs["limit"] = GraphQLDocumentInput(type: "Int", value: .scalarOrString(limit))
+            inputs["limit"] = GraphQLDocumentInput(type: "Int", value: .scalar(limit))
         } else {
-            inputs["limit"] = GraphQLDocumentInput(type: "Int", value: .scalarOrString(1_000))
+            inputs["limit"] = GraphQLDocumentInput(type: "Int", value: .scalar(1_000))
         }
 
         if let nextToken = nextToken {
-            inputs["nextToken"] = GraphQLDocumentInput(type: "String", value: .scalarOrString(nextToken))
+            inputs["nextToken"] = GraphQLDocumentInput(type: "String", value: .scalar(nextToken))
         }
 
         if let selectionSet = document.selectionSet {
@@ -47,8 +47,8 @@ public struct PaginationDecorator: ModelBasedGraphQLDocumentDecorator {
         let paginatedNode = SelectionSetField(fieldType: .pagination)
         let newRoot = SelectionSet(value: paginatedNode)
         selectionSet.value.name = "items"
-        newRoot.add(child: selectionSet)
-        newRoot.add(child: SelectionSet(value: SelectionSetField(name: "nextToken", fieldType: .value)))
+        newRoot.addChild(settingParentOf: selectionSet)
+        newRoot.addChild(settingParentOf: SelectionSet(value: SelectionSetField(name: "nextToken", fieldType: .value)))
         return newRoot
     }
 }
