@@ -10,7 +10,7 @@ import Foundation
 
 /// Decorates a GraphQL mutation with a "condition" input or a GraphQL query with a "filter" input. The value is the
 /// data extracted from an instance of a `QueryPredicate`
-public struct PredicateDecorator: SingleDirectiveGraphQLDocumentDecorator {
+public struct PredicateDecorator: ModelBasedGraphQLDocumentDecorator {
 
     private let predicate: QueryPredicate
 

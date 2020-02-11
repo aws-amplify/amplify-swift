@@ -11,7 +11,7 @@ import Amplify
 /// Decorate the GraphQL document with the data from an instance of the model. This is added as a single parameter
 /// called "input" that can be referenced by other decorators to append additional document inputs. This decorator
 /// has a dependency on the `DirectiveDecorator` as it constructs the input's type using the document name.
-public struct ModelDecorator: SingleDirectiveGraphQLDocumentDecorator {
+public struct ModelDecorator: ModelBasedGraphQLDocumentDecorator {
 
     private let model: Model
 
@@ -24,7 +24,6 @@ public struct ModelDecorator: SingleDirectiveGraphQLDocumentDecorator {
         var inputs = document.inputs
         inputs["input"] = GraphQLDocumentInput(type: "\(document.name.pascalCased())Input!",
             value: .object(model.graphQLInput))
-
         return document.copy(inputs: inputs)
     }
 }

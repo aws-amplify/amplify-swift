@@ -8,104 +8,102 @@
 import Foundation
 import Amplify
 
-/// Contains detail about the current selection set. `pagination` indicates that it contains paginated fields.
-/// `modelField` indicates that the values represent the property names from a `ModelSchema`.
-public enum SelectionSetType {
-    case pagination
-    case modelField
-}
+public typealias SelectionSet = TreeNode<SelectionSetField>
 
-/// A nested structure to contain a list of `SelectionSetField`, each of which may optionally contain another
-/// `SelectionSet`
-public struct SelectionSet {
-    var fields: [SelectionSetField]
-    var type: SelectionSetType
+public class TreeNode<E> {
+    var value: E
+    var children: [TreeNode<E>] = []
+    weak var parent: TreeNode<E>?
 
-    public init(fields: [SelectionSetField], type: SelectionSetType) {
-        self.fields = fields
-        self.type = type
-    }
-
-    mutating func append(_ selectionSetField: SelectionSetField) {
-        fields.append(selectionSetField)
-    }
-
-    mutating func update(_ field: SelectionSetField, at index: Int) {
-        fields[index] = field
-    }
-}
-
-public struct SelectionSetField {
-    public var value: String
-    public var innerSelectionSet: SelectionSet?
-
-    public init(value: String, innerSelectionSet: SelectionSet? = nil) {
+    init(value: E) {
         self.value = value
-        self.innerSelectionSet = innerSelectionSet
     }
 
-    mutating func updateInnerSelectionSet(_ innerSelectionSet: SelectionSet) {
-        self.innerSelectionSet = innerSelectionSet
+    func add(child: TreeNode) {
+        children.append(child)
+        child.parent = self
+    }
+}
+
+public enum SelectionSetFieldType {
+    case pagination
+    case model
+    case value
+}
+
+public class SelectionSetField {
+    var name: String?
+    var fieldType: SelectionSetFieldType
+    public init(name: String? = nil, fieldType: SelectionSetFieldType) {
+        self.name = name
+        self.fieldType = fieldType
+    }
+}
+
+extension SelectionSet {
+
+    /// Construct a `SelectionSet` with model fields
+    convenience init(fields: [ModelField]) {
+        self.init(value: SelectionSetField(fieldType: .model))
+        withModelFields(fields)
     }
 
-    public func toString(indentSize: Int = 0) -> String {
+    func withModelFields(_ fields: [ModelField]) {
+        fields.forEach { field in
+            let isRequiredAssociation = field.isRequired && field.isAssociationOwner
+            if isRequiredAssociation, let associatedModel = field.associatedModel {
+                let child = SelectionSet(value: .init(name: field.name, fieldType: .model))
+                child.withModelFields(associatedModel.schema.graphQLFields)
+                self.add(child: child)
+            } else {
+                self.add(child: .init(value: .init(name: field.graphQLName, fieldType: .value)))
+            }
+        }
+
+        add(child: .init(value: .init(name: "__typename", fieldType: .value)))
+    }
+
+    /// Generate the string value of the `SelectionSet` used in the GraphQL query document
+    ///
+    /// This method operates on `SelectionSet` with the root node containing a nil `value.name` and expects all inner
+    /// nodes to contain a value. It will generate a string with a nested and indented structure like:
+    /// ```
+    /// items {
+    ///   foo
+    ///   bar
+    ///   modelName {
+    ///     foo
+    ///     bar
+    ///   }
+    /// }
+    /// nextToken
+    /// startAt
+    /// ```
+    func stringValue(indentSize: Int = 0) -> String {
         var result = [String]()
         let indent = indentSize == 0 ? "" : String(repeating: "  ", count: indentSize)
 
-        if let innerSelectionSet = innerSelectionSet, !innerSelectionSet.fields.isEmpty {
-            result.append(indent + value + " {")
-            innerSelectionSet.fields.forEach { field in
-                result.append(field.toString(indentSize: indentSize + 1))
-            }
-            result.append(indent + "}")
-        } else {
-            result.append(indent + value)
+        // Account for the root node,
+        if let name = value.name {
+            result.append(indent + name)
         }
-        return result.joined(separator: "\n    ")
-    }
-}
 
-/// Extension to apply pagination and conflict resolution fields onto a selection set, specific to the observed
-/// Amplify transformation logic.
-extension SelectionSet {
-
-    /// Wrap the selection set in `items` and append a `nextToken` to the end
-    var paginated: SelectionSet {
-        SelectionSet(
-            fields: [SelectionSetField(value: "items", innerSelectionSet: self), SelectionSetField(value: "nextToken")],
-            type: .pagination)
-    }
-
-    /// Apply `startedAt` for paginated selection sets and `_version`, `_deleted`, `_lastChangedAt` fields onto model
-    /// related fields
-    var withConflictResolution: SelectionSet {
-        var selectionSet = self
-        switch type {
-        case .pagination:
-            // append `startedAt` for paginated selection sets, then extract the wrapped selection set from the first
-            // field, which will correlate to the "items" selection set field, then recursively apply
-            // `withConflictResolution`
-            selectionSet.append(SelectionSetField(value: "startedAt"))
-            if var first = selectionSet.fields.first, let innerSelectionSet = first.innerSelectionSet {
-                first.innerSelectionSet = innerSelectionSet.withConflictResolution
-                selectionSet.fields[0] = first
+        children.forEach { selectionSetField in
+            guard let name = selectionSetField.value.name else {
+                return
             }
-        case .modelField:
-            // append related conflict resolution fields to the end of the list of selection set fields
-            selectionSet.append(SelectionSetField(value: "_version"))
-            selectionSet.append(SelectionSetField(value: "_deleted"))
-            selectionSet.append(SelectionSetField(value: "_lastChangedAt"))
 
-            // For each selection set in each selection set field, recursively apply conflict resolution fields
-            for (index, field) in selectionSet.fields.enumerated() {
-                var newField = field
-                if let innerSelectionSet = field.innerSelectionSet {
-                    newField.updateInnerSelectionSet(innerSelectionSet.withConflictResolution)
-                    selectionSet.update(newField, at: index)
+            if !selectionSetField.children.isEmpty {
+                result.append(indent + name + " {")
+                selectionSetField.children.forEach { innerSelectionSetField in
+                    result.append(innerSelectionSetField.stringValue(indentSize: indentSize + 1))
                 }
+                result.append(indent + "}")
+            } else {
+                result.append(indent + name)
             }
         }
 
-        return selectionSet
+        return result.joined(separator: "\n    ")
     }
 }

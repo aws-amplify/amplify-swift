@@ -12,7 +12,7 @@ import Foundation
 /// All selection sets are decorated with conflict resolution fields and inputs are added based on the values that it
 /// was instantiated with. If `version` is passed, the input with key "input" will contain "_version" with the `version`
 /// value. If `lastSync` is passed, the input will contain new key "lastSync" with the `lastSync` value.
-public struct ConflictResolutionDecorator: SingleDirectiveGraphQLDocumentDecorator {
+public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
 
     private let version: Int?
     private let lastSync: Int?
@@ -37,13 +37,32 @@ public struct ConflictResolutionDecorator: SingleDirectiveGraphQLDocumentDecorat
         }
 
         if let lastSync = lastSync, case .query = document.operationType {
-            inputs["lastSync"] = GraphQLDocumentInput(type: "AWSTimestamp", value: .value(lastSync))
+            inputs["lastSync"] = GraphQLDocumentInput(type: "AWSTimestamp", value: .scalarOrString(lastSync))
         }
 
         if let selectionSet = document.selectionSet {
-            return document.copy(inputs: inputs, selectionSet: selectionSet.withConflictResolution)
+            addConflictResolution(selectionSet: selectionSet)
+            return document.copy(inputs: inputs, selectionSet: selectionSet)
         }
 
         return document.copy(inputs: inputs)
+    }
+
+    /// Append the correct conflict resolution fields for `model` and `pagination` selection sets.
+    private func addConflictResolution(selectionSet: SelectionSet) {
+        switch selectionSet.value.fieldType {
+        case .value:
+            break
+        case .model:
+            selectionSet.add(child: .init(value: .init(name: "_version", fieldType: .value)))
+            selectionSet.add(child: .init(value: .init(name: "_deleted", fieldType: .value)))
+            selectionSet.add(child: .init(value: .init(name: "_lastChangedAt", fieldType: .value)))
+        case .pagination:
+            selectionSet.add(child: .init(value: .init(name: "startedAt", fieldType: .value)))
+        }
+
+        selectionSet.children.forEach { child in
+            addConflictResolution(selectionSet: child)
+        }
     }
 }

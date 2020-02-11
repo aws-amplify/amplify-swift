@@ -37,8 +37,8 @@ class GraphQLListQueryTests: XCTestCase {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
 
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .list))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         documentBuilder.add(decorator: PaginationDecorator())
         documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))
         let document = documentBuilder.build()
@@ -71,8 +71,8 @@ class GraphQLListQueryTests: XCTestCase {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
 
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .list))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         documentBuilder.add(decorator: PaginationDecorator())
         documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())

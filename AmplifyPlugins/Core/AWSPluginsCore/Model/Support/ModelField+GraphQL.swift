@@ -19,29 +19,3 @@ extension ModelField {
         return name
     }
 }
-
-/// Extension that translate an array of model fields into `SelectionSet` structure.
-extension Array where Element == ModelField {
-
-    var selectionSet: SelectionSet {
-        return SelectionSet(fields: selectionSetFields, type: .modelField)
-    }
-
-    var selectionSetFields: [SelectionSetField] {
-        var selectionSets = [SelectionSetField]()
-        forEach { field in
-            let isRequiredAssociation = field.isRequired && field.isAssociationOwner
-            if isRequiredAssociation, let associatedModel = field.associatedModel {
-                selectionSets.append(SelectionSetField(
-                    value: field.name,
-                    innerSelectionSet: associatedModel.schema.graphQLFields.selectionSet))
-            } else {
-                selectionSets.append(SelectionSetField(value: field.graphQLName))
-            }
-        }
-
-        selectionSets.append(SelectionSetField(value: "__typename"))
-
-        return selectionSets
-    }
-}

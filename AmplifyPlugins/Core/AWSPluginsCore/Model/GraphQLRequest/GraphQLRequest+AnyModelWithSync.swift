@@ -30,8 +30,8 @@ extension GraphQLRequest {
                                       id: Model.Identifier,
                                       where predicate: QueryPredicate? = nil,
                                       version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelName: modelName, operationType: .mutation)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .delete))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName, operationType: .mutation)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(id: id))
         if let predicate = predicate {
             documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))
@@ -48,8 +48,8 @@ extension GraphQLRequest {
     public static func subscription(to modelType: Model.Type,
                                     subscriptionType: GraphQLSubscriptionType) -> GraphQLRequest<MutationSyncResult> {
 
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
-        documentBuilder.add(decorator: DirectiveDecorator(type: subscriptionType))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: subscriptionType))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
 
@@ -59,11 +59,15 @@ extension GraphQLRequest {
     }
 
     public static func syncQuery(modelType: Model.Type,
+                                 where predicate: QueryPredicate? = nil,
                                  limit: Int? = nil,
                                  nextToken: String? = nil,
                                  lastSync: Int? = nil) -> GraphQLRequest<SyncQueryResult> {
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .sync))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
+        if let predicate = predicate {
+            documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))
+        }
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
         documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync))
         let document = documentBuilder.build()
@@ -80,9 +84,9 @@ extension GraphQLRequest {
                                                where predicate: QueryPredicate? = nil,
                                                type: GraphQLMutationType,
                                                version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelName: model.modelName,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: model.modelName,
                                                                     operationType: .mutation)
-        documentBuilder.add(decorator: DirectiveDecorator(type: type))
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
         documentBuilder.add(decorator: ModelDecorator(model: model))
         if let predicate = predicate {
             documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))

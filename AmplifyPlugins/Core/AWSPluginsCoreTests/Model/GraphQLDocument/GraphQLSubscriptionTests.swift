@@ -32,8 +32,8 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///   - check if the generated GraphQL document is a valid subscription
     ///     - it has a list of fields with no nested models
     func testOnCreateGraphQLSubscriptionFromSimpleModel() {
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .onCreate))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnCreatePost {
@@ -55,8 +55,8 @@ class GraphQLSubscriptionTests: XCTestCase {
     }
 
     func testOnCreateGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .onCreate))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let expectedQueryDocument = """
@@ -90,8 +90,8 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///   - check if the generated GraphQL document is a valid subscription
     ///     - it has a list of fields with no nested models
     func testOnCreateGraphQLSubscriptionFromModelWithAssociation() {
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Comment.self, operationType: .subscription)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .onCreate))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Comment.self, operationType: .subscription)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnCreateComment {
@@ -119,8 +119,8 @@ class GraphQLSubscriptionTests: XCTestCase {
     }
 
     func testOnCreateGraphQLSubscriptionFromModelWithAssociationWithSyncEnabled() {
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Comment.self, operationType: .subscription)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .onCreate))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Comment.self, operationType: .subscription)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let expectedQueryDocument = """
@@ -162,8 +162,8 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///   - check if the generated GraphQL document is a valid subscription
     ///     - it has a list of fields with no nested models
     func testOnUpdateGraphQLSubscriptionFromSimpleModel() {
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .onUpdate))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         let document = documentBuilder.build()
 
         let expectedQueryDocument = """
@@ -186,8 +186,8 @@ class GraphQLSubscriptionTests: XCTestCase {
     }
 
     func testOnUpdateGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .onUpdate))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let expectedQueryDocument = """
@@ -220,8 +220,8 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///   - check if the generated GraphQL document is a valid subscription
     ///     - it has a list of fields with no nested models
     func testOnDeleteGraphQLSubscriptionFromSimpleModel() {
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .onDelete))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnDeletePost {
@@ -243,8 +243,8 @@ class GraphQLSubscriptionTests: XCTestCase {
     }
 
     func testOnDeleteGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .onDelete))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .subscription)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let expectedQueryDocument = """

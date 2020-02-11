@@ -11,7 +11,7 @@ import Amplify
 /// Decorate the GraphQLDocument with the value of `Model.Identifier` for a "delete" mutation or "get" query. This
 /// decorate has a dependency on `DirectiveDecorator` as it constructs the input's type using the document name for
 /// mutations.
-public struct ModelIdDecorator: SingleDirectiveGraphQLDocumentDecorator {
+public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
 
     private let id: Model.Identifier
 
@@ -27,7 +27,7 @@ public struct ModelIdDecorator: SingleDirectiveGraphQLDocumentDecorator {
             inputs["input"] = GraphQLDocumentInput(type: "\(document.name.pascalCased())Input!",
             value: .object(["id": id]))
         } else if case .query = document.operationType {
-            inputs["id"] = GraphQLDocumentInput(type: "ID!", value: .value(id))
+            inputs["id"] = GraphQLDocumentInput(type: "ID!", value: .scalarOrString(id))
         }
 
         return document.copy(inputs: inputs)

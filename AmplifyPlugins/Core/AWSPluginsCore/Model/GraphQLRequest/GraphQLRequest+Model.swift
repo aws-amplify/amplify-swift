@@ -25,8 +25,8 @@ extension GraphQLRequest {
                                           type: GraphQLMutationType) -> GraphQLRequest<M> {
         let modelType = ModelRegistry.modelType(from: model.modelName) ?? Swift.type(of: model)
 
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: modelType, operationType: .mutation)
-        documentBuilder.add(decorator: DirectiveDecorator(type: type))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .mutation)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
 
         switch type {
         case .create:
@@ -62,8 +62,8 @@ extension GraphQLRequest {
     /// - seealso: `GraphQLQuery`, `GraphQLQueryType.get`
     public static func query<M: Model>(from modelType: M.Type,
                                        byId id: String) -> GraphQLRequest<M?> {
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .get))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: id))
         let document = documentBuilder.build()
 
@@ -85,8 +85,8 @@ extension GraphQLRequest {
     /// - seealso: `GraphQLQuery`, `GraphQLQueryType.list`
     public static func query<M: Model>(from modelType: M.Type,
                                        where predicate: QueryPredicate? = nil) -> GraphQLRequest<[M]> {
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .list))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
 
         if let predicate = predicate {
             documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))
@@ -98,7 +98,7 @@ extension GraphQLRequest {
         return GraphQLRequest<[M]>(document: document.stringValue,
                                    variables: document.variables,
                                    responseType: [M].self,
-                                   decodePath: document.name)
+                                   decodePath: document.name + ".items")
     }
 
     /// Creates a `GraphQLRequest` that represents a subscription of a given `type` for a `model` type.
@@ -112,8 +112,8 @@ extension GraphQLRequest {
     /// - seealso: `GraphQLSubscription`, `GraphQLSubscriptionType`
     public static func subscription<M: Model>(of modelType: M.Type,
                                               type: GraphQLSubscriptionType) -> GraphQLRequest<M> {
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
-        documentBuilder.add(decorator: DirectiveDecorator(type: type))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
         let document = documentBuilder.build()
 
         return GraphQLRequest<M>(document: document.stringValue,

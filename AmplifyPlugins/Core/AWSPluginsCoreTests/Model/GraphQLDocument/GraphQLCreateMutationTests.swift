@@ -34,8 +34,8 @@ class GraphQLCreateMutationTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testCreateGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content", createdAt: Date())
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .create))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: post))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
@@ -77,8 +77,8 @@ class GraphQLCreateMutationTests: XCTestCase {
     func testCreateGraphQLMutationFromModelWithAssociation() {
         let post = Post(title: "title", content: "content", createdAt: Date())
         let comment = Comment(content: "comment", createdAt: Date(), post: post)
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Comment.self, operationType: .mutation)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .create))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Comment.self, operationType: .mutation)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: comment))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
@@ -123,8 +123,8 @@ class GraphQLCreateMutationTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testCreateGraphQLMutationFromSimpleModelWithSyncEnabled() {
         let post = Post(title: "title", content: "content", createdAt: Date())
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .create))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: post))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
@@ -171,8 +171,8 @@ class GraphQLCreateMutationTests: XCTestCase {
         let post = Post(title: "title", content: "content", createdAt: Date())
         let comment = Comment(content: "comment", createdAt: Date(), post: post)
 
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Comment.self, operationType: .mutation)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .create))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Comment.self, operationType: .mutation)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: comment))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()

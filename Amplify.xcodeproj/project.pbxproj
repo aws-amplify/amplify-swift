@@ -47,7 +47,7 @@
 		212CE70E23E9E991007D8E71 /* PaginationDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70923E9E991007D8E71 /* PaginationDecorator.swift */; };
 		212CE70F23E9E991007D8E71 /* ModelDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70A23E9E991007D8E71 /* ModelDecorator.swift */; };
 		212CE71123E9EA6A007D8E71 /* ModelField+GraphQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71023E9EA6A007D8E71 /* ModelField+GraphQL.swift */; };
-		212CE71323E9F2ED007D8E71 /* DirectiveDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71223E9F2ED007D8E71 /* DirectiveDecorator.swift */; };
+		212CE71323E9F2ED007D8E71 /* DirectiveNameDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71223E9F2ED007D8E71 /* DirectiveNameDecorator.swift */; };
 		21409C552384C55D000A53C9 /* LabelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C542384C55D000A53C9 /* LabelType.swift */; };
 		21409C5A2384C57D000A53C9 /* GraphQLMutationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C572384C57D000A53C9 /* GraphQLMutationType.swift */; };
 		21409C5B2384C57D000A53C9 /* GraphQLQueryType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C582384C57D000A53C9 /* GraphQLQueryType.swift */; };
@@ -83,8 +83,8 @@
 		2183A56723EA4A8B00232880 /* GraphQLCreateMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71623EA1839007D8E71 /* GraphQLCreateMutationTests.swift */; };
 		2183A56823EA4A8E00232880 /* GraphQLDeleteMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71423EA1838007D8E71 /* GraphQLDeleteMutationTests.swift */; };
 		2183A56923EA4A9100232880 /* GraphQLUpdateMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71523EA1839007D8E71 /* GraphQLUpdateMutationTests.swift */; };
-		219A887F23EB627100BBC5F2 /* SingleDirectiveGraphQLDocumentBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A887E23EB627100BBC5F2 /* SingleDirectiveGraphQLDocumentBuilder.swift */; };
-		219A888123EB629800BBC5F2 /* SingleDirectiveGraphQLDocumentDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A888023EB629800BBC5F2 /* SingleDirectiveGraphQLDocumentDecorator.swift */; };
+		219A887F23EB627100BBC5F2 /* ModelBasedGraphQLDocumentBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A887E23EB627100BBC5F2 /* ModelBasedGraphQLDocumentBuilder.swift */; };
+		219A888123EB629800BBC5F2 /* ModelBasedGraphQLDocumentDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A888023EB629800BBC5F2 /* ModelBasedGraphQLDocumentDecorator.swift */; };
 		219A888523EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A888423EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift */; };
 		219A888723EB89C200BBC5F2 /* GraphQLRequestAnyModelWithSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A888623EB89C200BBC5F2 /* GraphQLRequestAnyModelWithSyncTests.swift */; };
 		21D1CE8C2334233F0003BAA8 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D1CE8B2334233F0003BAA8 /* AuthError.swift */; };
@@ -562,7 +562,7 @@
 		212CE70923E9E991007D8E71 /* PaginationDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaginationDecorator.swift; sourceTree = "<group>"; };
 		212CE70A23E9E991007D8E71 /* ModelDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelDecorator.swift; sourceTree = "<group>"; };
 		212CE71023E9EA6A007D8E71 /* ModelField+GraphQL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelField+GraphQL.swift"; sourceTree = "<group>"; };
-		212CE71223E9F2ED007D8E71 /* DirectiveDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectiveDecorator.swift; sourceTree = "<group>"; };
+		212CE71223E9F2ED007D8E71 /* DirectiveNameDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectiveNameDecorator.swift; sourceTree = "<group>"; };
 		212CE71423EA1838007D8E71 /* GraphQLDeleteMutationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLDeleteMutationTests.swift; sourceTree = "<group>"; };
 		212CE71523EA1839007D8E71 /* GraphQLUpdateMutationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLUpdateMutationTests.swift; sourceTree = "<group>"; };
 		212CE71623EA1839007D8E71 /* GraphQLCreateMutationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLCreateMutationTests.swift; sourceTree = "<group>"; };
@@ -602,8 +602,8 @@
 		217855C2237F84D700A30D19 /* RESTRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTRequest.swift; sourceTree = "<group>"; };
 		217856BA2383320900A30D19 /* GraphQLQueryType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLQueryType.swift; sourceTree = "<group>"; };
 		217856BD2383322700A30D19 /* GraphQLMutationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLMutationType.swift; sourceTree = "<group>"; };
-		219A887E23EB627100BBC5F2 /* SingleDirectiveGraphQLDocumentBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleDirectiveGraphQLDocumentBuilder.swift; sourceTree = "<group>"; };
-		219A888023EB629800BBC5F2 /* SingleDirectiveGraphQLDocumentDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleDirectiveGraphQLDocumentDecorator.swift; sourceTree = "<group>"; };
+		219A887E23EB627100BBC5F2 /* ModelBasedGraphQLDocumentBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelBasedGraphQLDocumentBuilder.swift; sourceTree = "<group>"; };
+		219A888023EB629800BBC5F2 /* ModelBasedGraphQLDocumentDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelBasedGraphQLDocumentDecorator.swift; sourceTree = "<group>"; };
 		219A888423EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphQLRequest+AnyModelWithSync.swift"; sourceTree = "<group>"; };
 		219A888623EB89C200BBC5F2 /* GraphQLRequestAnyModelWithSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequestAnyModelWithSyncTests.swift; sourceTree = "<group>"; };
 		21D1CE8B2334233F0003BAA8 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
@@ -1205,8 +1205,8 @@
 				212CE70023E9E967007D8E71 /* GraphQLMutation.swift */,
 				212CE70223E9E967007D8E71 /* GraphQLQuery.swift */,
 				212CE70123E9E967007D8E71 /* GraphQLSubscription.swift */,
+				219A887E23EB627100BBC5F2 /* ModelBasedGraphQLDocumentBuilder.swift */,
 				2129BE0823948005006363A1 /* SingleDirectiveGraphQLDocument.swift */,
-				219A887E23EB627100BBC5F2 /* SingleDirectiveGraphQLDocumentBuilder.swift */,
 			);
 			path = GraphQLDocument;
 			sourceTree = "<group>";
@@ -1214,8 +1214,8 @@
 		2129BE1423948065006363A1 /* GraphQLRequest */ = {
 			isa = PBXGroup;
 			children = (
-				2129BE1523948065006363A1 /* GraphQLRequest+Model.swift */,
 				219A888423EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift */,
+				2129BE1523948065006363A1 /* GraphQLRequest+Model.swift */,
 			);
 			path = GraphQLRequest;
 			sourceTree = "<group>";
@@ -1314,12 +1314,12 @@
 			isa = PBXGroup;
 			children = (
 				212CE70723E9E990007D8E71 /* ConflictResolutionDecorator.swift */,
-				212CE71223E9F2ED007D8E71 /* DirectiveDecorator.swift */,
+				212CE71223E9F2ED007D8E71 /* DirectiveNameDecorator.swift */,
+				219A888023EB629800BBC5F2 /* ModelBasedGraphQLDocumentDecorator.swift */,
 				212CE70A23E9E991007D8E71 /* ModelDecorator.swift */,
 				212CE70623E9E990007D8E71 /* ModelIdDecorator.swift */,
 				212CE70923E9E991007D8E71 /* PaginationDecorator.swift */,
 				212CE70823E9E990007D8E71 /* PredicateDecorator.swift */,
-				219A888023EB629800BBC5F2 /* SingleDirectiveGraphQLDocumentDecorator.swift */,
 			);
 			path = Decorator;
 			sourceTree = "<group>";
@@ -3438,7 +3438,7 @@
 				212CE71123E9EA6A007D8E71 /* ModelField+GraphQL.swift in Sources */,
 				212CE70523E9E967007D8E71 /* GraphQLQuery.swift in Sources */,
 				212CE70C23E9E991007D8E71 /* ConflictResolutionDecorator.swift in Sources */,
-				212CE71323E9F2ED007D8E71 /* DirectiveDecorator.swift in Sources */,
+				212CE71323E9F2ED007D8E71 /* DirectiveNameDecorator.swift in Sources */,
 				21420A92237222A900FA140C /* OIDCConfiguration.swift in Sources */,
 				21420A95237222A900FA140C /* AWSAuthServiceBehavior.swift in Sources */,
 				21420A98237222A900FA140C /* AuthTokenProvider.swift in Sources */,
@@ -3446,13 +3446,13 @@
 				212CE70F23E9E991007D8E71 /* ModelDecorator.swift in Sources */,
 				21420A97237222A900FA140C /* IAMCredentialProvider.swift in Sources */,
 				212CE70D23E9E991007D8E71 /* PredicateDecorator.swift in Sources */,
-				219A888123EB629800BBC5F2 /* SingleDirectiveGraphQLDocumentDecorator.swift in Sources */,
+				219A888123EB629800BBC5F2 /* ModelBasedGraphQLDocumentDecorator.swift in Sources */,
 				212CE70423E9E967007D8E71 /* GraphQLSubscription.swift in Sources */,
 				21420A99237222A900FA140C /* APIKeyProvider.swift in Sources */,
 				6BBECD7123ADA7E100C8DFBE /* AmplifyAWSServiceConfiguration.swift in Sources */,
 				212CE6FE23E9E5A2007D8E71 /* GraphQLDocumentnputValue.swift in Sources */,
 				21420A90237222A900FA140C /* APIKeyConfiguration.swift in Sources */,
-				219A887F23EB627100BBC5F2 /* SingleDirectiveGraphQLDocumentBuilder.swift in Sources */,
+				219A887F23EB627100BBC5F2 /* ModelBasedGraphQLDocumentBuilder.swift in Sources */,
 				2129BE552395CAEF006363A1 /* PaginatedList.swift in Sources */,
 				2129BE212394806B006363A1 /* ModelSchema+GraphQL.swift in Sources */,
 				212CE70B23E9E991007D8E71 /* ModelIdDecorator.swift in Sources */,

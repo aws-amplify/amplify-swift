@@ -11,26 +11,33 @@ import Foundation
 /// Extension that adds GraphQL specific utilities to `ModelSchema`.
 extension ModelSchema {
 
-    /// The GraphQL directive name translated from the GraphQL operation and model schema data
-    func graphQLName(operationSubType: GraphQLOperationSubType) -> String {
+    /// The GraphQL directive name translated from a GraphQL query operation and model schema data
+    func graphQLName(queryType: GraphQLQueryType) -> String {
         let graphQLName: String
-        switch operationSubType {
-        case .mutation(let mutationType):
-            graphQLName = mutationType.rawValue + name
-        case .query(let queryType):
-            switch queryType {
-            case .list:
-                graphQLName = queryType.rawValue + name + "s"
-            case .sync:
-                graphQLName = queryType.rawValue + (pluralName ?? (name + "s"))
-            case .get:
-                graphQLName = queryType.rawValue + name
+        switch queryType {
+        case .list:
+            graphQLName = (queryType.rawValue + name).pluralize()
+        case .sync:
+            if let pluralName = pluralName {
+                graphQLName = queryType.rawValue + pluralName
+            } else {
+                graphQLName = (queryType.rawValue + name).pluralize()
             }
-        case .subscription(let subscriptionType):
-            graphQLName = subscriptionType.rawValue + name
+        case .get:
+            graphQLName = queryType.rawValue + name
         }
 
         return graphQLName
+    }
+
+    /// The GraphQL directive name translated from a GraphQL subsription operation and model schema name
+    func graphQLName(subscriptionType: GraphQLSubscriptionType) -> String {
+        subscriptionType.rawValue + name
+    }
+
+    /// The GraphQL directive name translated from a GraphQL mutation operation and model schema name
+    func graphQLName(mutationType: GraphQLMutationType) -> String {
+        mutationType.rawValue + name
     }
 
     /// The list of fields formatted for GraphQL usage.

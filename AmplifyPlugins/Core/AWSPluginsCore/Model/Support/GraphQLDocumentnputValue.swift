@@ -10,7 +10,7 @@ import Foundation
 /// A container to hold either an object or a value, useful for storing document inputs and allowing manipulation at
 /// the first level of the object
 public enum GraphQLDocumentInputValue {
-    case value(Any)
+    case scalarOrString(Any)
     case object([String: Any?])
 }
 

@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-/// A concrete implementation of `SingleDirectiveGraphQLDocument` that represents a mutation operation.
+/// A concrete implementation of `SingleDirectiveGraphQLDocument` that represents a query operation.
 public struct GraphQLQuery: SingleDirectiveGraphQLDocument {
 
     public init(operationType: GraphQLOperationType,
@@ -22,7 +22,7 @@ public struct GraphQLQuery: SingleDirectiveGraphQLDocument {
     }
 
     public init(modelType: Model.Type) {
-        self.selectionSet = modelType.schema.graphQLFields.selectionSet
+        self.selectionSet = SelectionSet(fields: modelType.schema.graphQLFields)
     }
 
     public var name: String = ""

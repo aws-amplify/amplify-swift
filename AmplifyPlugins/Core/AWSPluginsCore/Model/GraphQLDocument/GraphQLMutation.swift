@@ -22,7 +22,7 @@ public struct GraphQLMutation: SingleDirectiveGraphQLDocument {
     }
 
     public init(modelType: Model.Type) {
-        self.selectionSet = modelType.schema.graphQLFields.selectionSet
+        self.selectionSet = SelectionSet(fields: modelType.schema.graphQLFields)
     }
 
     public var name: String = ""

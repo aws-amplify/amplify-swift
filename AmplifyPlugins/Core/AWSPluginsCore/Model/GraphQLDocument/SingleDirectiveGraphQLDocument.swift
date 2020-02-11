@@ -19,10 +19,9 @@ public typealias GraphQLParameterName = String
 /// Represents a single directive GraphQL document. Concrete types that conform to this protocol must
 /// define a valid GraphQL operation document.
 ///
-/// This type aims to provide a representation of a simple GraphQL document with its components that can be decorated
-/// and later serialized into query document and variables for a request to a GraphQL service.
-/// Therefore, documents represented by concrete implementations provide a single GraphQL
-/// operation based on a defined `Model.Type`.
+/// This type aims to provide a representation of a simple GraphQL document with its components that can be easily
+/// decorated to extend the document. The components can then derive the standardized form of a GraphQL document
+/// containing the query string and variables.
 public protocol SingleDirectiveGraphQLDocument {
     /// The `GraphQLOperationType` a concrete implementation represents the
     /// GraphQL operation of the document
@@ -48,7 +47,7 @@ public protocol SingleDirectiveGraphQLDocument {
 // Provides default implementation
 extension SingleDirectiveGraphQLDocument {
 
-    /// Method to create a deep copy of the document, useful for `SingleDirectiveGraphQLDocumentDecorator` decorators
+    /// Method to create a deep copy of the document, useful for `ModelBasedGraphQLDocumentDecorator` decorators
     /// when decorating a document and returning a new document.
     public func copy(operationType: GraphQLOperationType? = nil,
                      name: String? = nil,
@@ -69,7 +68,7 @@ extension SingleDirectiveGraphQLDocument {
             switch input.value.value {
             case .object(let values):
                 variables.updateValue(values, forKey: input.key)
-            case .value(let value):
+            case .scalarOrString(let value):
                 variables.updateValue(value, forKey: input.key)
             }
 
@@ -83,26 +82,25 @@ extension SingleDirectiveGraphQLDocument {
 
         var selectionSetString = ""
         if let selectionSet = selectionSet {
-            selectionSetString = selectionSet.fields.map { $0.toString() }.joined(separator: "\n    ")
+            selectionSetString = selectionSet.stringValue()
         }
 
-        if !inputs.isEmpty {
-            let sortedInputs = inputs.sorted { $0.0 < $1.0 }
-            let inputTypes = sortedInputs.map { "$\($0.key): \($0.value.type)" }.joined(separator: ", ")
-            let inputParameters = sortedInputs.map { "\($0.key): $\($0.key)" }.joined(separator: ", ")
-
+        guard !inputs.isEmpty else {
             return """
-            \(operationType.rawValue) \(name.pascalCased())(\(inputTypes)) {
-              \(name)(\(inputParameters)) {
+            \(operationType.rawValue) \(name.pascalCased()) {
+              \(name) {
                 \(selectionSetString)
               }
             }
             """
         }
+        let sortedInputs = inputs.sorted { $0.0 < $1.0 }
+        let inputTypes = sortedInputs.map { "$\($0.key): \($0.value.type)" }.joined(separator: ", ")
+        let inputParameters = sortedInputs.map { "\($0.key): $\($0.key)" }.joined(separator: ", ")
 
         return """
-        \(operationType.rawValue) \(name.pascalCased()) {
-          \(name) {
+        \(operationType.rawValue) \(name.pascalCased())(\(inputTypes)) {
+          \(name)(\(inputParameters)) {
             \(selectionSetString)
           }
         }

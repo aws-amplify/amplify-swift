@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 
 /// Decorate the document input with "limit" and "nextToken". Also paginates the selection set with pagination fields.
-public struct PaginationDecorator: SingleDirectiveGraphQLDocumentDecorator {
+public struct PaginationDecorator: ModelBasedGraphQLDocumentDecorator {
 
     private let limit: Int?
     private let nextToken: String?
@@ -24,20 +24,31 @@ public struct PaginationDecorator: SingleDirectiveGraphQLDocumentDecorator {
         var inputs = document.inputs
 
         if let limit = limit {
-            inputs["limit"] = GraphQLDocumentInput(type: "Int", value: .value(limit))
+            inputs["limit"] = GraphQLDocumentInput(type: "Int", value: .scalarOrString(limit))
         } else {
-            inputs["limit"] = GraphQLDocumentInput(type: "Int", value: .value(1_000))
+            inputs["limit"] = GraphQLDocumentInput(type: "Int", value: .scalarOrString(1_000))
         }
 
         if let nextToken = nextToken {
-            inputs["nextToken"] = GraphQLDocumentInput(type: "String", value: .value(nextToken))
+            inputs["nextToken"] = GraphQLDocumentInput(type: "String", value: .scalarOrString(nextToken))
         }
 
         if let selectionSet = document.selectionSet {
+
             return document.copy(inputs: inputs,
-                                 selectionSet: selectionSet.paginated)
+                                 selectionSet: withPagination(selectionSet: selectionSet))
         }
 
         return document.copy(inputs: inputs)
+    }
+
+    /// Wrap the selectionSet with a pagination selection set,
+    func withPagination(selectionSet: SelectionSet) -> SelectionSet {
+        let paginatedNode = SelectionSetField(fieldType: .pagination)
+        let newRoot = SelectionSet(value: paginatedNode)
+        selectionSet.value.name = "items"
+        newRoot.add(child: selectionSet)
+        newRoot.add(child: SelectionSet(value: SelectionSetField(name: "nextToken", fieldType: .value)))
+        return newRoot
     }
 }

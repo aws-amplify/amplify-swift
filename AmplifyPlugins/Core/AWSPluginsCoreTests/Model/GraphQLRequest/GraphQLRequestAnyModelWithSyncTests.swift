@@ -24,9 +24,9 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
     func testCreateMutationGraphQLRequest() throws {
         let originalPost = Post(title: "title", content: "content", createdAt: Date())
         let anyPost = try originalPost.eraseToAnyModel()
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelName: anyPost.modelName,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: anyPost.modelName,
                                                                     operationType: .mutation)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .create))
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: anyPost))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
@@ -35,17 +35,15 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
-
-        // test the input
         XCTAssert(request.variables != nil)
     }
 
     func testUpdateMutationGraphQLRequest() throws {
         let originalPost = Post(title: "title", content: "content", createdAt: Date())
         let anyPost = try originalPost.eraseToAnyModel()
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelName: anyPost.modelName,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: anyPost.modelName,
                                                                     operationType: .mutation)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .update))
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: ModelDecorator(model: anyPost))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
@@ -54,8 +52,6 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
-
-        // test the input
         XCTAssert(request.variables != nil)
     }
 
@@ -63,9 +59,9 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         let originalPost = Post(title: "title", content: "content", createdAt: Date())
         let anyPost = try originalPost.eraseToAnyModel()
 
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelName: anyPost.modelName,
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: anyPost.modelName,
                                                                     operationType: .mutation)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .delete))
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(id: anyPost.id))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
@@ -74,15 +70,13 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
-
-        // test the input
         XCTAssert(request.variables != nil)
     }
 
     func testCreateSubscriptionGraphQLRequest() throws {
         let modelType = Post.self as Model.Type
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .onCreate))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
 
@@ -91,12 +85,26 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
-
-        // test the input
         XCTAssertNil(request.variables)
     }
 
     func testSyncQueryGraphQLRequest() throws {
+        let modelType = Post.self as Model.Type
+        let nextToken = "nextToken"
+        let limit = 100
+        let lastSync = 123
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
+        documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync))
+        let document = documentBuilder.build()
 
+        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: modelType,
+                                                                nextToken: nextToken,
+                                                                lastSync: lastSync)
+
+        XCTAssertEqual(document.stringValue, request.document)
+        XCTAssert(request.responseType == SyncQueryResult.self)
+        XCTAssert(request.variables != nil)
     }
 }

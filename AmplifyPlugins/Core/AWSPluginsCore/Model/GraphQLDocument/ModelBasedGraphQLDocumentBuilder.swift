@@ -10,8 +10,8 @@ import Amplify
 
 /// Helps construct a `SingleDirectiveGraphQLDocument`. Collects instances of the decorators and applies the changes
 /// on the document.
-public struct SingleDirectiveGraphQLDocumentBuilder {
-    private var decorators = [SingleDirectiveGraphQLDocumentDecorator]()
+public struct ModelBasedGraphQLDocumentBuilder {
+    private var decorators = [ModelBasedGraphQLDocumentDecorator]()
     private var document: SingleDirectiveGraphQLDocument
     private let modelType: Model.Type
 
@@ -35,15 +35,16 @@ public struct SingleDirectiveGraphQLDocumentBuilder {
         }
     }
 
-    public mutating func add(decorator: SingleDirectiveGraphQLDocumentDecorator) {
+    public mutating func add(decorator: ModelBasedGraphQLDocumentDecorator) {
         decorators.append(decorator)
     }
 
     public mutating func build() -> SingleDirectiveGraphQLDocument {
-        decorators.forEach { decorator in
-            document = decorator.decorate(document, modelType: self.modelType)
+
+        let decoratedDocument = decorators.reduce(document) { doc, decorator in
+            decorator.decorate(doc, modelType: self.modelType)
         }
 
-        return document
+        return decoratedDocument
     }
 }

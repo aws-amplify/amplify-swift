@@ -8,6 +8,6 @@
 import Foundation
 import Amplify
 
-public protocol SingleDirectiveGraphQLDocumentDecorator {
+public protocol ModelBasedGraphQLDocumentDecorator {
     func decorate(_ document: SingleDirectiveGraphQLDocument, modelType: Model.Type) -> SingleDirectiveGraphQLDocument
 }

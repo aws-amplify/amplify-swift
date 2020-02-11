@@ -36,8 +36,8 @@ class GraphQLSyncQueryTests: XCTestCase {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
 
-        var documentBuilder = SingleDirectiveGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
-        documentBuilder.add(decorator: DirectiveDecorator(type: .sync))
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))
         documentBuilder.add(decorator: PaginationDecorator(limit: 100, nextToken: "token"))
         documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: 123))
