@@ -94,6 +94,10 @@ final class IncomingAsyncSubscriptionEventPublisher {
         incomingSubscriptionEvents.subscribe(subscriber)
     }
 
+    func kill() {
+        reset(onComplete: {})
+    }
+
     func reset(onComplete: () -> Void) {
         onCreateOperation?.cancel()
         onCreateOperation = nil

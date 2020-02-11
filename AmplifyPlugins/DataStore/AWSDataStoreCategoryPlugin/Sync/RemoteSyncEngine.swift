@@ -32,6 +32,11 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         return remoteSyncTopicPublisher.eraseToAnyPublisher()
     }
 
+    private var networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?
+    private var mutationRetryNotifier: MutationRetryNotifier?
+    private let requestRetryablePolicy: RequestRetryablePolicy
+    private var currentAttemptNumber: Int
+
     /// Synchronizes startup operations
     let syncQueue: OperationQueue
 
@@ -45,7 +50,9 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     convenience init(storageAdapter: StorageEngineAdapter,
                      outgoingMutationQueue: OutgoingMutationQueueBehavior? = nil,
                      initialSyncOrchestratorFactory: InitialSyncOrchestratorFactory? = nil,
-                     reconciliationQueueFactory: IncomingEventReconciliationQueueFactory? = nil) throws {
+                     reconciliationQueueFactory: IncomingEventReconciliationQueueFactory? = nil,
+                     networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
+                     requestRetryablePolicy: RequestRetryablePolicy? = nil) throws {
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
         let outgoingMutationQueue = outgoingMutationQueue ?? OutgoingMutationQueue()
@@ -53,13 +60,16 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             AWSIncomingEventReconciliationQueue.init(modelTypes:api:storageAdapter:)
         let initialSyncOrchestratorFactory = initialSyncOrchestratorFactory ??
             AWSInitialSyncOrchestrator.init(api:reconciliationQueue:storageAdapter:)
+        let requestRetryablePolicy = requestRetryablePolicy ?? RequestRetryablePolicy()
 
         self.init(storageAdapter: storageAdapter,
                   outgoingMutationQueue: outgoingMutationQueue,
                   mutationEventIngester: mutationDatabaseAdapter,
                   mutationEventPublisher: awsMutationEventPublisher,
                   initialSyncOrchestratorFactory: initialSyncOrchestratorFactory,
-                  reconciliationQueueFactory: reconciliationQueueFactory)
+                  reconciliationQueueFactory: reconciliationQueueFactory,
+                  networkReachabilityPublisher: networkReachabilityPublisher,
+                  requestRetryablePolicy: requestRetryablePolicy)
     }
 
     init(storageAdapter: StorageEngineAdapter,
@@ -67,7 +77,9 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
          mutationEventIngester: MutationEventIngester,
          mutationEventPublisher: MutationEventPublisher,
          initialSyncOrchestratorFactory: @escaping InitialSyncOrchestratorFactory,
-         reconciliationQueueFactory: @escaping IncomingEventReconciliationQueueFactory) {
+         reconciliationQueueFactory: @escaping IncomingEventReconciliationQueueFactory,
+         networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?,
+         requestRetryablePolicy: RequestRetryablePolicy) {
         self.storageAdapter = storageAdapter
         self.mutationEventIngester = mutationEventIngester
         self.mutationEventPublisher = mutationEventPublisher
@@ -75,10 +87,13 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         self.initialSyncOrchestratorFactory = initialSyncOrchestratorFactory
         self.reconciliationQueueFactory = reconciliationQueueFactory
         self.remoteSyncTopicPublisher = PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>()
+        self.networkReachabilityPublisher = networkReachabilityPublisher
+        self.requestRetryablePolicy = requestRetryablePolicy
 
         self.syncQueue = OperationQueue()
         syncQueue.name = "com.amazonaws.Amplify.\(AWSDataStorePlugin.self).CloudSyncEngine"
         syncQueue.maxConcurrentOperationCount = 1
+        self.currentAttemptNumber = 1
     }
 
     func start(api: APICategoryGraphQLBehavior = Amplify.API) {
@@ -122,6 +137,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         startMutationQueueOp.addDependency(activateCloudSubscriptionsOp)
 
         let updateStateOp = CancelAwareBlockOperation {
+            self.resetCurrentAttemptNumber()
             Amplify.Hub.dispatch(to: .dataStore,
                                  payload: HubPayload(eventName: HubPayload.EventName.DataStore.syncStarted))
             self.remoteSyncTopicPublisher.send(.syncStarted)
@@ -169,14 +185,21 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     @available(iOS 13.0, *)
     private func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
+        tearDownAndPrepToBeRestartedInTheFuture()
+        remoteSyncTopicPublisher.send(.syncStopped)
+
         if case .failure(let error) = receiveCompletion {
-            self.remoteSyncTopicPublisher.send(completion: .failure(error))
-        }
-        if case .finished = receiveCompletion {
+            let advice = getRetryAdviceIfRetryable(error: error)
+            if advice.shouldRetry {
+                self.scheduleRetry(advice: advice)
+            } else {
+                self.remoteSyncTopicPublisher.send(completion: .failure(DataStoreError.api(error)))
+            }
+        } else {
             let unexpectedFinishError = DataStoreError.unknown("ReconcilationQueue sent .finished message",
                                                                AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
                                                                nil)
-            self.remoteSyncTopicPublisher.send(completion: .failure(unexpectedFinishError))
+            remoteSyncTopicPublisher.send(completion: .failure(unexpectedFinishError))
         }
     }
 
@@ -239,6 +262,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
         group.enter()
 
+        mutationRetryNotifier?.cancel()
         DispatchQueue.global().async {
             self.syncQueue.cancelAllOperations()
             self.syncQueue.waitUntilAllOperationsAreFinished()
@@ -258,6 +282,52 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         group.wait()
         onComplete()
     }
+
+    func tearDownAndPrepToBeRestartedInTheFuture() {
+        reconciliationQueue = nil
+        pauseMutations()
+
+        syncQueue.cancelAllOperations()
+        syncQueue.waitUntilAllOperationsAreFinished()
+    }
+
+    private func getRetryAdviceIfRetryable(error: Error) -> RequestRetryAdvice {
+        //TODO Parse error from the receive completion to use as an input into getting retry advice.
+        //For now, specifying not connected to internet to force a retry up to our maximum
+        let urlError = URLError(.notConnectedToInternet)
+        let advice = requestRetryablePolicy.retryRequestAdvice(urlError: urlError,
+                                                               httpURLResponse: nil,
+                                                               attemptNumber: currentAttemptNumber)
+        return advice
+    }
+
+    private func scheduleRetry(advice: RequestRetryAdvice) {
+        log.verbose("\(#function) scheduling retry for restarting remote sync engine")
+        resolveReachabilityPublisher()
+        mutationRetryNotifier = MutationRetryNotifier(advice: advice,
+                                                      networkReachabilityPublisher: networkReachabilityPublisher) {
+                                                        self.start()
+                                                        self.mutationRetryNotifier = nil
+        }
+        currentAttemptNumber += 1
+    }
+
+    private func resetCurrentAttemptNumber() {
+        currentAttemptNumber = 1
+    }
+
+    private func resolveReachabilityPublisher() {
+        if networkReachabilityPublisher == nil {
+            if let reachability = api as? APICategoryReachabilityBehavior {
+                do {
+                    networkReachabilityPublisher = try reachability.reachabilityPublisher()
+                } catch {
+                    log.error("\(#function): Unable to listen on reachability: \(error)")
+                }
+            }
+        }
+    }
+
 }
 
 @available(iOS 13.0, *)

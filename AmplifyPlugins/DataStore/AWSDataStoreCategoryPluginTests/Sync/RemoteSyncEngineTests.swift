@@ -137,7 +137,7 @@ class RemoteEngineSyncTests: XCTestCase {
                    syncStarted], timeout: defaultAsyncWaitTimeout)
     }
 
-    func testFailsAfterSyncStarted() throws {
+    func testNetworkFailsAfterSyncStarted() throws {
         let storageAdapterAvailable = expectation(description: "storageAdapterAvailable")
         let mutationsPaused = expectation(description: "mutationsPaused")
         let subscriptionsInitialized = expectation(description: "subscriptionsInitialized")
@@ -149,8 +149,16 @@ class RemoteEngineSyncTests: XCTestCase {
 
         let remoteSyncEngineSink = remoteSyncEngine
             .publisher
-            .sink(receiveCompletion: { _ in
-                failureOnEventReconciliationQueue.fulfill()
+            .sink(receiveCompletion: { completionValue in
+                if case .failure(let error) = completionValue {
+                    if case .api(let amplifyError) = error {
+                        if let urlError = amplifyError.underlyingError as? URLError {
+                            if urlError.errorCode == URLError.Code.timedOut.rawValue {
+                                failureOnEventReconciliationQueue.fulfill()
+                            }
+                        }
+                    }
+                }
             }, receiveValue: { event in
                 switch event {
                 case .storageAdapterAvailable:
@@ -169,7 +177,9 @@ class RemoteEngineSyncTests: XCTestCase {
                     mutationQueueStarted.fulfill()
                 case .syncStarted:
                     syncStarted.fulfill()
-                    MockAWSIncomingEventReconciliationQueue.mockSendCompletion(completion: .failure(DataStoreError.unknown("", "", nil)))
+                    let urlError = URLError(URLError.Code.timedOut)
+                    let apiError = APIError.networkError("not connected", nil, urlError)
+                    MockAWSIncomingEventReconciliationQueue.mockSendCompletion(completion: .failure(DataStoreError.api(apiError)))
                 default:
                     XCTFail("unexpected call")
                 }

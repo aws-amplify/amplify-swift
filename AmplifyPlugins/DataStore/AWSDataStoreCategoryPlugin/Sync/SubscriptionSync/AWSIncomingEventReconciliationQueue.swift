@@ -29,6 +29,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     }
 
     private var reconciliationQueues: [String: ModelReconciliationQueue]
+    private var hasIssuedKillSequence = false
 
     init(modelTypes: [Model.Type],
          api: APICategoryGraphQLBehavior,
@@ -74,11 +75,14 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     }
 
     private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
-        switch completed {
-        case .failure(let error):
-            eventReconciliationQueueTopic.send(completion: .failure(error))
-        case .finished:
-            eventReconciliationQueueTopic.send(completion: .finished)
+        let shouldPropagateUpward = kill()
+        if shouldPropagateUpward {
+            switch completed {
+            case .failure(let error):
+                eventReconciliationQueueTopic.send(completion: .failure(error))
+            case .finished:
+                eventReconciliationQueueTopic.send(completion: .finished)
+            }
         }
     }
 
@@ -86,6 +90,30 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         if case .mutationEvent(let event) = receiveValue {
             self.eventReconciliationQueueTopic.send(.mutationEvent(event))
         }
+    }
+
+    private func kill() -> Bool {
+
+        //It is possible to have multiple persistent connections fail in a very
+        // narrow time window, which will result in having multiple calls to kill.
+        // We should avoid calling kill() multiple times on items that have already
+        // been killed.
+        let semaphore = DispatchSemaphore(value: 1)
+        semaphore.wait()
+        let shouldIssueKill = !hasIssuedKillSequence
+        hasIssuedKillSequence = true
+        semaphore.signal()
+
+        if shouldIssueKill {
+            modelReconciliationQueueSinks.values.forEach { $0.cancel() }
+            reconciliationQueues.values.forEach { $0.kill() }
+            reconciliationQueues = [:]
+            modelReconciliationQueueSinks = [:]
+            return true
+        } else {
+            return false
+        }
+
     }
 }
 

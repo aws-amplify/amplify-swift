@@ -92,10 +92,12 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             .publisher
             .sink(receiveCompletion: { [weak self] completion in
                 self?.receiveCompletion(completion)
-                }, receiveValue: { [weak self] remoteModel in
-                    self?.incomingSubscriptionEventQueue.addOperation(CancelAwareBlockOperation {
-                        self?.enqueue(remoteModel)
-                    })
+                }, receiveValue: { [weak self] recieveValue in
+                    if case .mutationEvent(let remoteModel) = recieveValue {
+                        self?.incomingSubscriptionEventQueue.addOperation(CancelAwareBlockOperation {
+                            self?.enqueue(remoteModel)
+                        })
+                    }
             })
     }
 
@@ -140,6 +142,22 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             log.error("receiveCompletion: error: \(dataStoreError)")
             modelReconciliationQueueSubject.send(completion: .failure(dataStoreError))
         }
+    }
+
+    func kill() {
+        incomingEventsSink?.cancel()
+        incomingEventsSink = nil
+
+        incomingSubscriptionEvents.kill()
+
+        //Enqueue the rest of the items that our subscription downloaded
+        incomingSubscriptionEventQueue.waitUntilAllOperationsAreFinished()
+
+        //Finish writing to storageEngine
+        reconcileAndSaveQueue.waitUntilAllOperationsAreFinished()
+
+        // We could attempt to suspend the queue, but there should be no events
+        // coming in via the Combine publisher. Seems like we can just end
     }
 }
 
