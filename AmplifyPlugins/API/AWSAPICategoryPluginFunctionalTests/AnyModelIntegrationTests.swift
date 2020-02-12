@@ -50,7 +50,7 @@ class AnyModelIntegrationTests: XCTestCase {
 
         let callbackInvoked = expectation(description: "Callback invoked")
         var responseFromOperation: GraphQLResponse<AnyModel>?
-        _ = Amplify.API.mutate(ofAnyModel: anyPost, type: .create) { response in
+        _ = Amplify.API.mutate(of: anyPost, type: .create) { response in
             defer {
                 callbackInvoked.fulfill()
             }
@@ -101,7 +101,7 @@ class AnyModelIntegrationTests: XCTestCase {
         let originalAnyPost = try originalPost.eraseToAnyModel()
 
         let createCallbackInvoked = expectation(description: "Create callback invoked")
-        _ = Amplify.API.mutate(ofAnyModel: originalAnyPost, type: .create) { _ in
+        _ = Amplify.API.mutate(of: originalAnyPost, type: .create) { _ in
             createCallbackInvoked.fulfill()
         }
 
@@ -115,7 +115,7 @@ class AnyModelIntegrationTests: XCTestCase {
 
         let updateCallbackInvoked = expectation(description: "Update callback invoked")
         var responseFromOperation: GraphQLResponse<AnyModel>?
-        _ = Amplify.API.mutate(ofAnyModel: updatedAnyPost, type: .update) { response in
+        _ = Amplify.API.mutate(of: updatedAnyPost, type: .update) { response in
             defer {
                 updateCallbackInvoked.fulfill()
             }
@@ -164,7 +164,7 @@ class AnyModelIntegrationTests: XCTestCase {
         let originalAnyPost = try originalPost.eraseToAnyModel()
 
         let createCallbackInvoked = expectation(description: "Create callback invoked")
-        _ = Amplify.API.mutate(ofAnyModel: originalAnyPost, type: .create) { _ in
+        _ = Amplify.API.mutate(of: originalAnyPost, type: .create) { _ in
             createCallbackInvoked.fulfill()
         }
 
@@ -174,7 +174,7 @@ class AnyModelIntegrationTests: XCTestCase {
 
         let deleteCallbackInvoked = expectation(description: "Delete callback invoked")
         var responseFromOperation: GraphQLResponse<AnyModel>?
-        _ = Amplify.API.mutate(ofAnyModel: originalAnyPost, type: .delete) { response in
+        _ = Amplify.API.mutate(of: originalAnyPost, type: .delete) { response in
             defer {
                 deleteCallbackInvoked.fulfill()
             }

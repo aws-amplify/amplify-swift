@@ -29,7 +29,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
 
         downloadDataCalled += 1
 
-        if let error = self.errorOnContinuation {
+        if let error = errorOnContinuation {
             let resultWithError = AWSTask<AWSS3TransferUtilityDownloadTask>.init(error: error)
             return resultWithError
         }
@@ -45,7 +45,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
         }
 
         if let completionHandler = completionHandler {
-            if let error = self.errorOnCompletion {
+            if let error = errorOnCompletion {
                 completionHandler(task, nil, nil, error)
             } else {
                 completionHandler(task, nil, Data(), nil)
@@ -65,7 +65,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
 
         downloadToURLCalled += 1
 
-        if let error = self.errorOnContinuation {
+        if let error = errorOnContinuation {
             let resultWithError = AWSTask<AWSS3TransferUtilityDownloadTask>.init(error: error)
             return resultWithError
         }
@@ -77,7 +77,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
         }
 
         if let completionHandler = completionHandler {
-            if let error = self.errorOnCompletion {
+            if let error = errorOnCompletion {
                 completionHandler(task, nil, nil, error)
             } else {
                 completionHandler(task, nil, Data(), nil)
@@ -99,7 +99,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
 
         uploadDataCalled += 1
 
-        if let error = self.errorOnContinuation {
+        if let error = errorOnContinuation {
             let resultWithError = AWSTask<AWSS3TransferUtilityUploadTask>.init(error: error)
             return resultWithError
         }
@@ -111,7 +111,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
         }
 
         if let completionHandler = completionHandler {
-            if let error = self.errorOnCompletion {
+            if let error = errorOnCompletion {
                 completionHandler(task, error)
             } else {
                 completionHandler(task, nil)
@@ -131,7 +131,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
     -> AWSTask<AWSS3TransferUtilityUploadTask> {
         uploadFileCalled += 1
 
-        if let error = self.errorOnContinuation {
+        if let error = errorOnContinuation {
             let resultWithError = AWSTask<AWSS3TransferUtilityUploadTask>.init(error: error)
             return resultWithError
         }
@@ -143,7 +143,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
         }
 
         if let completionHandler = completionHandler {
-            if let error = self.errorOnCompletion {
+            if let error = errorOnCompletion {
                 completionHandler(task, error)
             } else {
                 completionHandler(task, nil)
@@ -165,7 +165,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
 
         multiPartUploadFileCalled += 1
 
-        if let error = self.errorOnContinuation {
+        if let error = errorOnContinuation {
             let resultWithError = AWSTask<AWSS3TransferUtilityMultiPartUploadTask>.init(error: error)
             return resultWithError
         }
@@ -177,7 +177,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
         }
 
         if let completionHandler = completionHandler {
-            if let error = self.errorOnCompletion {
+            if let error = errorOnCompletion {
                 completionHandler(task, error)
             } else {
                 completionHandler(task, nil)
@@ -198,7 +198,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
 
         multiPartUploadDataCalled += 1
 
-        if let error = self.errorOnContinuation {
+        if let error = errorOnContinuation {
             let resultWithError = AWSTask<AWSS3TransferUtilityMultiPartUploadTask>.init(error: error)
             return resultWithError
         }
@@ -210,7 +210,7 @@ public class MockAWSS3TransferUtility: AWSS3TransferUtilityBehavior {
         }
 
         if let completionHandler = completionHandler {
-            if let error = self.errorOnCompletion {
+            if let error = errorOnCompletion {
                 completionHandler(task, error)
             } else {
                 completionHandler(task, nil)

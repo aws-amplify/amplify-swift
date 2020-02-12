@@ -30,4 +30,9 @@ extension String {
     public func camelCased() -> String {
         return prefix(1).lowercased() + dropFirst()
     }
+
+    /// Appends "s" to the end of the string to represent the pluralized form.
+    public func pluralize() -> String {
+        return self + "s"
+    }
 }
