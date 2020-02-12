@@ -72,7 +72,8 @@ class SyncEngineTestBase: XCTestCase {
                                           outgoingMutationQueue: mutationQueue,
                                           mutationEventIngester: mutationDatabaseAdapter,
                                           mutationEventPublisher: awsMutationEventPublisher,
-                                          initialSyncOrchestratorFactory: initialSyncOrchestratorFactory)
+                                          initialSyncOrchestratorFactory: initialSyncOrchestratorFactory,
+                                          reconciliationQueueFactory: AWSIncomingEventReconciliationQueue.factory)
 
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           syncEngine: syncEngine)

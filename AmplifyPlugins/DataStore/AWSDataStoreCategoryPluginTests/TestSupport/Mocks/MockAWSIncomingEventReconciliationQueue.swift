@@ -1,0 +1,51 @@
+//
+// Copyright 2018-2020 Amazon.com,
+// Inc. or its affiliates. All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import AWSPluginsCore
+import Combine
+
+@testable import Amplify
+@testable import AmplifyTestCommon
+@testable import AWSDataStoreCategoryPlugin
+
+class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
+    static let factory: IncomingEventReconciliationQueueFactory = { modelTypes, api, storageAdapter in
+        MockAWSIncomingEventReconciliationQueue(modelTypes: modelTypes, api: api, storageAdapter: storageAdapter)
+    }
+    let incomingEventSubject: PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>
+    var publisher: AnyPublisher<IncomingEventReconciliationQueueEvent, DataStoreError> {
+        return incomingEventSubject.eraseToAnyPublisher()
+    }
+
+    static var lastInstance: MockAWSIncomingEventReconciliationQueue?
+    init(modelTypes: [Model.Type],
+         api: APICategoryGraphQLBehavior,
+         storageAdapter: StorageEngineAdapter) {
+        self.incomingEventSubject = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
+        updateLastInstance(instance: self)
+    }
+
+    func updateLastInstance(instance: MockAWSIncomingEventReconciliationQueue) {
+        MockAWSIncomingEventReconciliationQueue.lastInstance = instance
+    }
+
+    func start() {
+        incomingEventSubject.send(.started)
+    }
+
+    func pause() {
+        incomingEventSubject.send(.paused)
+    }
+
+    func offer(_ remoteModel: MutationSync<AnyModel>) {
+        //no-op for mock
+    }
+
+    static func mockSendCompletion(completion: Subscribers.Completion<DataStoreError>) {
+        lastInstance?.incomingEventSubject.send(completion: completion)
+    }
+}
