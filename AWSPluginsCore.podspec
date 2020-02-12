@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   
   s.requires_arc = true
   
-  AWS_SDK_VERSION = "~> 2.12.6"
+  AWS_SDK_VERSION = "~> 2.12.7"
 
   s.source_files = 'AmplifyPlugins/Core/AWSPluginsCore/**/*.swift'
   s.dependency 'Amplify', '0.10.0'
