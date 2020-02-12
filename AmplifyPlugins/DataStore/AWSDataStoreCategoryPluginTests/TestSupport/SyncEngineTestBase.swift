@@ -7,7 +7,7 @@
 
 import SQLite
 import XCTest
-
+import Combine
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
@@ -24,6 +24,7 @@ class SyncEngineTestBase: XCTestCase {
     /// Used for DB manipulation to mock starting data for tests
     var storageAdapter: SQLiteStorageEngineAdapter!
 
+    var reachabilityPublisher: PassthroughSubject<ReachabilityUpdate, Never>?
     // MARK: - Setup
 
     override func setUp() {
@@ -41,6 +42,7 @@ class SyncEngineTestBase: XCTestCase {
         ])
 
         amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: dataStoreConfig)
+        reachabilityPublisher = PassthroughSubject<ReachabilityUpdate, Never>()
 
         apiPlugin = MockAPICategoryPlugin()
         tryOrFail {
@@ -73,7 +75,9 @@ class SyncEngineTestBase: XCTestCase {
                                           mutationEventIngester: mutationDatabaseAdapter,
                                           mutationEventPublisher: awsMutationEventPublisher,
                                           initialSyncOrchestratorFactory: initialSyncOrchestratorFactory,
-                                          reconciliationQueueFactory: AWSIncomingEventReconciliationQueue.factory)
+                                          reconciliationQueueFactory: AWSIncomingEventReconciliationQueue.factory,
+                                          networkReachabilityPublisher: reachabilityPublisher?.eraseToAnyPublisher(),
+                                          requestRetryablePolicy: MockRequestRetryablePolicy())
 
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           syncEngine: syncEngine)

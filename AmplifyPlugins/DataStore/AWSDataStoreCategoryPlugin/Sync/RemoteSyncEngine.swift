@@ -233,6 +233,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                 if let underlyingError = dataStoreError.underlyingError {
                     self.log.error("\(underlyingError)")
                 }
+                //TODO: Instead of sending a failure, we need to be restarting the startup process
+                //      with an exponential backoff
                 self.remoteSyncTopicPublisher.send(completion: .failure(dataStoreError))
             } else {
                 self.log.info("Successfully finished sync")
@@ -285,10 +287,9 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     func tearDownAndPrepToBeRestartedInTheFuture() {
         reconciliationQueue = nil
-        pauseMutations()
+        outgoingMutationQueue.pauseSyncingToCloud()
 
         syncQueue.cancelAllOperations()
-        syncQueue.waitUntilAllOperationsAreFinished()
     }
 
     private func getRetryAdviceIfRetryable(error: Error) -> RequestRetryAdvice {

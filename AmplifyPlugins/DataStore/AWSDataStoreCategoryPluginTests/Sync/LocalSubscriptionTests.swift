@@ -34,11 +34,13 @@ class LocalSubscriptionTests: XCTestCase {
             let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
 
             let syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
-                                             outgoingMutationQueue: outgoingMutationQueue,
-                                             mutationEventIngester: mutationDatabaseAdapter,
-                                             mutationEventPublisher: awsMutationEventPublisher,
-                                             initialSyncOrchestratorFactory: NoOpInitialSyncOrchestrator.factory,
-                                             reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory)
+                                              outgoingMutationQueue: outgoingMutationQueue,
+                                              mutationEventIngester: mutationDatabaseAdapter,
+                                              mutationEventPublisher: awsMutationEventPublisher,
+                                              initialSyncOrchestratorFactory: NoOpInitialSyncOrchestrator.factory,
+                                              reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
+                                              networkReachabilityPublisher: nil,
+                                              requestRetryablePolicy: MockRequestRetryablePolicy())
 
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           syncEngine: syncEngine)
