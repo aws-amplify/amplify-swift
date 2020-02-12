@@ -89,6 +89,10 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         let finalRequest = endpointConfig.interceptors.reduce(urlRequest) { (request, interceptor) -> URLRequest in
             do {
                 return try interceptor.intercept(request)
+            } catch let error as APIError {
+                dispatch(event: .failed(error))
+                cancel()
+                return request
             } catch {
                 dispatch(event: .failed(APIError.operationError("Failed to intercept request fully..",
                                                                 "Something wrong with the interceptor",
