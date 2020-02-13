@@ -192,6 +192,7 @@
 		B92E03BA2367CE7A006CEB8D /* Model+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */; };
 		B9485E9723F40848009C4F93 /* Time+Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9485E9623F40847009C4F93 /* Time+Operation.swift */; };
 		B9485E9923F40877009C4F93 /* Date+Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9485E9823F40877009C4F93 /* Date+Operation.swift */; };
+		B9485E9B23F4BEEC009C4F93 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B9485E9A23F4BEEC009C4F93 /* README.md */; };
 		B9521833237E21BA00F53237 /* Comment+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B952182E237E21B900F53237 /* Comment+Schema.swift */; };
 		B9521834237E21BA00F53237 /* schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = B952182F237E21B900F53237 /* schema.graphql */; };
 		B9521835237E21BA00F53237 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9521830237E21B900F53237 /* Comment.swift */; };
@@ -825,6 +826,7 @@
 		B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Model+Codable.swift"; sourceTree = "<group>"; };
 		B9485E9623F40847009C4F93 /* Time+Operation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Time+Operation.swift"; sourceTree = "<group>"; };
 		B9485E9823F40877009C4F93 /* Date+Operation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Operation.swift"; sourceTree = "<group>"; };
+		B9485E9A23F4BEEC009C4F93 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		B952182E237E21B900F53237 /* Comment+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment+Schema.swift"; sourceTree = "<group>"; };
 		B952182F237E21B900F53237 /* schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
 		B9521830237E21B900F53237 /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
@@ -1728,6 +1730,7 @@
 				B9AF547923F324DB0059E6C4 /* DateScalarOperation.swift */,
 				B91A879B23D125A50049A12F /* DateTime.swift */,
 				B91A87A123D641570049A12F /* DateTime+Comparable.swift */,
+				B9485E9A23F4BEEC009C4F93 /* README.md */,
 				B91A879D23D12B730049A12F /* Time.swift */,
 				B9AF547723F323000059E6C4 /* Time+Comparable.swift */,
 				B9485E9623F40847009C4F93 /* Time+Operation.swift */,
@@ -2914,6 +2917,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B9485E9B23F4BEEC009C4F93 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
