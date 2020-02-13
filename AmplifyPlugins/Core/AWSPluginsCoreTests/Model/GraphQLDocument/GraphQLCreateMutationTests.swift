@@ -11,7 +11,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 
-class GraphQLMutationTests: XCTestCase {
+class GraphQLCreateMutationTests: XCTestCase {
 
     override func setUp() {
         ModelRegistry.register(modelType: Comment.self)
@@ -34,7 +34,10 @@ class GraphQLMutationTests: XCTestCase {
     ///     - it has a list of fields with no nested models
     func testCreateGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title", content: "content", createdAt: Date())
-        let document = GraphQLMutation(of: post, type: .create)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
+        documentBuilder.add(decorator: ModelDecorator(model: post))
+        let document = documentBuilder.build()
         let expectedQueryDocument = """
         mutation CreatePost($input: CreatePostInput!) {
           createPost(input: $input) {
@@ -50,7 +53,6 @@ class GraphQLMutationTests: XCTestCase {
         }
         """
         XCTAssertEqual(document.name, "createPost")
-        XCTAssertEqual(document.decodePath, "createPost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "createPost")
         XCTAssertNotNil(document.variables["input"])
@@ -75,7 +77,10 @@ class GraphQLMutationTests: XCTestCase {
     func testCreateGraphQLMutationFromModelWithAssociation() {
         let post = Post(title: "title", content: "content", createdAt: Date())
         let comment = Comment(content: "comment", createdAt: Date(), post: post)
-        let document = GraphQLMutation(of: comment, type: .create)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Comment.self, operationType: .mutation)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
+        documentBuilder.add(decorator: ModelDecorator(model: comment))
+        let document = documentBuilder.build()
         let expectedQueryDocument = """
         mutation CreateComment($input: CreateCommentInput!) {
           createComment(input: $input) {
@@ -97,7 +102,6 @@ class GraphQLMutationTests: XCTestCase {
         }
         """
         XCTAssertEqual(document.name, "createComment")
-        XCTAssertEqual(document.decodePath, "createComment")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "createComment")
         guard let input = document.variables["input"] as? GraphQLInput else {
@@ -111,18 +115,22 @@ class GraphQLMutationTests: XCTestCase {
     /// - When:
     ///   - the model is of type `Post`
     ///   - the model has no required associations
-    ///   - the mutation is of type `.update`
+    ///   - the mutation is of type `.create`
     /// - Then:
     ///   - check if the generated GraphQL document is a valid mutation:
-    ///     - it is named `updatePost`
-    ///     - it contains an `input` of type `UpdatePostInput`
+    ///     - it is named `createPost`
+    ///     - it contains an `input` of type `CreatePostInput`
     ///     - it has a list of fields with no nested models
-    func testUpdateGraphQLMutationFromSimpleModel() {
+    func testCreateGraphQLMutationFromSimpleModelWithSyncEnabled() {
         let post = Post(title: "title", content: "content", createdAt: Date())
-        let document = GraphQLMutation(of: post, type: .update)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
+        documentBuilder.add(decorator: ModelDecorator(model: post))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        let document = documentBuilder.build()
         let expectedQueryDocument = """
-        mutation UpdatePost($input: UpdatePostInput!) {
-          updatePost(input: $input) {
+        mutation CreatePost($input: CreatePostInput!) {
+          createPost(input: $input) {
             id
             content
             createdAt
@@ -131,13 +139,15 @@ class GraphQLMutationTests: XCTestCase {
             title
             updatedAt
             __typename
+            _version
+            _deleted
+            _lastChangedAt
           }
         }
         """
-        XCTAssertEqual(document.name, "updatePost")
-        XCTAssertEqual(document.decodePath, "updatePost")
+        XCTAssertEqual(document.name, "createPost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.name, "updatePost")
+        XCTAssertEqual(document.name, "createPost")
         XCTAssertNotNil(document.variables["input"])
         guard let input = document.variables["input"] as? [String: Any] else {
             XCTFail("The document variables property doesn't contain a valid input")
@@ -149,40 +159,56 @@ class GraphQLMutationTests: XCTestCase {
 
     /// - Given: a `Model` instance
     /// - When:
-    ///   - the model is of type `Post`
-    ///   - the model has no required associations
-    ///   - the mutation is of type `.delete`
+    ///   - the model is of type `Comment`
+    ///   - the model has required associations
+    ///   - the mutation is of type `.create`
     /// - Then:
     ///   - check if the generated GraphQL document is a valid mutation:
-    ///     - it is named `deletePost`
-    ///     - it contains an `input` of type `ID!`
-    ///     - it has a list of fields with no nested models
-    func testDeleteGraphQLMutationFromSimpleModel() {
+    ///     - it is named `createComment`
+    ///     - it contains an `input` of type `CreateCommentInput`
+    ///     - it has a list of fields with a `postId`
+    func testCreateGraphQLMutationFromModelWithAssociationWithSyncEnabled() {
         let post = Post(title: "title", content: "content", createdAt: Date())
-        let document = GraphQLMutation(of: post, type: .delete)
+        let comment = Comment(content: "comment", createdAt: Date(), post: post)
+
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Comment.self, operationType: .mutation)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
+        documentBuilder.add(decorator: ModelDecorator(model: comment))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        let document = documentBuilder.build()
         let expectedQueryDocument = """
-        mutation DeletePost($input: DeletePostInput!) {
-          deletePost(input: $input) {
+        mutation CreateComment($input: CreateCommentInput!) {
+          createComment(input: $input) {
             id
             content
             createdAt
-            draft
-            rating
-            title
-            updatedAt
+            post {
+              id
+              content
+              createdAt
+              draft
+              rating
+              title
+              updatedAt
+              __typename
+              _version
+              _deleted
+              _lastChangedAt
+            }
             __typename
+            _version
+            _deleted
+            _lastChangedAt
           }
         }
         """
-        XCTAssertEqual(document.name, "deletePost")
-        XCTAssertEqual(document.decodePath, "deletePost")
+        XCTAssertEqual(document.name, "createComment")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.name, "deletePost")
-        XCTAssert(document.variables["input"] != nil)
-        guard let input = document.variables["input"] as? [String: String] else {
-            XCTFail("Could not get object at `input`")
+        XCTAssertEqual(document.name, "createComment")
+        guard let input = document.variables["input"] as? GraphQLInput else {
+            XCTFail("Variables should contain a valid input")
             return
         }
-        XCTAssertEqual(input["id"], post.id)
+        XCTAssertEqual(input["commentPostId"] as? String, post.id)
     }
 }

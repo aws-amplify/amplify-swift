@@ -36,10 +36,50 @@ class GraphQLListQueryTests: XCTestCase {
     func testListGraphQLQueryFromSimpleModel() {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
-        let document = GraphQLListQuery(from: Post.self, predicate: predicate, syncEnabled: true)
+
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
+        documentBuilder.add(decorator: PaginationDecorator())
+        documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))
+        let document = documentBuilder.build()
         let expectedQueryDocument = """
-        query ListPosts($filter: ModelPostFilterInput, $limit: Int, $nextToken: String) {
-          listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+        query ListPosts($filter: ModelPostFilterInput, $limit: Int) {
+          listPosts(filter: $filter, limit: $limit) {
+            items {
+              id
+              content
+              createdAt
+              draft
+              rating
+              title
+              updatedAt
+              __typename
+            }
+            nextToken
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "listPosts")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertNotNil(document.variables)
+        XCTAssertNotNil(document.variables["limit"])
+        XCTAssertEqual(document.variables["limit"] as? Int, 1_000)
+        XCTAssertNotNil(document.variables["filter"])
+    }
+
+    func testListGraphQLQueryFromSimpleModelWithSyncEnabled() {
+        let post = Post.keys
+        let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
+
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
+        documentBuilder.add(decorator: PaginationDecorator())
+        documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        let document = documentBuilder.build()
+        let expectedQueryDocument = """
+        query ListPosts($filter: ModelPostFilterInput, $limit: Int) {
+          listPosts(filter: $filter, limit: $limit) {
             items {
               id
               content
@@ -54,16 +94,15 @@ class GraphQLListQueryTests: XCTestCase {
               _lastChangedAt
             }
             nextToken
+            startedAt
           }
         }
         """
         XCTAssertEqual(document.name, "listPosts")
-        XCTAssertEqual(document.decodePath, "listPosts.items")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertNotNil(document.variables)
         XCTAssertNotNil(document.variables["limit"])
         XCTAssertEqual(document.variables["limit"] as? Int, 1_000)
         XCTAssertNotNil(document.variables["filter"])
     }
-
 }

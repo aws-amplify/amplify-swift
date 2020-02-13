@@ -55,18 +55,15 @@ class GraphQLSyncBasedTests: XCTestCase {
 
         let updatedTitle = title + "Updated"
 
-        let modifiedPost = Post(id: createdPost.model.id,
+        let modifiedPost = Post(id: createdPost.model["id"] as? String ?? "",
                                 title: updatedTitle,
-                                content: createdPost.model.content,
+                                content: createdPost.model["content"] as? String ?? "",
                                 createdAt: Date())
 
         let completeInvoked = expectation(description: "request completed")
         var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
-        let document = GraphQLSyncMutation(of: modifiedPost, type: .update, version: 1)
-        let request = GraphQLRequest(document: document.stringValue,
-                                     variables: document.variables,
-                                     responseType: MutationSync<AnyModel>.self,
-                                     decodePath: document.decodePath)
+
+        let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: modifiedPost, version: 1)
 
         _ = Amplify.API.mutate(request: request) { event in
             defer {
@@ -107,7 +104,7 @@ class GraphQLSyncBasedTests: XCTestCase {
         }
 
         XCTAssertEqual(mutationSync.model["title"] as? String, updatedTitle)
-        XCTAssertEqual(mutationSync.model["content"] as? String, createdPost.model.content)
+        XCTAssertEqual(mutationSync.model["content"] as? String, createdPost.model["content"] as? String)
         XCTAssertEqual(mutationSync.syncMetadata.version, 2)
     }
 
@@ -132,11 +129,10 @@ class GraphQLSyncBasedTests: XCTestCase {
         var responseFromOperation: GraphQLResponse<PaginatedList<AnyModel>>?
         let post = Post.keys
         let predicate = post.title == title
-        let document = GraphQLSyncQuery(from: Post.self, predicate: predicate, limit: 1, lastSync: 123)
-        let request = GraphQLRequest(document: document.stringValue,
-                                     variables: document.variables,
-                                     responseType: PaginatedList<AnyModel>.self,
-                                     decodePath: document.decodePath)
+        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: Post.self,
+                                                                where: predicate,
+                                                                limit: 1,
+                                                                lastSync: 123)
 
         _ = Amplify.API.query(request: request) { event in
             defer {
@@ -198,12 +194,8 @@ class GraphQLSyncBasedTests: XCTestCase {
         let disconnectedInvoked = expectation(description: "Connection disconnected")
         let completedInvoked = expectation(description: "Completed invoked")
         let progressInvoked = expectation(description: "Progress invoked")
+        let request = GraphQLRequest<MutationSyncResult>.subscription(to: Post.self, subscriptionType: .onCreate)
 
-        let document = GraphQLSubscription(of: Post.self, type: .onCreate, syncEnabled: true)
-        let request = GraphQLRequest(document: document.stringValue,
-                                     variables: document.variables,
-                                     responseType: MutationSync<AnyModel>.self,
-                                     decodePath: document.decodePath)
         let operation = Amplify.API.subscribe(request: request) { event in
             switch event {
             case .inProcess(let graphQLResponse):
@@ -252,20 +244,16 @@ class GraphQLSyncBasedTests: XCTestCase {
 
     // MARK: Helpers
 
-    func createPost(id: String, title: String) -> MutationSync<AmplifyTestCommon.Post>? {
+    func createPost(id: String, title: String) -> MutationSyncResult? {
         let post = Post(id: id, title: title, content: "content", createdAt: Date())
         return createPost(post: post)
     }
 
-    func createPost(post: AmplifyTestCommon.Post) -> MutationSync<AmplifyTestCommon.Post>? {
-        var result: MutationSync<AmplifyTestCommon.Post>?
+    func createPost(post: AmplifyTestCommon.Post) -> MutationSyncResult? {
+        var result: MutationSyncResult?
         let completeInvoked = expectation(description: "request completed")
 
-        let document = GraphQLSyncMutation(of: post, type: .create)
-        let request = GraphQLRequest(document: document.stringValue,
-                                     variables: document.variables,
-                                     responseType: MutationSync<AmplifyTestCommon.Post>.self,
-                                     decodePath: document.decodePath)
+        let request = GraphQLRequest<MutationSyncResult>.createMutation(of: post)
         _ = Amplify.API.mutate(request: request, listener: { event in
             switch event {
             case .completed(let data):
@@ -285,5 +273,4 @@ class GraphQLSyncBasedTests: XCTestCase {
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
-
 }

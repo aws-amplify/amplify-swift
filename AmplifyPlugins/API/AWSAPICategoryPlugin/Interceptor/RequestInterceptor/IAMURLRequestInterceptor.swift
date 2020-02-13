@@ -33,8 +33,9 @@ struct IAMURLRequestInterceptor: URLRequestInterceptor {
                                 forHTTPHeaderField: URLRequestConstants.Header.xAmzDate)
         mutableRequest.setValue(URLRequestConstants.ContentType.applicationJson,
                                 forHTTPHeaderField: URLRequestConstants.Header.contentType)
-        let serviceConfiguration = AmplifyAWSServiceConfiguration(region: region,
-                                                                  credentialsProvider: iamCredentialsProvider.getCredentialsProvider())
+        let serviceConfiguration = AmplifyAWSServiceConfiguration(
+            region: region,
+            credentialsProvider: iamCredentialsProvider.getCredentialsProvider())
         mutableRequest.setValue(serviceConfiguration.userAgent,
                                 forHTTPHeaderField: URLRequestConstants.Header.userAgent)
 

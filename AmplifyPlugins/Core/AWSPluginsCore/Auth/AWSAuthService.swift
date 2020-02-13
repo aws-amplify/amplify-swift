@@ -51,9 +51,9 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         var authError: AuthError?
 
         let semaphore = DispatchSemaphore(value: 0)
-        mobileClient.getTokens { tokens, error in
-            if let error = error {
-                authError = AuthError.unknown("failed to get token with error \(error.localizedDescription)")
+        mobileClient.getTokens { [weak self] tokens, error in
+            if let error = error as? AWSMobileClientError {
+                authError = self?.map(error)
             } else if let token = tokens {
                 jwtToken = token.idToken?.tokenString
             }
@@ -90,16 +90,22 @@ public class AWSAuthService: AWSAuthServiceBehavior {
                                       """,
                                       error)
         case .guestAccessNotAllowed(let message):
-            return AuthError.identity("Guest access is not allowed",
-                                      message,
-                                      """
-                                      Cognito was configured to disallow unauthenticated (guest) access.
-                                      Turn on guest access and try again.
-                                      """,
-                                      error)
+            return AuthError.notAuthorized(message,
+                                           """
+                                           Cognito was configured to disallow unauthenticated (guest) access.
+                                           Turn on guest access and try again.
+                                           """,
+                                           error)
+        case .notSignedIn(let message):
+            return AuthError.notAuthenticated(message,
+                                              "The user needs be authenticated to make this request",
+                                              error)
+        case .notAuthorized(let message):
+            return AuthError.notAuthorized(message,
+                                           "The user does not have the correct permissions to make this request",
+                                           error)
         default:
-            return AuthError.unknown(error.localizedDescription)
+            return AuthError.unknown(error.message)
         }
     }
-
 }

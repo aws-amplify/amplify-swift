@@ -86,14 +86,9 @@ final class InitialSyncOperation: AsynchronousOperation {
             return
         }
 
-        let document = GraphQLSyncQuery(from: modelType,
-                                        nextToken: nextToken,
-                                        lastSync: lastSyncTime)
-
-        let request = GraphQLRequest(document: document.stringValue,
-                                     variables: document.variables,
-                                     responseType: SyncQueryResult.self,
-                                     decodePath: document.decodePath)
+        let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: modelType,
+                                                                nextToken: nextToken,
+                                                                lastSync: lastSyncTime)
 
         _ = api.query(request: request) { asyncEvent in
             switch asyncEvent {
