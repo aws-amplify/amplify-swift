@@ -18,7 +18,7 @@ public enum ModelFieldType: CustomStringConvertible {
     case dateTime
     case time
     case bool
-    case `enum`(Any.Type)
+    case `enum`(PersistentEnum.Type)
     case model(type: Model.Type)
     case collection(of: Model.Type)
 
@@ -31,7 +31,7 @@ public enum ModelFieldType: CustomStringConvertible {
         case .dateTime: return "AWSDateTime"
         case .time: return "AWSTime"
         case .bool: return "Boolean"
-        case .enum(let anyType): return String(describing: anyType)
+        case .enum(let enumType): return String(describing: enumType)
         case .model(let modelType): return modelType.modelName
         case .collection(let modelType): return modelType.modelName
         }
@@ -58,7 +58,13 @@ extension ModelField {
         case "AWSDate": return .date
         case "AWSDateTime": return .dateTime
         case "AWSTime": return .time
+        // when the type from the schema is not a scalar, it could be a Model, Type or Enum
         default:
+            // is it an Enum?
+            if let enumType = ModelRegistry.enumType(from: type) {
+                return .enum(enumType)
+            }
+            // is it a Model then?
             guard let model = ModelRegistry.modelType(from: type) else {
                 preconditionFailure("Model with name \(type) could not be found.")
             }

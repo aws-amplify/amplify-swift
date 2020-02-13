@@ -87,8 +87,10 @@ extension Model {
             // Now `value` is still an Any, but we've assured ourselves that it's not an Optional, which means we can
             // safely attempt a cast to Persistable below.
 
-            // if value is an associated model, get its id
-            if let value = value as? Model, field.isForeignKey {
+            if let value = value as? PersistentEnum {
+                return value.rawValue
+            } else if let value = value as? Model, field.isForeignKey {
+                // if value is an associated model, get its id
                 let associatedModel: Model.Type = type(of: value)
                 return value[associatedModel.schema.primaryKey.name] as? String
             } else if let value = value as? Persistable {

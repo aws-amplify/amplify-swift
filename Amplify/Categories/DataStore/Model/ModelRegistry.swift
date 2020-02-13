@@ -16,6 +16,8 @@ public struct ModelRegistry {
 
     private static var modelTypes = [String: Model.Type]()
 
+    private static var enumTypes = [String: PersistentEnum.Type]()
+
     private static var modelDecoders = [String: ModelDecoder]()
 
     public static var models: [Model.Type] {
@@ -37,9 +39,22 @@ public struct ModelRegistry {
         }
     }
 
+    public static func register(enumType: PersistentEnum.Type) {
+        concurrencyQueue.sync {
+            let enumName = String(describing: enumType)
+            enumTypes[enumName] = enumType
+        }
+    }
+
     public static func modelType(from name: String) -> Model.Type? {
         concurrencyQueue.sync {
             modelTypes[name]
+        }
+    }
+
+    public static func enumType(from name: String) -> PersistentEnum.Type? {
+        concurrencyQueue.sync {
+            enumTypes[name]
         }
     }
 
@@ -65,6 +80,7 @@ extension ModelRegistry {
     static func reset() {
         concurrencyQueue.sync {
             modelTypes = [:]
+            enumTypes = [:]
             modelDecoders = [:]
         }
     }

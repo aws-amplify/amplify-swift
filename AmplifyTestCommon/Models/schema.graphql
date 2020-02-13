@@ -6,6 +6,7 @@ type Post @model {
     updatedAt: AWSDateTime
     draft: Boolean
     rating: Float
+    status: PostStatus
     comments: [Comment] @connection(name: "PostComment")
 }
 
@@ -14,4 +15,10 @@ type Comment @model {
     content: String!
     createdAt: AWSDateTime!
     post: Post @connection(name: "PostComment")
+}
+
+enum PostStatus {
+    deleted
+    draft
+    published
 }

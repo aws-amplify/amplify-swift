@@ -116,6 +116,11 @@ extension ModelField: SQLColumn {
                 // values we accept, but always output the same format.
                 return value.iso8601Date?.iso8601String
             }
+        case .enum:
+            if let value = binding as? String {
+//                return enumType.from(string: value)
+                return value
+            }
         case .collection:
             return binding ?? []
         default:

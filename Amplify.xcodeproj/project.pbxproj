@@ -207,6 +207,8 @@
 		B98E9D122372236300934B51 /* QueryField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0A2372236200934B51 /* QueryField.swift */; };
 		B98E9D132372236300934B51 /* QueryOperator+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */; };
 		B98E9D142372236300934B51 /* QueryPredicate+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */; };
+		B9C79A7223F52C3A00ACAA3E /* Model+Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C79A7123F52C3A00ACAA3E /* Model+Enum.swift */; };
+		B9C79A7423F52E1A00ACAA3E /* PostStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C79A7323F52E1A00ACAA3E /* PostStatus.swift */; };
 		B9FAA10B23878122009414B4 /* ModelField+Association.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10A23878122009414B4 /* ModelField+Association.swift */; };
 		B9FAA10E23878BF3009414B4 /* UserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10D23878BF3009414B4 /* UserAccount.swift */; };
 		B9FAA11023878C5E009414B4 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10F23878C5E009414B4 /* UserProfile.swift */; };
@@ -834,6 +836,8 @@
 		B98E9D0A2372236200934B51 /* QueryField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryField.swift; sourceTree = "<group>"; };
 		B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "QueryOperator+Equatable.swift"; sourceTree = "<group>"; };
 		B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "QueryPredicate+Equatable.swift"; sourceTree = "<group>"; };
+		B9C79A7123F52C3A00ACAA3E /* Model+Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+Enum.swift"; sourceTree = "<group>"; };
+		B9C79A7323F52E1A00ACAA3E /* PostStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostStatus.swift; sourceTree = "<group>"; };
 		B9FAA10A23878122009414B4 /* ModelField+Association.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelField+Association.swift"; sourceTree = "<group>"; };
 		B9FAA10D23878BF3009414B4 /* UserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccount.swift; sourceTree = "<group>"; };
 		B9FAA10F23878C5E009414B4 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
@@ -1723,6 +1727,7 @@
 				B9FAA17F238FBB5D009414B4 /* Model+Array.swift */,
 				B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */,
 				FACBA78C23949588006349C8 /* Model+DateFormatting.swift */,
+				B9C79A7123F52C3A00ACAA3E /* Model+Enum.swift */,
 				FA8EE778238627040097E4F1 /* Model+ModelName.swift */,
 				B92E03AB2367CE7A006CEB8D /* Model+Schema.swift */,
 				FA8EE77C238627350097E4F1 /* Model+Subscript.swift */,
@@ -1750,6 +1755,7 @@
 				B9521832237E21B900F53237 /* Post.swift */,
 				B9521831237E21B900F53237 /* Post+Schema.swift */,
 				2129BE002394627B006363A1 /* PostCommentModelRegistration.swift */,
+				B9C79A7323F52E1A00ACAA3E /* PostStatus.swift */,
 				B9FAA10C23878BD6009414B4 /* Associations */,
 			);
 			path = Models;
@@ -3604,6 +3610,7 @@
 				FA09337E2384677A00C2FD5F /* AWSUnifiedLoggingPlugin.swift in Sources */,
 				FAF1B88623392F96007F1435 /* SerialDispatcher.swift in Sources */,
 				FAAFAF2D23904ADF002CF932 /* AtomicValue+Numeric.swift in Sources */,
+				B9C79A7223F52C3A00ACAA3E /* Model+Enum.swift in Sources */,
 				FA09B94B2322CBEB000E064D /* LoggingCategoryConfiguration.swift in Sources */,
 				2129BE512395A66F006363A1 /* AmplifyModelRegistration.swift in Sources */,
 				210922572359693900CEC295 /* BasicAnalyticsEvent.swift in Sources */,
@@ -3832,6 +3839,7 @@
 				FA176ED7238503C200C5C5F9 /* HubListenerTestUtilities.swift in Sources */,
 				21F40A3A23A294770074678E /* TestConfigHelper.swift in Sources */,
 				B4BD6B3723708C6700A1F0A7 /* MockPredictionsCategoryPlugin.swift in Sources */,
+				B9C79A7423F52E1A00ACAA3E /* PostStatus.swift in Sources */,
 				FACA361C2327FC7D000E74F6 /* MockHubCategoryPlugin.swift in Sources */,
 				FAD3937F23820DAE00463F5E /* MockDataStoreCategoryPlugin.swift in Sources */,
 				FACA361A2327FC69000E74F6 /* MockStorageCategoryPlugin.swift in Sources */,

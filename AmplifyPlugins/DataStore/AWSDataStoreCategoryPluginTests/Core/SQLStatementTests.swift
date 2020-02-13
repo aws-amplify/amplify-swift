@@ -20,6 +20,7 @@ class SQLStatementTests: XCTestCase {
         // one-to-many/many-to-one association
         ModelRegistry.register(modelType: Post.self)
         ModelRegistry.register(modelType: Comment.self)
+        ModelRegistry.register(enumType: PostStatus.self)
 
         // one-to-one association
         ModelRegistry.register(modelType: UserAccount.self)
@@ -49,6 +50,7 @@ class SQLStatementTests: XCTestCase {
           "createdAt" text not null,
           "draft" integer,
           "rating" real,
+          "status" text,
           "title" text not null,
           "updatedAt" text
         );
@@ -136,14 +138,14 @@ class SQLStatementTests: XCTestCase {
         let statement = InsertStatement(model: post)
 
         let expectedStatement = """
-        insert into Post ("id", "content", "createdAt", "draft", "rating", "title", "updatedAt")
-        values (?, ?, ?, ?, ?, ?, ?)
+        insert into Post ("id", "content", "createdAt", "draft", "rating", "status", "title", "updatedAt")
+        values (?, ?, ?, ?, ?, ?, ?, ?)
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
 
         let variables = statement.variables
         XCTAssertEqual(variables[1] as? String, "content")
-        XCTAssertEqual(variables[5] as? String, "title")
+        XCTAssertEqual(variables[6] as? String, "title")
     }
 
     /// - Given: a `Model` instance
@@ -189,6 +191,7 @@ class SQLStatementTests: XCTestCase {
           "createdAt" = ?,
           "draft" = ?,
           "rating" = ?,
+          "status" = ?,
           "title" = ?,
           "updatedAt" = ?
         where "id" = ?
@@ -197,8 +200,8 @@ class SQLStatementTests: XCTestCase {
 
         let variables = statement.variables
         XCTAssertEqual(variables[0] as? String, "content")
-        XCTAssertEqual(variables[4] as? String, "title")
-        XCTAssertEqual(variables[6] as? String, post.id)
+        XCTAssertEqual(variables[5] as? String, "title")
+        XCTAssertEqual(variables[7] as? String, post.id)
     }
 
     // MARK: - Delete Statements
@@ -236,8 +239,8 @@ class SQLStatementTests: XCTestCase {
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
-          "root"."draft" as "draft", "root"."rating" as "rating", "root"."title" as "title",
-          "root"."updatedAt" as "updatedAt"
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
         from Post as root
         """
         XCTAssertEqual(statement.stringValue, expectedStatement)
@@ -257,8 +260,8 @@ class SQLStatementTests: XCTestCase {
         let expectedStatement = """
         select
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
-          "root"."draft" as "draft", "root"."rating" as "rating", "root"."title" as "title",
-          "root"."updatedAt" as "updatedAt"
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."status" as "status",
+          "root"."title" as "title", "root"."updatedAt" as "updatedAt"
         from Post as root
         where 1 = 1
           and "root"."draft" = ?
@@ -284,7 +287,7 @@ class SQLStatementTests: XCTestCase {
           "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
           "root"."commentPostId" as "commentPostId", "post"."id" as "post.id", "post"."content" as "post.content",
           "post"."createdAt" as "post.createdAt", "post"."draft" as "post.draft", "post"."rating" as "post.rating",
-          "post"."title" as "post.title", "post"."updatedAt" as "post.updatedAt"
+          "post"."status" as "post.status", "post"."title" as "post.title", "post"."updatedAt" as "post.updatedAt"
         from Comment as root
         inner join Post as post
           on "post"."id" = "root"."commentPostId"
