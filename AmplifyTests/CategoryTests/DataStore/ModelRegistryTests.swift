@@ -12,13 +12,17 @@ import Amplify
 class ModelRegistryTests: XCTestCase {
 
     let postJSON =
-    #"{"id":"1","title":"title","content":"content","comments":[],"createdAt":"2019-12-31T01:23:45.678Z"}"#
+    #"{"id":"1","title":"title","content":"content","comments":[],"createdAt":"2019-12-31T01:23:45.678Z","status":"draft"}"#
 
-    func testCanRegisterConcreteType() {
+    private func registerModels() {
         ModelRegistry.register(modelType: Post.self)
         ModelRegistry.register(modelType: Comment.self)
+        ModelRegistry.register(enumType: PostStatus.self)
+    }
 
-        XCTAssertNotNil(ModelRegistry.modelType(from: "Post"))
+    func testCanRegisterConcreteType() {
+        registerModels()
+        XCTAssert(ModelRegistry.modelType(from: "Post") == Post.self)
     }
 
     func testCanRegisterProtocolType() {
@@ -26,13 +30,12 @@ class ModelRegistryTests: XCTestCase {
 
         types.forEach { ModelRegistry.register(modelType: $0) }
 
-        XCTAssertNotNil(ModelRegistry.modelType(from: "Post"))
-        XCTAssertNotNil(ModelRegistry.modelType(from: "Comment"))
+        XCTAssert(ModelRegistry.modelType(from: "Post") == Post.self)
+        XCTAssert(ModelRegistry.modelType(from: "Comment") == Comment.self)
     }
 
     func testDecode() throws {
-        ModelRegistry.register(modelType: Post.self)
-        ModelRegistry.register(modelType: Comment.self)
+        registerModels()
 
         guard let decodedPost = try ModelRegistry.decode(modelName: "Post", from: postJSON) as? Post else {
             XCTFail("Couldn't decode post")
@@ -42,20 +45,21 @@ class ModelRegistryTests: XCTestCase {
         XCTAssertEqual(decodedPost.id, "1")
         XCTAssertEqual(decodedPost.title, "title")
         XCTAssertEqual(decodedPost.content, "content")
+        XCTAssertEqual(decodedPost.status, PostStatus.draft)
 
         let actualMilliseconds = Int(decodedPost.createdAt.timeIntervalSince1970 * 1_000)
         XCTAssertEqual(actualMilliseconds, 1_577_755_425_678)
     }
 
     func testDecodeIntoModel() throws {
-        ModelRegistry.register(modelType: Post.self)
-        ModelRegistry.register(modelType: Comment.self)
+        registerModels()
 
         let decodedPost = try ModelRegistry.decode(modelName: "Post", from: postJSON)
 
         XCTAssertEqual(decodedPost.id, "1")
         XCTAssertEqual(decodedPost["title"] as? String, "title")
         XCTAssertEqual(decodedPost["content"] as? String, "content")
+        XCTAssertEqual(decodedPost["status"] as? PostStatus, PostStatus.draft)
 
         guard let createdAt = decodedPost["createdAt"] as? Date else {
             XCTFail("Could not decode createdAt from post")

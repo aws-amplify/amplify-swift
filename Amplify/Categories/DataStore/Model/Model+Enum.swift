@@ -23,8 +23,7 @@ import Foundation
 /// ```
 public protocol PersistentEnum: Codable {
 
-    /// The `String` representation. Make your enum conform to `String`
-    /// to get an automatic `rawValue`.
+    /// The `String` representation. Make your enum conform to `String` to get an automatic `rawValue`.
     /// See the [Enumeration Language Guide](https://docs.swift.org/swift-book/LanguageGuide/Enumerations.html#ID149)
     /// for details on enum with raw values.
     var rawValue: String { get }

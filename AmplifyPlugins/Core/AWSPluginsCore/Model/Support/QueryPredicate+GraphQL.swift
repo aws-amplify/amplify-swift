@@ -124,7 +124,7 @@ extension Persistable {
         if let value = value as? String {
             return value
         }
-        
+
         if let value = value as? PersistentEnum {
             return value.rawValue
         }
