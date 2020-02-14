@@ -52,6 +52,7 @@ class SyncEngineTestBase: XCTestCase {
     /// `models`.
     func setUpStorageAdapter(preCreating models: [Model.Type] = []) throws {
         models.forEach { ModelRegistry.register(modelType: $0) }
+        ModelRegistry.register(enumType: PostStatus.self)
         let connection = try Connection(.inMemory)
         storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
         try storageAdapter.setUp(models: StorageEngine.systemModels + models)

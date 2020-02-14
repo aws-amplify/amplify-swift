@@ -117,10 +117,7 @@ extension ModelField: SQLColumn {
                 return value.iso8601Date?.iso8601String
             }
         case .enum:
-            if let value = binding as? String {
-//                return enumType.from(string: value)
-                return value
-            }
+            return binding as? String
         case .collection:
             return binding ?? []
         default:
