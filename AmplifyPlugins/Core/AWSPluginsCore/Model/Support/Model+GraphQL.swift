@@ -29,6 +29,8 @@ extension Model {
                 } else {
                     input[name] = value
                 }
+            case .enum:
+                input[fieldName] = (value as? PersistentEnum)?.rawValue
             case .model:
                 // For Models, append the model name in front in case a targetName is not provided
                 // e.g. "comment" + "PostId"
