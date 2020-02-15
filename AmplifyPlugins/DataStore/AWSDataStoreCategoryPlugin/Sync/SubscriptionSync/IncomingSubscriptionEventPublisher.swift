@@ -9,7 +9,11 @@ import Amplify
 import AWSPluginsCore
 import Combine
 
+enum IncomingSubscriptionEventPublisherEvent {
+    case mutationEvent(MutationSync<AnyModel>)
+}
+
 @available(iOS 13.0, *)
-protocol IncomingSubscriptionEventPublisher {
-    var publisher: AnyPublisher<MutationSync<AnyModel>, DataStoreError> { get }
+protocol IncomingSubscriptionEventPublisher: Cancellable {
+    var publisher: AnyPublisher<IncomingSubscriptionEventPublisherEvent, DataStoreError> { get }
 }

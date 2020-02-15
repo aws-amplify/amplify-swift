@@ -25,6 +25,7 @@ extension RemoteSyncEngine {
         case notifiedSyncStarted
         case cleanedUp(AmplifyError?)
         case scheduleRestart(AmplifyError?)
+        case scheduleRestartFinished
 
         // Terminal actions
         case receivedCancel
@@ -52,6 +53,8 @@ extension RemoteSyncEngine {
                 return "cleanedUp"
             case .scheduleRestart:
                 return "scheduleRestart"
+            case .scheduleRestartFinished:
+                return "scheduleRestartFinished"
             case .receivedCancel:
                 return "receivedCancel"
             case .errored:

@@ -92,11 +92,13 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             .publisher
             .sink(receiveCompletion: { [weak self] completion in
                 self?.receiveCompletion(completion)
-                }, receiveValue: { [weak self] remoteModel in
-                    self?.incomingSubscriptionEventQueue.addOperation(CancelAwareBlockOperation {
-                        self?.enqueue(remoteModel)
-                    })
-            })
+                }, receiveValue: { [weak self] receiveValue in
+                    if case .mutationEvent(let remoteModel) = receiveValue {
+                        self?.incomingSubscriptionEventQueue.addOperation(CancelAwareBlockOperation {
+                            self?.enqueue(remoteModel)
+                        })
+                    }
+                })
     }
 
     /// (Re)starts the incoming subscription event queue.
@@ -116,6 +118,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     func cancel() {
         incomingEventsSink?.cancel()
         incomingEventsSink = nil
+        incomingSubscriptionEvents.cancel()
         reconcileAndSaveQueue.cancelAllOperations()
         incomingSubscriptionEventQueue.cancelAllOperations()
     }
