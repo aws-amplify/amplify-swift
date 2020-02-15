@@ -23,10 +23,12 @@ extension RemoteSyncEngine {
         case activatedCloudSubscriptions(APICategoryGraphQLBehavior, MutationEventPublisher)
         case activatedMutationQueue
         case notifiedSyncStarted
+        case cleanedUp(AmplifyError?)
+        case scheduleRestart(AmplifyError?)
 
         // Terminal actions
         case receivedCancel
-        case errored(AmplifyError)
+        case errored(AmplifyError?)
 
         var displayName: String {
             switch self {
@@ -46,6 +48,10 @@ extension RemoteSyncEngine {
                 return "activatedMutationQueue"
             case .notifiedSyncStarted:
                 return "notifiedSyncStarted"
+            case .cleanedUp:
+                return "cleanedUp"
+            case .scheduleRestart:
+                return "scheduleRestart"
             case .receivedCancel:
                 return "receivedCancel"
             case .errored:

@@ -7,6 +7,7 @@
 
 import SQLite
 import XCTest
+import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -25,6 +26,8 @@ class SyncEngineTestBase: XCTestCase {
     var storageAdapter: SQLiteStorageEngineAdapter!
 
     var stateMachine: StateMachine<RemoteSyncEngine.State, RemoteSyncEngine.Action>!
+
+    var reachabilityPublisher: PassthroughSubject<ReachabilityUpdate, Never>?
 
     // MARK: - Setup
 
@@ -78,7 +81,9 @@ class SyncEngineTestBase: XCTestCase {
                                           mutationEventPublisher: awsMutationEventPublisher,
                                           initialSyncOrchestratorFactory: initialSyncOrchestratorFactory,
                                           reconciliationQueueFactory: AWSIncomingEventReconciliationQueue.factory,
-                                          stateMachine: stateMachine)
+                                          stateMachine: stateMachine,
+                                          networkReachabilityPublisher: reachabilityPublisher?.eraseToAnyPublisher(),
+                                          requestRetryablePolicy: MockRequestRetryablePolicy())
 
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           syncEngine: syncEngine)
