@@ -7,7 +7,7 @@
 
 import Amplify
 import Combine
-
+//How much of this we will use vs trash, i have no idea
 enum RemoteSyncEngineEvent {
     case storageAdapterAvailable
     case subscriptionsPaused

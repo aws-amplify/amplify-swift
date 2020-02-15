@@ -24,6 +24,7 @@ class LocalSubscriptionTests: XCTestCase {
 
         let storageAdapter: SQLiteStorageEngineAdapter
         let storageEngine: StorageEngine
+        var stateMachine: MockStateMachine<RemoteSyncEngine.State, RemoteSyncEngine.Action>!
         do {
             let connection = try Connection(.inMemory)
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
@@ -32,13 +33,15 @@ class LocalSubscriptionTests: XCTestCase {
             let outgoingMutationQueue = NoOpMutationQueue()
             let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
             let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
+            stateMachine = MockStateMachine(initialState: .notStarted, resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
 
             let syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
                                              outgoingMutationQueue: outgoingMutationQueue,
                                              mutationEventIngester: mutationDatabaseAdapter,
                                              mutationEventPublisher: awsMutationEventPublisher,
                                              initialSyncOrchestratorFactory: NoOpInitialSyncOrchestrator.factory,
-                                             reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory)
+                                             reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
+                                             stateMachine: stateMachine)
 
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           syncEngine: syncEngine)
