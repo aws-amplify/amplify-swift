@@ -28,4 +28,8 @@ final class MockReconciliationQueue: MessageReporter, IncomingEventReconciliatio
     var publisher: AnyPublisher<IncomingEventReconciliationQueueEvent, DataStoreError> {
         return PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>().eraseToAnyPublisher()
     }
+
+    func cancel() {
+        //no-op for mock
+    }
 }

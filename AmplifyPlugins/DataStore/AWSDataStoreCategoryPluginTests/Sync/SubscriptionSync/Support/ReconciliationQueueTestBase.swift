@@ -18,7 +18,7 @@ class ReconciliationQueueTestBase: XCTestCase {
     var apiPlugin: MockAPICategoryPlugin!
     var storageAdapter: MockSQLiteStorageEngineAdapter!
     var subscriptionEventsPublisher: MockIncomingSubscriptionEventPublisher!
-    var subscriptionEventsSubject: PassthroughSubject<MutationSync<AnyModel>, DataStoreError>!
+    var subscriptionEventsSubject: PassthroughSubject<IncomingSubscriptionEventPublisherEvent, DataStoreError>!
 
     override func setUp() {
         ModelRegistry.register(modelType: MockSynced.self)
@@ -33,9 +33,13 @@ class ReconciliationQueueTestBase: XCTestCase {
 }
 
 struct MockIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPublisher {
-    let subject = PassthroughSubject<MutationSync<AnyModel>, DataStoreError>()
+    let subject = PassthroughSubject<IncomingSubscriptionEventPublisherEvent, DataStoreError>()
 
-    var publisher: AnyPublisher<MutationSync<AnyModel>, DataStoreError> {
+    var publisher: AnyPublisher<IncomingSubscriptionEventPublisherEvent, DataStoreError> {
         subject.eraseToAnyPublisher()
+    }
+
+    func cancel() {
+        //no-op for mock
     }
 }

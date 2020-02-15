@@ -18,7 +18,7 @@ import Combine
 /// `GraphQLSubscriptionType` and holds a reference to the returned operation. The operations' listeners enqueue
 /// incoming successful events onto a `Publisher`, that queue processors can subscribe to.
 @available(iOS 13.0, *)
-final class IncomingAsyncSubscriptionEventPublisher {
+final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
     typealias Payload = MutationSync<AnyModel>
     typealias Event = AsyncEvent<SubscriptionEvent<GraphQLResponse<Payload>>, Void, APIError>
 
@@ -86,6 +86,17 @@ final class IncomingAsyncSubscriptionEventPublisher {
 
     func subscribe<S: Subscriber>(subscriber: S) where S.Input == Event, S.Failure == DataStoreError {
         incomingSubscriptionEvents.subscribe(subscriber)
+    }
+
+    func cancel() {
+        onCreateOperation?.cancel()
+        onCreateOperation = nil
+
+        onUpdateOperation?.cancel()
+        onUpdateOperation = nil
+
+        onDeleteOperation?.cancel()
+        onDeleteOperation = nil
     }
 
     func reset(onComplete: () -> Void) {
