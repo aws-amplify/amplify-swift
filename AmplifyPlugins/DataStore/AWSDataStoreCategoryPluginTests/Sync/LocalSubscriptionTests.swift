@@ -41,7 +41,9 @@ class LocalSubscriptionTests: XCTestCase {
                                              mutationEventPublisher: awsMutationEventPublisher,
                                              initialSyncOrchestratorFactory: NoOpInitialSyncOrchestrator.factory,
                                              reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
-                                             stateMachine: stateMachine)
+                                             stateMachine: stateMachine,
+                                             networkReachabilityPublisher: nil,
+                                             requestRetryablePolicy: MockRequestRetryablePolicy())
 
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           syncEngine: syncEngine)
