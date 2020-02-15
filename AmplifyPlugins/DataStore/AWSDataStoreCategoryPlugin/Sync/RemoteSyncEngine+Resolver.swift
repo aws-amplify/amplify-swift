@@ -37,13 +37,26 @@ extension RemoteSyncEngine {
 
             case (.activateMutationQueue, .activatedMutationQueue):
                 return .notifySyncStarted
+
             case (.activateMutationQueue, .errored(let error)):
                 return .cleanup(error)
 
             case (.notifySyncStarted, .notifiedSyncStarted):
                 return .syncEngineActive
 
+            case (.syncEngineActive, .errored(let error)):
+                return .cleanup(error)
+
+            case (.cleanup, .cleanedUp(let error)):
+                return .scheduleRestart(error)
+
+            case (.scheduleRestart, .receivedStart):
+                return .pauseSubscriptions
+
             default:
+                print("Unexpected state transition. In \(currentState.displayName), got \(action.displayName)")
+                print("Unexpected state transition. In \(currentState), got \(action)")
+
                 log.warn("Unexpected state transition. In \(currentState.displayName), got \(action.displayName)")
                 log.verbose("Unexpected state transition. In \(currentState), got \(action)")
                 return currentState

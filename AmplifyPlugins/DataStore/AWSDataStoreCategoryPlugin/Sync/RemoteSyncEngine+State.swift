@@ -24,7 +24,9 @@ extension RemoteSyncEngine {
 
         case syncEngineActive
 
-        case cleanup(AmplifyError)
+        case cleanup(AmplifyError?)
+        case scheduleRestart(AmplifyError?)
+
         var displayName: String {
             switch self {
             case .notStarted:
@@ -47,6 +49,8 @@ extension RemoteSyncEngine {
                 return "syncEngineActive"
             case .cleanup:
                 return "cleanup"
+            case .scheduleRestart:
+                return "scheduleRestart"
             }
         }
     }
