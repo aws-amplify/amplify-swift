@@ -142,6 +142,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             startMutationQueue(api: api, mutationEventPublisher: mutationEventPublisher)
         case .notifySyncStarted:
             notifySyncStarted()
+
         case .syncEngineActive:
             break
 
@@ -219,17 +220,19 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                 if let underlyingError = dataStoreError.underlyingError {
                     self.log.error("\(underlyingError)")
                 }
-                self.remoteSyncTopicPublisher.send(completion: .failure(dataStoreError))
+
+                self.stateMachine.notify(action: .errored(dataStoreError))
             } else {
                 self.log.info("Successfully finished sync")
+
                 self.remoteSyncTopicPublisher.send(.performedInitialSync)
+                self.stateMachine.notify(action: .performedInitialSync)
             }
             semaphore.signal()
         }
 
         semaphore.wait()
         self.initialSyncOrchestrator = nil
-        stateMachine.notify(action: .performedInitialSync)
     }
 
     private func activateCloudSubscriptions() {

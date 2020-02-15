@@ -45,7 +45,7 @@ extension RemoteSyncEngine {
         mutationRetryNotifier = MutationRetryNotifier(advice: advice,
                                                       networkReachabilityPublisher: networkReachabilityPublisher) {
                                                         self.mutationRetryNotifier = nil
-                                                        self.stateMachine.notify(action: .receivedStart)
+                                                        self.stateMachine.notify(action: .scheduleRestartFinished)
         }
         currentAttemptNumber += 1
     }

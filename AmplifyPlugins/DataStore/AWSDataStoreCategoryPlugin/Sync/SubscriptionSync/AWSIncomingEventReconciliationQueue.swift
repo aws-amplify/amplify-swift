@@ -87,6 +87,13 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
             self.eventReconciliationQueueTopic.send(.mutationEvent(event))
         }
     }
+
+    func cancel() {
+        modelReconciliationQueueSinks.values.forEach { $0.cancel() }
+        reconciliationQueues.values.forEach { $0.cancel()}
+        reconciliationQueues = [:]
+        modelReconciliationQueueSinks = [:]
+    }
 }
 
 @available(iOS 13.0, *)

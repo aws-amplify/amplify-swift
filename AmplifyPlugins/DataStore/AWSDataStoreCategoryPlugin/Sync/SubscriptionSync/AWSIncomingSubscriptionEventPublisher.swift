@@ -15,13 +15,15 @@ import Combine
 final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPublisher {
 
     private let asyncEvents: IncomingAsyncSubscriptionEventPublisher
-    private let mapper: IncomingAsyncSubscriptionEventToAnyModelMapper
-
-    var publisher: AnyPublisher<MutationSync<AnyModel>, DataStoreError> {
-        mapper.publisher
+    private var mapper: IncomingAsyncSubscriptionEventToAnyModelMapper?
+    private let subscriptionEventSubject: PassthroughSubject<IncomingSubscriptionEventPublisherEvent, DataStoreError>
+    private var mapperSink: AnyCancellable?
+    var publisher: AnyPublisher<IncomingSubscriptionEventPublisherEvent, DataStoreError> {
+        return subscriptionEventSubject.eraseToAnyPublisher()
     }
 
     init(modelType: Model.Type, api: APICategoryGraphQLBehavior) {
+        self.subscriptionEventSubject = PassthroughSubject<IncomingSubscriptionEventPublisherEvent, DataStoreError>()
         self.asyncEvents = IncomingAsyncSubscriptionEventPublisher(modelType: modelType,
                                                                    api: api)
 
@@ -29,8 +31,26 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
         self.mapper = mapper
 
         asyncEvents.subscribe(subscriber: mapper)
+        self.mapperSink = mapper.publisher.sink(receiveCompletion: onReceiveCompletion(receiveCompletion:),
+                                                receiveValue: onReceive(receiveValue:))
     }
 
+    private func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
+
+        subscriptionEventSubject.send(completion: receiveCompletion)
+    }
+
+    private func onReceive(receiveValue: MutationSync<AnyModel>) {
+        subscriptionEventSubject.send(.mutationEvent(receiveValue))
+    }
+
+    func cancel() {
+        mapperSink?.cancel()
+        mapperSink = nil
+
+        asyncEvents.cancel()
+        mapper = nil
+    }
 }
 
 @available(iOS 13.0, *)
@@ -46,7 +66,7 @@ extension AWSIncomingSubscriptionEventPublisher: Resettable {
 
         group.enter()
         DispatchQueue.global().async {
-            self.mapper.reset { group.leave() }
+            self.mapper?.reset { group.leave() }
         }
 
         group.wait()

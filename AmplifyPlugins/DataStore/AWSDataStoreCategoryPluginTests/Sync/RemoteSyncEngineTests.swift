@@ -63,14 +63,18 @@ class RemoteSyncEngineTests: XCTestCase {
         let subscriptionsPaused = expectation(description: "subscriptionsPaused")
         let mutationsPaused = expectation(description: "mutationsPaused")
         let subscriptionsInitialized = expectation(description: "subscriptionsInitialized")
+        let cleanedup = expectation(description: "cleanedup")
         let failureOnInitialSync = expectation(description: "failureOnInitialSync")
 
         var currCount = 1
 
+        let advice = RequestRetryAdvice.init(shouldRetry: false)
+        mockRequestRetryablePolicy.pushOnRetryRequestAdvice(response: advice)
+
         let remoteSyncEngineSink = remoteSyncEngine
             .publisher
             .sink(receiveCompletion: { _ in
-                currCount = self.checkAndFulfill(currCount, 5, expectation: failureOnInitialSync)
+                currCount = self.checkAndFulfill(currCount, 6, expectation: failureOnInitialSync)
             }, receiveValue: { event in
                 switch event {
                 case .storageAdapterAvailable:
@@ -83,6 +87,8 @@ class RemoteSyncEngineTests: XCTestCase {
                     currCount = self.checkAndFulfill(currCount, 4, expectation: subscriptionsInitialized)
                 case .performedInitialSync:
                     XCTFail("performedInitialQueries should not be successful")
+                case .cleanedUp:
+                    currCount = self.checkAndFulfill(currCount, 5, expectation: cleanedup)
                 default:
                     XCTFail("Unexpected case gets hit")
                 }
@@ -96,6 +102,7 @@ class RemoteSyncEngineTests: XCTestCase {
                    subscriptionsPaused,
                    mutationsPaused,
                    subscriptionsInitialized,
+                   cleanedup,
                    failureOnInitialSync], timeout: defaultAsyncWaitTimeout)
     }
 
