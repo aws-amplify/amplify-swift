@@ -56,6 +56,7 @@ class RemoteEngineSyncTests: XCTestCase {
 
     func testFailureOnInitialSync() throws {
         let storageAdapterAvailable = expectation(description: "storageAdapterAvailable")
+        let subscriptionsPaused = expectation(description: "subscriptionsPaused")
         let mutationsPaused = expectation(description: "mutationsPaused")
         let subscriptionsInitialized = expectation(description: "subscriptionsInitialized")
         let failureOnInitialSync = expectation(description: "failureOnInitialSync")
@@ -69,7 +70,7 @@ class RemoteEngineSyncTests: XCTestCase {
                 case .storageAdapterAvailable:
                     storageAdapterAvailable.fulfill()
                 case .subscriptionsPaused:
-                    XCTFail("subscriptions have not been created, so they are not paused")
+                    subscriptionsPaused.fulfill()
                 case .mutationsPaused:
                     mutationsPaused.fulfill()
                 case .subscriptionsInitialized:
@@ -86,12 +87,15 @@ class RemoteEngineSyncTests: XCTestCase {
         remoteSyncEngine.start()
 
         wait(for: [storageAdapterAvailable,
-                   mutationsPaused, subscriptionsInitialized,
+                   subscriptionsPaused,
+                   mutationsPaused,
+                   subscriptionsInitialized,
                    failureOnInitialSync], timeout: defaultAsyncWaitTimeout)
     }
 
     func testRemoteSyncEngineHappyPath() throws {
         let storageAdapterAvailable = expectation(description: "storageAdapterAvailable")
+        let subscriptionsPaused = expectation(description: "subscriptionsPaused")
         let mutationsPaused = expectation(description: "mutationsPaused")
         let subscriptionsInitialized = expectation(description: "subscriptionsInitialized")
         let performedInitialSync = expectation(description: "performedInitialSync")
@@ -108,7 +112,7 @@ class RemoteEngineSyncTests: XCTestCase {
                 case .storageAdapterAvailable:
                     storageAdapterAvailable.fulfill()
                 case .subscriptionsPaused:
-                    XCTFail("subscriptions have not been created, so they are not paused")
+                    subscriptionsPaused.fulfill()
                 case .mutationsPaused:
                     mutationsPaused.fulfill()
                 case .subscriptionsInitialized:
@@ -129,6 +133,7 @@ class RemoteEngineSyncTests: XCTestCase {
         remoteSyncEngine.start()
 
         wait(for: [storageAdapterAvailable,
+                   subscriptionsPaused,
                    mutationsPaused,
                    subscriptionsInitialized,
                    performedInitialSync,
@@ -139,6 +144,7 @@ class RemoteEngineSyncTests: XCTestCase {
 
     func testFailsAfterSyncStarted() throws {
         let storageAdapterAvailable = expectation(description: "storageAdapterAvailable")
+        let subscriptionsPaused = expectation(description: "subscriptionsPaused")
         let mutationsPaused = expectation(description: "mutationsPaused")
         let subscriptionsInitialized = expectation(description: "subscriptionsInitialized")
         let performedInitialSync = expectation(description: "performedInitialSync")
@@ -156,7 +162,7 @@ class RemoteEngineSyncTests: XCTestCase {
                 case .storageAdapterAvailable:
                     storageAdapterAvailable.fulfill()
                 case .subscriptionsPaused:
-                    XCTFail("subscriptions have not been created, so they are not paused")
+                    subscriptionsPaused.fulfill()
                 case .mutationsPaused:
                     mutationsPaused.fulfill()
                 case .subscriptionsInitialized:
@@ -178,6 +184,7 @@ class RemoteEngineSyncTests: XCTestCase {
         remoteSyncEngine.start()
 
         wait(for: [storageAdapterAvailable,
+                   subscriptionsPaused,
                    mutationsPaused,
                    subscriptionsInitialized,
                    performedInitialSync,
