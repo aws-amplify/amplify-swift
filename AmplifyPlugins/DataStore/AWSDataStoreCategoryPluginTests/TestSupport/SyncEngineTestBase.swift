@@ -24,6 +24,8 @@ class SyncEngineTestBase: XCTestCase {
     /// Used for DB manipulation to mock starting data for tests
     var storageAdapter: SQLiteStorageEngineAdapter!
 
+    var stateMachine: StateMachine<RemoteSyncEngine.State, RemoteSyncEngine.Action>!
+
     // MARK: - Setup
 
     override func setUp() {
@@ -67,13 +69,16 @@ class SyncEngineTestBase: XCTestCase {
     ) throws {
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
+        stateMachine = StateMachine(initialState: .notStarted,
+                                    resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
 
         let syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
                                           outgoingMutationQueue: mutationQueue,
                                           mutationEventIngester: mutationDatabaseAdapter,
                                           mutationEventPublisher: awsMutationEventPublisher,
                                           initialSyncOrchestratorFactory: initialSyncOrchestratorFactory,
-                                          reconciliationQueueFactory: AWSIncomingEventReconciliationQueue.factory)
+                                          reconciliationQueueFactory: AWSIncomingEventReconciliationQueue.factory,
+                                          stateMachine: stateMachine)
 
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           syncEngine: syncEngine)
