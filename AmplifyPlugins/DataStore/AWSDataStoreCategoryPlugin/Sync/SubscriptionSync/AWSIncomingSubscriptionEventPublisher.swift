@@ -36,6 +36,7 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
     }
 
     private func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
+
         subscriptionEventSubject.send(completion: receiveCompletion)
     }
 

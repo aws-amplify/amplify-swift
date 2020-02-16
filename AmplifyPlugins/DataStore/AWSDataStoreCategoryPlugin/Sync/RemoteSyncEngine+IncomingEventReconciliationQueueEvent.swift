@@ -13,22 +13,17 @@ import Foundation
 extension RemoteSyncEngine {
     @available(iOS 13.0, *)
     func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
-        switch receiveCompletion {
-        case .failure(let error):
-            stateMachine.notify(action: .errored(error))
-        case .finished:
-            stateMachine.notify(action: .errored(nil))
+        let semaphore = DispatchSemaphore(value: 1)
+        semaphore.wait()
+        if case .syncEngineActive = stateMachine.state {
+            switch receiveCompletion {
+            case .failure(let error):
+                stateMachine.notify(action: .errored(error))
+            case .finished:
+                stateMachine.notify(action: .errored(nil))
+            }
         }
-        /*
-        if case .failure(let error) = receiveCompletion {
-            remoteSyncTopicPublisher.send(completion: .failure(error))
-        }
-        if case .finished = receiveCompletion {
-            let unexpectedFinishError = DataStoreError.unknown("ReconcilationQueue sent .finished message",
-                                                               AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
-                                                               nil)
-            remoteSyncTopicPublisher.send(completion: .failure(unexpectedFinishError))
-        }*/
+        semaphore.signal()
     }
 
     @available(iOS 13.0, *)

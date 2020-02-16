@@ -50,7 +50,7 @@ extension RemoteSyncEngine {
             case (.cleanup, .cleanedUp(let error)):
                 return .scheduleRestart(error)
 
-            case (.scheduleRestart, .receivedStart):
+            case (.scheduleRestart, .scheduleRestartFinished):
                 return .pauseSubscriptions
 
             default:
