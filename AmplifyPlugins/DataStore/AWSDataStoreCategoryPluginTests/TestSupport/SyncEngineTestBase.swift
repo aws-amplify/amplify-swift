@@ -29,6 +29,10 @@ class SyncEngineTestBase: XCTestCase {
 
     var reachabilityPublisher: PassthroughSubject<ReachabilityUpdate, Never>?
 
+    var syncEngine: RemoteSyncEngineBehavior!
+
+    var remoteSyncEngineSink: AnyCancellable!
+
     // MARK: - Setup
 
     override func setUp() {
@@ -75,15 +79,29 @@ class SyncEngineTestBase: XCTestCase {
         stateMachine = StateMachine(initialState: .notStarted,
                                     resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
 
-        let syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
-                                          outgoingMutationQueue: mutationQueue,
-                                          mutationEventIngester: mutationDatabaseAdapter,
-                                          mutationEventPublisher: awsMutationEventPublisher,
-                                          initialSyncOrchestratorFactory: initialSyncOrchestratorFactory,
-                                          reconciliationQueueFactory: AWSIncomingEventReconciliationQueue.factory,
-                                          stateMachine: stateMachine,
-                                          networkReachabilityPublisher: reachabilityPublisher?.eraseToAnyPublisher(),
-                                          requestRetryablePolicy: MockRequestRetryablePolicy())
+        syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
+                                      outgoingMutationQueue: mutationQueue,
+                                      mutationEventIngester: mutationDatabaseAdapter,
+                                      mutationEventPublisher: awsMutationEventPublisher,
+                                      initialSyncOrchestratorFactory: initialSyncOrchestratorFactory,
+                                      reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
+                                      stateMachine: stateMachine,
+                                      networkReachabilityPublisher: reachabilityPublisher?.eraseToAnyPublisher(),
+                                      requestRetryablePolicy: MockRequestRetryablePolicy())
+        remoteSyncEngineSink = syncEngine
+            .publisher
+            .sink(receiveCompletion: {_ in },
+                  receiveValue: { event in
+                    switch event {
+                    case .mutationsPaused:
+                        //Assume AWSIncomingEventReconciliationQueue succeeds in establishing connections
+                        DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
+                            MockAWSIncomingEventReconciliationQueue.mockSend(event: .initialized)
+                        }
+                    default:
+                        break
+                    }
+        })
 
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           syncEngine: syncEngine)

@@ -24,6 +24,8 @@ extension RemoteSyncEngine {
 
             case (.initializeSubscriptions, .initializedSubscriptions):
                 return .performInitialSync
+            case (.initializeSubscriptions, .errored(let error)):
+                return .cleanup(error)
 
             case (.performInitialSync, .performedInitialSync):
                 return .activateCloudSubscriptions

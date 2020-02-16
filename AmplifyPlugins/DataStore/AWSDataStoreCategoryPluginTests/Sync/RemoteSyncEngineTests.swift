@@ -83,6 +83,9 @@ class RemoteSyncEngineTests: XCTestCase {
                     currCount = self.checkAndFulfill(currCount, 2, expectation: subscriptionsPaused)
                 case .mutationsPaused:
                     currCount = self.checkAndFulfill(currCount, 3, expectation: mutationsPaused)
+                    DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
+                        MockAWSIncomingEventReconciliationQueue.mockSend(event: .initialized)
+                    }
                 case .subscriptionsInitialized:
                     currCount = self.checkAndFulfill(currCount, 4, expectation: subscriptionsInitialized)
                 case .performedInitialSync:
@@ -130,6 +133,9 @@ class RemoteSyncEngineTests: XCTestCase {
                     currCount = self.checkAndFulfill(currCount, 2, expectation: subscriptionsPaused)
                 case .mutationsPaused:
                     currCount = self.checkAndFulfill(currCount, 3, expectation: mutationsPaused)
+                    DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
+                        MockAWSIncomingEventReconciliationQueue.mockSend(event: .initialized)
+                    }
                 case .subscriptionsInitialized:
                     currCount = self.checkAndFulfill(currCount, 4, expectation: subscriptionsInitialized)
                 case .performedInitialSync:
@@ -186,6 +192,9 @@ class RemoteSyncEngineTests: XCTestCase {
                     currCount = self.checkAndFulfill(currCount, 2, expectation: subscriptionsPaused)
                 case .mutationsPaused:
                     currCount = self.checkAndFulfill(currCount, 3, expectation: mutationsPaused)
+                    DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
+                        MockAWSIncomingEventReconciliationQueue.mockSend(event: .initialized)
+                    }
                 case .subscriptionsInitialized:
                     currCount = self.checkAndFulfill(currCount, 4, expectation: subscriptionsInitialized)
                 case .performedInitialSync:

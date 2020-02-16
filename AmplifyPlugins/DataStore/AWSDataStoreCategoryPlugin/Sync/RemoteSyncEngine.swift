@@ -198,8 +198,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             receiveCompletion: onReceiveCompletion(receiveCompletion:),
             receiveValue: onReceive(receiveValue:))
 
-        remoteSyncTopicPublisher.send(.subscriptionsInitialized)
-        stateMachine.notify(action: .initializedSubscriptions)
+        //Notifying the publisher & state machine are handled in:
+        // RemoteSyncEngine+IncomingEventReconciliationQueueEvent.swift
     }
 
     private func performInitialSync() {
@@ -253,8 +253,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     private func cleanup(error: AmplifyError?) {
-        // TODO:
-        // handle clean up here
+        reconciliationQueue?.cancel()
+        reconciliationQueue = nil
+        outgoingMutationQueue.pauseSyncingToCloud()
+
         remoteSyncTopicPublisher.send(.cleanedUp)
         stateMachine.notify(action: .cleanedUp(error))
     }

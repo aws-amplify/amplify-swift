@@ -13,22 +13,32 @@ import Foundation
 extension RemoteSyncEngine {
     @available(iOS 13.0, *)
     func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
-        let semaphore = DispatchSemaphore(value: 1)
-        semaphore.wait()
-        if case .syncEngineActive = stateMachine.state {
-            switch receiveCompletion {
-            case .failure(let error):
-                stateMachine.notify(action: .errored(error))
-            case .finished:
-                stateMachine.notify(action: .errored(nil))
-            }
+        switch stateMachine.state {
+        case .initializeSubscriptions:
+            notifyError(receiveCompletion: receiveCompletion)
+        case .syncEngineActive:
+            notifyError(receiveCompletion: receiveCompletion)
+        default:
+            break
         }
-        semaphore.signal()
+    }
+
+    @available(iOS 13.0, *)
+    func notifyError(receiveCompletion: Subscribers.Completion<DataStoreError>) {
+        switch receiveCompletion {
+        case .failure(let error):
+            stateMachine.notify(action: .errored(error))
+        case .finished:
+            stateMachine.notify(action: .errored(nil))
+        }
     }
 
     @available(iOS 13.0, *)
     func onReceive(receiveValue: IncomingEventReconciliationQueueEvent) {
         switch receiveValue {
+        case .initialized:
+            remoteSyncTopicPublisher.send(.subscriptionsInitialized)
+            stateMachine.notify(action: .initializedSubscriptions)
         case .started:
             remoteSyncTopicPublisher.send(.subscriptionsActivated)
             if let api = self.api {
