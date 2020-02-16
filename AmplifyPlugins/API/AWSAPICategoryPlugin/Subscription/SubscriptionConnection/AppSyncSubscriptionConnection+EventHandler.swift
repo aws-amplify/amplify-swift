@@ -65,6 +65,9 @@ extension AppSyncSubscriptionConnection {
             serialSubscriptionQueue.async {[weak self] in
                 // Move all subscriptionItems to disconnected but keep them in memory.
                 self?.subscriptionItems.forEach { _, subscriptionItem in
+                    if let error = error {
+                       subscriptionItem.dispatch(error: .networkError("", nil, error))
+                    }
                     switch subscriptionItem.subscriptionConnectionState {
                     case .connecting, .connected:
                         subscriptionItem.setState(.disconnected)

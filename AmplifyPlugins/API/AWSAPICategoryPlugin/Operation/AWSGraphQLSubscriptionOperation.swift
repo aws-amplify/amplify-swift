@@ -46,6 +46,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         } else {
             super.cancel()
         }
+        subscriptionConnectionFactory.cancel()
     }
 
     override public func main() {

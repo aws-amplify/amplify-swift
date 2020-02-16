@@ -20,7 +20,9 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
     init(retryStrategy: AWSAppSyncRetryStrategy = .exponential) {
         self.retryStrategy = retryStrategy
     }
-
+    func cancel() {
+        apiToSubscriptionConnections = [:]
+    }
     func getOrCreateConnection(for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
                                authService: AWSAuthServiceBehavior) throws -> SubscriptionConnection {
         return try concurrencyQueue.sync {

@@ -8,7 +8,7 @@
 import AWSPluginsCore
 
 protocol SubscriptionConnectionFactory {
-
+    func cancel()
     func getOrCreateConnection(for endpointConfiguration: AWSAPICategoryPluginConfiguration.EndpointConfig,
                                authService: AWSAuthServiceBehavior) throws -> SubscriptionConnection
 }
