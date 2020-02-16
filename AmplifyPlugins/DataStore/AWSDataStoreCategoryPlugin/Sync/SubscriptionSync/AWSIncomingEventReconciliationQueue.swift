@@ -29,6 +29,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     }
 
     private var reconciliationQueues: [String: ModelReconciliationQueue]
+    private var numReconciliationQueuesConnected: Int
 
     init(modelTypes: [Model.Type],
          api: APICategoryGraphQLBehavior,
@@ -36,7 +37,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         self.modelReconciliationQueueSinks = [:]
         self.eventReconciliationQueueTopic = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
         self.reconciliationQueues = [:]
-
+        self.numReconciliationQueuesConnected = 0
         for modelType in modelTypes {
             let modelName = modelType.modelName
             let queue = AWSModelReconciliationQueue(modelType: modelType,
@@ -74,6 +75,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     }
 
     private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
+        numReconciliationQueuesConnected = 0
         switch completed {
         case .failure(let error):
             eventReconciliationQueueTopic.send(completion: .failure(error))
@@ -83,9 +85,20 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     }
 
     private func onRecieveValue(receiveValue: ModelReconciliationQueueEvent) {
-        if case .mutationEvent(let event) = receiveValue {
-            self.eventReconciliationQueueTopic.send(.mutationEvent(event))
+        switch receiveValue {
+        case .mutationEvent(let event):
+            eventReconciliationQueueTopic.send(.mutationEvent(event))
+        case .connected:
+            //TODO: Name each reconciliation queue and pass that information up
+            numReconciliationQueuesConnected += 1
+            if numReconciliationQueuesConnected == reconciliationQueues.count {
+                eventReconciliationQueueTopic.send(.initialized)
+            }
+        default:
+            break
         }
+    }
+    private func updateConnectedState() {
     }
 
     func cancel() {

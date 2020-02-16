@@ -18,6 +18,7 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
     private var mapper: IncomingAsyncSubscriptionEventToAnyModelMapper?
     private let subscriptionEventSubject: PassthroughSubject<IncomingSubscriptionEventPublisherEvent, DataStoreError>
     private var mapperSink: AnyCancellable?
+    private var connectedConnections: Int
     var publisher: AnyPublisher<IncomingSubscriptionEventPublisherEvent, DataStoreError> {
         return subscriptionEventSubject.eraseToAnyPublisher()
     }
@@ -31,17 +32,40 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
         self.mapper = mapper
 
         asyncEvents.subscribe(subscriber: mapper)
+        self.connectedConnections = 0
         self.mapperSink = mapper.publisher.sink(receiveCompletion: onReceiveCompletion(receiveCompletion:),
                                                 receiveValue: onReceive(receiveValue:))
     }
 
     private func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
-
         subscriptionEventSubject.send(completion: receiveCompletion)
     }
 
-    private func onReceive(receiveValue: MutationSync<AnyModel>) {
-        subscriptionEventSubject.send(.mutationEvent(receiveValue))
+    private func onReceive(receiveValue: IncomingAsyncSubscriptionEvent) {
+        //TODO: Update async subscription event code to pass through type of connected connection
+        let semaphore = DispatchSemaphore(value: 1)
+        semaphore.wait()
+
+        switch receiveValue {
+        case .connectionConnected:
+            connectedConnections += 1
+        case .connectionDisconnected:
+            if connectedConnections > 0 {
+                connectedConnections -= 1
+            }
+        default:
+            break
+        }
+        if connectedConnections == 3 {
+            subscriptionEventSubject.send(.connectionConnected)
+        } else if connectedConnections > 3 {
+            print("MORE CONNECTIONS THAN REQUIRD!?!?!?!?!")
+        }
+        semaphore.signal()
+
+        if case .payload(let mutationSyncAnyModel) = receiveValue {
+            subscriptionEventSubject.send(.mutationEvent(mutationSyncAnyModel))
+        }
     }
 
     func cancel() {
