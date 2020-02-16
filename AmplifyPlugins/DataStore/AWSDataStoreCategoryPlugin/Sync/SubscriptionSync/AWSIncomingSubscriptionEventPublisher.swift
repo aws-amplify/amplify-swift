@@ -36,12 +36,15 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
     }
 
     private func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
-
         subscriptionEventSubject.send(completion: receiveCompletion)
     }
 
-    private func onReceive(receiveValue: MutationSync<AnyModel>) {
-        subscriptionEventSubject.send(.mutationEvent(receiveValue))
+    private func onReceive(receiveValue: IncomingAsyncSubscriptionEvent) {
+        if case .connectionConnected = receiveValue {
+            subscriptionEventSubject.send(.connectionConnected)
+        } else if case .payload(let mutationSyncAnyModel) = receiveValue {
+            subscriptionEventSubject.send(.mutationEvent(mutationSyncAnyModel))
+        }
     }
 
     func cancel() {

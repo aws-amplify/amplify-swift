@@ -10,6 +10,7 @@ import AWSPluginsCore
 import Combine
 
 enum IncomingSubscriptionEventPublisherEvent {
+    case connectionConnected
     case mutationEvent(MutationSync<AnyModel>)
 }
 
