@@ -52,6 +52,7 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
         mapperSink = nil
 
         asyncEvents.cancel()
+        mapper?.cancel()
         mapper = nil
     }
 }
