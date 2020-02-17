@@ -107,7 +107,7 @@ extension ModelField {
     /// - seealso: `ModelFieldType`
     /// - seealso: `ModelFieldAssociation`
     public var associatedModel: Model.Type? {
-        switch typeDefinition {
+        switch type {
         case .model(let type), .collection(let type):
             return type
         default:

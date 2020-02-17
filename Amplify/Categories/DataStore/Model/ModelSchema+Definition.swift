@@ -9,7 +9,7 @@ import Foundation
 
 // TODO: Add the rest of the AppSync scalar types
 // https://docs.aws.amazon.com/appsync/latest/devguide/scalars.html
-public enum ModelFieldType: CustomStringConvertible {
+public enum ModelFieldType {
 
     case string
     case int
@@ -22,20 +22,20 @@ public enum ModelFieldType: CustomStringConvertible {
     case model(type: Model.Type)
     case collection(of: Model.Type)
 
-    public var description: String {
-        switch self {
-        case .string: return "String"
-        case .int: return "Int"
-        case .double: return "Float"
-        case .date:  return "AWSDate"
-        case .dateTime: return "AWSDateTime"
-        case .time: return "AWSTime"
-        case .bool: return "Boolean"
-        case .enum(let anyType): return String(describing: anyType)
-        case .model(let modelType): return modelType.modelName
-        case .collection(let modelType): return modelType.modelName
-        }
-    }
+//    public var description: String {
+//        switch self {
+//        case .string: return "String"
+//        case .int: return "Int"
+//        case .double: return "Float"
+//        case .date:  return "AWSDate"
+//        case .dateTime: return "AWSDateTime"
+//        case .time: return "AWSTime"
+//        case .bool: return "Boolean"
+//        case .enum(let anyType): return String(describing: anyType)
+//        case .model(let modelType): return modelType.modelName
+//        case .collection(let modelType): return modelType.modelName
+//        }
+//    }
 
     public var isArray: Bool {
         switch self {
@@ -47,26 +47,26 @@ public enum ModelFieldType: CustomStringConvertible {
     }
 }
 
-extension ModelField {
-
-    public var typeDefinition: ModelFieldType {
-        switch type {
-        case "String": return .string
-        case "Int": return .int
-        case "Float": return .double
-        case "Boolean": return .bool
-        case "AWSDate": return .date
-        case "AWSDateTime": return .dateTime
-        case "AWSTime": return .time
-        default:
-            guard let model = ModelRegistry.modelType(from: type) else {
-                preconditionFailure("Model with name \(type) could not be found.")
-            }
-            return isArray ? .collection(of: model) : .model(type: model)
-        }
-    }
-
-}
+//extension ModelField {
+//
+//    public var typeDefinition: ModelFieldType {
+//        switch type {
+//        case "String": return .string
+//        case "Int": return .int
+//        case "Float": return .double
+//        case "Boolean": return .bool
+//        case "AWSDate": return .date
+//        case "AWSDateTime": return .dateTime
+//        case "AWSTime": return .time
+//        default:
+//            guard let model = ModelRegistry.modelType(from: type) else {
+//                preconditionFailure("Model with name \(type) could not be found.")
+//            }
+//            return isArray ? .collection(of: model) : .model(type: model)
+//        }
+//    }
+//
+//}
 
 public enum ModelFieldNullability {
     case optional
@@ -184,7 +184,7 @@ public enum ModelFieldDefinition {
             preconditionFailure("Unexpected enum value found: \(String(describing: self))")
         }
         return ModelField(name: name,
-                          type: type.description,
+                          type: type,
                           isRequired: nullability.isRequired,
                           isArray: type.isArray,
                           attributes: attributes,

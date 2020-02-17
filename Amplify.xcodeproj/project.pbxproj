@@ -1718,6 +1718,7 @@
 		B92E03A62367CE7A006CEB8D /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B937FBFC23FB4ED300081639 /* Schema */,
 				2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */,
 				B92E03A72367CE7A006CEB8D /* Model.swift */,
 				B9FAA17F238FBB5D009414B4 /* Model+Array.swift */,
@@ -1737,6 +1738,13 @@
 				B9FAA1232388BE2B009414B4 /* Collection */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		B937FBFC23FB4ED300081639 /* Schema */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Schema;
 			sourceTree = "<group>";
 		};
 		B952182D237E21B900F53237 /* Models */ = {
