@@ -18,7 +18,7 @@ enum IncomingAsyncSubscriptionEvent {
 // swiftlint:disable type_name
 /// Subscribes to an IncomingSubscriptionAsyncEventQueue, and publishes AnyModel
 @available(iOS 13.0, *)
-final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
+final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber, Cancellable {
     // swiftlint:enable type_name
 
     typealias Input = IncomingAsyncSubscriptionEventPublisher.Event
@@ -98,6 +98,11 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
         case .failure(let failure):
             log.error(error: failure)
         }
+    }
+
+    func cancel() {
+        subscription?.cancel()
+        subscription = nil
     }
 
     func reset(onComplete: () -> Void) {

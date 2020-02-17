@@ -149,12 +149,17 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
     func cancel() {
         onCreateOperation?.cancel()
         onCreateOperation = nil
+        onCreateListener = nil
 
         onUpdateOperation?.cancel()
         onUpdateOperation = nil
+        onUpdateListener = nil
+
 
         onDeleteOperation?.cancel()
         onDeleteOperation = nil
+        onDeleteListener = nil
+
     }
 
     func reset(onComplete: () -> Void) {
