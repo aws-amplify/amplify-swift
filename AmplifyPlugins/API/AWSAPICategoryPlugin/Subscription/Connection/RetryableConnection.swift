@@ -22,12 +22,11 @@ protocol ConnectionRetryHandler {
 
     /// Check if we should retry the request or not.
     /// - Parameter error: Connection provider error.
-    func shouldRetryRequest(for error: ConnectionProviderError) -> AWSAppSyncRetryAdvice
+    func shouldRetryRequest(for error: ConnectionProviderError) -> RetryAdvice
 
 }
 
-/// Encapsulates advice about whether a request should be retried, and if so, after how much time
-struct AWSAppSyncRetryAdvice {
-    let shouldRetry: Bool
-    let retryInterval: DispatchTimeInterval?
+protocol RetryAdvice {
+    var shouldRetry: Bool { get }
+    var retryInterval: DispatchTimeInterval? { get }
 }

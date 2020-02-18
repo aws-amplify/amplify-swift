@@ -49,4 +49,11 @@ struct AppSyncLogger {
             NSLog("%@", log)
         }
     }
+    static func error(_ error: Error) {
+        if #available(iOS 10.0, *) {
+            os_log("%@", type: .error, error.localizedDescription)
+        } else {
+            NSLog("%@", error.localizedDescription)
+        }
+    }
 }

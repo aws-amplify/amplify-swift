@@ -8,6 +8,11 @@
 import Foundation
 
 extension AppSyncMessage: Encodable {
+    enum CodingKeys: String, CodingKey {
+        case id
+        case payload
+        case messageType = "type"
+    }
 
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -18,12 +23,6 @@ extension AppSyncMessage: Encodable {
             try container.encode(payload, forKey: .payload)
         }
         try container.encode(messageType.getValue(), forKey: .messageType)
-    }
-
-    enum CodingKeys: String, CodingKey {
-        case id
-        case payload
-        case messageType = "type"
     }
 }
 

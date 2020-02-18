@@ -37,15 +37,9 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
     override public func cancel() {
         if let subscriptionItem = subscriptionItem, let subscriptionConnection = subscriptionConnection {
-            switch subscriptionItem.subscriptionConnectionState {
-            case .connecting, .connected:
-                subscriptionConnection.unsubscribe(item: subscriptionItem)
-            case .disconnected:
-                super.cancel()
-            }
-        } else {
-            super.cancel()
+            subscriptionConnection.unsubscribe(item: subscriptionItem)
         }
+        super.cancel()
     }
 
     override public func main() {
@@ -93,14 +87,26 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         }
 
         // Create subscription
+
         subscriptionItem = subscriptionConnection?.subscribe(requestString: request.document,
                                                              variables: request.variables,
-                                                             onEvent: { [weak self] event in
-            self?.onAsyncSubscriptionEvent(event: event)
+                                                             eventHandler: { [weak self] event, _ in
+            self?.onAsyncSubscriptionEvent2(event: event)
         })
 
     }
 
+    private func onAsyncSubscriptionEvent2(event: SubscriptionItemEvent) {
+        switch event {
+        case .connection(let subscriptionConnectionEvent):
+            onSubscriptionEvent2(subscriptionConnectionEvent)
+        case .data(let data):
+            onGraphQLResponseData(data)
+        case .failed(let error):
+            dispatch(event: .failed(APIError.operationError("subscription item event failed with error", "", error)))
+            finish()
+        }
+    }
     private func onAsyncSubscriptionEvent(event: AsyncEvent<SubscriptionEvent<Data>, Void, APIError>) {
         switch event {
         case .inProcess(let subscriptionEvent):
@@ -114,6 +120,21 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         }
     }
 
+    private func onSubscriptionEvent2(_ subscriptionConnectionEvent: SubscriptionConnectionEvent) {
+        switch subscriptionConnectionEvent {
+        case .connecting:
+            let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.connecting)
+            dispatch(event: .inProcess(subscriptionEvent))
+        case .connected:
+            let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.connected)
+            dispatch(event: .inProcess(subscriptionEvent))
+        case .disconnected:
+            let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.disconnected)
+            dispatch(event: .inProcess(subscriptionEvent))
+            dispatch(event: .completed(()))
+            finish()
+        }
+    }
     private func onSubscriptionEvent(_ subscriptionEvent: SubscriptionEvent<Data>) {
         switch subscriptionEvent {
         case .connection(let subscriptionConnectionState):

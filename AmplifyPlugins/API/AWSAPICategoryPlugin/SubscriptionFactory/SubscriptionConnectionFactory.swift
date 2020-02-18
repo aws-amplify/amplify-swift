@@ -7,8 +7,10 @@
 
 import AWSPluginsCore
 
+/// Protocol for the subscription factory
 protocol SubscriptionConnectionFactory {
 
-    func getOrCreateConnection(for endpointConfiguration: AWSAPICategoryPluginConfiguration.EndpointConfig,
+    /// Get connection based on the connection type
+    func getOrCreateConnection(for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
                                authService: AWSAuthServiceBehavior) throws -> SubscriptionConnection
 }

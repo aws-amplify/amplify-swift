@@ -7,12 +7,12 @@
 
 import Foundation
 
-extension StarscreamWebsocketProvider: ConnectionInterceptable {
+extension RealtimeConnectionProvider: ConnectionInterceptable {
+
     func addInterceptor(_ interceptor: ConnectionInterceptor) {
         connectionInterceptors.append(interceptor)
     }
 
-    // TODO: Make interceptors asynchronous
     func interceptConnection(_ request: AppSyncConnectionRequest, for endpoint: URL) -> AppSyncConnectionRequest {
         let finalRequest = connectionInterceptors.reduce(request) { $1.interceptConnection($0, for: endpoint) }
         return finalRequest
