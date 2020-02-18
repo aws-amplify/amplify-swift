@@ -38,8 +38,13 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
     override public func cancel() {
         if let subscriptionItem = subscriptionItem, let subscriptionConnection = subscriptionConnection {
             subscriptionConnection.unsubscribe(item: subscriptionItem)
+            let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.disconnected)
+            dispatch(event: .inProcess(subscriptionEvent))
+            dispatch(event: .completed(()))
+            finish()
+        } else {
+            super.cancel()
         }
-        super.cancel()
     }
 
     override public func main() {
