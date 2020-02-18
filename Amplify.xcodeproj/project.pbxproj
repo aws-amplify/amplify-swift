@@ -1725,14 +1725,9 @@
 				B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */,
 				FACBA78C23949588006349C8 /* Model+DateFormatting.swift */,
 				FA8EE778238627040097E4F1 /* Model+ModelName.swift */,
-				B92E03AB2367CE7A006CEB8D /* Model+Schema.swift */,
 				FA8EE77C238627350097E4F1 /* Model+Subscript.swift */,
-				B9FAA10A23878122009414B4 /* ModelField+Association.swift */,
 				B92E03A92367CE7A006CEB8D /* ModelRegistry.swift */,
 				FA5D4CF2238AFD7B00D2F54A /* ModelRegistry+Syncable.swift */,
-				B92E03A82367CE7A006CEB8D /* ModelSchema.swift */,
-				FAA64FC22397294500B9C3C6 /* ModelSchema+Attributes.swift */,
-				B92E03AA2367CE7A006CEB8D /* ModelSchema+Definition.swift */,
 				FA8EE780238628490097E4F1 /* Persistable.swift */,
 				FA8EE775238626C70097E4F1 /* AnyModel */,
 				B9FAA1232388BE2B009414B4 /* Collection */,
@@ -1743,6 +1738,11 @@
 		B937FBFC23FB4ED300081639 /* Schema */ = {
 			isa = PBXGroup;
 			children = (
+				B92E03AB2367CE7A006CEB8D /* Model+Schema.swift */,
+				B9FAA10A23878122009414B4 /* ModelField+Association.swift */,
+				B92E03A82367CE7A006CEB8D /* ModelSchema.swift */,
+				FAA64FC22397294500B9C3C6 /* ModelSchema+Attributes.swift */,
+				B92E03AA2367CE7A006CEB8D /* ModelSchema+Definition.swift */,
 			);
 			path = Schema;
 			sourceTree = "<group>";

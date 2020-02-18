@@ -5,19 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// Defines a storage schema. This immutable struct holds a reference to all the available
-/// `Model` types and their respective `ModelSchema`.
-public struct Schema {
-
-    /// The `ModelSchema` instances indexed by their names (i.e. the type name)
-    let models: [String: ModelSchema]
-
-    /// The current version of the schema
-    let version: Int
-
-}
-
 public enum ModelAttribute {
+    
     /// Represents a database index, often used for frequent query optimizations.
     case index
 
