@@ -128,39 +128,39 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         switch newState {
         case .notStarted:
             break
-        case .pauseSubscriptions:
+        case .pausingSubscriptions:
             pauseSubscriptions()
-        case .pauseMutationQueue:
+        case .pausingMutationQueue:
             pauseMutations()
-        case .initializeSubscriptions(let api, let storageAdapter):
+        case .initializingSubscriptions(let api, let storageAdapter):
             initializeSubscriptions(api: api, storageAdapter: storageAdapter)
-        case .performInitialSync:
+        case .performingInitialSync:
             performInitialSync()
-        case .activateCloudSubscriptions:
+        case .activatingCloudSubscriptions:
             activateCloudSubscriptions()
-        case .activateMutationQueue(let api, let mutationEventPublisher):
+        case .activatingMutationQueue(let api, let mutationEventPublisher):
             startMutationQueue(api: api, mutationEventPublisher: mutationEventPublisher)
-        case .notifySyncStarted:
+        case .notifyingSyncStarted:
             notifySyncStarted()
 
         case .syncEngineActive:
             break
 
-        case .cleanup(let error):
+        case .cleaningUp(let error):
             cleanup(error: error)
 
-        case .scheduleRestart(let error):
+        case .schedulingRestart(let error):
             scheduleRestart(error: error)
         }
     }
 
     func start(api: APICategoryGraphQLBehavior = Amplify.API) {
-        self.api = api
         guard storageAdapter != nil else {
             log.error(error: DataStoreError.nilStorageAdapter())
             remoteSyncTopicPublisher.send(completion: .failure(DataStoreError.nilStorageAdapter()))
             return
         }
+        self.api = api
 
         remoteSyncTopicPublisher.send(.storageAdapterAvailable)
         stateMachine.notify(action: .receivedStart)
@@ -197,9 +197,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         reconciliationQueueSink = reconciliationQueue?.publisher.sink(
             receiveCompletion: onReceiveCompletion(receiveCompletion:),
             receiveValue: onReceive(receiveValue:))
-
-        //Notifying the publisher & state machine are handled in:
-        // RemoteSyncEngine+IncomingEventReconciliationQueueEvent.swift
     }
 
     private func performInitialSync() {
@@ -238,9 +235,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private func activateCloudSubscriptions() {
         log.debug(#function)
         reconciliationQueue?.start()
-
-        //Notifying the publisher & state machine are handled in:
-        // RemoteSyncEngine+IncomingEventReconciliationQueueEvent.swift
     }
 
     private func startMutationQueue(api: APICategoryGraphQLBehavior,

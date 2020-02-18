@@ -11,10 +11,9 @@ import Foundation
 
 @available(iOS 13.0, *)
 extension RemoteSyncEngine {
-    @available(iOS 13.0, *)
     func onReceiveCompletion(receiveCompletion: Subscribers.Completion<DataStoreError>) {
         switch stateMachine.state {
-        case .initializeSubscriptions:
+        case .initializingSubscriptions:
             notifyError(receiveCompletion: receiveCompletion)
         case .syncEngineActive:
             notifyError(receiveCompletion: receiveCompletion)
@@ -23,17 +22,15 @@ extension RemoteSyncEngine {
         }
     }
 
-    @available(iOS 13.0, *)
     func notifyError(receiveCompletion: Subscribers.Completion<DataStoreError>) {
         switch receiveCompletion {
         case .failure(let error):
             stateMachine.notify(action: .errored(error))
         case .finished:
-            stateMachine.notify(action: .errored(nil))
+            stateMachine.notify(action: .finished)
         }
     }
 
-    @available(iOS 13.0, *)
     func onReceive(receiveValue: IncomingEventReconciliationQueueEvent) {
         switch receiveValue {
         case .initialized:

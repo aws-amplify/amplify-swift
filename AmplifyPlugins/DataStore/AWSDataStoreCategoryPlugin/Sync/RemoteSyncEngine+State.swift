@@ -14,43 +14,43 @@ extension RemoteSyncEngine {
     enum State {
         case notStarted
 
-        case pauseSubscriptions
-        case pauseMutationQueue
-        case initializeSubscriptions(APICategoryGraphQLBehavior, StorageEngineAdapter)
-        case performInitialSync
-        case activateCloudSubscriptions
-        case activateMutationQueue(APICategoryGraphQLBehavior, MutationEventPublisher)
-        case notifySyncStarted
+        case pausingSubscriptions
+        case pausingMutationQueue
+        case initializingSubscriptions(APICategoryGraphQLBehavior, StorageEngineAdapter)
+        case performingInitialSync
+        case activatingCloudSubscriptions
+        case activatingMutationQueue(APICategoryGraphQLBehavior, MutationEventPublisher)
+        case notifyingSyncStarted
 
         case syncEngineActive
 
-        case cleanup(AmplifyError?)
-        case scheduleRestart(AmplifyError?)
+        case cleaningUp(AmplifyError?)
+        case schedulingRestart(AmplifyError?)
 
         var displayName: String {
             switch self {
             case .notStarted:
                 return "notStarted"
-            case .pauseSubscriptions:
-                return "pauseCloudSubscriptions"
-            case .pauseMutationQueue:
-                return "pauseMutationQueue"
-            case .initializeSubscriptions:
-                return "initializeSubscriptions"
-            case .performInitialSync:
-                return "performInitialSync"
-            case .activateCloudSubscriptions:
-                return "activateCloudSubscriptions"
-            case .activateMutationQueue:
-                return "activateMutationQueue"
-            case .notifySyncStarted:
-                return "notifySyncStarted"
+            case .pausingSubscriptions:
+                return "pausingSubscriptions"
+            case .pausingMutationQueue:
+                return "pausingMutationQueue"
+            case .initializingSubscriptions:
+                return "initializingSubscriptions"
+            case .performingInitialSync:
+                return "performingInitialSync"
+            case .activatingCloudSubscriptions:
+                return "activatingCloudSubscriptions"
+            case .activatingMutationQueue:
+                return "activatingMutationQueue"
+            case .notifyingSyncStarted:
+                return "notifyingSyncStarted"
             case .syncEngineActive:
                 return "syncEngineActive"
-            case .cleanup:
-                return "cleanup"
-            case .scheduleRestart:
-                return "scheduleRestart"
+            case .cleaningUp:
+                return "cleaningUp"
+            case .schedulingRestart:
+                return "schedulingRestart"
             }
         }
     }
