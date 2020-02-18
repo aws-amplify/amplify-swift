@@ -11,49 +11,61 @@ import Combine
 @available(iOS 13.0, *)
 extension RemoteSyncEngine {
     struct Resolver {
+        // swiftlint:disable cyclomatic_complexity
         static func resolve(currentState: State, action: Action) -> State {
             switch (currentState, action) {
             case (.notStarted, .receivedStart):
-                return .pauseSubscriptions
+                return .pausingSubscriptions
 
-            case (.pauseSubscriptions, .pausedSubscriptions):
-                return .pauseMutationQueue
+            case (.pausingSubscriptions, .pausedSubscriptions):
+                return .pausingMutationQueue
 
-            case (.pauseMutationQueue, .pausedMutationQueue(let api, let storageEngineAdapter)):
-                return .initializeSubscriptions(api, storageEngineAdapter)
+            case (.pausingMutationQueue, .pausedMutationQueue(let api, let storageEngineAdapter)):
+                return .initializingSubscriptions(api, storageEngineAdapter)
 
-            case (.initializeSubscriptions, .initializedSubscriptions):
-                return .performInitialSync
-            case (.initializeSubscriptions, .errored(let error)):
-                return .cleanup(error)
+            case (.initializingSubscriptions, .initializedSubscriptions):
+                return .performingInitialSync
+            case (.initializingSubscriptions, .errored(let error)):
+                return .cleaningUp(error)
+            case (.initializingSubscriptions, .finished):
+                return .cleaningUp(nil)
 
-            case (.performInitialSync, .performedInitialSync):
-                return .activateCloudSubscriptions
-            case (.performInitialSync, .errored(let error)):
-                return .cleanup(error)
 
-            case (.activateCloudSubscriptions, .activatedCloudSubscriptions(let api, let mutationEventPublisher)):
-                return .activateMutationQueue(api, mutationEventPublisher)
-            case (.activateCloudSubscriptions, .errored(let error)):
-                return .cleanup(error)
+            case (.performingInitialSync, .performedInitialSync):
+                return .activatingCloudSubscriptions
+            case (.performingInitialSync, .errored(let error)):
+                return .cleaningUp(error)
+            case (.performingInitialSync, .finished):
+                return .cleaningUp(nil)
 
-            case (.activateMutationQueue, .activatedMutationQueue):
-                return .notifySyncStarted
 
-            case (.activateMutationQueue, .errored(let error)):
-                return .cleanup(error)
+            case (.activatingCloudSubscriptions, .activatedCloudSubscriptions(let api, let mutationEventPublisher)):
+                return .activatingMutationQueue(api, mutationEventPublisher)
+            case (.activatingCloudSubscriptions, .errored(let error)):
+                return .cleaningUp(error)
+            case (.activatingCloudSubscriptions, .finished):
+                return .cleaningUp(nil)
 
-            case (.notifySyncStarted, .notifiedSyncStarted):
+            case (.activatingMutationQueue, .activatedMutationQueue):
+                return .notifyingSyncStarted
+            case (.activatingMutationQueue, .errored(let error)):
+                return .cleaningUp(error)
+            case (.activatingMutationQueue, .finished):
+                return .cleaningUp(nil)
+
+            case (.notifyingSyncStarted, .notifiedSyncStarted):
                 return .syncEngineActive
 
             case (.syncEngineActive, .errored(let error)):
-                return .cleanup(error)
+                return .cleaningUp(error)
+            case (.syncEngineActive, .finished):
+                return .cleaningUp(nil)
 
-            case (.cleanup, .cleanedUp(let error)):
-                return .scheduleRestart(error)
+            case (.cleaningUp, .cleanedUp(let error)):
+                return .schedulingRestart(error)
 
-            case (.scheduleRestart, .scheduleRestartFinished):
-                return .pauseSubscriptions
+            case (.schedulingRestart, .scheduleRestartFinished):
+                return .pausingSubscriptions
 
             default:
                 log.warn("Unexpected state transition. In \(currentState.displayName), got \(action.displayName)")

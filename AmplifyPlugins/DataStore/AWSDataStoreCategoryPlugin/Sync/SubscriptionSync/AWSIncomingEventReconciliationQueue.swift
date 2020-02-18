@@ -50,7 +50,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
             }
             reconciliationQueues[modelName] = queue
             let modelReconciliationQueueSink = queue.publisher.sink(receiveCompletion: onReceiveCompletion(completed:),
-                                                                    receiveValue: onRecieveValue(receiveValue:))
+                                                                    receiveValue: onReceiveValue(receiveValue:))
             modelReconciliationQueueSinks[modelName] = modelReconciliationQueueSink
         }
     }
@@ -84,7 +84,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         }
     }
 
-    private func onRecieveValue(receiveValue: ModelReconciliationQueueEvent) {
+    private func onReceiveValue(receiveValue: ModelReconciliationQueueEvent) {
         switch receiveValue {
         case .mutationEvent(let event):
             eventReconciliationQueueTopic.send(.mutationEvent(event))

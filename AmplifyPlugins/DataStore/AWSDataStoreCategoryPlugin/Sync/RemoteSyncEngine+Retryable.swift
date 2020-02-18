@@ -16,7 +16,7 @@ extension RemoteSyncEngine {
     }
 
     func scheduleRestart(error: AmplifyError?) {
-        let advice = getRetryAdviceIfRetryable(error: error)
+        let advice = getRetryAdvice(error: error)
         if advice.shouldRetry {
             scheduleRestart(advice: advice)
         } else {
@@ -29,7 +29,7 @@ extension RemoteSyncEngine {
 
     }
 
-    private func getRetryAdviceIfRetryable(error: Error?) -> RequestRetryAdvice {
+    private func getRetryAdvice(error: Error?) -> RequestRetryAdvice {
         //TODO: Parse error from the receive completion to use as an input into getting retry advice.
         //      For now, specifying not connected to internet to force a retry up to our maximum
         let urlError = URLError(.notConnectedToInternet)

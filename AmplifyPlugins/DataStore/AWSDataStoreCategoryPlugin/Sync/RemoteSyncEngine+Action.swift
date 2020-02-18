@@ -29,7 +29,8 @@ extension RemoteSyncEngine {
 
         // Terminal actions
         case receivedCancel
-        case errored(AmplifyError?)
+        case errored(AmplifyError)
+        case finished
 
         var displayName: String {
             switch self {
@@ -59,6 +60,8 @@ extension RemoteSyncEngine {
                 return "receivedCancel"
             case .errored:
                 return "errored"
+            case .finished:
+                return "finished"
             }
 
         }
