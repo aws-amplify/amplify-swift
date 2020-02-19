@@ -9,6 +9,7 @@ import Amplify
 import Foundation
 import AWSCore
 import AWSPluginsCore
+import AppSyncSubscriptionClient
 
 final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscriptionOperation<R> {
 

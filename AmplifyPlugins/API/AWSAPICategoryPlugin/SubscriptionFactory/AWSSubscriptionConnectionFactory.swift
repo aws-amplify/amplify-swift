@@ -9,6 +9,7 @@ import Foundation
 import AWSCore
 import AWSPluginsCore
 import Amplify
+import AppSyncSubscriptionClient
 
 class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
 

@@ -6,6 +6,7 @@
 //
 
 import AWSPluginsCore
+import AppSyncSubscriptionClient
 
 /// Protocol for the subscription factory
 protocol SubscriptionConnectionFactory {
