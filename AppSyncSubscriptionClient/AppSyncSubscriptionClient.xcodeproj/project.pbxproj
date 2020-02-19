@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		0AD78B53110DE3FA49863B2E /* Pods_AppSyncSubscriptionClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6C9007005F8ADA4BC1216F4 /* Pods_AppSyncSubscriptionClient.framework */; };
 		2171802323FCE13F00E520C9 /* AppSyncSubscriptionClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2171801923FCE13F00E520C9 /* AppSyncSubscriptionClient.framework */; };
-		2171802823FCE13F00E520C9 /* AppSyncSubscriptionClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2171802723FCE13F00E520C9 /* AppSyncSubscriptionClientTests.swift */; };
-		2171803423FCE17E00E520C9 /* AppSyncSubscriptionClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2171803323FCE17E00E520C9 /* AppSyncSubscriptionClient.swift */; };
 		2171805B23FCE32900E520C9 /* AppSyncWebsocketProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2171805523FCE24500E520C9 /* AppSyncWebsocketProvider.swift */; };
 		2171805C23FCE32C00E520C9 /* StarscreamAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2171805623FCE24500E520C9 /* StarscreamAdapter.swift */; };
 		2171805D23FCE32F00E520C9 /* StarscreamAdapter+Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2171805723FCE24500E520C9 /* StarscreamAdapter+Delegate.swift */; };
@@ -39,6 +37,10 @@
 		2171807523FCE38400E520C9 /* AppSyncSubscriptionConnection+DataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2171803723FCE24500E520C9 /* AppSyncSubscriptionConnection+DataHandler.swift */; };
 		2171807623FCE38700E520C9 /* AppSyncSubscriptionConnection+Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2171803623FCE24500E520C9 /* AppSyncSubscriptionConnection+Connection.swift */; };
 		2171807723FCE38900E520C9 /* AppSyncSubscriptionConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2171803523FCE24500E520C9 /* AppSyncSubscriptionConnection.swift */; };
+		2171809823FDBB2D00E520C9 /* RealtimeConnectionProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2171809723FDBB2D00E520C9 /* RealtimeConnectionProviderTests.swift */; };
+		2171809A23FDBB3F00E520C9 /* AppSyncSubscriptionConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2171809923FDBB3F00E520C9 /* AppSyncSubscriptionConnectionTests.swift */; };
+		2171809D23FDBBDA00E520C9 /* MockConnectionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2171809C23FDBBDA00E520C9 /* MockConnectionProvider.swift */; };
+		217180A023FDBC3A00E520C9 /* RealtimeGatewayURLInterceptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2171809F23FDBC3A00E520C9 /* RealtimeGatewayURLInterceptorTests.swift */; };
 		9F971FC9C9BB7824E08F7DD0 /* Pods_AppSyncSubscriptionClient_AppSyncSubscriptionClientTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8A5348600064C46167C94C /* Pods_AppSyncSubscriptionClient_AppSyncSubscriptionClientTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -56,9 +58,7 @@
 		2171801923FCE13F00E520C9 /* AppSyncSubscriptionClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AppSyncSubscriptionClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2171801D23FCE13F00E520C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2171802223FCE13F00E520C9 /* AppSyncSubscriptionClientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppSyncSubscriptionClientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		2171802723FCE13F00E520C9 /* AppSyncSubscriptionClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncSubscriptionClientTests.swift; sourceTree = "<group>"; };
 		2171802923FCE13F00E520C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2171803323FCE17E00E520C9 /* AppSyncSubscriptionClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncSubscriptionClient.swift; sourceTree = "<group>"; };
 		2171803523FCE24500E520C9 /* AppSyncSubscriptionConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncSubscriptionConnection.swift; sourceTree = "<group>"; };
 		2171803623FCE24500E520C9 /* AppSyncSubscriptionConnection+Connection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppSyncSubscriptionConnection+Connection.swift"; sourceTree = "<group>"; };
 		2171803723FCE24500E520C9 /* AppSyncSubscriptionConnection+DataHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AppSyncSubscriptionConnection+DataHandler.swift"; sourceTree = "<group>"; };
@@ -87,6 +87,10 @@
 		2171805523FCE24500E520C9 /* AppSyncWebsocketProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncWebsocketProvider.swift; sourceTree = "<group>"; };
 		2171805623FCE24500E520C9 /* StarscreamAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StarscreamAdapter.swift; sourceTree = "<group>"; };
 		2171805723FCE24500E520C9 /* StarscreamAdapter+Delegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StarscreamAdapter+Delegate.swift"; sourceTree = "<group>"; };
+		2171809723FDBB2D00E520C9 /* RealtimeConnectionProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeConnectionProviderTests.swift; sourceTree = "<group>"; };
+		2171809923FDBB3F00E520C9 /* AppSyncSubscriptionConnectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncSubscriptionConnectionTests.swift; sourceTree = "<group>"; };
+		2171809C23FDBBDA00E520C9 /* MockConnectionProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockConnectionProvider.swift; sourceTree = "<group>"; };
+		2171809F23FDBC3A00E520C9 /* RealtimeGatewayURLInterceptorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeGatewayURLInterceptorTests.swift; sourceTree = "<group>"; };
 		5D8A5348600064C46167C94C /* Pods_AppSyncSubscriptionClient_AppSyncSubscriptionClientTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AppSyncSubscriptionClient_AppSyncSubscriptionClientTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63A2B525F67F21B5CD247603 /* Pods-AppSyncSubscriptionClient.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppSyncSubscriptionClient.release.xcconfig"; path = "Target Support Files/Pods-AppSyncSubscriptionClient/Pods-AppSyncSubscriptionClient.release.xcconfig"; sourceTree = "<group>"; };
 		E6C9007005F8ADA4BC1216F4 /* Pods_AppSyncSubscriptionClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AppSyncSubscriptionClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -140,7 +144,6 @@
 			isa = PBXGroup;
 			children = (
 				2171801D23FCE13F00E520C9 /* Info.plist */,
-				2171803323FCE17E00E520C9 /* AppSyncSubscriptionClient.swift */,
 				2171803F23FCE24500E520C9 /* Connection */,
 				2171804E23FCE24500E520C9 /* ConnectionProvider */,
 				2171805423FCE24500E520C9 /* Support */,
@@ -152,8 +155,11 @@
 		2171802623FCE13F00E520C9 /* AppSyncSubscriptionClientTests */ = {
 			isa = PBXGroup;
 			children = (
-				2171802723FCE13F00E520C9 /* AppSyncSubscriptionClientTests.swift */,
+				2171809423FDBAC400E520C9 /* Connection */,
+				2171809523FDBACB00E520C9 /* ConnectionProvider */,
 				2171802923FCE13F00E520C9 /* Info.plist */,
+				2171809B23FDBBAD00E520C9 /* Mocks */,
+				2171809E23FDBC1600E520C9 /* Support */,
 			);
 			path = AppSyncSubscriptionClientTests;
 			sourceTree = "<group>";
@@ -236,6 +242,38 @@
 				2171805823FCE24500E520C9 /* Starscream */,
 			);
 			path = Websocket;
+			sourceTree = "<group>";
+		};
+		2171809423FDBAC400E520C9 /* Connection */ = {
+			isa = PBXGroup;
+			children = (
+				2171809923FDBB3F00E520C9 /* AppSyncSubscriptionConnectionTests.swift */,
+			);
+			path = Connection;
+			sourceTree = "<group>";
+		};
+		2171809523FDBACB00E520C9 /* ConnectionProvider */ = {
+			isa = PBXGroup;
+			children = (
+				2171809723FDBB2D00E520C9 /* RealtimeConnectionProviderTests.swift */,
+			);
+			path = ConnectionProvider;
+			sourceTree = "<group>";
+		};
+		2171809B23FDBBAD00E520C9 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				2171809C23FDBBDA00E520C9 /* MockConnectionProvider.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
+		2171809E23FDBC1600E520C9 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				2171809F23FDBC3A00E520C9 /* RealtimeGatewayURLInterceptorTests.swift */,
+			);
+			path = Support;
 			sourceTree = "<group>";
 		};
 		7321F3813B21F889B8A3F97C /* Pods */ = {
@@ -436,7 +474,6 @@
 			files = (
 				2171805E23FCE33700E520C9 /* AppSyncLogger.swift in Sources */,
 				2171807623FCE38700E520C9 /* AppSyncSubscriptionConnection+Connection.swift in Sources */,
-				2171803423FCE17E00E520C9 /* AppSyncSubscriptionClient.swift in Sources */,
 				2171806523FCE35E00E520C9 /* ConnectionProvider.swift in Sources */,
 				2171805B23FCE32900E520C9 /* AppSyncWebsocketProvider.swift in Sources */,
 				2171806223FCE35700E520C9 /* RealtimeGatewayURLInterceptor.swift in Sources */,
@@ -470,7 +507,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2171802823FCE13F00E520C9 /* AppSyncSubscriptionClientTests.swift in Sources */,
+				2171809D23FDBBDA00E520C9 /* MockConnectionProvider.swift in Sources */,
+				2171809823FDBB2D00E520C9 /* RealtimeConnectionProviderTests.swift in Sources */,
+				217180A023FDBC3A00E520C9 /* RealtimeGatewayURLInterceptorTests.swift in Sources */,
+				2171809A23FDBB3F00E520C9 /* AppSyncSubscriptionConnectionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

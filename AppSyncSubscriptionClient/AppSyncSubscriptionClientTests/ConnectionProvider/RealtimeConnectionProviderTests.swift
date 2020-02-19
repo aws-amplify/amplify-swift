@@ -1,15 +1,14 @@
 //
-//  AppSyncSubscriptionClientTests.swift
+//  RealtimeConnectionProviderTests.swift
 //  AppSyncSubscriptionClientTests
 //
-//  Created by Law, Michael on 2/18/20.
+//  Created by Law, Michael on 2/19/20.
 //  Copyright © 2020 amazonaws. All rights reserved.
 //
 
 import XCTest
-@testable import AppSyncSubscriptionClient
 
-class AppSyncSubscriptionClientTests: XCTestCase {
+class RealtimeConnectionProviderTests: XCTestCase {
 
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
