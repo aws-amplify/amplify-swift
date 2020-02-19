@@ -8,7 +8,7 @@
 import Foundation
 
 /// Protocol for the connection to make it retryable.
-protocol RetryableConnection {
+public protocol RetryableConnection {
 
     /// Adds a RetryHandler for the connection. The retry handler checks the error
     /// and decides whether to retry or not.
@@ -18,7 +18,7 @@ protocol RetryableConnection {
 }
 
 /// Protocol for connection retry handler.
-protocol ConnectionRetryHandler {
+public protocol ConnectionRetryHandler {
 
     /// Check if we should retry the request or not.
     /// - Parameter error: Connection provider error.
@@ -26,7 +26,7 @@ protocol ConnectionRetryHandler {
 
 }
 
-protocol RetryAdvice {
+public protocol RetryAdvice {
     var shouldRetry: Bool { get }
     var retryInterval: DispatchTimeInterval? { get }
 }

@@ -71,7 +71,7 @@ public class AppSyncSubscriptionConnection: SubscriptionConnection, RetryableCon
         }
     }
 
-    func addRetryHandler(handler: ConnectionRetryHandler) {
+    public func addRetryHandler(handler: ConnectionRetryHandler) {
         retryHandler = handler
     }
 }
