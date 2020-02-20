@@ -93,19 +93,18 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         }
 
         // Create subscription
-
         subscriptionItem = subscriptionConnection?.subscribe(requestString: request.document,
                                                              variables: request.variables,
                                                              eventHandler: { [weak self] event, _ in
-            self?.onAsyncSubscriptionEvent2(event: event)
+            self?.onAsyncSubscriptionEvent(event: event)
         })
 
     }
 
-    private func onAsyncSubscriptionEvent2(event: SubscriptionItemEvent) {
+    private func onAsyncSubscriptionEvent(event: SubscriptionItemEvent) {
         switch event {
         case .connection(let subscriptionConnectionEvent):
-            onSubscriptionEvent2(subscriptionConnectionEvent)
+            onSubscriptionEvent(subscriptionConnectionEvent)
         case .data(let data):
             onGraphQLResponseData(data)
         case .failed(let error):
@@ -113,20 +112,8 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             finish()
         }
     }
-    private func onAsyncSubscriptionEvent(event: AsyncEvent<SubscriptionEvent<Data>, Void, APIError>) {
-        switch event {
-        case .inProcess(let subscriptionEvent):
-            onSubscriptionEvent(subscriptionEvent)
-        case .failed(let error):
-            dispatch(event: .failed(error))
-            finish()
-        default:
-            dispatch(event: .failed(APIError.unknown("Unknown subscription event", "", nil)))
-            finish()
-        }
-    }
 
-    private func onSubscriptionEvent2(_ subscriptionConnectionEvent: SubscriptionConnectionEvent) {
+    private func onSubscriptionEvent(_ subscriptionConnectionEvent: SubscriptionConnectionEvent) {
         switch subscriptionConnectionEvent {
         case .connecting:
             let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.connecting)
@@ -137,24 +124,6 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         case .disconnected:
             let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.disconnected)
             dispatch(event: .inProcess(subscriptionEvent))
-            dispatch(event: .completed(()))
-            finish()
-        }
-    }
-    private func onSubscriptionEvent(_ subscriptionEvent: SubscriptionEvent<Data>) {
-        switch subscriptionEvent {
-        case .connection(let subscriptionConnectionState):
-            onSubscriptionConnectionState(subscriptionConnectionState)
-        case .data(let graphQLResponseData):
-            onGraphQLResponseData(graphQLResponseData)
-        }
-    }
-
-    private func onSubscriptionConnectionState(_ subscriptionConnectionState: SubscriptionConnectionState) {
-        let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(subscriptionConnectionState)
-        dispatch(event: .inProcess(subscriptionEvent))
-
-        if case .disconnected = subscriptionConnectionState {
             dispatch(event: .completed(()))
             finish()
         }

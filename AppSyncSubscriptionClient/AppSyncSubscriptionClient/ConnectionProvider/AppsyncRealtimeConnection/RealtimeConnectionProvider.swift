@@ -97,6 +97,10 @@ public class RealtimeConnectionProvider: ConnectionProvider {
     public func removeListener(identifier: String) {
         serialCallbackQueue.async {
             self.listeners.removeValue(forKey: identifier)
+            if self.listeners.count == 0 {
+                self.status = .notConnected
+                self.websocket.disconnect()
+            }
         }
     }
 
