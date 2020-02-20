@@ -34,8 +34,8 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
     private var onDeleteListener: GraphQLSubscriptionOperation<Payload>.EventListener?
     private var onDeleteConnected: Bool
 
-    private let connectionStatusMutex: DispatchSemaphore
-    private var combinedConnectionStatus: Bool {
+    private let connectionStatusQueue: OperationQueue
+    private var combinedConnectionStatusIsConnected: Bool {
         return onCreateConnected && onUpdateConnected && onDeleteConnected
     }
 
@@ -46,7 +46,10 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
         self.onCreateConnected = false
         self.onUpdateConnected = false
         self.onDeleteConnected = false
-        self.connectionStatusMutex = DispatchSemaphore(value: 1)
+        self.connectionStatusQueue = OperationQueue()
+        connectionStatusQueue.name = "com.amazonaws.Amplify.RemoteSyncEngine.\(modelType.modelName).IncomingAsyncSubscriptionEventPublisher"
+        connectionStatusQueue.maxConcurrentOperationCount = 1
+        connectionStatusQueue.isSuspended = false
 
         let incomingSubscriptionEvents = PassthroughSubject<Event, DataStoreError>()
         self.incomingSubscriptionEvents = incomingSubscriptionEvents
@@ -78,56 +81,50 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
 
     func onCreateListenerHandler(event: Event) {
         log.verbose("onCreateListener: \(event)")
-        if case .inProcess(.connection) = event {
-            connectionStatusMutex.wait()
-            if case .inProcess(.connection(.connected)) = event {
-                self.onCreateConnected = true
-            } else if case .inProcess(.connection(.disconnected)) = event {
-                self.onCreateConnected = false
-            }
-            if combinedConnectionStatus {
-                incomingSubscriptionEvents.send(event)
-            }
-            connectionStatusMutex.signal()
-            return
+        let onCreateConnectionOp = CancelAwareBlockOperation {
+            self.onCreateConnected = self.isConnectionStatusConnected(for: event)
+            self.sendConnectionEventIfConnected(event: event)
         }
-        incomingSubscriptionEvents.send(event)
+        genericListenerHandler(event: event, cancelAwareBlock: onCreateConnectionOp)
     }
 
     func onUpdateListenerHandler(event: Event) {
         log.verbose("onUpdateListener: \(event)")
-        if case .inProcess(.connection) = event {
-            connectionStatusMutex.wait()
-            if case .inProcess(.connection(.connected)) = event {
-                self.onUpdateConnected = true
-            } else if case .inProcess(.connection(.disconnected)) = event {
-                self.onUpdateConnected = false
-            }
-            if combinedConnectionStatus {
-                incomingSubscriptionEvents.send(event)
-            }
-            connectionStatusMutex.signal()
-            return
+        let onUpdateConnectionOp = CancelAwareBlockOperation {
+            self.onUpdateConnected = self.isConnectionStatusConnected(for: event)
+            self.sendConnectionEventIfConnected(event: event)
         }
-        incomingSubscriptionEvents.send(event)
+        genericListenerHandler(event: event, cancelAwareBlock: onUpdateConnectionOp)
     }
 
     func onDeleteListenerHandler(event: Event) {
         log.verbose("onDeleteListener: \(event)")
-        if case .inProcess(.connection) = event {
-            connectionStatusMutex.wait()
-            if case .inProcess(.connection(.connected)) = event {
-                self.onDeleteConnected = true
-            } else if case .inProcess(.connection(.disconnected)) = event {
-                self.onDeleteConnected = false
-            }
-            if combinedConnectionStatus {
-                incomingSubscriptionEvents.send(event)
-            }
-            connectionStatusMutex.signal()
-            return
+        let onDeleteConnectionOp = CancelAwareBlockOperation {
+            self.onDeleteConnected = self.isConnectionStatusConnected(for: event)
+            self.sendConnectionEventIfConnected(event: event)
         }
-        incomingSubscriptionEvents.send(event)
+        genericListenerHandler(event: event, cancelAwareBlock: onDeleteConnectionOp)
+    }
+
+    func isConnectionStatusConnected(for event: Event) -> Bool {
+        if case .inProcess(.connection(.connected)) = event {
+            return true
+        }
+        return false
+    }
+
+    func sendConnectionEventIfConnected(event: Event) {
+        if combinedConnectionStatusIsConnected {
+            incomingSubscriptionEvents.send(event)
+        }
+    }
+
+    func genericListenerHandler(event: Event, cancelAwareBlock: CancelAwareBlockOperation) {
+        if case .inProcess(.connection) = event {
+            self.connectionStatusQueue.addOperation(cancelAwareBlock)
+        } else {
+            incomingSubscriptionEvents.send(event)
+        }
     }
 
     static func apiSubscription(for modelType: Model.Type,
@@ -155,11 +152,11 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
         onUpdateOperation = nil
         onUpdateListener = nil
 
-
         onDeleteOperation?.cancel()
         onDeleteOperation = nil
         onDeleteListener = nil
 
+        connectionStatusQueue.cancelAllOperations()
     }
 
     func reset(onComplete: () -> Void) {
