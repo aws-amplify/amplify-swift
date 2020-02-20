@@ -31,6 +31,7 @@ public class RealtimeConnectionProvider: ConnectionProvider {
     public init(for url: URL, websocket: AppSyncWebsocketProvider) {
         self.url = url
         self.websocket = websocket
+        disconnectIfStale()
     }
 
     // MARK: - ConnectionProvider methods

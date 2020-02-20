@@ -10,11 +10,11 @@ import Foundation
 extension RealtimeConnectionProvider: AppSyncWebsocketDelegate {
 
     public func websocketDidConnect(provider: AppSyncWebsocketProvider) {
+        lastKeepAliveTime = DispatchTime.now()
         // Call the ack to finish the connection handshake
         // Inform the callback when ack gives back a response.
         AppSyncLogger.debug("WebsocketDidConnect, sending init message...")
         sendConnectionInitMessage()
-        disconnectIfStale()
     }
 
     public func websocketDidDisconnect(provider: AppSyncWebsocketProvider, error: Error?) {
