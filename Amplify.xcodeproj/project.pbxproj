@@ -207,6 +207,8 @@
 		B98E9D122372236300934B51 /* QueryField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0A2372236200934B51 /* QueryField.swift */; };
 		B98E9D132372236300934B51 /* QueryOperator+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */; };
 		B98E9D142372236300934B51 /* QueryPredicate+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */; };
+		B996FC4423FF2FA8006D0F68 /* Encodable+AnyEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B996FC4323FF2FA8006D0F68 /* Encodable+AnyEncodable.swift */; };
+		B9B64A9F23FCBF7E00730B68 /* ModelValueConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */; };
 		B9FAA10B23878122009414B4 /* ModelField+Association.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10A23878122009414B4 /* ModelField+Association.swift */; };
 		B9FAA10E23878BF3009414B4 /* UserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10D23878BF3009414B4 /* UserAccount.swift */; };
 		B9FAA11023878C5E009414B4 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10F23878C5E009414B4 /* UserProfile.swift */; };
@@ -834,6 +836,8 @@
 		B98E9D0A2372236200934B51 /* QueryField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryField.swift; sourceTree = "<group>"; };
 		B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "QueryOperator+Equatable.swift"; sourceTree = "<group>"; };
 		B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "QueryPredicate+Equatable.swift"; sourceTree = "<group>"; };
+		B996FC4323FF2FA8006D0F68 /* Encodable+AnyEncodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Encodable+AnyEncodable.swift"; sourceTree = "<group>"; };
+		B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelValueConverter.swift; sourceTree = "<group>"; };
 		B9FAA10A23878122009414B4 /* ModelField+Association.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelField+Association.swift"; sourceTree = "<group>"; };
 		B9FAA10D23878BF3009414B4 /* UserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccount.swift; sourceTree = "<group>"; };
 		B9FAA10F23878C5E009414B4 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
@@ -1718,7 +1722,6 @@
 		B92E03A62367CE7A006CEB8D /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				B937FBFC23FB4ED300081639 /* Schema */,
 				2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */,
 				B92E03A72367CE7A006CEB8D /* Model.swift */,
 				B9FAA17F238FBB5D009414B4 /* Model+Array.swift */,
@@ -1731,6 +1734,7 @@
 				FA8EE780238628490097E4F1 /* Persistable.swift */,
 				FA8EE775238626C70097E4F1 /* AnyModel */,
 				B9FAA1232388BE2B009414B4 /* Collection */,
+				B937FBFC23FB4ED300081639 /* Schema */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1743,6 +1747,7 @@
 				B92E03A82367CE7A006CEB8D /* ModelSchema.swift */,
 				FAA64FC22397294500B9C3C6 /* ModelSchema+Attributes.swift */,
 				B92E03AA2367CE7A006CEB8D /* ModelSchema+Definition.swift */,
+				B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */,
 			);
 			path = Schema;
 			sourceTree = "<group>";
@@ -2048,6 +2053,7 @@
 				FADB3A6723612940006D6FE9 /* BasicClosure.swift */,
 				FA56F72222B14B420039754A /* Cancellable.swift */,
 				6BB7440F23A9954900B0EB6C /* DispatchSource+MakeOneOff.swift */,
+				B996FC4323FF2FA8006D0F68 /* Encodable+AnyEncodable.swift */,
 				FA09B9402321BB78000E064D /* JSONValue.swift */,
 				FACD264F2386E9410068FBE6 /* JSONValue+KeyPath.swift */,
 				FACD264E2386E9410068FBE6 /* JSONValue+Subscript.swift */,
@@ -3520,11 +3526,13 @@
 			files = (
 				B92E03AE2367CE7A006CEB8D /* DataStoreCategoryPlugin.swift in Sources */,
 				FAD3936B2381F91100463F5E /* MutationEvent.swift in Sources */,
+				B996FC4423FF2FA8006D0F68 /* Encodable+AnyEncodable.swift in Sources */,
 				FAC0A29B22B3DEEE00B50912 /* HubPayload.swift in Sources */,
 				B4D3853F236C97360014653D /* PredictionsError.swift in Sources */,
 				FAD2A1892374D5DC0005CD6B /* GraphQLResponse.swift in Sources */,
 				FA8EE78323862DDB0097E4F1 /* AnyModel+Schema.swift in Sources */,
 				B92E03B22367CE7A006CEB8D /* DataStoreCategoryConfiguration.swift in Sources */,
+				B9B64A9F23FCBF7E00730B68 /* ModelValueConverter.swift in Sources */,
 				B92E03B82367CE7A006CEB8D /* ModelSchema+Definition.swift in Sources */,
 				21558E40237CB8640032A5BB /* GraphQLError.swift in Sources */,
 				950A26DD23D15D7E00D92B19 /* PredictionsSpeechToTextOperation.swift in Sources */,

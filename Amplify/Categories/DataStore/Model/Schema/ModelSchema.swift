@@ -6,7 +6,7 @@
 //
 
 public enum ModelAttribute {
-    
+
     /// Represents a database index, often used for frequent query optimizations.
     case index
 

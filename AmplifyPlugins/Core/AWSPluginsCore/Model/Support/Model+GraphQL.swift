@@ -22,7 +22,7 @@ extension Model {
             let name = field.graphQLName
             let value = self[field.name]
 
-            switch field.typeDefinition {
+            switch field.type {
             case .date, .dateTime:
                 if let date = value as? Date {
                     input[name] = date.iso8601String
