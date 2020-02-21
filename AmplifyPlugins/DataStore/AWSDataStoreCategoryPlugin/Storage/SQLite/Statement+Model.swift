@@ -52,25 +52,6 @@ extension Statement: StatementModelConvertible {
         SQLiteModelValueConverter()
     }
 
-//    public struct ResultSetRow {
-//
-//        let columns: [String: Int]
-//        let row: Statement.Element
-//
-//        func column(for name: String) -> Binding? {
-//            let columnIndex = columns[name]
-//            return row[columnIndex!]
-//        }
-//    }
-//
-//    public func resultSet() -> LazyMapSequence<Statement, ResultSetRow> {
-//        let columnEntries = columnNames.enumerated().map { ($0.element, $0.offset) }
-//        let columnMap = Dictionary(uniqueKeysWithValues: columnEntries)
-//        return `lazy`.map {
-//            ResultSetRow(columns: columnMap, row: $0)
-//        }
-//    }
-
     public func convert<M: Model>(to modelType: M.Type) throws -> [M] {
         var rows: [ModelValues] = []
         var convertedCache: ConvertCache = [:]
