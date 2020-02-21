@@ -29,6 +29,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     }
 
     private var reconciliationQueues: [String: ModelReconciliationQueue]
+    private var reconciliationQueueConnectionStatus: [String: Bool]
 
     init(modelTypes: [Model.Type],
          api: APICategoryGraphQLBehavior,
@@ -36,7 +37,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         self.modelReconciliationQueueSinks = [:]
         self.eventReconciliationQueueTopic = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
         self.reconciliationQueues = [:]
-
+        self.reconciliationQueueConnectionStatus = [:]
         for modelType in modelTypes {
             let modelName = modelType.modelName
             let queue = AWSModelReconciliationQueue(modelType: modelType,
@@ -49,7 +50,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
             }
             reconciliationQueues[modelName] = queue
             let modelReconciliationQueueSink = queue.publisher.sink(receiveCompletion: onReceiveCompletion(completed:),
-                                                                    receiveValue: onRecieveValue(receiveValue:))
+                                                                    receiveValue: onReceiveValue(receiveValue:))
             modelReconciliationQueueSinks[modelName] = modelReconciliationQueueSink
         }
     }
@@ -74,6 +75,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     }
 
     private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
+        reconciliationQueueConnectionStatus = [:]
         switch completed {
         case .failure(let error):
             eventReconciliationQueueTopic.send(completion: .failure(error))
@@ -82,10 +84,25 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         }
     }
 
-    private func onRecieveValue(receiveValue: ModelReconciliationQueueEvent) {
-        if case .mutationEvent(let event) = receiveValue {
-            self.eventReconciliationQueueTopic.send(.mutationEvent(event))
+    private func onReceiveValue(receiveValue: ModelReconciliationQueueEvent) {
+        switch receiveValue {
+        case .mutationEvent(let event):
+            eventReconciliationQueueTopic.send(.mutationEvent(event))
+        case .connected(let modelName):
+            reconciliationQueueConnectionStatus[modelName] = true
+            if reconciliationQueueConnectionStatus.count == reconciliationQueues.count {
+                eventReconciliationQueueTopic.send(.initialized)
+            }
+        default:
+            break
         }
+    }
+
+    func cancel() {
+        modelReconciliationQueueSinks.values.forEach { $0.cancel() }
+        reconciliationQueues.values.forEach { $0.cancel()}
+        reconciliationQueues = [:]
+        modelReconciliationQueueSinks = [:]
     }
 }
 

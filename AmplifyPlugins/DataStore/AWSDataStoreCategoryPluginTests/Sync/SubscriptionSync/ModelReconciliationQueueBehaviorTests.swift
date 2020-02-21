@@ -42,7 +42,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                                                     lastChangedAt: Date().unixSeconds,
                                                     version: 1)
             let mutationSync = MutationSync(model: model, syncMetadata: syncMetadata)
-            subscriptionEventsSubject.send(mutationSync)
+            subscriptionEventsSubject.send(.mutationEvent(mutationSync))
         }
 
         wait(for: [eventsNotSaved], timeout: 5.0)
@@ -84,7 +84,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                                                     lastChangedAt: Date().unixSeconds,
                                                     version: 1)
             let mutationSync = MutationSync(model: model, syncMetadata: syncMetadata)
-            subscriptionEventsSubject.send(mutationSync)
+            subscriptionEventsSubject.send(.mutationEvent(mutationSync))
         }
 
         queue.start()
@@ -150,7 +150,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                                                     lastChangedAt: Date().unixSeconds,
                                                     version: 1)
             let mutationSync = MutationSync(model: model, syncMetadata: syncMetadata)
-            subscriptionEventsSubject.send(mutationSync)
+            subscriptionEventsSubject.send(.mutationEvent(mutationSync))
         }
 
         queue.start()
@@ -195,7 +195,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                                                     lastChangedAt: Date().unixSeconds,
                                                     version: 1)
             let mutationSync = MutationSync(model: model, syncMetadata: syncMetadata)
-            subscriptionEventsSubject.send(mutationSync)
+            subscriptionEventsSubject.send(.mutationEvent(mutationSync))
         }
 
         queue.start()
@@ -228,7 +228,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                                                 lastChangedAt: Date().unixSeconds,
                                                 version: 1)
         let mutationSync = MutationSync(model: model, syncMetadata: syncMetadata)
-        subscriptionEventsSubject.send(mutationSync)
+        subscriptionEventsSubject.send(.mutationEvent(mutationSync))
 
         wait(for: [event1ShouldNotBeProcessed, event2ShouldNotBeProcessed, event3ShouldBeProcessed], timeout: 1.0)
 

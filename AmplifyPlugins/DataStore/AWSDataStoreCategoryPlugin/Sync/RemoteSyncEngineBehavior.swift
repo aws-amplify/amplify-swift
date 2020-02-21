@@ -17,6 +17,7 @@ enum RemoteSyncEngineEvent {
     case subscriptionsActivated
     case mutationQueueStarted
     case syncStarted
+    case cleanedUp
     case mutationEvent(MutationEvent)
 }
 

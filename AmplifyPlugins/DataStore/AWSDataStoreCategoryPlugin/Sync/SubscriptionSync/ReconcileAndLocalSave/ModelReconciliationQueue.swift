@@ -12,6 +12,7 @@ import Combine
 enum ModelReconciliationQueueEvent {
     case started
     case paused
+    case connected(String)
     case mutationEvent(MutationEvent)
 }
 

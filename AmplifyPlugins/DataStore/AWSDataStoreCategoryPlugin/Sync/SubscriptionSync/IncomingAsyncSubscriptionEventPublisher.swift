@@ -18,41 +18,48 @@ import Combine
 /// `GraphQLSubscriptionType` and holds a reference to the returned operation. The operations' listeners enqueue
 /// incoming successful events onto a `Publisher`, that queue processors can subscribe to.
 @available(iOS 13.0, *)
-final class IncomingAsyncSubscriptionEventPublisher {
+final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
     typealias Payload = MutationSync<AnyModel>
     typealias Event = AsyncEvent<SubscriptionEvent<GraphQLResponse<Payload>>, Void, APIError>
 
     private var onCreateOperation: GraphQLSubscriptionOperation<Payload>?
-    private let onCreateListener: GraphQLSubscriptionOperation<Payload>.EventListener
+    private var onCreateListener: GraphQLSubscriptionOperation<Payload>.EventListener?
+    private var onCreateConnected: Bool
 
     private var onUpdateOperation: GraphQLSubscriptionOperation<Payload>?
-    private let onUpdateListener: GraphQLSubscriptionOperation<Payload>.EventListener
+    private var onUpdateListener: GraphQLSubscriptionOperation<Payload>.EventListener?
+    private var onUpdateConnected: Bool
 
     private var onDeleteOperation: GraphQLSubscriptionOperation<Payload>?
-    private let onDeleteListener: GraphQLSubscriptionOperation<Payload>.EventListener
+    private var onDeleteListener: GraphQLSubscriptionOperation<Payload>.EventListener?
+    private var onDeleteConnected: Bool
+
+    private let connectionStatusMutex: DispatchSemaphore
+    private var combinedConnectionStatus: Bool {
+        return onCreateConnected && onUpdateConnected && onDeleteConnected
+    }
 
     private let incomingSubscriptionEvents: PassthroughSubject<Event, DataStoreError>
 
     init(modelType: Model.Type, api: APICategoryGraphQLBehavior) {
         let log = Amplify.Logging.logger(forCategory: "IncomingAsyncSubscriptionEventPublisher")
+        self.onCreateConnected = false
+        self.onUpdateConnected = false
+        self.onDeleteConnected = false
+        self.connectionStatusMutex = DispatchSemaphore(value: 1)
+
         let incomingSubscriptionEvents = PassthroughSubject<Event, DataStoreError>()
         self.incomingSubscriptionEvents = incomingSubscriptionEvents
 
-        let onCreateListener: GraphQLSubscriptionOperation<Payload>.EventListener = { event in
-            log.verbose("onCreateListener: \(event)")
-            incomingSubscriptionEvents.send(event)
-        }
-        self.onCreateListener = onCreateListener
+        let onCreateListener: GraphQLSubscriptionOperation<Payload>.EventListener = onCreateListenerHandler(event:)
+        self.onCreateListener =  onCreateListener
         self.onCreateOperation = IncomingAsyncSubscriptionEventPublisher.apiSubscription(
             for: modelType,
             subscriptionType: .onCreate,
             api: api,
             listener: onCreateListener)
 
-        let onUpdateListener: GraphQLSubscriptionOperation<Payload>.EventListener = { event in
-            log.verbose("onUpdateListener: \(event)")
-            incomingSubscriptionEvents.send(event)
-        }
+        let onUpdateListener: GraphQLSubscriptionOperation<Payload>.EventListener = onUpdateListenerHandler(event:)
         self.onUpdateListener = onUpdateListener
         self.onUpdateOperation = IncomingAsyncSubscriptionEventPublisher.apiSubscription(
             for: modelType,
@@ -60,16 +67,67 @@ final class IncomingAsyncSubscriptionEventPublisher {
             api: api,
             listener: onUpdateListener)
 
-        let onDeleteListener: GraphQLSubscriptionOperation<Payload>.EventListener = { event in
-            log.verbose("onDeleteListener: \(event)")
-            incomingSubscriptionEvents.send(event)
-        }
+        let onDeleteListener: GraphQLSubscriptionOperation<Payload>.EventListener = onDeleteListenerHandler(event:)
         self.onDeleteListener = onDeleteListener
         self.onDeleteOperation = IncomingAsyncSubscriptionEventPublisher.apiSubscription(
             for: modelType,
             subscriptionType: .onDelete,
             api: api,
             listener: onDeleteListener)
+    }
+
+    func onCreateListenerHandler(event: Event) {
+        log.verbose("onCreateListener: \(event)")
+        if case .inProcess(.connection) = event {
+            connectionStatusMutex.wait()
+            if case .inProcess(.connection(.connected)) = event {
+                self.onCreateConnected = true
+            } else if case .inProcess(.connection(.disconnected)) = event {
+                self.onCreateConnected = false
+            }
+            if combinedConnectionStatus {
+                incomingSubscriptionEvents.send(event)
+            }
+            connectionStatusMutex.signal()
+            return
+        }
+        incomingSubscriptionEvents.send(event)
+    }
+
+    func onUpdateListenerHandler(event: Event) {
+        log.verbose("onUpdateListener: \(event)")
+        if case .inProcess(.connection) = event {
+            connectionStatusMutex.wait()
+            if case .inProcess(.connection(.connected)) = event {
+                self.onUpdateConnected = true
+            } else if case .inProcess(.connection(.disconnected)) = event {
+                self.onUpdateConnected = false
+            }
+            if combinedConnectionStatus {
+                incomingSubscriptionEvents.send(event)
+            }
+            connectionStatusMutex.signal()
+            return
+        }
+        incomingSubscriptionEvents.send(event)
+    }
+
+    func onDeleteListenerHandler(event: Event) {
+        log.verbose("onDeleteListener: \(event)")
+        if case .inProcess(.connection) = event {
+            connectionStatusMutex.wait()
+            if case .inProcess(.connection(.connected)) = event {
+                self.onDeleteConnected = true
+            } else if case .inProcess(.connection(.disconnected)) = event {
+                self.onDeleteConnected = false
+            }
+            if combinedConnectionStatus {
+                incomingSubscriptionEvents.send(event)
+            }
+            connectionStatusMutex.signal()
+            return
+        }
+        incomingSubscriptionEvents.send(event)
     }
 
     static func apiSubscription(for modelType: Model.Type,
@@ -88,18 +146,34 @@ final class IncomingAsyncSubscriptionEventPublisher {
         incomingSubscriptionEvents.subscribe(subscriber)
     }
 
-    func reset(onComplete: () -> Void) {
+    func cancel() {
         onCreateOperation?.cancel()
         onCreateOperation = nil
-        onCreateListener(.completed(()))
+        onCreateListener = nil
 
         onUpdateOperation?.cancel()
         onUpdateOperation = nil
-        onUpdateListener(.completed(()))
+        onUpdateListener = nil
+
 
         onDeleteOperation?.cancel()
         onDeleteOperation = nil
-        onDeleteListener(.completed(()))
+        onDeleteListener = nil
+
+    }
+
+    func reset(onComplete: () -> Void) {
+        onCreateOperation?.cancel()
+        onCreateOperation = nil
+        onCreateListener?(.completed(()))
+
+        onUpdateOperation?.cancel()
+        onUpdateOperation = nil
+        onUpdateListener?(.completed(()))
+
+        onDeleteOperation?.cancel()
+        onDeleteOperation = nil
+        onDeleteListener?(.completed(()))
 
         onComplete()
     }
