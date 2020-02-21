@@ -63,13 +63,13 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
         case .string:
             return value as? String
         case .int:
-            return value as? Int
+            return value as? Int64
         case .double:
             return value as? Double
         case .date, .dateTime, .time:
             return (value as? String)?.iso8601Date?.iso8601String
         case .timestamp:
-            return value as? Int
+            return value as? Int64
         case .bool:
             if let intValue = value as? Int64 {
                 return Bool.fromDatatypeValue(intValue)
