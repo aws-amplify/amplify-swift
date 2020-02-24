@@ -2,6 +2,13 @@
 
 A declarative library for application development using cloud services.
 
+## 0.11.0
+
+### New Features
+
+- **Predictions**
+  - Added the ability to transcribe text for both online and offline use cases. [#290](https://github.com/aws-amplify/amplify-ios/pull/290)
+
 ## 0.10.0
 
 ### New Features
