@@ -30,10 +30,3 @@ public protocol Model: Codable {
     var id: Identifier { get }
 
 }
-
-public protocol Enum: Codable {
-
-    var rawValue: String { get }
-
-    init?(rawValue: String)
-}

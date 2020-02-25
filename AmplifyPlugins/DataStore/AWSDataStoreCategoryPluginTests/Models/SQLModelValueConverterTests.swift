@@ -10,23 +10,24 @@ import XCTest
 
 @testable import Amplify
 @testable import AWSDataStoreCategoryPlugin
+@testable import SQLite
 
-class SQLModelValueConverterTests: XCTestCase {
+class SQLModelValueConverterTests: BaseDataStoreTests {
 
-    let testDateString = "2020-02-02T08:00:00.000Z"
+    private let testId = "df5dd4a4-34f8-4974-8a37-2617cf8dafe1"
 
-    var testDate: Date {
+    private let testDateString = "2020-02-02T08:00:00.000Z"
+
+    private var testDate: Date {
         return testDateString.iso8601Date!
     }
 
-    func testModelWithEveryTypeConversionToBindings() {
-
+    private var exampleModel: ExampleWithEveryType {
         // non-model type
         let nonModelExample = ExampleNonModelType(someString: "string", someEnum: .foo)
-        let nonModelJSON = "{\"someString\":\"string\",\"someEnum\":\"foo\"}"
 
         // example model
-        let example = ExampleWithEveryType(id: "df5dd4a4-34f8-4974-8a37-2617cf8dafe1",
+        let example = ExampleWithEveryType(id: testId,
                                            stringField: "string",
                                            intField: 20,
                                            doubleField: 6.5,
@@ -35,6 +36,22 @@ class SQLModelValueConverterTests: XCTestCase {
                                            enumField: .bar,
                                            nonModelField: nonModelExample,
                                            arrayOfStringsField: ["foo", "bar"])
+        return example
+    }
+
+    /// - Given: a `ExampleWithEveryType` model instance
+    /// - When:
+    ///   - the `sqlValues()` is called
+    /// - Then:
+    ///   - the result should be a SQLite `[Binding]` with the expected types:
+    ///     - enum values must be strings
+    ///     - arrays must be strings
+    ///     - non-model types must be strings
+    ///     - bool must be `Int` (1 or 0)
+    ///     - the remaining types should not change
+    func testModelWithEveryTypeConversionToBindings() {
+        let nonModelJSON = "{\"someString\":\"string\",\"someEnum\":\"foo\"}"
+        let example = exampleModel
 
         // convert model to SQLite Bindings
         let bindings = example.sqlValues()
@@ -49,6 +66,49 @@ class SQLModelValueConverterTests: XCTestCase {
         XCTAssertEqual(bindings[5] as? String, "bar") // enumField
         XCTAssertEqual(bindings[6] as? Int, 20) // intField
         XCTAssertEqual(bindings[7] as? String, nonModelJSON) // nonModelField
+    }
+
+    /// - Given: a `ExampleWithEveryType` model instance
+    /// - When:
+    ///   - the `Amplify.DataStore.save(example)` is called, followed by a
+    ///   `Amplify.DataStore.query(ExampleWithEveryType, byId: id)`
+    /// - Then:
+    ///   - the returning object must contain exatly the same values as the saved object,
+    ///   including correct enums and non-model types
+    func testInsertAndSelectExampleWithEveryType() {
+        let example = exampleModel
+
+        // save it
+        Amplify.DataStore.save(exampleModel) { saveResult in
+            switch saveResult {
+            case .success:
+                Amplify.DataStore.query(ExampleWithEveryType.self, byId: example.id) {
+                    switch $0 {
+                    case .success(let result):
+                        // then check if the queried version has the correct values
+                        guard let savedExample = result else {
+                            XCTFail("ExampleWithEveryType with id \(example.id) not found")
+                            return
+                        }
+                        XCTAssertEqual(savedExample.arrayOfStringsField, example.arrayOfStringsField)
+                        XCTAssertEqual(savedExample.boolField, example.boolField)
+                        XCTAssertEqual(savedExample.dateField.iso8601String, example.dateField.iso8601String)
+                        XCTAssertEqual(savedExample.doubleField, example.doubleField)
+                        XCTAssertEqual(savedExample.enumField, example.enumField)
+                        XCTAssertEqual(savedExample.id, example.id)
+                        XCTAssertEqual(savedExample.intField, example.intField)
+                        XCTAssertEqual(savedExample.stringField, example.stringField)
+                        // non-model fields
+                        XCTAssertEqual(savedExample.nonModelField.someEnum, example.nonModelField.someEnum)
+                        XCTAssertEqual(savedExample.nonModelField.someString, example.nonModelField.someString)
+                    case .failure(let error):
+                        XCTFail(error.errorDescription)
+                    }
+                }
+            case .failure(let error):
+                XCTFail(error.errorDescription)
+            }
+        }
     }
 
 }

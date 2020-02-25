@@ -40,7 +40,7 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
         case .bool:
             return (value as? Bool)?.intValue
         case .enum:
-            return (value as? Enum)?.rawValue
+            return (value as? ModelEnum)?.rawValue
         case .model:
             return (value as? Model)?.id
         case .collection:
@@ -76,10 +76,10 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
             }
             return nil
         case .enum(let enumType):
-            if let stringValue = value as? String {
-                return enumType.init(rawValue: stringValue)
-            }
-            return nil
+//            if let stringValue = value as? String {
+//                return enumType.init(rawValue: stringValue)
+//            }
+            return value as? String
         case .type:
             if let stringValue = value as? String {
                 return try SQLiteModelValueConverter.fromJSON(stringValue)

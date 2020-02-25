@@ -7,8 +7,7 @@
 
 import Foundation
 
-// TODO: Add the rest of the AppSync scalar types
-// https://docs.aws.amazon.com/appsync/latest/devguide/scalars.html
+/// Defines the type of a `Model` field.
 public enum ModelFieldType {
 
     case string
@@ -19,7 +18,7 @@ public enum ModelFieldType {
     case time
     case timestamp
     case bool
-    case `enum`(type: Enum.Type)
+    case `enum`(type: ModelEnum.Type)
     case type(type: Codable.Type)
     case model(type: Model.Type)
     case collection(of: Model.Type)
@@ -50,17 +49,16 @@ public enum ModelFieldType {
         if type is Date.Type {
             return .dateTime
         }
-        if let enumType = type as? Enum.Type {
+        if let enumType = type as? ModelEnum.Type {
             return .enum(type: enumType)
         }
         if let modelType = type as? Model.Type {
             return .model(type: modelType)
         }
-        // TODO handle collection
         if let codableType = type as? Codable.Type {
             return .type(type: codableType)
         }
-        preconditionFailure("")
+        preconditionFailure("Could not create a ModelFieldType from a Swift MetaType")
     }
 }
 
