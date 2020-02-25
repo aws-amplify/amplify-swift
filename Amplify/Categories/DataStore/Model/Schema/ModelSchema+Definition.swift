@@ -19,7 +19,7 @@ public enum ModelFieldType {
     case timestamp
     case bool
     case `enum`(type: ModelEnum.Type)
-    case type(type: Codable.Type)
+    case type(_ type: Codable.Type)
     case model(type: Model.Type)
     case collection(of: Model.Type)
 
@@ -56,9 +56,9 @@ public enum ModelFieldType {
             return .model(type: modelType)
         }
         if let codableType = type as? Codable.Type {
-            return .type(type: codableType)
+            return .type(codableType)
         }
-        preconditionFailure("Could not create a ModelFieldType from a Swift MetaType")
+        preconditionFailure("Could not create a ModelFieldType from \(String(describing: type)) MetaType")
     }
 }
 

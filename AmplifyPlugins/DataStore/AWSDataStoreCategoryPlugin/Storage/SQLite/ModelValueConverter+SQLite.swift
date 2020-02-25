@@ -75,10 +75,7 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
                 return Bool.fromDatatypeValue(intValue)
             }
             return nil
-        case .enum(let enumType):
-//            if let stringValue = value as? String {
-//                return enumType.init(rawValue: stringValue)
-//            }
+        case .enum:
             return value as? String
         case .type:
             if let stringValue = value as? String {

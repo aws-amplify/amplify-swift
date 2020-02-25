@@ -39,7 +39,7 @@ extension Persistable {
         } catch {
             preconditionFailure("""
             Value \(String(describing: value)) of type \(String(describing: valueType))
-            is not a SQLite Binding compatible type.
+            is not a SQLite Binding compatible type. Error: \(error.localizedDescription)
             """)
         }
     }
@@ -96,8 +96,17 @@ extension Model {
             }
 
             // otherwise, delegate to the value converter
-            let binding = try? valueConverter.convertToTarget(from: value, fieldType: field.type)
-            return binding
+            do {
+                let binding = try valueConverter.convertToTarget(from: value, fieldType: field.type)
+                return binding
+            } catch {
+                logger.warn("""
+                Error converting \(modelType.modelName).\(field.name) to the proper SQLite Binding.
+                Root cause is: \(String(describing: error))
+                """)
+                return nil
+            }
+
         }
 
         return values
