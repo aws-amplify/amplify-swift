@@ -12,6 +12,8 @@ class RequestRetryablePolicy: RequestRetryable {
     private static let maxWaitMilliseconds = 300 * 1_000 // 5 minutes of max retry duration.
     private static let jitterMilliseconds: Float = 100.0
 
+    private static let maxExponentForExponentialBackoff = 31
+
     public func retryRequestAdvice(urlError: URLError?,
                                    httpURLResponse: HTTPURLResponse?,
                                    attemptNumber: Int) -> RequestRetryAdvice {
@@ -70,8 +72,13 @@ class RequestRetryablePolicy: RequestRetryable {
     /// Returns a delay in milliseconds for the current attempt number. The delay includes random jitter as
     /// described in https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/
     private func retryDelayInMillseconds(for attemptNumber: Int) -> Int {
+        var exponent = attemptNumber
+        if attemptNumber > RequestRetryablePolicy.maxExponentForExponentialBackoff {
+            exponent = RequestRetryablePolicy.maxExponentForExponentialBackoff
+        }
+
         let jitter = Double(getRandomBetween0And1() * RequestRetryablePolicy.jitterMilliseconds)
-        let delay = Int(Double(truncating: pow(2.0, attemptNumber) as NSNumber) * 100.0 + jitter)
+        let delay = Int(Double(truncating: pow(2.0, exponent) as NSNumber) * 100.0 + jitter)
         return delay
     }
 
