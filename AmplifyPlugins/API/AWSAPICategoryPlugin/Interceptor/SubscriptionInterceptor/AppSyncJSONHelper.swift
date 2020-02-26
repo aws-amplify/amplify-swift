@@ -7,7 +7,7 @@
 
 import Foundation
 import Amplify
-import AppSyncSubscriptionClient
+import AppSyncRealTimeClient
 
 struct AppSyncJSONHelper {
 

@@ -9,7 +9,7 @@ import Foundation
 import AWSCore
 import AWSPluginsCore
 import Amplify
-import AppSyncSubscriptionClient
+import AppSyncRealTimeClient
 
 class IAMAuthInterceptor: AuthInterceptor {
 
