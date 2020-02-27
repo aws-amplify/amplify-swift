@@ -9,6 +9,7 @@ import Foundation
 import AWSCore
 import AWSPluginsCore
 import Amplify
+import AppSyncRealTimeClient
 
 /// Auth interceptor for API Key based authentication
 class APIKeyAuthInterceptor: AuthInterceptor {

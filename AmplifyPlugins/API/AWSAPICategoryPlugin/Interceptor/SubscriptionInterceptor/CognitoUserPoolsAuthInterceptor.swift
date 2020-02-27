@@ -8,6 +8,7 @@
 import Foundation
 import AWSPluginsCore
 import Amplify
+import AppSyncRealTimeClient
 
 class CognitoUserPoolsAuthInterceptor: AuthInterceptor {
 
