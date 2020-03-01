@@ -29,7 +29,9 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
 
             // create or retrieve the connection provider. If creating, add interceptors onto the provider.
             let connectionProvider = apiToConnectionProvider[apiName] ??
-                createConnectionProvider(for: url, authInterceptor: authInterceptor, connectionType: .appSyncRealtime)
+                ConnectionProviderFactory.createConnectionProvider(for: url,
+                                                                   authInterceptor: authInterceptor,
+                                                                   connectionType: .appSyncRealtime)
 
             // store the connection provider for this api
             apiToConnectionProvider[apiName] = connectionProvider
@@ -47,46 +49,21 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
 
         switch authorizationConfiguration {
         case .apiKey(let apiKeyConfiguration):
-            let apiKeyProvider = BasicAPIKeyProvider(apiKey: apiKeyConfiguration.apiKey)
-            authInterceptor = APIKeyAuthInterceptor(apiKeyProvider)
+            authInterceptor = APIKeyAuthInterceptor(apiKeyConfiguration.apiKey)
         case .amazonCognitoUserPools:
-            let userPoolTokenProvider = BasicUserPoolTokenProvider(authService: authService)
-            authInterceptor = CognitoUserPoolsAuthInterceptor(userPoolTokenProvider)
+            let provider = AWSOIDCAuthProvider(authService: authService)
+            authInterceptor = OIDCAuthInterceptor(provider)
         case .awsIAM(let awsIAMConfiguration):
-            let iamCredentialsProvider = BasicIAMCredentialsProvider(authService: authService)
-            authInterceptor = IAMAuthInterceptor(iamCredentialsProvider, region: awsIAMConfiguration.region)
+            authInterceptor = IAMAuthInterceptor(authService.getCognitoCredentialsProvider(),
+                                                 region: awsIAMConfiguration.region)
         case .openIDConnect:
             // TODO: retrieve OIDC Token Provider from somewhere else that the developer added.
-            let tokenProvider = BasicUserPoolTokenProvider(authService: authService)
-            // TODO: Need to run through OIDC use case to identify what is the Interceptor logic
-            authInterceptor = CognitoUserPoolsAuthInterceptor(tokenProvider)
+            let tokenProvider = AWSOIDCAuthProvider(authService: authService)
+            authInterceptor = OIDCAuthInterceptor(tokenProvider)
         case .none:
             throw APIError.unknown("Cannot create AppSync subscription for none auth mode", "")
         }
 
         return authInterceptor
-    }
-
-    private func createConnectionProvider(for url: URL, authInterceptor: AuthInterceptor, connectionType: SubscriptionConnectionType) -> ConnectionProvider {
-        let provider = createConnectionProvider(for: url, connectionType: connectionType)
-
-        if let messageInterceptable = provider as? MessageInterceptable {
-            messageInterceptable.addInterceptor(authInterceptor)
-        }
-        if let connectionInterceptable = provider as? ConnectionInterceptable {
-            connectionInterceptable.addInterceptor(RealtimeGatewayURLInterceptor())
-            connectionInterceptable.addInterceptor(authInterceptor)
-        }
-
-        return provider
-    }
-
-    private func createConnectionProvider(for url: URL, connectionType: SubscriptionConnectionType) -> ConnectionProvider {
-        switch connectionType {
-        case .appSyncRealtime:
-            let websocketProvider = StarscreamAdapter()
-            let connectionProvider = RealtimeConnectionProvider(for: url, websocket: websocketProvider)
-            return connectionProvider
-        }
     }
 }
