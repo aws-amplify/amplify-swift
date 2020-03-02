@@ -7,25 +7,33 @@
 
 import Foundation
 
-public struct DateUnit: DateScalarUnit {
+public enum DateUnit {
 
-    public let component: Calendar.Component
-    public let value: Int
+    case days(_ value: Int)
+    case weeks(_ value: Int)
+    case months(_ value: Int)
+    case years(_ value: Int)
 
-    func date(from date: Date) -> Date {
-        return date.add(value: value, to: component)
+    public var calendarComponent: Calendar.Component {
+        switch self {
+        case .days, .weeks:
+            return .day
+        case .months:
+            return .month
+        case .years:
+            return .year
+        }
     }
 
-    func date(to date: Date) -> Date {
-        return date.add(value: -value, to: component)
-    }
-
-    func dateTime(from dateTime: DateTime) -> DateTime {
-        return dateTime.add(value: value, to: component)
-    }
-
-    func dateTime(to dateTime: DateTime) -> DateTime {
-        return dateTime.add(value: -value, to: component)
+    public var value: Int {
+        switch self {
+        case .days(let value),
+             .months(let value),
+             .years(let value):
+            return value
+        case .weeks(let value):
+            return value * 7
+        }
     }
 
 }
@@ -41,31 +49,11 @@ public protocol DateUnitOperable {
 extension DateScalar where Self: DateUnitOperable {
 
     public static func + (left: Self, right: DateUnit) -> Self {
-        return left.add(value: right.value, to: right.component)
+        return left.add(value: right.value, to: right.calendarComponent)
     }
 
     public static func - (left: Self, right: DateUnit) -> Self {
-        return left.add(value: -right.value, to: right.component)
-    }
-
-}
-
-extension Int {
-
-    public var days: DateUnit {
-        DateUnit(component: .day, value: self)
-    }
-
-    public var weeks: DateUnit {
-        DateUnit(component: .day, value: self * 7)
-    }
-
-    public var months: DateUnit {
-        DateUnit(component: .month, value: self)
-    }
-
-    public var years: DateUnit {
-        DateUnit(component: .year, value: self)
+        return left.add(value: -right.value, to: right.calendarComponent)
     }
 
 }

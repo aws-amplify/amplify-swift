@@ -22,7 +22,7 @@ public struct MutationEvent: Model {
                 modelName: String,
                 json: String,
                 mutationType: MutationType,
-                createdAt: DateTime = .now,
+                createdAt: DateTime = .now(),
                 version: Int? = nil,
                 inProcess: Bool = false) {
         self.id = id

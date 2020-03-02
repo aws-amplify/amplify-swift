@@ -18,8 +18,8 @@ public struct Time: DateScalar, TimeUnitOperable {
         [.hour, .minute, .second, .nanosecond, .timeZone]
     }
 
-    public static var now: Time {
-        Time(Date())
+    public static func now() -> Time {
+        return Time(Date())
     }
 
     public let date: Date

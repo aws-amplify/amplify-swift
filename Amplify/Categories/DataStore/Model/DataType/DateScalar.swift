@@ -15,6 +15,8 @@ public protocol DateScalar {
     /// Which components are relevant to the Date Scalar implementation.
     static var iso8601DateComponents: Set<Calendar.Component> { get }
 
+    static func now() -> Self
+
     /// The underlying `Date` object. All `DateScalar` implementations must be backed
     /// by a Foundation `Date` instance.
     var date: Date { get }

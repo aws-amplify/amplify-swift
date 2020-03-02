@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// An extension that makes the `Date` struct conform with the `DataScalar` protocol.
+/// An extension that makes the `Date` struct conform with the `DateScalar` protocol.
 /// When used in persistence operations, the granularity of the different date representations
 /// is set by using different scalar types: `Date`, `DateTime` and `Time`.
 ///
@@ -18,6 +18,10 @@ extension Date: DateScalar, DateUnitOperable {
 
     public static var iso8601DateComponents: Set<Calendar.Component> {
         [.year, .month, .day, .timeZone]
+    }
+
+    public static func now() -> Date {
+        return Date()
     }
 
     public var date: Date {

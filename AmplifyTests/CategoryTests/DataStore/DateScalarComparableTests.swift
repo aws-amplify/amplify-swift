@@ -206,7 +206,7 @@ class DateScalarComparableTests: XCTestCase {
 
     func testDecodedDateTimeEquality() {
         do {
-            let time1 = DateTime.now
+            let time1 = DateTime.now()
             let time2 = try DateTime(iso8601String: time1.iso8601String)
             XCTAssertEqual(time1.iso8601String, time2.iso8601String)
             // TODO: truncate DataScalar precision properly

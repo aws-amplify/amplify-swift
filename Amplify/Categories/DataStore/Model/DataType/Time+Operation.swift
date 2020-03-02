@@ -7,25 +7,35 @@
 
 import Foundation
 
-public struct TimeUnit: DateScalarUnit {
 
-    public let component: Calendar.Component
-    public let value: Int
+public enum TimeUnit {
 
-    func dateTime(from dateTime: DateTime) -> DateTime {
-        return dateTime.add(value: value, to: component)
+    case hours(_ value: Int)
+    case minutes(_ value: Int)
+    case seconds(_ value: Int)
+    case nanoseconds(_ value: Int)
+
+    public var calendarComponent: Calendar.Component {
+        switch self {
+        case .hours:
+            return .hour
+        case .minutes:
+            return .minute
+        case .seconds:
+            return .second
+        case .nanoseconds:
+            return .nanosecond
+        }
     }
 
-    func dateTime(to dateTime: DateTime) -> DateTime {
-        return dateTime.add(value: -value, to: component)
-    }
-
-    func time(from time: Time) -> Time {
-        return time.add(value: value, to: component)
-    }
-
-    func time(to time: Time) -> Time {
-        return time.add(value: -value, to: component)
+    public var value: Int {
+        switch self {
+        case .hours(let value),
+             .minutes(let value),
+             .seconds(let value),
+             .nanoseconds(let value):
+            return value
+        }
     }
 
 }
@@ -41,31 +51,11 @@ public protocol TimeUnitOperable {
 extension DateScalar where Self: TimeUnitOperable {
 
     public static func + (left: Self, right: TimeUnit) -> Self {
-        return left.add(value: right.value, to: right.component)
+        return left.add(value: right.value, to: right.calendarComponent)
     }
 
     public static func - (left: Self, right: TimeUnit) -> Self {
-        return left.add(value: -right.value, to: right.component)
-    }
-
-}
-
-extension Int {
-
-    public var hours: TimeUnit {
-        TimeUnit(component: .hour, value: self)
-    }
-
-    public var minutes: TimeUnit {
-        TimeUnit(component: .minute, value: self)
-    }
-
-    public var seconds: TimeUnit {
-        TimeUnit(component: .second, value: self)
-    }
-
-    public var nanoseconds: TimeUnit {
-        TimeUnit(component: .nanosecond, value: self)
+        return left.add(value: -right.value, to: right.calendarComponent)
     }
 
 }
