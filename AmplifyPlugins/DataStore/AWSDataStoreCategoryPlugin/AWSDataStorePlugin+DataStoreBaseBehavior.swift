@@ -105,6 +105,24 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                withId: model.id,
                completion: publishingCompletion)
     }
+    public func delete<M: Model>(_ modelType: M.Type,
+                                 where predicate: () -> QueryPredicate,
+                                 completion: @escaping DataStoreCallback<Void>) {
+        let publishingCompletion: DataStoreCallback<Void> = { result in
+            switch result {
+            case .success:
+                // TODO: Handle errors from mutation event creation
+                // TODO: Do we need to publish mutation events for this?
+                print("Handle this prior to pushing in this code")
+            case .failure:
+                break
+            }
+            completion(result)
+        }
+        storageEngine.delete(modelType,
+                             predicate: predicate(),
+                             completion: publishingCompletion)
+    }
 
     // MARK: Private
 
@@ -133,5 +151,4 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
             }
         }
     }
-
 }

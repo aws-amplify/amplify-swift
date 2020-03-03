@@ -50,6 +50,12 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("deleteById")
     }
 
+    func delete<M: Model>(_ model: M,
+                          where predicate: () -> QueryPredicate,
+                          completion: @escaping DataStoreCallback<Void>) {
+        notify("deleteByPredicate")
+    }
+
     @available(iOS 13.0, *)
     func publisher<M: Model>(for modelType: M.Type)
         -> AnyPublisher<MutationEvent, DataStoreError> {

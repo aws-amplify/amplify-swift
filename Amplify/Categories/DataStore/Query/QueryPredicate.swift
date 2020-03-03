@@ -23,6 +23,10 @@ public func not<Predicate: QueryPredicate>(_ predicate: Predicate) -> QueryPredi
     return QueryPredicateGroup(type: .not, predicates: [predicate])
 }
 
+public enum QueryPredicateConstant: QueryPredicate {
+    case all
+}
+
 public class QueryPredicateGroup: QueryPredicate {
 
     public internal(set) var type: QueryPredicateGroupType

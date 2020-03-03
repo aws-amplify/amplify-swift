@@ -22,6 +22,10 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
                 withId id: Model.Identifier,
                 completion: DataStoreCallback<Void>)
 
+    func delete<M: Model>(_ modelType: M.Type,
+                          predicate: QueryPredicate,
+                          completion: (DataStoreResult<Void>) -> Void)
+
     func query(untypedModel modelType: Model.Type,
                predicate: QueryPredicate?,
                completion: DataStoreCallback<[Model]>)

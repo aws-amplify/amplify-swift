@@ -171,6 +171,32 @@ final class StorageEngine: StorageEngineBehavior {
         storageAdapter.delete(modelType, withId: id, completion: wrappedCompletion)
     }
 
+    func delete<M: Model>(_ modelType: M.Type,
+                          predicate: QueryPredicate,
+                          completion: @escaping DataStoreCallback<Void>) {
+        let wrappedCompletion: DataStoreCallback<Void> = { result in
+            guard modelType.schema.isSyncable, let syncEngine = self.syncEngine else {
+                completion(result)
+                return
+            }
+
+            guard case .success = result else {
+                completion(result)
+                return
+            }
+
+            //if #available(iOS 13.0, *) {
+            // TODO: Figure out how to sync deletes with predicates to the backend
+            //self.syncDeletion(of: modelType, withId: id, syncEngine: syncEngine, completion: completion)
+            //} else {
+            completion(result)
+            //}
+        }
+
+        storageAdapter.delete(modelType, predicate: predicate, completion: wrappedCompletion)
+    }
+
+
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate? = nil,
                          completion: DataStoreCallback<[M]>) {
