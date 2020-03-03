@@ -148,46 +148,114 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     ///   - call `delete(Post, id)` and check if `query(Post)` is empty
     ///   - check if `storageAdapter.exists(Post, id)` returns `false`
     func testInsertPostAndThenDeleteIt() {
-        let expectation = self.expectation(description: "it should insert and update a Post")
-
-        func checkDeletedPost(id: String) {
-            storageAdapter.query(Post.self) {
-                switch $0 {
-                case .success(let posts):
-                    XCTAssertEqual(posts.count, 0)
-                    do {
-                        let exists = try storageAdapter.exists(Post.self, withId: id)
-                        XCTAssertFalse(exists)
-                    } catch {
-                        XCTFail(String(describing: error))
-                    }
-                    expectation.fulfill()
-                case .failure(let error):
-                    XCTFail(String(describing: error))
-                    expectation.fulfill()
-                }
-            }
-        }
+        let saveExpectation = expectation(description: "Saved")
+        let deleteExpectation = expectation(description: "Deleted")
+        let queryExpectation = expectation(description: "Queried")
 
         let post = Post(title: "title", content: "content", createdAt: Date())
         storageAdapter.save(post) { insertResult in
             switch insertResult {
             case .success:
+                saveExpectation.fulfill()
                 storageAdapter.delete(Post.self, withId: post.id) {
                     switch $0 {
                     case .success:
-                        checkDeletedPost(id: post.id)
+                        deleteExpectation.fulfill()
+                        checkIfPostIsDeleted(id: post.id)
+                        queryExpectation.fulfill()
                     case .failure(let error):
                         XCTFail(error.errorDescription)
                     }
                 }
             case .failure(let error):
                 XCTFail(String(describing: error))
-                expectation.fulfill()
             }
         }
 
-        wait(for: [expectation], timeout: 5)
+        wait(for: [saveExpectation, deleteExpectation, queryExpectation], timeout: 2)
     }
 
+    func testInsertSinglePostThenDeleteItByPredicate() {
+        let dateTestStart = Date()
+        let dateInFuture = dateTestStart.addingTimeInterval(TimeInterval(10))
+        let saveExpectation = expectation(description: "Saved")
+        let deleteExpectation = expectation(description: "Deleted")
+        let queryExpectation = expectation(description: "Queried")
+
+        let post = Post(title: "title1", content: "content1", createdAt: dateInFuture)
+        storageAdapter.save(post) { insertResult in
+            switch insertResult {
+            case .success:
+                saveExpectation.fulfill()
+                let postKeys = Post.keys
+                let predicate = postKeys.createdAt.gt(dateTestStart)
+                storageAdapter.delete(Post.self, predicate: predicate) { result in
+                    switch result {
+                    case .success:
+                        deleteExpectation.fulfill()
+                        checkIfPostIsDeleted(id: post.id)
+                        queryExpectation.fulfill()
+                    case .failure(let error):
+                        XCTFail(error.errorDescription)
+                    }
+                }
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            }
+        }
+
+        wait(for: [saveExpectation, deleteExpectation, queryExpectation], timeout: 2)
+    }
+
+    func testInsertionOfManyItemsThenDeleteAllByPredicateConstant() {
+        let saveExpectation = expectation(description: "Saved 10 items")
+        let deleteExpectation = expectation(description: "Deleted 10 items")
+        let queryExpectation = expectation(description: "Queried 10 items")
+
+        let titleX = "title"
+        let contentX = "content"
+        var counter = 0
+        let maxCount = 10
+        var postsAdded: [String] = []
+        while counter < maxCount {
+            let title = "\(titleX)\(counter)"
+            let content = "\(contentX)\(counter)"
+
+            let post = Post(title: title, content: content, createdAt: Date())
+            storageAdapter.save(post) { insertResult in
+                switch insertResult {
+                case .success:
+                    postsAdded.append(post.id)
+                    if counter == maxCount - 1 {
+                        saveExpectation.fulfill()
+                        storageAdapter.delete(Post.self, predicate: QueryPredicateConstant.all) { result in
+                            switch result {
+                            case .success:
+                                deleteExpectation.fulfill()
+                                for postId in postsAdded {
+                                    checkIfPostIsDeleted(id: postId)
+                                }
+                                queryExpectation.fulfill()
+                            case .failure(let error):
+                                XCTFail(error.errorDescription)
+                            }
+                        }
+                    }
+                case .failure(let error):
+                    XCTFail(String(describing: error))
+                }
+            }
+            counter += 1
+        }
+        wait(for: [saveExpectation, deleteExpectation, queryExpectation], timeout: 5)
+    }
+
+    func checkIfPostIsDeleted(id: String) {
+        do {
+            let exists = try storageAdapter.exists(Post.self, withId: id)
+            XCTAssertFalse(exists, "ID \(id) should not exist")
+        } catch {
+            XCTFail(String(describing: error))
+        }
+    }
 }

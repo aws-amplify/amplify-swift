@@ -29,6 +29,10 @@ public protocol DataStoreBaseBehavior {
                           completion: @escaping DataStoreCallback<Void>)
 
     func delete<M: Model>(_ modelType: M.Type,
+                          where predicate: @escaping QueryPredicateFactory,
+                          completion: @escaping DataStoreCallback<Void>)
+
+    func delete<M: Model>(_ modelType: M.Type,
                           withId id: String,
                           completion: @escaping DataStoreCallback<Void>)
 }

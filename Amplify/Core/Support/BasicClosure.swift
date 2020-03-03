@@ -7,3 +7,5 @@
 
 /// Convenience typealias
 public typealias BasicClosure = () -> Void
+
+public typealias BasicThrowableClosure = () throws -> Void
