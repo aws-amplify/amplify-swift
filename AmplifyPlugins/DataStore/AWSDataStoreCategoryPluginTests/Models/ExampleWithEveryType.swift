@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 
-public enum ExampleEnum: String, PersistableEnum {
+public enum ExampleEnum: String, EnumPersistable {
     case foo
     case bar
 }

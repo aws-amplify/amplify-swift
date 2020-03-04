@@ -18,8 +18,8 @@ public enum ModelFieldType {
     case time
     case timestamp
     case bool
-    case `enum`(type: PersistableEnum.Type)
-    case type(_ type: Codable.Type)
+    case `enum`(type: EnumPersistable.Type)
+    case customType(_ type: Codable.Type)
     case model(type: Model.Type)
     case collection(of: Model.Type)
 
@@ -49,14 +49,14 @@ public enum ModelFieldType {
         if type is Date.Type {
             return .dateTime
         }
-//        if let enumType = type as? StringRepresentable.Type {
-//            return .enum(type: enumType)
-//        }
+        if let enumType = type as? EnumPersistable.Type {
+            return .enum(type: enumType)
+        }
         if let modelType = type as? Model.Type {
             return .model(type: modelType)
         }
         if let codableType = type as? Codable.Type {
-            return .type(codableType)
+            return .customType(codableType)
         }
         preconditionFailure("Could not create a ModelFieldType from \(String(describing: type)) MetaType")
     }

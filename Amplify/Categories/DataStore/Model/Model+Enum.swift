@@ -16,12 +16,12 @@ import Foundation
 /// - Example:
 ///
 /// ```swift
-/// public enum PostStatus: String, PersistableEnum {
+/// public enum PostStatus: String, EnumPersistable {
 ///     case draft
 ///     case published
 /// }
 /// ```
-public protocol PersistableEnum: Codable {
+public protocol EnumPersistable: Codable {
 
     var rawValue: String { get }
 
