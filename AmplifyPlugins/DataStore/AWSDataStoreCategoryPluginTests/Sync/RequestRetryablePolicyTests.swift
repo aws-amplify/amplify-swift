@@ -188,6 +188,39 @@ class RequestRetryablePolicyTests: XCTestCase {
         XCTAssertEqual(retryAdvice.retryInterval, defaultTimeout)
     }
 
+    func testMaxValueRetryDelay() {
+        let retryableErrorCode = URLError.init(.timedOut)
+
+        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
+                                                         httpURLResponse: nil,
+                                                         attemptNumber: 31)
+
+        XCTAssert(retryAdvice.shouldRetry)
+        assertMilliseconds(retryAdvice.retryInterval, greaterThan: 214_748_364_800, lessThan: 214_748_364_900)
+    }
+
+    func testBeyondMaxValueRetryDelay() {
+        let retryableErrorCode = URLError.init(.timedOut)
+
+        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
+                                                         httpURLResponse: nil,
+                                                         attemptNumber: 32)
+
+        XCTAssert(retryAdvice.shouldRetry)
+        assertMilliseconds(retryAdvice.retryInterval, greaterThan: 214_748_364_800, lessThan: 214_748_364_900)
+    }
+
+    func testOverflowCase() {
+        let retryableErrorCode = URLError.init(.timedOut)
+
+        let retryAdvice = retryPolicy.retryRequestAdvice(urlError: retryableErrorCode,
+                                                         httpURLResponse: nil,
+                                                         attemptNumber: 58)
+
+        XCTAssert(retryAdvice.shouldRetry)
+        assertMilliseconds(retryAdvice.retryInterval, greaterThan: 214_748_364_800, lessThan: 214_748_364_900)
+    }
+
     func assertMilliseconds(_ retryInterval: DispatchTimeInterval?, greaterThan: Int, lessThan: Int) {
         guard let retryInterval = retryInterval else {
             XCTFail("retryInterval is nil")
