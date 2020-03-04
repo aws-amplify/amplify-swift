@@ -22,7 +22,7 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
     public typealias SourceType = Any?
     public typealias TargetType = Binding?
 
-    public func convertToTarget(from source: Any?, fieldType: ModelFieldType) throws -> Binding? {
+    public static func convertToTarget(from source: Any?, fieldType: ModelFieldType) throws -> Binding? {
         guard let value = source else {
             return nil
         }
@@ -40,7 +40,7 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
         case .bool:
             return (value as? Bool)?.intValue
         case .enum:
-            return (value as? ModelEnum)?.rawValue
+            return (value as? PersistableEnum)?.rawValue
         case .model:
             return (value as? Model)?.id
         case .collection:
@@ -55,7 +55,7 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
         }
     }
 
-    public func convertToSource(from target: Binding?, fieldType: ModelFieldType) throws -> Any? {
+    public static func convertToSource(from target: Binding?, fieldType: ModelFieldType) throws -> Any? {
         guard let value = target else {
             return nil
         }

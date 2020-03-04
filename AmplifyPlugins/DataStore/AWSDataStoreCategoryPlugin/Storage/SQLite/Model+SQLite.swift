@@ -24,10 +24,9 @@ extension Persistable {
     internal func asBinding() -> Binding {
         let value = self
         let valueType = type(of: value)
-        let valueConverter = SQLiteModelValueConverter()
         do {
-            let binding = try valueConverter.convertToTarget(from: value,
-                                                             fieldType: .from(type: valueType))
+            let binding = try SQLiteModelValueConverter.convertToTarget(from: value,
+                                                                        fieldType: .from(type: valueType))
             guard let validBinding = binding else {
                 preconditionFailure("""
                 Converting \(String(describing: value)) of type \(String(describing: valueType))
@@ -40,6 +39,8 @@ extension Persistable {
             preconditionFailure("""
             Value \(String(describing: value)) of type \(String(describing: valueType))
             is not a SQLite Binding compatible type. Error: \(error.localizedDescription)
+
+            \(AmplifyErrorMessages.shouldNotHappenReportBugToAWS())
             """)
         }
     }
@@ -97,7 +98,7 @@ extension Model {
 
             // otherwise, delegate to the value converter
             do {
-                let binding = try valueConverter.convertToTarget(from: value, fieldType: field.type)
+                let binding = try SQLiteModelValueConverter.convertToTarget(from: value, fieldType: field.type)
                 return binding
             } catch {
                 logger.warn("""

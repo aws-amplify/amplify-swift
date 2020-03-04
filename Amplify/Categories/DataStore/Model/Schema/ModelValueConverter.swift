@@ -22,7 +22,7 @@ public protocol ModelValueConverter {
     ///   - source: the value from the `Model`
     ///   - fieldType: the type of the `Model` field
     /// - Returns: the converted value
-    func convertToTarget(from source: SourceType, fieldType: ModelFieldType) throws -> TargetType
+    static func convertToTarget(from source: SourceType, fieldType: ModelFieldType) throws -> TargetType
 
     /// Converts a target value of a certain type to the `Model` field type
     ///
@@ -30,23 +30,23 @@ public protocol ModelValueConverter {
     ///   - target: the value from the target
     ///   - fieldType: the type of the `Model` field
     /// - Returns: the converted value to the expected `ModelFieldType`
-    func convertToSource(from target: TargetType, fieldType: ModelFieldType) throws -> SourceType
+    static func convertToSource(from target: TargetType, fieldType: ModelFieldType) throws -> SourceType
 
 }
 
 /// Extension with reusable JSON encoding/decoding utilities.
 extension ModelValueConverter {
 
-    static var decoder: JSONDecoder {
+    static var jsonDecoder: JSONDecoder {
         JSONDecoder(dateDecodingStrategy: ModelDateFormatting.decodingStrategy)
     }
 
-    static var encoder: JSONEncoder {
+    static var jsonEncoder: JSONEncoder {
         JSONEncoder(dateEncodingStrategy: ModelDateFormatting.encodingStrategy)
     }
 
     public static func toJSON(_ value: Encodable) throws -> String? {
-        let data = try encoder.encode(value.eraseToAnyEncodable())
+        let data = try jsonEncoder.encode(value.eraseToAnyEncodable())
         return String(data: data, encoding: .utf8)
     }
 

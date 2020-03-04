@@ -18,7 +18,7 @@ public enum ModelFieldType {
     case time
     case timestamp
     case bool
-    case `enum`(type: ModelEnum.Type)
+    case `enum`(type: PersistableEnum.Type)
     case type(_ type: Codable.Type)
     case model(type: Model.Type)
     case collection(of: Model.Type)
@@ -49,9 +49,9 @@ public enum ModelFieldType {
         if type is Date.Type {
             return .dateTime
         }
-        if let enumType = type as? ModelEnum.Type {
-            return .enum(type: enumType)
-        }
+//        if let enumType = type as? StringRepresentable.Type {
+//            return .enum(type: enumType)
+//        }
         if let modelType = type as? Model.Type {
             return .model(type: modelType)
         }

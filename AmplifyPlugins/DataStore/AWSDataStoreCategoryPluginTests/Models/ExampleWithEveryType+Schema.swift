@@ -26,7 +26,7 @@ extension ExampleWithEveryType {
 
     public static let keys = CodingKeys.self
 
-    //  MARK: - ModelSchema
+    // MARK: - ModelSchema
 
     public static let schema = defineSchema { model in
         let example = ExampleWithEveryType.keys

@@ -48,10 +48,6 @@ extension Statement: StatementModelConvertible {
         Amplify.Logging.logger(forCategory: CategoryType.dataStore.displayName)
     }
 
-    var valueConverter: SQLiteModelValueConverter {
-        SQLiteModelValueConverter()
-    }
-
     public func convert<M: Model>(to modelType: M.Type) throws -> [M] {
         var rows: [ModelValues] = []
         var convertedCache: ConvertCache = [:]
@@ -108,7 +104,8 @@ extension Statement: StatementModelConvertible {
                                                   fieldName: propertyName)
                 values[propertyName] = associatedModel
             } else if let field = schema.field(withName: name) {
-                values[name] = try valueConverter.convertToSource(from: row[index], fieldType: field.type)
+                values[name] = try SQLiteModelValueConverter.convertToSource(from: row[index],
+                                                                             fieldType: field.type)
             } else {
                 logger.debug("""
                 A column named \(name) was found in the result set but no field on
