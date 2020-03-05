@@ -104,7 +104,8 @@ extension Statement: StatementModelConvertible {
                                                   fieldName: propertyName)
                 values[propertyName] = associatedModel
             } else if let field = schema.field(withName: name) {
-                values[name] = field.value(from: row[index])
+                values[name] = try SQLiteModelValueConverter.convertToSource(from: row[index],
+                                                                             fieldType: field.type)
             } else {
                 logger.debug("""
                 A column named \(name) was found in the result set but no field on

@@ -23,24 +23,26 @@ extension Persistable {
     /// - Returns: the value as `Binding`
     internal func asBinding() -> Binding {
         let value = self
+        let valueType = type(of: value)
+        do {
+            let binding = try SQLiteModelValueConverter.convertToTarget(from: value,
+                                                                        fieldType: .from(type: valueType))
+            guard let validBinding = binding else {
+                preconditionFailure("""
+                Converting \(String(describing: value)) of type \(String(describing: valueType))
+                to a SQLite Binding returned a nil value. This is likely a bug in the
+                SQLiteModelValueConverter logic.
+                """)
+            }
+            return validBinding
+        } catch {
+            preconditionFailure("""
+            Value \(String(describing: value)) of type \(String(describing: valueType))
+            is not a SQLite Binding compatible type. Error: \(error.localizedDescription)
 
-        if let value = value as? Bool {
-            return Int(value.datatypeValue)
+            \(AmplifyErrorMessages.shouldNotHappenReportBugToAWS())
+            """)
         }
-
-        // if value conforms to binding, resolve it
-        if let value = value as? Binding {
-            return value
-        }
-
-        if let value = value as? Date {
-            return value.iso8601String
-        }
-
-        preconditionFailure("""
-        Value \(String(describing: value)) of type \(String(describing: type(of: value)))
-        is not a SQLite Binding compatible type.
-        """)
     }
 }
 
@@ -55,9 +57,10 @@ extension Model {
     ///
     /// - Parameter fields: an optional subset of fields
     /// - Returns: an array of SQLite's `Binding` compatible type
-    internal func sqlValues(for fields: [ModelField]?) -> [Binding?] {
+    internal func sqlValues(for fields: [ModelField]? = nil) -> [Binding?] {
         let modelType = type(of: self)
         let modelFields = fields ?? modelType.schema.sortedFields
+        let valueConverter = SQLiteModelValueConverter()
         let values: [Binding?] = modelFields.map { field in
 
             // self[field.name] subscript accessor returns an Any??, we need to do a few things:
@@ -91,16 +94,20 @@ extension Model {
             if let value = value as? Model, field.isForeignKey {
                 let associatedModel: Model.Type = type(of: value)
                 return value[associatedModel.schema.primaryKey.name] as? String
-            } else if let value = value as? Persistable {
-                return value.asBinding()
-            } else {
+            }
+
+            // otherwise, delegate to the value converter
+            do {
+                let binding = try SQLiteModelValueConverter.convertToTarget(from: value, fieldType: field.type)
+                return binding
+            } catch {
                 logger.warn("""
-                Field \(field.name) of model \(modelName) has an unsupported value
-                of type \(String(describing: type(of: value))).
-                Refer to types that conform to Persistable.
+                Error converting \(modelType.modelName).\(field.name) to the proper SQLite Binding.
+                Root cause is: \(String(describing: error))
                 """)
                 return nil
             }
+
         }
 
         return values

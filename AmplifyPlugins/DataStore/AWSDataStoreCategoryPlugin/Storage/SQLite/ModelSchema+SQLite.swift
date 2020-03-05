@@ -47,10 +47,10 @@ extension ModelField: SQLColumn {
     }
 
     var sqlType: SQLDataType {
-        switch typeDefinition {
+        switch type {
         case .string, .enum, .date, .dateTime, .time, .model:
             return .text
-        case .int, .bool:
+        case .int, .bool, .timestamp:
             return .integer
         case .double:
             return .real
@@ -96,33 +96,6 @@ extension ModelField: SQLColumn {
         return "as \(column.quoted())"
     }
 
-    /// Converts a SQLite value type (i.e. `Binding`) to `ModelField` type. Type conversions are done
-    /// in order to create a bridge between SQLite restricted support to types and the actual Swift
-    /// types defined in the `Model`. For example, `Bool` values are represented as `Int64` in SQLite
-    /// and must be converted back to `Bool` for decoding a `Model`.
-    ///
-    /// - Parameter binding: the SQLite `Binding` value. Can be `nil`
-    /// - Returns: the actual `Model` value, can be `nil`
-    /// - seealso: `ModelFieldType`
-    func value(from binding: Binding?) -> Any? {
-        switch typeDefinition {
-        case .bool:
-            if let value = binding as? Int64 {
-                return Bool.fromDatatypeValue(value)
-            }
-        case .date, .dateTime:
-            if let value = binding as? String {
-                // Converting back & forth between date and string allows us to be a bit more relaxed in the string
-                // values we accept, but always output the same format.
-                return value.iso8601Date?.iso8601String
-            }
-        case .collection:
-            return binding ?? []
-        default:
-            return binding
-        }
-        return binding
-    }
 }
 
 extension ModelSchema {

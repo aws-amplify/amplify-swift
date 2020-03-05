@@ -5,20 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-/// Defines a storage schema. This immutable struct holds a reference to all the available
-/// `Model` types and their respective `ModelSchema`.
-public struct Schema {
-
-    /// The `ModelSchema` instances indexed by their names (i.e. the type name)
-    let models: [String: ModelSchema]
-
-    /// The current version of the schema
-    let version: Int
-
-}
-
 public enum ModelAttribute {
-    /// TODO: What does this mean?
+
+    /// Represents a database index, often used for frequent query optimizations.
     case index
 
     /// This model is used by the Amplify system or a plugin, and should not be used by the app developer
@@ -32,7 +21,7 @@ public enum ModelFieldAttribute {
 public struct ModelField {
 
     public let name: String
-    public let type: String
+    public let type: ModelFieldType
     public let isRequired: Bool
     public let isArray: Bool
     public let attributes: [ModelFieldAttribute]
@@ -43,7 +32,7 @@ public struct ModelField {
     }
 
     init(name: String,
-         type: String,
+         type: ModelFieldType,
          isRequired: Bool = false,
          isArray: Bool = false,
          attributes: [ModelFieldAttribute] = [],
