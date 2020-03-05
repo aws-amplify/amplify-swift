@@ -12,6 +12,7 @@ public struct AmplifyConfiguration: Codable {
     enum CodingKeys: String, CodingKey {
         case analytics
         case api
+        case auth
         case dataStore
         case hub
         case logging
@@ -25,7 +26,10 @@ public struct AmplifyConfiguration: Codable {
     /// Configurations for the Amplify API category
     let api: APICategoryConfiguration?
 
-    /// Configurations for the Amplify API category
+    /// Configurations for the Amplify Auth category
+    let auth: AuthCategoryConfiguration?
+
+    /// Configurations for the Amplify DataStore category
     let dataStore: DataStoreCategoryConfiguration?
 
     /// Configurations for the Amplify Hub category
@@ -40,8 +44,10 @@ public struct AmplifyConfiguration: Codable {
     /// Configurations for the Amplify Storage category
     let storage: StorageCategoryConfiguration?
 
+
     public init(analytics: AnalyticsCategoryConfiguration? = nil,
                 api: APICategoryConfiguration? = nil,
+                auth: AuthCategoryConfiguration? = nil,
                 dataStore: DataStoreCategoryConfiguration? = nil,
                 hub: HubCategoryConfiguration? = nil,
                 logging: LoggingCategoryConfiguration? = nil,
@@ -49,6 +55,7 @@ public struct AmplifyConfiguration: Codable {
                 storage: StorageCategoryConfiguration? = nil) {
         self.analytics = analytics
         self.api = api
+        self.auth = auth
         self.dataStore = dataStore
         self.hub = hub
         self.logging = logging
@@ -103,13 +110,14 @@ extension Amplify {
                 try configure(Analytics, using: configuration)
             case .api:
                 try configure(API, using: configuration)
+            case .auth:
+                try configure(Auth, using: configuration)
             case .dataStore:
                 try configure(DataStore, using: configuration)
             case .predictions:
                 try configure(Predictions, using: configuration)
             case .storage:
                 try configure(Storage, using: configuration)
-
             case .hub, .logging:
                 // Already configured
                 break
