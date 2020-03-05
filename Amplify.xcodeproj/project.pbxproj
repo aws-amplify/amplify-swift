@@ -840,6 +840,7 @@
 		B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "QueryPredicate+Equatable.swift"; sourceTree = "<group>"; };
 		B996FC4323FF2FA8006D0F68 /* Encodable+AnyEncodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Encodable+AnyEncodable.swift"; sourceTree = "<group>"; };
 		B996FC4C24059918006D0F68 /* Model+Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+Enum.swift"; sourceTree = "<group>"; };
+		B998C6B524108DCB004AC210 /* amplify-tools.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "amplify-tools.sh"; sourceTree = "<group>"; };
 		B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelValueConverter.swift; sourceTree = "<group>"; };
 		B9DCA262240F217C00075E22 /* AnyEncodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyEncodableTests.swift; sourceTree = "<group>"; };
 		B9FAA10A23878122009414B4 /* ModelField+Association.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelField+Association.swift"; sourceTree = "<group>"; };
@@ -1802,6 +1803,22 @@
 			path = Query;
 			sourceTree = "<group>";
 		};
+		B998C6B324108C92004AC210 /* AmplifyTools */ = {
+			isa = PBXGroup;
+			children = (
+				B998C6B424108DAC004AC210 /* bin */,
+			);
+			path = AmplifyTools;
+			sourceTree = "<group>";
+		};
+		B998C6B424108DAC004AC210 /* bin */ = {
+			isa = PBXGroup;
+			children = (
+				B998C6B524108DCB004AC210 /* amplify-tools.sh */,
+			);
+			path = bin;
+			sourceTree = "<group>";
+		};
 		B9DD3F0B23552C4E00D62C65 /* DataStore */ = {
 			isa = PBXGroup;
 			children = (
@@ -2187,6 +2204,7 @@
 				FACA35F32327FB14000E74F6 /* AmplifyFunctionalTests */,
 				21FFF9B9230DBEF8005878EA /* AmplifyPlugins */,
 				2125E2522319EC3100B3DEB5 /* AmplifyTestApp */,
+				B998C6B324108C92004AC210 /* AmplifyTools */,
 				FAC234D32279F8DA00424678 /* Products */,
 				3687F9047D3AA33BCC710C97 /* Pods */,
 				C4DBE378379CBB2C3F4536BE /* Frameworks */,

@@ -23,4 +23,14 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.source_files = 'Amplify/**/*.swift'
 
+  s.subspec 'Tools' do |ss|
+    # ss.source_files = 'AmplifyTools/**/*.swift'
+    ss.preserve_path = 'AmplifyTools/bin'
+    ss.script_phase = {
+      :name => 'Amplify',
+      :script => '"${PODS_ROOT}/Amplify/Tools/bin/amplify-tools.sh"',
+      :execution_position => :before_compile
+    }
+  end
+
 end
