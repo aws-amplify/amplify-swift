@@ -24,11 +24,10 @@ Pod::Spec.new do |s|
   s.source_files = 'Amplify/**/*.swift'
 
   s.subspec 'Tools' do |ss|
-    # ss.source_files = 'AmplifyTools/**/*.swift'
-    ss.preserve_path = 'AmplifyTools/bin'
+    ss.source_files = 'AmplifyTools/amplify-tools.sh'
     ss.script_phase = {
       :name => 'Amplify',
-      :script => '"${PODS_ROOT}/Amplify/Tools/bin/amplify-tools.sh"',
+      :script => '"${PODS_ROOT}/Amplify/Tools/amplify-tools.sh"',
       :execution_position => :before_compile
     }
   end
