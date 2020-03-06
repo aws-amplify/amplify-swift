@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
     ss.source_files = 'AmplifyTools/amplify-tools.sh'
     ss.script_phase = {
       :name => 'Amplify',
-      :script => '"${PODS_ROOT}/Amplify/Tools/amplify-tools.sh"',
+      :script => '"${PODS_ROOT}/Amplify/AmplifyTools/amplify-tools.sh"',
       :execution_position => :before_compile
     }
   end
