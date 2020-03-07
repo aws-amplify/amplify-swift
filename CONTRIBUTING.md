@@ -1,47 +1,199 @@
-# Contributing Guidelines
+# Amplify iOS Contributing Guide
 
-Thank you for your interest in contributing to our project. Whether it's a bug report, new feature, correction, or additional
-documentation, we greatly value feedback and contributions from our community.
+Thank you for your interest in contributing to our project! <3 Whether it's a bug report, new feature, correction, or additional documentation, we greatly value feedback and contributions from our community. Please read through it carefully before submitting a PR or issue and let us know if it's not up-to-date (or even better, submit a PR with your corrections ;)).
 
-Please read through this document before submitting any issues or pull requests to ensure we have all the necessary
-information to effectively respond to your bug report or contribution.
+- [History & Ethos](#our-history-and-ethos)
+  - [Our Design](#our-design)
+- [Getting Started](#getting-started)
+- [Tools](#tools)
+- [Debugging](#debugging)
+  - [Running Cocoapods Locally](#running-cocoapods-locally)
+- [Pull Requests](#pull-requests)
+  - [Pull Request Checklist](#pull-request-checklist)
+  - [Step 1: Open Issue](#step-1-open-issue)
+  - [Step 2: Design (optional)](#step-2-design-optional)
+  - [Step 3: Fork The Repo](#step-3-fork-the-repo)
+  - [Step 4: Work your Magic](#step-3-work-your-magic)
+  - [Step 5: Commit](#step-4-commit)
+  - [Step 6: Pull Request](#step-5-pull-request)
+  - [Step 7: Merge](#step-6-merge)
+- [Troubleshooting](#troubleshooting)
+- [Related Repositories](#related-repositories)
+- [Finding Contributions](#finding-contributions-to-work-on)
+- [Code of Conduct](#code-of-conduct)
+- [Security Issue Notifications](#security-issue-notifications)
+- [Licensing](#licensing)
 
 
-## Reporting Bugs/Feature Requests
+## Our History and Ethos
 
-We welcome you to use the GitHub issue tracker to report bugs or suggest features.
+AWS Amplify aims to enhance the development experience using JavaScript with AWS. Amplify codifies best practices through programmatic interfaces to help you effortlessly interact with cloud resources.
 
-When filing an issue, please check [existing open](https://github.com/awslabs/amplify-ios/issues), or [recently closed](https://github.com/awslabs/amplify-ios/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aclosed%20), issues to make sure somebody else hasn't already
-reported the issue. Please try to include as much information as you can. Details like these are incredibly useful:
+First and foremost Amplify exposes to you WHAT things do and then HOW best to do them. The WHAT is at a functional use case with HOW being an opinionated implementation that you can override with “escape hatches.” This will allow you to have higher velocity and build better applications by focusing less on implementation choices. Secondly, Amplify should be a manifestation of The Rule of Least Power when developing against AWS. This means it encourages architectural and programmatic best practices and the ability to start quickly. This shows by encouraging certain services (API Gateway usage vs. direct DynamoDB interaction) or certain connection patterns (Circuit breaker, retry counts and throttle up/down).
 
-* A reproducible test case or series of steps
-* The version of our code being used
-* Any modifications you've made relevant to the bug
-* Anything unusual about your environment or deployment
+Opinionated implementations: There are many ways to interface with AWS Services. Certain service interactions are favored over others. For instance if sending and receiving JSON we would prefer an API Gateway endpoint to other mechanisms. Amplify will programmatically help optimize for cost and performance through library decisions.
 
+Declarative actions: Amplify will provide you a reference to a generic client object and ability to perform common actions. “RegisterUser”, “Login”, “SendObject”, “UpdateObject”, “StreamData”. By default you should not need to worry about AWS Service specific API operations like putItem() with a unique hash or even HTTP verbs.
 
-## Contributing via Pull Requests
-Contributions via pull requests are much appreciated. Before sending us a pull request, please ensure that:
+Cascading service interactions: Certain actions in a declarative style can have overlapping or ambiguous AWS Service implementations. With an opinionated implementation we can decide which Services are "primary" and which are "secondary" depending on what is configured. For instance sending an image will prefer S3 over API Gateway..
 
-1. You are working against the latest source on the *master* branch.
-2. You check existing open, and recently merged, pull requests to make sure someone else hasn't addressed the problem already.
-3. You open an issue to discuss any significant work - we would hate for your time to be wasted.
+Simple, standard data objects: Sending & Receiving data to AWS Services can have many parameters, which tend to show up in the SDKs. These are abstracted and inferred, where possible, with simple JSON that the implementation can reason about. Standard parameters (bucket names, stream names, partition keys, etc.) that are part of the implementation are extracted from a simplified configuration file and dynamically generated/updated in order to further allow focus on state and data types only.
 
-To send us a pull request, please:
+### Our Design
 
-1. Fork the repository.
-2. Modify the source; please focus on the specific change you are contributing. If you also reformat all the code, it will be hard for us to focus on your change.
-3. Ensure local tests pass.
-4. Commit to your fork using clear commit messages.
-5. Send us a pull request, answering any default questions in the pull request interface.
-6. Pay attention to any automated CI failures reported in the pull request, and stay involved in the conversation.
+As more and more modules are introduced to AWS Amplify, it became a necessity to modularize the library into smaller pieces so that users could avoid importing unnecessary parts into their app. The goal of this design is to make AWS Amplify modularized and also keep it backward compatible to avoid breaking changes.
 
-GitHub provides additional document on [forking a repository](https://help.github.com/articles/fork-a-repo/) and
-[creating a pull request](https://help.github.com/articles/creating-a-pull-request/).
+Modular import prevents unnecessary code dependencies are included with the app, and thus decreases the bundle size and enables adding new functionality without the risk of introducing errors related to the unused code.
 
+Amplify has established the concepts of categories and plugins. A category is a collection of api calls that are exposed to the client to do things inside that category. For example, in the storage category generally one wants to upload and download objects from storage so the apis exposed to the client will represent that functionality. Because Amplify is pluggable, a plugin of your choosing will provide the actual implementation behind that api interface. Using the same example of Storage, the plugin we choose might be AWSStoragePlugin which would then implement each api call from the category with a service call or set of service calls to S3, the underlying storage provider of the AWS plugin.
+
+## Getting Started
+
+To get started with contributing to the iOS library of Amplify, first make sure you have the latest version of Xcode installed as well as cocoapods. You can install cocoapods by simply running:
+
+```
+sudo gem install cocoapods
+```
+
+Then make sure you fork the project first and then clone it by running:
+
+```
+git clone git@github.com:YOURGITHUBUSERNAME/amplify-ios.git
+```
+GitHub provides additional documentation on [forking a repository](https://help.github.com/articles/fork-a-repo/).
+
+The project itself is broken up into various Xcode projects so it's important to understand what you want to change and open the correct project. At the root of the project there is an Xcode project/workspace called Amplify. The Amplify project contains all the models and interfaces that we expose for each category so all the generic parts of a category live here. If you wanted for instance to add another API to the Storage category, you might start by running `pod install` right at the root and opening the Amplify workspace and heading to the Storage folder like below:
+
+```
+cd amplify-ios
+pod install
+xed .
+```
+
+Then perhaps if you wanted to implement this API you added to storage in the plugin behind it, the workflow be as follows:
+
+```
+cd amplify-ios
+cd AmplifyPlugins/Storage
+pod install
+xed .
+```
+
+## Tools
+
+[Xcode](https://developer.apple.com/xcode/) and [Cocoapods](https://guides.cocoapods.org/using/getting-started.html) are used for all build and dependency management.
+
+## Debugging
+
+### Running Cocoapods Locally
+
+Framework development is quite different from typical app development when it comes to debugging and being able to test your code. First you will want to create a new app that uses the pods you changed. For instance, if you changed something in the `Storage` category to test to see if it works, you will need to create a new app and run `pod init` and edit the `Podfile` to use the local version of Amplify that you are building on. This is done by editing the `Podfile` of the new application to take a path to the pod instead of a version number like below:
+
+```ruby
+
+target 'MySampleApp' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+  # with :path I can direct my project to use a local path for the pod
+  pod 'Amplify', :path => '~/Projects/amplify-ios'      # 
+  pod 'AmplifyPlugins/AWSS3StoragePlugin', :path => '~/Projects/amplify-ios'
+  pod 'AWSPluginsCore', :path => '~/Projects/amplify-ios'           
+  
+end
+```
+Then you want to run `pod update` at the root of your sample app to make sure it is using the local version of the pods. When you open the workspace, under the Pods project, the you'll see a section call Development Pods. This where those local pods were installed and if you want to change code here to debug, it will change in the other repo, just make sure you clean and re-build before testing your code again.
+
+## Pull Requests
+
+### Pull Request Checklist
+- Testing
+    - Unit test added or updated
+    - Integration test added or updated
+- Changelog
+    - Update Changelog with your updates in accordance with our pattern under the new version. Example below:
+
+    ```markdown
+    ## 2.xx.x
+
+    ### Bug Fixes
+
+    - **Breaking Change** List out any breaking changes here
+
+    - **Storage or name of category you changed**
+      - for example, if you made a change to Storage, add the heading like above and list the bug fix here with the issue number.
+
+    ### Misc. Updates
+
+    -  Misc updates go here. Usually model changes
+    ```
+
+### Step 1: Open Issue
+
+If there isn't one already, open an issue describing what you intend to contribute. It's useful to communicate in advance, because sometimes, someone is already working in this space, so maybe it's worth collaborating with them instead of duplicating the efforts.
+
+### Step 2: Design (optional)
+
+In some cases, it is useful to seek for feedback on the design of your planned implementation. This is useful when you plan a big change or feature, or you want advice on what would be the best path forward.
+
+The GitHub issue is sufficient for such discussions, and can be sufficient to get clarity on what you plan to do. Make sure you tag any members of the Amplify iOS team so we can help guide you: @kneekey23, @lawmicha, @wooj2, @palpatim, @royjit, @drochetti, @phani-srikar.
+
+### Step 3: Fork the Repo
+
+First, create a fork of amplify-ios. Clone it, and make changes to this fork.
+
+```
+git clone git@github.com:GITHUBUSERNAME/aws-sdk-ios.git 
+# change your GITHUBUSERNAME to your github username before running this command.
+```
+
+### Step 4: Work your magic
+
+Work your magic. Here are some guidelines:
+
+- Coding style (abbreviated):
+    - In general, follow the style of the code around you
+    - 2 space indentation
+    - 120 characters wide
+    - Every change requires a new or updated unit test/integ test
+    - If you change customer facing APIs, make sure to update the documentation above the interface and include a reason for the breaking change in your PR comments
+    - Try to maintain a single feature/bugfix per pull request. It's okay to introduce a little bit of housekeeping changes along the way, but try to avoid conflating multiple features. Eventually all these are going to go into a single commit, so you can use that to frame your scope.
+
+### Step 5: Commit
+
+Create a commit with the proposed change changes:
+
+- Commit title and message (and PR title and description).
+- The title must be descriptive to the specific change.
+- No period at the end of the title.
+- Commit message should describe motivation. Think about your code reviewers and what information they need in order to understand what you did. If it's a big commit (hopefully not), try to provide some good entry points so it will be easier to follow.
+- Commit message should indicate which issues are fixed: `fixes #<issue>` or `closes #<issue>`.
+- Shout out to collaborators.
+- If not obvious (i.e. from unit tests), describe how you verified that your change works.
+- If this commit includes breaking changes, they must be listed at the top of the changelog as described above in the Pull Request Checklist.
+
+### Step 6: Pull Request
+
+- Push your changes to your GitHub fork
+- Submit a Pull Requests on the aws-sdk-ios repo to the `master` branch and add one of the amplify-ios team members on it (kneekey23, @lawmicha, @wooj2, @palpatim, @royjit, @drochetti, @phani-srikar).
+- Please follow the PR checklist written below. We trust our contributors to self-check, and this helps that process!
+- Discuss review comments and iterate until you get at least one “Approve”. When iterating, push new commits to the same branch. 
+- Usually all these are going to be squashed when you merge to master. - The commit messages should be hints for you when you finalize your merge commit message.
+- Make sure to update the PR title/description if things change. 
+- Rebase with master if the master branch has commits ahead of your fork.
+
+### Step 7: Merge
+Once your PR has been approved and tested, go ahead and merge it into `master`! It will be released in the next Amplify release which we try to do biweekly on Thursday's. Yay!! 
+
+## Troubleshooting
+
+Most build issues can be solved by [removing your derived data](https://iosdevcenters.blogspot.com/2015/12/how-to-delete-derived-data-and-clean.html) and doing a clean and build. For any other serious build issues, open a new issue or see if there is one existing that may have a fix on it.
+
+## Related Repositories
+
+We like to have platform parity as much as possible while still respecting the language we are writing in so often times we will try to align our designs with the [amplify-android](https://github.com/aws-amplify/amplify-android) repository. Feel free to check it out as well to see how something is done for Android.
 
 ## Finding contributions to work on
-Looking at the existing issues is a great way to find something to contribute on. As our projects, by default, use the default GitHub issue labels (enhancement/bug/duplicate/help wanted/invalid/question/wontfix), looking at any ['help wanted'](https://github.com/awslabs/amplify-ios/labels/help%20wanted) issues is a great place to start.
+Looking at the existing issues is a great way to find something to contribute on. As our projects, by default, use the default GitHub issue labels (enhancement/bug/duplicate/help wanted/invalid/question/wontfix), looking at any ['help wanted'](https://github.com/aws-amplify/amplify-ios/labels/help%20wanted) issues is a great place to start.
 
 
 ## Code of Conduct
@@ -56,6 +208,6 @@ If you discover a potential security issue in this project we ask that you notif
 
 ## Licensing
 
-See the [LICENSE](https://github.com/awslabs/amplify-ios/blob/master/LICENSE) file for our project's licensing. We will ask you to confirm the licensing of your contribution.
+See the [LICENSE](https://github.com/aws-amplify/amplify-ios/blob/master/LICENSE) file for our project's licensing. We will ask you to confirm the licensing of your contribution.
 
 We may ask you to sign a [Contributor License Agreement (CLA)](http://en.wikipedia.org/wiki/Contributor_License_Agreement) for larger changes.
