@@ -1,6 +1,6 @@
 # Amplify iOS Contributing Guide
 
-Thank you for your interest in contributing to our project! <3 Whether it's a bug report, new feature, correction, or additional documentation, we greatly value feedback and contributions from our community. Please read through it carefully before submitting a PR or issue and let us know if it's not up-to-date (or even better, submit a PR with your corrections ;)).
+Thank you for your interest in contributing to our project! <3 Whether it's a bug report, new feature, correction, or additional documentation, we greatly value feedback and contributions from our community. The following is our contribution guide, which we hope you will read through carefully prior to submitting a pull-request (PR) or issue. In the event that our guide is not up to date, feel free to let us know by opening an issue (or even better, submit a PR with your proposed corrections ;)).
 
 - [History & Ethos](#our-history-and-ethos)
   - [Our Design](#our-design)
@@ -27,13 +27,13 @@ Thank you for your interest in contributing to our project! <3 Whether it's a bu
 
 ## Our History and Ethos
 
-AWS Amplify aims to enhance the development experience using JavaScript with AWS. Amplify codifies best practices through programmatic interfaces to help you effortlessly interact with cloud resources.
+AWS Amplify for iOS aims to provide highly-opinionated, declarative, interaction based, interfaces which adopt best practices for interfacing with cloud resources. We are targeting AWS first as our initial cloud provider (big surprise!), but are designing the framework to allow support for other cloud providers
 
-First and foremost Amplify exposes to you WHAT things do and then HOW best to do them. The WHAT is at a functional use case with HOW being an opinionated implementation that you can override with “escape hatches.” This will allow you to have higher velocity and build better applications by focusing less on implementation choices. Secondly, Amplify should be a manifestation of The Rule of Least Power when developing against AWS. This means it encourages architectural and programmatic best practices and the ability to start quickly. This shows by encouraging certain services (API Gateway usage vs. direct DynamoDB interaction) or certain connection patterns (Circuit breaker, retry counts and throttle up/down).
+Amplify exposes to you what things do and then how best to do them. The WHAT is at a functional use case with HOW being an opinionated implementation that you can override with “escape hatches.” This will allow you to achieve higher velocity by combining a set of well tested, correct by construction designs which allow you to plug-in your custom application specific business logic. Additionally, Amplify should be a manifestation of The Rule of Least Power when developing against AWS. This means it encourages architectural and programmatic best practices and the ability to start quickly. This shows by encouraging certain services (API Gateway usage vs. direct DynamoDB interaction) or certain connection patterns (Circuit breaker, retry counts and throttle up/down).
 
 Opinionated implementations: There are many ways to interface with AWS Services. Certain service interactions are favored over others. For instance if sending and receiving JSON we would prefer an API Gateway endpoint to other mechanisms. Amplify will programmatically help optimize for cost and performance through library decisions.
 
-Declarative actions: Amplify will provide you a reference to a generic client object and ability to perform common actions. “RegisterUser”, “Login”, “SendObject”, “UpdateObject”, “StreamData”. By default you should not need to worry about AWS Service specific API operations like putItem() with a unique hash or even HTTP verbs.
+Declarative actions: Contrary to lower level service APIs like "putItem()" which require developers to handle client exceptions and http verbs, and response codes, Amplify provides developers with interaction based APIs such as: "RegisterUser", "Login", etc. with human readable errors and recovery suggestions. By default you should not need to worry about AWS Service specific API operations like putItem() with a unique hash or even HTTP verbs.
 
 Cascading service interactions: Certain actions in a declarative style can have overlapping or ambiguous AWS Service implementations. With an opinionated implementation we can decide which Services are "primary" and which are "secondary" depending on what is configured. For instance sending an image will prefer S3 over API Gateway..
 
@@ -41,9 +41,9 @@ Simple, standard data objects: Sending & Receiving data to AWS Services can have
 
 ### Our Design
 
-As more and more modules are introduced to AWS Amplify, it became a necessity to modularize the library into smaller pieces so that users could avoid importing unnecessary parts into their app. The goal of this design is to make AWS Amplify modularized and also keep it backward compatible to avoid breaking changes.
+As more and more plugins are introduced in to AWS Amplify, it became a necessity to modularize the library into smaller pieces so that users could avoid importing unnecessary parts into their app. The goal of this design is to make AWS Amplify plugins isolated and independent of each other as well as keep it backward compatible to avoid breaking changes.
 
-Modular import prevents unnecessary code dependencies are included with the app, and thus decreases the bundle size and enables adding new functionality without the risk of introducing errors related to the unused code.
+Modular imports prevent unnecessary code dependencies becoming included with the app, and thus decreases the bundle size and enables adding new functionality without the risk of introducing errors related to the unused code.
 
 Amplify has established the concepts of categories and plugins. A category is a collection of api calls that are exposed to the client to do things inside that category. For example, in the storage category generally one wants to upload and download objects from storage so the apis exposed to the client will represent that functionality. Because Amplify is pluggable, a plugin of your choosing will provide the actual implementation behind that api interface. Using the same example of Storage, the plugin we choose might be AWSStoragePlugin which would then implement each api call from the category with a service call or set of service calls to S3, the underlying storage provider of the AWS plugin.
 
@@ -62,7 +62,16 @@ git clone git@github.com:YOURGITHUBUSERNAME/amplify-ios.git
 ```
 GitHub provides additional documentation on [forking a repository](https://help.github.com/articles/fork-a-repo/).
 
-The project itself is broken up into various Xcode projects so it's important to understand what you want to change and open the correct project. At the root of the project there is an Xcode project/workspace called Amplify. The Amplify project contains all the models and interfaces that we expose for each category so all the generic parts of a category live here. If you wanted for instance to add another API to the Storage category, you might start by running `pod install` right at the root and opening the Amplify workspace and heading to the Storage folder like below:
+The Amplify iOS framework has been divided into multiple Xcode projects:
+
+- Core - Amplify.xcworkspace - Includes high level category interfaces and shared interfaces. Shared components including Hub.
+- API - AmplifyPlugins/API/APICategoryPlugin.xcworkspace
+- Analytics - AmplifyPlugins/Analytics/AnalyticsCategoryPlugin.xcworkspace
+- DataStore - AmplifyPlugins/DataStore/DataStoreCategoryPlugin.xcworkspace
+- Predictions - AmplifyPlugins/Predictions/PredictionsCategoryPlugin.xcworkspace
+- Storage - AmplifyPlugins/Storage/StoragePlugin.xcworkspace
+
+Prior to making changes, you will need to run `pod install` in the directory that you intend to make changes in. For example, if you wanted to add another API to the Storage category, you might start by running `pod install` at the root of the project and open the Amplify Core workspace and heading to the Storage folder with the commands below:
 
 ```
 cd amplify-ios
@@ -73,8 +82,7 @@ xed .
 Then perhaps if you wanted to implement this API you added to storage in the plugin behind it, the workflow be as follows:
 
 ```
-cd amplify-ios
-cd AmplifyPlugins/Storage
+cd amplify-ios/AmplifyPlugins/Storage
 pod install
 xed .
 ```
@@ -131,9 +139,9 @@ Then you want to run `pod update` at the root of your sample app to make sure it
 
 If there isn't one already, open an issue describing what you intend to contribute. It's useful to communicate in advance, because sometimes, someone is already working in this space, so maybe it's worth collaborating with them instead of duplicating the efforts.
 
-### Step 2: Design (optional)
+### Step 2: Design
 
-In some cases, it is useful to seek for feedback on the design of your planned implementation. This is useful when you plan a big change or feature, or you want advice on what would be the best path forward.
+In some cases, it is useful and mandatory to seek for feedback on the design of your planned implementation. This is useful when you plan a breaking change or large feature, or you want advice on what would be the best path forward.
 
 The GitHub issue is sufficient for such discussions, and can be sufficient to get clarity on what you plan to do. Make sure you tag any members of the Amplify iOS team so we can help guide you: @kneekey23, @lawmicha, @wooj2, @palpatim, @royjit, @drochetti, @phani-srikar.
 
@@ -152,7 +160,7 @@ Work your magic. Here are some guidelines:
 
 - Coding style (abbreviated):
     - In general, follow the style of the code around you
-    - 2 space indentation
+    - 4 space indentation
     - 120 characters wide
     - Every change requires a new or updated unit test/integ test
     - If you change customer facing APIs, make sure to update the documentation above the interface and include a reason for the breaking change in your PR comments
@@ -162,31 +170,29 @@ Work your magic. Here are some guidelines:
 
 Create a commit with the proposed change changes:
 
-- Commit title and message (and PR title and description).
-- The title must be descriptive to the specific change.
-- No period at the end of the title.
 - Commit message should describe motivation. Think about your code reviewers and what information they need in order to understand what you did. If it's a big commit (hopefully not), try to provide some good entry points so it will be easier to follow.
-- Commit message should indicate which issues are fixed: `fixes #<issue>` or `closes #<issue>`.
-- Shout out to collaborators.
-- If not obvious (i.e. from unit tests), describe how you verified that your change works.
-- If this commit includes breaking changes, they must be listed at the top of the changelog as described above in the Pull Request Checklist.
 
 ### Step 6: Pull Request
 
 - Push your changes to your GitHub fork
-- Submit a Pull Requests on the aws-sdk-ios repo to the `master` branch and add one of the amplify-ios team members on it (kneekey23, @lawmicha, @wooj2, @palpatim, @royjit, @drochetti, @phani-srikar).
-- Please follow the PR checklist written below. We trust our contributors to self-check, and this helps that process!
+- Submit a Pull Requests on the aws-sdk-ios repo to the `master` branch and add one of the amplify-ios team members on it (@kneekey23, @lawmicha, @wooj2, @palpatim, @royjit, @drochetti, @phani-srikar).
+- The title of your PR must be descriptive to the specific change.
+- No period at the end of the title.
+- Pull Request message should indicate which issues are fixed: `fixes #<issue>` or `closes #<issue>`.
+- PR messaged should include shout out to collaborators.
+- If not obvious (i.e. from unit tests), describe how you verified that your change works.
+- If this PR includes breaking changes, they must be listed at the top of the changelog as described above in the Pull Request Checklist.
 - Discuss review comments and iterate until you get at least one “Approve”. When iterating, push new commits to the same branch. 
-- Usually all these are going to be squashed when you merge to master. - The commit messages should be hints for you when you finalize your merge commit message.
+- Usually all these are going to be squashed when you merge to master.
 - Make sure to update the PR title/description if things change. 
 - Rebase with master if the master branch has commits ahead of your fork.
 
 ### Step 7: Merge
-Once your PR has been approved and tested, go ahead and merge it into `master`! It will be released in the next Amplify release which we try to do biweekly on Thursday's. Yay!! 
+Once your PR has been approved and tested, go ahead and merge it into `master`! Barring any unforeseen circumstances, your changes will be released in our next version. Yay!! 
 
 ## Troubleshooting
 
-Most build issues can be solved by [removing your derived data](https://iosdevcenters.blogspot.com/2015/12/how-to-delete-derived-data-and-clean.html) and doing a clean and build. For any other serious build issues, open a new issue or see if there is one existing that may have a fix on it.
+Some build issues can be solved by [removing your derived data](https://iosdevcenters.blogspot.com/2015/12/how-to-delete-derived-data-and-clean.html) and doing a clean and build. For any other serious build issues, open a new issue or see if there is one existing that may have a fix on it.
 
 ## Related Repositories
 
