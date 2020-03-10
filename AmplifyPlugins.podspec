@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
     ss.source_files = 'AmplifyPlugins/API/AWSAPICategoryPlugin/**/*.swift'
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'ReachabilitySwift', '~> 5.0.0'
-    ss.dependency 'AppSyncRealTimeClient', "~> 1.0.0"
+    ss.dependency 'AppSyncRealTimeClient', "~> 1.0.2"
   end
 
   s.subspec 'AWSDataStorePlugin' do |ss|
