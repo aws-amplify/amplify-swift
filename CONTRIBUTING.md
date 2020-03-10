@@ -27,7 +27,7 @@ Thank you for your interest in contributing to our project! <3 Whether it's a bu
 
 ## Our History and Ethos
 
-AWS Amplify for iOS aims to provide highly-opinionated, declarative, interaction based, interfaces which adopt best practices for interfacing with cloud resources. We are targeting AWS first as our initial cloud provider (big surprise!), but are designing the framework to allow support for other cloud providers
+Amplify for iOS aims to provide highly-opinionated, declarative, interaction based, interfaces which adopt best practices for interfacing with cloud resources. We are targeting AWS first as our initial cloud provider (big surprise!), but are designing the framework to allow support for other cloud providers
 
 Amplify exposes to you what things do and then how best to do them. The WHAT is at a functional use case with HOW being an opinionated implementation that you can override with “escape hatches.” This will allow you to achieve higher velocity by combining a set of well tested, correct by construction designs which allow you to plug-in your custom application specific business logic. Additionally, Amplify should be a manifestation of The Rule of Least Power when developing against AWS. This means it encourages architectural and programmatic best practices and the ability to start quickly. This shows by encouraging certain services (API Gateway usage vs. direct DynamoDB interaction) or certain connection patterns (Circuit breaker, retry counts and throttle up/down).
 
@@ -41,7 +41,7 @@ Simple, standard data objects: Sending & Receiving data to AWS Services can have
 
 ### Our Design
 
-As more and more plugins are introduced in to AWS Amplify, it became a necessity to modularize the library into smaller pieces so that users could avoid importing unnecessary parts into their app. The goal of this design is to make AWS Amplify plugins isolated and independent of each other as well as keep it backward compatible to avoid breaking changes.
+As more and more plugins are introduced in to AWS Amplify, it became a necessity to modularize the library into smaller pieces so that users could avoid importing unnecessary parts into their app. The goal of this design is to make Amplify plugins isolated and independent of each other as well as keep it backward compatible to avoid breaking changes.
 
 Modular imports prevent unnecessary code dependencies becoming included with the app, and thus decreases the bundle size and enables adding new functionality without the risk of introducing errors related to the unused code.
 
