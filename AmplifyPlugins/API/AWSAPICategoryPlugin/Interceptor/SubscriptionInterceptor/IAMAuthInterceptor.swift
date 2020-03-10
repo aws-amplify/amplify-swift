@@ -11,17 +11,17 @@ import AWSPluginsCore
 import Amplify
 import AppSyncRealTimeClient
 
-public class IAMAuthInterceptor: AuthInterceptor {
+class IAMAuthInterceptor: AuthInterceptor {
 
     let authProvider: AWSCredentialsProvider
     let region: AWSRegionType
 
-    public init(_ authProvider: AWSCredentialsProvider, region: AWSRegionType) {
+    init(_ authProvider: AWSCredentialsProvider, region: AWSRegionType) {
         self.authProvider = authProvider
         self.region = region
     }
 
-    public func interceptMessage(_ message: AppSyncMessage, for endpoint: URL) -> AppSyncMessage {
+    func interceptMessage(_ message: AppSyncMessage, for endpoint: URL) -> AppSyncMessage {
         switch message.messageType {
         case .subscribe:
             let authHeader = getAuthHeader(endpoint, with: message.payload?.data ?? "")
@@ -37,8 +37,8 @@ public class IAMAuthInterceptor: AuthInterceptor {
         return message
     }
 
-    public func interceptConnection(_ request: AppSyncConnectionRequest,
-                                    for endpoint: URL) -> AppSyncConnectionRequest {
+    func interceptConnection(_ request: AppSyncConnectionRequest,
+                             for endpoint: URL) -> AppSyncConnectionRequest {
         let url = endpoint.appendingPathComponent(RealtimeProviderConstants.iamConnectPath)
         let payloadString = SubscriptionConstants.emptyPayload
         guard let authHeader = getAuthHeader(url, with: payloadString) else {
