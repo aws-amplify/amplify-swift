@@ -27,42 +27,35 @@ extension RemoteSyncEngine {
                 return .performingInitialSync
             case (.initializingSubscriptions, .errored(let error)):
                 return .cleaningUp(error)
-            case (.initializingSubscriptions, .finished):
-                return .cleaningUp(nil)
-
 
             case (.performingInitialSync, .performedInitialSync):
                 return .activatingCloudSubscriptions
             case (.performingInitialSync, .errored(let error)):
                 return .cleaningUp(error)
-            case (.performingInitialSync, .finished):
-                return .cleaningUp(nil)
-
 
             case (.activatingCloudSubscriptions, .activatedCloudSubscriptions(let api, let mutationEventPublisher)):
                 return .activatingMutationQueue(api, mutationEventPublisher)
             case (.activatingCloudSubscriptions, .errored(let error)):
                 return .cleaningUp(error)
-            case (.activatingCloudSubscriptions, .finished):
-                return .cleaningUp(nil)
 
             case (.activatingMutationQueue, .activatedMutationQueue):
                 return .notifyingSyncStarted
             case (.activatingMutationQueue, .errored(let error)):
                 return .cleaningUp(error)
-            case (.activatingMutationQueue, .finished):
-                return .cleaningUp(nil)
 
             case (.notifyingSyncStarted, .notifiedSyncStarted):
                 return .syncEngineActive
 
             case (.syncEngineActive, .errored(let error)):
                 return .cleaningUp(error)
-            case (.syncEngineActive, .finished):
-                return .cleaningUp(nil)
+
+            case (_, .finished):
+                return .cleaningUpForTermination
 
             case (.cleaningUp, .cleanedUp(let error)):
                 return .schedulingRestart(error)
+            case (.cleaningUpForTermination, .cleanedUpForTermination):
+                return .terminate
 
             case (.schedulingRestart, .scheduleRestartFinished):
                 return .pausingSubscriptions

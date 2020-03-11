@@ -35,6 +35,8 @@ public protocol DataStoreBaseBehavior {
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: String,
                           completion: @escaping DataStoreCallback<Void>)
+
+    func clear(completion: @escaping DataStoreCallback<Void>)
 }
 
 public protocol DataStoreSubscribeBehavior {

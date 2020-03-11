@@ -279,6 +279,16 @@ final class StorageEngine: StorageEngineBehavior {
         syncEngine?.start(api: Amplify.API)
     }
 
+    func clear(completion: @escaping DataStoreCallback<Void>) {
+        if let syncEngine = syncEngine {
+            syncEngine.stop(completion: { _ in
+                self.storageAdapter.clear(completion: completion)
+            })
+        } else {
+            storageAdapter.clear(completion: completion)
+        }
+    }
+
     func reset(onComplete: () -> Void) {
         // TOOD: Perform cleanup on StorageAdapter, including releasing its `Connection` if needed
         let group = DispatchGroup()

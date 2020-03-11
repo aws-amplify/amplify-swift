@@ -14,12 +14,14 @@ import AWSPluginsCore
 /// an integration layer between the AppSyncLocal `StorageEngine` and SQLite for local storage.
 final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     internal var connection: Connection!
+    private var dbFilePath: URL?
 
     convenience init(databaseName: String = "database") throws {
         guard let documentsPath = getDocumentPath() else {
             preconditionFailure("Could not create the database. The `.documentDirectory` is invalid")
         }
-        let path = documentsPath.appendingPathComponent("\(databaseName).db").absoluteString
+        let dbFilePath = documentsPath.appendingPathComponent("\(databaseName).db")
+        let path = dbFilePath.absoluteString
 
         let connection: Connection
         do {
@@ -28,11 +30,12 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             throw DataStoreError.invalidDatabase(path: path, error)
         }
 
-        try self.init(connection: connection)
+        try self.init(connection: connection, dbFilePath: dbFilePath)
     }
 
-    internal init(connection: Connection) throws {
+    internal init(connection: Connection, dbFilePath: URL? = nil) throws {
         self.connection = connection
+        self.dbFilePath = dbFilePath
         try SQLiteStorageEngineAdapter.initializeDatabase(connection: connection)
         log.verbose("Initialized \(connection)")
     }
@@ -222,6 +225,23 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         try connection.transaction {
             try transactionBlock()
         }
+    }
+
+    func clear(completion: @escaping DataStoreCallback<Void>) {
+        guard let dbFilePath = dbFilePath else {
+            log.error("Attempt to clear DB, but file path was empty")
+            completion(.failure(causedBy: DataStoreError.invalidDatabase(path: "Database path not set", nil)))
+            return
+        }
+        connection = nil
+        let fileManager = FileManager.default
+        do {
+            try fileManager.removeItem(at: dbFilePath)
+        } catch {
+            log.error("Failed to delete database file located at: \(dbFilePath), error: \(error)")
+            completion(.failure(causedBy: DataStoreError.invalidDatabase(path: dbFilePath.absoluteString, error)))
+        }
+        completion(.successfulVoid)
     }
 }
 

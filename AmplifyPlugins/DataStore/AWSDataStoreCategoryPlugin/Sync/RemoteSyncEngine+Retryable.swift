@@ -15,21 +15,20 @@ extension RemoteSyncEngine {
         currentAttemptNumber = 1
     }
 
-    func scheduleRestart(error: AmplifyError?) {
+    func scheduleRestartOrTerminate(error: AmplifyError) {
         let advice = getRetryAdvice(error: error)
         if advice.shouldRetry {
             scheduleRestart(advice: advice)
         } else {
-            if let error = error {
-                remoteSyncTopicPublisher.send(completion: .failure(DataStoreError.api(error)))
-            } else {
-                remoteSyncTopicPublisher.send(completion: .finished)
+            remoteSyncTopicPublisher.send(completion: .failure(DataStoreError.api(error)))
+            if let completionBlock = finishedCompletionBlock {
+                completionBlock(.failure(causedBy: error))
+                finishedCompletionBlock = nil
             }
         }
-
     }
 
-    private func getRetryAdvice(error: Error?) -> RequestRetryAdvice {
+    private func getRetryAdvice(error: Error) -> RequestRetryAdvice {
         //TODO: Parse error from the receive completion to use as an input into getting retry advice.
         //      For now, specifying not connected to internet to force a retry up to our maximum
         let urlError = URLError(.notConnectedToInternet)

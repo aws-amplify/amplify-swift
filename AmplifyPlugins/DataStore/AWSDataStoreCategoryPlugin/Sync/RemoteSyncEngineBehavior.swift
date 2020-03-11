@@ -18,6 +18,7 @@ enum RemoteSyncEngineEvent {
     case mutationQueueStarted
     case syncStarted
     case cleanedUp
+    case cleanedUpForTermination
     case mutationEvent(MutationEvent)
 }
 
@@ -35,6 +36,8 @@ protocol RemoteSyncEngineBehavior: class {
     /// 1. Mutation processor drains messages off the queue in serial and sends to the service, invoking
     ///    any local callbacks on error if necessary
     func start(api: APICategoryGraphQLBehavior)
+
+    func stop(completion: @escaping DataStoreCallback<Void>)
 
     /// Submits a new mutation for synchronization to the remote API. The response will be handled by the appropriate
     /// reconciliation queue

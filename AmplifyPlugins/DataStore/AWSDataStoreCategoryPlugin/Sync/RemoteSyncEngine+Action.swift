@@ -23,8 +23,9 @@ extension RemoteSyncEngine {
         case activatedCloudSubscriptions(APICategoryGraphQLBehavior, MutationEventPublisher)
         case activatedMutationQueue
         case notifiedSyncStarted
-        case cleanedUp(AmplifyError?)
-        case scheduleRestart(AmplifyError?)
+        case cleanedUp(AmplifyError)
+        case cleanedUpForTermination
+        case scheduleRestart(AmplifyError)
         case scheduleRestartFinished
 
         // Terminal actions
@@ -52,6 +53,8 @@ extension RemoteSyncEngine {
                 return "notifiedSyncStarted"
             case .cleanedUp:
                 return "cleanedUp"
+            case .cleanedUpForTermination:
+                return "cleanedUpForTermination"
             case .scheduleRestart:
                 return "scheduleRestart"
             case .scheduleRestartFinished:

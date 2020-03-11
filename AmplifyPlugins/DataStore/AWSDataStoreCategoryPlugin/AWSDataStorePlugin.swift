@@ -16,7 +16,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     var isSyncEnabled: Bool
 
     /// The Publisher that sends mutation events to subscribers
-    let dataStorePublisher: DataStoreSubscribeBehavior?
+    var dataStorePublisher: DataStoreSubscribeBehavior?
 
     let modelRegistration: AmplifyModelRegistration
 
@@ -78,15 +78,23 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
     }
 
-    // MARK: Private
-
-    private func resolveSyncEnabled() {
-        if #available(iOS 13.0, *) {
-            isSyncEnabled = ModelRegistry.hasSyncableModels
+    func reinitStorageEngineIfNeeded() {
+        if storageEngine != nil {
+            return
+        }
+        do {
+            if #available(iOS 13.0, *) {
+                self.dataStorePublisher = DataStorePublisher()
+            }
+            try resolveStorageEngine()
+            try storageEngine.setUp(models: ModelRegistry.models)
+            storageEngine.startSync()
+        } catch {
+            log.error(error: error)
         }
     }
 
-    private func resolveStorageEngine() throws {
+    func resolveStorageEngine() throws {
         guard storageEngine == nil else {
             return
         }
@@ -94,6 +102,14 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled)
         if #available(iOS 13.0, *) {
             setupStorageSink()
+        }
+    }
+
+    // MARK: Private
+
+    private func resolveSyncEnabled() {
+        if #available(iOS 13.0, *) {
+            isSyncEnabled = ModelRegistry.hasSyncableModels
         }
     }
 
