@@ -22,6 +22,10 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
                 withId id: Model.Identifier,
                 completion: DataStoreCallback<Void>)
 
+    func delete<M: Model>(_ modelType: M.Type,
+                          predicate: QueryPredicate,
+                          completion: @escaping DataStoreCallback<[M]>)
+
     func query(untypedModel modelType: Model.Type,
                predicate: QueryPredicate?,
                completion: DataStoreCallback<[Model]>)
@@ -43,4 +47,5 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
     func queryModelSyncMetadata(for modelType: Model.Type) throws -> ModelSyncMetadata?
 
+    func transaction(_ basicClosure: BasicThrowableClosure) throws
 }

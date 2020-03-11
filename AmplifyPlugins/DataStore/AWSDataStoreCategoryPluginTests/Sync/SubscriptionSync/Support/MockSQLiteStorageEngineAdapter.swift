@@ -67,6 +67,12 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         XCTFail("Not expected to execute")
     }
 
+    func delete<M: Model>(_ modelType: M.Type,
+                          predicate: QueryPredicate,
+                          completion: @escaping DataStoreCallback<[M]>) {
+        XCTFail("Not expected to execute")
+    }
+
     func delete(untypedModelType modelType: Model.Type,
                 withId id: String,
                 completion: (Result<Void, DataStoreError>) -> Void) {
@@ -151,6 +157,10 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         listenerForModelSyncMetadata?()
         return resultForQueryModelSyncMetadata
     }
+
+    func transaction(_ basicClosure: () throws -> Void) throws {
+        XCTFail("Not expected to execute")
+    }
 }
 
 class MockStorageEngineBehavior: StorageEngineBehavior {
@@ -177,6 +187,12 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
                           withId id: Model.Identifier,
                           completion: DataStoreCallback<Void>) {
         completion(.successfulVoid)
+    }
+
+    func delete<M: Model>(_ modelType: M.Type,
+                          predicate: QueryPredicate,
+                          completion: @escaping DataStoreCallback<[M]>) {
+        XCTFail("Not expected to execute")
     }
 
     func query<M: Model>(_ modelType: M.Type, predicate: QueryPredicate?, completion: DataStoreCallback<[M]>) {

@@ -16,6 +16,10 @@ protocol ModelStorageBehavior {
                           withId id: Model.Identifier,
                           completion: @escaping DataStoreCallback<Void>)
 
+    func delete<M: Model>(_ modelType: M.Type,
+                          predicate: QueryPredicate,
+                          completion: @escaping DataStoreCallback<[M]>)
+
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate?,
                          completion: DataStoreCallback<[M]>)
