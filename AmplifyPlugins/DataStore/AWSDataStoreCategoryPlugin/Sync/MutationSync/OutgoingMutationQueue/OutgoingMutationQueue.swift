@@ -144,7 +144,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             let dataStoreError = DataStoreError.configuration(
                 "API is unexpectedly nil",
                 """
-                The reference to storageAdapter has been released while an ongoing mutation was being processed.
+                The reference to api has been released while an ongoing mutation was being processed.
                 \(AmplifyErrorMessages.reportBugToAWS())
                 """
             )

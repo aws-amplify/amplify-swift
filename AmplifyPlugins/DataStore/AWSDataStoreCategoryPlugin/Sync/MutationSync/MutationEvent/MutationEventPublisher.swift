@@ -10,6 +10,6 @@ import Combine
 
 /// Publishes mutation events to downstream subscribers for subsequent sync to the API.
 @available(iOS 13.0, *)
-protocol MutationEventPublisher: class {
+protocol MutationEventPublisher: class, Cancellable {
     var publisher: AnyPublisher<MutationEvent, DataStoreError> { get }
 }

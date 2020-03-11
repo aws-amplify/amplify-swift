@@ -48,6 +48,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     let requestRetryablePolicy: RequestRetryablePolicy
     var currentAttemptNumber: Int
 
+    var finishedCompletionBlock: DataStoreCallback<Void>?
+
     /// Initializes the CloudSyncEngine with the specified storageAdapter as the provider for persistence of
     /// MutationEvents, sync metadata, and conflict resolution metadata. Immediately initializes the incoming mutation
     /// queue so it can begin accepting incoming mutations from DataStore.
@@ -144,8 +146,14 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         case .cleaningUp(let error):
             cleanup(error: error)
 
+        case .cleaningUpForTermination:
+            cleanupForTermination()
+
         case .schedulingRestart(let error):
-            scheduleRestart(error: error)
+            scheduleRestartOrTerminate(error: error)
+
+        case .terminate:
+            terminate()
         }
     }
 
@@ -159,6 +167,21 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
         remoteSyncTopicPublisher.send(.storageAdapterAvailable)
         stateMachine.notify(action: .receivedStart)
+    }
+
+    func stop(completion: @escaping DataStoreCallback<Void>) {
+        stateMachine.notify(action: .finished)
+        if finishedCompletionBlock == nil {
+            finishedCompletionBlock = completion
+        }
+    }
+
+    func terminate() {
+        remoteSyncTopicPublisher.send(completion: .finished)
+        if let completionBlock = finishedCompletionBlock {
+            completionBlock(.successfulVoid)
+            finishedCompletionBlock = nil
+        }
     }
 
     func submit(_ mutationEvent: MutationEvent) -> Future<MutationEvent, DataStoreError> {
@@ -241,13 +264,24 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         stateMachine.notify(action: .activatedMutationQueue)
     }
 
-    private func cleanup(error: AmplifyError?) {
+    private func cleanup(error: AmplifyError) {
         reconciliationQueue?.cancel()
         reconciliationQueue = nil
         outgoingMutationQueue.pauseSyncingToCloud()
 
         remoteSyncTopicPublisher.send(.cleanedUp)
         stateMachine.notify(action: .cleanedUp(error))
+    }
+
+    private func cleanupForTermination() {
+        reconciliationQueue?.cancel()
+        reconciliationQueue = nil
+        outgoingMutationQueue.pauseSyncingToCloud()
+
+        mutationEventPublisher.cancel()
+
+        remoteSyncTopicPublisher.send(.cleanedUpForTermination)
+        stateMachine.notify(action: .cleanedUpForTermination)
     }
 
     private func notifySyncStarted() {

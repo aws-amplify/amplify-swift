@@ -161,6 +161,9 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     func transaction(_ basicClosure: () throws -> Void) throws {
         XCTFail("Not expected to execute")
     }
+    func clear(completion: @escaping DataStoreCallback<Void>) {
+        XCTFail("Not expected to execute")
+    }
 }
 
 class MockStorageEngineBehavior: StorageEngineBehavior {
@@ -196,6 +199,10 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     }
 
     func query<M: Model>(_ modelType: M.Type, predicate: QueryPredicate?, completion: DataStoreCallback<[M]>) {
+        //TODO: Find way to mock this
+    }
+
+    func clear(completion: @escaping DataStoreCallback<Void>) {
         //TODO: Find way to mock this
     }
 }

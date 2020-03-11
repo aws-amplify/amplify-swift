@@ -48,4 +48,6 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
     func queryModelSyncMetadata(for modelType: Model.Type) throws -> ModelSyncMetadata?
 
     func transaction(_ basicClosure: BasicThrowableClosure) throws
+
+    func clear(completion: @escaping DataStoreCallback<Void>)
 }

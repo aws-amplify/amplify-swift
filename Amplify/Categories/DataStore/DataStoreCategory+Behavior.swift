@@ -38,4 +38,8 @@ extension DataStoreCategory: DataStoreBaseBehavior {
                                  completion: @escaping DataStoreCallback<Void>) {
         plugin.delete(modelType, withId: id, completion: completion)
     }
+
+    public func clear(completion: @escaping DataStoreCallback<Void>) {
+        plugin.clear(completion: completion)
+    }
 }

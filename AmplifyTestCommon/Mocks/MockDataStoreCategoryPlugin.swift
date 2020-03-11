@@ -56,6 +56,10 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("deleteByPredicate")
     }
 
+    func clear(completion: @escaping DataStoreCallback<Void>) {
+        notify("clear")
+    }
+
     @available(iOS 13.0, *)
     func publisher<M: Model>(for modelType: M.Type)
         -> AnyPublisher<MutationEvent, DataStoreError> {
