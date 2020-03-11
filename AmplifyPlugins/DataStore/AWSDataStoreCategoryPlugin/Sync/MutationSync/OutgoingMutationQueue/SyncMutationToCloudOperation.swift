@@ -92,16 +92,15 @@ class SyncMutationToCloudOperation: Operation {
     func createAPIRequest(mutationType: GraphQLMutationType) -> GraphQLRequest<MutationSync<AnyModel>>? {
         let request: GraphQLRequest<MutationSync<AnyModel>>
         do {
+            let model = try mutationEvent.decodeModel()
             switch mutationType {
             case .delete:
                 request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: mutationEvent.modelName,
-                                                                            id: mutationEvent.id,
+                                                                            id: model.id,
                                                                             version: mutationEvent.version)
             case .update:
-                let model = try mutationEvent.decodeModel()
                 request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model, version: mutationEvent.version)
             case .create:
-                let model = try mutationEvent.decodeModel()
                 request = GraphQLRequest<MutationSyncResult>.createMutation(of: model, version: mutationEvent.version)
             }
         } catch {
