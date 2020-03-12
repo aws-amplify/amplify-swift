@@ -201,6 +201,38 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(variables[6] as? String, post.id)
     }
 
+    /// - Given: a `Model` instance, with condition
+    /// - When:
+    ///   - the model is of type `Post`
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - check if the variables match the expected values
+    func testUpdateStatementFromModelWithCondition() {
+        let post = Post(title: "title", content: "content", createdAt: Date())
+        let condition = Post.keys.content == "content2"
+        let statement = UpdateStatement(model: post, condition: condition)
+
+        let expectedStatement = """
+        update Post
+        set
+          "content" = ?,
+          "createdAt" = ?,
+          "draft" = ?,
+          "rating" = ?,
+          "title" = ?,
+          "updatedAt" = ?
+        where "id" = ?
+          and "content" = ?
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+
+        let variables = statement.variables
+        XCTAssertEqual(variables[0] as? String, "content")
+        XCTAssertEqual(variables[4] as? String, "title")
+        XCTAssertEqual(variables[6] as? String, post.id)
+        // variables[7] as? String, "content2"
+    }
+
     // MARK: - Delete Statements
 
     /// - Given: a `Model` type and an `id`
@@ -307,6 +339,24 @@ class SQLStatementTests: XCTestCase {
         let statement = ConditionStatement(modelType: Post.self, predicate: predicate)
 
         XCTAssertEqual("""
+          and "id" is not null
+        """, statement.stringValue)
+        XCTAssert(statement.variables.isEmpty)
+    }
+
+    /// - Given: a simple predicate and namespace
+    /// - When:
+    ///   - the field is `id`
+    ///   - the operator is `ne`
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    func testTranslateSingleQueryPredicateWithNamespace() {
+        let post = Post.keys
+
+        let predicate = post.id != nil
+        let statement = ConditionStatement(modelType: Post.self, predicate: predicate, namespace: "root")
+
+        XCTAssertEqual("""
           and "root"."id" is not null
         """, statement.stringValue)
         XCTAssert(statement.variables.isEmpty)
@@ -322,7 +372,7 @@ class SQLStatementTests: XCTestCase {
         func assertPredicate(_ predicate: QueryPredicate,
                              matches sql: String,
                              bindings: [Binding?]? = nil) {
-            let statement = ConditionStatement(modelType: Post.self, predicate: predicate)
+            let statement = ConditionStatement(modelType: Post.self, predicate: predicate, namespace: "root")
             XCTAssertEqual(statement.stringValue, "  and \(sql)")
             if let bindings = bindings {
                 XCTAssertEqual(bindings.count, statement.variables.count)
@@ -373,6 +423,44 @@ class SQLStatementTests: XCTestCase {
         let statement = ConditionStatement(modelType: Post.self, predicate: predicate)
 
         XCTAssertEqual("""
+          and "id" is not null
+          and "draft" = ?
+          and "rating" > ?
+          and "rating" between ? and ?
+          and "updatedAt" is null
+          and (
+            "content" like ?
+            or "title" like ?
+          )
+        """, statement.stringValue)
+
+        let variables = statement.variables
+        XCTAssertEqual(variables[0] as? Int, 1)
+        XCTAssertEqual(variables[1] as? Int, 0)
+        XCTAssertEqual(variables[2] as? Int, 2)
+        XCTAssertEqual(variables[3] as? Int, 4)
+        XCTAssertEqual(variables[4] as? String, "%gelato%")
+        XCTAssertEqual(variables[5] as? String, "ice cream%")
+    }
+
+    /// - Given: a grouped predicate and namespace
+    /// - When:
+    ///   - the predicate contains a set of different operations
+    /// - Then:
+    ///   - it generates a valid series of SQL conditions
+    func testTranslateComplexGroupedQueryPredicateWithNamespace() {
+        let post = Post.keys
+
+        let predicate = post.id != nil
+            && post.draft == true
+            && post.rating > 0
+            && post.rating.between(start: 2, end: 4)
+            && post.updatedAt == nil
+            && (post.content ~= "gelato" || post.title.beginsWith("ice cream"))
+
+        let statement = ConditionStatement(modelType: Post.self, predicate: predicate, namespace: "root")
+
+        XCTAssertEqual("""
           and "root"."id" is not null
           and "root"."draft" = ?
           and "root"."rating" > ?
@@ -392,5 +480,4 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(variables[4] as? String, "%gelato%")
         XCTAssertEqual(variables[5] as? String, "ice cream%")
     }
-
 }

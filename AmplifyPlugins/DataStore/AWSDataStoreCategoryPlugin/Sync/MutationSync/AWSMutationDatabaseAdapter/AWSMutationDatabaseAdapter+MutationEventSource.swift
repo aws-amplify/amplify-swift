@@ -50,7 +50,7 @@ extension AWSMutationDatabaseAdapter: MutationEventSource {
                        completion: @escaping DataStoreCallback<MutationEvent>) {
         var inProcessEvent = mutationEvent
         inProcessEvent.inProcess = true
-        storageAdapter.save(inProcessEvent, completion: completion)
+        storageAdapter.save(inProcessEvent, condition: nil, completion: completion)
     }
 
 }

@@ -105,12 +105,12 @@ final class StorageEngine: StorageEngineBehavior {
         try storageAdapter.setUp(models: models)
     }
 
-    func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
+    func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: @escaping DataStoreCallback<M>) {
         // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
         // mutation type
         let modelExists: Bool
         do {
-            modelExists = try storageAdapter.exists(M.self, withId: model.id)
+            modelExists = try storageAdapter.exists(M.self, withId: model.id, predicate: nil)
         } catch {
             let dataStoreError = DataStoreError.invalidOperation(causedBy: error)
             completion(.failure(dataStoreError))
@@ -141,8 +141,7 @@ final class StorageEngine: StorageEngineBehavior {
             }
         }
 
-        storageAdapter.save(model, completion: wrappedCompletion)
-
+        storageAdapter.save(model, condition: condition, completion: wrappedCompletion)
     }
 
     func delete<M: Model>(_ modelType: M.Type,

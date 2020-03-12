@@ -15,6 +15,7 @@ public protocol DataStoreBaseBehavior {
 
     /// Saves the model to storage. If sync is enabled, also initiates a sync of the mutation to the remote API
     func save<M: Model>(_ model: M,
+                        where condition: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>)
 
     func query<M: Model>(_ modelType: M.Type,

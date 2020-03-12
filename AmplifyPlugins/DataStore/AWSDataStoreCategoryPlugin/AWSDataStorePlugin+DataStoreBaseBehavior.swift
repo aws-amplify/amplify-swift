@@ -11,9 +11,11 @@ import AWSPluginsCore
 extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func save<M: Model>(_ model: M,
+                               where condition: QueryPredicate? = nil,
                                completion: @escaping DataStoreCallback<M>) {
-        log.verbose("Saving: \(model)")
+        log.verbose("Saving: \(model) with condition: \(String(describing: condition))")
         reinitStorageEngineIfNeeded()
+
         // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
         // mutation type
         let modelExists: Bool
@@ -22,7 +24,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                 throw DataStoreError.configuration("Unable to get storage adapter",
                                                    "")
             }
-            modelExists = try engine.storageAdapter.exists(M.self, withId: model.id)
+            modelExists = try engine.storageAdapter.exists(M.self, withId: model.id, predicate: nil)
         } catch {
             if let dataStoreError = error as? DataStoreError {
                 completion(.failure(dataStoreError))
@@ -49,7 +51,10 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
             completion(result)
         }
 
-        storageEngine.save(model, completion: publishingCompletion)
+        storageEngine.save(model,
+                           condition: condition,
+                           completion: publishingCompletion)
+
     }
 
     public func query<M: Model>(_ modelType: M.Type,

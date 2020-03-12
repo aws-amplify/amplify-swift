@@ -250,7 +250,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     private func saveMetadata(storageAdapter: StorageEngineAdapter,
                               inProcessModel: AppliedModel) {
         log.verbose(#function)
-        storageAdapter.save(remoteModel.syncMetadata) { result in
+        storageAdapter.save(remoteModel.syncMetadata, condition: nil) { result in
             switch result {
             case .failure(let dataStoreError):
                 let errorAction = Action.errored(dataStoreError)
