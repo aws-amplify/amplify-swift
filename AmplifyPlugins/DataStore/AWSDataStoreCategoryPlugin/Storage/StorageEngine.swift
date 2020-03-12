@@ -119,6 +119,12 @@ final class StorageEngine: StorageEngineBehavior {
 
         let mutationType = modelExists ? MutationEvent.MutationType.update : .create
 
+        // TODO: finalize save behavior
+        if mutationType == .create && condition != nil {
+            let dataStoreError = DataStoreError.invalidOperation(causedBy: nil)
+            completion(.failure(causedBy: dataStoreError))
+        }
+
         let wrappedCompletion: DataStoreCallback<M> = { result in
             guard type(of: model).schema.isSyncable, let syncEngine = self.syncEngine else {
                 completion(result)
