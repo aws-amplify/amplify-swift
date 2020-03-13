@@ -49,7 +49,7 @@ Amplify has established the concepts of categories and plugins. A category is a 
 
 ## Getting Started
 
-To get started with contributing to the iOS library of Amplify, first make sure you have the latest version of Xcode installed as well as cocoapods. You can install cocoapods by simply running:
+To get started with the Amplify Framework for iOS, first make sure you have the latest version of Xcode installed as well as cocoapods. You can install cocoapods by simply running:
 
 ```
 sudo gem install cocoapods
@@ -65,13 +65,13 @@ GitHub provides additional documentation on [forking a repository](https://help.
 The Amplify iOS framework has been divided into multiple Xcode projects:
 
 - Core - Amplify.xcworkspace - Includes high level category interfaces and shared interfaces. Shared components including Hub.
-- API - AmplifyPlugins/API/APICategoryPlugin.xcworkspace
-- Analytics - AmplifyPlugins/Analytics/AnalyticsCategoryPlugin.xcworkspace
-- DataStore - AmplifyPlugins/DataStore/DataStoreCategoryPlugin.xcworkspace
-- Predictions - AmplifyPlugins/Predictions/PredictionsCategoryPlugin.xcworkspace
-- Storage - AmplifyPlugins/Storage/StoragePlugin.xcworkspace
+- API - AmplifyPlugins/API/APICategoryPlugin.xcworkspace - Includes the plugin with implementations for the API category. 
+- Analytics - AmplifyPlugins/Analytics/AnalyticsCategoryPlugin.xcworkspace - Includes the plugin with implementations for the analytics category.
+- DataStore - AmplifyPlugins/DataStore/DataStoreCategoryPlugin.xcworkspace - Includes the plugins with the implementations for the datastore category
+- Predictions - AmplifyPlugins/Predictions/PredictionsCategoryPlugin.xcworkspace - Includes 2 plugins (AWS and CoreML) with the implementations for the predictions category.
+- Storage - AmplifyPlugins/Storage/StoragePlugin.xcworkspace - Includes the plugin with the implementation for the storage category.
 
-Prior to making changes, you will need to run `pod install` in the directory that you intend to make changes in. For example, if you wanted to add another API to the Storage category, you might start by running `pod install` at the root of the project and open the Amplify Core workspace and heading to the Storage folder with the commands below:
+Prior to making changes, you will need to run `pod install` in the directory in which you intend to make changes. For example, if you wanted to add another API to the Storage category, you might start by running `pod install` at the root of the project. Then, open the Amplify Core workspace and enter the Storage folder, with the commands below:
 
 ```
 cd amplify-ios
@@ -79,7 +79,7 @@ pod install
 xed .
 ```
 
-Then perhaps if you wanted to implement this API you added to storage in the plugin behind it, the workflow be as follows:
+After you add the new API to the storage category, you'll want to support the API in a plugin. To do so:
 
 ```
 cd amplify-ios/AmplifyPlugins/Storage
@@ -137,13 +137,13 @@ Then you want to run `pod update` at the root of your sample app to make sure it
 
 ### Step 1: Open Issue
 
-If there isn't one already, open an issue describing what you intend to contribute. It's useful to communicate in advance, because sometimes, someone is already working in this space, so maybe it's worth collaborating with them instead of duplicating the efforts.
+If there isn't one already, open an issue describing what you intend to contribute. It's useful to communicate in advance, because sometimes, someone is already working in this space. So, maybe it's worth collaborating with them instead of duplicating the efforts.
 
 ### Step 2: Design
 
 In some cases, it is useful and mandatory to seek for feedback on the design of your planned implementation. This is useful when you plan a breaking change or large feature, or you want advice on what would be the best path forward.
 
-The GitHub issue is sufficient for such discussions, and can be sufficient to get clarity on what you plan to do. Make sure you tag any members of the Amplify iOS team so we can help guide you: @kneekey23, @lawmicha, @wooj2, @palpatim, @royjit, @drochetti, @phani-srikar.
+The GitHub issue is sufficient for such discussions, and can be sufficient to get clarity on what you plan to do. Make sure you tag the Amplify Native team using @aws-amplify/amplify-native so we can help guide you.
 
 ### Step 3: Fork the Repo
 
@@ -175,7 +175,7 @@ Create a commit with the proposed change changes:
 ### Step 6: Pull Request
 
 - Push your changes to your GitHub fork
-- Submit a Pull Requests on the aws-sdk-ios repo to the `master` branch and add one of the amplify-ios team members on it (@kneekey23, @lawmicha, @wooj2, @palpatim, @royjit, @drochetti, @phani-srikar).
+- Submit a Pull Requests on the aws-sdk-ios repo to the `master` branch and add the Amplify Native team using @aws-amplify/amplify-native so we can approve/provide feedback.
 - The title of your PR must be descriptive to the specific change.
 - No period at the end of the title.
 - Pull Request message should indicate which issues are fixed: `fixes #<issue>` or `closes #<issue>`.
