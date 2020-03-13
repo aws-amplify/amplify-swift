@@ -196,7 +196,26 @@ Some build issues can be solved by [removing your derived data](https://iosdevce
 
 ## Related Repositories
 
-We like to have platform parity as much as possible while still respecting the language we are writing in so often times we will try to align our designs with the [amplify-android](https://github.com/aws-amplify/amplify-android) repository. Feel free to check it out as well to see how something is done for Android.
+This project is part of the Amplify Framework, which runs on Android,
+iOS, and numerous JavaScript-based web platforms.
+
+1. [AWS Amplify for iOS](https://github.com/aws-amplify/amplify-ios)
+2. [AWS Amplify for JavaScript](https://github.com/aws-amplify/amplify-js)
+
+AWS Amplify plugins are built on top of the AWS SDKs. AWS SDKs are a
+toolkit for interacting with AWS backend resources.
+
+1. [AWS SDK for Android](https://github.com/aws-amplify/aws-sdk-android)
+2. [AWS SDK for iOS](https://github.com/aws-amplify/aws-sdk-ios)
+3. [AWS SDK for JavaScript](https://github.com/aws/aws-sdk-js)
+
+Not officially part of the AWS SDKs, [AppSync](https://aws.amazon.com/appsync/) is an opinionated,
+mobile-oriented GraphQL management service. It is used by Amplify's
+DataStore and API plugins.
+
+1. [Android AppSync Client](https://github.com/awslabs/aws-mobile-appsync-sdk-android)
+2. [iOS AppSync Client](https://github.com/awslabs/aws-mobile-appsync-sdk-ios)
+3. [JavaScript AppSync Client](https://github.com/awslabs/aws-mobile-appsync-sdk-js)
 
 ## Finding contributions to work on
 Looking at the existing issues is a great way to find something to contribute on. As our projects, by default, use the default GitHub issue labels (enhancement/bug/duplicate/help wanted/invalid/question/wontfix), looking at any ['help wanted'](https://github.com/aws-amplify/amplify-ios/labels/help%20wanted) or ['good first'](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) issues is a great place to start.
