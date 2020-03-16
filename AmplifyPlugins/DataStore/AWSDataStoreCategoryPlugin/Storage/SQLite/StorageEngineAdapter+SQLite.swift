@@ -20,12 +20,16 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         guard let documentsPath = getDocumentPath() else {
             preconditionFailure("Could not create the database. The `.documentDirectory` is invalid")
         }
-        let dbFilePath = documentsPath.appendingPathComponent("\(databaseName).db")
+        var dbFilePath = documentsPath.appendingPathComponent("\(databaseName).db")
         let path = dbFilePath.absoluteString
 
         let connection: Connection
         do {
             connection = try Connection(path)
+
+            var urlResourceValues = URLResourceValues()
+            urlResourceValues.isExcludedFromBackup = true
+            try dbFilePath.setResourceValues(urlResourceValues)
         } catch {
             throw DataStoreError.invalidDatabase(path: path, error)
         }
