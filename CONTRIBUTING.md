@@ -121,18 +121,14 @@ Then you want to run `pod update` at the root of your sample app to make sure it
     - Update Changelog with your updates in accordance with our pattern under the new version. Example below:
 
     ```markdown
+    ## Unreleased
+      - Please place a note with your updates HERE. :)
     ## 2.xx.x
 
     ### Bug Fixes
 
-    - **Breaking Change** List out any breaking changes here
-
-    - **Storage or name of category you changed**
-      - for example, if you made a change to Storage, add the heading like above and list the bug fix here with the issue number.
-
     ### Misc. Updates
 
-    -  Misc updates go here. Usually model changes
     ```
 
 ### Step 1: Open Issue
@@ -151,7 +147,7 @@ First, create a fork of amplify-ios. Clone it, and make changes to this fork.
 
 ```
 git clone git@github.com:GITHUBUSERNAME/aws-sdk-ios.git 
-# change your GITHUBUSERNAME to your github username before running this command.
+# change your GITHUBUSERNAME to your Github username before running this command.
 ```
 
 ### Step 4: Work your magic
@@ -161,10 +157,10 @@ Work your magic. Here are some guidelines:
 - Coding style (abbreviated):
     - In general, follow the style of the code around you
     - 4 space indentation
-    - 120 characters wide
+    - 100 characters wide
     - Every change requires a new or updated unit test/integ test
     - If you change customer facing APIs, make sure to update the documentation above the interface and include a reason for the breaking change in your PR comments
-    - Try to maintain a single feature/bugfix per pull request. It's okay to introduce a little bit of housekeeping changes along the way, but try to avoid conflating multiple features. Eventually all these are going to go into a single commit, so you can use that to frame your scope.
+    - Try to maintain a single feature/bugfix per pull request. It's okay to introduce a little bit of housekeeping changes along the way, but don't conflate multiple features. Eventually all these are going to go into a single commit, so you can use that to frame your scope.
 
 ### Step 5: Commit
 
@@ -188,7 +184,7 @@ Create a commit with the proposed change changes:
 - Rebase with master if the master branch has commits ahead of your fork.
 
 ### Step 7: Merge
-Once your PR has been approved and tested, go ahead and merge it into `master`! Barring any unforeseen circumstances, your changes will be released in our next version. Yay!! 
+Once your PR has been approved and tested, we will merge it into `master` for you and barring any unforeseen circumstances, your changes will be released in our next version. Yay!! 
 
 ## Troubleshooting
 
@@ -208,14 +204,6 @@ toolkit for interacting with AWS backend resources.
 1. [AWS SDK for Android](https://github.com/aws-amplify/aws-sdk-android)
 2. [AWS SDK for iOS](https://github.com/aws-amplify/aws-sdk-ios)
 3. [AWS SDK for JavaScript](https://github.com/aws/aws-sdk-js)
-
-Not officially part of the AWS SDKs, [AppSync](https://aws.amazon.com/appsync/) is an opinionated,
-mobile-oriented GraphQL management service. It is used by Amplify's
-DataStore and API plugins.
-
-1. [Android AppSync Client](https://github.com/awslabs/aws-mobile-appsync-sdk-android)
-2. [iOS AppSync Client](https://github.com/awslabs/aws-mobile-appsync-sdk-ios)
-3. [JavaScript AppSync Client](https://github.com/awslabs/aws-mobile-appsync-sdk-js)
 
 ## Finding contributions to work on
 Looking at the existing issues is a great way to find something to contribute on. As our projects, by default, use the default GitHub issue labels (enhancement/bug/duplicate/help wanted/invalid/question/wontfix), looking at any ['help wanted'](https://github.com/aws-amplify/amplify-ios/labels/help%20wanted) or ['good first'](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) issues is a great place to start.
