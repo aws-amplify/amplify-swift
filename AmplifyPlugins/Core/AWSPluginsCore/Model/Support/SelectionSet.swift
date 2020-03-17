@@ -68,25 +68,24 @@ extension SelectionSet {
         var result = [String]()
         let indent = indentSize == 0 ? "" : String(repeating: "  ", count: indentSize)
 
-        // Account for the root node,
-        if let name = value.name {
-            result.append(indent + name)
-        }
-
-        children.forEach { selectionSetField in
-            guard let name = selectionSetField.value.name else {
-                return
-            }
-
-            if !selectionSetField.children.isEmpty {
+        switch value.fieldType {
+        case .model, .pagination:
+            if let name = value.name {
                 result.append(indent + name + " {")
-                selectionSetField.children.forEach { innerSelectionSetField in
+                children.forEach { innerSelectionSetField in
                     result.append(innerSelectionSetField.stringValue(indentSize: indentSize + 1))
                 }
                 result.append(indent + "}")
             } else {
-                result.append(indent + name)
+                children.forEach { innerSelectionSetField in
+                    result.append(innerSelectionSetField.stringValue(indentSize: indentSize))
+                }
             }
+        case .value:
+            guard let name = value.name else {
+                return ""
+            }
+            result.append(indent + name)
         }
 
         return result.joined(separator: "\n    ")
