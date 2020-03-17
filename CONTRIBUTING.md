@@ -5,6 +5,7 @@ Thank you for your interest in contributing to our project! <3 Whether it's a bu
 - [History & Ethos](#our-history-and-ethos)
   - [Our Design](#our-design)
 - [Getting Started](#getting-started)
+- [Testing](#testing)
 - [Tools](#tools)
 - [Debugging](#debugging)
   - [Running Cocoapods Locally](#running-cocoapods-locally)
@@ -86,6 +87,11 @@ cd amplify-ios/AmplifyPlugins/Storage
 pod install
 xed .
 ```
+## Testing
+
+Each plugin has its own set of unit and integration tests. Make sure to run the unit tests from the plugin and relevant integration tests from the other test targets in the workspace to ensure there is no regression and add new tests where needed, to cover the changes you are making. 
+
+The test targets are under each workspace containing the plugin are named "'PluginName'E2ETests", "'PluginName'IntegrationTests", and "'PluginName'FunctionalTests". First install [Amplify CLI](https://github.com/aws-amplify/amplify-cli) and then follow the instructions in the README.md at the root of the test target to provision and set up the backend to run the integration tests.
 
 ## Tools
 
