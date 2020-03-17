@@ -944,6 +944,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2134813E241AF365001966DE /* amplifyconfiguration.json in Resources */,
 				2149E61423886C7F00873955 /* LaunchScreen.storyboard in Resources */,
 				2149E61123886C7F00873955 /* Assets.xcassets in Resources */,
 				2149E60F23886C7B00873955 /* Main.storyboard in Resources */,

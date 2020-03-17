@@ -82,4 +82,77 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
         wait(for: [deleteReceived], timeout: networkTimeout)
     }
+
+    /// - Given: A post that has been saved
+    /// - When:
+    ///    - attempt to update the existing post with a condition does not match existing data
+    ///    - attempt to update the existing post with a condition that matches existing data
+    /// - Then:
+    ///    - the update with condition that does not match will return existing post data, not updated.
+    ///    - the update with condition that matches existing data will be applied and returned.
+    func testCreateThenMutateWithCondition() throws {
+        try startAmplifyAndWaitForSync()
+
+        let post = Post.keys
+        let date = Date()
+        let title = "This is a new post I created"
+        let newPost = Post(
+            title: title,
+            content: "Original content from DataStoreEndToEndTests at \(date)",
+            createdAt: date)
+
+        var updatedPost = newPost
+            updatedPost.content = "UPDATED CONTENT from DataStoreEndToEndTests at \(Date())"
+
+        let createReceived = expectation(description: "Create notification received")
+        let updateWithNoChangeReceived = expectation(description: "Update with no change notification received")
+        let updateReceived = expectation(description: "Update notification received")
+
+        let hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                guard let mutationEvent = payload.data as? MutationEvent,
+                    let post = try? mutationEvent.decodeModel() as? Post
+                    else {
+                        XCTFail("Can't cast payload as mutation event")
+                        return
+                }
+
+                if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                    XCTAssertEqual(post.content, post.content)
+                    XCTAssertEqual(mutationEvent.version, 1)
+                    createReceived.fulfill()
+                    return
+                }
+
+                if mutationEvent.mutationType == GraphQLMutationType.update.rawValue && mutationEvent.version == 2 {
+                    XCTAssertEqual(post.content, newPost.content)
+                    updateWithNoChangeReceived.fulfill()
+                    return
+                }
+
+                if mutationEvent.mutationType == GraphQLMutationType.update.rawValue && mutationEvent.version == 3 {
+                    XCTAssertEqual(post.content, updatedPost.content)
+                    updateReceived.fulfill()
+                    return
+                }
+        }
+
+        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+
+        Amplify.DataStore.save(newPost) { _ in }
+
+        wait(for: [createReceived], timeout: networkTimeout)
+
+        Amplify.DataStore.save(updatedPost, where: post.title == "some random title") { _ in }
+
+        wait(for: [updateWithNoChangeReceived], timeout: networkTimeout)
+
+        Amplify.DataStore.save(updatedPost, where: post.title == title) { _ in }
+
+        wait(for: [updateReceived], timeout: networkTimeout)
+    }
 }

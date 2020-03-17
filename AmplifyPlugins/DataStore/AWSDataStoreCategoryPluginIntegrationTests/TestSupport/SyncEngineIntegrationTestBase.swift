@@ -41,7 +41,7 @@ class SyncEngineIntegrationTestBase: XCTestCase {
         Amplify.Logging.logLevel = .verbose
 
         do {
-            try Amplify.add(plugin: AWSAPIPlugin())
+            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: TestModelRegistration()))
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: TestModelRegistration()))
         } catch {
             XCTFail(String(describing: error))

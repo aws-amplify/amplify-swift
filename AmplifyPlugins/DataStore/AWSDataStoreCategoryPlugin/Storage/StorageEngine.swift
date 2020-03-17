@@ -140,6 +140,7 @@ final class StorageEngine: StorageEngineBehavior {
                 self.log.verbose("\(#function) syncing mutation for \(savedModel)")
                 self.syncMutation(of: savedModel,
                                   mutationType: mutationType,
+                                  queryPredicate: condition,
                                   syncEngine: syncEngine,
                                   completion: completion)
             } else {
@@ -378,11 +379,14 @@ final class StorageEngine: StorageEngineBehavior {
     @available(iOS 13.0, *)
     private func syncMutation<M: Model>(of savedModel: M,
                                         mutationType: MutationEvent.MutationType,
+                                        queryPredicate: QueryPredicate? = nil,
                                         syncEngine: RemoteSyncEngineBehavior,
                                         completion: @escaping DataStoreCallback<M>) {
         let mutationEvent: MutationEvent
         do {
-            mutationEvent = try MutationEvent(model: savedModel, mutationType: mutationType)
+            mutationEvent = try MutationEvent(model: savedModel,
+                                              mutationType: mutationType,
+                                              queryPredicate: queryPredicate)
         } catch {
             let dataStoreError = DataStoreError(error: error)
             completion(.failure(dataStoreError))

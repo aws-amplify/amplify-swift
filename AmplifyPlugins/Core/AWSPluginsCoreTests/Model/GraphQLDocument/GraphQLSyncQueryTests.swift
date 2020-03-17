@@ -113,5 +113,4 @@ class GraphQLSyncQueryTests: XCTestCase {
         """
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
     }
-
 }
