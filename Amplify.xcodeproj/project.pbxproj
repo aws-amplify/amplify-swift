@@ -207,8 +207,6 @@
 		B98E9D122372236300934B51 /* QueryField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0A2372236200934B51 /* QueryField.swift */; };
 		B98E9D132372236300934B51 /* QueryOperator+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */; };
 		B98E9D142372236300934B51 /* QueryPredicate+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */; };
-		B99209E32411E49D00F80010 /* amplify-tools.sh in Resources */ = {isa = PBXBuildFile; fileRef = B99209E12411E49D00F80010 /* amplify-tools.sh */; };
-		B99209E42411E49D00F80010 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B99209E22411E49D00F80010 /* README.md */; };
 		B996FC4423FF2FA8006D0F68 /* Encodable+AnyEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B996FC4323FF2FA8006D0F68 /* Encodable+AnyEncodable.swift */; };
 		B996FC4D24059918006D0F68 /* Model+Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = B996FC4C24059918006D0F68 /* Model+Enum.swift */; };
 		B9B64A9F23FCBF7E00730B68 /* ModelValueConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */; };
@@ -2927,8 +2925,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B99209E42411E49D00F80010 /* README.md in Resources */,
-				B99209E32411E49D00F80010 /* amplify-tools.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
