@@ -33,7 +33,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     /// Synchronizes startup operations
-    private let syncQueue: OperationQueue
     private let workQueue = DispatchQueue(label: "com.amazonaws.RemoteSyncEngineOperationQueue",
                                           target: DispatchQueue.global())
 
@@ -100,10 +99,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         self.remoteSyncTopicPublisher = PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>()
         self.networkReachabilityPublisher = networkReachabilityPublisher
         self.requestRetryablePolicy = requestRetryablePolicy
-
-        self.syncQueue = OperationQueue()
-        syncQueue.name = "com.amazonaws.Amplify.\(AWSDataStorePlugin.self).CloudSyncEngine"
-        syncQueue.maxConcurrentOperationCount = 1
 
         self.currentAttemptNumber = 1
 
@@ -268,11 +263,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         let group = DispatchGroup()
 
         group.enter()
-
-        DispatchQueue.global().async {
-            self.syncQueue.cancelAllOperations()
-            self.syncQueue.waitUntilAllOperationsAreFinished()
-        }
 
         let mirror = Mirror(reflecting: self)
         for child in mirror.children {

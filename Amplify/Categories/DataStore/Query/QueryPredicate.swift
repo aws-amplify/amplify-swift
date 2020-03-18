@@ -23,6 +23,13 @@ public func not<Predicate: QueryPredicate>(_ predicate: Predicate) -> QueryPredi
     return QueryPredicateGroup(type: .not, predicates: [predicate])
 }
 
+/// The case `.all` is a predicate used as an argument to select all of a single modeltype. We
+/// chose `.all` instead of `nil` because we didn't want to use the implicit nature of `nil` to
+/// specify an action applies to an entire data set.
+public enum QueryPredicateConstant: QueryPredicate {
+    case all
+}
+
 public class QueryPredicateGroup: QueryPredicate {
 
     public internal(set) var type: QueryPredicateGroupType

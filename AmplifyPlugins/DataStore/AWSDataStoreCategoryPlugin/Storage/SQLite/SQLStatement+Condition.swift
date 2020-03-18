@@ -49,6 +49,10 @@ private func translateQueryPredicate(from modelType: Model.Type,
                 indentSize -= 1
                 sql.append("\(indent))")
             }
+        } else if let constant = pred as? QueryPredicateConstant {
+            if case .all = constant {
+                sql.append("or 1 = 1")
+            }
         }
     }
     translate(predicate)

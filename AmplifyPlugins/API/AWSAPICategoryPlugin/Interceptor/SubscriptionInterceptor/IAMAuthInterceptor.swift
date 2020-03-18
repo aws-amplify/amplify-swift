@@ -13,10 +13,10 @@ import AppSyncRealTimeClient
 
 class IAMAuthInterceptor: AuthInterceptor {
 
-    let authProvider: IAMCredentialsProvider
+    let authProvider: AWSCredentialsProvider
     let region: AWSRegionType
 
-    init(_ authProvider: IAMCredentialsProvider, region: AWSRegionType) {
+    init(_ authProvider: AWSCredentialsProvider, region: AWSRegionType) {
         self.authProvider = authProvider
         self.region = region
     }
@@ -37,8 +37,9 @@ class IAMAuthInterceptor: AuthInterceptor {
         return message
     }
 
-    func interceptConnection(_ request: AppSyncConnectionRequest, for url: URL) -> AppSyncConnectionRequest {
-        let url = url.appendingPathComponent(RealtimeProviderConstants.iamConnectPath)
+    func interceptConnection(_ request: AppSyncConnectionRequest,
+                             for endpoint: URL) -> AppSyncConnectionRequest {
+        let url = endpoint.appendingPathComponent(RealtimeProviderConstants.iamConnectPath)
         let payloadString = SubscriptionConstants.emptyPayload
         guard let authHeader = getAuthHeader(url, with: payloadString) else {
             return request
@@ -61,9 +62,8 @@ class IAMAuthInterceptor: AuthInterceptor {
         return signedRequest
     }
 
-    final private func getAuthHeader(_ url: URL, with payload: String) -> IAMAuthenticationHeader? {
-        guard let host = url.host else {
-            Amplify.API.log.warn("[IAMAuthInterceptor] getAuthHeader missing host")
+    final private func getAuthHeader(_ endpoint: URL, with payload: String) -> IAMAuthenticationHeader? {
+        guard let host = endpoint.host else {
             return nil
         }
         let amzDate =  NSDate.aws_clockSkewFixed() as NSDate
@@ -72,13 +72,11 @@ class IAMAuthInterceptor: AuthInterceptor {
         }
         let awsEndpoint = AWSEndpoint(region: region,
                                       serviceName: SubscriptionConstants.appsyncServiceName,
-                                      url: url)
-        let signer: AWSSignatureV4Signer = AWSSignatureV4Signer(credentialsProvider: authProvider.getCredentialsProvider(),
+                                      url: endpoint)
+        let signer: AWSSignatureV4Signer = AWSSignatureV4Signer(credentialsProvider: authProvider,
                                                                 endpoint: awsEndpoint)
-
-        // TODO: Make this asynchronous https://github.com/aws-amplify/amplify-ios/issues/73
         let semaphore = DispatchSemaphore(value: 0)
-        let mutableRequest = NSMutableURLRequest(url: url)
+        let mutableRequest = NSMutableURLRequest(url: endpoint)
         mutableRequest.httpMethod = "POST"
         mutableRequest.addValue(RealtimeProviderConstants.iamAccept,
                                 forHTTPHeaderField: RealtimeProviderConstants.acceptKey)
@@ -89,7 +87,7 @@ class IAMAuthInterceptor: AuthInterceptor {
                                 forHTTPHeaderField: RealtimeProviderConstants.contentTypeKey)
         mutableRequest.httpBody = payload.data(using: .utf8)
 
-        signer.interceptRequest(mutableRequest).continueWith { task in
+        signer.interceptRequest(mutableRequest).continueWith { _ in
             semaphore.signal()
             return nil
         }

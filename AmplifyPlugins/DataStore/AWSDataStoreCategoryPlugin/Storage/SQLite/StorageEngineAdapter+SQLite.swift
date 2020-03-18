@@ -13,7 +13,6 @@ import AWSPluginsCore
 /// [SQLite](https://sqlite.org) `StorageEngineAdapter` implementation. This class provides
 /// an integration layer between the AppSyncLocal `StorageEngine` and SQLite for local storage.
 final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
-
     internal var connection: Connection!
 
     convenience init(databaseName: String = "database") throws {
@@ -97,6 +96,18 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                     completion(.failure(error))
                 }
             }
+        } catch {
+            completion(.failure(causedBy: error))
+        }
+    }
+
+    func delete<M: Model>(_ modelType: M.Type,
+                          predicate: QueryPredicate,
+                          completion: (DataStoreResult<[M]>) -> Void) {
+        do {
+            let statement = DeleteStatement(modelType: modelType, predicate: predicate)
+            _ = try connection.prepare(statement.stringValue).run(statement.variables)
+            completion(.success([]))
         } catch {
             completion(.failure(causedBy: error))
         }
@@ -205,6 +216,12 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         let rows = try connection.prepare(statement.stringValue).run(statement.variables)
         let result = try rows.convert(to: ModelSyncMetadata.self)
         return try result.unique()
+    }
+
+    func transaction(_ transactionBlock: BasicThrowableClosure) throws {
+        try connection.transaction {
+            try transactionBlock()
+        }
     }
 }
 
