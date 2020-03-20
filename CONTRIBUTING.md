@@ -42,14 +42,14 @@ git clone git@github.com:YOURGITHUBUSERNAME/amplify-ios.git
 ```
 GitHub provides additional documentation on [forking a repository](https://help.github.com/articles/fork-a-repo/).
 
-The Amplify iOS framework has been divided into multiple Xcode projects:
+The Amplify iOS framework has been divided into multiple Xcode projects. You can find any of the catgory specific ones under `AmplifyPlugins` in their specific category folder:
 
 - Core - Amplify.xcworkspace - Includes high level category interfaces and shared interfaces. Shared components including Hub.
-- API - AmplifyPlugins/API/APICategoryPlugin.xcworkspace - Includes the plugin with implementations for the API category. 
-- Analytics - AmplifyPlugins/Analytics/AnalyticsCategoryPlugin.xcworkspace - Includes the plugin with implementations for the analytics category.
-- DataStore - AmplifyPlugins/DataStore/DataStoreCategoryPlugin.xcworkspace - Includes the plugins with the implementations for the datastore category
-- Predictions - AmplifyPlugins/Predictions/PredictionsCategoryPlugin.xcworkspace - Includes 2 plugins (AWS and CoreML) with the implementations for the predictions category.
-- Storage - AmplifyPlugins/Storage/StoragePlugin.xcworkspace - Includes the plugin with the implementation for the storage category.
+- API - Includes the plugin with implementations for the API category. 
+- Analytics - Includes the plugin with implementations for the analytics category.
+- DataStore - Includes the plugins with the implementations for the datastore category
+- Predictions - Includes 2 plugins (AWS and CoreML) with the implementations for the predictions category.
+- Storage - Includes the plugin with the implementation for the storage category.
 
 Prior to making changes, you will need to run `pod install` in the directory in which you intend to make changes. For example, if you wanted to add another API to the Storage category, you might start by running `pod install` at the root of the project. Then, open the Amplify Core workspace and enter the Storage folder, with the commands below:
 
