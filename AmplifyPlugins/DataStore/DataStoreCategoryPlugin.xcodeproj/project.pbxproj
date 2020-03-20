@@ -11,6 +11,8 @@
 		0DA38963A6DD53AF9BCDFC68 /* Pods_AWSDataStoreCategoryPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6CF3060AE9E227813325029F /* Pods_AWSDataStoreCategoryPlugin.framework */; };
 		1CB256DB1E49BBEF19B0DE8C /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 901B53EACEE953021704BB41 /* Pods_AWSDataStoreCategoryPlugin_AWSDataStoreCategoryPluginTests.framework */; };
 		2129BE4A23948A97006363A1 /* StorageAdapterMutationSyncTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE4923948A97006363A1 /* StorageAdapterMutationSyncTests.swift */; };
+		213481BF24213E14001966DE /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 213481BE24213E13001966DE /* README.md */; };
+		213481C5242140BE001966DE /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 213481C4242140BE001966DE /* amplifyconfiguration.json */; };
 		2149E5C52388684F00873955 /* StorageEngineBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E5A82388684F00873955 /* StorageEngineBehavior.swift */; };
 		2149E5C62388684F00873955 /* StorageEngineAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E5A92388684F00873955 /* StorageEngineAdapter.swift */; };
 		2149E5C72388684F00873955 /* StorageEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E5AA2388684F00873955 /* StorageEngine.swift */; };
@@ -131,7 +133,6 @@
 		FAD2BDF6239583B2006EB065 /* TestModelRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD2BDF5239583B2006EB065 /* TestModelRegistration.swift */; };
 		FADD728F238B0F10005AA69A /* IncomingAsyncSubscriptionEventPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADD728E238B0F10005AA69A /* IncomingAsyncSubscriptionEventPublisher.swift */; };
 		FADD7291238B19CB005AA69A /* IncomingAsyncSubscriptionEventToAnyModelMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FADD7290238B19CB005AA69A /* IncomingAsyncSubscriptionEventToAnyModelMapper.swift */; };
-		FAE414682399CD6300CE94C2 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = FAE414672399CD6300CE94C2 /* amplifyconfiguration.json */; };
 		FAE4146A239AA2B700CE94C2 /* RemoteSyncReconcilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE41469239AA2B700CE94C2 /* RemoteSyncReconcilerTests.swift */; };
 		FAE4146C239AA40600CE94C2 /* MockSQLiteStorageEngineAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE4146B239AA40600CE94C2 /* MockSQLiteStorageEngineAdapter.swift */; };
 		FAE4146F239AA71300CE94C2 /* EquatableExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE4146E239AA71300CE94C2 /* EquatableExtensions.swift */; };
@@ -172,6 +173,8 @@
 /* Begin PBXFileReference section */
 		18669A1BE454F2AE676FBEA4 /* Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		2129BE4923948A97006363A1 /* StorageAdapterMutationSyncTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageAdapterMutationSyncTests.swift; sourceTree = "<group>"; };
+		213481BE24213E13001966DE /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		213481C4242140BE001966DE /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
 		2149E59B238867E100873955 /* AWSDataStoreCategoryPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSDataStoreCategoryPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2149E5A82388684F00873955 /* StorageEngineBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageEngineBehavior.swift; sourceTree = "<group>"; };
 		2149E5A92388684F00873955 /* StorageEngineAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageEngineAdapter.swift; sourceTree = "<group>"; };
@@ -308,7 +311,6 @@
 		FAD2BDF5239583B2006EB065 /* TestModelRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestModelRegistration.swift; sourceTree = "<group>"; };
 		FADD728E238B0F10005AA69A /* IncomingAsyncSubscriptionEventPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingAsyncSubscriptionEventPublisher.swift; sourceTree = "<group>"; };
 		FADD7290238B19CB005AA69A /* IncomingAsyncSubscriptionEventToAnyModelMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomingAsyncSubscriptionEventToAnyModelMapper.swift; sourceTree = "<group>"; };
-		FAE414672399CD6300CE94C2 /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
 		FAE41469239AA2B700CE94C2 /* RemoteSyncReconcilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteSyncReconcilerTests.swift; sourceTree = "<group>"; };
 		FAE4146B239AA40600CE94C2 /* MockSQLiteStorageEngineAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSQLiteStorageEngineAdapter.swift; sourceTree = "<group>"; };
 		FAE4146E239AA71300CE94C2 /* EquatableExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EquatableExtensions.swift; sourceTree = "<group>"; };
@@ -507,11 +509,12 @@
 		2149E61E23886CEE00873955 /* AWSDataStoreCategoryPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
-				2149E62123886CEE00873955 /* Info.plist */,
+				FAE414662399CD0C00CE94C2 /* Config */,
 				FAB571412395A3E80006A5F8 /* DataStoreEndToEndTests.swift */,
+				2149E62123886CEE00873955 /* Info.plist */,
+				213481BE24213E13001966DE /* README.md */,
 				FA3841EA23889D6C0070AD5B /* SubscriptionEndToEndTests.swift */,
 				2149E62B23886D3900873955 /* SyncMetadataTests.swift */,
-				FAE414662399CD0C00CE94C2 /* Config */,
 				FAD2BDF7239583B5006EB065 /* TestSupport */,
 			);
 			path = AWSDataStoreCategoryPluginIntegrationTests;
@@ -720,7 +723,7 @@
 		FAE414662399CD0C00CE94C2 /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				FAE414672399CD6300CE94C2 /* amplifyconfiguration.json */,
+				213481C4242140BE001966DE /* amplifyconfiguration.json */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -951,7 +954,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAE414682399CD6300CE94C2 /* amplifyconfiguration.json in Resources */,
+				213481BF24213E14001966DE /* README.md in Resources */,
+				213481C5242140BE001966DE /* amplifyconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -32,7 +32,7 @@ class GraphQLSyncQueryTests: XCTestCase {
     ///     - - it contains an `filter` argument of type `ModelPostFilterInput`
     ///     - it is named `syncPosts`
     ///     - it has a list of fields with no nested models
-    func testSyncGraphQLQueryFromSimpleModel() {
+    func testSyncGraphQLQueryForPost() {
         let post = Post.keys
         let predicate = post.id.eq("id") && (post.title.beginsWith("Title") || post.content.contains("content"))
 
@@ -73,6 +73,45 @@ class GraphQLSyncQueryTests: XCTestCase {
         XCTAssertNotNil(document.variables["filter"])
         XCTAssertNotNil(document.variables["lastSync"])
         XCTAssertEqual(document.variables["lastSync"] as? Int, 123)
+    }
+
+    func testSyncGraphQLQueryForComment() {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Comment.self, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
+        documentBuilder.add(decorator: PaginationDecorator(limit: 100, nextToken: "token"))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: 123))
+        let document = documentBuilder.build()
+        let expectedQueryDocument = """
+        query SyncComments($lastSync: AWSTimestamp, $limit: Int, $nextToken: String) {
+          syncComments(lastSync: $lastSync, limit: $limit, nextToken: $nextToken) {
+            items {
+              id
+              content
+              createdAt
+              post {
+                id
+                content
+                createdAt
+                draft
+                rating
+                title
+                updatedAt
+                __typename
+                _version
+                _deleted
+                _lastChangedAt
+              }
+              __typename
+              _version
+              _deleted
+              _lastChangedAt
+            }
+            nextToken
+            startedAt
+          }
+        }
+        """
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
     }
 
 }
