@@ -92,6 +92,9 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         case .requestingEvent:
             requestEvent()
 
+        case .resumingMutationQueue:
+            resumeSyncingToCloud()
+
         case .inError(let error):
             // Maybe we have to notify the Hub?
             log.error(error: error)
@@ -99,10 +102,17 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         case .notInitialized,
              .notStarted,
              .finished,
-             .waitingForEventToProcess:
+             .waitingForEventToProcess,
+             .resumed:
             break
         }
 
+    }
+
+    func resumeSyncingToCloud() {
+        log.verbose(#function)
+        operationQueue.isSuspended = false
+        stateMachine.notify(action: .resumedSyncingToCloud)
     }
 
     /// Responder method for `starting`. Starts the operation queue and subscribes to the publisher. Return actions:
