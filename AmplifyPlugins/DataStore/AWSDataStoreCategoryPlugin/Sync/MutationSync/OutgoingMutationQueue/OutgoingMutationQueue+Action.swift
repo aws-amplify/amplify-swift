@@ -21,6 +21,7 @@ extension OutgoingMutationQueue {
         // Event loop
         case enqueuedEvent
         case processedEvent
+        case resumedSyncingToCloud
 
         // Terminal actions
         case receivedCancel
@@ -36,6 +37,8 @@ extension OutgoingMutationQueue {
                 return "initialized"
             case .processedEvent:
                 return "processedEvent"
+            case .resumedSyncingToCloud:
+                return "resumedSyncingToCloud"
             case .receivedCancel:
                 return "receivedCancel"
             case .receivedStart:

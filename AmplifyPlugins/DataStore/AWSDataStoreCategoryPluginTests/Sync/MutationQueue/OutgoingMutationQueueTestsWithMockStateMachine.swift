@@ -68,6 +68,11 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         }
         stateMachine.state = .starting(apiBehavior, publisher)
         semaphore.wait()
+        let futureResult = MutationEvent(modelId: "1",
+                                         modelName: "Post",
+                                         json: "{}",
+                                         mutationType: MutationEvent.MutationType.create)
+        eventSource.pushMutationEvent(futureResult: .success(futureResult))
 
         let enqueueEvent = expectation(description: "state requestingEvent, enqueueEvent")
         let processEvent = expectation(description: "state requestingEvent, processedEvent")
@@ -94,6 +99,80 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
 
         stateMachine.state = .requestingEvent
         waitForExpectations(timeout: 1)
+    }
+
+    func testRecievedStartActionWhileExpectingEventProcessedAction() throws {
+        //Ensure subscription is setup
+        let receivedSubscription = expectation(description: "receivedSubscription")
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedSubscription)
+            receivedSubscription.fulfill()
+        }
+        stateMachine.state = .starting(apiBehavior, publisher)
+        wait(for: [receivedSubscription], timeout: 200)
+
+        //Mock incoming mutation event
+        let futureResult = try MutationEvent(model: Post(title: "title", content: "content", createdAt: Date()),
+                                             mutationType: .create)
+        eventSource.pushMutationEvent(futureResult: .success(futureResult))
+
+        let enqueueEvent = expectation(description: "state requestingEvent, enqueueEvent")
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action, OutgoingMutationQueue.Action.enqueuedEvent)
+            enqueueEvent.fulfill()
+        }
+        let mutateAPICallExpecation = expectation(description: "Call to api category for mutate")
+        var listenerFromRequest: GraphQLOperation<MutationSync<AnyModel>>.EventListener!
+        let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { _, eventListener in
+            mutateAPICallExpecation.fulfill()
+            listenerFromRequest = eventListener
+            return nil
+        }
+        apiBehavior.responders[.mutateRequestListener] = responder
+
+        stateMachine.state = .requestingEvent
+        wait(for: [enqueueEvent, mutateAPICallExpecation], timeout: 200)
+
+        // While we are expecting the mutationEvent to be processed by making an API call.
+        // pause the mutation queue.  Note that we are not testing that the operation
+        // actually gets paused, the purpose of this test is to test the state transition
+        // when we call startSyncingToCloud()
+        mutationQueue.pauseSyncingToCloud()
+
+        //Re-enable syncing
+        let startRecievedAgain = expectation(description: "Start recieved again")
+        let resumeSyncingToCloud = expectation(description: "Resume sync to cloud")
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedStart(self.apiBehavior, self.publisher))
+            startRecievedAgain.fulfill()
+        }
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action, OutgoingMutationQueue.Action.resumedSyncingToCloud)
+            resumeSyncingToCloud.fulfill()
+        }
+
+        mutationQueue.startSyncingToCloud(api: apiBehavior, mutationEventPublisher: publisher)
+        stateMachine.state = .resumingMutationQueue
+
+        wait(for: [startRecievedAgain, resumeSyncingToCloud], timeout: 1)
+
+        //After - enabling, mock the callback from API to be completed
+        let processEvent = expectation(description: "state requestingEvent, processedEvent")
+        stateMachine.pushExpectActionCriteria { action in
+            XCTAssertEqual(action, OutgoingMutationQueue.Action.processedEvent)
+            processEvent.fulfill()
+        }
+
+        let model = MockSynced(id: "id-1")
+        let anyModel = try model.eraseToAnyModel()
+        let remoteSyncMetadata = MutationSyncMetadata(id: model.id,
+                                                      deleted: false,
+                                                      lastChangedAt: Date().unixSeconds,
+                                                      version: 2)
+        let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
+        listenerFromRequest(.completed(.success(remoteMutationSync)))
+
+        wait(for: [processEvent], timeout: 1)
     }
 }
 
@@ -135,6 +214,8 @@ extension OutgoingMutationQueue.Action: Equatable {
             return true
         case (.receivedCancel, .receivedCancel):
             return true
+        case (.resumedSyncingToCloud, .resumedSyncingToCloud):
+            return true
         case (.errored, .errored):
             return true
         default:
@@ -144,14 +225,19 @@ extension OutgoingMutationQueue.Action: Equatable {
 }
 
 class MockMutationEventSource: MutationEventSource {
+    var resultQueue = [DataStoreResult<MutationEvent>]()
+
+    func pushMutationEvent(futureResult: DataStoreResult<MutationEvent>) {
+        resultQueue.append(futureResult)
+    }
 
     func getNextMutationEvent(completion: @escaping DataStoreCallback<MutationEvent>) {
-        //TODO: Make generic to handle the error cases
-        let mutationEvent = MutationEvent(modelId: "1",
-                                          modelName: "Post",
-                                          json: "{}",
-                                          mutationType: MutationEvent.MutationType.create)
-        completion(.success(mutationEvent))
+        guard let result = resultQueue.first else {
+            XCTFail("No result queued up, use pushMutationEvent() to queue up results")
+            return
+        }
+        resultQueue.removeFirst()
+        completion(result)
     }
 }
 
