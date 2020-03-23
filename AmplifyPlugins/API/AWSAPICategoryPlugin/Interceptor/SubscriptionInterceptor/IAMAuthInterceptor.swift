@@ -70,9 +70,11 @@ class IAMAuthInterceptor: AuthInterceptor {
         guard let date = amzDate.aws_stringValue(AWSDateISO8601DateFormat2) else {
             return nil
         }
-        let awsEndpoint = AWSEndpoint(region: region,
-                                      serviceName: SubscriptionConstants.appsyncServiceName,
-                                      url: endpoint)
+        guard let awsEndpoint = AWSEndpoint(region: region,
+                                            serviceName: SubscriptionConstants.appsyncServiceName,
+                                            url: endpoint) else {
+            return nil
+        }
         let signer: AWSSignatureV4Signer = AWSSignatureV4Signer(credentialsProvider: authProvider,
                                                                 endpoint: awsEndpoint)
         let semaphore = DispatchSemaphore(value: 0)

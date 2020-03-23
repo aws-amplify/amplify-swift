@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
     
     s.requires_arc = true
 
-    AWS_SDK_VERSION = '~> 2.12.6'
+    AWS_SDK_VERSION = '~> 2.13.0'
     AMPLIFY_VERSION = '0.10.0'
     
     s.source_files = 'AmplifyPlugins/Predictions/AWSPredictionsPlugin/**/*.swift'

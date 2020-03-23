@@ -1,7 +1,7 @@
 platform :ios, '12.0'
 use_frameworks!
 
-AWS_SDK_VERSION = "2.12.5"
+AWS_SDK_VERSION = "2.13.0"
 
 pod 'SwiftFormat/CLI'
 pod 'SwiftLint'

@@ -1,14 +1,14 @@
 PODS:
-  - AWSAuthCore (2.12.6):
-    - AWSCore (= 2.12.6)
-  - AWSCognitoIdentityProvider (2.12.6):
+  - AWSAuthCore (2.13.0):
+    - AWSCore (= 2.13.0)
+  - AWSCognitoIdentityProvider (2.13.0):
     - AWSCognitoIdentityProviderASF (= 1.0.1)
-    - AWSCore (= 2.12.6)
+    - AWSCore (= 2.13.0)
   - AWSCognitoIdentityProviderASF (1.0.1)
-  - AWSCore (2.12.6)
-  - AWSMobileClient (2.12.6):
-    - AWSAuthCore (= 2.12.6)
-    - AWSCognitoIdentityProvider (= 2.12.6)
+  - AWSCore (2.13.0)
+  - AWSMobileClient (2.13.0):
+    - AWSAuthCore (= 2.13.0)
+    - AWSCognitoIdentityProvider (= 2.13.0)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
@@ -16,7 +16,7 @@ PODS:
   - SwiftLint (0.37.0)
 
 DEPENDENCIES:
-  - AWSMobileClient (~> 2.12.6)
+  - AWSMobileClient (~> 2.13.0)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
   - SwiftFormat/CLI
@@ -49,16 +49,16 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  AWSAuthCore: d981abe8fb987a1caa7ac6c76c428de12387dcf4
-  AWSCognitoIdentityProvider: 9502438e528185a2c61b97baf66e2fd2ac6833f3
+  AWSAuthCore: 8fa7f8a8ddd6b0922d9989d8eaa8e7bac87b02fc
+  AWSCognitoIdentityProvider: 9ea197104d3425eed78c58d122190217f2b0cee2
   AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
-  AWSCore: 48bb8d477d8137377e86b2ade9eb34a761f42df5
-  AWSMobileClient: d752ed540a75d45516c8d5b2054b3f3b6b9e7e65
+  AWSCore: 167aba8cdaff6873193a66f062f41749c6c6a3d3
+  AWSMobileClient: e8922b6abcafa01d0fb630a93f64397f3bc73079
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SwiftFormat: 5faa819600268dfaa5c19f1359730883db151678
   SwiftLint: c078a14d7d7ade75e5507795d185e3da41d844d2
 
-PODFILE CHECKSUM: 052b557087c76e48d6c09130d48e484e6b7ed701
+PODFILE CHECKSUM: 1c22fd7e8ddadfe26bb643a7d7ebf74f24d85950
 
 COCOAPODS: 1.9.0
