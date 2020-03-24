@@ -23,6 +23,7 @@ public protocol DataStoreBaseBehavior {
 
     func query<M: Model>(_ modelType: M.Type,
                          where predicate: QueryPredicateFactory?,
+                         paginate paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>)
 
     func delete<M: Model>(_ model: M,

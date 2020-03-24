@@ -9,6 +9,7 @@ import Amplify
 import Combine
 
 class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
+    
     var key: String {
         return "MockDataStoreCategoryPlugin"
     }
@@ -35,6 +36,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
     func query<M: Model>(_ modelType: M.Type,
                          where predicate: QueryPredicateFactory?,
+                         paginate paginationInput: QueryPaginationInput?,
                          completion: (DataStoreResult<[M]>) -> Void) {
         notify("queryByPredicate")
     }

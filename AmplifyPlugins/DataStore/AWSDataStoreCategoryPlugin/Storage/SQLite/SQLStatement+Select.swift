@@ -15,11 +15,16 @@ struct SelectStatement: SQLStatement {
 
     let modelType: Model.Type
     let conditionStatement: ConditionStatement?
+    let paginationInput: QueryPaginationInput?
 
+    // TODO remove this once sorting support is added to DataStore
     // Used by plugin to order and limit results for system table queries
     let additionalStatements: String?
 
-    init(from modelType: Model.Type, predicate: QueryPredicate? = nil, additionalStatements: String? = nil) {
+    init(from modelType: Model.Type,
+         predicate: QueryPredicate? = nil,
+         paginationInput: QueryPaginationInput? = nil,
+         additionalStatements: String? = nil) {
         self.modelType = modelType
 
         var conditionStatement: ConditionStatement?
@@ -29,7 +34,7 @@ struct SelectStatement: SQLStatement {
             conditionStatement = statement
         }
         self.conditionStatement = conditionStatement
-
+        self.paginationInput = paginationInput
         self.additionalStatements = additionalStatements
     }
 
@@ -85,6 +90,13 @@ struct SelectStatement: SQLStatement {
             sql = """
             \(sql)
             \(additionalStatements)
+            """
+        }
+
+        if let paginationInput = paginationInput {
+            sql = """
+            \(sql)
+            \(paginationInput.sqlStatement)
             """
         }
 

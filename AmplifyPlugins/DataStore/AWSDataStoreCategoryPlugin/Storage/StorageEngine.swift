@@ -197,6 +197,7 @@ final class StorageEngine: StorageEngineBehavior {
             try storageAdapter.transaction {
                 storageAdapter.query(modelType,
                                      predicate: predicate,
+                                     paginationInput: nil,
                                      additionalStatements: nil,
                                      completion: queryCompletionBlock)
             }
@@ -271,8 +272,12 @@ final class StorageEngine: StorageEngineBehavior {
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate? = nil,
+                         paginationInput: QueryPaginationInput? = nil,
                          completion: DataStoreCallback<[M]>) {
-        return storageAdapter.query(modelType, predicate: predicate, completion: completion)
+        return storageAdapter.query(modelType,
+                                    predicate: predicate,
+                                    paginationInput: paginationInput,
+                                    completion: completion)
     }
 
     func startSync() {

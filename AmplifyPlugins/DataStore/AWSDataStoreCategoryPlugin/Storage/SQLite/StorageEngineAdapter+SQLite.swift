@@ -13,6 +13,7 @@ import AWSPluginsCore
 /// [SQLite](https://sqlite.org) `StorageEngineAdapter` implementation. This class provides
 /// an integration layer between the AppSyncLocal `StorageEngine` and SQLite for local storage.
 final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
+
     internal var connection: Connection!
     private var dbFilePath: URL?
 
@@ -140,6 +141,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate? = nil,
+                         paginationInput: QueryPaginationInput? = nil,
                          completion: DataStoreCallback<[M]>) {
         query(modelType,
               predicate: predicate,
@@ -149,11 +151,13 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate? = nil,
+                         paginationInput: QueryPaginationInput? = nil,
                          additionalStatements: String? = nil,
                          completion: DataStoreCallback<[M]>) {
         do {
             let statement = SelectStatement(from: modelType,
                                             predicate: predicate,
+                                            paginationInput: paginationInput,
                                             additionalStatements: additionalStatements)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
             let result: [M] = try rows.convert(to: modelType)
