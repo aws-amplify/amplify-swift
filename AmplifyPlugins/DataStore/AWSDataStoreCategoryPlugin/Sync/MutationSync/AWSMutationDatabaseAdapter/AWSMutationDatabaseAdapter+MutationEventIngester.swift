@@ -73,10 +73,9 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
             return .saveCandidate
         }
 
-        // TODO: Handle conditional mutations, something like:
-        // if candidate.isConditional {
-        //     return MutationDisposition.saveCandidate
-        // }
+        if candidate.queryPredicateJson != nil {
+            return .saveCandidate
+        }
 
         guard let candidateMutationType = GraphQLMutationType(rawValue: candidate.mutationType) else {
             let dataStoreError =

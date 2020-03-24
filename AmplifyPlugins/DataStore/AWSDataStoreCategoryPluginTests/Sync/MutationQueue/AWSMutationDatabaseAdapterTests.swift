@@ -16,6 +16,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     var databaseAdapter: AWSMutationDatabaseAdapter!
 
     let model1 = Post(title: "model1", content: "content1", createdAt: Date())
+    let post = Post.keys
 
     override func setUp() {
         do {
@@ -33,6 +34,26 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [localCreate])
 
         XCTAssertEqual(disposition, .replaceLocalWithCandidate)
+    }
+
+    func test_saveCandidate_CanadidateUpdateWithCondition() throws {
+        let anyLocal = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.create)
+        let candidateUpdate = try MutationEvent(model: model1,
+                                                mutationType: MutationEvent.MutationType.update,
+                                                queryPredicate: post.title == model1.title)
+
+        let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [anyLocal])
+        XCTAssertEqual(disposition, .saveCandidate)
+    }
+
+    func test_saveCandidate_CanadidateDeleteWithCondition() throws {
+        let anyLocal = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.create)
+        let candidateUpdate = try MutationEvent(model: model1,
+                                                mutationType: MutationEvent.MutationType.delete,
+                                                queryPredicate: post.title == model1.title)
+
+        let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [anyLocal])
+        XCTAssertEqual(disposition, .saveCandidate)
     }
 
     func test_replaceLocal_BothUpdate() throws {
