@@ -49,6 +49,8 @@
 		212CE70F23E9E991007D8E71 /* ModelDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70A23E9E991007D8E71 /* ModelDecorator.swift */; };
 		212CE71123E9EA6A007D8E71 /* ModelField+GraphQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71023E9EA6A007D8E71 /* ModelField+GraphQL.swift */; };
 		212CE71323E9F2ED007D8E71 /* DirectiveNameDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71223E9F2ED007D8E71 /* DirectiveNameDecorator.swift */; };
+		213481D0242A6040001966DE /* AnyQueryPredicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213481CF242A603F001966DE /* AnyQueryPredicate.swift */; };
+		213481D2242A63AA001966DE /* QueryOperator+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213481D1242A63AA001966DE /* QueryOperator+Codable.swift */; };
 		21409C552384C55D000A53C9 /* LabelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C542384C55D000A53C9 /* LabelType.swift */; };
 		21409C5A2384C57D000A53C9 /* GraphQLMutationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C572384C57D000A53C9 /* GraphQLMutationType.swift */; };
 		21409C5B2384C57D000A53C9 /* GraphQLQueryType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C582384C57D000A53C9 /* GraphQLQueryType.swift */; };
@@ -579,6 +581,8 @@
 		212CE71B23EA1847007D8E71 /* GraphQLListQueryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLListQueryTests.swift; sourceTree = "<group>"; };
 		212CE71C23EA1847007D8E71 /* GraphQLSyncQueryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLSyncQueryTests.swift; sourceTree = "<group>"; };
 		212CE72023EA184F007D8E71 /* GraphQLSubscriptionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLSubscriptionTests.swift; sourceTree = "<group>"; };
+		213481CF242A603F001966DE /* AnyQueryPredicate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyQueryPredicate.swift; sourceTree = "<group>"; };
+		213481D1242A63AA001966DE /* QueryOperator+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QueryOperator+Codable.swift"; sourceTree = "<group>"; };
 		21409C4C23847E41000A53C9 /* LabelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelType.swift; sourceTree = "<group>"; };
 		21409C542384C55D000A53C9 /* LabelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelType.swift; sourceTree = "<group>"; };
 		21409C572384C57D000A53C9 /* GraphQLMutationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLMutationType.swift; sourceTree = "<group>"; };
@@ -1792,9 +1796,11 @@
 		B98E9D042372236200934B51 /* Query */ = {
 			isa = PBXGroup;
 			children = (
+				213481CF242A603F001966DE /* AnyQueryPredicate.swift */,
 				B98E9D062372236200934B51 /* ModelKey.swift */,
 				B98E9D0A2372236200934B51 /* QueryField.swift */,
 				B98E9D072372236200934B51 /* QueryOperator.swift */,
+				213481D1242A63AA001966DE /* QueryOperator+Codable.swift */,
 				B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */,
 				B98E9D082372236200934B51 /* QueryPredicate.swift */,
 				B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */,
@@ -3703,6 +3709,7 @@
 				FAA2E8BE23A00BD600E420EA /* AmplifyAPICategory.swift in Sources */,
 				210DBC142332B3C6009B9E51 /* StorageGetURLOperation.swift in Sources */,
 				95DAAB2A237E63370028544F /* Pose.swift in Sources */,
+				213481D0242A6040001966DE /* AnyQueryPredicate.swift in Sources */,
 				FA09B94D2322CC05000E064D /* StorageCategoryConfiguration.swift in Sources */,
 				950A26DF23D15D9800D92B19 /* SpeechToTextResult.swift in Sources */,
 				B92E03AF2367CE7A006CEB8D /* DataStoreCategoryBehavior.swift in Sources */,
@@ -3744,6 +3751,7 @@
 				95DAAB31237E63370028544F /* PartOfSpeech.swift in Sources */,
 				B9FAA13A238BBADE009414B4 /* List+Combine.swift in Sources */,
 				FA8EE77B2386271A0097E4F1 /* Model+AnyModel.swift in Sources */,
+				213481D2242A63AA001966DE /* QueryOperator+Codable.swift in Sources */,
 				FA56F72522B14B6A0039754A /* Resumable.swift in Sources */,
 				FAA2E8C023A00C6500E420EA /* AmplifyAPICategory+APICategory.swift in Sources */,
 				21FFF997230C96CB005878EA /* StorageRemoveOperation.swift in Sources */,

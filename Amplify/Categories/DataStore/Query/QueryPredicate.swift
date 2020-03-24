@@ -8,9 +8,29 @@
 import Foundation
 
 /// Protocol that indicates concrete types conforming to it can be used a predicate member.
-public protocol QueryPredicate {}
+public protocol QueryPredicate: Codable {
+    static var type: QueryPredicateType { get }
+}
 
-public enum QueryPredicateGroupType: String {
+/// List of possible `QueryPredicate` types
+public enum QueryPredicateType: String, Codable {
+    case group
+    case constant
+    case operation
+
+    var metatype: QueryPredicate.Type {
+        switch self {
+        case .group:
+            return QueryPredicateGroup.self
+        case .constant:
+            return QueryPredicateConstant.self
+        case .operation:
+            return QueryPredicateOperation.self
+        }
+    }
+}
+
+public enum QueryPredicateGroupType: String, Codable {
     case and
     case or
     case not
@@ -26,11 +46,14 @@ public func not<Predicate: QueryPredicate>(_ predicate: Predicate) -> QueryPredi
 /// The case `.all` is a predicate used as an argument to select all of a single modeltype. We
 /// chose `.all` instead of `nil` because we didn't want to use the implicit nature of `nil` to
 /// specify an action applies to an entire data set.
-public enum QueryPredicateConstant: QueryPredicate {
+public enum QueryPredicateConstant: String, QueryPredicate {
+    public static var type: QueryPredicateType = .constant
+
     case all
 }
 
 public class QueryPredicateGroup: QueryPredicate {
+    public static var type: QueryPredicateType = .group
 
     public internal(set) var type: QueryPredicateGroupType
     public internal(set) var predicates: [QueryPredicate]
@@ -72,9 +95,32 @@ public class QueryPredicateGroup: QueryPredicate {
     public static prefix func ! (rhs: QueryPredicateGroup) -> QueryPredicateGroup {
         return not(rhs)
     }
+
+    /// Provide conformance to `Codable`
+
+    enum CodingKeys: String, CodingKey {
+        case type
+        case predicates
+    }
+
+    /// Decode `type` and `predicates`. Array of predicates are first decoded using `AnyQueryPredicate` wrapper, and
+    /// then the inner `QueryPredicate` is retrieved.
+    required public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.type = try container.decode(QueryPredicateGroupType.self, forKey: .type)
+        self.predicates = try container.decode([AnyQueryPredicate].self, forKey: .predicates).map { $0.base }
+    }
+
+    /// Encode `type` and `predicates`. Array of predicates are encoded as an array of `AnyQueryPredicate`'s.
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(type, forKey: .type)
+        try container.encode(predicates.map(AnyQueryPredicate.init), forKey: .predicates)
+    }
 }
 
 public class QueryPredicateOperation: QueryPredicate {
+    public static var type: QueryPredicateType = .operation
 
     public let field: String
     public let `operator`: QueryOperator

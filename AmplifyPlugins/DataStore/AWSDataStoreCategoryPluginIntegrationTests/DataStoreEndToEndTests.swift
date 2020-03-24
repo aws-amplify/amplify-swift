@@ -85,10 +85,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
     /// - Given: A post that has been saved
     /// - When:
-    ///    - attempt to update the existing post with a condition does not match existing data
     ///    - attempt to update the existing post with a condition that matches existing data
     /// - Then:
-    ///    - the update with condition that does not match will return existing post data, not updated.
     ///    - the update with condition that matches existing data will be applied and returned.
     func testCreateThenMutateWithCondition() throws {
         try startAmplifyAndWaitForSync()
@@ -105,7 +103,6 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             updatedPost.content = "UPDATED CONTENT from DataStoreEndToEndTests at \(Date())"
 
         let createReceived = expectation(description: "Create notification received")
-        let updateWithNoChangeReceived = expectation(description: "Update with no change notification received")
         let updateReceived = expectation(description: "Update notification received")
 
         let hubListener = Amplify.Hub.listen(
@@ -125,14 +122,9 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                     return
                 }
 
-                if mutationEvent.mutationType == GraphQLMutationType.update.rawValue && mutationEvent.version == 2 {
-                    XCTAssertEqual(post.content, newPost.content)
-                    updateWithNoChangeReceived.fulfill()
-                    return
-                }
-
-                if mutationEvent.mutationType == GraphQLMutationType.update.rawValue && mutationEvent.version == 3 {
+                if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
                     XCTAssertEqual(post.content, updatedPost.content)
+                    XCTAssertEqual(mutationEvent.version, 2)
                     updateReceived.fulfill()
                     return
                 }
@@ -146,10 +138,6 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         Amplify.DataStore.save(newPost) { _ in }
 
         wait(for: [createReceived], timeout: networkTimeout)
-
-        Amplify.DataStore.save(updatedPost, where: post.title == "some random title") { _ in }
-
-        wait(for: [updateWithNoChangeReceived], timeout: networkTimeout)
 
         Amplify.DataStore.save(updatedPost, where: post.title == title) { _ in }
 

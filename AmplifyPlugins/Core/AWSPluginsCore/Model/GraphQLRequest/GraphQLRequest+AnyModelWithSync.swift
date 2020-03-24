@@ -23,7 +23,7 @@ extension GraphQLRequest {
     public static func updateMutation(of model: Model,
                                       where predicate: QueryPredicate? = nil,
                                       version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        createOrUpdateMutation(of: model, type: .update, version: version)
+        createOrUpdateMutation(of: model, where: predicate, type: .update, version: version)
     }
 
     public static func deleteMutation(modelName: String,

@@ -16,7 +16,7 @@ public struct MutationEvent: Model {
     public var createdAt: Date
     public var version: Int?
     public var inProcess: Bool
-    public var queryPredicate: QueryPredicate?
+    public var queryPredicateJson: String?
 
     public init(id: Identifier = UUID().uuidString,
                 modelId: String,
@@ -26,7 +26,7 @@ public struct MutationEvent: Model {
                 createdAt: Date = Date(),
                 version: Int? = nil,
                 inProcess: Bool = false,
-                queryPredicate: QueryPredicate? = nil) {
+                queryPredicateJson: String? = nil) {
         self.id = id
         self.modelId = modelId
         self.modelName = modelName
@@ -35,7 +35,7 @@ public struct MutationEvent: Model {
         self.createdAt = createdAt
         self.version = version
         self.inProcess = inProcess
-        self.queryPredicate = queryPredicate
+        self.queryPredicateJson = queryPredicateJson
     }
 
     public init<M: Model>(model: M,
@@ -44,12 +44,22 @@ public struct MutationEvent: Model {
                           queryPredicate: QueryPredicate? = nil) throws {
         let modelType = type(of: model)
         let json = try model.toJSON()
-        self.init(modelId: model.id,
-                  modelName: modelType.schema.name,
-                  json: json,
-                  mutationType: mutationType,
-                  version: version,
-                  queryPredicate: queryPredicate)
+        if let queryPredicate = queryPredicate {
+            let anyQueryPredicate = AnyQueryPredicate(queryPredicate)
+            self.init(modelId: model.id,
+                      modelName: modelType.schema.name,
+                      json: json,
+                      mutationType: mutationType,
+                      version: version,
+                      queryPredicateJson: try anyQueryPredicate.toJSON())
+        } else {
+            self.init(modelId: model.id,
+                      modelName: modelType.schema.name,
+                      json: json,
+                      mutationType: mutationType,
+                      version: version)
+        }
+
     }
 
     public func decodeModel() throws -> Model {
@@ -73,5 +83,14 @@ public struct MutationEvent: Model {
         }
 
         return typedModel
+    }
+
+    // Decodes the query predicate from the mutation event
+    public func decodeQueryPredicate() throws -> QueryPredicate? {
+        if let queryPredicateJson = queryPredicateJson {
+            return try AnyQueryPredicate.from(json: queryPredicateJson).base
+        } else {
+            return nil
+        }
     }
 }
