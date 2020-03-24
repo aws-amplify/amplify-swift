@@ -153,8 +153,6 @@ class SyncMutationToCloudOperation: Operation {
             return
         }
 
-        // TODO: Wire in actual event validation
-
         // This doesn't belong here--need to add a `delete` API to the MutationEventSource and pass a
         // reference into the mutation queue.
         Amplify.DataStore.delete(mutationEvent) { result in

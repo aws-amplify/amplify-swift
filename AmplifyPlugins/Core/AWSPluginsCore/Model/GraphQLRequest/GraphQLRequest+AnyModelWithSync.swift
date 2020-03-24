@@ -15,6 +15,19 @@ public typealias MutationSyncResult = MutationSync<AnyModel>
 /// as `version` and `lastSync` and returns a model that has been erased to `AnyModel`.
 extension GraphQLRequest {
 
+    public static func query(modelName: String, byId id: String) -> GraphQLRequest<MutationSyncResult?> {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
+        documentBuilder.add(decorator: ModelIdDecorator(id: id))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        let document = documentBuilder.build()
+
+        return GraphQLRequest<MutationSyncResult?>(document: document.stringValue,
+                                  variables: document.variables,
+                                  responseType: MutationSyncResult?.self,
+                                  decodePath: document.name)
+    }
+
     public static func createMutation(of model: Model,
                                       version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
         createOrUpdateMutation(of: model, type: .create, version: version)

@@ -12,7 +12,7 @@ import Foundation
 @available(iOS 13.0, *)
 class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
-    private weak var storageAdapter: StorageEngineAdapter?
+    weak var storageAdapter: StorageEngineAdapter?
 
     // Assigned at `start`
     weak var api: APICategoryGraphQLBehavior?
@@ -135,8 +135,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             performInitialSync()
         case .activatingCloudSubscriptions:
             activateCloudSubscriptions()
-        case .activatingMutationQueue(let api, let mutationEventPublisher):
-            startMutationQueue(api: api, mutationEventPublisher: mutationEventPublisher)
+        case .activatingMutationQueue(let api, let mutationEventPublisher, let storageAdapter):
+            startMutationQueue(api: api,
+                               mutationEventPublisher: mutationEventPublisher,
+                               storageAdapter: storageAdapter)
         case .notifyingSyncStarted:
             notifySyncStarted()
 
@@ -256,9 +258,12 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     private func startMutationQueue(api: APICategoryGraphQLBehavior,
-                                    mutationEventPublisher: MutationEventPublisher) {
+                                    mutationEventPublisher: MutationEventPublisher,
+                                    storageAdapter: StorageEngineAdapter) {
         log.debug(#function)
-        outgoingMutationQueue.startSyncingToCloud(api: api, mutationEventPublisher: mutationEventPublisher)
+        outgoingMutationQueue.startSyncingToCloud(api: api,
+                                                  mutationEventPublisher: mutationEventPublisher,
+                                                  storageAdapter: storageAdapter)
 
         remoteSyncTopicPublisher.send(.mutationQueueStarted)
         stateMachine.notify(action: .activatedMutationQueue)

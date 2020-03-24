@@ -16,7 +16,7 @@ extension OutgoingMutationQueue {
         // Startup/config states
         case notInitialized
         case notStarted
-        case starting(APICategoryGraphQLBehavior, MutationEventPublisher)
+        case starting(APICategoryGraphQLBehavior, MutationEventPublisher, StorageEngineAdapter)
 
         // Event loop
         case requestingEvent

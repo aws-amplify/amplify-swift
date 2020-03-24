@@ -13,7 +13,9 @@ import Foundation
 @available(iOS 13.0, *)
 protocol OutgoingMutationQueueBehavior: class {
     func pauseSyncingToCloud()
-    func startSyncingToCloud(api: APICategoryGraphQLBehavior, mutationEventPublisher: MutationEventPublisher)
+    func startSyncingToCloud(api: APICategoryGraphQLBehavior,
+                             mutationEventPublisher: MutationEventPublisher,
+                             storageAdapter: StorageEngineAdapter)
 }
 
 @available(iOS 13.0, *)
@@ -28,6 +30,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                                           target: DispatchQueue.global())
 
     private weak var api: APICategoryGraphQLBehavior?
+    private weak var storageAdapter: StorageEngineAdapter?
     private var subscription: Subscription?
 
     init(_ stateMachine: StateMachine<State, Action>? = nil) {
@@ -60,9 +63,11 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     // MARK: - Public API
 
-    func startSyncingToCloud(api: APICategoryGraphQLBehavior, mutationEventPublisher: MutationEventPublisher) {
+    func startSyncingToCloud(api: APICategoryGraphQLBehavior,
+                             mutationEventPublisher: MutationEventPublisher,
+                             storageAdapter: StorageEngineAdapter) {
         log.verbose(#function)
-        stateMachine.notify(action: .receivedStart(api, mutationEventPublisher))
+        stateMachine.notify(action: .receivedStart(api, mutationEventPublisher, storageAdapter))
     }
 
     func cancel() {
@@ -86,8 +91,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
         switch newState {
 
-        case .starting(let api, let mutationEventPublisher):
-            start(api: api, mutationEventPublisher: mutationEventPublisher)
+        case .starting(let api, let mutationEventPublisher, let storageAdapter):
+            start(api: api, mutationEventPublisher: mutationEventPublisher, storageAdapter: storageAdapter)
 
         case .requestingEvent:
             requestEvent()
@@ -117,9 +122,12 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     /// Responder method for `starting`. Starts the operation queue and subscribes to the publisher. Return actions:
     /// - started
-    private func start(api: APICategoryGraphQLBehavior, mutationEventPublisher: MutationEventPublisher) {
+    private func start(api: APICategoryGraphQLBehavior,
+                       mutationEventPublisher: MutationEventPublisher,
+                       storageAdapter: StorageEngineAdapter) {
         log.verbose(#function)
         self.api = api
+        self.storageAdapter = storageAdapter
         operationQueue.isSuspended = false
 
         // State machine notification to ".receivedSubscription" will be handled in `receive(subscription:)`
@@ -162,10 +170,40 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             return
         }
 
+        guard let storageAdapter = storageAdapter else {
+            let dataStoreError = DataStoreError.configuration(
+                "StorageAdapter is unexpectedly nil",
+                """
+                The reference to storageAdapter has been released while an ongoing mutation was being processed.
+                \(AmplifyErrorMessages.reportBugToAWS())
+                """
+            )
+            stateMachine.notify(action: .errored(dataStoreError))
+            return
+        }
+
         let syncMutationToCloudOperation =
-            SyncMutationToCloudOperation(mutationEvent: mutationEvent, api: api) { result in
-                self.log.verbose("mutationEvent finished: \(mutationEvent); result: \(result)")
-                self.stateMachine.notify(action: .processedEvent)
+            SyncMutationToCloudOperation(mutationEvent: mutationEvent, api: api) { [weak self] result in
+                self?.log.verbose("mutationEvent finished: \(mutationEvent); result: \(result)")
+
+                if case .completed(let response) = result,
+                    case .failure(let error) = response {
+
+                    let processMutationErrorFromCloudOperation =
+                        ProcessMutationErrorFromCloudOperation(mutationEvent: mutationEvent,
+                                                               storageAdapter: storageAdapter,
+                                                               error: error,
+                                                               api: api) { [weak self] result in
+
+                        self?.log.verbose("mutation error processed, result: \(result)")
+                        self?.stateMachine.notify(action: .processedEvent)
+                    }
+
+                    self?.operationQueue.addOperation(processMutationErrorFromCloudOperation)
+
+                } else {
+                    self?.stateMachine.notify(action: .processedEvent)
+                }
         }
 
         operationQueue.addOperation(syncMutationToCloudOperation)
@@ -204,3 +242,4 @@ extension OutgoingMutationQueue: Subscriber {
 
 @available(iOS 13.0, *)
 extension OutgoingMutationQueue: DefaultLogger { }
+
