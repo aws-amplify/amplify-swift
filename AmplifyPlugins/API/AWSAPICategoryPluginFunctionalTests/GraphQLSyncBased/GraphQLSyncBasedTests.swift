@@ -108,6 +108,77 @@ class GraphQLSyncBasedTests: XCTestCase {
         XCTAssertEqual(mutationSync.syncMetadata.version, 2)
     }
 
+    // Given: A newly created post
+    // When: Call update mutation with with an updated title
+    //       with a condition that does not match the newly created post
+    // Then: The mutation result in a successful response, with graphQL repsonse data containing error
+    //       The error should be "ConditionalCheckFailedException"
+    func testUpdatePostWithInvalidConditionShouldFailWithConditionalCheckFailedException() {
+        let uuid = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let title = testMethodName + "Title"
+        let post = Post.keys
+        guard let createdPost = createPost(id: uuid, title: title) else {
+            XCTFail("Failed to create post with version 1")
+            return
+        }
+
+        let updatedTitle = title + "Updated"
+
+        let modifiedPost = Post(id: createdPost.model["id"] as? String ?? "",
+                                title: updatedTitle,
+                                content: createdPost.model["content"] as? String ?? "",
+                                createdAt: Date())
+
+        let completeInvoked = expectation(description: "request completed")
+        var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
+
+        let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: modifiedPost,
+                                                                        where: post.title == "Does not match",
+                                                                        version: 1)
+
+        _ = Amplify.API.mutate(request: request) { event in
+            defer {
+                completeInvoked.fulfill()
+            }
+            switch event {
+            case .completed(let graphQLResponse):
+                responseFromOperation = graphQLResponse
+            case .failed(let apiError):
+                XCTFail("\(apiError)")
+            default:
+                XCTFail("Could not get data back")
+            }
+        }
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+
+        guard let response = responseFromOperation else {
+            XCTAssertNotNil(responseFromOperation)
+            return
+        }
+
+        let conditionalFailedError = expectation(description: "error should be conditional request failed")
+        switch response {
+        case .success(let mutationSync):
+            XCTFail("success: \(mutationSync)")
+        case .failure(let error):
+            switch error {
+            case .error(let errors):
+                errors.forEach { error in
+                    if error.message.contains("conditional request failed") {
+                        conditionalFailedError.fulfill()
+                    }
+                }
+            case .partial(let model, let errors):
+                XCTFail("partial: \(model), \(errors)")
+            case .transformationError(let rawResponse, let apiError):
+                XCTFail("transformationError: \(rawResponse), \(apiError)")
+            }
+        }
+
+        wait(for: [conditionalFailedError], timeout: TestCommonConstants.networkTimeout)
+    }
+
     // Given: Two newly created posts
     // When: Call sync query with limit of 1, to ensure that we get a nextToken back
     // Then: The result should be a PaginatedList contain all fields populated (items, startedAt, nextToken)
