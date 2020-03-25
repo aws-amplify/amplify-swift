@@ -7,26 +7,28 @@
 
 import Foundation
 
-/// Type-erased wrapper of for encoding and decoding `QueryPredicate`
-struct AnyQueryPredicate: Codable {
-    var base: QueryPredicate
-    init(_ base: QueryPredicate) {
+/// Type-erased wrapper for encoding and decoding `QueryPredicate`
+public struct AnyQueryPredicate: Codable {
+
+    public var base: QueryPredicate
+
+    public init(_ base: QueryPredicate) {
         self.base = base
     }
 
     private enum CodingKeys: CodingKey {
-        case type, base
+        case metatype, base
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let type = try container.decode(QueryPredicateType.self, forKey: .type)
+        let type = try container.decode(QueryPredicateType.self, forKey: .metatype)
         self.base = try type.metatype.init(from: decoder)
     }
 
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(type(of: base).type, forKey: .type)
+        try container.encode(type(of: base).metatype, forKey: .metatype)
         try base.encode(to: encoder)
     }
 }
@@ -50,7 +52,7 @@ extension AnyQueryPredicate {
         let data = try resolvedEncoder.encode(self)
         guard let json = String(data: data, encoding: .utf8) else {
             throw DataStoreError.decodingError(
-                "Invalid UTF-8 Data object. Could not convert the encoded Model into a valid UTF-8 JSON string",
+                "Invalid UTF-8 Data object. Could not convert encoded QueryPredicate into a valid UTF-8 JSON string",
                 "Check if your QueryPredicate doesn't contain any value with invalid UTF-8 characters."
             )
         }

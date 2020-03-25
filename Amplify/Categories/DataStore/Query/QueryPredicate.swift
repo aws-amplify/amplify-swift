@@ -9,7 +9,7 @@ import Foundation
 
 /// Protocol that indicates concrete types conforming to it can be used a predicate member.
 public protocol QueryPredicate: Codable {
-    static var type: QueryPredicateType { get }
+    static var metatype: QueryPredicateType { get }
 }
 
 /// List of possible `QueryPredicate` types
@@ -47,13 +47,13 @@ public func not<Predicate: QueryPredicate>(_ predicate: Predicate) -> QueryPredi
 /// chose `.all` instead of `nil` because we didn't want to use the implicit nature of `nil` to
 /// specify an action applies to an entire data set.
 public enum QueryPredicateConstant: String, QueryPredicate {
-    public static var type: QueryPredicateType = .constant
+    public static var metatype: QueryPredicateType = .constant
 
     case all
 }
 
 public class QueryPredicateGroup: QueryPredicate {
-    public static var type: QueryPredicateType = .group
+    public static var metatype: QueryPredicateType = .group
 
     public internal(set) var type: QueryPredicateGroupType
     public internal(set) var predicates: [QueryPredicate]
@@ -120,7 +120,7 @@ public class QueryPredicateGroup: QueryPredicate {
 }
 
 public class QueryPredicateOperation: QueryPredicate {
-    public static var type: QueryPredicateType = .operation
+    public static var metatype: QueryPredicateType = .operation
 
     public let field: String
     public let `operator`: QueryOperator

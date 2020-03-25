@@ -23,6 +23,7 @@ extension QueryOperator: Codable {
         /// Additional value with type specified by `.persistableType`
         case secondValue
     }
+
     private enum Base: String, Codable {
         case notEqual
         case equals
