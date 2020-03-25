@@ -10,12 +10,11 @@ import Combine
 import Foundation
 import AWSPluginsCore
 
-
 /// Checks the GraphQL error response for specific error scenarios related to data synchronziation to the local store.
 /// 1. When there is a "conditional request failed" error, then query for the latest version of the model, update local
 /// store.
 @available(iOS 13.0, *)
-class ProcessMutationErrorFromCloudOperation: Operation {
+class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
 
     private weak var api: APICategoryGraphQLBehavior?
     private weak var storageAdapter: StorageEngineAdapter?
@@ -120,6 +119,10 @@ class ProcessMutationErrorFromCloudOperation: Operation {
     private func saveMetadata(storageAdapter: StorageEngineAdapter,
                               syncMetadata: MutationSyncMetadata) {
         storageAdapter.save(syncMetadata, condition: nil) { [weak self] result in
+            let payload = HubPayload(eventName: HubPayload.EventName.DataStore.conditionalSaveFailed,
+                                     data: self?.mutationEvent)
+            Amplify.Hub.dispatch(to: .dataStore, payload: payload)
+
             switch result {
             case .failure(let dataStoreError):
                 let error = DataStoreError.internalOperation("DataStore failed to save", "", dataStoreError)
@@ -132,8 +135,8 @@ class ProcessMutationErrorFromCloudOperation: Operation {
 
     override func cancel() {
         queryOperation?.cancel()
-        let apiError = DataStoreError.unknown("Operation cancelled", "")
-        finish(result: .failure(apiError))
+        let error = DataStoreError.unknown("Operation cancelled", "")
+        finish(result: .failure(error))
     }
 
     private func finish(result: Result<Void, Error>) {

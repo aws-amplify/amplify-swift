@@ -32,6 +32,13 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     func testProcessMutationErrorFromCloudOperationSuccess() throws {
         let expectCompletion = expectation(description: "Expect to complete error processing")
         let expectAPIQuery = expectation(description: "call to API.query")
+        let expectHubEvent = expectation(description: "Hub is notified")
+
+        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
+            if payload.eventName == "DataStore.conditionalSaveFailed" {
+                expectHubEvent.fulfill()
+            }
+        }
 
         let completion: (Result<Void, Error>) -> Void = { result in
             expectCompletion.fulfill()
@@ -73,6 +80,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
 
         let queue = OperationQueue()
         queue.addOperation(operation)
+
         wait(for: [expectAPIQuery], timeout: defaultAsyncWaitTimeout)
 
         guard let listenerForApiRequest = listenerForApiRequestOptional else {
@@ -81,8 +89,12 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
 
         listenerForApiRequest(.completed(.success(remoteMutationSync)))
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
 
+        wait(for: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
+
+        Amplify.Hub.removeListener(hubListener)
+
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 }
 

@@ -83,7 +83,7 @@ class SyncEngineIntegrationTestBase: XCTestCase {
             }
         }
 
-        wait(for: [syncStarted], timeout: 5.0)
+        wait(for: [syncStarted], timeout: 15.0)
     }
 
 }
