@@ -13,6 +13,7 @@ extension MutationEvent {
                                       completion: DataStoreCallback<[MutationEvent]>) {
         let fields = MutationEvent.keys
 
+        // TODO remove this in favor of a proper sorting API
         // Get mutation events in order of ascending creation date
         let orderByCreatedAt = "ORDER BY \(fields.createdAt.stringValue) ASC"
 
@@ -20,6 +21,7 @@ extension MutationEvent {
 
         storageAdapter.query(MutationEvent.self,
                              predicate: predicate,
+                             paginationInput: nil,
                              additionalStatements: orderByCreatedAt) { completion($0) }
     }
 }

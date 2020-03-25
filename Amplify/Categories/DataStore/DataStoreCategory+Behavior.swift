@@ -18,8 +18,9 @@ extension DataStoreCategory: DataStoreBaseBehavior {
 
     public func query<M: Model>(_ modelType: M.Type,
                                 where predicate: QueryPredicateFactory? = nil,
+                                paginate paginationInput: QueryPaginationInput? = nil,
                                 completion: DataStoreCallback<[M]>) {
-        plugin.query(modelType, where: predicate, completion: completion)
+        plugin.query(modelType, where: predicate, paginate: paginationInput, completion: completion)
     }
 
     public func delete<M: Model>(_ model: M,

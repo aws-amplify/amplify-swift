@@ -292,6 +292,28 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
+    // MARK: - Select Statements paginated
+
+    /// - Given: a `Model` type and a `QueryPaginationInput`
+    /// - When:
+    ///   - the model is of type `Post`
+    ///   - the pagination input has `page` 2 and `limit` 20
+    /// - Then:
+    ///   - check if the generated SQL statement is valid
+    ///   - check if the statement contains the correct `limit` and `offset`
+    func testSelectStatementWithPaginationInfo() {
+        let statement = SelectStatement(from: Post.self, predicate: nil, paginationInput: .page(2, limit: 20))
+        let expectedStatement = """
+        select
+          "root"."id" as "id", "root"."content" as "content", "root"."createdAt" as "createdAt",
+          "root"."draft" as "draft", "root"."rating" as "rating", "root"."title" as "title",
+          "root"."updatedAt" as "updatedAt"
+        from Post as root
+        limit 20 offset 40
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
     // MARK: - Query Predicates
 
     /// - Given: a simple predicate
