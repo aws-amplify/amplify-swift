@@ -258,8 +258,9 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let hubExpect = expectation(description: "Hub is notified")
         let notifyExpect = expectation(description: "action .notified notified")
         let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
-            XCTAssertEqual(payload.eventName, "DataStore.syncReceived")
-            hubExpect.fulfill()
+            if payload.eventName == "DataStore.syncReceived" {
+                hubExpect.fulfill()
+            }
         }
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.notified)

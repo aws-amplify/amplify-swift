@@ -119,9 +119,10 @@ final class StorageEngine: StorageEngineBehavior {
 
         let mutationType = modelExists ? MutationEvent.MutationType.update : .create
 
-        // TODO: finalize save behavior
         if mutationType == .create && condition != nil {
-            let dataStoreError = DataStoreError.invalidOperation(causedBy: nil)
+            let dataStoreError = DataStoreError.conditionalSaveFailed(
+                "Cannot apply a condition on model which does not exist.",
+                "Save the model instance without a condition first.")
             completion(.failure(causedBy: dataStoreError))
         }
 
