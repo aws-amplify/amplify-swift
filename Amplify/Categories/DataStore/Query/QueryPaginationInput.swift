@@ -10,16 +10,26 @@ import Foundation
 /// A simple struct that holds pagination information that can be applied queries.
 public struct QueryPaginationInput {
 
-    /// The default page size
-    public static var defaultLimit: UInt = 100
+    /// The default page size.
+    public static let defaultLimit: UInt = 100
 
+    /// The page number. It starts at 0.
     public let page: UInt
+    
+    /// The number of results per page.
     public let limit: UInt
 
 }
 
 extension QueryPaginationInput {
 
+    /// Creates a `QueryPaginationInput` in an expressive way, enabling a short
+    /// and developer friendly access to an instance of `QueryPaginationInput`.
+    ///
+    /// - Parameters:
+    ///   - page: the page number (starting at 0)
+    ///   - limit: the page size (defaults to `QueryPaginationInput.defaultLimit`)
+    /// - Returns: a new instance of `QueryPaginationInput`
     public static func page(_ page: UInt,
                             limit: UInt = QueryPaginationInput.defaultLimit) -> QueryPaginationInput {
         return QueryPaginationInput(page: page, limit: limit)
