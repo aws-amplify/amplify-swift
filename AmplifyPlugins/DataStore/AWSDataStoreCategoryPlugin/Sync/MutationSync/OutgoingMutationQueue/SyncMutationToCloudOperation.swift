@@ -153,17 +153,7 @@ class SyncMutationToCloudOperation: Operation {
             return
         }
 
-        // This doesn't belong here--need to add a `delete` API to the MutationEventSource and pass a
-        // reference into the mutation queue.
-        Amplify.DataStore.delete(mutationEvent) { result in
-            switch result {
-            case .failure(let dataStoreError):
-                let apiError = APIError.pluginError(dataStoreError)
-                self.finish(result: .failed(apiError))
-            case .success:
-                self.finish(result: asyncEvent)
-            }
-        }
+        finish(result: asyncEvent)
     }
 
     private func resolveReachabilityPublisher(request: GraphQLRequest<MutationSync<AnyModel>>) {

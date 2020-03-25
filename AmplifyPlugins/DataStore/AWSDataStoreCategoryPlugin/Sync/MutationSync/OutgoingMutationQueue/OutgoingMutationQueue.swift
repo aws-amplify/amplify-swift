@@ -184,7 +184,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
         let syncMutationToCloudOperation =
             SyncMutationToCloudOperation(mutationEvent: mutationEvent, api: api) { [weak self] result in
-                self?.log.verbose("mutationEvent finished: \(mutationEvent); result: \(result)")
+                self?.log.verbose(
+                    "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent); result: \(result)")
 
                 if case .completed(let response) = result,
                     case .failure(let error) = response {
@@ -195,20 +196,34 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                                                                error: error,
                                                                api: api) { [weak self] result in
 
-                        self?.log.verbose("mutation error processed, result: \(result)")
-                        self?.stateMachine.notify(action: .processedEvent)
+                        self?.log.verbose(
+                            "[ProcessMutationErrorFromCloudOperation] mutation error processed, result: \(result)")
+                        self?.completeProcessingEvent(mutationEvent)
                     }
-
                     self?.operationQueue.addOperation(processMutationErrorFromCloudOperation)
-
                 } else {
-                    self?.stateMachine.notify(action: .processedEvent)
+                    self?.completeProcessingEvent(mutationEvent)
                 }
         }
 
         operationQueue.addOperation(syncMutationToCloudOperation)
 
         stateMachine.notify(action: .enqueuedEvent)
+    }
+
+    private func completeProcessingEvent(_ mutationEvent: MutationEvent) {
+        // This doesn't belong here--need to add a `delete` API to the MutationEventSource and pass a
+        // reference into the mutation queue.
+        Amplify.DataStore.delete(mutationEvent) { result in
+            switch result {
+            case .failure(let dataStoreError):
+                self.log.verbose("mutationEvent failed to delete: error: \(dataStoreError)")
+            case .success:
+                self.log.verbose("mutationEvent deleted successfully")
+            }
+
+            self.stateMachine.notify(action: .processedEvent)
+        }
     }
 
 }
