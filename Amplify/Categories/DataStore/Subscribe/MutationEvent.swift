@@ -41,24 +41,15 @@ public struct MutationEvent: Model {
     public init<M: Model>(model: M,
                           mutationType: MutationType,
                           version: Int? = nil,
-                          queryPredicate: QueryPredicate? = nil) throws {
+                          queryPredicateJson: String? = nil) throws {
         let modelType = type(of: model)
         let json = try model.toJSON()
-        if let queryPredicate = queryPredicate {
-            let anyQueryPredicate = AnyQueryPredicate(queryPredicate)
-            self.init(modelId: model.id,
-                      modelName: modelType.schema.name,
-                      json: json,
-                      mutationType: mutationType,
-                      version: version,
-                      queryPredicateJson: try anyQueryPredicate.toJSON())
-        } else {
-            self.init(modelId: model.id,
-                      modelName: modelType.schema.name,
-                      json: json,
-                      mutationType: mutationType,
-                      version: version)
-        }
+        self.init(modelId: model.id,
+                  modelName: modelType.schema.name,
+                  json: json,
+                  mutationType: mutationType,
+                  version: version,
+                  queryPredicateJson: queryPredicateJson)
 
     }
 
@@ -83,14 +74,5 @@ public struct MutationEvent: Model {
         }
 
         return typedModel
-    }
-
-    // Decodes the query predicate from the mutation event
-    public func decodeQueryPredicate() throws -> QueryPredicate? {
-        if let queryPredicateJson = queryPredicateJson {
-            return try AnyQueryPredicate.from(json: queryPredicateJson).base
-        } else {
-            return nil
-        }
     }
 }

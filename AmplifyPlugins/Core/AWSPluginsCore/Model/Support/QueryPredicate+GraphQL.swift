@@ -16,6 +16,22 @@ protocol GraphQLFilterConvertible {
 
 /// Extension to translate a `QueryPredicate` into a GraphQL query variables object
 extension QueryPredicate {
+
+    /// Serialize the translated GraphQL query variable object to JSON string.
+    /// See `String` extension `toGraphQLFilterJSON` method to deserialize
+    public func toGraphQLFilterString() throws -> String {
+        let graphQLFilterVariablesData = try JSONSerialization.data(withJSONObject: graphQLFilterVariables)
+
+        guard let serializedString = String(data: graphQLFilterVariablesData, encoding: .utf8) else {
+            preconditionFailure("""
+                Could not initialize String from graphQLFilterVariables:
+                \(String(describing: graphQLFilterVariablesData))
+                """)
+        }
+
+        return serializedString
+    }
+
     var graphQLFilterVariables: [String: Any] {
         if let operation = self as? QueryPredicateOperation {
             return operation.graphQLFilter
@@ -25,6 +41,18 @@ extension QueryPredicate {
 
         preconditionFailure(
             "Could not find QueryPredicateOperation or QueryPredicateGroup for \(String(describing: self))")
+    }
+}
+
+extension String {
+
+    /// Deserialize the JSON string converted with `QueryPredicate.toGraphQLFilterString()` to `[String: Any]` JSON
+    public func toGraphQLFilterJSON() throws -> [String: Any] {
+        let data = Data(utf8)
+        guard let queryPredicateJson = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            preconditionFailure("Could not initialize JSON from queryPredicate String: \(self))")
+        }
+        return queryPredicateJson
     }
 }
 

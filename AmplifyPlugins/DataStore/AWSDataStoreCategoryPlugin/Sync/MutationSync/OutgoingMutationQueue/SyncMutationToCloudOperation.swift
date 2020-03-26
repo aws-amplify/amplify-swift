@@ -94,13 +94,19 @@ class SyncMutationToCloudOperation: Operation {
         do {
             switch mutationType {
             case .delete:
-                let queryPredicate = try mutationEvent.decodeQueryPredicate()
+                var queryPredicate: QueryPredicateInput?
+                if let queryPredicateJson = mutationEvent.queryPredicateJson {
+                    queryPredicate = .json(try queryPredicateJson.toGraphQLFilterJSON())
+                }
                 request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: mutationEvent.modelName,
                                                                             id: mutationEvent.modelId,
                                                                             where: queryPredicate,
                                                                             version: mutationEvent.version)
             case .update:
-                let queryPredicate = try mutationEvent.decodeQueryPredicate()
+                var queryPredicate: QueryPredicateInput?
+                if let queryPredicateJson = mutationEvent.queryPredicateJson {
+                    queryPredicate = .json(try queryPredicateJson.toGraphQLFilterJSON())
+                }
                 let model = try mutationEvent.decodeModel()
                 request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
                                                                             where: queryPredicate,

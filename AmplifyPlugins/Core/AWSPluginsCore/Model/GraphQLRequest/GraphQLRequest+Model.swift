@@ -34,12 +34,12 @@ extension GraphQLRequest {
         case .delete:
             documentBuilder.add(decorator: ModelIdDecorator(id: model.id))
             if let predicate = predicate {
-                documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))
+                documentBuilder.add(decorator: PredicateDecorator(predicateInput: .object(predicate)))
             }
         case .update:
             documentBuilder.add(decorator: ModelDecorator(model: model))
             if let predicate = predicate {
-                documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))
+                documentBuilder.add(decorator: PredicateDecorator(predicateInput: .object(predicate)))
             }
         }
 
@@ -89,7 +89,7 @@ extension GraphQLRequest {
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
 
         if let predicate = predicate {
-            documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))
+            documentBuilder.add(decorator: PredicateDecorator(predicateInput: .object(predicate)))
         }
 
         documentBuilder.add(decorator: PaginationDecorator())

@@ -38,9 +38,11 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
 
     func test_saveCandidate_CanadidateUpdateWithCondition() throws {
         let anyLocal = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.create)
+        let queryPredicate = post.title == model1.title
+        let queryPredicateJson = try queryPredicate.toGraphQLFilterString()
         let candidateUpdate = try MutationEvent(model: model1,
                                                 mutationType: MutationEvent.MutationType.update,
-                                                queryPredicate: post.title == model1.title)
+                                                queryPredicateJson: queryPredicateJson)
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [anyLocal])
         XCTAssertEqual(disposition, .saveCandidate)
@@ -48,9 +50,11 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
 
     func test_saveCandidate_CanadidateDeleteWithCondition() throws {
         let anyLocal = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.create)
+        let queryPredicate = post.title == model1.title
+        let queryPredicateJson = try queryPredicate.toGraphQLFilterString()
         let candidateUpdate = try MutationEvent(model: model1,
                                                 mutationType: MutationEvent.MutationType.delete,
-                                                queryPredicate: post.title == model1.title)
+                                                queryPredicateJson: queryPredicateJson)
 
         let disposition = databaseAdapter.disposition(for: candidateUpdate, given: [anyLocal])
         XCTAssertEqual(disposition, .saveCandidate)

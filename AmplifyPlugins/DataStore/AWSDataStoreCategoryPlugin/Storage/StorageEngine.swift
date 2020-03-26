@@ -385,9 +385,15 @@ final class StorageEngine: StorageEngineBehavior {
                                         completion: @escaping DataStoreCallback<M>) {
         let mutationEvent: MutationEvent
         do {
+            var queryPredicateJson: String?
+            if let queryPredicate = queryPredicate {
+                queryPredicateJson = try queryPredicate.toGraphQLFilterString()
+            }
+
             mutationEvent = try MutationEvent(model: savedModel,
                                               mutationType: mutationType,
-                                              queryPredicate: queryPredicate)
+                                              queryPredicateJson: queryPredicateJson)
+
         } catch {
             let dataStoreError = DataStoreError(error: error)
             completion(.failure(dataStoreError))
