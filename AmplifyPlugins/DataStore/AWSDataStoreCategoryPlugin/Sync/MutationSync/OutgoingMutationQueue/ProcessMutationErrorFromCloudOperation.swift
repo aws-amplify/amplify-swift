@@ -11,8 +11,7 @@ import Foundation
 import AWSPluginsCore
 
 /// Checks the GraphQL error response for specific error scenarios related to data synchronziation to the local store.
-/// 1. When there is a "conditional request failed" error, then query for the latest version of the model, update local
-/// store.
+/// 1. When there is a "conditional request failed" error, then emit to the Hub a 'conditionalSaveFailed' event.
 @available(iOS 13.0, *)
 class ProcessMutationErrorFromCloudOperation: Operation {
 
