@@ -45,7 +45,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try predicate.toGraphQLFilterJSON()
+        let result = try predicate.toGraphQLFilterPrettyPrintedJson()
         XCTAssertEqual(result, expected)
     }
 
@@ -115,7 +115,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try predicate.toGraphQLFilterJSON()
+        let result = try predicate.toGraphQLFilterPrettyPrintedJson()
         XCTAssertEqual(result, expected)
     }
 
@@ -147,13 +147,39 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try predicate.toGraphQLFilterJSON()
+        let result = try predicate.toGraphQLFilterPrettyPrintedJson()
         XCTAssertEqual(result, expected)
+    }
+
+    func testJSONSerializationAndDeserialization() throws {
+        let post = Post.keys
+        let predicate = post.id.eq("id") && post.title.beginsWith("Title")
+        let predicateString = try predicate.toGraphQLFilterString()
+        XCTAssertNotNil(predicateString)
+        let predicateJson = try predicateString.toGraphQLFilterJson()
+        guard let filter = predicateJson["and"] as? [[String: Any]] else {
+            XCTFail("should contain 'and' operation")
+            return
+        }
+        let idPredicate = filter[0]
+        guard let idFilter = idPredicate["id"] as? [String: Any] else {
+            XCTFail("should contain 'id' value")
+            return
+        }
+        XCTAssert(idFilter["eq"] as? String == "id")
+
+        let titlePredicate = filter[1]
+        guard let titleFilter = titlePredicate["title"] as? [String: Any] else {
+            XCTFail("should contain 'title' value")
+            return
+        }
+
+        XCTAssert(titleFilter["beginsWith"] as? String == "Title")
     }
 }
 
 extension QueryPredicate {
-    func toGraphQLFilterJSON() throws -> String {
+    func toGraphQLFilterPrettyPrintedJson() throws -> String {
         let graphQLFilterVariablesData = try JSONSerialization.data(withJSONObject: graphQLFilterVariables,
                                                                     options: .prettyPrinted)
 

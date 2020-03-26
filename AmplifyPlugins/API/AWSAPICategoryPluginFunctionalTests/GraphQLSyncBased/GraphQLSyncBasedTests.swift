@@ -249,7 +249,7 @@ class GraphQLSyncBasedTests: XCTestCase {
         var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
 
         let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: modifiedPost,
-                                                                        where: post.title == "Does not match",
+                                                                        where: .object(post.title == "Does not match"),
                                                                         version: 1)
 
         _ = Amplify.API.mutate(request: request) { event in

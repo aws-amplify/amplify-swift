@@ -8,7 +8,7 @@
 import Foundation
 
 /// Protocol that indicates concrete types conforming to it can be used a predicate member.
-public protocol QueryPredicate { }
+public protocol QueryPredicate {}
 
 public enum QueryPredicateGroupType: String {
     case and
@@ -26,7 +26,7 @@ public func not<Predicate: QueryPredicate>(_ predicate: Predicate) -> QueryPredi
 /// The case `.all` is a predicate used as an argument to select all of a single modeltype. We
 /// chose `.all` instead of `nil` because we didn't want to use the implicit nature of `nil` to
 /// specify an action applies to an entire data set.
-public enum QueryPredicateConstant: String, QueryPredicate {
+public enum QueryPredicateConstant: QueryPredicate {
     case all
 }
 
@@ -71,16 +71,10 @@ public class QueryPredicateGroup: QueryPredicate {
     public static prefix func ! (rhs: QueryPredicateGroup) -> QueryPredicateGroup {
         return not(rhs)
     }
-
-    /// Provide conformance to `Codable`
-
-    enum CodingKeys: String, CodingKey {
-        case type
-        case predicates
-    }
 }
 
 public class QueryPredicateOperation: QueryPredicate {
+
     public let field: String
     public let `operator`: QueryOperator
 

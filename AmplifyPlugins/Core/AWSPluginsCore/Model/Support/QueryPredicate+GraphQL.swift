@@ -18,13 +18,13 @@ protocol GraphQLFilterConvertible {
 extension QueryPredicate {
 
     /// Serialize the translated GraphQL query variable object to JSON string.
-    /// See `String` extension `toGraphQLFilterJSON` method to deserialize
+    /// See `String` extension `toGraphQLFilterJson` method to deserialize
     public func toGraphQLFilterString() throws -> String {
         let graphQLFilterVariablesData = try JSONSerialization.data(withJSONObject: graphQLFilterVariables)
 
         guard let serializedString = String(data: graphQLFilterVariablesData, encoding: .utf8) else {
             preconditionFailure("""
-                Could not initialize String from graphQLFilterVariables:
+                Could not initialize String from the GraphQL representation of QueryPredicate:
                 \(String(describing: graphQLFilterVariablesData))
                 """)
         }
@@ -47,7 +47,7 @@ extension QueryPredicate {
 extension String {
 
     /// Deserialize the JSON string converted with `QueryPredicate.toGraphQLFilterString()` to `[String: Any]` JSON
-    public func toGraphQLFilterJSON() throws -> [String: Any] {
+    public func toGraphQLFilterJson() throws -> [String: Any] {
         let data = Data(utf8)
         guard let queryPredicateJson = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
             preconditionFailure("Could not initialize JSON from queryPredicate String: \(self))")

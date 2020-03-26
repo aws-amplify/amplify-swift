@@ -14,7 +14,7 @@ import AWSPluginsCore
 /// 1. When there is a "conditional request failed" error, then query for the latest version of the model, update local
 /// store.
 @available(iOS 13.0, *)
-class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
+class ProcessMutationErrorFromCloudOperation: Operation {
 
     private let mutationEvent: MutationEvent
     private let error: GraphQLResponseError<MutationSync<AnyModel>>
