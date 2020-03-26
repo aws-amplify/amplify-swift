@@ -152,8 +152,6 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     /// - Then:
     ///    - the post is first only updated on local store is not sync to the remote
     ///    - the save with condition reaches the remote and fails with conditional save failed
-    ///    - the post is then retrieved to verify that it has been reconcilied with the original `newPost` data from
-    ///    remote
     func testCreateThenMutateWithConditionFailOnSync() throws {
         try startAmplifyAndWaitForSync()
 
@@ -171,7 +169,6 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let createReceived = expectation(description: "Create notification received")
         let updateLocalSuccess = expectation(description: "Update local successful")
         let conditionalReceived = expectation(description: "Conditional save failed received")
-        let querySuccess = expectation(description: "local data has been updated successfully")
 
         let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
             guard let mutationEvent = payload.data as? MutationEvent,
@@ -222,21 +219,5 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         Amplify.DataStore.save(updatedPost, where: post.content == updatedPost.content) { _ in }
 
         wait(for: [conditionalReceived], timeout: networkTimeout)
-
-        Amplify.DataStore.query(Post.self, byId: newPost.id) { result in
-            switch result {
-            case .success(let postOptional):
-                guard let post = postOptional else {
-                    XCTFail("Missing post")
-                    return
-                }
-                XCTAssertEqual(post.content, newPost.content)
-                XCTAssertNotEqual(post.content, updatedPost.content)
-                querySuccess.fulfill()
-            case .failure(let error):
-                XCTFail(String(describing: error))
-            }
-        }
-        wait(for: [querySuccess], timeout: networkTimeout)
     }
 }

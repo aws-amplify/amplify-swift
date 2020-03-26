@@ -16,19 +16,14 @@ import AWSPluginsCore
 @available(iOS 13.0, *)
 class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
 
-    private weak var api: APICategoryGraphQLBehavior?
-    private weak var storageAdapter: StorageEngineAdapter?
     private let mutationEvent: MutationEvent
     private let error: GraphQLResponseError<MutationSync<AnyModel>>
     private let completion: (Result<Void, Error>) -> Void
     private var queryOperation: GraphQLOperation<MutationSync<AnyModel>?>?
 
     init(mutationEvent: MutationEvent,
-         storageAdapter: StorageEngineAdapter,
          error: GraphQLResponseError<MutationSync<AnyModel>>,
-         api: APICategoryGraphQLBehavior, completion: @escaping (Result<Void, Error>) -> Void) {
-        self.api = api
-        self.storageAdapter = storageAdapter
+         completion: @escaping (Result<Void, Error>) -> Void) {
         self.mutationEvent = mutationEvent
         self.error = error
         self.completion = completion
@@ -50,70 +45,20 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
 
     private func processConditionalRequestFailed() {
         if case let .error(graphQLErrors) = error {
+            // TODO: Check for 'ConflictUnhandled', execute conflict handler configurated
+
             let hasConditionalRequestFailed = graphQLErrors.contains { (error) -> Bool in
                 error.message.contains("conditional request failed")
             }
 
             if hasConditionalRequestFailed {
-                queryLatestRemoteModel()
-            } else {
-                finish(result: .success(()))
-            }
-        } else {
-            finish(result: .success(()))
-        }
-    }
-
-    private func queryLatestRemoteModel() {
-        guard let api = api else {
-            log.error("\(#function): API unexpectedly nil")
-            let apiError = APIError.unknown("API unexpectedly nil", "")
-            finish(result: .failure(apiError))
-            return
-        }
-
-        let apiRequest = GraphQLRequest<MutationSyncResult?>.query(modelName: mutationEvent.modelName,
-                                                                   byId: mutationEvent.modelId)
-        queryOperation = api.query(request: apiRequest) { [weak self] asyncEvent in
-            self?.log.verbose("queryLatestRemote received asyncEvent: \(asyncEvent)")
-            self?.saveIfResponseContainsModel(asyncEvent: asyncEvent)
-        }
-    }
-
-    private func saveIfResponseContainsModel(
-        asyncEvent: AsyncEvent<Void, GraphQLResponse<MutationSync<AnyModel>?>, APIError>) {
-
-        guard !isCancelled else {
-            queryOperation?.cancel()
-            let apiError = APIError.unknown("Operation cancelled", "")
-            finish(result: .failure(apiError))
-            return
-        }
-
-        if case .completed(let response) = asyncEvent,
-            case .success(let mutationSyncOptional) = response,
-            let mutationSync = mutationSyncOptional {
-            saveModel(mutationSync)
-        }
-    }
-
-    private func saveModel(_ mutationSync: MutationSync<AnyModel>) {
-        guard let storageAdapter = storageAdapter else {
-            log.error("\(#function): StorageAdapter unexpectedly nil")
-            let error = DataStoreError.unknown("StorageAdapter unexpectedly nil", "")
-            finish(result: .failure(error))
-            return
-        }
-
-        storageAdapter.save(untypedModel: mutationSync.model.instance) { [weak self] response in
-            switch response {
-            case .failure(let dataStoreError):
-                let error = DataStoreError.internalOperation("DataStore failed to save", "", dataStoreError)
-                self?.finish(result: .failure(error))
-            case .success:
-                self?.saveMetadata(storageAdapter: storageAdapter, syncMetadata: mutationSync.syncMetadata)
+                let payload = HubPayload(eventName: HubPayload.EventName.DataStore.conditionalSaveFailed,
+                                         data: mutationEvent)
+                Amplify.Hub.dispatch(to: .dataStore, payload: payload)
             }
         }
+
+        finish(result: .success(()))
     }
 
     private func saveMetadata(storageAdapter: StorageEngineAdapter,

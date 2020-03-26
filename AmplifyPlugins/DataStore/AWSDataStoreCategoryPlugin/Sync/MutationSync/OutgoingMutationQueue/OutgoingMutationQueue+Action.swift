@@ -15,7 +15,7 @@ extension OutgoingMutationQueue {
     enum Action {
         // Startup/config actions
         case initialized
-        case receivedStart(APICategoryGraphQLBehavior, MutationEventPublisher, StorageEngineAdapter)
+        case receivedStart(APICategoryGraphQLBehavior, MutationEventPublisher)
         case receivedSubscription
 
         // Event loop

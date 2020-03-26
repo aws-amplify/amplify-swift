@@ -38,10 +38,9 @@ extension RemoteSyncEngine {
             stateMachine.notify(action: .initializedSubscriptions)
         case .started:
             remoteSyncTopicPublisher.send(.subscriptionsActivated)
-            if let api = self.api, let storageAdapter = self.storageAdapter {
+            if let api = self.api {
                 stateMachine.notify(action: .activatedCloudSubscriptions(api,
-                                                                         mutationEventPublisher,
-                                                                         storageAdapter))
+                                                                         mutationEventPublisher))
             }
         case .paused:
             remoteSyncTopicPublisher.send(.subscriptionsPaused)

@@ -17,21 +17,16 @@ import Combine
 @available(iOS 13.0, *)
 class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     let defaultAsyncWaitTimeout = 10.0
-    var mockAPIPlugin: MockAPICategoryPlugin!
-    var storageAdapter: MockSQLiteStorageEngineAdapter!
     override func setUp() {
         tryOrFail {
             try setUpWithAPI()
         }
         ModelRegistry.register(modelType: Post.self)
         ModelRegistry.register(modelType: Comment.self)
-
-        storageAdapter = MockSQLiteStorageEngineAdapter()
     }
 
     func testProcessMutationErrorFromCloudOperationSuccess() throws {
         let expectCompletion = expectation(description: "Expect to complete error processing")
-        let expectAPIQuery = expectation(description: "call to API.query")
         let expectHubEvent = expectation(description: "Hub is notified")
 
         let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
@@ -51,44 +46,12 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                   extensions: nil)
         let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError])
 
-        var listenerForApiRequestOptional: GraphQLOperation<MutationSync<AnyModel>?>.EventListener?
-        let responder = QueryRequestListenerResponder<MutationSync<AnyModel>?> { _, eventListener in
-
-            listenerForApiRequestOptional = eventListener
-            expectAPIQuery.fulfill()
-            return nil
-        }
-
-        let model = MockSynced(id: "id-1")
-        let anyModel = try model.eraseToAnyModel()
-        let remoteSyncMetadata = MutationSyncMetadata(id: model.id,
-                                                      deleted: false,
-                                                      lastChangedAt: Date().unixSeconds,
-                                                      version: 2)
-        let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
-
-        mockAPIPlugin.responders[.queryRequestListener] = responder
-
-        storageAdapter.returnOnSave(dataStoreResult: .success(anyModel))
-        storageAdapter.shouldReturnErrorOnSaveMetadata = false
-
         let operation = ProcessMutationErrorFromCloudOperation(mutationEvent: mutationEvent,
-                                                               storageAdapter: storageAdapter,
                                                                error: graphQLResponseError,
-                                                               api: mockAPIPlugin,
                                                                completion: completion)
 
         let queue = OperationQueue()
         queue.addOperation(operation)
-
-        wait(for: [expectAPIQuery], timeout: defaultAsyncWaitTimeout)
-
-        guard let listenerForApiRequest = listenerForApiRequestOptional else {
-            XCTFail("Listener was not called through MockAPICategoryPlugin")
-            return
-        }
-
-        listenerForApiRequest(.completed(.success(remoteMutationSync)))
 
         wait(for: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
 
@@ -117,20 +80,7 @@ extension ProcessMutationErrorFromCloudOperationTests {
         return amplifyConfig
     }
 
-    private func setUpAPICategory(config: AmplifyConfiguration) throws -> AmplifyConfiguration {
-        mockAPIPlugin = MockAPICategoryPlugin()
-        try Amplify.add(plugin: mockAPIPlugin)
-
-        let apiConfig = APICategoryConfiguration(plugins: [
-            "MockAPICategoryPlugin": true
-        ])
-        let amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: config.dataStore)
-        return amplifyConfig
-    }
-
     private func setUpWithAPI() throws {
-        let configWithoutAPI = try setUpCore()
-        let configWithAPI = try setUpAPICategory(config: configWithoutAPI)
-        try Amplify.configure(configWithAPI)
+        try Amplify.configure(try setUpCore())
     }
 }

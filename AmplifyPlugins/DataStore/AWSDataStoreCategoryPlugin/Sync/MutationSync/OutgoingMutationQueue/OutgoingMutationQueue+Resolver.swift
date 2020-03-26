@@ -21,8 +21,8 @@ extension OutgoingMutationQueue {
             case (.notInitialized, .initialized):
                 return .notStarted
 
-            case (.notStarted, .receivedStart(let api, let mutationEventPublisher, let storageAdapter)):
-                return .starting(api, mutationEventPublisher, storageAdapter)
+            case (.notStarted, .receivedStart(let api, let mutationEventPublisher)):
+                return .starting(api, mutationEventPublisher)
             case (_, .receivedStart):
                 return .resumingMutationQueue
 
