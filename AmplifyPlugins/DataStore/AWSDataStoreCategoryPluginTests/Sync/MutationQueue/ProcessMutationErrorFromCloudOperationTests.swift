@@ -40,10 +40,9 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
         let post1 = Post(title: "post1", content: "content1", createdAt: Date())
         let mutationEvent = try MutationEvent(model: post1, mutationType: .create)
-        let graphQLError = GraphQLError(message: "conditional request failed",
-                                  locations: nil,
-                                  path: nil,
-                                  extensions: nil)
+        let graphQLError = AppSyncGraphQLError<MutationSync<AnyModel>>(
+            message: "conditional request failed",
+            errorType: AppSyncErrorType.conditionalCheck.rawValue)
         let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError])
 
         let operation = ProcessMutationErrorFromCloudOperation(mutationEvent: mutationEvent,

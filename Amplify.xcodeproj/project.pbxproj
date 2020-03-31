@@ -16,6 +16,7 @@
 		210DBC142332B3C6009B9E51 /* StorageGetURLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC132332B3C6009B9E51 /* StorageGetURLOperation.swift */; };
 		210DBC162332B3CB009B9E51 /* StorageDownloadDataOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC152332B3CB009B9E51 /* StorageDownloadDataOperation.swift */; };
 		210DBC472332F0C5009B9E51 /* StorageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210DBC462332F0C5009B9E51 /* StorageError.swift */; };
+		210E789E2433A23600907486 /* AppSyncGraphQLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210E789D2433A23600907486 /* AppSyncGraphQLError.swift */; };
 		2125E2542319EC3100B3DEB5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2532319EC3100B3DEB5 /* AppDelegate.swift */; };
 		2125E2562319EC3100B3DEB5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2552319EC3100B3DEB5 /* ViewController.swift */; };
 		2125E2592319EC3100B3DEB5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2125E2572319EC3100B3DEB5 /* Main.storyboard */; };
@@ -537,6 +538,7 @@
 		210DBC132332B3C6009B9E51 /* StorageGetURLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageGetURLOperation.swift; sourceTree = "<group>"; };
 		210DBC152332B3CB009B9E51 /* StorageDownloadDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageDownloadDataOperation.swift; sourceTree = "<group>"; };
 		210DBC462332F0C5009B9E51 /* StorageError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageError.swift; sourceTree = "<group>"; };
+		210E789D2433A23600907486 /* AppSyncGraphQLError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSyncGraphQLError.swift; sourceTree = "<group>"; };
 		2125E20D2318CD3900B3DEB5 /* MockAWSMobileClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAWSMobileClient.swift; sourceTree = "<group>"; };
 		2125E2102318D73B00B3DEB5 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		2125E2512319EC3000B3DEB5 /* AmplifyTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmplifyTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1191,6 +1193,14 @@
 				210922562359693800CEC295 /* BasicAnalyticsEvent.swift */,
 			);
 			path = Event;
+			sourceTree = "<group>";
+		};
+		210E78A02436C68D00907486 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				210E789D2433A23600907486 /* AppSyncGraphQLError.swift */,
+			);
+			path = API;
 			sourceTree = "<group>";
 		};
 		2125E2522319EC3100B3DEB5 /* AmplifyTestApp */ = {
@@ -1964,9 +1974,10 @@
 		FA131AAB2360FE070008381C /* AWSPluginsCore */ = {
 			isa = PBXGroup;
 			children = (
+				210E78A02436C68D00907486 /* API */,
+				FA131ACB2360FE470008381C /* Auth */,
 				FA131AAC2360FE070008381C /* AWSPluginsCore.h */,
 				FA131AAD2360FE070008381C /* Info.plist */,
-				FA131ACB2360FE470008381C /* Auth */,
 				2129BE0223947FA3006363A1 /* Model */,
 				6BBECD6F23ADA7C100C8DFBE /* ServiceConfiguration */,
 				2129BE3F23948909006363A1 /* Sync */,
@@ -3502,6 +3513,7 @@
 				21420A90237222A900FA140C /* APIKeyConfiguration.swift in Sources */,
 				219A887F23EB627100BBC5F2 /* ModelBasedGraphQLDocumentBuilder.swift in Sources */,
 				2129BE552395CAEF006363A1 /* PaginatedList.swift in Sources */,
+				210E789E2433A23600907486 /* AppSyncGraphQLError.swift in Sources */,
 				2129BE212394806B006363A1 /* ModelSchema+GraphQL.swift in Sources */,
 				212CE70B23E9E991007D8E71 /* ModelIdDecorator.swift in Sources */,
 				2129BE4223948924006363A1 /* MutationSync.swift in Sources */,

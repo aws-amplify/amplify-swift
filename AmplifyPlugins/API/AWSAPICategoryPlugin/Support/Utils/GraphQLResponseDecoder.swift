@@ -7,6 +7,7 @@
 
 import Foundation
 import Amplify
+import AWSPluginsCore
 
 struct GraphQLResponseDecoder {
 
@@ -48,13 +49,13 @@ struct GraphQLResponseDecoder {
             }
 
         case (.none, .some(let errors)):
-            let responseErrors = try decodeErrors(graphQLErrors: errors)
+            let responseErrors = try decodeErrors(graphQLErrors: errors, into: responseType)
             return GraphQLResponse<R>.failure(.error(responseErrors))
 
         case (.some(let data), .some(let errors)):
             do {
                 if data.count == 1, let first = data.first, case .null = first.value {
-                    let responseErrors = try decodeErrors(graphQLErrors: errors)
+                    let responseErrors = try decodeErrors(graphQLErrors: errors, into: responseType)
                     return GraphQLResponse<R>.failure(.error(responseErrors))
                 }
 
@@ -62,7 +63,7 @@ struct GraphQLResponseDecoder {
                 let responseData = try decode(graphQLData: jsonValue,
                                               into: responseType,
                                               at: decodePath)
-                let responseErrors = try decodeErrors(graphQLErrors: errors)
+                let responseErrors = try decodeErrors(graphQLErrors: errors, into: responseType)
                 return GraphQLResponse<R>.failure(.partial(responseData, responseErrors))
             } catch let decodingError as DecodingError {
                 let error = APIError(error: decodingError)
@@ -165,11 +166,12 @@ struct GraphQLResponseDecoder {
         return try decoder.decode(responseType, from: serializedJSON)
     }
 
-    private static func decodeErrors(graphQLErrors: [JSONValue]) throws -> [GraphQLError] {
-        var responseErrors = [GraphQLError]()
+    private static func decodeErrors<R: Decodable>(graphQLErrors: [JSONValue],
+                                                   into responseType: R.Type) throws -> [AppSyncGraphQLError<R>] {
+        var responseErrors = [AppSyncGraphQLError<R>]()
         for error in graphQLErrors {
             do {
-                let responseError = try decode(graphQLError: error)
+                let responseError = try decode(graphQLError: error, into: responseType)
                 responseErrors.append(responseError)
             } catch let decodingError as DecodingError {
                 throw APIError(error: decodingError)
@@ -181,11 +183,12 @@ struct GraphQLResponseDecoder {
         return responseErrors
     }
 
-    private static func decode(graphQLError: JSONValue) throws -> GraphQLError {
+    private static func decode<R: Decodable>(graphQLError: JSONValue,
+                                             into responseType: R.Type) throws -> AppSyncGraphQLError<R> {
         let serializedJSON = try JSONEncoder().encode(graphQLError)
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
-        return try decoder.decode(GraphQLError.self, from: serializedJSON)
+        return try decoder.decode(AppSyncGraphQLError<R>.self, from: serializedJSON)
     }
 
     private static func serialize(graphQLData: JSONValue,

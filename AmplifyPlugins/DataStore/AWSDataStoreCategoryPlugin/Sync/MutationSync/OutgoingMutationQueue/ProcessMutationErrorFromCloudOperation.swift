@@ -47,7 +47,12 @@ class ProcessMutationErrorFromCloudOperation: Operation {
             // TODO: Check for 'ConflictUnhandled', execute conflict handler configurated
 
             let hasConditionalRequestFailed = graphQLErrors.contains { (error) -> Bool in
-                error.message.contains("conditional request failed")
+                if let appSyncError = error as? AppSyncGraphQLError<MutationSync<AnyModel>>,
+                    let errorType = appSyncError.appSyncErrorType {
+                    return errorType == .conditionalCheck
+                }
+
+                return false
             }
 
             if hasConditionalRequestFailed {

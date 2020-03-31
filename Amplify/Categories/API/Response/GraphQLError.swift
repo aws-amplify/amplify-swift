@@ -6,23 +6,23 @@
 //
 
 /// The error format according to https://graphql.github.io/graphql-spec/June2018/#sec-Errors
-public struct GraphQLError: Decodable {
+public protocol GraphQLError: Decodable {
 
     /// Description of the error
-    public let message: String
+    var message: String { get }
 
     /// list of locations describing the syntax element
-    public let locations: [Location]?
+    var locations: [Location]? { get }
 
     /// Details the path of the response field with error. The values are either strings or 0-index integers
-    public let path: [JSONValue]?
+    var path: [JSONValue]? { get }
 
     /// Additional map of of errors
-    public let extensions: [String: JSONValue]?
+    var extensions: [String: JSONValue]? { get }
+}
 
-    /// Both `line` and `column` are positive numbers describing the beginning of an associated syntax element
-    public struct Location: Decodable {
-        public let line: Int
-        public let column: Int
-    }
+/// Both `line` and `column` are positive numbers describing the beginning of an associated syntax element
+public struct Location: Decodable {
+    public let line: Int
+    public let column: Int
 }

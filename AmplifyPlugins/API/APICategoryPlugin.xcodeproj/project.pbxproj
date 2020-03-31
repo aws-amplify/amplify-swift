@@ -699,7 +699,6 @@
 		21D7A08B237B54D90057D00D /* AWSAPICategoryPlugin */ = {
 			isa = PBXGroup;
 			children = (
-				21D7A0DE237B54D90057D00D /* Info.plist */,
 				21D7A09A237B54D90057D00D /* AWSAPIPlugin.swift */,
 				21D7A098237B54D90057D00D /* AWSAPIPlugin+Configure.swift */,
 				21D7A0B1237B54D90057D00D /* AWSAPIPlugin+GraphQLBehavior.swift */,
@@ -712,6 +711,7 @@
 				21D7A0D1237B54D90057D00D /* AWSAPIPlugin+URLSessionBehaviorDelegate.swift */,
 				21D7A09B237B54D90057D00D /* AWSAPIPlugin+URLSessionDelegate.swift */,
 				21D7A093237B54D90057D00D /* Configuration */,
+				21D7A0DE237B54D90057D00D /* Info.plist */,
 				21D7A0D2237B54D90057D00D /* Interceptor */,
 				21D7A08C237B54D90057D00D /* Operation */,
 				6B2E465323AAA5000066EDCE /* Reachability */,

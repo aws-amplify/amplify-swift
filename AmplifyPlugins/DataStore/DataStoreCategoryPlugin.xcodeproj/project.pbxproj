@@ -494,9 +494,9 @@
 			children = (
 				B9FAA141238C6082009414B4 /* BaseDataStoreTests.swift */,
 				FA4A955A239AD3F4008E876E /* Foundation+TestExtensions.swift */,
+				FAF101A62398807100D5ECC9 /* Mocks */,
 				FAC010F1239570D300FCE7BB /* SyncEngineTestBase.swift */,
 				FA4B8E952391C609009FC10F /* XCTest+AmplifyExtensions.swift */,
-				FAF101A62398807100D5ECC9 /* Mocks */,
 			);
 			path = TestSupport;
 			sourceTree = "<group>";
