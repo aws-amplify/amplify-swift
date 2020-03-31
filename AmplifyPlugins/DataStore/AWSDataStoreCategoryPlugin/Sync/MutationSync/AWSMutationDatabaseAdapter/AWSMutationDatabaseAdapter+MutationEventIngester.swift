@@ -73,7 +73,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
             return .saveCandidate
         }
 
-        if candidate.queryPredicateJson != nil {
+        if candidate.graphQLFilterJSON != nil {
             return .saveCandidate
         }
 

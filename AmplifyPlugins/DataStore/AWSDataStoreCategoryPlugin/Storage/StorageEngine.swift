@@ -120,7 +120,7 @@ final class StorageEngine: StorageEngineBehavior {
         let mutationType = modelExists ? MutationEvent.MutationType.update : .create
 
         if mutationType == .create && condition != nil {
-            let dataStoreError = DataStoreError.conditionalSaveFailed(
+            let dataStoreError = DataStoreError.invalidCondition(
                 "Cannot apply a condition on model which does not exist.",
                 "Save the model instance without a condition first.")
             completion(.failure(causedBy: dataStoreError))
@@ -385,14 +385,14 @@ final class StorageEngine: StorageEngineBehavior {
                                         completion: @escaping DataStoreCallback<M>) {
         let mutationEvent: MutationEvent
         do {
-            var queryPredicateJson: String?
+            var graphQLFilterJSON: String?
             if let queryPredicate = queryPredicate {
-                queryPredicateJson = try queryPredicate.toGraphQLFilterString()
+                graphQLFilterJSON = try queryPredicate.toGraphQLFilterJSON()
             }
 
             mutationEvent = try MutationEvent(model: savedModel,
                                               mutationType: mutationType,
-                                              queryPredicateJson: queryPredicateJson)
+                                              graphQLFilterJSON: graphQLFilterJSON)
 
         } catch {
             let dataStoreError = DataStoreError(error: error)

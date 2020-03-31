@@ -13,7 +13,7 @@ public enum DataStoreError: Error {
     case api(AmplifyError)
     case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
     case conflict(DataStoreSyncConflict)
-    case conditionalSaveFailed(ErrorDescription, RecoverySuggestion, Error? = nil)
+    case invalidCondition(ErrorDescription, RecoverySuggestion, Error? = nil)
     case decodingError(ErrorDescription, RecoverySuggestion)
     case internalOperation(ErrorDescription, RecoverySuggestion, Error? = nil)
     case invalidDatabase(path: String, Error? = nil)
@@ -46,7 +46,7 @@ extension DataStoreError: AmplifyError {
             Only a single result was expected and the actual count was \(count).
             """
         case .configuration(let errorDescription, _, _),
-             .conditionalSaveFailed(let errorDescription, _, _),
+             .invalidCondition(let errorDescription, _, _),
              .decodingError(let errorDescription, _),
              .internalOperation(let errorDescription, _, _),
              .sync(let errorDescription, _, _),
@@ -74,7 +74,7 @@ extension DataStoreError: AmplifyError {
             as unique indexes and primary keys.
             """
         case .configuration(_, let recoverySuggestion, _),
-             .conditionalSaveFailed(_, let recoverySuggestion, _),
+             .invalidCondition(_, let recoverySuggestion, _),
              .decodingError(_, let recoverySuggestion),
              .internalOperation(_, let recoverySuggestion, _),
              .sync(_, let recoverySuggestion, _),
@@ -88,7 +88,7 @@ extension DataStoreError: AmplifyError {
         case .api(let amplifyError):
             return amplifyError
         case .configuration(_, _, let underlyingError),
-             .conditionalSaveFailed(_, _, let underlyingError),
+             .invalidCondition(_, _, let underlyingError),
              .internalOperation(_, _, let underlyingError),
              .invalidDatabase(_, let underlyingError),
              .invalidOperation(let underlyingError),

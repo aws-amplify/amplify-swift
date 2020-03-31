@@ -248,8 +248,9 @@ class GraphQLSyncBasedTests: XCTestCase {
         let completeInvoked = expectation(description: "request completed")
         var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
 
+        let queryPredicate = post.title == "Does not match"
         let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: modifiedPost,
-                                                                        where: .object(post.title == "Does not match"),
+                                                                        where: queryPredicate.graphQLFilter,
                                                                         version: 1)
 
         _ = Amplify.API.mutate(request: request) { event in

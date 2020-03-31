@@ -92,7 +92,7 @@ class GraphQLRequestModelTests: XCTestCase {
 
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
-        documentBuilder.add(decorator: PredicateDecorator(predicateInput: .object(predicate)))
+        documentBuilder.add(decorator: FilterDecorator(graphQLFilter: predicate.graphQLFilter))
         documentBuilder.add(decorator: PaginationDecorator())
         let document = documentBuilder.build()
 

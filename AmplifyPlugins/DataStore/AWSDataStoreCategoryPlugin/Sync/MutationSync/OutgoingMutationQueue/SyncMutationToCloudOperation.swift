@@ -91,25 +91,23 @@ class SyncMutationToCloudOperation: Operation {
 
     func createAPIRequest(mutationType: GraphQLMutationType) -> GraphQLRequest<MutationSync<AnyModel>>? {
         let request: GraphQLRequest<MutationSync<AnyModel>>
+
         do {
+            var graphQLFilter: GraphQLFilter?
+            if let graphQLFilterJSON = mutationEvent.graphQLFilterJSON {
+                graphQLFilter = try graphQLFilterJSON.toGraphQLFilter()
+            }
+
             switch mutationType {
             case .delete:
-                var queryPredicate: QueryPredicateInput?
-                if let queryPredicateJson = mutationEvent.queryPredicateJson {
-                    queryPredicate = .json(try queryPredicateJson.toGraphQLFilterJson())
-                }
                 request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: mutationEvent.modelName,
                                                                             id: mutationEvent.modelId,
-                                                                            where: queryPredicate,
+                                                                            where: graphQLFilter,
                                                                             version: mutationEvent.version)
             case .update:
-                var queryPredicate: QueryPredicateInput?
-                if let queryPredicateJson = mutationEvent.queryPredicateJson {
-                    queryPredicate = .json(try queryPredicateJson.toGraphQLFilterJson())
-                }
                 let model = try mutationEvent.decodeModel()
                 request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
-                                                                            where: queryPredicate,
+                                                                            where: graphQLFilter,
                                                                             version: mutationEvent.version)
             case .create:
                 let model = try mutationEvent.decodeModel()

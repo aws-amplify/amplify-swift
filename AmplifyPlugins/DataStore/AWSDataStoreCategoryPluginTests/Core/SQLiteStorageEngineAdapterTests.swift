@@ -207,8 +207,8 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
             case .success:
                 XCTFail("Update should not be successful")
             case .failure(let error):
-                guard case .conditionalSaveFailed = error else {
-                    XCTFail("Did not match conditional save failed error")
+                guard case .invalidCondition = error else {
+                    XCTFail("Did not match invalid condition error")
                     return
                 }
 
@@ -240,8 +240,8 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                     case .success:
                         XCTFail("Update should not be successful")
                     case .failure(let error):
-                        guard case .conditionalSaveFailed = error else {
-                            XCTFail("Did not match conditional save failed error")
+                        guard case .invalidCondition = error else {
+                            XCTFail("Did not match invalid conditiion")
                             return
                         }
 

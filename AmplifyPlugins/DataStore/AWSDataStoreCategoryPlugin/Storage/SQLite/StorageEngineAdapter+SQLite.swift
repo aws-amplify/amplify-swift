@@ -83,7 +83,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
             if !modelExists {
                 if condition != nil {
-                    let dataStoreError = DataStoreError.conditionalSaveFailed(
+                    let dataStoreError = DataStoreError.invalidCondition(
                         "Cannot apply a condition on model which does not exist.",
                         "Save the model instance without a condition first.")
                     completion(.failure(causedBy: dataStoreError))
@@ -98,7 +98,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                 if condition != nil {
                     let modelExistsWithCondition = try exists(modelType, withId: model.id, predicate: condition)
                     if !modelExistsWithCondition {
-                        let dataStoreError = DataStoreError.conditionalSaveFailed(
+                        let dataStoreError = DataStoreError.invalidCondition(
                         "Save failed due to condition did not match existing model instance.",
                         "The save will continue to fail until the model instance is updated.")
                         completion(.failure(causedBy: dataStoreError))

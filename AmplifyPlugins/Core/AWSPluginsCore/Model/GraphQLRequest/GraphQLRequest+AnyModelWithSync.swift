@@ -34,20 +34,20 @@ extension GraphQLRequest {
     }
 
     public static func updateMutation(of model: Model,
-                                      where predicateInput: QueryPredicateInput? = nil,
+                                      where graphQLFilter: GraphQLFilter? = nil,
                                       version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        createOrUpdateMutation(of: model, where: predicateInput, type: .update, version: version)
+        createOrUpdateMutation(of: model, where: graphQLFilter, type: .update, version: version)
     }
 
     public static func deleteMutation(modelName: String,
                                       id: Model.Identifier,
-                                      where predicateInput: QueryPredicateInput? = nil,
+                                      where graphQLFilter: GraphQLFilter? = nil,
                                       version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(id: id))
-        if let predicateInput = predicateInput {
-            documentBuilder.add(decorator: PredicateDecorator(predicateInput: predicateInput))
+        if let graphQLFilter = graphQLFilter {
+            documentBuilder.add(decorator: FilterDecorator(graphQLFilter: graphQLFilter))
         }
         documentBuilder.add(decorator: ConflictResolutionDecorator(version: version))
         let document = documentBuilder.build()
@@ -79,7 +79,7 @@ extension GraphQLRequest {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         if let predicate = predicate {
-            documentBuilder.add(decorator: PredicateDecorator(predicateInput: .object(predicate)))
+            documentBuilder.add(decorator: FilterDecorator(graphQLFilter: predicate.graphQLFilter))
         }
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
         documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync))
@@ -94,15 +94,15 @@ extension GraphQLRequest {
     // MARK: Private methods
 
     private static func createOrUpdateMutation(of model: Model,
-                                               where predicateInput: QueryPredicateInput? = nil,
+                                               where graphQLFilter: GraphQLFilter? = nil,
                                                type: GraphQLMutationType,
                                                version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: model.modelName,
                                                                     operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
         documentBuilder.add(decorator: ModelDecorator(model: model))
-        if let predicateInput = predicateInput {
-            documentBuilder.add(decorator: PredicateDecorator(predicateInput: predicateInput))
+        if let graphQLFilter = graphQLFilter {
+            documentBuilder.add(decorator: FilterDecorator(graphQLFilter: graphQLFilter))
         }
         documentBuilder.add(decorator: ConflictResolutionDecorator(version: version))
         let document = documentBuilder.build()

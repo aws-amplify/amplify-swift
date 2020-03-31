@@ -44,7 +44,7 @@
 		212CE70523E9E967007D8E71 /* GraphQLQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70223E9E967007D8E71 /* GraphQLQuery.swift */; };
 		212CE70B23E9E991007D8E71 /* ModelIdDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70623E9E990007D8E71 /* ModelIdDecorator.swift */; };
 		212CE70C23E9E991007D8E71 /* ConflictResolutionDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70723E9E990007D8E71 /* ConflictResolutionDecorator.swift */; };
-		212CE70D23E9E991007D8E71 /* PredicateDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70823E9E990007D8E71 /* PredicateDecorator.swift */; };
+		212CE70D23E9E991007D8E71 /* FilterDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70823E9E990007D8E71 /* FilterDecorator.swift */; };
 		212CE70E23E9E991007D8E71 /* PaginationDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70923E9E991007D8E71 /* PaginationDecorator.swift */; };
 		212CE70F23E9E991007D8E71 /* ModelDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70A23E9E991007D8E71 /* ModelDecorator.swift */; };
 		212CE71123E9EA6A007D8E71 /* ModelField+GraphQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71023E9EA6A007D8E71 /* ModelField+GraphQL.swift */; };
@@ -568,7 +568,7 @@
 		212CE70223E9E967007D8E71 /* GraphQLQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLQuery.swift; sourceTree = "<group>"; };
 		212CE70623E9E990007D8E71 /* ModelIdDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelIdDecorator.swift; sourceTree = "<group>"; };
 		212CE70723E9E990007D8E71 /* ConflictResolutionDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConflictResolutionDecorator.swift; sourceTree = "<group>"; };
-		212CE70823E9E990007D8E71 /* PredicateDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredicateDecorator.swift; sourceTree = "<group>"; };
+		212CE70823E9E990007D8E71 /* FilterDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterDecorator.swift; sourceTree = "<group>"; };
 		212CE70923E9E991007D8E71 /* PaginationDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaginationDecorator.swift; sourceTree = "<group>"; };
 		212CE70A23E9E991007D8E71 /* ModelDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelDecorator.swift; sourceTree = "<group>"; };
 		212CE71023E9EA6A007D8E71 /* ModelField+GraphQL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelField+GraphQL.swift"; sourceTree = "<group>"; };
@@ -1338,7 +1338,7 @@
 				212CE70A23E9E991007D8E71 /* ModelDecorator.swift */,
 				212CE70623E9E990007D8E71 /* ModelIdDecorator.swift */,
 				212CE70923E9E991007D8E71 /* PaginationDecorator.swift */,
-				212CE70823E9E990007D8E71 /* PredicateDecorator.swift */,
+				212CE70823E9E990007D8E71 /* FilterDecorator.swift */,
 			);
 			path = Decorator;
 			sourceTree = "<group>";
@@ -3490,7 +3490,7 @@
 				21420A91237222A900FA140C /* AWSAuthorizationConfiguration.swift in Sources */,
 				212CE70F23E9E991007D8E71 /* ModelDecorator.swift in Sources */,
 				21420A97237222A900FA140C /* IAMCredentialProvider.swift in Sources */,
-				212CE70D23E9E991007D8E71 /* PredicateDecorator.swift in Sources */,
+				212CE70D23E9E991007D8E71 /* FilterDecorator.swift in Sources */,
 				219A888123EB629800BBC5F2 /* ModelBasedGraphQLDocumentDecorator.swift in Sources */,
 				212CE70423E9E967007D8E71 /* GraphQLSubscription.swift in Sources */,
 				21420A99237222A900FA140C /* APIKeyProvider.swift in Sources */,

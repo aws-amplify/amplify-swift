@@ -17,7 +17,7 @@ extension MutationEvent {
         case createdAt
         case version
         case inProcess
-        case queryPredicateJson
+        case graphQLFilterJSON
     }
 
     public static let keys = CodingKeys.self
@@ -38,8 +38,8 @@ extension MutationEvent {
             .field(mutation.mutationType, is: .required, ofType: .string),
             .field(mutation.createdAt, is: .required, ofType: .dateTime),
             .field(mutation.version, is: .optional, ofType: .int),
-            .field(mutation.inProcess, is: .optional, ofType: .bool),
-            .field(mutation.queryPredicateJson, is: .optional, ofType: .string)
+            .field(mutation.inProcess, is: .required, ofType: .bool),
+            .field(mutation.graphQLFilterJSON, is: .optional, ofType: .string)
         )
     }
 }

@@ -45,7 +45,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try predicate.toGraphQLFilterPrettyPrintedJson()
+        let result = try predicate.toGraphQLFilterJSON(options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
@@ -115,7 +115,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try predicate.toGraphQLFilterPrettyPrintedJson()
+        let result = try predicate.toGraphQLFilterJSON(options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
@@ -147,16 +147,16 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try predicate.toGraphQLFilterPrettyPrintedJson()
+        let result = try predicate.toGraphQLFilterJSON(options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
     func testJSONSerializationAndDeserialization() throws {
         let post = Post.keys
         let predicate = post.id.eq("id") && post.title.beginsWith("Title")
-        let predicateString = try predicate.toGraphQLFilterString()
+        let predicateString = try predicate.toGraphQLFilterJSON()
         XCTAssertNotNil(predicateString)
-        let predicateJson = try predicateString.toGraphQLFilterJson()
+        let predicateJson = try predicateString.toGraphQLFilter()
         guard let filter = predicateJson["and"] as? [[String: Any]] else {
             XCTFail("should contain 'and' operation")
             return
@@ -175,20 +175,5 @@ class QueryPredicateGraphQLTests: XCTestCase {
         }
 
         XCTAssert(titleFilter["beginsWith"] as? String == "Title")
-    }
-}
-
-extension QueryPredicate {
-    func toGraphQLFilterPrettyPrintedJson() throws -> String {
-        let graphQLFilterVariablesData = try JSONSerialization.data(withJSONObject: graphQLFilterVariables,
-                                                                    options: .prettyPrinted)
-
-        guard let serializedString = String(data: graphQLFilterVariablesData, encoding: .utf8) else {
-            throw """
-            Could not initialize String from graphQLFilterVariables: \(String(describing: graphQLFilterVariablesData))
-            """
-        }
-
-        return serializedString
     }
 }

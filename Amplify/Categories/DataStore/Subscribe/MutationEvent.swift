@@ -16,7 +16,7 @@ public struct MutationEvent: Model {
     public var createdAt: Date
     public var version: Int?
     public var inProcess: Bool
-    public var queryPredicateJson: String?
+    public var graphQLFilterJSON: String?
 
     public init(id: Identifier = UUID().uuidString,
                 modelId: String,
@@ -26,7 +26,7 @@ public struct MutationEvent: Model {
                 createdAt: Date = Date(),
                 version: Int? = nil,
                 inProcess: Bool = false,
-                queryPredicateJson: String? = nil) {
+                graphQLFilterJSON: String? = nil) {
         self.id = id
         self.modelId = modelId
         self.modelName = modelName
@@ -35,13 +35,13 @@ public struct MutationEvent: Model {
         self.createdAt = createdAt
         self.version = version
         self.inProcess = inProcess
-        self.queryPredicateJson = queryPredicateJson
+        self.graphQLFilterJSON = graphQLFilterJSON
     }
 
     public init<M: Model>(model: M,
                           mutationType: MutationType,
                           version: Int? = nil,
-                          queryPredicateJson: String? = nil) throws {
+                          graphQLFilterJSON: String? = nil) throws {
         let modelType = type(of: model)
         let json = try model.toJSON()
         self.init(modelId: model.id,
@@ -49,7 +49,7 @@ public struct MutationEvent: Model {
                   json: json,
                   mutationType: mutationType,
                   version: version,
-                  queryPredicateJson: queryPredicateJson)
+                  graphQLFilterJSON: graphQLFilterJSON)
 
     }
 
