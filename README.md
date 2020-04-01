@@ -1,20 +1,20 @@
 ## Amplify for iOS (Preview)
-<img src="https://s3.amazonaws.com/aws-mobile-hub-images/aws-amplify-logo.png" alt="AWS Amplify" width="550" >
+<img src="https://s3.amazonaws.com/aws-mobile-hub-images/aws-amplify-logo.png" alt="AWS Amplify" width="550" /><br/>
 AWS Amplify provides a declarative and easy-to-use interface across different categories of cloud operations. AWS Amplify goes well with any JavaScript based frontend workflow, and React Native for mobile developers.
 
 Our default implementation works with Amazon Web Services (AWS), but AWS Amplify is designed to be open and pluggable for any custom backend or service.
 
-- **API Documentation**
-  https://aws-amplify.github.io/docs/ios/start
+- **Full Documentation**
+  https://docs.amplify.aws/start?integration=ios
 
 ## Features/APIs
 
-- [**Analytics**](https://aws-amplify.github.io/docs/ios/analytics): Easily collect analytics data for your app. Analytics data includes user sessions and other custom events that you want to track in your app.
-- [**API**](https://aws-amplify.github.io/docs/ios/api): Interact with your AWS AppSync API or make HTTP requests to your API Gateway endpoint with Amplify API. It provides a GraphQL client interface to use with Amplify Tool's model generation and automatic signing process to authenticate your requests.
-- [**Storage**](https://aws-amplify.github.io/docs/ios/storage): Provides a simple mechanism for managing user content for your app in guest, protected or private storage buckets.
-- [**Predictions**](https://aws-amplify.github.io/docs/ios/predictions): Provides a solution for using AI and ML cloud services to enhance your application.
+- [**Analytics**](https://docs.amplify.aws/lib/analytics/getting-started?platform=ios): Easily collect analytics data for your app. Analytics data includes user sessions and other custom events that you want to track in your app.
+- [**API**](https://docs.amplify.aws/lib/graphqlapi/getting-started?platform=ios): Interact with your AWS AppSync API or make HTTP requests to your API Gateway endpoint with Amplify API. It provides a GraphQL client interface to use with Amplify Tool's model generation and automatic signing process to authenticate your requests.
+- [**Storage**](https://docs.amplify.aws/lib/storage/getting-started?platform=ios): Provides a simple mechanism for managing user content for your app in guest, protected or private storage buckets.
+- [**Predictions**](https://docs.amplify.aws/lib/predictions/intro?platform=ios): Provides a solution for using AI and ML cloud services to enhance your application.
 
-All services and features not listed above are supported via the [iOS SDK](https://aws-amplify.github.io/docs/sdk/ios/start) or if supported by a category can be accessed via the Escape Hatch like below:`
+All services and features not listed above are supported via the [iOS SDK](https://docs.amplify.aws/sdk?platform=ios) or if supported by a category can be accessed via the Escape Hatch like below:`
 
 ``` swift
 let rekognitionService = Amplify.Predictions.getEscapeHatch(key: .rekognition) as! AWSRekognition
