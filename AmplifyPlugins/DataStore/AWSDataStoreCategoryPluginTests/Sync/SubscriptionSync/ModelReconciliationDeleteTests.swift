@@ -51,7 +51,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         apiPlugin.responders[.subscribeRequestListener] = responder
 
         tryOrFail {
-            try setUpDataStore(modelRegistration: MockModelRegistration())
+            try setUpDataStore(schema: MockDataStoreSchema())
             mockRemoteSyncEngineFor_testUpdateAfterDelete()
             try startAmplifyAndWaitForSync()
         }
@@ -139,7 +139,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         apiPlugin.responders[.subscribeRequestListener] = responder
 
         tryOrFail {
-            try setUpDataStore(modelRegistration: MockModelRegistration())
+            try setUpDataStore(schema: MockDataStoreSchema())
             mockRemoteSyncEngineFor_testDeleteWithNoLocalModel()
             try startAmplifyAndWaitForSync()
         }
@@ -153,7 +153,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         let syncReceivedNotification = expectation(description: "Received 'syncReceived' update from Hub")
         let syncReceivedToken = Amplify.Hub.listen(to: .dataStore,
                                                    eventName: HubPayload.EventName.DataStore.syncReceived) { _ in
-                                                    syncReceivedNotification.fulfill()
+            syncReceivedNotification.fulfill()
         }
         guard try HubListenerTestUtilities.waitForListener(with: syncReceivedToken, timeout: 5.0) else {
             XCTFail("Sync listener never registered")

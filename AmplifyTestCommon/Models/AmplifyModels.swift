@@ -11,7 +11,7 @@ import Foundation
 
 // Contains the set of classes that conforms to the `Model` protocol.
 
-final public class AmplifyModels: AmplifyModelRegistration {
+final public class TestDataStoreSchema: DataStoreSchema {
   public let version: String = "46369a50a95486d76713fd33833fb782"
 
   public func registerModels(registry: ModelRegistry.Type) {

@@ -42,7 +42,7 @@ class SyncEngineIntegrationTestBase: XCTestCase {
 
         do {
             try Amplify.add(plugin: AWSAPIPlugin())
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: TestModelRegistration()))
+            try Amplify.add(plugin: AWSDataStorePlugin(schema: TestDataStoreSchema()))
         } catch {
             XCTFail(String(describing: error))
             return

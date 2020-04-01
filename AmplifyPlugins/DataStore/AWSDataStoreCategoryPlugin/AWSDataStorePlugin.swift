@@ -18,7 +18,11 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// The Publisher that sends mutation events to subscribers
     var dataStorePublisher: DataStoreSubscribeBehavior?
 
-    let modelRegistration: AmplifyModelRegistration
+    /// The schema that holds a reference to its version and all registered models
+    let schema: DataStoreSchema
+
+    /// The DataStore configuration
+    let configuration: DataStoreConfiguration
 
     /// The local storage provider. Resolved during configuration phase
     var storageEngine: StorageEngineBehavior!
@@ -38,8 +42,9 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     /// No-argument init that uses defaults for all providers
-    public init(modelRegistration: AmplifyModelRegistration) {
-        self.modelRegistration = modelRegistration
+    public init(schema: DataStoreSchema, configuration: DataStoreConfiguration = .default) {
+        self.schema = schema
+        self.configuration = configuration
         self.isSyncEnabled = false
         if #available(iOS 13.0, *) {
             self.dataStorePublisher = DataStorePublisher()
@@ -49,10 +54,12 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     /// Internal initializer for testing
-    init(modelRegistration: AmplifyModelRegistration,
+    init(schema: DataStoreSchema,
+         configuration: DataStoreConfiguration = .default,
          storageEngine: StorageEngineBehavior,
          dataStorePublisher: DataStoreSubscribeBehavior) {
-        self.modelRegistration = modelRegistration
+        self.schema = schema
+        self.configuration = configuration
         self.isSyncEnabled = false
         self.storageEngine = storageEngine
         self.dataStorePublisher = dataStorePublisher
@@ -62,7 +69,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// `AmplifyModelRegistration.registerModels`, so we can inspect those models to derive isSyncEnabled, and pass
     /// them to `StorageEngine.setUp(models:)`
     public func configure(using configuration: Any) throws {
-        modelRegistration.registerModels(registry: ModelRegistry.self)
+        schema.registerModels(registry: ModelRegistry.self)
         resolveSyncEnabled()
         try resolveStorageEngine()
 

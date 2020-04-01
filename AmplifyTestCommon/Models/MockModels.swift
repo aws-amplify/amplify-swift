@@ -60,7 +60,7 @@ public struct MockUnsynced: Model {
 
 }
 
-struct MockModelRegistration: AmplifyModelRegistration {
+struct MockDataStoreSchema: DataStoreSchema {
 
     func registerModels(registry: ModelRegistry.Type) {
         registry.register(modelType: MockSynced.self)

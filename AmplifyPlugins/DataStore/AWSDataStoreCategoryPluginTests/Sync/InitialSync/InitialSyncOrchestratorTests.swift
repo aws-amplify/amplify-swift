@@ -17,7 +17,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
     override class func setUp() {
         Amplify.Logging.logLevel = .info
         ModelRegistry.reset()
-        PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
+        PostCommentSchema().registerModels(registry: ModelRegistry.self)
     }
 
     /// - Given: An InitialSyncOrchestrator with a model dependency graph

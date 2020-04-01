@@ -54,12 +54,12 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin {
         }
     }
 
-    public init(modelRegistration: AmplifyModelRegistration? = nil,
+    public init(schema: DataStoreSchema? = nil,
                 sessionFactory: URLSessionBehaviorFactory? = nil) {
 
         self.mapper = OperationTaskMapper()
         self.queue = OperationQueue()
-        modelRegistration?.registerModels(registry: ModelRegistry.self)
+        schema?.registerModels(registry: ModelRegistry.self)
 
         super.init()
 

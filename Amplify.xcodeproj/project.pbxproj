@@ -34,7 +34,7 @@
 		2129BE4423948951006363A1 /* MutationSyncMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE4323948951006363A1 /* MutationSyncMetadata.swift */; };
 		2129BE48239489AC006363A1 /* MutationSyncMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE47239489AC006363A1 /* MutationSyncMetadataTests.swift */; };
 		2129BE4F23949F1B006363A1 /* MutationSyncMetadata+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE4B23948C54006363A1 /* MutationSyncMetadata+Schema.swift */; };
-		2129BE512395A66F006363A1 /* AmplifyModelRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */; };
+		2129BE512395A66F006363A1 /* DataStoreSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE502395A66F006363A1 /* DataStoreSchema.swift */; };
 		2129BE552395CAEF006363A1 /* PaginatedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE542395CAEF006363A1 /* PaginatedList.swift */; };
 		2129BE562395CAF9006363A1 /* PaginatedListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE522395CA05006363A1 /* PaginatedListTests.swift */; };
 		212CE6FC23E9E523007D8E71 /* SelectionSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE6FB23E9E523007D8E71 /* SelectionSet.swift */; };
@@ -558,7 +558,7 @@
 		2129BE4323948951006363A1 /* MutationSyncMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutationSyncMetadata.swift; sourceTree = "<group>"; };
 		2129BE47239489AC006363A1 /* MutationSyncMetadataTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutationSyncMetadataTests.swift; sourceTree = "<group>"; };
 		2129BE4B23948C54006363A1 /* MutationSyncMetadata+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MutationSyncMetadata+Schema.swift"; sourceTree = "<group>"; };
-		2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyModelRegistration.swift; sourceTree = "<group>"; };
+		2129BE502395A66F006363A1 /* DataStoreSchema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreSchema.swift; sourceTree = "<group>"; };
 		2129BE522395CA05006363A1 /* PaginatedListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListTests.swift; sourceTree = "<group>"; };
 		2129BE542395CAEF006363A1 /* PaginatedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedList.swift; sourceTree = "<group>"; };
 		212CE6FB23E9E523007D8E71 /* SelectionSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionSet.swift; sourceTree = "<group>"; };
@@ -1728,7 +1728,7 @@
 		B92E03A62367CE7A006CEB8D /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */,
+				2129BE502395A66F006363A1 /* DataStoreSchema.swift */,
 				B92E03A72367CE7A006CEB8D /* Model.swift */,
 				B9FAA17F238FBB5D009414B4 /* Model+Array.swift */,
 				B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */,
@@ -3632,7 +3632,7 @@
 				FAF1B88623392F96007F1435 /* SerialDispatcher.swift in Sources */,
 				FAAFAF2D23904ADF002CF932 /* AtomicValue+Numeric.swift in Sources */,
 				FA09B94B2322CBEB000E064D /* LoggingCategoryConfiguration.swift in Sources */,
-				2129BE512395A66F006363A1 /* AmplifyModelRegistration.swift in Sources */,
+				2129BE512395A66F006363A1 /* DataStoreSchema.swift in Sources */,
 				210922572359693900CEC295 /* BasicAnalyticsEvent.swift in Sources */,
 				FAC2353F227A055200424678 /* PluginError.swift in Sources */,
 				FA76A2D32342B47100B91ADB /* HubPayloadEventName.swift in Sources */,

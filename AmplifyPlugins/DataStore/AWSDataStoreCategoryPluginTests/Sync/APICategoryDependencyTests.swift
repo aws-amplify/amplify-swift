@@ -72,7 +72,7 @@ extension APICategoryDependencyTests {
                                           syncEngine: syncEngine)
 
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
+        let dataStorePlugin = AWSDataStorePlugin(schema: TestDataStoreSchema(),
                                                          storageEngine: storageEngine,
                                                          dataStorePublisher: dataStorePublisher)
         try Amplify.add(plugin: dataStorePlugin)
