@@ -7,7 +7,6 @@
 
 set -e
 export PATH=$PATH:$(npm bin -g)
-cd ..
 
 if ! which node >/dev/null; then
   echo "warning: Node is not installed. Vist https://nodejs.org/en/download/ to install it"
