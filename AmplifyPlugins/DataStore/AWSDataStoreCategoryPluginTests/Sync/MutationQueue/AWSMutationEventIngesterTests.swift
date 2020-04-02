@@ -44,8 +44,8 @@ class AWSMutationEventIngesterTests: XCTestCase {
 
             let publisher = DataStorePublisher()
             let dataStorePlugin = AWSDataStorePlugin(schema: TestDataStoreSchema(),
-                                                             storageEngine: storageEngine,
-                                                             dataStorePublisher: publisher)
+                                                     storageEngine: storageEngine,
+                                                     dataStorePublisher: publisher)
 
             try Amplify.add(plugin: apiPlugin)
             try Amplify.add(plugin: dataStorePlugin)

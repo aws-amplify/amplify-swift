@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Foundation
 
 /// Error Handler function typealias
 public typealias DataStoreErrorHandler = (AmplifyError) -> Void
@@ -27,30 +28,38 @@ public typealias DataStoreConflictHandlerResolver = (DataStoreConflictHandlerRes
 
 /// The conflict resolution result enum.
 public enum DataStoreConflictHandlerResult {
-    
+
     /// Discard the local changes in favor of the remote ones.
     case discard
-    
+
     /// Keep the local changes.
     case keep
-    
+
     /// Return a new `Model` instance that should used instead of the local and remote changes.
     case new(Model)
 }
 
-
 /// The `DataStore` plugin configuration object.
 public struct DataStoreConfiguration {
 
+    /// A callback function called on unhandled errors
     public let errorHandler: DataStoreErrorHandler
+    
+    /// A callback called when a conflict could not be resolved by the service
     public let conflictHandler: DataStoreConflictHandler
-    public let syncInterval: UInt
+    
+    /// How often the sync engine will run (in seconds)
+    public let syncInterval: TimeInterval
+    
+    /// The number of records to sync per execution
     public let syncMaxRecords: UInt
+    
+    /// The page size of each sync execution
     public let syncPageSize: UInt
 
     init(errorHandler: @escaping DataStoreErrorHandler,
          conflictHandler: @escaping DataStoreConflictHandler,
-         syncInterval: UInt,
+         syncInterval: TimeInterval,
          syncMaxRecords: UInt,
          syncPageSize: UInt) {
         self.errorHandler = errorHandler
@@ -64,7 +73,7 @@ public struct DataStoreConfiguration {
 
 extension DataStoreConfiguration {
 
-    public static let defaultSyncInterval: UInt = 1_440
+    public static let defaultSyncInterval: TimeInterval = .hours(24)
     public static let defaultSyncMaxRecords: UInt = 10_000
     public static let defaultSyncPageSize: UInt = 1_000
 
@@ -73,7 +82,7 @@ extension DataStoreConfiguration {
     /// - Parameters:
     ///   - errorHandler: a callback function called on unhandled errors
     ///   - conflictHandler: a callback called when a conflict could not be resolved by the service
-    ///   - syncInterval: how often the sync engine will run
+    ///   - syncInterval: how often the sync engine will run (in seconds)
     ///   - syncMaxRecords: the number of records to sync per execution
     ///   - syncPageSize: the page size of each sync execution
     /// - Returns: an instance of `DataStoreConfiguration` with the passed parameters.
@@ -82,7 +91,7 @@ extension DataStoreConfiguration {
             Amplify.Logging.error(error: error)
         },
         conflictHandler: @escaping DataStoreConflictHandler,
-        syncInterval: UInt = DataStoreConfiguration.defaultSyncInterval,
+        syncInterval: TimeInterval = DataStoreConfiguration.defaultSyncInterval,
         syncMaxRecords: UInt = DataStoreConfiguration.defaultSyncMaxRecords,
         syncPageSize: UInt = DataStoreConfiguration.defaultSyncPageSize
     ) -> DataStoreConfiguration {
@@ -95,8 +104,8 @@ extension DataStoreConfiguration {
 
     /// The default configuration.
     public static var `default`: DataStoreConfiguration {
-        .custom(conflictHandler: { _, resolver  in
-            resolver(.discard)
+        .custom(conflictHandler: { _, resolve  in
+            resolve(.discard)
         })
     }
 
