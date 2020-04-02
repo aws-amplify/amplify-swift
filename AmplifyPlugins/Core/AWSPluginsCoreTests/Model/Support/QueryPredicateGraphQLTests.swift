@@ -45,7 +45,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try predicate.toGraphQLFilterJSON(options: [.prettyPrinted])
+        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
@@ -115,7 +115,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try predicate.toGraphQLFilterJSON(options: [.prettyPrinted])
+        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
@@ -147,17 +147,17 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try predicate.toGraphQLFilterJSON(options: [.prettyPrinted])
+        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
     func testJSONSerializationAndDeserialization() throws {
         let post = Post.keys
         let predicate = post.id.eq("id") && post.title.beginsWith("Title")
-        let predicateString = try predicate.toGraphQLFilterJSON()
-        XCTAssertNotNil(predicateString)
-        let predicateJson = try predicateString.toGraphQLFilter()
-        guard let filter = predicateJson["and"] as? [[String: Any]] else {
+        let result = try GraphQLFilterConverter.toJSON(predicate)
+        XCTAssertNotNil(result)
+        let graphQLFilter = try GraphQLFilterConverter.fromJSON(result)
+        guard let filter = graphQLFilter["and"] as? [[String: Any]] else {
             XCTFail("should contain 'and' operation")
             return
         }

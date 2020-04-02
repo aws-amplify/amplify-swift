@@ -95,7 +95,7 @@ class SyncMutationToCloudOperation: Operation {
         do {
             var graphQLFilter: GraphQLFilter?
             if let graphQLFilterJSON = mutationEvent.graphQLFilterJSON {
-                graphQLFilter = try graphQLFilterJSON.toGraphQLFilter()
+                graphQLFilter = try GraphQLFilterConverter.fromJSON(graphQLFilterJSON)
             }
 
             switch mutationType {

@@ -387,7 +387,7 @@ final class StorageEngine: StorageEngineBehavior {
         do {
             var graphQLFilterJSON: String?
             if let queryPredicate = queryPredicate {
-                graphQLFilterJSON = try queryPredicate.toGraphQLFilterJSON()
+                graphQLFilterJSON = try GraphQLFilterConverter.toJSON(queryPredicate)
             }
 
             mutationEvent = try MutationEvent(model: savedModel,

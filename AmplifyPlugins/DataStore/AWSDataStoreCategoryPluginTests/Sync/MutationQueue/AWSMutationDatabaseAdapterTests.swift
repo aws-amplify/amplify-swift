@@ -11,6 +11,7 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
+import AWSPluginsCore
 
 class AWSMutationDatabaseAdapterTests: XCTestCase {
     var databaseAdapter: AWSMutationDatabaseAdapter!
@@ -39,7 +40,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     func test_saveCandidate_CanadidateUpdateWithCondition() throws {
         let anyLocal = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.create)
         let queryPredicate = post.title == model1.title
-        let graphQLFilterJSON = try queryPredicate.toGraphQLFilterJSON()
+        let graphQLFilterJSON = try GraphQLFilterConverter.toJSON(queryPredicate)
         let candidateUpdate = try MutationEvent(model: model1,
                                                 mutationType: MutationEvent.MutationType.update,
                                                 graphQLFilterJSON: graphQLFilterJSON)
@@ -51,7 +52,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     func test_saveCandidate_CanadidateDeleteWithCondition() throws {
         let anyLocal = try MutationEvent(model: model1, mutationType: MutationEvent.MutationType.create)
         let queryPredicate = post.title == model1.title
-        let graphQLFilterJSON = try queryPredicate.toGraphQLFilterJSON()
+        let graphQLFilterJSON = try GraphQLFilterConverter.toJSON(queryPredicate)
         let candidateUpdate = try MutationEvent(model: model1,
                                                 mutationType: MutationEvent.MutationType.delete,
                                                 graphQLFilterJSON: graphQLFilterJSON)
