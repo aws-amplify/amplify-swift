@@ -23,9 +23,9 @@ extension GraphQLRequest {
         let document = documentBuilder.build()
 
         return GraphQLRequest<MutationSyncResult?>(document: document.stringValue,
-                                  variables: document.variables,
-                                  responseType: MutationSyncResult?.self,
-                                  decodePath: document.name)
+                                                   variables: document.variables,
+                                                   responseType: MutationSyncResult?.self,
+                                                   decodePath: document.name)
     }
 
     public static func createMutation(of model: Model,
@@ -34,20 +34,20 @@ extension GraphQLRequest {
     }
 
     public static func updateMutation(of model: Model,
-                                      where graphQLFilter: GraphQLFilter? = nil,
+                                      where filter: GraphQLFilter? = nil,
                                       version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
-        createOrUpdateMutation(of: model, where: graphQLFilter, type: .update, version: version)
+        createOrUpdateMutation(of: model, where: filter, type: .update, version: version)
     }
 
     public static func deleteMutation(modelName: String,
                                       id: Model.Identifier,
-                                      where graphQLFilter: GraphQLFilter? = nil,
+                                      where filter: GraphQLFilter? = nil,
                                       version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(id: id))
-        if let graphQLFilter = graphQLFilter {
-            documentBuilder.add(decorator: FilterDecorator(graphQLFilter: graphQLFilter))
+        if let filter = filter {
+            documentBuilder.add(decorator: FilterDecorator(filter: filter))
         }
         documentBuilder.add(decorator: ConflictResolutionDecorator(version: version))
         let document = documentBuilder.build()
@@ -79,7 +79,7 @@ extension GraphQLRequest {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         if let predicate = predicate {
-            documentBuilder.add(decorator: FilterDecorator(graphQLFilter: predicate.graphQLFilter))
+            documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
         }
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
         documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync))
@@ -94,15 +94,15 @@ extension GraphQLRequest {
     // MARK: Private methods
 
     private static func createOrUpdateMutation(of model: Model,
-                                               where graphQLFilter: GraphQLFilter? = nil,
+                                               where filter: GraphQLFilter? = nil,
                                                type: GraphQLMutationType,
                                                version: Int? = nil) -> GraphQLRequest<MutationSyncResult> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: model.modelName,
                                                                     operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
         documentBuilder.add(decorator: ModelDecorator(model: model))
-        if let graphQLFilter = graphQLFilter {
-            documentBuilder.add(decorator: FilterDecorator(graphQLFilter: graphQLFilter))
+        if let filter = filter {
+            documentBuilder.add(decorator: FilterDecorator(filter: filter))
         }
         documentBuilder.add(decorator: ConflictResolutionDecorator(version: version))
         let document = documentBuilder.build()

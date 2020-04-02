@@ -12,10 +12,10 @@ import Foundation
 /// The value is a `GraphQLFilter` object
 public struct FilterDecorator: ModelBasedGraphQLDocumentDecorator {
 
-    private let graphQLFilter: GraphQLFilter
+    private let filter: GraphQLFilter
 
-    public init(graphQLFilter: GraphQLFilter) {
-        self.graphQLFilter = graphQLFilter
+    public init(filter: GraphQLFilter) {
+        self.filter = filter
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
@@ -24,10 +24,10 @@ public struct FilterDecorator: ModelBasedGraphQLDocumentDecorator {
         let modelName = modelType.schema.name
         if case .mutation = document.operationType {
             inputs["condition"] = GraphQLDocumentInput(type: "Model\(modelName)ConditionInput",
-                value: .object(graphQLFilter))
+                value: .object(filter))
         } else if case .query = document.operationType {
             inputs["filter"] = GraphQLDocumentInput(type: "Model\(modelName)FilterInput",
-                value: .object(graphQLFilter))
+                value: .object(filter))
         }
 
         return document.copy(inputs: inputs)
