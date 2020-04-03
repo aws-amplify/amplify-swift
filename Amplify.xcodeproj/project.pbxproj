@@ -44,11 +44,12 @@
 		212CE70523E9E967007D8E71 /* GraphQLQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70223E9E967007D8E71 /* GraphQLQuery.swift */; };
 		212CE70B23E9E991007D8E71 /* ModelIdDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70623E9E990007D8E71 /* ModelIdDecorator.swift */; };
 		212CE70C23E9E991007D8E71 /* ConflictResolutionDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70723E9E990007D8E71 /* ConflictResolutionDecorator.swift */; };
-		212CE70D23E9E991007D8E71 /* PredicateDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70823E9E990007D8E71 /* PredicateDecorator.swift */; };
+		212CE70D23E9E991007D8E71 /* FilterDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70823E9E990007D8E71 /* FilterDecorator.swift */; };
 		212CE70E23E9E991007D8E71 /* PaginationDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70923E9E991007D8E71 /* PaginationDecorator.swift */; };
 		212CE70F23E9E991007D8E71 /* ModelDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE70A23E9E991007D8E71 /* ModelDecorator.swift */; };
 		212CE71123E9EA6A007D8E71 /* ModelField+GraphQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71023E9EA6A007D8E71 /* ModelField+GraphQL.swift */; };
 		212CE71323E9F2ED007D8E71 /* DirectiveNameDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212CE71223E9F2ED007D8E71 /* DirectiveNameDecorator.swift */; };
+		213481D9242AFA62001966DE /* AnyModelTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213481D8242AFA62001966DE /* AnyModelTester.swift */; };
 		21409C552384C55D000A53C9 /* LabelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C542384C55D000A53C9 /* LabelType.swift */; };
 		21409C5A2384C57D000A53C9 /* GraphQLMutationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C572384C57D000A53C9 /* GraphQLMutationType.swift */; };
 		21409C5B2384C57D000A53C9 /* GraphQLQueryType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C582384C57D000A53C9 /* GraphQLQueryType.swift */; };
@@ -568,7 +569,7 @@
 		212CE70223E9E967007D8E71 /* GraphQLQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLQuery.swift; sourceTree = "<group>"; };
 		212CE70623E9E990007D8E71 /* ModelIdDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelIdDecorator.swift; sourceTree = "<group>"; };
 		212CE70723E9E990007D8E71 /* ConflictResolutionDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConflictResolutionDecorator.swift; sourceTree = "<group>"; };
-		212CE70823E9E990007D8E71 /* PredicateDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredicateDecorator.swift; sourceTree = "<group>"; };
+		212CE70823E9E990007D8E71 /* FilterDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterDecorator.swift; sourceTree = "<group>"; };
 		212CE70923E9E991007D8E71 /* PaginationDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaginationDecorator.swift; sourceTree = "<group>"; };
 		212CE70A23E9E991007D8E71 /* ModelDecorator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelDecorator.swift; sourceTree = "<group>"; };
 		212CE71023E9EA6A007D8E71 /* ModelField+GraphQL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelField+GraphQL.swift"; sourceTree = "<group>"; };
@@ -580,6 +581,7 @@
 		212CE71B23EA1847007D8E71 /* GraphQLListQueryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLListQueryTests.swift; sourceTree = "<group>"; };
 		212CE71C23EA1847007D8E71 /* GraphQLSyncQueryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLSyncQueryTests.swift; sourceTree = "<group>"; };
 		212CE72023EA184F007D8E71 /* GraphQLSubscriptionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLSubscriptionTests.swift; sourceTree = "<group>"; };
+		213481D8242AFA62001966DE /* AnyModelTester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyModelTester.swift; sourceTree = "<group>"; };
 		21409C4C23847E41000A53C9 /* LabelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelType.swift; sourceTree = "<group>"; };
 		21409C542384C55D000A53C9 /* LabelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelType.swift; sourceTree = "<group>"; };
 		21409C572384C57D000A53C9 /* GraphQLMutationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLMutationType.swift; sourceTree = "<group>"; };
@@ -1338,9 +1340,17 @@
 				212CE70A23E9E991007D8E71 /* ModelDecorator.swift */,
 				212CE70623E9E990007D8E71 /* ModelIdDecorator.swift */,
 				212CE70923E9E991007D8E71 /* PaginationDecorator.swift */,
-				212CE70823E9E990007D8E71 /* PredicateDecorator.swift */,
+				212CE70823E9E990007D8E71 /* FilterDecorator.swift */,
 			);
 			path = Decorator;
+			sourceTree = "<group>";
+		};
+		213481D7242AFA58001966DE /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				213481D8242AFA62001966DE /* AnyModelTester.swift */,
+			);
+			path = Support;
 			sourceTree = "<group>";
 		};
 		21409C562384C57D000A53C9 /* GraphQL */ = {
@@ -2574,10 +2584,11 @@
 		FAD3937B23820CE200463F5E /* DataStore */ = {
 			isa = PBXGroup;
 			children = (
+				213481D7242AFA58001966DE /* Support */,
 				FA8EE772238621320097E4F1 /* AnyModelTests.swift */,
-				FAE414602399A6A500CE94C2 /* ModelRegistryTests.swift */,
 				FAD3937923820CDB00463F5E /* DataStoreCategoryClientAPITests.swift */,
 				FAD3937C23820D0200463F5E /* DataStoreCategoryConfigurationTests.swift */,
+				FAE414602399A6A500CE94C2 /* ModelRegistryTests.swift */,
 			);
 			path = DataStore;
 			sourceTree = "<group>";
@@ -3482,7 +3493,7 @@
 				21420A91237222A900FA140C /* AWSAuthorizationConfiguration.swift in Sources */,
 				212CE70F23E9E991007D8E71 /* ModelDecorator.swift in Sources */,
 				21420A97237222A900FA140C /* IAMCredentialProvider.swift in Sources */,
-				212CE70D23E9E991007D8E71 /* PredicateDecorator.swift in Sources */,
+				212CE70D23E9E991007D8E71 /* FilterDecorator.swift in Sources */,
 				219A888123EB629800BBC5F2 /* ModelBasedGraphQLDocumentDecorator.swift in Sources */,
 				212CE70423E9E967007D8E71 /* GraphQLSubscription.swift in Sources */,
 				21420A99237222A900FA140C /* APIKeyProvider.swift in Sources */,
@@ -3829,6 +3840,7 @@
 				FA47B8362350C2D60031A0E3 /* AutoUnsubscribeOperationTests.swift in Sources */,
 				FAC2356E227A056600424678 /* AnalyticsCategoryClientAPITests.swift in Sources */,
 				B4BD6B3323708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift in Sources */,
+				213481D9242AFA62001966DE /* AnyModelTester.swift in Sources */,
 				FA47B8382350C58B0031A0E3 /* AutoUnsubscribeHubListenToOperationTests.swift in Sources */,
 				FAC23574227A056B00424678 /* ConfigurationTests.swift in Sources */,
 				B9DCA263240F217C00075E22 /* AnyEncodableTests.swift in Sources */,

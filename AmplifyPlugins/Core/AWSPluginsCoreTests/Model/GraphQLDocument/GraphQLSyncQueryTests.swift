@@ -38,7 +38,7 @@ class GraphQLSyncQueryTests: XCTestCase {
 
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
-        documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))
+        documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
         documentBuilder.add(decorator: PaginationDecorator(limit: 100, nextToken: "token"))
         documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: 123))
         let document = documentBuilder.build()
@@ -113,5 +113,4 @@ class GraphQLSyncQueryTests: XCTestCase {
         """
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
     }
-
 }

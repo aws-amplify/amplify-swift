@@ -8,15 +8,46 @@
 import Foundation
 import Amplify
 
-typealias GraphQLFilter = [String: Any]
+public typealias GraphQLFilter = [String: Any]
 
 protocol GraphQLFilterConvertible {
     var graphQLFilter: GraphQLFilter { get }
 }
 
+// Convert QueryPredicate to GraphQLFilter JSON, and GraphQLFilter JSON to GraphQLFilter
+public struct GraphQLFilterConverter {
+
+    /// Serialize the translated GraphQL query variable object to JSON string.
+    public static func toJSON(_ queryPredicate: QueryPredicate,
+                              options: JSONSerialization.WritingOptions = []) throws -> String {
+        let graphQLFilterData = try JSONSerialization.data(withJSONObject: queryPredicate.graphQLFilter,
+                                                           options: options)
+
+        guard let serializedString = String(data: graphQLFilterData, encoding: .utf8) else {
+            preconditionFailure("""
+                Could not initialize String from the GraphQL representation of QueryPredicate:
+                \(String(describing: graphQLFilterData))
+                """)
+        }
+
+        return serializedString
+    }
+
+    /// Deserialize the JSON string converted with `GraphQLFilterConverter.toJSON()` to `GraphQLFilter`
+    public static func fromJSON(_ value: String) throws -> GraphQLFilter {
+        guard let data = value.data(using: .utf8),
+            let filter = try JSONSerialization.jsonObject(with: data) as? GraphQLFilter else {
+            preconditionFailure("Could not serialize to GraphQLFilter from: \(self))")
+        }
+
+        return filter
+    }
+}
+
 /// Extension to translate a `QueryPredicate` into a GraphQL query variables object
 extension QueryPredicate {
-    var graphQLFilterVariables: [String: Any] {
+
+    public var graphQLFilter: GraphQLFilter {
         if let operation = self as? QueryPredicateOperation {
             return operation.graphQLFilter
         } else if let group = self as? QueryPredicateGroup {
@@ -41,12 +72,12 @@ extension QueryPredicateGroup: GraphQLFilterConvertible {
         case .and, .or:
             var graphQLPredicateOperation = [logicalOperator: [Any]()]
             predicates.forEach { predicate in
-                graphQLPredicateOperation[logicalOperator]?.append(predicate.graphQLFilterVariables)
+                graphQLPredicateOperation[logicalOperator]?.append(predicate.graphQLFilter)
             }
             return graphQLPredicateOperation
         case .not:
             if let predicate = self.predicates.first {
-                return [logicalOperator: predicate.graphQLFilterVariables]
+                return [logicalOperator: predicate.graphQLFilter]
             } else {
                 preconditionFailure("Missing predicate for \(String(describing: self)) with type: \(type)")
             }

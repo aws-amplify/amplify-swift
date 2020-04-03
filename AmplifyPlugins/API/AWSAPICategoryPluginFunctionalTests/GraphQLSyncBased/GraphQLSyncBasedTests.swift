@@ -39,6 +39,121 @@ class GraphQLSyncBasedTests: XCTestCase {
         Amplify.reset()
     }
 
+    // Given: No post created
+    // When: Call get query to retrieve non-existent post
+    // Then: The query result should be nil
+    func testQueryNonExistentPostReturnsNil() {
+        let completeInvoked = expectation(description: "request completed")
+        var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>?>?
+
+        let id = UUID().uuidString
+        let modelName = "Post"
+
+        let request = GraphQLRequest<MutationSyncResult?>.query(modelName: modelName, byId: id)
+        _ = Amplify.API.query(request: request) { event in
+            defer {
+                completeInvoked.fulfill()
+            }
+            switch event {
+            case .completed(let graphQLResponse):
+                responseFromOperation = graphQLResponse
+            case .failed(let apiError):
+                XCTFail("\(apiError)")
+            default:
+                XCTFail("Could not get data back")
+            }
+        }
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+
+        guard let response = responseFromOperation else {
+            XCTAssertNotNil(responseFromOperation)
+            return
+        }
+        guard case .success(let mutationSyncOptional) = response else {
+            switch response {
+            case .success:
+                break
+
+            case .failure(let error):
+                switch error {
+                case .error(let errors):
+                    XCTFail("errors: \(errors)")
+                case .partial(let model, let errors):
+                    XCTFail("partial: \(model), \(errors)")
+                case .transformationError(let rawResponse, let apiError):
+                    XCTFail("transformationError: \(rawResponse), \(apiError)")
+                }
+            }
+            return
+        }
+
+        XCTAssertNil(mutationSyncOptional)
+    }
+
+    // Given: A newly created post
+    // When: Call get query to retrieve the newly created post
+    // Then: The query result should be the post with the latest version
+    func testCreatePostThenQueryPost() {
+        let uuid = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let title = testMethodName + "Title"
+        guard let createdPost = createPost(id: uuid, title: title) else {
+            XCTFail("Failed to create post with version 1")
+            return
+        }
+
+        let completeInvoked = expectation(description: "request completed")
+        var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>?>?
+
+        let request = GraphQLRequest<MutationSyncResult?>.query(modelName: createdPost.model.modelName,
+                                                                byId: createdPost.model.id)
+
+        _ = Amplify.API.query(request: request) { event in
+            defer {
+                completeInvoked.fulfill()
+            }
+            switch event {
+            case .completed(let graphQLResponse):
+                responseFromOperation = graphQLResponse
+            case .failed(let apiError):
+                XCTFail("\(apiError)")
+            default:
+                XCTFail("Could not get data back")
+            }
+        }
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+
+        guard let response = responseFromOperation else {
+            XCTAssertNotNil(responseFromOperation)
+            return
+        }
+        guard case .success(let mutationSyncOptional) = response else {
+            switch response {
+            case .success:
+                break
+
+            case .failure(let error):
+                switch error {
+                case .error(let errors):
+                    XCTFail("errors: \(errors)")
+                case .partial(let model, let errors):
+                    XCTFail("partial: \(model), \(errors)")
+                case .transformationError(let rawResponse, let apiError):
+                    XCTFail("transformationError: \(rawResponse), \(apiError)")
+                }
+            }
+            return
+        }
+        guard let mutationSync = mutationSyncOptional else {
+            XCTFail("Missing MutationSync object")
+            return
+        }
+
+        XCTAssertEqual(mutationSync.model["title"] as? String, title)
+        XCTAssertEqual(mutationSync.model["content"] as? String, createdPost.model["content"] as? String)
+        XCTAssertEqual(mutationSync.syncMetadata.version, 1)
+    }
+
     // Given: A newly created post will have version 1
     // When: Call update mutation with with an updated title
     //       passing in version 1, which is the correct unmodified version
@@ -106,6 +221,78 @@ class GraphQLSyncBasedTests: XCTestCase {
         XCTAssertEqual(mutationSync.model["title"] as? String, updatedTitle)
         XCTAssertEqual(mutationSync.model["content"] as? String, createdPost.model["content"] as? String)
         XCTAssertEqual(mutationSync.syncMetadata.version, 2)
+    }
+
+    // Given: A newly created post
+    // When: Call update mutation with with an updated title
+    //       with a condition that does not match the newly created post
+    // Then: The mutation result in a successful response, with graphQL repsonse data containing error
+    //       The error should be "ConditionalCheckFailedException"
+    func testUpdatePostWithInvalidConditionShouldFailWithConditionalCheckFailed() {
+        let uuid = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let title = testMethodName + "Title"
+        let post = Post.keys
+        guard let createdPost = createPost(id: uuid, title: title) else {
+            XCTFail("Failed to create post with version 1")
+            return
+        }
+
+        let updatedTitle = title + "Updated"
+
+        let modifiedPost = Post(id: createdPost.model["id"] as? String ?? "",
+                                title: updatedTitle,
+                                content: createdPost.model["content"] as? String ?? "",
+                                createdAt: Date())
+
+        let completeInvoked = expectation(description: "request completed")
+        var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
+
+        let queryPredicate = post.title == "Does not match"
+        let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: modifiedPost,
+                                                                        where: queryPredicate.graphQLFilter,
+                                                                        version: 1)
+
+        _ = Amplify.API.mutate(request: request) { event in
+            defer {
+                completeInvoked.fulfill()
+            }
+            switch event {
+            case .completed(let graphQLResponse):
+                responseFromOperation = graphQLResponse
+            case .failed(let apiError):
+                XCTFail("\(apiError)")
+            default:
+                XCTFail("Could not get data back")
+            }
+        }
+        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+
+        guard let response = responseFromOperation else {
+            XCTAssertNotNil(responseFromOperation)
+            return
+        }
+
+        let conditionalFailedError = expectation(description: "error should be conditional request failed")
+        switch response {
+        case .success(let mutationSync):
+            XCTFail("success: \(mutationSync)")
+        case .failure(let error):
+            switch error {
+            case .error(let errors):
+                errors.forEach { error in
+                    if error.message.contains("conditional request failed") {
+                        conditionalFailedError.fulfill()
+                    }
+                }
+            case .partial(let model, let errors):
+                XCTFail("partial: \(model), \(errors)")
+            case .transformationError(let rawResponse, let apiError):
+                XCTFail("transformationError: \(rawResponse), \(apiError)")
+            }
+        }
+
+        wait(for: [conditionalFailedError], timeout: TestCommonConstants.networkTimeout)
     }
 
     // Given: Two newly created posts

@@ -45,7 +45,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try predicate.toGraphQLFilterJSON()
+        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
@@ -115,7 +115,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try predicate.toGraphQLFilterJSON()
+        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
 
@@ -147,22 +147,33 @@ class QueryPredicateGraphQLTests: XCTestCase {
           ]
         }
         """
-        let result = try predicate.toGraphQLFilterJSON()
+        let result = try GraphQLFilterConverter.toJSON(predicate, options: [.prettyPrinted])
         XCTAssertEqual(result, expected)
     }
-}
 
-extension QueryPredicate {
-    func toGraphQLFilterJSON() throws -> String {
-        let graphQLFilterVariablesData = try JSONSerialization.data(withJSONObject: graphQLFilterVariables,
-                                                                    options: .prettyPrinted)
+    func testJSONSerializationAndDeserialization() throws {
+        let post = Post.keys
+        let predicate = post.id.eq("id") && post.title.beginsWith("Title")
+        let result = try GraphQLFilterConverter.toJSON(predicate)
+        XCTAssertNotNil(result)
+        let graphQLFilter = try GraphQLFilterConverter.fromJSON(result)
+        guard let filter = graphQLFilter["and"] as? [[String: Any]] else {
+            XCTFail("should contain 'and' operation")
+            return
+        }
+        let idPredicate = filter[0]
+        guard let idFilter = idPredicate["id"] as? [String: Any] else {
+            XCTFail("should contain 'id' value")
+            return
+        }
+        XCTAssert(idFilter["eq"] as? String == "id")
 
-        guard let serializedString = String(data: graphQLFilterVariablesData, encoding: .utf8) else {
-            throw """
-            Could not initialize String from graphQLFilterVariables: \(String(describing: graphQLFilterVariablesData))
-            """
+        let titlePredicate = filter[1]
+        guard let titleFilter = titlePredicate["title"] as? [String: Any] else {
+            XCTFail("should contain 'title' value")
+            return
         }
 
-        return serializedString
+        XCTAssert(titleFilter["beginsWith"] as? String == "Title")
     }
 }

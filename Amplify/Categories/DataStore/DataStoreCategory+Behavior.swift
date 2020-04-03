@@ -6,8 +6,10 @@
 //
 
 extension DataStoreCategory: DataStoreBaseBehavior {
-    public func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
-        plugin.save(model, completion: completion)
+    public func save<M: Model>(_ model: M,
+                               where condition: QueryPredicate? = nil,
+                               completion: @escaping DataStoreCallback<M>) {
+        plugin.save(model, where: condition, completion: completion)
     }
 
     public func query<M: Model>(_ modelType: M.Type,

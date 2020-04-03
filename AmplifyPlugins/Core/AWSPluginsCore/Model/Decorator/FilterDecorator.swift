@@ -8,14 +8,14 @@
 import Amplify
 import Foundation
 
-/// Decorates a GraphQL mutation with a "condition" input or a GraphQL query with a "filter" input. The value is the
-/// data extracted from an instance of a `QueryPredicate`
-public struct PredicateDecorator: ModelBasedGraphQLDocumentDecorator {
+/// Decorates a GraphQL mutation with a "condition" input or a GraphQL query with a "filter" input.
+/// The value is a `GraphQLFilter` object
+public struct FilterDecorator: ModelBasedGraphQLDocumentDecorator {
 
-    private let predicate: QueryPredicate
+    private let filter: GraphQLFilter
 
-    public init(predicate: QueryPredicate) {
-        self.predicate = predicate
+    public init(filter: GraphQLFilter) {
+        self.filter = filter
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
@@ -24,10 +24,10 @@ public struct PredicateDecorator: ModelBasedGraphQLDocumentDecorator {
         let modelName = modelType.schema.name
         if case .mutation = document.operationType {
             inputs["condition"] = GraphQLDocumentInput(type: "Model\(modelName)ConditionInput",
-                value: .object(predicate.graphQLFilterVariables))
+                value: .object(filter))
         } else if case .query = document.operationType {
             inputs["filter"] = GraphQLDocumentInput(type: "Model\(modelName)FilterInput",
-                value: .object(predicate.graphQLFilterVariables))
+                value: .object(filter))
         }
 
         return document.copy(inputs: inputs)

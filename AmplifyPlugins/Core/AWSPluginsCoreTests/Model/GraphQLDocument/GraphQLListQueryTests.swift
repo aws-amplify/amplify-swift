@@ -40,7 +40,7 @@ class GraphQLListQueryTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         documentBuilder.add(decorator: PaginationDecorator())
-        documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))
+        documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         query ListPosts($filter: ModelPostFilterInput, $limit: Int) {
@@ -74,7 +74,7 @@ class GraphQLListQueryTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         documentBuilder.add(decorator: PaginationDecorator())
-        documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))
+        documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let expectedQueryDocument = """
