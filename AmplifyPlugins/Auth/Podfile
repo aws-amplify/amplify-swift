@@ -1,0 +1,34 @@
+platform :ios, '12.0'
+use_frameworks!
+
+AWS_SDK_VERSION = "2.13.0"
+
+pod 'SwiftFormat/CLI'
+pod 'SwiftLint'
+
+target 'AWSAuthPlugin' do
+  pod 'Amplify', :path => '../../'
+  pod 'AWSPluginsCore', :path => '../../'
+
+  target "AWSAuthPluginTests" do
+    inherit! :complete
+
+    pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
+    pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+    pod 'AmplifyTestCommon', :path => '../../'
+  end
+end
+
+target "HostApp" do
+  use_frameworks!
+  pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
+  pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+  pod 'AmplifyTestCommon', :path => '../../'
+  pod 'Amplify', :path => '../../'
+
+  target "AWSAuthPluginIntegrationTests" do
+    inherit! :complete
+
+    pod 'AmplifyPlugins/AWSAPIPlugin', :path => '../../'
+  end
+end
