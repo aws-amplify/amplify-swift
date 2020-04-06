@@ -26,13 +26,6 @@ pods = [
 ]
 
 platform :ios do
-  desc "Bump pod versions"
-  lane :bump_podspecs_patch do
-
-    pods.each { |pod| version_bump_podspec(path: pod, bump_type: "patch") }
-
-  end
-
   desc "Release pods"
   lane :release_pods do
 
@@ -43,4 +36,21 @@ platform :ios do
 
   end
 
+  desc "Generate docs"
+  lane :generate_docs do
+    sh("jazzy --output='/Users/distiller/amplify-ios/docs' --min-acl=internal -x -workspace,/Users/distiller/amplify-ios/Amplify.xcworkspace,-scheme,Amplify")
+    commit_push()
+  end
+
+  desc "Commit and push"
+  private_lane :commit_push do
+    sh("git config --global user.email $GITHUB_EMAIL")
+    sh("git config --global user.name $GITHUB_USER")
+
+    sh("git add /Users/distiller/amplify-ios/docs/")
+    commit_message = "docs: update API docs [skip ci]"
+    sh("git commit -m '#{commit_message}'")
+    sh("git push --set-upstream origin gh-pages")
+    sh("git push origin")
+  end
 end
