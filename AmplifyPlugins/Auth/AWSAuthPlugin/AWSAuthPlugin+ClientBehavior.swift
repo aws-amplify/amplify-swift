@@ -31,11 +31,19 @@ extension AWSAuthPlugin {
         fatalError()
     }
 
-    public func signIn(username: String,
-                       password: String,
+    public func signIn(username: String?,
+                       password: String?,
                        options: AuthSignInOperation.Request.Options?,
                        listener: AuthSignInOperation.EventListener?) -> AuthSignInOperation {
-        fatalError()
+        let options = options ?? AuthSignInRequest.Options()
+        let request = AuthSignInRequest(username: username,
+                                        password: password,
+                                        options: options)
+        let signInOperation = AWSAuthSignInOperation(request,
+                                                     authenticationProvider: authenticationProvider,
+                                                     listener: listener)
+        queue.addOperation(signInOperation)
+        return signInOperation
     }
 
     public func signInWithSocial(provider: AuthSocialProvider,
@@ -43,6 +51,7 @@ extension AWSAuthPlugin {
                                  options: AuthSocialSignInOperation.Request.Options?,
                                  listener: AuthSocialSignInOperation.EventListener?) -> AuthSocialSignInOperation {
         fatalError()
+
     }
 
     public func signInWithUI(options: AuthUISignInOperation.Request.Options?,
