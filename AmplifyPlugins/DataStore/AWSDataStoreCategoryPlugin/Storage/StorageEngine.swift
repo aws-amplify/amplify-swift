@@ -141,7 +141,7 @@ final class StorageEngine: StorageEngineBehavior {
                 self.log.verbose("\(#function) syncing mutation for \(savedModel)")
                 self.syncMutation(of: savedModel,
                                   mutationType: mutationType,
-                                  queryPredicate: condition,
+                                  predicate: condition,
                                   syncEngine: syncEngine,
                                   completion: completion)
             } else {
@@ -246,6 +246,7 @@ final class StorageEngine: StorageEngineBehavior {
             } else {
                 self.syncDeletions(of: modelType,
                                    withModelIds: modelIds,
+                                   predicate: predicate,
                                    syncEngine: syncEngine,
                                    completion: syncCompletionWrapper)
             }
@@ -351,9 +352,21 @@ final class StorageEngine: StorageEngineBehavior {
     // we start to pass in the predicate
     private func syncDeletions<M: Model>(of modelType: M.Type,
                                          withModelIds modelIds: [Model.Identifier],
+                                         predicate: QueryPredicate? = nil,
                                          syncEngine: RemoteSyncEngineBehavior,
                                          completion: @escaping DataStoreCallback<Void>) {
         var mutationEvents: Set<Model.Identifier> = []
+
+        var graphQLFilterJSON: String?
+        if let predicate = predicate {
+            do {
+                graphQLFilterJSON = try GraphQLFilterConverter.toJSON(predicate)
+            } catch {
+                let dataStoreError = DataStoreError(error: error)
+                completion(.failure(dataStoreError))
+                return
+            }
+        }
 
         for modelId in modelIds {
             let mutationEvent = MutationEvent(id: UUID().uuidString,
@@ -361,7 +374,8 @@ final class StorageEngine: StorageEngineBehavior {
                                               modelName: modelType.modelName,
                                               json: "{}",
                                               mutationType: .delete,
-                                              createdAt: Date())
+                                              createdAt: Date(),
+                                              graphQLFilterJSON: graphQLFilterJSON)
 
             let mutationEventCallback: DataStoreCallback<MutationEvent> = { result in
                 switch result {
@@ -385,14 +399,14 @@ final class StorageEngine: StorageEngineBehavior {
     @available(iOS 13.0, *)
     private func syncMutation<M: Model>(of savedModel: M,
                                         mutationType: MutationEvent.MutationType,
-                                        queryPredicate: QueryPredicate? = nil,
+                                        predicate: QueryPredicate? = nil,
                                         syncEngine: RemoteSyncEngineBehavior,
                                         completion: @escaping DataStoreCallback<M>) {
         let mutationEvent: MutationEvent
         do {
             var graphQLFilterJSON: String?
-            if let queryPredicate = queryPredicate {
-                graphQLFilterJSON = try GraphQLFilterConverter.toJSON(queryPredicate)
+            if let predicate = predicate {
+                graphQLFilterJSON = try GraphQLFilterConverter.toJSON(predicate)
             }
 
             mutationEvent = try MutationEvent(model: savedModel,
