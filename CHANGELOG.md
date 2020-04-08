@@ -18,7 +18,7 @@ A declarative library for application development using cloud services.
   - DataStore.save() API now takes in a condition [#355](https://github.com/aws-amplify/amplify-ios/pull/355)
   - Added reachability and retryability to remote sync engine [#321](https://github.com/aws-amplify/amplify-ios/pull/321) [#322](https://github.com/aws-amplify/amplify-ios/pull/322) [#323](https://github.com/aws-amplify/amplify-ios/pull/323) [#324](https://github.com/aws-amplify/amplify-ios/pull/324)
   - Fix out of bounds case when retry handler >= 57 [#338](https://github.com/aws-amplify/amplify-ios/pull/338)
-  - Datastore.delete() with predicate [#346](https://github.com/aws-amplify/amplify-ios/pull/346)
+  - Datastore.delete(modelType) with predicate [#346](https://github.com/aws-amplify/amplify-ios/pull/346)
   - Datastore.clear() async to remove local datastore [#353](https://github.com/aws-amplify/amplify-ios/pull/353)
 
 ## 0.10.0
