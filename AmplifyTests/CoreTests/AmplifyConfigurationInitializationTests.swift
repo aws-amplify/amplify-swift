@@ -129,6 +129,8 @@ class AmplifyConfigurationInitializationTests: XCTestCase {
                 XCTAssertNil(amplifyConfig.analytics)
             case .api:
                 XCTAssertNil(amplifyConfig.api)
+            case .auth:
+                XCTAssertNil(amplifyConfig.auth)
             case .dataStore:
                 // TODO assert
                 XCTAssert(true)
