@@ -21,6 +21,8 @@ COCOAPODS_PUSH_WAIT_TIME = 600
 
 pods = [
   {spec: "Amplify.podspec", sleep: true},
+  # AmplifyPlugins depends on AWSPluginsCore, but skipping the sleep here
+  # since there's one after CoreMLPredictionsPlugin
   {spec: "AWSPluginsCore.podspec", sleep: false},
   {spec: "CoreMLPredictionsPlugin.podspec", sleep: true},
   {spec: "AWSPredictionsPlugin.podspec", sleep: false},
