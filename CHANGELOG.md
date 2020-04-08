@@ -6,8 +6,16 @@ A declarative library for application development using cloud services.
 
 ### New Features
 
+- **General**
+  - AWS iOS SDK Dependency upgrade to 2.13.x [https://github.com/aws-amplify/amplify-ios/pull/330](https://github.com/aws-amplify/amplify-ios/pull/360)
 - **Predictions**
   - Added the ability to transcribe text for both online and offline use cases. [#290](https://github.com/aws-amplify/amplify-ios/pull/290)
+- **API**
+  - Add GraphQLDocument builder classes for constructing Model-based GraphQL APIs [#309](https://github.com/aws-amplify/amplify-ios/pull/309)
+  - Add support for REST API with Cognito User Pools [#312](https://github.com/aws-amplify/amplify-ios/pull/312)
+  - Migrate APIPlugin's websocket provider to use AppSyncRealTimeClient [#330](https://github.com/aws-amplify/amplify-ios/pull/330), [#341](https://github.com/aws-amplify/amplify-ios/pull/341), [#352](https://github.com/aws-amplify/amplify-ios/pull/352)
+- **DataStore**
+  - DataStore.save() API now takes in a condition [#355](https://github.com/aws-amplify/amplify-ios/pull/355)
 
 ## 0.10.0
 
