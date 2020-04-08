@@ -4,7 +4,7 @@ version: 2.1
 
 defaults: &defaults
   macos:
-    xcode: "11.2.1"
+    xcode: "11.4.0"
   working_directory: ~/amplify-ios
   environment:
       BUNDLE_PATH: vendor/bundle
@@ -157,13 +157,10 @@ jobs:
       - *restore_repo
       - restore_gems
       - check_bundle
-      # - run:
-      #     name: Bump pod versions
-      #     command: bundle exec fastlane bump_podspecs_patch
       - run:
           name: Release pods
           command: bundle exec fastlane release_pods
-
+          no_output_timeout: 20m
 
 workflows:
   build_test_deploy:
