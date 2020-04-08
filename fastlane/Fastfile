@@ -17,7 +17,7 @@ opt_out_usage
 
 default_platform(:ios)
 
-COCOAPODS_PUSH_WAIT_TIME = 6
+COCOAPODS_PUSH_WAIT_TIME = 600
 
 pods = [
   {spec: "Amplify.podspec", sleep: true},

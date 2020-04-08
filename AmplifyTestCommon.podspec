@@ -9,7 +9,7 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "AmplifyTestCommon"
-  spec.version      = "0.10.0"
+  spec.version      = "0.11.0"
   spec.summary      = "Test resources used by different targets"
   spec.description  = "Provides different test resources and mock methods"
 
@@ -22,10 +22,10 @@ Pod::Spec.new do |spec|
   spec.requires_arc = true
 
   spec.source_files = 'AmplifyTestCommon/**/*.swift'
-  spec.dependency 'Amplify', '0.10.0'
+  spec.dependency 'Amplify', '0.11.0'
 
   spec.subspec 'AWSPluginsTestCommon' do |subspec|
     subspec.source_files = 'AmplifyPlugins/Core/AWSPluginsTestCommon/**/*.swift'
-    spec.dependency 'AWSPluginsCore', '0.10.0'
+    spec.dependency 'AWSPluginsCore', '0.11.0'
   end
 end
