@@ -7,7 +7,7 @@ A declarative library for application development using cloud services.
 ### New Features
 
 - **General**
-  - SDK Dependency upgrade to 2.13.x [https://github.com/aws-amplify/amplify-ios/pull/330](https://github.com/aws-amplify/amplify-ios/pull/360)
+  - AWS iOS SDK Dependency upgrade to 2.13.x [https://github.com/aws-amplify/amplify-ios/pull/330](https://github.com/aws-amplify/amplify-ios/pull/360)
 - **Predictions**
   - Added the ability to transcribe text for both online and offline use cases. [#290](https://github.com/aws-amplify/amplify-ios/pull/290)
 - **API**
