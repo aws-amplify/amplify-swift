@@ -28,6 +28,8 @@ extension Amplify {
                 reset(Analytics, in: group) { group.leave() }
             case .api:
                 reset(API, in: group) { group.leave() }
+            case .auth:
+                reset(Auth, in: group) { group.leave() }
             case .dataStore:
                 reset(DataStore, in: group) { group.leave() }
             case .hub:
@@ -58,6 +60,8 @@ extension Amplify {
                 Analytics = AnalyticsCategory()
             case .api:
                 API = AmplifyAPICategory()
+            case .auth:
+                Auth = AuthCategory()
             case .dataStore:
                 DataStore = DataStoreCategory()
             case .predictions:

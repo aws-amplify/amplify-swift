@@ -9,28 +9,23 @@
 /// channels for intra-app communication. Internally, Amplify uses the Hub for dispatching notifications about events
 /// associated with different categories.
 public enum HubChannel {
-    /// Hub messages relating to Amplify Analytics
+
     case analytics
 
-    /// Hub messages relating to Amplify API
     case api
 
-    /// Hub messages relating to Amplify DataStore
+    case auth
+
     case dataStore
 
-    /// Hub messages relating to Amplify Hub
     case hub
 
-    /// Hub messages relating to Amplify Logging
     case logging
 
-    /// Hub messages relating to Amplify Predictions
     case predictions
 
-    /// Hub messages relating to Amplify Storage
     case storage
 
-    /// A custom channel with its own name
     case custom(String)
 
     /// Convenience property to return an array of all non-`custom` channels
@@ -52,6 +47,8 @@ extension HubChannel: Equatable {
             return true
         case (.api, .api):
             return true
+        case (.auth, .auth):
+            return true
         case (.dataStore, .dataStore):
             return true
         case (.hub, .hub):
@@ -64,7 +61,6 @@ extension HubChannel: Equatable {
             return true
         case (.custom(let lhsValue), .custom(let rhsValue)):
             return lhsValue == rhsValue
-
         default:
             return false
         }
@@ -78,6 +74,8 @@ extension HubChannel {
             self = .analytics
         case .api:
             self = .api
+        case .auth:
+            self = .auth
         case .dataStore:
             self = .dataStore
         case .hub:

@@ -27,6 +27,7 @@ public class Amplify {
     // ease of testing.
     public static internal(set) var Analytics = AnalyticsCategory()
     public static internal(set) var API: APICategory = AmplifyAPICategory()
+    public static internal(set) var Auth = AuthCategory()
     public static internal(set) var DataStore = DataStoreCategory()
     public static internal(set) var Hub = HubCategory()
     public static internal(set) var Logging = LoggingCategory()
@@ -43,6 +44,8 @@ public class Amplify {
             try Analytics.add(plugin: plugin)
         case let plugin as APICategoryPlugin:
             try API.add(plugin: plugin)
+        case let plugin as AuthCategoryPlugin:
+            try Auth.add(plugin: plugin)
         case let plugin as DataStoreCategoryPlugin:
             try DataStore.add(plugin: plugin)
         case let plugin as HubCategoryPlugin:
