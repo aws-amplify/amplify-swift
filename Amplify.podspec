@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = 'Amplify'
-  s.version      = '0.10.0'
+  s.version      = '0.11.0'
   s.summary      = 'Amazon Web Services Amplify for iOS.'
 
   s.description  = 'AWS Amplify for iOS provides a declarative library for application development using cloud services'
