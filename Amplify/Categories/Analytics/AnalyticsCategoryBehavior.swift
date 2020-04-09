@@ -8,7 +8,7 @@
 import Foundation
 
 /// Behavior of the Analytics category that clients will use
-public protocol AnalyticsCategoryClientBehavior {
+public protocol AnalyticsCategoryBehavior {
 
     /// Allows you to tie a user to their actions and record traits about them. It includes
     /// an unique User ID and any optional traits you know about them like their email, name, etc.

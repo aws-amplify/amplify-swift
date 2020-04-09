@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public protocol PredictionsCategoryPlugin: Plugin, PredictionsCategoryClientBehavior { }
+public protocol PredictionsCategoryPlugin: Plugin, PredictionsCategoryBehavior { }
 
 public extension PredictionsCategoryPlugin {
     var categoryType: CategoryType {

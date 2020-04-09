@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public protocol AnalyticsCategoryPlugin: Plugin, AnalyticsCategoryClientBehavior { }
+public protocol AnalyticsCategoryPlugin: Plugin, AnalyticsCategoryBehavior { }
 
 public extension AnalyticsCategoryPlugin {
     var categoryType: CategoryType {

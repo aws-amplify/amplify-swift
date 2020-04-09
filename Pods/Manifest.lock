@@ -1,19 +1,19 @@
 PODS:
-  - AWSAuthCore (2.13.0):
-    - AWSCore (= 2.13.0)
-  - AWSCognitoIdentityProvider (2.13.0):
+  - AWSAuthCore (2.13.1):
+    - AWSCore (= 2.13.1)
+  - AWSCognitoIdentityProvider (2.13.1):
     - AWSCognitoIdentityProviderASF (= 1.0.1)
-    - AWSCore (= 2.13.0)
+    - AWSCore (= 2.13.1)
   - AWSCognitoIdentityProviderASF (1.0.1)
-  - AWSCore (2.13.0)
-  - AWSMobileClient (2.13.0):
-    - AWSAuthCore (= 2.13.0)
-    - AWSCognitoIdentityProvider (= 2.13.0)
+  - AWSCore (2.13.1)
+  - AWSMobileClient (2.13.1):
+    - AWSAuthCore (= 2.13.1)
+    - AWSCognitoIdentityProvider (= 2.13.1)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
-  - SwiftFormat/CLI (0.42.0)
-  - SwiftLint (0.37.0)
+  - SwiftFormat/CLI (0.44.7)
+  - SwiftLint (0.39.2)
 
 DEPENDENCIES:
   - AWSMobileClient (~> 2.13.0)
@@ -23,7 +23,7 @@ DEPENDENCIES:
   - SwiftLint
 
 SPEC REPOS:
-  https://cdn.cocoapods.org/:
+  trunk:
     - AWSAuthCore
     - AWSCognitoIdentityProvider
     - AWSCognitoIdentityProviderASF
@@ -49,16 +49,16 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  AWSAuthCore: 8fa7f8a8ddd6b0922d9989d8eaa8e7bac87b02fc
-  AWSCognitoIdentityProvider: 9ea197104d3425eed78c58d122190217f2b0cee2
+  AWSAuthCore: c15735eb14cccf2a26e371e3a6a841d613d411ef
+  AWSCognitoIdentityProvider: 78f240befbd2e47a8e644946a9dd19812b0e5044
   AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
-  AWSCore: 167aba8cdaff6873193a66f062f41749c6c6a3d3
-  AWSMobileClient: e8922b6abcafa01d0fb630a93f64397f3bc73079
+  AWSCore: ec394695d054fa4136b20ccd22d8901faea5de04
+  AWSMobileClient: 8aede2dc1b0760709a2c02465e2b0c286b7cd00b
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
-  SwiftFormat: 5faa819600268dfaa5c19f1359730883db151678
-  SwiftLint: c078a14d7d7ade75e5507795d185e3da41d844d2
+  SwiftFormat: fd97e27b8de5a46c9d1988bf1db1dc92e79f86a3
+  SwiftLint: 22ccbbe3b8008684be5955693bab135e0ed6a447
 
 PODFILE CHECKSUM: 1c22fd7e8ddadfe26bb643a7d7ebf74f24d85950
 
-COCOAPODS: 1.9.0
+COCOAPODS: 1.9.1

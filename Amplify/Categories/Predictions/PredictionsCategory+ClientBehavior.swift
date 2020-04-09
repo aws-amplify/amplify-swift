@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension PredictionsCategory: PredictionsCategoryClientBehavior {
+extension PredictionsCategory: PredictionsCategoryBehavior {
 
     public func convert(textToSpeech: String,
                         options: PredictionsTextToSpeechRequest.Options? = nil,
