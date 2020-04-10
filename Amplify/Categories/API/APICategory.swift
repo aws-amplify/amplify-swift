@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public protocol APICategory: Category, APICategoryClientBehavior {
+public protocol APICategory: Category, APICategoryBehavior {
     func add(plugin: APICategoryPlugin) throws
     func getPlugin(for key: PluginKey) throws -> APICategoryPlugin
 }

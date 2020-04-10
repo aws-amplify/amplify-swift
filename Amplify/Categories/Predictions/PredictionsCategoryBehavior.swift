@@ -8,7 +8,7 @@
 import Foundation
 
 /// Behavior of the Predictions category that clients will use
-public protocol PredictionsCategoryClientBehavior {
+public protocol PredictionsCategoryBehavior {
 
     /// Translate the text to the language specified.
     /// - Parameter textToTranslate: The text to translate

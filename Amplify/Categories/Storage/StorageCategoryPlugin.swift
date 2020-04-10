@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public protocol StorageCategoryPlugin: Plugin, StorageCategoryClientBehavior { }
+public protocol StorageCategoryPlugin: Plugin, StorageCategoryBehavior { }
 
 public extension StorageCategoryPlugin {
     var categoryType: CategoryType {

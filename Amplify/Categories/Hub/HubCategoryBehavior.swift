@@ -11,7 +11,7 @@ import Foundation
 public typealias HubListener = (HubPayload) -> Void
 
 /// Behavior of the Hub category that clients will use
-public protocol HubCategoryClientBehavior {
+public protocol HubCategoryBehavior {
 
     /// Dispatch a Hub message on the specified channel
     /// - Parameter channel: The channel to send the message on

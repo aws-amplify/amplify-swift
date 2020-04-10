@@ -9,7 +9,7 @@ import Amplify
 import Combine
 
 class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
-    
+
     var key: String {
         return "MockDataStoreCategoryPlugin"
     }
