@@ -70,7 +70,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     public func configure(using configuration: Any) throws {
         modelRegistration.registerModels(registry: ModelRegistry.self)
         resolveSyncEnabled()
-        try resolveStorageEngine()
+        try resolveStorageEngine(dataStoreConfiguration: self.configuration)
 
         try storageEngine.setUp(models: ModelRegistry.models)
 
@@ -92,7 +92,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             if #available(iOS 13.0, *) {
                 self.dataStorePublisher = DataStorePublisher()
             }
-            try resolveStorageEngine()
+            try resolveStorageEngine(dataStoreConfiguration: configuration)
             try storageEngine.setUp(models: ModelRegistry.models)
             storageEngine.startSync()
         } catch {
@@ -100,12 +100,12 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
     }
 
-    func resolveStorageEngine() throws {
+    func resolveStorageEngine(dataStoreConfiguration: DataStoreConfiguration) throws {
         guard storageEngine == nil else {
             return
         }
 
-        storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled)
+        storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled, dataStoreConfiguration: dataStoreConfiguration)
         if #available(iOS 13.0, *) {
             setupStorageSink()
         }

@@ -15,6 +15,7 @@ final class InitialSyncOperation: AsynchronousOperation {
     private weak var api: APICategoryGraphQLBehavior?
     private weak var reconciliationQueue: IncomingEventReconciliationQueue?
     private weak var storageAdapter: StorageEngineAdapter?
+    private let dataStoreConfiguration: DataStoreConfiguration
 
     private let modelType: Model.Type
     private let completion: AWSInitialSyncOrchestrator.SyncOperationResultHandler
@@ -25,11 +26,13 @@ final class InitialSyncOperation: AsynchronousOperation {
          api: APICategoryGraphQLBehavior?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
          storageAdapter: StorageEngineAdapter?,
+         dataStoreConfiguration: DataStoreConfiguration,
          completion: @escaping AWSInitialSyncOrchestrator.SyncOperationResultHandler) {
         self.modelType = modelType
         self.api = api
         self.reconciliationQueue = reconciliationQueue
         self.storageAdapter = storageAdapter
+        self.dataStoreConfiguration = dataStoreConfiguration
         self.completion = completion
     }
 
