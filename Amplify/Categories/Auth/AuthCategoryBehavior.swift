@@ -7,13 +7,34 @@
 
 import Foundation
 
-public protocol AuthCategoryClientBehavior {
+/// Behavior of the Storage category that clients will use
+public protocol AuthCategoryBehavior {
 
+    /// SignUp a user to the authentication provider.
+    ///
+    /// If the signUp require multiple steps like passing a confirmation code, use the method
+    /// `confirmSignUp` after the this method completes.
+    ///
+    /// - Parameters:
+    ///   - username: username to signUp
+    ///   - password: password as per the password policy of the provider
+    ///   - options: Parameters specific to plugin behavior
+    ///   - listener: Triggered when the operation completes.
     func signUp(username: String,
                 password: String,
                 options: AuthSignUpOperation.Request.Options?,
                 listener: AuthSignUpOperation.EventListener?) -> AuthSignUpOperation
 
+    /// Confirms the `signUp` operation.
+    ///
+    /// Invoke this operation as a follow up for the signUp process if the authentication provider
+    /// that you are using required to follow a next step after signUp. Calling this operation without
+    /// first calling `signUp` or `resendSignUpCode` will cause an error.
+    /// - Parameters:
+    ///   - username: Username used that was used to signUp.
+    ///   - confirmationCode: Confirmation code received to the user.
+    ///   - options: Parameters specific to plugin behavior
+    ///   - listener: Triggered when the operation completes.
     func confirmSignUp(username: String,
                        confirmationCode: String,
                        options: AuthConfirmSignUpOperation.Request.Options?,

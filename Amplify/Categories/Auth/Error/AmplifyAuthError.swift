@@ -7,6 +7,7 @@
 
 import Foundation
 
+// TODO: Rename to AuthError
 public enum AmplifyAuthError {
     case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
     case service(ErrorDescription, RecoverySuggestion, Error? = nil)

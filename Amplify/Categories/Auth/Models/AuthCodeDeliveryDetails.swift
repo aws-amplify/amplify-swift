@@ -31,4 +31,5 @@ public enum DeliveryMedium {
     case email
     case phoneNumber
     case custom(String)
+    case unknown
 }
