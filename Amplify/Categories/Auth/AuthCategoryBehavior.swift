@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Behavior of the Storage category that clients will use
+/// Behavior of the Auth category that clients will use
 public protocol AuthCategoryBehavior {
 
     /// SignUp a user to the authentication provider.
