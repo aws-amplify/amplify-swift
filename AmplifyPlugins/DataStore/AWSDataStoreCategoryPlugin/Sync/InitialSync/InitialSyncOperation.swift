@@ -54,7 +54,24 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
 
         let lastSyncMetadata = getLastSyncMetadata()
-        lastSyncTime = lastSyncMetadata?.lastSync
+        guard let lastSync = lastSyncMetadata?.lastSync else {
+            return
+        }
+
+        //TODO: Update to use TimeInterval.milliseconds when it is pushed to master branch
+        // https://github.com/aws-amplify/amplify-ios/issues/398
+        let lastSyncDate = Date(timeIntervalSince1970: TimeInterval(lastSync) / 1_000)
+        let secondsSinceLastSync = (lastSyncDate.timeIntervalSinceNow * -1)
+        if secondsSinceLastSync < 0 {
+            log.info("lastSyncTime was in the future, assuming base query")
+            lastSyncTime = nil
+            return
+        }
+
+        let shouldDoDeltaQuery = secondsSinceLastSync < dataStoreConfiguration.syncInterval
+        if shouldDoDeltaQuery {
+            lastSyncTime = lastSync
+        }
     }
 
     private func getLastSyncMetadata() -> ModelSyncMetadata? {
