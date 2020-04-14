@@ -17,27 +17,30 @@ opt_out_usage
 
 default_platform(:ios)
 
+COCOAPODS_PUSH_WAIT_TIME = 600
+
 pods = [
-  "Amplify.podspec",
-  "AWSPluginsCore.podspec",
-  "CoreMLPredictionsPlugin.podspec",
-  "AWSPredictionsPlugin.podspec",
-  "AmplifyPlugins.podspec"
+  {spec: "Amplify.podspec", sleep: true},
+  # AmplifyPlugins depends on AWSPluginsCore, but skipping the sleep here
+  # since there's one after CoreMLPredictionsPlugin
+  {spec: "AWSPluginsCore.podspec", sleep: false},
+  {spec: "CoreMLPredictionsPlugin.podspec", sleep: true},
+  {spec: "AWSPredictionsPlugin.podspec", sleep: false},
+  {spec: "AmplifyPlugins.podspec", sleep: false}
 ]
 
 platform :ios do
-  desc "Bump pod versions"
-  lane :bump_podspecs_patch do
-
-    pods.each { |pod| version_bump_podspec(path: pod, bump_type: "patch") }
-
-  end
-
   desc "Release pods"
   lane :release_pods do
 
     pods.each { |pod|
-      pod_push(path: pod, allow_warnings: true, swift_version: "5.1")
+      UI.message("Pushing pod #{pod[:spec]}")
+      pod_push(path: pod[:spec], allow_warnings: true, swift_version: "5.1")
+      if pod[:sleep]
+        UI.message("Sleeping for #{COCOAPODS_PUSH_WAIT_TIME}s")
+        sleep COCOAPODS_PUSH_WAIT_TIME
+      end
+      
       Actions.sh('pod repo update')
     }
 

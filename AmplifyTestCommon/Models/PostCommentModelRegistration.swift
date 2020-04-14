@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 
-final public class PostCommentSchema: DataStoreSchema {
+final public class PostCommentSchemaProvider: ModelSchemaProvider {
     public func registerModels(registry: ModelRegistry.Type) {
         ModelRegistry.register(modelType: Post.self)
         ModelRegistry.register(modelType: Comment.self)

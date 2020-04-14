@@ -21,6 +21,23 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         ModelRegistry.reset()
     }
 
+    func testQueryGraphQLRequest() throws {
+        let originalPost = Post(title: "title", content: "content", createdAt: Date())
+        let anyPost = try originalPost.eraseToAnyModel()
+
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: anyPost.modelName, operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
+        documentBuilder.add(decorator: ModelIdDecorator(id: anyPost.id))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        let document = documentBuilder.build()
+
+        let request = GraphQLRequest<MutationSyncResult?>.query(modelName: anyPost.modelName, byId: anyPost.id)
+
+        XCTAssertEqual(document.stringValue, request.document)
+        XCTAssert(request.responseType == MutationSyncResult?.self)
+        XCTAssert(request.variables != nil)
+    }
+
     func testCreateMutationGraphQLRequest() throws {
         let originalPost = Post(title: "title", content: "content", createdAt: Date())
         let anyPost = try originalPost.eraseToAnyModel()

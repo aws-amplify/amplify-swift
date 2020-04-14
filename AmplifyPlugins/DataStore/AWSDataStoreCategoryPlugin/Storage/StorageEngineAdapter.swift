@@ -38,7 +38,9 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
     // MARK: - Synchronous APIs
 
-    func exists(_ modelType: Model.Type, withId id: Model.Identifier) throws -> Bool
+    func exists(_ modelType: Model.Type,
+                withId id: Model.Identifier,
+                predicate: QueryPredicate?) throws -> Bool
 
     func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>]
 

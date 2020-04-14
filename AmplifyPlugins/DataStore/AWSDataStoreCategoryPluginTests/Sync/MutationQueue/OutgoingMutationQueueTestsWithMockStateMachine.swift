@@ -33,7 +33,6 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         eventSource = MockMutationEventSource()
         publisher = AWSMutationEventPublisher(eventSource: eventSource)
         apiBehavior = MockAPICategoryPlugin()
-
     }
 
     func testInitialState() {
@@ -143,7 +142,8 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         let startRecievedAgain = expectation(description: "Start recieved again")
         let resumeSyncingToCloud = expectation(description: "Resume sync to cloud")
         stateMachine.pushExpectActionCriteria { action in
-            XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedStart(self.apiBehavior, self.publisher))
+            XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedStart(self.apiBehavior,
+                                                                              self.publisher))
             startRecievedAgain.fulfill()
         }
         stateMachine.pushExpectActionCriteria { action in
@@ -151,7 +151,8 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             resumeSyncingToCloud.fulfill()
         }
 
-        mutationQueue.startSyncingToCloud(api: apiBehavior, mutationEventPublisher: publisher)
+        mutationQueue.startSyncingToCloud(api: apiBehavior,
+                                          mutationEventPublisher: publisher)
         stateMachine.state = .resumingMutationQueue
 
         wait(for: [startRecievedAgain, resumeSyncingToCloud], timeout: 1)
@@ -248,7 +249,7 @@ extension OutgoingMutationQueueMockStateTest {
 
         let storageEngine = MockStorageEngineBehavior()
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStorePlugin(schema: TestDataStoreSchema(),
+        let dataStorePlugin = AWSDataStorePlugin(schema: TestSchemaProvider(),
                                                  storageEngine: storageEngine,
                                                  dataStorePublisher: dataStorePublisher)
         try Amplify.add(plugin: dataStorePlugin)

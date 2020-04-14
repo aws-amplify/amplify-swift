@@ -141,6 +141,121 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         wait(for: [expectation], timeout: 5)
     }
 
+    /// - Given: A Post instance
+    /// - When:
+    ///    - The `save(post)` is called
+    /// - Then:
+    ///    - call `update(post, condition)` with `post.title` updated and condition matches `post.content`
+    ///    - a successful update for `update(post, condition)`
+    ///    - call `query(Post)` to check if the model was correctly updated
+    func testInsertPostAndThenUpdateItWithCondition() {
+        let expectation = self.expectation(
+            description: "it should insert and update a Post")
+
+        func checkSavedPost(id: String) {
+            storageAdapter.query(Post.self) {
+                switch $0 {
+                case .success(let posts):
+                    XCTAssertEqual(posts.count, 1)
+                    if let post = posts.first {
+                        XCTAssertEqual(post.id, id)
+                        XCTAssertEqual(post.title, "title updated")
+                    }
+                    expectation.fulfill()
+                case .failure(let error):
+                    XCTFail(String(describing: error))
+                    expectation.fulfill()
+                }
+            }
+        }
+
+        var post = Post(title: "title", content: "content", createdAt: Date())
+        storageAdapter.save(post) { insertResult in
+            switch insertResult {
+            case .success:
+                post.title = "title updated"
+                let condition = Post.keys.content == post.content
+                storageAdapter.save(post, condition: condition) { updateResult in
+                    switch updateResult {
+                    case .success:
+                        checkSavedPost(id: post.id)
+                    case .failure(let error):
+                        XCTFail(error.errorDescription)
+                    }
+                }
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            }
+        }
+
+        wait(for: [expectation], timeout: 5)
+    }
+
+    /// - Given: A Post instance
+    /// - When:
+    ///    - The `save(post, condition)` is called, condition is passed in.
+    /// - Then:
+    ///    - Fails with conditional save failed error when there is no existing model instance
+    func testUpdateWithConditionFailsWhenNoExistingModel() {
+        let expectation = self.expectation(
+            description: "it should fail to update the Post that does not exist")
+
+        let post = Post(title: "title", content: "content", createdAt: Date())
+        let condition = Post.keys.content == "content"
+        storageAdapter.save(post, condition: condition) { insertResult in
+            switch insertResult {
+            case .success:
+                XCTFail("Update should not be successful")
+            case .failure(let error):
+                guard case .invalidCondition = error else {
+                    XCTFail("Did not match invalid condition error")
+                    return
+                }
+
+                expectation.fulfill()
+            }
+        }
+
+        wait(for: [expectation], timeout: 5)
+    }
+
+    /// - Given: A Post instance
+    /// - When:
+    ///    - The `save(post)` is called
+    /// - Then:
+    ///    - call `update(post, condition)` with `post.title` updated and condition does not match
+    ///    - the update for `update(post, condition)` fails with conditional save failed error
+    func testInsertPostAndThenUpdateItWithConditionDoesNotMatchShouldReturnError() {
+        let expectation = self.expectation(
+            description: "it should insert and then fail to update the Post, given bad condition")
+
+        var post = Post(title: "title not updated", content: "content", createdAt: Date())
+        storageAdapter.save(post) { insertResult in
+            switch insertResult {
+            case .success:
+                post.title = "title updated"
+                let condition = Post.keys.content == "content 2 does not match previous content"
+                storageAdapter.save(post, condition: condition) { updateResult in
+                    switch updateResult {
+                    case .success:
+                        XCTFail("Update should not be successful")
+                    case .failure(let error):
+                        guard case .invalidCondition = error else {
+                            XCTFail("Did not match invalid conditiion")
+                            return
+                        }
+
+                        expectation.fulfill()
+                    }
+                }
+            case .failure(let error):
+                XCTFail(String(describing: error))
+            }
+        }
+
+        wait(for: [expectation], timeout: 5)
+    }
+
     /// - Given: a list a `Post` instance
     /// - When:
     ///   - the `save(post)` is called

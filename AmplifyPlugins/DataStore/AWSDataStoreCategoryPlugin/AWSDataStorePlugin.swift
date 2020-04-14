@@ -19,7 +19,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     var dataStorePublisher: DataStoreSubscribeBehavior?
 
     /// The schema that holds a reference to its version and all registered models
-    let schema: DataStoreSchema
+    let schema: ModelSchemaProvider
 
     /// The DataStore configuration
     let configuration: DataStoreConfiguration
@@ -42,7 +42,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     /// No-argument init that uses defaults for all providers
-    public init(schema: DataStoreSchema, configuration: DataStoreConfiguration = .default) {
+    public init(schema: ModelSchemaProvider, configuration: DataStoreConfiguration = .default) {
         self.schema = schema
         self.configuration = configuration
         self.isSyncEnabled = false
@@ -54,7 +54,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     /// Internal initializer for testing
-    init(schema: DataStoreSchema,
+    init(schema: ModelSchemaProvider,
          configuration: DataStoreConfiguration = .default,
          storageEngine: StorageEngineBehavior,
          dataStorePublisher: DataStoreSubscribeBehavior) {

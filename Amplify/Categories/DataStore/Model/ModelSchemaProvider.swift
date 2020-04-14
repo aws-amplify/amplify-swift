@@ -9,7 +9,7 @@ import Foundation
 
 /// Protocol that defines a contract between the consumer and the DataStore plugin.
 /// All models have to be registered and have an associated `version`.
-public protocol DataStoreSchema {
+public protocol ModelSchemaProvider {
 
     /// Function called during plugin initialization. Implementations must
     /// register all the available models here.

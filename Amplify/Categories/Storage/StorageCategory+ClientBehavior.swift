@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension StorageCategory: StorageCategoryClientBehavior {
+extension StorageCategory: StorageCategoryBehavior {
     public func getURL(key: String,
                        options: StorageGetURLRequest.Options? = nil,
                        listener: StorageGetURLOperation.EventListener?) -> StorageGetURLOperation {

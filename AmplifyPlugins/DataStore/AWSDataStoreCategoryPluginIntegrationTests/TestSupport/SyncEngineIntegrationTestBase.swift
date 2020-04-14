@@ -42,7 +42,7 @@ class SyncEngineIntegrationTestBase: XCTestCase {
 
         do {
             try Amplify.add(plugin: AWSAPIPlugin())
-            try Amplify.add(plugin: AWSDataStorePlugin(schema: TestDataStoreSchema()))
+            try Amplify.add(plugin: AWSDataStorePlugin(schema: TestSchemaProvider()))
         } catch {
             XCTFail(String(describing: error))
             return
@@ -83,7 +83,7 @@ class SyncEngineIntegrationTestBase: XCTestCase {
             }
         }
 
-        wait(for: [syncStarted], timeout: 5.0)
+        wait(for: [syncStarted], timeout: 15.0)
     }
 
 }

@@ -53,6 +53,11 @@ struct GraphQLResponseDecoder {
 
         case (.some(let data), .some(let errors)):
             do {
+                if data.count == 1, let first = data.first, case .null = first.value {
+                    let responseErrors = try decodeErrors(graphQLErrors: errors)
+                    return GraphQLResponse<R>.failure(.error(responseErrors))
+                }
+
                 let jsonValue = JSONValue.object(data)
                 let responseData = try decode(graphQLData: jsonValue,
                                               into: responseType,

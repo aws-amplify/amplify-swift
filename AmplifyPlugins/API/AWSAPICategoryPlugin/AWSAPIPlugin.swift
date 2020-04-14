@@ -54,7 +54,7 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin {
         }
     }
 
-    public init(schema: DataStoreSchema? = nil,
+    public init(schema: ModelSchemaProvider? = nil,
                 sessionFactory: URLSessionBehaviorFactory? = nil) {
 
         self.mapper = OperationTaskMapper()

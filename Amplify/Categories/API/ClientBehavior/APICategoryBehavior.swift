@@ -6,7 +6,7 @@
 //
 
 /// Behavior of the API category that clients will use
-public typealias APICategoryClientBehavior =
+public typealias APICategoryBehavior =
     APICategoryRESTBehavior &
     APICategoryGraphQLBehavior &
     APICategoryInterceptorBehavior &

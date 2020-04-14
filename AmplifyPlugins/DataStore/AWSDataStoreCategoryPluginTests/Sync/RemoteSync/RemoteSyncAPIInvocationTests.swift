@@ -49,7 +49,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
         }
 
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStorePlugin(schema: TestDataStoreSchema(),
+        let dataStorePlugin = AWSDataStorePlugin(schema: TestSchemaProvider(),
                                                  storageEngine: storageEngine,
                                                  dataStorePublisher: dataStorePublisher)
 

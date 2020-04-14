@@ -91,15 +91,24 @@ class SyncMutationToCloudOperation: Operation {
 
     func createAPIRequest(mutationType: GraphQLMutationType) -> GraphQLRequest<MutationSync<AnyModel>>? {
         let request: GraphQLRequest<MutationSync<AnyModel>>
+
         do {
+            var graphQLFilter: GraphQLFilter?
+            if let graphQLFilterJSON = mutationEvent.graphQLFilterJSON {
+                graphQLFilter = try GraphQLFilterConverter.fromJSON(graphQLFilterJSON)
+            }
+
             switch mutationType {
             case .delete:
                 request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: mutationEvent.modelName,
                                                                             id: mutationEvent.modelId,
+                                                                            where: graphQLFilter,
                                                                             version: mutationEvent.version)
             case .update:
                 let model = try mutationEvent.decodeModel()
-                request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model, version: mutationEvent.version)
+                request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
+                                                                            where: graphQLFilter,
+                                                                            version: mutationEvent.version)
             case .create:
                 let model = try mutationEvent.decodeModel()
                 request = GraphQLRequest<MutationSyncResult>.createMutation(of: model, version: mutationEvent.version)
@@ -148,19 +157,7 @@ class SyncMutationToCloudOperation: Operation {
             return
         }
 
-        // TODO: Wire in actual event validation
-
-        // This doesn't belong here--need to add a `delete` API to the MutationEventSource and pass a
-        // reference into the mutation queue.
-        Amplify.DataStore.delete(mutationEvent) { result in
-            switch result {
-            case .failure(let dataStoreError):
-                let apiError = APIError.pluginError(dataStoreError)
-                self.finish(result: .failed(apiError))
-            case .success:
-                self.finish(result: asyncEvent)
-            }
-        }
+        finish(result: asyncEvent)
     }
 
     private func resolveReachabilityPublisher(request: GraphQLRequest<MutationSync<AnyModel>>) {

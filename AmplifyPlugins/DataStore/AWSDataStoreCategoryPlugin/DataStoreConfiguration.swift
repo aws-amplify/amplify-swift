@@ -32,11 +32,11 @@ public enum DataStoreConflictHandlerResult {
     /// Discard the local changes in favor of the remote ones.
     case discard
 
-    /// Keep the local changes.
+    /// Keep the local changes (semantic shortcut to `retry(local)`).
     case keep
 
     /// Return a new `Model` instance that should used instead of the local and remote changes.
-    case new(Model)
+    case retry(Model)
 }
 
 /// The `DataStore` plugin configuration object.
@@ -44,16 +44,16 @@ public struct DataStoreConfiguration {
 
     /// A callback function called on unhandled errors
     public let errorHandler: DataStoreErrorHandler
-    
+
     /// A callback called when a conflict could not be resolved by the service
     public let conflictHandler: DataStoreConflictHandler
-    
+
     /// How often the sync engine will run (in seconds)
     public let syncInterval: TimeInterval
-    
+
     /// The number of records to sync per execution
     public let syncMaxRecords: UInt
-    
+
     /// The page size of each sync execution
     public let syncPageSize: UInt
 
@@ -90,7 +90,9 @@ extension DataStoreConfiguration {
         errorHandler: @escaping DataStoreErrorHandler = { error in
             Amplify.Logging.error(error: error)
         },
-        conflictHandler: @escaping DataStoreConflictHandler,
+        conflictHandler: @escaping DataStoreConflictHandler = { _, resolve  in
+            resolve(.discard)
+        },
         syncInterval: TimeInterval = DataStoreConfiguration.defaultSyncInterval,
         syncMaxRecords: UInt = DataStoreConfiguration.defaultSyncMaxRecords,
         syncPageSize: UInt = DataStoreConfiguration.defaultSyncPageSize
@@ -104,9 +106,7 @@ extension DataStoreConfiguration {
 
     /// The default configuration.
     public static var `default`: DataStoreConfiguration {
-        .custom(conflictHandler: { _, resolve  in
-            resolve(.discard)
-        })
+        .custom()
     }
 
 }

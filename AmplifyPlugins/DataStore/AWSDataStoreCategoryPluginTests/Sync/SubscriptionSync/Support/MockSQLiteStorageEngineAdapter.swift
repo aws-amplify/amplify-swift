@@ -100,7 +100,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         return []
     }
 
-    func exists(_ modelType: Model.Type, withId id: Model.Identifier) throws -> Bool {
+    func exists(_ modelType: Model.Type, withId id: Model.Identifier, predicate: QueryPredicate?) throws -> Bool {
         XCTFail("Not expected to execute")
         return true
     }
@@ -114,7 +114,9 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         completion(resultForSave!)
     }
 
-    func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
+    func save<M: Model>(_ model: M,
+                        condition: QueryPredicate?,
+                        completion: @escaping DataStoreCallback<M>) {
         if let responder = responders[.saveModelCompletion] as? SaveModelCompletionResponder<M> {
             responder.callback((model, completion))
             return
@@ -186,7 +188,7 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     func setUp(models: [Model.Type]) throws {
     }
 
-    func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
+    func save<M: Model>(_ model: M, condition: QueryPredicate?, completion: @escaping DataStoreCallback<M>) {
         XCTFail("Not expected to execute")
     }
 

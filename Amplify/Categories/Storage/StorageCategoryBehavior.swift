@@ -8,7 +8,7 @@
 import Foundation
 
 /// Behavior of the Storage category that clients will use
-public protocol StorageCategoryClientBehavior {
+public protocol StorageCategoryBehavior {
     /// Retrieve the remote URL for the object from storage.
     ///
     /// - Parameters:

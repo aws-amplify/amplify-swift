@@ -24,6 +24,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     }
 
     func save<M: Model>(_ model: M,
+                        where condition: QueryPredicate? = nil,
                         completion: (DataStoreResult<M>) -> Void) {
         notify("save")
     }

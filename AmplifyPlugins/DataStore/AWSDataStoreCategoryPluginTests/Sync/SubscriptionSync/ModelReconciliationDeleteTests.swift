@@ -51,7 +51,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         apiPlugin.responders[.subscribeRequestListener] = responder
 
         tryOrFail {
-            try setUpDataStore(schema: MockDataStoreSchema())
+            try setUpDataStore(schema: MockModelSchemaProvider())
             mockRemoteSyncEngineFor_testUpdateAfterDelete()
             try startAmplifyAndWaitForSync()
         }
@@ -139,7 +139,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         apiPlugin.responders[.subscribeRequestListener] = responder
 
         tryOrFail {
-            try setUpDataStore(schema: MockDataStoreSchema())
+            try setUpDataStore(schema: MockModelSchemaProvider())
             mockRemoteSyncEngineFor_testDeleteWithNoLocalModel()
             try startAmplifyAndWaitForSync()
         }
