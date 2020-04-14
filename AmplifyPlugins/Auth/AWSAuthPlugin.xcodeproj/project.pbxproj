@@ -17,9 +17,7 @@
 		B49FAA2424451A22001868ED /* AWSAuthPlugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49FAA2324451A22001868ED /* AWSAuthPlugin+Reset.swift */; };
 		B49FAA2624451AEF001868ED /* AWSAuthPlugin+Configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49FAA2524451AEF001868ED /* AWSAuthPlugin+Configure.swift */; };
 		B49FAA2A24451D37001868ED /* AuthPluginConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49FAA2924451D37001868ED /* AuthPluginConstants.swift */; };
-		B49FAA2E244523B3001868ED /* AWSAuthConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49FAA2D244523B3001868ED /* AWSAuthConfiguration.swift */; };
 		B49FAA302445275F001868ED /* AuthPluginErrorConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49FAA2F2445275F001868ED /* AuthPluginErrorConstants.swift */; };
-		B49FAA322445294E001868ED /* AWSAuthConfiguration+MobileClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49FAA312445294E001868ED /* AWSAuthConfiguration+MobileClient.swift */; };
 		B49FAA3624456995001868ED /* AWSMobileClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49FAA3524456995001868ED /* AWSMobileClientBehavior.swift */; };
 		B49FAA3824456AAA001868ED /* AWSMobileClientAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49FAA3724456AAA001868ED /* AWSMobileClientAdapter.swift */; };
 		B49FAA4124457039001868ED /* AuthorizationProviderBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49FAA3F24457039001868ED /* AuthorizationProviderBehavior.swift */; };
@@ -72,9 +70,7 @@
 		B49FAA2324451A22001868ED /* AWSAuthPlugin+Reset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAuthPlugin+Reset.swift"; sourceTree = "<group>"; };
 		B49FAA2524451AEF001868ED /* AWSAuthPlugin+Configure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAuthPlugin+Configure.swift"; sourceTree = "<group>"; };
 		B49FAA2924451D37001868ED /* AuthPluginConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPluginConstants.swift; sourceTree = "<group>"; };
-		B49FAA2D244523B3001868ED /* AWSAuthConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthConfiguration.swift; sourceTree = "<group>"; };
 		B49FAA2F2445275F001868ED /* AuthPluginErrorConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPluginErrorConstants.swift; sourceTree = "<group>"; };
-		B49FAA312445294E001868ED /* AWSAuthConfiguration+MobileClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAuthConfiguration+MobileClient.swift"; sourceTree = "<group>"; };
 		B49FAA3524456995001868ED /* AWSMobileClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSMobileClientBehavior.swift; sourceTree = "<group>"; };
 		B49FAA3724456AAA001868ED /* AWSMobileClientAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSMobileClientAdapter.swift; sourceTree = "<group>"; };
 		B49FAA3F24457039001868ED /* AuthorizationProviderBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationProviderBehavior.swift; sourceTree = "<group>"; };
@@ -169,7 +165,6 @@
 				B49FAA2524451AEF001868ED /* AWSAuthPlugin+Configure.swift */,
 				B49FAA2324451A22001868ED /* AWSAuthPlugin+Reset.swift */,
 				B49FAA3E24457039001868ED /* Dependency */,
-				B49FAA2B24452398001868ED /* Models */,
 				B49FAA4724458011001868ED /* Operations */,
 				B4FA3357241057E300E1C659 /* Resources */,
 				B49FAA3324456984001868ED /* Service */,
@@ -202,23 +197,6 @@
 				B49FAA2F2445275F001868ED /* AuthPluginErrorConstants.swift */,
 			);
 			path = Constants;
-			sourceTree = "<group>";
-		};
-		B49FAA2B24452398001868ED /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				B49FAA2C244523A1001868ED /* Configuration */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		B49FAA2C244523A1001868ED /* Configuration */ = {
-			isa = PBXGroup;
-			children = (
-				B49FAA2D244523B3001868ED /* AWSAuthConfiguration.swift */,
-				B49FAA312445294E001868ED /* AWSAuthConfiguration+MobileClient.swift */,
-			);
-			path = Configuration;
 			sourceTree = "<group>";
 		};
 		B49FAA3324456984001868ED /* Service */ = {
@@ -803,10 +781,8 @@
 			files = (
 				B49FAA46244570F9001868ED /* AuthenticationProviderAdapter.swift in Sources */,
 				B4F3EA38243A753500F23296 /* AWSAuthPlugin.swift in Sources */,
-				B49FAA322445294E001868ED /* AWSAuthConfiguration+MobileClient.swift in Sources */,
 				B49FAA4224457039001868ED /* AuthenticationProviderBehavior.swift in Sources */,
 				B49FAA2624451AEF001868ED /* AWSAuthPlugin+Configure.swift in Sources */,
-				B49FAA2E244523B3001868ED /* AWSAuthConfiguration.swift in Sources */,
 				B49FAA3824456AAA001868ED /* AWSMobileClientAdapter.swift in Sources */,
 				B49FAA22244519C3001868ED /* AWSAuthPlugin+ClientBehavior.swift in Sources */,
 				B49FAA3624456995001868ED /* AWSMobileClientBehavior.swift in Sources */,

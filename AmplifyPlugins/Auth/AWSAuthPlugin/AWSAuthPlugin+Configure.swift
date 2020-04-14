@@ -23,8 +23,10 @@ extension AWSAuthPlugin {
                                                  AuthPluginErrorConstants.decodeConfigurationError.recoverySuggestion)
         }
         do {
+            // Convert the JSONValue to [String: Any] dictionary to be used by AWSMobileClient
             let configurationData =  try JSONEncoder().encode(jsonValueConfiguration)
-            let authConfig = try JSONDecoder().decode(AWSAuthConfiguration.self, from: configurationData)
+            let authConfig = (try? JSONSerialization.jsonObject(with: configurationData, options: [])
+                as? [String: Any]) ?? [:]
             let mobileClient = AWSMobileClientAdapter(configuration: authConfig)
             try mobileClient.initialize()
             let authenticationProvider = AuthenticationProviderAdapter(awsmobileClient: mobileClient)

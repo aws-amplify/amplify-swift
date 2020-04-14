@@ -16,7 +16,12 @@ struct AuthPluginErrorConstants {
         "Unable to decode configuration",
         "Make sure the plugin configuration is JSONValue")
 
+    static let configurationObjectExpected: AuthPluginErrorString = (
+        "Configuration was not a dictionary literal",
+        "Make sure the value for the plugin is a dictionary literal")
+
+
     static let mobileClientInitializeError: AuthPluginErrorString = (
-    "Unable to initialize the underlying AWSMobileClient",
-    "Make sure that the necessary configuration are present in the configuration file")
+        "Unable to initialize the underlying AWSMobileClient",
+        "Make sure that the necessary configuration are present in the configuration file")
 }

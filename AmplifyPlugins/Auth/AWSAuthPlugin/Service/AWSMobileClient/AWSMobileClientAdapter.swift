@@ -12,8 +12,8 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
 
     let awsMobileClient: AWSMobileClient
 
-    init(configuration: AWSAuthConfiguration) {
-        self.awsMobileClient = AWSMobileClient.init(configuration: configuration.awsMobileClientConfiguration())
+    init(configuration: [String: Any]) {
+        self.awsMobileClient = AWSMobileClient.init(configuration: configuration)
     }
 
     func initialize() throws {
