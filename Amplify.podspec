@@ -22,5 +22,24 @@ Pod::Spec.new do |s|
   
   s.requires_arc = true
   s.source_files = 'Amplify/**/*.swift'
+  s.default_subspec = 'Default'
+  
+  s.subspec 'Default' do |default|
+    default.preserve_path = 'AmplifyTools'
+    default.script_phase = {
+      :name => 'Default',
+      :script => 'echo "no-op"',
+      :execution_position => :before_compile
+    }
+  end
+
+  s.subspec 'Tools' do |ss|
+    ss.preserve_path = 'AmplifyTools'
+    ss.script_phase = {
+      :name => 'AmplifyTools',
+      :script => 'mkdir -p ${PODS_ROOT}/AmplifyTools; cp -vf "${PODS_TARGET_SRCROOT}/AmplifyTools/amplify-tools.sh" ${PODS_ROOT}/AmplifyTools/.',
+      :execution_position => :before_compile
+    }
+  end
 
 end
