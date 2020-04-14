@@ -20,7 +20,14 @@ final class InitialSyncOperation: AsynchronousOperation {
     private let modelType: Model.Type
     private let completion: AWSInitialSyncOrchestrator.SyncOperationResultHandler
 
-    private var lastSyncTime: Int?
+    private var recordsReceived: UInt
+
+    private var syncMaxRecords: UInt {
+        return dataStoreConfiguration.syncMaxRecords
+    }
+    private var syncPageSize: UInt {
+        return dataStoreConfiguration.syncPageSize
+    }
 
     init(modelType: Model.Type,
          api: APICategoryGraphQLBehavior?,
@@ -34,6 +41,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         self.storageAdapter = storageAdapter
         self.dataStoreConfiguration = dataStoreConfiguration
         self.completion = completion
+        self.recordsReceived = 0
     }
 
     override func main() {
@@ -43,19 +51,19 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
 
         log.info("Beginning sync for \(modelType.modelName)")
-        setUpLastSyncTime()
-        query()
+        let lastSyncTime = getLastSyncTime()
+        query(lastSyncTime: lastSyncTime)
     }
 
-    private func setUpLastSyncTime() {
+    private func getLastSyncTime() -> Int? {
         guard !isCancelled else {
             super.finish()
-            return
+            return nil
         }
 
         let lastSyncMetadata = getLastSyncMetadata()
         guard let lastSync = lastSyncMetadata?.lastSync else {
-            return
+            return nil
         }
 
         //TODO: Update to use TimeInterval.milliseconds when it is pushed to master branch
@@ -64,14 +72,11 @@ final class InitialSyncOperation: AsynchronousOperation {
         let secondsSinceLastSync = (lastSyncDate.timeIntervalSinceNow * -1)
         if secondsSinceLastSync < 0 {
             log.info("lastSyncTime was in the future, assuming base query")
-            lastSyncTime = nil
-            return
+            return nil
         }
 
         let shouldDoDeltaQuery = secondsSinceLastSync < dataStoreConfiguration.syncInterval
-        if shouldDoDeltaQuery {
-            lastSyncTime = lastSync
-        }
+        return shouldDoDeltaQuery ? lastSync : nil
     }
 
     private func getLastSyncMetadata() -> ModelSyncMetadata? {
@@ -95,7 +100,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     }
 
-    private func query(nextToken: String? = nil) {
+    private func query(lastSyncTime: Int?, nextToken: String? = nil) {
         guard !isCancelled else {
             super.finish()
             return
@@ -105,8 +110,10 @@ final class InitialSyncOperation: AsynchronousOperation {
             finish(result: .failure(DataStoreError.nilAPIHandle()))
             return
         }
-
+        let minSyncPageSize = Int(min(syncMaxRecords - recordsReceived, syncPageSize))
+        let limit = minSyncPageSize < 0 ? Int(syncPageSize) : minSyncPageSize
         let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: modelType,
+                                                                limit: limit,
                                                                 nextToken: nextToken,
                                                                 lastSync: lastSyncTime)
 
@@ -116,7 +123,7 @@ final class InitialSyncOperation: AsynchronousOperation {
                 // TODO: Retry query on error
                 self.finish(result: .failure(DataStoreError.api(apiError)))
             case .completed(let graphQLResult):
-                self.handleQueryResults(graphQLResult: graphQLResult)
+                self.handleQueryResults(lastSyncTime: lastSyncTime, graphQLResult: graphQLResult)
             default:
                 break
             }
@@ -125,7 +132,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     /// Disposes of the query results: Stops if error, reconciles results if success, and kick off a new query if there
     /// is a next token
-    private func handleQueryResults(graphQLResult: Result<SyncQueryResult, GraphQLResponseError<SyncQueryResult>>) {
+    private func handleQueryResults(lastSyncTime: Int?, graphQLResult: Result<SyncQueryResult, GraphQLResponseError<SyncQueryResult>>) {
         guard !isCancelled else {
             super.finish()
             return
@@ -146,23 +153,23 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
 
         let items = syncQueryResult.items
-        lastSyncTime = syncQueryResult.startedAt
+        recordsReceived += UInt(items.count)
 
         for item in items {
             reconciliationQueue.offer(item)
         }
 
-        if let nextToken = syncQueryResult.nextToken {
+        if let nextToken = syncQueryResult.nextToken, recordsReceived < syncMaxRecords {
             DispatchQueue.global().async {
-                self.query(nextToken: nextToken)
+                self.query(lastSyncTime: lastSyncTime, nextToken: nextToken)
             }
         } else {
-            updateModelSyncMetadata()
+            updateModelSyncMetadata(lastSyncTime: syncQueryResult.startedAt)
         }
 
     }
 
-    private func updateModelSyncMetadata() {
+    private func updateModelSyncMetadata(lastSyncTime: Int?) {
         guard !isCancelled else {
             super.finish()
             return
