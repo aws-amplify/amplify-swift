@@ -9,6 +9,7 @@ import Amplify
 import Foundation
 import AWSCore
 import AWSPluginsCore
+import AppSyncRealTimeClient
 
 final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscriptionOperation<R> {
 
@@ -37,12 +38,11 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
     override public func cancel() {
         if let subscriptionItem = subscriptionItem, let subscriptionConnection = subscriptionConnection {
-            switch subscriptionItem.subscriptionConnectionState {
-            case .connecting, .connected:
-                subscriptionConnection.unsubscribe(item: subscriptionItem)
-            case .disconnected:
-                super.cancel()
-            }
+            subscriptionConnection.unsubscribe(item: subscriptionItem)
+            let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.disconnected)
+            dispatch(event: .inProcess(subscriptionEvent))
+            dispatch(event: .completed(()))
+            finish()
         } else {
             super.cancel()
         }
@@ -84,7 +84,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         // Retrieve the subscription connection
         do {
             subscriptionConnection = try subscriptionConnectionFactory.getOrCreateConnection(for: endpointConfig,
-                                                                                 authService: authService)
+                                                                                             authService: authService)
         } catch {
             let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)
             dispatch(event: .failed(error))
@@ -93,33 +93,40 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         }
 
         // Create subscription
+
         subscriptionItem = subscriptionConnection?.subscribe(requestString: request.document,
                                                              variables: request.variables,
-                                                             onEvent: { [weak self] event in
+                                                             eventHandler: { [weak self] event, _ in
             self?.onAsyncSubscriptionEvent(event: event)
         })
 
     }
 
-    private func onAsyncSubscriptionEvent(event: AsyncEvent<SubscriptionEvent<Data>, Void, APIError>) {
+    private func onAsyncSubscriptionEvent(event: SubscriptionItemEvent) {
         switch event {
-        case .inProcess(let subscriptionEvent):
-            onSubscriptionEvent(subscriptionEvent)
+        case .connection(let subscriptionConnectionEvent):
+            onSubscriptionEvent(subscriptionConnectionEvent)
+        case .data(let data):
+            onGraphQLResponseData(data)
         case .failed(let error):
-            dispatch(event: .failed(error))
-            finish()
-        default:
-            dispatch(event: .failed(APIError.unknown("Unknown subscription event", "", nil)))
+            dispatch(event: .failed(APIError.operationError("subscription item event failed with error", "", error)))
             finish()
         }
     }
 
-    private func onSubscriptionEvent(_ subscriptionEvent: SubscriptionEvent<Data>) {
-        switch subscriptionEvent {
-        case .connection(let subscriptionConnectionState):
-            onSubscriptionConnectionState(subscriptionConnectionState)
-        case .data(let graphQLResponseData):
-            onGraphQLResponseData(graphQLResponseData)
+    private func onSubscriptionEvent(_ subscriptionConnectionEvent: SubscriptionConnectionEvent) {
+        switch subscriptionConnectionEvent {
+        case .connecting:
+            let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.connecting)
+            dispatch(event: .inProcess(subscriptionEvent))
+        case .connected:
+            let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.connected)
+            dispatch(event: .inProcess(subscriptionEvent))
+        case .disconnected:
+            let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.disconnected)
+            dispatch(event: .inProcess(subscriptionEvent))
+            dispatch(event: .completed(()))
+            finish()
         }
     }
 

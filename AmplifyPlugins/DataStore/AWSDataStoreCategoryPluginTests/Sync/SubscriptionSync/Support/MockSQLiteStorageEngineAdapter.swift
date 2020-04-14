@@ -67,6 +67,12 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         XCTFail("Not expected to execute")
     }
 
+    func delete<M: Model>(_ modelType: M.Type,
+                          predicate: QueryPredicate,
+                          completion: @escaping DataStoreCallback<[M]>) {
+        XCTFail("Not expected to execute")
+    }
+
     func delete(untypedModelType modelType: Model.Type,
                 withId id: String,
                 completion: (Result<Void, DataStoreError>) -> Void) {
@@ -82,7 +88,10 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         completion(result)
     }
 
-    func query<M: Model>(_ modelType: M.Type, predicate: QueryPredicate?, completion: DataStoreCallback<[M]>) {
+    func query<M: Model>(_ modelType: M.Type,
+                         predicate: QueryPredicate?,
+                         paginationInput: QueryPaginationInput?,
+                         completion: DataStoreCallback<[M]>) {
         XCTFail("Not expected to execute")
     }
 
@@ -91,7 +100,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         return []
     }
 
-    func exists(_ modelType: Model.Type, withId id: Model.Identifier) throws -> Bool {
+    func exists(_ modelType: Model.Type, withId id: Model.Identifier, predicate: QueryPredicate?) throws -> Bool {
         XCTFail("Not expected to execute")
         return true
     }
@@ -105,7 +114,9 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         completion(resultForSave!)
     }
 
-    func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
+    func save<M: Model>(_ model: M,
+                        condition: QueryPredicate?,
+                        completion: @escaping DataStoreCallback<M>) {
         if let responder = responders[.saveModelCompletion] as? SaveModelCompletionResponder<M> {
             responder.callback((model, completion))
             return
@@ -123,6 +134,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate?,
+                         paginationInput: QueryPaginationInput?,
                          additionalStatements: String?,
                          completion: DataStoreCallback<[M]>) {
         if let responder = responders[.queryModelTypePredicateAdditionalStatements]
@@ -151,6 +163,13 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         listenerForModelSyncMetadata?()
         return resultForQueryModelSyncMetadata
     }
+
+    func transaction(_ basicClosure: () throws -> Void) throws {
+        XCTFail("Not expected to execute")
+    }
+    func clear(completion: @escaping DataStoreCallback<Void>) {
+        XCTFail("Not expected to execute")
+    }
 }
 
 class MockStorageEngineBehavior: StorageEngineBehavior {
@@ -169,7 +188,7 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     func setUp(models: [Model.Type]) throws {
     }
 
-    func save<M: Model>(_ model: M, completion: @escaping DataStoreCallback<M>) {
+    func save<M: Model>(_ model: M, condition: QueryPredicate?, completion: @escaping DataStoreCallback<M>) {
         XCTFail("Not expected to execute")
     }
 
@@ -179,7 +198,20 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
         completion(.successfulVoid)
     }
 
-    func query<M: Model>(_ modelType: M.Type, predicate: QueryPredicate?, completion: DataStoreCallback<[M]>) {
+    func delete<M: Model>(_ modelType: M.Type,
+                          predicate: QueryPredicate,
+                          completion: @escaping DataStoreCallback<[M]>) {
+        XCTFail("Not expected to execute")
+    }
+
+    func query<M: Model>(_ modelType: M.Type,
+                         predicate: QueryPredicate?,
+                         paginationInput: QueryPaginationInput?,
+                         completion: DataStoreCallback<[M]>) {
+        //TODO: Find way to mock this
+    }
+
+    func clear(completion: @escaping DataStoreCallback<Void>) {
         //TODO: Find way to mock this
     }
 }

@@ -28,7 +28,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         }
         ModelRegistry.register(modelType: Post.self)
 
-        let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now)
+        let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now())
         let anyPost = AnyModel(testPost)
         anyPostMetadata = MutationSyncMetadata(id: "1",
                                                deleted: false,
@@ -36,7 +36,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                                                version: 1)
         anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
 
-        let testDelete = Post(id: "2", title: "post2", content: "content2", createdAt: .now)
+        let testDelete = Post(id: "2", title: "post2", content: "content2", createdAt: .now())
         let anyPostDelete = AnyModel(testDelete)
         let anyPostDeleteMetadata = MutationSyncMetadata(id: "2",
                                                          deleted: true,
@@ -258,8 +258,9 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         let hubExpect = expectation(description: "Hub is notified")
         let notifyExpect = expectation(description: "action .notified notified")
         let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
-            XCTAssertEqual(payload.eventName, "DataStore.syncReceived")
-            hubExpect.fulfill()
+            if payload.eventName == "DataStore.syncReceived" {
+                hubExpect.fulfill()
+            }
         }
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, ReconcileAndLocalSaveOperation.Action.notified)

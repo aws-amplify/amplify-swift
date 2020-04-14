@@ -92,11 +92,9 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             .publisher
             .sink(receiveCompletion: { [weak self] completion in
                 self?.receiveCompletion(completion)
-                }, receiveValue: { [weak self] remoteModel in
-                    self?.incomingSubscriptionEventQueue.addOperation(CancelAwareBlockOperation {
-                        self?.enqueue(remoteModel)
-                    })
-            })
+                }, receiveValue: { [weak self] receiveValue in
+                    self?.receive(receiveValue)
+                })
     }
 
     /// (Re)starts the incoming subscription event queue.
@@ -116,6 +114,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     func cancel() {
         incomingEventsSink?.cancel()
         incomingEventsSink = nil
+        incomingSubscriptionEvents.cancel()
         reconcileAndSaveQueue.cancelAllOperations()
         incomingSubscriptionEventQueue.cancelAllOperations()
     }
@@ -131,6 +130,16 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         reconcileAndSaveQueue.addOperation(reconcileOp)
     }
 
+    private func receive(_ receive: IncomingSubscriptionEventPublisherEvent) {
+        switch receive {
+        case .mutationEvent(let remoteModel):
+            incomingSubscriptionEventQueue.addOperation(CancelAwareBlockOperation {
+                self.enqueue(remoteModel)
+            })
+        case .connectionConnected:
+            modelReconciliationQueueSubject.send(.connected(modelName))
+        }
+    }
     private func receiveCompletion(_ completion: Subscribers.Completion<DataStoreError>) {
         switch completion {
         case .finished:

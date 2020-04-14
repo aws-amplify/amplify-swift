@@ -9,10 +9,16 @@ import Amplify
 import AWSPluginsCore
 import Combine
 
+enum IncomingAsyncSubscriptionEvent {
+    case payload(MutationSync<AnyModel>)
+    case connectionConnected
+    case connectionDisconnected
+}
+
 // swiftlint:disable type_name
 /// Subscribes to an IncomingSubscriptionAsyncEventQueue, and publishes AnyModel
 @available(iOS 13.0, *)
-final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
+final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber, Cancellable {
     // swiftlint:enable type_name
 
     typealias Input = IncomingAsyncSubscriptionEventPublisher.Event
@@ -21,14 +27,14 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
 
     var subscription: Subscription?
 
-    private let modelsFromSubscription: PassthroughSubject<Payload, DataStoreError>
+    private let modelsFromSubscription: PassthroughSubject<IncomingAsyncSubscriptionEvent, DataStoreError>
 
-    var publisher: AnyPublisher<Payload, DataStoreError> {
+    var publisher: AnyPublisher<IncomingAsyncSubscriptionEvent, DataStoreError> {
         modelsFromSubscription.eraseToAnyPublisher()
     }
 
     init() {
-        self.modelsFromSubscription = PassthroughSubject<Payload, DataStoreError>()
+        self.modelsFromSubscription = PassthroughSubject<IncomingAsyncSubscriptionEvent, DataStoreError>()
     }
 
     // MARK: - Subscriber
@@ -71,6 +77,14 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
             // Connection events are informational only at this level. The terminal state is represented at the
             // AsyncEvent Completion/Error
             log.info("connectionState now \(connectionState)")
+            switch connectionState {
+            case .connected:
+                modelsFromSubscription.send(.connectionConnected)
+            case .disconnected:
+                modelsFromSubscription.send(.connectionDisconnected)
+            default:
+                break
+            }
         case .data(let graphQLResponse):
             dispose(of: graphQLResponse)
         }
@@ -80,10 +94,15 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber {
         log.verbose("dispose(of graphQLResponse): \(graphQLResponse)")
         switch graphQLResponse {
         case .success(let mutationSync):
-            modelsFromSubscription.send(mutationSync)
+            modelsFromSubscription.send(.payload(mutationSync))
         case .failure(let failure):
             log.error(error: failure)
         }
+    }
+
+    func cancel() {
+        subscription?.cancel()
+        subscription = nil
     }
 
     func reset(onComplete: () -> Void) {

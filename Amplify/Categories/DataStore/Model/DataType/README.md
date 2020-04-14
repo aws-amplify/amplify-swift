@@ -40,18 +40,14 @@ Time:
 
 ```swift
 // current time plus 2 hours
-let time = Time.now + 2.hours
-// the idiomatic way
-let time = 2.hours.time(from: .now)
+let time = Time.now + .hours(2)
 ```
 
 Date/Time:
 
 ```swift
 // current date/time 2 weeks ago
-let datetime = DateTime.now - 2.weeks
-// the idiomatic way
-let datetime = 2.weeks.dateTime(to: .now)
+let datetime = DateTime.now - .weeks(2)
 ```
 
 #### 1.5. References

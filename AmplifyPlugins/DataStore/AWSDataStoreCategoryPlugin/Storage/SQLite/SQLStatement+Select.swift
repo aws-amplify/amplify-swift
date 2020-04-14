@@ -15,21 +15,28 @@ struct SelectStatement: SQLStatement {
 
     let modelType: Model.Type
     let conditionStatement: ConditionStatement?
+    let paginationInput: QueryPaginationInput?
 
+    // TODO remove this once sorting support is added to DataStore
     // Used by plugin to order and limit results for system table queries
     let additionalStatements: String?
+    let namespace = "root"
 
-    init(from modelType: Model.Type, predicate: QueryPredicate? = nil, additionalStatements: String? = nil) {
+    init(from modelType: Model.Type,
+         predicate: QueryPredicate? = nil,
+         paginationInput: QueryPaginationInput? = nil,
+         additionalStatements: String? = nil) {
         self.modelType = modelType
 
         var conditionStatement: ConditionStatement?
         if let predicate = predicate {
             let statement = ConditionStatement(modelType: modelType,
-                                               predicate: predicate)
+                                               predicate: predicate,
+                                               namespace: namespace[...])
             conditionStatement = statement
         }
         self.conditionStatement = conditionStatement
-
+        self.paginationInput = paginationInput
         self.additionalStatements = additionalStatements
     }
 
@@ -38,7 +45,7 @@ struct SelectStatement: SQLStatement {
         let fields = schema.columns
         let tableName = schema.name
         var columns = fields.map { field -> String in
-            return field.columnName(forNamespace: "root") + " " + field.columnAlias()
+            return field.columnName(forNamespace: namespace) + " " + field.columnAlias()
         }
 
         // eager load many-to-one/one-to-one relationships
@@ -85,6 +92,13 @@ struct SelectStatement: SQLStatement {
             sql = """
             \(sql)
             \(additionalStatements)
+            """
+        }
+
+        if let paginationInput = paginationInput {
+            sql = """
+            \(sql)
+            \(paginationInput.sqlStatement)
             """
         }
 

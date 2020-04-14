@@ -22,18 +22,25 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
                 withId id: Model.Identifier,
                 completion: DataStoreCallback<Void>)
 
+    func delete<M: Model>(_ modelType: M.Type,
+                          predicate: QueryPredicate,
+                          completion: @escaping DataStoreCallback<[M]>)
+
     func query(untypedModel modelType: Model.Type,
                predicate: QueryPredicate?,
                completion: DataStoreCallback<[Model]>)
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate?,
+                         paginationInput: QueryPaginationInput?,
                          additionalStatements: String?,
                          completion: DataStoreCallback<[M]>)
 
     // MARK: - Synchronous APIs
 
-    func exists(_ modelType: Model.Type, withId id: Model.Identifier) throws -> Bool
+    func exists(_ modelType: Model.Type,
+                withId id: Model.Identifier,
+                predicate: QueryPredicate?) throws -> Bool
 
     func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>]
 
@@ -43,4 +50,7 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
     func queryModelSyncMetadata(for modelType: Model.Type) throws -> ModelSyncMetadata?
 
+    func transaction(_ basicClosure: BasicThrowableClosure) throws
+
+    func clear(completion: @escaping DataStoreCallback<Void>)
 }

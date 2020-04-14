@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension HubCategory: HubCategoryClientBehavior {
+extension HubCategory: HubCategoryBehavior {
     public func dispatch(to channel: HubChannel, payload: HubPayload) {
         plugin.dispatch(to: channel, payload: payload)
     }

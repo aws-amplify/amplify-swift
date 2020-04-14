@@ -197,7 +197,7 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         try Amplify.DataStore.getPlugin(for: "MockSecondDataStoreCategoryPlugin")
-            .save(TestModel.make()) { _ in }
+            .save(TestModel.make(), where: nil) { _ in }
         waitForExpectations(timeout: 1.0)
     }
 

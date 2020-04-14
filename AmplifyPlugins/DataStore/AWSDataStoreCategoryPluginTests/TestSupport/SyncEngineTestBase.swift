@@ -7,6 +7,7 @@
 
 import SQLite
 import XCTest
+import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -23,6 +24,14 @@ class SyncEngineTestBase: XCTestCase {
 
     /// Used for DB manipulation to mock starting data for tests
     var storageAdapter: SQLiteStorageEngineAdapter!
+
+    var stateMachine: StateMachine<RemoteSyncEngine.State, RemoteSyncEngine.Action>!
+
+    var reachabilityPublisher: PassthroughSubject<ReachabilityUpdate, Never>?
+
+    var syncEngine: RemoteSyncEngineBehavior!
+
+    var remoteSyncEngineSink: AnyCancellable!
 
     // MARK: - Setup
 
@@ -67,13 +76,32 @@ class SyncEngineTestBase: XCTestCase {
     ) throws {
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
+        stateMachine = StateMachine(initialState: .notStarted,
+                                    resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
 
-        let syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
-                                          outgoingMutationQueue: mutationQueue,
-                                          mutationEventIngester: mutationDatabaseAdapter,
-                                          mutationEventPublisher: awsMutationEventPublisher,
-                                          initialSyncOrchestratorFactory: initialSyncOrchestratorFactory,
-                                          reconciliationQueueFactory: AWSIncomingEventReconciliationQueue.factory)
+        syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
+                                      outgoingMutationQueue: mutationQueue,
+                                      mutationEventIngester: mutationDatabaseAdapter,
+                                      mutationEventPublisher: awsMutationEventPublisher,
+                                      initialSyncOrchestratorFactory: initialSyncOrchestratorFactory,
+                                      reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
+                                      stateMachine: stateMachine,
+                                      networkReachabilityPublisher: reachabilityPublisher?.eraseToAnyPublisher(),
+                                      requestRetryablePolicy: MockRequestRetryablePolicy())
+        remoteSyncEngineSink = syncEngine
+            .publisher
+            .sink(receiveCompletion: {_ in },
+                  receiveValue: { event in
+                    switch event {
+                    case .mutationsPaused:
+                        //Assume AWSIncomingEventReconciliationQueue succeeds in establishing connections
+                        DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
+                            MockAWSIncomingEventReconciliationQueue.mockSend(event: .initialized)
+                        }
+                    default:
+                        break
+                    }
+        })
 
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           syncEngine: syncEngine)
@@ -123,7 +151,7 @@ class SyncEngineTestBase: XCTestCase {
                                               modelName: post.modelName,
                                               json: post.toJSON(),
                                               mutationType: mutationType,
-                                              createdAt: .now,
+                                              createdAt: .now(),
                                               inProcess: inProcess)
 
         let mutationEventSaved = expectation(description: "Preloaded mutation event saved")

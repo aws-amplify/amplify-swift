@@ -24,6 +24,7 @@ class LocalSubscriptionTests: XCTestCase {
 
         let storageAdapter: SQLiteStorageEngineAdapter
         let storageEngine: StorageEngine
+        var stateMachine: MockStateMachine<RemoteSyncEngine.State, RemoteSyncEngine.Action>!
         do {
             let connection = try Connection(.inMemory)
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
@@ -32,13 +33,17 @@ class LocalSubscriptionTests: XCTestCase {
             let outgoingMutationQueue = NoOpMutationQueue()
             let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
             let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
+            stateMachine = MockStateMachine(initialState: .notStarted, resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
 
             let syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
                                              outgoingMutationQueue: outgoingMutationQueue,
                                              mutationEventIngester: mutationDatabaseAdapter,
                                              mutationEventPublisher: awsMutationEventPublisher,
                                              initialSyncOrchestratorFactory: NoOpInitialSyncOrchestrator.factory,
-                                             reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory)
+                                             reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
+                                             stateMachine: stateMachine,
+                                             networkReachabilityPublisher: nil,
+                                             requestRetryablePolicy: MockRequestRetryablePolicy())
 
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           syncEngine: syncEngine)
@@ -95,7 +100,7 @@ class LocalSubscriptionTests: XCTestCase {
         let model = Post(id: UUID().uuidString,
                          title: "Test Post",
                          content: "Test Post Content",
-                         createdAt: .now,
+                         createdAt: .now(),
                          updatedAt: nil,
                          draft: false,
                          rating: nil,
@@ -131,7 +136,7 @@ class LocalSubscriptionTests: XCTestCase {
         let model = Post(id: UUID().uuidString,
                          title: "Test Post",
                          content: "Test Post Content",
-                         createdAt: .now,
+                         createdAt: .now(),
                          updatedAt: nil,
                          draft: false,
                          rating: nil,
@@ -153,7 +158,7 @@ class LocalSubscriptionTests: XCTestCase {
         let model = Post(id: UUID().uuidString,
                          title: "Test Post",
                          content: originalContent,
-                         createdAt: .now,
+                         createdAt: .now(),
                          updatedAt: nil,
                          draft: false,
                          rating: nil,
@@ -169,7 +174,7 @@ class LocalSubscriptionTests: XCTestCase {
         let newContent = "Updated content as of \(Date())"
         var newModel = model
         newModel.content = newContent
-        newModel.updatedAt = .now
+        newModel.updatedAt = .now()
 
         let receivedMutationEvent = expectation(description: "Received mutation event")
 
@@ -218,7 +223,7 @@ class LocalSubscriptionTests: XCTestCase {
 
         let model = Post(title: "Test Post",
                          content: "Test Post Content",
-                         createdAt: .now)
+                         createdAt: .now())
 
         Amplify.DataStore.save(model) { _ in }
         Amplify.DataStore.delete(model) { _ in }

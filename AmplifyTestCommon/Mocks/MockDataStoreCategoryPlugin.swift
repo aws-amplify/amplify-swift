@@ -9,6 +9,7 @@ import Amplify
 import Combine
 
 class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
+
     var key: String {
         return "MockDataStoreCategoryPlugin"
     }
@@ -23,6 +24,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     }
 
     func save<M: Model>(_ model: M,
+                        where condition: QueryPredicate? = nil,
                         completion: (DataStoreResult<M>) -> Void) {
         notify("save")
     }
@@ -35,6 +37,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
     func query<M: Model>(_ modelType: M.Type,
                          where predicate: QueryPredicateFactory?,
+                         paginate paginationInput: QueryPaginationInput?,
                          completion: (DataStoreResult<[M]>) -> Void) {
         notify("queryByPredicate")
     }
@@ -48,6 +51,16 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
                           withId id: String,
                           completion: (DataStoreResult<Void>) -> Void) {
         notify("deleteById")
+    }
+
+    func delete<M: Model>(_ model: M.Type,
+                          where predicate: @escaping QueryPredicateFactory,
+                          completion: @escaping DataStoreCallback<Void>) {
+        notify("deleteByPredicate")
+    }
+
+    func clear(completion: @escaping DataStoreCallback<Void>) {
+        notify("clear")
     }
 
     @available(iOS 13.0, *)

@@ -34,6 +34,7 @@ final class AWSMutationEventPublisher: Publisher {
 
     func cancel() {
         subscription = nil
+        eventSource = nil
     }
 
     func request(_ demand: Subscribers.Demand) {

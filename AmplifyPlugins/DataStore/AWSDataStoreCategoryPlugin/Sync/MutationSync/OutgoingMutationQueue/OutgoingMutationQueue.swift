@@ -13,7 +13,8 @@ import Foundation
 @available(iOS 13.0, *)
 protocol OutgoingMutationQueueBehavior: class {
     func pauseSyncingToCloud()
-    func startSyncingToCloud(api: APICategoryGraphQLBehavior, mutationEventPublisher: MutationEventPublisher)
+    func startSyncingToCloud(api: APICategoryGraphQLBehavior,
+                             mutationEventPublisher: MutationEventPublisher)
 }
 
 @available(iOS 13.0, *)
@@ -60,7 +61,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     // MARK: - Public API
 
-    func startSyncingToCloud(api: APICategoryGraphQLBehavior, mutationEventPublisher: MutationEventPublisher) {
+    func startSyncingToCloud(api: APICategoryGraphQLBehavior,
+                             mutationEventPublisher: MutationEventPublisher) {
         log.verbose(#function)
         stateMachine.notify(action: .receivedStart(api, mutationEventPublisher))
     }
@@ -92,6 +94,9 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         case .requestingEvent:
             requestEvent()
 
+        case .resumingMutationQueue:
+            resumeSyncingToCloud()
+
         case .inError(let error):
             // Maybe we have to notify the Hub?
             log.error(error: error)
@@ -99,15 +104,23 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         case .notInitialized,
              .notStarted,
              .finished,
-             .waitingForEventToProcess:
+             .waitingForEventToProcess,
+             .resumed:
             break
         }
 
     }
 
+    func resumeSyncingToCloud() {
+        log.verbose(#function)
+        operationQueue.isSuspended = false
+        stateMachine.notify(action: .resumedSyncingToCloud)
+    }
+
     /// Responder method for `starting`. Starts the operation queue and subscribes to the publisher. Return actions:
     /// - started
-    private func start(api: APICategoryGraphQLBehavior, mutationEventPublisher: MutationEventPublisher) {
+    private func start(api: APICategoryGraphQLBehavior,
+                       mutationEventPublisher: MutationEventPublisher) {
         log.verbose(#function)
         self.api = api
         operationQueue.isSuspended = false
@@ -144,7 +157,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             let dataStoreError = DataStoreError.configuration(
                 "API is unexpectedly nil",
                 """
-                The reference to storageAdapter has been released while an ongoing mutation was being processed.
+                The reference to api has been released while an ongoing mutation was being processed.
                 \(AmplifyErrorMessages.reportBugToAWS())
                 """
             )
@@ -153,14 +166,45 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         }
 
         let syncMutationToCloudOperation =
-            SyncMutationToCloudOperation(mutationEvent: mutationEvent, api: api) { result in
-                self.log.verbose("mutationEvent finished: \(mutationEvent); result: \(result)")
-                self.stateMachine.notify(action: .processedEvent)
+            SyncMutationToCloudOperation(mutationEvent: mutationEvent, api: api) { [weak self] result in
+                self?.log.verbose(
+                    "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent); result: \(result)")
+
+                if case .completed(let response) = result,
+                    case .failure(let error) = response {
+
+                    let processMutationErrorFromCloudOperation =
+                        ProcessMutationErrorFromCloudOperation(mutationEvent: mutationEvent,
+                                                               error: error) { [weak self] result in
+
+                        self?.log.verbose(
+                            "[ProcessMutationErrorFromCloudOperation] mutation error processed, result: \(result)")
+                        self?.completeProcessingEvent(mutationEvent)
+                    }
+                    self?.operationQueue.addOperation(processMutationErrorFromCloudOperation)
+                } else {
+                    self?.completeProcessingEvent(mutationEvent)
+                }
         }
 
         operationQueue.addOperation(syncMutationToCloudOperation)
 
         stateMachine.notify(action: .enqueuedEvent)
+    }
+
+    private func completeProcessingEvent(_ mutationEvent: MutationEvent) {
+        // This doesn't belong here--need to add a `delete` API to the MutationEventSource and pass a
+        // reference into the mutation queue.
+        Amplify.DataStore.delete(mutationEvent) { result in
+            switch result {
+            case .failure(let dataStoreError):
+                self.log.verbose("mutationEvent failed to delete: error: \(dataStoreError)")
+            case .success:
+                self.log.verbose("mutationEvent deleted successfully")
+            }
+
+            self.stateMachine.notify(action: .processedEvent)
+        }
     }
 
 }
@@ -194,3 +238,4 @@ extension OutgoingMutationQueue: Subscriber {
 
 @available(iOS 13.0, *)
 extension OutgoingMutationQueue: DefaultLogger { }
+

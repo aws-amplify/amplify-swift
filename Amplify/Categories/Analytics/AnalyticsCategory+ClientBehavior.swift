@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension AnalyticsCategory: AnalyticsCategoryClientBehavior {
+extension AnalyticsCategory: AnalyticsCategoryBehavior {
     public func identifyUser(_ identityId: String, withProfile userProfile: AnalyticsUserProfile? = nil) {
         plugin.identifyUser(identityId, withProfile: userProfile)
     }

@@ -21,6 +21,8 @@ extension OutgoingMutationQueue {
         // Event loop
         case requestingEvent
         case waitingForEventToProcess
+        case resumingMutationQueue
+        case resumed
 
         // Terminal states
         case finished
@@ -42,6 +44,10 @@ extension OutgoingMutationQueue {
                 return "starting"
             case .waitingForEventToProcess:
                 return "waitingForEventToProcess"
+            case .resumingMutationQueue:
+                return "resumingMutationQueue"
+            case .resumed:
+                return "resumed"
             }
         }
     }

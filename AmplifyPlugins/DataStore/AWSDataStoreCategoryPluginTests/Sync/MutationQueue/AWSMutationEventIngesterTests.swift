@@ -63,7 +63,7 @@ class AWSMutationEventIngesterTests: XCTestCase {
     func testMutationQueueWritesSaveEvents() {
         let post = Post(title: "Post title",
                         content: "Post content",
-                        createdAt: .now)
+                        createdAt: .now())
 
         let saveCompleted = expectation(description: "Local save completed")
         Amplify.DataStore.save(post) { result in

@@ -11,8 +11,10 @@ import AWSPluginsCore
 extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func save<M: Model>(_ model: M,
+                               where condition: QueryPredicate? = nil,
                                completion: @escaping DataStoreCallback<M>) {
-        log.verbose("Saving: \(model)")
+        log.verbose("Saving: \(model) with condition: \(String(describing: condition))")
+        reinitStorageEngineIfNeeded()
 
         // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
         // mutation type
@@ -22,7 +24,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                 throw DataStoreError.configuration("Unable to get storage adapter",
                                                    "")
             }
-            modelExists = try engine.storageAdapter.exists(M.self, withId: model.id)
+            modelExists = try engine.storageAdapter.exists(M.self, withId: model.id, predicate: nil)
         } catch {
             if let dataStoreError = error as? DataStoreError {
                 completion(.failure(dataStoreError))
@@ -49,14 +51,18 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
             completion(result)
         }
 
-        storageEngine.save(model, completion: publishingCompletion)
+        storageEngine.save(model,
+                           condition: condition,
+                           completion: publishingCompletion)
+
     }
 
     public func query<M: Model>(_ modelType: M.Type,
                                 byId id: String,
                                 completion: DataStoreCallback<M?>) {
+        reinitStorageEngineIfNeeded()
         let predicate: QueryPredicateFactory = { field("id") == id }
-        query(modelType, where: predicate) {
+        query(modelType, where: predicate, paginate: .firstResult) {
             switch $0 {
             case .success(let models):
                 do {
@@ -73,15 +79,19 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func query<M: Model>(_ modelType: M.Type,
                                 where predicateFactory: QueryPredicateFactory? = nil,
+                                paginate paginationInput: QueryPaginationInput? = nil,
                                 completion: DataStoreCallback<[M]>) {
+        reinitStorageEngineIfNeeded()
         storageEngine.query(modelType,
                             predicate: predicateFactory?(),
+                            paginationInput: paginationInput,
                             completion: completion)
     }
 
     public func delete<M: Model>(_ modelType: M.Type,
                                  withId id: String,
                                  completion: @escaping DataStoreCallback<Void>) {
+        reinitStorageEngineIfNeeded()
         storageEngine.delete(modelType,
                              withId: id,
                              completion: completion)
@@ -89,6 +99,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func delete<M: Model>(_ model: M,
                                  completion: @escaping DataStoreCallback<Void>) {
+        reinitStorageEngineIfNeeded()
         let publishingCompletion: DataStoreCallback<Void> = { result in
             switch result {
             case .success:
@@ -106,6 +117,43 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                completion: publishingCompletion)
     }
 
+    public func delete<M: Model>(_ modelType: M.Type,
+                                 where predicate: @escaping QueryPredicateFactory,
+                                 completion: @escaping DataStoreCallback<Void>) {
+        reinitStorageEngineIfNeeded()
+        let onCompletion: DataStoreCallback<[M]> = { result in
+            switch result {
+            case .success(let models):
+                for model in models {
+                    self.publishMutationEvent(from: model, mutationType: .delete)
+                }
+                completion(.emptyResult)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+        storageEngine.delete(modelType,
+                             predicate: predicate(),
+                             completion: onCompletion)
+    }
+
+    public func clear(completion: @escaping DataStoreCallback<Void>) {
+        if storageEngine == nil {
+            completion(.successfulVoid)
+            return
+        }
+        storageEngine.clear { result in
+            self.storageEngine = nil
+            if #available(iOS 13.0, *) {
+                if let publisher = self.dataStorePublisher as? DataStorePublisher {
+                    publisher.sendFinished()
+                }
+            }
+            self.dataStorePublisher = nil
+            completion(result)
+        }
+    }
+
     // MARK: Private
 
     private func publishMutationEvent<M: Model>(from model: M,
@@ -113,7 +161,8 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         if #available(iOS 13.0, *) {
             let metadata = MutationSyncMetadata.keys
             storageEngine.query(MutationSyncMetadata.self,
-                                predicate: metadata.id == model.id) {
+                                predicate: metadata.id == model.id,
+                                paginationInput: .firstResult) {
                                     switch $0 {
                                     case .success(let result):
                                         do {

@@ -21,4 +21,6 @@ protocol StorageEngineBehavior: class, ModelStorageBehavior {
 
     /// Tells the StorageEngine to begin syncing, if sync is enabled
     func startSync()
+
+    func clear(completion: @escaping DataStoreCallback<Void>)
 }

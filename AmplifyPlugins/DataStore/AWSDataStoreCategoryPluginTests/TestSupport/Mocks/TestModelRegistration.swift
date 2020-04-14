@@ -19,6 +19,9 @@ struct TestModelRegistration: AmplifyModelRegistration {
         // Mock Models
         registry.register(modelType: MockSynced.self)
         registry.register(modelType: MockUnsynced.self)
+
+        // Models for data conversion testing
+        registry.register(modelType: ExampleWithEveryType.self)
     }
 
     let version: String = "1"

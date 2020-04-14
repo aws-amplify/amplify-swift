@@ -15,6 +15,7 @@ public protocol DataStoreBaseBehavior {
 
     /// Saves the model to storage. If sync is enabled, also initiates a sync of the mutation to the remote API
     func save<M: Model>(_ model: M,
+                        where condition: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>)
 
     func query<M: Model>(_ modelType: M.Type,
@@ -23,14 +24,21 @@ public protocol DataStoreBaseBehavior {
 
     func query<M: Model>(_ modelType: M.Type,
                          where predicate: QueryPredicateFactory?,
+                         paginate paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>)
 
     func delete<M: Model>(_ model: M,
                           completion: @escaping DataStoreCallback<Void>)
 
     func delete<M: Model>(_ modelType: M.Type,
+                          where predicate: @escaping QueryPredicateFactory,
+                          completion: @escaping DataStoreCallback<Void>)
+
+    func delete<M: Model>(_ modelType: M.Type,
                           withId id: String,
                           completion: @escaping DataStoreCallback<Void>)
+
+    func clear(completion: @escaping DataStoreCallback<Void>)
 }
 
 public protocol DataStoreSubscribeBehavior {

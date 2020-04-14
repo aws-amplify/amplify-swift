@@ -48,4 +48,12 @@ class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue 
     static func mockSendCompletion(completion: Subscribers.Completion<DataStoreError>) {
         lastInstance?.incomingEventSubject.send(completion: completion)
     }
+
+    static func mockSend(event: IncomingEventReconciliationQueueEvent) {
+        lastInstance?.incomingEventSubject.send(event)
+    }
+
+    func cancel() {
+        //no-op for mock
+    }
 }

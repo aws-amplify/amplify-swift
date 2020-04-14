@@ -1,7 +1,7 @@
 # Uncomment the next line to define a global platform for your project
 platform :ios, "11.0"
 
-AWS_SDK_VERSION = "2.12.6"
+AWS_SDK_VERSION = "2.13.0"
 
 target "Amplify" do
   # Comment the next line if you"re not using Swift and don"t want to use dynamic frameworks

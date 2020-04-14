@@ -15,25 +15,32 @@ import AWSPluginsCore
 final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     internal var connection: Connection!
+    private var dbFilePath: URL?
 
     convenience init(databaseName: String = "database") throws {
         guard let documentsPath = getDocumentPath() else {
             preconditionFailure("Could not create the database. The `.documentDirectory` is invalid")
         }
-        let path = documentsPath.appendingPathComponent("\(databaseName).db").absoluteString
+        var dbFilePath = documentsPath.appendingPathComponent("\(databaseName).db")
+        let path = dbFilePath.absoluteString
 
         let connection: Connection
         do {
             connection = try Connection(path)
+
+            var urlResourceValues = URLResourceValues()
+            urlResourceValues.isExcludedFromBackup = true
+            try dbFilePath.setResourceValues(urlResourceValues)
         } catch {
             throw DataStoreError.invalidDatabase(path: path, error)
         }
 
-        try self.init(connection: connection)
+        try self.init(connection: connection, dbFilePath: dbFilePath)
     }
 
-    internal init(connection: Connection) throws {
+    internal init(connection: Connection, dbFilePath: URL? = nil) throws {
         self.connection = connection
+        self.dbFilePath = dbFilePath
         try SQLiteStorageEngineAdapter.initializeDatabase(connection: connection)
         log.verbose("Initialized \(connection)")
     }
@@ -70,16 +77,37 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
-    func save<M: Model>(_ model: M, completion: DataStoreCallback<M>) {
+    func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: DataStoreCallback<M>) {
         do {
             let modelType = type(of: model)
-            let shouldUpdate = try exists(modelType, withId: model.id)
+            let modelExists = try exists(modelType, withId: model.id)
 
-            if shouldUpdate {
-                let statement = UpdateStatement(model: model)
-                _ = try connection.prepare(statement.stringValue).run(statement.variables)
-            } else {
+            if !modelExists {
+                if condition != nil {
+                    let dataStoreError = DataStoreError.invalidCondition(
+                        "Cannot apply a condition on model which does not exist.",
+                        "Save the model instance without a condition first.")
+                    completion(.failure(causedBy: dataStoreError))
+                    return
+                }
+
                 let statement = InsertStatement(model: model)
+                _ = try connection.prepare(statement.stringValue).run(statement.variables)
+            }
+
+            if modelExists {
+                if condition != nil {
+                    let modelExistsWithCondition = try exists(modelType, withId: model.id, predicate: condition)
+                    if !modelExistsWithCondition {
+                        let dataStoreError = DataStoreError.invalidCondition(
+                        "Save failed due to condition did not match existing model instance.",
+                        "The save will continue to fail until the model instance is updated.")
+                        completion(.failure(causedBy: dataStoreError))
+                        return
+                    }
+                }
+
+                let statement = UpdateStatement(model: model, condition: condition)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
             }
 
@@ -97,6 +125,18 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                     completion(.failure(error))
                 }
             }
+        } catch {
+            completion(.failure(causedBy: error))
+        }
+    }
+
+    func delete<M: Model>(_ modelType: M.Type,
+                          predicate: QueryPredicate,
+                          completion: (DataStoreResult<[M]>) -> Void) {
+        do {
+            let statement = DeleteStatement(modelType: modelType, predicate: predicate)
+            _ = try connection.prepare(statement.stringValue).run(statement.variables)
+            completion(.success([]))
         } catch {
             completion(.failure(causedBy: error))
         }
@@ -122,6 +162,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate? = nil,
+                         paginationInput: QueryPaginationInput? = nil,
                          completion: DataStoreCallback<[M]>) {
         query(modelType,
               predicate: predicate,
@@ -131,11 +172,13 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate? = nil,
+                         paginationInput: QueryPaginationInput? = nil,
                          additionalStatements: String? = nil,
                          completion: DataStoreCallback<[M]>) {
         do {
             let statement = SelectStatement(from: modelType,
                                             predicate: predicate,
+                                            paginationInput: paginationInput,
                                             additionalStatements: additionalStatements)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
             let result: [M] = try rows.convert(to: modelType)
@@ -145,12 +188,25 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
-    func exists(_ modelType: Model.Type, withId id: Model.Identifier) throws -> Bool {
+    func exists(_ modelType: Model.Type,
+                withId id: Model.Identifier,
+                predicate: QueryPredicate? = nil) throws -> Bool {
         let schema = modelType.schema
         let primaryKey = schema.primaryKey.sqlName
-        let sql = "select count(\(primaryKey)) from \(schema.name) where \(primaryKey) = ?"
+        var sql = "select count(\(primaryKey)) from \(schema.name) where \(primaryKey) = ?"
+        var variables: [Binding?] = [id]
+        if let predicate = predicate {
+            let conditionStatement = ConditionStatement(modelType: modelType,
+                                                        predicate: predicate)
+            sql = """
+            \(sql)
+            \(conditionStatement.stringValue)
+            """
 
-        let result = try connection.scalar(sql, [id])
+            variables.append(contentsOf: conditionStatement.variables)
+        }
+
+        let result = try connection.scalar(sql, variables)
         if let count = result as? Int64 {
             if count > 1 {
                 throw DataStoreError.nonUniqueResult(model: modelType.modelName,
@@ -205,6 +261,29 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         let rows = try connection.prepare(statement.stringValue).run(statement.variables)
         let result = try rows.convert(to: ModelSyncMetadata.self)
         return try result.unique()
+    }
+
+    func transaction(_ transactionBlock: BasicThrowableClosure) throws {
+        try connection.transaction {
+            try transactionBlock()
+        }
+    }
+
+    func clear(completion: @escaping DataStoreCallback<Void>) {
+        guard let dbFilePath = dbFilePath else {
+            log.error("Attempt to clear DB, but file path was empty")
+            completion(.failure(causedBy: DataStoreError.invalidDatabase(path: "Database path not set", nil)))
+            return
+        }
+        connection = nil
+        let fileManager = FileManager.default
+        do {
+            try fileManager.removeItem(at: dbFilePath)
+        } catch {
+            log.error("Failed to delete database file located at: \(dbFilePath), error: \(error)")
+            completion(.failure(causedBy: DataStoreError.invalidDatabase(path: dbFilePath.absoluteString, error)))
+        }
+        completion(.successfulVoid)
     }
 }
 

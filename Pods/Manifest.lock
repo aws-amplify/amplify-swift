@@ -1,22 +1,22 @@
 PODS:
-  - AWSAuthCore (2.12.6):
-    - AWSCore (= 2.12.6)
-  - AWSCognitoIdentityProvider (2.12.6):
+  - AWSAuthCore (2.13.1):
+    - AWSCore (= 2.13.1)
+  - AWSCognitoIdentityProvider (2.13.1):
     - AWSCognitoIdentityProviderASF (= 1.0.1)
-    - AWSCore (= 2.12.6)
+    - AWSCore (= 2.13.1)
   - AWSCognitoIdentityProviderASF (1.0.1)
-  - AWSCore (2.12.6)
-  - AWSMobileClient (2.12.6):
-    - AWSAuthCore (= 2.12.6)
-    - AWSCognitoIdentityProvider (= 2.12.6)
+  - AWSCore (2.13.1)
+  - AWSMobileClient (2.13.1):
+    - AWSAuthCore (= 2.13.1)
+    - AWSCognitoIdentityProvider (= 2.13.1)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
-  - SwiftFormat/CLI (0.42.0)
-  - SwiftLint (0.37.0)
+  - SwiftFormat/CLI (0.44.7)
+  - SwiftLint (0.39.2)
 
 DEPENDENCIES:
-  - AWSMobileClient (~> 2.12.6)
+  - AWSMobileClient (~> 2.13.0)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
   - SwiftFormat/CLI
@@ -49,16 +49,16 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  AWSAuthCore: d981abe8fb987a1caa7ac6c76c428de12387dcf4
-  AWSCognitoIdentityProvider: 9502438e528185a2c61b97baf66e2fd2ac6833f3
+  AWSAuthCore: c15735eb14cccf2a26e371e3a6a841d613d411ef
+  AWSCognitoIdentityProvider: 78f240befbd2e47a8e644946a9dd19812b0e5044
   AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
-  AWSCore: 48bb8d477d8137377e86b2ade9eb34a761f42df5
-  AWSMobileClient: d752ed540a75d45516c8d5b2054b3f3b6b9e7e65
+  AWSCore: ec394695d054fa4136b20ccd22d8901faea5de04
+  AWSMobileClient: 8aede2dc1b0760709a2c02465e2b0c286b7cd00b
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
-  SwiftFormat: 5faa819600268dfaa5c19f1359730883db151678
-  SwiftLint: c078a14d7d7ade75e5507795d185e3da41d844d2
+  SwiftFormat: fd97e27b8de5a46c9d1988bf1db1dc92e79f86a3
+  SwiftLint: 22ccbbe3b8008684be5955693bab135e0ed6a447
 
-PODFILE CHECKSUM: 052b557087c76e48d6c09130d48e484e6b7ed701
+PODFILE CHECKSUM: 1c22fd7e8ddadfe26bb643a7d7ebf74f24d85950
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.1

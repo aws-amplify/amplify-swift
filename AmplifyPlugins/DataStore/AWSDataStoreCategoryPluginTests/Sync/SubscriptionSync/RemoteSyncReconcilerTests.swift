@@ -27,7 +27,7 @@ class RemoteSyncReconcilerTests: XCTestCase {
                                       modelName: MockSynced.modelName,
                                       json: "{}",
                                       mutationType: .create,
-                                      createdAt: .now,
+                                      createdAt: .now(),
                                       version: 1,
                                       inProcess: false)
 
