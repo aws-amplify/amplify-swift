@@ -37,17 +37,20 @@ AuthSignUpOperation {
         authenticationProvider.signUp(request: request) { [weak self] result in
             guard let self = self else { return }
 
-            if self.isCancelled {
+            defer {
                 self.finish()
+            }
+
+            if self.isCancelled {
                 return
             }
+
             switch result {
             case .success(let signUpResult):
                 self.dispatch(signUpResult)
             case .failure(let signUpError):
                 self.dispatch(signUpError)
             }
-            self.finish()
         }
     }
 
