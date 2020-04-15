@@ -9,6 +9,7 @@ pod 'SwiftLint'
 target 'AWSAuthPlugin' do
   pod 'Amplify', :path => '../../'
   pod 'AWSPluginsCore', :path => '../../'
+  pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
 
   target "AWSAuthPluginTests" do
     inherit! :complete
@@ -28,7 +29,5 @@ target "HostApp" do
 
   target "AWSAuthPluginIntegrationTests" do
     inherit! :complete
-
-    pod 'AmplifyPlugins/AWSAPIPlugin', :path => '../../'
   end
 end
