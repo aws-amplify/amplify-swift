@@ -9,10 +9,10 @@ import Foundation
 
 class AuthorizationProviderAdapter: AuthorizationProviderBehavior {
 
-    let awsmobileClient: AWSMobileClientBehavior
+    let awsMobileClient: AWSMobileClientBehavior
 
-    init(awsmobileClient: AWSMobileClientBehavior) {
-        self.awsmobileClient = awsmobileClient
+    init(awsMobileClient: AWSMobileClientBehavior) {
+        self.awsMobileClient = awsMobileClient
     }
 
     func fetchSession() {

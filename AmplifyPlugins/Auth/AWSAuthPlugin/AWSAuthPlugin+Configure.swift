@@ -27,10 +27,10 @@ extension AWSAuthPlugin {
             let configurationData =  try JSONEncoder().encode(jsonValueConfiguration)
             let authConfig = (try? JSONSerialization.jsonObject(with: configurationData, options: [])
                 as? [String: Any]) ?? [:]
-            let mobileClient = AWSMobileClientAdapter(configuration: authConfig)
-            try mobileClient.initialize()
-            let authenticationProvider = AuthenticationProviderAdapter(awsmobileClient: mobileClient)
-            let authorizationProvider = AuthorizationProviderAdapter(awsmobileClient: mobileClient)
+            let awsMobileClient = AWSMobileClientAdapter(configuration: authConfig)
+            try awsMobileClient.initialize()
+            let authenticationProvider = AuthenticationProviderAdapter(awsMobileClient: awsMobileClient)
+            let authorizationProvider = AuthorizationProviderAdapter(awsMobileClient: awsMobileClient)
             configure(authenticationProvider: authenticationProvider,
                       authorizationProvider: authorizationProvider)
         } catch let authError as AmplifyAuthError {
@@ -60,7 +60,7 @@ extension AWSAuthPlugin {
                    authorizationProvider: AuthorizationProviderBehavior,
                    queue: OperationQueue = OperationQueue()) {
         self.authenticationProvider = authenticationProvider
-        self.authenticationProvider = authenticationProvider
+        self.authorizationProvider = authorizationProvider
         self.queue = queue
     }
 }

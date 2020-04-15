@@ -10,10 +10,11 @@ import Foundation
 /// Behavior of the Auth category that clients will use
 public protocol AuthCategoryBehavior {
 
-    /// SignUp a user to the authentication provider.
+    /// SignUp a user with the authentication provider.
     ///
     /// If the signUp require multiple steps like passing a confirmation code, use the method
-    /// `confirmSignUp` after the this method completes.
+    /// `confirmSignUp` after this api completes. You can check if the user is confirmed or not
+    /// using the result `AuthSignUpResult.userConfirmed`.
     ///
     /// - Parameters:
     ///   - username: username to signUp
@@ -29,7 +30,7 @@ public protocol AuthCategoryBehavior {
     ///
     /// Invoke this operation as a follow up for the signUp process if the authentication provider
     /// that you are using required to follow a next step after signUp. Calling this operation without
-    /// first calling `signUp` or `resendSignUpCode` will cause an error.
+    /// first calling `signUp` or `resendSignUpCode` may cause an error.
     /// - Parameters:
     ///   - username: Username used that was used to signUp.
     ///   - confirmationCode: Confirmation code received to the user.

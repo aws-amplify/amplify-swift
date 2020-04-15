@@ -47,6 +47,7 @@ AuthSignUpOperation {
             case .failure(let signUpError):
                 self.dispatch(signUpError)
             }
+            self.finish()
         }
     }
 

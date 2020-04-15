@@ -11,5 +11,6 @@ extension AWSAuthPlugin {
 
     public func reset(onComplete: @escaping BasicClosure) {
         onComplete()
+        // TODO: Verify whether we should recreate awsmobileclient #172336364
     }
 }

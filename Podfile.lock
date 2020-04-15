@@ -1,14 +1,14 @@
 PODS:
-  - AWSAuthCore (2.13.1):
-    - AWSCore (= 2.13.1)
-  - AWSCognitoIdentityProvider (2.13.1):
+  - AWSAuthCore (2.13.2):
+    - AWSCore (= 2.13.2)
+  - AWSCognitoIdentityProvider (2.13.2):
     - AWSCognitoIdentityProviderASF (= 1.0.1)
-    - AWSCore (= 2.13.1)
+    - AWSCore (= 2.13.2)
   - AWSCognitoIdentityProviderASF (1.0.1)
-  - AWSCore (2.13.1)
-  - AWSMobileClient (2.13.1):
-    - AWSAuthCore (= 2.13.1)
-    - AWSCognitoIdentityProvider (= 2.13.1)
+  - AWSCore (2.13.2)
+  - AWSMobileClient (2.13.2):
+    - AWSAuthCore (= 2.13.2)
+    - AWSCognitoIdentityProvider (= 2.13.2)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
@@ -49,11 +49,11 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  AWSAuthCore: c15735eb14cccf2a26e371e3a6a841d613d411ef
-  AWSCognitoIdentityProvider: 78f240befbd2e47a8e644946a9dd19812b0e5044
+  AWSAuthCore: 890aaf36fa3a913a5948851a576c02456bed4c5b
+  AWSCognitoIdentityProvider: 68455a8d170bb6cd0ec17d261da0ab3d623232b0
   AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
-  AWSCore: ec394695d054fa4136b20ccd22d8901faea5de04
-  AWSMobileClient: 8aede2dc1b0760709a2c02465e2b0c286b7cd00b
+  AWSCore: 8e878a5b1b99cdf3d7df0c1c86be0bfcd6294c11
+  AWSMobileClient: bdec2a26617590bd3eece9bf208005bc4682d424
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SwiftFormat: fd97e27b8de5a46c9d1988bf1db1dc92e79f86a3
