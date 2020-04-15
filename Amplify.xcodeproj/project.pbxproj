@@ -193,7 +193,7 @@
 		B4926F6E24250219007B769C /* AuthForgotPasswordOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4926F6D24250219007B769C /* AuthForgotPasswordOperation.swift */; };
 		B49A02F92410BEBE00B42A25 /* AuthCategory+CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49A02F82410BEBD00B42A25 /* AuthCategory+CategoryConfigurable.swift */; };
 		B49A02FB2410BEDF00B42A25 /* AuthCategory+Resettable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49A02FA2410BEDF00B42A25 /* AuthCategory+Resettable.swift */; };
-		B4A19DAB24101EEB00DE2E55 /* AuthCategoryClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4A19DAA24101EEB00DE2E55 /* AuthCategoryClientBehavior.swift */; };
+		B4A19DAB24101EEB00DE2E55 /* AuthCategoryBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4A19DAA24101EEB00DE2E55 /* AuthCategoryBehavior.swift */; };
 		B4A19DAD24101F7100DE2E55 /* AuthSignUpOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4A19DAC24101F7100DE2E55 /* AuthSignUpOperation.swift */; };
 		B4ADE8F4241063820007E86C /* AuthCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4ADE8F3241063820007E86C /* AuthCategory.swift */; };
 		B4BD6B3323708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BD6B3223708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift */; };
@@ -862,7 +862,7 @@
 		B4926F6D24250219007B769C /* AuthForgotPasswordOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthForgotPasswordOperation.swift; sourceTree = "<group>"; };
 		B49A02F82410BEBD00B42A25 /* AuthCategory+CategoryConfigurable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AuthCategory+CategoryConfigurable.swift"; sourceTree = "<group>"; };
 		B49A02FA2410BEDF00B42A25 /* AuthCategory+Resettable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthCategory+Resettable.swift"; sourceTree = "<group>"; };
-		B4A19DAA24101EEB00DE2E55 /* AuthCategoryClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCategoryClientBehavior.swift; sourceTree = "<group>"; };
+		B4A19DAA24101EEB00DE2E55 /* AuthCategoryBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCategoryBehavior.swift; sourceTree = "<group>"; };
 		B4A19DAC24101F7100DE2E55 /* AuthSignUpOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignUpOperation.swift; sourceTree = "<group>"; };
 		B4ADE8F3241063820007E86C /* AuthCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCategory.swift; sourceTree = "<group>"; };
 		B4BD6B3223708C0000A1F0A7 /* PredictionsCategoryClientAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionsCategoryClientAPITests.swift; sourceTree = "<group>"; };
@@ -1782,7 +1782,7 @@
 				B4ADE8F3241063820007E86C /* AuthCategory.swift */,
 				B4FA336524105DCD00E1C659 /* AuthCategory+ClientBehavior.swift */,
 				B4FA336724105E8100E1C659 /* AuthCategory+HubPayloadEventName.swift */,
-				B4A19DAA24101EEB00DE2E55 /* AuthCategoryClientBehavior.swift */,
+				B4A19DAA24101EEB00DE2E55 /* AuthCategoryBehavior.swift */,
 				B4FA336924105EB700E1C659 /* AuthCategoryConfiguration.swift */,
 				B4FA336124105D1800E1C659 /* AuthCategoryPlugin.swift */,
 				B4A19DA924101E9D00DE2E55 /* Error */,
@@ -3793,7 +3793,7 @@
 				219A88ED23F3309800BBC5F2 /* Tree.swift in Sources */,
 				95DAAB47237E639E0028544F /* IdentifyLabelsResult.swift in Sources */,
 				FAC23547227A055200424678 /* Plugin.swift in Sources */,
-				B4A19DAB24101EEB00DE2E55 /* AuthCategoryClientBehavior.swift in Sources */,
+				B4A19DAB24101EEB00DE2E55 /* AuthCategoryBehavior.swift in Sources */,
 				B9FAA180238FBB5D009414B4 /* Model+Array.swift in Sources */,
 				FA9FB780232AA11A00C04D32 /* HubChannelDispatcher.swift in Sources */,
 				FA315298233D644F00DE78E7 /* StorageDownloadDataRequest.swift in Sources */,

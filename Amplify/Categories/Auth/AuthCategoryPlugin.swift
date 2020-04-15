@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol AuthCategoryPlugin: Plugin, AuthCategoryClientBehavior {}
+public protocol AuthCategoryPlugin: Plugin, AuthCategoryBehavior {}
 
 public extension AuthCategoryPlugin {
     var categoryType: CategoryType {

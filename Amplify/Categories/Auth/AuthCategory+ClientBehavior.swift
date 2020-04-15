@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension AuthCategory: AuthCategoryClientBehavior {
+extension AuthCategory: AuthCategoryBehavior {
 
     public func signUp(username: String,
                        password: String,
