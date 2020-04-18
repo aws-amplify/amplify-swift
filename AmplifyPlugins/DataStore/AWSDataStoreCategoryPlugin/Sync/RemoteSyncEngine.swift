@@ -135,6 +135,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             pauseSubscriptions()
         case .pausingMutationQueue:
             pauseMutations()
+        case .clearingStateOutgoingMutations(let storageAdapter):
+            clearStateOutgoingMutations(storageAdapter: storageAdapter)
         case .initializingSubscriptions(let api, let storageAdapter):
             initializeSubscriptions(api: api, storageAdapter: storageAdapter)
         case .performingInitialSync:
@@ -209,8 +211,19 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         outgoingMutationQueue.pauseSyncingToCloud()
 
         remoteSyncTopicPublisher.send(.mutationsPaused)
-        if let api = self.api, let storageAdapter = self.storageAdapter {
-            stateMachine.notify(action: .pausedMutationQueue(api, storageAdapter))
+        if let storageAdapter = self.storageAdapter {
+            stateMachine.notify(action: .pausedMutationQueue(storageAdapter))
+        }
+    }
+
+    private func clearStateOutgoingMutations(storageAdapter: StorageEngineAdapter) {
+        log.debug(#function)
+        let mutationEventClearState = MutationEventClearState(storageAdapter: storageAdapter)
+        mutationEventClearState.clearStateOutgoingMutations {
+            if let api = self.api {
+                self.remoteSyncTopicPublisher.send(.clearedStateOutgoingMutations)
+                self.stateMachine.notify(action: .clearedStateOutgoingMutations(api, storageAdapter))
+            }
         }
     }
 
