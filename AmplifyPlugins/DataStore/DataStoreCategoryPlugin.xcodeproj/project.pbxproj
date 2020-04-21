@@ -74,6 +74,7 @@
 		9BDB42C47E6D7F9A113AE558 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C6448DF009E54C11ACE4515 /* Pods_HostApp.framework */; };
 		B912D1B824296F1E0028F05C /* QueryPaginationInput+SQLite.swift in Sources */ = {isa = PBXBuildFile; fileRef = B912D1B724296F1E0028F05C /* QueryPaginationInput+SQLite.swift */; };
 		B912D1BA242984D10028F05C /* QueryPaginationInputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B912D1B9242984D10028F05C /* QueryPaginationInputTests.swift */; };
+		B9334BA22433AF3E00C9F407 /* DataStoreConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9334BA12433AF3E00C9F407 /* DataStoreConfiguration.swift */; };
 		B996FC4723FF3C7C006D0F68 /* ExampleWithEveryType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B996FC4623FF3C7C006D0F68 /* ExampleWithEveryType.swift */; };
 		B996FC4923FF3E92006D0F68 /* ExampleWithEveryType+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B996FC4823FF3E92006D0F68 /* ExampleWithEveryType+Schema.swift */; };
 		B996FC4B23FF418C006D0F68 /* SQLModelValueConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B996FC4A23FF418C006D0F68 /* SQLModelValueConverterTests.swift */; };
@@ -256,6 +257,7 @@
 		AA98AF8502498A6DD04B5B9D /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
 		B912D1B724296F1E0028F05C /* QueryPaginationInput+SQLite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QueryPaginationInput+SQLite.swift"; sourceTree = "<group>"; };
 		B912D1B9242984D10028F05C /* QueryPaginationInputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryPaginationInputTests.swift; sourceTree = "<group>"; };
+		B9334BA12433AF3E00C9F407 /* DataStoreConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreConfiguration.swift; sourceTree = "<group>"; };
 		B996FC4623FF3C7C006D0F68 /* ExampleWithEveryType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleWithEveryType.swift; sourceTree = "<group>"; };
 		B996FC4823FF3E92006D0F68 /* ExampleWithEveryType+Schema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExampleWithEveryType+Schema.swift"; sourceTree = "<group>"; };
 		B996FC4A23FF418C006D0F68 /* SQLModelValueConverterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLModelValueConverterTests.swift; sourceTree = "<group>"; };
@@ -402,11 +404,12 @@
 		2149E5A62388684F00873955 /* AWSDataStoreCategoryPlugin */ = {
 			isa = PBXGroup;
 			children = (
-				2149E5C32388684F00873955 /* Info.plist */,
 				2149E5C42388684F00873955 /* AWSDataStorePlugin.swift */,
 				FACBB2AD238AFAE800C29602 /* AWSDataStorePlugin+DataStoreBaseBehavior.swift */,
 				FA5D4CEE238AFCBC00D2F54A /* AWSDataStorePlugin+DataStoreSubscribeBehavior.swift */,
 				FA5D4CEC238AFC4D00D2F54A /* AWSDataStorePlugin+DefaultLogger.swift */,
+				B9334BA12433AF3E00C9F407 /* DataStoreConfiguration.swift */,
+				2149E5C32388684F00873955 /* Info.plist */,
 				2149E5A72388684F00873955 /* Storage */,
 				2149E5B82388684F00873955 /* Subscribe */,
 				2149E5BA2388684F00873955 /* Sync */,
@@ -779,14 +782,14 @@
 			isa = PBXGroup;
 			children = (
 				B9E010E3239167E000DCE8C8 /* TestModelRegistration.swift */,
+				6B64027823E3584300001FD7 /* MockAWSIncomingEventReconciliationQueue.swift */,
+				6BDC224123E27324007C8410 /* MockAWSInitialSyncOrchestrator.swift */,
+				6B64027A23E38B9900001FD7 /* MockOutgoingMutationQueue.swift */,
 				FAF5287A2399814F0053A717 /* MockReconciliationQueue.swift */,
+				6BC4FDA923A899680027D20C /* MockRequestRetryablePolicy.swift */,
 				6B4E3DF52397327E00AD962B /* MockStateMachine.swift */,
 				FA8D932E239EA5C4001ED336 /* NoOpInitialSyncOrchestrator.swift */,
 				FA23345B23955CEF009BEFE9 /* NoOpMutationQueue.swift */,
-				6BC4FDA923A899680027D20C /* MockRequestRetryablePolicy.swift */,
-				6BDC224123E27324007C8410 /* MockAWSInitialSyncOrchestrator.swift */,
-				6B64027823E3584300001FD7 /* MockAWSIncomingEventReconciliationQueue.swift */,
-				6B64027A23E38B9900001FD7 /* MockOutgoingMutationQueue.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -1271,6 +1274,7 @@
 				2149E5C72388684F00873955 /* StorageEngine.swift in Sources */,
 				FA3B3F05238F22F5002EFDB3 /* OutgoingMutationQueue+Action.swift in Sources */,
 				FAED573E238B4C2F008EBED8 /* StorageEngineAdapter+UntypedModel.swift in Sources */,
+				B9334BA22433AF3E00C9F407 /* DataStoreConfiguration.swift in Sources */,
 				FA4A9559239ACC1B008E876E /* IncomingSubscriptionEventPublisher.swift in Sources */,
 				FA8F4D222395B11700861D91 /* MutationEvent+Query.swift in Sources */,
 				FAF7CECB238C72830095547B /* OutgoingMutationQueue.swift in Sources */,

@@ -20,6 +20,9 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     let modelRegistration: AmplifyModelRegistration
 
+    /// The DataStore configuration
+    let configuration: DataStoreConfiguration
+
     /// The local storage provider. Resolved during configuration phase
     var storageEngine: StorageEngineBehavior!
 
@@ -38,8 +41,9 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     /// No-argument init that uses defaults for all providers
-    public init(modelRegistration: AmplifyModelRegistration) {
+    public init(modelRegistration: AmplifyModelRegistration, configuration: DataStoreConfiguration = .default) {
         self.modelRegistration = modelRegistration
+        self.configuration = configuration
         self.isSyncEnabled = false
         if #available(iOS 13.0, *) {
             self.dataStorePublisher = DataStorePublisher()
@@ -50,9 +54,11 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     /// Internal initializer for testing
     init(modelRegistration: AmplifyModelRegistration,
+         configuration: DataStoreConfiguration = .default,
          storageEngine: StorageEngineBehavior,
          dataStorePublisher: DataStoreSubscribeBehavior) {
         self.modelRegistration = modelRegistration
+        self.configuration = configuration
         self.isSyncEnabled = false
         self.storageEngine = storageEngine
         self.dataStorePublisher = dataStorePublisher

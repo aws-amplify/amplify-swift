@@ -54,8 +54,8 @@ class LocalSubscriptionTests: XCTestCase {
 
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                                         storageEngine: storageEngine,
-                                                         dataStorePublisher: dataStorePublisher)
+                                                 storageEngine: storageEngine,
+                                                 dataStorePublisher: dataStorePublisher)
 
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
             "awsDataStorePlugin": true
