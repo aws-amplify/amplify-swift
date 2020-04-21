@@ -42,7 +42,7 @@ class BaseDataStoreTests: XCTestCase {
         }
 
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStorePlugin(schema: LocalTestSchemaProvider(),
+        let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                  storageEngine: storageEngine,
                                                  dataStorePublisher: dataStorePublisher)
 

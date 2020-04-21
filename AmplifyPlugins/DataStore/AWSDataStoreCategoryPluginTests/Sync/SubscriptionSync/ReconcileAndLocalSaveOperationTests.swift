@@ -280,7 +280,7 @@ extension ReconcileAndLocalSaveOperationTests {
 
         let storageEngine = MockStorageEngineBehavior()
         let dataStorePublisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStorePlugin(schema: TestSchemaProvider(),
+        let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                  storageEngine: storageEngine,
                                                  dataStorePublisher: dataStorePublisher)
         try Amplify.add(plugin: dataStorePlugin)

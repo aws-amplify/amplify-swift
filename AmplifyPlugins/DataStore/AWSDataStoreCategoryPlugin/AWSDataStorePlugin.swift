@@ -19,7 +19,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     var dataStorePublisher: DataStoreSubscribeBehavior?
 
     /// The schema that holds a reference to its version and all registered models
-    let schema: ModelSchemaProvider
+    let modelRegistration: AmplifyModelRegistration
 
     /// The DataStore configuration
     let configuration: DataStoreConfiguration
@@ -42,8 +42,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     /// No-argument init that uses defaults for all providers
-    public init(schema: ModelSchemaProvider, configuration: DataStoreConfiguration = .default) {
-        self.schema = schema
+    public init(modelRegistration: AmplifyModelRegistration, configuration: DataStoreConfiguration = .default) {
+        self.modelRegistration = modelRegistration
         self.configuration = configuration
         self.isSyncEnabled = false
         if #available(iOS 13.0, *) {
@@ -54,11 +54,11 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     /// Internal initializer for testing
-    init(schema: ModelSchemaProvider,
+    init(modelRegistration: AmplifyModelRegistration,
          configuration: DataStoreConfiguration = .default,
          storageEngine: StorageEngineBehavior,
          dataStorePublisher: DataStoreSubscribeBehavior) {
-        self.schema = schema
+        self.modelRegistration = modelRegistration
         self.configuration = configuration
         self.isSyncEnabled = false
         self.storageEngine = storageEngine
@@ -69,7 +69,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// `AmplifyModelRegistration.registerModels`, so we can inspect those models to derive isSyncEnabled, and pass
     /// them to `StorageEngine.setUp(models:)`
     public func configure(using configuration: Any) throws {
-        schema.registerModels(registry: ModelRegistry.self)
+        modelRegistration.registerModels(registry: ModelRegistry.self)
         resolveSyncEnabled()
         try resolveStorageEngine()
 

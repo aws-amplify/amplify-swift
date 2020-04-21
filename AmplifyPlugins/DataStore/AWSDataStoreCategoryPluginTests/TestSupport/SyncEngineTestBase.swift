@@ -72,7 +72,7 @@ class SyncEngineTestBase: XCTestCase {
     func setUpDataStore(
         mutationQueue: OutgoingMutationQueueBehavior = NoOpMutationQueue(),
         initialSyncOrchestratorFactory: @escaping InitialSyncOrchestratorFactory = NoOpInitialSyncOrchestrator.factory,
-        schema: ModelSchemaProvider = TestSchemaProvider()
+        modelRegistration: AmplifyModelRegistration = TestModelRegistration()
     ) throws {
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
@@ -107,7 +107,7 @@ class SyncEngineTestBase: XCTestCase {
                                           syncEngine: syncEngine)
 
         let publisher = DataStorePublisher()
-        let dataStorePlugin = AWSDataStorePlugin(schema: schema,
+        let dataStorePlugin = AWSDataStorePlugin(modelRegistration: modelRegistration,
                                                  storageEngine: storageEngine,
                                                  dataStorePublisher: publisher)
 

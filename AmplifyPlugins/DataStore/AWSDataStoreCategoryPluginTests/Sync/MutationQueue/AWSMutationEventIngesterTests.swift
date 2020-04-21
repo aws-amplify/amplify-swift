@@ -43,7 +43,7 @@ class AWSMutationEventIngesterTests: XCTestCase {
                                               syncEngine: syncEngine)
 
             let publisher = DataStorePublisher()
-            let dataStorePlugin = AWSDataStorePlugin(schema: TestSchemaProvider(),
+            let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                      storageEngine: storageEngine,
                                                      dataStorePublisher: publisher)
 
