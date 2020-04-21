@@ -47,7 +47,8 @@ class InitialSyncOperationTests: XCTestCase {
             modelType: MockSynced.self,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
-            storageAdapter: storageAdapter) { _ in }
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .default) { _ in }
 
         operation.main()
 
@@ -81,7 +82,8 @@ class InitialSyncOperationTests: XCTestCase {
             modelType: MockSynced.self,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
-            storageAdapter: storageAdapter) { _ in }
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .default) { _ in }
 
         operation.main()
 
@@ -114,7 +116,8 @@ class InitialSyncOperationTests: XCTestCase {
             modelType: MockSynced.self,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
-            storageAdapter: storageAdapter) { _ in
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .default) { _ in
                 syncCallbackReceived.fulfill()
         }
 
@@ -155,7 +158,8 @@ class InitialSyncOperationTests: XCTestCase {
             modelType: MockSynced.self,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
-            storageAdapter: storageAdapter) { _ in }
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .default) { _ in }
 
         operation.main()
 
@@ -203,7 +207,8 @@ class InitialSyncOperationTests: XCTestCase {
             modelType: MockSynced.self,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
-            storageAdapter: storageAdapter) { _ in }
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .default) { _ in }
 
         operation.main()
 
@@ -237,7 +242,8 @@ class InitialSyncOperationTests: XCTestCase {
             modelType: MockSynced.self,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
-            storageAdapter: storageAdapter) { _ in
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .default) { _ in
                 syncCallbackReceived.fulfill()
         }
 
@@ -297,7 +303,8 @@ class InitialSyncOperationTests: XCTestCase {
             modelType: MockSynced.self,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
-            storageAdapter: storageAdapter) {_ in }
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .default) {_ in }
 
         operation.main()
 

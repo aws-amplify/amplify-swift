@@ -14,8 +14,11 @@ import Combine
 @testable import AWSDataStoreCategoryPlugin
 
 class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator {
-    static let factory: InitialSyncOrchestratorFactory = { api, reconciliationQueue, storageAdapter in
-        MockAWSInitialSyncOrchestrator(api: api, reconciliationQueue: reconciliationQueue, storageAdapter: storageAdapter)
+    static let factory: InitialSyncOrchestratorFactory = { dataStoreConfiguration, api, reconciliationQueue, storageAdapter in
+        MockAWSInitialSyncOrchestrator(dataStoreConfiguration: dataStoreConfiguration,
+                                       api: api,
+                                       reconciliationQueue: reconciliationQueue,
+                                       storageAdapter: storageAdapter)
     }
 
     typealias SyncOperationResult = Result<Void, DataStoreError>
@@ -24,7 +27,8 @@ class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     private static var instance: MockAWSInitialSyncOrchestrator?
     private static var mockedResponse: SyncOperationResult?
 
-    init(api: APICategoryGraphQLBehavior?,
+    init(dataStoreConfiguration: DataStoreConfiguration,
+         api: APICategoryGraphQLBehavior?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
          storageAdapter: StorageEngineAdapter?) {
     }

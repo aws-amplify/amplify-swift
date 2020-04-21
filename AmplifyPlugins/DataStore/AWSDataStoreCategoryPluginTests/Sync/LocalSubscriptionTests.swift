@@ -36,16 +36,18 @@ class LocalSubscriptionTests: XCTestCase {
             stateMachine = MockStateMachine(initialState: .notStarted, resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
 
             let syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
-                                             outgoingMutationQueue: outgoingMutationQueue,
-                                             mutationEventIngester: mutationDatabaseAdapter,
-                                             mutationEventPublisher: awsMutationEventPublisher,
-                                             initialSyncOrchestratorFactory: NoOpInitialSyncOrchestrator.factory,
-                                             reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
-                                             stateMachine: stateMachine,
-                                             networkReachabilityPublisher: nil,
-                                             requestRetryablePolicy: MockRequestRetryablePolicy())
+                                              dataStoreConfiguration: .default,
+                                              outgoingMutationQueue: outgoingMutationQueue,
+                                              mutationEventIngester: mutationDatabaseAdapter,
+                                              mutationEventPublisher: awsMutationEventPublisher,
+                                              initialSyncOrchestratorFactory: NoOpInitialSyncOrchestrator.factory,
+                                              reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
+                                              stateMachine: stateMachine,
+                                              networkReachabilityPublisher: nil,
+                                              requestRetryablePolicy: MockRequestRetryablePolicy())
 
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
+                                          dataStoreConfiguration: .default,
                                           syncEngine: syncEngine)
         } catch {
             XCTFail(String(describing: error))

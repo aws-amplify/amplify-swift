@@ -31,6 +31,7 @@ class RemoteSyncEngineTests: XCTestCase {
         mockRequestRetryablePolicy = MockRequestRetryablePolicy()
         do {
             remoteSyncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
+                                                    dataStoreConfiguration: .default,
                                                     outgoingMutationQueue: mockOutgoingMutationQueue,
                                                     initialSyncOrchestratorFactory: MockAWSInitialSyncOrchestrator.factory,
                                                     reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
