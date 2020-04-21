@@ -18,7 +18,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// The Publisher that sends mutation events to subscribers
     var dataStorePublisher: DataStoreSubscribeBehavior?
 
-    /// The schema that holds a reference to its version and all registered models
     let modelRegistration: AmplifyModelRegistration
 
     /// The DataStore configuration
