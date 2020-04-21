@@ -10,4 +10,5 @@ public protocol AuthUser {
     var username: String { get }
 
     var userId: String { get }
+    
 }

@@ -80,8 +80,10 @@ extension AuthCategory: AuthCategoryBehavior {
         plugin.signOut(options: options, listener: listener)
     }
 
-    public func fetchAuthState(listener: AuthStateOperation.EventListener?) -> AuthStateOperation {
-        return plugin.fetchAuthState(listener: listener)
+    public func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options? = nil,
+                                 listener: AuthFetchSessionOperation.EventListener?) -> AuthFetchSessionOperation {
+        return plugin.fetchAuthSession(options: options,
+                                       listener: listener)
     }
 
     public func resetPassword(for username: String,

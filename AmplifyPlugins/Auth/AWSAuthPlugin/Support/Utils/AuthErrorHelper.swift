@@ -132,7 +132,6 @@ struct AuthErrorHelper {
         .federationProviderExists(let message), // User is already signed in to user pool in federatedSignIn
         .unableToSignIn(let message), // Called in signout, releaseSignInWait.
         .idTokenNotIssued(let message), // Not used anywhere.
-        // Handled in WebUISignIn inside plugin
         .userPoolNotConfigured(let message):
             // TODO: Hanlde the above errors inside the plugin #172336364
             return AmplifyAuthError.unknown(message)

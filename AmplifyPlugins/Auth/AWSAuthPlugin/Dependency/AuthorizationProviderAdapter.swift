@@ -5,7 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
+import Amplify
+import AWSMobileClient
+
+typealias SessionCompletionHandler = (Result<AuthSession, AmplifyAuthError>) -> Void
 
 class AuthorizationProviderAdapter: AuthorizationProviderBehavior {
 
@@ -15,7 +18,19 @@ class AuthorizationProviderAdapter: AuthorizationProviderBehavior {
         self.awsMobileClient = awsMobileClient
     }
 
-    func fetchSession() {
-        //TODO: Complete implementation
+    func fetchSession(request: AuthFetchSessionRequest,
+                      completionHandler: @escaping SessionCompletionHandler) {
+
+        switch awsMobileClient.getCurrentUserState() {
+        case .guest:
+            fetchSignedOutSession(completionHandler)
+        case .signedIn,
+             .signedOutFederatedTokensInvalid,
+             .signedOutUserPoolsTokenInvalid:
+            fetchSignedInSession(completionHandler)
+        case .signedOut,
+             .unknown:
+            fetchSignedOutSession(completionHandler)
+        }
     }
 }

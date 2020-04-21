@@ -5,8 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 public struct AWSAuthResetPasswordOptions {
 
     public let metadata: [String: String]?
-
 }

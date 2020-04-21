@@ -154,4 +154,20 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
                                               clientMetaData: clientMetaData,
                                               completionHandler: completionHandler)
     }
+
+    func getIdentityId() -> AWSTask<NSString> {
+        return awsMobileClient.getIdentityId()
+    }
+
+    func getTokens(_ completionHandler: @escaping (Tokens?, Error?) -> Void) {
+        return awsMobileClient.getTokens(completionHandler)
+    }
+
+    func getAWSCredentials(_ completionHandler: @escaping (AWSCredentials?, Error?) -> Void) {
+        return awsMobileClient.getAWSCredentials(completionHandler)
+    }
+
+    func getCurrentUserState() -> UserState {
+        return awsMobileClient.currentUserState
+    }
 }
