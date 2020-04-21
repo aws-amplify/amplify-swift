@@ -12,6 +12,7 @@ enum RemoteSyncEngineEvent {
     case storageAdapterAvailable
     case subscriptionsPaused
     case mutationsPaused
+    case clearedStateOutgoingMutations
     case subscriptionsInitialized
     case performedInitialSync
     case subscriptionsActivated
