@@ -39,7 +39,5 @@ struct RemoteSyncReconciler {
         }
 
         return .dropRemoteModel
-
     }
-
 }

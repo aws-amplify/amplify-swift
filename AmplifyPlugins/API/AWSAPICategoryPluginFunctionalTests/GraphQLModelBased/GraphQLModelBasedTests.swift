@@ -19,7 +19,7 @@ class GraphQLModelBasedTests: XCTestCase {
 
     override func setUp() {
         Amplify.reset()
-        let plugin = AWSAPIPlugin(modelRegistration: PostCommentModelRegistration())
+        let plugin = AWSAPIPlugin(schema: PostCommentSchema())
 
         do {
             try Amplify.add(plugin: plugin)

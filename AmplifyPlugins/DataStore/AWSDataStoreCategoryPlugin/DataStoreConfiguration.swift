@@ -19,9 +19,9 @@ public struct DataStoreConflictData {
     public let remote: Model
 }
 
-/// Conflict Handler function typealias. The function is used during a conflict that
-/// could not be resolved and requires a decision from the consumer.
-public typealias DataStoreConflictHandler = (DataStoreConflictData, DataStoreConflictHandlerResolver) -> Void
+/// could not be resolved and requires a decision from the consumer. The consumer can call other methods (optionally
+/// asynchronous) before calling the escaping `DataStoreConflictHandlerResolver` with the resolution,
+public typealias DataStoreConflictHandler = (DataStoreConflictData, @escaping DataStoreConflictHandlerResolver) -> Void
 
 /// Callback for the `DataStoreConflictHandler`.
 public typealias DataStoreConflictHandlerResolver = (DataStoreConflictHandlerResult) -> Void
@@ -30,10 +30,10 @@ public typealias DataStoreConflictHandlerResolver = (DataStoreConflictHandlerRes
 public enum DataStoreConflictHandlerResult {
 
     /// Discard the local changes in favor of the remote ones.
-    case discard
+    case applyRemote
 
-    /// Keep the local changes (semantic shortcut to `retry(local)`).
-    case keep
+    /// Keep the local changes.
+    case retryLocal
 
     /// Return a new `Model` instance that should used instead of the local and remote changes.
     case retry(Model)
@@ -91,7 +91,7 @@ extension DataStoreConfiguration {
             Amplify.Logging.error(error: error)
         },
         conflictHandler: @escaping DataStoreConflictHandler = { _, resolve  in
-            resolve(.discard)
+            resolve(.applyRemote)
         },
         syncInterval: TimeInterval = DataStoreConfiguration.defaultSyncInterval,
         syncMaxRecords: UInt = DataStoreConfiguration.defaultSyncMaxRecords,

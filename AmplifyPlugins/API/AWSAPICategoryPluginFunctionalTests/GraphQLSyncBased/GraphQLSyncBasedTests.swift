@@ -19,7 +19,7 @@ class GraphQLSyncBasedTests: XCTestCase {
 
     override func setUp() {
         Amplify.reset()
-        let plugin = AWSAPIPlugin(modelRegistration: PostCommentModelRegistration())
+        let plugin = AWSAPIPlugin(schema: PostCommentSchema())
 
         do {
             try Amplify.add(plugin: plugin)
@@ -358,7 +358,7 @@ class GraphQLSyncBasedTests: XCTestCase {
             return
         }
 
-        let conflictUnhandledError = expectation(description: "error should be conditional request failed")
+        let conflictUnhandledError = expectation(description: "error should be conflict unhandled")
         switch response {
         case .success(let mutationSync):
             XCTFail("success: \(mutationSync)")
@@ -398,6 +398,113 @@ class GraphQLSyncBasedTests: XCTestCase {
         }
 
         wait(for: [conflictUnhandledError], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    // Given: A newly created post
+    // When: Call delete mutation, twice
+    // Then: The first delete mutation is successful, and second returns conflict unhandled exception due to older version.
+    func testCreatePostThenDeleteTwiceConflictUnhandledException() {
+        let uuid = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let title = testMethodName + "Title"
+        let post = Post.keys
+        guard let createdPost = createPost(id: uuid, title: title) else {
+            XCTFail("Failed to create post with version 1")
+            return
+        }
+        let firstDeleteSuccess = expectation(description: "first delete mutation should be successful")
+
+        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: createdPost.model.modelName,
+                                                                        id: createdPost.model.id,
+                                                                        version: 1)
+        _ = Amplify.API.mutate(request: request) { event in
+            switch event {
+            case .completed(let graphQLResponse):
+                firstDeleteSuccess.fulfill()
+            case .failed(let apiError):
+                XCTFail("\(apiError)")
+            default:
+                XCTFail("Could not get data back")
+            }
+        }
+        wait(for: [firstDeleteSuccess], timeout: TestCommonConstants.networkTimeout)
+
+        var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
+        let secondDeleteFailed = expectation(
+            description: "second delete mutatiion request should failed with ConflictUnhandled errorType")
+        _ = Amplify.API.mutate(request: request) { event in
+            defer {
+                secondDeleteFailed.fulfill()
+            }
+            switch event {
+            case .completed(let graphQLResponse):
+                responseFromOperation = graphQLResponse
+            case .failed(let apiError):
+                XCTFail("\(apiError)")
+            default:
+                XCTFail("Could not get data back")
+            }
+        }
+        wait(for: [secondDeleteFailed], timeout: TestCommonConstants.networkTimeout)
+
+        guard let response = responseFromOperation else {
+            XCTAssertNotNil(responseFromOperation)
+            return
+        }
+
+        let conflictUnhandledError = expectation(description: "error should be conflict unhandled")
+        switch response {
+        case .success(let mutationSync):
+            XCTFail("success: \(mutationSync)")
+        case .failure(let error):
+            switch error {
+            case .error(let errors):
+                XCTAssertEqual(errors.count, 1)
+                guard let error = errors.first,
+                    let appSyncGraphQLError = error as? AppSyncGraphQLError<MutationSync<AnyModel>>,
+                    let errorType = appSyncGraphQLError.appSyncErrorType else {
+                        XCTFail("Failed to get AppSyncGraphQLError's AppSyncErrorType and response object")
+                        return
+                }
+                XCTAssertEqual(errorType, AppSyncErrorType.conflictUnhandled)
+                guard let mutationSync = appSyncGraphQLError.data else {
+                    XCTFail("Failed to get data object for conflict unhandled error")
+                    return
+                }
+                XCTAssertEqual(mutationSync.syncMetadata.deleted, true)
+                XCTAssertEqual(mutationSync.syncMetadata.version, 2)
+                conflictUnhandledError.fulfill()
+            case .partial(let model, let errors):
+                XCTFail("partial: \(model), \(errors)")
+            case .transformationError(let rawResponse, let apiError):
+                XCTFail("transformationError: \(rawResponse), \(apiError)")
+            }
+        }
+
+        wait(for: [conflictUnhandledError], timeout: TestCommonConstants.networkTimeout)
+
+        let updateSuccess = expectation(description: "update with correct version should be successful")
+
+        let updatedTitle = title + "Updated"
+        let modifiedPost = Post(id: createdPost.model["id"] as? String ?? "",
+                                title: updatedTitle,
+                                content: createdPost.model["content"] as? String ?? "",
+                                createdAt: Date())
+
+        let updateRequest = GraphQLRequest<MutationSyncResult>.updateMutation(of: modifiedPost,
+                                                                              version: 2)
+        _ = Amplify.API.mutate(request: updateRequest) { event in
+            switch event {
+            case .completed(let graphQLResponse):
+                updateSuccess.fulfill()
+            case .failed(let apiError):
+                XCTFail("\(apiError)")
+            default:
+                XCTFail("Could not get data back")
+            }
+        }
+        wait(for: [updateSuccess], timeout: TestCommonConstants.networkTimeout)
+
     }
 
     // Given: Two newly created posts

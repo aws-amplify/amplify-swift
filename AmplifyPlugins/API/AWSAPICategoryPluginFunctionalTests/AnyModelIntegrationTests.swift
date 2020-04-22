@@ -20,7 +20,7 @@ class AnyModelIntegrationTests: XCTestCase {
         Amplify.reset()
         Amplify.Logging.logLevel = .verbose
 
-        let plugin = AWSAPIPlugin(modelRegistration: PostCommentModelRegistration())
+        let plugin = AWSAPIPlugin(schema: PostCommentSchema())
 
         do {
             try Amplify.add(plugin: plugin)

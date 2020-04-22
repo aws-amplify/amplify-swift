@@ -76,6 +76,12 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     func delete(untypedModelType modelType: Model.Type,
                 withId id: String,
                 completion: (Result<Void, DataStoreError>) -> Void) {
+        if let responder = responders[.deleteUntypedModel] as? DeleteUntypedModelCompletionResponder {
+            responder.callback((modelType, id))
+            completion(.emptyResult)
+            return
+        }
+
         return shouldReturnErrorOnDeleteMutation
             ? completion(.failure(causedBy: DataStoreError.invalidModelName("DelMutate")))
             : completion(.emptyResult)
