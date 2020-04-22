@@ -10,6 +10,11 @@ import AWSPluginsCore
 import Combine
 import Foundation
 
+//Used for testing:
+@available(iOS 13.0, *)
+typealias ModelReconciliationQueueFactory =
+    (Model.Type, StorageEngineAdapter, APICategoryGraphQLBehavior, IncomingSubscriptionEventPublisher?) -> ModelReconciliationQueue
+
 /// A queue of reconciliation operations, merged from incoming subscription events and responses to locally-sourced
 /// mutations for a single model type.
 ///
