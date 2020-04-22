@@ -23,7 +23,7 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
         }
         if let error = mobileClientError {
             throw AmplifyAuthError.configuration(AuthPluginErrorConstants.mobileClientInitializeError.errorDescription,
-                                                AuthPluginErrorConstants.mobileClientInitializeError.recoverySuggestion,
+                                                 AuthPluginErrorConstants.mobileClientInitializeError.recoverySuggestion,
                                                  error)
         }
     }
@@ -51,5 +51,34 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
                                       confirmationCode: confirmationCode,
                                       clientMetaData: clientMetaData,
                                       completionHandler: completionHandler)
+    }
+
+    func signIn(username: String,
+                password: String,
+                validationData: [String: String]? = nil,
+                completionHandler: @escaping ((SignInResult?, Error?) -> Void)) {
+        awsMobileClient.signIn(username: username,
+                               password: password,
+                               validationData: validationData,
+                               completionHandler: completionHandler)
+    }
+
+    func federatedSignIn(providerName: String, token: String,
+                         federatedSignInOptions: FederatedSignInOptions,
+                         completionHandler: @escaping ((UserState?, Error?) -> Void)) {
+        awsMobileClient.federatedSignIn(providerName: providerName,
+                                        token: token,
+                                        federatedSignInOptions: federatedSignInOptions,
+                                        completionHandler: completionHandler)
+    }
+
+    func showSignIn(navigationController: UINavigationController,
+                    signInUIOptions: SignInUIOptions,
+                    hostedUIOptions: HostedUIOptions?,
+                    _ completionHandler: @escaping (UserState?, Error?) -> Void) {
+        awsMobileClient.showSignIn(navigationController: navigationController,
+                                   signInUIOptions: signInUIOptions,
+                                   hostedUIOptions: hostedUIOptions,
+                                   completionHandler)
     }
 }
