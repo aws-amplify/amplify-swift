@@ -14,14 +14,14 @@ public typealias DataStoreErrorHandler = (AmplifyError) -> Void
 /// Holds a reference to both the local `Model` and the remote one during a conflict
 /// resolution. Implementations of the `DataStoreConflictHandler` use this to decide
 /// what the outcome of a conflict should be.
-public struct DataStoreConclictData {
+public struct DataStoreConflictData {
     public let local: Model
     public let remote: Model
 }
 
 /// Conflict Handler function typealias. The function is used during a conflict that
 /// could not be resolved and requires a decision from the consumer.
-public typealias DataStoreConflictHandler = (DataStoreConclictData, DataStoreConflictHandlerResolver) -> Void
+public typealias DataStoreConflictHandler = (DataStoreConflictData, DataStoreConflictHandlerResolver) -> Void
 
 /// Callback for the `DataStoreConflictHandler`.
 public typealias DataStoreConflictHandlerResolver = (DataStoreConflictHandlerResult) -> Void
