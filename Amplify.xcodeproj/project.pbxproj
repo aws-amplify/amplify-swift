@@ -2962,9 +2962,9 @@
 			buildConfigurationList = FAC234E62279F8DA00424678 /* Build configuration list for PBXNativeTarget "Amplify" */;
 			buildPhases = (
 				5F9B8F5FB2FC02D2CEA5EFD6 /* [CP] Check Pods Manifest.lock */,
-				FAC234CE2279F8DA00424678 /* Sources */,
 				FAF8AC86233AB5CF009FBF97 /* SwiftFormat */,
 				FAC23581227A2D8C00424678 /* SwiftLint */,
+				FAC234CE2279F8DA00424678 /* Sources */,
 				FAC234CD2279F8DA00424678 /* Headers */,
 				FAC234CF2279F8DA00424678 /* Frameworks */,
 				FAC234D02279F8DA00424678 /* Resources */,
