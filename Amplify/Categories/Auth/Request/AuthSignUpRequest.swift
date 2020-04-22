@@ -11,11 +11,11 @@ public struct AuthSignUpRequest: AmplifyOperationRequest {
 
     public let username: String
 
-    public let password: String
+    public let password: String?
 
     public var options: Options
 
-    public init(username: String, password: String, options: Options) {
+    public init(username: String, password: String?, options: Options) {
         self.username = username
         self.password = password
         self.options = options
@@ -26,16 +26,17 @@ public extension AuthSignUpRequest {
 
     struct Options {
 
-        public let userAttributes: [String: String]?
-        public let validationData: [String: String]?
-        public let metadata: [String: String]?
+        public let userAttributes: [AuthUserAttribute]?
 
-        public init(userAttributes: [String: String]? = nil,
-                    validationData: [String: String]? = nil,
-                    metadata: [String: String]? = nil) {
+        /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
+        /// a way to utilize the underlying auth plugin functionality. See plugin documentation for expected
+        /// key/values
+        public let pluginOptions: Any?
+
+        public init(userAttributes: [AuthUserAttribute]? = nil,
+                    pluginOptions: Any? = nil) {
             self.userAttributes = userAttributes
-            self.validationData = validationData
-            self.metadata = metadata
+            self.pluginOptions = pluginOptions
         }
     }
 }

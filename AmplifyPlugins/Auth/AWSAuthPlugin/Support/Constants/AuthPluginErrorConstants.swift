@@ -36,6 +36,30 @@ extension AuthPluginErrorConstants {
         "Username is required to signIn",
         "Make sure that a valid username is passed during sigIn"
     )
+
+    static let signUpUsernameError: AuthPluginValidationErrorString = (
+        "username",
+        "Username is required to signUp",
+        "Make sure that a valid username is passed for signUp"
+    )
+
+    static let signUpPasswordError: AuthPluginValidationErrorString = (
+        "password",
+        "Password is required to signUp",
+        "Make sure that a valid password is passed for signUp"
+    )
+
+    static let confirmSignUpUsernameError: AuthPluginValidationErrorString = (
+        "username",
+        "Username is required to confirmSignUp",
+        "Make sure that a valid username is passed for confirmSignUp"
+    )
+
+    static let confirmSignUpCodeError: AuthPluginValidationErrorString = (
+        "code",
+        "code is required to confirmSignUp",
+        "Make sure that a valid code is passed for confirmSignUp"
+    )
 }
 
 // Recovery Messages

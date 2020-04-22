@@ -22,7 +22,7 @@ public protocol AuthCategoryBehavior {
     ///   - options: Parameters specific to plugin behavior
     ///   - listener: Triggered when the operation completes.
     func signUp(username: String,
-                password: String,
+                password: String?,
                 options: AuthSignUpOperation.Request.Options?,
                 listener: AuthSignUpOperation.EventListener?) -> AuthSignUpOperation
 
@@ -40,6 +40,16 @@ public protocol AuthCategoryBehavior {
                        confirmationCode: String,
                        options: AuthConfirmSignUpOperation.Request.Options?,
                        listener: AuthConfirmSignUpOperation.EventListener?) -> AuthConfirmSignUpOperation
+
+    /// Resends the confirmation code to confirm the signUp process
+    ///
+    /// - Parameters:
+    ///   - username: Username of the user to be confirmed.
+    ///   - options: Parameters specific to plugin behavior.
+    ///   - listener: Triggered when the operation completes.
+    func resendSignUpCode(username: String,
+                          options: AuthResendSignUpCodeOperation.Request.Options?,
+                          listener: AuthResendSignUpCodeOperation.EventListener?) -> AuthResendSignUpCodeOperation
 
     /// SignIn to the authentication provider
     ///
