@@ -27,11 +27,10 @@ extension AuthCategory: AuthCategoryBehavior {
                                     confirmationCode: confirmationCode,
                                     options: options,
                                     listener: listener)
-
     }
 
-    public func signIn(username: String,
-                       password: String,
+    public func signIn(username: String? = nil,
+                       password: String? = nil,
                        options: AuthSignInOperation.Request.Options? = nil,
                        listener: AuthSignInOperation.EventListener?) -> AuthSignInOperation {
         return plugin.signIn(username: username,
