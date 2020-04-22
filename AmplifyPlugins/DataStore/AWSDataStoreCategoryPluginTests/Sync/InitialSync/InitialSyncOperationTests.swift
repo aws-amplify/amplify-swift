@@ -358,4 +358,40 @@ class InitialSyncOperationTests: XCTestCase {
 
         wait(for: [apiWasQueried], timeout: 1.0)
     }
+
+    func testBaseQueryWithCustomSyncPageSize() throws {
+        let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
+        try storageAdapter.setUp(models: StorageEngine.systemModels + [MockSynced.self])
+
+        let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")
+        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
+            let lastSync = request.variables?["lastSync"] as? Int
+            XCTAssertNil(lastSync)
+            XCTAssert(request.document.contains("limit: Int"))
+            let limitValue = request.variables?["limit"] as? Int
+            XCTAssertEqual(10, limitValue)
+
+            let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: nil)
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            listener?(event)
+            apiWasQueried.fulfill()
+            return nil
+        }
+
+        let apiPlugin = MockAPICategoryPlugin()
+        apiPlugin.responders[.queryRequestListener] = responder
+
+        let reconciliationQueue = MockReconciliationQueue()
+        let configuration  = DataStoreConfiguration.custom(syncPageSize: 10)
+        let operation = InitialSyncOperation(
+            modelType: MockSynced.self,
+            api: apiPlugin,
+            reconciliationQueue: reconciliationQueue,
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: configuration) {_ in }
+
+        operation.main()
+
+        wait(for: [apiWasQueried], timeout: 1.0)
+    }
 }
