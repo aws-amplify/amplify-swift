@@ -41,8 +41,18 @@ public protocol AuthCategoryBehavior {
                        options: AuthConfirmSignUpOperation.Request.Options?,
                        listener: AuthConfirmSignUpOperation.EventListener?) -> AuthConfirmSignUpOperation
 
-    func signIn(username: String,
-                password: String,
+    /// SignIn to the authentication provider
+    ///
+    /// Username and password are optional values, check the plugin documentation to decide on what all values need to
+    /// passed. For example in a passwordless flow you just need to pass the username and the passwordcould be nil.
+    ///
+    /// - Parameters:
+    ///   - username: Username to signIn the user
+    ///   - password: Password to signIn the user
+    ///   - options: Parameters specific to plugin behavior
+    ///   - listener: Triggered when the operation completes.
+    func signIn(username: String?,
+                password: String?,
                 options: AuthSignInOperation.Request.Options?,
                 listener: AuthSignInOperation.EventListener?) -> AuthSignInOperation
 

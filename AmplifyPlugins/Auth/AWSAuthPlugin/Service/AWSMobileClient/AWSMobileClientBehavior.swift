@@ -23,4 +23,18 @@ protocol AWSMobileClientBehavior {
                        confirmationCode: String,
                        clientMetaData: [String: String],
                        completionHandler: @escaping ((SignUpResult?, Error?) -> Void))
+
+    func signIn(username: String,
+                password: String,
+                validationData: [String: String]?,
+                completionHandler: @escaping ((SignInResult?, Error?) -> Void))
+
+    func federatedSignIn(providerName: String, token: String,
+                         federatedSignInOptions: FederatedSignInOptions,
+                         completionHandler: @escaping ((UserState?, Error?) -> Void))
+
+    func showSignIn(navigationController: UINavigationController,
+                    signInUIOptions: SignInUIOptions,
+                    hostedUIOptions: HostedUIOptions?,
+                    _ completionHandler: @escaping (UserState?, Error?) -> Void)
 }
