@@ -42,7 +42,7 @@ extension AuthenticationProviderAdapter {
 
                                 guard result.signInState != .signedIn else {
                                     // Return if the user has signedIn, this is a terminal step of signIn.
-                                    let authResult = AuthSignInResult(isSignedIn: true)
+                                    let authResult = AuthSignInResult(nextStep: .done)
                                     completionHandler(.success(authResult))
                                     return
                                 }
@@ -53,7 +53,7 @@ extension AuthenticationProviderAdapter {
                                     return
                                 }
 
-                                let authResult = AuthSignInResult(isSignedIn: false, nextStep: nextStep)
+                                let authResult = AuthSignInResult(nextStep: nextStep)
                                 completionHandler(.success(authResult))
         }
 

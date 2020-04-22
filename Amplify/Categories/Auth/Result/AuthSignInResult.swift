@@ -13,18 +13,15 @@ public struct AuthSignInResult {
     ///
     /// When this value is false, it means that there are more steps to follow for the signIn flow. Check `nextStep`
     /// to understand the next flow. If `isSignedIn` is true, signIn flow has been completed.
-    public let isSignedIn: Bool
+    public var isSignedIn: Bool { nextStep == .done }
 
     /// Shows the next step required to complete the signIn flow.
     ///
-    /// This value will be nil if `isSignedIn` is true.
-    public var nextStep: AuthSignInStep?
+    public var nextStep: AuthSignInStep
 
     //TODO: Add Code delivery #172336364
 
-    public init(isSignedIn: Bool,
-                 nextStep: AuthSignInStep? = nil) {
-        self.isSignedIn = isSignedIn
+    public init(nextStep: AuthSignInStep) {
         self.nextStep = nextStep
     }
 }
@@ -57,4 +54,8 @@ public enum AuthSignInStep {
     /// Auth step require the user to setup their MFA preferences
     ///
     case mfaSetup
+
+    /// There is no next step and the signIn flow is complete
+    ///
+    case done
 }
