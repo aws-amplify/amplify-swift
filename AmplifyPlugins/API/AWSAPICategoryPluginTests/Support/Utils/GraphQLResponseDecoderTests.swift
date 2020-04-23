@@ -33,5 +33,4 @@ class GraphQLResponseDecoderTests: XCTestCase {
         XCTAssertNotNil(decodedResponse)
 //        XCTAssertEqual(decodedResponse["foo"], "bar")
     }
-
 }

@@ -48,6 +48,12 @@ class ProcessMutationErrorFromCloudOperation: Operation {
 
             let hasConditionalRequestFailed = graphQLErrors.contains { (error) -> Bool in
                 error.message.contains("conditional request failed")
+                if let extensions = error.extensions,
+                    case let .string(errorType) = extensions["errorType"],
+                    errorType == "ConditionalCheckFailedException" {
+                    return true
+                }
+                return false
             }
 
             if hasConditionalRequestFailed {
