@@ -128,7 +128,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         let expectedPinpointEvent = AWSPinpointEvent(eventType: testName, session: AWSPinpointSession())
         mockPinpoint.createEventResult = expectedPinpointEvent
         expectedPinpointEvent.addProperties(testProperties)
-        let event = BasicAnalyticsEvent(testName, properties: testProperties)
+        let event = BasicAnalyticsEvent(name: testName, properties: testProperties)
 
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
         _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
@@ -156,7 +156,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.record is not called
     func testRecordEventDispatchesErrorForIsEnabledFalse() {
         analyticsPlugin.isEnabled = false
-        let event = BasicAnalyticsEvent(testName, properties: testProperties)
+        let event = BasicAnalyticsEvent(name: testName, properties: testProperties)
 
         analyticsPlugin.record(event: event)
 
@@ -174,7 +174,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         let expectedPinpointEvent = AWSPinpointEvent(eventType: testName, session: AWSPinpointSession())
         mockPinpoint.createEventResult = expectedPinpointEvent
         expectedPinpointEvent.addProperties(testProperties)
-        let event = BasicAnalyticsEvent(testName, properties: testProperties)
+        let event = BasicAnalyticsEvent(name: testName, properties: testProperties)
 
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
         _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in

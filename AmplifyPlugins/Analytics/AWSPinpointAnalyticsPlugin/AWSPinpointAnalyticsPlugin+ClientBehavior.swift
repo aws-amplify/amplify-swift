@@ -62,7 +62,7 @@ extension AWSPinpointAnalyticsPlugin {
     }
 
     public func record(eventWithName eventName: String) {
-        let event = BasicAnalyticsEvent(eventName)
+        let event = BasicAnalyticsEvent(name: eventName)
         record(event: event)
     }
 

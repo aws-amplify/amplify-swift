@@ -7,6 +7,8 @@
 
 import Foundation
 
+public typealias AnalyticsProperties = [String: AnalyticsPropertyValue]
+
 /// Behavior of the Analytics category that clients will use
 public protocol AnalyticsCategoryBehavior {
 
@@ -33,7 +35,7 @@ public protocol AnalyticsCategoryBehavior {
     /// name when calling `record`. Examples of global properties would be `selectedPlan`, `campaignSource`
     ///
     /// - Parameter properties: The dictionary of property name to property values
-    func registerGlobalProperties(_ properties: [String: AnalyticsPropertyValue])
+    func registerGlobalProperties(_ properties: AnalyticsProperties)
 
     /// Registered global properties can be unregistered though this method. In case no keys are provided, *all*
     /// registered global properties will be unregistered.

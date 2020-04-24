@@ -18,7 +18,7 @@ extension AnalyticsCategory: AnalyticsCategoryBehavior {
         plugin.record(eventWithName: eventName)
     }
 
-    public func registerGlobalProperties(_ properties: [String: AnalyticsPropertyValue]) {
+    public func registerGlobalProperties(_ properties: AnalyticsProperties) {
         plugin.registerGlobalProperties(properties)
     }
 
@@ -36,5 +36,18 @@ extension AnalyticsCategory: AnalyticsCategoryBehavior {
 
     public func disable() {
         plugin.disable()
+    }
+}
+
+/// Methods that wrap `AnalyticsCategoryBehavior` to provides additional useful calling patterns
+extension AnalyticsCategory {
+
+    /// Registered global properties can be unregistered though this method. In case no keys are provided, *all*
+    /// registered global properties will be unregistered. Duplicate keys will be ignored. This method can be called
+    /// from `Amplify.Analytics` and is a wrapper for `unregisterGlobalProperties(_ keys: Set<String>? = nil)`
+    ///
+    /// - Parameter keys: one or more of property names to unregister
+    public func unregisterGlobalProperties(_ keys: String...) {
+        plugin.unregisterGlobalProperties(keys.isEmpty ? nil : Set<String>(keys))
     }
 }
