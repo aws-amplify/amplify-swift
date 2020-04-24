@@ -7,13 +7,13 @@
 
 import Foundation
 
-public protocol AuthSocialSignInOperation: AmplifyOperation<AuthSocialSignInRequest,
+public protocol AuthWebUISignInOperation: AmplifyOperation<AuthWebUISignInRequest,
 Void,
-AuthSocialSignInResult,
+AuthSignInResult,
 AmplifyAuthError> {}
 
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let socialSignIn = "Auth.socialSignIn"
+    static let webUISignIn = "Auth.webUISignIn"
 }

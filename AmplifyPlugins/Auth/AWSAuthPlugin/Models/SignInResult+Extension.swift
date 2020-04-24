@@ -13,11 +13,11 @@ extension SignInState {
     func toAmplifyAuthSignInStep() throws -> AuthSignInStep {
         switch self {
         case .smsMFA:
-            return .smsMFAChallenge
+            return .confirmSignInWithSMSMFACode
         case .customChallenge:
-            return .customChallenge
+            return .confirmSignInWithCustomChallenge
         case .newPasswordRequired:
-            return .newPasswordRequiredChallenge
+            return .confirmSignInWithNewPassword
         default:
             throw (AmplifyAuthError.unknown("AWSMobileClient auth state is not handled"))
         }

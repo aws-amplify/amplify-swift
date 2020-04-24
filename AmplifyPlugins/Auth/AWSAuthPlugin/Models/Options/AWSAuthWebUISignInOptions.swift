@@ -7,19 +7,9 @@
 
 import Foundation
 
-public enum AuthProvider {
+public struct AWSAuthWebUISignInOptions {
 
-    case amazon
+    public let idpIdentifier: String?
 
-    case apple
-
-    case facebook
-
-    case google
-
-    case oidc
-
-    case saml
-
-    case custom(String)
+    public let federationProviderName: String?
 }

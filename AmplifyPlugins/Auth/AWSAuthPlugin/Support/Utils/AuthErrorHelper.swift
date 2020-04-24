@@ -131,22 +131,18 @@ struct AuthErrorHelper {
         .guestAccessNotAllowed(let message), // Returned from getAWSCredentials. Handled in plugin
         .federationProviderExists(let message), // User is already signed in to user pool in federatedSignIn
         .unableToSignIn(let message), // Called in signout, releaseSignInWait.
-        .userCancelledSignIn(let message),
         .idTokenNotIssued(let message), // Not used anywhere.
-        .badRequest(let message), // HostedUI returned with bad url or request.
+        // Handled in WebUISignIn inside plugin
         .userPoolNotConfigured(let message):
             // TODO: Hanlde the above errors inside the plugin #172336364
             return AmplifyAuthError.unknown(message)
 
-        case .securityFailed(let message):
-            // Error occured inside HostedUI
-            // TODO: Handle this error in Auth.signInWithUI #172336364
-            return AmplifyAuthError.unknown(message)
-
-        case .idTokenAndAcceessTokenNotIssued(let message):
-            // Called inside hostedUI showSignIn if there is no idToken or accessToken after getsession completes
-            // This error will be handled by Auth.signInWithUI.
-            // TODO: Handle this error in Auth.signInWithUI #172336364
+        case .badRequest(let message),
+             .securityFailed(let message),
+             .userCancelledSignIn(let message),
+             .idTokenAndAcceessTokenNotIssued(let message):
+            // These errors are thrown from HostedUI signIn.
+            // Handled in WebUISignIn inside plugin.
             return AmplifyAuthError.unknown(message)
 
         case .expiredRefreshToken(let message):

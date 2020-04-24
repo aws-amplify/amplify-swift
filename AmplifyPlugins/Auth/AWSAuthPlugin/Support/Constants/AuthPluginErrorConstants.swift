@@ -27,6 +27,14 @@ struct AuthPluginErrorConstants {
     static let mobileClientInitializeError: AuthPluginErrorString = (
         "Unable to initialize the underlying AWSMobileClient",
         "Make sure that the necessary configuration are present in the configuration file")
+
+    static let hostedUISecurityFailedError: AuthPluginErrorString = (
+        "Found invalid parameter while parsing the webUI signIn",
+        "Make sure that the signIn url is not tampered. Contact AWS if this issue happens.")
+
+    static let hostedUIUserCancelledError: AuthPluginErrorString = (
+        "User cancelled the signIn flow and could not be completed.",
+        "Present the signIn UI again for the user to sign in.")
 }
 
 // Field validation errors
@@ -113,5 +121,7 @@ extension AuthPluginErrorConstants {
     static let notAuthorizedError: RecoverySuggestion = """
     Check whether the given values are correct and the user is authorized to perform the operation.
     """
+
+    static let hostedUIBadRequestError: RecoverySuggestion = "Retry the webUi signIn"
 
 }
