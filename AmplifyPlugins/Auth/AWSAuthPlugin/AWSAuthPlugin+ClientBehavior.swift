@@ -10,7 +10,7 @@ import Amplify
 extension AWSAuthPlugin {
 
     public func signUp(username: String,
-                       password: String,
+                       password: String?,
                        options: AuthSignUpOperation.Request.Options?,
                        listener: AuthSignUpOperation.EventListener?) -> AuthSignUpOperation {
         let options = options ?? AuthSignUpRequest.Options()
@@ -29,6 +29,13 @@ extension AWSAuthPlugin {
                               options: AuthConfirmSignUpOperation.Request.Options?,
                               listener: AuthConfirmSignUpOperation.EventListener?) -> AuthConfirmSignUpOperation {
         fatalError()
+    }
+
+    public func resendSignUpCode(username: String,
+                                 options: AuthResendSignUpCodeOperation.Request.Options? = nil,
+                                 listener: AuthResendSignUpCodeOperation.EventListener?)
+        -> AuthResendSignUpCodeOperation {
+            fatalError()
     }
 
     public func signIn(username: String?,
