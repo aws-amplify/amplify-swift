@@ -24,6 +24,9 @@ protocol AWSMobileClientBehavior {
                        clientMetaData: [String: String],
                        completionHandler: @escaping ((SignUpResult?, Error?) -> Void))
 
+    func resendSignUpCode(username: String,
+                          completionHandler: @escaping ((SignUpResult?, Error?) -> Void))
+
     func signIn(username: String,
                 password: String,
                 validationData: [String: String]?,
