@@ -9,27 +9,15 @@ import Foundation
 
 public struct AuthCodeDeliveryDetails {
 
-    public let destination: String
+    /// Destination to which the code was delivered.
+    public let destination: DeliveryDestination
 
-    public let deliveryMedium: DeliveryMedium
+    /// Attribute that is confirmed or verified.
+    public let attributeName: String?
 
-    public let attributeName: String
-
-    public init(destination: String,
-                 deliveryMedium: DeliveryMedium,
-                 attributeName: String) {
+    public init(destination: DeliveryDestination,
+                 attributeName: String? = nil) {
         self.destination = destination
-        self.deliveryMedium = deliveryMedium
         self.attributeName = attributeName
     }
-
-}
-
-//TODO: Should we move this under AuthCodeDeliveryDetails extension?
-public enum DeliveryMedium {
-    case sms
-    case email
-    case phoneNumber
-    case custom(String)
-    case unknown
 }

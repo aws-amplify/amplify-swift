@@ -10,7 +10,7 @@ import Foundation
 extension AuthCategory: AuthCategoryBehavior {
 
     public func signUp(username: String,
-                       password: String,
+                       password: String? = nil,
                        options: AuthSignUpOperation.Request.Options? = nil,
                        listener: AuthSignUpOperation.EventListener?) -> AuthSignUpOperation {
         return plugin.signUp(username: username,
@@ -27,6 +27,15 @@ extension AuthCategory: AuthCategoryBehavior {
                                     confirmationCode: confirmationCode,
                                     options: options,
                                     listener: listener)
+    }
+
+    public func resendSignUpCode(username: String,
+                                 options: AuthResendSignUpCodeOperation.Request.Options? = nil,
+                                 listener: AuthResendSignUpCodeOperation.EventListener?)
+        -> AuthResendSignUpCodeOperation {
+            return plugin.resendSignUpCode(username: username,
+                                           options: options,
+                                           listener: listener)
     }
 
     public func signIn(username: String? = nil,

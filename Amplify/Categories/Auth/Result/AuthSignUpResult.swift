@@ -9,12 +9,14 @@ import Foundation
 
 public struct AuthSignUpResult {
 
-    public let userConfirmed: Bool
+    /// Indicate whether the signUp flow is completed.
+    public var isSignupComplete: Bool {
+        return nextStep.signUpStep == .done
+    }
 
-    public let codeDeliveryDetails: AuthCodeDeliveryDetails?
+    public let nextStep: AuthNextSignUpStep
 
-    public init(userConfirmed: Bool, codeDeliveryDetails: AuthCodeDeliveryDetails?) {
-        self.userConfirmed = userConfirmed
-        self.codeDeliveryDetails = codeDeliveryDetails
+    public init(_ nextStep: AuthNextSignUpStep) {
+        self.nextStep = nextStep
     }
 }

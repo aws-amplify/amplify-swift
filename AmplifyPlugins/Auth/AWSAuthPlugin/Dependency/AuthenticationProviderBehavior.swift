@@ -16,6 +16,9 @@ protocol AuthenticationProviderBehavior {
     func confirmSignUp(request: AuthConfirmSignUpRequest,
                        completionHandler: @escaping (Result<AuthSignUpResult, AmplifyAuthError>) -> Void)
 
+    func resendSignUpCode(request: AuthResendSignUpCodeRequest,
+                          completionHandler: @escaping (Result<AuthCodeDeliveryDetails, AmplifyAuthError>) -> Void)
+
     func signIn(request: AuthSignInRequest,
                 completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void)
 }

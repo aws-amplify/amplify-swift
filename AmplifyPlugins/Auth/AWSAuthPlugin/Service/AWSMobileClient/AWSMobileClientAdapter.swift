@@ -53,6 +53,10 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
                                       completionHandler: completionHandler)
     }
 
+    func resendSignUpCode(username: String, completionHandler: @escaping ((SignUpResult?, Error?) -> Void)) {
+        awsMobileClient.resendSignUpCode(username: username, completionHandler: completionHandler)
+    }
+
     func signIn(username: String,
                 password: String,
                 validationData: [String: String]? = nil,
