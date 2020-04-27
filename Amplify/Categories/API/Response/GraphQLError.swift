@@ -20,7 +20,10 @@ public struct GraphQLError: Decodable {
     /// Additional map of of errors
     public let extensions: [String: JSONValue]?
 
-    public init(message: String, locations: [Location]?, path: [JSONValue]?, extensions: [String: JSONValue]?) {
+    public init(message: String,
+                locations: [Location]? = nil,
+                path: [JSONValue]? = nil,
+                extensions: [String: JSONValue]? = nil) {
         self.message = message
         self.locations = locations
         self.path = path

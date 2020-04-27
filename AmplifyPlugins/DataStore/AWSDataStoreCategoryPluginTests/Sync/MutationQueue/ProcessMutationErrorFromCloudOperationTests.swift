@@ -43,7 +43,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let graphQLError = GraphQLError(message: "conditional request failed",
                                         locations: nil,
                                         path: nil,
-                                        extensions: ["errorType": "ConditionalCheckFailedException"])
+                                        extensions: ["errorType": .string(AppSyncErrorType.conditionalCheck.rawValue)])
         let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError])
 
         let operation = ProcessMutationErrorFromCloudOperation(mutationEvent: mutationEvent,

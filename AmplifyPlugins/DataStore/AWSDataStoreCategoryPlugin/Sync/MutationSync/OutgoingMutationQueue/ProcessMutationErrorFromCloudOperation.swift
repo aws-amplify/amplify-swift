@@ -44,14 +44,11 @@ class ProcessMutationErrorFromCloudOperation: Operation {
 
     private func processConditionalRequestFailed() {
         if case let .error(graphQLErrors) = error {
-            // TODO: Check for 'ConflictUnhandled', execute conflict handler configurated
+            // TODO: Check for 'ConflictUnhandled', execute conflict handler
 
             let hasConditionalRequestFailed = graphQLErrors.contains { (error) -> Bool in
-                error.message.contains("conditional request failed")
-                if let extensions = error.extensions,
-                    case let .string(errorType) = extensions["errorType"],
-                    errorType == "ConditionalCheckFailedException" {
-                    return true
+                if let extensions = error.extensions, case let .string(errorTypeValue) = extensions["errorType"] {
+                    return AppSyncErrorType(errorTypeValue) == .conditionalCheck
                 }
                 return false
             }

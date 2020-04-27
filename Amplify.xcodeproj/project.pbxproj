@@ -92,6 +92,7 @@
 		219A88ED23F3309800BBC5F2 /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A88EC23F3309800BBC5F2 /* Tree.swift */; };
 		219A88EF23F3358F00BBC5F2 /* TreeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A88EE23F3358F00BBC5F2 /* TreeTests.swift */; };
 		219A88F123F3379900BBC5F2 /* GraphQLDocumentInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A88F023F3379900BBC5F2 /* GraphQLDocumentInput.swift */; };
+		21C395B3245729EC00597EA2 /* AppSyncErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */; };
 		21D1CE8C2334233F0003BAA8 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D1CE8B2334233F0003BAA8 /* AuthError.swift */; };
 		21D79FDA237617C60057D00D /* SubscriptionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FD9237617C60057D00D /* SubscriptionEvent.swift */; };
 		21D79FE12377BF4B0057D00D /* AuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FE02377BF4B0057D00D /* AuthProvider.swift */; };
@@ -622,6 +623,7 @@
 		219A88EC23F3309800BBC5F2 /* Tree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
 		219A88EE23F3358F00BBC5F2 /* TreeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeTests.swift; sourceTree = "<group>"; };
 		219A88F023F3379900BBC5F2 /* GraphQLDocumentInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLDocumentInput.swift; sourceTree = "<group>"; };
+		21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncErrorType.swift; sourceTree = "<group>"; };
 		21D1CE8B2334233F0003BAA8 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
 		21D79FD9237617C60057D00D /* SubscriptionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionEvent.swift; sourceTree = "<group>"; };
 		21D79FE02377BF4B0057D00D /* AuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthProvider.swift; sourceTree = "<group>"; };
@@ -1398,6 +1400,14 @@
 			path = Error;
 			sourceTree = "<group>";
 		};
+		21C395B4245729F100597EA2 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
 		21FFF999230C96E0005878EA /* Operation */ = {
 			isa = PBXGroup;
 			children = (
@@ -1977,9 +1987,10 @@
 		FA131AAB2360FE070008381C /* AWSPluginsCore */ = {
 			isa = PBXGroup;
 			children = (
+				21C395B4245729F100597EA2 /* API */,
+				FA131ACB2360FE470008381C /* Auth */,
 				FA131AAC2360FE070008381C /* AWSPluginsCore.h */,
 				FA131AAD2360FE070008381C /* Info.plist */,
-				FA131ACB2360FE470008381C /* Auth */,
 				2129BE0223947FA3006363A1 /* Model */,
 				6BBECD6F23ADA7C100C8DFBE /* ServiceConfiguration */,
 				2129BE3F23948909006363A1 /* Sync */,
@@ -3499,6 +3510,7 @@
 				21D79FE12377BF4B0057D00D /* AuthProvider.swift in Sources */,
 				21420AA1237222A900FA140C /* AWSMobileClientBehavior.swift in Sources */,
 				212CE71123E9EA6A007D8E71 /* ModelField+GraphQL.swift in Sources */,
+				21C395B3245729EC00597EA2 /* AppSyncErrorType.swift in Sources */,
 				212CE70523E9E967007D8E71 /* GraphQLQuery.swift in Sources */,
 				212CE70C23E9E991007D8E71 /* ConflictResolutionDecorator.swift in Sources */,
 				212CE71323E9F2ED007D8E71 /* DirectiveNameDecorator.swift in Sources */,

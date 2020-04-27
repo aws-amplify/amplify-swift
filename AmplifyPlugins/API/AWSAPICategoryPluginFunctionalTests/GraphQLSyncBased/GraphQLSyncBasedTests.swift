@@ -284,11 +284,12 @@ class GraphQLSyncBasedTests: XCTestCase {
                 XCTAssertEqual(errors.count, 1)
                 guard let error = errors.first,
                     let extensions = error.extensions,
-                    case let .string(errorType) = extensions["errorType"] else {
+                    case let .string(errorTypeValue) = extensions["errorType"] else {
                     XCTFail("Failed to get errorType from extensions of the GraphQL error")
                     return
                 }
-                XCTAssertEqual(errorType, "ConditionalCheckFailedException")
+                let errorType = AppSyncErrorType(errorTypeValue)
+                XCTAssertEqual(errorType, .conditionalCheck)
                 conditionalFailedError.fulfill()
             case .partial(let model, let errors):
                 XCTFail("partial: \(model), \(errors)")
@@ -373,7 +374,9 @@ class GraphQLSyncBasedTests: XCTestCase {
                     XCTFail("Missing errorType")
                     return
                 }
-                XCTAssertEqual(errorTypeValue, "ConflictUnhandled")
+                let errorType = AppSyncErrorType(errorTypeValue)
+                XCTAssertEqual(errorType, .conflictUnhandled)
+
                 guard case let .object(dataObject) = extensions["data"] else {
                     XCTFail("Missing data")
                     return
