@@ -5,25 +5,24 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSMobileClient
 
-public class AWSAuthSignUpOperation: AmplifyOperation<AuthSignUpRequest,
+public class AWSAuthConfirmSignUpOperation: AmplifyOperation<AuthConfirmSignUpRequest,
     Void,
     AuthSignUpResult,
     AmplifyAuthError>,
-AuthSignUpOperation {
+AuthConfirmSignUpOperation {
 
     let authenticationProvider: AuthenticationProviderBehavior
 
-    init(_ request: AuthSignUpRequest,
+    init(_ request: AuthConfirmSignUpRequest,
          authenticationProvider: AuthenticationProviderBehavior,
          listener: EventListener?) {
 
         self.authenticationProvider = authenticationProvider
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.signUp,
+                   eventName: HubPayload.EventName.Auth.confirmSignUp,
                    request: request,
                    listener: listener)
     }
@@ -40,22 +39,18 @@ AuthSignUpOperation {
             return
         }
 
-        authenticationProvider.signUp(request: request) { [weak self] result in
+        authenticationProvider.confirmSignUp(request: request) {[weak self]  result in
+
             guard let self = self else { return }
 
             defer {
                 self.finish()
             }
-
-            if self.isCancelled {
-                return
-            }
-
             switch result {
-            case .success(let signUpResult):
-                self.dispatch(signUpResult)
-            case .failure(let signUpError):
-                self.dispatch(signUpError)
+            case .failure(let error):
+                self.dispatch(error)
+            case .success(let signInResult):
+                self.dispatch(signInResult)
             }
         }
     }
@@ -69,4 +64,5 @@ AuthSignUpOperation {
         let asyncEvent = AsyncEvent<Void, AuthSignUpResult, AmplifyAuthError>.failed(error)
         dispatch(event: asyncEvent)
     }
+
 }

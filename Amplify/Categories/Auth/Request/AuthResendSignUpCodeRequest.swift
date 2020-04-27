@@ -7,22 +7,19 @@
 
 import Foundation
 
-public struct AuthConfirmSignUpRequest: AmplifyOperationRequest {
+public struct AuthResendSignUpCodeRequest: AmplifyOperationRequest {
 
     public let username: String
 
-    public let code: String
-
     public var options: Options
 
-    public init(username: String, code: String, options: Options) {
+    public init(username: String, options: Options) {
         self.username = username
-        self.code = code
         self.options = options
     }
 }
 
-public extension AuthConfirmSignUpRequest {
+public extension AuthResendSignUpCodeRequest {
 
     struct Options {
 
@@ -36,3 +33,4 @@ public extension AuthConfirmSignUpRequest {
         }
     }
 }
+
