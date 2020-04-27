@@ -34,7 +34,7 @@ AuthSignUpOperation {
             return
         }
 
-        if let validationError = request.validate() {
+        if let validationError = request.hasError() {
             dispatch(validationError)
             finish()
             return

@@ -16,7 +16,7 @@ public struct AuthUserAttribute {
 }
 
 public enum AuthUserAttributeKey {
-
+    // Attribute ref - https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html
     case address
     case birthDate
     case email

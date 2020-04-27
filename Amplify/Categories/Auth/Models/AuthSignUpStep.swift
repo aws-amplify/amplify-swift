@@ -11,6 +11,6 @@ public enum AuthSignUpStep {
     /// Need to confirm the user
     case confirmUser
 
-    /// SignUp step completed
+    /// Sign up is complete
     case done
 }

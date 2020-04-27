@@ -9,7 +9,7 @@ import Foundation
 
 public struct AuthCodeDeliveryDetails {
 
-    /// Destination to which the code was send.
+    /// Destination to which the code was delivered.
     public let destination: DeliveryDestination
 
     /// Attribute that is confirmed or verified.

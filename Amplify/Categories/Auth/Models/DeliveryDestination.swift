@@ -10,7 +10,10 @@ public typealias Destination = String
 public enum DeliveryDestination {
 
     case email(Destination?)
-    case sms(Destination?)
+
     case phone(Destination?)
+
+    case sms(Destination?)
+
     case unknown(Destination?)
 }
