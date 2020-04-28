@@ -121,17 +121,39 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             return
         case .delete:
             guard !remote.syncMetadata.deleted else {
-                log.debug("Conflict Unhandled for data delete in local and remote. Nothing to do, skip processing.")
+                log.debug("Conflict Unhandled for data deleted in local and remote. Nothing to do, skip processing.")
                 finish(result: .success(nil))
                 return
             }
-            // Default conflict resolution is to `discard` the local changes. Since local model has been deleted and
-            // remote has not, recreate the local model given the remote data.
-            saveCreateOrUpdateMutation(remoteModel: remote)
+
+            let localModel: Model
+            do {
+                localModel = try mutationEvent.decodeModel()
+            } catch {
+                let error = DataStoreError.unknown("Couldn't decode local model", "")
+                finish(result: .failure(error))
+                return
+            }
+            let conflictData = DataStoreConflictData(local: localModel, remote: remote.model.instance)
+            let latestVersion = remote.syncMetadata.version
+            dataStoreConfiguration.conflictHandler(conflictData) { result in
+                switch result {
+                case .applyRemote:
+                    self.saveCreateOrUpdateMutation(remoteModel: remote)
+                case .retryLocal:
+                    let request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: localModel.modelName,
+                                                                                    id: localModel.id,
+                                                                                    version: latestVersion)
+                    self.makeAPIRequest(request)
+                case .retry(let model):
+                    let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
+                                                                                    version: latestVersion)
+                    self.makeAPIRequest(request)
+                }
+            }
         case .update:
             guard !remote.syncMetadata.deleted else {
-                // Remote model has been deleted and there is nothing we can do to un-delete it
-                // Reconcile the local store by deleting locally.
+                log.debug("Conflict Unhandled for updated local and deleted remote. Reconcile by deleting local")
                 saveDeleteMutation(remoteModel: remote)
                 return
             }
@@ -148,7 +170,6 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             let conflictData = DataStoreConflictData(local: localModel, remote: remote.model.instance)
             let latestVersion = remote.syncMetadata.version
             dataStoreConfiguration.conflictHandler(conflictData) { result in
-                print("result called")
                 switch result {
                 case .applyRemote:
                     self.saveCreateOrUpdateMutation(remoteModel: remote)

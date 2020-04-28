@@ -63,7 +63,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: Model.Identifier,
-                          completion: DataStoreCallback<Void>) {
+                          completion: DataStoreCallback<M?>) {
         XCTFail("Not expected to execute")
     }
 
@@ -200,8 +200,8 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
 
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: Model.Identifier,
-                          completion: DataStoreCallback<Void>) {
-        completion(.successfulVoid)
+                          completion: DataStoreCallback<M?>) {
+        completion(.success(nil))
     }
 
     func delete<M: Model>(_ modelType: M.Type,

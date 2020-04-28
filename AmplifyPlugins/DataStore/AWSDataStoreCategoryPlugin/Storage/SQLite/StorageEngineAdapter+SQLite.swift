@@ -144,8 +144,15 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: Model.Identifier,
-                          completion: (DataStoreResult<Void>) -> Void) {
-        delete(untypedModelType: modelType, withId: id, completion: completion)
+                          completion: (DataStoreResult<M?>) -> Void) {
+        delete(untypedModelType: modelType, withId: id) { result in
+            switch result {
+            case .success:
+                completion(.success(nil))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 
     func delete(untypedModelType modelType: Model.Type,
