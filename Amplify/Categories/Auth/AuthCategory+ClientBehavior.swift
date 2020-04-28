@@ -104,13 +104,62 @@ extension AuthCategory: AuthCategoryBehavior {
                                             listener: listener)
     }
 
-    public func changePassword(currentPassword: String,
-                               newPassword: String,
-                               options: AuthChangePasswordOperation.Request.Options? = nil,
-                               listener: AuthChangePasswordOperation.EventListener?) -> AuthChangePasswordOperation {
-        return plugin.changePassword(currentPassword: currentPassword,
-                                     newPassword: newPassword,
-                                     options: options,
-                                     listener: listener)
+    public func getCurrentUser() -> AuthUser? {
+        return plugin.getCurrentUser()
+    }
+
+    public func fetchAttributes(options: AuthFetchUserAttributeOperation.Request.Options? = nil,
+                                listener: AuthFetchUserAttributeOperation.EventListener?)
+        -> AuthFetchUserAttributeOperation {
+            return plugin.fetchAttributes(options: options,
+                                          listener: listener)
+    }
+
+    public func update(userAttribute: AuthUserAttribute,
+                       options: AuthUpdateUserAttributeOperation.Request.Options? = nil,
+                       listener: AuthUpdateUserAttributeOperation.EventListener?) -> AuthUpdateUserAttributeOperation {
+        return plugin.update(userAttribute: userAttribute,
+                             options: options,
+                             listener: listener)
+    }
+
+    public func update(userAttributes: [AuthUserAttribute],
+                       options: AuthUpdateUserAttributesOperation.Request.Options? = nil,
+                       listener: AuthUpdateUserAttributesOperation.EventListener?)
+        -> AuthUpdateUserAttributesOperation {
+            return plugin.update(userAttributes: userAttributes,
+                                 options: options,
+                                 listener: listener)
+    }
+
+    public func resendConfirmationCode(for attributeType: AuthUserAttributeKey,
+                                       options: AuthAttributeResendConfirmationCodeOperation.Request.Options? = nil,
+                                       listener: AuthAttributeResendConfirmationCodeOperation.EventListener?)
+        -> AuthAttributeResendConfirmationCodeOperation {
+            return plugin.resendConfirmationCode(for: attributeType,
+                                                 options: options,
+                                                 listener: listener)
+
+    }
+
+    public func confirm(userAttribute: AuthUserAttributeKey,
+                        confirmationCode: String,
+                        options: AuthConfirmUserAttributeOperation.Request.Options? = nil,
+                        listener: AuthConfirmUserAttributeOperation.EventListener?)
+        -> AuthConfirmUserAttributeOperation {
+            return plugin.confirm(userAttribute: userAttribute,
+                                  confirmationCode: confirmationCode,
+                                  options: options,
+                                  listener: listener)
+    }
+
+    public func update(oldPassword: String,
+                       to newPassword: String,
+                       options: AuthChangePasswordOperation.Request.Options? = nil,
+                       listener: AuthChangePasswordOperation.EventListener?) -> AuthChangePasswordOperation {
+        return plugin.update(oldPassword: oldPassword,
+                             to: newPassword,
+                             options: options,
+                             listener: listener)
     }
 }

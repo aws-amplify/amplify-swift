@@ -99,4 +99,39 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
     func signOut(options: SignOutOptions = SignOutOptions(), completionHandler: @escaping ((Error?) -> Void)) {
         awsMobileClient.signOut(options: options, completionHandler: completionHandler)
     }
+
+    func username() -> String? {
+        return awsMobileClient.username
+    }
+
+    func verifyUserAttribute(attributeName: String,
+                             completionHandler: @escaping ((UserCodeDeliveryDetails?, Error?) -> Void)) {
+        awsMobileClient.verifyUserAttribute(attributeName: attributeName,
+                                            completionHandler: completionHandler)
+    }
+
+    func updateUserAttributes(attributeMap: [String: String],
+                              completionHandler: @escaping (([UserCodeDeliveryDetails]?, Error?) -> Void)) {
+        awsMobileClient.updateUserAttributes(attributeMap: attributeMap,
+                                             completionHandler: completionHandler)
+    }
+
+    func getUserAttributes(completionHandler: @escaping (([String: String]?, Error?) -> Void)) {
+        awsMobileClient.getUserAttributes(completionHandler: completionHandler)
+    }
+
+    func confirmUpdateUserAttributes(attributeName: String, code: String,
+                                     completionHandler: @escaping ((Error?) -> Void)) {
+        awsMobileClient.confirmUpdateUserAttributes(attributeName: attributeName,
+                                                    code: code,
+                                                    completionHandler: completionHandler)
+    }
+
+    func changePassword(currentPassword: String,
+                        proposedPassword: String,
+                        completionHandler: @escaping ((Error?) -> Void)) {
+        awsMobileClient.changePassword(currentPassword: currentPassword,
+                                       proposedPassword: proposedPassword,
+                                       completionHandler: completionHandler)
+    }
 }

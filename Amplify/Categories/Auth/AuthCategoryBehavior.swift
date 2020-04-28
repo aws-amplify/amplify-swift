@@ -125,8 +125,34 @@ public protocol AuthCategoryBehavior {
                                listener: AuthConfirmForgotPasswordOperation.EventListener?) ->
     AuthConfirmForgotPasswordOperation
 
-    func changePassword(currentPassword: String,
-                        newPassword: String,
-                        options: AuthChangePasswordOperation.Request.Options?,
-                        listener: AuthChangePasswordOperation.EventListener?) -> AuthChangePasswordOperation
+    // MARK: - User Management
+
+    /// Returns the currently logged in user.
+    ///
+    func getCurrentUser() -> AuthUser?
+
+    func fetchAttributes(options: AuthFetchUserAttributeOperation.Request.Options?,
+                         listener: AuthFetchUserAttributeOperation.EventListener?) -> AuthFetchUserAttributeOperation
+
+    func update(userAttribute: AuthUserAttribute,
+                options: AuthUpdateUserAttributeOperation.Request.Options?,
+                listener: AuthUpdateUserAttributeOperation.EventListener?) -> AuthUpdateUserAttributeOperation
+
+    func update(userAttributes: [AuthUserAttribute],
+                options: AuthUpdateUserAttributesOperation.Request.Options?,
+                listener: AuthUpdateUserAttributesOperation.EventListener?) -> AuthUpdateUserAttributesOperation
+
+    func resendConfirmationCode(for attributeType: AuthUserAttributeKey,
+                                options: AuthAttributeResendConfirmationCodeOperation.Request.Options?,
+                                listener: AuthAttributeResendConfirmationCodeOperation.EventListener?) -> AuthAttributeResendConfirmationCodeOperation
+
+    func confirm(userAttribute: AuthUserAttributeKey,
+                 confirmationCode: String,
+                 options: AuthConfirmUserAttributeOperation.Request.Options?,
+                 listener: AuthConfirmUserAttributeOperation.EventListener?) -> AuthConfirmUserAttributeOperation
+
+    func update(oldPassword: String,
+                to newPassword: String,
+                options: AuthChangePasswordOperation.Request.Options?,
+                listener: AuthChangePasswordOperation.EventListener?) -> AuthChangePasswordOperation
 }

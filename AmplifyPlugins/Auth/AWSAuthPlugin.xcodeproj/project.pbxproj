@@ -50,6 +50,16 @@
 		B49FAA5124478775001868ED /* AuthenticationProviderAdapter+SignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49FAA5024478775001868ED /* AuthenticationProviderAdapter+SignIn.swift */; };
 		B4A65ADB244E4C0E003A8F57 /* AuthErrorHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4A65ADA244E4C0E003A8F57 /* AuthErrorHelper.swift */; };
 		B4A65ADF244E4D2D003A8F57 /* AWSCognitoAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4A65ADE244E4D2D003A8F57 /* AWSCognitoAuthError.swift */; };
+		B4B5CC9C2457B9820019C783 /* AWSAuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B5CC9B2457B9820019C783 /* AWSAuthUser.swift */; };
+		B4B5CC9E24586C9E0019C783 /* AuthUserServiceBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B5CC9D24586C9E0019C783 /* AuthUserServiceBehavior.swift */; };
+		B4B5CCAB2458AE2B0019C783 /* AuthUserServiceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B5CCAA2458AE2B0019C783 /* AuthUserServiceAdapter.swift */; };
+		B4B5CCB22458AF390019C783 /* AWSAuthConfirmUserAttributeOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B5CCAD2458AF390019C783 /* AWSAuthConfirmUserAttributeOperation.swift */; };
+		B4B5CCB32458AF390019C783 /* AWSAuthUpdateUserAttributeOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B5CCAE2458AF390019C783 /* AWSAuthUpdateUserAttributeOperation.swift */; };
+		B4B5CCB42458AF390019C783 /* AWSAuthFetchUserAttributeOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B5CCAF2458AF390019C783 /* AWSAuthFetchUserAttributeOperation.swift */; };
+		B4B5CCB52458AF390019C783 /* AWSAuthUpdateUserAttributesOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B5CCB02458AF390019C783 /* AWSAuthUpdateUserAttributesOperation.swift */; };
+		B4B5CCB62458AF390019C783 /* AWSAuthAttributeResendConfirmationCodeOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B5CCB12458AF390019C783 /* AWSAuthAttributeResendConfirmationCodeOperation.swift */; };
+		B4B5CCBA2458C4330019C783 /* AWSAuthPlugin+UserBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B5CCB92458C4330019C783 /* AWSAuthPlugin+UserBehavior.swift */; };
+		B4C04A9A2462193700E59DF8 /* AWSAuthChangePasswordOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C04A992462193700E59DF8 /* AWSAuthChangePasswordOperation.swift */; };
 		B4F3EA09243A655A00F23296 /* AWSAuthPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3EA08243A655A00F23296 /* AWSAuthPluginIntegrationTests.swift */; };
 		B4F3EA38243A753500F23296 /* AWSAuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3EA37243A753500F23296 /* AWSAuthPlugin.swift */; };
 		B4F3EA47243A776800F23296 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B4F3EA41243A776800F23296 /* Assets.xcassets */; };
@@ -128,6 +138,16 @@
 		B49FAA5024478775001868ED /* AuthenticationProviderAdapter+SignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthenticationProviderAdapter+SignIn.swift"; sourceTree = "<group>"; };
 		B4A65ADA244E4C0E003A8F57 /* AuthErrorHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthErrorHelper.swift; sourceTree = "<group>"; };
 		B4A65ADE244E4D2D003A8F57 /* AWSCognitoAuthError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSCognitoAuthError.swift; sourceTree = "<group>"; };
+		B4B5CC9B2457B9820019C783 /* AWSAuthUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthUser.swift; sourceTree = "<group>"; };
+		B4B5CC9D24586C9E0019C783 /* AuthUserServiceBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUserServiceBehavior.swift; sourceTree = "<group>"; };
+		B4B5CCAA2458AE2B0019C783 /* AuthUserServiceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUserServiceAdapter.swift; sourceTree = "<group>"; };
+		B4B5CCAD2458AF390019C783 /* AWSAuthConfirmUserAttributeOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthConfirmUserAttributeOperation.swift; sourceTree = "<group>"; };
+		B4B5CCAE2458AF390019C783 /* AWSAuthUpdateUserAttributeOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthUpdateUserAttributeOperation.swift; sourceTree = "<group>"; };
+		B4B5CCAF2458AF390019C783 /* AWSAuthFetchUserAttributeOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthFetchUserAttributeOperation.swift; sourceTree = "<group>"; };
+		B4B5CCB02458AF390019C783 /* AWSAuthUpdateUserAttributesOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthUpdateUserAttributesOperation.swift; sourceTree = "<group>"; };
+		B4B5CCB12458AF390019C783 /* AWSAuthAttributeResendConfirmationCodeOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthAttributeResendConfirmationCodeOperation.swift; sourceTree = "<group>"; };
+		B4B5CCB92458C4330019C783 /* AWSAuthPlugin+UserBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAuthPlugin+UserBehavior.swift"; sourceTree = "<group>"; };
+		B4C04A992462193700E59DF8 /* AWSAuthChangePasswordOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthChangePasswordOperation.swift; sourceTree = "<group>"; };
 		B4F3EA06243A655900F23296 /* AWSAuthPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAuthPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4F3EA08243A655A00F23296 /* AWSAuthPluginIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthPluginIntegrationTests.swift; sourceTree = "<group>"; };
 		B4F3EA0A243A655A00F23296 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -213,6 +233,7 @@
 				B4A65ADD244E4D0B003A8F57 /* Error */,
 				B41998E8244C06D20073B233 /* Options */,
 				B439F2B62448DBF500C30CBB /* SignInResult+Extension.swift */,
+				B4B5CC9B2457B9820019C783 /* AWSAuthUser.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -248,6 +269,7 @@
 				B49FAA21244519C3001868ED /* AWSAuthPlugin+ClientBehavior.swift */,
 				B49FAA2524451AEF001868ED /* AWSAuthPlugin+Configure.swift */,
 				B49FAA2324451A22001868ED /* AWSAuthPlugin+Reset.swift */,
+				B4B5CCB92458C4330019C783 /* AWSAuthPlugin+UserBehavior.swift */,
 				B49FAA3E24457039001868ED /* Dependency */,
 				B439F2AC24488CFD00C30CBB /* Models */,
 				B49FAA4724458011001868ED /* Operations */,
@@ -312,6 +334,8 @@
 				B49FAA4024457039001868ED /* AuthenticationProviderBehavior.swift */,
 				B49FAA43244570E9001868ED /* AuthorizationProviderAdapter.swift */,
 				B49FAA3F24457039001868ED /* AuthorizationProviderBehavior.swift */,
+				B4B5CC9D24586C9E0019C783 /* AuthUserServiceBehavior.swift */,
+				B4B5CCAA2458AE2B0019C783 /* AuthUserServiceAdapter.swift */,
 			);
 			path = Dependency;
 			sourceTree = "<group>";
@@ -327,6 +351,7 @@
 				B49FAA482445801E001868ED /* AWSAuthSignUpOperation.swift */,
 				B493E6A72454CF6A00D9E521 /* AWSAuthSocialWebUISignInOperation.swift */,
 				B493E6A52454CEC700D9E521 /* AWSAuthWebUISignInOperation.swift */,
+				B4B5CCAC2458AF390019C783 /* UserOperations */,
 			);
 			path = Operations;
 			sourceTree = "<group>";
@@ -348,6 +373,19 @@
 				B4A65ADE244E4D2D003A8F57 /* AWSCognitoAuthError.swift */,
 			);
 			path = Error;
+			sourceTree = "<group>";
+		};
+		B4B5CCAC2458AF390019C783 /* UserOperations */ = {
+			isa = PBXGroup;
+			children = (
+				B4B5CCAD2458AF390019C783 /* AWSAuthConfirmUserAttributeOperation.swift */,
+				B4B5CCAF2458AF390019C783 /* AWSAuthFetchUserAttributeOperation.swift */,
+				B4B5CCAE2458AF390019C783 /* AWSAuthUpdateUserAttributeOperation.swift */,
+				B4B5CCB02458AF390019C783 /* AWSAuthUpdateUserAttributesOperation.swift */,
+				B4B5CCB12458AF390019C783 /* AWSAuthAttributeResendConfirmationCodeOperation.swift */,
+				B4C04A992462193700E59DF8 /* AWSAuthChangePasswordOperation.swift */,
+			);
+			path = UserOperations;
 			sourceTree = "<group>";
 		};
 		B4F3EA07243A655A00F23296 /* AWSAuthPluginIntegrationTests */ = {
@@ -894,14 +932,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4B5CCBA2458C4330019C783 /* AWSAuthPlugin+UserBehavior.swift in Sources */,
 				B452F1DB2450F4470069F7FA /* AWSAuthConfirmSignUpOperation.swift in Sources */,
 				B439F2B72448DBF500C30CBB /* SignInResult+Extension.swift in Sources */,
+				B4B5CCB22458AF390019C783 /* AWSAuthConfirmUserAttributeOperation.swift in Sources */,
 				B49FAA46244570F9001868ED /* AuthenticationProviderAdapter.swift in Sources */,
 				B4F3EA38243A753500F23296 /* AWSAuthPlugin.swift in Sources */,
+				B4C04A9A2462193700E59DF8 /* AWSAuthChangePasswordOperation.swift in Sources */,
 				B4A65ADB244E4C0E003A8F57 /* AuthErrorHelper.swift in Sources */,
 				B493E6AC2456698B00D9E521 /* AWSAuthWebUISignInOptions.swift in Sources */,
+				B4B5CCAB2458AE2B0019C783 /* AuthUserServiceAdapter.swift in Sources */,
 				B439F2AB2448836500C30CBB /* AuthSignInRequest+Validate.swift in Sources */,
+				B4B5CCB62458AF390019C783 /* AWSAuthAttributeResendConfirmationCodeOperation.swift in Sources */,
+				B4B5CCB32458AF390019C783 /* AWSAuthUpdateUserAttributeOperation.swift in Sources */,
 				B49FAA4224457039001868ED /* AuthenticationProviderBehavior.swift in Sources */,
+				B4B5CCB42458AF390019C783 /* AWSAuthFetchUserAttributeOperation.swift in Sources */,
 				B493E6972452593100D9E521 /* AuthUserAttributeKey+Extension.swift in Sources */,
 				B473B546245DF2C000C45C72 /* AWSAuthConfirmSignInOptions.swift in Sources */,
 				B452F1DF2450F7820069F7FA /* AuthResendSignUpCodeRequest+Validate.swift in Sources */,
@@ -915,7 +960,9 @@
 				B452F1DD2450F4550069F7FA /* AWSAuthResendSignUpCodeOperation.swift in Sources */,
 				B49FAA22244519C3001868ED /* AWSAuthPlugin+ClientBehavior.swift in Sources */,
 				B41998EA244C06E60073B233 /* AWSAuthSignInOptions.swift in Sources */,
+				B4B5CCB52458AF390019C783 /* AWSAuthUpdateUserAttributesOperation.swift in Sources */,
 				B49FAA3624456995001868ED /* AWSMobileClientBehavior.swift in Sources */,
+				B4B5CC9E24586C9E0019C783 /* AuthUserServiceBehavior.swift in Sources */,
 				B49FAA44244570E9001868ED /* AuthorizationProviderAdapter.swift in Sources */,
 				B49FAA5124478775001868ED /* AuthenticationProviderAdapter+SignIn.swift in Sources */,
 				B452F1E12450F7930069F7FA /* AuthConfirmSignUpRequest+Validate.swift in Sources */,
@@ -929,6 +976,7 @@
 				B493E6A82454CF6A00D9E521 /* AWSAuthSocialWebUISignInOperation.swift in Sources */,
 				B493E6A62454CEC700D9E521 /* AWSAuthWebUISignInOperation.swift in Sources */,
 				B49FAA2424451A22001868ED /* AWSAuthPlugin+Reset.swift in Sources */,
+				B4B5CC9C2457B9820019C783 /* AWSAuthUser.swift in Sources */,
 				B4A65ADF244E4D2D003A8F57 /* AWSCognitoAuthError.swift in Sources */,
 				B49FAA302445275F001868ED /* AuthPluginErrorConstants.swift in Sources */,
 				B452F1E72450F9160069F7FA /* AWSAuthConfirmSignUpOptions.swift in Sources */,

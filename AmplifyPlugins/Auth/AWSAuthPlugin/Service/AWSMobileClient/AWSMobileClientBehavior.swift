@@ -48,4 +48,21 @@ protocol AWSMobileClientBehavior {
 
     func signOut(options: SignOutOptions,
                  completionHandler: @escaping ((Error?) -> Void))
+
+    func username() -> String?
+
+    func verifyUserAttribute(attributeName: String,
+                             completionHandler: @escaping ((UserCodeDeliveryDetails?, Error?) -> Void))
+
+    func updateUserAttributes(attributeMap: [String: String],
+                              completionHandler: @escaping (([UserCodeDeliveryDetails]?, Error?) -> Void))
+
+    func getUserAttributes(completionHandler: @escaping (([String: String]?, Error?) -> Void))
+
+    func confirmUpdateUserAttributes(attributeName: String, code: String,
+                                     completionHandler: @escaping ((Error?) -> Void))
+
+    func changePassword(currentPassword: String,
+                        proposedPassword: String,
+                        completionHandler: @escaping ((Error?) -> Void))
 }

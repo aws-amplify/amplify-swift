@@ -13,6 +13,7 @@ public struct AuthCodeDeliveryDetails {
     public let destination: DeliveryDestination
 
     /// Attribute that is confirmed or verified.
+    // TODO: Change to attributeType #172336364
     public let attributeName: String?
 
     public init(destination: DeliveryDestination,

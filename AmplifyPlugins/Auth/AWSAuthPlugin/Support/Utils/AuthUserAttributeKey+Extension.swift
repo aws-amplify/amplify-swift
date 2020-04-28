@@ -43,3 +43,40 @@ extension AuthUserAttributeKey {
         }
     }
 }
+
+extension String {
+
+    func toUserAttributeKey() -> AuthUserAttributeKey {
+        switch self {
+        case AuthUserAttributeKey.address.toString():
+            return .address
+        case AuthUserAttributeKey.birthDate.toString():
+            return .birthDate
+        case AuthUserAttributeKey.email.toString():
+            return .email
+        case AuthUserAttributeKey.familyName.toString():
+            return .familyName
+        case AuthUserAttributeKey.gender.toString():
+            return .gender
+        case AuthUserAttributeKey.givenName.toString():
+            return .givenName
+        case AuthUserAttributeKey.locale.toString():
+            return .locale
+        case AuthUserAttributeKey.middleName.toString():
+            return .middleName
+        case AuthUserAttributeKey.name.toString():
+            return .name
+        case AuthUserAttributeKey.nickname.toString():
+            return .nickname
+        case AuthUserAttributeKey.phoneNumber.toString():
+            return .phoneNumber
+        case AuthUserAttributeKey.picture.toString():
+            return .picture
+        case AuthUserAttributeKey.preferredUsername.toString():
+            return .preferredUsername
+        default:
+            return .custom(self)
+        }
+
+    }
+}

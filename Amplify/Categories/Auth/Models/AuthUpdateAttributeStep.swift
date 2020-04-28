@@ -5,11 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
+public enum AuthUpdateAttributeStep {
 
-// TOOD: Rename with a common pattern
+    case confirmAttributeWithCode
 
-public struct AmplifyUser {
-
-    let userName: String
+    case done
 }
