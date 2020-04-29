@@ -41,10 +41,11 @@ extension GraphQLResponseDecoder {
     /// This is the opinionated implementation of the plugin to store service errors which do not conform to the
     /// GraphQL Error spec (https://spec.graphql.org/June2018/#sec-Errors)
     private static func mergeExtensions(from graphQLErrorJSON: JSONValue, graphQLError: GraphQLError) -> GraphQLError {
-
+        var keys = ["message", "locations", "path", "extensions"]
         var mergedExtensions = [String: JSONValue]()
         if let graphQLErrorExtensions = graphQLError.extensions {
             mergedExtensions = graphQLErrorExtensions
+            keys += mergedExtensions.keys
         }
 
         guard case let .object(graphQLErrorObject) = graphQLErrorJSON else {
@@ -52,11 +53,7 @@ extension GraphQLResponseDecoder {
         }
 
         graphQLErrorObject.forEach { key, value in
-            if key == "message" ||
-                key == "locations" ||
-                key == "path" ||
-                key  == "extensions" ||
-                mergedExtensions.keys.contains(key) {
+            if keys.contains(key) {
                 return
             }
 
@@ -66,6 +63,6 @@ extension GraphQLResponseDecoder {
         return GraphQLError(message: graphQLError.message,
                             locations: graphQLError.locations,
                             path: graphQLError.path,
-                            extensions: !mergedExtensions.isEmpty ? mergedExtensions : nil)
+                            extensions: mergedExtensions.isEmpty ? nil : mergedExtensions)
     }
 }
