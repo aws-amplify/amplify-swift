@@ -198,7 +198,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                           "eventPropertyIntKey": 123,
                           "eventPropertyDoubleKey": 12.34,
                           "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
-        let event = BasicAnalyticsEvent("eventName", properties: properties)
+        let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
 
         wait(for: [flushEventsInvoked], timeout: 20)

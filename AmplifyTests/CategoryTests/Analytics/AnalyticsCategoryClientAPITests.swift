@@ -60,7 +60,7 @@ class AnalyticsCategoryClientAPITests: XCTestCase {
     }
 
     func testRecordWithEvent() throws {
-        let event = BasicAnalyticsEvent("test")
+        let event = BasicAnalyticsEvent(name: "test")
         let expectedMessage = "record(event:test)"
         let methodInvoked = expectation(description: "Expected method was invoked on plugin")
         plugin.listeners.append { message in
@@ -93,6 +93,18 @@ class AnalyticsCategoryClientAPITests: XCTestCase {
             }
         }
         analytics.unregisterGlobalProperties()
+        waitForExpectations(timeout: 1.0)
+    }
+
+    func testUnregisterGlobalPropertiesWithVariadicParameter() throws {
+        let expectedMessage = "unregisterGlobalProperties(_:)"
+        let methodInvoked = expectation(description: "Expected method was invoked on plugin")
+        plugin.listeners.append { message in
+            if message == expectedMessage {
+                methodInvoked.fulfill()
+            }
+        }
+        analytics.unregisterGlobalProperties("one", "two")
         waitForExpectations(timeout: 1.0)
     }
 

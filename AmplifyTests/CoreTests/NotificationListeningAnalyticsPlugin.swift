@@ -40,7 +40,7 @@ class NotificationListeningAnalyticsPlugin: AnalyticsCategoryPlugin {
         // Do nothing
     }
 
-    func registerGlobalProperties(_ properties: [String: AnalyticsPropertyValue]) {
+    func registerGlobalProperties(_ properties: AnalyticsProperties) {
         // Do nothing
     }
 
