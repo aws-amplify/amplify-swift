@@ -86,7 +86,7 @@ extension AuthenticationProviderAdapter {
     }
 
     // MARK: - Internal methods
-    func showSignInWebView(window: UIWindow,
+    private func showSignInWebView(window: UIWindow,
                            request: AuthWebUISignInRequest,
                            completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void) {
 
@@ -145,7 +145,7 @@ extension AuthenticationProviderAdapter {
         })
     }
 
-    func convertSignUIErrorToAuthError(_ error: Error) -> AmplifyAuthError {
+    private func convertSignUIErrorToAuthError(_ error: Error) -> AmplifyAuthError {
         if let awsMobileClientError = error as? AWSMobileClientError {
             switch awsMobileClientError {
             case .securityFailed(message: _):

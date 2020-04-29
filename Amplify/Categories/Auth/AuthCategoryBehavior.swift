@@ -71,6 +71,8 @@ public protocol AuthCategoryBehavior {
 
     /// SignIn using pre configured web UI.
     ///
+    /// Calling this method will always launch a webUI that let the user to signIn.
+    ///
     /// - Parameters:
     ///   - presentationAnchor: Anchor on which the UI is presented.
     ///   - options: Parameters specific to plugin behavior.
@@ -80,6 +82,11 @@ public protocol AuthCategoryBehavior {
                          listener: AuthWebUISignInOperation.EventListener?) -> AuthWebUISignInOperation
 
     /// SignIn using an auth provider on a web UI
+    ///
+    /// Calling this method directly calls the authProvider's signIn interface in a webUI. Depending on the plugin
+    /// implementation and the authentication state with the provider, this method might complete without showing
+    /// any UI.
+    /// 
     /// - Parameters:
     ///   - authProvider: Auth provider used to signIn.
     ///   - presentationAnchor: Anchor on which the UI is presented.
