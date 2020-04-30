@@ -65,4 +65,6 @@ public enum AWSCognitoAuthError: Error {
     /// Error in loading the web UI.
     case errorLoadingUI
 
+    /// User cancelled the step
+    case userCancelled
 }

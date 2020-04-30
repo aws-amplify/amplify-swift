@@ -53,17 +53,34 @@ extension AWSAuthPlugin {
         return signInOperation
     }
 
-    public func signInWithSocial(provider: AuthSocialProvider,
-                                 token: String,
-                                 options: AuthSocialSignInOperation.Request.Options?,
-                                 listener: AuthSocialSignInOperation.EventListener?) -> AuthSocialSignInOperation {
-        fatalError()
-
+    public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
+                                options: AuthWebUISignInOperation.Request.Options?,
+                                listener: AuthWebUISignInOperation.EventListener?) -> AuthWebUISignInOperation {
+        let options = options ?? AuthWebUISignInRequest.Options()
+        let request = AuthWebUISignInRequest(presentationAnchor: presentationAnchor,
+                                             options: options)
+        let signInWithWebUIOperation = AWSAuthWebUISignInOperation(request,
+                                                                   authenticationProvider: authenticationProvider,
+                                                                   listener: listener)
+        queue.addOperation(signInWithWebUIOperation)
+        return signInWithWebUIOperation
     }
 
-    public func signInWithUI(options: AuthUISignInOperation.Request.Options?,
-                             listener: AuthUISignInOperation.EventListener?) -> AuthUISignInOperation {
-        fatalError()
+    public func signInWithWebUI(for authProvider: AuthProvider,
+                                presentationAnchor: AuthUIPresentationAnchor,
+                                options: AuthSocialWebUISignInOperation.Request.Options?,
+                                listener: AuthSocialWebUISignInOperation.EventListener?)
+        -> AuthSocialWebUISignInOperation {
+            let options = options ?? AuthWebUISignInRequest.Options()
+            let request = AuthWebUISignInRequest(presentationAnchor: presentationAnchor,
+                                                 authProvider: authProvider,
+                                                 options: options)
+            let signInWithWebUIOperation = AWSAuthSocialWebUISignInOperation(
+                request,
+                authenticationProvider: authenticationProvider,
+                listener: listener)
+            queue.addOperation(signInWithWebUIOperation)
+            return signInWithWebUIOperation
     }
 
     public func fetchAuthState(listener: AuthStateOperation.EventListener?) -> AuthStateOperation {

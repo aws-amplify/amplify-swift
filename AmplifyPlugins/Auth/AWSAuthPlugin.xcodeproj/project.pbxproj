@@ -26,6 +26,10 @@
 		B493E6952452519500D9E521 /* AuthSignUpRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E6942452519500D9E521 /* AuthSignUpRequest+Validate.swift */; };
 		B493E6972452593100D9E521 /* AuthUserAttributeKey+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E6962452593100D9E521 /* AuthUserAttributeKey+Extension.swift */; };
 		B493E6992452604300D9E521 /* UserCodeDeliveryDetails+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E6982452604300D9E521 /* UserCodeDeliveryDetails+Extension.swift */; };
+		B493E6A62454CEC700D9E521 /* AWSAuthWebUISignInOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E6A52454CEC700D9E521 /* AWSAuthWebUISignInOperation.swift */; };
+		B493E6A82454CF6A00D9E521 /* AWSAuthSocialWebUISignInOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E6A72454CF6A00D9E521 /* AWSAuthSocialWebUISignInOperation.swift */; };
+		B493E6AA2454E19200D9E521 /* AuthProvider+AWSMobileClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E6A92454E19200D9E521 /* AuthProvider+AWSMobileClient.swift */; };
+		B493E6AC2456698B00D9E521 /* AWSAuthWebUISignInOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E6AB2456698B00D9E521 /* AWSAuthWebUISignInOptions.swift */; };
 		B49FAA22244519C3001868ED /* AWSAuthPlugin+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49FAA21244519C3001868ED /* AWSAuthPlugin+ClientBehavior.swift */; };
 		B49FAA2424451A22001868ED /* AWSAuthPlugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49FAA2324451A22001868ED /* AWSAuthPlugin+Reset.swift */; };
 		B49FAA2624451AEF001868ED /* AWSAuthPlugin+Configure.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49FAA2524451AEF001868ED /* AWSAuthPlugin+Configure.swift */; };
@@ -95,6 +99,10 @@
 		B493E6942452519500D9E521 /* AuthSignUpRequest+Validate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthSignUpRequest+Validate.swift"; sourceTree = "<group>"; };
 		B493E6962452593100D9E521 /* AuthUserAttributeKey+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthUserAttributeKey+Extension.swift"; sourceTree = "<group>"; };
 		B493E6982452604300D9E521 /* UserCodeDeliveryDetails+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserCodeDeliveryDetails+Extension.swift"; sourceTree = "<group>"; };
+		B493E6A52454CEC700D9E521 /* AWSAuthWebUISignInOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthWebUISignInOperation.swift; sourceTree = "<group>"; };
+		B493E6A72454CF6A00D9E521 /* AWSAuthSocialWebUISignInOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthSocialWebUISignInOperation.swift; sourceTree = "<group>"; };
+		B493E6A92454E19200D9E521 /* AuthProvider+AWSMobileClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthProvider+AWSMobileClient.swift"; sourceTree = "<group>"; };
+		B493E6AB2456698B00D9E521 /* AWSAuthWebUISignInOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthWebUISignInOptions.swift; sourceTree = "<group>"; };
 		B49FAA21244519C3001868ED /* AWSAuthPlugin+ClientBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAuthPlugin+ClientBehavior.swift"; sourceTree = "<group>"; };
 		B49FAA2324451A22001868ED /* AWSAuthPlugin+Reset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAuthPlugin+Reset.swift"; sourceTree = "<group>"; };
 		B49FAA2524451AEF001868ED /* AWSAuthPlugin+Configure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAuthPlugin+Configure.swift"; sourceTree = "<group>"; };
@@ -168,9 +176,10 @@
 		B41998E8244C06D20073B233 /* Options */ = {
 			isa = PBXGroup;
 			children = (
+				B452F1E62450F9160069F7FA /* AWSAuthConfirmSignUpOptions.swift */,
 				B41998E9244C06E60073B233 /* AWSAuthSignInOptions.swift */,
 				B452F1E42450F90B0069F7FA /* AWSAuthSignUpOptions.swift */,
-				B452F1E62450F9160069F7FA /* AWSAuthConfirmSignUpOptions.swift */,
+				B493E6AB2456698B00D9E521 /* AWSAuthWebUISignInOptions.swift */,
 			);
 			path = Options;
 			sourceTree = "<group>";
@@ -178,9 +187,9 @@
 		B439F2A92448835700C30CBB /* Request */ = {
 			isa = PBXGroup;
 			children = (
-				B439F2AA2448836500C30CBB /* AuthSignInRequest+Validate.swift */,
-				B452F1DE2450F7820069F7FA /* AuthResendSignUpCodeRequest+Validate.swift */,
 				B452F1E02450F7930069F7FA /* AuthConfirmSignUpRequest+Validate.swift */,
+				B452F1DE2450F7820069F7FA /* AuthResendSignUpCodeRequest+Validate.swift */,
+				B439F2AA2448836500C30CBB /* AuthSignInRequest+Validate.swift */,
 				B493E6942452519500D9E521 /* AuthSignUpRequest+Validate.swift */,
 			);
 			path = Request;
@@ -275,8 +284,8 @@
 		B49FAA342445698A001868ED /* AWSMobileClient */ = {
 			isa = PBXGroup;
 			children = (
-				B49FAA3524456995001868ED /* AWSMobileClientBehavior.swift */,
 				B49FAA3724456AAA001868ED /* AWSMobileClientAdapter.swift */,
+				B49FAA3524456995001868ED /* AWSMobileClientBehavior.swift */,
 			);
 			path = AWSMobileClient;
 			sourceTree = "<group>";
@@ -301,6 +310,8 @@
 				B452F1DC2450F4550069F7FA /* AWSAuthResendSignUpCodeOperation.swift */,
 				B49FAA4A24468BD0001868ED /* AWSAuthSignInOperation.swift */,
 				B49FAA482445801E001868ED /* AWSAuthSignUpOperation.swift */,
+				B493E6A72454CF6A00D9E521 /* AWSAuthSocialWebUISignInOperation.swift */,
+				B493E6A52454CEC700D9E521 /* AWSAuthWebUISignInOperation.swift */,
 			);
 			path = Operations;
 			sourceTree = "<group>";
@@ -309,6 +320,7 @@
 			isa = PBXGroup;
 			children = (
 				B4A65ADA244E4C0E003A8F57 /* AuthErrorHelper.swift */,
+				B493E6A92454E19200D9E521 /* AuthProvider+AWSMobileClient.swift */,
 				B493E6962452593100D9E521 /* AuthUserAttributeKey+Extension.swift */,
 				B493E6982452604300D9E521 /* UserCodeDeliveryDetails+Extension.swift */,
 			);
@@ -872,12 +884,14 @@
 				B49FAA46244570F9001868ED /* AuthenticationProviderAdapter.swift in Sources */,
 				B4F3EA38243A753500F23296 /* AWSAuthPlugin.swift in Sources */,
 				B4A65ADB244E4C0E003A8F57 /* AuthErrorHelper.swift in Sources */,
+				B493E6AC2456698B00D9E521 /* AWSAuthWebUISignInOptions.swift in Sources */,
 				B439F2AB2448836500C30CBB /* AuthSignInRequest+Validate.swift in Sources */,
 				B49FAA4224457039001868ED /* AuthenticationProviderBehavior.swift in Sources */,
 				B493E6972452593100D9E521 /* AuthUserAttributeKey+Extension.swift in Sources */,
 				B452F1DF2450F7820069F7FA /* AuthResendSignUpCodeRequest+Validate.swift in Sources */,
 				B493E6992452604300D9E521 /* UserCodeDeliveryDetails+Extension.swift in Sources */,
 				B49FAA2624451AEF001868ED /* AWSAuthPlugin+Configure.swift in Sources */,
+				B493E6AA2454E19200D9E521 /* AuthProvider+AWSMobileClient.swift in Sources */,
 				B49FAA3824456AAA001868ED /* AWSMobileClientAdapter.swift in Sources */,
 				B49FAA4B24468BD0001868ED /* AWSAuthSignInOperation.swift in Sources */,
 				B452F1DD2450F4550069F7FA /* AWSAuthResendSignUpCodeOperation.swift in Sources */,
@@ -892,6 +906,8 @@
 				B493E6952452519500D9E521 /* AuthSignUpRequest+Validate.swift in Sources */,
 				B49FAA4124457039001868ED /* AuthorizationProviderBehavior.swift in Sources */,
 				B452F1E52450F90B0069F7FA /* AWSAuthSignUpOptions.swift in Sources */,
+				B493E6A82454CF6A00D9E521 /* AWSAuthSocialWebUISignInOperation.swift in Sources */,
+				B493E6A62454CEC700D9E521 /* AWSAuthWebUISignInOperation.swift in Sources */,
 				B49FAA2424451A22001868ED /* AWSAuthPlugin+Reset.swift in Sources */,
 				B4A65ADF244E4D2D003A8F57 /* AWSCognitoAuthError.swift in Sources */,
 				B49FAA302445275F001868ED /* AuthPluginErrorConstants.swift in Sources */,
