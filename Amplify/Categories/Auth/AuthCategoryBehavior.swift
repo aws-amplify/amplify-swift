@@ -6,6 +6,9 @@
 //
 
 import Foundation
+import UIKit
+
+public typealias AuthUIPresentationAnchor = UIWindow
 
 /// Behavior of the Auth category that clients will use
 public protocol AuthCategoryBehavior {
@@ -66,13 +69,33 @@ public protocol AuthCategoryBehavior {
                 options: AuthSignInOperation.Request.Options?,
                 listener: AuthSignInOperation.EventListener?) -> AuthSignInOperation
 
-    func signInWithSocial(provider: AuthSocialProvider,
-                          token: String,
-                          options: AuthSocialSignInOperation.Request.Options?,
-                          listener: AuthSocialSignInOperation.EventListener?) -> AuthSocialSignInOperation
+    /// SignIn using pre configured web UI.
+    ///
+    /// Calling this method will always launch the Auth plugin's default web user interface
+    ///
+    /// - Parameters:
+    ///   - presentationAnchor: Anchor on which the UI is presented.
+    ///   - options: Parameters specific to plugin behavior.
+    ///   - listener: Triggered when the operation completes.
+    func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
+                         options: AuthWebUISignInOperation.Request.Options?,
+                         listener: AuthWebUISignInOperation.EventListener?) -> AuthWebUISignInOperation
 
-    func signInWithUI(options: AuthUISignInOperation.Request.Options?,
-                      listener: AuthUISignInOperation.EventListener?) -> AuthUISignInOperation
+    /// SignIn using an auth provider on a web UI
+    ///
+    /// Calling this method will invoke the AuthProvider's default web user interface. Depending on the plugin
+    /// implementation and the authentication state with the provider, this method might complete without showing
+    /// any UI.
+    ///
+    /// - Parameters:
+    ///   - authProvider: Auth provider used to signIn.
+    ///   - presentationAnchor: Anchor on which the UI is presented.
+    ///   - options: Parameters specific to plugin behavior.
+    ///   - listener: Triggered when the operation completes.
+    func signInWithWebUI(for authProvider: AuthProvider,
+                         presentationAnchor: AuthUIPresentationAnchor,
+                         options: AuthSocialWebUISignInOperation.Request.Options?,
+                         listener: AuthSocialWebUISignInOperation.EventListener?) -> AuthSocialWebUISignInOperation
 
     func fetchAuthState(listener: AuthStateOperation.EventListener?) -> AuthStateOperation
 

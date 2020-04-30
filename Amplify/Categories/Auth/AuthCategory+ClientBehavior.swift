@@ -48,21 +48,23 @@ extension AuthCategory: AuthCategoryBehavior {
                              listener: listener)
     }
 
-    public func signInWithSocial(provider: AuthSocialProvider,
-                                 token: String,
-                                 options: AuthSocialSignInOperation.Request.Options? = nil,
-                                 listener: AuthSocialSignInOperation.EventListener?) -> AuthSocialSignInOperation {
-        return plugin.signInWithSocial(provider: provider,
-                                       token: token,
-                                       options: options,
-                                       listener: listener)
+    public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
+                                options: AuthWebUISignInOperation.Request.Options? = nil,
+                                listener: AuthWebUISignInOperation.EventListener?) -> AuthWebUISignInOperation {
+        return plugin.signInWithWebUI(presentationAnchor: presentationAnchor,
+                                      options: options,
+                                      listener: listener)
     }
 
-    public func signInWithUI(options: AuthUISignInRequest.Options? = nil,
-                             listener: AuthUISignInOperation.EventListener?) -> AuthUISignInOperation {
-        return plugin.signInWithUI(options: options,
-                                   listener: listener)
-
+    public func signInWithWebUI(for authProvider: AuthProvider,
+                                presentationAnchor: AuthUIPresentationAnchor,
+                                options: AuthSocialWebUISignInOperation.Request.Options? = nil,
+                                listener: AuthSocialWebUISignInOperation.EventListener?)
+        -> AuthSocialWebUISignInOperation {
+            return plugin.signInWithWebUI(for: authProvider,
+                                          presentationAnchor: presentationAnchor,
+                                          options: options,
+                                          listener: listener)
     }
 
     public func fetchAuthState(listener: AuthStateOperation.EventListener?) -> AuthStateOperation {

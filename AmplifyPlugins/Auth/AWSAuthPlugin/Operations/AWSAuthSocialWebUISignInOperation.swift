@@ -8,21 +8,21 @@
 import Foundation
 import Amplify
 
-public class AWSAuthSignInOperation: AmplifyOperation<AuthSignInRequest,
+public class AWSAuthSocialWebUISignInOperation: AmplifyOperation<AuthWebUISignInRequest,
     Void,
     AuthSignInResult,
     AmplifyAuthError>,
-AuthSignInOperation {
+AuthSocialWebUISignInOperation {
 
     let authenticationProvider: AuthenticationProviderBehavior
 
-    init(_ request: AuthSignInRequest,
+    init(_ request: AuthWebUISignInRequest,
          authenticationProvider: AuthenticationProviderBehavior,
          listener: EventListener?) {
 
         self.authenticationProvider = authenticationProvider
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.signIn,
+                   eventName: HubPayload.EventName.Auth.socialWebUISgnIn,
                    request: request,
                    listener: listener)
     }
@@ -33,13 +33,7 @@ AuthSignInOperation {
             return
         }
 
-        if let validationError = request.hasError() {
-            dispatch(validationError)
-            finish()
-            return
-        }
-
-        authenticationProvider.signIn(request: request) {[weak self]  result in
+        authenticationProvider.signInWithWebUI(request: request) {[weak self]  result in
 
             guard let self = self else { return }
 
