@@ -10,7 +10,7 @@ public typealias AdditionalInfo = [String: String]
 /// Auth SignIn flow steps
 ///
 ///
-public enum AuthSignInStep: Equatable {
+public enum AuthSignInStep {
 
     /// Auth step is SMS multi factor authentication.
     ///
@@ -36,26 +36,4 @@ public enum AuthSignInStep: Equatable {
     /// There is no next step and the signIn flow is complete
     ///
     case done
-}
-
-// swiftlint:disable empty_enum_arguments
-extension AuthSignInStep {
-    public static func == (lhs: AuthSignInStep, rhs: AuthSignInStep) -> Bool {
-        switch (lhs, rhs) {
-        case (.done, .done):
-            return true
-        case (.confirmSignInWithSMSMFACode(_, _), .confirmSignInWithSMSMFACode(_, _)):
-            return true
-        case (.confirmSignInWithCustomChallenge(_), .confirmSignInWithCustomChallenge(_)):
-            return true
-        case (.confirmSignInWithNewPassword(_), .confirmSignInWithNewPassword(_)):
-            return true
-        case (.resetPassword(_), .resetPassword(_)):
-            return true
-        case (.confirmSignUp(_), .confirmSignUp(_)):
-            return true
-        default:
-            return false
-        }
-    }
 }
