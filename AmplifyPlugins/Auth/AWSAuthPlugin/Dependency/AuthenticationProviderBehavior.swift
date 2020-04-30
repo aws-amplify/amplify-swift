@@ -21,4 +21,7 @@ protocol AuthenticationProviderBehavior {
 
     func signIn(request: AuthSignInRequest,
                 completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void)
+
+    func signInWithWebUI(request: AuthWebUISignInRequest,
+                         completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void)
 }

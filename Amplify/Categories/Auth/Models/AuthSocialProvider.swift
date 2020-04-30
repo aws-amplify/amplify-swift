@@ -7,11 +7,19 @@
 
 import Foundation
 
-public enum AuthSocialProvider {
+public enum AuthProvider {
 
     case amazon
+
     case apple
+
     case facebook
+
     case google
+
+    case oidc
+
+    case saml
+
     case custom(String)
 }

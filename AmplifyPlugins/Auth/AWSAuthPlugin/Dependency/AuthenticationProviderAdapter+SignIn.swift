@@ -47,15 +47,120 @@ extension AuthenticationProviderAdapter {
                                     return
                                 }
 
-                                guard let nextStep = try? result.signInState.toAmplifyAuthSignInStep() else {
-                                    let error = AmplifyAuthError.unknown("Invalid state for signIn \(result.signInState)")
+                                guard let signInNextStep = try? result.toAmplifyAuthSignInStep() else {
+                                    // Could not find any next step for signIn. This should not happen.
+                                    let error = AmplifyAuthError.unknown("""
+                                        Invalid state for signIn \(result.signInState)
+                                        """)
                                     completionHandler(.failure(error))
                                     return
                                 }
-
-                                let authResult = AuthSignInResult(nextStep: nextStep)
+                                let authResult = AuthSignInResult(nextStep: signInNextStep)
                                 completionHandler(.success(authResult))
         }
 
+    }
+
+    func signInWithWebUI(request: AuthWebUISignInRequest,
+                         completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void) {
+
+        let window = request.presentationAnchor
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            self.showSignInWebView(window: window,
+                                   request: request,
+                                   completionHandler: completionHandler)
+        }
+    }
+
+    // MARK: - Internal methods
+    private func showSignInWebView(window: UIWindow,
+                                   request: AuthWebUISignInRequest,
+                                   completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void) {
+
+        // Stop the execution here if we are not running on the main thread.
+        // There is no point on returning an error back to the developer, because
+        // they do not control how the UI is presented.
+        dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
+
+        let idpIdentifier = (request.options.pluginOptions as? AWSAuthWebUISignInOptions)?.idpIdentifier
+        let federationProviderName = (request.options.pluginOptions as? AWSAuthWebUISignInOptions)?
+            .federationProviderName
+        let hostedUIOptions = HostedUIOptions(disableFederation: false,
+                                              scopes: request.options.scopes,
+                                              identityProvider: request.authProvider?.toCognitoHostedUIString(),
+                                              idpIdentifier: idpIdentifier,
+                                              federationProviderName: federationProviderName,
+                                              signInURIQueryParameters: request.options.signInQueryParameters,
+                                              tokenURIQueryParameters: request.options.tokenQueryParameters,
+                                              signOutURIQueryParameters: request.options.signOutQueryParameters)
+
+        // Create a navigation controller with an empty UIViewController.
+        let navController = UINavigationController(rootViewController: UIViewController())
+        navController.isNavigationBarHidden = true
+        navController.modalPresentationStyle = .overCurrentContext
+        window.rootViewController?.present(navController, animated: false, completion: {
+
+            self.awsMobileClient.showSignIn(navigationController: navController,
+                                            signInUIOptions: SignInUIOptions(),
+                                            hostedUIOptions: hostedUIOptions) { [weak self] state, error in
+                                                defer {
+                                                    DispatchQueue.main.async {
+                                                        navController.dismiss(animated: false)
+                                                    }
+                                                }
+                                                guard let self = self else { return }
+
+                                                if let error = error {
+                                                    let authError = self.convertSignUIErrorToAuthError(error)
+                                                    completionHandler(.failure(authError))
+                                                    return
+                                                }
+
+                                                guard let state = state, state == .signedIn else {
+
+                                                    let error = AmplifyAuthError.unknown("""
+                                                    signInWithWebUI did not produce a valid result.
+                                                    """)
+                                                    completionHandler(.failure(error))
+                                                    return
+                                                }
+                                                let authResult = AuthSignInResult(nextStep: .done)
+                                                completionHandler(.success(authResult))
+            }
+
+        })
+    }
+
+    private func convertSignUIErrorToAuthError(_ error: Error) -> AmplifyAuthError {
+        if let awsMobileClientError = error as? AWSMobileClientError {
+            switch awsMobileClientError {
+            case .securityFailed(message: _):
+                // This error is caused when the redirected url's query parameter `state` has a different value from
+                // value it was set before.
+                return AmplifyAuthError.service(
+                    AuthPluginErrorConstants.hostedUISecurityFailedError.errorDescription,
+                    AuthPluginErrorConstants.hostedUISecurityFailedError.recoverySuggestion)
+            case .badRequest(let message):
+                // Received when we get back an error parameter in the redirect url
+                return AmplifyAuthError.service(message, AuthPluginErrorConstants.hostedUIBadRequestError)
+            case .idTokenAndAcceessTokenNotIssued(let message):
+                // Received when there is no tokens after the signIn is complete. This should not happen, so
+                // return an unknown error.
+                return AmplifyAuthError.unknown(message)
+            case .userCancelledSignIn(message: _):
+                // User clicked cancel
+                return AmplifyAuthError.service(
+                    AuthPluginErrorConstants.hostedUIUserCancelledError.errorDescription,
+                    AuthPluginErrorConstants.hostedUIUserCancelledError.recoverySuggestion,
+                    AWSCognitoAuthError.userCancelled)
+            default:
+                break
+            }
+
+        }
+        let authError = AuthErrorHelper.toAmplifyAuthError(error)
+        return authError
     }
 }
