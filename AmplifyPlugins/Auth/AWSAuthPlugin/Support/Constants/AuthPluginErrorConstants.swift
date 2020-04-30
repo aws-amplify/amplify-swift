@@ -29,8 +29,8 @@ struct AuthPluginErrorConstants {
         "Make sure that the necessary configuration are present in the configuration file")
 
     static let hostedUISecurityFailedError: AuthPluginErrorString = (
-        "Found invalid parameter while parsing the webUI signIn",
-        "Make sure that the signIn url is not tampered. Contact AWS if this issue happens.")
+        "Found invalid parameter while parsing the webUI redirect URL",
+        "Make sure that the signIn URL has not been modified during the signIn flow")
 
     static let hostedUIUserCancelledError: AuthPluginErrorString = (
         "User cancelled the signIn flow and could not be completed.",

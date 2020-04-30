@@ -14,8 +14,8 @@ public struct AWSAuthWebUISignInOptions {
     /// This can be used to identify a provider if there are multiple instance of the same authentication provider.
     /// For example if you have multiple SAML identity providers, you can identify one of them by providing this
     /// `idpIdentifier` value. If this value is set, the webUI will just show a textbox to enter the email address.
-    /// On the other hand, if you donot give any value here, the webUI will show the list of identity providers and the
-    /// user has to select one of them to continue.
+    /// On the other hand, if you do not give any value here, the webUI will show the list of identity providers and the
+    /// user must select one of them to continue.
     public let idpIdentifier: String?
 
     /// Provider name to which the signedIn user will be federated in the AWS Cognito Identity Pool

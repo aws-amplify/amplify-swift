@@ -42,13 +42,12 @@ extension AuthenticationProviderAdapter {
 
                                 guard result.signInState != .signedIn else {
                                     // Return if the user has signedIn, this is a terminal step of signIn.
-                                    let signInNextStep = AuthNextSignInStep(.done)
-                                    let authResult = AuthSignInResult(nextStep: signInNextStep)
+                                    let authResult = AuthSignInResult(nextStep: .done)
                                     completionHandler(.success(authResult))
                                     return
                                 }
 
-                                guard let nextStep = try? result.signInState.toAmplifyAuthSignInStep() else {
+                                guard let signInNextStep = try? result.toAmplifyAuthSignInStep() else {
                                     // Could not find any next step for signIn. This should not happen.
                                     let error = AmplifyAuthError.unknown("""
                                         Invalid state for signIn \(result.signInState)
@@ -56,16 +55,6 @@ extension AuthenticationProviderAdapter {
                                     completionHandler(.failure(error))
                                     return
                                 }
-                                var codeDeliveryDetails: AuthCodeDeliveryDetails?
-                                if let deliveryDetails = result.codeDetails {
-                                    let destination = deliveryDetails.toDeliveryDestination()
-                                    let attributeName = deliveryDetails.attributeName ?? ""
-                                    codeDeliveryDetails = AuthCodeDeliveryDetails(destination: destination,
-                                                                                  attributeName: attributeName)
-                                }
-                                let signInNextStep = AuthNextSignInStep(nextStep,
-                                                                        additionalInfo: result.parameters,
-                                                                        codeDeliveryDetails: codeDeliveryDetails)
                                 let authResult = AuthSignInResult(nextStep: signInNextStep)
                                 completionHandler(.success(authResult))
         }
@@ -87,8 +76,8 @@ extension AuthenticationProviderAdapter {
 
     // MARK: - Internal methods
     private func showSignInWebView(window: UIWindow,
-                           request: AuthWebUISignInRequest,
-                           completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void) {
+                                   request: AuthWebUISignInRequest,
+                                   completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void) {
 
         // Stop the execution here if we are not running on the main thread.
         // There is no point on returning an error back to the developer, because
@@ -137,8 +126,7 @@ extension AuthenticationProviderAdapter {
                                                     completionHandler(.failure(error))
                                                     return
                                                 }
-                                                let signInNextStep = AuthNextSignInStep(.done)
-                                                let authResult = AuthSignInResult(nextStep: signInNextStep)
+                                                let authResult = AuthSignInResult(nextStep: .done)
                                                 completionHandler(.success(authResult))
             }
 

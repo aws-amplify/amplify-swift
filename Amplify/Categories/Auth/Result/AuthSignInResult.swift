@@ -14,14 +14,14 @@ public struct AuthSignInResult {
     /// When this value is false, it means that there are more steps to follow for the signIn flow. Check `nextStep`
     /// to understand the next flow. If `isSignedIn` is true, signIn flow has been completed.
     public var isSignedIn: Bool {
-        nextStep.signInStep == .done
+        nextStep == .done
     }
 
     /// Shows the next step required to complete the signIn flow.
     ///
-    public var nextStep: AuthNextSignInStep
+    public var nextStep: AuthSignInStep
 
-    public init(nextStep: AuthNextSignInStep) {
+    public init(nextStep: AuthSignInStep) {
         self.nextStep = nextStep
     }
 }

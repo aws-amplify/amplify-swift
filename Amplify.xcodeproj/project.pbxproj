@@ -193,7 +193,6 @@
 		B493E69324524E8C00D9E521 /* AuthUserAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E69224524E8C00D9E521 /* AuthUserAttribute.swift */; };
 		B493E69C245394B700D9E521 /* AuthNextSignUpStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E69B245394B700D9E521 /* AuthNextSignUpStep.swift */; };
 		B493E69E245394E200D9E521 /* AuthSignUpStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E69D245394E200D9E521 /* AuthSignUpStep.swift */; };
-		B493E6A02453A22100D9E521 /* AuthNextSignInStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E69F2453A22100D9E521 /* AuthNextSignInStep.swift */; };
 		B493E6A22453A29C00D9E521 /* AuthSignInStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E6A12453A29C00D9E521 /* AuthSignInStep.swift */; };
 		B493E6A42453A32C00D9E521 /* AuthSocialWebUISignInOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E6A32453A32C00D9E521 /* AuthSocialWebUISignInOperation.swift */; };
 		B49A02F92410BEBE00B42A25 /* AuthCategory+CategoryConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49A02F82410BEBD00B42A25 /* AuthCategory+CategoryConfigurable.swift */; };
@@ -863,7 +862,6 @@
 		B493E69224524E8C00D9E521 /* AuthUserAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUserAttribute.swift; sourceTree = "<group>"; };
 		B493E69B245394B700D9E521 /* AuthNextSignUpStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthNextSignUpStep.swift; sourceTree = "<group>"; };
 		B493E69D245394E200D9E521 /* AuthSignUpStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignUpStep.swift; sourceTree = "<group>"; };
-		B493E69F2453A22100D9E521 /* AuthNextSignInStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthNextSignInStep.swift; sourceTree = "<group>"; };
 		B493E6A12453A29C00D9E521 /* AuthSignInStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignInStep.swift; sourceTree = "<group>"; };
 		B493E6A32453A32C00D9E521 /* AuthSocialWebUISignInOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSocialWebUISignInOperation.swift; sourceTree = "<group>"; };
 		B49A02F82410BEBD00B42A25 /* AuthCategory+CategoryConfigurable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AuthCategory+CategoryConfigurable.swift"; sourceTree = "<group>"; };
@@ -1830,7 +1828,6 @@
 				B493E69224524E8C00D9E521 /* AuthUserAttribute.swift */,
 				B493E69B245394B700D9E521 /* AuthNextSignUpStep.swift */,
 				B493E69D245394E200D9E521 /* AuthSignUpStep.swift */,
-				B493E69F2453A22100D9E521 /* AuthNextSignInStep.swift */,
 				B493E6A12453A29C00D9E521 /* AuthSignInStep.swift */,
 			);
 			path = Models;
@@ -3775,7 +3772,6 @@
 				B92E03B82367CE7A006CEB8D /* ModelSchema+Definition.swift in Sources */,
 				21558E40237CB8640032A5BB /* GraphQLError.swift in Sources */,
 				950A26DD23D15D7E00D92B19 /* PredictionsSpeechToTextOperation.swift in Sources */,
-				B493E6A02453A22100D9E521 /* AuthNextSignInStep.swift in Sources */,
 				B4D3853C236C97360014653D /* PredictionsTranslateTextRequest.swift in Sources */,
 				B452F1D32450EEAE0069F7FA /* AuthResendSignUpCodeOperation.swift in Sources */,
 				FAC2352B227A053D00424678 /* AnalyticsEvent.swift in Sources */,
@@ -4058,7 +4054,6 @@
 				B98E9D132372236300934B51 /* QueryOperator+Equatable.swift in Sources */,
 				21409C5A2384C57D000A53C9 /* GraphQLMutationType.swift in Sources */,
 				B493E69E245394E200D9E521 /* AuthSignUpStep.swift in Sources */,
-				B4C498FC2415DAF300067992 /* AuthSocialSignInOperation.swift in Sources */,
 				95DAAB35237E63370028544F /* Polygon.swift in Sources */,
 				B452F1D52450EEEB0069F7FA /* AuthResendSignUpCodeRequest.swift in Sources */,
 				B4926F6C242501A9007B769C /* AuthForgotPasswordResult.swift in Sources */,
