@@ -202,7 +202,11 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
               completionPromise: @escaping Future<MutationEvent, DataStoreError>.Promise) {
 
         log.verbose("\(#function) mutationEvent: \(mutationEvent)")
-        storageAdapter.save(mutationEvent, condition: nil) { result in
+        var eventToPersist = mutationEvent
+        if nextEventPromise != nil {
+            eventToPersist.inProcess = true
+        }
+        storageAdapter.save(eventToPersist, condition: nil) { result in
             switch result {
             case .failure(let dataStoreError):
                 self.log.verbose("\(#function): Error saving mutation event: \(dataStoreError)")

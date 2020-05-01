@@ -13,10 +13,10 @@ public struct BasicAnalyticsEvent: AnalyticsEvent {
     public var name: String
 
     /// Properties of the event
-    public var properties: [String: AnalyticsPropertyValue]?
+    public var properties: AnalyticsProperties?
 
-    public init(_ name: String,
-                properties: [String: AnalyticsPropertyValue]? = nil) {
+    public init(name: String,
+                properties: AnalyticsProperties? = nil) {
         self.name = name
         self.properties = properties
     }

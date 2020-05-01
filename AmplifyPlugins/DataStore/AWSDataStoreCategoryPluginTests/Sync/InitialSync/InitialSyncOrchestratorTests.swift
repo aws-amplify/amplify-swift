@@ -43,7 +43,8 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator: InitialSyncOrchestrator =
-            AWSInitialSyncOrchestrator(api: apiPlugin,
+            AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+                                       api: apiPlugin,
                                        reconciliationQueue: reconciliationQueue,
                                        storageAdapter: storageAdapter)
 
@@ -88,7 +89,8 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator: InitialSyncOrchestrator =
-            AWSInitialSyncOrchestrator(api: apiPlugin,
+            AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+                                       api: apiPlugin,
                                        reconciliationQueue: reconciliationQueue,
                                        storageAdapter: storageAdapter)
 
@@ -139,7 +141,8 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator: InitialSyncOrchestrator =
-            AWSInitialSyncOrchestrator(api: apiPlugin,
+            AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+                                       api: apiPlugin,
                                        reconciliationQueue: reconciliationQueue,
                                        storageAdapter: storageAdapter)
 

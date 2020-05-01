@@ -19,7 +19,7 @@ The following steps demonstrate how to set up an GraphQL endpoint with AppSync t
 ? Do you want to configure advanced settings for the GraphQL API `Yes, I want to make some additional changes.`
 ? Configure additional auth types? `No`
 ? Configure conflict detection? `Yes`
-? Select the default resolution strategy `Auto Merge`
+? Select the default resolution strategy `Optimistic Concurrency`
 ? Do you want to override default per model settings? `No`
 ? Do you have an annotated GraphQL schema? `Yes`
 ? Provide your schema file path: `schema.graphql`

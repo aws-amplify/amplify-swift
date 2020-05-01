@@ -17,7 +17,8 @@ extension RemoteSyncEngine {
         case receivedStart
 
         case pausedSubscriptions
-        case pausedMutationQueue(APICategoryGraphQLBehavior, StorageEngineAdapter)
+        case pausedMutationQueue(StorageEngineAdapter)
+        case clearedStateOutgoingMutations(APICategoryGraphQLBehavior, StorageEngineAdapter)
         case initializedSubscriptions
         case performedInitialSync
         case activatedCloudSubscriptions(APICategoryGraphQLBehavior, MutationEventPublisher)
@@ -41,6 +42,8 @@ extension RemoteSyncEngine {
                 return "pausedSubscriptions"
             case .pausedMutationQueue:
                 return "pausedMutationQueue"
+            case .clearedStateOutgoingMutations:
+                return "resetStateOutgoingMutations"
             case .initializedSubscriptions:
                 return "initializedSubscriptions"
             case .performedInitialSync:

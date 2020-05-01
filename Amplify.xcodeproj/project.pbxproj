@@ -92,6 +92,7 @@
 		219A88ED23F3309800BBC5F2 /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A88EC23F3309800BBC5F2 /* Tree.swift */; };
 		219A88EF23F3358F00BBC5F2 /* TreeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A88EE23F3358F00BBC5F2 /* TreeTests.swift */; };
 		219A88F123F3379900BBC5F2 /* GraphQLDocumentInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A88F023F3379900BBC5F2 /* GraphQLDocumentInput.swift */; };
+		21C395B3245729EC00597EA2 /* AppSyncErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */; };
 		21D1CE8C2334233F0003BAA8 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D1CE8B2334233F0003BAA8 /* AuthError.swift */; };
 		21D79FDA237617C60057D00D /* SubscriptionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FD9237617C60057D00D /* SubscriptionEvent.swift */; };
 		21D79FE12377BF4B0057D00D /* AuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FE02377BF4B0057D00D /* AuthProvider.swift */; };
@@ -231,6 +232,7 @@
 		B9B50DC423D917BB0086F1E1 /* DateScalarFormat+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC323D917BB0086F1E1 /* DateScalarFormat+Date.swift */; };
 		B9B50DC623D918020086F1E1 /* Date+DateScalar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC523D918020086F1E1 /* Date+DateScalar.swift */; };
 		B9B50DC823DA15890086F1E1 /* DataStoreError+DateScalar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B50DC723DA15890086F1E1 /* DataStoreError+DateScalar.swift */; };
+		B9A329CC243559BF00C5B80C /* TimeInterval+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A329CB243559BF00C5B80C /* TimeInterval+Helper.swift */; };
 		B9B64A9F23FCBF7E00730B68 /* ModelValueConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */; };
 		B9DCA263240F217C00075E22 /* AnyEncodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DCA262240F217C00075E22 /* AnyEncodableTests.swift */; };
 		B9FAA10B23878122009414B4 /* ModelField+Association.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10A23878122009414B4 /* ModelField+Association.swift */; };
@@ -641,6 +643,7 @@
 		219A88EC23F3309800BBC5F2 /* Tree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
 		219A88EE23F3358F00BBC5F2 /* TreeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeTests.swift; sourceTree = "<group>"; };
 		219A88F023F3379900BBC5F2 /* GraphQLDocumentInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLDocumentInput.swift; sourceTree = "<group>"; };
+		21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncErrorType.swift; sourceTree = "<group>"; };
 		21D1CE8B2334233F0003BAA8 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
 		21D79FD9237617C60057D00D /* SubscriptionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionEvent.swift; sourceTree = "<group>"; };
 		21D79FE02377BF4B0057D00D /* AuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthProvider.swift; sourceTree = "<group>"; };
@@ -870,6 +873,8 @@
 		B98E9D0A2372236200934B51 /* QueryField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryField.swift; sourceTree = "<group>"; };
 		B98E9D0B2372236200934B51 /* QueryOperator+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "QueryOperator+Equatable.swift"; sourceTree = "<group>"; };
 		B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "QueryPredicate+Equatable.swift"; sourceTree = "<group>"; };
+		B99209E12411E49D00F80010 /* amplify-tools.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "amplify-tools.sh"; sourceTree = "<group>"; };
+		B99209E22411E49D00F80010 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		B996FC4323FF2FA8006D0F68 /* Encodable+AnyEncodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Encodable+AnyEncodable.swift"; sourceTree = "<group>"; };
 		B996FC4C24059918006D0F68 /* Model+Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+Enum.swift"; sourceTree = "<group>"; };
 		B99EF4B423DB020C00D821BC /* DateScalarComparableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateScalarComparableTests.swift; sourceTree = "<group>"; };
@@ -884,6 +889,7 @@
 		B9B50DC323D917BB0086F1E1 /* DateScalarFormat+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateScalarFormat+Date.swift"; sourceTree = "<group>"; };
 		B9B50DC523D918020086F1E1 /* Date+DateScalar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+DateScalar.swift"; sourceTree = "<group>"; };
 		B9B50DC723DA15890086F1E1 /* DataStoreError+DateScalar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataStoreError+DateScalar.swift"; sourceTree = "<group>"; };
+		B9A329CB243559BF00C5B80C /* TimeInterval+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+Helper.swift"; sourceTree = "<group>"; };
 		B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelValueConverter.swift; sourceTree = "<group>"; };
 		B9DCA262240F217C00075E22 /* AnyEncodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyEncodableTests.swift; sourceTree = "<group>"; };
 		B9FAA10A23878122009414B4 /* ModelField+Association.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelField+Association.swift"; sourceTree = "<group>"; };
@@ -1434,6 +1440,14 @@
 			path = Error;
 			sourceTree = "<group>";
 		};
+		21C395B4245729F100597EA2 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
 		21FFF999230C96E0005878EA /* Operation */ = {
 			isa = PBXGroup;
 			children = (
@@ -1801,7 +1815,6 @@
 		B92E03A62367CE7A006CEB8D /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */,
 				B92E03A72367CE7A006CEB8D /* Model.swift */,
 				B9FAA17F238FBB5D009414B4 /* Model+Array.swift */,
 				B92E03AC2367CE7A006CEB8D /* Model+Codable.swift */,
@@ -1811,6 +1824,7 @@
 				FA8EE77C238627350097E4F1 /* Model+Subscript.swift */,
 				B92E03A92367CE7A006CEB8D /* ModelRegistry.swift */,
 				FA5D4CF2238AFD7B00D2F54A /* ModelRegistry+Syncable.swift */,
+				2129BE502395A66F006363A1 /* AmplifyModelRegistration.swift */,
 				FA8EE780238628490097E4F1 /* Persistable.swift */,
 				FA8EE775238626C70097E4F1 /* AnyModel */,
 				B9FAA1232388BE2B009414B4 /* Collection */,
@@ -1877,6 +1891,15 @@
 				B98E9D0C2372236200934B51 /* QueryPredicate+Equatable.swift */,
 			);
 			path = Query;
+			sourceTree = "<group>";
+		};
+		B998C6B324108C92004AC210 /* AmplifyTools */ = {
+			isa = PBXGroup;
+			children = (
+				B99209E12411E49D00F80010 /* amplify-tools.sh */,
+				B99209E22411E49D00F80010 /* README.md */,
+			);
+			path = AmplifyTools;
 			sourceTree = "<group>";
 		};
 		B9DD3F0B23552C4E00D62C65 /* DataStore */ = {
@@ -2028,9 +2051,10 @@
 		FA131AAB2360FE070008381C /* AWSPluginsCore */ = {
 			isa = PBXGroup;
 			children = (
+				21C395B4245729F100597EA2 /* API */,
+				FA131ACB2360FE470008381C /* Auth */,
 				FA131AAC2360FE070008381C /* AWSPluginsCore.h */,
 				FA131AAD2360FE070008381C /* Info.plist */,
-				FA131ACB2360FE470008381C /* Auth */,
 				2129BE0223947FA3006363A1 /* Model */,
 				6BBECD6F23ADA7C100C8DFBE /* ServiceConfiguration */,
 				2129BE3F23948909006363A1 /* Sync */,
@@ -2144,6 +2168,7 @@
 				FAE4145E23999BC900CE94C2 /* Result+Void.swift */,
 				FA56F72422B14B6A0039754A /* Resumable.swift */,
 				B9FAA174238EFC59009414B4 /* String+Extensions.swift */,
+				B9A329CB243559BF00C5B80C /* TimeInterval+Helper.swift */,
 				219A88EC23F3309800BBC5F2 /* Tree.swift */,
 			);
 			path = Support;
@@ -2265,6 +2290,7 @@
 				FACA35F32327FB14000E74F6 /* AmplifyFunctionalTests */,
 				21FFF9B9230DBEF8005878EA /* AmplifyPlugins */,
 				2125E2522319EC3100B3DEB5 /* AmplifyTestApp */,
+				B998C6B324108C92004AC210 /* AmplifyTools */,
 				FAC234D32279F8DA00424678 /* Products */,
 				3687F9047D3AA33BCC710C97 /* Pods */,
 				C4DBE378379CBB2C3F4536BE /* Frameworks */,
@@ -3553,6 +3579,7 @@
 				21D79FE12377BF4B0057D00D /* AuthProvider.swift in Sources */,
 				21420AA1237222A900FA140C /* AWSMobileClientBehavior.swift in Sources */,
 				212CE71123E9EA6A007D8E71 /* ModelField+GraphQL.swift in Sources */,
+				21C395B3245729EC00597EA2 /* AppSyncErrorType.swift in Sources */,
 				212CE70523E9E967007D8E71 /* GraphQLQuery.swift in Sources */,
 				212CE70C23E9E991007D8E71 /* ConflictResolutionDecorator.swift in Sources */,
 				212CE71323E9F2ED007D8E71 /* DirectiveNameDecorator.swift in Sources */,
@@ -3846,6 +3873,7 @@
 				FAC2351C227A053D00424678 /* APICategoryPlugin.swift in Sources */,
 				FA176ED52385012000C5C5F9 /* DataStoreCategory+HubPayloadEventName.swift in Sources */,
 				210DBC162332B3CB009B9E51 /* StorageDownloadDataOperation.swift in Sources */,
+				B9A329CC243559BF00C5B80C /* TimeInterval+Helper.swift in Sources */,
 				950A26DC23D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift in Sources */,
 				FAC235A3227A5ED000424678 /* HubChannel.swift in Sources */,
 				FAA2E8CE23A02A8100E420EA /* PredictionsCategory+Resettable.swift in Sources */,

@@ -13,7 +13,7 @@ import Combine
 @testable import AWSDataStoreCategoryPlugin
 
 class MockAWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
-    static let factory: IncomingEventReconciliationQueueFactory = { modelTypes, api, storageAdapter in
+    static let factory: IncomingEventReconciliationQueueFactory = { modelTypes, api, storageAdapter, _ in
         MockAWSIncomingEventReconciliationQueue(modelTypes: modelTypes, api: api, storageAdapter: storageAdapter)
     }
     let incomingEventSubject: PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>

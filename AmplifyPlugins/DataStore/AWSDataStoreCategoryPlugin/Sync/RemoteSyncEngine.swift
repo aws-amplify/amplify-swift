@@ -14,6 +14,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     weak var storageAdapter: StorageEngineAdapter?
 
+    private var dataStoreConfiguration: DataStoreConfiguration
+
     // Assigned at `start`
     weak var api: APICategoryGraphQLBehavior?
 
@@ -54,6 +56,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     /// MutationEvents, sync metadata, and conflict resolution metadata. Immediately initializes the incoming mutation
     /// queue so it can begin accepting incoming mutations from DataStore.
     convenience init(storageAdapter: StorageEngineAdapter,
+                     dataStoreConfiguration: DataStoreConfiguration,
                      outgoingMutationQueue: OutgoingMutationQueueBehavior? = nil,
                      initialSyncOrchestratorFactory: InitialSyncOrchestratorFactory? = nil,
                      reconciliationQueueFactory: IncomingEventReconciliationQueueFactory? = nil,
@@ -64,15 +67,16 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
         let outgoingMutationQueue = outgoingMutationQueue ?? OutgoingMutationQueue()
         let reconciliationQueueFactory = reconciliationQueueFactory ??
-            AWSIncomingEventReconciliationQueue.init(modelTypes:api:storageAdapter:)
+            AWSIncomingEventReconciliationQueue.init(modelTypes:api:storageAdapter:modelReconciliationQueueFactory:)
         let initialSyncOrchestratorFactory = initialSyncOrchestratorFactory ??
-            AWSInitialSyncOrchestrator.init(api:reconciliationQueue:storageAdapter:)
+            AWSInitialSyncOrchestrator.init(dataStoreConfiguration:api:reconciliationQueue:storageAdapter:)
         let stateMachine = stateMachine ?? StateMachine(initialState: .notStarted,
                                                         resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
         let requestRetryablePolicy = requestRetryablePolicy ?? RequestRetryablePolicy()
 
 
         self.init(storageAdapter: storageAdapter,
+                  dataStoreConfiguration: dataStoreConfiguration,
                   outgoingMutationQueue: outgoingMutationQueue,
                   mutationEventIngester: mutationDatabaseAdapter,
                   mutationEventPublisher: awsMutationEventPublisher,
@@ -84,6 +88,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     init(storageAdapter: StorageEngineAdapter,
+         dataStoreConfiguration: DataStoreConfiguration,
          outgoingMutationQueue: OutgoingMutationQueueBehavior,
          mutationEventIngester: MutationEventIngester,
          mutationEventPublisher: MutationEventPublisher,
@@ -93,6 +98,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
          networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?,
          requestRetryablePolicy: RequestRetryablePolicy) {
         self.storageAdapter = storageAdapter
+        self.dataStoreConfiguration = dataStoreConfiguration
         self.mutationEventIngester = mutationEventIngester
         self.mutationEventPublisher = mutationEventPublisher
         self.outgoingMutationQueue = outgoingMutationQueue
@@ -129,6 +135,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             pauseSubscriptions()
         case .pausingMutationQueue:
             pauseMutations()
+        case .clearingStateOutgoingMutations(let storageAdapter):
+            clearStateOutgoingMutations(storageAdapter: storageAdapter)
         case .initializingSubscriptions(let api, let storageAdapter):
             initializeSubscriptions(api: api, storageAdapter: storageAdapter)
         case .performingInitialSync:
@@ -203,8 +211,19 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         outgoingMutationQueue.pauseSyncingToCloud()
 
         remoteSyncTopicPublisher.send(.mutationsPaused)
-        if let api = self.api, let storageAdapter = self.storageAdapter {
-            stateMachine.notify(action: .pausedMutationQueue(api, storageAdapter))
+        if let storageAdapter = self.storageAdapter {
+            stateMachine.notify(action: .pausedMutationQueue(storageAdapter))
+        }
+    }
+
+    private func clearStateOutgoingMutations(storageAdapter: StorageEngineAdapter) {
+        log.debug(#function)
+        let mutationEventClearState = MutationEventClearState(storageAdapter: storageAdapter)
+        mutationEventClearState.clearStateOutgoingMutations {
+            if let api = self.api {
+                self.remoteSyncTopicPublisher.send(.clearedStateOutgoingMutations)
+                self.stateMachine.notify(action: .clearedStateOutgoingMutations(api, storageAdapter))
+            }
         }
     }
 
@@ -212,7 +231,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                                          storageAdapter: StorageEngineAdapter) {
         log.debug(#function)
         let syncableModelTypes = ModelRegistry.models.filter { $0.schema.isSyncable }
-        reconciliationQueue = reconciliationQueueFactory(syncableModelTypes, api, storageAdapter)
+        reconciliationQueue = reconciliationQueueFactory(syncableModelTypes, api, storageAdapter, nil)
         reconciliationQueueSink = reconciliationQueue?.publisher.sink(
             receiveCompletion: onReceiveCompletion(receiveCompletion:),
             receiveValue: onReceive(receiveValue:))
@@ -221,7 +240,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private func performInitialSync() {
         log.debug(#function)
 
-        let initialSyncOrchestrator = initialSyncOrchestratorFactory(api, reconciliationQueue, storageAdapter)
+        let initialSyncOrchestrator = initialSyncOrchestratorFactory(dataStoreConfiguration,
+                                                                     api,
+                                                                     reconciliationQueue,
+                                                                     storageAdapter)
 
         // Hold a reference so we can `reset` while initial sync is in process
         self.initialSyncOrchestrator = initialSyncOrchestrator

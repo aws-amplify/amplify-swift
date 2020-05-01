@@ -13,9 +13,8 @@ import AWSPluginsCore
 final class StorageEngine: StorageEngineBehavior {
     // TODO: Make this private once we get a mutation flow that passes the type of mutation as needed
     let storageAdapter: StorageEngineAdapter
-
+    private let dataStoreConfiguration: DataStoreConfiguration
     private var syncEngine: RemoteSyncEngineBehavior?
-
     private weak var api: APICategoryGraphQLBehavior?
 
     var iSyncEngineSink: Any?
@@ -62,25 +61,32 @@ final class StorageEngine: StorageEngineBehavior {
     // Internal initializer used for testing, to allow lazy initialization of the SyncEngine. Note that the provided
     // storageAdapter must have already been set up with system models
     init(storageAdapter: StorageEngineAdapter,
+         dataStoreConfiguration: DataStoreConfiguration,
          syncEngine: RemoteSyncEngineBehavior?) {
         self.storageAdapter = storageAdapter
+        self.dataStoreConfiguration = dataStoreConfiguration
         self.syncEngine = syncEngine
     }
 
-    convenience init(isSyncEnabled: Bool) throws {
+    convenience init(isSyncEnabled: Bool, dataStoreConfiguration: DataStoreConfiguration) throws {
         let key = kCFBundleNameKey as String
         let databaseName = Bundle.main.object(forInfoDictionaryKey: key) as? String
         let storageAdapter = try SQLiteStorageEngineAdapter(databaseName: databaseName ?? "app")
 
         try storageAdapter.setUp(models: StorageEngine.systemModels)
         if #available(iOS 13.0, *) {
-            let syncEngine = isSyncEnabled ? try? RemoteSyncEngine(storageAdapter: storageAdapter) : nil
-            self.init(storageAdapter: storageAdapter, syncEngine: syncEngine)
+            let syncEngine = isSyncEnabled ? try? RemoteSyncEngine(storageAdapter: storageAdapter,
+                                                                   dataStoreConfiguration: dataStoreConfiguration) : nil
+            self.init(storageAdapter: storageAdapter,
+                      dataStoreConfiguration: dataStoreConfiguration,
+                      syncEngine: syncEngine)
             self.storageEnginePublisher = PassthroughSubject<StorageEngineEvent, DataStoreError>()
             sinkEngineSink = syncEngine?.publisher.sink(receiveCompletion: onReceiveCompletion(receiveCompletion:),
                                                         receiveValue: onReceive(receiveValue:))
         } else {
-            self.init(storageAdapter: storageAdapter, syncEngine: nil)
+            self.init(storageAdapter: storageAdapter,
+                      dataStoreConfiguration: dataStoreConfiguration,
+                      syncEngine: nil)
         }
     }
 

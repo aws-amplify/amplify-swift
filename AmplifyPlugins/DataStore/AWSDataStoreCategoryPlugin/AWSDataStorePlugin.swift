@@ -20,6 +20,9 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     let modelRegistration: AmplifyModelRegistration
 
+    /// The DataStore configuration
+    let dataStoreConfiguration: DataStoreConfiguration
+
     /// The local storage provider. Resolved during configuration phase
     var storageEngine: StorageEngineBehavior!
 
@@ -38,8 +41,10 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     /// No-argument init that uses defaults for all providers
-    public init(modelRegistration: AmplifyModelRegistration) {
+    public init(modelRegistration: AmplifyModelRegistration,
+                configuration dataStoreConfiguration: DataStoreConfiguration = .default) {
         self.modelRegistration = modelRegistration
+        self.dataStoreConfiguration = dataStoreConfiguration
         self.isSyncEnabled = false
         if #available(iOS 13.0, *) {
             self.dataStorePublisher = DataStorePublisher()
@@ -50,9 +55,11 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     /// Internal initializer for testing
     init(modelRegistration: AmplifyModelRegistration,
+         configuration dataStoreConfiguration: DataStoreConfiguration = .default,
          storageEngine: StorageEngineBehavior,
          dataStorePublisher: DataStoreSubscribeBehavior) {
         self.modelRegistration = modelRegistration
+        self.dataStoreConfiguration = dataStoreConfiguration
         self.isSyncEnabled = false
         self.storageEngine = storageEngine
         self.dataStorePublisher = dataStorePublisher
@@ -61,10 +68,10 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// By the time this method gets called, DataStore will already have invoked
     /// `AmplifyModelRegistration.registerModels`, so we can inspect those models to derive isSyncEnabled, and pass
     /// them to `StorageEngine.setUp(models:)`
-    public func configure(using configuration: Any) throws {
+    public func configure(using amplifyConfiguration: Any) throws {
         modelRegistration.registerModels(registry: ModelRegistry.self)
         resolveSyncEnabled()
-        try resolveStorageEngine()
+        try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
 
         try storageEngine.setUp(models: ModelRegistry.models)
 
@@ -86,7 +93,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             if #available(iOS 13.0, *) {
                 self.dataStorePublisher = DataStorePublisher()
             }
-            try resolveStorageEngine()
+            try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
             try storageEngine.setUp(models: ModelRegistry.models)
             storageEngine.startSync()
         } catch {
@@ -94,12 +101,12 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
     }
 
-    func resolveStorageEngine() throws {
+    func resolveStorageEngine(dataStoreConfiguration: DataStoreConfiguration) throws {
         guard storageEngine == nil else {
             return
         }
 
-        storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled)
+        storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled, dataStoreConfiguration: dataStoreConfiguration)
         if #available(iOS 13.0, *) {
             setupStorageSink()
         }

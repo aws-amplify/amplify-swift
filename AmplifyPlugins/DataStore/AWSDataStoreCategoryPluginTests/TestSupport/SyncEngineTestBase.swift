@@ -80,6 +80,7 @@ class SyncEngineTestBase: XCTestCase {
                                     resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
 
         syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
+                                      dataStoreConfiguration: .default,
                                       outgoingMutationQueue: mutationQueue,
                                       mutationEventIngester: mutationDatabaseAdapter,
                                       mutationEventPublisher: awsMutationEventPublisher,
@@ -104,6 +105,7 @@ class SyncEngineTestBase: XCTestCase {
         })
 
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
+                                          dataStoreConfiguration: .default,
                                           syncEngine: syncEngine)
 
         let publisher = DataStorePublisher()
