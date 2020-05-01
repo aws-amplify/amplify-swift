@@ -34,12 +34,10 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     private let dataStoreConfiguration: DataStoreConfiguration
     private let storageAdapter: StorageEngineAdapter
 
-    private let mutationEventPublisher: PassthroughSubject<MutationEvent, Never>
+    private let outgoingMutationQueueSubject: PassthroughSubject<MutationEvent, Never>
     public var publisher: AnyPublisher<MutationEvent, Never> {
-        return mutationEventPublisher.eraseToAnyPublisher()
+        return outgoingMutationQueueSubject.eraseToAnyPublisher()
     }
-
-    private var processMutationErrorOperationSink: AnyCancellable?
 
     init(_ stateMachine: StateMachine<State, Action>? = nil,
          storageAdapter: StorageEngineAdapter,
@@ -57,7 +55,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             StateMachine(initialState: .notInitialized,
                          resolver: OutgoingMutationQueue.Resolver.resolve(currentState:action:))
 
-        self.mutationEventPublisher = PassthroughSubject<MutationEvent, Never>()
+        self.outgoingMutationQueueSubject = PassthroughSubject<MutationEvent, Never>()
 
         self.stateMachineSink = self.stateMachine
             .$state
@@ -208,7 +206,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                 self.log.verbose("[ProcessMutationErrorFromCloudOperation] mutation error processed, result: \(result)")
                 if case let .success(mutationEventOptional) = result,
                     let outgoingMutationEvent = mutationEventOptional {
-                    self.mutationEventPublisher.send(outgoingMutationEvent)
+                    self.outgoingMutationQueueSubject.send(outgoingMutationEvent)
                 }
                 self.completeProcessingEvent(mutationEvent)
             }

@@ -19,8 +19,10 @@ public struct DataStoreConflictData {
     public let remote: Model
 }
 
-/// could not be resolved and requires a decision from the consumer. The consumer can call other methods (optionally
-/// asynchronous) before calling the escaping `DataStoreConflictHandlerResolver` with the resolution,
+/// The `DataStoreConflictHandler` is an asynchronous callback which allows consumers to decide how to resolve conflicts
+/// between the frontend and backend. This can be configured on the `conflictHandler` of the `DataStoreConfiguration`
+/// by implementing the body of the closure, processing `DataStoreConflictData` and resolving the conflict by calling
+/// `DataStoreConflictHandlerResolver`
 public typealias DataStoreConflictHandler = (DataStoreConflictData, @escaping DataStoreConflictHandlerResolver) -> Void
 
 /// Callback for the `DataStoreConflictHandler`.
@@ -29,10 +31,10 @@ public typealias DataStoreConflictHandlerResolver = (DataStoreConflictHandlerRes
 /// The conflict resolution result enum.
 public enum DataStoreConflictHandlerResult {
 
-    /// Discard the local changes in favor of the remote ones.
+    /// Discard the local changes in favor of the remote ones. Semantically the same as `DISCARD` on Amplify-JS
     case applyRemote
 
-    /// Keep the local changes.
+    /// Keep the local changes. (semantic shortcut to `retry(local)`).
     case retryLocal
 
     /// Return a new `Model` instance that should used instead of the local and remote changes.
