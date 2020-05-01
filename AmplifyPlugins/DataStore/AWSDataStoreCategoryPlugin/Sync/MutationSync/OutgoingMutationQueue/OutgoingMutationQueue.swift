@@ -180,11 +180,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         }
 
         let syncMutationToCloudOperation = SyncMutationToCloudOperation(mutationEvent: mutationEvent,
-                                                                        api: api) { [weak self] result in
-            guard let self = self else {
-                return
-            }
-
+                                                                        api: api) { result in
             self.log.verbose(
                 "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent); result: \(result)")
 
@@ -198,10 +194,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                                                        mutationEvent: mutationEvent,
                                                        api: api,
                                                        storageAdapter: self.storageAdapter,
-                                                       error: error) { [weak self] result in
-                guard let self = self else {
-                    return
-                }
+                                                       error: error) { result in
 
                 self.log.verbose("[ProcessMutationErrorFromCloudOperation] mutation error processed, result: \(result)")
                 if case let .success(mutationEventOptional) = result,

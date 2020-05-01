@@ -126,7 +126,6 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         }
 
         self.outgoingMutationQueueSink = self.outgoingMutationQueue.publisher.sink { mutationEvent in
-            self.log.verbose("MutationEvent received from outgoing mutation queue for topic publisher \(mutationEvent)")
             self.remoteSyncTopicPublisher.send(.mutationEvent(mutationEvent))
         }
     }
