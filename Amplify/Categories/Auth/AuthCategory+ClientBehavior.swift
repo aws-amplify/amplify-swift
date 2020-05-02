@@ -75,6 +75,11 @@ extension AuthCategory: AuthCategoryBehavior {
                                     listener: listener)
     }
 
+    public func signOut(options: AuthSignOutOperation.Request.Options? = nil,
+                        listener: AuthSignOutOperation.EventListener?) -> AuthSignOutOperation {
+        plugin.signOut(options: options, listener: listener)
+    }
+
     public func fetchAuthState(listener: AuthStateOperation.EventListener?) -> AuthStateOperation {
         return plugin.fetchAuthState(listener: listener)
     }

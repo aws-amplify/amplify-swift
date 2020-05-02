@@ -45,4 +45,7 @@ protocol AWSMobileClientBehavior {
                        userAttributes: [String: String],
                        clientMetaData: [String: String],
                        completionHandler: @escaping ((SignInResult?, Error?) -> Void))
+
+    func signOut(options: SignOutOptions,
+                 completionHandler: @escaping ((Error?) -> Void))
 }

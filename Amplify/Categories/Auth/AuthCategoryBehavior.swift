@@ -107,6 +107,9 @@ public protocol AuthCategoryBehavior {
                        options: AuthConfirmSignInOperation.Request.Options?,
                        listener: AuthConfirmSignInOperation.EventListener?) -> AuthConfirmSignInOperation
 
+    func signOut(options: AuthSignOutOperation.Request.Options?,
+                 listener: AuthSignOutOperation.EventListener?) -> AuthSignOutOperation
+
     func fetchAuthState(listener: AuthStateOperation.EventListener?) -> AuthStateOperation
 
     // MARK: - Password Management
