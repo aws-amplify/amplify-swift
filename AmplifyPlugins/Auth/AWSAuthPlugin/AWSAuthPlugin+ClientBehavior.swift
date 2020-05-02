@@ -83,6 +83,18 @@ extension AWSAuthPlugin {
             return signInWithWebUIOperation
     }
 
+    public func confirmSignIn(challengeResponse: String,
+                              options: AuthConfirmSignInOperation.Request.Options? = nil,
+                              listener: AuthConfirmSignInOperation.EventListener?) -> AuthConfirmSignInOperation {
+        let options = options ?? AuthConfirmSignInRequest.Options()
+        let request = AuthConfirmSignInRequest(challengeResponse: challengeResponse, options: options)
+        let confirmSignInOperation = AWSAuthConfirmSignInOperation(request,
+                                                                   authenticationProvider: authenticationProvider,
+                                                                   listener: listener)
+        queue.addOperation(confirmSignInOperation)
+        return confirmSignInOperation
+    }
+
     public func fetchAuthState(listener: AuthStateOperation.EventListener?) -> AuthStateOperation {
         fatalError()
     }

@@ -68,6 +68,12 @@ extension AuthPluginErrorConstants {
         "code is required to confirmSignUp",
         "Make sure that a valid code is passed for confirmSignUp"
     )
+
+    static let confirmSignInChallengeResponseError: AuthPluginValidationErrorString = (
+        "challengeResponse",
+        "challengeResponse is required to confirmSignIn",
+        "Make sure that a valid challenge response is passed for confirmSignIn"
+    )
 }
 
 // Recovery Messages
