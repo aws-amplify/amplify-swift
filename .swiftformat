@@ -34,8 +34,8 @@
   --hexliteralcase lowercase
   --octalgrouping none
 
---enable ranges
-  --ranges spaced
+--enable spaceAroundOperators
+  --operatorfunc spaced
 
 --enable redundantSelf
   --self init-only

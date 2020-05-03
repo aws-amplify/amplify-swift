@@ -7,10 +7,11 @@
 
 import Foundation
 
-public protocol PredictionsIdentifyOperation: AmplifyOperation<PredictionsIdentifyRequest,
-    Void,
+public protocol PredictionsIdentifyOperation: AmplifyOperation<
+    PredictionsIdentifyRequest,
     IdentifyResult,
-PredictionsError> { }
+    PredictionsError
+> { }
 
 public extension HubPayload.EventName.Predictions {
     static let identifyLabels = "Predictions.identifyLabels"
