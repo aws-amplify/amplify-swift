@@ -7,8 +7,11 @@
 
 import Foundation
 
-public protocol PredictionsTextToSpeechOperation: AmplifyOperation<PredictionsTextToSpeechRequest,
-Void, TextToSpeechResult, PredictionsError> { }
+public protocol PredictionsTextToSpeechOperation: AmplifyOperation<
+    PredictionsTextToSpeechRequest,
+    TextToSpeechResult,
+    PredictionsError
+> { }
 
 public extension HubPayload.EventName.Predictions {
     static let textToSpeech = "Predictions.textToSpeech"

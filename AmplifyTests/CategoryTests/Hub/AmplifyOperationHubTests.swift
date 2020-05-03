@@ -40,11 +40,9 @@ class AmplifyOperationHubTests: XCTestCase {
 
         let listenerWasInvoked = expectation(description: "listener was invoked")
 
-        let listener: NonListeningStorageListOperation.EventListener = { event in
+        let token = Amplify.Hub.listenForResult(to: operation) { event in
             listenerWasInvoked.fulfill()
         }
-
-        let token = Amplify.Hub.listen(to: operation, listener: listener)
 
         try waitForToken(token)
 
@@ -58,8 +56,11 @@ class AmplifyOperationHubTests: XCTestCase {
     /// Then: That listener is notified when an event occurs
     func testlistenerViaOperationInit() {
         let listenerInvoked = expectation(description: "listener was invoked")
-        _ = Amplify.Storage.getURL(key: "foo") { _ in
+        let operation = Amplify.Storage.getURL(key: "foo") { _ in
             listenerInvoked.fulfill()
+        }
+        if let mockOperation = operation as? MockDispatchingStorageGetURLOperation {
+            mockOperation.doMockDispatch()
         }
         waitForExpectations(timeout: 1.0)
     }
@@ -87,6 +88,10 @@ class AmplifyOperationHubTests: XCTestCase {
 
         try waitForToken(token)
 
+        if let mockOperation = operation as? MockDispatchingStorageGetURLOperation {
+            mockOperation.doMockDispatch()
+        }
+
         waitForExpectations(timeout: 1.0)
     }
 
@@ -111,256 +116,259 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     func getURL(key: String,
                 options: StorageGetURLRequest.Options? = nil,
-                listener: StorageGetURLOperation.EventListener? = nil) -> StorageGetURLOperation {
+                resultListener: StorageGetURLOperation.ResultListener? = nil) -> StorageGetURLOperation {
         let options = options ?? StorageGetURLRequest.Options()
 
         let request = StorageGetURLRequest(key: key, options: options)
 
         let operation = MockDispatchingStorageGetURLOperation(request: request,
-                                                              listener: listener)
-
-        let delay = resolveDispatchDelay(options: options.pluginOptions)
-        queue.asyncAfter(deadline: .now() + delay) {
-            operation.dispatch(event: .notInProcess)
-        }
-
+                                                              resultListener: resultListener)
         return operation
     }
 
     func downloadData(key: String,
                       options: StorageDownloadDataRequest.Options? = nil,
-                      listener: StorageDownloadDataOperation.EventListener? = nil) -> StorageDownloadDataOperation {
+                      progressListener: ProgressListener? = nil,
+                      resultListener: StorageDownloadDataOperation.ResultListener? = nil
+    ) -> StorageDownloadDataOperation {
         let options = options ?? StorageDownloadDataRequest.Options()
 
         let request = StorageDownloadDataRequest(key: key, options: options)
 
         let operation = MockDispatchingStorageDownloadDataOperation(request: request,
-                                                               listener: listener)
-
-        let delay = resolveDispatchDelay(options: options.pluginOptions)
-        queue.asyncAfter(deadline: .now() + delay) {
-            operation.dispatch(event: .notInProcess)
-        }
-
+                                                                    progressListener: progressListener,
+                                                                    resultListener: resultListener)
         return operation
     }
 
     func downloadFile(key: String,
                       local: URL,
                       options: StorageDownloadFileRequest.Options? = nil,
-                      listener: StorageDownloadFileOperation.EventListener? = nil)
-        -> StorageDownloadFileOperation {
+                      progressListener: ProgressListener? = nil,
+                      resultListener: StorageDownloadFileOperation.ResultListener? = nil
+    ) -> StorageDownloadFileOperation {
             let options = options ?? StorageDownloadFileRequest.Options()
 
             let request = StorageDownloadFileRequest(key: key, local: local, options: options)
 
             let operation = MockDispatchingStorageDownloadFileOperation(request: request,
-                                                                        listener: listener)
-
-            let delay = resolveDispatchDelay(options: options.pluginOptions)
-            queue.asyncAfter(deadline: .now() + delay) {
-                operation.dispatch(event: .notInProcess)
-            }
-
+                                                                        progressListener: progressListener,
+                                                                        resultListener: resultListener)
             return operation
-
     }
 
     func uploadData(key: String,
                     data: Data,
                     options: StorageUploadDataRequest.Options? = nil,
-                    listener: StorageUploadDataOperation.EventListener? = nil) -> StorageUploadDataOperation {
+                    progressListener: ProgressListener? = nil,
+                    resultListener: StorageUploadDataOperation.ResultListener? = nil
+    ) -> StorageUploadDataOperation {
         let options = options ?? StorageUploadDataRequest.Options()
 
         let request = StorageUploadDataRequest(key: key, data: data, options: options)
 
         let operation = MockDispatchingStorageUploadDataOperation(request: request,
-                                                               listener: listener)
-
-        let delay = resolveDispatchDelay(options: options.pluginOptions)
-        queue.asyncAfter(deadline: .now() + delay) {
-            operation.dispatch(event: .notInProcess)
-        }
-
+                                                                  progressListener: progressListener,
+                                                                  resultListener: resultListener)
         return operation
     }
 
     func uploadFile(key: String,
                     local: URL,
                     options: StorageUploadFileRequest.Options? = nil,
-                    listener: StorageUploadFileOperation.EventListener? = nil) -> StorageUploadFileOperation {
+                    progressListener: ProgressListener? = nil,
+                    resultListener: StorageUploadFileOperation.ResultListener? = nil
+    ) -> StorageUploadFileOperation {
         let options = options ?? StorageUploadFileRequest.Options()
 
         let request = StorageUploadFileRequest(key: key, local: local, options: options)
 
         let operation = MockDispatchingStorageUploadFileOperation(request: request,
-                                                                  listener: listener)
-
-        let delay = resolveDispatchDelay(options: options.pluginOptions)
-        queue.asyncAfter(deadline: .now() + delay) {
-            operation.dispatch(event: .notInProcess)
-        }
-
+                                                                  progressListener: progressListener,
+                                                                  resultListener: resultListener)
         return operation
     }
 
     func remove(key: String,
                 options: StorageRemoveRequest.Options? = nil,
-                listener: StorageRemoveOperation.EventListener? = nil) -> StorageRemoveOperation {
+                resultListener: StorageRemoveOperation.ResultListener? = nil) -> StorageRemoveOperation {
         let options = options ?? StorageRemoveRequest.Options()
 
         let request = StorageRemoveRequest(key: key, options: options)
 
         let operation = MockDispatchingStorageRemoveOperation(request: request,
-                                                              listener: listener)
-
-        let delay = resolveDispatchDelay(options: options.pluginOptions)
-        queue.asyncAfter(deadline: .now() + delay) {
-            operation.dispatch(event: .notInProcess)
-        }
-
+                                                              resultListener: resultListener)
         return operation
     }
 
     func list(options: StorageListRequest.Options?,
-              listener: StorageListOperation.EventListener?) -> StorageListOperation {
+              resultListener: StorageListOperation.ResultListener?) -> StorageListOperation {
         let options = options ?? StorageListRequest.Options()
 
         let request = StorageListRequest(options: options)
 
         let operation = MockDispatchingStorageListOperation(request: request,
-                                                            listener: listener)
-
-        let delay = resolveDispatchDelay(options: options.pluginOptions)
-        queue.asyncAfter(deadline: .now() + delay) {
-            operation.dispatch(event: .notInProcess)
-        }
-
+                                                            resultListener: resultListener)
         return operation
     }
 
     func reset(onComplete: @escaping BasicClosure) {
         onComplete()
     }
-
-    func resolveDispatchDelay(options: Any?) -> TimeInterval {
-        let delay: TimeInterval
-        if let options = options as? [String: Double],
-            let dispatchDelay = options["dispatchDelay"] {
-            delay = dispatchDelay
-        } else {
-            delay = 0
-        }
-        return delay
-    }
-
 }
 
 // swiftlint:disable:next type_name
-class MockDispatchingStorageDownloadFileOperation: AmplifyOperation<StorageDownloadFileRequest, Progress,
-Void, StorageError>, StorageDownloadFileOperation {
-    init(request: Request, listener: EventListener? = nil) {
+class MockDispatchingStorageDownloadFileOperation: AmplifyInProcessReportingOperation<
+    StorageDownloadFileRequest,
+    Progress,
+    Void,
+    StorageError
+>, StorageDownloadFileOperation {
+    init(request: Request, progressListener: ProgressListener? = nil, resultListener: ResultListener? = nil) {
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.downloadFile,
                    request: request,
-                   listener: listener)
+                   inProcessListener: progressListener,
+                   resultListener: resultListener)
     }
 
     func doMockDispatch() {
-        super.dispatch(event: .unknown)
+        super.dispatch(result: Result.successfulVoid)
+    }
+
+    func doMockProgress() {
+        super.dispatchInProcess(data: Progress(totalUnitCount: 1))
     }
 }
 
 // swiftlint:disable:next type_name
-class MockDispatchingStorageDownloadDataOperation: AmplifyOperation<StorageDownloadDataRequest, Progress,
-Data, StorageError>, StorageDownloadDataOperation {
-    init(request: Request, listener: EventListener? = nil) {
+class MockDispatchingStorageDownloadDataOperation: AmplifyInProcessReportingOperation<
+    StorageDownloadDataRequest,
+    Progress,
+    Data,
+    StorageError
+>, StorageDownloadDataOperation {
+    init(request: Request, progressListener: ProgressListener? = nil, resultListener: ResultListener? = nil) {
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.downloadData,
                    request: request,
-                   listener: listener)
+                   inProcessListener: progressListener,
+                   resultListener: resultListener)
     }
 
-    func doMockDispatch() {
-        super.dispatch(event: .unknown)
+    func doMockDispatch(result: StorageDownloadDataOperation.OperationResult = .success(Data())) {
+        super.dispatch(result: result)
+    }
+
+    func doMockProgress() {
+        super.dispatchInProcess(data: Progress(totalUnitCount: 1))
     }
 }
 
-class MockDispatchingStorageGetURLOperation: AmplifyOperation<StorageGetURLRequest, Void,
-URL, StorageError>, StorageGetURLOperation {
-    init(request: Request, listener: EventListener? = nil) {
+class MockDispatchingStorageGetURLOperation: AmplifyOperation<
+    StorageGetURLRequest,
+    URL,
+    StorageError
+>, StorageGetURLOperation {
+    init(request: Request, resultListener: ResultListener? = nil) {
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.getURL,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
-    func doMockDispatch() {
-        super.dispatch(event: .unknown)
+    func doMockDispatch(result: StorageGetURLOperation.OperationResult = .success(URL(fileURLWithPath: "/path"))) {
+        super.dispatch(result: result)
     }
 }
 
-class MockDispatchingStorageListOperation: AmplifyOperation<StorageListRequest, Void,
-StorageListResult, StorageError>, StorageListOperation {
-    init(request: Request, listener: EventListener? = nil) {
+class MockDispatchingStorageListOperation: AmplifyOperation<
+    StorageListRequest,
+    StorageListResult,
+    StorageError
+>, StorageListOperation {
+    init(request: Request, resultListener: ResultListener? = nil) {
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.list,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
-    func doMockDispatch(event: Event = .unknown) {
-        super.dispatch(event: event)
+    func doMockDispatch() {
+        super.dispatch(result: .success(StorageListResult(items: [])))
     }
 }
 
-class MockDispatchingStorageRemoveOperation: AmplifyOperation<StorageRemoveRequest, Void,
-String, StorageError>, StorageRemoveOperation {
-    init(request: Request, listener: EventListener? = nil) {
+class MockDispatchingStorageRemoveOperation: AmplifyOperation<
+    StorageRemoveRequest,
+    String,
+    StorageError
+>, StorageRemoveOperation {
+    init(request: Request, resultListener: ResultListener? = nil) {
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.remove,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     func doMockDispatch() {
-        super.dispatch(event: .unknown)
+        super.dispatch(result: .success("Done"))
     }
 }
 
 // swiftlint:disable:next type_name
-class MockDispatchingStorageUploadDataOperation: AmplifyOperation<StorageUploadDataRequest, Progress,
-String, StorageError>, StorageUploadDataOperation {
-    init(request: Request, listener: EventListener? = nil) {
+class MockDispatchingStorageUploadDataOperation: AmplifyInProcessReportingOperation<
+    StorageUploadDataRequest,
+    Progress,
+    String,
+    StorageError
+>, StorageUploadDataOperation {
+    init(request: Request, progressListener: ProgressListener? = nil, resultListener: ResultListener? = nil) {
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.uploadData,
                    request: request,
-                   listener: listener)
+                   inProcessListener: progressListener,
+                   resultListener: resultListener)
     }
 
     func doMockDispatch() {
-        super.dispatch(event: .unknown)
+        super.dispatch(result: .success("Done"))
+    }
+
+    func doMockProgress() {
+        super.dispatchInProcess(data: Progress(totalUnitCount: 1))
     }
 }
 
 // swiftlint:disable:next type_name
-class MockDispatchingStorageUploadFileOperation: AmplifyOperation<StorageUploadFileRequest, Progress,
-String, StorageError>, StorageUploadFileOperation {
-    init(request: Request, listener: EventListener? = nil) {
+class MockDispatchingStorageUploadFileOperation: AmplifyInProcessReportingOperation<
+    StorageUploadFileRequest,
+    Progress,
+    String,
+    StorageError
+>, StorageUploadFileOperation {
+    init(request: Request, progressListener: ProgressListener? = nil, resultListener: ResultListener? = nil) {
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.uploadFile,
                    request: request,
-                   listener: listener)
+                   inProcessListener: progressListener,
+                   resultListener: resultListener)
     }
 
     func doMockDispatch() {
-        super.dispatch(event: .unknown)
+        super.dispatch(result: .success("Done"))
+    }
+
+    func doMockProgress() {
+        super.dispatchInProcess(data: Progress(totalUnitCount: 1))
     }
 }
 
-class NonListeningStorageListOperation: AmplifyOperation<StorageListRequest, Void,
-    StorageListResult, StorageError>,
-StorageListOperation {
+class NonListeningStorageListOperation: AmplifyOperation<
+    StorageListRequest,
+    StorageListResult,
+    StorageError
+>, StorageListOperation {
     init(request: Request) {
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.downloadFile,
