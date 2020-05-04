@@ -11,7 +11,7 @@ import UIKit
 public typealias AuthUIPresentationAnchor = UIWindow
 
 /// Behavior of the Auth category that clients will use
-public protocol AuthCategoryBehavior: AuthCategoryUserBehavior {
+public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDeviceBehavior {
 
     /// SignUp a user with the authentication provider.
     ///

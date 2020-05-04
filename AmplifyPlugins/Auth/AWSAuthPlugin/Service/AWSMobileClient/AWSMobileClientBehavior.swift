@@ -83,4 +83,15 @@ protocol AWSMobileClientBehavior {
     func getAWSCredentials(_ completionHandler: @escaping (AWSCredentials?, Error?) -> Void)
 
     func getCurrentUserState() -> UserState
+
+    func listDevices(completionHandler: @escaping ((ListDevicesResult?, Error?) -> Void))
+
+    func updateDeviceStatus(remembered: Bool,
+                            completionHandler: @escaping ((UpdateDeviceStatusResult?, Error?) -> Void))
+
+    func getDevice(_ completionHandler: @escaping ((Device?, Error?) -> Void))
+
+    func forgetDevice(deviceId: String, completionHandler: @escaping ((Error?) -> Void))
+
+    func forgetCurrentDevice(_ completionHandler: @escaping ((Error?) -> Void))
 }
