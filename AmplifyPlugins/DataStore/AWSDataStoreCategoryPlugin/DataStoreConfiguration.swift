@@ -19,9 +19,11 @@ public struct DataStoreConflictData {
     public let remote: Model
 }
 
-/// Conflict Handler function typealias. The function is used during a conflict that
-/// could not be resolved and requires a decision from the consumer.
-public typealias DataStoreConflictHandler = (DataStoreConflictData, DataStoreConflictHandlerResolver) -> Void
+/// The `DataStoreConflictHandler` is an asynchronous callback which allows consumers to decide how to resolve conflicts
+/// between the frontend and backend. This can be configured on the `conflictHandler` of the `DataStoreConfiguration`
+/// by implementing the body of the closure, processing `DataStoreConflictData` and resolving the conflict by calling
+/// `DataStoreConflictHandlerResolver`
+public typealias DataStoreConflictHandler = (DataStoreConflictData, @escaping DataStoreConflictHandlerResolver) -> Void
 
 /// Callback for the `DataStoreConflictHandler`.
 public typealias DataStoreConflictHandlerResolver = (DataStoreConflictHandlerResult) -> Void
@@ -29,11 +31,11 @@ public typealias DataStoreConflictHandlerResolver = (DataStoreConflictHandlerRes
 /// The conflict resolution result enum.
 public enum DataStoreConflictHandlerResult {
 
-    /// Discard the local changes in favor of the remote ones.
-    case discard
+    /// Discard the local changes in favor of the remote ones. Semantically the same as `DISCARD` on Amplify-JS
+    case applyRemote
 
-    /// Keep the local changes (semantic shortcut to `retry(local)`).
-    case keep
+    /// Keep the local changes. (semantic shortcut to `retry(local)`).
+    case retryLocal
 
     /// Return a new `Model` instance that should used instead of the local and remote changes.
     case retry(Model)
@@ -91,7 +93,7 @@ extension DataStoreConfiguration {
             Amplify.Logging.error(error: error)
         },
         conflictHandler: @escaping DataStoreConflictHandler = { _, resolve  in
-            resolve(.discard)
+            resolve(.applyRemote)
         },
         syncInterval: TimeInterval = DataStoreConfiguration.defaultSyncInterval,
         syncMaxRecords: UInt = DataStoreConfiguration.defaultSyncMaxRecords,

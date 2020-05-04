@@ -727,6 +727,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             try setUpStorageAdapter(preCreating: [Post.self, Comment.self])
             try setUpDataStore()
             try startAmplifyAndWaitForSync()
+            try savePost(post)
             try saveMutationEvent(of: .create, for: post, inProcess: true)
         }
 

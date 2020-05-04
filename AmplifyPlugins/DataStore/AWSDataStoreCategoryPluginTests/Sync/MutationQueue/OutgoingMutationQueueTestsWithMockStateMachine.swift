@@ -19,6 +19,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
     var stateMachine: MockStateMachine<OutgoingMutationQueue.State, OutgoingMutationQueue.Action>!
     var publisher: AWSMutationEventPublisher!
     var apiBehavior: MockAPICategoryPlugin!
+    var storageAdapter: StorageEngineAdapter!
     var eventSource: MockMutationEventSource!
     override func setUp() {
         do {
@@ -29,7 +30,10 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         ModelRegistry.register(modelType: Post.self)
         stateMachine = MockStateMachine(initialState: .notInitialized,
                                         resolver: OutgoingMutationQueue.Resolver.resolve(currentState:action:))
-        mutationQueue = OutgoingMutationQueue(stateMachine)
+        storageAdapter = MockSQLiteStorageEngineAdapter()
+        mutationQueue = OutgoingMutationQueue(stateMachine,
+                                              storageAdapter: storageAdapter,
+                                              dataStoreConfiguration: .default)
         eventSource = MockMutationEventSource()
         publisher = AWSMutationEventPublisher(eventSource: eventSource)
         apiBehavior = MockAPICategoryPlugin()
@@ -42,7 +46,9 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             expect.fulfill()
         }
 
-        mutationQueue = OutgoingMutationQueue(stateMachine)
+        mutationQueue = OutgoingMutationQueue(stateMachine,
+                                              storageAdapter: storageAdapter,
+                                              dataStoreConfiguration: .default)
         waitForExpectations(timeout: 1)
 
         XCTAssertEqual(stateMachine.state, OutgoingMutationQueue.State.notInitialized)

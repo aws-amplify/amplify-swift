@@ -22,4 +22,7 @@ class MockOutgoingMutationQueue: OutgoingMutationQueueBehavior {
         //no-op
     }
 
+    var publisher: AnyPublisher<MutationEvent, Never> {
+        return PassthroughSubject<MutationEvent, Never>().eraseToAnyPublisher()
+    }
 }

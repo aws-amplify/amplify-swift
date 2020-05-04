@@ -26,6 +26,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private let mutationEventIngester: MutationEventIngester
     let mutationEventPublisher: MutationEventPublisher
     private let outgoingMutationQueue: OutgoingMutationQueueBehavior
+    private var outgoingMutationQueueSink: AnyCancellable?
 
     private var reconciliationQueueSink: AnyCancellable?
 
@@ -65,7 +66,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                      requestRetryablePolicy: RequestRetryablePolicy? = nil) throws {
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
-        let outgoingMutationQueue = outgoingMutationQueue ?? OutgoingMutationQueue()
+        let outgoingMutationQueue = outgoingMutationQueue ??
+            OutgoingMutationQueue(storageAdapter: storageAdapter, dataStoreConfiguration: dataStoreConfiguration)
         let reconciliationQueueFactory = reconciliationQueueFactory ??
             AWSIncomingEventReconciliationQueue.init(modelTypes:api:storageAdapter:modelReconciliationQueueFactory:)
         let initialSyncOrchestratorFactory = initialSyncOrchestratorFactory ??
@@ -121,6 +123,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                 self.workQueue.async {
                     self.respond(to: newState)
                 }
+        }
+
+        self.outgoingMutationQueueSink = self.outgoingMutationQueue.publisher.sink { mutationEvent in
+            self.remoteSyncTopicPublisher.send(.mutationEvent(mutationEvent))
         }
     }
 

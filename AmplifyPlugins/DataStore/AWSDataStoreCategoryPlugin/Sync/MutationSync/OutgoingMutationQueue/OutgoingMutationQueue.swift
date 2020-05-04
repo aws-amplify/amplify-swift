@@ -15,6 +15,7 @@ protocol OutgoingMutationQueueBehavior: class {
     func pauseSyncingToCloud()
     func startSyncingToCloud(api: APICategoryGraphQLBehavior,
                              mutationEventPublisher: MutationEventPublisher)
+    var publisher: AnyPublisher<MutationEvent, Never> { get }
 }
 
 @available(iOS 13.0, *)
@@ -30,8 +31,19 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     private weak var api: APICategoryGraphQLBehavior?
     private var subscription: Subscription?
+    private let dataStoreConfiguration: DataStoreConfiguration
+    private let storageAdapter: StorageEngineAdapter
 
-    init(_ stateMachine: StateMachine<State, Action>? = nil) {
+    private let outgoingMutationQueueSubject: PassthroughSubject<MutationEvent, Never>
+    public var publisher: AnyPublisher<MutationEvent, Never> {
+        return outgoingMutationQueueSubject.eraseToAnyPublisher()
+    }
+
+    init(_ stateMachine: StateMachine<State, Action>? = nil,
+         storageAdapter: StorageEngineAdapter,
+         dataStoreConfiguration: DataStoreConfiguration) {
+        self.storageAdapter = storageAdapter
+        self.dataStoreConfiguration = dataStoreConfiguration
         let operationQueue = OperationQueue()
         operationQueue.name = "com.amazonaws.OutgoingMutationOperationQueue"
         operationQueue.maxConcurrentOperationCount = 1
@@ -42,6 +54,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         self.stateMachine = stateMachine ??
             StateMachine(initialState: .notInitialized,
                          resolver: OutgoingMutationQueue.Resolver.resolve(currentState:action:))
+
+        self.outgoingMutationQueueSubject = PassthroughSubject<MutationEvent, Never>()
 
         self.stateMachineSink = self.stateMachine
             .$state
@@ -165,26 +179,31 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             return
         }
 
-        let syncMutationToCloudOperation =
-            SyncMutationToCloudOperation(mutationEvent: mutationEvent, api: api) { [weak self] result in
-                self?.log.verbose(
-                    "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent); result: \(result)")
+        let syncMutationToCloudOperation = SyncMutationToCloudOperation(mutationEvent: mutationEvent,
+                                                                        api: api) { result in
+            self.log.verbose(
+                "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent.id); result: \(result)")
 
-                if case .completed(let response) = result,
-                    case .failure(let error) = response {
+            guard case .completed(let response) = result, case .failure(let graphQLResponseError) = response else {
+                self.completeProcessingEvent(mutationEvent)
+                return
+            }
 
-                    let processMutationErrorFromCloudOperation =
-                        ProcessMutationErrorFromCloudOperation(mutationEvent: mutationEvent,
-                                                               error: error) { [weak self] result in
+            let processMutationErrorFromCloudOperation =
+                ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: self.dataStoreConfiguration,
+                                                       mutationEvent: mutationEvent,
+                                                       api: api,
+                                                       storageAdapter: self.storageAdapter,
+                                                       graphQLResponseError: graphQLResponseError) { result in
 
-                        self?.log.verbose(
-                            "[ProcessMutationErrorFromCloudOperation] mutation error processed, result: \(result)")
-                        self?.completeProcessingEvent(mutationEvent)
-                    }
-                    self?.operationQueue.addOperation(processMutationErrorFromCloudOperation)
-                } else {
-                    self?.completeProcessingEvent(mutationEvent)
+                self.log.verbose("[ProcessMutationErrorFromCloudOperation] mutation error processed, result: \(result)")
+                if case let .success(mutationEventOptional) = result,
+                    let outgoingMutationEvent = mutationEventOptional {
+                    self.outgoingMutationQueueSubject.send(outgoingMutationEvent)
                 }
+                self.completeProcessingEvent(mutationEvent)
+            }
+            self.operationQueue.addOperation(processMutationErrorFromCloudOperation)
         }
 
         operationQueue.addOperation(syncMutationToCloudOperation)

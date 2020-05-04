@@ -14,18 +14,84 @@ import Combine
 @testable import AWSPluginsCore
 @testable import AWSDataStoreCategoryPlugin
 
+// swiftlint:disable type_body_length
 @available(iOS 13.0, *)
 class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     let defaultAsyncWaitTimeout = 10.0
+    var mockAPIPlugin: MockAPICategoryPlugin!
+    var storageAdapter: StorageEngineAdapter!
+
     override func setUp() {
         tryOrFail {
             try setUpWithAPI()
         }
+        storageAdapter = MockSQLiteStorageEngineAdapter()
+
         ModelRegistry.register(modelType: Post.self)
         ModelRegistry.register(modelType: Comment.self)
     }
 
-    func testProcessMutationErrorFromCloudOperationSuccess() throws {
+    func testProcessMutationErrorFromCloudOperationSuccessForUnknownError() throws {
+        let localPost = Post(title: "localTitle", content: "localContent", createdAt: Date())
+        let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: Date())
+        let mutationEvent = try MutationEvent(model: localPost, mutationType: .delete)
+        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
+                                                                     deleted: true,
+                                                                     version: 1,
+                                                                     errorType: .unknown("unknownErrorType")) else {
+            XCTFail("Couldn't get GraphQL response with remote post")
+            return
+        }
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            guard case .success = result else {
+                XCTFail("Should have been successful")
+                return
+            }
+            expectCompletion.fulfill()
+        }
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+    }
+
+    func testProcessMutationErrorFromCloudOperationSuccessForMissingErrorType() throws {
+        let localPost = Post(title: "localTitle", content: "localContent", createdAt: Date())
+        let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: Date())
+        let mutationEvent = try MutationEvent(model: localPost, mutationType: .delete)
+        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
+                                                                     deleted: true,
+                                                                     version: 1,
+                                                                     errorType: nil) else {
+            XCTFail("Couldn't get GraphQL response with remote post")
+            return
+        }
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            guard case .success = result else {
+                XCTFail("Should have been successful")
+                return
+            }
+            expectCompletion.fulfill()
+        }
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+    }
+
+    func testProcessMutationErrorFromCloudOperationSuccessForConditionalCheck() throws {
         let expectCompletion = expectation(description: "Expect to complete error processing")
         let expectHubEvent = expectation(description: "Hub is notified")
 
@@ -35,7 +101,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             }
         }
 
-        let completion: (Result<Void, Error>) -> Void = { result in
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
             expectCompletion.fulfill()
         }
         let post1 = Post(title: "post1", content: "content1", createdAt: Date())
@@ -46,17 +112,729 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                         extensions: ["errorType": .string(AppSyncErrorType.conditionalCheck.rawValue)])
         let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError])
 
-        let operation = ProcessMutationErrorFromCloudOperation(mutationEvent: mutationEvent,
-                                                               error: graphQLResponseError,
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
 
         let queue = OperationQueue()
         queue.addOperation(operation)
 
-        wait(for: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
-
+        wait(for: [expectHubEvent, expectCompletion], timeout: defaultAsyncWaitTimeout)
         Amplify.Hub.removeListener(hubListener)
+    }
 
+    /// - Given: Conflict Unhandled error
+    /// - When:
+    ///    - Error does not contain the remote model
+    /// - Then:
+    ///    - Unexpected scenario, there should never be an conflict unhandled error without error.data
+    func testConflictUnhandledReturnsErrorForMissingRemoteModel() throws {
+        let localPost = Post(title: "localTitle", content: "localContent", createdAt: Date())
+        let mutationEvent = try MutationEvent(model: localPost, mutationType: .create)
+        let graphQLError = GraphQLError(message: "conflict unhandled",
+                                        extensions: ["errorType": .string(AppSyncErrorType.conflictUnhandled.rawValue)])
+        let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError])
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            guard case let .failure(error) = result,
+                let dataStoreError = error as? DataStoreError,
+                case .unknown = dataStoreError else {
+                XCTFail("Should have failed with DataStoreError.unknown")
+                return
+            }
+
+            XCTAssertEqual(dataStoreError.errorDescription, "Missing remote model from the response from AppSync.")
+            expectCompletion.fulfill()
+        }
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+    }
+
+    /// - Given: Conflict Unhandled error
+    /// - When:
+    ///    - MutationType is `create`
+    /// - Then:
+    ///    - Unexpected scenario, there should never get a conflict for create mutations
+    func testConflictUnhandledReturnsErrorForCreateMutation() throws {
+        let localPost = Post(title: "localTitle", content: "localContent", createdAt: Date())
+        let mutationEvent = try MutationEvent(model: localPost, mutationType: .create)
+        let remotePost = Post(title: "remoteTitle", content: "remoteContent", createdAt: Date())
+        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
+                                                                     deleted: false,
+                                                                     version: 1) else {
+            XCTFail("Couldn't get GraphQL response with remote post")
+            return
+        }
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            guard case let .failure(error) = result,
+                let dataStoreError = error as? DataStoreError,
+                case .unknown = dataStoreError else {
+                XCTFail("Should have failed with DataStoreError.unknown")
+                return
+            }
+
+            XCTAssertEqual(dataStoreError.errorDescription, "Should never get conflict unhandled for create mutation")
+            expectCompletion.fulfill()
+        }
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+    }
+
+    /// - Given: Conflict Unhandled error
+    /// - When:
+    ///    - MutationType is `delete`, remote model is deleted.
+    /// - Then:
+    ///    - No-op, operation finishes successfully
+    func testConflictUnhandledForDeleteMutationAndDeletedRemoteModel() throws {
+        let localPost = Post(title: "localTitle", content: "localContent", createdAt: Date())
+        let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: Date())
+        let mutationEvent = try MutationEvent(model: localPost, mutationType: .delete)
+        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
+                                                                     deleted: true,
+                                                                     version: 1) else {
+            XCTFail("Couldn't get GraphQL response with remote post")
+            return
+        }
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            guard case .success = result else {
+                XCTFail("Should have been successful")
+                return
+            }
+            expectCompletion.fulfill()
+        }
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+    }
+
+    /// - Given: Conflict Unhandled error
+    /// - When:
+    ///    - MutationType is `delete`, remote model is an update, conflict handler returns `.retryLocal`
+    /// - Then:
+    ///    - API is called to delete with local model
+    func testConflictUnhandledForDeleteMutationAndUpdatedRemoteModelReturnsRetryLocal() throws {
+        let localPost = Post(title: "localTitle", content: "localContent", createdAt: Date())
+        let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: Date())
+        let mutationEvent = try MutationEvent(model: localPost, mutationType: .delete)
+        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
+                                                                     deleted: false,
+                                                                     version: 2) else {
+            XCTFail("Couldn't get GraphQL response with remote post")
+            return
+        }
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            guard case .success(let mutationEventOptional) = result else {
+                XCTFail("Should have been successful")
+                return
+            }
+            XCTAssertNil(mutationEventOptional)
+            expectCompletion.fulfill()
+        }
+
+        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.EventListener?
+        let apiMutateCalled = expectation(description: "API was called")
+        mockAPIPlugin.responders[.mutateRequestListener] =
+            MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
+                guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
+                    XCTFail("The document variables property doesn't contain a valid input")
+                    return nil
+                }
+                XCTAssert(input["id"] as? String == localPost.id)
+                XCTAssert(request.document.contains("DeletePost"))
+                eventListenerOptional = eventListener
+                apiMutateCalled.fulfill()
+                return nil
+        }
+
+        let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
+        let configuration = DataStoreConfiguration.custom(conflictHandler: { data, resolve  in
+            guard let localPost = data.local as? Post,
+                let remotePost = data.remote as? Post else {
+                XCTFail("Couldn't get Posts from local and remote data")
+                return
+            }
+
+            XCTAssertEqual(localPost.title, "localTitle")
+            XCTAssertEqual(remotePost.title, "remoteTitle")
+            expectConflicthandlerCalled.fulfill()
+            resolve(.retryLocal)
+        })
+
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: configuration,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+
+        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
+        guard let eventListener = eventListenerOptional else {
+            XCTFail("Listener was not called through MockAPICategoryPlugin")
+            return
+        }
+        let updatedMetadata = MutationSyncMetadata(id: remotePost.id, deleted: true, lastChangedAt: 0, version: 3)
+        let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
+        eventListener(.completed(.success(mockResponse)))
+
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+    }
+
+    /// - Given: Conflict Unhandled error
+    /// - When:
+    ///    - MutationType is `delete`, remote model is an update, conflict handler returns `.retry(model)`
+    /// - Then:
+    ///    - API is called with the model from the conflict handler result
+    func testConflictUnhandledForDeleteMutationAndUpdatedRemoteModelReturnsRetryModel() throws {
+        let localPost = Post(title: "localTitle", content: "localContent", createdAt: Date())
+        let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: Date())
+        let mutationEvent = try MutationEvent(model: localPost, mutationType: .delete)
+        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
+                                                                     deleted: false,
+                                                                     version: 2) else {
+            XCTFail("Couldn't get GraphQL response with remote post")
+            return
+        }
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            guard case .success(let mutationEventOptional) = result else {
+                XCTFail("Should have been successful")
+                return
+            }
+            XCTAssertNil(mutationEventOptional)
+            expectCompletion.fulfill()
+        }
+
+        let retryModel = Post(title: "retryModel", content: "retryContent", createdAt: Date())
+        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.EventListener?
+        let apiMutateCalled = expectation(description: "API was called")
+        mockAPIPlugin.responders[.mutateRequestListener] =
+            MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
+                guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
+                    XCTFail("The document variables property doesn't contain a valid input")
+                    return nil
+                }
+                XCTAssert(input["title"] as? String == retryModel.title)
+                XCTAssertTrue(request.document.contains("UpdatePost"))
+                eventListenerOptional = eventListener
+                apiMutateCalled.fulfill()
+                return nil
+        }
+
+        let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
+        let configuration = DataStoreConfiguration.custom(conflictHandler: { data, resolve  in
+            guard let localPost = data.local as? Post,
+                let remotePost = data.remote as? Post else {
+                XCTFail("Couldn't get Posts from local and remote data")
+                return
+            }
+
+            XCTAssertEqual(localPost.title, "localTitle")
+            XCTAssertEqual(remotePost.title, "remoteTitle")
+            expectConflicthandlerCalled.fulfill()
+            resolve(.retry(retryModel))
+        })
+
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: configuration,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+
+        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
+        guard let eventListener = eventListenerOptional else {
+            XCTFail("Listener was not called through MockAPICategoryPlugin")
+            return
+        }
+        let updatedMetadata = MutationSyncMetadata(id: remotePost.id, deleted: false, lastChangedAt: 0, version: 3)
+        let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
+        eventListener(.completed(.success(mockResponse)))
+
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+    }
+
+    /// - Given: Conflict Unhandled error
+    /// - When:
+    ///    - MutationType is `delete`, remote model is an update, conflict handler returns `.applyRemote`
+    /// - Then:
+    ///    - Local Store is reconciled(recreated) to remote model, result mutationEvent is `update`
+    func testConflictUnhandledForDeleteMutationAndUpdatedRemoteModelReturnsApplyRemote() throws {
+        let localPost = Post(title: "localTitle", content: "localContent", createdAt: Date())
+        let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: Date())
+        let mutationEvent = try MutationEvent(model: localPost, mutationType: .delete)
+        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
+                                                                     deleted: false,
+                                                                     version: 2) else {
+            XCTFail("Couldn't get GraphQL response with remote post")
+            return
+        }
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            guard case .success(let mutationEventOptional) = result,
+                let mutationEvent = mutationEventOptional else {
+                    XCTFail("Should have been successful")
+                    return
+            }
+            XCTAssertEqual(mutationEvent.mutationType, "update")
+            XCTAssertEqual(mutationEvent.modelId, remotePost.id)
+            expectCompletion.fulfill()
+        }
+
+        let modelSavedEvent = expectation(description: "model saved event")
+        modelSavedEvent.expectedFulfillmentCount = 2
+        let storageAdapter = MockSQLiteStorageEngineAdapter()
+        storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { model, completion in
+            guard let savedPost = model as? Post else {
+                XCTFail("Couldn't get Posts from local and remote data")
+                return
+            }
+            XCTAssertEqual(savedPost.title, remotePost.title)
+            modelSavedEvent.fulfill()
+            completion(.success(model))
+        }
+
+        storageAdapter.responders[.saveModelCompletion] =
+            SaveModelCompletionResponder<MutationSyncMetadata> { metadata, completion in
+                XCTAssertEqual(metadata.deleted, false)
+                XCTAssertEqual(metadata.version, 2)
+                modelSavedEvent.fulfill()
+                completion(.success(metadata))
+        }
+
+        let expectHubEvent = expectation(description: "Hub is notified")
+        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
+            if payload.eventName == "DataStore.syncReceived" {
+                expectHubEvent.fulfill()
+            }
+        }
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+
+        wait(for: [modelSavedEvent], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        Amplify.Hub.removeListener(hubListener)
+    }
+
+    /// - Given: Conflict Unhandled error
+    /// - When:
+    ///    - MutationType is `update`, remote model is deleted
+    /// - Then:
+    ///    - Local model is deleted, result mutationEvent is `delete`
+    func testConflictUnhandledForUpdateMutationAndDeletedRemoteModel() throws {
+        let localPost = Post(title: "localTitle", content: "localContent", createdAt: Date())
+        let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: Date())
+        let mutationEvent = try MutationEvent(model: localPost, mutationType: .update)
+        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
+                                                                     deleted: true,
+                                                                     version: 2) else {
+            XCTFail("Couldn't get GraphQL response with remote post")
+            return
+        }
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            guard case .success(let mutationEventOptional) = result,
+                let mutationEvent = mutationEventOptional else {
+                XCTFail("Should have been successful")
+                return
+            }
+            XCTAssertEqual(mutationEvent.mutationType, "delete")
+            XCTAssertEqual(mutationEvent.modelId, localPost.id)
+            expectCompletion.fulfill()
+        }
+
+        let modelDeletedEvent = expectation(description: "model deleted event")
+        let metadataSavedEvent = expectation(description: "metadata saved event")
+        let storageAdapter = MockSQLiteStorageEngineAdapter()
+        storageAdapter.shouldReturnErrorOnDeleteMutation = false
+        storageAdapter.responders[.deleteUntypedModel] = DeleteUntypedModelCompletionResponder { _ in
+            modelDeletedEvent.fulfill()
+        }
+        storageAdapter.responders[.saveModelCompletion] =
+            SaveModelCompletionResponder<MutationSyncMetadata> { metadata, completion in
+            XCTAssertEqual(metadata.deleted, true)
+            XCTAssertEqual(metadata.version, 2)
+            metadataSavedEvent.fulfill()
+            completion(.success(metadata))
+        }
+
+        let expectHubEvent = expectation(description: "Hub is notified")
+        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
+            if payload.eventName == "DataStore.syncReceived" {
+                expectHubEvent.fulfill()
+            }
+        }
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+
+        wait(for: [modelDeletedEvent], timeout: defaultAsyncWaitTimeout)
+        wait(for: [metadataSavedEvent], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        Amplify.Hub.removeListener(hubListener)
+    }
+
+    /// - Given: Conflict Unhandled error
+    /// - When:
+    ///    - MutationType is `update`, remote model is an update, conflict handler returns `.applyRemote`
+    /// - Then:
+    ///    - Local model is updated with remote model data, result mutationEvent is `update`
+    func testConflictUnhandledUpdateMutationAndUpdatedRemoteReturnsApplyRemote() throws {
+        let localPost = Post(title: "localTitle", content: "localContent", createdAt: Date())
+        let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: Date())
+        let mutationEvent = try MutationEvent(model: localPost, mutationType: .update)
+        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
+                                                                     deleted: false,
+                                                                     version: 2) else {
+            XCTFail("Couldn't get GraphQL response with remote post")
+            return
+        }
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            guard case .success(let mutationEventOptional) = result,
+                let mutationEvent = mutationEventOptional else {
+                XCTFail("Should have been successful")
+                return
+            }
+            XCTAssertEqual(mutationEvent.mutationType, "update")
+            XCTAssertEqual(mutationEvent.modelId, remotePost.id)
+            expectCompletion.fulfill()
+        }
+
+        let storageAdapter = MockSQLiteStorageEngineAdapter()
+        let modelSavedEvent = expectation(description: "model saved event")
+        let metadataSavedEvent = expectation(description: "metadata saved event")
+        storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { model, completion in
+            guard let savedPost = model as? Post else {
+                XCTFail("Couldn't get Posts from local and remote data")
+                return
+            }
+            XCTAssertEqual(savedPost.title, remotePost.title)
+            modelSavedEvent.fulfill()
+            completion(.success(model))
+        }
+        storageAdapter.responders[.saveModelCompletion] =
+            SaveModelCompletionResponder<MutationSyncMetadata> { metadata, completion in
+            XCTAssertEqual(metadata.deleted, false)
+            XCTAssertEqual(metadata.version, 2)
+            metadataSavedEvent.fulfill()
+            completion(.success(metadata))
+        }
+
+        let expectHubEvent = expectation(description: "Hub is notified")
+        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
+            if payload.eventName == "DataStore.syncReceived" {
+                expectHubEvent.fulfill()
+            }
+        }
+        let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
+        let configuration = DataStoreConfiguration.custom(conflictHandler: { data, resolve  in
+            guard let localPost = data.local as? Post,
+                let remotePost = data.remote as? Post else {
+                XCTFail("Couldn't get Posts from local and remote data")
+                return
+            }
+
+            XCTAssertEqual(localPost.title, "localTitle")
+            XCTAssertEqual(remotePost.title, "remoteTitle")
+            expectConflicthandlerCalled.fulfill()
+            resolve(.applyRemote)
+        })
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: configuration,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+
+        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [modelSavedEvent], timeout: defaultAsyncWaitTimeout)
+        wait(for: [metadataSavedEvent], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        Amplify.Hub.removeListener(hubListener)
+    }
+
+    /// - Given: Conflict Unhandled error
+    /// - When:
+    ///    - MutationType is `update`, remote model is an update, conflict handler returns `.retryLocal`
+    /// - Then:
+    ///    - API is called to update with the local model
+    func testConflictUnhandledUpdateMutationAndUpdatedRemoteReturnsRetryLocal() throws {
+        let localPost = Post(title: "localTitle", content: "localContent", createdAt: Date())
+        let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: Date())
+        let mutationEvent = try MutationEvent(model: localPost, mutationType: .update)
+        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
+                                                                     deleted: false,
+                                                                     version: 2) else {
+            XCTFail("Couldn't get GraphQL response with remote post")
+            return
+        }
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            guard case .success(let mutationEventOptional) = result else {
+                XCTFail("Should have been successful")
+                return
+            }
+            XCTAssertNil(mutationEventOptional)
+            expectCompletion.fulfill()
+        }
+
+        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.EventListener?
+        let apiMutateCalled = expectation(description: "API was called")
+        mockAPIPlugin.responders[.mutateRequestListener] =
+            MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
+                guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
+                    XCTFail("The document variables property doesn't contain a valid input")
+                    return nil
+                }
+                XCTAssert(input["title"] as? String == localPost.title)
+                XCTAssertTrue(request.document.contains("UpdatePost"))
+                eventListenerOptional = eventListener
+                apiMutateCalled.fulfill()
+                return nil
+        }
+
+        let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
+        let configuration = DataStoreConfiguration.custom(conflictHandler: { data, resolve  in
+            guard let localPost = data.local as? Post,
+                let remotePost = data.remote as? Post else {
+                XCTFail("Couldn't get Posts from local and remote data")
+                return
+            }
+
+            XCTAssertEqual(localPost.title, "localTitle")
+            XCTAssertEqual(remotePost.title, "remoteTitle")
+            expectConflicthandlerCalled.fulfill()
+            resolve(.retryLocal)
+        })
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: configuration,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+
+        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
+        guard let eventListener = eventListenerOptional else {
+            XCTFail("Listener was not called through MockAPICategoryPlugin")
+            return
+        }
+        let updatedMetadata = MutationSyncMetadata(id: remotePost.id, deleted: false, lastChangedAt: 0, version: 3)
+        let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
+        eventListener(.completed(.success(mockResponse)))
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+    }
+
+    /// - Given: Conflict Unhandled error
+    /// - When:
+    ///    - MutationType is `update`, remote model is an update, conflict handler returns `.retry(Model)`
+    /// - Then:
+    ///    - API is called to update the model from the conflict handler result
+    func testConflictUnhandledUpdateMutationAndUpdatedRemoteReturnsRetryModel() throws {
+        let localPost = Post(title: "localTitle", content: "localContent", createdAt: Date())
+        let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: Date())
+        let mutationEvent = try MutationEvent(model: localPost, mutationType: .update)
+        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
+                                                                     deleted: false,
+                                                                     version: 2) else {
+            XCTFail("Couldn't get GraphQL response with remote post")
+            return
+        }
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            guard case .success(let mutationEventOptional) = result else {
+                XCTFail("Should have been successful")
+                return
+            }
+            XCTAssertNil(mutationEventOptional)
+            expectCompletion.fulfill()
+        }
+
+        let retryModel = Post(title: "retryModel", content: "retryContent", createdAt: Date())
+        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.EventListener?
+        let apiMutateCalled = expectation(description: "API was called")
+        mockAPIPlugin.responders[.mutateRequestListener] =
+            MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
+                guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
+                    XCTFail("The document variables property doesn't contain a valid input")
+                    return nil
+                }
+                XCTAssert(input["title"] as? String == retryModel.title)
+                XCTAssertTrue(request.document.contains("UpdatePost"))
+                eventListenerOptional = eventListener
+                apiMutateCalled.fulfill()
+                return nil
+        }
+
+        let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
+        let configuration = DataStoreConfiguration.custom(conflictHandler: { data, resolve  in
+            guard let localPost = data.local as? Post,
+                let remotePost = data.remote as? Post else {
+                XCTFail("Couldn't get Posts from local and remote data")
+                return
+            }
+
+            XCTAssertEqual(localPost.title, "localTitle")
+            XCTAssertEqual(remotePost.title, "remoteTitle")
+            expectConflicthandlerCalled.fulfill()
+            resolve(.retry(retryModel))
+        })
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: configuration,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+
+        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
+        guard let eventListener = eventListenerOptional else {
+            XCTFail("Listener was not called through MockAPICategoryPlugin")
+            return
+        }
+        let updatedMetadata = MutationSyncMetadata(id: remotePost.id, deleted: false, lastChangedAt: 0, version: 3)
+        let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
+        eventListener(.completed(.success(mockResponse)))
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+    }
+
+    /// - Given: Conflict Unhandled error
+    /// - When:
+    ///    - MutationType is `update`, remote model is an update, conflict handler returns `.retryLocal`
+    ///    - API is called to update with local model and response contains error
+    /// - Then:
+    ///    - `DataStoreErrorHandler` is called
+    func testConflictUnhandledSyncToCloudReturnsError() throws {
+        let localPost = Post(title: "localTitle", content: "localContent", createdAt: Date())
+        let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: Date())
+        let mutationEvent = try MutationEvent(model: localPost, mutationType: .update)
+        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
+                                                                     deleted: false,
+                                                                     version: 2) else {
+            XCTFail("Couldn't get GraphQL response with remote post")
+            return
+        }
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            guard case .success(let mutationEventOptional) = result else {
+                XCTFail("Should have been successful")
+                return
+            }
+            XCTAssertNil(mutationEventOptional)
+            expectCompletion.fulfill()
+        }
+
+        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.EventListener?
+        let apiMutateCalled = expectation(description: "API was called")
+        mockAPIPlugin.responders[.mutateRequestListener] =
+            MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
+                guard let variables = request.variables, let input = variables["input"] as? [String: Any] else {
+                    XCTFail("The document variables property doesn't contain a valid input")
+                    return nil
+                }
+                XCTAssert(input["title"] as? String == localPost.title)
+                XCTAssertTrue(request.document.contains("UpdatePost"))
+                eventListenerOptional = eventListener
+                apiMutateCalled.fulfill()
+                return nil
+        }
+
+        let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
+        let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
+        let configuration = DataStoreConfiguration.custom(errorHandler: { _ in
+            expectErrorHandlerCalled.fulfill()
+        }, conflictHandler: { data, resolve in
+            guard let localPost = data.local as? Post,
+                let remotePost = data.remote as? Post else {
+                XCTFail("Couldn't get Posts from local and remote data")
+                return
+            }
+
+            XCTAssertEqual(localPost.title, "localTitle")
+            XCTAssertEqual(remotePost.title, "remoteTitle")
+            expectConflicthandlerCalled.fulfill()
+            resolve(.retryLocal)
+        })
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: configuration,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+
+        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
+        guard let eventListener = eventListenerOptional else {
+            XCTFail("Listener was not called through MockAPICategoryPlugin")
+            return
+        }
+
+        let error = GraphQLError(message: "some other error")
+        eventListener(.completed(.failure(.error([error]))))
+
+        wait(for: [expectErrorHandlerCalled], timeout: defaultAsyncWaitTimeout)
         wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 }
@@ -80,7 +858,49 @@ extension ProcessMutationErrorFromCloudOperationTests {
         return amplifyConfig
     }
 
+    private func setUpAPICategory(config: AmplifyConfiguration) throws -> AmplifyConfiguration {
+        mockAPIPlugin = MockAPICategoryPlugin()
+        try Amplify.add(plugin: mockAPIPlugin)
+
+        let apiConfig = APICategoryConfiguration(plugins: [
+            "MockAPICategoryPlugin": true
+        ])
+        let amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: config.dataStore)
+        return amplifyConfig
+    }
+
     private func setUpWithAPI() throws {
-        try Amplify.configure(try setUpCore())
+        let configWithoutAPI = try setUpCore()
+        let configWithAPI = try setUpAPICategory(config: configWithoutAPI)
+        try Amplify.configure(configWithAPI)
+    }
+
+    private func getGraphQLResponseError(withRemote post: Post,
+                                         deleted: Bool,
+                                         version: Int,
+                                         errorType: AppSyncErrorType? = .conflictUnhandled)
+        throws -> GraphQLResponseError<MutationSync<AnyModel>>? {
+        guard let data = try post.toJSON().data(using: .utf8) else {
+            return nil
+        }
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
+        let remoteData = try decoder.decode(JSONValue.self, from: data)
+        guard case var .object(remoteDataObject) = remoteData else {
+            return nil
+        }
+        remoteDataObject["_deleted"] = .boolean(deleted)
+        remoteDataObject["_lastChangedAt"] = .number(123)
+        remoteDataObject["_version"] = .number(Double(version))
+        remoteDataObject["__typename"] = .string(post.modelName)
+        if let errorType = errorType {
+            let graphQLError = GraphQLError(message: "error message",
+                                            extensions: ["errorType": .string(errorType.rawValue),
+                                                         "data": .object(remoteDataObject)])
+            return GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError])
+        } else {
+            let graphQLError = GraphQLError(message: "error messageb")
+            return GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError])
+        }
     }
 }
