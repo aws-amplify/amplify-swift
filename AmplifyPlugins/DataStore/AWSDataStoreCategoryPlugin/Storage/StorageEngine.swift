@@ -161,9 +161,9 @@ final class StorageEngine: StorageEngineBehavior {
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: Model.Identifier,
                           completion: @escaping (DataStoreResult<M?>) -> Void) {
-        let transactionResult = delete(modelType, predicate: field("id").eq(id))
+        let transactionResult = queryAndDeleteTransaction(modelType, predicate: field("id").eq(id))
 
-        let model: M
+        let deletedModel: M
         switch transactionResult {
         case .success(let queriedModels):
             guard queriedModels.count <= 1 else {
@@ -175,7 +175,7 @@ final class StorageEngine: StorageEngineBehavior {
                 completion(.success(nil))
                 return
             }
-            model = first
+            deletedModel = first
         case .failure(let error):
             completion(.failure(error))
             return
@@ -188,7 +188,7 @@ final class StorageEngine: StorageEngineBehavior {
             if self.syncEngine == nil {
                 log.error("Unable to sync because syncEngine is nil")
             }
-            completion(.success(model))
+            completion(.success(deletedModel))
             return
         }
 
@@ -196,25 +196,25 @@ final class StorageEngine: StorageEngineBehavior {
             let syncCompletionWrapper: DataStoreCallback<Void> = { syncResult in
                 switch syncResult {
                 case .success:
-                    completion(.success(model))
+                    completion(.success(deletedModel))
                 case .failure(let error):
                     completion(.failure(error))
                 }
             }
 
-            self.syncDeletion(with: model,
+            self.syncDeletion(with: deletedModel,
                               syncEngine: syncEngine,
                               completion: syncCompletionWrapper)
 
         } else {
-            completion(.success(model))
+            completion(.success(deletedModel))
         }
     }
 
     func delete<M: Model>(_ modelType: M.Type,
                           predicate: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>) {
-        let transactionResult = delete(modelType, predicate: predicate)
+        let transactionResult = queryAndDeleteTransaction(modelType, predicate: predicate)
 
         guard modelType.schema.isSyncable, let syncEngine = self.syncEngine else {
             if !modelType.schema.isSystem {
@@ -255,7 +255,8 @@ final class StorageEngine: StorageEngineBehavior {
         }
     }
 
-    private func delete<M: Model>(_ modelType: M.Type, predicate: QueryPredicate) -> DataStoreResult<[M]> {
+    private func queryAndDeleteTransaction<M: Model>(_ modelType: M.Type,
+                                                     predicate: QueryPredicate) -> DataStoreResult<[M]> {
         var queriedResult: DataStoreResult<[M]>?
         var deletedResult: DataStoreResult<[M]>?
 

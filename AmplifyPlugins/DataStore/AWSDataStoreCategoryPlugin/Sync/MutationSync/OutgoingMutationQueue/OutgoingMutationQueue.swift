@@ -182,9 +182,9 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         let syncMutationToCloudOperation = SyncMutationToCloudOperation(mutationEvent: mutationEvent,
                                                                         api: api) { result in
             self.log.verbose(
-                "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent); result: \(result)")
+                "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent.id); result: \(result)")
 
-            guard case .completed(let response) = result, case .failure(let error) = response else {
+            guard case .completed(let response) = result, case .failure(let graphQLResponseError) = response else {
                 self.completeProcessingEvent(mutationEvent)
                 return
             }
@@ -194,7 +194,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                                                        mutationEvent: mutationEvent,
                                                        api: api,
                                                        storageAdapter: self.storageAdapter,
-                                                       error: error) { result in
+                                                       graphQLResponseError: graphQLResponseError) { result in
 
                 self.log.verbose("[ProcessMutationErrorFromCloudOperation] mutation error processed, result: \(result)")
                 if case let .success(mutationEventOptional) = result,

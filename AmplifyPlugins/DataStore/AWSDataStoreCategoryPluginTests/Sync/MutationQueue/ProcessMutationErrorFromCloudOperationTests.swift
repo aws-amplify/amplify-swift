@@ -31,6 +31,66 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         ModelRegistry.register(modelType: Comment.self)
     }
 
+    func testProcessMutationErrorFromCloudOperationSuccessForUnknownError() throws {
+        let localPost = Post(title: "localTitle", content: "localContent", createdAt: Date())
+        let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: Date())
+        let mutationEvent = try MutationEvent(model: localPost, mutationType: .delete)
+        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
+                                                                     deleted: true,
+                                                                     version: 1,
+                                                                     errorType: .unknown("unknownErrorType")) else {
+            XCTFail("Couldn't get GraphQL response with remote post")
+            return
+        }
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            guard case .success = result else {
+                XCTFail("Should have been successful")
+                return
+            }
+            expectCompletion.fulfill()
+        }
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+    }
+
+    func testProcessMutationErrorFromCloudOperationSuccessForMissingErrorType() throws {
+        let localPost = Post(title: "localTitle", content: "localContent", createdAt: Date())
+        let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: Date())
+        let mutationEvent = try MutationEvent(model: localPost, mutationType: .delete)
+        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
+                                                                     deleted: true,
+                                                                     version: 1,
+                                                                     errorType: nil) else {
+            XCTFail("Couldn't get GraphQL response with remote post")
+            return
+        }
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            guard case .success = result else {
+                XCTFail("Should have been successful")
+                return
+            }
+            expectCompletion.fulfill()
+        }
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+    }
+
     func testProcessMutationErrorFromCloudOperationSuccessForConditionalCheck() throws {
         let expectCompletion = expectation(description: "Expect to complete error processing")
         let expectHubEvent = expectation(description: "Hub is notified")
@@ -56,7 +116,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
-                                                               error: graphQLResponseError,
+                                                               graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
 
         let queue = OperationQueue()
@@ -93,7 +153,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
-                                                               error: graphQLResponseError,
+                                                               graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
         let queue = OperationQueue()
         queue.addOperation(operation)
@@ -131,7 +191,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
-                                                               error: graphQLResponseError,
+                                                               graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
         let queue = OperationQueue()
         queue.addOperation(operation)
@@ -146,8 +206,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     func testConflictUnhandledForDeleteMutationAndDeletedRemoteModel() throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: Date())
         let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: Date())
-        let mutationEvent = MutationEvent(modelId: localPost.id, modelName: localPost.modelName, json: "{}",
-                                          mutationType: .delete)
+        let mutationEvent = try MutationEvent(model: localPost, mutationType: .delete)
         guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
                                                                      deleted: true,
                                                                      version: 1) else {
@@ -166,7 +225,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
-                                                               error: graphQLResponseError,
+                                                               graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
         let queue = OperationQueue()
         queue.addOperation(operation)
@@ -231,20 +290,21 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
-                                                               error: graphQLResponseError,
+                                                               graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
 
         let queue = OperationQueue()
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled, apiMutateCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
         guard let eventListener = eventListenerOptional else {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
         }
         let updatedMetadata = MutationSyncMetadata(id: remotePost.id, deleted: true, lastChangedAt: 0, version: 3)
-        let local = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
-        eventListener(.completed(.success(local)))
+        let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
+        eventListener(.completed(.success(mockResponse)))
 
         wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
@@ -308,20 +368,21 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
-                                                               error: graphQLResponseError,
+                                                               graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
 
         let queue = OperationQueue()
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled, apiMutateCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
         guard let eventListener = eventListenerOptional else {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
         }
         let updatedMetadata = MutationSyncMetadata(id: remotePost.id, deleted: false, lastChangedAt: 0, version: 3)
-        let local = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
-        eventListener(.completed(.success(local)))
+        let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
+        eventListener(.completed(.success(mockResponse)))
 
         wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
@@ -384,13 +445,15 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
-                                                               error: graphQLResponseError,
+                                                               graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
 
         let queue = OperationQueue()
         queue.addOperation(operation)
 
-        wait(for: [expectHubEvent, modelSavedEvent, expectCompletion], timeout: defaultAsyncWaitTimeout)
+        wait(for: [modelSavedEvent], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
         Amplify.Hub.removeListener(hubListener)
     }
 
@@ -446,14 +509,16 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
-                                                               error: graphQLResponseError,
+                                                               graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
 
         let queue = OperationQueue()
         queue.addOperation(operation)
 
-        wait(for: [modelDeletedEvent, metadataSavedEvent, expectHubEvent, expectCompletion],
-             timeout: defaultAsyncWaitTimeout)
+        wait(for: [modelDeletedEvent], timeout: defaultAsyncWaitTimeout)
+        wait(for: [metadataSavedEvent], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
         Amplify.Hub.removeListener(hubListener)
     }
 
@@ -486,7 +551,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
 
         let storageAdapter = MockSQLiteStorageEngineAdapter()
         let modelSavedEvent = expectation(description: "model saved event")
-        modelSavedEvent.expectedFulfillmentCount = 2
+        let metadataSavedEvent = expectation(description: "metadata saved event")
         storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { model, completion in
             guard let savedPost = model as? Post else {
                 XCTFail("Couldn't get Posts from local and remote data")
@@ -500,7 +565,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             SaveModelCompletionResponder<MutationSyncMetadata> { metadata, completion in
             XCTAssertEqual(metadata.deleted, false)
             XCTAssertEqual(metadata.version, 2)
-            modelSavedEvent.fulfill()
+            metadataSavedEvent.fulfill()
             completion(.success(metadata))
         }
 
@@ -527,14 +592,17 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
-                                                               error: graphQLResponseError,
+                                                               graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
 
         let queue = OperationQueue()
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled, modelSavedEvent, expectHubEvent, expectCompletion],
-             timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [modelSavedEvent], timeout: defaultAsyncWaitTimeout)
+        wait(for: [metadataSavedEvent], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectHubEvent], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
         Amplify.Hub.removeListener(hubListener)
     }
 
@@ -595,20 +663,21 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
-                                                               error: graphQLResponseError,
+                                                               graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
 
         let queue = OperationQueue()
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled, apiMutateCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
         guard let eventListener = eventListenerOptional else {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
         }
         let updatedMetadata = MutationSyncMetadata(id: remotePost.id, deleted: false, lastChangedAt: 0, version: 3)
-        let local = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
-        eventListener(.completed(.success(local)))
+        let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
+        eventListener(.completed(.success(mockResponse)))
         wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
@@ -670,20 +739,21 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
-                                                               error: graphQLResponseError,
+                                                               graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
 
         let queue = OperationQueue()
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled, apiMutateCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
         guard let eventListener = eventListenerOptional else {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
         }
         let updatedMetadata = MutationSyncMetadata(id: remotePost.id, deleted: false, lastChangedAt: 0, version: 3)
-        let local = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
-        eventListener(.completed(.success(local)))
+        let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
+        eventListener(.completed(.success(mockResponse)))
         wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
@@ -730,7 +800,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
 
         let expectConflicthandlerCalled = expectation(description: "Expect conflict handler called")
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
-        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+        let configuration = DataStoreConfiguration.custom(errorHandler: { _ in
             expectErrorHandlerCalled.fulfill()
         }, conflictHandler: { data, resolve in
             guard let localPost = data.local as? Post,
@@ -748,13 +818,14 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
-                                                               error: graphQLResponseError,
+                                                               graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
 
         let queue = OperationQueue()
         queue.addOperation(operation)
 
-        wait(for: [expectConflicthandlerCalled, apiMutateCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [apiMutateCalled], timeout: defaultAsyncWaitTimeout)
         guard let eventListener = eventListenerOptional else {
             XCTFail("Listener was not called through MockAPICategoryPlugin")
             return
@@ -763,7 +834,8 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let error = GraphQLError(message: "some other error")
         eventListener(.completed(.failure(.error([error]))))
 
-        wait(for: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectErrorHandlerCalled], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 }
 
@@ -805,7 +877,9 @@ extension ProcessMutationErrorFromCloudOperationTests {
 
     private func getGraphQLResponseError(withRemote post: Post,
                                          deleted: Bool,
-                                         version: Int) throws -> GraphQLResponseError<MutationSync<AnyModel>>? {
+                                         version: Int,
+                                         errorType: AppSyncErrorType? = .conflictUnhandled)
+        throws -> GraphQLResponseError<MutationSync<AnyModel>>? {
         guard let data = try post.toJSON().data(using: .utf8) else {
             return nil
         }
@@ -819,9 +893,14 @@ extension ProcessMutationErrorFromCloudOperationTests {
         remoteDataObject["_lastChangedAt"] = .number(123)
         remoteDataObject["_version"] = .number(Double(version))
         remoteDataObject["__typename"] = .string(post.modelName)
-        let graphQLError = GraphQLError(message: "conflict unhandled",
-                                        extensions: ["errorType": .string(AppSyncErrorType.conflictUnhandled.rawValue),
-                                                     "data": .object(remoteDataObject)])
-        return GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError])
+        if let errorType = errorType {
+            let graphQLError = GraphQLError(message: "error message",
+                                            extensions: ["errorType": .string(errorType.rawValue),
+                                                         "data": .object(remoteDataObject)])
+            return GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError])
+        } else {
+            let graphQLError = GraphQLError(message: "error messageb")
+            return GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError])
+        }
     }
 }

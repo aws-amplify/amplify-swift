@@ -19,7 +19,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
     private let dataStoreConfiguration: DataStoreConfiguration
     private let storageAdapter: StorageEngineAdapter
     private let mutationEvent: MutationEvent
-    private let error: GraphQLResponseError<MutationSync<AnyModel>>
+    private let graphQLResponseError: GraphQLResponseError<MutationSync<AnyModel>>
     private let completion: (Result<MutationEvent?, Error>) -> Void
     private var mutationOperation: GraphQLOperation<MutationSync<AnyModel>>?
     private weak var api: APICategoryGraphQLBehavior?
@@ -28,13 +28,13 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
          mutationEvent: MutationEvent,
          api: APICategoryGraphQLBehavior,
          storageAdapter: StorageEngineAdapter,
-         error: GraphQLResponseError<MutationSync<AnyModel>>,
+         graphQLResponseError: GraphQLResponseError<MutationSync<AnyModel>>,
          completion: @escaping (Result<MutationEvent?, Error>) -> Void) {
         self.dataStoreConfiguration = dataStoreConfiguration
         self.mutationEvent = mutationEvent
         self.api = api
         self.storageAdapter = storageAdapter
-        self.error = error
+        self.graphQLResponseError = graphQLResponseError
         self.completion = completion
         super.init()
     }
@@ -48,12 +48,13 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             return
         }
 
-        guard case let .error(graphQLErrors) = error else {
+        guard case let .error(graphQLErrors) = graphQLResponseError else {
             finish(result: .success(nil))
             return
         }
 
         guard graphQLErrors.count == 1 else {
+            log.error("Received more than one error response: \(graphQLResponseError)")
             finish(result: .success(nil))
             return
         }
@@ -77,27 +78,31 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
                 log.debug("Unhandled error with errorType \(errorType)")
                 finish(result: .success(nil))
             }
+        } else {
+            log.debug("GraphQLError missing extensions and errorType \(graphQLError)")
+            finish(result: .success(nil))
         }
     }
 
     private func processConflictUnhandled(_ extensions: [String: JSONValue]) {
-        guard case let .object(data) = extensions["data"] else {
-            let error = DataStoreError.unknown("Missing remote model from the response from AppSync.",
-                                               "This indicates something unexpected was returned from the service")
+        let localModel: Model
+        do {
+            localModel = try mutationEvent.decodeModel()
+        } catch {
+            let error = DataStoreError.unknown("Couldn't decode local model", "")
             finish(result: .failure(error))
             return
         }
 
-        let remote: MutationSync<AnyModel>
-        do {
-            let serializedJSON = try JSONEncoder().encode(data)
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
-            remote = try decoder.decode(MutationSync<AnyModel>.self, from: serializedJSON)
-        } catch {
+        let remoteModel: MutationSync<AnyModel>
+        switch getRemoteModel(extensions) {
+        case .success(let model):
+            remoteModel = model
+        case .failure(let error):
             finish(result: .failure(error))
             return
         }
+        let latestVersion = remoteModel.syncMetadata.version
 
         guard let mutationType = GraphQLMutationType(rawValue: mutationEvent.mutationType) else {
             let dataStoreError = DataStoreError.decodingError(
@@ -120,68 +125,74 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             finish(result: .failure(error))
             return
         case .delete:
-            guard !remote.syncMetadata.deleted else {
-                log.debug("Conflict Unhandled for data deleted in local and remote. Nothing to do, skip processing.")
-                finish(result: .success(nil))
-                return
-            }
-
-            let localModel: Model
-            do {
-                localModel = try mutationEvent.decodeModel()
-            } catch {
-                let error = DataStoreError.unknown("Couldn't decode local model", "")
-                finish(result: .failure(error))
-                return
-            }
-            let conflictData = DataStoreConflictData(local: localModel, remote: remote.model.instance)
-            let latestVersion = remote.syncMetadata.version
-            dataStoreConfiguration.conflictHandler(conflictData) { result in
-                switch result {
-                case .applyRemote:
-                    self.saveCreateOrUpdateMutation(remoteModel: remote)
-                case .retryLocal:
-                    let request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: localModel.modelName,
-                                                                                    id: localModel.id,
-                                                                                    version: latestVersion)
-                    self.makeAPIRequest(request)
-                case .retry(let model):
-                    let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
-                                                                                    version: latestVersion)
-                    self.makeAPIRequest(request)
-                }
-            }
+            processLocalModelDeleted(localModel: localModel, remoteModel: remoteModel, latestVersion: latestVersion)
         case .update:
-            guard !remote.syncMetadata.deleted else {
-                log.debug("Conflict Unhandled for updated local and deleted remote. Reconcile by deleting local")
-                saveDeleteMutation(remoteModel: remote)
-                return
-            }
+            processLocalModelUpdated(localModel: localModel, remoteModel: remoteModel, latestVersion: latestVersion)
+        }
+    }
 
-            let localModel: Model
-            do {
-                localModel = try mutationEvent.decodeModel()
-            } catch {
-                let error = DataStoreError.unknown("Couldn't get model ", "")
-                finish(result: .failure(error))
-                return
-            }
+    func getRemoteModel(_ extensions: [String: JSONValue]) -> Result<MutationSync<AnyModel>, Error> {
+        guard case let .object(data) = extensions["data"] else {
+            let error = DataStoreError.unknown("Missing remote model from the response from AppSync.",
+                                               "This indicates something unexpected was returned from the service")
+            return .failure(error)
+        }
+        do {
+            let serializedJSON = try JSONEncoder().encode(data)
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
+            return .success(try decoder.decode(MutationSync<AnyModel>.self, from: serializedJSON))
+        } catch {
+            return .failure(error)
+        }
+    }
 
-            let conflictData = DataStoreConflictData(local: localModel, remote: remote.model.instance)
-            let latestVersion = remote.syncMetadata.version
-            dataStoreConfiguration.conflictHandler(conflictData) { result in
-                switch result {
-                case .applyRemote:
-                    self.saveCreateOrUpdateMutation(remoteModel: remote)
-                case .retryLocal:
-                    let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: localModel,
-                                                                                    version: latestVersion)
-                    self.makeAPIRequest(request)
-                case .retry(let model):
-                    let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
-                                                                                    version: latestVersion)
-                    self.makeAPIRequest(request)
-                }
+    func processLocalModelDeleted(localModel: Model, remoteModel: MutationSync<AnyModel>, latestVersion: Int) {
+        guard !remoteModel.syncMetadata.deleted else {
+            log.debug("Conflict Unhandled for data deleted in local and remote. Nothing to do, skip processing.")
+            finish(result: .success(nil))
+            return
+        }
+
+        let conflictData = DataStoreConflictData(local: localModel, remote: remoteModel.model.instance)
+        dataStoreConfiguration.conflictHandler(conflictData) { result in
+            switch result {
+            case .applyRemote:
+                self.saveCreateOrUpdateMutation(remoteModel: remoteModel)
+            case .retryLocal:
+                let request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: localModel.modelName,
+                                                                                id: localModel.id,
+                                                                                version: latestVersion)
+                self.makeAPIRequest(request)
+            case .retry(let model):
+                let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
+                                                                                version: latestVersion)
+                self.makeAPIRequest(request)
+            }
+        }
+    }
+
+    func processLocalModelUpdated(localModel: Model, remoteModel: MutationSync<AnyModel>, latestVersion: Int) {
+        guard !remoteModel.syncMetadata.deleted else {
+            log.debug("Conflict Unhandled for updated local and deleted remote. Reconcile by deleting local")
+            saveDeleteMutation(remoteModel: remoteModel)
+            return
+        }
+
+        let conflictData = DataStoreConflictData(local: localModel, remote: remoteModel.model.instance)
+        let latestVersion = remoteModel.syncMetadata.version
+        dataStoreConfiguration.conflictHandler(conflictData) { result in
+            switch result {
+            case .applyRemote:
+                self.saveCreateOrUpdateMutation(remoteModel: remoteModel)
+            case .retryLocal:
+                let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: localModel,
+                                                                                version: latestVersion)
+                self.makeAPIRequest(request)
+            case .retry(let model):
+                let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: model,
+                                                                                version: latestVersion)
+                self.makeAPIRequest(request)
             }
         }
     }
