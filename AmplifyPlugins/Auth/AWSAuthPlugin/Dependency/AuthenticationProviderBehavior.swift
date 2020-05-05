@@ -27,4 +27,7 @@ protocol AuthenticationProviderBehavior {
 
     func confirmSignIn(request: AuthConfirmSignInRequest,
                        completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void)
+
+    func signOut(request: AuthSignOutRequest,
+                 completionHandler: @escaping (Result<Void, AmplifyAuthError>) -> Void)
 }

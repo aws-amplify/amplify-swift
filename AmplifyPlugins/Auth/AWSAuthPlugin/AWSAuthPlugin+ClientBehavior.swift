@@ -95,6 +95,17 @@ extension AWSAuthPlugin {
         return confirmSignInOperation
     }
 
+    public func signOut(options: AuthSignOutRequest.Options?, listener: AuthSignOutOperation.EventListener?)
+        -> AuthSignOutOperation {
+            let options = options ?? AuthSignOutRequest.Options()
+            let request = AuthSignOutRequest(options: options)
+            let signOutOperation = AWSAuthSignOutOperation(request,
+                                                           authenticationProvider: authenticationProvider,
+                                                           listener: listener)
+            queue.addOperation(signOutOperation)
+            return signOutOperation
+    }
+
     public func fetchAuthState(listener: AuthStateOperation.EventListener?) -> AuthStateOperation {
         fatalError()
     }

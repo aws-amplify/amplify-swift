@@ -7,19 +7,16 @@
 
 import Foundation
 
-public struct AuthResendSignUpCodeRequest: AmplifyOperationRequest {
-
-    public let username: String
+public struct AuthSignOutRequest: AmplifyOperationRequest {
 
     public var options: Options
 
-    public init(username: String, options: Options) {
-        self.username = username
+    public init(options: Options) {
         self.options = options
     }
 }
 
-public extension AuthResendSignUpCodeRequest {
+public extension AuthSignOutRequest {
 
     struct Options {
 
