@@ -41,14 +41,7 @@ extension AuthenticationProviderAdapter {
                                     return
                                 }
 
-                                var codeDeliveryDetails: AuthCodeDeliveryDetails?
-                                if let deliveryDetails = result.codeDeliveryDetails {
-                                    let destination = deliveryDetails.toDeliveryDestination()
-                                    let attributeName = deliveryDetails.attributeName ?? ""
-                                    codeDeliveryDetails = AuthCodeDeliveryDetails(destination: destination,
-                                                                                  attributeName: attributeName)
-                                }
-
+                                let codeDeliveryDetails = result.codeDeliveryDetails?.toAuthCodeDeliveryDetails()
                                 let signUpStep: AuthSignUpStep = (result.signUpConfirmationState == .confirmed) ?
                                     .done : .confirmUser
                                 let nextStep = AuthNextSignUpStep(signUpStep, codeDeliveryDetails: codeDeliveryDetails)
@@ -98,16 +91,12 @@ extension AuthenticationProviderAdapter {
 
             guard let result = result,
                 let deliveryDetails = result.codeDeliveryDetails else {
-                // This should not happen, return an unknown error.
-                let error = AmplifyAuthError.unknown("Could not read result from resendSignUpCode operation")
-                completionHandler(.failure(error))
-                return
+                    // This should not happen, return an unknown error.
+                    let error = AmplifyAuthError.unknown("Could not read result from resendSignUpCode operation")
+                    completionHandler(.failure(error))
+                    return
             }
-
-            let destination = deliveryDetails.toDeliveryDestination()
-            let attributeName = deliveryDetails.attributeName ?? ""
-            let codeDeliveryDetails = AuthCodeDeliveryDetails(destination: destination,
-                                                              attributeName: attributeName)
+            let codeDeliveryDetails = deliveryDetails.toAuthCodeDeliveryDetails()
             completionHandler(.success(codeDeliveryDetails))
         }
     }

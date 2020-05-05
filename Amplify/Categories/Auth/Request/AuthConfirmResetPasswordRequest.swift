@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct AuthConfirmForgotPwdRequest: AmplifyOperationRequest {
+public struct AuthConfirmResetPasswordRequest: AmplifyOperationRequest {
 
     public let username: String
 
@@ -28,14 +28,17 @@ public struct AuthConfirmForgotPwdRequest: AmplifyOperationRequest {
     }
 }
 
-public extension AuthConfirmForgotPwdRequest {
+public extension AuthConfirmResetPasswordRequest {
 
     struct Options {
 
-        public let metadata: [String: String]?
+        /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
+        /// a way to utilize the underlying auth plugin functionality. See plugin documentation for expected
+        /// key/values
+        public let pluginOptions: Any?
 
-        public init(metadata: [String: String]? = nil) {
-            self.metadata = metadata
+        public init(pluginOptions: Any? = nil) {
+            self.pluginOptions = pluginOptions
         }
     }
 }

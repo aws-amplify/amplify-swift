@@ -84,23 +84,24 @@ extension AuthCategory: AuthCategoryBehavior {
         return plugin.fetchAuthState(listener: listener)
     }
 
-    public func forgotPassword(username: String,
-                               options: AuthForgotPasswordOperation.Request.Options? = nil,
-                               listener: AuthForgotPasswordOperation.EventListener?) -> AuthForgotPasswordOperation {
-        return plugin.forgotPassword(username: username,
-                                     options: options,
-                                     listener: listener)
+    public func resetPassword(for username: String,
+                              options: AuthResetPasswordOperation.Request.Options? = nil,
+                              listener: AuthResetPasswordOperation.EventListener?) -> AuthResetPasswordOperation {
+        return plugin.resetPassword(for: username,
+                                    options: options,
+                                    listener: listener)
     }
 
-    public func confirmForgotPassword(username: String,
-                                      newPassword: String,
+    public  func confirmResetPassword(for username: String,
+                                      with newPassword: String,
                                       confirmationCode: String,
-                                      options: AuthConfirmForgotPasswordOperation.Request.Options? = nil,
-                                      listener: AuthConfirmForgotPasswordOperation.EventListener?) -> AuthConfirmForgotPasswordOperation {
-        return plugin.confirmForgotPassword(username: username,
-                                            newPassword: newPassword,
-                                            confirmationCode: confirmationCode,
-                                            options: options,
-                                            listener: listener)
+                                      options: AuthConfirmResetPasswordOperation.Request.Options? = nil,
+                                      listener: AuthConfirmResetPasswordOperation.EventListener?)
+        -> AuthConfirmResetPasswordOperation {
+            return plugin.confirmResetPassword(for: username,
+                                               with: newPassword,
+                                               confirmationCode: confirmationCode,
+                                               options: options,
+                                               listener: listener)
     }
 }
