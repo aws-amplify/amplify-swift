@@ -95,4 +95,8 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
                                       clientMetaData: clientMetaData,
                                       completionHandler: completionHandler)
     }
+
+    func signOut(options: SignOutOptions = SignOutOptions(), completionHandler: @escaping ((Error?) -> Void)) {
+        awsMobileClient.signOut(options: options, completionHandler: completionHandler)
+    }
 }
