@@ -190,6 +190,8 @@
 		B450741B241166AE0098F02D /* AuthUserState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B450741A241166AE0098F02D /* AuthUserState.swift */; };
 		B452F1D32450EEAE0069F7FA /* AuthResendSignUpCodeOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B452F1D22450EEAE0069F7FA /* AuthResendSignUpCodeOperation.swift */; };
 		B452F1D52450EEEB0069F7FA /* AuthResendSignUpCodeRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B452F1D42450EEEB0069F7FA /* AuthResendSignUpCodeRequest.swift */; };
+		B473B53E245DE8E100C45C72 /* AuthConfirmSignInOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B473B53D245DE8E100C45C72 /* AuthConfirmSignInOperation.swift */; };
+		B473B540245DE93100C45C72 /* AuthConfirmSignInRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B473B53F245DE93100C45C72 /* AuthConfirmSignInRequest.swift */; };
 		B4926F6A2425013B007B769C /* AuthForgotPasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4926F692425013B007B769C /* AuthForgotPasswordRequest.swift */; };
 		B4926F6C242501A9007B769C /* AuthForgotPasswordResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4926F6B242501A9007B769C /* AuthForgotPasswordResult.swift */; };
 		B4926F6E24250219007B769C /* AuthForgotPasswordOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4926F6D24250219007B769C /* AuthForgotPasswordOperation.swift */; };
@@ -863,6 +865,8 @@
 		B450741A241166AE0098F02D /* AuthUserState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUserState.swift; sourceTree = "<group>"; };
 		B452F1D22450EEAE0069F7FA /* AuthResendSignUpCodeOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResendSignUpCodeOperation.swift; sourceTree = "<group>"; };
 		B452F1D42450EEEB0069F7FA /* AuthResendSignUpCodeRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResendSignUpCodeRequest.swift; sourceTree = "<group>"; };
+		B473B53D245DE8E100C45C72 /* AuthConfirmSignInOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmSignInOperation.swift; sourceTree = "<group>"; };
+		B473B53F245DE93100C45C72 /* AuthConfirmSignInRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmSignInRequest.swift; sourceTree = "<group>"; };
 		B4926F692425013B007B769C /* AuthForgotPasswordRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthForgotPasswordRequest.swift; sourceTree = "<group>"; };
 		B4926F6B242501A9007B769C /* AuthForgotPasswordResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthForgotPasswordResult.swift; sourceTree = "<group>"; };
 		B4926F6D24250219007B769C /* AuthForgotPasswordOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthForgotPasswordOperation.swift; sourceTree = "<group>"; };
@@ -1806,16 +1810,17 @@
 		B4A19DA524101E9D00DE2E55 /* Operation */ = {
 			isa = PBXGroup;
 			children = (
-				B4A19DAC24101F7100DE2E55 /* AuthSignUpOperation.swift */,
-				B450740C2411553D0098F02D /* AuthConfirmSignUpOperation.swift */,
-				B450741024115C140098F02D /* AuthSignInOperation.swift */,
-				B4C499012415E0CA00067992 /* AuthWebUISignInOperation.swift */,
-				B4FA76042416E0F0006F59CE /* AuthStateOperation.swift */,
-				B4926F6D24250219007B769C /* AuthForgotPasswordOperation.swift */,
-				B4251A04242503F6007F59EF /* AuthConfirmForgotPwdOperation.swift */,
 				B4251A0A242504FA007F59EF /* AuthChangePasswordOperation.swift */,
+				B4251A04242503F6007F59EF /* AuthConfirmForgotPwdOperation.swift */,
+				B473B53D245DE8E100C45C72 /* AuthConfirmSignInOperation.swift */,
+				B450740C2411553D0098F02D /* AuthConfirmSignUpOperation.swift */,
+				B4926F6D24250219007B769C /* AuthForgotPasswordOperation.swift */,
 				B452F1D22450EEAE0069F7FA /* AuthResendSignUpCodeOperation.swift */,
+				B450741024115C140098F02D /* AuthSignInOperation.swift */,
+				B4A19DAC24101F7100DE2E55 /* AuthSignUpOperation.swift */,
 				B493E6A32453A32C00D9E521 /* AuthSocialWebUISignInOperation.swift */,
+				B4FA76042416E0F0006F59CE /* AuthStateOperation.swift */,
+				B4C499012415E0CA00067992 /* AuthWebUISignInOperation.swift */,
 			);
 			path = Operation;
 			sourceTree = "<group>";
@@ -1852,15 +1857,16 @@
 		B4A19DA824101E9D00DE2E55 /* Request */ = {
 			isa = PBXGroup;
 			children = (
-				B43DC737241051A200D40275 /* AuthSignUpRequest.swift */,
-				B43CD8532411469D00BF5A60 /* AuthConfirmSignUpRequest.swift */,
-				B450741224115C260098F02D /* AuthSignInRequest.swift */,
-				B4C499032415E0F300067992 /* AuthWebUISignInRequest.swift */,
-				B4FA76062416E82B006F59CE /* AuthStateRequest.swift */,
-				B4926F692425013B007B769C /* AuthForgotPasswordRequest.swift */,
-				B4251A0024250369007F59EF /* AuthConfirmForgotPwdRequest.swift */,
 				B4251A062425047D007F59EF /* AuthChangePasswordRequest.swift */,
+				B4251A0024250369007F59EF /* AuthConfirmForgotPwdRequest.swift */,
+				B473B53F245DE93100C45C72 /* AuthConfirmSignInRequest.swift */,
+				B43CD8532411469D00BF5A60 /* AuthConfirmSignUpRequest.swift */,
+				B4926F692425013B007B769C /* AuthForgotPasswordRequest.swift */,
 				B452F1D42450EEEB0069F7FA /* AuthResendSignUpCodeRequest.swift */,
+				B450741224115C260098F02D /* AuthSignInRequest.swift */,
+				B43DC737241051A200D40275 /* AuthSignUpRequest.swift */,
+				B4FA76062416E82B006F59CE /* AuthStateRequest.swift */,
+				B4C499032415E0F300067992 /* AuthWebUISignInRequest.swift */,
 			);
 			path = Request;
 			sourceTree = "<group>";
@@ -3848,6 +3854,7 @@
 				95DAAB21237E63370028544F /* LanguageDetectionResult.swift in Sources */,
 				FAC2351E227A053D00424678 /* APICategory.swift in Sources */,
 				FAC2351B227A053D00424678 /* APICategoryBehavior.swift in Sources */,
+				B473B540245DE93100C45C72 /* AuthConfirmSignInRequest.swift in Sources */,
 				B4926F6A2425013B007B769C /* AuthForgotPasswordRequest.swift in Sources */,
 				FA5D4CF3238AFD7B00D2F54A /* ModelRegistry+Syncable.swift in Sources */,
 				FAAFAF37239051E6002CF932 /* AtomicDictionary.swift in Sources */,
@@ -3974,6 +3981,7 @@
 				95DAAB83237F13940028544F /* EntityMatch.swift in Sources */,
 				FA09B93B2321A36F000E064D /* StorageCategory+CategoryConfigurable.swift in Sources */,
 				95DAAB4C237E639E0028544F /* IdentifyEntitiesResult.swift in Sources */,
+				B473B53E245DE8E100C45C72 /* AuthConfirmSignInOperation.swift in Sources */,
 				B43CD858241147F900BF5A60 /* AmplifyUser.swift in Sources */,
 				B43CD8542411469D00BF5A60 /* AuthConfirmSignUpRequest.swift in Sources */,
 				B4D38539236C97360014653D /* PredictionsCategory+ClientBehavior.swift in Sources */,

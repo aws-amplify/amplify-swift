@@ -12,6 +12,8 @@ extension SignInResult {
 
     func toAmplifyAuthSignInStep() throws -> AuthSignInStep {
         switch signInState {
+        case .signedIn:
+            return .done
         case .smsMFA:
             let deliveryDetails = AuthCodeDeliveryDetails(destination: .sms(codeDetails?.destination))
             return .confirmSignInWithSMSMFACode(deliveryDetails, nil)

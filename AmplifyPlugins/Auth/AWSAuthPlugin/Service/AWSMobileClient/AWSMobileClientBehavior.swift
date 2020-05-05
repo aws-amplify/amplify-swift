@@ -40,4 +40,9 @@ protocol AWSMobileClientBehavior {
                     signInUIOptions: SignInUIOptions,
                     hostedUIOptions: HostedUIOptions?,
                     _ completionHandler: @escaping (UserState?, Error?) -> Void)
+
+    func confirmSignIn(challengeResponse: String,
+                       userAttributes: [String: String],
+                       clientMetaData: [String: String],
+                       completionHandler: @escaping ((SignInResult?, Error?) -> Void))
 }

@@ -85,4 +85,14 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
                                    hostedUIOptions: hostedUIOptions,
                                    completionHandler)
     }
+
+    func confirmSignIn(challengeResponse: String,
+                       userAttributes: [String: String] = [:],
+                       clientMetaData: [String: String] = [:],
+                       completionHandler: @escaping ((SignInResult?, Error?) -> Void)) {
+        awsMobileClient.confirmSignIn(challengeResponse: challengeResponse,
+                                      userAttributes: userAttributes,
+                                      clientMetaData: clientMetaData,
+                                      completionHandler: completionHandler)
+    }
 }
