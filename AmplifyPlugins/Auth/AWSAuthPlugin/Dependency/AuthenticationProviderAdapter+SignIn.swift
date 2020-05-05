@@ -25,11 +25,12 @@ extension AuthenticationProviderAdapter {
         let validationData = (request.options.pluginOptions as? AWSAuthSignInOptions)?.metadata
         awsMobileClient.signIn(username: username,
                                password: password,
-                               validationData: validationData) { result, error in
+                               validationData: validationData) { [weak self] result, error in
+                                guard let self = self else { return }
 
                                 guard error == nil else {
-                                    let authError = AuthErrorHelper.toAmplifyAuthError(error!)
-                                    completionHandler(.failure(authError))
+                                    let result = self.convertSignInErrorToResult(error!)
+                                    completionHandler(result)
                                     return
                                 }
 
@@ -37,13 +38,6 @@ extension AuthenticationProviderAdapter {
                                     // This should not happen, return an unknown error.
                                     let error = AmplifyAuthError.unknown("Could not read result from signIn operation")
                                     completionHandler(.failure(error))
-                                    return
-                                }
-
-                                guard result.signInState != .signedIn else {
-                                    // Return if the user has signedIn, this is a terminal step of signIn.
-                                    let authResult = AuthSignInResult(nextStep: .done)
-                                    completionHandler(.success(authResult))
                                     return
                                 }
 
@@ -72,6 +66,49 @@ extension AuthenticationProviderAdapter {
                                    request: request,
                                    completionHandler: completionHandler)
         }
+    }
+
+    func confirmSignIn(request: AuthConfirmSignInRequest,
+                       completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void) {
+
+        let userAttributes = (request.options.pluginOptions as? AWSAuthConfirmSignInOptions)?.userAttributes ?? []
+        let mobileClientUserAttributes = userAttributes.reduce(into: [String: String]()) {
+            $0[$1.key.toString()] = $1.value
+        }
+        let clientMetaData = (request.options.pluginOptions as? AWSAuthConfirmSignInOptions)?.metadata
+
+        awsMobileClient.confirmSignIn(challengeResponse: request.challengeResponse,
+                                      userAttributes: mobileClientUserAttributes,
+                                      clientMetaData: clientMetaData ?? [:]) { [weak self] result, error in
+                                        guard let self = self else { return }
+
+                                        if let error = error {
+                                            let result = self.convertSignInErrorToResult(error)
+                                            completionHandler(result)
+                                            return
+                                        }
+
+                                        guard let result = result else {
+                                            // This should not happen, return an unknown error.
+                                            let error = AmplifyAuthError.unknown("""
+                                            Could not read result from confirmSignIn operation
+                                            """)
+                                            completionHandler(.failure(error))
+                                            return
+                                        }
+
+                                        guard let nextStep = try? result.toAmplifyAuthSignInStep() else {
+                                            // Could not find any next step for signIn. This should not happen.
+                                            let error = AmplifyAuthError.unknown("""
+                                                Invalid state for signIn \(result.signInState)
+                                                """)
+                                            completionHandler(.failure(error))
+                                            return
+                                        }
+                                        let authResult = AuthSignInResult(nextStep: nextStep)
+                                        completionHandler(.success(authResult))
+        }
+
     }
 
     // MARK: - Internal methods
@@ -133,6 +170,20 @@ extension AuthenticationProviderAdapter {
         })
     }
 
+    private func convertSignInErrorToResult(_ error: Error) -> Result<AuthSignInResult, AmplifyAuthError> {
+        if let awsMobileClientError = error as? AWSMobileClientError {
+            if case .passwordResetRequired = awsMobileClientError {
+                let authResult = AuthSignInResult(nextStep: .resetPassword(nil))
+                return .success(authResult)
+            } else if case .userNotConfirmed = awsMobileClientError {
+                let authResult = AuthSignInResult(nextStep: .confirmSignUp(nil))
+                return .success(authResult)
+            }
+        }
+        let authError = AuthErrorHelper.toAmplifyAuthError(error)
+        return .failure(authError)
+    }
+
     private func convertSignUIErrorToAuthError(_ error: Error) -> AmplifyAuthError {
         if let awsMobileClientError = error as? AWSMobileClientError {
             switch awsMobileClientError {
@@ -163,4 +214,5 @@ extension AuthenticationProviderAdapter {
         let authError = AuthErrorHelper.toAmplifyAuthError(error)
         return authError
     }
+
 }

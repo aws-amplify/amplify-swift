@@ -97,6 +97,16 @@ public protocol AuthCategoryBehavior {
                          options: AuthSocialWebUISignInOperation.Request.Options?,
                          listener: AuthSocialWebUISignInOperation.EventListener?) -> AuthSocialWebUISignInOperation
 
+    /// Confirms a next step in signIn flow.
+    ///
+    /// - Parameters:
+    ///   - challengeResponse: Challenge response required to confirm the next step in signIn flow
+    ///   - options: Parameters specific to plugin behavior.
+    ///   - listener: Triggered when the operation completes.
+    func confirmSignIn(challengeResponse: String,
+                       options: AuthConfirmSignInOperation.Request.Options?,
+                       listener: AuthConfirmSignInOperation.EventListener?) -> AuthConfirmSignInOperation
+
     func fetchAuthState(listener: AuthStateOperation.EventListener?) -> AuthStateOperation
 
     // MARK: - Password Management

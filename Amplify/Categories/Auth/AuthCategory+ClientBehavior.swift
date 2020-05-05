@@ -67,6 +67,14 @@ extension AuthCategory: AuthCategoryBehavior {
                                           listener: listener)
     }
 
+    public func confirmSignIn(challengeResponse: String,
+                              options: AuthConfirmSignInOperation.Request.Options? = nil,
+                              listener: AuthConfirmSignInOperation.EventListener?) -> AuthConfirmSignInOperation {
+        return plugin.confirmSignIn(challengeResponse: challengeResponse,
+                                    options: options,
+                                    listener: listener)
+    }
+
     public func fetchAuthState(listener: AuthStateOperation.EventListener?) -> AuthStateOperation {
         return plugin.fetchAuthState(listener: listener)
     }
