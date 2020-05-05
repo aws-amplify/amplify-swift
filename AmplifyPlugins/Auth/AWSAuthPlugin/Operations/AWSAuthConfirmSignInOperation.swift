@@ -40,7 +40,7 @@ AuthConfirmSignInOperation {
             return
         }
 
-        authenticationProvider.confirmSignIn(request: request) {[weak self]  result in
+        authenticationProvider.confirmSignIn(request: request) { [weak self]  result in
 
             guard let self = self else { return }
 

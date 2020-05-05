@@ -71,15 +71,19 @@ extension AuthenticationProviderAdapter {
     func confirmSignIn(request: AuthConfirmSignInRequest,
                        completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void) {
 
-        let userAttributes = (request.options.pluginOptions as? AWSAuthConfirmSignInOptions)?.userAttributes
+        let userAttributes = (request.options.pluginOptions as? AWSAuthConfirmSignInOptions)?.userAttributes ?? []
+        let mobileClientUserAttributes = userAttributes.reduce(into: [String: String]()) {
+            $0[$1.key.toString()] = $1.value
+        }
         let clientMetaData = (request.options.pluginOptions as? AWSAuthConfirmSignInOptions)?.metadata
+
         awsMobileClient.confirmSignIn(challengeResponse: request.challengeResponse,
-                                      userAttributes: [:],
+                                      userAttributes: mobileClientUserAttributes,
                                       clientMetaData: clientMetaData ?? [:]) { [weak self] result, error in
                                         guard let self = self else { return }
 
-                                        guard error == nil else {
-                                            let result = self.convertSignInErrorToResult(error!)
+                                        if let error = error {
+                                            let result = self.convertSignInErrorToResult(error)
                                             completionHandler(result)
                                             return
                                         }
