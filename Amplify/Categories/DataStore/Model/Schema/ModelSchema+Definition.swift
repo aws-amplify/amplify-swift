@@ -80,13 +80,18 @@ public struct ModelSchemaDefinition {
 
     internal let name: String
     public var pluralName: String?
+    public var authRules: AuthRules
     internal var fields: ModelFields
     internal var attributes: [ModelAttribute]
 
-    init(name: String, pluralName: String? = nil, attributes: [ModelAttribute] = []) {
+    init(name: String,
+         pluralName: String? = nil,
+         authRules: AuthRules = [],
+         attributes: [ModelAttribute] = []) {
         self.name = name
         self.pluralName = pluralName
         self.fields = [:] as ModelFields
+        self.authRules = authRules
         self.attributes = attributes
     }
 
@@ -102,7 +107,11 @@ public struct ModelSchemaDefinition {
     }
 
     internal func build() -> ModelSchema {
-        return ModelSchema(name: name, pluralName: pluralName, attributes: attributes, fields: fields)
+        return ModelSchema(name: name,
+                           pluralName: pluralName,
+                           authRules: authRules,
+                           attributes: attributes,
+                           fields: fields)
     }
 }
 

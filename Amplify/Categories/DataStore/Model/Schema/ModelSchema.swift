@@ -52,6 +52,7 @@ public struct ModelSchema {
 
     public let name: String
     public let pluralName: String?
+    public let authRules: AuthRules
     public let fields: ModelFields
     public let attributes: [ModelAttribute]
 
@@ -66,10 +67,12 @@ public struct ModelSchema {
 
     init(name: String,
          pluralName: String? = nil,
+         authRules: AuthRules = [],
          attributes: [ModelAttribute] = [],
          fields: ModelFields = [:]) {
         self.name = name
         self.pluralName = pluralName
+        self.authRules = authRules
         self.attributes = attributes
         self.fields = fields
 
