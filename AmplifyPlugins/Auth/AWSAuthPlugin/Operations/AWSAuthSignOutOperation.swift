@@ -22,7 +22,7 @@ AuthSignOutOperation {
 
         self.authenticationProvider = authenticationProvider
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.webUISignIn,
+                   eventName: HubPayload.EventName.Auth.signOut,
                    request: request,
                    listener: listener)
     }
