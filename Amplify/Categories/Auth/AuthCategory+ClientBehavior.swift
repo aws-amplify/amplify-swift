@@ -132,11 +132,11 @@ extension AuthCategory: AuthCategoryBehavior {
                                  listener: listener)
     }
 
-    public func resendConfirmationCode(for attributeType: AuthUserAttributeKey,
+    public func resendConfirmationCode(for attributeKey: AuthUserAttributeKey,
                                        options: AuthAttributeResendConfirmationCodeOperation.Request.Options? = nil,
                                        listener: AuthAttributeResendConfirmationCodeOperation.EventListener?)
         -> AuthAttributeResendConfirmationCodeOperation {
-            return plugin.resendConfirmationCode(for: attributeType,
+            return plugin.resendConfirmationCode(for: attributeKey,
                                                  options: options,
                                                  listener: listener)
 

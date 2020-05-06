@@ -102,7 +102,7 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
 
     func changePassword(request: AuthChangePasswordRequest,
                         completionHandler: @escaping ChangePasswordCompletion) {
-        awsMobileClient.changePassword(currentPassword: request.currentPassword,
+        awsMobileClient.changePassword(currentPassword: request.oldPassword,
                                        proposedPassword: request.newPassword) { error in
                                         guard let error = error else {
                                             completionHandler(.success(()))
@@ -139,8 +139,7 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
                 if let attribute = item.attributeName {
                     let authCodeDeliveryDetails = AuthCodeDeliveryDetails(destination: item.toDeliveryDestination(),
                                                                           attributeName: attribute)
-                    let nextStep = AuthNextUpdateAttributeStep(.confirmAttributeWithCode,
-                                                               codeDeliveryDetails: authCodeDeliveryDetails)
+                    let nextStep = AuthUpdateAttributeStep.confirmAttributeWithCode(authCodeDeliveryDetails, nil)
                     let updateAttributeResult = AuthUpdateAttributeResult(isUpdated: false,
                                                                           nextStep: nextStep)
                     finalResult[attribute.toUserAttributeKey()] = updateAttributeResult
@@ -148,12 +147,10 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
             }
             // Check if all items are added to the dictionary
             for item in attributeList where finalResult[item.key] == nil {
-                let doneStep = AuthNextUpdateAttributeStep(.done)
-                let updateAttributeResult = AuthUpdateAttributeResult(isUpdated: true, nextStep: doneStep)
+                let updateAttributeResult = AuthUpdateAttributeResult(isUpdated: true, nextStep: .done)
                 finalResult[item.key] = updateAttributeResult
             }
             completionHandler(.success(finalResult))
-
         }
     }
 }

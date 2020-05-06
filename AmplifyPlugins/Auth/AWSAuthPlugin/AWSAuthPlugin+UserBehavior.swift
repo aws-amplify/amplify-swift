@@ -47,15 +47,15 @@ extension AWSAuthPlugin {
             return operation
     }
 
-    public func resendConfirmationCode(for attributeType: AuthUserAttributeKey,
+    public func resendConfirmationCode(for attributeKey: AuthUserAttributeKey,
                                        options: AuthAttributeResendConfirmationCodeOperation.Request.Options? = nil,
                                        listener: AuthAttributeResendConfirmationCodeOperation.EventListener?)
         -> AuthAttributeResendConfirmationCodeOperation {
             let options = options ?? AuthAttributeResendConfirmationCodeRequest.Options()
-            let request = AuthAttributeResendConfirmationCodeRequest(attributeKey: attributeType, options: options)
+            let request = AuthAttributeResendConfirmationCodeRequest(attributeKey: attributeKey, options: options)
             let operation = AWSAuthAttributeResendConfirmationCodeOperation(request,
-                                                                userService: userService,
-                                                                listener: listener)
+                                                                            userService: userService,
+                                                                            listener: listener)
             queue.addOperation(operation)
             return operation
     }
@@ -80,6 +80,14 @@ extension AWSAuthPlugin {
                        to newPassword: String,
                        options: AuthChangePasswordOperation.Request.Options? = nil,
                        listener: AuthChangePasswordOperation.EventListener?) -> AuthChangePasswordOperation {
-        fatalError()
+        let options = options ?? AuthChangePasswordRequest.Options()
+        let request = AuthChangePasswordRequest(oldPassword: oldPassword,
+                                                newPassword: newPassword,
+                                                options: options)
+        let operation = AWSAuthChangePasswordOperation(request,
+                                                       userService: userService,
+                                                       listener: listener)
+        queue.addOperation(operation)
+        return operation
     }
 }

@@ -7,6 +7,8 @@
 
 import Foundation
 
+public typealias AdditionalInfo = [String: String]
+
 public struct AuthCodeDeliveryDetails {
 
     /// Destination to which the code was delivered.
@@ -17,7 +19,7 @@ public struct AuthCodeDeliveryDetails {
     public let attributeName: String?
 
     public init(destination: DeliveryDestination,
-                 attributeName: String? = nil) {
+                attributeName: String? = nil) {
         self.destination = destination
         self.attributeName = attributeName
     }

@@ -37,7 +37,7 @@ struct AuthPluginErrorConstants {
         "Present the signIn UI again for the user to sign in.")
 
     static let userInvalidError: AuthPluginErrorString = (
-        "Couldnot validate the user",
+        "Could not validate the user",
         "Get the current user Auth.getCurrentUser() and make the request")
 }
 

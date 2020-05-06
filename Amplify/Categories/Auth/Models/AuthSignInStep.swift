@@ -5,8 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public typealias AdditionalInfo = [String: String]
-
 /// Auth SignIn flow steps
 ///
 ///

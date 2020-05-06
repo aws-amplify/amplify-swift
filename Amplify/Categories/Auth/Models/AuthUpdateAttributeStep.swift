@@ -7,7 +7,7 @@
 
 public enum AuthUpdateAttributeStep {
 
-    case confirmAttributeWithCode
+    case confirmAttributeWithCode(AuthCodeDeliveryDetails, AdditionalInfo?)
 
     case done
 }

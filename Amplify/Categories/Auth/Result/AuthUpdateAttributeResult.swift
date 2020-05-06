@@ -11,12 +11,10 @@ public struct AuthUpdateAttributeResult {
 
     public let isUpdated: Bool
 
-    public let nextStep: AuthNextUpdateAttributeStep
+    public let nextStep: AuthUpdateAttributeStep
 
-    public init(isUpdated: Bool,
-                nextStep: AuthNextUpdateAttributeStep) {
+    public init(isUpdated: Bool, nextStep: AuthUpdateAttributeStep) {
         self.isUpdated = isUpdated
         self.nextStep = nextStep
     }
-
 }

@@ -142,7 +142,7 @@ public protocol AuthCategoryBehavior {
                 options: AuthUpdateUserAttributesOperation.Request.Options?,
                 listener: AuthUpdateUserAttributesOperation.EventListener?) -> AuthUpdateUserAttributesOperation
 
-    func resendConfirmationCode(for attributeType: AuthUserAttributeKey,
+    func resendConfirmationCode(for attributeKey: AuthUserAttributeKey,
                                 options: AuthAttributeResendConfirmationCodeOperation.Request.Options?,
                                 listener: AuthAttributeResendConfirmationCodeOperation.EventListener?) -> AuthAttributeResendConfirmationCodeOperation
 
