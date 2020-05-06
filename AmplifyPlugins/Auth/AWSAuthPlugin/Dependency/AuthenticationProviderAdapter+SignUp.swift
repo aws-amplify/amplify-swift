@@ -36,15 +36,17 @@ extension AuthenticationProviderAdapter {
 
                                 guard let result = result else {
                                     // This should not happen, return an unknown error.
-                                    let error = AmplifyAuthError.unknown("Could not read result from signUp operation")
+                                    let error = AmplifyAuthError.unknown("""
+                                    Could not read result from signUp operation. The operation did not return any error
+                                    or result from the api.
+                                    """)
                                     completionHandler(.failure(error))
                                     return
                                 }
 
                                 let codeDeliveryDetails = result.codeDeliveryDetails?.toAuthCodeDeliveryDetails()
-                                let signUpStep: AuthSignUpStep = (result.signUpConfirmationState == .confirmed) ?
-                                    .done : .confirmUser
-                                let nextStep = AuthNextSignUpStep(signUpStep, codeDeliveryDetails: codeDeliveryDetails)
+                                let nextStep: AuthSignUpStep = (result.signUpConfirmationState == .confirmed) ?
+                                    .done : .confirmUser(codeDeliveryDetails, nil)
                                 let signUpResult = AuthSignUpResult(nextStep)
                                 completionHandler(.success(signUpResult))
         }
@@ -73,8 +75,7 @@ extension AuthenticationProviderAdapter {
                                             completionHandler(.failure(error))
                                             return
                                         }
-                                        let nextStep = AuthNextSignUpStep(.done)
-                                        let confirmSignUpResult = AuthSignUpResult(nextStep)
+                                        let confirmSignUpResult = AuthSignUpResult(.done)
                                         completionHandler(.success(confirmSignUpResult))
         }
     }

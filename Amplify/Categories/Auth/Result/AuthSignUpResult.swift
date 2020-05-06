@@ -11,12 +11,17 @@ public struct AuthSignUpResult {
 
     /// Indicate whether the signUp flow is completed.
     public var isSignupComplete: Bool {
-        return nextStep.signUpStep == .done
+        switch nextStep {
+        case .done:
+            return true
+        default:
+            return false
+        }
     }
 
-    public let nextStep: AuthNextSignUpStep
+    public let nextStep: AuthSignUpStep
 
-    public init(_ nextStep: AuthNextSignUpStep) {
+    public init(_ nextStep: AuthSignUpStep) {
         self.nextStep = nextStep
     }
 }

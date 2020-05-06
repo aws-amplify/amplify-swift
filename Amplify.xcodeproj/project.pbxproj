@@ -198,7 +198,6 @@
 		B4926F6E24250219007B769C /* AuthResetPasswordOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4926F6D24250219007B769C /* AuthResetPasswordOperation.swift */; };
 		B493E69124524D3200D9E521 /* DeliveryDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E69024524D3200D9E521 /* DeliveryDestination.swift */; };
 		B493E69324524E8C00D9E521 /* AuthUserAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E69224524E8C00D9E521 /* AuthUserAttribute.swift */; };
-		B493E69C245394B700D9E521 /* AuthNextSignUpStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E69B245394B700D9E521 /* AuthNextSignUpStep.swift */; };
 		B493E69E245394E200D9E521 /* AuthSignUpStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E69D245394E200D9E521 /* AuthSignUpStep.swift */; };
 		B493E6A22453A29C00D9E521 /* AuthSignInStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E6A12453A29C00D9E521 /* AuthSignInStep.swift */; };
 		B493E6A42453A32C00D9E521 /* AuthSocialWebUISignInOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E6A32453A32C00D9E521 /* AuthSocialWebUISignInOperation.swift */; };
@@ -889,7 +888,6 @@
 		B4926F6D24250219007B769C /* AuthResetPasswordOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResetPasswordOperation.swift; sourceTree = "<group>"; };
 		B493E69024524D3200D9E521 /* DeliveryDestination.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeliveryDestination.swift; sourceTree = "<group>"; };
 		B493E69224524E8C00D9E521 /* AuthUserAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUserAttribute.swift; sourceTree = "<group>"; };
-		B493E69B245394B700D9E521 /* AuthNextSignUpStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthNextSignUpStep.swift; sourceTree = "<group>"; };
 		B493E69D245394E200D9E521 /* AuthSignUpStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignUpStep.swift; sourceTree = "<group>"; };
 		B493E6A12453A29C00D9E521 /* AuthSignInStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignInStep.swift; sourceTree = "<group>"; };
 		B493E6A32453A32C00D9E521 /* AuthSocialWebUISignInOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSocialWebUISignInOperation.swift; sourceTree = "<group>"; };
@@ -1879,8 +1877,13 @@
 			isa = PBXGroup;
 			children = (
 				B43CD8512411463000BF5A60 /* AuthCodeDeliveryDetails.swift */,
-				B493E69B245394B700D9E521 /* AuthNextSignUpStep.swift */,
 				B4507418241166580098F02D /* AuthSession.swift */,
+				B43CD857241147F900BF5A60 /* AmplifyUser.swift */,
+				B4507418241166580098F02D /* AmplifyAuthInformation.swift */,
+				B450741A241166AE0098F02D /* AuthUserState.swift */,
+				B4C498F92415D24B00067992 /* AuthSocialProvider.swift */,
+				B493E69224524E8C00D9E521 /* AuthUserAttribute.swift */,
+				B493E69D245394E200D9E521 /* AuthSignUpStep.swift */,
 				B493E6A12453A29C00D9E521 /* AuthSignInStep.swift */,
 				B493E69D245394E200D9E521 /* AuthSignUpStep.swift */,
 				B4C498F92415D24B00067992 /* AuthSocialProvider.swift */,
@@ -4117,7 +4120,6 @@
 				950A26DC23D15D7E00D92B19 /* PredictionsTextToSpeechOperation.swift in Sources */,
 				FAC235A3227A5ED000424678 /* HubChannel.swift in Sources */,
 				FAA2E8CE23A02A8100E420EA /* PredictionsCategory+Resettable.swift in Sources */,
-				B493E69C245394B700D9E521 /* AuthNextSignUpStep.swift in Sources */,
 				FAC23516227A053D00424678 /* StorageCategoryBehavior.swift in Sources */,
 				FA4E730E232829F1003B8EEB /* Resettable.swift in Sources */,
 				FAC23518227A053D00424678 /* StorageCategoryPlugin.swift in Sources */,
