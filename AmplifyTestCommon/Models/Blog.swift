@@ -14,14 +14,17 @@ public struct Blog: Model {
     public var content: String
     public var createdAt: Date
     public var owner: String?
+    public var authorNotes: String?
 
     public init(id: String = UUID().uuidString,
                 content: String,
                 createdAt: Date,
-                owner: String?) {
+                owner: String?,
+                authorNotes: String?) {
         self.id = id
         self.content = content
         self.createdAt = createdAt
         self.owner = owner
+        self.authorNotes = authorNotes
     }
 }

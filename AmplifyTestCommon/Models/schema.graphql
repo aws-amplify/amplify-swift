@@ -19,10 +19,14 @@ type Comment @model {
 type Blog
     @model
     @auth(rules: [
-        { allow: owner, ownerField: "owner", "operations: [create, update, delete] },
+        { allow: owner, ownerField: "owner", "operations: [create, read] },
         { allow: groups, groups: ["Admin"] }
     ]) {
     id: ID!
     content: String!
     createdAt: AWSDateTime!
+    owner: String
+    authorsNotes: String @auth( rules: [
+        { allow: owner, ownerField: "owner", operations: [update] }
+    ])
 }
