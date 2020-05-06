@@ -9,8 +9,8 @@ import Amplify
 
 extension AWSAuthPlugin {
 
-    public func fetchAttributes(options: AuthFetchUserAttributeOperation.Request.Options? = nil,
-                                listener: AuthFetchUserAttributeOperation.EventListener?)
+    public func fetchUserAttributes(options: AuthFetchUserAttributeOperation.Request.Options? = nil,
+                                    listener: AuthFetchUserAttributeOperation.EventListener?)
         -> AuthFetchUserAttributeOperation {
 
             let options = options ?? AuthFetchUserAttributesRequest.Options()
