@@ -20,6 +20,7 @@ extension GraphQLRequest {
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: id))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: AuthRuleDecorator())
         let document = documentBuilder.build()
 
         return GraphQLRequest<MutationSyncResult?>(document: document.stringValue,
@@ -50,6 +51,7 @@ extension GraphQLRequest {
             documentBuilder.add(decorator: FilterDecorator(filter: filter))
         }
         documentBuilder.add(decorator: ConflictResolutionDecorator(version: version))
+        documentBuilder.add(decorator: AuthRuleDecorator())
         let document = documentBuilder.build()
 
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
@@ -59,11 +61,13 @@ extension GraphQLRequest {
     }
 
     public static func subscription(to modelType: Model.Type,
-                                    subscriptionType: GraphQLSubscriptionType) -> GraphQLRequest<MutationSyncResult> {
+                                    subscriptionType: GraphQLSubscriptionType,
+                                    ownerId: String? = nil) -> GraphQLRequest<MutationSyncResult> {
 
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: subscriptionType))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: AuthRuleDecorator(subscriptionType: subscriptionType, ownerId: ownerId))
         let document = documentBuilder.build()
 
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
@@ -83,6 +87,7 @@ extension GraphQLRequest {
         }
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
         documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync))
+        documentBuilder.add(decorator: AuthRuleDecorator())
         let document = documentBuilder.build()
 
         return GraphQLRequest<SyncQueryResult>(document: document.stringValue,
@@ -105,6 +110,7 @@ extension GraphQLRequest {
             documentBuilder.add(decorator: FilterDecorator(filter: filter))
         }
         documentBuilder.add(decorator: ConflictResolutionDecorator(version: version))
+        documentBuilder.add(decorator: AuthRuleDecorator())
         let document = documentBuilder.build()
 
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
