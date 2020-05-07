@@ -1847,11 +1847,11 @@
 				B452F1D22450EEAE0069F7FA /* AuthResendSignUpCodeOperation.swift */,
 				B4926F6D24250219007B769C /* AuthResetPasswordOperation.swift */,
 				B450741024115C140098F02D /* AuthSignInOperation.swift */,
-				B473B547245E097600C45C72 /* AuthSignOutOperation.swift */,
-				B4A19DAC24101F7100DE2E55 /* AuthSignUpOperation.swift */,
 				B493E6A32453A32C00D9E521 /* AuthSocialWebUISignInOperation.swift */,
 				B4FA76042416E0F0006F59CE /* AuthStateOperation.swift */,
 				B4C499012415E0CA00067992 /* AuthWebUISignInOperation.swift */,
+				B473B547245E097600C45C72 /* AuthSignOutOperation.swift */,
+				B4A19DAC24101F7100DE2E55 /* AuthSignUpOperation.swift */,
 				B4B5CC922457B7F90019C783 /* UserOperations */,
 			);
 			path = Operation;
@@ -1896,6 +1896,7 @@
 				B43CD8532411469D00BF5A60 /* AuthConfirmSignUpRequest.swift */,
 				B4B5CC8A2457B32D0019C783 /* AuthConfirmUserAttributeRequest.swift */,
 				B4B5CC802457B0690019C783 /* AuthFetchUserAttributesRequest.swift */,
+				B4926F692425013B007B769C /* AuthForgotPasswordRequest.swift */,
 				B452F1D42450EEEB0069F7FA /* AuthResendSignUpCodeRequest.swift */,
 				B4926F692425013B007B769C /* AuthResetPasswordRequest.swift */,
 				B450741224115C260098F02D /* AuthSignInRequest.swift */,
