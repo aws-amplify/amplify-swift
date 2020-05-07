@@ -23,6 +23,9 @@ final public class AWSAuthPlugin: AuthCategoryPlugin {
     /// Operations related to the authorization provider
     var authorizationProvider: AuthorizationProviderBehavior!
 
+    /// Operations related to the user operations provider
+    var userService: AuthUserServiceBehavior!
+
     /// The unique key of the plugin within the auth category.
     public var key: PluginKey {
         return "awsCognitoAuthPlugin"

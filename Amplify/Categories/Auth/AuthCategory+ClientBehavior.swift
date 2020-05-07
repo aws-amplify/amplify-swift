@@ -103,14 +103,4 @@ extension AuthCategory: AuthCategoryBehavior {
                                             options: options,
                                             listener: listener)
     }
-
-    public func changePassword(currentPassword: String,
-                               newPassword: String,
-                               options: AuthChangePasswordOperation.Request.Options? = nil,
-                               listener: AuthChangePasswordOperation.EventListener?) -> AuthChangePasswordOperation {
-        return plugin.changePassword(currentPassword: currentPassword,
-                                     newPassword: newPassword,
-                                     options: options,
-                                     listener: listener)
-    }
 }

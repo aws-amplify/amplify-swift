@@ -5,11 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
+import Amplify
 
-// TOOD: Rename with a common pattern
+public struct AWSAuthUser: AuthUser {
 
-public struct AmplifyUser {
+    public var username: String
 
-    let userName: String
+    public var userId: String
+
 }

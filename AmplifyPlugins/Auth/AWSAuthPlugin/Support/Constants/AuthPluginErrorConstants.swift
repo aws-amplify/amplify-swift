@@ -35,6 +35,10 @@ struct AuthPluginErrorConstants {
     static let hostedUIUserCancelledError: AuthPluginErrorString = (
         "User cancelled the signIn flow and could not be completed.",
         "Present the signIn UI again for the user to sign in.")
+
+    static let userInvalidError: AuthPluginErrorString = (
+        "Could not validate the user",
+        "Get the current user Auth.getCurrentUser() and make the request")
 }
 
 // Field validation errors

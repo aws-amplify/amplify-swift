@@ -30,4 +30,6 @@ protocol AuthenticationProviderBehavior {
 
     func signOut(request: AuthSignOutRequest,
                  completionHandler: @escaping (Result<Void, AmplifyAuthError>) -> Void)
+
+    func signInUsername() -> Result<String, AmplifyAuthError>
 }
