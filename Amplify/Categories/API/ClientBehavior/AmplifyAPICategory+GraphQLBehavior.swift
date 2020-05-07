@@ -22,9 +22,10 @@ extension AmplifyAPICategory: APICategoryGraphQLBehavior {
     }
 
     public func mutate<M: Model>(of model: M,
+                                 where condition: QueryPredicate? = nil,
                                  type: GraphQLMutationType,
                                  listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M> {
-        plugin.mutate(of: model, type: type, listener: listener)
+        plugin.mutate(of: model, where: condition, type: type, listener: listener)
     }
 
     public func subscribe<M: Model>(from modelType: M.Type,

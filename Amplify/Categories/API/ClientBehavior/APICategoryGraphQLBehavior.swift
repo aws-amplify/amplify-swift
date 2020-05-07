@@ -39,10 +39,12 @@ public protocol APICategoryGraphQLBehavior: class {
     ///
     /// - Parameters:
     ///   - model: The instance of the `Model`.
+    ///   - condition: The condition to apply on the instance of `Model`.
     ///   - type: The type of mutation to apply on the instance of `Model`.
     ///   - listener: The event listener for the operation
     /// - Returns: The AmplifyOperation being enqueued.
     func mutate<M: Model>(of model: M,
+                          where condition: QueryPredicate?,
                           type: GraphQLMutationType,
                           listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M>
 

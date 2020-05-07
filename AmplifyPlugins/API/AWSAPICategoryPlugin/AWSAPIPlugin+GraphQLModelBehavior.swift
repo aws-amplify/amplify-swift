@@ -24,9 +24,10 @@ public extension AWSAPIPlugin {
     }
 
     func mutate<M: Model>(of model: M,
+                          where condition: QueryPredicate?,
                           type: GraphQLMutationType,
                           listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M> {
-        let request = GraphQLRequest<M>.mutation(of: model, type: type)
+        let request = GraphQLRequest<M>.mutation(of: model, where: condition, type: type)
         return mutate(request: request, listener: listener)
     }
 

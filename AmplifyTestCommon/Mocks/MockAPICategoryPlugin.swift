@@ -10,6 +10,7 @@ import Combine
 import Foundation
 
 class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
+
     var responders = [ResponderKeys: Any]()
 
     // MARK: - Properties
@@ -43,6 +44,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     }
 
     func mutate<M: Model>(of model: M,
+                          where condition: QueryPredicate? = nil,
                           type: GraphQLMutationType,
                           listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M> {
         notify("mutate(of:\(model.modelName)-\(model.id),type:\(type),listener:)")
