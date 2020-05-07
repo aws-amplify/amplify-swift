@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol AuthChangePasswordOperation: AmplifyOperation<AuthChangePasswordRequest,
+public protocol AuthConfirmUserAttributeOperation: AmplifyOperation<AuthConfirmUserAttributeRequest,
     Void,
     Void,
 AmplifyAuthError> {}
@@ -15,5 +15,5 @@ AmplifyAuthError> {}
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let changePassword = "Auth.changePassword"
+    static let confirmUserAttributes = "Auth.confirmUserAttributes"
 }

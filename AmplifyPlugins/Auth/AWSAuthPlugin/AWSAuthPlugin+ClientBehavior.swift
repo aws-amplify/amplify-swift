@@ -134,4 +134,7 @@ extension AWSAuthPlugin {
         fatalError()
     }
 
+    public func getCurrentUser() -> AuthUser? {
+        return nil
+    }
 }

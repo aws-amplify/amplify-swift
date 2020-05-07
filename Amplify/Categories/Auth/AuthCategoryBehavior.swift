@@ -11,7 +11,7 @@ import UIKit
 public typealias AuthUIPresentationAnchor = UIWindow
 
 /// Behavior of the Auth category that clients will use
-public protocol AuthCategoryBehavior {
+public protocol AuthCategoryBehavior: AuthCategoryUserBehavior {
 
     /// SignUp a user with the authentication provider.
     ///
@@ -125,8 +125,4 @@ public protocol AuthCategoryBehavior {
                                listener: AuthConfirmForgotPasswordOperation.EventListener?) ->
     AuthConfirmForgotPasswordOperation
 
-    func changePassword(currentPassword: String,
-                        newPassword: String,
-                        options: AuthChangePasswordOperation.Request.Options?,
-                        listener: AuthChangePasswordOperation.EventListener?) -> AuthChangePasswordOperation
 }

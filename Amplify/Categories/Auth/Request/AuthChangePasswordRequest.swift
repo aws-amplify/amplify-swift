@@ -9,16 +9,16 @@ import Foundation
 
 public struct AuthChangePasswordRequest: AmplifyOperationRequest {
 
-    public let currentPassword: String
+    public let oldPassword: String
 
     public let newPassword: String
 
     public var options: Options
 
-    public init(currentPassword: String,
+    public init(oldPassword: String,
                 newPassword: String,
                 options: Options) {
-        self.currentPassword = currentPassword
+        self.oldPassword = oldPassword
         self.newPassword = newPassword
         self.options = options
     }
