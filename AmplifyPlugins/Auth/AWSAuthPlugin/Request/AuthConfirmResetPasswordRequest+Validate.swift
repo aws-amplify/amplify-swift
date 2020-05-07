@@ -18,9 +18,9 @@ extension AuthConfirmResetPasswordRequest {
         }
         guard !newPassword.isEmpty else {
             return AmplifyAuthError.validation(
-                AuthPluginErrorConstants.confirmResetPasswordError.field,
-                AuthPluginErrorConstants.confirmResetPasswordError.errorDescription,
-                AuthPluginErrorConstants.confirmResetPasswordError.recoverySuggestion)
+                AuthPluginErrorConstants.confirmResetPasswordNewPasswordError.field,
+                AuthPluginErrorConstants.confirmResetPasswordNewPasswordError.errorDescription,
+                AuthPluginErrorConstants.confirmResetPasswordNewPasswordError.recoverySuggestion)
         }
         guard !confirmationCode.isEmpty else {
             return AmplifyAuthError.validation(

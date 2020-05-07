@@ -112,7 +112,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior {
 
     func fetchAuthState(listener: AuthStateOperation.EventListener?) -> AuthStateOperation
 
-    /// Initiate a reset password for the user
+    /// Initiate a reset password flow for the user
     ///
     /// - Parameters:
     ///   - username: username whose password need to reset

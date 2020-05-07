@@ -134,7 +134,7 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
                                        proposedPassword: proposedPassword,
                                        completionHandler: completionHandler)
     }
-    
+
     func forgotPassword(username: String,
                         clientMetaData: [String: String],
                         completionHandler: @escaping ((ForgotPasswordResult?, Error?) -> Void)) {

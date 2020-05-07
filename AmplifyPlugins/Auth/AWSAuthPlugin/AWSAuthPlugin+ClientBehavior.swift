@@ -124,11 +124,11 @@ extension AWSAuthPlugin {
         return operation
     }
 
-    public  func confirmResetPassword(for username: String,
-                                      with newPassword: String,
-                                      confirmationCode: String,
-                                      options: AuthConfirmResetPasswordOperation.Request.Options? = nil,
-                                      listener: AuthConfirmResetPasswordOperation.EventListener?)
+    public func confirmResetPassword(for username: String,
+                                     with newPassword: String,
+                                     confirmationCode: String,
+                                     options: AuthConfirmResetPasswordOperation.Request.Options? = nil,
+                                     listener: AuthConfirmResetPasswordOperation.EventListener?)
         -> AuthConfirmResetPasswordOperation {
             let options = options ?? AuthConfirmResetPasswordRequest.Options()
             let request = AuthConfirmResetPasswordRequest(username: username,

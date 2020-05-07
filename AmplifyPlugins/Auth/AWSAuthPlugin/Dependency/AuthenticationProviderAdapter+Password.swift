@@ -28,6 +28,9 @@ extension AuthenticationProviderAdapter {
                     completionHandler(.failure(error))
                     return
                 }
+
+                // If there is no codeDeliveryDetails, there is no next step. On the other hand if there is
+                // codeDeliveryDetails, it means that the next step is to confirmResetPassword.
                 guard let codeDeliveryDetails = result.codeDeliveryDetails?.toAuthCodeDeliveryDetails() else {
                     let authResetPasswordResult = AuthResetPasswordResult(isPasswordReset: true, nextStep: .done)
                     completionHandler(.success(authResetPasswordResult))
@@ -35,8 +38,7 @@ extension AuthenticationProviderAdapter {
                 }
 
                 let nextStep = AuthResetPasswordStep.confirmResetPasswordWithCode(codeDeliveryDetails, nil)
-                let authResetPasswordResult = AuthResetPasswordResult(isPasswordReset: false,
-                                                                      nextStep: nextStep)
+                let authResetPasswordResult = AuthResetPasswordResult(isPasswordReset: false, nextStep: nextStep)
                 completionHandler(.success(authResetPasswordResult))
         }
     }

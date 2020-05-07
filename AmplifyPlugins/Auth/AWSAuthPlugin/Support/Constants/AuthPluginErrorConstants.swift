@@ -85,7 +85,7 @@ extension AuthPluginErrorConstants {
         "Make sure that a valid username is passed for confirmResetPassword"
     )
 
-    static let confirmResetPasswordError: AuthPluginValidationErrorString = (
+    static let confirmResetPasswordNewPasswordError: AuthPluginValidationErrorString = (
         "newPassword",
         "newPassword is required to confirmResetPassword",
         "Make sure that a valid newPassword is passed for confirmResetPassword"
