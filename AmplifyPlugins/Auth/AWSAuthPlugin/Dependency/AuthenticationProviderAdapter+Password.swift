@@ -29,11 +29,13 @@ extension AuthenticationProviderAdapter {
                     return
                 }
 
-                // If there is no codeDeliveryDetails, there is no next step. On the other hand if there is
-                // codeDeliveryDetails, it means that the next step is to confirmResetPassword.
+                // Expecting the api to return a codeDeliveryDetail always. If we couldnot find the delivery
+                // details return an unknown error
                 guard let codeDeliveryDetails = result.codeDeliveryDetails?.toAuthCodeDeliveryDetails() else {
-                    let authResetPasswordResult = AuthResetPasswordResult(isPasswordReset: true, nextStep: .done)
-                    completionHandler(.success(authResetPasswordResult))
+                    let error = AmplifyAuthError.unknown("""
+                    Could not read delivery details for the confirmation code from resetPassword result.
+                    """)
+                    completionHandler(.failure(error))
                     return
                 }
 
