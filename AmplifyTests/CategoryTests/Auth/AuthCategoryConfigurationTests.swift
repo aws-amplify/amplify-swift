@@ -165,9 +165,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        _ = Amplify.Auth.changePassword(currentPassword: "current",
-                                        newPassword: "new",
-                                        listener: nil)
+        _ = Amplify.Auth.update(oldPassword: "current", to: "new", listener: nil)
         waitForExpectations(timeout: 1.0)
     }
 
@@ -209,10 +207,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         _ = try Amplify.Auth.getPlugin(for: "MockSecondAuthCategoryPlugin")
-            .changePassword(currentPassword: "current",
-                            newPassword: "new",
-                            options: nil,
-                            listener: nil)
+            .update(oldPassword: "current", to: "new", options: nil, listener: nil)
         waitForExpectations(timeout: 1.0)
     }
 
@@ -243,9 +238,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
 
         let exception: BadInstructionException? = catchBadInstruction {
-            _ = Amplify.Auth.changePassword(currentPassword: "current",
-                                            newPassword: "new",
-                                            listener: nil)
+            _ = Amplify.Auth.update(oldPassword: "current", to: "new", listener: nil)
         }
         XCTAssertNotNil(exception)
     }
@@ -303,9 +296,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
         let exception: BadInstructionException? = catchBadInstruction {
-            _ = Amplify.Auth.changePassword(currentPassword: "current",
-                                            newPassword: "new",
-                                            listener: nil)
+            _ = Amplify.Auth.update(oldPassword: "current", to: "new", listener: nil)
         }
         XCTAssertNotNil(exception)
     }
@@ -362,9 +353,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
         XCTAssertNoThrow(try Amplify.Auth.configure(using: config))
 
         let exception: BadInstructionException? = catchBadInstruction {
-            _ = Amplify.Auth.changePassword(currentPassword: "current",
-                                            newPassword: "new",
-                                            listener: nil)
+            _ = Amplify.Auth.update(oldPassword: "current", to: "new", listener: nil)
         }
         XCTAssertNil(exception)
     }
