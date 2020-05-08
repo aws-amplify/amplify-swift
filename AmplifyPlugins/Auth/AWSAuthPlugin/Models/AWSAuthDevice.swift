@@ -26,4 +26,18 @@ public struct AWSAuthDevice: AuthDevice {
 
     /// The date this device was last updated.
     public let lastModifiedDate: Date?
+
+    public init(id: String,
+                name: String,
+                attributes: [String: String]?,
+                createdDate: Date?,
+                lastAuthenticatedDate: Date?,
+                lastModifiedDate: Date?) {
+        self.id = id
+        self.name = name
+        self.attributes = attributes
+        self.createdDate = createdDate
+        self.lastAuthenticatedDate = lastAuthenticatedDate
+        self.lastModifiedDate = lastModifiedDate
+    }
 }

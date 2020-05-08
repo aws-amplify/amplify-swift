@@ -173,7 +173,7 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
     func getCurrentUserState() -> UserState {
         return awsMobileClient.currentUserState
     }
-    
+
     func listDevices(completionHandler: @escaping ((ListDevicesResult?, Error?) -> Void)) {
         awsMobileClient.deviceOperations.list(completionHandler: completionHandler)
     }
