@@ -28,14 +28,26 @@ extension AWSAuthPlugin {
                               confirmationCode: String,
                               options: AuthConfirmSignUpOperation.Request.Options?,
                               listener: AuthConfirmSignUpOperation.EventListener?) -> AuthConfirmSignUpOperation {
-        fatalError()
+        let options = options ?? AuthConfirmSignUpRequest.Options()
+        let request = AuthConfirmSignUpRequest(username: username, code: confirmationCode, options: options)
+        let operation = AWSAuthConfirmSignUpOperation(request,
+                                                      authenticationProvider: authenticationProvider,
+                                                      listener: listener)
+        queue.addOperation(operation)
+        return operation
     }
 
     public func resendSignUpCode(username: String,
                                  options: AuthResendSignUpCodeOperation.Request.Options? = nil,
                                  listener: AuthResendSignUpCodeOperation.EventListener?)
         -> AuthResendSignUpCodeOperation {
-            fatalError()
+            let options = options ?? AuthResendSignUpCodeRequest.Options()
+            let request = AuthResendSignUpCodeRequest(username: username, options: options)
+            let operation = AWSAuthResendSignUpCodeOperation(request,
+                                                             authenticationProvider: authenticationProvider,
+                                                             listener: listener)
+            queue.addOperation(operation)
+            return operation
     }
 
     public func signIn(username: String?,
@@ -148,13 +160,6 @@ extension AWSAuthPlugin {
                                                                  listener: listener)
             queue.addOperation(operation)
             return operation
-    }
-
-    public func changePassword(currentPassword: String,
-                               newPassword: String,
-                               options: AuthChangePasswordOperation.Request.Options?,
-                               listener: AuthChangePasswordOperation.EventListener?) -> AuthChangePasswordOperation {
-        fatalError()
     }
 
     public func getCurrentUser() -> AuthUser? {
