@@ -24,7 +24,7 @@ extension GraphQLRequest {
         let document = documentBuilder.build()
 
         return GraphQLRequest<MutationSyncResult?>(document: document.stringValue,
-                                                   variables: document.variables,
+                                                   variables: document.variables.isEmpty ? nil : document.variables,
                                                    responseType: MutationSyncResult?.self,
                                                    decodePath: document.name)
     }
@@ -55,7 +55,7 @@ extension GraphQLRequest {
         let document = documentBuilder.build()
 
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
-                                                  variables: document.variables,
+                                                  variables: document.variables.isEmpty ? nil : document.variables,
                                                   responseType: MutationSyncResult.self,
                                                   decodePath: document.name)
     }
@@ -71,6 +71,7 @@ extension GraphQLRequest {
         let document = documentBuilder.build()
 
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
+                                                  variables: document.variables.isEmpty ? nil : document.variables,
                                                   responseType: MutationSyncResult.self,
                                                   decodePath: document.name)
     }
@@ -91,7 +92,7 @@ extension GraphQLRequest {
         let document = documentBuilder.build()
 
         return GraphQLRequest<SyncQueryResult>(document: document.stringValue,
-                                               variables: document.variables,
+                                               variables: document.variables.isEmpty ? nil : document.variables,
                                                responseType: SyncQueryResult.self,
                                                decodePath: document.name)
     }
@@ -114,7 +115,7 @@ extension GraphQLRequest {
         let document = documentBuilder.build()
 
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
-                                                  variables: document.variables,
+                                                  variables: document.variables.isEmpty ? nil : document.variables,
                                                   responseType: MutationSyncResult.self,
                                                   decodePath: document.name)
     }

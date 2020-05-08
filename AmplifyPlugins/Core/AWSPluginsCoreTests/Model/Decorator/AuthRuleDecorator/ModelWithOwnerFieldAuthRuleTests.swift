@@ -80,6 +80,7 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "createModelWithOwnerField")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertTrue(document.variables.isEmpty)
     }
 
     // Since the owner field already exists on the model, ensure that it is not added again
@@ -101,6 +102,7 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "deleteModelWithOwnerField")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertTrue(document.variables.isEmpty)
     }
 
     // Since the owner field already exists on the model, ensure that it is not added again
@@ -122,6 +124,7 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "updateModelWithOwnerField")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertTrue(document.variables.isEmpty)
     }
 
     // Since the owner field already exists on the model, ensure that it is not added again
@@ -143,6 +146,7 @@ class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "getModelWithOwnerField")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertTrue(document.variables.isEmpty)
     }
 
     // Since the owner field already exists on the model, ensure that it is not added again

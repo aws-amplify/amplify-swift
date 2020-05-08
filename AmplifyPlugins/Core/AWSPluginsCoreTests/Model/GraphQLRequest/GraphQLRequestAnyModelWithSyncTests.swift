@@ -22,12 +22,10 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
     }
 
     func testQueryGraphQLRequest() throws {
-        let originalPost = Post(title: "title", content: "content", createdAt: Date())
-        let anyPost = try originalPost.eraseToAnyModel()
-
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: anyPost.modelName, operationType: .query)
+        let post = Post(title: "title", content: "content", createdAt: Date())
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: anyPost.id))
+        documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
@@ -48,21 +46,24 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         }
         """
 
-        let request = GraphQLRequest<MutationSyncResult?>.query(modelName: anyPost.modelName, byId: anyPost.id)
+        let request = GraphQLRequest<MutationSyncResult?>.query(modelName: post.modelName, byId: post.id)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult?.self)
-        XCTAssert(request.variables != nil)
+        guard let variables = request.variables else {
+            XCTFail("The request doesn't contain variables")
+            return
+        }
+        XCTAssertEqual(variables["id"] as? String, post.id)
     }
 
     func testCreateMutationGraphQLRequest() throws {
-        let originalPost = Post(title: "title", content: "content", createdAt: Date())
-        let anyPost = try originalPost.eraseToAnyModel()
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: anyPost.modelName,
-                                                                    operationType: .mutation)
+        let post = Post(title: "title", content: "content", createdAt: Date())
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName,
+                                                               operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
-        documentBuilder.add(decorator: ModelDecorator(model: anyPost))
+        documentBuilder.add(decorator: ModelDecorator(model: post))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
@@ -82,21 +83,29 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.createMutation(of: anyPost)
+        let request = GraphQLRequest<MutationSyncResult>.createMutation(of: post)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
-        XCTAssert(request.variables != nil)
+        guard let variables = request.variables else {
+            XCTFail("The request doesn't contain variables")
+            return
+        }
+        guard let input = variables["input"] as? [String: Any] else {
+            XCTFail("The document variables property doesn't contain a valid input")
+            return
+        }
+        XCTAssert(input["title"] as? String == post.title)
+        XCTAssert(input["content"] as? String == post.content)
     }
 
     func testUpdateMutationGraphQLRequest() throws {
-        let originalPost = Post(title: "title", content: "content", createdAt: Date())
-        let anyPost = try originalPost.eraseToAnyModel()
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: anyPost.modelName,
-                                                                    operationType: .mutation)
+        let post = Post(title: "title", content: "content", createdAt: Date())
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName,
+                                                               operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
-        documentBuilder.add(decorator: ModelDecorator(model: anyPost))
+        documentBuilder.add(decorator: ModelDecorator(model: post))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
@@ -116,22 +125,29 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: anyPost)
+        let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: post)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
-        XCTAssert(request.variables != nil)
+        guard let variables = request.variables else {
+            XCTFail("The request doesn't contain variables")
+            return
+        }
+        guard let input = variables["input"] as? [String: Any] else {
+            XCTFail("The document variables property doesn't contain a valid input")
+            return
+        }
+        XCTAssert(input["title"] as? String == post.title)
+        XCTAssert(input["content"] as? String == post.content)
     }
 
     func testDeleteMutationGraphQLRequest() throws {
-        let originalPost = Post(title: "title", content: "content", createdAt: Date())
-        let anyPost = try originalPost.eraseToAnyModel()
-
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: anyPost.modelName,
-                                                                    operationType: .mutation)
+        let post = Post(title: "title", content: "content", createdAt: Date())
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName,
+                                                               operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
-        documentBuilder.add(decorator: ModelIdDecorator(id: anyPost.id))
+        documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
@@ -152,12 +168,20 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         }
         """
 
-        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: anyPost.modelName, id: anyPost.id)
+        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: post.modelName, id: post.id)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
-        XCTAssert(request.variables != nil)
+        guard let variables = request.variables else {
+            XCTFail("The request doesn't contain variables")
+            return
+        }
+        guard let input = variables["input"] as? [String: Any] else {
+            XCTFail("The document variables property doesn't contain a valid input")
+            return
+        }
+        XCTAssertEqual(input["id"] as? String, post.id)
     }
 
     func testCreateSubscriptionGraphQLRequest() throws {
@@ -225,12 +249,22 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         """
 
         let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: modelType,
+                                                                limit: limit,
                                                                 nextToken: nextToken,
                                                                 lastSync: lastSync)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == SyncQueryResult.self)
-        XCTAssert(request.variables != nil)
+        guard let variables = request.variables else {
+            XCTFail("The request doesn't contain variables")
+            return
+        }
+        XCTAssertNotNil(variables["limit"])
+        XCTAssertEqual(variables["limit"] as? Int, limit)
+        XCTAssertNotNil(variables["nextToken"])
+        XCTAssertEqual(variables["nextToken"] as? String, nextToken)
+        XCTAssertNotNil(variables["lastSync"])
+        XCTAssertEqual(variables["lastSync"] as? Int, lastSync)
     }
 }

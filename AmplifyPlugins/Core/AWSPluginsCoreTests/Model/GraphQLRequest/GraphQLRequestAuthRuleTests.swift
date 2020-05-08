@@ -21,11 +21,10 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
     }
 
     func testQueryGraphQLRequest() throws {
-        let originalBlog = Blog(content: "content", createdAt: Date(), owner: nil)
-        let anyBlog = try originalBlog.eraseToAnyModel()
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: anyBlog.modelName, operationType: .query)
+        let blog = Blog(content: "content", createdAt: Date(), owner: nil, authorNotes: nil)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: blog.modelName, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: ModelIdDecorator(id: anyBlog.id))
+        documentBuilder.add(decorator: ModelIdDecorator(id: blog.id))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator())
         let document = documentBuilder.build()
@@ -33,6 +32,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         query GetBlog($id: ID!) {
           getBlog(id: $id) {
             id
+            authorNotes
             content
             createdAt
             owner
@@ -44,21 +44,23 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         }
         """
 
-        let request = GraphQLRequest<MutationSyncResult?>.query(modelName: anyBlog.modelName, byId: anyBlog.id)
+        let request = GraphQLRequest<MutationSyncResult?>.query(modelName: blog.modelName, byId: blog.id)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult?.self)
-        XCTAssert(request.variables != nil)
+        guard let variables = request.variables else {
+            XCTFail("The request doesn't contain variables")
+            return
+        }
+        XCTAssertEqual(variables["id"] as? String, blog.id)
     }
 
     func testCreateMutationGraphQLRequest() throws {
-        let originalBlog = Blog(content: "content", createdAt: Date(), owner: nil)
-        let anyBlog = try originalBlog.eraseToAnyModel()
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: anyBlog.modelName,
-                                                                    operationType: .mutation)
+        let blog = Blog(content: "content", createdAt: Date(), owner: nil, authorNotes: nil)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: blog.modelName, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
-        documentBuilder.add(decorator: ModelDecorator(model: anyBlog))
+        documentBuilder.add(decorator: ModelDecorator(model: blog))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator())
         let document = documentBuilder.build()
@@ -66,6 +68,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         mutation CreateBlog($input: CreateBlogInput!) {
           createBlog(input: $input) {
             id
+            authorNotes
             content
             createdAt
             owner
@@ -76,21 +79,29 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.createMutation(of: anyBlog)
+        let request = GraphQLRequest<MutationSyncResult>.createMutation(of: blog)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
         XCTAssert(request.variables != nil)
+        guard let variables = request.variables else {
+            XCTFail("The request doesn't contain variables")
+            return
+        }
+        guard let input = variables["input"] as? [String: Any] else {
+            XCTFail("The document variables property doesn't contain a valid input")
+            return
+        }
+        XCTAssert(input["content"] as? String == blog.content)
+
     }
 
     func testUpdateMutationGraphQLRequest() throws {
-        let originalBlog = Blog(content: "content", createdAt: Date(), owner: nil)
-        let anyBlog = try originalBlog.eraseToAnyModel()
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: anyBlog.modelName,
-                                                                    operationType: .mutation)
+        let blog = Blog(content: "content", createdAt: Date(), owner: nil, authorNotes: nil)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: blog.modelName, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
-        documentBuilder.add(decorator: ModelDecorator(model: anyBlog))
+        documentBuilder.add(decorator: ModelDecorator(model: blog))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator())
         let document = documentBuilder.build()
@@ -98,6 +109,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         mutation UpdateBlog($input: UpdateBlogInput!) {
           updateBlog(input: $input) {
             id
+            authorNotes
             content
             createdAt
             owner
@@ -108,21 +120,27 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
           }
         }
         """
-        let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: anyBlog)
+        let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: blog)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
-        XCTAssert(request.variables != nil)
+        guard let variables = request.variables else {
+            XCTFail("The request doesn't contain variables")
+            return
+        }
+        guard let input = variables["input"] as? [String: Any] else {
+            XCTFail("The document variables property doesn't contain a valid input")
+            return
+        }
+        XCTAssert(input["content"] as? String == blog.content)
     }
 
     func testDeleteMutationGraphQLRequest() throws {
-        let originalBlog = Blog(content: "content", createdAt: Date(), owner: nil)
-        let anyBlog = try originalBlog.eraseToAnyModel()
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: anyBlog.modelName,
-                                                               operationType: .mutation)
+        let blog = Blog(content: "content", createdAt: Date(), owner: nil, authorNotes: nil)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: blog.modelName, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
-        documentBuilder.add(decorator: ModelIdDecorator(id: anyBlog.id))
+        documentBuilder.add(decorator: ModelIdDecorator(id: blog.id))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator())
         let document = documentBuilder.build()
@@ -130,6 +148,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         mutation DeleteBlog($input: DeleteBlogInput!) {
           deleteBlog(input: $input) {
             id
+            authorNotes
             content
             createdAt
             owner
@@ -141,25 +160,35 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         }
         """
 
-        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: anyBlog.modelName, id: anyBlog.id)
+        let request = GraphQLRequest<MutationSyncResult>.deleteMutation(modelName: blog.modelName, id: blog.id)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
-        XCTAssert(request.variables != nil)
+        guard let variables = request.variables else {
+            XCTFail("The request doesn't contain variables")
+            return
+        }
+        guard let input = variables["input"] as? [String: Any] else {
+            XCTFail("The document variables property doesn't contain a valid input")
+            return
+        }
+        XCTAssertEqual(input["id"] as? String, blog.id)
     }
 
     func testOnCreateSubscriptionGraphQLRequest() throws {
         let modelType = Blog.self as Model.Type
+        let ownerId = "111"
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
-        documentBuilder.add(decorator: AuthRuleDecorator(subscriptionType: .onCreate, ownerId: "111"))
+        documentBuilder.add(decorator: AuthRuleDecorator(subscriptionType: .onCreate, ownerId: ownerId))
         let document = documentBuilder.build()
         let documentStringValue = """
         subscription OnCreateBlog($owner: String!) {
           onCreateBlog(owner: $owner) {
             id
+            authorNotes
             content
             createdAt
             owner
@@ -172,12 +201,20 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         """
         let request = GraphQLRequest<MutationSyncResult>.subscription(to: modelType,
                                                                       subscriptionType: .onCreate,
-                                                                      ownerId: "111")
+                                                                      ownerId: ownerId)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == MutationSyncResult.self)
-        XCTAssertNil(request.variables)
+        guard let variables = request.variables else {
+            XCTFail("The request doesn't contain variables")
+            return
+        }
+        guard let input = variables["owner"] as? String else {
+            XCTFail("The document variables property doesn't contain a valid input")
+            return
+        }
+        XCTAssertEqual(input, ownerId)
     }
 
     func testOnUpdateSubscriptionGraphQLRequest() throws {
@@ -188,9 +225,10 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: AuthRuleDecorator(subscriptionType: .onUpdate, ownerId: "111"))
         let document = documentBuilder.build()
         let documentStringValue = """
-        subscription OnUpdateBlog($owner: String!) {
-          onUpdateBlog(owner: $owner) {
+        subscription OnUpdateBlog {
+          onUpdateBlog {
             id
+            authorNotes
             content
             createdAt
             owner
@@ -219,9 +257,10 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: AuthRuleDecorator(subscriptionType: .onDelete, ownerId: "111"))
         let document = documentBuilder.build()
         let documentStringValue = """
-        subscription OnDeleteBlog($owner: String!) {
-          onDeleteBlog(owner: $owner) {
+        subscription OnDeleteBlog {
+          onDeleteBlog {
             id
+            authorNotes
             content
             createdAt
             owner
@@ -258,6 +297,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
           syncBlogs(lastSync: $lastSync, limit: $limit, nextToken: $nextToken) {
             items {
               id
+              authorNotes
               content
               createdAt
               owner
@@ -273,12 +313,22 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         """
 
         let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: modelType,
+                                                                limit: limit,
                                                                 nextToken: nextToken,
                                                                 lastSync: lastSync)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssertEqual(documentStringValue, request.document)
         XCTAssert(request.responseType == SyncQueryResult.self)
-        XCTAssert(request.variables != nil)
+        guard let variables = request.variables else {
+            XCTFail("The request doesn't contain variables")
+            return
+        }
+        XCTAssertNotNil(variables["limit"])
+        XCTAssertEqual(variables["limit"] as? Int, limit)
+        XCTAssertNotNil(variables["nextToken"])
+        XCTAssertEqual(variables["nextToken"] as? String, nextToken)
+        XCTAssertNotNil(variables["lastSync"])
+        XCTAssertEqual(variables["lastSync"] as? Int, lastSync)
     }
 }

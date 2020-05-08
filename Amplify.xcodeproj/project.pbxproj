@@ -98,7 +98,7 @@
 		21A3FDAF24630D7F00E76120 /* ModelWithOwnerFieldAuthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A3FDAE24630D7F00E76120 /* ModelWithOwnerFieldAuthRuleTests.swift */; };
 		21A3FDB224630D9F00E76120 /* AuthRuleDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A3FDB024630D9800E76120 /* AuthRuleDecorator.swift */; };
 		21A3FDB42463C49F00E76120 /* ModelReadUpdateAuthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A3FDB32463C49F00E76120 /* ModelReadUpdateAuthRuleTests.swift */; };
-		21A3FDB62464590600E76120 /* ModelMultipleOwnerAuthRuleTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A3FDB52464590600E76120 /* ModelMultipleOwnerAuthRuleTest.swift */; };
+		21A3FDB62464590600E76120 /* ModelMultipleOwnerAuthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A3FDB52464590600E76120 /* ModelMultipleOwnerAuthRuleTests.swift */; };
 		21A3FDB9246494CD00E76120 /* GraphQLRequestAuthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A3FDB8246494CD00E76120 /* GraphQLRequestAuthRuleTests.swift */; };
 		21C395B3245729EC00597EA2 /* AppSyncErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */; };
 		21D1CE8C2334233F0003BAA8 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D1CE8B2334233F0003BAA8 /* AuthError.swift */; };
@@ -637,7 +637,7 @@
 		21A3FDAE24630D7F00E76120 /* ModelWithOwnerFieldAuthRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelWithOwnerFieldAuthRuleTests.swift; sourceTree = "<group>"; };
 		21A3FDB024630D9800E76120 /* AuthRuleDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRuleDecorator.swift; sourceTree = "<group>"; };
 		21A3FDB32463C49F00E76120 /* ModelReadUpdateAuthRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelReadUpdateAuthRuleTests.swift; sourceTree = "<group>"; };
-		21A3FDB52464590600E76120 /* ModelMultipleOwnerAuthRuleTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelMultipleOwnerAuthRuleTest.swift; sourceTree = "<group>"; };
+		21A3FDB52464590600E76120 /* ModelMultipleOwnerAuthRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelMultipleOwnerAuthRuleTests.swift; sourceTree = "<group>"; };
 		21A3FDB8246494CD00E76120 /* GraphQLRequestAuthRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequestAuthRuleTests.swift; sourceTree = "<group>"; };
 		21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncErrorType.swift; sourceTree = "<group>"; };
 		21D1CE8B2334233F0003BAA8 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
@@ -1432,7 +1432,7 @@
 			children = (
 				21A3FDAE24630D7F00E76120 /* ModelWithOwnerFieldAuthRuleTests.swift */,
 				21A3FDB32463C49F00E76120 /* ModelReadUpdateAuthRuleTests.swift */,
-				21A3FDB52464590600E76120 /* ModelMultipleOwnerAuthRuleTest.swift */,
+				21A3FDB52464590600E76120 /* ModelMultipleOwnerAuthRuleTests.swift */,
 			);
 			path = AuthRuleDecorator;
 			sourceTree = "<group>";
@@ -3585,7 +3585,7 @@
 			files = (
 				2183A56923EA4A9100232880 /* GraphQLUpdateMutationTests.swift in Sources */,
 				21A3FDB9246494CD00E76120 /* GraphQLRequestAuthRuleTests.swift in Sources */,
-				21A3FDB62464590600E76120 /* ModelMultipleOwnerAuthRuleTest.swift in Sources */,
+				21A3FDB62464590600E76120 /* ModelMultipleOwnerAuthRuleTests.swift in Sources */,
 				2129BE3A2394828B006363A1 /* QueryPredicateGraphQLTests.swift in Sources */,
 				2129BE48239489AC006363A1 /* MutationSyncMetadataTests.swift in Sources */,
 				21A3FDAF24630D7F00E76120 /* ModelWithOwnerFieldAuthRuleTests.swift in Sources */,

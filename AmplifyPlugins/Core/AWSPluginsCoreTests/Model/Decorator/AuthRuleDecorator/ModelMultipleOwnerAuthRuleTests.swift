@@ -56,7 +56,7 @@ public struct ModelMultipleOwner: Model {
     }
 }
 
-class ModelMultipleOwnerAuthRuleTest: XCTestCase {
+class ModelMultipleOwnerAuthRuleTests: XCTestCase {
 
     override func setUp() {
         ModelRegistry.register(modelType: ModelMultipleOwner.self)
@@ -86,6 +86,7 @@ class ModelMultipleOwnerAuthRuleTest: XCTestCase {
         """
         XCTAssertEqual(document.name, "createModelMultipleOwner")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertTrue(document.variables.isEmpty)
     }
 
     // Ensure that the `owner` field is added to the model fields
@@ -108,6 +109,7 @@ class ModelMultipleOwnerAuthRuleTest: XCTestCase {
         """
         XCTAssertEqual(document.name, "deleteModelMultipleOwner")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertTrue(document.variables.isEmpty)
     }
 
     // Ensure that the `owner` field is added to the model fields
@@ -130,6 +132,7 @@ class ModelMultipleOwnerAuthRuleTest: XCTestCase {
         """
         XCTAssertEqual(document.name, "updateModelMultipleOwner")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertTrue(document.variables.isEmpty)
     }
 
     // Ensure that the `owner` field is added to the model fields
@@ -152,6 +155,7 @@ class ModelMultipleOwnerAuthRuleTest: XCTestCase {
         """
         XCTAssertEqual(document.name, "getModelMultipleOwner")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertTrue(document.variables.isEmpty)
     }
 
     // A List query is a paginated selection set, make sure the `owner` field is added to the model fields

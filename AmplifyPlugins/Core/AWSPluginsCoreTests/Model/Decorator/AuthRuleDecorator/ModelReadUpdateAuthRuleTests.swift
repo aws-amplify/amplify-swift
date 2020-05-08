@@ -74,6 +74,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "createModelReadUpdateField")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertTrue(document.variables.isEmpty)
     }
 
     // Ensure that the `owner` field is added to the model fields
@@ -95,6 +96,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "deleteModelReadUpdateField")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertTrue(document.variables.isEmpty)
     }
 
     // Ensure that the `owner` field is added to the model fields
@@ -116,6 +118,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "updateModelReadUpdateField")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertTrue(document.variables.isEmpty)
     }
 
     // Ensure that the `owner` field is added to the model fields
@@ -137,6 +140,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "getModelReadUpdateField")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        XCTAssertTrue(document.variables.isEmpty)
     }
 
     // A List query is a paginated selection set, make sure the `owner` field is added to the model fields

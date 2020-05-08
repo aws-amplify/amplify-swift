@@ -28,11 +28,11 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         guard !authRules.isEmpty else {
             return document
         }
-        var document = document
+        var decorateDocument = document
         authRules.forEach { authRule in
-            document = decorateIfOwnerAuthStrategy(document: document, authRule: authRule)
+            decorateDocument = decorateIfOwnerAuthStrategy(document: decorateDocument, authRule: authRule)
         }
-        return document
+        return decorateDocument
     }
 
     func decorateIfOwnerAuthStrategy(document: SingleDirectiveGraphQLDocument,
@@ -54,25 +54,26 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
 
         let operations = authRule.operations.isEmpty ? [.create, .update, .delete, .read] : authRule.operations
 
+        var requiredOwnerInput = false
         switch subscriptionType {
         case .onCreate:
-            if operations.contains(.create), let ownerId = ownerId {
-                var inputs = document.inputs
-                inputs[ownerField] = GraphQLDocumentInput(type: "String!", value: .scalar(ownerId))
-                return document.copy(inputs: inputs, selectionSet: selectionSet)
+            if operations.contains(.create) {
+                requiredOwnerInput = true
             }
         case .onUpdate:
-            if operations.contains(.update), let ownerId = ownerId {
-                var inputs = document.inputs
-                inputs[ownerField] = GraphQLDocumentInput(type: "String!", value: .scalar(ownerId))
-                return document.copy(inputs: inputs, selectionSet: selectionSet)
+            if operations.contains(.update) {
+                requiredOwnerInput = true
             }
         case .onDelete:
-            if operations.contains(.delete), let ownerId = ownerId {
-                var inputs = document.inputs
-                inputs[ownerField] = GraphQLDocumentInput(type: "String!", value: .scalar(ownerId))
-                return document.copy(inputs: inputs, selectionSet: selectionSet)
+            if operations.contains(.delete) {
+                requiredOwnerInput = true
             }
+        }
+
+        if requiredOwnerInput, let ownerId = ownerId {
+            var inputs = document.inputs
+            inputs[ownerField] = GraphQLDocumentInput(type: "String!", value: .scalar(ownerId))
+            return document.copy(inputs: inputs, selectionSet: selectionSet)
         }
         return document.copy(selectionSet: selectionSet)
     }
