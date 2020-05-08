@@ -7,7 +7,7 @@
 
 import Amplify
 
-extension AuthProvider {
+extension AuthNProvider {
 
     func toCognitoHostedUIString() -> String {
         switch self {

@@ -248,11 +248,10 @@
 		B439F2AC24488CFD00C30CBB /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				B439F2B62448DBF500C30CBB /* SignInResult+Extension.swift */,
+				B4B5CC9B2457B9820019C783 /* AWSAuthUser.swift */,
 				B4A65ADD244E4D0B003A8F57 /* Error */,
 				B41998E8244C06D20073B233 /* Options */,
 				B439F2B62448DBF500C30CBB /* SignInResult+Extension.swift */,
-				B4B5CC9B2457B9820019C783 /* AWSAuthUser.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -354,8 +353,8 @@
 				B49FAA4024457039001868ED /* AuthenticationProviderBehavior.swift */,
 				B49FAA43244570E9001868ED /* AuthorizationProviderAdapter.swift */,
 				B49FAA3F24457039001868ED /* AuthorizationProviderBehavior.swift */,
-				B4B5CC9D24586C9E0019C783 /* AuthUserServiceBehavior.swift */,
 				B4B5CCAA2458AE2B0019C783 /* AuthUserServiceAdapter.swift */,
+				B4B5CC9D24586C9E0019C783 /* AuthUserServiceBehavior.swift */,
 			);
 			path = Dependency;
 			sourceTree = "<group>";
