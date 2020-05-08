@@ -29,6 +29,8 @@ extension CategoryTypeable {
             return amplifyConfiguration.predictions
         case .storage:
             return amplifyConfiguration.storage
+        case .auth:
+            return amplifyConfiguration.auth
         }
     }
 
