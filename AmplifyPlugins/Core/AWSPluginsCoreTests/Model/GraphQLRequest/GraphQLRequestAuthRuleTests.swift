@@ -94,7 +94,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
             return
         }
         XCTAssert(input["content"] as? String == blog.content)
-
+        XCTAssertFalse(input.keys.contains("owner"))
     }
 
     func testUpdateMutationGraphQLRequest() throws {
@@ -134,6 +134,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
             return
         }
         XCTAssert(input["content"] as? String == blog.content)
+        XCTAssertFalse(input.keys.contains("owner"))
     }
 
     func testDeleteMutationGraphQLRequest() throws {
@@ -174,6 +175,8 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
             return
         }
         XCTAssertEqual(input["id"] as? String, blog.id)
+        XCTAssertFalse(input.keys.contains("owner"))
+        XCTAssertFalse(input.keys.contains("authorNotes"))
     }
 
     func testOnCreateSubscriptionGraphQLRequest() throws {

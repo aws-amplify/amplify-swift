@@ -100,6 +100,7 @@
 		21A3FDB42463C49F00E76120 /* ModelReadUpdateAuthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A3FDB32463C49F00E76120 /* ModelReadUpdateAuthRuleTests.swift */; };
 		21A3FDB62464590600E76120 /* ModelMultipleOwnerAuthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A3FDB52464590600E76120 /* ModelMultipleOwnerAuthRuleTests.swift */; };
 		21A3FDB9246494CD00E76120 /* GraphQLRequestAuthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A3FDB8246494CD00E76120 /* GraphQLRequestAuthRuleTests.swift */; };
+		21A3FDBF2465FA1500E76120 /* AuthRule+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A3FDBE2465FA1500E76120 /* AuthRule+Extension.swift */; };
 		21C395B3245729EC00597EA2 /* AppSyncErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */; };
 		21D1CE8C2334233F0003BAA8 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D1CE8B2334233F0003BAA8 /* AuthError.swift */; };
 		21D79FDA237617C60057D00D /* SubscriptionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FD9237617C60057D00D /* SubscriptionEvent.swift */; };
@@ -639,6 +640,7 @@
 		21A3FDB32463C49F00E76120 /* ModelReadUpdateAuthRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelReadUpdateAuthRuleTests.swift; sourceTree = "<group>"; };
 		21A3FDB52464590600E76120 /* ModelMultipleOwnerAuthRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelMultipleOwnerAuthRuleTests.swift; sourceTree = "<group>"; };
 		21A3FDB8246494CD00E76120 /* GraphQLRequestAuthRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLRequestAuthRuleTests.swift; sourceTree = "<group>"; };
+		21A3FDBE2465FA1500E76120 /* AuthRule+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthRule+Extension.swift"; sourceTree = "<group>"; };
 		21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncErrorType.swift; sourceTree = "<group>"; };
 		21D1CE8B2334233F0003BAA8 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
 		21D79FD9237617C60057D00D /* SubscriptionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionEvent.swift; sourceTree = "<group>"; };
@@ -1272,6 +1274,7 @@
 				2129BE1D2394806B006363A1 /* ModelSchema+GraphQL.swift */,
 				2129BE1A2394806B006363A1 /* QueryPredicate+GraphQL.swift */,
 				212CE6FB23E9E523007D8E71 /* SelectionSet.swift */,
+				21A3FDBE2465FA1500E76120 /* AuthRule+Extension.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -3570,6 +3573,7 @@
 				21420A90237222A900FA140C /* APIKeyConfiguration.swift in Sources */,
 				219A887F23EB627100BBC5F2 /* ModelBasedGraphQLDocumentBuilder.swift in Sources */,
 				2129BE552395CAEF006363A1 /* PaginatedList.swift in Sources */,
+				21A3FDBF2465FA1500E76120 /* AuthRule+Extension.swift in Sources */,
 				2129BE212394806B006363A1 /* ModelSchema+GraphQL.swift in Sources */,
 				212CE70B23E9E991007D8E71 /* ModelIdDecorator.swift in Sources */,
 				2129BE4223948924006363A1 /* MutationSync.swift in Sources */,

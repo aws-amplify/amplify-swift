@@ -45,14 +45,14 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
             return document
         }
 
-        let ownerField = (authRule.ownerField != nil) ? authRule.ownerField!.stringValue : "owner"
+        let ownerField = authRule.getOwnerFieldOrDefault()
         selectionSet = withOwnerField(selectionSet: selectionSet, ownerField: ownerField)
 
         guard let subscriptionType = subscriptionType else {
             return document.copy(selectionSet: selectionSet)
         }
 
-        let operations = authRule.operations.isEmpty ? [.create, .update, .delete, .read] : authRule.operations
+        let operations = authRule.getModelOperationsOrDefault()
 
         var requiredOwnerInput = false
         switch subscriptionType {
