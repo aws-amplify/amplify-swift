@@ -1844,6 +1844,7 @@
 			children = (
 				B4ADE8F3241063820007E86C /* AuthCategory.swift */,
 				B4FA336524105DCD00E1C659 /* AuthCategory+ClientBehavior.swift */,
+				B4FEA92224635CA40009B47B /* AuthCategory+DeviceBehavior.swift */,
 				B4FA336724105E8100E1C659 /* AuthCategory+HubPayloadEventName.swift */,
 				B463D6CE24633E45008C0F85 /* AuthCategory+UserBehavior.swift */,
 				B4A19DAA24101EEB00DE2E55 /* AuthCategoryBehavior.swift */,
@@ -1857,7 +1858,6 @@
 				B4A19DA524101E9D00DE2E55 /* Operation */,
 				B4A19DA824101E9D00DE2E55 /* Request */,
 				B4A19DA624101E9D00DE2E55 /* Result */,
-				B4FEA92224635CA40009B47B /* AuthCategory+DeviceBehavior.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -1869,10 +1869,9 @@
 				B4251A04242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift */,
 				B473B53D245DE8E100C45C72 /* AuthConfirmSignInOperation.swift */,
 				B450740C2411553D0098F02D /* AuthConfirmSignUpOperation.swift */,
-				B4FA76042416E0F0006F59CE /* AuthFetchSessionOperation.swift */,
 				B46884112460A8D600221268 /* AuthFetchDevicesOperation.swift */,
+				B4FA76042416E0F0006F59CE /* AuthFetchSessionOperation.swift */,
 				B46884132460A8E000221268 /* AuthForgetDeviceOperation.swift */,
-				B4926F6D24250219007B769C /* AuthForgotPasswordOperation.swift */,
 				B46884152460A8ED00221268 /* AuthRememberDeviceOperation.swift */,
 				B452F1D22450EEAE0069F7FA /* AuthResendSignUpCodeOperation.swift */,
 				B4926F6D24250219007B769C /* AuthResetPasswordOperation.swift */,
@@ -1890,11 +1889,9 @@
 			isa = PBXGroup;
 			children = (
 				B4926F6B242501A9007B769C /* AuthResetPasswordResult.swift */,
-				B4B5CCA02458A0490019C783 /* AuthUpdateAttributeResult.swift */,
-				B4251A08242504DB007F59EF /* AuthChangePasswordResult.swift */,
-				B4251A02242503A0007F59EF /* AuthConfirmForgotPwdResult.swift */,
 				B450741424115C340098F02D /* AuthSignInResult.swift */,
 				B43CD8552411472300BF5A60 /* AuthSignUpResult.swift */,
+				B4B5CCA02458A0490019C783 /* AuthUpdateAttributeResult.swift */,
 			);
 			path = Result;
 			sourceTree = "<group>";
@@ -1903,13 +1900,8 @@
 			isa = PBXGroup;
 			children = (
 				B43CD8512411463000BF5A60 /* AuthCodeDeliveryDetails.swift */,
+				B468840F2460A85200221268 /* AuthDevice.swift */,
 				B4507418241166580098F02D /* AuthSession.swift */,
-				B43CD857241147F900BF5A60 /* AmplifyUser.swift */,
-				B4507418241166580098F02D /* AmplifyAuthInformation.swift */,
-				B450741A241166AE0098F02D /* AuthUserState.swift */,
-				B4C498F92415D24B00067992 /* AuthSocialProvider.swift */,
-				B493E69224524E8C00D9E521 /* AuthUserAttribute.swift */,
-				B493E69D245394E200D9E521 /* AuthSignUpStep.swift */,
 				B493E6A12453A29C00D9E521 /* AuthSignInStep.swift */,
 				B493E69D245394E200D9E521 /* AuthSignUpStep.swift */,
 				B4C498F92415D24B00067992 /* AuthSocialProvider.swift */,
@@ -1917,7 +1909,6 @@
 				B43CD857241147F900BF5A60 /* AuthUser.swift */,
 				B493E69224524E8C00D9E521 /* AuthUserAttribute.swift */,
 				B493E69024524D3200D9E521 /* DeliveryDestination.swift */,
-				B468840F2460A85200221268 /* AuthDevice.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1931,12 +1922,10 @@
 				B473B53F245DE93100C45C72 /* AuthConfirmSignInRequest.swift */,
 				B43CD8532411469D00BF5A60 /* AuthConfirmSignUpRequest.swift */,
 				B4B5CC8A2457B32D0019C783 /* AuthConfirmUserAttributeRequest.swift */,
+				B46884172460A92900221268 /* AuthFetchDevicesRequest.swift */,
 				B4FA76062416E82B006F59CE /* AuthFetchSessionRequest.swift */,
 				B4B5CC802457B0690019C783 /* AuthFetchUserAttributesRequest.swift */,
-				B4926F692425013B007B769C /* AuthForgotPasswordRequest.swift */,
-				B46884172460A92900221268 /* AuthFetchDevicesRequest.swift */,
 				B46884192460A98E00221268 /* AuthForgetDeviceRequest.swift */,
-				B4926F692425013B007B769C /* AuthForgotPasswordRequest.swift */,
 				B468841B2460A9CC00221268 /* AuthRememberDeviceRequest.swift */,
 				B452F1D42450EEEB0069F7FA /* AuthResendSignUpCodeRequest.swift */,
 				B4926F692425013B007B769C /* AuthResetPasswordRequest.swift */,
@@ -2575,9 +2564,9 @@
 		FAC234EE227A053D00424678 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
-				B4A19DA424101E9D00DE2E55 /* Auth */,
 				FAC2350A227A053D00424678 /* Analytics */,
 				FAC234FB227A053D00424678 /* API */,
+				B4A19DA424101E9D00DE2E55 /* Auth */,
 				B9DD3F0B23552C4E00D62C65 /* DataStore */,
 				FAC2358B227A46A900424678 /* Hub */,
 				FAC23503227A053D00424678 /* Logging */,
