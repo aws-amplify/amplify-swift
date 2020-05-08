@@ -17,14 +17,17 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
     }
 
     func initialize() throws {
+
         var mobileClientError: Error?
+
         awsMobileClient.initialize { _, error in
             mobileClientError = error
         }
         if let error = mobileClientError {
-            throw AmplifyAuthError.configuration(AuthPluginErrorConstants.mobileClientInitializeError.errorDescription,
-                                                 AuthPluginErrorConstants.mobileClientInitializeError.recoverySuggestion,
-                                                 error)
+            throw AmplifyAuthError.configuration(
+                AuthPluginErrorConstants.mobileClientInitializeError.errorDescription,
+                AuthPluginErrorConstants.mobileClientInitializeError.recoverySuggestion,
+                error)
         }
     }
 
@@ -169,5 +172,28 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
 
     func getCurrentUserState() -> UserState {
         return awsMobileClient.currentUserState
+    }
+
+    func listDevices(completionHandler: @escaping ((ListDevicesResult?, Error?) -> Void)) {
+        awsMobileClient.deviceOperations.list(completionHandler: completionHandler)
+    }
+
+    func updateDeviceStatus(remembered: Bool,
+                            completionHandler: @escaping ((UpdateDeviceStatusResult?, Error?) -> Void)) {
+        awsMobileClient.deviceOperations.updateStatus(remembered: remembered,
+                                                      completionHandler: completionHandler)
+    }
+
+    func getDevice(_ completionHandler: @escaping ((Device?, Error?) -> Void)) {
+        awsMobileClient.deviceOperations.get(completionHandler)
+    }
+
+    func forgetDevice(deviceId: String, completionHandler: @escaping ((Error?) -> Void)) {
+        awsMobileClient.deviceOperations.forget(deviceId: deviceId,
+                                                completionHandler: completionHandler)
+    }
+
+    func forgetCurrentDevice(_ completionHandler: @escaping ((Error?) -> Void)) {
+        awsMobileClient.deviceOperations.forget(completionHandler)
     }
 }
