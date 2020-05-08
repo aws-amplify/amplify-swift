@@ -39,6 +39,78 @@ struct AuthPluginErrorConstants {
     static let userInvalidError: AuthPluginErrorString = (
         "Could not validate the user",
         "Get the current user Auth.getCurrentUser() and make the request")
+    static let identityIdSignOutError: AuthPluginErrorString = (
+        "There is no user signed in to retreive identity id",
+        "Call Auth.signIn to sign in a user or enable unauthenticated access in AWS Cognito Identity Pool")
+
+    static let awsCredentialsSignOutError: AuthPluginErrorString = (
+        "There is no user signed in to retreive AWS credentials",
+        "Call Auth.signIn to sign in a user or enable unauthenticated access in AWS Cognito Identity Pool")
+
+    static let cognitoTokensSignOutError: AuthPluginErrorString = (
+        "There is no user signed in to retreive cognito tokens",
+        "Call Auth.signIn to sign in a user and then call Auth.fetchSession")
+
+    static let userSubSignOutError: AuthPluginErrorString = (
+        "There is no user signed in to retreive user sub",
+        "Call Auth.signIn to sign in a user and then call Auth.fetchSession")
+
+    static let identityIdOfflineError: AuthPluginErrorString = (
+        "A network error occured while trying to fetch identity id",
+        "Try again with exponential backoff")
+
+    static let awsCredentialsOfflineError: AuthPluginErrorString = (
+        "A network error occured while trying to fetch AWS credentials",
+        "Try again with exponential backoff")
+
+    static let usersubOfflineError: AuthPluginErrorString = (
+        "A network error occured while trying to fetch user sub",
+        "Try again with exponential backoff")
+
+    static let cognitoTokenOfflineError: AuthPluginErrorString = (
+        "A network error occured while trying to fetch AWS Cognito Tokens",
+        "Try again with exponential backoff")
+
+    static let identityIdServiceError: AuthPluginErrorString = (
+        "A serivce error occured while trying to fetch identity id",
+        "Try again with exponential backoff")
+
+    static let awsCredentialsServiceError: AuthPluginErrorString = (
+        "A service error occured while trying to fetch AWS credentials",
+        "Try again with exponential backoff")
+
+
+    static let identityIdSessionExpiredError: AuthPluginErrorString = (
+        "Session expired could not fetch identity id",
+        "Invoke Auth.signIn to re-authenticate the user")
+
+    static let awsCredentialsSessionExpiredError: AuthPluginErrorString = (
+        "Session expired could not fetch AWS Credentials",
+        "Invoke Auth.signIn to re-authenticate the user")
+
+    static let usersubSessionExpiredError: AuthPluginErrorString = (
+        "Session expired could not fetch user sub",
+        "Invoke Auth.signIn to re-authenticate the user")
+
+    static let cognitoTokensSessionExpiredError: AuthPluginErrorString = (
+        "Session expired could not fetch cognito tokens",
+        "Invoke Auth.signIn to re-authenticate the user")
+
+    static let cognitoTokenSignedInThroughCIDPError: AuthPluginErrorString = (
+        "User is not signed in through Cognito User pool",
+        "Tokens are not valid with user signed in through AWS Cognito Identity Pool")
+
+    static let userSubSignedInThroughCIDPError: AuthPluginErrorString = (
+        "User is not signed in through Cognito User pool",
+        "User sub are not valid with user signed in through AWS Cognito Identity Pool")
+
+    static let signedInIdentityIdWithNoCIDPError: AuthPluginErrorString = (
+        "Could not fetch identity Id, AWS Cognito Identity Pool is not configured",
+        "Follow the steps to configure AWS Cognito Identity Pool and try again")
+
+    static let signedInAWSCredentialsWithNoCIDPError: AuthPluginErrorString = (
+        "Could not fetch AWS Credentials, AWS Cognito Identity Pool is not configured",
+        "Follow the steps to configure AWS Cognito Identity Pool and try again")
 }
 
 // Field validation errors

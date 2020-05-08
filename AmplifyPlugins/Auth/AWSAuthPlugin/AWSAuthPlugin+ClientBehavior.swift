@@ -106,8 +106,16 @@ extension AWSAuthPlugin {
             return signOutOperation
     }
 
-    public func fetchAuthState(listener: AuthStateOperation.EventListener?) -> AuthStateOperation {
-        fatalError()
+    public func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options?,
+                                 listener: AuthFetchSessionOperation.EventListener?) -> AuthFetchSessionOperation {
+        let options = options ?? AuthFetchSessionRequest.Options()
+        let request = AuthFetchSessionRequest(options: options)
+        let fetchAuthSessionOperation = AWSAuthFetchSessionOperation(request,
+                                                                     authenticationProvider: authenticationProvider,
+                                                                     authorizationProvider: authorizationProvider,
+                                                                     listener: listener)
+        queue.addOperation(fetchAuthSessionOperation)
+        return fetchAuthSessionOperation
     }
 
     // MARK: - Password Management

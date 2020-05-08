@@ -7,11 +7,7 @@
 
 import Foundation
 
-//TODO: Use same pattern throughout the category
-
-public protocol AmplifyAuthInformation {
+public protocol AuthSession {
 
     var isSignedIn: Bool { get }
-
-    var state: AuthUserState { get }
 }

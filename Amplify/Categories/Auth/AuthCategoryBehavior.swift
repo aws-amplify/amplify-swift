@@ -110,7 +110,13 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior {
     func signOut(options: AuthSignOutOperation.Request.Options?,
                  listener: AuthSignOutOperation.EventListener?) -> AuthSignOutOperation
 
-    func fetchAuthState(listener: AuthStateOperation.EventListener?) -> AuthStateOperation
+    /// Fetch the current authentication session.
+    ///
+    /// - Parameters:
+    ///   - options: Parameters specific to plugin behavior
+    ///   - listener: Triggered when the operation completes.
+    func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options?,
+                          listener: AuthFetchSessionOperation.EventListener?) -> AuthFetchSessionOperation
 
     /// Initiate a reset password flow for the user
     ///

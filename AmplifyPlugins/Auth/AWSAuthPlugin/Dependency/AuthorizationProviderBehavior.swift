@@ -5,9 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
+import Amplify
 
 protocol AuthorizationProviderBehavior {
 
-    func fetchSession()
+    func fetchSession(request: AuthFetchSessionRequest,
+                      completionHandler: @escaping (Result<AuthSession, AmplifyAuthError>) -> Void)
 }

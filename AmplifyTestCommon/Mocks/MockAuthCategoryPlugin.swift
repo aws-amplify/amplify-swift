@@ -43,7 +43,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-    func fetchAuthState(listener: AuthStateOperation.EventListener?) -> AuthStateOperation {
+    func fetchAuthState(listener: AuthFetchSessionOperation.EventListener?) -> AuthFetchSessionOperation {
         fatalError()
     }
 

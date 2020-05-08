@@ -75,4 +75,12 @@ protocol AWSMobileClientBehavior {
                                confirmationCode: String,
                                clientMetaData: [String: String],
                                completionHandler: @escaping ((ForgotPasswordResult?, Error?) -> Void))
+
+    func getIdentityId() -> AWSTask<NSString>
+
+    func getTokens(_ completionHandler: @escaping (Tokens?, Error?) -> Void)
+
+    func getAWSCredentials(_ completionHandler: @escaping (AWSCredentials?, Error?) -> Void)
+
+    func getCurrentUserState() -> UserState
 }

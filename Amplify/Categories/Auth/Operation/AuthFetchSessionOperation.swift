@@ -7,13 +7,13 @@
 
 import Foundation
 
-public protocol AuthStateOperation: AmplifyOperation<AuthStateRequest,
-Void,
-AmplifyAuthInformation,
+public protocol AuthFetchSessionOperation: AmplifyOperation<AuthFetchSessionRequest,
+    Void,
+    AuthSession,
 AmplifyAuthError> {}
 
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let authState = "Auth.authState"
+    static let fetchSession = "Auth.fetchSession"
 }
