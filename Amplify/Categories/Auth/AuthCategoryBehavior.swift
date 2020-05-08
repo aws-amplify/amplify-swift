@@ -92,7 +92,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior {
     ///   - presentationAnchor: Anchor on which the UI is presented.
     ///   - options: Parameters specific to plugin behavior.
     ///   - listener: Triggered when the operation completes.
-    func signInWithWebUI(for authProvider: AuthProvider,
+    func signInWithWebUI(for authProvider: AuthNProvider,
                          presentationAnchor: AuthUIPresentationAnchor,
                          options: AuthSocialWebUISignInOperation.Request.Options?,
                          listener: AuthSocialWebUISignInOperation.EventListener?) -> AuthSocialWebUISignInOperation

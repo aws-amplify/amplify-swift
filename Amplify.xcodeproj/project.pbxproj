@@ -1847,12 +1847,12 @@
 				B452F1D22450EEAE0069F7FA /* AuthResendSignUpCodeOperation.swift */,
 				B4926F6D24250219007B769C /* AuthResetPasswordOperation.swift */,
 				B450741024115C140098F02D /* AuthSignInOperation.swift */,
-				B4B5CC922457B7F90019C783 /* UserOperations */,
 				B473B547245E097600C45C72 /* AuthSignOutOperation.swift */,
 				B4A19DAC24101F7100DE2E55 /* AuthSignUpOperation.swift */,
 				B493E6A32453A32C00D9E521 /* AuthSocialWebUISignInOperation.swift */,
 				B4FA76042416E0F0006F59CE /* AuthStateOperation.swift */,
 				B4C499012415E0CA00067992 /* AuthWebUISignInOperation.swift */,
+				B4B5CC922457B7F90019C783 /* UserOperations */,
 			);
 			path = Operation;
 			sourceTree = "<group>";
@@ -1860,14 +1860,10 @@
 		B4A19DA624101E9D00DE2E55 /* Result */ = {
 			isa = PBXGroup;
 			children = (
-				B450741424115C340098F02D /* AuthSignInResult.swift */,
-				B4926F6B242501A9007B769C /* AuthForgotPasswordResult.swift */,
-				B43CD8552411472300BF5A60 /* AuthSignUpResult.swift */,
-				B4B5CCA02458A0490019C783 /* AuthUpdateAttributeResult.swift */,
-				B4251A08242504DB007F59EF /* AuthChangePasswordResult.swift */,
 				B4926F6B242501A9007B769C /* AuthResetPasswordResult.swift */,
 				B450741424115C340098F02D /* AuthSignInResult.swift */,
 				B43CD8552411472300BF5A60 /* AuthSignUpResult.swift */,
+				B4B5CCA02458A0490019C783 /* AuthUpdateAttributeResult.swift */,
 			);
 			path = Result;
 			sourceTree = "<group>";
@@ -1900,7 +1896,6 @@
 				B43CD8532411469D00BF5A60 /* AuthConfirmSignUpRequest.swift */,
 				B4B5CC8A2457B32D0019C783 /* AuthConfirmUserAttributeRequest.swift */,
 				B4B5CC802457B0690019C783 /* AuthFetchUserAttributesRequest.swift */,
-				B4926F692425013B007B769C /* AuthForgotPasswordRequest.swift */,
 				B452F1D42450EEEB0069F7FA /* AuthResendSignUpCodeRequest.swift */,
 				B4926F692425013B007B769C /* AuthResetPasswordRequest.swift */,
 				B450741224115C260098F02D /* AuthSignInRequest.swift */,

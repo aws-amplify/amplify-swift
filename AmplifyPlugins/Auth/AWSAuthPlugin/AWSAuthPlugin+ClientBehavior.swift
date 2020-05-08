@@ -66,7 +66,7 @@ extension AWSAuthPlugin {
         return signInWithWebUIOperation
     }
 
-    public func signInWithWebUI(for authProvider: AuthProvider,
+    public func signInWithWebUI(for authProvider: AuthNProvider,
                                 presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthSocialWebUISignInOperation.Request.Options?,
                                 listener: AuthSocialWebUISignInOperation.EventListener?)
