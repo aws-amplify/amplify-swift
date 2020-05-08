@@ -21,4 +21,11 @@ extension UserCodeDeliveryDetails {
         }
     }
 
+    func toAuthCodeDeliveryDetails() -> AuthCodeDeliveryDetails {
+        let destination = toDeliveryDestination()
+        let attributeName = self.attributeName ?? ""
+        return  AuthCodeDeliveryDetails(destination: destination,
+                                        attributeName: attributeName)
+    }
+
 }

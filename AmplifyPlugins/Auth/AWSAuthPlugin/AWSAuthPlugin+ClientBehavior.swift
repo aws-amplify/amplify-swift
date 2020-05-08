@@ -112,19 +112,34 @@ extension AWSAuthPlugin {
 
     // MARK: - Password Management
 
-    public func forgotPassword(username: String,
-                               options: AuthForgotPasswordOperation.Request.Options?,
-                               listener: AuthForgotPasswordOperation.EventListener?) -> AuthForgotPasswordOperation {
-        fatalError()
+    public func resetPassword(for username: String,
+                              options: AuthResetPasswordOperation.Request.Options? = nil,
+                              listener: AuthResetPasswordOperation.EventListener?) -> AuthResetPasswordOperation {
+        let options = options ?? AuthResetPasswordRequest.Options()
+        let request = AuthResetPasswordRequest(username: username, options: options)
+        let operation = AWSAuthResetPasswordOperation(request,
+                                                      authenticationProvider: authenticationProvider,
+                                                      listener: listener)
+        queue.addOperation(operation)
+        return operation
     }
 
-    public func confirmForgotPassword(username: String,
-                                      newPassword: String,
-                                      confirmationCode: String,
-                                      options: AuthConfirmForgotPasswordOperation.Request.Options?,
-                                      listener: AuthConfirmForgotPasswordOperation.EventListener?) ->
-        AuthConfirmForgotPasswordOperation {
-            fatalError()
+    public func confirmResetPassword(for username: String,
+                                     with newPassword: String,
+                                     confirmationCode: String,
+                                     options: AuthConfirmResetPasswordOperation.Request.Options? = nil,
+                                     listener: AuthConfirmResetPasswordOperation.EventListener?)
+        -> AuthConfirmResetPasswordOperation {
+            let options = options ?? AuthConfirmResetPasswordRequest.Options()
+            let request = AuthConfirmResetPasswordRequest(username: username,
+                                                          newPassword: newPassword,
+                                                          confirmationCode: confirmationCode,
+                                                          options: options)
+            let operation = AWSAuthConfirmResetPasswordOperation(request,
+                                                                 authenticationProvider: authenticationProvider,
+                                                                 listener: listener)
+            queue.addOperation(operation)
+            return operation
     }
 
     public func changePassword(currentPassword: String,

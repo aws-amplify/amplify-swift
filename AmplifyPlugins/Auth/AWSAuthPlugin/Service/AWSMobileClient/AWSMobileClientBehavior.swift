@@ -65,4 +65,14 @@ protocol AWSMobileClientBehavior {
     func changePassword(currentPassword: String,
                         proposedPassword: String,
                         completionHandler: @escaping ((Error?) -> Void))
+
+    func forgotPassword(username: String,
+                        clientMetaData: [String: String],
+                        completionHandler: @escaping ((ForgotPasswordResult?, Error?) -> Void))
+
+    func confirmForgotPassword(username: String,
+                               newPassword: String,
+                               confirmationCode: String,
+                               clientMetaData: [String: String],
+                               completionHandler: @escaping ((ForgotPasswordResult?, Error?) -> Void))
 }

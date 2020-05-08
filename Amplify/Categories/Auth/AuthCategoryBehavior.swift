@@ -112,17 +112,29 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior {
 
     func fetchAuthState(listener: AuthStateOperation.EventListener?) -> AuthStateOperation
 
-    // MARK: - Password Management
+    /// Initiate a reset password flow for the user
+    ///
+    /// - Parameters:
+    ///   - username: username whose password need to reset
+    ///   - options: Parameters specific to plugin behavior
+    ///   - listener: Triggered when the operation completes
+    func resetPassword(for username: String,
+                       options: AuthResetPasswordOperation.Request.Options?,
+                       listener: AuthResetPasswordOperation.EventListener?) -> AuthResetPasswordOperation
 
-    func forgotPassword(username: String,
-                        options: AuthForgotPasswordOperation.Request.Options?,
-                        listener: AuthForgotPasswordOperation.EventListener?) -> AuthForgotPasswordOperation
-
-    func confirmForgotPassword(username: String,
-                               newPassword: String,
-                               confirmationCode: String,
-                               options: AuthConfirmForgotPasswordOperation.Request.Options?,
-                               listener: AuthConfirmForgotPasswordOperation.EventListener?) ->
-    AuthConfirmForgotPasswordOperation
+    /// Confirms a reset password flow
+    ///
+    /// - Parameters:
+    ///   - username: username whose password need to reset
+    ///   - newPassword: new password for the user
+    ///   - confirmationCode: Received confirmation code
+    ///   - options: Parameters specific to plugin behavior
+    ///   - listener: Triggered when the operation completes
+    func confirmResetPassword(for username: String,
+                              with newPassword: String,
+                              confirmationCode: String,
+                              options: AuthConfirmResetPasswordOperation.Request.Options?,
+                              listener: AuthConfirmResetPasswordOperation.EventListener?)
+        -> AuthConfirmResetPasswordOperation
 
 }

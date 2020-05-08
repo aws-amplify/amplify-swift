@@ -7,11 +7,7 @@
 
 import Foundation
 
-public struct AuthConfirmForgotPwdResult {
+public struct AWSAuthResetPasswordOptions {
 
-    public let status: Bool
-
-    public init(status: Bool) {
-        self.status = status
-    }
+    public let metadata: [String: String]?
 }

@@ -78,6 +78,31 @@ extension AuthPluginErrorConstants {
         "challengeResponse is required to confirmSignIn",
         "Make sure that a valid challenge response is passed for confirmSignIn"
     )
+
+    static let confirmResetPasswordUsernameError: AuthPluginValidationErrorString = (
+        "username",
+        "username is required to confirmResetPassword",
+        "Make sure that a valid username is passed for confirmResetPassword"
+    )
+
+    static let confirmResetPasswordNewPasswordError: AuthPluginValidationErrorString = (
+        "newPassword",
+        "newPassword is required to confirmResetPassword",
+        "Make sure that a valid newPassword is passed for confirmResetPassword"
+    )
+
+    static let confirmResetPasswordCodeError: AuthPluginValidationErrorString = (
+        "confirmationCode",
+        "confirmationCode is required to confirmResetPassword",
+        "Make sure that a valid confirmationCode is passed for confirmResetPassword"
+    )
+
+    static let resetPasswordUsernameError: AuthPluginValidationErrorString = (
+        "username",
+        "username is required to resetPassword",
+        "Make sure that a valid username is passed for resetPassword"
+    )
+
 }
 
 // Recovery Messages

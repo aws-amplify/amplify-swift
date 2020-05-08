@@ -134,4 +134,24 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
                                        proposedPassword: proposedPassword,
                                        completionHandler: completionHandler)
     }
+
+    func forgotPassword(username: String,
+                        clientMetaData: [String: String],
+                        completionHandler: @escaping ((ForgotPasswordResult?, Error?) -> Void)) {
+        awsMobileClient.forgotPassword(username: username,
+                                       clientMetaData: clientMetaData,
+                                       completionHandler: completionHandler)
+    }
+
+    func confirmForgotPassword(username: String,
+                               newPassword: String,
+                               confirmationCode: String,
+                               clientMetaData: [String: String],
+                               completionHandler: @escaping ((ForgotPasswordResult?, Error?) -> Void)) {
+        awsMobileClient.confirmForgotPassword(username: username,
+                                              newPassword: newPassword,
+                                              confirmationCode: confirmationCode,
+                                              clientMetaData: clientMetaData,
+                                              completionHandler: completionHandler)
+    }
 }

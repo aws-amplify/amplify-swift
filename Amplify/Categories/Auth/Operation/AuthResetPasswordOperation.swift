@@ -7,13 +7,13 @@
 
 import Foundation
 
-public protocol AuthForgotPasswordOperation: AmplifyOperation<AuthForgotPasswordRequest,
+public protocol AuthResetPasswordOperation: AmplifyOperation<AuthResetPasswordRequest,
     Void,
-    AuthForgotPasswordResult,
+    AuthResetPasswordResult,
 AmplifyAuthError> {}
 
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let forgotPassword = "Auth.forgotpassword"
+    static let resetPassword = "Auth.resetPassword"
 }

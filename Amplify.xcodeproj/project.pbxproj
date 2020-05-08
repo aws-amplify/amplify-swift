@@ -169,9 +169,8 @@
 		95DAAB8A237F13B70028544F /* TextToSpeechResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB88237F13B70028544F /* TextToSpeechResult.swift */; };
 		95DAAB8C237F13D10028544F /* PredictionsTextToSpeechRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DAAB8B237F13D10028544F /* PredictionsTextToSpeechRequest.swift */; };
 		972D1CA72316922ECE530571 /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 934ECFB4BB156267C1BC067A /* Pods_Amplify_AWSPluginsCore_AWSPluginsTestConfigs_AWSPluginsCoreTests.framework */; };
-		B4251A0124250369007F59EF /* AuthConfirmForgotPwdRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A0024250369007F59EF /* AuthConfirmForgotPwdRequest.swift */; };
-		B4251A03242503A0007F59EF /* AuthConfirmForgotPwdResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A02242503A0007F59EF /* AuthConfirmForgotPwdResult.swift */; };
-		B4251A05242503F6007F59EF /* AuthConfirmForgotPwdOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A04242503F6007F59EF /* AuthConfirmForgotPwdOperation.swift */; };
+		B4251A0124250369007F59EF /* AuthConfirmResetPasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A0024250369007F59EF /* AuthConfirmResetPasswordRequest.swift */; };
+		B4251A05242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A04242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift */; };
 		B4251A072425047D007F59EF /* AuthChangePasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A062425047D007F59EF /* AuthChangePasswordRequest.swift */; };
 		B4251A0B242504FA007F59EF /* AuthChangePasswordOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4251A0A242504FA007F59EF /* AuthChangePasswordOperation.swift */; };
 		B4340A24238325B900101BBA /* DefaultNetworkPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4340A23238325B900101BBA /* DefaultNetworkPolicy.swift */; };
@@ -195,9 +194,9 @@
 		B473B540245DE93100C45C72 /* AuthConfirmSignInRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B473B53F245DE93100C45C72 /* AuthConfirmSignInRequest.swift */; };
 		B473B548245E097600C45C72 /* AuthSignOutOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B473B547245E097600C45C72 /* AuthSignOutOperation.swift */; };
 		B473B54A245E09B600C45C72 /* AuthSignOutRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B473B549245E09B600C45C72 /* AuthSignOutRequest.swift */; };
-		B4926F6A2425013B007B769C /* AuthForgotPasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4926F692425013B007B769C /* AuthForgotPasswordRequest.swift */; };
-		B4926F6C242501A9007B769C /* AuthForgotPasswordResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4926F6B242501A9007B769C /* AuthForgotPasswordResult.swift */; };
-		B4926F6E24250219007B769C /* AuthForgotPasswordOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4926F6D24250219007B769C /* AuthForgotPasswordOperation.swift */; };
+		B4926F6A2425013B007B769C /* AuthResetPasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4926F692425013B007B769C /* AuthResetPasswordRequest.swift */; };
+		B4926F6C242501A9007B769C /* AuthResetPasswordResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4926F6B242501A9007B769C /* AuthResetPasswordResult.swift */; };
+		B4926F6E24250219007B769C /* AuthResetPasswordOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4926F6D24250219007B769C /* AuthResetPasswordOperation.swift */; };
 		B493E69124524D3200D9E521 /* DeliveryDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E69024524D3200D9E521 /* DeliveryDestination.swift */; };
 		B493E69324524E8C00D9E521 /* AuthUserAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E69224524E8C00D9E521 /* AuthUserAttribute.swift */; };
 		B493E69C245394B700D9E521 /* AuthNextSignUpStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E69B245394B700D9E521 /* AuthNextSignUpStep.swift */; };
@@ -859,9 +858,8 @@
 		AB74666B4E8B096CB3305EAE /* Pods-AmplifyAppExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AmplifyAppExample.release.xcconfig"; path = "Target Support Files/Pods-AmplifyAppExample/Pods-AmplifyAppExample.release.xcconfig"; sourceTree = "<group>"; };
 		AE1BE989582A3F5BB378AF15 /* Pods-AWSPinpointAnalyticsPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPlugin.release.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPlugin/Pods-AWSPinpointAnalyticsPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		B2CF34EB93BFDE1F02457D5E /* Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests/Pods-AWSPlugins-AWSPinpointAnalyticsPlugin-AWSPinpointAnalyticsPluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		B4251A0024250369007F59EF /* AuthConfirmForgotPwdRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmForgotPwdRequest.swift; sourceTree = "<group>"; };
-		B4251A02242503A0007F59EF /* AuthConfirmForgotPwdResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmForgotPwdResult.swift; sourceTree = "<group>"; };
-		B4251A04242503F6007F59EF /* AuthConfirmForgotPwdOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmForgotPwdOperation.swift; sourceTree = "<group>"; };
+		B4251A0024250369007F59EF /* AuthConfirmResetPasswordRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmResetPasswordRequest.swift; sourceTree = "<group>"; };
+		B4251A04242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmResetPasswordOperation.swift; sourceTree = "<group>"; };
 		B4251A062425047D007F59EF /* AuthChangePasswordRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthChangePasswordRequest.swift; sourceTree = "<group>"; };
 		B4251A0A242504FA007F59EF /* AuthChangePasswordOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthChangePasswordOperation.swift; sourceTree = "<group>"; };
 		B4340A23238325B900101BBA /* DefaultNetworkPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultNetworkPolicy.swift; sourceTree = "<group>"; };
@@ -885,9 +883,9 @@
 		B473B53F245DE93100C45C72 /* AuthConfirmSignInRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmSignInRequest.swift; sourceTree = "<group>"; };
 		B473B547245E097600C45C72 /* AuthSignOutOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignOutOperation.swift; sourceTree = "<group>"; };
 		B473B549245E09B600C45C72 /* AuthSignOutRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignOutRequest.swift; sourceTree = "<group>"; };
-		B4926F692425013B007B769C /* AuthForgotPasswordRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthForgotPasswordRequest.swift; sourceTree = "<group>"; };
-		B4926F6B242501A9007B769C /* AuthForgotPasswordResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthForgotPasswordResult.swift; sourceTree = "<group>"; };
-		B4926F6D24250219007B769C /* AuthForgotPasswordOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthForgotPasswordOperation.swift; sourceTree = "<group>"; };
+		B4926F692425013B007B769C /* AuthResetPasswordRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResetPasswordRequest.swift; sourceTree = "<group>"; };
+		B4926F6B242501A9007B769C /* AuthResetPasswordResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResetPasswordResult.swift; sourceTree = "<group>"; };
+		B4926F6D24250219007B769C /* AuthResetPasswordOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResetPasswordOperation.swift; sourceTree = "<group>"; };
 		B493E69024524D3200D9E521 /* DeliveryDestination.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeliveryDestination.swift; sourceTree = "<group>"; };
 		B493E69224524E8C00D9E521 /* AuthUserAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUserAttribute.swift; sourceTree = "<group>"; };
 		B493E69B245394B700D9E521 /* AuthNextSignUpStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthNextSignUpStep.swift; sourceTree = "<group>"; };
@@ -1843,18 +1841,18 @@
 			isa = PBXGroup;
 			children = (
 				B4251A0A242504FA007F59EF /* AuthChangePasswordOperation.swift */,
-				B4251A04242503F6007F59EF /* AuthConfirmForgotPwdOperation.swift */,
+				B4251A04242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift */,
 				B473B53D245DE8E100C45C72 /* AuthConfirmSignInOperation.swift */,
 				B450740C2411553D0098F02D /* AuthConfirmSignUpOperation.swift */,
-				B4926F6D24250219007B769C /* AuthForgotPasswordOperation.swift */,
 				B452F1D22450EEAE0069F7FA /* AuthResendSignUpCodeOperation.swift */,
+				B4926F6D24250219007B769C /* AuthResetPasswordOperation.swift */,
 				B450741024115C140098F02D /* AuthSignInOperation.swift */,
+				B4B5CC922457B7F90019C783 /* UserOperations */,
+				B473B547245E097600C45C72 /* AuthSignOutOperation.swift */,
+				B4A19DAC24101F7100DE2E55 /* AuthSignUpOperation.swift */,
 				B493E6A32453A32C00D9E521 /* AuthSocialWebUISignInOperation.swift */,
 				B4FA76042416E0F0006F59CE /* AuthStateOperation.swift */,
 				B4C499012415E0CA00067992 /* AuthWebUISignInOperation.swift */,
-				B473B547245E097600C45C72 /* AuthSignOutOperation.swift */,
-				B4A19DAC24101F7100DE2E55 /* AuthSignUpOperation.swift */,
-				B4B5CC922457B7F90019C783 /* UserOperations */,
 			);
 			path = Operation;
 			sourceTree = "<group>";
@@ -1864,9 +1862,12 @@
 			children = (
 				B450741424115C340098F02D /* AuthSignInResult.swift */,
 				B4926F6B242501A9007B769C /* AuthForgotPasswordResult.swift */,
-				B4251A02242503A0007F59EF /* AuthConfirmForgotPwdResult.swift */,
 				B43CD8552411472300BF5A60 /* AuthSignUpResult.swift */,
 				B4B5CCA02458A0490019C783 /* AuthUpdateAttributeResult.swift */,
+				B4251A08242504DB007F59EF /* AuthChangePasswordResult.swift */,
+				B4926F6B242501A9007B769C /* AuthResetPasswordResult.swift */,
+				B450741424115C340098F02D /* AuthSignInResult.swift */,
+				B43CD8552411472300BF5A60 /* AuthSignUpResult.swift */,
 			);
 			path = Result;
 			sourceTree = "<group>";
@@ -1894,13 +1895,14 @@
 			children = (
 				B4F7F3E724621E6200544B04 /* AuthAttributeResendConfirmationCodeRequest.swift */,
 				B4251A062425047D007F59EF /* AuthChangePasswordRequest.swift */,
-				B4251A0024250369007F59EF /* AuthConfirmForgotPwdRequest.swift */,
+				B4251A0024250369007F59EF /* AuthConfirmResetPasswordRequest.swift */,
 				B473B53F245DE93100C45C72 /* AuthConfirmSignInRequest.swift */,
 				B43CD8532411469D00BF5A60 /* AuthConfirmSignUpRequest.swift */,
 				B4B5CC8A2457B32D0019C783 /* AuthConfirmUserAttributeRequest.swift */,
 				B4B5CC802457B0690019C783 /* AuthFetchUserAttributesRequest.swift */,
 				B4926F692425013B007B769C /* AuthForgotPasswordRequest.swift */,
 				B452F1D42450EEEB0069F7FA /* AuthResendSignUpCodeRequest.swift */,
+				B4926F692425013B007B769C /* AuthResetPasswordRequest.swift */,
 				B450741224115C260098F02D /* AuthSignInRequest.swift */,
 				B473B549245E09B600C45C72 /* AuthSignOutRequest.swift */,
 				B43DC737241051A200D40275 /* AuthSignUpRequest.swift */,
@@ -3886,7 +3888,7 @@
 				FAC0A2AF22B4400100B50912 /* LoggingCategory+ClientBehavior.swift in Sources */,
 				95DAAB28237E63370028544F /* Celebrity.swift in Sources */,
 				FA0933812384749A00C2FD5F /* LoggingCategory+Logger.swift in Sources */,
-				B4926F6E24250219007B769C /* AuthForgotPasswordOperation.swift in Sources */,
+				B4926F6E24250219007B769C /* AuthResetPasswordOperation.swift in Sources */,
 				FA6BC87F235F5DAE0001A882 /* APICategoryInterceptorBehavior.swift in Sources */,
 				B9FAA175238EFC5A009414B4 /* String+Extensions.swift in Sources */,
 				B4B5CC992457B7FA0019C783 /* AuthFetchUserAttributeOperation.swift in Sources */,
@@ -3910,7 +3912,8 @@
 				FAC2351E227A053D00424678 /* APICategory.swift in Sources */,
 				FAC2351B227A053D00424678 /* APICategoryBehavior.swift in Sources */,
 				B473B540245DE93100C45C72 /* AuthConfirmSignInRequest.swift in Sources */,
-				B4926F6A2425013B007B769C /* AuthForgotPasswordRequest.swift in Sources */,
+				B4926F6A2425013B007B769C /* AuthResetPasswordRequest.swift in Sources */,
+				B4926F6A2425013B007B769C /* AuthResetPasswordRequest.swift in Sources */,
 				FA5D4CF3238AFD7B00D2F54A /* ModelRegistry+Syncable.swift in Sources */,
 				FAAFAF37239051E6002CF932 /* AtomicDictionary.swift in Sources */,
 				95DAAB2F237E63370028544F /* LanguageType.swift in Sources */,
@@ -4063,7 +4066,6 @@
 				95DAAB38237E63370028544F /* Landmark.swift in Sources */,
 				21FFF988230B7B2C005878EA /* AsychronousOperation.swift in Sources */,
 				95DAAB49237E639E0028544F /* IdentifyDocumentTextResult.swift in Sources */,
-				B4251A03242503A0007F59EF /* AuthConfirmForgotPwdResult.swift in Sources */,
 				FA0173352375F8A5005DDDFC /* LoggingError.swift in Sources */,
 				B4D38540236C97360014653D /* PredictionsCategoryPlugin.swift in Sources */,
 				B4B5CCA32458A1300019C783 /* AuthUpdateUserAttributesRequest.swift in Sources */,
@@ -4125,7 +4127,7 @@
 				95DAAB36237E63370028544F /* Selection.swift in Sources */,
 				B4251A0B242504FA007F59EF /* AuthChangePasswordOperation.swift in Sources */,
 				FAC0A2AD22B43FE700B50912 /* HubCategory+ClientBehavior.swift in Sources */,
-				B4251A0124250369007F59EF /* AuthConfirmForgotPwdRequest.swift in Sources */,
+				B4251A0124250369007F59EF /* AuthConfirmResetPasswordRequest.swift in Sources */,
 				FAAFAF2F23904B14002CF932 /* AtomicValue+Bool.swift in Sources */,
 				FACD26502386E9410068FBE6 /* JSONValue+Subscript.swift in Sources */,
 				B450741324115C260098F02D /* AuthSignInRequest.swift in Sources */,
@@ -4144,7 +4146,7 @@
 				B98E9D0E2372236300934B51 /* ModelKey.swift in Sources */,
 				B9FAA13C238BBE67009414B4 /* DataStoreCallback+Combine.swift in Sources */,
 				95DAAB8A237F13B70028544F /* TextToSpeechResult.swift in Sources */,
-				B4251A05242503F6007F59EF /* AuthConfirmForgotPwdOperation.swift in Sources */,
+				B4251A05242503F6007F59EF /* AuthConfirmResetPasswordOperation.swift in Sources */,
 				B98E9D122372236300934B51 /* QueryField.swift in Sources */,
 				B98E9D0F2372236300934B51 /* QueryOperator.swift in Sources */,
 				FAA64FC52397344D00B9C3C6 /* AtomicValue+RangeReplaceableCollection.swift in Sources */,
@@ -4154,7 +4156,7 @@
 				B493E69E245394E200D9E521 /* AuthSignUpStep.swift in Sources */,
 				95DAAB35237E63370028544F /* Polygon.swift in Sources */,
 				B452F1D52450EEEB0069F7FA /* AuthResendSignUpCodeRequest.swift in Sources */,
-				B4926F6C242501A9007B769C /* AuthForgotPasswordResult.swift in Sources */,
+				B4926F6C242501A9007B769C /* AuthResetPasswordResult.swift in Sources */,
 				B98E9D102372236300934B51 /* QueryPredicate.swift in Sources */,
 				B98E9D142372236300934B51 /* QueryPredicate+Equatable.swift in Sources */,
 			);

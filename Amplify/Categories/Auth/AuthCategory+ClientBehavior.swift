@@ -8,7 +8,7 @@
 import Foundation
 
 extension AuthCategory: AuthCategoryBehavior {
-
+    
     public func signUp(username: String,
                        password: String? = nil,
                        options: AuthSignUpOperation.Request.Options? = nil,
@@ -18,7 +18,7 @@ extension AuthCategory: AuthCategoryBehavior {
                              options: options,
                              listener: listener)
     }
-
+    
     public func confirmSignUp(username: String,
                               confirmationCode: String,
                               options: AuthConfirmSignUpOperation.Request.Options? = nil,
@@ -28,7 +28,7 @@ extension AuthCategory: AuthCategoryBehavior {
                                     options: options,
                                     listener: listener)
     }
-
+    
     public func resendSignUpCode(username: String,
                                  options: AuthResendSignUpCodeOperation.Request.Options? = nil,
                                  listener: AuthResendSignUpCodeOperation.EventListener?)
@@ -37,7 +37,7 @@ extension AuthCategory: AuthCategoryBehavior {
                                            options: options,
                                            listener: listener)
     }
-
+    
     public func signIn(username: String? = nil,
                        password: String? = nil,
                        options: AuthSignInOperation.Request.Options? = nil,
@@ -47,7 +47,7 @@ extension AuthCategory: AuthCategoryBehavior {
                              options: options,
                              listener: listener)
     }
-
+    
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthWebUISignInOperation.Request.Options? = nil,
                                 listener: AuthWebUISignInOperation.EventListener?) -> AuthWebUISignInOperation {
@@ -55,7 +55,7 @@ extension AuthCategory: AuthCategoryBehavior {
                                       options: options,
                                       listener: listener)
     }
-
+    
     public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthSocialWebUISignInOperation.Request.Options? = nil,
@@ -66,7 +66,7 @@ extension AuthCategory: AuthCategoryBehavior {
                                           options: options,
                                           listener: listener)
     }
-
+    
     public func confirmSignIn(challengeResponse: String,
                               options: AuthConfirmSignInOperation.Request.Options? = nil,
                               listener: AuthConfirmSignInOperation.EventListener?) -> AuthConfirmSignInOperation {
@@ -74,33 +74,34 @@ extension AuthCategory: AuthCategoryBehavior {
                                     options: options,
                                     listener: listener)
     }
-
+    
     public func signOut(options: AuthSignOutOperation.Request.Options? = nil,
                         listener: AuthSignOutOperation.EventListener?) -> AuthSignOutOperation {
         plugin.signOut(options: options, listener: listener)
     }
-
+    
     public func fetchAuthState(listener: AuthStateOperation.EventListener?) -> AuthStateOperation {
         return plugin.fetchAuthState(listener: listener)
     }
-
-    public func forgotPassword(username: String,
-                               options: AuthForgotPasswordOperation.Request.Options? = nil,
-                               listener: AuthForgotPasswordOperation.EventListener?) -> AuthForgotPasswordOperation {
-        return plugin.forgotPassword(username: username,
-                                     options: options,
-                                     listener: listener)
+    
+    public func resetPassword(for username: String,
+                              options: AuthResetPasswordOperation.Request.Options? = nil,
+                              listener: AuthResetPasswordOperation.EventListener?) -> AuthResetPasswordOperation {
+        return plugin.resetPassword(for: username,
+                                    options: options,
+                                    listener: listener)
     }
-
-    public func confirmForgotPassword(username: String,
-                                      newPassword: String,
-                                      confirmationCode: String,
-                                      options: AuthConfirmForgotPasswordOperation.Request.Options? = nil,
-                                      listener: AuthConfirmForgotPasswordOperation.EventListener?) -> AuthConfirmForgotPasswordOperation {
-        return plugin.confirmForgotPassword(username: username,
-                                            newPassword: newPassword,
-                                            confirmationCode: confirmationCode,
-                                            options: options,
-                                            listener: listener)
+    
+    public func confirmResetPassword(for username: String,
+                                     with newPassword: String,
+                                     confirmationCode: String,
+                                     options: AuthConfirmResetPasswordOperation.Request.Options? = nil,
+                                     listener: AuthConfirmResetPasswordOperation.EventListener?)
+        -> AuthConfirmResetPasswordOperation {
+            return plugin.confirmResetPassword(for: username,
+                                               with: newPassword,
+                                               confirmationCode: confirmationCode,
+                                               options: options,
+                                               listener: listener)
     }
 }

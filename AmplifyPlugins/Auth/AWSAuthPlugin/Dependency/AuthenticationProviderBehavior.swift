@@ -32,4 +32,10 @@ protocol AuthenticationProviderBehavior {
                  completionHandler: @escaping (Result<Void, AmplifyAuthError>) -> Void)
 
     func signInUsername() -> Result<String, AmplifyAuthError>
+
+    func resetPassword(request: AuthResetPasswordRequest,
+                       completionHandler: @escaping (Result<AuthResetPasswordResult, AmplifyAuthError>) -> Void)
+
+    func confirmResetPassword(request: AuthConfirmResetPasswordRequest,
+                              completionHandler: @escaping (Result<Void, AmplifyAuthError>) -> Void)
 }
