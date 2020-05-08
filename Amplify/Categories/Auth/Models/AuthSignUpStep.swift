@@ -9,7 +9,7 @@
 public enum AuthSignUpStep {
 
     /// Need to confirm the user
-    case confirmUser
+    case confirmUser(AuthCodeDeliveryDetails?, AdditionalInfo?)
 
     /// Sign up is complete
     case done
