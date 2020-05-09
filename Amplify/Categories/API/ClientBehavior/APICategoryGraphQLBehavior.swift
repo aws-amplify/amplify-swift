@@ -48,6 +48,18 @@ public protocol APICategoryGraphQLBehavior: class {
                           type: GraphQLMutationType,
                           listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M>
 
+    /// Performs a GraphQL mutate for the `Model` item. This operation will be asynchronous, with the callback
+    /// accessible both locally and via the Hub.
+    ///
+    /// - Parameters:
+    ///   - model: The instance of the `Model`.
+    ///   - type: The type of mutation to apply on the instance of `Model`.
+    ///   - listener: The event listener for the operation
+    /// - Returns: The AmplifyOperation being enqueued.
+    func mutate<M: Model>(of model: M,
+                          type: GraphQLMutationType,
+                          listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M>
+
     /// Performs a GraphQL subscribe operation for `Model` items.
     ///
     /// - Parameters:

@@ -7,6 +7,7 @@
 
 import XCTest
 import AWSMobileClient
+import AWSPluginsCore
 @testable import AWSAPICategoryPlugin
 @testable import Amplify
 @testable import AmplifyTestCommon
@@ -292,6 +293,54 @@ class GraphQLModelBasedTests: XCTestCase {
             }
         })
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    func testUpdatePostWithInvalidCondition() {
+        let uuid = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let title = testMethodName + "Title"
+        guard let createPost = createPost(id: uuid, title: title) else {
+            XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
+            return
+        }
+        let conditionTitle = "IdontCareUpdated"
+        let failureInvoked = expectation(description: "request failed")
+
+        let post = Post.keys
+        let condition = post.title == conditionTitle
+
+        _ = Amplify.API.mutate(of: createPost, where: condition, type: .update, listener: { event in
+            switch event {
+            case .completed(let data):
+                switch data {
+                case .success:
+                    XCTFail("This test should fail since we are expecting the condition check to fail on backend")
+                case .failure(let error):
+                    switch error {
+                    case .error(let errors):
+                        XCTAssertEqual(errors.count, 1)
+                        guard let error = errors.first,
+                            let extensions = error.extensions,
+                            case let .string(errorTypeValue) = extensions["errorType"] else {
+                            XCTFail("Failed to get errorType from extensions of the GraphQL error")
+                            return
+                        }
+                        let errorType = AppSyncErrorType(errorTypeValue)
+                        XCTAssertEqual(errorType, .conditionalCheck)
+                        failureInvoked.fulfill()
+                    case .partial(let model, let errors):
+                        XCTFail("partial: \(model), \(errors)")
+                    case .transformationError(let rawResponse, let apiError):
+                        XCTFail("transformationError: \(rawResponse), \(apiError)")
+                    }
+                }
+            case .failed(let error):
+                print(error)
+            default:
+                XCTFail("Could not get data back")
+            }
+        })
+        wait(for: [failureInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testOnCreatePostSubscriptionWithModel() {

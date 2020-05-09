@@ -31,6 +31,13 @@ public extension AWSAPIPlugin {
         return mutate(request: request, listener: listener)
     }
 
+    func mutate<M: Model>(of model: M,
+                          type: GraphQLMutationType,
+                          listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M> {
+        let request = GraphQLRequest<M>.mutation(of: model, type: type)
+        return mutate(request: request, listener: listener)
+    }
+
     func mutate(ofAnyModel anyModel: AnyModel,
                 type: GraphQLMutationType,
                 listener: GraphQLOperation<AnyModel>.EventListener?) -> GraphQLOperation<AnyModel> {

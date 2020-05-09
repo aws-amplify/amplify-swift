@@ -218,8 +218,8 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
 
     // MARK: Common functionality
 
-    func createBlog(id: String, name: String) -> Blog? {
-        var blog: Blog?
+    func createBlog(id: String, name: String) -> AWSAPICategoryPluginTestCommon.Blog? {
+        var blog: AWSAPICategoryPluginTestCommon.Blog?
         let completeInvoked = expectation(description: "request completed")
         let request = GraphQLRequest(apiName: BlogPostCommentGraphQLWithAPIKeyTests.blogPostGraphQLWithAPIKey,
                                      document: CreateBlogMutation.document,

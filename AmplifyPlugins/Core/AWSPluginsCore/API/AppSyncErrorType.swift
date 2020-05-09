@@ -12,7 +12,7 @@ public enum AppSyncErrorType: Equatable {
 
     private static let conditionalCheckFailedErrorString = "ConditionalCheckFailedException"
     private static let conflictUnhandledErrorString = "ConflictUnhandled"
-
+    private static let dynomoDBConditionalCheckFailed = "DynamoDB:ConditionalCheckFailedException"
     /// Conflict detection finds a version mismatch and the conflict handler rejects the mutation.
     /// See https://docs.aws.amazon.com/appsync/latest/devguide/conflict-detection-and-sync.html for more information
     case conflictUnhandled
@@ -23,7 +23,7 @@ public enum AppSyncErrorType: Equatable {
 
     public init(_ value: String) {
         switch value {
-        case AppSyncErrorType.conditionalCheckFailedErrorString:
+        case AppSyncErrorType.conditionalCheckFailedErrorString, AppSyncErrorType.dynomoDBConditionalCheckFailed:
             self = .conditionalCheck
         case AppSyncErrorType.conflictUnhandledErrorString:
             self = .conflictUnhandled

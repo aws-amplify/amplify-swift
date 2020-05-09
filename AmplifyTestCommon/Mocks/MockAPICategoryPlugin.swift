@@ -59,6 +59,21 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         return operation
     }
 
+    func mutate<M: Model>(of model: M,
+                          type: GraphQLMutationType,
+                          listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M> {
+        notify("mutate(of:\(model.modelName)-\(model.id),type:\(type),listener:)")
+        let options = GraphQLOperationRequest<M>.Options()
+        let request = GraphQLOperationRequest<M>(apiName: nil,
+                                                 operationType: .subscription,
+                                                 document: "",
+                                                 variables: nil,
+                                                 responseType: M.self,
+                                                 options: options)
+        let operation = MockGraphQLOperation(request: request, responseType: M.self)
+        return operation
+    }
+
     func mutate(ofAnyModel anyModel: AnyModel,
                 type: GraphQLMutationType,
                 listener: GraphQLOperation<AnyModel>.EventListener?) -> GraphQLOperation<AnyModel> {
