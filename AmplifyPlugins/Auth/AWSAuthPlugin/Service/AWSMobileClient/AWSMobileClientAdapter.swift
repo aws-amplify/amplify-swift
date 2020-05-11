@@ -12,8 +12,8 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
 
     let awsMobileClient: AWSMobileClient
 
-    init(configuration: [String: Any]) {
-        self.awsMobileClient = AWSMobileClient.init(configuration: configuration)
+    init() {
+        self.awsMobileClient = AWSMobileClient.default()
     }
 
     func initialize() throws {
@@ -199,5 +199,17 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
 
     func invalidateCachedTemporaryCredentials() {
         awsMobileClient.invalidateCachedTemporaryCredentials()
+    }
+
+    func addUserStateListener(_ object: AnyObject, _ callback: @escaping UserStateChangeCallback) {
+        awsMobileClient.addUserStateListener(object, callback)
+    }
+
+    func removeUserStateListener(_ object: AnyObject) {
+        awsMobileClient.removeUserStateListener(object)
+    }
+
+    func releaseSignInWait() {
+        awsMobileClient.releaseSignInWait()
     }
 }
