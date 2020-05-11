@@ -19,7 +19,7 @@ type Comment @model {
 type Blog
     @model
     @auth(rules: [
-        { allow: owner, ownerField: "owner", "operations: [create, read] },
+        { allow: owner, ownerField: "owner", operations: [create, read] },
         { allow: groups, groups: ["Admin"] }
     ]) {
     id: ID!

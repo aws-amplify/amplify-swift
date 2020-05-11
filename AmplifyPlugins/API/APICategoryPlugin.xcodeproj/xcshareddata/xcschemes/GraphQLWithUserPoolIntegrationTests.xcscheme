@@ -23,6 +23,9 @@
             </BuildableReference>
             <SkippedTests>
                <Test
+                  Identifier = "GraphQLWithUserPoolIntegrationTests/testCreateTodoMutationWithMissingInputFromVariables()">
+               </Test>
+               <Test
                   Identifier = "GraphQLWithUserPoolIntegrationTests/testSetUpOnce()">
                </Test>
             </SkippedTests>
