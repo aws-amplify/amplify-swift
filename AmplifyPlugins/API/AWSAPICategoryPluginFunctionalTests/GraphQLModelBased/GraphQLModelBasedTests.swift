@@ -295,7 +295,7 @@ class GraphQLModelBasedTests: XCTestCase {
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testUpdatePostWithInvalidCondition() {
+    func testUpdatePostWithInvalidConditionShouldReturnConditionalCheckFailed() {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
@@ -303,13 +303,12 @@ class GraphQLModelBasedTests: XCTestCase {
             XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
             return
         }
-        let conditionTitle = "IdontCareUpdated"
         let failureInvoked = expectation(description: "request failed")
 
         let post = Post.keys
-        let condition = post.title == conditionTitle
-
-        _ = Amplify.API.mutate(of: createPost, where: condition, type: .update, listener: { event in
+        let invalidCondition = post.title == "invalidTitle"
+        
+        _ = Amplify.API.mutate(of: createPost, where: invalidCondition, type: .update, listener: { event in
             switch event {
             case .completed(let data):
                 switch data {
