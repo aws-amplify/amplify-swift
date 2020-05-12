@@ -11,4 +11,6 @@ protocol AuthorizationProviderBehavior {
 
     func fetchSession(request: AuthFetchSessionRequest,
                       completionHandler: @escaping (Result<AuthSession, AuthError>) -> Void)
+
+    func invalidateCachedTemporaryCredentials()
 }

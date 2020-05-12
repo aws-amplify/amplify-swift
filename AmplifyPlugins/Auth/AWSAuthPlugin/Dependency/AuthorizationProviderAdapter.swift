@@ -33,4 +33,8 @@ class AuthorizationProviderAdapter: AuthorizationProviderBehavior {
             fetchSignedOutSession(completionHandler)
         }
     }
+
+    func invalidateCachedTemporaryCredentials() {
+        awsMobileClient.invalidateCachedTemporaryCredentials()
+    }
 }

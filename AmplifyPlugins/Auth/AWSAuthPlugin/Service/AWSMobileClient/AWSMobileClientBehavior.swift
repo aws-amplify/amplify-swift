@@ -94,4 +94,6 @@ protocol AWSMobileClientBehavior {
     func forgetDevice(deviceId: String, completionHandler: @escaping ((Error?) -> Void))
 
     func forgetCurrentDevice(_ completionHandler: @escaping ((Error?) -> Void))
+
+    func invalidateCachedTemporaryCredentials()
 }

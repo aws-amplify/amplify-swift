@@ -11,22 +11,26 @@ import AWSMobileClient
 
 public class AWSAuthService: AWSAuthServiceBehavior {
 
-    var mobileClient: AWSMobileClientBehavior!
 
-    public convenience init() {
-        self.init(mobileClient: nil)
+    public func getCredentialsProvider() -> AWSCredentialsProvider {
+        return AmplifyAWSCredentialsProvider()
     }
 
-    init(mobileClient: AWSMobileClientBehavior? = nil) {
-        let mobileClient = mobileClient ?? AWSMobileClientAdapter(AWSMobileClient.default())
-        self.mobileClient = mobileClient
-    }
+    public func getIdentityId() -> Result<String, Error> {
+        var result: Result<String, AuthError>? = nil
+        let semaphore = DispatchSemaphore(value: 0)
+        Amplify.Auth.fetchAuthSession { (event) in
+            switch event {
+            case .completed(let session):
+                print("")
+            case .failed(let error):
+                result = .failure(AuthError.unknown("Some error occuring retrieving the IdentityId."))
+            default:
+                result = .failure(AuthError.unknown("Some error occuring retrieving the IdentityId."))
+            }
+        }
+        semaphore.wait()
 
-    public func getCognitoCredentialsProvider() -> AWSCognitoCredentialsProvider {
-        return mobileClient.getCognitoCredentialsProvider()
-    }
-
-    public func getIdentityId() -> Result<String, AuthError> {
         let task = mobileClient.getIdentityId()
         task.waitUntilFinished()
 
