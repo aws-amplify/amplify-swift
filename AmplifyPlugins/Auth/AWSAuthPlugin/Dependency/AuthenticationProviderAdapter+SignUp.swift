@@ -20,7 +20,7 @@ extension AuthenticationProviderAdapter {
 
         // Convert the attributes to [String: String]
         let attributes = request.options.userAttributes?.reduce(into: [String: String]()) {
-            $0[$1.key.toString()] = $1.value
+            $0[$1.key.rawValue] = $1.value
         }
         awsMobileClient.signUp(username: request.username,
                                password: password,

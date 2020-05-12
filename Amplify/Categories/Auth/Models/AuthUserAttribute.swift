@@ -31,6 +31,7 @@ public enum AuthUserAttributeKey {
     case picture
     case preferredUsername
     case custom(String)
+    case unknown(String)
 }
 
 extension AuthUserAttributeKey: Hashable {}

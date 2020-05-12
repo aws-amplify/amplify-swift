@@ -31,8 +31,12 @@ extension AWSAuthPlugin {
             try awsMobileClient.initialize()
             let authenticationProvider = AuthenticationProviderAdapter(awsMobileClient: awsMobileClient)
             let authorizationProvider = AuthorizationProviderAdapter(awsMobileClient: awsMobileClient)
+            let userService = AuthUserServiceAdapter(awsMobileClient: awsMobileClient)
+            let deviceService = AuthDeviceServiceAdapter(awsMobileClient: awsMobileClient)
             configure(authenticationProvider: authenticationProvider,
-                      authorizationProvider: authorizationProvider)
+                      authorizationProvider: authorizationProvider,
+                      userService: userService,
+                      deviceService: deviceService)
         } catch let authError as AuthError {
             throw authError
         } catch {
@@ -58,9 +62,13 @@ extension AWSAuthPlugin {
     ///   - queue: The queue which operations are stored and dispatched for asychronous processing.
     func configure(authenticationProvider: AuthenticationProviderBehavior,
                    authorizationProvider: AuthorizationProviderBehavior,
+                   userService: AuthUserServiceBehavior,
+                   deviceService: AuthDeviceServiceBehavior,
                    queue: OperationQueue = OperationQueue()) {
         self.authenticationProvider = authenticationProvider
         self.authorizationProvider = authorizationProvider
+        self.userService = userService
+        self.deviceService = deviceService
         self.queue = queue
     }
 }
