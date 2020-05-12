@@ -10,7 +10,7 @@ import Foundation
 // MARK: - Enum
 
 public enum DataStoreError: Error {
-    case api(AmplifyError)
+    case api(AmplifyError, MutationEvent? = nil)
     case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
     case conflict(DataStoreSyncConflict)
     case invalidCondition(ErrorDescription, RecoverySuggestion, Error? = nil)
@@ -30,7 +30,7 @@ extension DataStoreError: AmplifyError {
 
     public var errorDescription: ErrorDescription {
         switch self {
-        case .api(let error):
+        case .api(let error, _):
             return error.errorDescription
         case .conflict:
             return "A conflict occurred syncing a local model with the remote API"
@@ -57,7 +57,7 @@ extension DataStoreError: AmplifyError {
 
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
-        case .api(let error):
+        case .api(let error, _):
             return error.recoverySuggestion
         case .conflict:
             return "See this error's associated value for the details of the conflict"
@@ -85,7 +85,7 @@ extension DataStoreError: AmplifyError {
 
     public var underlyingError: Error? {
         switch self {
-        case .api(let amplifyError):
+        case .api(let amplifyError, _):
             return amplifyError
         case .configuration(_, _, let underlyingError),
              .invalidCondition(_, _, let underlyingError),
