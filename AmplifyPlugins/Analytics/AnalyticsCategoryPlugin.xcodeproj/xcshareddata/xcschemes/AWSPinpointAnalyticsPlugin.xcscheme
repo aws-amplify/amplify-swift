@@ -37,6 +37,11 @@
                BlueprintName = "AWSPinpointAnalyticsPluginTests"
                ReferencedContainer = "container:AnalyticsCategoryPlugin.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "AWSPinpointAnalyticsPluginConfigureTests/testConfigureSuccess()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>
