@@ -79,7 +79,6 @@ struct AuthPluginErrorConstants {
         "A service error occured while trying to fetch AWS credentials",
         "Try again with exponential backoff")
 
-
     static let identityIdSessionExpiredError: AuthPluginErrorString = (
         "Session expired could not fetch identity id",
         "Invoke Auth.signIn to re-authenticate the user")

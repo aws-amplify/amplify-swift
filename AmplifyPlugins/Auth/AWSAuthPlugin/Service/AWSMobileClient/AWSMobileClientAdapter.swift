@@ -24,7 +24,7 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
             mobileClientError = error
         }
         if let error = mobileClientError {
-            throw AmplifyAuthError.configuration(
+            throw AuthError.configuration(
                 AuthPluginErrorConstants.mobileClientInitializeError.errorDescription,
                 AuthPluginErrorConstants.mobileClientInitializeError.recoverySuggestion,
                 error)

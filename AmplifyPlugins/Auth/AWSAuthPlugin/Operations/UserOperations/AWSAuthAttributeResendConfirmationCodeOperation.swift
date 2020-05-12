@@ -11,7 +11,7 @@ public class AWSAuthAttributeResendConfirmationCodeOperation: AmplifyOperation<
     AuthAttributeResendConfirmationCodeRequest,
     Void,
     AuthCodeDeliveryDetails,
-    AmplifyAuthError>,
+    AuthError>,
 AuthAttributeResendConfirmationCodeOperation {
 
     let userService: AuthUserServiceBehavior
@@ -47,12 +47,12 @@ AuthAttributeResendConfirmationCodeOperation {
     }
 
     private func dispatch(_ result: AuthCodeDeliveryDetails) {
-        let asyncEvent = AsyncEvent<Void, AuthCodeDeliveryDetails, AmplifyAuthError>.completed(result)
+        let asyncEvent = AsyncEvent<Void, AuthCodeDeliveryDetails, AuthError>.completed(result)
         dispatch(event: asyncEvent)
     }
 
-    private func dispatch(_ error: AmplifyAuthError) {
-        let asyncEvent = AsyncEvent<Void, AuthCodeDeliveryDetails, AmplifyAuthError>.failed(error)
+    private func dispatch(_ error: AuthError) {
+        let asyncEvent = AsyncEvent<Void, AuthCodeDeliveryDetails, AuthError>.failed(error)
         dispatch(event: asyncEvent)
     }
 }

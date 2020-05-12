@@ -96,7 +96,6 @@
 		219A88EF23F3358F00BBC5F2 /* TreeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A88EE23F3358F00BBC5F2 /* TreeTests.swift */; };
 		219A88F123F3379900BBC5F2 /* GraphQLDocumentInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219A88F023F3379900BBC5F2 /* GraphQLDocumentInput.swift */; };
 		21C395B3245729EC00597EA2 /* AppSyncErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */; };
-		21D1CE8C2334233F0003BAA8 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D1CE8B2334233F0003BAA8 /* AuthError.swift */; };
 		21D79FDA237617C60057D00D /* SubscriptionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FD9237617C60057D00D /* SubscriptionEvent.swift */; };
 		21D79FE12377BF4B0057D00D /* AuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FE02377BF4B0057D00D /* AuthProvider.swift */; };
 		21D79FE32377F4120057D00D /* SubscriptionConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FE22377F4120057D00D /* SubscriptionConnectionState.swift */; };
@@ -179,7 +178,7 @@
 		B43CD8562411472300BF5A60 /* AuthSignUpResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43CD8552411472300BF5A60 /* AuthSignUpResult.swift */; };
 		B43CD858241147F900BF5A60 /* AuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43CD857241147F900BF5A60 /* AuthUser.swift */; };
 		B43DC738241051A200D40275 /* AuthSignUpRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43DC737241051A200D40275 /* AuthSignUpRequest.swift */; };
-		B43DC73A2410526C00D40275 /* AmplifyAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43DC7392410526C00D40275 /* AmplifyAuthError.swift */; };
+		B43DC73A2410526C00D40275 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43DC7392410526C00D40275 /* AuthError.swift */; };
 		B450740D2411553D0098F02D /* AuthConfirmSignUpOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B450740C2411553D0098F02D /* AuthConfirmSignUpOperation.swift */; };
 		B450741124115C140098F02D /* AuthSignInOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B450741024115C140098F02D /* AuthSignInOperation.swift */; };
 		B450741324115C260098F02D /* AuthSignInRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B450741224115C260098F02D /* AuthSignInRequest.swift */; };
@@ -701,7 +700,6 @@
 		219A88EE23F3358F00BBC5F2 /* TreeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeTests.swift; sourceTree = "<group>"; };
 		219A88F023F3379900BBC5F2 /* GraphQLDocumentInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLDocumentInput.swift; sourceTree = "<group>"; };
 		21C395B2245729EC00597EA2 /* AppSyncErrorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncErrorType.swift; sourceTree = "<group>"; };
-		21D1CE8B2334233F0003BAA8 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
 		21D79FD9237617C60057D00D /* SubscriptionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionEvent.swift; sourceTree = "<group>"; };
 		21D79FE02377BF4B0057D00D /* AuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthProvider.swift; sourceTree = "<group>"; };
 		21D79FE22377F4120057D00D /* SubscriptionConnectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionConnectionState.swift; sourceTree = "<group>"; };
@@ -878,7 +876,7 @@
 		B43CD8552411472300BF5A60 /* AuthSignUpResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignUpResult.swift; sourceTree = "<group>"; };
 		B43CD857241147F900BF5A60 /* AuthUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUser.swift; sourceTree = "<group>"; };
 		B43DC737241051A200D40275 /* AuthSignUpRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignUpRequest.swift; sourceTree = "<group>"; };
-		B43DC7392410526C00D40275 /* AmplifyAuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyAuthError.swift; sourceTree = "<group>"; };
+		B43DC7392410526C00D40275 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
 		B450740C2411553D0098F02D /* AuthConfirmSignUpOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmSignUpOperation.swift; sourceTree = "<group>"; };
 		B450741024115C140098F02D /* AuthSignInOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignInOperation.swift; sourceTree = "<group>"; };
 		B450741224115C260098F02D /* AuthSignInRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignInRequest.swift; sourceTree = "<group>"; };
@@ -1584,7 +1582,6 @@
 		21FFF9A3230C973D005878EA /* Error */ = {
 			isa = PBXGroup;
 			children = (
-				21D1CE8B2334233F0003BAA8 /* AuthError.swift */,
 				210DBC462332F0C5009B9E51 /* StorageError.swift */,
 			);
 			path = Error;
@@ -1942,7 +1939,7 @@
 		B4A19DA924101E9D00DE2E55 /* Error */ = {
 			isa = PBXGroup;
 			children = (
-				B43DC7392410526C00D40275 /* AmplifyAuthError.swift */,
+				B43DC7392410526C00D40275 /* AuthError.swift */,
 			);
 			path = Error;
 			sourceTree = "<group>";
@@ -3936,7 +3933,7 @@
 				21FFF994230C96CB005878EA /* StorageUploadDataOperation.swift in Sources */,
 				95DAAB30237E63370028544F /* IdentifyAction.swift in Sources */,
 				21D79FE32377F4120057D00D /* SubscriptionConnectionState.swift in Sources */,
-				B43DC73A2410526C00D40275 /* AmplifyAuthError.swift in Sources */,
+				B43DC73A2410526C00D40275 /* AuthError.swift in Sources */,
 				95DAAB45237E639E0028544F /* IdentifyResult.swift in Sources */,
 				95DAAB21237E63370028544F /* LanguageDetectionResult.swift in Sources */,
 				FAC2351E227A053D00424678 /* APICategory.swift in Sources */,
@@ -4122,7 +4119,6 @@
 				B493E6A42453A32C00D9E521 /* AuthSocialWebUISignInOperation.swift in Sources */,
 				FA09B9492322CBD5000E064D /* HubCategoryConfiguration.swift in Sources */,
 				B9FAA1252388BE48009414B4 /* List+Model.swift in Sources */,
-				21D1CE8C2334233F0003BAA8 /* AuthError.swift in Sources */,
 				FAC0A2B222B4402000B50912 /* StorageCategory+ClientBehavior.swift in Sources */,
 				B9FAA1272388BE91009414B4 /* List+LazyLoad.swift in Sources */,
 				B4FA76072416E82B006F59CE /* AuthFetchSessionRequest.swift in Sources */,

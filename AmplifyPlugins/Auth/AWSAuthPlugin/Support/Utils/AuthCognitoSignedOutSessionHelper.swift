@@ -17,7 +17,7 @@ struct AuthCognitoSignedOutSessionHelper {
     ///   - awsCredentials: Valid AWS Credentials for the current signedOut session
     /// - Returns: Returns a valid signedOut session
     static func makeSignedOutSession(identityId: String,
-                                 awsCredentials: AuthAWSCredentials) -> AWSAuthCognitoSession {
+                                     awsCredentials: AuthAWSCredentials) -> AWSAuthCognitoSession {
         let tokensError = makeCognitoTokensSignedOutError()
         let userSubError = makeUserSubSignedOutError()
         let authSession = AWSAuthCognitoSession(isSignedIn: false,
@@ -43,10 +43,10 @@ struct AuthCognitoSignedOutSessionHelper {
                 return makeSignedOutSessionWithServiceIssue()
             }
         }
-        if let authError = error as? AmplifyAuthError {
+        if let authError = error as? AuthError {
             return makeSignedOutSession(withUnhandledError: authError)
         } else {
-            let authError = AuthErrorHelper.toAmplifyAuthError(error)
+            let authError = AuthErrorHelper.toAuthError(error)
             return makeSignedOutSession(withUnhandledError: authError)
         }
     }
@@ -58,7 +58,7 @@ struct AuthCognitoSignedOutSessionHelper {
     ///
     /// - Parameter error: Unhandled error
     /// - Returns: Session will have isSignedIn = false
-    private static func makeSignedOutSession(withUnhandledError error: AmplifyAuthError) -> AWSAuthCognitoSession {
+    private static func makeSignedOutSession(withUnhandledError error: AuthError) -> AWSAuthCognitoSession {
 
         let identityIdError = error
         let awsCredentialsError = error
@@ -77,12 +77,12 @@ struct AuthCognitoSignedOutSessionHelper {
     /// Guest/SignOut session when the guest access is not enabled.
     /// - Returns: Session with isSignedIn = false
     private static func makeSessionWithNoGuestAccess() -> AWSAuthCognitoSession {
-        let identityIdError = AmplifyAuthError.service(
+        let identityIdError = AuthError.service(
             AuthPluginErrorConstants.identityIdSignOutError.errorDescription,
             AuthPluginErrorConstants.identityIdSignOutError.recoverySuggestion,
             AWSCognitoAuthError.invalidAccountTypeException)
 
-        let awsCredentialsError = AmplifyAuthError.service(
+        let awsCredentialsError = AuthError.service(
             AuthPluginErrorConstants.awsCredentialsSignOutError.errorDescription,
             AuthPluginErrorConstants.awsCredentialsSignOutError.recoverySuggestion,
             AWSCognitoAuthError.invalidAccountTypeException)
@@ -99,12 +99,12 @@ struct AuthCognitoSignedOutSessionHelper {
     }
 
     private static func makeOfflineSignedOutSession() -> AWSAuthCognitoSession {
-        let identityIdError = AmplifyAuthError.service(
+        let identityIdError = AuthError.service(
             AuthPluginErrorConstants.identityIdOfflineError.errorDescription,
             AuthPluginErrorConstants.identityIdOfflineError.recoverySuggestion,
             AWSCognitoAuthError.network)
 
-        let awsCredentialsError = AmplifyAuthError.service(
+        let awsCredentialsError = AuthError.service(
             AuthPluginErrorConstants.awsCredentialsOfflineError.errorDescription,
             AuthPluginErrorConstants.awsCredentialsOfflineError.recoverySuggestion,
             AWSCognitoAuthError.network)
@@ -124,11 +124,11 @@ struct AuthCognitoSignedOutSessionHelper {
     /// - Returns: Session will have isSignedIn = false
     private static func makeSignedOutSessionWithServiceIssue() -> AWSAuthCognitoSession {
 
-        let identityIdError = AmplifyAuthError.service(
+        let identityIdError = AuthError.service(
             AuthPluginErrorConstants.identityIdServiceError.errorDescription,
             AuthPluginErrorConstants.identityIdServiceError.recoverySuggestion)
 
-        let awsCredentialsError = AmplifyAuthError.service(
+        let awsCredentialsError = AuthError.service(
             AuthPluginErrorConstants.awsCredentialsServiceError.errorDescription,
             AuthPluginErrorConstants.awsCredentialsServiceError.recoverySuggestion)
 
@@ -143,16 +143,16 @@ struct AuthCognitoSignedOutSessionHelper {
         return authSession
     }
 
-    private static func makeUserSubSignedOutError() -> AmplifyAuthError {
-        let userSubError = AmplifyAuthError.service(
+    private static func makeUserSubSignedOutError() -> AuthError {
+        let userSubError = AuthError.service(
             AuthPluginErrorConstants.userSubSignOutError.errorDescription,
             AuthPluginErrorConstants.userSubSignOutError.recoverySuggestion,
             AWSCognitoAuthError.signedOut)
         return userSubError
     }
 
-    private static func makeCognitoTokensSignedOutError() -> AmplifyAuthError {
-        let tokensError = AmplifyAuthError.service(
+    private static func makeCognitoTokensSignedOutError() -> AuthError {
+        let tokensError = AuthError.service(
             AuthPluginErrorConstants.cognitoTokensSignOutError.errorDescription,
             AuthPluginErrorConstants.cognitoTokensSignOutError.recoverySuggestion,
             AWSCognitoAuthError.signedOut)

@@ -10,7 +10,7 @@ import AWSMobileClient
 
 extension AuthenticationProviderAdapter {
 
-    func signOut(request: AuthSignOutRequest, completionHandler: @escaping (Result<Void, AmplifyAuthError>) -> Void) {
+    func signOut(request: AuthSignOutRequest, completionHandler: @escaping (Result<Void, AuthError>) -> Void) {
 
         // If user is signed in through HostedUI the signout require UI to complete. So calling this in main thread.
         DispatchQueue.main.async { [weak self] in
@@ -21,7 +21,7 @@ extension AuthenticationProviderAdapter {
         }
     }
 
-    private func signOutWithUI(_ completionHandler: @escaping (Result<Void, AmplifyAuthError>) -> Void) {
+    private func signOutWithUI(_ completionHandler: @escaping (Result<Void, AuthError>) -> Void) {
 
         // Stop the execution here if we are not running on the main thread.
         // There is no point on returning an error back to the developer, because
@@ -30,7 +30,7 @@ extension AuthenticationProviderAdapter {
         let signOutOptions = SignOutOptions(signOutGlobally: true, invalidateTokens: true)
         awsMobileClient.signOut(options: signOutOptions) { error in
             guard error == nil else {
-                let authError = AuthErrorHelper.toAmplifyAuthError(error!)
+                let authError = AuthErrorHelper.toAuthError(error!)
                 completionHandler(.failure(authError))
                 return
             }

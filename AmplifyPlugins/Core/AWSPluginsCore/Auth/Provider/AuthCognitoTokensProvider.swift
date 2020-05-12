@@ -8,7 +8,7 @@
 import Amplify
 
 public protocol AuthCognitoTokensProvider {
-    func getCognitoTokens() -> Result<AuthCognitoTokens, AmplifyAuthError>
+    func getCognitoTokens() -> Result<AuthCognitoTokens, AuthError>
 }
 
 public protocol AuthCognitoTokens {

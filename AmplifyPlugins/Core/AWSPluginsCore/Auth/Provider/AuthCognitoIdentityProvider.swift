@@ -8,7 +8,7 @@
 import Amplify
 
 public protocol AuthCognitoIdentityProvider {
-    func getIdentityId() -> Result<String, AmplifyAuthError>
+    func getIdentityId() -> Result<String, AuthError>
 
-    func getUserSub() -> Result<String, AmplifyAuthError>
+    func getUserSub() -> Result<String, AuthError>
 }

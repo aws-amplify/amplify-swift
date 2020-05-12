@@ -10,7 +10,7 @@ import Foundation
 public protocol AuthSocialWebUISignInOperation: AmplifyOperation<AuthWebUISignInRequest,
     Void,
     AuthSignInResult,
-AmplifyAuthError> {}
+AuthError> {}
 
 public extension HubPayload.EventName.Auth {
 

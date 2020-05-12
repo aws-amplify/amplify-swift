@@ -11,20 +11,20 @@ import AWSMobileClient
 extension AuthenticationProviderAdapter {
 
     func resetPassword(request: AuthResetPasswordRequest,
-                       completionHandler: @escaping (Result<AuthResetPasswordResult, AmplifyAuthError>) -> Void ) {
+                       completionHandler: @escaping (Result<AuthResetPasswordResult, AuthError>) -> Void ) {
 
         let clientMetaData = (request.options.pluginOptions as? AWSAuthResetPasswordOptions)?.metadata ?? [:]
         awsMobileClient.forgotPassword(
             username: request.username,
             clientMetaData: clientMetaData) { result, error in
                 if let error = error {
-                    let authError = AuthErrorHelper.toAmplifyAuthError(error)
+                    let authError = AuthErrorHelper.toAuthError(error)
                     completionHandler(.failure(authError))
                     return
                 }
                 guard let result = result else {
                     // This should not happen, return an unknown error.
-                    let error = AmplifyAuthError.unknown("Could not read result from resetPassword operation")
+                    let error = AuthError.unknown("Could not read result from resetPassword operation")
                     completionHandler(.failure(error))
                     return
                 }
@@ -32,7 +32,7 @@ extension AuthenticationProviderAdapter {
                 // Expecting the api to return a codeDeliveryDetail always. If we couldnot find the delivery
                 // details return an unknown error
                 guard let codeDeliveryDetails = result.codeDeliveryDetails?.toAuthCodeDeliveryDetails() else {
-                    let error = AmplifyAuthError.unknown("""
+                    let error = AuthError.unknown("""
                     Could not read delivery details for the confirmation code from resetPassword result.
                     """)
                     completionHandler(.failure(error))
@@ -46,7 +46,7 @@ extension AuthenticationProviderAdapter {
     }
 
     func confirmResetPassword(request: AuthConfirmResetPasswordRequest,
-                              completionHandler: @escaping (Result<Void, AmplifyAuthError>) -> Void) {
+                              completionHandler: @escaping (Result<Void, AuthError>) -> Void) {
 
         let clientMetaData = (request.options.pluginOptions as? AWSAuthConfirmResetPasswordOptions)?.metadata ?? [:]
         awsMobileClient.confirmForgotPassword(
@@ -55,7 +55,7 @@ extension AuthenticationProviderAdapter {
             confirmationCode: request.confirmationCode,
             clientMetaData: clientMetaData) { _, error in
                 if let error = error {
-                    let authError = AuthErrorHelper.toAmplifyAuthError(error)
+                    let authError = AuthErrorHelper.toAuthError(error)
                     completionHandler(.failure(authError))
                     return
                 }

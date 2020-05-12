@@ -11,31 +11,31 @@ import Amplify
 protocol AuthenticationProviderBehavior {
 
     func signUp(request: AuthSignUpRequest,
-                completionHandler: @escaping (Result<AuthSignUpResult, AmplifyAuthError>) -> Void)
+                completionHandler: @escaping (Result<AuthSignUpResult, AuthError>) -> Void)
 
     func confirmSignUp(request: AuthConfirmSignUpRequest,
-                       completionHandler: @escaping (Result<AuthSignUpResult, AmplifyAuthError>) -> Void)
+                       completionHandler: @escaping (Result<AuthSignUpResult, AuthError>) -> Void)
 
     func resendSignUpCode(request: AuthResendSignUpCodeRequest,
-                          completionHandler: @escaping (Result<AuthCodeDeliveryDetails, AmplifyAuthError>) -> Void)
+                          completionHandler: @escaping (Result<AuthCodeDeliveryDetails, AuthError>) -> Void)
 
     func signIn(request: AuthSignInRequest,
-                completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void)
+                completionHandler: @escaping (Result<AuthSignInResult, AuthError>) -> Void)
 
     func signInWithWebUI(request: AuthWebUISignInRequest,
-                         completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void)
+                         completionHandler: @escaping (Result<AuthSignInResult, AuthError>) -> Void)
 
     func confirmSignIn(request: AuthConfirmSignInRequest,
-                       completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void)
+                       completionHandler: @escaping (Result<AuthSignInResult, AuthError>) -> Void)
 
     func signOut(request: AuthSignOutRequest,
-                 completionHandler: @escaping (Result<Void, AmplifyAuthError>) -> Void)
+                 completionHandler: @escaping (Result<Void, AuthError>) -> Void)
 
-    func signInUsername() -> Result<String, AmplifyAuthError>
+    func signInUsername() -> Result<String, AuthError>
 
     func resetPassword(request: AuthResetPasswordRequest,
-                       completionHandler: @escaping (Result<AuthResetPasswordResult, AmplifyAuthError>) -> Void)
+                       completionHandler: @escaping (Result<AuthResetPasswordResult, AuthError>) -> Void)
 
     func confirmResetPassword(request: AuthConfirmResetPasswordRequest,
-                              completionHandler: @escaping (Result<Void, AmplifyAuthError>) -> Void)
+                              completionHandler: @escaping (Result<Void, AuthError>) -> Void)
 }

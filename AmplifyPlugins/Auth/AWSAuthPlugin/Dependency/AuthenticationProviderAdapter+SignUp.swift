@@ -10,7 +10,7 @@ import Amplify
 extension AuthenticationProviderAdapter {
 
     func signUp(request: AuthSignUpRequest,
-                completionHandler: @escaping (Result<AuthSignUpResult, AmplifyAuthError>) -> Void) {
+                completionHandler: @escaping (Result<AuthSignUpResult, AuthError>) -> Void) {
 
         // Password validation already completed in operation
         let password = request.password ?? ""
@@ -29,14 +29,14 @@ extension AuthenticationProviderAdapter {
                                clientMetaData: clientMetaData) { result, error in
 
                                 guard error == nil else {
-                                    let authError = AuthErrorHelper.toAmplifyAuthError(error!)
+                                    let authError = AuthErrorHelper.toAuthError(error!)
                                     completionHandler(.failure(authError))
                                     return
                                 }
 
                                 guard let result = result else {
                                     // This should not happen, return an unknown error.
-                                    let error = AmplifyAuthError.unknown("""
+                                    let error = AuthError.unknown("""
                                     Could not read result from signUp operation. The operation did not return any error
                                     or result from the api.
                                     """)
@@ -53,7 +53,7 @@ extension AuthenticationProviderAdapter {
     }
 
     func confirmSignUp(request: AuthConfirmSignUpRequest,
-                       completionHandler: @escaping (Result<AuthSignUpResult, AmplifyAuthError>) -> Void) {
+                       completionHandler: @escaping (Result<AuthSignUpResult, AuthError>) -> Void) {
 
         let clientMetaData = (request.options.pluginOptions as? AWSAuthConfirmSignUpOptions)?.metadata ?? [:]
 
@@ -62,14 +62,14 @@ extension AuthenticationProviderAdapter {
                                       clientMetaData: clientMetaData) { result, error in
 
                                         guard error == nil else {
-                                            let authError = AuthErrorHelper.toAmplifyAuthError(error!)
+                                            let authError = AuthErrorHelper.toAuthError(error!)
                                             completionHandler(.failure(authError))
                                             return
                                         }
 
                                         guard result != nil else {
                                             // This should not happen, return an unknown error.
-                                            let error = AmplifyAuthError.unknown("""
+                                            let error = AuthError.unknown("""
                                             Could not read result from confirmSignUp operation
                                             """)
                                             completionHandler(.failure(error))
@@ -81,11 +81,11 @@ extension AuthenticationProviderAdapter {
     }
 
     func resendSignUpCode(request: AuthResendSignUpCodeRequest,
-                          completionHandler: @escaping (Result<AuthCodeDeliveryDetails, AmplifyAuthError>) -> Void) {
+                          completionHandler: @escaping (Result<AuthCodeDeliveryDetails, AuthError>) -> Void) {
 
         awsMobileClient.resendSignUpCode(username: request.username) { result, error in
             guard error == nil else {
-                let authError = AuthErrorHelper.toAmplifyAuthError(error!)
+                let authError = AuthErrorHelper.toAuthError(error!)
                 completionHandler(.failure(authError))
                 return
             }
@@ -93,7 +93,7 @@ extension AuthenticationProviderAdapter {
             guard let result = result,
                 let deliveryDetails = result.codeDeliveryDetails else {
                     // This should not happen, return an unknown error.
-                    let error = AmplifyAuthError.unknown("Could not read result from resendSignUpCode operation")
+                    let error = AuthError.unknown("Could not read result from resendSignUpCode operation")
                     completionHandler(.failure(error))
                     return
             }

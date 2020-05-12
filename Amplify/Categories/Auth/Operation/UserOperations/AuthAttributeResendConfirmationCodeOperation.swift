@@ -8,7 +8,7 @@
 public protocol AuthAttributeResendConfirmationCodeOperation: AmplifyOperation<AuthAttributeResendConfirmationCodeRequest,
     Void,
     AuthCodeDeliveryDetails,
-AmplifyAuthError> {}
+AuthError> {}
 
 public extension HubPayload.EventName.Auth {
 

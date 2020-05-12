@@ -12,7 +12,7 @@ import Amplify
 public class AWSAuthConfirmSignInOperation: AmplifyOperation<AuthConfirmSignInRequest,
     Void,
     AuthSignInResult,
-    AmplifyAuthError>,
+    AuthError>,
 AuthConfirmSignInOperation {
 
     let authenticationProvider: AuthenticationProviderBehavior
@@ -57,12 +57,12 @@ AuthConfirmSignInOperation {
     }
 
     private func dispatch(_ result: AuthSignInResult) {
-        let asyncEvent = AsyncEvent<Void, AuthSignInResult, AmplifyAuthError>.completed(result)
+        let asyncEvent = AsyncEvent<Void, AuthSignInResult, AuthError>.completed(result)
         dispatch(event: asyncEvent)
     }
 
-    private func dispatch(_ error: AmplifyAuthError) {
-        let asyncEvent = AsyncEvent<Void, AuthSignInResult, AmplifyAuthError>.failed(error)
+    private func dispatch(_ error: AuthError) {
+        let asyncEvent = AsyncEvent<Void, AuthSignInResult, AuthError>.failed(error)
         dispatch(event: asyncEvent)
     }
 }

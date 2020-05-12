@@ -10,7 +10,7 @@ import Foundation
 public protocol AuthRememberDeviceOperation: AmplifyOperation<AuthRememberDeviceRequest,
     Void,
     Void,
-AmplifyAuthError> {}
+AuthError> {}
 
 public extension HubPayload.EventName.Auth {
 

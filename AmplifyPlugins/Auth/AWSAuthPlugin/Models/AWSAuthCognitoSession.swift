@@ -17,19 +17,19 @@ AuthCognitoIdentityProvider {
     /// Indicates whether the user is signedIn or not
     public var isSignedIn: Bool
 
-    public let userSubResult: Result<String, AmplifyAuthError>
+    public let userSubResult: Result<String, AuthError>
 
-    public let identityIdResult: Result<String, AmplifyAuthError>
+    public let identityIdResult: Result<String, AuthError>
 
-    public let awsCredentialsResult: Result<AuthAWSCredentials, AmplifyAuthError>
+    public let awsCredentialsResult: Result<AuthAWSCredentials, AuthError>
 
-    public let cognitoTokensResult: Result<AuthCognitoTokens, AmplifyAuthError>
+    public let cognitoTokensResult: Result<AuthCognitoTokens, AuthError>
 
     init(isSignedIn: Bool,
-         userSubResult: Result<String, AmplifyAuthError>,
-         identityIdResult: Result<String, AmplifyAuthError>,
-         awsCredentialsResult: Result<AuthAWSCredentials, AmplifyAuthError>,
-         cognitoTokensResult: Result<AuthCognitoTokens, AmplifyAuthError>) {
+         userSubResult: Result<String, AuthError>,
+         identityIdResult: Result<String, AuthError>,
+         awsCredentialsResult: Result<AuthAWSCredentials, AuthError>,
+         cognitoTokensResult: Result<AuthCognitoTokens, AuthError>) {
         self.isSignedIn = isSignedIn
         self.userSubResult = userSubResult
         self.identityIdResult = identityIdResult
@@ -37,19 +37,19 @@ AuthCognitoIdentityProvider {
         self.cognitoTokensResult = cognitoTokensResult
     }
 
-    public func getAWSCredentials() -> Result<AuthAWSCredentials, AmplifyAuthError> {
+    public func getAWSCredentials() -> Result<AuthAWSCredentials, AuthError> {
         return awsCredentialsResult
     }
 
-    public func getCognitoTokens() -> Result<AuthCognitoTokens, AmplifyAuthError> {
+    public func getCognitoTokens() -> Result<AuthCognitoTokens, AuthError> {
         return cognitoTokensResult
     }
 
-    public func getIdentityId() -> Result<String, AmplifyAuthError> {
+    public func getIdentityId() -> Result<String, AuthError> {
         return identityIdResult
     }
 
-    public func getUserSub() -> Result<String, AmplifyAuthError> {
+    public func getUserSub() -> Result<String, AuthError> {
         return userSubResult
     }
 }

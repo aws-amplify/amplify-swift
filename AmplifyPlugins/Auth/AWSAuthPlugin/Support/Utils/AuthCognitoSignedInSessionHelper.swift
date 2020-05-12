@@ -10,21 +10,21 @@ import Amplify
 struct AuthCognitoSignedInSessionHelper {
 
     static func makeOfflineSignedInSession() -> AWSAuthCognitoSession {
-        let identityIdError = AmplifyAuthError.service(
+        let identityIdError = AuthError.service(
             AuthPluginErrorConstants.identityIdOfflineError.errorDescription,
             AuthPluginErrorConstants.identityIdOfflineError.recoverySuggestion,
             AWSCognitoAuthError.network)
 
-        let awsCredentialsError = AmplifyAuthError.service(
+        let awsCredentialsError = AuthError.service(
             AuthPluginErrorConstants.awsCredentialsOfflineError.errorDescription,
             AuthPluginErrorConstants.awsCredentialsOfflineError.recoverySuggestion,
             AWSCognitoAuthError.network)
 
-        let tokensError = AmplifyAuthError.service(
+        let tokensError = AuthError.service(
             AuthPluginErrorConstants.cognitoTokenOfflineError.errorDescription,
             AuthPluginErrorConstants.cognitoTokenOfflineError.recoverySuggestion,
             AWSCognitoAuthError.network)
-        let userSubError = AmplifyAuthError.service(
+        let userSubError = AuthError.service(
             AuthPluginErrorConstants.usersubOfflineError.errorDescription,
             AuthPluginErrorConstants.usersubOfflineError.recoverySuggestion,
             AWSCognitoAuthError.network)
@@ -38,22 +38,22 @@ struct AuthCognitoSignedInSessionHelper {
     }
 
     static func makeExpiredSignedInSession() -> AWSAuthCognitoSession {
-        let identityIdError = AmplifyAuthError.service(
+        let identityIdError = AuthError.service(
             AuthPluginErrorConstants.identityIdSessionExpiredError.errorDescription,
             AuthPluginErrorConstants.identityIdSessionExpiredError.recoverySuggestion,
             AWSCognitoAuthError.sessionExpired)
 
-        let awsCredentialsError = AmplifyAuthError.service(
+        let awsCredentialsError = AuthError.service(
             AuthPluginErrorConstants.awsCredentialsSessionExpiredError.errorDescription,
             AuthPluginErrorConstants.awsCredentialsSessionExpiredError.recoverySuggestion,
             AWSCognitoAuthError.sessionExpired)
 
-        let tokensError = AmplifyAuthError.service(
+        let tokensError = AuthError.service(
             AuthPluginErrorConstants.cognitoTokensSessionExpiredError.errorDescription,
             AuthPluginErrorConstants.cognitoTokensSessionExpiredError.recoverySuggestion,
             AWSCognitoAuthError.sessionExpired)
 
-        let userSubError = AmplifyAuthError.service(
+        let userSubError = AuthError.service(
             AuthPluginErrorConstants.usersubSessionExpiredError.errorDescription,
             AuthPluginErrorConstants.usersubSessionExpiredError.recoverySuggestion,
             AWSCognitoAuthError.sessionExpired)
@@ -70,7 +70,7 @@ struct AuthCognitoSignedInSessionHelper {
     ///
     /// - Parameter error: Unhandled error
     /// - Returns: Session will have isSignedIn = false
-    static func makeSignedInSession(withUnhandledError error: AmplifyAuthError) -> AWSAuthCognitoSession {
+    static func makeSignedInSession(withUnhandledError error: AuthError) -> AWSAuthCognitoSession {
 
         let authSession = AWSAuthCognitoSession(isSignedIn: true,
                                                 userSubResult: .failure(error),
@@ -80,32 +80,32 @@ struct AuthCognitoSignedInSessionHelper {
         return authSession
     }
 
-    static func userSubErrorForIdentityPoolFederation() -> AmplifyAuthError {
-        let userSubError = AmplifyAuthError.service(
+    static func userSubErrorForIdentityPoolFederation() -> AuthError {
+        let userSubError = AuthError.service(
             AuthPluginErrorConstants.userSubSignedInThroughCIDPError.errorDescription,
             AuthPluginErrorConstants.userSubSignedInThroughCIDPError.recoverySuggestion,
             AWSCognitoAuthError.invalidAccountTypeException)
         return userSubError
     }
 
-    static func cognitoTokenErrorForIdentityPoolFederation() -> AmplifyAuthError {
-        let tokensError = AmplifyAuthError.service(
+    static func cognitoTokenErrorForIdentityPoolFederation() -> AuthError {
+        let tokensError = AuthError.service(
             AuthPluginErrorConstants.cognitoTokenSignedInThroughCIDPError.errorDescription,
             AuthPluginErrorConstants.cognitoTokenSignedInThroughCIDPError.recoverySuggestion,
             AWSCognitoAuthError.invalidAccountTypeException)
         return tokensError
     }
 
-    static func identityIdErrorForInvalidConfiguration() -> AmplifyAuthError {
-        let identityIdError = AmplifyAuthError.service(
+    static func identityIdErrorForInvalidConfiguration() -> AuthError {
+        let identityIdError = AuthError.service(
             AuthPluginErrorConstants.signedInIdentityIdWithNoCIDPError.errorDescription,
             AuthPluginErrorConstants.signedInIdentityIdWithNoCIDPError.recoverySuggestion,
             AWSCognitoAuthError.invalidAccountTypeException)
         return identityIdError
     }
 
-    static func awsCredentialsErrorForInvalidConfiguration() -> AmplifyAuthError {
-        let awsCredentialsError = AmplifyAuthError.service(
+    static func awsCredentialsErrorForInvalidConfiguration() -> AuthError {
+        let awsCredentialsError = AuthError.service(
             AuthPluginErrorConstants.signedInAWSCredentialsWithNoCIDPError.errorDescription,
             AuthPluginErrorConstants.signedInAWSCredentialsWithNoCIDPError.recoverySuggestion,
             AWSCognitoAuthError.invalidAccountTypeException)

@@ -8,7 +8,7 @@
 public protocol AuthUpdateUserAttributesOperation: AmplifyOperation<AuthUpdateUserAttributesRequest,
     Void,
     [AuthUserAttributeKey: AuthUpdateAttributeResult],
-AmplifyAuthError> {}
+AuthError> {}
 
 public extension HubPayload.EventName.Auth {
 

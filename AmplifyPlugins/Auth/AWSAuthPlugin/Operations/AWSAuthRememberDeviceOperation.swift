@@ -11,7 +11,7 @@ import Amplify
 public class AWSAuthRememberDeviceOperation: AmplifyOperation<AuthRememberDeviceRequest,
     Void,
     Void,
-    AmplifyAuthError>,
+    AuthError>,
 AuthRememberDeviceOperation {
 
     let deviceService: AuthDeviceServiceBehavior
@@ -49,12 +49,12 @@ AuthRememberDeviceOperation {
     }
 
     private func dispatchSuccess() {
-        let asyncEvent = AsyncEvent<Void, Void, AmplifyAuthError>.completed(())
+        let asyncEvent = AsyncEvent<Void, Void, AuthError>.completed(())
         dispatch(event: asyncEvent)
     }
 
-    private func dispatch(_ error: AmplifyAuthError) {
-        let asyncEvent = AsyncEvent<Void, Void, AmplifyAuthError>.failed(error)
+    private func dispatch(_ error: AuthError) {
+        let asyncEvent = AsyncEvent<Void, Void, AuthError>.failed(error)
         dispatch(event: asyncEvent)
     }
 }

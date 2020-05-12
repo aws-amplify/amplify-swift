@@ -9,15 +9,15 @@ import Amplify
 
 extension AuthSignUpRequest {
 
-    func hasError() -> AmplifyAuthError? {
+    func hasError() -> AuthError? {
         guard !username.isEmpty else {
-            return AmplifyAuthError.validation(AuthPluginErrorConstants.signUpUsernameError.field,
+            return AuthError.validation(AuthPluginErrorConstants.signUpUsernameError.field,
                                                AuthPluginErrorConstants.signUpUsernameError.errorDescription,
                                                AuthPluginErrorConstants.signUpUsernameError.recoverySuggestion)
         }
 
         guard let password = password, !password.isEmpty else {
-            return AmplifyAuthError.validation(AuthPluginErrorConstants.signUpPasswordError.field,
+            return AuthError.validation(AuthPluginErrorConstants.signUpPasswordError.field,
                                                AuthPluginErrorConstants.signUpPasswordError.errorDescription,
                                                AuthPluginErrorConstants.signUpPasswordError.recoverySuggestion)
         }

@@ -8,7 +8,7 @@
 import Amplify
 import AWSMobileClient
 
-typealias SessionCompletionHandler = (Result<AuthSession, AmplifyAuthError>) -> Void
+typealias SessionCompletionHandler = (Result<AuthSession, AuthError>) -> Void
 
 class AuthorizationProviderAdapter: AuthorizationProviderBehavior {
 
