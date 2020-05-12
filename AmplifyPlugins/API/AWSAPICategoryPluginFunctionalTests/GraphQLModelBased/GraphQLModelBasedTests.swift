@@ -303,17 +303,16 @@ class GraphQLModelBasedTests: XCTestCase {
             XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
             return
         }
-        let failureInvoked = expectation(description: "request failed")
-
         let post = Post.keys
         let invalidCondition = post.title == "invalidTitle"
+        let failureInvoked = expectation(description: "request failed")
         
         _ = Amplify.API.mutate(of: createPost, where: invalidCondition, type: .update, listener: { event in
             switch event {
             case .completed(let data):
                 switch data {
                 case .success:
-                    XCTFail("This test should fail since we are expecting the condition check to fail on backend")
+                    XCTFail("Received successful response data but expecting conditional check failed")
                 case .failure(let error):
                     switch error {
                     case .error(let errors):
@@ -334,7 +333,7 @@ class GraphQLModelBasedTests: XCTestCase {
                     }
                 }
             case .failed(let error):
-                print(error)
+                XCTFail("Unexpected .failed event: \(error)")
             default:
                 XCTFail("Could not get data back")
             }
