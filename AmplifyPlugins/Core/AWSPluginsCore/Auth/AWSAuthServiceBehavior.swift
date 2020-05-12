@@ -9,11 +9,10 @@ import AWSCore
 import Amplify
 
 public protocol AWSAuthServiceBehavior: class {
+
     func getCredentialsProvider() -> AWSCredentialsProvider
 
     func getIdentityId() -> Result<String, AuthError>
 
     func getToken() -> Result<String, AuthError>
-
-    func reset()
 }

@@ -20,7 +20,7 @@ public class AmplifyAWSCredentialsProvider: NSObject, AWSCredentialsProvider {
             case .failed(let error):
                 completionSource.set(error: error)
             default:
-                let error = AmplifyAuthError.unknown("Fetch auth session returned an invalid result type")
+                let error = AuthError.unknown("Fetch auth session returned an invalid result type")
                 completionSource.set(error: error)
             }
         }
@@ -45,7 +45,7 @@ public class AmplifyAWSCredentialsProvider: NSObject, AWSCredentialsProvider {
         case .failure(let error):
             completionSource.set(error: error)
         case .none:
-            let error = AmplifyAuthError.unknown("Auth session doesnot include aws credentials information")
+            let error = AuthError.unknown("Auth session doesnot include aws credentials information")
             completionSource.set(error: error)
         }
     }

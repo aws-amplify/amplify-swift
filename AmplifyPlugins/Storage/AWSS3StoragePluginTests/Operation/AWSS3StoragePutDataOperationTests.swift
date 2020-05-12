@@ -42,7 +42,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testUploadDataOperationGetIdentityIdError() {
-        mockAuthService.getIdentityIdError = AuthError.identity("", "", "")
+        mockAuthService.getIdentityIdError = AuthError.service("", "", "")
 
         let options = StorageUploadDataRequest.Options(accessLevel: .protected)
         let request = StorageUploadDataRequest(key: testKey, data: testData, options: options)

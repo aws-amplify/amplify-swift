@@ -29,15 +29,15 @@ class AWSPredictionsService {
     let transcribeClientDelegate: NativeWSTranscribeStreamingClientDelegate!
 
     convenience init(configuration: PredictionsPluginConfiguration,
-                     cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
+                     credentialsProvider: AWSCredentialsProvider,
                      identifier: String) throws {
 
         let interpretServiceConfiguration = AmplifyAWSServiceConfiguration(region: configuration.interpret.region,
-                                                                           credentialsProvider: cognitoCredentialsProvider)
+                                                                           credentialsProvider: credentialsProvider)
         let identifyServiceConfiguration = AmplifyAWSServiceConfiguration(region: configuration.identify.region,
-                                                                          credentialsProvider: cognitoCredentialsProvider)
+                                                                          credentialsProvider: credentialsProvider)
         let convertServiceConfiguration =  AmplifyAWSServiceConfiguration(region: configuration.convert.region,
-                                                                          credentialsProvider: cognitoCredentialsProvider)
+                                                                          credentialsProvider: credentialsProvider)
 
         let awsTranslateAdapter = AWSPredictionsService.makeAWSTranslate(
             serviceConfiguration: convertServiceConfiguration,

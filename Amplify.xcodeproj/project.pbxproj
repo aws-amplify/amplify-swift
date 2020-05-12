@@ -405,7 +405,6 @@
 		FAAFAF3323904BA4002CF932 /* AtomicValue+NumericTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAFAF3223904BA4002CF932 /* AtomicValue+NumericTests.swift */; };
 		FAAFAF37239051E6002CF932 /* AtomicDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAFAF36239051E6002CF932 /* AtomicDictionary.swift */; };
 		FAAFAF3D2390D4A6002CF932 /* AmplifyErrorMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAFAF3C2390D4A6002CF932 /* AmplifyErrorMessages.swift */; };
-		FAB2C9A42384B218008EE879 /* MockAWSMobileClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E20D2318CD3900B3DEB5 /* MockAWSMobileClient.swift */; };
 		FAB2C9A52384B21C008EE879 /* MockAWSAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2125E2A72321DCDD00B3DEB5 /* MockAWSAuthService.swift */; };
 		FAB2C9A62384B229008EE879 /* AWSPluginsTestCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = FA131AE023610B6A0008381C /* AWSPluginsTestCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FAB3CA15238D9BE400F59BD0 /* DefaultLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB3CA14238D9BE400F59BD0 /* DefaultLogger.swift */; };
@@ -613,7 +612,6 @@
 		210DBC132332B3C6009B9E51 /* StorageGetURLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageGetURLOperation.swift; sourceTree = "<group>"; };
 		210DBC152332B3CB009B9E51 /* StorageDownloadDataOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageDownloadDataOperation.swift; sourceTree = "<group>"; };
 		210DBC462332F0C5009B9E51 /* StorageError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageError.swift; sourceTree = "<group>"; };
-		2125E20D2318CD3900B3DEB5 /* MockAWSMobileClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAWSMobileClient.swift; sourceTree = "<group>"; };
 		2125E2102318D73B00B3DEB5 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		2125E2512319EC3000B3DEB5 /* AmplifyTestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AmplifyTestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2125E2532319EC3100B3DEB5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -2333,7 +2331,6 @@
 				FA131AE023610B6A0008381C /* AWSPluginsTestCommon.h */,
 				FA131AE123610B6A0008381C /* Info.plist */,
 				2125E2A72321DCDD00B3DEB5 /* MockAWSAuthService.swift */,
-				2125E20D2318CD3900B3DEB5 /* MockAWSMobileClient.swift */,
 			);
 			path = AWSPluginsTestCommon;
 			sourceTree = "<group>";
@@ -3859,7 +3856,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAB2C9A42384B218008EE879 /* MockAWSMobileClient.swift in Sources */,
 				FAB2C9A52384B21C008EE879 /* MockAWSAuthService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
