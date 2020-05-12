@@ -7,8 +7,7 @@
 
 import Foundation
 
-// TODO: Rename to AuthError - #172336364
-public enum AmplifyAuthError {
+public enum AuthError {
     case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
     case service(ErrorDescription, RecoverySuggestion, Error? = nil)
     case unknown(ErrorDescription, Error? = nil)
@@ -17,7 +16,7 @@ public enum AmplifyAuthError {
     case invalidState(ErrorDescription, RecoverySuggestion, Error? = nil)
 }
 
-extension AmplifyAuthError: AmplifyError {
+extension AuthError: AmplifyError {
 
     public var underlyingError: Error? {
         switch self {

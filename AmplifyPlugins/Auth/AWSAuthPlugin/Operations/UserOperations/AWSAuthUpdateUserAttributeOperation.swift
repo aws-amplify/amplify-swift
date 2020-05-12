@@ -10,7 +10,7 @@ import Amplify
 public class AWSAuthUpdateUserAttributeOperation: AmplifyOperation<AuthUpdateUserAttributeRequest,
     Void,
     AuthUpdateAttributeResult,
-AmplifyAuthError>,
+AuthError>,
 AuthUpdateUserAttributeOperation {
 
     let userService: AuthUserServiceBehavior
@@ -47,12 +47,12 @@ AuthUpdateUserAttributeOperation {
      }
 
      private func dispatch(_ result: AuthUpdateAttributeResult) {
-         let asyncEvent = AsyncEvent<Void, AuthUpdateAttributeResult, AmplifyAuthError>.completed(result)
+         let asyncEvent = AsyncEvent<Void, AuthUpdateAttributeResult, AuthError>.completed(result)
          dispatch(event: asyncEvent)
      }
 
-     private func dispatch(_ error: AmplifyAuthError) {
-         let asyncEvent = AsyncEvent<Void, AuthUpdateAttributeResult, AmplifyAuthError>.failed(error)
+     private func dispatch(_ error: AuthError) {
+         let asyncEvent = AsyncEvent<Void, AuthUpdateAttributeResult, AuthError>.failed(error)
          dispatch(event: asyncEvent)
      }
 }

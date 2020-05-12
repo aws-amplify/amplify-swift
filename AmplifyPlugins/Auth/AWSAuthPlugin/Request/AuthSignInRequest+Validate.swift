@@ -9,9 +9,9 @@ import Amplify
 
 extension AuthSignInRequest {
 
-    func hasError() -> AmplifyAuthError? {
+    func hasError() -> AuthError? {
         guard let username = self.username, !username.isEmpty else {
-            return AmplifyAuthError.validation(AuthPluginErrorConstants.signInUsernameError.field,
+            return AuthError.validation(AuthPluginErrorConstants.signInUsernameError.field,
                                                AuthPluginErrorConstants.signInUsernameError.errorDescription,
                                                AuthPluginErrorConstants.signInUsernameError.recoverySuggestion)
         }

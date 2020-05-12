@@ -9,21 +9,21 @@ import Amplify
 
 extension AuthConfirmResetPasswordRequest {
 
-    func hasError() -> AmplifyAuthError? {
+    func hasError() -> AuthError? {
         guard !username.isEmpty else {
-            return AmplifyAuthError.validation(
+            return AuthError.validation(
                 AuthPluginErrorConstants.confirmResetPasswordUsernameError.field,
                 AuthPluginErrorConstants.confirmResetPasswordUsernameError.errorDescription,
                 AuthPluginErrorConstants.confirmResetPasswordUsernameError.recoverySuggestion)
         }
         guard !newPassword.isEmpty else {
-            return AmplifyAuthError.validation(
+            return AuthError.validation(
                 AuthPluginErrorConstants.confirmResetPasswordNewPasswordError.field,
                 AuthPluginErrorConstants.confirmResetPasswordNewPasswordError.errorDescription,
                 AuthPluginErrorConstants.confirmResetPasswordNewPasswordError.recoverySuggestion)
         }
         guard !confirmationCode.isEmpty else {
-            return AmplifyAuthError.validation(
+            return AuthError.validation(
                 AuthPluginErrorConstants.confirmResetPasswordCodeError.field,
                 AuthPluginErrorConstants.confirmResetPasswordCodeError.errorDescription,
                 AuthPluginErrorConstants.confirmResetPasswordCodeError.recoverySuggestion)

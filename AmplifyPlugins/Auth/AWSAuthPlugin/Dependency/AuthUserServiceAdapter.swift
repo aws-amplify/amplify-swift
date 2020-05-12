@@ -19,13 +19,13 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
                          completionHandler: @escaping FetchUserAttributesCompletion) {
         awsMobileClient.getUserAttributes { result, error in
             guard error == nil else {
-                let authError = AuthErrorHelper.toAmplifyAuthError(error!)
+                let authError = AuthErrorHelper.toAuthError(error!)
                 completionHandler(.failure(authError))
                 return
             }
             guard let result = result else {
                 // This should not happen, return an unknown error.
-                let error = AmplifyAuthError.unknown("Could not read result from fetchAttributes operation")
+                let error = AuthError.unknown("Could not read result from fetchAttributes operation")
                 completionHandler(.failure(error))
                 return
             }
@@ -42,7 +42,7 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
             switch result {
             case .success(let updateAttributeResultDict):
                 guard let updateResult = updateAttributeResultDict[request.userAttribute.key] else {
-                    let error = AmplifyAuthError.unknown("Could not read result from updateAttribute operation")
+                    let error = AuthError.unknown("Could not read result from updateAttribute operation")
                     completionHandler(.failure(error))
                     return
                 }
@@ -66,14 +66,14 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
         awsMobileClient.verifyUserAttribute(attributeName: request.attributeKey.toString()) { result, error in
 
             guard error == nil else {
-                let authError = AuthErrorHelper.toAmplifyAuthError(error!)
+                let authError = AuthErrorHelper.toAuthError(error!)
                 completionHandler(.failure(authError))
                 return
             }
 
             guard let result = result else {
                 // This should not happen, return an unknown error.
-                let error = AmplifyAuthError.unknown("""
+                let error = AuthError.unknown("""
                 Could not read result from resendAttributeConfirmationCode operation
                 """)
                 completionHandler(.failure(error))
@@ -95,7 +95,7 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
                                                             completionHandler(.success(()))
                                                             return
                                                         }
-                                                        let authError = AuthErrorHelper.toAmplifyAuthError(error)
+                                                        let authError = AuthErrorHelper.toAuthError(error)
                                                         completionHandler(.failure(authError))
         }
     }
@@ -108,7 +108,7 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
                                             completionHandler(.success(()))
                                             return
                                         }
-                                        let authError = AuthErrorHelper.toAmplifyAuthError(error)
+                                        let authError = AuthErrorHelper.toAuthError(error)
                                         completionHandler(.failure(authError))
         }
 
@@ -122,14 +122,14 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
         }
         awsMobileClient.updateUserAttributes(attributeMap: attributeMap) { result, error in
             guard error == nil else {
-                let authError = AuthErrorHelper.toAmplifyAuthError(error!)
+                let authError = AuthErrorHelper.toAuthError(error!)
                 completionHandler(.failure(authError))
                 return
             }
 
             guard let result = result else {
                 // This should not happen, return an unknown error.
-                let error = AmplifyAuthError.unknown("Could not read result from verifyUserAttribute operation")
+                let error = AuthError.unknown("Could not read result from verifyUserAttribute operation")
                 completionHandler(.failure(error))
                 return
             }

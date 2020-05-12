@@ -12,7 +12,7 @@ import AWSMobileClient
 public class AWSAuthSignUpOperation: AmplifyOperation<AuthSignUpRequest,
     Void,
     AuthSignUpResult,
-    AmplifyAuthError>,
+    AuthError>,
 AuthSignUpOperation {
 
     let authenticationProvider: AuthenticationProviderBehavior
@@ -61,12 +61,12 @@ AuthSignUpOperation {
     }
 
     private func dispatch(_ result: AuthSignUpResult) {
-        let asyncEvent = AsyncEvent<Void, AuthSignUpResult, AmplifyAuthError>.completed(result)
+        let asyncEvent = AsyncEvent<Void, AuthSignUpResult, AuthError>.completed(result)
         dispatch(event: asyncEvent)
     }
 
-    private func dispatch(_ error: AmplifyAuthError) {
-        let asyncEvent = AsyncEvent<Void, AuthSignUpResult, AmplifyAuthError>.failed(error)
+    private func dispatch(_ error: AuthError) {
+        let asyncEvent = AsyncEvent<Void, AuthSignUpResult, AuthError>.failed(error)
         dispatch(event: asyncEvent)
     }
 }

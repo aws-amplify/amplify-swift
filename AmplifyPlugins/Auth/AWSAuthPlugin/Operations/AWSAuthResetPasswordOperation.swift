@@ -11,7 +11,7 @@ import Amplify
 public class AWSAuthResetPasswordOperation: AmplifyOperation<AuthResetPasswordRequest,
     Void,
     AuthResetPasswordResult,
-    AmplifyAuthError>,
+    AuthError>,
 AuthResetPasswordOperation {
 
     let authenticationProvider: AuthenticationProviderBehavior
@@ -61,12 +61,12 @@ AuthResetPasswordOperation {
     }
 
     private func dispatch(_ result: AuthResetPasswordResult) {
-        let asyncEvent = AsyncEvent<Void, AuthResetPasswordResult, AmplifyAuthError>.completed(result)
+        let asyncEvent = AsyncEvent<Void, AuthResetPasswordResult, AuthError>.completed(result)
         dispatch(event: asyncEvent)
     }
 
-    private func dispatch(_ error: AmplifyAuthError) {
-        let asyncEvent = AsyncEvent<Void, AuthResetPasswordResult, AmplifyAuthError>.failed(error)
+    private func dispatch(_ error: AuthError) {
+        let asyncEvent = AsyncEvent<Void, AuthResetPasswordResult, AuthError>.failed(error)
         dispatch(event: asyncEvent)
     }
 }

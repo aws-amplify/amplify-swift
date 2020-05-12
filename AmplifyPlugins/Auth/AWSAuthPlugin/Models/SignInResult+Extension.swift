@@ -22,7 +22,7 @@ extension SignInResult {
         case .newPasswordRequired:
             return .confirmSignInWithNewPassword(nil)
         default:
-            throw (AmplifyAuthError.unknown("AWSMobileClient auth state is not handled"))
+            throw (AuthError.unknown("AWSMobileClient auth state is not handled"))
         }
     }
 }

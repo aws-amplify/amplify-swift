@@ -9,15 +9,15 @@ import Amplify
 
 extension AuthConfirmSignUpRequest {
 
-    func hasError() -> AmplifyAuthError? {
+    func hasError() -> AuthError? {
         guard !username.isEmpty else {
-            return AmplifyAuthError.validation(AuthPluginErrorConstants.confirmSignUpUsernameError.field,
+            return AuthError.validation(AuthPluginErrorConstants.confirmSignUpUsernameError.field,
                                                AuthPluginErrorConstants.confirmSignUpUsernameError.errorDescription,
                                                AuthPluginErrorConstants.confirmSignUpUsernameError.recoverySuggestion)
         }
 
         guard !code.isEmpty else {
-            return AmplifyAuthError.validation(AuthPluginErrorConstants.confirmSignUpCodeError.field,
+            return AuthError.validation(AuthPluginErrorConstants.confirmSignUpCodeError.field,
                                                AuthPluginErrorConstants.confirmSignUpCodeError.errorDescription,
                                                AuthPluginErrorConstants.confirmSignUpCodeError.recoverySuggestion)
         }

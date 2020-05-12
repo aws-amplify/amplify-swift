@@ -9,9 +9,9 @@ import Amplify
 
 extension AuthResendSignUpCodeRequest {
 
-    func hasError() -> AmplifyAuthError? {
+    func hasError() -> AuthError? {
         guard !username.isEmpty else {
-            return AmplifyAuthError.validation(AuthPluginErrorConstants.confirmSignUpUsernameError.field,
+            return AuthError.validation(AuthPluginErrorConstants.confirmSignUpUsernameError.field,
                                                AuthPluginErrorConstants.confirmSignUpUsernameError.errorDescription,
                                                AuthPluginErrorConstants.confirmSignUpUsernameError.recoverySuggestion)
         }

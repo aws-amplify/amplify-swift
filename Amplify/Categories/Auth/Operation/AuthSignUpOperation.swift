@@ -8,9 +8,9 @@
 import Foundation
 
 public protocol AuthSignUpOperation: AmplifyOperation<AuthSignUpRequest,
-Void,
-AuthSignUpResult,
-AmplifyAuthError> {}
+    Void,
+    AuthSignUpResult,
+AuthError> {}
 
 public extension HubPayload.EventName.Auth {
 

@@ -16,17 +16,17 @@ struct AuthDeviceServiceAdapter: AuthDeviceServiceBehavior {
     }
 
     func fetchDevices(request: AuthFetchDevicesRequest,
-                      completionHandler: @escaping (Result<[AuthDevice], AmplifyAuthError>) -> Void) {
+                      completionHandler: @escaping (Result<[AuthDevice], AuthError>) -> Void) {
 
         awsMobileClient.listDevices { result, error in
             if let error = error {
-                let authError = AuthErrorHelper.toAmplifyAuthError(error)
+                let authError = AuthErrorHelper.toAuthError(error)
                 completionHandler(.failure(authError))
                 return
             }
             guard let result = result else {
                 // This should not happen, return an unknown error.
-                let error = AmplifyAuthError.unknown("Could not read result from fetchDevices operation")
+                let error = AuthError.unknown("Could not read result from fetchDevices operation")
                 completionHandler(.failure(error))
                 return
             }
@@ -38,12 +38,12 @@ struct AuthDeviceServiceAdapter: AuthDeviceServiceBehavior {
     }
 
     func forgetDevice(request: AuthForgetDeviceRequest,
-                      completionHandler: @escaping (Result<Void, AmplifyAuthError>) -> Void) {
+                      completionHandler: @escaping (Result<Void, AuthError>) -> Void) {
 
         guard let device = request.device else {
             awsMobileClient.forgetCurrentDevice { error in
                 if let error = error {
-                    let authError = AuthErrorHelper.toAmplifyAuthError(error)
+                    let authError = AuthErrorHelper.toAuthError(error)
                     completionHandler(.failure(authError))
                     return
                 }
@@ -53,7 +53,7 @@ struct AuthDeviceServiceAdapter: AuthDeviceServiceBehavior {
         }
         awsMobileClient.forgetDevice(deviceId: device.id) { error in
             if let error = error {
-                let authError = AuthErrorHelper.toAmplifyAuthError(error)
+                let authError = AuthErrorHelper.toAuthError(error)
                 completionHandler(.failure(authError))
                 return
             }
@@ -64,10 +64,10 @@ struct AuthDeviceServiceAdapter: AuthDeviceServiceBehavior {
     }
 
     func rememberDevice(request: AuthRememberDeviceRequest,
-                        completionHandler: @escaping (Result<Void, AmplifyAuthError>) -> Void) {
+                        completionHandler: @escaping (Result<Void, AuthError>) -> Void) {
         awsMobileClient.updateDeviceStatus(remembered: true) { _, error in
             if let error = error {
-                let authError = AuthErrorHelper.toAmplifyAuthError(error)
+                let authError = AuthErrorHelper.toAuthError(error)
                 completionHandler(.failure(authError))
                 return
             }

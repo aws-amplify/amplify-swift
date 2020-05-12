@@ -51,17 +51,17 @@ extension AuthorizationProviderAdapter {
                         self.fetchSignedInSessionWithSessionExpiredError(completionHandler)
 
                     } else {
-                        self.fetchSignedInSession(withError: AuthErrorHelper.toAmplifyAuthError(error!),
+                        self.fetchSignedInSession(withError: AuthErrorHelper.toAuthError(error!),
                                                   completionHandler)
                     }
                 } else {
-                    self.fetchSignedInSession(withError: AuthErrorHelper.toAmplifyAuthError(error!), completionHandler)
+                    self.fetchSignedInSession(withError: AuthErrorHelper.toAuthError(error!), completionHandler)
                 }
                 return
             }
 
             guard let tokens = tokens else {
-                let error = AmplifyAuthError.unknown("""
+                let error = AuthError.unknown("""
                     Could not fetch AWS Cognito tokens, but there was no error reported back from
                     AWSMobileClient.getTokens call.
                     """)
@@ -70,7 +70,7 @@ extension AuthorizationProviderAdapter {
             }
 
             guard let userSub = tokens.idToken?.claims?["sub"] as? String else {
-                let error = AmplifyAuthError.unknown("""
+                let error = AuthError.unknown("""
                 Could not retreive user sub from the fetched Cognito tokens. There was no error in calling
                 AWSMobileClient.getTokens.
                 """)
@@ -99,8 +99,8 @@ extension AuthorizationProviderAdapter {
     }
 
     /// Build the session with valid Cognito tokens.
-    private func retrieveAWSCredentials(withTokensResult tokenResult: Result<AuthCognitoTokens, AmplifyAuthError>,
-                                        userSubResult: Result<String, AmplifyAuthError>,
+    private func retrieveAWSCredentials(withTokensResult tokenResult: Result<AuthCognitoTokens, AuthError>,
+                                        userSubResult: Result<String, AuthError>,
                                         completionHandler: @escaping SessionCompletionHandler) {
 
         awsMobileClient.getAWSCredentials { [weak self] awsCredentials, error in
@@ -124,13 +124,13 @@ extension AuthorizationProviderAdapter {
                     self.fetchSignedInSessionWithSessionExpiredError(completionHandler)
 
                 } else {
-                    self.fetchSignedInSession(withError: AuthErrorHelper.toAmplifyAuthError(error!), completionHandler)
+                    self.fetchSignedInSession(withError: AuthErrorHelper.toAuthError(error!), completionHandler)
                 }
                 return
             }
 
             guard let credentials = awsCredentials else {
-                let error = AmplifyAuthError.unknown("""
+                let error = AuthError.unknown("""
                     Could not fetch AWS Cognito credentials, but there was no error reported back from
                     AWSMobileClient.getAWSCredentials call.
                     """)
@@ -149,8 +149,8 @@ extension AuthorizationProviderAdapter {
     /// At this point we have already fetched AWS Credentials using an identity Id. So the expectation is that there is
     /// a valid identity id cached.
     private func retrieveIdentityId(withCredentials credentials: AWSCredentials,
-                                    tokenResult: Result<AuthCognitoTokens, AmplifyAuthError>,
-                                    userSubResult: Result<String, AmplifyAuthError>,
+                                    tokenResult: Result<AuthCognitoTokens, AuthError>,
+                                    userSubResult: Result<String, AuthError>,
                                     completionHandler: @escaping SessionCompletionHandler) {
 
         awsMobileClient.getIdentityId().continueWith { (task) -> Any? in
@@ -163,12 +163,12 @@ extension AuthorizationProviderAdapter {
                         self.fetchSignedInSessionWithSessionExpiredError(completionHandler)
                     }
                 }
-                let authError = AuthErrorHelper.toAmplifyAuthError(task.error!)
+                let authError = AuthErrorHelper.toAuthError(task.error!)
                 self.fetchSignedInSession(withError: authError, completionHandler)
                 return nil
             }
             guard let identityId = task.result as String? else {
-                let error = AmplifyAuthError.unknown("""
+                let error = AuthError.unknown("""
                     Could not fetch Identity Id from Identity Pool, but there was no error reported back from
                     AWSMobileClient.getIdentityId call.
                     """)
@@ -199,7 +199,7 @@ extension AuthorizationProviderAdapter {
     }
 
     /// Could not fetch the session because of an error.
-    private func fetchSignedInSession(withError error: AmplifyAuthError,
+    private func fetchSignedInSession(withError error: AuthError,
                                       _ completionHandler: SessionCompletionHandler) {
         let authSession = AuthCognitoSignedInSessionHelper.makeSignedInSession(withUnhandledError: error)
         completionHandler(.success(authSession))
@@ -209,8 +209,8 @@ extension AuthorizationProviderAdapter {
     ///
     /// Cognito Identity Pool is not configured for this authentication provider.
     private func fetchSignedInSessionWithNoIdentityPool(
-        withTokensResult tokenResult: Result<AuthCognitoTokens, AmplifyAuthError>,
-        userSubResult: Result<String, AmplifyAuthError>,
+        withTokensResult tokenResult: Result<AuthCognitoTokens, AuthError>,
+        userSubResult: Result<String, AuthError>,
         _ completionHandler: SessionCompletionHandler) {
 
         let identityIdError = AuthCognitoSignedInSessionHelper.identityIdErrorForInvalidConfiguration()

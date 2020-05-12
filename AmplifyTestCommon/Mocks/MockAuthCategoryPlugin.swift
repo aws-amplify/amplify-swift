@@ -180,7 +180,7 @@ class MockSecondAuthCategoryPlugin: MockAuthCategoryPlugin {
     }
 }
 
-class MockAuthChangePasswordOperation: AmplifyOperation<AuthChangePasswordRequest, Void, Void, AmplifyAuthError>,
+class MockAuthChangePasswordOperation: AmplifyOperation<AuthChangePasswordRequest, Void, Void, AuthError>,
 AuthChangePasswordOperation {
 
     init(request: Request) {

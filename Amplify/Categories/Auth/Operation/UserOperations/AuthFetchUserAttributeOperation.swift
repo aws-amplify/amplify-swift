@@ -8,7 +8,7 @@
 public protocol AuthFetchUserAttributeOperation: AmplifyOperation<AuthFetchUserAttributesRequest,
     Void,
     [AuthUserAttribute],
-AmplifyAuthError> {}
+AuthError> {}
 
 public extension HubPayload.EventName.Auth {
 

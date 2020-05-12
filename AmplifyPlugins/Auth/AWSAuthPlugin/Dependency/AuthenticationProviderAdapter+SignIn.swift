@@ -11,7 +11,7 @@ import AWSMobileClient
 extension AuthenticationProviderAdapter {
 
     func signIn(request: AuthSignInRequest,
-                completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void) {
+                completionHandler: @escaping (Result<AuthSignInResult, AuthError>) -> Void) {
 
         // AuthSignInRequest.validate method should have already validated the username and the below line
         // is just to avoid optional unwrapping.
@@ -36,14 +36,14 @@ extension AuthenticationProviderAdapter {
 
                                 guard let result = result else {
                                     // This should not happen, return an unknown error.
-                                    let error = AmplifyAuthError.unknown("Could not read result from signIn operation")
+                                    let error = AuthError.unknown("Could not read result from signIn operation")
                                     completionHandler(.failure(error))
                                     return
                                 }
 
                                 guard let signInNextStep = try? result.toAmplifyAuthSignInStep() else {
                                     // Could not find any next step for signIn. This should not happen.
-                                    let error = AmplifyAuthError.unknown("""
+                                    let error = AuthError.unknown("""
                                         Invalid state for signIn \(result.signInState)
                                         """)
                                     completionHandler(.failure(error))
@@ -56,7 +56,7 @@ extension AuthenticationProviderAdapter {
     }
 
     func signInWithWebUI(request: AuthWebUISignInRequest,
-                         completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void) {
+                         completionHandler: @escaping (Result<AuthSignInResult, AuthError>) -> Void) {
 
         let window = request.presentationAnchor
         DispatchQueue.main.async { [weak self] in
@@ -69,7 +69,7 @@ extension AuthenticationProviderAdapter {
     }
 
     func confirmSignIn(request: AuthConfirmSignInRequest,
-                       completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void) {
+                       completionHandler: @escaping (Result<AuthSignInResult, AuthError>) -> Void) {
 
         let userAttributes = (request.options.pluginOptions as? AWSAuthConfirmSignInOptions)?.userAttributes ?? []
         let mobileClientUserAttributes = userAttributes.reduce(into: [String: String]()) {
@@ -90,7 +90,7 @@ extension AuthenticationProviderAdapter {
 
                                         guard let result = result else {
                                             // This should not happen, return an unknown error.
-                                            let error = AmplifyAuthError.unknown("""
+                                            let error = AuthError.unknown("""
                                             Could not read result from confirmSignIn operation
                                             """)
                                             completionHandler(.failure(error))
@@ -99,7 +99,7 @@ extension AuthenticationProviderAdapter {
 
                                         guard let nextStep = try? result.toAmplifyAuthSignInStep() else {
                                             // Could not find any next step for signIn. This should not happen.
-                                            let error = AmplifyAuthError.unknown("""
+                                            let error = AuthError.unknown("""
                                                 Invalid state for signIn \(result.signInState)
                                                 """)
                                             completionHandler(.failure(error))
@@ -114,7 +114,7 @@ extension AuthenticationProviderAdapter {
     // MARK: - Internal methods
     private func showSignInWebView(window: UIWindow,
                                    request: AuthWebUISignInRequest,
-                                   completionHandler: @escaping (Result<AuthSignInResult, AmplifyAuthError>) -> Void) {
+                                   completionHandler: @escaping (Result<AuthSignInResult, AuthError>) -> Void) {
 
         // Stop the execution here if we are not running on the main thread.
         // There is no point on returning an error back to the developer, because
@@ -157,7 +157,7 @@ extension AuthenticationProviderAdapter {
 
                                                 guard let state = state, state == .signedIn else {
 
-                                                    let error = AmplifyAuthError.unknown("""
+                                                    let error = AuthError.unknown("""
                                                     signInWithWebUI did not produce a valid result.
                                                     """)
                                                     completionHandler(.failure(error))
@@ -170,7 +170,7 @@ extension AuthenticationProviderAdapter {
         })
     }
 
-    private func convertSignInErrorToResult(_ error: Error) -> Result<AuthSignInResult, AmplifyAuthError> {
+    private func convertSignInErrorToResult(_ error: Error) -> Result<AuthSignInResult, AuthError> {
         if let awsMobileClientError = error as? AWSMobileClientError {
             if case .passwordResetRequired = awsMobileClientError {
                 let authResult = AuthSignInResult(nextStep: .resetPassword(nil))
@@ -180,29 +180,29 @@ extension AuthenticationProviderAdapter {
                 return .success(authResult)
             }
         }
-        let authError = AuthErrorHelper.toAmplifyAuthError(error)
+        let authError = AuthErrorHelper.toAuthError(error)
         return .failure(authError)
     }
 
-    private func convertSignUIErrorToAuthError(_ error: Error) -> AmplifyAuthError {
+    private func convertSignUIErrorToAuthError(_ error: Error) -> AuthError {
         if let awsMobileClientError = error as? AWSMobileClientError {
             switch awsMobileClientError {
             case .securityFailed(message: _):
                 // This error is caused when the redirected url's query parameter `state` has a different value from
                 // value it was set before.
-                return AmplifyAuthError.service(
+                return AuthError.service(
                     AuthPluginErrorConstants.hostedUISecurityFailedError.errorDescription,
                     AuthPluginErrorConstants.hostedUISecurityFailedError.recoverySuggestion)
             case .badRequest(let message):
                 // Received when we get back an error parameter in the redirect url
-                return AmplifyAuthError.service(message, AuthPluginErrorConstants.hostedUIBadRequestError)
+                return AuthError.service(message, AuthPluginErrorConstants.hostedUIBadRequestError)
             case .idTokenAndAcceessTokenNotIssued(let message):
                 // Received when there is no tokens after the signIn is complete. This should not happen, so
                 // return an unknown error.
-                return AmplifyAuthError.unknown(message)
+                return AuthError.unknown(message)
             case .userCancelledSignIn(message: _):
                 // User clicked cancel
-                return AmplifyAuthError.service(
+                return AuthError.service(
                     AuthPluginErrorConstants.hostedUIUserCancelledError.errorDescription,
                     AuthPluginErrorConstants.hostedUIUserCancelledError.recoverySuggestion,
                     AWSCognitoAuthError.userCancelled)
@@ -211,7 +211,7 @@ extension AuthenticationProviderAdapter {
             }
 
         }
-        let authError = AuthErrorHelper.toAmplifyAuthError(error)
+        let authError = AuthErrorHelper.toAuthError(error)
         return authError
     }
 

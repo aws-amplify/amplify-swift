@@ -11,7 +11,7 @@ import Amplify
 public class AWSAuthFetchSessionOperation: AmplifyOperation<AuthFetchSessionRequest,
     Void,
     AuthSession,
-    AmplifyAuthError>,
+    AuthError>,
 AuthFetchSessionOperation {
 
     let authenticationProvider: AuthenticationProviderBehavior
@@ -52,12 +52,12 @@ AuthFetchSessionOperation {
     }
 
     private func dispatch(_ result: AuthSession) {
-        let asyncEvent = AsyncEvent<Void, AuthSession, AmplifyAuthError>.completed(result)
+        let asyncEvent = AsyncEvent<Void, AuthSession, AuthError>.completed(result)
         dispatch(event: asyncEvent)
     }
 
-    private func dispatch(_ error: AmplifyAuthError) {
-        let asyncEvent = AsyncEvent<Void, AuthSession, AmplifyAuthError>.failed(error)
+    private func dispatch(_ error: AuthError) {
+        let asyncEvent = AsyncEvent<Void, AuthSession, AuthError>.failed(error)
         dispatch(event: asyncEvent)
     }
 }

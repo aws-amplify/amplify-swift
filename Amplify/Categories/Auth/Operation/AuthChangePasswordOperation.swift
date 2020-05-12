@@ -10,7 +10,7 @@ import Foundation
 public protocol AuthChangePasswordOperation: AmplifyOperation<AuthChangePasswordRequest,
     Void,
     Void,
-AmplifyAuthError> {}
+AuthError> {}
 
 public extension HubPayload.EventName.Auth {
 

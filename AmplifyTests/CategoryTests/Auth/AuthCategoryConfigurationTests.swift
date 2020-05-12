@@ -105,7 +105,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
         Amplify.reset()
         XCTAssertThrowsError(try Amplify.Auth.getPlugin(for: "MockAuthCategoryPlugin"),
                              "Getting a plugin after reset() should throw") { error in
-                                guard case AmplifyAuthError.configuration = error else {
+                                guard case AuthError.configuration = error else {
                                     XCTFail("Expected PluginError.noSuchPlugin")
                                     return
                                 }

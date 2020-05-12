@@ -16,13 +16,13 @@ class AuthenticationProviderAdapter: AuthenticationProviderBehavior {
         self.awsMobileClient = awsMobileClient
     }
 
-    func signInUsername() -> Result<String, AmplifyAuthError> {
+    func signInUsername() -> Result<String, AuthError> {
 
         if let username = awsMobileClient.username() {
             return .success(username)
         }
         // TODO: Fix the error here
-        return .failure(AmplifyAuthError.unknown(""))
+        return .failure(AuthError.unknown(""))
 
     }
 }

@@ -23,7 +23,7 @@ extension AuthorizationProviderAdapter {
             guard let credentials = awsCredentials else {
                 // This should not happen, throw an unknown error.
                 // Since we couldnot fetch aws credentials, we stop here to avoid sending partial information.
-                let error = AmplifyAuthError.unknown("""
+                let error = AuthError.unknown("""
                     Could not fetch AWS credentials, but there was no error reported back from
                     AWSMobileClient.getAWSCredentials call.
                     """)
@@ -53,7 +53,7 @@ extension AuthorizationProviderAdapter {
                 return nil
             }
             guard let identityId = task.result as String? else {
-                let error = AmplifyAuthError.unknown("""
+                let error = AuthError.unknown("""
                     Could not retreive identity id, but there was no error reported back from
                     AWSMobileClient.getIdentityId call.
                     """)

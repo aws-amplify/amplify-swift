@@ -19,7 +19,7 @@ extension AWSAuthPlugin {
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
     public func configure(using configuration: Any) throws {
         guard let jsonValueConfiguration = configuration as? JSONValue else {
-            throw AmplifyAuthError.configuration(AuthPluginErrorConstants.decodeConfigurationError.errorDescription,
+            throw AuthError.configuration(AuthPluginErrorConstants.decodeConfigurationError.errorDescription,
                                                  AuthPluginErrorConstants.decodeConfigurationError.recoverySuggestion)
         }
         do {
@@ -33,10 +33,10 @@ extension AWSAuthPlugin {
             let authorizationProvider = AuthorizationProviderAdapter(awsMobileClient: awsMobileClient)
             configure(authenticationProvider: authenticationProvider,
                       authorizationProvider: authorizationProvider)
-        } catch let authError as AmplifyAuthError {
+        } catch let authError as AuthError {
             throw authError
         } catch {
-            let amplifyError = AmplifyAuthError.configuration(
+            let amplifyError = AuthError.configuration(
                 "Error configuring \(String(describing: self))",
                 """
                 There was an error configuring the plugin. See the underlying error for more details.

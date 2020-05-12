@@ -8,7 +8,7 @@
 import Amplify
 
 public protocol AuthAWSCredentialsProvider {
-    func getAWSCredentials() -> Result<AuthAWSCredentials, AmplifyAuthError>
+    func getAWSCredentials() -> Result<AuthAWSCredentials, AuthError>
 }
 
 public protocol AuthAWSTemporaryCredentials: AuthAWSCredentials {

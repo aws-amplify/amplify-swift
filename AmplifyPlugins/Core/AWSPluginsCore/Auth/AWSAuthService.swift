@@ -81,31 +81,8 @@ public class AWSAuthService: AWSAuthServiceBehavior {
     }
 
     private func map(_ error: AWSMobileClientError) -> AuthError {
-        switch error {
-        case .identityIdUnavailable(let message):
-            return AuthError.identity("Identity Id is Unavailable",
-                                      message,
-                                      """
-                                      Check for network connectivity and try again.
-                                      """,
-                                      error)
-        case .guestAccessNotAllowed(let message):
-            return AuthError.notAuthorized(message,
-                                           """
-                                           Cognito was configured to disallow unauthenticated (guest) access.
-                                           Turn on guest access and try again.
-                                           """,
-                                           error)
-        case .notSignedIn(let message):
-            return AuthError.notAuthenticated(message,
-                                              "The user needs be authenticated to make this request",
-                                              error)
-        case .notAuthorized(let message):
-            return AuthError.notAuthorized(message,
-                                           "The user does not have the correct permissions to make this request",
-                                           error)
-        default:
-            return AuthError.unknown(error.message)
-        }
+        // TODO: Use main auth error from Auth plugin
+        return AuthError.unknown(error.message)
     }
+
 }
