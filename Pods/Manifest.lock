@@ -16,6 +16,7 @@ PODS:
   - SwiftLint (0.39.2)
 
 DEPENDENCIES:
+  - AWSCore (~> 2.13.0)
   - AWSMobileClient (~> 2.13.0)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
@@ -59,6 +60,6 @@ SPEC CHECKSUMS:
   SwiftFormat: e415b539c50e7a956a44b023544c9846c0c037d7
   SwiftLint: 22ccbbe3b8008684be5955693bab135e0ed6a447
 
-PODFILE CHECKSUM: 1c22fd7e8ddadfe26bb643a7d7ebf74f24d85950
+PODFILE CHECKSUM: fc461e5668075e714c6540522b03ee1d361c96b7
 
 COCOAPODS: 1.9.1

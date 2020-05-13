@@ -10,8 +10,7 @@ import AWSCore
 import Amplify
 
 public protocol IAMCredentialsProvider {
-    // TODO: Should we really be returning `AWSCognitoCredentialsProvider`?
-    func getCredentialsProvider() -> AWSCognitoCredentialsProvider
+    func getCredentialsProvider() -> AWSCredentialsProvider
 }
 
 public struct BasicIAMCredentialsProvider: IAMCredentialsProvider {
@@ -21,7 +20,7 @@ public struct BasicIAMCredentialsProvider: IAMCredentialsProvider {
         self.authService = authService
     }
 
-    public func getCredentialsProvider() -> AWSCognitoCredentialsProvider {
-        return authService.getCognitoCredentialsProvider()
+    public func getCredentialsProvider() -> AWSCredentialsProvider {
+        return authService.getCredentialsProvider()
     }
 }

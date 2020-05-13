@@ -34,6 +34,14 @@ final public class AWSAuthPlugin: AuthCategoryPlugin {
         return "awsCognitoAuthPlugin"
     }
 
+    public func getEscapeHatch() -> AWSAuthService {
+        if let internalAuthorizationProvider = authorizationProvider as? AuthorizationProviderAdapter,
+            let awsMobileClientProvider = internalAuthorizationProvider.awsMobileClient as? AWSMobileClientAdapter {
+            return .awsMobileClient(awsMobileClientProvider.awsMobileClient)
+        }
+        fatalError("Invoke Amplify configuration before accessing escape hatch")
+    }
+
     /// Instantiates an instance of the AWSAuthPlugin.
     public init() {
     }

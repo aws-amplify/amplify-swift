@@ -34,13 +34,13 @@ extension AWSPinpointAnalyticsPlugin {
     /// Configure AWSPinpointAnalyticsPlugin programatically using AWSPinpointAnalyticsPluginConfiguration
     public func configure(using configuration: AWSPinpointAnalyticsPluginConfiguration) throws {
         let authService = AWSAuthService()
-        let cognitoCredentialsProvider = authService.getCognitoCredentialsProvider()
+        let credentialsProvider = authService.getCredentialsProvider()
 
         let pinpoint = try AWSPinpointAdapter(
             pinpointAnalyticsAppId: configuration.appId,
             pinpointAnalyticsRegion: configuration.region,
             pinpointTargetingRegion: configuration.targetingRegion,
-            cognitoCredentialsProvider: cognitoCredentialsProvider)
+            credentialsProvider: credentialsProvider)
 
         let appSessionTracker =
             AppSessionTracker(trackAppSessions: configuration.trackAppSessions,

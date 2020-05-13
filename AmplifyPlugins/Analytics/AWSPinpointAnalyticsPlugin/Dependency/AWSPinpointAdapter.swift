@@ -20,13 +20,13 @@ class AWSPinpointAdapter: AWSPinpointBehavior {
     convenience init(pinpointAnalyticsAppId: String,
                      pinpointAnalyticsRegion: AWSRegionType,
                      pinpointTargetingRegion: AWSRegionType,
-                     cognitoCredentialsProvider: AWSCognitoCredentialsProvider) throws {
+                     credentialsProvider: AWSCredentialsProvider) throws {
 
         let pinpointConfiguration = AWSPinpointConfiguration(appId: pinpointAnalyticsAppId, launchOptions: nil)
         let serviceConfiguration = AmplifyAWSServiceConfiguration(region: pinpointAnalyticsRegion,
-                                                                  credentialsProvider: cognitoCredentialsProvider)
+                                                                  credentialsProvider: credentialsProvider)
         let targetingServiceConfiguration = AmplifyAWSServiceConfiguration(region: pinpointTargetingRegion,
-                                                                           credentialsProvider: cognitoCredentialsProvider)
+                                                                           credentialsProvider: credentialsProvider)
 
         pinpointConfiguration.serviceConfiguration = serviceConfiguration
         pinpointConfiguration.targetingServiceConfiguration = targetingServiceConfiguration

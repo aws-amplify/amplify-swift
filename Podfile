@@ -30,6 +30,7 @@ target "Amplify" do
     inherit! :complete
     use_frameworks!
 
+    pod "AWSCore", "~> #{AWS_SDK_VERSION}"
     pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
 
     abstract_target "AWSPluginsTestConfigs" do

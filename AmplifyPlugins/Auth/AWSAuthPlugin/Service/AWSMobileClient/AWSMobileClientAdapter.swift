@@ -196,4 +196,8 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
     func forgetCurrentDevice(_ completionHandler: @escaping ((Error?) -> Void)) {
         awsMobileClient.deviceOperations.forget(completionHandler)
     }
+
+    func invalidateCachedTemporaryCredentials() {
+        awsMobileClient.invalidateCachedTemporaryCredentials()
+    }
 }
