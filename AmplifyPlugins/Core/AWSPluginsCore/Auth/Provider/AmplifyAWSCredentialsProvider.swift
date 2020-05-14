@@ -45,7 +45,7 @@ public class AmplifyAWSCredentialsProvider: NSObject, AWSCredentialsProvider {
         case .failure(let error):
             completionSource.set(error: error)
         case .none:
-            let error = AuthError.unknown("Auth session doesnot include aws credentials information")
+            let error = AuthError.unknown("Auth session does not include AWS credentials information")
             completionSource.set(error: error)
         }
     }
