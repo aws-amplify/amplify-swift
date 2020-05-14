@@ -7,7 +7,7 @@
 
 import AWSMobileClient
 
-public enum AWSAuthService {
+public enum AWSCognitoAuthService {
 
     case awsMobileClient(AWSMobileClient)
 
