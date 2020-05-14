@@ -51,8 +51,9 @@ type SocialNote
 ```json
 {
     "user1": "<USER EMAIL>",
+    "passwordUser1": "<PASSWORD>"
     "user2": "<USER2 EMAIL>",
-    "password": "<PASSWORD>"
+    "passwordUser2": "<PASSWORD>"
 }
 
 ```

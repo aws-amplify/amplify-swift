@@ -6,48 +6,46 @@
 //
 
 import XCTest
-@testable import Amplify
-import AWSMobileClient
+import AWSPluginsCore
 import AWSAPICategoryPlugin
+import AWSMobileClient
+
+@testable import Amplify
 @testable import AWSAPICategoryPluginTestCommon
 @testable import AmplifyTestCommon
-import AWSPluginsCore
 
 class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
+    struct User {
+        let username: String
+        let password: String
+    }
 
-    static let amplifyConfiguration = "GraphQLAuthDirectiveIntegrationTests-amplifyconfiguration"
-    static let awsconfiguration = "GraphQLAuthDirectiveIntegrationTests-awsconfiguration"
-    static let credentials = "GraphQLAuthDirectiveIntegrationTests-credentials"
-    static var user1: String!
-    static var user2: String!
-    static var password: String!
+    let amplifyConfigurationFile = "GraphQLAuthDirectiveIntegrationTests-amplifyconfiguration"
+    let awsconfigurationFile = "GraphQLAuthDirectiveIntegrationTests-awsconfiguration"
+    let credentialsFile = "GraphQLAuthDirectiveIntegrationTests-credentials"
+    var user1: User!
+    var user2: User!
 
-    static override func setUp() {
+    override func setUp() {
         do {
-
-            let credentials = try TestConfigHelper.retrieveCredentials(
-                forResource: GraphQLAuthDirectiveIntegrationTests.credentials)
+            let credentials = try TestConfigHelper.retrieveCredentials(forResource: credentialsFile)
 
             guard let user1 = credentials["user1"],
                 let user2 = credentials["user2"],
-                let password = credentials["password"] else {
+                let passwordUser1 = credentials["passwordUser1"],
+                let passwordUser2 = credentials["passwordUser2"] else {
                     XCTFail("Missing credentials.json data")
                     return
             }
 
-            GraphQLAuthDirectiveIntegrationTests.user1 = user1
-            GraphQLAuthDirectiveIntegrationTests.user2 = user2
-            GraphQLAuthDirectiveIntegrationTests.password = password
-
-            let awsConfiguration = try TestConfigHelper.retrieveAWSConfiguration(
-                forResource: GraphQLAuthDirectiveIntegrationTests.awsconfiguration)
+            self.user1 = User(username: user1, password: passwordUser1)
+            self.user2 = User(username: user2, password: passwordUser2)
+            let awsConfiguration = try TestConfigHelper.retrieveAWSConfiguration(forResource: awsconfigurationFile)
             AWSInfo.configureDefaultAWSInfo(awsConfiguration)
         } catch {
             XCTFail("Error during setup: \(error)")
         }
-    }
 
-    override func setUp() {
         do {
             AuthHelper.initializeMobileClient()
 
@@ -55,8 +53,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
 
             try Amplify.add(plugin: AWSAPIPlugin())
 
-            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
-                forResource: GraphQLAuthDirectiveIntegrationTests.amplifyConfiguration)
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
             try Amplify.configure(amplifyConfig)
 
             ModelRegistry.register(modelType: SocialNote.self)
@@ -70,8 +67,16 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         AuthHelper.signOut()
     }
 
-    /// A model with operations [create, update, delete] allows the model to be read by others but not updated or
-    /// deleted. This creates a read-only model.
+    /// Models created with:
+    /// @auth(rules: [ { allow: owner, operations: [create, update, delete] } ])
+    ///
+    /// Yields the following permissions model:
+    ///         Create  Read    Update  Delete
+    /// Owner   allow   allow   allow   allow
+    /// Others   x      allow   deny    deny
+    ///
+    /// This creates a read-only model. 'Owner' refers to the user that creates the instance of the model. 'Other'
+    /// refers to any other user that was not the owner.
     ///
     /// - When:
     ///    - Model restricts access to create, update, delete.
@@ -81,8 +86,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     ///    - Others cannot update or delete the owner's model
     ///    - Owner can delete the model
     func testModelIsReadOnly() {
-        AuthHelper.signIn(username: GraphQLAuthDirectiveIntegrationTests.user1,
-                          password: GraphQLAuthDirectiveIntegrationTests.password)
+        AuthHelper.signIn(username: user1.username, password: user1.password)
         let id = UUID().uuidString
         let content = "owner created content"
         let ownerCreatedNoteResult = createNote(id, content: content)
@@ -103,8 +107,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
             return
         }
         AuthHelper.signOut()
-        AuthHelper.signIn(username: GraphQLAuthDirectiveIntegrationTests.user2,
-                          password: GraphQLAuthDirectiveIntegrationTests.password)
+        AuthHelper.signIn(username: user2.username, password: user2.password)
         let otherReadNoteResult = queryNote(byId: id)
         guard case let .success(otherReadNoteOptional) = otherReadNoteResult,
             let otherReadNote = otherReadNoteOptional else {
@@ -129,8 +132,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         XCTAssertEqual(appSyncErrorOnDelete, .conditionalCheck)
 
         AuthHelper.signOut()
-        AuthHelper.signIn(username: GraphQLAuthDirectiveIntegrationTests.user1,
-                          password: GraphQLAuthDirectiveIntegrationTests.password)
+        AuthHelper.signIn(username: user1.username, password: user1.password)
         let ownerDeletedNoteResult = deleteNote(byId: id, version: ownerUpdatedNote.syncMetadata.version)
         guard case .success = ownerDeletedNoteResult else {
             XCTFail("Owner should be able to delete own note")
@@ -159,8 +161,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     }
 
     func testSyncQuery() {
-        AuthHelper.signIn(username: GraphQLAuthDirectiveIntegrationTests.user1,
-                          password: GraphQLAuthDirectiveIntegrationTests.password)
+        AuthHelper.signIn(username: user1.username, password: user1.password)
         let id = UUID().uuidString
         let content = "owner created content"
         let ownerCreatedNoteResult = createNote(id, content: content)
@@ -195,8 +196,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     }
 
     func testOnCreateSubscriptionOnlyWhenSignedIntoUserPool() {
-        AuthHelper.signIn(username: GraphQLAuthDirectiveIntegrationTests.user1,
-                          password: GraphQLAuthDirectiveIntegrationTests.password)
+        AuthHelper.signIn(username: user1.username, password: user1.password)
         let connectedInvoked = expectation(description: "Connection established")
         let progressInvoked = expectation(description: "Progress invoked")
         guard let ownerId = AuthHelper.getUserSub() else {
