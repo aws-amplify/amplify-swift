@@ -15,8 +15,6 @@ import XCTest
 
      # Defaults to use the "owner" field.
      { allow: owner },
-
-     # Authorize the update mutation and both queries. Use `queries: null` to disable auth for queries.
      { allow: owner, ownerField: "editors", operations: [update, read] }
    ]) {
    id: ID!

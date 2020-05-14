@@ -23,9 +23,6 @@ public enum AuthRuleDecoratorInput {
 // contains create and delete, therefore the onCreate and onDelete subscriptions require the owner field, but not the
 // onUpdate subscription.
 
-/// Decorate the document with auth rule related fields such as automatically adding owner to the the selection set and
-/// adding the owner input to subscription document input
-///
 /// Decorate the document with auth related fields. For `owner` strategy, fields include:
 /// * add the value of `ownerField` to the model selection set, defaults "owner" when `ownerField` is not specified
 /// * owner field value for subscription document inputs for the corresponding auth rule `operation`
