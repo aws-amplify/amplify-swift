@@ -6,10 +6,11 @@
 //
 
 import XCTest
-import AWSMobileClient
+import AmplifyPlugins
 @testable import Amplify
 import AWSS3StoragePlugin
 import AWSS3
+
 class AWSS3StoragePluginConfigurationTests: XCTestCase {
 
     /// Given: awss3StoragePlugin configuration with incorrect DefaultAccessLevel value
@@ -31,6 +32,7 @@ class AWSS3StoragePluginConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         do {
+            try Amplify.add(plugin: AWSAuthPlugin())
             try Amplify.add(plugin: AWSS3StoragePlugin())
         } catch {
             XCTFail("Failed to add plugin before configuring")

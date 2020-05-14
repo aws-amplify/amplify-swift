@@ -98,7 +98,6 @@
 		21D79FE32377F4120057D00D /* SubscriptionConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D79FE22377F4120057D00D /* SubscriptionConnectionState.swift */; };
 		21F40A3A23A294770074678E /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3923A294770074678E /* TestConfigHelper.swift */; };
 		21F40A3C23A2952C0074678E /* AuthHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3B23A2952C0074678E /* AuthHelper.swift */; };
-		21F40A3E23A295390074678E /* AWSMobileClient+Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3D23A295390074678E /* AWSMobileClient+Message.swift */; };
 		21F40A4023A295470074678E /* TestCommonConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F40A3F23A295470074678E /* TestCommonConstants.swift */; };
 		21FFF988230B7B2C005878EA /* AsychronousOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF986230B7A5D005878EA /* AsychronousOperation.swift */; };
 		21FFF98E230C81E6005878EA /* StorageAccessLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FFF98D230C81E6005878EA /* StorageAccessLevel.swift */; };
@@ -699,7 +698,6 @@
 		21D79FE22377F4120057D00D /* SubscriptionConnectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionConnectionState.swift; sourceTree = "<group>"; };
 		21F40A3923A294770074678E /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		21F40A3B23A2952C0074678E /* AuthHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthHelper.swift; sourceTree = "<group>"; };
-		21F40A3D23A295390074678E /* AWSMobileClient+Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSMobileClient+Message.swift"; sourceTree = "<group>"; };
 		21F40A3F23A295470074678E /* TestCommonConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestCommonConstants.swift; sourceTree = "<group>"; };
 		21FFF986230B7A5D005878EA /* AsychronousOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsychronousOperation.swift; sourceTree = "<group>"; };
 		21FFF98D230C81E6005878EA /* StorageAccessLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageAccessLevel.swift; sourceTree = "<group>"; };
@@ -2471,7 +2469,6 @@
 			isa = PBXGroup;
 			children = (
 				21F40A3B23A2952C0074678E /* AuthHelper.swift */,
-				21F40A3D23A295390074678E /* AWSMobileClient+Message.swift */,
 				FA176ED6238503C200C5C5F9 /* HubListenerTestUtilities.swift */,
 				21F40A3923A294770074678E /* TestConfigHelper.swift */,
 			);
@@ -4267,7 +4264,6 @@
 				FACA361A2327FC69000E74F6 /* MockStorageCategoryPlugin.swift in Sources */,
 				B9521837237E21BA00F53237 /* Post.swift in Sources */,
 				B9FAA11A23879AC8009414B4 /* BookAuthor.swift in Sources */,
-				21F40A3E23A295390074678E /* AWSMobileClient+Message.swift in Sources */,
 				FAA2E8BC239FFC7700E420EA /* MockModels.swift in Sources */,
 				B9FAA11E23879B9F009414B4 /* Book+Schema.swift in Sources */,
 				FACA361B2327FC74000E74F6 /* MockLoggingCategoryPlugin.swift in Sources */,

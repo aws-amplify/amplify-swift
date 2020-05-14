@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import AWSMobileClient
 @testable import Amplify
 import AWSS3StoragePlugin
 import AWSS3
@@ -51,7 +50,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     override func setUp() {
         do {
-            AuthHelper.initializeMobileClient()
+
             Amplify.reset()
 
             try Amplify.add(plugin: AWSS3StoragePlugin())

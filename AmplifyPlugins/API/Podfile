@@ -28,7 +28,6 @@ target "HostApp" do
   pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
   pod 'AmplifyTestCommon', :path => '../../'
   pod 'Amplify', :path => '../../'
-  pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
 
   target "AWSAPICategoryPluginTestCommon" do
     inherit! :complete

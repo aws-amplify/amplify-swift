@@ -7,7 +7,6 @@
 
 import XCTest
 @testable import Amplify
-import AWSMobileClient
 import AWSAPICategoryPlugin
 @testable import AWSAPICategoryPluginTestCommon
 @testable import AmplifyTestCommon

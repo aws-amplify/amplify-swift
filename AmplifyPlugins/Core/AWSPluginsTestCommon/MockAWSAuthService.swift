@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSMobileClient
 import Amplify
 import AWSPluginsCore
+import AWSCore
 
 public class MockAWSAuthService: AWSAuthServiceBehavior {
 

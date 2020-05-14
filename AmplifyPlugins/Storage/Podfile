@@ -27,7 +27,7 @@ target "HostApp" do
   pod 'AmplifyTestCommon', :path => '../../'
   pod 'Amplify', :path => '../../'
   pod 'AWSPluginsCore', :path => '../../'
-  pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
+  pod "AmplifyPlugins/AWSAuthPlugin", :path => '../../'
 
   target "AWSS3StoragePluginFunctionalTests" do
     inherit! :complete

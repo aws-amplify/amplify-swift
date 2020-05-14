@@ -8,7 +8,6 @@
 import XCTest
 @testable import Amplify
 import AWSAPICategoryPlugin
-import AWSMobileClient
 @testable import AmplifyTestCommon
 
 class RESTWithUserPoolIntegrationTests: XCTestCase {

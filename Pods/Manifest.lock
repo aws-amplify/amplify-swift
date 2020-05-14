@@ -1,14 +1,5 @@
 PODS:
-  - AWSAuthCore (2.13.3):
-    - AWSCore (= 2.13.3)
-  - AWSCognitoIdentityProvider (2.13.3):
-    - AWSCognitoIdentityProviderASF (= 1.0.1)
-    - AWSCore (= 2.13.3)
-  - AWSCognitoIdentityProviderASF (1.0.1)
   - AWSCore (2.13.3)
-  - AWSMobileClient (2.13.3):
-    - AWSAuthCore (= 2.13.3)
-    - AWSCognitoIdentityProvider (= 2.13.3)
   - CwlCatchException (1.0.2)
   - CwlPreconditionTesting (1.1.1):
     - CwlCatchException
@@ -17,7 +8,6 @@ PODS:
 
 DEPENDENCIES:
   - AWSCore (~> 2.13.0)
-  - AWSMobileClient (~> 2.13.0)
   - CwlCatchException (from `https://github.com/mattgallagher/CwlCatchException.git`, tag `1.2.0`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `1.2.0`)
   - SwiftFormat/CLI
@@ -25,11 +15,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - AWSAuthCore
-    - AWSCognitoIdentityProvider
-    - AWSCognitoIdentityProviderASF
     - AWSCore
-    - AWSMobileClient
     - SwiftFormat
     - SwiftLint
 
@@ -50,16 +36,12 @@ CHECKOUT OPTIONS:
     :tag: 1.2.0
 
 SPEC CHECKSUMS:
-  AWSAuthCore: 93b71ac38596e75790015c7299c725bb09ae1d5f
-  AWSCognitoIdentityProvider: 3480819d983e78eda7a43e141273756784be30cb
-  AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
   AWSCore: fc361166b595e3c0183c55987743b295646c39d2
-  AWSMobileClient: 9149b664d1a89279bd49d36598c7afc38a63d7d1
   CwlCatchException: 70a52ae44ea5d46db7bd385f801a94942420cd8c
   CwlPreconditionTesting: d33a4e4f285c0b885fddcae5dfedfbb34d4f3961
   SwiftFormat: b72e592ea0979aeee53f6052abff291181364933
   SwiftLint: 22ccbbe3b8008684be5955693bab135e0ed6a447
 
-PODFILE CHECKSUM: fc461e5668075e714c6540522b03ee1d361c96b7
+PODFILE CHECKSUM: c4051cca636a2b5df816f468c3e4c73f3540529a
 
 COCOAPODS: 1.9.1

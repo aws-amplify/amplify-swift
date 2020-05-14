@@ -6,98 +6,85 @@
 //
 
 import Foundation
-import AWSMobileClient
+import Amplify
+import AWSPluginsCore
 
 class AuthHelper {
-    static func initializeMobileClient() {
-        let callbackInvoked = DispatchSemaphore(value: 0)
-
-        AWSMobileClient.default().initialize { userState, error in
-            if let error = error {
-                if let awsMobileClientError = error as? AWSMobileClientError {
-                    fatalError("Error initializing AWSMobileClient. Error: \(awsMobileClientError.message)")
-                } else {
-                    fatalError("Error initializing AWSMobileClient. Error: \(error.localizedDescription)")
-                }
-            }
-
-            guard let userState = userState else {
-                fatalError("userState is unexpectedly empty initializing AWSMobileClient")
-            }
-
-            if userState != UserState.signedOut {
-                AWSMobileClient.default().signOut()
-            }
-            print("AWSMobileClient Initialized")
-            callbackInvoked.signal()
-        }
-
-        _ = callbackInvoked.wait(timeout: .now() + TestCommonConstants.networkTimeout)
-    }
 
     static func signUpUser(username: String, password: String) {
         let callbackInvoked = DispatchSemaphore(value: 0)
-        let userAttributes = ["email": username]
-        AWSMobileClient.default().signUp(username: username,
-                                         password: password,
-                                         userAttributes: userAttributes) { result, error in
-            if let error = error {
-                if let awsMobileClientError = error as? AWSMobileClientError {
-                    fatalError("Failed to sign up user with error: \(awsMobileClientError.message)")
-                } else {
-                    fatalError("Failed to sign up user with error: \(error.localizedDescription)")
-                }
-            }
-
-            guard result != nil else {
-                fatalError("result from signUp should not be nil")
-            }
-
-            callbackInvoked.signal()
+        let userAttributes = [AuthUserAttribute(.email, value: username)]
+        let options = AuthSignUpRequest.Options(userAttributes: userAttributes,
+                                                pluginOptions: nil)
+        _ = Amplify.Auth.signUp(username: username,
+                                password: password,
+                                options: options) { event in
+                                    defer {
+                                        callbackInvoked.signal()
+                                    }
+                                    switch event {
+                                    case .completed(let result):
+                                        print(result)
+                                    case .failed(let error):
+                                        fatalError("Failed to sign up user with error: \(error)")
+                                    default:
+                                        fatalError("Wrong event result returned Auth.signUp")
+                                    }
         }
-
         _ = callbackInvoked.wait(timeout: .now() + TestCommonConstants.networkTimeout)
     }
 
     static func signIn(username: String, password: String) {
         let callbackInvoked = DispatchSemaphore(value: 0)
 
-        AWSMobileClient.default().signIn(username: username, password: password) { result, error in
-            if let error = error {
-                if let awsMobileClientError = error as? AWSMobileClientError {
-                    fatalError("Sign in failed: \(awsMobileClientError.message)")
-                } else {
-                    fatalError("awsMobileClientError: \(error.localizedDescription)")
-                }
-            }
-
-            guard let result = result else {
-                fatalError("No result from SignIn")
-            }
-
-            if result.signInState != .signedIn {
-                fatalError("User is not signed in, state is \(result.signInState)")
-            }
-            callbackInvoked.signal()
+        _ = Amplify.Auth.signIn(username: username,
+                                password: password) { event in
+                                    defer {
+                                        callbackInvoked.signal()
+                                    }
+                                    switch event {
+                                    case .completed(let result):
+                                        print(result)
+                                    case .failed(let error):
+                                        fatalError("Failed to sign in user with error: \(error)")
+                                    default:
+                                        fatalError("Wrong event result returned for Auth.signIn ")
+                                    }
         }
         _ = callbackInvoked.wait(timeout: .now() + TestCommonConstants.networkTimeout)
     }
 
     static func signOut() {
-        AWSMobileClient.default().signOut()
+        let callbackInvoked = DispatchSemaphore(value: 0)
+        _ = Amplify.Auth.signOut { _ in
+            callbackInvoked.signal()
+        }
+        _ = callbackInvoked.wait(timeout: .now() + TestCommonConstants.networkTimeout)
     }
 
     static func getIdentityId() -> String {
-        let task = AWSMobileClient.default().getIdentityId()
-        task.waitUntilFinished()
-        if let error = task.error {
-            fatalError("Could not get identityId, with error \(error)")
-        }
 
-        if let result = task.result {
-            return result as String
-        }
+        let callbackInvoked = DispatchSemaphore(value: 0)
+        var result: Result<String, AuthError>?
 
-        fatalError("Could not get identityId from result")
+        _ = Amplify.Auth.fetchAuthSession { event in
+            defer {
+                callbackInvoked.signal()
+            }
+
+            switch event {
+            case .completed(let session):
+                result = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
+            case .failed(let error):
+                result = .failure(error)
+            default: break
+
+            }
+        }
+        _ = callbackInvoked.wait(timeout: .now() + TestCommonConstants.networkTimeout)
+        guard let validResult = try? result?.get() else {
+            fatalError("Wrong event result returned for Auth.fetchAuthSession")
+        }
+        return validResult
     }
 }

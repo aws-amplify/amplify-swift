@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import AWSMobileClient
 import Amplify
 @testable import AWSS3StoragePlugin
 import AWSS3
