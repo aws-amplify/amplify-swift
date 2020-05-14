@@ -100,4 +100,8 @@ class AuthHelper {
 
         fatalError("Could not get identityId from result")
     }
+
+    static func getUserSub() -> String? {
+        AWSMobileClient.default().username
+    }
 }
