@@ -19,7 +19,7 @@ public protocol AuthCategoryUserBehavior {
     ///   - options: Parameters specific to plugin behavior
     ///   - listener: Triggered when the operation completes.
     func fetchUserAttributes(options: AuthFetchUserAttributeOperation.Request.Options?,
-                         listener: AuthFetchUserAttributeOperation.EventListener?) -> AuthFetchUserAttributeOperation
+                             listener: AuthFetchUserAttributeOperation.EventListener?) -> AuthFetchUserAttributeOperation
 
     /// Update user attribute for the current user
     ///

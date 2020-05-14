@@ -7,7 +7,6 @@
 
 import Foundation
 import Amplify
-import AWSPluginsCore
 
 class AuthHelper {
 
@@ -62,29 +61,4 @@ class AuthHelper {
         _ = callbackInvoked.wait(timeout: .now() + TestCommonConstants.networkTimeout)
     }
 
-    static func getIdentityId() -> String {
-
-        let callbackInvoked = DispatchSemaphore(value: 0)
-        var result: Result<String, AuthError>?
-
-        _ = Amplify.Auth.fetchAuthSession { event in
-            defer {
-                callbackInvoked.signal()
-            }
-
-            switch event {
-            case .completed(let session):
-                result = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
-            case .failed(let error):
-                result = .failure(error)
-            default: break
-
-            }
-        }
-        _ = callbackInvoked.wait(timeout: .now() + TestCommonConstants.networkTimeout)
-        guard let validResult = try? result?.get() else {
-            fatalError("Wrong event result returned for Auth.fetchAuthSession")
-        }
-        return validResult
-    }
 }

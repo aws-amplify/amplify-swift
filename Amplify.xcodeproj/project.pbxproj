@@ -177,6 +177,7 @@
 		B43CD858241147F900BF5A60 /* AuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43CD857241147F900BF5A60 /* AuthUser.swift */; };
 		B43DC738241051A200D40275 /* AuthSignUpRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43DC737241051A200D40275 /* AuthSignUpRequest.swift */; };
 		B43DC73A2410526C00D40275 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43DC7392410526C00D40275 /* AuthError.swift */; };
+		B44C8EB0246DA56800E3D32D /* AuthResetPasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4926F692425013B007B769C /* AuthResetPasswordRequest.swift */; };
 		B450740D2411553D0098F02D /* AuthConfirmSignUpOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B450740C2411553D0098F02D /* AuthConfirmSignUpOperation.swift */; };
 		B450741124115C140098F02D /* AuthSignInOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B450741024115C140098F02D /* AuthSignInOperation.swift */; };
 		B450741324115C260098F02D /* AuthSignInRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B450741224115C260098F02D /* AuthSignInRequest.swift */; };
@@ -197,7 +198,6 @@
 		B473B540245DE93100C45C72 /* AuthConfirmSignInRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B473B53F245DE93100C45C72 /* AuthConfirmSignInRequest.swift */; };
 		B473B548245E097600C45C72 /* AuthSignOutOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B473B547245E097600C45C72 /* AuthSignOutOperation.swift */; };
 		B473B54A245E09B600C45C72 /* AuthSignOutRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B473B549245E09B600C45C72 /* AuthSignOutRequest.swift */; };
-		B4926F6A2425013B007B769C /* AuthResetPasswordRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4926F692425013B007B769C /* AuthResetPasswordRequest.swift */; };
 		B4926F6C242501A9007B769C /* AuthResetPasswordResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4926F6B242501A9007B769C /* AuthResetPasswordResult.swift */; };
 		B4926F6E24250219007B769C /* AuthResetPasswordOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4926F6D24250219007B769C /* AuthResetPasswordOperation.swift */; };
 		B493E69124524D3200D9E521 /* DeliveryDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = B493E69024524D3200D9E521 /* DeliveryDestination.swift */; };
@@ -3935,8 +3935,6 @@
 				FAC2351E227A053D00424678 /* APICategory.swift in Sources */,
 				FAC2351B227A053D00424678 /* APICategoryBehavior.swift in Sources */,
 				B473B540245DE93100C45C72 /* AuthConfirmSignInRequest.swift in Sources */,
-				B4926F6A2425013B007B769C /* AuthResetPasswordRequest.swift in Sources */,
-				B4926F6A2425013B007B769C /* AuthResetPasswordRequest.swift in Sources */,
 				B46884102460A85200221268 /* AuthDevice.swift in Sources */,
 				FA5D4CF3238AFD7B00D2F54A /* ModelRegistry+Syncable.swift in Sources */,
 				FAAFAF37239051E6002CF932 /* AtomicDictionary.swift in Sources */,
@@ -4021,6 +4019,7 @@
 				FA4E731623294B6E003B8EEB /* AWSHubPlugin.swift in Sources */,
 				FAC23543227A055200424678 /* Category+Configuration.swift in Sources */,
 				FA09B9452322C9E8000E064D /* AnalyticsCategoryConfiguration.swift in Sources */,
+				B44C8EB0246DA56800E3D32D /* AuthResetPasswordRequest.swift in Sources */,
 				FA09B9472322CBA7000E064D /* APICategoryConfiguration.swift in Sources */,
 				21FFF995230C96CB005878EA /* StorageListOperation.swift in Sources */,
 				95DAAB33237E63370028544F /* KeyPhrase.swift in Sources */,

@@ -14,10 +14,10 @@ extension AuthCategory: AuthCategoryUserBehavior {
     }
 
     public func fetchUserAttributes(options: AuthFetchUserAttributeOperation.Request.Options? = nil,
-                                listener: AuthFetchUserAttributeOperation.EventListener?)
+                                    listener: AuthFetchUserAttributeOperation.EventListener?)
         -> AuthFetchUserAttributeOperation {
             return plugin.fetchUserAttributes(options: options,
-                                          listener: listener)
+                                              listener: listener)
     }
 
     public func update(userAttribute: AuthUserAttribute,

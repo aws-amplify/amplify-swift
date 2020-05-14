@@ -40,7 +40,8 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
                  options: PredictionsSpeechToTextRequest.Options?,
                  listener: PredictionsSpeechToTextOperation.EventListener?) -> PredictionsSpeechToTextOperation {
         notify("speechToText")
-        let request = PredictionsSpeechToTextRequest(speechToText: speechToText, options: options ?? PredictionsSpeechToTextRequest.Options())
+        let request = PredictionsSpeechToTextRequest(speechToText: speechToText,
+                                                     options: options ?? PredictionsSpeechToTextRequest.Options())
         return MockPredictionsSpeechToTextOperation(request: request)
 
     }

@@ -5,7 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public protocol AuthAttributeResendConfirmationCodeOperation: AmplifyOperation<AuthAttributeResendConfirmationCodeRequest,
+public protocol AuthAttributeResendConfirmationCodeOperation: AmplifyOperation<
+    AuthAttributeResendConfirmationCodeRequest,
     Void,
     AuthCodeDeliveryDetails,
 AuthError> {}
