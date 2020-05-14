@@ -11,8 +11,4 @@ public enum AWSAuthService {
 
     case awsMobileClient(AWSMobileClient)
 
-    // Below cases are for future, currently the auth plugin only uses AWSMobileClient.
-    case cognitoUserPoolService
-
-    case cognitoIdentityPoolService
 }
