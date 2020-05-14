@@ -195,36 +195,40 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                                                   mutationEvent: MutationEvent,
                                                   api: APICategoryGraphQLBehavior) {
         if case let .completed(response) = result, case let .failure(graphQLResponseError) = response {
-            let processMutationErrorFromCloudOperation = ProcessMutationErrorFromCloudOperation(
-                dataStoreConfiguration: self.dataStoreConfiguration,
-                mutationEvent: mutationEvent,
-                api: api,
-                storageAdapter: self.storageAdapter,
-                graphQLResponseError: graphQLResponseError) { result in
-                    if case let .success(mutationEventOptional) = result,
-                        let outgoingMutationEvent = mutationEventOptional {
-                        self.outgoingMutationQueueSubject.send(outgoingMutationEvent)
-                    }
-                    self.completeProcessingEvent(mutationEvent)
-            }
-            self.operationQueue.addOperation(processMutationErrorFromCloudOperation)
+            processMutationErrorFromCloud(mutationEvent: mutationEvent,
+                                          api: api,
+                                          apiError: nil,
+                                          graphQLResponseError: graphQLResponseError)
         } else if case let .failed(apiError) = result {
-            let processMutationErrorFromCloudOperation = ProcessMutationErrorFromCloudOperation(
-                dataStoreConfiguration: self.dataStoreConfiguration,
-                mutationEvent: mutationEvent,
-                api: api,
-                storageAdapter: self.storageAdapter,
-                apiError: apiError) { result in
-                    if case let .success(mutationEventOptional) = result,
-                        let outgoingMutationEvent = mutationEventOptional {
-                        self.outgoingMutationQueueSubject.send(outgoingMutationEvent)
-                    }
-                    self.completeProcessingEvent(mutationEvent)
-            }
-            self.operationQueue.addOperation(processMutationErrorFromCloudOperation)
+            processMutationErrorFromCloud(mutationEvent: mutationEvent,
+                                          api: api,
+                                          apiError: apiError,
+                                          graphQLResponseError: nil)
+
         } else {
             completeProcessingEvent(mutationEvent)
         }
+    }
+
+    private func processMutationErrorFromCloud(mutationEvent: MutationEvent,
+                                               api: APICategoryGraphQLBehavior,
+                                               apiError: APIError?,
+                                               graphQLResponseError: GraphQLResponseError<MutationSync<AnyModel>>?) {
+        let processMutationErrorFromCloudOperation = ProcessMutationErrorFromCloudOperation(
+            dataStoreConfiguration: dataStoreConfiguration,
+            mutationEvent: mutationEvent,
+            api: api,
+            storageAdapter: storageAdapter,
+            graphQLResponseError: graphQLResponseError,
+            apiError: apiError) { result in
+                self.log.verbose("[ProcessMutationErrorFromCloudOperation] result: \(result)")
+                if case let .success(mutationEventOptional) = result,
+                    let outgoingMutationEvent = mutationEventOptional {
+                    self.outgoingMutationQueueSubject.send(outgoingMutationEvent)
+                }
+                self.completeProcessingEvent(mutationEvent)
+        }
+        operationQueue.addOperation(processMutationErrorFromCloudOperation)
     }
 
     private func completeProcessingEvent(_ mutationEvent: MutationEvent) {
