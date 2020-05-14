@@ -34,7 +34,7 @@ final public class AWSAuthPlugin: AuthCategoryPlugin {
         return "awsCognitoAuthPlugin"
     }
 
-    public func getEscapeHatch() -> AWSAuthService {
+    public func getEscapeHatch() -> AWSCognitoAuthService {
         if let internalAuthorizationProvider = authorizationProvider as? AuthorizationProviderAdapter,
             let awsMobileClientProvider = internalAuthorizationProvider.awsMobileClient as? AWSMobileClientAdapter {
             return .awsMobileClient(awsMobileClientProvider.awsMobileClient)
