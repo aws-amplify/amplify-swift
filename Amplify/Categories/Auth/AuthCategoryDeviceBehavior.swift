@@ -15,7 +15,7 @@ public protocol AuthCategoryDeviceBehavior {
     ///   - listener: Triggered when the operation completes.
     func fetchDevices(
         options: AuthFetchDevicesOperation.Request.Options?,
-        listener: AuthFetchDevicesOperation.EventListener?) -> AuthFetchDevicesOperation
+        listener: AuthFetchDevicesOperation.ResultListener?) -> AuthFetchDevicesOperation
 
     /// Forget device from the user
     ///
@@ -26,7 +26,7 @@ public protocol AuthCategoryDeviceBehavior {
     func forget(
         device: AuthDevice?,
         options: AuthForgetDeviceOperation.Request.Options?,
-        listener: AuthForgetDeviceOperation.EventListener?) -> AuthForgetDeviceOperation
+        listener: AuthForgetDeviceOperation.ResultListener?) -> AuthForgetDeviceOperation
 
     /// Make the current user device as remebered
     ///
@@ -35,5 +35,5 @@ public protocol AuthCategoryDeviceBehavior {
     ///   - listener: Triggered when the operation completes.
     func rememberDevice(
         options: AuthRememberDeviceOperation.Request.Options?,
-        listener: AuthRememberDeviceOperation.EventListener?) -> AuthRememberDeviceOperation
+        listener: AuthRememberDeviceOperation.ResultListener?) -> AuthRememberDeviceOperation
 }

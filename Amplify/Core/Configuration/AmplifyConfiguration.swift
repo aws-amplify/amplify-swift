@@ -44,7 +44,6 @@ public struct AmplifyConfiguration: Codable {
     /// Configurations for the Amplify Storage category
     let storage: StorageCategoryConfiguration?
 
-
     public init(analytics: AnalyticsCategoryConfiguration? = nil,
                 api: APICategoryConfiguration? = nil,
                 auth: AuthCategoryConfiguration? = nil,

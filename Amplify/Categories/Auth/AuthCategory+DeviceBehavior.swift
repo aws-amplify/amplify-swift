@@ -11,7 +11,7 @@ extension AuthCategory: AuthCategoryDeviceBehavior {
 
     public func fetchDevices(
         options: AuthFetchDevicesOperation.Request.Options? = nil,
-        listener: AuthFetchDevicesOperation.EventListener?) -> AuthFetchDevicesOperation {
+        listener: AuthFetchDevicesOperation.ResultListener?) -> AuthFetchDevicesOperation {
         return plugin.fetchDevices(options: options,
                                    listener: listener)
     }
@@ -19,7 +19,7 @@ extension AuthCategory: AuthCategoryDeviceBehavior {
     public func forget(
         device: AuthDevice? = nil,
         options: AuthForgetDeviceOperation.Request.Options? = nil,
-        listener: AuthForgetDeviceOperation.EventListener?) -> AuthForgetDeviceOperation {
+        listener: AuthForgetDeviceOperation.ResultListener?) -> AuthForgetDeviceOperation {
         return plugin.forget(device: device,
                              options: options,
                              listener: listener)
@@ -27,7 +27,7 @@ extension AuthCategory: AuthCategoryDeviceBehavior {
 
     public func rememberDevice(
         options: AuthRememberDeviceOperation.Request.Options? = nil,
-        listener: AuthRememberDeviceOperation.EventListener?) -> AuthRememberDeviceOperation {
+        listener: AuthRememberDeviceOperation.ResultListener?) -> AuthRememberDeviceOperation {
         plugin.rememberDevice(options: options, listener: listener)
     }
 

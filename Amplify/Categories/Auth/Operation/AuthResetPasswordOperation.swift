@@ -7,10 +7,11 @@
 
 import Foundation
 
-public protocol AuthResetPasswordOperation: AmplifyOperation<AuthResetPasswordRequest,
-    Void,
+public protocol AuthResetPasswordOperation: AmplifyOperation<
+    AuthResetPasswordRequest,
     AuthResetPasswordResult,
-AuthError> {}
+    AuthError
+> {}
 
 public extension HubPayload.EventName.Auth {
 

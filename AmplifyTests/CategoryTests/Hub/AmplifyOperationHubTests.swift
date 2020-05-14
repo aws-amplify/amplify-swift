@@ -40,7 +40,7 @@ class AmplifyOperationHubTests: XCTestCase {
 
         let listenerWasInvoked = expectation(description: "listener was invoked")
 
-        let token = Amplify.Hub.listenForResult(to: operation) { event in
+        let token = Amplify.Hub.listenForResult(to: operation) { _ in
             listenerWasInvoked.fulfill()
         }
 

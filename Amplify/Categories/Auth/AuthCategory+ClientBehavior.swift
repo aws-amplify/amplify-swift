@@ -12,7 +12,7 @@ extension AuthCategory: AuthCategoryBehavior {
     public func signUp(username: String,
                        password: String? = nil,
                        options: AuthSignUpOperation.Request.Options? = nil,
-                       listener: AuthSignUpOperation.EventListener?) -> AuthSignUpOperation {
+                       listener: AuthSignUpOperation.ResultListener?) -> AuthSignUpOperation {
         return plugin.signUp(username: username,
                              password: password,
                              options: options,
@@ -22,7 +22,7 @@ extension AuthCategory: AuthCategoryBehavior {
     public func confirmSignUp(username: String,
                               confirmationCode: String,
                               options: AuthConfirmSignUpOperation.Request.Options? = nil,
-                              listener: AuthConfirmSignUpOperation.EventListener?) -> AuthConfirmSignUpOperation {
+                              listener: AuthConfirmSignUpOperation.ResultListener?) -> AuthConfirmSignUpOperation {
         return plugin.confirmSignUp(username: username,
                                     confirmationCode: confirmationCode,
                                     options: options,
@@ -31,7 +31,7 @@ extension AuthCategory: AuthCategoryBehavior {
 
     public func resendSignUpCode(username: String,
                                  options: AuthResendSignUpCodeOperation.Request.Options? = nil,
-                                 listener: AuthResendSignUpCodeOperation.EventListener?)
+                                 listener: AuthResendSignUpCodeOperation.ResultListener?)
         -> AuthResendSignUpCodeOperation {
             return plugin.resendSignUpCode(username: username,
                                            options: options,
@@ -41,7 +41,7 @@ extension AuthCategory: AuthCategoryBehavior {
     public func signIn(username: String? = nil,
                        password: String? = nil,
                        options: AuthSignInOperation.Request.Options? = nil,
-                       listener: AuthSignInOperation.EventListener?) -> AuthSignInOperation {
+                       listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation {
         return plugin.signIn(username: username,
                              password: password,
                              options: options,
@@ -50,7 +50,7 @@ extension AuthCategory: AuthCategoryBehavior {
 
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthWebUISignInOperation.Request.Options? = nil,
-                                listener: AuthWebUISignInOperation.EventListener?) -> AuthWebUISignInOperation {
+                                listener: AuthWebUISignInOperation.ResultListener?) -> AuthWebUISignInOperation {
         return plugin.signInWithWebUI(presentationAnchor: presentationAnchor,
                                       options: options,
                                       listener: listener)
@@ -59,7 +59,7 @@ extension AuthCategory: AuthCategoryBehavior {
     public func signInWithWebUI(for authProvider: AuthNProvider,
                                 presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthSocialWebUISignInOperation.Request.Options? = nil,
-                                listener: AuthSocialWebUISignInOperation.EventListener?)
+                                listener: AuthSocialWebUISignInOperation.ResultListener?)
         -> AuthSocialWebUISignInOperation {
             return plugin.signInWithWebUI(for: authProvider,
                                           presentationAnchor: presentationAnchor,
@@ -69,26 +69,26 @@ extension AuthCategory: AuthCategoryBehavior {
 
     public func confirmSignIn(challengeResponse: String,
                               options: AuthConfirmSignInOperation.Request.Options? = nil,
-                              listener: AuthConfirmSignInOperation.EventListener?) -> AuthConfirmSignInOperation {
+                              listener: AuthConfirmSignInOperation.ResultListener?) -> AuthConfirmSignInOperation {
         return plugin.confirmSignIn(challengeResponse: challengeResponse,
                                     options: options,
                                     listener: listener)
     }
 
     public func signOut(options: AuthSignOutOperation.Request.Options? = nil,
-                        listener: AuthSignOutOperation.EventListener?) -> AuthSignOutOperation {
+                        listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation {
         plugin.signOut(options: options, listener: listener)
     }
 
     public func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options? = nil,
-                                 listener: AuthFetchSessionOperation.EventListener?) -> AuthFetchSessionOperation {
+                                 listener: AuthFetchSessionOperation.ResultListener?) -> AuthFetchSessionOperation {
         return plugin.fetchAuthSession(options: options,
                                        listener: listener)
     }
 
     public func resetPassword(for username: String,
                               options: AuthResetPasswordOperation.Request.Options? = nil,
-                              listener: AuthResetPasswordOperation.EventListener?) -> AuthResetPasswordOperation {
+                              listener: AuthResetPasswordOperation.ResultListener?) -> AuthResetPasswordOperation {
         return plugin.resetPassword(for: username,
                                     options: options,
                                     listener: listener)
@@ -98,7 +98,7 @@ extension AuthCategory: AuthCategoryBehavior {
                                      with newPassword: String,
                                      confirmationCode: String,
                                      options: AuthConfirmResetPasswordOperation.Request.Options? = nil,
-                                     listener: AuthConfirmResetPasswordOperation.EventListener?)
+                                     listener: AuthConfirmResetPasswordOperation.ResultListener?)
         -> AuthConfirmResetPasswordOperation {
             return plugin.confirmResetPassword(for: username,
                                                with: newPassword,
