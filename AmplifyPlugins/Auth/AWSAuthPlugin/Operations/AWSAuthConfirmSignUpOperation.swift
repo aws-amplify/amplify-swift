@@ -8,23 +8,23 @@
 import Amplify
 import AWSMobileClient
 
-public class AWSAuthConfirmSignUpOperation: AmplifyOperation<AuthConfirmSignUpRequest,
-    Void,
+public class AWSAuthConfirmSignUpOperation: AmplifyOperation<
+    AuthConfirmSignUpRequest,
     AuthSignUpResult,
-    AuthError>,
-AuthConfirmSignUpOperation {
+    AuthError
+>, AuthConfirmSignUpOperation {
 
     let authenticationProvider: AuthenticationProviderBehavior
 
     init(_ request: AuthConfirmSignUpRequest,
          authenticationProvider: AuthenticationProviderBehavior,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
 
         self.authenticationProvider = authenticationProvider
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.confirmSignUp,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
@@ -56,13 +56,13 @@ AuthConfirmSignUpOperation {
     }
 
     private func dispatch(_ result: AuthSignUpResult) {
-        let asyncEvent = AsyncEvent<Void, AuthSignUpResult, AuthError>.completed(result)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.success(result)
+        dispatch(result: result)
     }
 
     private func dispatch(_ error: AuthError) {
-        let asyncEvent = AsyncEvent<Void, AuthSignUpResult, AuthError>.failed(error)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.failure(error)
+        dispatch(result: result)
     }
 
 }

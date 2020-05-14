@@ -11,13 +11,13 @@ extension AWSAuthPlugin {
 
     public func fetchDevices(
         options: AuthFetchDevicesOperation.Request.Options? = nil,
-        listener: AuthFetchDevicesOperation.EventListener?) -> AuthFetchDevicesOperation {
+        listener: AuthFetchDevicesOperation.ResultListener?) -> AuthFetchDevicesOperation {
 
         let options = options ?? AuthFetchDevicesRequest.Options()
         let request = AuthFetchDevicesRequest(options: options)
         let fetchDeviceOperation = AWSAuthFetchDevicesOperation(request,
                                                                 deviceService: deviceService,
-                                                                listener: listener)
+                                                                resultListener: listener)
         queue.addOperation(fetchDeviceOperation)
         return fetchDeviceOperation
     }
@@ -25,25 +25,25 @@ extension AWSAuthPlugin {
     public func forget(
         device: AuthDevice? = nil,
         options: AuthForgetDeviceOperation.Request.Options? = nil,
-        listener: AuthForgetDeviceOperation.EventListener?) -> AuthForgetDeviceOperation {
+        listener: AuthForgetDeviceOperation.ResultListener?) -> AuthForgetDeviceOperation {
 
         let options = options ?? AuthForgetDeviceRequest.Options()
         let request = AuthForgetDeviceRequest(device: device, options: options)
         let fetchDeviceOperation = AWSAuthForgetDeviceOperation(request,
                                                                 deviceService: deviceService,
-                                                                listener: listener)
+                                                                resultListener: listener)
         queue.addOperation(fetchDeviceOperation)
         return fetchDeviceOperation
     }
 
     public func rememberDevice(
         options: AuthRememberDeviceOperation.Request.Options? = nil,
-        listener: AuthRememberDeviceOperation.EventListener?) -> AuthRememberDeviceOperation {
+        listener: AuthRememberDeviceOperation.ResultListener?) -> AuthRememberDeviceOperation {
         let options = options ?? AuthRememberDeviceRequest.Options()
         let request = AuthRememberDeviceRequest(options: options)
         let fetchDeviceOperation = AWSAuthRememberDeviceOperation(request,
                                                                   deviceService: deviceService,
-                                                                  listener: listener)
+                                                                  resultListener: listener)
         queue.addOperation(fetchDeviceOperation)
         return fetchDeviceOperation
     }

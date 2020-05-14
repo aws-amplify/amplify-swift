@@ -7,23 +7,23 @@
 
 import Amplify
 
-public class AWSAuthConfirmUserAttributeOperation: AmplifyOperation<AuthConfirmUserAttributeRequest,
+public class AWSAuthConfirmUserAttributeOperation: AmplifyOperation<
+    AuthConfirmUserAttributeRequest,
     Void,
-    Void,
-    AuthError>,
-AuthConfirmUserAttributeOperation {
+    AuthError
+>, AuthConfirmUserAttributeOperation {
 
     let userService: AuthUserServiceBehavior
 
     init(_ request: AuthConfirmUserAttributeRequest,
          userService: AuthUserServiceBehavior,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
 
         self.userService = userService
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.confirmUserAttributes,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
@@ -48,12 +48,12 @@ AuthConfirmUserAttributeOperation {
     }
 
     private func dispatch(_ result: Void) {
-        let asyncEvent = AsyncEvent<Void, Void, AuthError>.completed(result)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.success(result)
+        dispatch(result: result)
     }
 
     private func dispatch(_ error: AuthError) {
-        let asyncEvent = AsyncEvent<Void, Void, AuthError>.failed(error)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.failure(error)
+        dispatch(result: result)
     }
 }
