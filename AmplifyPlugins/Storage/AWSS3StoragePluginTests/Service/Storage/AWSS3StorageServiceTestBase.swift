@@ -13,7 +13,6 @@ class AWSS3StorageServiceTestBase: XCTestCase {
     var mockTransferUtility: MockAWSS3TransferUtility!
     var mockPreSignedURLBuilder: MockAWSS3PreSignedURLBuilder!
     var mockS3: MockS3!
-    var mockMobileClient: MockAWSMobileClient!
 
     var storageService: AWSS3StorageService!
 
@@ -24,7 +23,6 @@ class AWSS3StorageServiceTestBase: XCTestCase {
         mockTransferUtility = MockAWSS3TransferUtility()
         mockPreSignedURLBuilder = MockAWSS3PreSignedURLBuilder()
         mockS3 = MockS3()
-        mockMobileClient = MockAWSMobileClient()
         storageService = AWSS3StorageService(transferUtility: mockTransferUtility,
                                              preSignedURLBuilder: mockPreSignedURLBuilder,
                                              awsS3: mockS3,
