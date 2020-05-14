@@ -117,6 +117,7 @@ extension GraphQLRequest {
         let document = documentBuilder.build()
 
         return GraphQLRequest<M>(document: document.stringValue,
+                                 variables: document.variables,
                                  responseType: modelType,
                                  decodePath: document.name)
     }

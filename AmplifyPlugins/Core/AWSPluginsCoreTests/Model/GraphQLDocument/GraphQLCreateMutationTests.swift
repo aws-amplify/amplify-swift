@@ -55,8 +55,12 @@ class GraphQLCreateMutationTests: XCTestCase {
         XCTAssertEqual(document.name, "createPost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "createPost")
-        XCTAssertNotNil(document.variables["input"])
-        guard let input = document.variables["input"] as? [String: Any] else {
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertNotNil(variables["input"])
+        guard let input = variables["input"] as? [String: Any] else {
             XCTFail("The document variables property doesn't contain a valid input")
             return
         }
@@ -104,7 +108,11 @@ class GraphQLCreateMutationTests: XCTestCase {
         XCTAssertEqual(document.name, "createComment")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "createComment")
-        guard let input = document.variables["input"] as? GraphQLInput else {
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        guard let input = variables["input"] as? GraphQLInput else {
             XCTFail("Variables should contain a valid input")
             return
         }
@@ -148,8 +156,12 @@ class GraphQLCreateMutationTests: XCTestCase {
         XCTAssertEqual(document.name, "createPost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "createPost")
-        XCTAssertNotNil(document.variables["input"])
-        guard let input = document.variables["input"] as? [String: Any] else {
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertNotNil(variables["input"])
+        guard let input = variables["input"] as? [String: Any] else {
             XCTFail("The document variables property doesn't contain a valid input")
             return
         }
@@ -205,7 +217,11 @@ class GraphQLCreateMutationTests: XCTestCase {
         XCTAssertEqual(document.name, "createComment")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "createComment")
-        guard let input = document.variables["input"] as? GraphQLInput else {
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        guard let input = variables["input"] as? GraphQLInput else {
             XCTFail("Variables should contain a valid input")
             return
         }
