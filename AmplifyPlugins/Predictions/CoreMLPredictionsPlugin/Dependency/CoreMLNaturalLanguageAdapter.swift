@@ -78,6 +78,7 @@ class CoreMLNaturalLanguageAdapter: CoreMLNaturalLanguageBehavior {
 
 extension NLTag {
 
+    // swiftlint:disable cyclomatic_complexity
     /// Convert the CoreML NLTag to SpeechType
     func getSpeechType() -> SpeechType {
         switch self {
@@ -111,6 +112,7 @@ extension NLTag {
 
         }
     }
+    // swiftlint:enable cyclomatic_complexity
 
     func getEntityType() -> EntityType {
         switch self {
@@ -128,6 +130,7 @@ extension NLTag {
 
 extension NLLanguage {
 
+    // swiftlint:disable:next function_body_length cyclomatic_complexity
     func getLanguageType() -> LanguageType {
         switch self {
         case .amharic:

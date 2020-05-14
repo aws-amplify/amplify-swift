@@ -248,7 +248,10 @@ extension AWSPredictionsService: AWSComprehendServiceBehavior {
 extension Array where Element: AWSComprehendDominantLanguage {
 
     func getDominantLanguage() -> AWSComprehendDominantLanguage? {
-        return max { item1, item2 in
+        // SwiftFormat removes `self` below, but that leads to ambiguity between the instance method on Array and the
+        // global `max` method. Adding `self` removes the ambiguity.
+        // swiftformat:disable:next redundantSelf
+        return self.max { item1, item2 in
             guard let item1Score = item1.score else {
                 return false
             }

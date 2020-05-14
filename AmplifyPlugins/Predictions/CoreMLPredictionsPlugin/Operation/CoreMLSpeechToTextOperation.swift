@@ -8,22 +8,23 @@
 import Foundation
 import Amplify
 
-public class CoreMLSpeechToTextOperation: AmplifyOperation<PredictionsSpeechToTextRequest,
-    Void,
+public class CoreMLSpeechToTextOperation: AmplifyOperation<
+    PredictionsSpeechToTextRequest,
     SpeechToTextResult,
-PredictionsError>, PredictionsSpeechToTextOperation {
+    PredictionsError
+>, PredictionsSpeechToTextOperation {
 
        weak var coreMLSpeech: CoreMLSpeechBehavior?
 
     init(_ request: PredictionsSpeechToTextRequest,
          coreMLSpeech: CoreMLSpeechBehavior,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
 
         self.coreMLSpeech = coreMLSpeech
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.speechToText,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
@@ -42,12 +43,12 @@ PredictionsError>, PredictionsSpeechToTextOperation {
                 let errorDescription = CoreMLPluginErrorString.transcriptionNoResult.errorDescription
                 let recovery = CoreMLPluginErrorString.transcriptionNoResult.recoverySuggestion
                 let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
-                self.dispatch(event: .failed(predictionsError))
+                self.dispatch(result: .failure(predictionsError))
                 self.finish()
                 return
             }
 
-            self.dispatch(event: .completed(result))
+            self.dispatch(result: .success(result))
             self.finish()
         }
 

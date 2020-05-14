@@ -12,6 +12,7 @@ import Amplify
 import Foundation
 @testable import AWSPredictionsPlugin
 
+// swiftlint:disable file_length type_body_length
 class PredictionsServiceRekognitionTests: XCTestCase {
 
     var predictionsService: AWSPredictionsService!
@@ -179,7 +180,8 @@ class PredictionsServiceRekognitionTests: XCTestCase {
                 let labelResult = result as? IdentifyLabelsResult
                 let labels = IdentifyLabelsResultTransformers.processModerationLabels(mockResponse.moderationLabels!)
                 XCTAssertEqual(labelResult?.labels, labels, "Labels should be the same")
-                XCTAssertNotNil(labelResult?.unsafeContent, "unsafe content should have a boolean in it since we called moderation labels")
+                XCTAssertNotNil(labelResult?.unsafeContent,
+                                "unsafe content should have a boolean in it since we called moderation labels")
             case .failed(let error):
                 XCTFail("Should not produce error: \(error)")
             }
