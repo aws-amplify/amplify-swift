@@ -7,10 +7,11 @@
 
 import Foundation
 
-public protocol AuthSignOutOperation: AmplifyOperation<AuthSignOutRequest,
+public protocol AuthSignOutOperation: AmplifyOperation<
+    AuthSignOutRequest,
     Void,
-    Void,
-AuthError> {}
+    AuthError
+> {}
 
 public extension HubPayload.EventName.Auth {
 

@@ -9,7 +9,6 @@ import Foundation
 
 public struct AuthRememberDeviceRequest: AmplifyOperationRequest {
 
-
     public var options: Options
 
     public init(options: Options) {
@@ -31,4 +30,3 @@ public extension AuthRememberDeviceRequest {
         }
     }
 }
-

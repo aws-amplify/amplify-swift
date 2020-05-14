@@ -26,11 +26,10 @@ public class AWSAuthService: AWSAuthServiceBehavior {
             }
 
             switch event {
-            case .completed(let session):
+            case .success(let session):
                 result = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
-            case .failed(let error):
+            case .failure(let error):
                 result = .failure(error)
-            default: break
 
             }
         }
@@ -53,11 +52,10 @@ public class AWSAuthService: AWSAuthServiceBehavior {
             }
 
             switch event {
-            case .completed(let session):
+            case .success(let session):
                 result = self?.getTokenString(from: session)
-            case .failed(let error):
+            case .failure(let error):
                 result = .failure(error)
-            default: break
 
             }
         }

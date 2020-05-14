@@ -7,10 +7,11 @@
 
 import Foundation
 
-public protocol AuthConfirmUserAttributeOperation: AmplifyOperation<AuthConfirmUserAttributeRequest,
+public protocol AuthConfirmUserAttributeOperation: AmplifyOperation<
+    AuthConfirmUserAttributeRequest,
     Void,
-    Void,
-AuthError> {}
+    AuthError
+> {}
 
 public extension HubPayload.EventName.Auth {
 

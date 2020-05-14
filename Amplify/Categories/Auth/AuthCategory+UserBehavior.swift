@@ -14,15 +14,15 @@ extension AuthCategory: AuthCategoryUserBehavior {
     }
 
     public func fetchUserAttributes(options: AuthFetchUserAttributeOperation.Request.Options? = nil,
-                                listener: AuthFetchUserAttributeOperation.EventListener?)
+                                    listener: AuthFetchUserAttributeOperation.ResultListener?)
         -> AuthFetchUserAttributeOperation {
             return plugin.fetchUserAttributes(options: options,
-                                          listener: listener)
+                                              listener: listener)
     }
 
     public func update(userAttribute: AuthUserAttribute,
                        options: AuthUpdateUserAttributeOperation.Request.Options? = nil,
-                       listener: AuthUpdateUserAttributeOperation.EventListener?) -> AuthUpdateUserAttributeOperation {
+                       listener: AuthUpdateUserAttributeOperation.ResultListener?) -> AuthUpdateUserAttributeOperation {
         return plugin.update(userAttribute: userAttribute,
                              options: options,
                              listener: listener)
@@ -30,7 +30,7 @@ extension AuthCategory: AuthCategoryUserBehavior {
 
     public func update(userAttributes: [AuthUserAttribute],
                        options: AuthUpdateUserAttributesOperation.Request.Options? = nil,
-                       listener: AuthUpdateUserAttributesOperation.EventListener?)
+                       listener: AuthUpdateUserAttributesOperation.ResultListener?)
         -> AuthUpdateUserAttributesOperation {
             return plugin.update(userAttributes: userAttributes,
                                  options: options,
@@ -39,7 +39,7 @@ extension AuthCategory: AuthCategoryUserBehavior {
 
     public func resendConfirmationCode(for attributeKey: AuthUserAttributeKey,
                                        options: AuthAttributeResendConfirmationCodeOperation.Request.Options? = nil,
-                                       listener: AuthAttributeResendConfirmationCodeOperation.EventListener?)
+                                       listener: AuthAttributeResendConfirmationCodeOperation.ResultListener?)
         -> AuthAttributeResendConfirmationCodeOperation {
             return plugin.resendConfirmationCode(for: attributeKey,
                                                  options: options,
@@ -50,7 +50,7 @@ extension AuthCategory: AuthCategoryUserBehavior {
     public func confirm(userAttribute: AuthUserAttributeKey,
                         confirmationCode: String,
                         options: AuthConfirmUserAttributeOperation.Request.Options? = nil,
-                        listener: AuthConfirmUserAttributeOperation.EventListener?)
+                        listener: AuthConfirmUserAttributeOperation.ResultListener?)
         -> AuthConfirmUserAttributeOperation {
             return plugin.confirm(userAttribute: userAttribute,
                                   confirmationCode: confirmationCode,
@@ -61,7 +61,7 @@ extension AuthCategory: AuthCategoryUserBehavior {
     public func update(oldPassword: String,
                        to newPassword: String,
                        options: AuthChangePasswordOperation.Request.Options? = nil,
-                       listener: AuthChangePasswordOperation.EventListener?) -> AuthChangePasswordOperation {
+                       listener: AuthChangePasswordOperation.ResultListener?) -> AuthChangePasswordOperation {
         return plugin.update(oldPassword: oldPassword,
                              to: newPassword,
                              options: options,

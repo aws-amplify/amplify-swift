@@ -7,6 +7,7 @@
 
 import Foundation
 
+// swiftlint:disable:next type_name
 public struct AuthAttributeResendConfirmationCodeRequest: AmplifyOperationRequest {
 
     public let attributeKey: AuthUserAttributeKey

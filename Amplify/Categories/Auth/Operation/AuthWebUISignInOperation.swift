@@ -7,10 +7,11 @@
 
 import Foundation
 
-public protocol AuthWebUISignInOperation: AmplifyOperation<AuthWebUISignInRequest,
-    Void,
+public protocol AuthWebUISignInOperation: AmplifyOperation<
+    AuthWebUISignInRequest,
     AuthSignInResult,
-AuthError> {}
+    AuthError
+> {}
 
 public extension HubPayload.EventName.Auth {
 

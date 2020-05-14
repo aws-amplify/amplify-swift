@@ -7,10 +7,11 @@
 
 import Foundation
 
-public protocol AuthForgetDeviceOperation: AmplifyOperation<AuthForgetDeviceRequest,
+public protocol AuthForgetDeviceOperation: AmplifyOperation<
+    AuthForgetDeviceRequest,
     Void,
-    Void,
-AuthError> {}
+    AuthError
+> {}
 
 public extension HubPayload.EventName.Auth {
 
