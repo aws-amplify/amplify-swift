@@ -78,16 +78,24 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         let filter = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
         var token: UnsubscribeToken?
         token = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { _ in
-            do {
-                _ = try Amplify.API.getPlugin(for: "awsAPIPlugin")
+            if self.hasAddedPlugin("awsAPIPlugin") || self.hasAddedPlugin("MockAPICategoryPlugin") {
                 self.storageEngine.startSync()
-            } catch {
-                self.log.info("Unable to find awsAPIPlugin, syncEngine will not be started")
+            } else {
+                self.log.info("Unable to find suitable plugin for syncEngine.  syncEngine will not be started")
             }
 
             if let token = token {
                 Amplify.Hub.removeListener(token)
             }
+        }
+    }
+
+    func hasAddedPlugin(_ pluginName: String) -> Bool {
+        do {
+            _ = try Amplify.API.getPlugin(for: pluginName)
+            return true
+        } catch {
+            return false
         }
     }
 
