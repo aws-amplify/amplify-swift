@@ -78,7 +78,13 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         let filter = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
         var token: UnsubscribeToken?
         token = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { _ in
-            self.storageEngine.startSync()
+            do {
+                _ = try Amplify.API.getPlugin(for: "awsAPIPlugin")
+                self.storageEngine.startSync()
+            } catch {
+                self.log.info("Unable to find awsAPIPlugin, syncEngine will not be started")
+            }
+
             if let token = token {
                 Amplify.Hub.removeListener(token)
             }
