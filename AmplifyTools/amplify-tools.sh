@@ -25,7 +25,7 @@ amplifyRegion=$region
 amplifyEnvName=$envName
 
 if $amplifyModelgen; then
-  echo "modelgel is set to true, generating Swift models from schema.graphql..."
+  echo "modelgen is set to true, generating Swift models from schema.graphql..."
   amplify codegen model
   # calls amplify-app again so the Xcode project is updated with the generated models
   amplify-app --platform ios
