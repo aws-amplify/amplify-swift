@@ -61,10 +61,13 @@ class GraphQLListQueryTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "listPosts")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertNotNil(document.variables)
-        XCTAssertNotNil(document.variables["limit"])
-        XCTAssertEqual(document.variables["limit"] as? Int, 1_000)
-        XCTAssertNotNil(document.variables["filter"])
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertNotNil(variables["limit"])
+        XCTAssertEqual(variables["limit"] as? Int, 1_000)
+        XCTAssertNotNil(variables["filter"])
     }
 
     func testListGraphQLQueryFromSimpleModelWithSyncEnabled() {
@@ -100,9 +103,12 @@ class GraphQLListQueryTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "listPosts")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertNotNil(document.variables)
-        XCTAssertNotNil(document.variables["limit"])
-        XCTAssertEqual(document.variables["limit"] as? Int, 1_000)
-        XCTAssertNotNil(document.variables["filter"])
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertNotNil(variables["limit"])
+        XCTAssertEqual(variables["limit"] as? Int, 1_000)
+        XCTAssertNotNil(variables["filter"])
     }
 }

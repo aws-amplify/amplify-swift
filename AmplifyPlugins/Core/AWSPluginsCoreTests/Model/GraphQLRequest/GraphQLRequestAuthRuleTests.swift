@@ -26,7 +26,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: blog.id))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
-        documentBuilder.add(decorator: AuthRuleDecorator())
+        documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
         let documentStringValue = """
         query GetBlog($id: ID!) {
@@ -62,7 +62,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: blog))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
-        documentBuilder.add(decorator: AuthRuleDecorator())
+        documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
         let documentStringValue = """
         mutation CreateBlog($input: CreateBlogInput!) {
@@ -103,7 +103,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: ModelDecorator(model: blog))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
-        documentBuilder.add(decorator: AuthRuleDecorator())
+        documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
         let documentStringValue = """
         mutation UpdateBlog($input: UpdateBlogInput!) {
@@ -143,7 +143,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(id: blog.id))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
-        documentBuilder.add(decorator: AuthRuleDecorator())
+        documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
         let documentStringValue = """
         mutation DeleteBlog($input: DeleteBlogInput!) {
@@ -185,7 +185,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
-        documentBuilder.add(decorator: AuthRuleDecorator(subscriptionType: .onCreate, ownerId: ownerId))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, ownerId)))
         let document = documentBuilder.build()
         let documentStringValue = """
         subscription OnCreateBlog($owner: String!) {
@@ -225,7 +225,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
-        documentBuilder.add(decorator: AuthRuleDecorator(subscriptionType: .onUpdate, ownerId: "111"))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, "111")))
         let document = documentBuilder.build()
         let documentStringValue = """
         subscription OnUpdateBlog {
@@ -257,7 +257,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
-        documentBuilder.add(decorator: AuthRuleDecorator(subscriptionType: .onDelete, ownerId: "111"))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, "111")))
         let document = documentBuilder.build()
         let documentStringValue = """
         subscription OnDeleteBlog {
@@ -293,7 +293,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
         documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync))
-        documentBuilder.add(decorator: AuthRuleDecorator())
+        documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
         let documentStringValue = """
         query SyncBlogs($lastSync: AWSTimestamp, $limit: Int, $nextToken: String) {

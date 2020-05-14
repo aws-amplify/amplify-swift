@@ -50,7 +50,11 @@ class GraphQLGetQueryTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "getPost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables["id"] as? String, "id")
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertEqual(variables["id"] as? String, "id")
     }
 
     func testGetGraphQLQueryFromSimpleModelWithSyncEnabled() {
@@ -78,7 +82,11 @@ class GraphQLGetQueryTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "getPost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables["id"] as? String, "id")
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertEqual(variables["id"] as? String, "id")
     }
 
     /// - Given: a `Model` type
@@ -118,7 +126,11 @@ class GraphQLGetQueryTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "getComment")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables["id"] as? String, "id")
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertEqual(variables["id"] as? String, "id")
     }
 
     func testGetGraphQLQueryFromModelWithAssociationAndSyncEnabled() {
@@ -155,6 +167,10 @@ class GraphQLGetQueryTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "getComment")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables["id"] as? String, "id")
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertEqual(variables["id"] as? String, "id")
     }
 }

@@ -9,7 +9,10 @@ import Amplify
 
 extension AuthRule {
     func getOwnerFieldOrDefault() -> String {
-        return (ownerField != nil) ? ownerField!.stringValue : "owner"
+        guard let ownerField = ownerField else {
+            return "owner"
+        }
+        return ownerField.stringValue
     }
 
     func getModelOperationsOrDefault() -> [ModelOperation] {

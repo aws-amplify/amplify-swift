@@ -60,7 +60,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
-        documentBuilder.add(decorator: AuthRuleDecorator())
+        documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         mutation CreateModelReadUpdateField {
@@ -82,7 +82,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
-        documentBuilder.add(decorator: AuthRuleDecorator())
+        documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         mutation DeleteModelReadUpdateField {
@@ -104,7 +104,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
-        documentBuilder.add(decorator: AuthRuleDecorator())
+        documentBuilder.add(decorator: AuthRuleDecorator(.mutation))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         mutation UpdateModelReadUpdateField {
@@ -126,7 +126,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
-        documentBuilder.add(decorator: AuthRuleDecorator())
+        documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         query GetModelReadUpdateField {
@@ -149,7 +149,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
                                                                operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         documentBuilder.add(decorator: PaginationDecorator())
-        documentBuilder.add(decorator: AuthRuleDecorator())
+        documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         query ListModelReadUpdateFields($limit: Int) {
@@ -174,7 +174,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator())
         documentBuilder.add(decorator: ConflictResolutionDecorator())
-        documentBuilder.add(decorator: AuthRuleDecorator())
+        documentBuilder.add(decorator: AuthRuleDecorator(.query))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         query SyncModelReadUpdateFields($limit: Int) {
@@ -202,7 +202,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
-        documentBuilder.add(decorator: AuthRuleDecorator(subscriptionType: .onCreate, ownerId: "111"))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onCreate, "111")))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnCreateModelReadUpdateField($owner: String!) {
@@ -216,7 +216,11 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "onCreateModelReadUpdateField")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables["owner"] as? String, "111")
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertEqual(variables["owner"] as? String, "111")
     }
 
     // Others can `.update` this model, which means the update subscription does not require owner input
@@ -224,7 +228,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
-        documentBuilder.add(decorator: AuthRuleDecorator(subscriptionType: .onUpdate, ownerId: "111"))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onUpdate, "111")))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnUpdateModelReadUpdateField {
@@ -245,7 +249,7 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: ModelReadUpdateField.self,
                                                                operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
-        documentBuilder.add(decorator: AuthRuleDecorator(subscriptionType: .onDelete, ownerId: "111"))
+        documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, "111")))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnDeleteModelReadUpdateField($owner: String!) {
@@ -259,7 +263,11 @@ class ModelReadUpdateAuthRuleTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "onDeleteModelReadUpdateField")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables["owner"] as? String, "111")
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertEqual(variables["owner"] as? String, "111")
     }
 
 }

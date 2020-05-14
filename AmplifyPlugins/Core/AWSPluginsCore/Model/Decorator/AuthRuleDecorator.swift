@@ -8,18 +8,33 @@
 import Foundation
 import Amplify
 
-// https://github.com/aws-amplify/amplify-cli/issues/4182
-// If the owner authorization does not contain `.read` operation, then others can read owners data,
-// do not have to apply any owner field to the subscription document input
-/// Decorate the document with auth related fields such as the selection set and owner input to subscription documents
+public enum AuthRuleDecoratorInput {
+    public typealias OwnerId = String
+    case subscription(GraphQLSubscriptionType, OwnerId)
+    case mutation
+    case query
+}
+
+// Tracking issue: https://github.com/aws-amplify/amplify-cli/issues/4182 Once this issue is resolved, the behavior and
+// the interface is expected to change. Subscription operations should not need to take in any owner fields in the
+// document input, similar to how the mutations operate. For now, the provisioned backend requires owner field for
+// the subscription operation corresponding to the operation defined on the auth rule. For example,
+// @auth(rules: [ { allow: owner, operations: [create, delete] } ])
+// contains create and delete, therefore the onCreate and onDelete subscriptions require the owner field, but not the
+// onUpdate subscription.
+
+/// Decorate the document with auth rule related fields such as automatically adding owner to the the selection set and
+/// adding the owner input to subscription document input
+///
+/// Decorate the document with auth related fields. For `owner` strategy, fields include:
+/// * add the value of `ownerField` to the model selection set, defaults "owner" when `ownerField` is not specified
+/// * owner field value for subscription document inputs for the corresponding auth rule `operation`
 public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
 
-    private let subscriptionType: GraphQLSubscriptionType?
-    private let ownerId: String?
+    private let input: AuthRuleDecoratorInput
 
-    public init(subscriptionType: GraphQLSubscriptionType? = nil, ownerId: String? = nil) {
-        self.subscriptionType = subscriptionType
-        self.ownerId = ownerId
+    public init(_ authRuleDecoratorInput: AuthRuleDecoratorInput) {
+        self.input = authRuleDecoratorInput
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
@@ -46,31 +61,14 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         }
 
         let ownerField = authRule.getOwnerFieldOrDefault()
-        selectionSet = withOwnerField(selectionSet: selectionSet, ownerField: ownerField)
+        selectionSet = appendOwnerFieldToSelectionSetIfNeeded(selectionSet: selectionSet, ownerField: ownerField)
 
-        guard let subscriptionType = subscriptionType else {
+        guard case let .subscription(subscriptionType, ownerId) = input else {
             return document.copy(selectionSet: selectionSet)
         }
 
         let operations = authRule.getModelOperationsOrDefault()
-
-        var requiredOwnerInput = false
-        switch subscriptionType {
-        case .onCreate:
-            if operations.contains(.create) {
-                requiredOwnerInput = true
-            }
-        case .onUpdate:
-            if operations.contains(.update) {
-                requiredOwnerInput = true
-            }
-        case .onDelete:
-            if operations.contains(.delete) {
-                requiredOwnerInput = true
-            }
-        }
-
-        if requiredOwnerInput, let ownerId = ownerId {
+        if isOwnerInputRequiredOnSubscription(subscriptionType, operations: operations) {
             var inputs = document.inputs
             inputs[ownerField] = GraphQLDocumentInput(type: "String!", value: .scalar(ownerId))
             return document.copy(inputs: inputs, selectionSet: selectionSet)
@@ -78,8 +76,28 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
         return document.copy(selectionSet: selectionSet)
     }
 
+    private func isOwnerInputRequiredOnSubscription(_ subscriptionType: GraphQLSubscriptionType,
+                                                    operations: [ModelOperation]) -> Bool {
+        var isOwnerInputRequired = false
+        switch subscriptionType {
+        case .onCreate:
+            if operations.contains(.create) {
+                isOwnerInputRequired = true
+            }
+        case .onUpdate:
+            if operations.contains(.update) {
+                isOwnerInputRequired = true
+            }
+        case .onDelete:
+            if operations.contains(.delete) {
+                isOwnerInputRequired = true
+            }
+        }
+        return isOwnerInputRequired
+    }
+
     /// First finds the first `model` SelectionSet. Then, only append it when the `ownerField` does not exist.
-    func withOwnerField(selectionSet: SelectionSet, ownerField: String) -> SelectionSet {
+    private func appendOwnerFieldToSelectionSetIfNeeded(selectionSet: SelectionSet, ownerField: String) -> SelectionSet {
         var selectionSetModel = selectionSet
         while selectionSetModel.value.fieldType != .model {
             selectionSetModel.children.forEach { selectionSet in
