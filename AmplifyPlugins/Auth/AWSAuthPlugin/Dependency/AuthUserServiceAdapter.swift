@@ -29,7 +29,7 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
                 completionHandler(.failure(error))
                 return
             }
-            let resultList = result.map { AuthUserAttribute($0.key.toUserAttributeKey(), value: $0.value) }
+            let resultList = result.map { AuthUserAttribute(AuthUserAttributeKey(rawValue: $0.key), value: $0.value) }
             completionHandler(.success(resultList))
         }
     }
@@ -63,7 +63,7 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
     func resendAttributeConfirmationCode(request: AuthAttributeResendConfirmationCodeRequest,
                                          completionHandler: @escaping ResendAttributeConfirmationCodeCompletion) {
 
-        awsMobileClient.verifyUserAttribute(attributeName: request.attributeKey.toString()) { result, error in
+        awsMobileClient.verifyUserAttribute(attributeName: request.attributeKey.rawValue) { result, error in
 
             guard error == nil else {
                 let authError = AuthErrorHelper.toAuthError(error!)
@@ -79,8 +79,7 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
                 completionHandler(.failure(error))
                 return
             }
-            let codeDeliveryDetails = AuthCodeDeliveryDetails(destination: result.toDeliveryDestination(),
-                                                              attributeName: result.attributeName)
+            let codeDeliveryDetails = result.toAuthCodeDeliveryDetails()
             completionHandler(.success(codeDeliveryDetails))
         }
 
@@ -89,7 +88,7 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
     func confirmAttribute(request: AuthConfirmUserAttributeRequest,
                           completionHandler: @escaping ConfirmAttributeCompletion) {
 
-        awsMobileClient.confirmUpdateUserAttributes(attributeName: request.attributeKey.toString(),
+        awsMobileClient.confirmUpdateUserAttributes(attributeName: request.attributeKey.rawValue,
                                                     code: request.confirmationCode) { error in
                                                         guard let error = error else {
                                                             completionHandler(.success(()))
@@ -118,7 +117,7 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
                                   completionHandler: @escaping UpdateUserAttributesCompletion) {
 
         let attributeMap = attributeList.reduce(into: [String: String]()) {
-            $0[$1.key.toString()] = $1.value
+            $0[$1.key.rawValue] = $1.value
         }
         awsMobileClient.updateUserAttributes(attributeMap: attributeMap) { result, error in
             guard error == nil else {
@@ -137,12 +136,11 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
             var finalResult = [AuthUserAttributeKey: AuthUpdateAttributeResult]()
             for item in result {
                 if let attribute = item.attributeName {
-                    let authCodeDeliveryDetails = AuthCodeDeliveryDetails(destination: item.toDeliveryDestination(),
-                                                                          attributeName: attribute)
+                    let authCodeDeliveryDetails = item.toAuthCodeDeliveryDetails()
                     let nextStep = AuthUpdateAttributeStep.confirmAttributeWithCode(authCodeDeliveryDetails, nil)
                     let updateAttributeResult = AuthUpdateAttributeResult(isUpdated: false,
                                                                           nextStep: nextStep)
-                    finalResult[attribute.toUserAttributeKey()] = updateAttributeResult
+                    finalResult[AuthUserAttributeKey(rawValue: attribute)] = updateAttributeResult
                 }
             }
             // Check if all items are added to the dictionary

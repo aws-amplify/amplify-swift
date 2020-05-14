@@ -73,7 +73,7 @@ extension AuthenticationProviderAdapter {
 
         let userAttributes = (request.options.pluginOptions as? AWSAuthConfirmSignInOptions)?.userAttributes ?? []
         let mobileClientUserAttributes = userAttributes.reduce(into: [String: String]()) {
-            $0[$1.key.toString()] = $1.value
+            $0[$1.key.rawValue] = $1.value
         }
         let clientMetaData = (request.options.pluginOptions as? AWSAuthConfirmSignInOptions)?.metadata
 
