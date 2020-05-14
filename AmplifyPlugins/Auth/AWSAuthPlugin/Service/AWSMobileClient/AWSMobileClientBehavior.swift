@@ -96,4 +96,10 @@ protocol AWSMobileClientBehavior {
     func forgetCurrentDevice(_ completionHandler: @escaping ((Error?) -> Void))
 
     func invalidateCachedTemporaryCredentials()
+
+    func addUserStateListener(_ object: AnyObject, _ callback: @escaping UserStateChangeCallback)
+
+    func removeUserStateListener(_ object: AnyObject)
+
+    func releaseSignInWait()
 }
