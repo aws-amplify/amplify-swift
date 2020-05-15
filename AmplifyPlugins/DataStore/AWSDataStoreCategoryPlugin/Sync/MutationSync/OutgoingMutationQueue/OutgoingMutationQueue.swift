@@ -184,7 +184,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             self.log.verbose(
                 "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent.id); result: \(result)")
 
-            guard case .completed(let response) = result, case .failure(let graphQLResponseError) = response else {
+            guard case .success(let response) = result, case .failure(let graphQLResponseError) = response else {
                 self.completeProcessingEvent(mutationEvent)
                 return
             }
@@ -257,4 +257,3 @@ extension OutgoingMutationQueue: Subscriber {
 
 @available(iOS 13.0, *)
 extension OutgoingMutationQueue: DefaultLogger { }
-
