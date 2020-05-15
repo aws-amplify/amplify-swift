@@ -21,9 +21,10 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageDownloadFileOperation(request,
                                                           storageService: mockStorageService,
-                                                          authService: mockAuthService) { event in
-            switch event {
-            case .failed(let error):
+                                                          authService: mockAuthService,
+                                                          progressListener: nil) { result in
+            switch result {
+            case .failure(let error):
                 guard case .validation = error else {
                     XCTFail("Should have failed with validation error")
                     return
@@ -47,9 +48,10 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageDownloadFileOperation(request,
                                                           storageService: mockStorageService,
-                                                          authService: mockAuthService) { event in
-            switch event {
-            case .failed(let error):
+                                                          authService: mockAuthService,
+                                                          progressListener: nil) { result in
+            switch result {
+            case .failure(let error):
                 guard case .authError = error else {
                     XCTFail("Should have failed with identity error")
                     return
@@ -78,18 +80,20 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         let expectedServiceKey = StorageAccessLevel.guest.serviceAccessPrefix + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
-        let operation = AWSS3StorageDownloadFileOperation(request,
-                                                          storageService: mockStorageService,
-                                                          authService: mockAuthService) { event in
-            switch event {
-            case .completed:
-                completeInvoked.fulfill()
-            case .inProcess:
+        let operation = AWSS3StorageDownloadFileOperation(
+            request,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: { _ in
                 inProcessInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event invoked on operation")
+        }, resultListener: { result in
+            switch result {
+            case .success:
+                completeInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected error on operation: \(error)")
             }
-        }
+        })
 
         operation.start()
 
@@ -110,18 +114,20 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         let expectedServiceKey = StorageAccessLevel.guest.serviceAccessPrefix + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let failedInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageDownloadFileOperation(request,
-                                                          storageService: mockStorageService,
-                                                          authService: mockAuthService) { event in
-            switch event {
-            case .failed:
-                failedInvoked.fulfill()
-            case .inProcess:
+        let operation = AWSS3StorageDownloadFileOperation(
+            request,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: { _ in
                 inProcessInvoked.fulfill()
-            default:
+        }, resultListener: { result in
+            switch result {
+            case .failure:
+                failedInvoked.fulfill()
+            case .success:
                 XCTFail("Unexpected event invoked on operation")
             }
-        }
+        })
 
         operation.start()
 
@@ -144,18 +150,20 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testTargetIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
-        let operation = AWSS3StorageDownloadFileOperation(request,
-                                                          storageService: mockStorageService,
-                                                          authService: mockAuthService) { event in
-            switch event {
-            case .completed:
-                completeInvoked.fulfill()
-            case .inProcess:
+        let operation = AWSS3StorageDownloadFileOperation(
+            request,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: { _ in
                 inProcessInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event invoked on operation")
+        }, resultListener: { result in
+            switch result {
+            case .success:
+                completeInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Unexpected error on operation: \(error)")
             }
-        }
+        })
 
         operation.start()
 

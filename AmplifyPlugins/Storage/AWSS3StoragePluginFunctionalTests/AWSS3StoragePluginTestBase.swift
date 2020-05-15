@@ -27,7 +27,8 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     static override func setUp() {
         do {
-            let credentials = try TestConfigHelper.retrieveCredentials(forResource: AWSS3StoragePluginTestBase.credentials)
+            let credentials = try TestConfigHelper
+                .retrieveCredentials(forResource: AWSS3StoragePluginTestBase.credentials)
 
             guard let user1 = credentials["user1"],
                 let user2 = credentials["user2"],
@@ -79,12 +80,10 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
         let operation = Amplify.Storage.uploadData(key: key, data: data, options: nil) { event in
             switch event {
-            case .completed:
+            case .success:
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
 

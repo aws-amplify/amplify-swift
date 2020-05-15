@@ -113,7 +113,7 @@ extension AWSS3StorageService {
                 return
             }
 
-            onEvent(StorageEvent.completed(()))
+            onEvent(StorageEvent.completedVoid)
         }
 
         return block

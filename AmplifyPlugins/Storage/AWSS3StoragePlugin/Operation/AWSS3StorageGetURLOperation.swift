@@ -10,8 +10,11 @@ import Amplify
 import AWSPluginsCore
 import AWSS3
 
-public class AWSS3StorageGetURLOperation: AmplifyOperation<StorageGetURLRequest, Void, URL, StorageError>,
-    StorageGetURLOperation {
+public class AWSS3StorageGetURLOperation: AmplifyOperation<
+    StorageGetURLRequest,
+    URL,
+    StorageError
+>, StorageGetURLOperation {
 
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
@@ -19,14 +22,14 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<StorageGetURLRequest,
     init(_ request: StorageGetURLRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
 
         self.storageService = storageService
         self.authService = authService
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.getURL,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func cancel() {
@@ -84,12 +87,12 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<StorageGetURLRequest,
     }
 
     private func dispatch(_ result: URL) {
-        let asyncEvent = AsyncEvent<Void, URL, StorageError>.completed(result)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.success(result)
+        dispatch(result: result)
     }
 
     private func dispatch(_ error: StorageError) {
-        let asyncEvent = AsyncEvent<Void, URL, StorageError>.failed(error)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.failure(error)
+        dispatch(result: result)
     }
 }
