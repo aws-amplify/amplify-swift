@@ -14,7 +14,11 @@ struct AWSPollyErrorMessage {
 
     static let languageNotSupported: AWSPollyErrorString = (
         "The language specified is not currently supported by Amazon Polly in this capacity.",
-        "For a list of supported languages, check here https://docs.aws.amazon.com/polly/latest/dg/SupportedLanguage.html.")
+        """
+        For a list of supported languages, check
+        https://docs.aws.amazon.com/polly/latest/dg/SupportedLanguage.html.
+        """
+    )
 
     static let textLengthExceeded: AWSPollyErrorString = (
         "The string of text sent in is longer than the accepted limits.",

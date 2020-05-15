@@ -9,20 +9,22 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 
-public class AWSTranslateOperation: AmplifyOperation<PredictionsTranslateTextRequest,
-    Void, TranslateTextResult, PredictionsError>,
-PredictionsTranslateTextOperation {
+public class AWSTranslateOperation: AmplifyOperation<
+    PredictionsTranslateTextRequest,
+    TranslateTextResult,
+    PredictionsError
+>, PredictionsTranslateTextOperation {
 
     let predictionsService: AWSPredictionsService
 
     init(_ request: PredictionsTranslateTextRequest,
          predictionsService: AWSPredictionsService,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
         self.predictionsService = predictionsService
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.translate,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func cancel() {
@@ -36,7 +38,7 @@ PredictionsTranslateTextOperation {
         }
 
         if let error = request.validate() {
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
             return
         }
@@ -52,10 +54,10 @@ PredictionsTranslateTextOperation {
     private func onServiceEvent(event: PredictionsEvent<TranslateTextResult, PredictionsError>) {
         switch event {
         case .completed(let result):
-            dispatch(event: .completed(result))
+            dispatch(result: .success(result))
             finish()
         case .failed(let error):
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
 
         }

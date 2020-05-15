@@ -32,8 +32,8 @@ struct AWSRekognitionErrorMessage {
     static let limitExceeded: AWSRekognitionErrorMessageString = (
         "The request exceeded the service limits.",
         """
-        Decrease the number of calls you are making or make sure your request is below the service limits for your region.
-        Check the limits here:
+        Decrease the number of calls you are making or make sure your request is below the service limits for your
+        region. Check the limits here:
         https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html#limits_rekognition
         """)
 
