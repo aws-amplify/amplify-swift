@@ -74,7 +74,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completed(())]
+            StorageEvent.completedVoid]
 
         let expectedUploadSource = UploadSource.data(testData)
         let metadata = ["mykey": "Value"]
@@ -158,7 +158,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceMultiPartUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completed(())]
+            StorageEvent.completedVoid]
 
         var testLargeDataString = "testLargeDataString"
         for _ in 1 ... 20 {

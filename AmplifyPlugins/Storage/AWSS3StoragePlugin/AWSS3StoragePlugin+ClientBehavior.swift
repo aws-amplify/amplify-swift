@@ -23,15 +23,17 @@ extension AWSS3StoragePlugin {
     ///   - options: Additional parameters to specify API behavior.
     ///   - listener: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
-    public func getURL(key: String,
-                       options: StorageGetURLRequest.Options? = nil,
-                       listener: StorageGetURLOperation.EventListener? = nil) -> StorageGetURLOperation {
+    public func getURL(
+        key: String,
+        options: StorageGetURLRequest.Options? = nil,
+        resultListener: StorageGetURLOperation.ResultListener? = nil
+    ) -> StorageGetURLOperation {
         let options = options ?? StorageGetURLRequest.Options()
         let request = StorageGetURLRequest(key: key, options: options)
         let getURLOperation = AWSS3StorageGetURLOperation(request,
                                                           storageService: storageService,
                                                           authService: authService,
-                                                          listener: listener)
+                                                          resultListener: resultListener)
 
         queue.addOperation(getURLOperation)
 
@@ -48,15 +50,19 @@ extension AWSS3StoragePlugin {
     ///   - options: Additional parameters to specify API behavior.
     ///   - listener: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
-    public func downloadData(key: String,
-                             options: StorageDownloadDataRequest.Options? = nil,
-                             listener: StorageDownloadDataOperation.EventListener? = nil) -> StorageDownloadDataOperation {
+    public func downloadData(
+        key: String,
+        options: StorageDownloadDataRequest.Options? = nil,
+        progressListener: StorageDownloadDataOperation.InProcessListener?,
+        resultListener: StorageDownloadDataOperation.ResultListener?
+    ) -> StorageDownloadDataOperation {
         let options = options ?? StorageDownloadDataRequest.Options()
         let request = StorageDownloadDataRequest(key: key, options: options)
         let downloadDataOperation = AWSS3StorageDownloadDataOperation(request,
-                                                            storageService: storageService,
-                                                            authService: authService,
-                                                            listener: listener)
+                                                                      storageService: storageService,
+                                                                      authService: authService,
+                                                                      progressListener: progressListener,
+                                                                      resultListener: resultListener)
 
         queue.addOperation(downloadDataOperation)
 
@@ -74,17 +80,20 @@ extension AWSS3StoragePlugin {
     ///   - options: Additional parameters to specify API behavior.
     ///   - listener: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
-    public func downloadFile(key: String,
-                             local: URL,
-                             options: StorageDownloadFileRequest.Options? = nil,
-                             listener: StorageDownloadFileOperation.EventListener? = nil)
-        -> StorageDownloadFileOperation {
+    public func downloadFile(
+        key: String,
+        local: URL,
+        options: StorageDownloadFileRequest.Options? = nil,
+        progressListener: StorageDownloadFileOperation.InProcessListener?,
+        resultListener: StorageDownloadFileOperation.ResultListener?
+    ) -> StorageDownloadFileOperation {
         let options = options ?? StorageDownloadFileRequest.Options()
         let request = StorageDownloadFileRequest(key: key, local: local, options: options)
         let downloadFileOperation = AWSS3StorageDownloadFileOperation(request,
                                                                       storageService: storageService,
                                                                       authService: authService,
-                                                                      listener: listener)
+                                                                      progressListener: progressListener,
+                                                                      resultListener: resultListener)
 
         queue.addOperation(downloadFileOperation)
 
@@ -102,17 +111,21 @@ extension AWSS3StoragePlugin {
     ///   - options: Additional parameters to specify API behavior.
     ///   - listener: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
-    public func uploadData(key: String,
-                           data: Data,
-                           options: StorageUploadDataRequest.Options? = nil,
-                           listener: StorageUploadDataOperation.EventListener? = nil) -> StorageUploadDataOperation {
+    public func uploadData(
+        key: String,
+        data: Data,
+        options: StorageUploadDataRequest.Options? = nil,
+        progressListener: StorageUploadDataOperation.InProcessListener?,
+        resultListener: StorageUploadDataOperation.ResultListener?
+    ) -> StorageUploadDataOperation {
         let options = options ?? StorageUploadDataRequest.Options()
         let request = StorageUploadDataRequest(key: key, data: data, options: options)
 
         let uploadDataOperation = AWSS3StorageUploadDataOperation(request,
                                                             storageService: storageService,
                                                             authService: authService,
-                                                            listener: listener)
+                                                            progressListener: progressListener,
+                                                            resultListener: resultListener)
 
         queue.addOperation(uploadDataOperation)
 
@@ -130,17 +143,21 @@ extension AWSS3StoragePlugin {
     ///   - options: Additional parameters to specify API behavior.
     ///   - listener: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
-    public func uploadFile(key: String,
-                           local: URL,
-                           options: StorageUploadFileRequest.Options? = nil,
-                           listener: StorageUploadFileOperation.EventListener? = nil) -> StorageUploadFileOperation {
+    public func uploadFile(
+        key: String,
+        local: URL,
+        options: StorageUploadFileRequest.Options? = nil,
+        progressListener: StorageUploadFileOperation.InProcessListener?,
+        resultListener: StorageUploadFileOperation.ResultListener?
+    ) -> StorageUploadFileOperation {
         let options = options ?? StorageUploadFileRequest.Options()
         let request = StorageUploadFileRequest(key: key, local: local, options: options)
 
         let uploadFileOperation = AWSS3StorageUploadFileOperation(request,
                                                                   storageService: storageService,
                                                                   authService: authService,
-                                                                  listener: listener)
+                                                                  progressListener: progressListener,
+                                                                  resultListener: resultListener)
 
         queue.addOperation(uploadFileOperation)
 
@@ -157,15 +174,17 @@ extension AWSS3StoragePlugin {
     ///   - options: Additional parameters to specify API behavior.
     ///   - listener: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
-    public func remove(key: String,
-                       options: StorageRemoveRequest.Options? = nil,
-                       listener: StorageRemoveOperation.EventListener? = nil) -> StorageRemoveOperation {
+    public func remove(
+        key: String,
+        options: StorageRemoveRequest.Options? = nil,
+        resultListener: StorageRemoveOperation.ResultListener? = nil
+    ) -> StorageRemoveOperation {
         let options = options ?? StorageRemoveRequest.Options()
         let request = StorageRemoveRequest(key: key, options: options)
         let removeOperation = AWSS3StorageRemoveOperation(request,
                                                           storageService: storageService,
                                                           authService: authService,
-                                                          listener: listener)
+                                                          resultListener: resultListener)
 
         queue.addOperation(removeOperation)
 
@@ -182,13 +201,13 @@ extension AWSS3StoragePlugin {
     ///   - listener: The closure to receive status updates.
     /// - Returns: An operation object representing the work to be done.
     public func list(options: StorageListRequest.Options? = nil,
-                     listener: StorageListOperation.EventListener? = nil) -> StorageListOperation {
+                     resultListener: StorageListOperation.ResultListener? = nil) -> StorageListOperation {
         let options = options ?? StorageListRequest.Options()
         let request = StorageListRequest(options: options)
         let listOperation = AWSS3StorageListOperation(request,
                                                       storageService: storageService,
                                                       authService: authService,
-                                                      listener: listener)
+                                                      resultListener: resultListener)
 
         queue.addOperation(listOperation)
 

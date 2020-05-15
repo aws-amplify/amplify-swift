@@ -99,7 +99,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completed(())]
+            StorageEvent.completedVoid]
 
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
@@ -189,7 +189,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.storageServiceMultiPartUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(AWSS3TransferUtilityTask())),
             StorageEvent.inProcess(Progress()),
-            StorageEvent.completed(())]
+            StorageEvent.completedVoid]
 
         let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * 6) // 6MB
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"

@@ -39,12 +39,12 @@ extension AWSS3StorageService {
                 return nil
             }
 
-            guard let result = task.result else {
+            guard task.result != nil else {
                 onEvent(StorageEvent.failed(StorageError.unknown("Delete was completed but no result value")))
                 return nil
             }
 
-            onEvent(StorageEvent.completed(()))
+            onEvent(StorageEvent.completedVoid)
 
             return nil
         }
