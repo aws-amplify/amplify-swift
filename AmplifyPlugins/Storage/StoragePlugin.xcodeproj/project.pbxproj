@@ -987,7 +987,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}ZZ\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		B478F6642374DE2B00C4F92B /* Swift Format */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1005,7 +1005,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../../.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/${PRODUCT_NAME}ZZ\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../../.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		DE75EF23119BC9907BA8D9A9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1496,7 +1496,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.amazonaws.$(PRODUCT_NAME)/";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.amazonaws.$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1515,7 +1515,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.amazonaws.$(PRODUCT_NAME)/";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.amazonaws.$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

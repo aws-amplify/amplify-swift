@@ -22,16 +22,16 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageGetURLOperation(request,
                                                     storageService: mockStorageService,
-                                                    authService: mockAuthService) { event in
-            switch event {
-            case .failed(let error):
+                                                    authService: mockAuthService) { result in
+            switch result {
+            case .failure(let error):
                 guard case .validation = error else {
-                    XCTFail("Should have failed with validation error")
+                    XCTFail("Should have failed with validation error, not \(error)")
                     return
                 }
                 failedInvoked.fulfill()
-            default:
-                XCTFail("Should have received failed event")
+            case .success(let url):
+                XCTFail("Should have received failed event, got \(url)")
             }
         }
 
@@ -49,16 +49,16 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageGetURLOperation(request,
                                                  storageService: mockStorageService,
-                                                 authService: mockAuthService) { event in
-            switch event {
-            case .failed(let error):
+                                                 authService: mockAuthService) { result in
+            switch result {
+            case .failure(let error):
                 guard case .authError = error else {
-                    XCTFail("Should have failed with authError")
+                    XCTFail("Should have failed with authError, not \(error)")
                     return
                 }
                 failedInvoked.fulfill()
-            default:
-                XCTFail("Should have received failed event")
+            case .success(let url):
+                XCTFail("Should have received failed event, got \(url)")
             }
         }
 
@@ -81,12 +81,12 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageGetURLOperation(request,
                                                     storageService: mockStorageService,
-                                                    authService: mockAuthService) { event in
-            switch event {
-            case .completed:
+                                                    authService: mockAuthService) { result in
+            switch result {
+            case .success:
                 completeInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event invoked on operation")
+            case .failure(let error):
+                XCTFail("Unexpected error on operation: \(error)")
             }
         }
 
@@ -111,12 +111,12 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageGetURLOperation(request,
                                                     storageService: mockStorageService,
-                                                    authService: mockAuthService) { event in
-            switch event {
-            case .failed:
+                                                    authService: mockAuthService) { result in
+            switch result {
+            case .failure:
                 failedInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event invoked on operation")
+            case .success(let url):
+                XCTFail("Should have received failed event, got \(url)")
             }
         }
 
@@ -141,10 +141,10 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
                                                     storageService: mockStorageService,
                                                     authService: mockAuthService) { event in
             switch event {
-            case .completed:
+            case .success:
                 completeInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event invoked on operation")
+            case .failure(let error):
+                XCTFail("Unexpected error on operation: \(error)")
             }
         }
 

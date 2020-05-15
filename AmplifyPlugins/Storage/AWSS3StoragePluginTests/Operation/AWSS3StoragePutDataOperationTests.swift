@@ -21,10 +21,11 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
 
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageUploadDataOperation(request,
-                                                     storageService: mockStorageService,
-                                                     authService: mockAuthService) { event in
-            switch event {
-            case .failed(let error):
+                                                        storageService: mockStorageService,
+                                                        authService: mockAuthService,
+                                                        progressListener: nil) { result in
+            switch result {
+            case .failure(let error):
                 guard case .validation = error else {
                     XCTFail("Should have failed with validation error")
                     return
@@ -50,9 +51,10 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageUploadDataOperation(request,
                                                      storageService: mockStorageService,
-                                                     authService: mockAuthService) { event in
-            switch event {
-            case .failed(let error):
+                                                     authService: mockAuthService,
+                                                     progressListener: nil) { result in
+            switch result {
+            case .failure(let error):
                 guard case .authError = error else {
                     XCTFail("Should have failed with authError")
                     return
@@ -88,18 +90,20 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
-        let operation = AWSS3StorageUploadDataOperation(request,
-                                                     storageService: mockStorageService,
-                                                     authService: mockAuthService) { event in
-            switch event {
-            case .completed:
-                completeInvoked.fulfill()
-            case .inProcess:
+        let operation = AWSS3StorageUploadDataOperation(
+            request,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: { _ in
                 inProcessInvoked.fulfill()
+        }, resultListener: { result in
+            switch result {
+            case .success:
+                completeInvoked.fulfill()
             default:
                 XCTFail("Should have received completed event")
             }
-        }
+        })
 
         operation.start()
 
@@ -128,18 +132,20 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let failInvoked = expectation(description: "failed was invoked on operation")
-        let operation = AWSS3StorageUploadDataOperation(request,
-                                                     storageService: mockStorageService,
-                                                     authService: mockAuthService) { event in
-            switch event {
-            case .failed:
-                failInvoked.fulfill()
-            case .inProcess:
+        let operation = AWSS3StorageUploadDataOperation(
+            request,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: { _ in
                 inProcessInvoked.fulfill()
+        }, resultListener: { result in
+            switch result {
+            case .failure:
+                failInvoked.fulfill()
             default:
                 XCTFail("Should have received completed event")
             }
-        }
+        })
 
         operation.start()
 
@@ -179,18 +185,20 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         let expectedServiceKey = StorageAccessLevel.protected.rawValue + "/" + testIdentityId + "/" + testKey
         let inProcessInvoked = expectation(description: "inProgress was invoked on operation")
         let completeInvoked = expectation(description: "complete was invoked on operation")
-        let operation = AWSS3StorageUploadDataOperation(request,
-                                                     storageService: mockStorageService,
-                                                     authService: mockAuthService) { event in
-            switch event {
-            case .completed:
-                completeInvoked.fulfill()
-            case .inProcess:
+        let operation = AWSS3StorageUploadDataOperation(
+            request,
+            storageService: mockStorageService,
+            authService: mockAuthService,
+            progressListener: { _ in
                 inProcessInvoked.fulfill()
+        }, resultListener: { result in
+            switch result {
+            case .success:
+                completeInvoked.fulfill()
             default:
                 XCTFail("Should have received completed event")
             }
-        }
+        })
 
         operation.start()
 
