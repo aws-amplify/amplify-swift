@@ -55,12 +55,10 @@ class AnyModelIntegrationTests: XCTestCase {
                 callbackInvoked.fulfill()
             }
             switch response {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 responseFromOperation = graphQLResponse
-            case .failed(let apiError):
+            case .failure(let apiError):
                 XCTFail("\(apiError)")
-            default:
-                break
             }
         }
 
@@ -120,12 +118,10 @@ class AnyModelIntegrationTests: XCTestCase {
                 updateCallbackInvoked.fulfill()
             }
             switch response {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 responseFromOperation = graphQLResponse
-            case .failed(let apiError):
+            case .failure(let apiError):
                 XCTFail("\(apiError)")
-            default:
-                break
             }
         }
 
@@ -170,8 +166,6 @@ class AnyModelIntegrationTests: XCTestCase {
 
         wait(for: [createCallbackInvoked], timeout: networkTimeout)
 
-        let newContent = "Updated post content as of \(Date())"
-
         let deleteCallbackInvoked = expectation(description: "Delete callback invoked")
         var responseFromOperation: GraphQLResponse<AnyModel>?
         _ = Amplify.API.mutate(of: originalAnyPost, type: .delete) { response in
@@ -179,12 +173,10 @@ class AnyModelIntegrationTests: XCTestCase {
                 deleteCallbackInvoked.fulfill()
             }
             switch response {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 responseFromOperation = graphQLResponse
-            case .failed(let apiError):
+            case .failure(let apiError):
                 XCTFail("\(apiError)")
-            default:
-                break
             }
         }
 

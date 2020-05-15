@@ -20,7 +20,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
          session: URLSessionBehavior,
          mapper: OperationTaskMapper,
          pluginConfig: AWSAPICategoryPluginConfiguration,
-         listener: AWSGraphQLOperation.EventListener?) {
+         resultListener: AWSGraphQLOperation.ResultListener?) {
 
         self.session = session
         self.mapper = mapper
@@ -29,7 +29,7 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         super.init(categoryType: .api,
                    eventName: request.operationType.hubEventName,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
@@ -44,11 +44,11 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         do {
             try request.validate()
         } catch let error as APIError {
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
             return
         } catch {
-            dispatch(event: .failed(APIError.unknown("Could not validate request", "", nil)))
+            dispatch(result: .failure(APIError.unknown("Could not validate request", "", nil)))
             finish()
             return
         }
@@ -58,11 +58,11 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         do {
             endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL)
         } catch let error as APIError {
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
             return
         } catch {
-            dispatch(event: .failed(APIError.unknown("Could not get endpoint configuration", "", nil)))
+            dispatch(result: .failure(APIError.unknown("Could not get endpoint configuration", "", nil)))
             finish()
             return
         }
@@ -74,9 +74,9 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         do {
             requestPayload = try JSONSerialization.data(withJSONObject: queryDocument)
         } catch {
-            dispatch(event: .failed(APIError.operationError("Failed to serialize query document",
-                                                            "fix the document or variables",
-                                                            error)))
+            dispatch(result: .failure(APIError.operationError("Failed to serialize query document",
+                                                              "fix the document or variables",
+                                                              error)))
             finish()
             return
         }
@@ -90,13 +90,13 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
             do {
                 return try interceptor.intercept(request)
             } catch let error as APIError {
-                dispatch(event: .failed(error))
+                dispatch(result: .failure(error))
                 cancel()
                 return request
             } catch {
-                dispatch(event: .failed(APIError.operationError("Failed to intercept request fully..",
-                                                                "Something wrong with the interceptor",
-                                                                error)))
+                dispatch(result: .failure(APIError.operationError("Failed to intercept request fully.",
+                                                                  "Something wrong with the interceptor",
+                                                                  error)))
                 cancel()
                 return request
             }

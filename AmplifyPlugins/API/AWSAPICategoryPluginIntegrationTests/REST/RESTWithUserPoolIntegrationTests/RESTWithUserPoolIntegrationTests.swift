@@ -68,14 +68,12 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.get(request: request) { event in
             switch event {
-            case .completed(let data):
+            case .success(let data):
                 let result = String(decoding: data, as: UTF8.self)
                 print(result)
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
 
@@ -88,9 +86,9 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.get(request: request) { event in
             switch event {
-            case .completed(let data):
+            case .success(let data):
                 XCTFail("Unexpected .complted event: \(data)")
-            case .failed(let error):
+            case .failure(let error):
                 guard case let .operationError(_, _, underlyingError) = error else {
                     XCTFail("Error should be operationError")
                     return
@@ -101,14 +99,12 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
                     return
                 }
 
-                guard case .notAuthenticated = authError else {
-                    XCTFail("Error should be AuthError.notAuthenticated")
+                guard case .notAuthorized = authError else {
+                    XCTFail("Error should be AuthError.notAuthorized")
                     return
                 }
 
                 failedInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
 

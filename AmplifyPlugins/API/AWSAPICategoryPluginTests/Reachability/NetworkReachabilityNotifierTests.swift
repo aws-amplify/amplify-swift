@@ -18,9 +18,11 @@ class NetworkReachabilityNotifierTests: XCTestCase {
 
     override func setUp() {
         do {
-            notifier = try NetworkReachabilityNotifier(host: "localhost",
-                                                       allowsCellularAccess: true,
-                                                       reachabilityFactory: MockNetworkReachabilityProvidingFactory.self)
+            notifier = try NetworkReachabilityNotifier(
+                host: "localhost",
+                allowsCellularAccess: true,
+                reachabilityFactory: MockNetworkReachabilityProvidingFactory.self
+            )
         } catch {
             XCTFail("failed to init NetworkReachabilityNotifier")
         }

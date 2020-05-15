@@ -40,7 +40,8 @@ final class RESTOperationRequestUtils {
                 "Invalid URL for \(baseURL.absoluteString)",
                 """
                 Review your API plugin configuration and ensure \(baseURL.absoluteString) has a valid URL for the
-                'Endpoint' field, and make sure to pass a valid path in your request. The value passed was '\(path)'.
+                'Endpoint' field, and make sure to pass a valid path in your request. The value passed was
+                '\(path ?? "nil")'.
                 """
             )
         }

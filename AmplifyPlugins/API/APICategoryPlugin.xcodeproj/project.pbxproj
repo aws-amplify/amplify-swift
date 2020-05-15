@@ -732,7 +732,6 @@
 		21D7A08B237B54D90057D00D /* AWSAPICategoryPlugin */ = {
 			isa = PBXGroup;
 			children = (
-				21D7A0DE237B54D90057D00D /* Info.plist */,
 				21D7A09A237B54D90057D00D /* AWSAPIPlugin.swift */,
 				21D7A098237B54D90057D00D /* AWSAPIPlugin+Configure.swift */,
 				21D7A0B1237B54D90057D00D /* AWSAPIPlugin+GraphQLBehavior.swift */,
@@ -748,6 +747,7 @@
 				21D7A0D2237B54D90057D00D /* Interceptor */,
 				21D7A08C237B54D90057D00D /* Operation */,
 				6B2E465323AAA5000066EDCE /* Reachability */,
+				FA99642D246EF8B40020E879 /* Resources */,
 				214BD3E023FB8B070059A286 /* SubscriptionFactory */,
 				21D7A0BA237B54D90057D00D /* Support */,
 				21D7A0B2237B54D90057D00D /* URLSessionBehavior */,
@@ -1088,6 +1088,14 @@
 			path = Concurrency;
 			sourceTree = "<group>";
 		};
+		FA99642D246EF8B40020E879 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				21D7A0DE237B54D90057D00D /* Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1254,10 +1262,10 @@
 			buildConfigurationList = B478F6032374DBF400C4F92B /* Build configuration list for PBXNativeTarget "AWSAPICategoryPlugin" */;
 			buildPhases = (
 				5613285A2AA3539567C0FEF0 /* [CP] Check Pods Manifest.lock */,
+				B478F5F62374DBF400C4F92B /* Headers */,
 				B478F5F72374DBF400C4F92B /* Sources */,
 				B478F6602374DDAE00C4F92B /* Swift Format */,
 				B478F6612374DDE900C4F92B /* Swift Lint */,
-				B478F5F62374DBF400C4F92B /* Headers */,
 				B478F5F82374DBF400C4F92B /* Frameworks */,
 				B478F5F92374DBF400C4F92B /* Resources */,
 			);
@@ -1275,9 +1283,9 @@
 			buildConfigurationList = B478F6532374DCE700C4F92B /* Build configuration list for PBXNativeTarget "AWSAPICategoryPluginTests" */;
 			buildPhases = (
 				545CD035F7EA47266FCC27C1 /* [CP] Check Pods Manifest.lock */,
+				B478F6452374DCE700C4F92B /* Sources */,
 				B478F6642374DE2B00C4F92B /* Swift Format */,
 				B478F6622374DE0100C4F92B /* Swift Lint */,
-				B478F6452374DCE700C4F92B /* Sources */,
 				B478F6462374DCE700C4F92B /* Frameworks */,
 				B478F6472374DCE700C4F92B /* Resources */,
 				97332BF0085398F958DF3CA3 /* [CP] Embed Pods Frameworks */,
@@ -1548,7 +1556,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../../.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AWSAPICategoryPluginIntegrationTests/REST/RESTWithUserPoolIntegrationTests\"\n";
 		};
 		219A889D23ECF9B200BBC5F2 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1566,7 +1574,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSAPICategoryPluginIntegrationTests/REST/RESTWithUserPoolIntegrationTests\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/AWSAPICategoryPluginIntegrationTests/REST/RESTWithUserPoolIntegrationTests\"\n";
 		};
 		234EB4E426CA2A5E328F1760 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1783,7 +1791,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../../.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		B478F6612374DDE900C4F92B /* Swift Lint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1801,7 +1809,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSAPICategoryPlugin\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		B478F6622374DE0100C4F92B /* Swift Lint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1819,7 +1827,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSAPICategoryPluginTests\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		B478F6642374DE2B00C4F92B /* Swift Format */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1837,7 +1845,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../../.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		BCA8E4CCFF8385874F3DEDB6 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1889,7 +1897,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSAPICategoryPluginTestCommon\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		FA941E0E2388898C0099B2E8 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1907,7 +1915,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../../.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		FA941E0F23888A050099B2E8 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1925,7 +1933,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../../.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		FA941E1023888A1B0099B2E8 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1943,7 +1951,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../../.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AWSAPICategoryPluginIntegrationTests/GraphQL/GraphQLWithIAMIntegrationTests\"\n";
 		};
 		FA941E1123888A2B0099B2E8 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1961,7 +1969,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../../.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AWSAPICategoryPluginIntegrationTests/GraphQL/GraphQLWithUserPoolIntegrationTests\"\n";
 		};
 		FA941E1223888A5D0099B2E8 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1979,7 +1987,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../../.swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AWSAPICategoryPluginIntegrationTests/REST/RESTWithIAMIntegrationTests\"\n";
 		};
 		FA941E1323888AED0099B2E8 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1997,7 +2005,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSAPICategoryPluginFunctionalTests\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		FA941E1423888AFF0099B2E8 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2015,7 +2023,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSAPICategoryPluginIntegrationTests/GraphQL/GraphQLWithIAMIntegrationTests\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/AWSAPICategoryPluginIntegrationTests/GraphQL/GraphQLWithIAMIntegrationTests\"\n";
 		};
 		FA941E1523888B0D0099B2E8 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2033,7 +2041,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSAPICategoryPluginIntegrationTests/GraphQL/GraphQLWithUserPoolIntegrationTests\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/AWSAPICategoryPluginIntegrationTests/GraphQL/GraphQLWithUserPoolIntegrationTests\"\n";
 		};
 		FA941E1623888B1C0099B2E8 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2051,7 +2059,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSAPICategoryPluginIntegrationTests/REST/RESTWithIAMIntegrationTests\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/AWSAPICategoryPluginIntegrationTests/REST/RESTWithIAMIntegrationTests\"\n";
 		};
 		FDD102FD0C405872630B4F56 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -7,6 +7,7 @@
 
 import XCTest
 
+// swiftlint:disable:next type_name
 class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase {
     func testClassMustNotBeEmptyOrSwiftFormatWillCrash() {
         //TODO implement code

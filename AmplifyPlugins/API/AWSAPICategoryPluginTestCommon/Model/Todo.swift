@@ -192,7 +192,6 @@ class ListTodosQuery {
     }
 }
 
-
 class OnCreateTodoSubscription {
     static let document = """
         subscription OnCreateTodo {\n

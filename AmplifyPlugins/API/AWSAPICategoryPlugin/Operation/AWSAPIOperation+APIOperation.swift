@@ -27,11 +27,11 @@ extension AWSRESTOperation: APIOperation {
         do {
             try apiOperationResponse.validate()
         } catch let error as APIError {
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
             return
         } catch {
-            dispatch(event: .failed(APIError.unknown("", "", error)))
+            dispatch(result: .failure(APIError.unknown("", "", error)))
             finish()
             return
         }
@@ -49,16 +49,16 @@ extension AWSRESTOperation: APIOperation {
         do {
             try apiOperationResponse.validate()
         } catch let error as APIError {
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
             return
         } catch {
-            dispatch(event: .failed(APIError.unknown("", "", error)))
+            dispatch(result: .failure(APIError.unknown("", "", error)))
             finish()
             return
         }
 
-        dispatch(event: .completed(data))
+        dispatch(result: .success(data))
         finish()
     }
 }

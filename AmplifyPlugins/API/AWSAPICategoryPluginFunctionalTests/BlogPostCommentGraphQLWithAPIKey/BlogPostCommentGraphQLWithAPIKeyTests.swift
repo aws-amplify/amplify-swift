@@ -84,18 +84,16 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
                                      responseType: CreateBlogMutation.Data.self)
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 XCTFail("Unexpected .completed event: \(graphQLResponse)")
-            case .failed(let error):
-                guard case let .httpStatusError(statusCode, httpURLResponse) = error else {
+            case .failure(let error):
+                guard case let .httpStatusError(statusCode, _) = error else {
                     XCTFail("Should be Http Status error")
                     return
                 }
 
                 XCTAssertEqual(statusCode, 401)
                 failedInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(operation)
@@ -122,7 +120,7 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
                                      responseType: String.self)
         let queryOperation = Amplify.API.query(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .success(dataString) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
@@ -148,10 +146,8 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
                 }
 
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(queryOperation)
@@ -188,7 +184,7 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
                                      responseType: GetBlogQuery.Data.self)
         let queryOperation = Amplify.API.query(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
@@ -206,10 +202,8 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
                 XCTAssertEqual(blog.posts!.items!.first!.comments?.items?.first?.id, comment.id)
                 XCTAssertEqual(blog.posts!.items!.first!.comments?.items?.first?.content, comment.content)
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(queryOperation)
@@ -227,7 +221,7 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
                                      responseType: CreateBlogMutation.Data.self)
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
@@ -238,10 +232,8 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
                 }
                 blog = createBlog
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(operation)
@@ -259,7 +251,7 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
                                      responseType: CreatePostMutation.Data.self)
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
@@ -270,10 +262,8 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
                 }
                 post = createPost
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(operation)
@@ -291,7 +281,7 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
                                      responseType: CreateCommentMutation.Data.self)
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
@@ -303,10 +293,8 @@ class BlogPostCommentGraphQLWithAPIKeyTests: XCTestCase {
 
                 comment = createComment
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(operation)

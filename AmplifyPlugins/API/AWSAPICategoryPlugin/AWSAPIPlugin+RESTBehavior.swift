@@ -10,7 +10,7 @@ import Foundation
 
 public extension AWSAPIPlugin {
 
-    func get(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+    func get(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         let operationRequest = RESTOperationRequest(request: request,
                                                     operationType: .get)
 
@@ -18,13 +18,13 @@ public extension AWSAPIPlugin {
                                          session: session,
                                          mapper: mapper,
                                          pluginConfig: pluginConfig,
-                                         listener: listener)
+                                         resultListener: listener)
 
         queue.addOperation(operation)
         return operation
     }
 
-    func put(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+    func put(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         let operationRequest = RESTOperationRequest(request: request,
                                                     operationType: .put)
 
@@ -32,13 +32,13 @@ public extension AWSAPIPlugin {
                                          session: session,
                                          mapper: mapper,
                                          pluginConfig: pluginConfig,
-                                         listener: listener)
+                                         resultListener: listener)
 
         queue.addOperation(operation)
         return operation
     }
 
-    func post(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+    func post(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         let operationRequest = RESTOperationRequest(request: request,
                                                     operationType: .post)
 
@@ -46,26 +46,26 @@ public extension AWSAPIPlugin {
                                          session: session,
                                          mapper: mapper,
                                          pluginConfig: pluginConfig,
-                                         listener: listener)
+                                         resultListener: listener)
 
         queue.addOperation(operation)
         return operation
     }
 
-    func patch(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+    func patch(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         let operationRequest = RESTOperationRequest(request: request, operationType: .patch)
 
         let operation = AWSRESTOperation(request: operationRequest,
                                          session: session,
                                          mapper: mapper,
                                          pluginConfig: pluginConfig,
-                                         listener: listener)
+                                         resultListener: listener)
 
         queue.addOperation(operation)
         return operation
     }
 
-    func delete(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+    func delete(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         let operationRequest = RESTOperationRequest(request: request,
                                                     operationType: .delete)
 
@@ -73,13 +73,13 @@ public extension AWSAPIPlugin {
                                          session: session,
                                          mapper: mapper,
                                          pluginConfig: pluginConfig,
-                                         listener: listener)
+                                         resultListener: listener)
 
         queue.addOperation(operation)
         return operation
     }
 
-    func head(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+    func head(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         let operationRequest = RESTOperationRequest(request: request,
                                                     operationType: .head)
 
@@ -87,7 +87,7 @@ public extension AWSAPIPlugin {
                                          session: session,
                                          mapper: mapper,
                                          pluginConfig: pluginConfig,
-                                         listener: listener)
+                                         resultListener: listener)
 
         queue.addOperation(operation)
         return operation
