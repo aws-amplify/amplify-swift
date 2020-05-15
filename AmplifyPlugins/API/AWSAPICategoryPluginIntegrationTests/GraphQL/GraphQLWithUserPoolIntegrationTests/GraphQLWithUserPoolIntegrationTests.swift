@@ -80,7 +80,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                                      responseType: CreateTodoMutation.Data.self)
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
@@ -96,10 +96,8 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                 XCTAssertEqual(todo.typename, String(describing: Todo.self))
 
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(operation)
@@ -122,14 +120,12 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                                      responseType: CreateTodoMutation.Data.self)
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 XCTFail("Unexpected .completed event: \(graphQLResponse)")
-            case .failed(let error):
+            case .failure(let error):
 
                 print("Got error back because user not signed in: \(error)")
                 failedInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(operation)
@@ -156,7 +152,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
 
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
@@ -173,10 +169,8 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                 XCTAssertEqual(todo.typename, String(describing: Todo.self))
 
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(operation)
@@ -200,7 +194,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                                      decodePath: CreateTodoMutation.decodePath)
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .failure(graphQLResponseError) = graphQLResponse else {
                     XCTFail("Missing failure")
                     return
@@ -214,10 +208,8 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                 XCTAssertNil(todo)
                 XCTAssertNotNil(error)
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(operation)
@@ -242,7 +234,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                                      responseType: MalformedCreateTodoData.self)
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .failure(graphQLResponseError) = graphQLResponse else {
                     XCTFail("Unexpected event: \(graphQLResponse)")
                     return
@@ -253,8 +245,8 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                     return
                 }
                 transformationErrorInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event: \(event)")
+            case .failure:
+                break
             }
         }
         XCTAssertNotNil(operation)
@@ -282,7 +274,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                                      responseType: GetTodoQuery.Data.self)
         let queryOperation = Amplify.API.query(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
@@ -298,10 +290,8 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                 XCTAssertEqual(todo.typename, String(describing: Todo.self))
 
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(queryOperation)
@@ -322,7 +312,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                                      responseType: GetTodoQuery.Data.self)
         let operation = Amplify.API.query(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
@@ -330,10 +320,8 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
 
                 XCTAssertNil(data.getTodo)
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(operation)
@@ -364,7 +352,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                                      responseType: UpdateTodoMutation.Data.self)
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
@@ -379,10 +367,8 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                 XCTAssertEqual(todo.description, expectedDescription)
                 XCTAssertEqual(todo.typename, String(describing: Todo.self))
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(operation)
@@ -410,7 +396,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                                      responseType: DeleteTodoMutation.Data.self)
         let deleteOperation = Amplify.API.mutate(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
@@ -425,10 +411,8 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                 XCTAssertEqual(deleteTodo.description, description)
                 XCTAssertEqual(deleteTodo.typename, String(describing: Todo.self))
                 deleteCompleteInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(deleteOperation)
@@ -440,7 +424,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                                             responseType: GetTodoQuery.Data.self)
         let queryOperation = Amplify.API.query(request: getTodoRequest) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 XCTAssertNotNil(graphQLResponse)
 
                 guard case let .success(data) = graphQLResponse else {
@@ -450,10 +434,8 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
 
                 XCTAssertNil(data.getTodo)
                 queryCompleteInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(queryOperation)
@@ -482,7 +464,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                                      responseType: ListTodosQuery.Data.self)
         let operation = Amplify.API.query(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
@@ -494,10 +476,8 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
 
                 XCTAssertTrue(!listTodos.items.isEmpty)
                 listCompleteInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(operation)
@@ -518,7 +498,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                                      responseType: ListTodosQuery.Data.self)
         let operation = Amplify.API.query(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
@@ -530,10 +510,8 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
 
                 XCTAssertEqual(listTodos.items.count, 0)
                 listCompleteInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(operation)
@@ -554,11 +532,10 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         let request = GraphQLRequest(document: OnCreateTodoSubscription.document,
                                      variables: nil,
                                      responseType: OnCreateTodoSubscription.Data.self)
-        let operation = Amplify.API.subscribe(request: request) { event in
-            switch event {
-            case .inProcess(let graphQLResponse):
-                print(graphQLResponse)
-                switch graphQLResponse {
+        let operation = Amplify.API.subscribe(
+            request: request,
+            valueListener: { event in
+                switch event {
                 case .connection(let state):
                     switch state {
                     case .connecting:
@@ -568,18 +545,17 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                     case .disconnected:
                         disconnectedInvoked.fulfill()
                     }
-
-                case .data(let graphQLResponse):
+                case .data:
                     progressInvoked.fulfill()
                 }
-            case .failed(let error):
+        }, completionListener: { event in
+            switch event {
+            case .failure(let error):
                 print("Unexpected .failed event: \(error)")
-            case .completed:
+            case .success:
                 completedInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
-        }
+        })
         XCTAssertNotNil(operation)
         wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let uuid = UUID().uuidString
@@ -618,11 +594,10 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         let request = GraphQLRequest(document: OnUpdateTodoSubscription.document,
                                      variables: nil,
                                      responseType: OnUpdateTodoSubscription.Data.self)
-        let operation = Amplify.API.subscribe(request: request) { event in
-            switch event {
-            case .inProcess(let graphQLResponse):
-                print(graphQLResponse)
-                switch graphQLResponse {
+        let operation = Amplify.API.subscribe(
+            request: request,
+            valueListener: { event in
+                switch event {
                 case .connection(let state):
                     switch state {
                     case .connecting:
@@ -632,18 +607,18 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                     case .disconnected:
                         disconnectedInvoked.fulfill()
                     }
-
-                case .data(let graphQLResponse):
+                case .data:
                     progressInvoked.fulfill()
                 }
-            case .failed(let error):
+        }, completionListener: { event in
+            switch event {
+            case .failure(let error):
                 print("Unexpected .failed event: \(error)")
-            case .completed:
+            case .success:
                 completedInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
-        }
+        })
+
         XCTAssertNotNil(operation)
         wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let uuid = UUID().uuidString
@@ -685,11 +660,10 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         let request = GraphQLRequest(document: OnDeleteTodoSubscription.document,
                                      variables: nil,
                                      responseType: OnDeleteTodoSubscription.Data.self)
-        let operation = Amplify.API.subscribe(request: request) { event in
-            switch event {
-            case .inProcess(let graphQLResponse):
-                print(graphQLResponse)
-                switch graphQLResponse {
+        let operation = Amplify.API.subscribe(
+            request: request,
+            valueListener: { event in
+                switch event {
                 case .connection(let state):
                     switch state {
                     case .connecting:
@@ -699,18 +673,18 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                     case .disconnected:
                         disconnectedInvoked.fulfill()
                     }
-
-                case .data(let graphQLResponse):
+                case .data:
                     progressInvoked.fulfill()
                 }
-            case .failed(let error):
+        }, completionListener: { event in
+            switch event {
+            case .failure(let error):
                 print("Unexpected .failed event: \(error)")
-            case .completed:
+            case .success:
                 completedInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
-        }
+        })
+
         XCTAssertNotNil(operation)
         wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let uuid = UUID().uuidString
@@ -748,12 +722,10 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         for operation in operations {
             _ = operation.subscribe { event in
                 switch event {
-                case .completed:
+                case .success:
                     completedInvoked.fulfill()
-                case .failed(let error):
+                case .failure(let error):
                     XCTFail("Unexpected .failed event: \(error)")
-                default:
-                    break
                 }
             }
             XCTAssertTrue(operation.isExecuting)
@@ -778,7 +750,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                                      responseType: CreateTodoMutation.Data.self)
         _ = Amplify.API.mutate(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
@@ -790,10 +762,8 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
 
                 todo = createTodo
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -811,7 +781,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                                      responseType: UpdateTodoMutation.Data.self)
         _ = Amplify.API.mutate(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
@@ -823,10 +793,8 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
 
                 todo = updateTodo
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -842,7 +810,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                                      responseType: DeleteTodoMutation.Data.self)
         _ = Amplify.API.mutate(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
@@ -854,10 +822,8 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
 
                 todo = deleteTodo
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -869,11 +835,10 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         let request = GraphQLRequest(document: OnCreateTodoSubscription.document,
                                      variables: nil,
                                      responseType: OnCreateTodoSubscription.Data.self)
-        let operation = Amplify.API.subscribe(request: request) { event in
-            switch event {
-            case .inProcess(let graphQLResponse):
-                print(graphQLResponse)
-                switch graphQLResponse {
+        let operation = Amplify.API.subscribe(
+            request: request,
+            valueListener: { event in
+                switch event {
                 case .connection(let state):
                     switch state {
                     case .connected:
@@ -884,10 +849,10 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                 default:
                     break
                 }
-            default:
-                break
-            }
-        }
+        },
+            completionListener: nil
+        )
+
         XCTAssertNotNil(operation)
         wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         return operation

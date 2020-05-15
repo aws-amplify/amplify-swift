@@ -24,7 +24,8 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
          pluginConfig: AWSAPICategoryPluginConfiguration,
          subscriptionConnectionFactory: SubscriptionConnectionFactory,
          authService: AWSAuthServiceBehavior,
-         listener: AWSGraphQLSubscriptionOperation.EventListener?) {
+         inProcessListener: AWSGraphQLSubscriptionOperation.InProcessListener?,
+         resultListener: AWSGraphQLSubscriptionOperation.ResultListener?) {
 
         self.pluginConfig = pluginConfig
         self.subscriptionConnectionFactory = subscriptionConnectionFactory
@@ -33,15 +34,16 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         super.init(categoryType: .api,
                    eventName: HubPayload.EventName.API.subscribe,
                    request: request,
-                   listener: listener)
+                   inProcessListener: inProcessListener,
+                   resultListener: resultListener)
     }
 
     override public func cancel() {
         if let subscriptionItem = subscriptionItem, let subscriptionConnection = subscriptionConnection {
             subscriptionConnection.unsubscribe(item: subscriptionItem)
             let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.disconnected)
-            dispatch(event: .inProcess(subscriptionEvent))
-            dispatch(event: .completed(()))
+            dispatchInProcess(data: subscriptionEvent)
+            dispatch(result: .successfulVoid)
             finish()
         } else {
             super.cancel()
@@ -58,11 +60,11 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         do {
             try request.validate()
         } catch let error as APIError {
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
             return
         } catch {
-            dispatch(event: .failed(APIError.unknown("Could not validate request", "", nil)))
+            dispatch(result: .failure(APIError.unknown("Could not validate request", "", nil)))
             finish()
             return
         }
@@ -72,11 +74,11 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         do {
             endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL)
         } catch let error as APIError {
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
             return
         } catch {
-            dispatch(event: .failed(APIError.unknown("Could not get endpoint configuration", "", nil)))
+            dispatch(result: .failure(APIError.unknown("Could not get endpoint configuration", "", nil)))
             finish()
             return
         }
@@ -87,7 +89,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
                                                                                              authService: authService)
         } catch {
             let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
             return
         }
@@ -109,7 +111,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         case .data(let data):
             onGraphQLResponseData(data)
         case .failed(let error):
-            dispatch(event: .failed(APIError.operationError("subscription item event failed with error", "", error)))
+            dispatch(result: .failure(APIError.operationError("subscription item event failed with error", "", error)))
             finish()
         }
     }
@@ -118,24 +120,24 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         switch subscriptionConnectionEvent {
         case .connecting:
             let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.connecting)
-            dispatch(event: .inProcess(subscriptionEvent))
+            dispatchInProcess(data: subscriptionEvent)
         case .connected:
             let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.connected)
-            dispatch(event: .inProcess(subscriptionEvent))
+            dispatchInProcess(data: subscriptionEvent)
         case .disconnected:
             let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.disconnected)
-            dispatch(event: .inProcess(subscriptionEvent))
-            dispatch(event: .completed(()))
+            dispatchInProcess(data: subscriptionEvent)
+            dispatch(result: .successfulVoid)
             finish()
         }
     }
 
     private func onSubscriptionConnectionState(_ subscriptionConnectionState: SubscriptionConnectionState) {
         let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(subscriptionConnectionState)
-        dispatch(event: .inProcess(subscriptionEvent))
+        dispatchInProcess(data: subscriptionEvent)
 
         if case .disconnected = subscriptionConnectionState {
-            dispatch(event: .completed(()))
+            dispatch(result: .successfulVoid)
             finish()
         }
     }
@@ -147,15 +149,15 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
                                                                     responseType: request.responseType,
                                                                     decodePath: request.decodePath,
                                                                     rawGraphQLResponse: graphQLResponseData)
-            dispatch(event: .inProcess(.data(graphQLResponse)))
+            dispatchInProcess(data: .data(graphQLResponse))
         } catch let error as APIError {
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
         } catch {
             // TODO: Verify with the team that terminating a subscription after failing to decode/cast one
             // payload is the right thing to do. Another option would be to propagate a GraphQL error, but
             // leave the subscription alive.
-            dispatch(event: .failed(APIError.operationError("Failed to deserialize", "", error)))
+            dispatch(result: .failure(APIError.operationError("Failed to deserialize", "", error)))
             finish()
         }
     }

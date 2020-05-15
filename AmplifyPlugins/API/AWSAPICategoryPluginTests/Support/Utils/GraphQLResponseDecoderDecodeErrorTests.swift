@@ -27,7 +27,8 @@ class GraphQLResponseDecoderDecodeErrorTests: XCTestCase {
             ]
         ]
 
-        let graphQLErrors = try GraphQLResponseDecoder.decodeErrors(graphQLErrors: [graphQLErrorJSON, graphQLErrorJSON2])
+        let graphQLErrors = try GraphQLResponseDecoder
+            .decodeErrors(graphQLErrors: [graphQLErrorJSON, graphQLErrorJSON2])
 
         XCTAssertEqual(graphQLErrors.count, 2)
         let result = graphQLErrors[0]
