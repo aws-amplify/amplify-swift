@@ -10,8 +10,12 @@ import Amplify
 import AWSPluginsCore
 import AWSS3
 
-public class AWSS3StorageDownloadDataOperation: AmplifyOperation<StorageDownloadDataRequest, Progress, Data, StorageError>,
-    StorageDownloadDataOperation {
+public class AWSS3StorageDownloadDataOperation: AmplifyInProcessReportingOperation<
+    StorageDownloadDataRequest,
+    Progress,
+    Data,
+    StorageError
+>, StorageDownloadDataOperation {
 
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
@@ -24,14 +28,16 @@ public class AWSS3StorageDownloadDataOperation: AmplifyOperation<StorageDownload
     init(_ request: StorageDownloadDataRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         listener: EventListener?) {
+         progressListener: InProcessListener?,
+         resultListener: ResultListener?) {
 
         self.storageService = storageService
         self.authService = authService
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.downloadData,
                    request: request,
-                   listener: listener)
+                   inProcessListener: progressListener,
+                   resultListener: resultListener)
     }
 
     override public func pause() {
@@ -121,17 +127,16 @@ public class AWSS3StorageDownloadDataOperation: AmplifyOperation<StorageDownload
     }
 
     private func dispatch(_ progress: Progress) {
-        let asyncEvent = AsyncEvent<Progress, Data, StorageError>.inProcess(progress)
-        dispatch(event: asyncEvent)
+        dispatchInProcess(data: progress)
     }
 
     private func dispatch(_ result: Data) {
-        let asyncEvent = AsyncEvent<Progress, Data, StorageError>.completed(result)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.success(result)
+        dispatch(result: result)
     }
 
     private func dispatch(_ error: StorageError) {
-        let asyncEvent = AsyncEvent<Progress, Data, StorageError>.failed(error)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.failure(error)
+        dispatch(result: result)
     }
 }

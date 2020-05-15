@@ -10,8 +10,12 @@ import Amplify
 import AWSPluginsCore
 import AWSS3
 
-public class AWSS3StorageUploadFileOperation: AmplifyOperation<StorageUploadFileRequest, Progress, String,
-    StorageError>, StorageUploadFileOperation {
+public class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
+    StorageUploadFileRequest,
+    Progress,
+    String,
+    StorageError
+>, StorageUploadFileOperation {
 
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
@@ -24,14 +28,16 @@ public class AWSS3StorageUploadFileOperation: AmplifyOperation<StorageUploadFile
     init(_ request: StorageUploadFileRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         listener: EventListener?) {
+         progressListener: InProcessListener?,
+         resultListener: ResultListener?) {
 
         self.storageService = storageService
         self.authService = authService
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.uploadFile,
                    request: request,
-                   listener: listener)
+                   inProcessListener: progressListener,
+                   resultListener: resultListener)
     }
 
     override public func pause() {
@@ -140,17 +146,16 @@ public class AWSS3StorageUploadFileOperation: AmplifyOperation<StorageUploadFile
     }
 
     private func dispatch(_ progress: Progress) {
-        let asyncEvent = AsyncEvent<Progress, String, StorageError>.inProcess(progress)
-        dispatch(event: asyncEvent)
+        dispatchInProcess(data: progress)
     }
 
     private func dispatch(_ result: String) {
-        let asyncEvent = AsyncEvent<Progress, String, StorageError>.completed(result)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.success(result)
+        dispatch(result: result)
     }
 
     private func dispatch(_ error: StorageError) {
-        let asyncEvent = AsyncEvent<Progress, String, StorageError>.failed(error)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.failure(error)
+        dispatch(result: result)
     }
 }

@@ -27,7 +27,9 @@ class StorageRequestUtilsValidatorTests: XCTestCase {
     func testValidateTargetIdentityIdWithPublicAccessLevelReturnsError() {
         let result = StorageRequestUtils.validateTargetIdentityId(testIdentityId, accessLevel: .guest)
         XCTAssertNotNil(result)
-        XCTAssertTrue(result!.errorDescription.contains(StorageErrorConstants.invalidAccessLevelWithTarget.errorDescription))
+        XCTAssertTrue(result!
+            .errorDescription
+            .contains(StorageErrorConstants.invalidAccessLevelWithTarget.errorDescription))
     }
 
     func testValidateTargetIdentityIdWithProtectedAccessLevelSuccess() {
@@ -38,7 +40,9 @@ class StorageRequestUtilsValidatorTests: XCTestCase {
     func testValidateTargetIdentityIdWithPrivateAccessLevelReturnsError() {
         let result = StorageRequestUtils.validateTargetIdentityId(testIdentityId, accessLevel: .private)
         XCTAssertNotNil(result)
-        XCTAssertTrue(result!.errorDescription.contains(StorageErrorConstants.invalidAccessLevelWithTarget.errorDescription))
+        XCTAssertTrue(result!
+            .errorDescription
+            .contains(StorageErrorConstants.invalidAccessLevelWithTarget.errorDescription))
     }
 
     func testValidateTargetIdentityIdForEmpyTargetIdReturnsError() {

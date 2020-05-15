@@ -12,6 +12,7 @@ import AWSS3StoragePlugin
 import AWSS3
 @testable import AmplifyTestCommon
 
+// swiftlint:disable:next type_name
 class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase {
 
     /// Given: A large data object to upload
@@ -27,11 +28,11 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
         failedInvoked.isInverted = true
         let noProgressAfterPause = expectation(description: "Progress after pause is invoked")
         noProgressAfterPause.isInverted = true
-        let operation = Amplify.Storage.uploadData(key: key,
-                                                data: AWSS3StoragePluginTestBase.largeDataObject,
-                                                options: nil) { event in
-            switch event {
-            case .inProcess(let progress):
+        let operation = Amplify.Storage.uploadData(
+            key: key,
+            data: AWSS3StoragePluginTestBase.largeDataObject,
+            options: nil,
+            progressListener: { progress in
                 // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
                 if progress.fractionCompleted > 0.3 {
                     progressInvoked.fulfill()
@@ -41,14 +42,15 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
                 if progress.fractionCompleted > 0.7 {
                     noProgressAfterPause.fulfill()
                 }
-            case .completed:
+
+        }, resultListener: { result in
+            switch result {
+            case .success:
                 completeInvoked.fulfill()
-            case .failed:
+            case .failure:
                 failedInvoked.fulfill()
-            default:
-                break
             }
-        }
+        })
 
         XCTAssertNotNil(operation)
         wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -64,23 +66,23 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
         let completeInvoked = expectation(description: "Completed is invoked")
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
-        let operation = Amplify.Storage.uploadData(key: key,
-                                                data: AWSS3StoragePluginTestBase.largeDataObject,
-                                                options: nil) { event in
-            switch event {
-            case .inProcess(let progress):
+        let operation = Amplify.Storage.uploadData(
+            key: key,
+            data: AWSS3StoragePluginTestBase.largeDataObject,
+            options: nil,
+            progressListener: { progress in
                 // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
                 if progress.fractionCompleted > 0.3 {
                     progressInvoked.fulfill()
                 }
-            case .completed:
+        }, resultListener: { result in
+            switch result {
+            case .success:
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
-        }
+        })
 
         XCTAssertNotNil(operation)
         wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -100,23 +102,23 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
         completedInvoked.isInverted = true
         let failedInvoked = expectation(description: "Failed invoked")
         failedInvoked.isInverted = true
-        let operation = Amplify.Storage.uploadData(key: key,
-                                                data: AWSS3StoragePluginTestBase.largeDataObject,
-                                                options: nil) { event in
-            switch event {
-            case .inProcess(let progress):
-                // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
-                if progress.fractionCompleted > 0.3 {
-                    progressInvoked.fulfill()
-                }
-            case .completed:
-                completedInvoked.fulfill()
-            case .failed:
-                failedInvoked.fulfill()
-            default:
-                break
+        let operation = Amplify.Storage.uploadData(
+            key: key,
+            data: AWSS3StoragePluginTestBase.largeDataObject,
+            options: nil,
+            progressListener: { progress in
+            // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
+            if progress.fractionCompleted > 0.3 {
+                progressInvoked.fulfill()
             }
-        }
+        }, resultListener: { result in
+            switch result {
+            case .success:
+                completedInvoked.fulfill()
+            case .failure:
+                failedInvoked.fulfill()
+            }
+        })
 
         XCTAssertNotNil(operation)
         wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)

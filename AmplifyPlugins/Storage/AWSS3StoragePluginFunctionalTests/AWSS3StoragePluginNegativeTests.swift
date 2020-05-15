@@ -22,21 +22,22 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         let expectedKey = "public/" + key
         let failInvoked = expectation(description: "Failed is invoked")
         let options = StorageDownloadDataRequest.Options()
-        let operation = Amplify.Storage.downloadData(key: key, options: options) { event in
-            switch event {
-            case .completed:
-                XCTFail("Should not have completed successfully")
-            case .failed(let error):
-                guard case let .keyNotFound(key, errorDescription, _, _) = error else {
-                    XCTFail("Should have been validation error")
-                    return
-                }
+        let operation = Amplify.Storage.downloadData(
+            key: key,
+            options: options,
+            progressListener: nil) { event in
+                switch event {
+                case .success:
+                    XCTFail("Should not have completed successfully")
+                case .failure(let error):
+                    guard case let .keyNotFound(key, _, _, _) = error else {
+                        XCTFail("Should have been validation error")
+                        return
+                    }
 
-                XCTAssertEqual(key, expectedKey)
-                failInvoked.fulfill()
-            default:
-                break
-            }
+                    XCTAssertEqual(key, expectedKey)
+                    failInvoked.fulfill()
+                }
         }
 
         XCTAssertNotNil(operation)
@@ -51,20 +52,22 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
         let failedInvoked = expectation(description: "Failed is invoked")
-        let operation = Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil) { event in
-            switch event {
-            case .completed:
-                XCTFail("Completed event is received")
-            case .failed(let error):
-                guard case let .localFileNotFound(error) = error else {
-                    XCTFail("Should have been service error with missing File description")
-                    return
+        let operation = Amplify.Storage.uploadFile(
+            key: key,
+            local: fileURL,
+            options: nil,
+            progressListener: nil) { event in
+                switch event {
+                case .success:
+                    XCTFail("Completed event is received")
+                case .failure(let error):
+                    guard case .localFileNotFound = error else {
+                        XCTFail("Should have been service error with missing File description, not \(error)")
+                        return
+                    }
+                    //XCTAssertEqual(error.0, StorageErrorConstants.missingFile.errorDescription)
+                    failedInvoked.fulfill()
                 }
-                //XCTAssertEqual(error.0, StorageErrorConstants.missingFile.errorDescription)
-                failedInvoked.fulfill()
-            default:
-                break
-            }
         }
 
         XCTAssertNotNil(operation)

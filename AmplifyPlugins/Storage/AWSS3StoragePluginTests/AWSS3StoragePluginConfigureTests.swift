@@ -278,7 +278,8 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
                 return
             }
 
-            XCTAssertEqual(amplifyError.errorDescription, PluginErrorConstants.invalidDefaultAccessLevel.errorDescription)
+            XCTAssertEqual(amplifyError.errorDescription,
+                           PluginErrorConstants.invalidDefaultAccessLevel.errorDescription)
         }
     }
 
@@ -307,7 +308,8 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
                 return
             }
 
-            XCTAssertEqual(amplifyError.errorDescription, PluginErrorConstants.invalidDefaultAccessLevel.errorDescription)
+            XCTAssertEqual(amplifyError.errorDescription,
+                           PluginErrorConstants.invalidDefaultAccessLevel.errorDescription)
         }
     }
 
@@ -337,7 +339,8 @@ class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
                 return
             }
 
-            XCTAssertEqual(amplifyError.errorDescription, PluginErrorConstants.invalidDefaultAccessLevel.errorDescription)
+            XCTAssertEqual(amplifyError.errorDescription,
+                           PluginErrorConstants.invalidDefaultAccessLevel.errorDescription)
         }
     }
 }

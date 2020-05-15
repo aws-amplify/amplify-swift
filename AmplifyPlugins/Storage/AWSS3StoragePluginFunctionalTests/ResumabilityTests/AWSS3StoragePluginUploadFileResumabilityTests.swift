@@ -11,5 +11,6 @@ import Amplify
 import AWSS3StoragePlugin
 import AWSS3
 
+// swiftlint:disable:next type_name
 class AWSS3StoragePluginUploadFileResumabilityTests: AWSS3StoragePluginTestBase {
 }

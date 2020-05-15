@@ -20,9 +20,9 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageRemoveOperation(request,
                                                     storageService: mockStorageService,
-                                                    authService: mockAuthService) { event in
-            switch event {
-            case .failed(let error):
+                                                    authService: mockAuthService) { result in
+            switch result {
+            case .failure(let error):
                 guard case .validation = error else {
                     XCTFail("Should have failed with validation error")
                     return
@@ -47,9 +47,9 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageRemoveOperation(request,
                                                     storageService: mockStorageService,
-                                                    authService: mockAuthService) { event in
-            switch event {
-            case .failed(let error):
+                                                    authService: mockAuthService) { result in
+            switch result {
+            case .failure(let error):
                 guard case .authError = error else {
                     XCTFail("Should have failed with authError")
                     return
@@ -67,7 +67,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testRemoveOperationDeleteSuccess() {
-        mockStorageService.storageServiceDeleteEvents = [StorageEvent.completed(())]
+        mockStorageService.storageServiceDeleteEvents = [StorageEvent.completedVoid]
         let options = StorageRemoveRequest.Options()
         let request = StorageRemoveRequest(key: testKey, options: options)
 
@@ -75,9 +75,9 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageRemoveOperation(request,
                                                     storageService: mockStorageService,
-                                                    authService: mockAuthService) { event in
-            switch event {
-            case .completed:
+                                                    authService: mockAuthService) { result in
+            switch result {
+            case .success:
                 completeInvoked.fulfill()
             default:
                 XCTFail("Should have received completed event")
@@ -100,9 +100,9 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageRemoveOperation(request,
                                                     storageService: mockStorageService,
-                                                    authService: mockAuthService) { event in
-            switch event {
-            case .failed:
+                                                    authService: mockAuthService) { result in
+            switch result {
+            case .failure:
                 failedInvoked.fulfill()
             default:
                 XCTFail("Should have received failed event")
@@ -118,7 +118,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
 
     func testRemoveOperationDeleteForPrivateAccessLevel() {
         mockAuthService.identityId = testIdentityId
-        mockStorageService.storageServiceDeleteEvents = [StorageEvent.completed(())]
+        mockStorageService.storageServiceDeleteEvents = [StorageEvent.completedVoid]
         let options = StorageRemoveRequest.Options(accessLevel: .private)
         let request = StorageRemoveRequest(key: testKey, options: options)
 
@@ -126,9 +126,9 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         let completeInvoked = expectation(description: "complete was invoked on operation")
         let operation = AWSS3StorageRemoveOperation(request,
                                                     storageService: mockStorageService,
-                                                    authService: mockAuthService) { event in
-            switch event {
-            case .completed:
+                                                    authService: mockAuthService) { result in
+            switch result {
+            case .success:
                 completeInvoked.fulfill()
             default:
                 XCTFail("Should have received completed event")
