@@ -8,6 +8,7 @@
 import XCTest
 import AWSPluginsCore
 import AWSAPICategoryPlugin
+import AmplifyPlugins
 import AWSMobileClient
 
 @testable import Amplify
@@ -21,7 +22,6 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     }
 
     let amplifyConfigurationFile = "GraphQLAuthDirectiveIntegrationTests-amplifyconfiguration"
-    let awsconfigurationFile = "GraphQLAuthDirectiveIntegrationTests-awsconfiguration"
     let credentialsFile = "GraphQLAuthDirectiveIntegrationTests-credentials"
     var user1: User!
     var user2: User!
@@ -40,19 +40,9 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
 
             self.user1 = User(username: user1, password: passwordUser1)
             self.user2 = User(username: user2, password: passwordUser2)
-            let awsConfiguration = try TestConfigHelper.retrieveAWSConfiguration(forResource: awsconfigurationFile)
-            AWSInfo.configureDefaultAWSInfo(awsConfiguration)
-        } catch {
-            XCTFail("Error during setup: \(error)")
-        }
-
-        do {
-            AuthHelper.initializeMobileClient()
-
-            Amplify.reset()
 
             try Amplify.add(plugin: AWSAPIPlugin())
-
+            try Amplify.add(plugin: AWSAuthPlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
             try Amplify.configure(amplifyConfig)
 
@@ -60,11 +50,14 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         } catch {
             XCTFail("Error during setup: \(error)")
         }
+        if isSignedIn() {
+            signOut()
+        }
     }
 
     override func tearDown() {
+        signOut()
         Amplify.reset()
-        AuthHelper.signOut()
     }
 
     /// Models created with:
@@ -86,7 +79,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     ///    - Others cannot update or delete the owner's model
     ///    - Owner can delete the model
     func testModelIsReadOnly() {
-        AuthHelper.signIn(username: user1.username, password: user1.password)
+        signIn(username: user1.username, password: user1.password)
         let id = UUID().uuidString
         let content = "owner created content"
         let ownerCreatedNoteResult = createNote(id, content: content)
@@ -106,8 +99,9 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
             XCTFail("Owner should be able to update own note")
             return
         }
-        AuthHelper.signOut()
-        AuthHelper.signIn(username: user2.username, password: user2.password)
+
+        signOut()
+        signIn(username: user2.username, password: user2.password)
         let otherReadNoteResult = queryNote(byId: id)
         guard case let .success(otherReadNoteOptional) = otherReadNoteResult,
             let otherReadNote = otherReadNoteOptional else {
@@ -131,8 +125,8 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         }
         XCTAssertEqual(appSyncErrorOnDelete, .conditionalCheck)
 
-        AuthHelper.signOut()
-        AuthHelper.signIn(username: user1.username, password: user1.password)
+        signOut()
+        signIn(username: user1.username, password: user1.password)
         let ownerDeletedNoteResult = deleteNote(byId: id, version: ownerUpdatedNote.syncMetadata.version)
         guard case .success = ownerDeletedNoteResult else {
             XCTFail("Owner should be able to delete own note")
@@ -161,7 +155,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     }
 
     func testSyncQuery() {
-        AuthHelper.signIn(username: user1.username, password: user1.password)
+        signIn(username: user1.username, password: user1.password)
         let id = UUID().uuidString
         let content = "owner created content"
         let ownerCreatedNoteResult = createNote(id, content: content)
@@ -196,13 +190,10 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     }
 
     func testOnCreateSubscriptionOnlyWhenSignedIntoUserPool() {
-        AuthHelper.signIn(username: user1.username, password: user1.password)
+        signIn(username: user1.username, password: user1.password)
         let connectedInvoked = expectation(description: "Connection established")
         let progressInvoked = expectation(description: "Progress invoked")
-        guard let ownerId = AuthHelper.getUserSub() else {
-            XCTFail("Could not get ownerId for authenticated user")
-            return
-        }
+        let ownerId = CognitoAuthHelper.getUserSub()
         let request = GraphQLRequest<MutationSyncResult>.subscription(to: SocialNote.self,
                                                                       subscriptionType: .onCreate,
                                                                       ownerId: ownerId)

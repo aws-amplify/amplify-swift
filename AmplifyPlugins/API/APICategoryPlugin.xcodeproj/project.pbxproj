@@ -11,9 +11,9 @@
 		21233D032469B06B00039337 /* SocialNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21233D022469B06B00039337 /* SocialNote.swift */; };
 		21233D052469DF1200039337 /* GraphQLAuthDirectiveIntegrationTests+Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21233D042469DF1200039337 /* GraphQLAuthDirectiveIntegrationTests+Support.swift */; };
 		21233D092469EBA000039337 /* GraphQLAuthDirectiveIntegrationTests-credentials.json in Resources */ = {isa = PBXBuildFile; fileRef = 21233D062469EBA000039337 /* GraphQLAuthDirectiveIntegrationTests-credentials.json */; };
-		21233D0A2469EBA000039337 /* GraphQLAuthDirectiveIntegrationTests-awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 21233D072469EBA000039337 /* GraphQLAuthDirectiveIntegrationTests-awsconfiguration.json */; };
 		21233D0B2469EBA000039337 /* GraphQLAuthDirectiveIntegrationTests-amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 21233D082469EBA000039337 /* GraphQLAuthDirectiveIntegrationTests-amplifyconfiguration.json */; };
 		21233D0D2469EBBE00039337 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 21233D0C2469EBBE00039337 /* README.md */; };
+		21233DC8246F571100039337 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21233DC6246F560A00039337 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift */; };
 		2129BE3E239486D2006363A1 /* AnyModel+JSONInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE3D239486D2006363A1 /* AnyModel+JSONInit.swift */; };
 		21409C4F2384BA7E000A53C9 /* APIOperationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C4E2384BA7E000A53C9 /* APIOperationResponse.swift */; };
 		21409C5E2384DE2C000A53C9 /* AWSAPIPlugin+GraphQLModelBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21409C5D2384DE2C000A53C9 /* AWSAPIPlugin+GraphQLModelBehavior.swift */; };
@@ -267,9 +267,9 @@
 		21233D022469B06B00039337 /* SocialNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialNote.swift; sourceTree = "<group>"; };
 		21233D042469DF1200039337 /* GraphQLAuthDirectiveIntegrationTests+Support.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphQLAuthDirectiveIntegrationTests+Support.swift"; sourceTree = "<group>"; };
 		21233D062469EBA000039337 /* GraphQLAuthDirectiveIntegrationTests-credentials.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "GraphQLAuthDirectiveIntegrationTests-credentials.json"; sourceTree = "<group>"; };
-		21233D072469EBA000039337 /* GraphQLAuthDirectiveIntegrationTests-awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "GraphQLAuthDirectiveIntegrationTests-awsconfiguration.json"; sourceTree = "<group>"; };
 		21233D082469EBA000039337 /* GraphQLAuthDirectiveIntegrationTests-amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "GraphQLAuthDirectiveIntegrationTests-amplifyconfiguration.json"; sourceTree = "<group>"; };
 		21233D0C2469EBBE00039337 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		21233DC6246F560A00039337 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GraphQLAuthDirectiveIntegrationTests+Auth.swift"; sourceTree = "<group>"; };
 		2129BE3D239486D2006363A1 /* AnyModel+JSONInit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AnyModel+JSONInit.swift"; sourceTree = "<group>"; };
 		21409C4E2384BA7E000A53C9 /* APIOperationResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIOperationResponse.swift; sourceTree = "<group>"; };
 		21409C5D2384DE2C000A53C9 /* AWSAPIPlugin+GraphQLModelBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAPIPlugin+GraphQLModelBehavior.swift"; sourceTree = "<group>"; };
@@ -559,9 +559,9 @@
 			isa = PBXGroup;
 			children = (
 				21233D082469EBA000039337 /* GraphQLAuthDirectiveIntegrationTests-amplifyconfiguration.json */,
-				21233D072469EBA000039337 /* GraphQLAuthDirectiveIntegrationTests-awsconfiguration.json */,
 				21233D062469EBA000039337 /* GraphQLAuthDirectiveIntegrationTests-credentials.json */,
 				21A3FDBA2464BB5F00E76120 /* GraphQLAuthDirectiveIntegrationTests.swift */,
+				21233DC6246F560A00039337 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift */,
 				21233D042469DF1200039337 /* GraphQLAuthDirectiveIntegrationTests+Support.swift */,
 				21233D0C2469EBBE00039337 /* README.md */,
 				21233D022469B06B00039337 /* SocialNote.swift */,
@@ -1445,7 +1445,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				21233D0A2469EBA000039337 /* GraphQLAuthDirectiveIntegrationTests-awsconfiguration.json in Resources */,
 				219A88A223EE034F00BBC5F2 /* RESTWithUserPoolIntegrationTests-amplifyconfiguration.json in Resources */,
 				219A88A323EE034F00BBC5F2 /* RESTWithUserPoolIntegrationTests-awsconfiguration.json in Resources */,
 				21598CE3239FF54E00529F29 /* RESTWithIAMIntegrationTests-amplifyconfiguration.json in Resources */,
@@ -2117,6 +2116,7 @@
 			files = (
 				21233D052469DF1200039337 /* GraphQLAuthDirectiveIntegrationTests+Support.swift in Sources */,
 				21233D032469B06B00039337 /* SocialNote.swift in Sources */,
+				21233DC8246F571100039337 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift in Sources */,
 				21A3FDBB2464BB5F00E76120 /* GraphQLAuthDirectiveIntegrationTests.swift in Sources */,
 				217856A223810B9400A30D19 /* GraphQLWithUserPoolIntegrationTests.swift in Sources */,
 			);
