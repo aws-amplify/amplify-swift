@@ -8,12 +8,18 @@
 import Amplify
 
 typealias FetchUserAttributesCompletion = (Result<[AuthUserAttribute], AuthError>) -> Void
+
 typealias UpdateUserAttributeCompletion = (Result<AuthUpdateAttributeResult, AuthError>) -> Void
+
 typealias UpdateUserAttributesCompletion = (Result<[AuthUserAttributeKey: AuthUpdateAttributeResult],
     AuthError>) -> Void
+
+// swiftlint:disable:next type_name
 typealias ResendAttributeConfirmationCodeCompletion = (Result<AuthCodeDeliveryDetails,
     AuthError>) -> Void
+
 typealias ConfirmAttributeCompletion = (Result<Void, AuthError>) -> Void
+
 typealias ChangePasswordCompletion = (Result<Void, AuthError>) -> Void
 
 protocol AuthUserServiceBehavior: class {

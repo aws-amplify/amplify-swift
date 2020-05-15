@@ -7,22 +7,22 @@
 
 import Amplify
 
-public class AWSAuthChangePasswordOperation: AmplifyOperation<AuthChangePasswordRequest,
+public class AWSAuthChangePasswordOperation: AmplifyOperation<
+    AuthChangePasswordRequest,
     Void,
-    Void,
-    AuthError>,
-AuthChangePasswordOperation {
+    AuthError
+>, AuthChangePasswordOperation {
 
     let userService: AuthUserServiceBehavior
 
     init(_ request: AuthChangePasswordRequest,
          userService: AuthUserServiceBehavior,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
         self.userService = userService
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.changePassword,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
@@ -45,12 +45,12 @@ AuthChangePasswordOperation {
     }
 
     private func dispatchSuccess() {
-        let asyncEvent = AsyncEvent<Void, Void, AuthError>.completed(())
-        dispatch(event: asyncEvent)
+        let result = OperationResult.success(())
+        dispatch(result: result)
     }
 
     private func dispatch(_ error: AuthError) {
-        let asyncEvent = AsyncEvent<Void, Void, AuthError>.failed(error)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.failure(error)
+        dispatch(result: result)
     }
 }

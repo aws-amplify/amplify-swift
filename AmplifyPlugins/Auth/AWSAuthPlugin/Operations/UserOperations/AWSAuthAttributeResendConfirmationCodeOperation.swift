@@ -7,24 +7,24 @@
 
 import Amplify
 
+// swiftlint:disable:next type_name
 public class AWSAuthAttributeResendConfirmationCodeOperation: AmplifyOperation<
     AuthAttributeResendConfirmationCodeRequest,
-    Void,
     AuthCodeDeliveryDetails,
-    AuthError>,
-AuthAttributeResendConfirmationCodeOperation {
+    AuthError
+>, AuthAttributeResendConfirmationCodeOperation {
 
     let userService: AuthUserServiceBehavior
 
     init(_ request: AuthAttributeResendConfirmationCodeRequest,
          userService: AuthUserServiceBehavior,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
 
         self.userService = userService
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.attributeResendConfirmationCode,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
@@ -47,12 +47,12 @@ AuthAttributeResendConfirmationCodeOperation {
     }
 
     private func dispatch(_ result: AuthCodeDeliveryDetails) {
-        let asyncEvent = AsyncEvent<Void, AuthCodeDeliveryDetails, AuthError>.completed(result)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.success(result)
+        dispatch(result: result)
     }
 
     private func dispatch(_ error: AuthError) {
-        let asyncEvent = AsyncEvent<Void, AuthCodeDeliveryDetails, AuthError>.failed(error)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.failure(error)
+        dispatch(result: result)
     }
 }

@@ -9,23 +9,23 @@ import Foundation
 
 import Amplify
 
-public class AWSAuthConfirmSignInOperation: AmplifyOperation<AuthConfirmSignInRequest,
-    Void,
+public class AWSAuthConfirmSignInOperation: AmplifyOperation<
+    AuthConfirmSignInRequest,
     AuthSignInResult,
-    AuthError>,
-AuthConfirmSignInOperation {
+    AuthError
+>, AuthConfirmSignInOperation {
 
     let authenticationProvider: AuthenticationProviderBehavior
 
     init(_ request: AuthConfirmSignInRequest,
          authenticationProvider: AuthenticationProviderBehavior,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
 
         self.authenticationProvider = authenticationProvider
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.confirmSignIn,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
@@ -57,12 +57,12 @@ AuthConfirmSignInOperation {
     }
 
     private func dispatch(_ result: AuthSignInResult) {
-        let asyncEvent = AsyncEvent<Void, AuthSignInResult, AuthError>.completed(result)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.success(result)
+        dispatch(result: result)
     }
 
     private func dispatch(_ error: AuthError) {
-        let asyncEvent = AsyncEvent<Void, AuthSignInResult, AuthError>.failed(error)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.failure(error)
+        dispatch(result: result)
     }
 }

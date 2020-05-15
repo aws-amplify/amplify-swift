@@ -8,23 +8,23 @@
 import Foundation
 import Amplify
 
-public class AWSAuthSignInOperation: AmplifyOperation<AuthSignInRequest,
-    Void,
+public class AWSAuthSignInOperation: AmplifyOperation<
+    AuthSignInRequest,
     AuthSignInResult,
-    AuthError>,
-AuthSignInOperation {
+    AuthError
+>, AuthSignInOperation {
 
     let authenticationProvider: AuthenticationProviderBehavior
 
     init(_ request: AuthSignInRequest,
          authenticationProvider: AuthenticationProviderBehavior,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
 
         self.authenticationProvider = authenticationProvider
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.signIn,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
@@ -40,7 +40,6 @@ AuthSignInOperation {
         }
 
         authenticationProvider.signIn(request: request) {[weak self]  result in
-
             guard let self = self else { return }
 
             defer {
@@ -56,12 +55,12 @@ AuthSignInOperation {
     }
 
     private func dispatch(_ result: AuthSignInResult) {
-        let asyncEvent = AsyncEvent<Void, AuthSignInResult, AuthError>.completed(result)
-        dispatch(event: asyncEvent)
+        let asyncEvent = AWSAuthSignInOperation.OperationResult.success(result)
+        dispatch(result: asyncEvent)
     }
 
     private func dispatch(_ error: AuthError) {
-        let asyncEvent = AsyncEvent<Void, AuthSignInResult, AuthError>.failed(error)
-        dispatch(event: asyncEvent)
+        let asyncEvent = AWSAuthSignInOperation.OperationResult.failure(error)
+        dispatch(result: asyncEvent)
     }
 }

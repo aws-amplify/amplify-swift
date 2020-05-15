@@ -222,7 +222,6 @@
 		B4BD35C6246477870072DFBF /* Tokens+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tokens+Extension.swift"; sourceTree = "<group>"; };
 		B4C04A992462193700E59DF8 /* AWSAuthChangePasswordOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthChangePasswordOperation.swift; sourceTree = "<group>"; };
 		B4C8EDB7246B5EFD00ED7484 /* AuthUserAttributeKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUserAttributeKeyTests.swift; sourceTree = "<group>"; };
-		B4D0668124635E3A00CF9FE3 /* AWSAuthPlugin+DeviceBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAuthPlugin+DeviceBehavior.swift"; sourceTree = "<group>"; };
 		B4D066832463636C00CF9FE3 /* AWSAuthDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthDevice.swift; sourceTree = "<group>"; };
 		B4D066852463642A00CF9FE3 /* Device+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Device+Extension.swift"; sourceTree = "<group>"; };
 		B4EDB6AD245BADE2000794FE /* AuthCognitoSignedOutSessionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCognitoSignedOutSessionHelper.swift; sourceTree = "<group>"; };
@@ -378,7 +377,6 @@
 			children = (
 				B4F3EA37243A753500F23296 /* AWSAuthPlugin.swift */,
 				B49FAA2524451AEF001868ED /* AWSAuthPlugin+Configure.swift */,
-				B4D0668124635E3A00CF9FE3 /* AWSAuthPlugin+DeviceBehavior.swift */,
 				B42B3D3C246AE2B6007211E0 /* AWSAuthPlugin+InvalidateCredentials.swift */,
 				B49FAA2324451A22001868ED /* AWSAuthPlugin+Reset.swift */,
 				B41B895F24672AB40092F96D /* ClientBehavior */,

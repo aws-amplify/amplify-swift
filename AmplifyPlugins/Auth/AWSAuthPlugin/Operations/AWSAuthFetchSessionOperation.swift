@@ -8,11 +8,11 @@
 import Foundation
 import Amplify
 
-public class AWSAuthFetchSessionOperation: AmplifyOperation<AuthFetchSessionRequest,
-    Void,
+public class AWSAuthFetchSessionOperation: AmplifyOperation<
+    AuthFetchSessionRequest,
     AuthSession,
-    AuthError>,
-AuthFetchSessionOperation {
+    AuthError
+>, AuthFetchSessionOperation {
 
     let authenticationProvider: AuthenticationProviderBehavior
     let authorizationProvider: AuthorizationProviderBehavior
@@ -20,14 +20,14 @@ AuthFetchSessionOperation {
     init(_ request: AuthFetchSessionRequest,
          authenticationProvider: AuthenticationProviderBehavior,
          authorizationProvider: AuthorizationProviderBehavior,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
 
         self.authenticationProvider = authenticationProvider
         self.authorizationProvider = authorizationProvider
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.fetchSession,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
@@ -52,12 +52,12 @@ AuthFetchSessionOperation {
     }
 
     private func dispatch(_ result: AuthSession) {
-        let asyncEvent = AsyncEvent<Void, AuthSession, AuthError>.completed(result)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.success(result)
+        dispatch(result: result)
     }
 
     private func dispatch(_ error: AuthError) {
-        let asyncEvent = AsyncEvent<Void, AuthSession, AuthError>.failed(error)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.failure(error)
+        dispatch(result: result)
     }
 }

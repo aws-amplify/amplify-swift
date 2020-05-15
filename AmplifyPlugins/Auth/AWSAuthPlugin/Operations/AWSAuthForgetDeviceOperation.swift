@@ -8,23 +8,23 @@
 import Foundation
 import Amplify
 
-public class AWSAuthForgetDeviceOperation: AmplifyOperation<AuthForgetDeviceRequest,
+public class AWSAuthForgetDeviceOperation: AmplifyOperation<
+    AuthForgetDeviceRequest,
     Void,
-    Void,
-    AuthError>,
-AuthForgetDeviceOperation {
+    AuthError
+>, AuthForgetDeviceOperation {
 
     let deviceService: AuthDeviceServiceBehavior
 
     init(_ request: AuthForgetDeviceRequest,
          deviceService: AuthDeviceServiceBehavior,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
 
         self.deviceService = deviceService
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.forgetDevice,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
@@ -48,12 +48,12 @@ AuthForgetDeviceOperation {
     }
 
     private func dispatchSuccess() {
-        let asyncEvent = AsyncEvent<Void, Void, AuthError>.completed(())
-        dispatch(event: asyncEvent)
+        let result = OperationResult.success(())
+        dispatch(result: result)
     }
 
     private func dispatch(_ error: AuthError) {
-        let asyncEvent = AsyncEvent<Void, Void, AuthError>.failed(error)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.failure(error)
+        dispatch(result: result)
     }
 }
