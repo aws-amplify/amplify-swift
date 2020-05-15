@@ -8,23 +8,23 @@
 import Amplify
 import AWSMobileClient
 
-public class AWSAuthResendSignUpCodeOperation: AmplifyOperation<AuthResendSignUpCodeRequest,
-    Void,
+public class AWSAuthResendSignUpCodeOperation: AmplifyOperation<
+    AuthResendSignUpCodeRequest,
     AuthCodeDeliveryDetails,
-    AuthError>,
-AuthResendSignUpCodeOperation {
+    AuthError
+>, AuthResendSignUpCodeOperation {
 
     let authenticationProvider: AuthenticationProviderBehavior
 
     init(_ request: AuthResendSignUpCodeRequest,
          authenticationProvider: AuthenticationProviderBehavior,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
 
         self.authenticationProvider = authenticationProvider
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.resendSignUpCode,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
@@ -56,12 +56,12 @@ AuthResendSignUpCodeOperation {
     }
 
     private func dispatch(_ result: AuthCodeDeliveryDetails) {
-        let asyncEvent = AsyncEvent<Void, AuthCodeDeliveryDetails, AuthError>.completed(result)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.success(result)
+        dispatch(result: result)
     }
 
     private func dispatch(_ error: AuthError) {
-        let asyncEvent = AsyncEvent<Void, AuthCodeDeliveryDetails, AuthError>.failed(error)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.failure(error)
+        dispatch(result: result)
     }
 }

@@ -12,6 +12,7 @@ protocol AWSMobileClientBehavior {
 
     func initialize() throws
 
+    // swiftlint:disable:next function_parameter_count
     func signUp(username: String,
                 password: String,
                 userAttributes: [String: String],
