@@ -8,19 +8,19 @@
 import Foundation
 import Amplify
 
-public class CoreMLTranslateTextOperation: AmplifyOperation<PredictionsTranslateTextRequest,
-    Void,
+public class CoreMLTranslateTextOperation: AmplifyOperation<
+    PredictionsTranslateTextRequest,
     TranslateTextResult,
-PredictionsError>, PredictionsTranslateTextOperation {
-
+    PredictionsError
+>, PredictionsTranslateTextOperation {
 
     init(_ request: PredictionsTranslateTextRequest,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
 
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.interpret,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
@@ -32,7 +32,7 @@ PredictionsError>, PredictionsTranslateTextOperation {
         let errorDescription = CoreMLPluginErrorString.operationNotSupported.errorDescription
         let recovery = CoreMLPluginErrorString.operationNotSupported.recoverySuggestion
         let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
-        dispatch(event: .failed(predictionsError))
+        dispatch(result: .failure(predictionsError))
         finish()
     }
 }

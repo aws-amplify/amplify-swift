@@ -9,23 +9,23 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 
-public class InterpretTextOperation: AmplifyOperation<PredictionsInterpretRequest,
-    Void,
+public class InterpretTextOperation: AmplifyOperation<
+    PredictionsInterpretRequest,
     InterpretResult,
-    PredictionsError>,
-PredictionsInterpretOperation {
+    PredictionsError
+>, PredictionsInterpretOperation {
 
     let multiService: InterpretTextMultiService
 
     init(_ request: PredictionsInterpretRequest,
          multiService: InterpretTextMultiService,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
 
         self.multiService = multiService
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.interpret,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
@@ -57,10 +57,10 @@ PredictionsInterpretOperation {
 
         switch event {
         case .completed(let result):
-            dispatch(event: .completed(result))
+            dispatch(result: .success(result))
             finish()
         case .failed(let error):
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
         }
     }

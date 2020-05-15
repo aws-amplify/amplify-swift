@@ -153,5 +153,3 @@ class CoreMLVisionAdapter: CoreMLVisionBehavior {
     }
 
 }
-
-

@@ -13,6 +13,7 @@ import AWSPredictionsPlugin
 import AWSRekognition
 import XCTest
 
+// swiftlint:disable:next type_body_length
 class IdentifyBasicIntegrationTests: XCTestCase {
 
      let region: JSONValue = "us-west-2"
@@ -123,12 +124,10 @@ class IdentifyBasicIntegrationTests: XCTestCase {
                                                      image: url,
                                                      options: PredictionsIdentifyRequest.Options()) { event in
             switch event {
-            case .completed:
+            case .success:
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
 
@@ -149,12 +148,10 @@ class IdentifyBasicIntegrationTests: XCTestCase {
                                                      image: url,
                                                      options: PredictionsIdentifyRequest.Options()) { event in
                                                         switch event {
-                                                        case .completed:
+                                                        case .success:
                                                             completeInvoked.fulfill()
-                                                        case .failed(let error):
+                                                        case .failure(let error):
                                                             XCTFail("Failed with \(error)")
-                                                        default:
-                                                            break
                                                         }
         }
 
@@ -175,12 +172,10 @@ class IdentifyBasicIntegrationTests: XCTestCase {
                                                      image: url,
                                                      options: PredictionsIdentifyRequest.Options()) { event in
                                                         switch event {
-                                                        case .completed:
+                                                        case .success:
                                                             completeInvoked.fulfill()
-                                                        case .failed(let error):
+                                                        case .failure(let error):
                                                             XCTFail("Failed with \(error)")
-                                                        default:
-                                                            break
                                                         }
         }
 
@@ -201,12 +196,10 @@ class IdentifyBasicIntegrationTests: XCTestCase {
                                                      image: url,
                                                      options: PredictionsIdentifyRequest.Options()) { event in
                                                         switch event {
-                                                        case .completed:
+                                                        case .success:
                                                             completeInvoked.fulfill()
-                                                        case .failed(let error):
+                                                        case .failure(let error):
                                                             XCTFail("Failed with \(error)")
-                                                        default:
-                                                            break
                                                         }
         }
 
@@ -227,12 +220,10 @@ class IdentifyBasicIntegrationTests: XCTestCase {
                                                      image: url,
                                                      options: PredictionsIdentifyRequest.Options()) { event in
                                                         switch event {
-                                                        case .completed:
+                                                        case .success:
                                                             completeInvoked.fulfill()
-                                                        case .failed(let error):
+                                                        case .failure(let error):
                                                             XCTFail("Failed with \(error)")
-                                                        default:
-                                                            break
                                                         }
         }
 
@@ -253,12 +244,10 @@ class IdentifyBasicIntegrationTests: XCTestCase {
                                                      image: url,
                                                      options: PredictionsIdentifyRequest.Options()) { event in
                                                         switch event {
-                                                        case .completed:
+                                                        case .success:
                                                             completeInvoked.fulfill()
-                                                        case .failed(let error):
+                                                        case .failure(let error):
                                                             XCTFail("Failed with \(error)")
-                                                        default:
-                                                            break
                                                         }
         }
 
@@ -279,12 +268,10 @@ class IdentifyBasicIntegrationTests: XCTestCase {
                                                      image: url,
                                                      options: PredictionsIdentifyRequest.Options()) { event in
                                                         switch event {
-                                                        case .completed:
+                                                        case .success:
                                                             completeInvoked.fulfill()
-                                                        case .failed(let error):
+                                                        case .failure(let error):
                                                             XCTFail("Failed with \(error)")
-                                                        default:
-                                                            break
                                                         }
         }
 
@@ -305,12 +292,10 @@ class IdentifyBasicIntegrationTests: XCTestCase {
                                                      image: url,
                                                      options: PredictionsIdentifyRequest.Options()) { event in
                                                         switch event {
-                                                        case .completed:
+                                                        case .success:
                                                             completeInvoked.fulfill()
-                                                        case .failed(let error):
+                                                        case .failure(let error):
                                                             XCTFail("Failed with \(error)")
-                                                        default:
-                                                            break
                                                         }
         }
 
@@ -331,12 +316,10 @@ class IdentifyBasicIntegrationTests: XCTestCase {
                                                      image: url,
                                                      options: PredictionsIdentifyRequest.Options()) { event in
                                                         switch event {
-                                                        case .completed:
+                                                        case .success:
                                                             completeInvoked.fulfill()
-                                                        case .failed(let error):
+                                                        case .failure(let error):
                                                             XCTFail("Failed with \(error)")
-                                                        default:
-                                                            break
                                                         }
         }
 
@@ -357,12 +340,10 @@ class IdentifyBasicIntegrationTests: XCTestCase {
                                                      image: url,
                                                      options: PredictionsIdentifyRequest.Options()) { event in
                                                         switch event {
-                                                        case .completed:
+                                                        case .success:
                                                             completeInvoked.fulfill()
-                                                        case .failed(let error):
+                                                        case .failure(let error):
                                                             XCTFail("Failed with \(error)")
-                                                        default:
-                                                            break
                                                         }
         }
 

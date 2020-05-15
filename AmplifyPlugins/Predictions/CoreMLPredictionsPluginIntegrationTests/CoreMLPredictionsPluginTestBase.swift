@@ -46,5 +46,4 @@ class AWSPredictionsPluginTestBase: XCTestCase {
         print("Amplify initialized")
     }
 
-
 }
