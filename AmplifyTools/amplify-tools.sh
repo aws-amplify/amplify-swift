@@ -50,13 +50,9 @@ else
 fi
 
 if [ -z "$amplifyEnvName" ]; then
-  AMPLIFY="{\
-  \"envName\":\"amplify\"\
-}"
+  AMPLIFY="{\"envName\":\"amplify\"}"
 else
-  AMPLIFY="{\
-  \"envName\":\"${amplifyEnvName}\"\
-}"
+  AMPLIFY="{\"envName\":\"${amplifyEnvName}\"}"
 fi
 PROVIDERS="{\
   \"awscloudformation\":$AWSCLOUDFORMATIONCONFIG\
