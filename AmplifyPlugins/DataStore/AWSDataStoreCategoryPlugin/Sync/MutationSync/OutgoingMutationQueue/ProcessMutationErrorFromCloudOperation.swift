@@ -11,15 +11,17 @@ import Foundation
 import AWSPluginsCore
 
 /// Checks the GraphQL error response for specific error scenarios related to data synchronziation to the local store.
-/// 1. When there is a "conditional request failed" error, then emit to the Hub a 'conditionalSaveFailed' event.
-/// 2. When there is a "conflict unahandled" error, trigger the conflict handler and reconcile the state of the system.
+/// 1. When there is an APIError which is for an unauthenticated user, call the error handler.
+/// 2. When there is a "conditional request failed" error, then emit to the Hub a 'conditionalSaveFailed' event.
+/// 3. When there is a "conflict unahandled" error, trigger the conflict handler and reconcile the state of the system.
 @available(iOS 13.0, *)
 class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
 
     private let dataStoreConfiguration: DataStoreConfiguration
     private let storageAdapter: StorageEngineAdapter
     private let mutationEvent: MutationEvent
-    private let graphQLResponseError: GraphQLResponseError<MutationSync<AnyModel>>
+    private let graphQLResponseError: GraphQLResponseError<MutationSync<AnyModel>>?
+    private let apiError: APIError?
     private let completion: (Result<MutationEvent?, Error>) -> Void
     private var mutationOperation: GraphQLOperation<MutationSync<AnyModel>>?
     private weak var api: APICategoryGraphQLBehavior?
@@ -28,13 +30,15 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
          mutationEvent: MutationEvent,
          api: APICategoryGraphQLBehavior,
          storageAdapter: StorageEngineAdapter,
-         graphQLResponseError: GraphQLResponseError<MutationSync<AnyModel>>,
+         graphQLResponseError: GraphQLResponseError<MutationSync<AnyModel>>? = nil,
+         apiError: APIError? = nil,
          completion: @escaping (Result<MutationEvent?, Error>) -> Void) {
         self.dataStoreConfiguration = dataStoreConfiguration
         self.mutationEvent = mutationEvent
         self.api = api
         self.storageAdapter = storageAdapter
         self.graphQLResponseError = graphQLResponseError
+        self.apiError = apiError
         self.completion = completion
         super.init()
     }
@@ -48,13 +52,20 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             return
         }
 
-        guard case let .error(graphQLErrors) = graphQLResponseError else {
+        if let apiError = apiError, isAuthServiceError(apiError: apiError) {
+            dataStoreConfiguration.errorHandler(DataStoreError.api(apiError, mutationEvent))
             finish(result: .success(nil))
             return
         }
 
+        guard let graphQLResponseError = graphQLResponseError,
+            case let .error(graphQLErrors) = graphQLResponseError else {
+                finish(result: .success(nil))
+                return
+        }
+
         guard graphQLErrors.count == 1 else {
-            log.error("Received more than one error response: \(graphQLResponseError)")
+            log.error("Received more than one error response: \(String(describing: graphQLResponseError))")
             finish(result: .success(nil))
             return
         }
@@ -82,6 +93,16 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             log.debug("GraphQLError missing extensions and errorType \(graphQLError)")
             finish(result: .success(nil))
         }
+    }
+
+    private func isAuthServiceError(apiError: APIError) -> Bool {
+        if case let .operationError(_, _, underlyingError) = apiError,
+            let authError = underlyingError as? AuthError,
+            case .service = authError {
+            return true
+        }
+
+        return false
     }
 
     private func processConflictUnhandled(_ extensions: [String: JSONValue]) {
