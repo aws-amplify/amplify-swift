@@ -36,10 +36,10 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     ///    - APIError is .notAuthenticated
     /// - Then:
     ///    - `DataStoreErrorHandler` is called
-    func testProcessMutationErrorFromCloudOperationSuccessForNotAuthenticatedAPIError() throws {
+    func testProcessMutationErrorFromCloudOperationSuccessForAuthServiceAPIError() throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: Date())
         let mutationEvent = try MutationEvent(model: localPost, mutationType: .update)
-        let authError = AuthError.notAuthenticated("User is not authenticated", "Authenticate user", nil)
+        let authError = AuthError.service("User is not authenticated", "Authenticate user", nil)
         let apiError = APIError.operationError("not signed in", "Sign In User", authError)
         let expectCompletion = expectation(description: "Expect to complete error processing")
         let completion: (Result<MutationEvent?, Error>) -> Void = { result in
@@ -60,8 +60,8 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             guard let actualAPIError = amplifyError as? APIError,
                 case let .operationError(_, _, underlyingError) = actualAPIError,
                 let authError = underlyingError as? AuthError,
-                case .notAuthenticated = authError else {
-                    XCTFail("Should be `notAuthenticated` error")
+                case .service = authError else {
+                    XCTFail("Should be `service` error")
                     return
             }
             guard let actualMutationEvent = mutationEventOptional else {

@@ -52,7 +52,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             return
         }
 
-        if let apiError = apiError, isNotAuthenticated(apiError: apiError) {
+        if let apiError = apiError, isAuthServiceError(apiError: apiError) {
             dataStoreConfiguration.errorHandler(DataStoreError.api(apiError, mutationEvent))
             finish(result: .success(nil))
             return
@@ -95,10 +95,10 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         }
     }
 
-    private func isNotAuthenticated(apiError: APIError) -> Bool {
+    private func isAuthServiceError(apiError: APIError) -> Bool {
         if case let .operationError(_, _, underlyingError) = apiError,
             let authError = underlyingError as? AuthError,
-            case .notAuthenticated = authError {
+            case .service = authError {
             return true
         }
 
