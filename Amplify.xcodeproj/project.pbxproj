@@ -216,6 +216,7 @@
 		B4A19DAB24101EEB00DE2E55 /* AuthCategoryBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4A19DAA24101EEB00DE2E55 /* AuthCategoryBehavior.swift */; };
 		B4A19DAD24101F7100DE2E55 /* AuthSignUpOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4A19DAC24101F7100DE2E55 /* AuthSignUpOperation.swift */; };
 		B4ADE8F4241063820007E86C /* AuthCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4ADE8F3241063820007E86C /* AuthCategory.swift */; };
+		B4B1E0E524733687007F3261 /* AuthEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B1E0E424733687007F3261 /* AuthEventName.swift */; };
 		B4B5CC812457B0690019C783 /* AuthFetchUserAttributesRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B5CC802457B0690019C783 /* AuthFetchUserAttributesRequest.swift */; };
 		B4B5CC872457B2470019C783 /* AuthUpdateUserAttributeRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B5CC862457B2470019C783 /* AuthUpdateUserAttributeRequest.swift */; };
 		B4B5CC8B2457B32D0019C783 /* AuthConfirmUserAttributeRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B5CC8A2457B32D0019C783 /* AuthConfirmUserAttributeRequest.swift */; };
@@ -919,6 +920,7 @@
 		B4A19DAA24101EEB00DE2E55 /* AuthCategoryBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCategoryBehavior.swift; sourceTree = "<group>"; };
 		B4A19DAC24101F7100DE2E55 /* AuthSignUpOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignUpOperation.swift; sourceTree = "<group>"; };
 		B4ADE8F3241063820007E86C /* AuthCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCategory.swift; sourceTree = "<group>"; };
+		B4B1E0E424733687007F3261 /* AuthEventName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthEventName.swift; sourceTree = "<group>"; };
 		B4B5CC802457B0690019C783 /* AuthFetchUserAttributesRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFetchUserAttributesRequest.swift; sourceTree = "<group>"; };
 		B4B5CC862457B2470019C783 /* AuthUpdateUserAttributeRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUpdateUserAttributeRequest.swift; sourceTree = "<group>"; };
 		B4B5CC8A2457B32D0019C783 /* AuthConfirmUserAttributeRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmUserAttributeRequest.swift; sourceTree = "<group>"; };
@@ -1950,6 +1952,7 @@
 				B43CD857241147F900BF5A60 /* AuthUser.swift */,
 				B493E69224524E8C00D9E521 /* AuthUserAttribute.swift */,
 				B493E69024524D3200D9E521 /* DeliveryDestination.swift */,
+				B4B1E0E424733687007F3261 /* AuthEventName.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -3971,6 +3974,7 @@
 				95DAAB84237F13940028544F /* VoiceType.swift in Sources */,
 				FAA2E8C223A00D5800E420EA /* APICategory+Resettable.swift in Sources */,
 				B4FA336324105D1800E1C659 /* AuthCategoryPlugin.swift in Sources */,
+				B4B1E0E524733687007F3261 /* AuthEventName.swift in Sources */,
 				6B33896823AAACC900561E5B /* ReachabilityUpdate.swift in Sources */,
 				FAA2E8CC23A02A5400E420EA /* HubCategory+Resettable.swift in Sources */,
 				2142099823721F4400FA140C /* RESTOperationRequest.swift in Sources */,

@@ -34,10 +34,12 @@ extension AWSAuthPlugin {
             let authorizationProvider = AuthorizationProviderAdapter(awsMobileClient: awsMobileClient)
             let userService = AuthUserServiceAdapter(awsMobileClient: awsMobileClient)
             let deviceService = AuthDeviceServiceAdapter(awsMobileClient: awsMobileClient)
+            let hubEventHandler = AuthHubEventHandler()
             configure(authenticationProvider: authenticationProvider,
                       authorizationProvider: authorizationProvider,
                       userService: userService,
-                      deviceService: deviceService)
+                      deviceService: deviceService,
+                      hubEventHandler: hubEventHandler)
         } catch let authError as AuthError {
             throw authError
         } catch {
@@ -65,11 +67,13 @@ extension AWSAuthPlugin {
                    authorizationProvider: AuthorizationProviderBehavior,
                    userService: AuthUserServiceBehavior,
                    deviceService: AuthDeviceServiceBehavior,
+                   hubEventHandler: AuthHubEventBehavior,
                    queue: OperationQueue = OperationQueue()) {
         self.authenticationProvider = authenticationProvider
         self.authorizationProvider = authorizationProvider
         self.userService = userService
         self.deviceService = deviceService
+        self.hubEventHandler = hubEventHandler
         self.queue = queue
     }
 }

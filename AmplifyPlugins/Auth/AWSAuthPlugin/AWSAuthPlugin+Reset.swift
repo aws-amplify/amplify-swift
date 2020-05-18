@@ -25,6 +25,7 @@ extension AWSAuthPlugin {
         authenticationProvider = nil
         userService = nil
         deviceService = nil
+        hubEventHandler = nil
         onComplete()
     }
 }
