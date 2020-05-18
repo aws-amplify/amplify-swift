@@ -108,13 +108,6 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
             return operation
     }
 
-    func subscribe<R: Decodable>(request: GraphQLRequest<R>,
-                                 valueListener: GraphQLSubscriptionOperation<R>.InProcessListener?,
-                                 completionListener: GraphQLSubscriptionOperation<R>.ResultListener?)
-        -> GraphQLSubscriptionOperation<R> {
-        fatalError("Not implemented")
-    }
-
     // MARK: - Request-based GraphQL methods
 
     func mutate<R>(request: GraphQLRequest<R>,
@@ -162,8 +155,9 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     }
 
     func subscribe<R: Decodable>(request: GraphQLRequest<R>,
-                                 listener: GraphQLSubscriptionOperation<R>.ResultListener?) ->
-        GraphQLSubscriptionOperation<R> {
+                                 valueListener: GraphQLSubscriptionOperation<R>.InProcessListener?,
+                                 completionListener: GraphQLSubscriptionOperation<R>.ResultListener?)
+        -> GraphQLSubscriptionOperation<R> {
             notify(
                 """
                 subscribe(request:listener:) document: \(request.document); \
@@ -172,7 +166,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
             )
 
             if let responder = responders[.subscribeRequestListener] as? SubscribeRequestListenerResponder<R> {
-                if let operation = responder.callback((request, listener)) {
+                if let operation = responder.callback((request, valueListener, completionListener)) {
                     return operation
                 }
             }

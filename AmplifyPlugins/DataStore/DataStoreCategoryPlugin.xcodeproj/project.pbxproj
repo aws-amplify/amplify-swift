@@ -945,8 +945,8 @@
 			projectRoot = "";
 			targets = (
 				2149E59A238867E100873955 /* AWSDataStoreCategoryPlugin */,
-				2149E61C23886CEE00873955 /* AWSDataStoreCategoryPluginIntegrationTests */,
 				2149E5E22388692E00873955 /* AWSDataStoreCategoryPluginTests */,
+				2149E61C23886CEE00873955 /* AWSDataStoreCategoryPluginIntegrationTests */,
 				2149E60423886C7B00873955 /* HostApp */,
 			);
 		};
@@ -1180,7 +1180,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\"  --config \"${SRCROOT}/../../.swiftformat\" \"${SRCROOT}/${PRODUCT_NAME}XX\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\"  --config \"${SRCROOT}/../../.swiftformat\" \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		FA9EB2C6238894A800BAADBD /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1198,7 +1198,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}XX\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		FA9EB2C7238894B400BAADBD /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1216,7 +1216,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\"  --config \"${SRCROOT}/../../.swiftformat\" \"${SRCROOT}/${PRODUCT_NAME}XX\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\"  --config \"${SRCROOT}/../../.swiftformat\" \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		FA9EB2C8238894CB00BAADBD /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1234,7 +1234,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}XX\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

@@ -15,8 +15,10 @@ import Combine
 @testable import AWSDataStoreCategoryPlugin
 
 // swiftlint:disable type_body_length
+// swiftlint:disable type_name
 @available(iOS 13.0, *)
 class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
+    // swiftlint:enable type_name
     let defaultAsyncWaitTimeout = 10.0
     var mockAPIPlugin: MockAPICategoryPlugin!
     var storageAdapter: StorageEngineAdapter!
@@ -257,7 +259,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             expectCompletion.fulfill()
         }
 
-        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.EventListener?
+        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
         let apiMutateCalled = expectation(description: "API was called")
         mockAPIPlugin.responders[.mutateRequestListener] =
             MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
@@ -304,7 +306,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
         let updatedMetadata = MutationSyncMetadata(id: remotePost.id, deleted: true, lastChangedAt: 0, version: 3)
         let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
-        eventListener(.completed(.success(mockResponse)))
+        eventListener(.success(.success(mockResponse)))
 
         wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
@@ -335,7 +337,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
 
         let retryModel = Post(title: "retryModel", content: "retryContent", createdAt: Date())
-        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.EventListener?
+        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
         let apiMutateCalled = expectation(description: "API was called")
         mockAPIPlugin.responders[.mutateRequestListener] =
             MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
@@ -382,7 +384,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
         let updatedMetadata = MutationSyncMetadata(id: remotePost.id, deleted: false, lastChangedAt: 0, version: 3)
         let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
-        eventListener(.completed(.success(mockResponse)))
+        eventListener(.success(.success(mockResponse)))
 
         wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
@@ -631,7 +633,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             expectCompletion.fulfill()
         }
 
-        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.EventListener?
+        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
         let apiMutateCalled = expectation(description: "API was called")
         mockAPIPlugin.responders[.mutateRequestListener] =
             MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
@@ -677,7 +679,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
         let updatedMetadata = MutationSyncMetadata(id: remotePost.id, deleted: false, lastChangedAt: 0, version: 3)
         let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
-        eventListener(.completed(.success(mockResponse)))
+        eventListener(.success(.success(mockResponse)))
         wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
@@ -707,7 +709,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
 
         let retryModel = Post(title: "retryModel", content: "retryContent", createdAt: Date())
-        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.EventListener?
+        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
         let apiMutateCalled = expectation(description: "API was called")
         mockAPIPlugin.responders[.mutateRequestListener] =
             MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
@@ -753,7 +755,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
         let updatedMetadata = MutationSyncMetadata(id: remotePost.id, deleted: false, lastChangedAt: 0, version: 3)
         let mockResponse = MutationSync(model: try localPost.eraseToAnyModel(), syncMetadata: updatedMetadata)
-        eventListener(.completed(.success(mockResponse)))
+        eventListener(.success(.success(mockResponse)))
         wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
@@ -783,7 +785,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             expectCompletion.fulfill()
         }
 
-        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.EventListener?
+        var eventListenerOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
         let apiMutateCalled = expectation(description: "API was called")
         mockAPIPlugin.responders[.mutateRequestListener] =
             MutateRequestListenerResponder<MutationSync<AnyModel>> { request, eventListener in
@@ -832,7 +834,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
 
         let error = GraphQLError(message: "some other error")
-        eventListener(.completed(.failure(.error([error]))))
+        eventListener(.success(.failure(.error([error]))))
 
         wait(for: [expectErrorHandlerCalled], timeout: defaultAsyncWaitTimeout)
         wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
