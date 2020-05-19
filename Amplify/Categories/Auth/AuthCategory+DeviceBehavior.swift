@@ -16,13 +16,13 @@ extension AuthCategory: AuthCategoryDeviceBehavior {
                                    listener: listener)
     }
 
-    public func forget(
-        device: AuthDevice? = nil,
+    public func forgetDevice(
+        _ device: AuthDevice? = nil,
         options: AuthForgetDeviceOperation.Request.Options? = nil,
         listener: AuthForgetDeviceOperation.ResultListener?) -> AuthForgetDeviceOperation {
-        return plugin.forget(device: device,
-                             options: options,
-                             listener: listener)
+        return plugin.forgetDevice(device,
+                                   options: options,
+                                   listener: listener)
     }
 
     public func rememberDevice(

@@ -19,21 +19,21 @@ extension AuthCategory: AuthCategoryBehavior {
                              listener: listener)
     }
 
-    public func confirmSignUp(username: String,
+    public func confirmSignUp(for username: String,
                               confirmationCode: String,
                               options: AuthConfirmSignUpOperation.Request.Options? = nil,
                               listener: AuthConfirmSignUpOperation.ResultListener?) -> AuthConfirmSignUpOperation {
-        return plugin.confirmSignUp(username: username,
+        return plugin.confirmSignUp(for: username,
                                     confirmationCode: confirmationCode,
                                     options: options,
                                     listener: listener)
     }
 
-    public func resendSignUpCode(username: String,
+    public func resendSignUpCode(for username: String,
                                  options: AuthResendSignUpCodeOperation.Request.Options? = nil,
                                  listener: AuthResendSignUpCodeOperation.ResultListener?)
         -> AuthResendSignUpCodeOperation {
-            return plugin.resendSignUpCode(username: username,
+            return plugin.resendSignUpCode(for: username,
                                            options: options,
                                            listener: listener)
     }
