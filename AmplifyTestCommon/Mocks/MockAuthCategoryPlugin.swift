@@ -94,9 +94,10 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-    public func fetchUserAttributes(options: AuthFetchUserAttributeOperation.Request.Options? = nil,
-                                listener: AuthFetchUserAttributeOperation.ResultListener?)
-        -> AuthFetchUserAttributeOperation {
+    public func fetchUserAttributes(
+        options: AuthFetchUserAttributeOperation.Request.Options? = nil,
+        listener: AuthFetchUserAttributeOperation.ResultListener?
+    ) -> AuthFetchUserAttributeOperation {
             fatalError()
     }
 

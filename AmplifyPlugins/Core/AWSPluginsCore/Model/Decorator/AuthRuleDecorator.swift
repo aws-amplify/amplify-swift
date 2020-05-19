@@ -94,7 +94,8 @@ public struct AuthRuleDecorator: ModelBasedGraphQLDocumentDecorator {
     }
 
     /// First finds the first `model` SelectionSet. Then, only append it when the `ownerField` does not exist.
-    private func appendOwnerFieldToSelectionSetIfNeeded(selectionSet: SelectionSet, ownerField: String) -> SelectionSet {
+    private func appendOwnerFieldToSelectionSetIfNeeded(selectionSet: SelectionSet,
+                                                        ownerField: String) -> SelectionSet {
         var selectionSetModel = selectionSet
         while selectionSetModel.value.fieldType != .model {
             selectionSetModel.children.forEach { selectionSet in
