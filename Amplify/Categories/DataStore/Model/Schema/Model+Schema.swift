@@ -46,11 +46,11 @@ extension Model {
     }
 
     public static func rule(allow: AuthStrategy,
-                            ownerField: CodingKey? = nil,
+                            ownerField: String? = nil,
                             identityClaim: String? = nil,
                             groupClaim: String? = nil,
                             groups: [String] = [],
-                            groupsField: CodingKey? = nil,
+                            groupsField: String? = nil,
                             operations: [ModelOperation] = []) -> AuthRule {
         return AuthRule(allow: allow,
                         ownerField: ownerField,
