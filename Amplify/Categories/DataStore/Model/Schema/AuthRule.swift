@@ -28,6 +28,7 @@ public struct AuthRule {
     public let identityClaim: String?
     public let groupClaim: String?
     public let groups: [String]
+    public let groupsField: CodingKey?
     public let operations: [ModelOperation]
 
     public init(allow: AuthStrategy,
@@ -36,6 +37,7 @@ public struct AuthRule {
                 identityClaim: String? = nil,
                 groupClaim: String? = nil,
                 groups: [String] = [],
+                groupsField: CodingKey? = nil,
                 operations: [ModelOperation] = []) {
         self.allow = allow
         self.field = field
@@ -43,6 +45,7 @@ public struct AuthRule {
         self.identityClaim = identityClaim
         self.groupClaim = groupClaim
         self.groups = groups
+        self.groupsField = groupsField
         self.operations = operations
     }
 }

@@ -51,6 +51,7 @@ extension Model {
                             identityClaim: String? = nil,
                             groupClaim: String? = nil,
                             groups: [String] = [],
+                            groupsField: CodingKey? = nil,
                             operations: [ModelOperation] = []) -> AuthRule {
         return AuthRule(allow: allow,
                         field: field,
@@ -58,6 +59,7 @@ extension Model {
                         identityClaim: identityClaim,
                         groupClaim: groupClaim,
                         groups: groups,
+                        groupsField: groupsField,
                         operations: operations)
     }
 }
