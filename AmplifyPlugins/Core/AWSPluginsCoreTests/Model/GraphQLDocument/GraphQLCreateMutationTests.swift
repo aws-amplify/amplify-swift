@@ -68,9 +68,6 @@ class GraphQLCreateMutationTests: XCTestCase {
             XCTFail("The document variables property doesn't contain a valid input")
             return
         }
-        print("=====================")
-        print(input)
-        print("=====================")
         XCTAssertEqual(input["title"] as? String, post.title)
         XCTAssertEqual(input["content"] as? String, post.content)
         XCTAssertEqual(input["status"] as? String, PostStatus.private.rawValue)
