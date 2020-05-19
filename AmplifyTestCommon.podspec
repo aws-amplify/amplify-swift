@@ -23,9 +23,10 @@ Pod::Spec.new do |spec|
 
   spec.source_files = 'AmplifyTestCommon/**/*.swift'
   spec.dependency 'Amplify', '0.11.0'
-
+  
   spec.subspec 'AWSPluginsTestCommon' do |subspec|
     subspec.source_files = 'AmplifyPlugins/Core/AWSPluginsTestCommon/**/*.swift'
-    spec.dependency 'AWSPluginsCore', '0.11.0'
+    subspec.dependency 'AWSPluginsCore', '0.11.0'
+    subspec.dependency 'AWSCore'
   end
 end

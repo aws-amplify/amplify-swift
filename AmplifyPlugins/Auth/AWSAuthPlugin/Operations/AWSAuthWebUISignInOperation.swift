@@ -8,23 +8,23 @@
 import Foundation
 import Amplify
 
-public class AWSAuthWebUISignInOperation: AmplifyOperation<AuthWebUISignInRequest,
-    Void,
+public class AWSAuthWebUISignInOperation: AmplifyOperation<
+    AuthWebUISignInRequest,
     AuthSignInResult,
-    AuthError>,
-AuthWebUISignInOperation {
+    AuthError
+>, AuthWebUISignInOperation {
 
     let authenticationProvider: AuthenticationProviderBehavior
 
     init(_ request: AuthWebUISignInRequest,
          authenticationProvider: AuthenticationProviderBehavior,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
 
         self.authenticationProvider = authenticationProvider
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.webUISignIn,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
@@ -50,12 +50,12 @@ AuthWebUISignInOperation {
     }
 
     private func dispatch(_ result: AuthSignInResult) {
-        let asyncEvent = AsyncEvent<Void, AuthSignInResult, AuthError>.completed(result)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.success(result)
+        dispatch(result: result)
     }
 
     private func dispatch(_ error: AuthError) {
-        let asyncEvent = AsyncEvent<Void, AuthSignInResult, AuthError>.failed(error)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.failure(error)
+        dispatch(result: result)
     }
 }

@@ -5,24 +5,21 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-import AWSMobileClient
 import Amplify
+import AWSMobileClient
 import AWSPluginsCore
+import Foundation
 
 @testable import AWSPinpointAnalyticsPlugin
 
 // This should be moved over to common test package https://github.com/aws-amplify/amplify-ios/issues/21
 public class MockAWSAuthService: AWSAuthServiceBehavior {
-
     var getIdentityIdError: AuthError?
     var identityId: String?
 
-    public func configure() {
-    }
+    public func configure() {}
 
-    public func reset() {
-    }
+    public func reset() {}
 
     public func getCredentialsProvider() -> AWSCredentialsProvider {
         let cognitoCredentialsProvider = AWSCognitoCredentialsProvider()
@@ -38,6 +35,6 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
     }
 
     public func getToken() -> Result<String, AuthError> {
-        return .success("")
+        .success("")
     }
 }

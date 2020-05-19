@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol StorageGetURLOperation: AmplifyOperation<StorageGetURLRequest, Void, URL, StorageError> {}
+public protocol StorageGetURLOperation: AmplifyOperation<StorageGetURLRequest, URL, StorageError> {}
 
 public extension HubPayload.EventName.Storage {
     /// eventName for HubPayloads emitted by this operation

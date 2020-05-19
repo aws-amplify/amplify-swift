@@ -51,6 +51,7 @@ class GraphQLSyncQueryTests: XCTestCase {
               createdAt
               draft
               rating
+              status
               title
               updatedAt
               __typename
@@ -98,6 +99,7 @@ class GraphQLSyncQueryTests: XCTestCase {
                 createdAt
                 draft
                 rating
+                status
                 title
                 updatedAt
                 __typename

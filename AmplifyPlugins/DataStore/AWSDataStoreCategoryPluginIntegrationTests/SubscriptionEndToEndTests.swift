@@ -114,19 +114,17 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
                                      responseType: Post.self,
                                      decodePath: "createPost")
 
-        _ = Amplify.API.mutate(request: request) { asyncEvent in
-            switch asyncEvent {
-            case .completed(let result):
-                switch result {
-                case .failure(let errors):
-                    XCTFail(String(describing: errors))
+        _ = Amplify.API.mutate(request: request) { result in
+            switch result {
+            case .success(let graphQLResult):
+                switch graphQLResult {
                 case .success(let post):
                     XCTAssertNotNil(post)
+                case .failure(let errors):
+                    XCTFail(String(describing: errors))
                 }
-            case .failed(let apiError):
-                XCTFail(String(describing: apiError))
-            default:
-                break
+            case .failure(let error):
+                XCTFail(String(describing: error))
             }
         }
     }
@@ -152,19 +150,17 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
                                      responseType: Post.self,
                                      decodePath: "updatePost")
 
-        _ = Amplify.API.mutate(request: request) { asyncEvent in
-            switch asyncEvent {
-            case .completed(let result):
-                switch result {
-                case .failure(let errors):
-                    XCTFail(String(describing: errors))
+        _ = Amplify.API.mutate(request: request) { result in
+            switch result {
+            case .success(let graphQLResult):
+                switch graphQLResult {
                 case .success(let post):
                     XCTAssertNotNil(post)
+                case .failure(let errors):
+                    XCTFail(String(describing: errors))
                 }
-            case .failed(let apiError):
-                XCTFail(String(describing: apiError))
-            default:
-                break
+            case .failure(let error):
+                XCTFail(String(describing: error))
             }
         }
     }
@@ -189,19 +185,17 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
                                      responseType: Post.self,
                                      decodePath: "deletePost")
 
-        _ = Amplify.API.mutate(request: request) { asyncEvent in
-            switch asyncEvent {
-            case .completed(let result):
-                switch result {
-                case .failure(let errors):
-                    XCTFail(String(describing: errors))
+        _ = Amplify.API.mutate(request: request) { result in
+            switch result {
+            case .success(let graphQLResult):
+                switch graphQLResult {
                 case .success(let post):
                     XCTAssertNotNil(post)
+                case .failure(let errors):
+                    XCTFail(String(describing: errors))
                 }
-            case .failed(let apiError):
-                XCTFail(String(describing: apiError))
-            default:
-                break
+            case .failure(let error):
+                XCTFail(String(describing: error))
             }
         }
     }

@@ -130,7 +130,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             enqueueEvent.fulfill()
         }
         let mutateAPICallExpecation = expectation(description: "Call to api category for mutate")
-        var listenerFromRequest: GraphQLOperation<MutationSync<AnyModel>>.EventListener!
+        var listenerFromRequest: GraphQLOperation<MutationSync<AnyModel>>.ResultListener!
         let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { _, eventListener in
             mutateAPICallExpecation.fulfill()
             listenerFromRequest = eventListener
@@ -180,7 +180,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
                                                       lastChangedAt: Date().unixSeconds,
                                                       version: 2)
         let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
-        listenerFromRequest(.completed(.success(remoteMutationSync)))
+        listenerFromRequest(.success(.success(remoteMutationSync)))
 
         wait(for: [processEvent], timeout: 1)
     }

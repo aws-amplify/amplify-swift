@@ -12,8 +12,12 @@ import AWSS3
 
 // TODO: thread safety: everything has to be locked down
 // TODO verify no retain cycle
-public class AWSS3StorageDownloadFileOperation: AmplifyOperation<StorageDownloadFileRequest, Progress,
-Void, StorageError>, StorageDownloadFileOperation {
+public class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
+    StorageDownloadFileRequest,
+    Progress,
+    Void,
+    StorageError
+>, StorageDownloadFileOperation {
 
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
@@ -26,14 +30,16 @@ Void, StorageError>, StorageDownloadFileOperation {
     init(_ request: StorageDownloadFileRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         listener: EventListener?) {
+         progressListener: InProcessListener?,
+         resultListener: ResultListener?) {
 
         self.storageService = storageService
         self.authService = authService
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.downloadFile,
                    request: request,
-                   listener: listener)
+                   inProcessListener: progressListener,
+                   resultListener: resultListener)
     }
 
     override public func pause() {
@@ -116,17 +122,16 @@ Void, StorageError>, StorageDownloadFileOperation {
     }
 
     private func dispatch(_ progress: Progress) {
-        let asyncEvent = AsyncEvent<Progress, Void, StorageError>.inProcess(progress)
-        dispatch(event: asyncEvent)
+        dispatchInProcess(data: progress)
     }
 
     private func dispatch() {
-        let asyncEvent = AsyncEvent<Progress, Void, StorageError>.completed(())
-        dispatch(event: asyncEvent)
+        let result = OperationResult.successfulVoid
+        dispatch(result: result)
     }
 
     private func dispatch(_ error: StorageError) {
-        let asyncEvent = AsyncEvent<Progress, Void, StorageError>.failed(error)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.failure(error)
+        dispatch(result: result)
     }
 }

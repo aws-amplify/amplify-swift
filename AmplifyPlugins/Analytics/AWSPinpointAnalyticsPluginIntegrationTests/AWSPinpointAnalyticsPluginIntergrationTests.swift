@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 @testable import Amplify
-@testable import AWSPinpointAnalyticsPlugin
 import AWSMobileClient
 import AWSPinpoint
+@testable import AWSPinpointAnalyticsPlugin
+import XCTest
 
+// swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
-
     /*
      Set up
      `amplify init`
@@ -117,8 +117,8 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                     "autoFlushEventsInterval": 10,
                     "trackAppSessions": true,
                     "autoSessionTrackingInterval": 2
-            ]
-        ])
+                ]
+            ])
 
         let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig)
 
@@ -143,7 +143,6 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             print(payload)
             if payload.eventName == HubPayload.EventName.Analytics.identifyUser {
-
                 guard let data = payload.data as? (String, AnalyticsUserProfile?) else {
                     XCTFail("Missing data")
                     return
@@ -166,10 +165,10 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                           "userPropertyDoubleKey": 12.34,
                           "userPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
         let userProfile = AnalyticsUserProfile(name: "name",
-                                                email: "email",
-                                                plan: "plan",
-                                                location: location,
-                                                properties: properties)
+                                               email: "email",
+                                               plan: "plan",
+                                               location: location,
+                                               properties: properties)
         Amplify.Analytics.identifyUser(userId, withProfile: userProfile)
 
         wait(for: [identifyUserEvent], timeout: 20)

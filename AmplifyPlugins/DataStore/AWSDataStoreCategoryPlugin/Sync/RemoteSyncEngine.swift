@@ -72,10 +72,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             AWSIncomingEventReconciliationQueue.init(modelTypes:api:storageAdapter:modelReconciliationQueueFactory:)
         let initialSyncOrchestratorFactory = initialSyncOrchestratorFactory ??
             AWSInitialSyncOrchestrator.init(dataStoreConfiguration:api:reconciliationQueue:storageAdapter:)
+        let resolver = RemoteSyncEngine.Resolver.resolve(currentState:action:)
         let stateMachine = stateMachine ?? StateMachine(initialState: .notStarted,
-                                                        resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
+                                                        resolver: resolver)
         let requestRetryablePolicy = requestRetryablePolicy ?? RequestRetryablePolicy()
-
 
         self.init(storageAdapter: storageAdapter,
                   dataStoreConfiguration: dataStoreConfiguration,
@@ -130,6 +130,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         }
     }
 
+    // swiftlint:disable cyclomatic_complexity
     /// Listens to incoming state changes and invokes the appropriate asynchronous methods in response.
     private func respond(to newState: State) {
         log.verbose("\(#function): \(newState)")
@@ -171,6 +172,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             terminate()
         }
     }
+    // swiftlint:enable cyclomatic_complexity
 
     func start(api: APICategoryGraphQLBehavior = Amplify.API) {
         guard storageAdapter != nil else {

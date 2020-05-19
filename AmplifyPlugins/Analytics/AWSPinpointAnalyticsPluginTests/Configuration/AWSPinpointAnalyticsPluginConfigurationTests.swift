@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
+import XCTest
 
 @testable import AWSPinpointAnalyticsPlugin
 
+// swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
-
     let testAppId = "testAppId"
     let appId: JSONValue = "testAppId"
     let testRegion = "us-east-1"
@@ -22,18 +22,20 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
     let trackAppSession: JSONValue = false
     let testAutoSessionTrackingInterval = 100
     let autoSessionTrackingInterval: JSONValue = 100
-    let pinpointAnalyticsPluginConfiguration = JSONValue.init(
+    let pinpointAnalyticsPluginConfiguration = JSONValue(
         dictionaryLiteral:
         (AWSPinpointAnalyticsPluginConfiguration.appIdConfigKey, "testAppId"),
-        (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, "us-east-1"))
-    let regionConfiguration = JSONValue.init(dictionaryLiteral:
+        (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, "us-east-1")
+    )
+    let regionConfiguration = JSONValue(dictionaryLiteral:
         (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, "us-east-1"))
 
     func testConfigureSuccess() throws {
-        let analyticsPluginConfig = JSONValue.init(
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
-            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
+            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration)
+        )
 
         do {
             let config = try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)
@@ -52,15 +54,16 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
         }
     }
 
-     func testConfigureWithAutoFlushEventsIntervalSuccess() {
-         let analyticsPluginConfig = JSONValue.init(
-             dictionaryLiteral:
-             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
-             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration),
-             (AWSPinpointAnalyticsPluginConfiguration.autoFlushEventsIntervalKey, autoFlushInterval))
+    func testConfigureWithAutoFlushEventsIntervalSuccess() {
+        let analyticsPluginConfig = JSONValue(
+            dictionaryLiteral:
+            (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
+            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration),
+            (AWSPinpointAnalyticsPluginConfiguration.autoFlushEventsIntervalKey, autoFlushInterval)
+        )
 
-         do {
-             let config = try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)
+        do {
+            let config = try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)
             XCTAssertNotNil(config)
             XCTAssertEqual(config.appId, testAppId)
             XCTAssertEqual(config.region, testRegion.aws_regionTypeValue())
@@ -70,18 +73,19 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
                            AWSPinpointAnalyticsPluginConfiguration.defaultTrackAppSession)
             XCTAssertEqual(config.autoSessionTrackingInterval,
                            AWSPinpointAnalyticsPluginConfiguration.defaultAutoSessionTrackingInterval)
-         } catch {
+        } catch {
             XCTFail("Failed to instantiate analytics plugin configuration")
-         }
-     }
+        }
+    }
 
-     func testConfigureThrowsErrorForInvalidAutoFlushEventsIntervalValue() {
-        let autoFlushInterval = JSONValue.init(integerLiteral: -100)
-        let analyticsPluginConfig = JSONValue.init(
+    func testConfigureThrowsErrorForInvalidAutoFlushEventsIntervalValue() {
+        let autoFlushInterval = JSONValue(integerLiteral: -100)
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration),
-            (AWSPinpointAnalyticsPluginConfiguration.autoFlushEventsIntervalKey, autoFlushInterval))
+            (AWSPinpointAnalyticsPluginConfiguration.autoFlushEventsIntervalKey, autoFlushInterval)
+        )
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
@@ -94,11 +98,12 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
     }
 
     func testConfigureWithTrackAppSessionSuccess() {
-        let analyticsPluginConfig = JSONValue.init(
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration),
-            (AWSPinpointAnalyticsPluginConfiguration.trackAppSessionsKey, trackAppSession))
+            (AWSPinpointAnalyticsPluginConfiguration.trackAppSessionsKey, trackAppSession)
+        )
 
         do {
             let config = try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)
@@ -114,14 +119,15 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
         } catch {
             XCTFail("Failed to instantiate analytics plugin configuration")
         }
-     }
+    }
 
     func testConfigureWithAutoSessionTrackingIntervalSuccess() {
-        let analyticsPluginConfig = JSONValue.init(
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration),
-            (AWSPinpointAnalyticsPluginConfiguration.autoSessionTrackingIntervalKey, autoSessionTrackingInterval))
+            (AWSPinpointAnalyticsPluginConfiguration.autoSessionTrackingIntervalKey, autoSessionTrackingInterval)
+        )
 
         do {
             let config = try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)
@@ -136,15 +142,16 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
         } catch {
             XCTFail("Failed to instantiate analytics plugin configuration")
         }
-     }
+    }
 
     func testConfigureThrowsErrorForInvalidAutoSessionTrackingValue() {
-        let autoSessionTrackingInterval = JSONValue.init(integerLiteral: -100)
-        let analyticsPluginConfig = JSONValue.init(
+        let autoSessionTrackingInterval = JSONValue(integerLiteral: -100)
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration),
-            (AWSPinpointAnalyticsPluginConfiguration.autoSessionTrackingIntervalKey, autoSessionTrackingInterval))
+            (AWSPinpointAnalyticsPluginConfiguration.autoSessionTrackingIntervalKey, autoSessionTrackingInterval)
+        )
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
@@ -156,8 +163,8 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
         }
     }
 
-     func testConfigureThrowsErrorForMissingConfigurationObject() {
-        let analyticsPluginConfig = JSONValue.init(stringLiteral: "notADictionaryLiteral")
+    func testConfigureThrowsErrorForMissingConfigurationObject() {
+        let analyticsPluginConfig = JSONValue(stringLiteral: "notADictionaryLiteral")
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
@@ -167,10 +174,10 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             XCTAssertEqual(errorDescription,
                            AnalyticsPluginErrorConstant.configurationObjectExpected.errorDescription)
         }
-     }
+    }
 
-     func testConfigureThrowsErrorForMissingPinpointAnalyticsConfiguration() {
-        let analyticsPluginConfig = JSONValue.init(
+    func testConfigureThrowsErrorForMissingPinpointAnalyticsConfiguration() {
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
 
@@ -182,14 +189,15 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             XCTAssertEqual(errorDescription,
                            AnalyticsPluginErrorConstant.missingPinpointAnalyicsConfiguration.errorDescription)
         }
-     }
+    }
 
-     func testConfigureThrowsErrorForMissingPinpointAnalyticsConfigurationObject() {
-        let pinpointAnalyticsPluginConfiguration = JSONValue.init(stringLiteral: "notDictionary")
-        let analyticsPluginConfig = JSONValue.init(
+    func testConfigureThrowsErrorForMissingPinpointAnalyticsConfigurationObject() {
+        let pinpointAnalyticsPluginConfiguration = JSONValue(stringLiteral: "notDictionary")
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
-            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
+            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration)
+        )
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
@@ -199,16 +207,17 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             XCTAssertEqual(errorDescription,
                            AnalyticsPluginErrorConstant.pinpointAnalyticsConfigurationExpected.errorDescription)
         }
-     }
+    }
 
-     func testConfigureThrowsErrorForMissingPinpointAnalyticsAppId() {
-        let pinpointAnalyticsPluginConfiguration = JSONValue.init(
+    func testConfigureThrowsErrorForMissingPinpointAnalyticsAppId() {
+        let pinpointAnalyticsPluginConfiguration = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, region))
-        let analyticsPluginConfig = JSONValue.init(
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
-            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
+            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration)
+        )
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
@@ -217,17 +226,19 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             }
             XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.missingAppId.errorDescription)
         }
-     }
+    }
 
-     func testConfigureThrowsErrorForEmptyPinpointAnalyticsAppIdValue() {
-        let pinpointAnalyticsPluginConfiguration = JSONValue.init(
+    func testConfigureThrowsErrorForEmptyPinpointAnalyticsAppIdValue() {
+        let pinpointAnalyticsPluginConfiguration = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.appIdConfigKey, ""),
-            (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, region))
-        let analyticsPluginConfig = JSONValue.init(
+            (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, region)
+        )
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
-            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
+            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration)
+        )
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
@@ -236,17 +247,19 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             }
             XCTAssertEqual(errorDescription, AnalyticsPluginErrorConstant.emptyAppId.errorDescription)
         }
-     }
+    }
 
     func testConfigureThrowsErrorForInvalidPinpointAnalyticsAppIdValue() {
-        let pinpointAnalyticsPluginConfiguration = JSONValue.init(
+        let pinpointAnalyticsPluginConfiguration = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.appIdConfigKey, 1),
-            (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, region))
-        let analyticsPluginConfig = JSONValue.init(
+            (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, region)
+        )
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
-            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
+            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration)
+        )
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
@@ -258,13 +271,14 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
     }
 
     func testConfigureThrowsErrorForMissingPinpointAnalyticsRegion() {
-        let pinpointAnalyticsPluginConfiguration = JSONValue.init(
+        let pinpointAnalyticsPluginConfiguration = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.appIdConfigKey, appId))
-        let analyticsPluginConfig = JSONValue.init(
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
-            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
+            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration)
+        )
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
@@ -276,14 +290,16 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
     }
 
     func testConfigureThrowsErrorForEmptyPinpointAnalyticsRegionValue() {
-        let pinpointAnalyticsPluginConfiguration = JSONValue.init(
+        let pinpointAnalyticsPluginConfiguration = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.appIdConfigKey, appId),
-            (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, ""))
-        let analyticsPluginConfig = JSONValue.init(
+            (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, "")
+        )
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
-            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
+            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration)
+        )
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
@@ -295,14 +311,16 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
     }
 
     func testConfigureThrowsErrorForInvalidPinpointAnalyticsRegionValue() {
-        let pinpointAnalyticsPluginConfiguration = JSONValue.init(
+        let pinpointAnalyticsPluginConfiguration = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.appIdConfigKey, appId),
-            (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, "invalidRegion"))
-        let analyticsPluginConfig = JSONValue.init(
+            (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, "invalidRegion")
+        )
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
-            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
+            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration)
+        )
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
@@ -314,7 +332,7 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
     }
 
     func testConfigureThrowsErrorForMissingPinpointTargetingConfiguration() {
-        let analyticsPluginConfig = JSONValue.init(
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration))
 
@@ -326,15 +344,15 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
             XCTAssertEqual(errorDescription,
                            AnalyticsPluginErrorConstant.missingPinpointTargetingConfiguration.errorDescription)
         }
-
     }
 
     func testConfigureThrowsErrorForMissingPinpointTargetingConfigurationObject() {
-        let regionConfiguration = JSONValue.init(stringLiteral: "notDictionary")
-        let analyticsPluginConfig = JSONValue.init(
+        let regionConfiguration = JSONValue(stringLiteral: "notDictionary")
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
-            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
+            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration)
+        )
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
@@ -347,12 +365,13 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
     }
 
     func testConfigureThrowsErrorForMissingPinpointTargetingRegion() {
-        let regionConfiguration = JSONValue.init(dictionaryLiteral:
+        let regionConfiguration = JSONValue(dictionaryLiteral:
             ("MissingRegionKey", region))
-        let analyticsPluginConfig = JSONValue.init(
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
-            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
+            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration)
+        )
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
@@ -364,12 +383,13 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
     }
 
     func testConfigureThrowsErrorForEmptyPinpointTargetingRegionValue() {
-        let regionConfiguration = JSONValue.init(dictionaryLiteral:
+        let regionConfiguration = JSONValue(dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, ""))
-        let analyticsPluginConfig = JSONValue.init(
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
-            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
+            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration)
+        )
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {
@@ -381,12 +401,13 @@ class AWSPinpointAnalyticsPluginConfigurationTests: XCTestCase {
     }
 
     func testConfigureThrowsErrorForInvalidPinpointTargetingRegionValue() {
-        let regionConfiguration = JSONValue.init(dictionaryLiteral:
+        let regionConfiguration = JSONValue(dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.regionConfigKey, "invalidRegion"))
-        let analyticsPluginConfig = JSONValue.init(
+        let analyticsPluginConfig = JSONValue(
             dictionaryLiteral:
             (AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey, pinpointAnalyticsPluginConfiguration),
-            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration))
+            (AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey, regionConfiguration)
+        )
 
         XCTAssertThrowsError(try AWSPinpointAnalyticsPluginConfiguration(analyticsPluginConfig)) { error in
             guard case let PluginError.pluginConfigurationError(errorDescription, _, _) = error else {

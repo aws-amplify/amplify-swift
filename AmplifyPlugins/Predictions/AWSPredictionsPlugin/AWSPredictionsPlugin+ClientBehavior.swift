@@ -14,7 +14,7 @@ extension AWSPredictionsPlugin {
                         language: LanguageType?,
                         targetLanguage: LanguageType?,
                         options: PredictionsTranslateTextRequest.Options?,
-                        listener: PredictionsTranslateTextOperation.EventListener? = nil)
+                        listener: PredictionsTranslateTextOperation.ResultListener? = nil)
         -> PredictionsTranslateTextOperation {
 
             let request = PredictionsTranslateTextRequest(textToTranslate: textToTranslate,
@@ -23,14 +23,14 @@ extension AWSPredictionsPlugin {
                                                           options: options ?? PredictionsTranslateTextRequest.Options())
             let convertOperation = AWSTranslateOperation(request,
                                                          predictionsService: predictionsService,
-                                                         listener: listener)
+                                                         resultListener: listener)
             queue.addOperation(convertOperation)
             return convertOperation
     }
 
     public func convert(textToSpeech: String,
                         options: PredictionsTextToSpeechRequest.Options?,
-                        listener: PredictionsTextToSpeechOperation.EventListener? = nil)
+                        listener: PredictionsTextToSpeechOperation.ResultListener? = nil)
         -> PredictionsTextToSpeechOperation {
             let request = PredictionsTextToSpeechRequest(
                 textToSpeech: textToSpeech,
@@ -39,16 +39,18 @@ extension AWSPredictionsPlugin {
             let convertOperation = AWSPollyOperation(request,
                                                      predictionsService: predictionsService,
                                                      authService: authService,
-                                                     listener: listener)
+                                                     resultListener: listener)
 
             queue.addOperation(convertOperation)
             return convertOperation
 
     }
 
-    public func convert(speechToText: URL,
-                        options: PredictionsSpeechToTextRequest.Options?,
-                        listener: PredictionsSpeechToTextOperation.EventListener?) -> PredictionsSpeechToTextOperation {
+    public func convert(
+        speechToText: URL,
+        options: PredictionsSpeechToTextRequest.Options?,
+        listener: PredictionsSpeechToTextOperation.ResultListener?
+    ) -> PredictionsSpeechToTextOperation {
         let request = PredictionsSpeechToTextRequest(speechToText: speechToText,
                                                      options: options ?? PredictionsSpeechToTextRequest.Options())
 
@@ -60,7 +62,7 @@ extension AWSPredictionsPlugin {
         let operation = AWSTranscribeOperation(request: request,
                                                multiService: multiService,
                                                requestInProcess: requestInProcess,
-                                               listener: listener)
+                                               resultListener: listener)
         queue.addOperation(operation)
         return operation
 
@@ -69,7 +71,7 @@ extension AWSPredictionsPlugin {
     public func identify(type: IdentifyAction,
                          image: URL,
                          options: PredictionsIdentifyRequest.Options?,
-                         listener: PredictionsIdentifyOperation.EventListener? = nil) -> PredictionsIdentifyOperation {
+                         listener: PredictionsIdentifyOperation.ResultListener? = nil) -> PredictionsIdentifyOperation {
         let options = options
 
         let request = PredictionsIdentifyRequest(image: image,
@@ -79,7 +81,7 @@ extension AWSPredictionsPlugin {
                                                 predictionsService: predictionsService)
         let operation = IdentifyOperation(request: request,
                                           multiService: multiService,
-                                          listener: listener)
+                                          resultListener: listener)
 
         queue.addOperation(operation)
         return operation
@@ -90,10 +92,10 @@ extension AWSPredictionsPlugin {
     ///
     /// - Parameter text: input text
     /// - Parameter options: Option for the plugin
-    /// - Parameter listener: Listener to which events are send
+    /// - Parameter resultListener: Listener to which events are send
     public func interpret(text: String,
                           options: PredictionsInterpretRequest.Options?,
-                          listener: PredictionsInterpretOperation.EventListener?) -> PredictionsInterpretOperation {
+                          listener: PredictionsInterpretOperation.ResultListener?) -> PredictionsInterpretOperation {
 
         let request = PredictionsInterpretRequest(textToInterpret: text,
                                                   options: options ?? PredictionsInterpretRequest.Options())
@@ -101,7 +103,7 @@ extension AWSPredictionsPlugin {
                                                      predictionsService: predictionsService)
         let operation = InterpretTextOperation(request,
                                                multiService: multiService,
-                                               listener: listener)
+                                               resultListener: listener)
         queue.addOperation(operation)
         return operation
     }

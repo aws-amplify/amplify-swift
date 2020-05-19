@@ -31,8 +31,8 @@ class AutoUnsubscribeOperationTests: XCTestCase {
 
     /// - Given: An Amplify operation class
     /// - When: I pass an event listener with no other options to the operation constructor
-    /// - Then: The event listener is unsubscribed when it receives a terminal event (.completed)
-    func testOperationUnsubscribesOnComplete() throws {
+    /// - Then: The event listener is unsubscribed when it receives a successful result
+    func testOperationUnsubscribesOnSuccess() throws {
         let listenerWasInvokedForInProcess = expectation(description: "listener was invoked for in process event")
         listenerWasInvokedForInProcess.isInverted = true
 
@@ -41,29 +41,30 @@ class AutoUnsubscribeOperationTests: XCTestCase {
         let listenerWasInvokedForFailed = expectation(description: "listener was invoked for failed event")
         listenerWasInvokedForFailed.isInverted = true
 
-        let amplifyOperation = Amplify.Storage.list { event in
-            switch event {
-            case .inProcess:
-                listenerWasInvokedForInProcess.fulfill()
-            case .completed:
+        let progressListener: ProgressListener = { _ in listenerWasInvokedForInProcess.fulfill() }
+
+        let amplifyOperation = Amplify.Storage.downloadData(
+            key: "foo",
+            progressListener: progressListener
+        ) { result in
+            switch result {
+            case .success:
                 listenerWasInvokedForCompleted.fulfill()
-            case .failed:
+            case .failure:
                 listenerWasInvokedForFailed.fulfill()
-            default:
-                break
             }
         }
 
-        guard let operation = amplifyOperation as? MockDispatchingStorageListOperation else {
+        guard let operation = amplifyOperation as? MockDispatchingStorageDownloadDataOperation else {
             XCTFail("Unable to cast amplifyOperation as MockDispatchingStorageListOperation")
             return
         }
 
-        operation.doMockDispatch(event: .completed(StorageListResult(items: [])))
+        operation.doMockDispatch()
         wait(for: [listenerWasInvokedForCompleted], timeout: 0.1)
 
-        operation.doMockDispatch(event: .inProcess(()))
-        operation.doMockDispatch(event: .failed(StorageError.accessDenied("", "")))
+        operation.doMockProgress()
+        operation.doMockDispatch(result: .failure(StorageError.accessDenied("", "")))
         wait(for: [listenerWasInvokedForInProcess, listenerWasInvokedForFailed], timeout: 0.1)
     }
 
@@ -79,29 +80,30 @@ class AutoUnsubscribeOperationTests: XCTestCase {
 
         let listenerWasInvokedForFailed = expectation(description: "listener was invoked for failed event")
 
-        let amplifyOperation = Amplify.Storage.list { event in
-            switch event {
-            case .inProcess:
-                listenerWasInvokedForInProcess.fulfill()
-            case .completed:
+        let progressListener: ProgressListener = { _ in listenerWasInvokedForInProcess.fulfill() }
+
+        let amplifyOperation = Amplify.Storage.downloadData(
+            key: "foo",
+            progressListener: progressListener
+        ) { result in
+            switch result {
+            case .success:
                 listenerWasInvokedForCompleted.fulfill()
-            case .failed:
+            case .failure:
                 listenerWasInvokedForFailed.fulfill()
-            default:
-                break
             }
         }
 
-        guard let operation = amplifyOperation as? MockDispatchingStorageListOperation else {
+        guard let operation = amplifyOperation as? MockDispatchingStorageDownloadDataOperation else {
             XCTFail("Unable to cast amplifyOperation as MockDispatchingStorageListOperation")
             return
         }
 
-        operation.doMockDispatch(event: .failed(StorageError.accessDenied("", "")))
+        operation.doMockDispatch(result: .failure(StorageError.accessDenied("", "")))
         wait(for: [listenerWasInvokedForFailed], timeout: 0.1)
 
-        operation.doMockDispatch(event: .inProcess(()))
-        operation.doMockDispatch(event: .completed(StorageListResult(items: [])))
+        operation.doMockProgress()
+        operation.doMockDispatch()
         wait(for: [listenerWasInvokedForInProcess, listenerWasInvokedForCompleted], timeout: 0.1)
     }
 
@@ -117,29 +119,30 @@ class AutoUnsubscribeOperationTests: XCTestCase {
         let listenerWasInvokedForFailed = expectation(description: "listener was invoked for failed event")
         listenerWasInvokedForFailed.isInverted = true
 
-        let amplifyOperation = Amplify.Storage.list { event in
-            switch event {
-            case .inProcess:
-                listenerWasInvokedForInProcess.fulfill()
-            case .completed:
+        let progressListener: ProgressListener = { _ in listenerWasInvokedForInProcess.fulfill() }
+
+        let amplifyOperation = Amplify.Storage.downloadData(
+            key: "foo",
+            progressListener: progressListener
+        ) { result in
+            switch result {
+            case .success:
                 listenerWasInvokedForCompleted.fulfill()
-            case .failed:
+            case .failure:
                 listenerWasInvokedForFailed.fulfill()
-            default:
-                break
             }
         }
 
-        guard let operation = amplifyOperation as? MockDispatchingStorageListOperation else {
+        guard let operation = amplifyOperation as? MockDispatchingStorageDownloadDataOperation else {
             XCTFail("Unable to cast amplifyOperation as MockDispatchingStorageListOperation")
             return
         }
 
-        operation.doMockDispatch(event: .inProcess(()))
-        operation.doMockDispatch(event: .completed(StorageListResult(items: [])))
+        operation.doMockProgress()
+        operation.doMockDispatch()
         wait(for: [listenerWasInvokedForInProcess, listenerWasInvokedForCompleted], timeout: 0.1)
 
-        operation.doMockDispatch(event: .failed(StorageError.accessDenied("", "")))
+        operation.doMockDispatch(result: .failure(StorageError.accessDenied("", "")))
         wait(for: [listenerWasInvokedForFailed], timeout: 0.1)
     }
 
@@ -155,29 +158,30 @@ class AutoUnsubscribeOperationTests: XCTestCase {
 
         let listenerWasInvokedForFailed = expectation(description: "listener was invoked for failed event")
 
-        let amplifyOperation = Amplify.Storage.list { event in
-            switch event {
-            case .inProcess:
-                listenerWasInvokedForInProcess.fulfill()
-            case .completed:
+        let progressListener: ProgressListener = { _ in listenerWasInvokedForInProcess.fulfill() }
+
+        let amplifyOperation = Amplify.Storage.downloadData(
+            key: "foo",
+            progressListener: progressListener
+        ) { result in
+            switch result {
+            case .success:
                 listenerWasInvokedForCompleted.fulfill()
-            case .failed:
+            case .failure:
                 listenerWasInvokedForFailed.fulfill()
-            default:
-                break
             }
         }
 
-        guard let operation = amplifyOperation as? MockDispatchingStorageListOperation else {
+        guard let operation = amplifyOperation as? MockDispatchingStorageDownloadDataOperation else {
             XCTFail("Unable to cast amplifyOperation as MockDispatchingStorageListOperation")
             return
         }
 
-        operation.doMockDispatch(event: .inProcess(()))
-        operation.doMockDispatch(event: .failed(StorageError.accessDenied("", "")))
+        operation.doMockProgress()
+        operation.doMockDispatch(result: .failure(StorageError.accessDenied("", "")))
         wait(for: [listenerWasInvokedForInProcess, listenerWasInvokedForFailed], timeout: 0.1)
 
-        operation.doMockDispatch(event: .completed(StorageListResult(items: [])))
+        operation.doMockProgress()
         wait(for: [listenerWasInvokedForCompleted], timeout: 0.1)
     }
 

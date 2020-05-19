@@ -5,13 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSPinpointAnalyticsPlugin
+import XCTest
 
 class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
-
     var analyticsPlugin: AWSPinpointAnalyticsPlugin!
     var mockPinpoint: MockAWSPinpoint!
     var authService: MockAWSAuthService!
@@ -26,7 +25,7 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
     var plugin: HubCategoryPlugin {
         guard let plugin = try? Amplify.Hub.getPlugin(for: "awsHubPlugin"),
             plugin.key == "awsHubPlugin" else {
-                fatalError("Could not access awsHubPlugin")
+            fatalError("Could not access awsHubPlugin")
         }
         return plugin
     }
@@ -38,7 +37,8 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
         authService = MockAWSAuthService()
         appSessionTracker = MockAppSessionTracker(
             trackAppSessions: AWSPinpointAnalyticsPluginConfiguration.defaultTrackAppSession,
-            autoSessionTrackingInterval: AWSPinpointAnalyticsPluginConfiguration.defaultAutoSessionTrackingInterval)
+            autoSessionTrackingInterval: AWSPinpointAnalyticsPluginConfiguration.defaultAutoSessionTrackingInterval
+        )
 
         analyticsPlugin.configure(pinpoint: mockPinpoint,
                                   authService: authService,
@@ -56,6 +56,6 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
 
     override func tearDown() {
         Amplify.reset()
-        analyticsPlugin.reset { }
+        analyticsPlugin.reset {}
     }
 }

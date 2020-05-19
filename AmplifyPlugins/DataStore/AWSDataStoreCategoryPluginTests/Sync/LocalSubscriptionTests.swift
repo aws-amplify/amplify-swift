@@ -33,18 +33,21 @@ class LocalSubscriptionTests: XCTestCase {
             let outgoingMutationQueue = NoOpMutationQueue()
             let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
             let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
-            stateMachine = MockStateMachine(initialState: .notStarted, resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
+            stateMachine = MockStateMachine(initialState: .notStarted,
+                                            resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
 
-            let syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
-                                              dataStoreConfiguration: .default,
-                                              outgoingMutationQueue: outgoingMutationQueue,
-                                              mutationEventIngester: mutationDatabaseAdapter,
-                                              mutationEventPublisher: awsMutationEventPublisher,
-                                              initialSyncOrchestratorFactory: NoOpInitialSyncOrchestrator.factory,
-                                              reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
-                                              stateMachine: stateMachine,
-                                              networkReachabilityPublisher: nil,
-                                              requestRetryablePolicy: MockRequestRetryablePolicy())
+            let syncEngine = RemoteSyncEngine(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .default,
+                outgoingMutationQueue: outgoingMutationQueue,
+                mutationEventIngester: mutationDatabaseAdapter,
+                mutationEventPublisher: awsMutationEventPublisher,
+                initialSyncOrchestratorFactory: NoOpInitialSyncOrchestrator.factory,
+                reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
+                stateMachine: stateMachine,
+                networkReachabilityPublisher: nil,
+                requestRetryablePolicy: MockRequestRetryablePolicy()
+            )
 
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           dataStoreConfiguration: .default,

@@ -8,6 +8,7 @@
 import XCTest
 import AWSPluginsCore
 import AWSAPICategoryPlugin
+import AmplifyPlugins
 import AWSMobileClient
 
 @testable import Amplify
@@ -21,7 +22,6 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     }
 
     let amplifyConfigurationFile = "GraphQLAuthDirectiveIntegrationTests-amplifyconfiguration"
-    let awsconfigurationFile = "GraphQLAuthDirectiveIntegrationTests-awsconfiguration"
     let credentialsFile = "GraphQLAuthDirectiveIntegrationTests-credentials"
     var user1: User!
     var user2: User!
@@ -40,19 +40,9 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
 
             self.user1 = User(username: user1, password: passwordUser1)
             self.user2 = User(username: user2, password: passwordUser2)
-            let awsConfiguration = try TestConfigHelper.retrieveAWSConfiguration(forResource: awsconfigurationFile)
-            AWSInfo.configureDefaultAWSInfo(awsConfiguration)
-        } catch {
-            XCTFail("Error during setup: \(error)")
-        }
-
-        do {
-            AuthHelper.initializeMobileClient()
-
-            Amplify.reset()
 
             try Amplify.add(plugin: AWSAPIPlugin())
-
+            try Amplify.add(plugin: AWSAuthPlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
             try Amplify.configure(amplifyConfig)
 
@@ -60,11 +50,14 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         } catch {
             XCTFail("Error during setup: \(error)")
         }
+        if isSignedIn() {
+            signOut()
+        }
     }
 
     override func tearDown() {
+        signOut()
         Amplify.reset()
-        AuthHelper.signOut()
     }
 
     /// Models created with:
@@ -86,7 +79,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     ///    - Others cannot update or delete the owner's model
     ///    - Owner can delete the model
     func testModelIsReadOnly() {
-        AuthHelper.signIn(username: user1.username, password: user1.password)
+        signIn(username: user1.username, password: user1.password)
         let id = UUID().uuidString
         let content = "owner created content"
         let ownerCreatedNoteResult = createNote(id, content: content)
@@ -106,8 +99,9 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
             XCTFail("Owner should be able to update own note")
             return
         }
-        AuthHelper.signOut()
-        AuthHelper.signIn(username: user2.username, password: user2.password)
+
+        signOut()
+        signIn(username: user2.username, password: user2.password)
         let otherReadNoteResult = queryNote(byId: id)
         guard case let .success(otherReadNoteOptional) = otherReadNoteResult,
             let otherReadNote = otherReadNoteOptional else {
@@ -131,8 +125,8 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         }
         XCTAssertEqual(appSyncErrorOnDelete, .conditionalCheck)
 
-        AuthHelper.signOut()
-        AuthHelper.signIn(username: user1.username, password: user1.password)
+        signOut()
+        signIn(username: user1.username, password: user1.password)
         let ownerDeletedNoteResult = deleteNote(byId: id, version: ownerUpdatedNote.syncMetadata.version)
         guard case .success = ownerDeletedNoteResult else {
             XCTFail("Owner should be able to delete own note")
@@ -147,13 +141,11 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         let request = GraphQLRequest<MutationSyncResult>.createMutation(of: note)
         _ = Amplify.API.mutate(request: request, listener: { event in
             switch event {
-            case .completed:
+            case .success:
                 XCTFail("Should not have completed successfully")
-            case .failed(let error):
+            case .failure(let error):
                 self.assertNotAuthenticated(error)
                 failureInvoked.fulfill()
-            default:
-                XCTFail("Unexpected case")
             }
         })
 
@@ -161,7 +153,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     }
 
     func testSyncQuery() {
-        AuthHelper.signIn(username: user1.username, password: user1.password)
+        signIn(username: user1.username, password: user1.password)
         let id = UUID().uuidString
         let content = "owner created content"
         let ownerCreatedNoteResult = createNote(id, content: content)
@@ -183,32 +175,27 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: SocialNote.self, limit: 1)
         _ = Amplify.API.query(request: request) { event in
             switch event {
-            case .completed:
+            case .success:
                 XCTFail("Should not have completed successfully")
-            case .failed(let error):
+            case .failure(let error):
                 self.assertNotAuthenticated(error)
                 failureInvoked.fulfill()
-            default:
-                XCTFail("Unexpected case")
             }
         }
         wait(for: [failureInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testOnCreateSubscriptionOnlyWhenSignedIntoUserPool() {
-        AuthHelper.signIn(username: user1.username, password: user1.password)
+        signIn(username: user1.username, password: user1.password)
         let connectedInvoked = expectation(description: "Connection established")
         let progressInvoked = expectation(description: "Progress invoked")
-        guard let ownerId = AuthHelper.getUserSub() else {
-            XCTFail("Could not get ownerId for authenticated user")
-            return
-        }
+        let ownerId = getUserSub()
         let request = GraphQLRequest<MutationSyncResult>.subscription(to: SocialNote.self,
                                                                       subscriptionType: .onCreate,
                                                                       ownerId: ownerId)
-        let operation = Amplify.API.subscribe(request: request) { event in
-            switch event {
-            case .inProcess(let graphQLResponse):
+        let operation = Amplify.API.subscribe(
+            request: request,
+            valueListener: { graphQLResponse in
                 switch graphQLResponse {
                 case .connection(let state):
                     if case .connected = state {
@@ -222,14 +209,14 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
                         XCTFail(error.errorDescription)
                     }
                 }
-            case .failed(let error):
+        }, completionListener: { result in
+            switch result {
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            case .completed:
+            case .success:
                 break
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
-        }
+        })
         wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
 
         let ownerCreatedNoteResult = createNote(content: "owner created content")

@@ -28,7 +28,7 @@ class InitialSyncOperationTests: XCTestCase {
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
             let startDateMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startDateMilliseconds)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             return nil
         }
@@ -65,7 +65,7 @@ class InitialSyncOperationTests: XCTestCase {
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
             let startDateMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startDateMilliseconds)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             apiWasQueried.fulfill()
             return nil
@@ -99,7 +99,7 @@ class InitialSyncOperationTests: XCTestCase {
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
             let startDateMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startDateMilliseconds)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             return nil
         }
@@ -141,7 +141,7 @@ class InitialSyncOperationTests: XCTestCase {
             let startedAt = Int(Date().timeIntervalSince1970)
             let nextToken = nextTokens.isEmpty ? nil : nextTokens.removeFirst()
             let list = PaginatedList<AnyModel>(items: [], nextToken: nextToken, startedAt: startedAt)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             apiWasQueried.fulfill()
             return nil
@@ -182,7 +182,7 @@ class InitialSyncOperationTests: XCTestCase {
                                                 version: 1)
             let mutationSync = MutationSync(model: anyModel, syncMetadata: metadata)
             let list = PaginatedList<AnyModel>(items: [mutationSync], nextToken: nil, startedAt: startedAtMilliseconds)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             return nil
         }
@@ -225,7 +225,7 @@ class InitialSyncOperationTests: XCTestCase {
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
             let startedAt = startDateMilliseconds
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             return nil
         }
@@ -289,7 +289,7 @@ class InitialSyncOperationTests: XCTestCase {
             XCTAssertEqual(lastSync, startDateMilliseconds)
 
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: nil)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             apiWasQueried.fulfill()
             return nil
@@ -336,7 +336,7 @@ class InitialSyncOperationTests: XCTestCase {
             XCTAssertNil(lastSync)
 
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: nil)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             apiWasQueried.fulfill()
             return nil
@@ -372,7 +372,7 @@ class InitialSyncOperationTests: XCTestCase {
             XCTAssertEqual(10, limitValue)
 
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: nil)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             apiWasQueried.fulfill()
             return nil

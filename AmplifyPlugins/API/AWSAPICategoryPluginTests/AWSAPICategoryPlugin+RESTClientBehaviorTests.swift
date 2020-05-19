@@ -11,6 +11,7 @@ import XCTest
 @testable import AWSAPICategoryPlugin
 @testable import AmplifyTestCommon
 
+// swiftlint:disable:next type_name
 class AWSAPICategoryPluginRESTClientBehaviorTests: AWSAPICategoryPluginTestBase {
 
     // MARK: Get API tests

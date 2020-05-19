@@ -7,14 +7,10 @@
 
 import Foundation
 
-public protocol AuthConfirmSignInOperation: AmplifyOperation<AuthConfirmSignInRequest,
-Void,
-AuthSignInResult,
-AuthError> {}
+public protocol AuthConfirmSignInOperation: AmplifyOperation<AuthConfirmSignInRequest, AuthSignInResult, AuthError> {}
 
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
     static let confirmSignIn = "Auth.confirmSignIn"
 }
-

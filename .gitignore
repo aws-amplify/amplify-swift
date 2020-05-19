@@ -28,6 +28,9 @@ xcuserdata
 build
 builtFramework
 AWS*.framework
+node_modules
+package.json
+package-lock.json
 
 # Stuff that can't be committed #
 ######################

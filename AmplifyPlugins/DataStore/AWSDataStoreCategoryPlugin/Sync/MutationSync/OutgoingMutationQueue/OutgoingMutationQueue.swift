@@ -191,20 +191,19 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         stateMachine.notify(action: .enqueuedEvent)
     }
 
-    private func processSyncMutationToCloudResult(_ result: GraphQLOperation<MutationSync<AnyModel>>.Event,
+    private func processSyncMutationToCloudResult(_ result: GraphQLOperation<MutationSync<AnyModel>>.OperationResult,
                                                   mutationEvent: MutationEvent,
                                                   api: APICategoryGraphQLBehavior) {
-        if case let .completed(response) = result, case let .failure(graphQLResponseError) = response {
+        if case let .success(graphQLResponse) = result, case let .failure(graphQLResponseError) = graphQLResponse {
             processMutationErrorFromCloud(mutationEvent: mutationEvent,
                                           api: api,
                                           apiError: nil,
                                           graphQLResponseError: graphQLResponseError)
-        } else if case let .failed(apiError) = result {
+        } else if case let .failure(apiError) = result {
             processMutationErrorFromCloud(mutationEvent: mutationEvent,
                                           api: api,
                                           apiError: apiError,
                                           graphQLResponseError: nil)
-
         } else {
             completeProcessingEvent(mutationEvent)
         }
@@ -277,4 +276,3 @@ extension OutgoingMutationQueue: Subscriber {
 
 @available(iOS 13.0, *)
 extension OutgoingMutationQueue: DefaultLogger { }
-

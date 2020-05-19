@@ -21,7 +21,7 @@ public struct HubPayload {
     public let context: Any?
 
     /// A freeform structure used to pass objects or custom data. For HubPayloads that are generated from
-    /// AmplifyOperations, this field will be the Operation's associated AsyncEvent.
+    /// AmplifyOperations, this field will be the Operation's associated OperationResult.
     public let data: Any?
 
     public init(eventName: String,

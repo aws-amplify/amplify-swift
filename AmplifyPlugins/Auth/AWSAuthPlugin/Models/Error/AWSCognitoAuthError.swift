@@ -68,15 +68,9 @@ public enum AWSCognitoAuthError: Error {
     /// User cancelled the step
     case userCancelled
 
-    /// Requested operation/value is not available in signed out state.
-    case signedOut
-
     /// Requested resource is not available with the current account setup.
     case invalidAccountTypeException
 
     /// Request was not completed because of any network related issue
     case network
-
-    /// Session expired need to re-authenticate
-    case sessionExpired
 }

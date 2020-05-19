@@ -5,11 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSPinpoint
+import Foundation
 
 extension AWSPinpointAdapter: AWSPinpointAnalyticsClientBehavior {
-
     func addGlobalAttribute(_ theValue: String, forKey theKey: String) {
         pinpoint.analyticsClient.addGlobalAttribute(theValue, forKey: theKey)
     }
@@ -30,7 +29,7 @@ extension AWSPinpointAdapter: AWSPinpointAnalyticsClientBehavior {
         pinpoint.analyticsClient.removeGlobalAttribute(forKey: theKey)
     }
 
-    func removeGlobalAttribute(forKey theKey: String, forEventType theEventType: String) {
+    func removeGlobalAttribute(forKey theKey: String, forEventType _: String) {
         pinpoint.analyticsClient.removeGlobalAttribute(forKey: theKey)
     }
 
@@ -43,33 +42,33 @@ extension AWSPinpointAdapter: AWSPinpointAnalyticsClientBehavior {
     }
 
     func record(_ theEvent: AWSPinpointEvent) -> AWSTask<AnyObject> {
-        return pinpoint.analyticsClient.record(theEvent)
+        pinpoint.analyticsClient.record(theEvent)
     }
 
     func createEvent(withEventType theEventType: String) -> AWSPinpointEvent {
-        return pinpoint.analyticsClient.createEvent(withEventType: theEventType)
+        pinpoint.analyticsClient.createEvent(withEventType: theEventType)
     }
 
     func createAppleMonetizationEvent(with transaction: SKPaymentTransaction,
                                       with product: SKProduct) -> AWSPinpointEvent {
-        return pinpoint.analyticsClient.createAppleMonetizationEvent(with: transaction, with: product)
+        pinpoint.analyticsClient.createAppleMonetizationEvent(with: transaction, with: product)
     }
 
     func createVirtualMonetizationEvent(withProductId theProductId: String,
                                         withItemPrice theItemPrice: Double,
                                         withQuantity theQuantity: Int,
                                         withCurrency theCurrency: String) -> AWSPinpointEvent {
-        return pinpoint.analyticsClient.createVirtualMonetizationEvent(withProductId: theProductId,
-                                                                       withItemPrice: theItemPrice,
-                                                                       withQuantity: theQuantity,
-                                                                       withCurrency: theCurrency)
+        pinpoint.analyticsClient.createVirtualMonetizationEvent(withProductId: theProductId,
+                                                                withItemPrice: theItemPrice,
+                                                                withQuantity: theQuantity,
+                                                                withCurrency: theCurrency)
     }
 
     func submitEvents() -> AWSTask<AnyObject> {
-        return pinpoint.analyticsClient.submitEvents()
+        pinpoint.analyticsClient.submitEvents()
     }
 
     func submitEvents(completionBlock: @escaping AWSPinpointCompletionBlock) -> AWSTask<AnyObject> {
-        return pinpoint.analyticsClient.submitEvents(completionBlock: completionBlock)
+        pinpoint.analyticsClient.submitEvents(completionBlock: completionBlock)
     }
 }

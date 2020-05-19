@@ -12,6 +12,7 @@ import AWSPluginsCore
 
 extension MockSQLiteStorageEngineAdapter {
     enum ResponderKeys {
+        // swiftlint:disable:next identifier_name
         case queryModelTypePredicateAdditionalStatements
         case queryMutationSyncMetadata
         case saveModelCompletion

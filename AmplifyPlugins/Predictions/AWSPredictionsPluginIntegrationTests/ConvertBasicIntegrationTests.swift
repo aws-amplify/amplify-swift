@@ -27,15 +27,13 @@ class ConvertBasicIntegrationTests: AWSPredictionsPluginTestBase {
         let operation = Amplify.Predictions.convert(speechToText: url,
                                                     options: options) { event in
             switch event {
-            case .completed(let result):
+            case .success(let result):
                 convertInvoked.fulfill()
                 XCTAssertNotNil(result, "Result should contain value")
-            case .failed(let error):
+            case .failure(let error):
                 DispatchQueue.main.async {
                 XCTFail("Should not receieve error \(error)")
                 }
-            default:
-                break
             }
 
         }

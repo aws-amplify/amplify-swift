@@ -17,7 +17,7 @@ extension AnalyticsError: AmplifyError {
         switch self {
         case .configuration(let errorDescription, _, _):
             return errorDescription
-        case .unknown(let errorDescription):
+        case .unknown(let errorDescription, _):
             return "Unexpected error occurred with message: \(errorDescription)"
         }
     }

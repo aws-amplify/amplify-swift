@@ -7,6 +7,7 @@
 
 import XCTest
 @testable import Amplify
+@testable import AmplifyTestCommon
 import AWSMobileClient
 import AWSAPICategoryPlugin
 @testable import AWSAPICategoryPluginTestCommon
@@ -89,7 +90,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
                                      responseType: CreateTodoMutation.Data.self)
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 guard case let .success(data) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
@@ -105,10 +106,8 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
                 XCTAssertEqual(todo.typename, String(describing: Todo.self))
 
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(operation)
@@ -131,9 +130,9 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
                                      responseType: CreateTodoMutation.Data.self)
         let operation = Amplify.API.mutate(request: request) { event in
             switch event {
-            case .completed(let result):
+            case .success(let result):
                 XCTFail("Unexpected .completed event: \(result)")
-            case .failed(let error):
+            case .failure(let error):
                 print(error)
                 guard case let .httpStatusError(statusCode, _) = error else {
                     XCTFail("Should be HttpStatusError")
@@ -142,8 +141,6 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
 
                 XCTAssertEqual(statusCode, 401)
                 failedInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         XCTAssertNotNil(operation)

@@ -15,12 +15,9 @@ public class AmplifyAWSCredentialsProvider: NSObject, AWSCredentialsProvider {
         _  = Amplify.Auth.fetchAuthSession { [weak self] event in
 
             switch event {
-            case .completed(let session):
+            case .success(let session):
                 self?.parseAWSCredentialsFromSession(session, completionSource: completionSource)
-            case .failed(let error):
-                completionSource.set(error: error)
-            default:
-                let error = AuthError.unknown("Fetch auth session returned an invalid result type")
+            case .failure(let error):
                 completionSource.set(error: error)
             }
         }

@@ -35,12 +35,10 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
         let authSessionExpectation = expectation(description: "Received event result from fetchAuth")
         let operation = Amplify.Auth.fetchAuthSession {event in
             switch event {
-            case .completed(let result):
+            case .success(let result):
                 XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Should not receive error \(error)")
-            default:
-                break
             }
             authSessionExpectation.fulfill()
         }
@@ -60,7 +58,7 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
         let authSessionExpectation = expectation(description: "Received event result from fetchAuth")
         let operation = Amplify.Auth.fetchAuthSession {event in
             switch event {
-            case .completed(let result):
+            case .success(let result):
                 XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
                 let credentialsResult = (result as? AuthAWSCredentialsProvider)?.getAWSCredentials()
                 guard let awsCredentails = try? credentialsResult?.get() else {
@@ -69,6 +67,37 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
                 }
                 XCTAssertNotNil(awsCredentails.accessKey, "Access key should not be nil")
 
+            case .failure(let error):
+                XCTFail("Should not receive error \(error)")
+            }
+            authSessionExpectation.fulfill()
+        }
+        XCTAssertNotNil(operation, "Operation should not be nil")
+        wait(for: [authSessionExpectation], timeout: networkTimeout)
+    }
+
+    /// Test whether fetchAuth returns signedOut error
+    ///
+    /// - Given: Auth plugin with user signedOut
+    /// - When:
+    ///    - I fetchAuth session
+    /// - Then:
+    ///    - I should get a session with token result as signedOut.
+    ///
+    func testCognitoTokenSignedOutError() {
+
+        let authSessionExpectation = expectation(description: "Received event result from fetchAuth")
+        let operation = Amplify.Auth.fetchAuthSession {event in
+            switch event {
+            case .completed(let result):
+                XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
+
+                let tokensResult = (result as? AuthCognitoTokensProvider)?.getCognitoTokens()
+                guard case let .failure(authError) = tokensResult,
+                    case .signedOut(_, _, _) = authError else {
+                        XCTFail("Should produce signedOut error.")
+                        return
+                }
             case .failed(let error):
                 XCTFail("Should not receive error \(error)")
             default:

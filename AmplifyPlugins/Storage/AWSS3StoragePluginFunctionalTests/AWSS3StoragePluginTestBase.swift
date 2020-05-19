@@ -6,9 +6,10 @@
 //
 
 import XCTest
-import AWSMobileClient
+
 @testable import Amplify
 import AWSS3StoragePlugin
+import AmplifyPlugins
 import AWSS3
 import AWSCognitoIdentityProvider
 @testable import AmplifyTestCommon
@@ -16,7 +17,6 @@ import AWSCognitoIdentityProvider
 class AWSS3StoragePluginTestBase: XCTestCase {
 
     static let amplifyConfiguration = "AWSS3StoragePluginTests-amplifyconfiguration"
-    static let awsconfiguration = "AWSS3StoragePluginTests-awsconfiguration"
     static let credentials = "AWSS3StoragePluginTests-credentials"
 
     static let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * 6) // 6MB
@@ -27,7 +27,8 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     static override func setUp() {
         do {
-            let credentials = try TestConfigHelper.retrieveCredentials(forResource: AWSS3StoragePluginTestBase.credentials)
+            let credentials = try TestConfigHelper
+                .retrieveCredentials(forResource: AWSS3StoragePluginTestBase.credentials)
 
             guard let user1 = credentials["user1"],
                 let user2 = credentials["user2"],
@@ -35,15 +36,9 @@ class AWSS3StoragePluginTestBase: XCTestCase {
                 XCTFail("Missing credentials.json data")
                 return
             }
-
             AWSS3StoragePluginTestBase.user1 = user1
             AWSS3StoragePluginTestBase.user2 = user2
             AWSS3StoragePluginTestBase.password = password
-
-            let awsConfiguration = try TestConfigHelper.retrieveAWSConfiguration(
-                forResource: AWSS3StoragePluginTestBase.awsconfiguration)
-            AWSInfo.configureDefaultAWSInfo(awsConfiguration)
-
         } catch {
             XCTFail("Failed to initialize test set up \(error)")
         }
@@ -51,9 +46,8 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     override func setUp() {
         do {
-            AuthHelper.initializeMobileClient()
             Amplify.reset()
-
+            try Amplify.add(plugin: AWSAuthPlugin())
             try Amplify.add(plugin: AWSS3StoragePlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: AWSS3StoragePluginTestBase.amplifyConfiguration)
@@ -79,12 +73,10 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
         let operation = Amplify.Storage.uploadData(key: key, data: data, options: nil) { event in
             switch event {
-            case .completed:
+            case .success:
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
 

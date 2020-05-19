@@ -63,11 +63,16 @@ class AWSPredictionsService {
 
         let transcribeClientDelegate = NativeWSTranscribeStreamingClientDelegate()
 
-        let nativeWebSocketProvider = NativeWebSocketProvider(clientDelegate: transcribeClientDelegate, callbackQueue: transcribeCallbackQueue)
+        let nativeWebSocketProvider = NativeWebSocketProvider(
+            clientDelegate: transcribeClientDelegate,
+            callbackQueue: transcribeCallbackQueue
+        )
 
-        let awsTranscribeStreamingAdapter = AWSPredictionsService.makeTranscribeStreaming(nativeWebSocketProvider: nativeWebSocketProvider,
-                                                                                          serviceConfiguration: convertServiceConfiguration,
-                                                                                          identifier: identifier)
+        let awsTranscribeStreamingAdapter = AWSPredictionsService.makeTranscribeStreaming(
+            nativeWebSocketProvider: nativeWebSocketProvider,
+            serviceConfiguration: convertServiceConfiguration,
+            identifier: identifier
+        )
 
         self.init(identifier: identifier,
                   awsTranslate: awsTranslateAdapter,

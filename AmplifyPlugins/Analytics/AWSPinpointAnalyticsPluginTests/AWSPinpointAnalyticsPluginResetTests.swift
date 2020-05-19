@@ -5,11 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 @testable import AWSPinpointAnalyticsPlugin
+import XCTest
 
 class AWSPinpointAnalyticsPluginResetTests: AWSPinpointAnalyticsPluginTestBase {
-
     func testReset() {
         let completedInvoked = expectation(description: "onComplete is invoked")
         analyticsPlugin.reset {
@@ -24,5 +23,4 @@ class AWSPinpointAnalyticsPluginResetTests: AWSPinpointAnalyticsPluginTestBase {
         XCTAssertNil(analyticsPlugin.globalProperties)
         XCTAssertNil(analyticsPlugin.isEnabled)
     }
-
 }

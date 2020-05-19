@@ -9,6 +9,7 @@ import XCTest
 import AWSPluginsCore
 import AWSAPICategoryPlugin
 import AWSMobileClient
+import AmplifyPlugins
 
 @testable import Amplify
 @testable import AWSAPICategoryPluginTestCommon
@@ -69,20 +70,18 @@ extension GraphQLAuthDirectiveIntegrationTests {
         return result
     }
 
-    func onMutationEvent(_ event: GraphQLOperation<MutationSyncResult>.Event) ->
+    func onMutationEvent(_ event: GraphQLOperation<MutationSyncResult>.OperationResult) ->
         Result<MutationSyncResult, GraphQLResponseError<MutationSyncResult>> {
             switch event {
-            case .completed(let data):
+            case .success(let data):
                 switch data {
                 case .success(let note):
                     return .success(note)
                 case .failure(let error):
                     return .failure(error)
                 }
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Got failed, error: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
             fatalError("Failed to return response data")
     }
@@ -93,7 +92,7 @@ extension GraphQLAuthDirectiveIntegrationTests {
         let request = GraphQLRequest<MutationSyncResult?>.query(modelName: SocialNote.modelName, byId: id)
         _ = Amplify.API.query(request: request) { event in
             switch event {
-            case .completed(let data):
+            case .success(let data):
                 switch data {
                 case .success(let note):
                     resultOptional = .success(note)
@@ -101,10 +100,8 @@ extension GraphQLAuthDirectiveIntegrationTests {
                     resultOptional = .failure(error)
                 }
                 queryNoteInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Got failed, error: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
 
@@ -121,7 +118,7 @@ extension GraphQLAuthDirectiveIntegrationTests {
         let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: SocialNote.self, limit: 1)
         _ = Amplify.API.query(request: request) { event in
             switch event {
-            case .completed(let data):
+            case .success(let data):
                 switch data {
                 case .success(let paginatedNotes):
                     resultOptional = .success(paginatedNotes)
@@ -129,10 +126,8 @@ extension GraphQLAuthDirectiveIntegrationTests {
                     resultOptional = .failure(error)
                 }
                 syncQueryInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Got failed, error: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
         wait(for: [syncQueryInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -158,14 +153,20 @@ extension GraphQLAuthDirectiveIntegrationTests {
             XCTFail("Error should be operationError")
             return
         }
-
         guard let authError = underlyingError as? AuthError else {
             XCTFail("underlying error should be AuthError, but instead was \(underlyingError ?? "nil")")
             return
         }
-
-        guard case .notAuthenticated = authError else {
-            XCTFail("Error should be AuthError.notAuthenticated")
+        guard case let .service(_, _, underlyingAuthError) = authError else {
+            XCTFail("Error should be AuthError.service")
+            return
+        }
+        guard let awsCognitoAuthError = underlyingAuthError as? AWSCognitoAuthError else {
+            XCTFail("Error should be AWSCognitoAuthError")
+            return
+        }
+        guard case .signedOut = awsCognitoAuthError else {
+            XCTFail("Error should be .signedOut")
             return
         }
     }

@@ -22,8 +22,8 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
     public typealias SourceType = Any?
     public typealias TargetType = Binding?
 
-    public static func convertToTarget(from source: Any?,
-                                       fieldType: ModelFieldType) throws -> Binding? {
+    // swiftlint:disable:next cyclomatic_complexity
+    public static func convertToTarget(from source: Any?, fieldType: ModelFieldType) throws -> Binding? {
         guard let value = source else {
             return nil
         }
@@ -56,8 +56,8 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
         }
     }
 
-    public static func convertToSource(from target: Binding?,
-                                       fieldType: ModelFieldType) throws -> Any? {
+    // swiftlint:disable:next cyclomatic_complexity
+    public static func convertToSource(from target: Binding?, fieldType: ModelFieldType) throws -> Any? {
         guard let value = target else {
             return nil
         }

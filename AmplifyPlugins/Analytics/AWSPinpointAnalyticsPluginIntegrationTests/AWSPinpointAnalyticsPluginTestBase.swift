@@ -5,13 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 @testable import Amplify
-import AWSPinpointAnalyticsPlugin
 import AWSMobileClient
+import AWSPinpointAnalyticsPlugin
+import XCTest
 
 class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
-
     let appId: JSONValue = "56e6f06fd4f244c6b202bc327bd3b4e6"
     let region: JSONValue = "us-east-1"
     let targetingRegion: JSONValue = "us-east-1"
@@ -48,8 +47,8 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
                     "autoFlushEventsInterval": 10,
                     "trackAppSessions": true,
                     "autoSessionTrackingInterval": 2
-            ]
-        ])
+                ]
+            ])
 
         let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig)
 
