@@ -1,0 +1,31 @@
+{
+    "UserAgent": "aws-amplify-cli/2.0",
+    "Version": "1.0",
+    "analytics": {
+        "plugins": {
+            "awsPinpointAnalyticsPlugin": {
+                "pinpointAnalytics": {
+                    "appId": "a8086cb5adb34c14810f5980634ecd55",
+                    "region": "eu-west-1"
+                },
+                "pinpointTargeting": {
+                    "region": "eu-west-1"
+                }
+            }
+        }
+    },
+    "auth": {
+        "plugins": {
+            "awsCognitoAuthPlugin": {
+                "CredentialsProvider": {
+                    "CognitoIdentity": {
+                        "Default": {
+                            "PoolId": "eu-west-2:4fe79d55-0656-4af8-8666-8de653d70208",
+                            "Region": "eu-west-2"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

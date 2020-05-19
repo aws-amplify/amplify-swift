@@ -6,7 +6,8 @@
 //
 
 @testable import Amplify
-import AWSMobileClient
+//import AWSMobileClient
+import AmplifyPlugins
 import AWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
 import XCTest
@@ -74,45 +75,46 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     let analyticsPluginKey = "awsPinpointAnalyticsPlugin"
 
     override func setUp() {
-        let config = [
+        let authConfig = AuthCategoryConfiguration(
+            plugins: [
             "CredentialsProvider": [
                 "CognitoIdentity": [
                     "Default": [
-                        "PoolId": "us-west-2:xxx",
-                        "Region": "us-west-2"
+                        "PoolId": "eu-west-2:8a882197-8039-45da-9a08-d9c76cbc6c93",
+                        "Region": "eu-west-2"
                     ]
                 ]
             ]
-        ]
-        AWSInfo.configureDefaultAWSInfo(config)
+        ])
+//        AWSInfo.configureDefaultAWSInfo(authConfig)
 
-        let mobileClientIsInitialized = expectation(description: "AWSMobileClient is initialized")
-        AWSMobileClient.default().initialize { userState, error in
-            guard error == nil else {
-                XCTFail("Error initializing AWSMobileClient. Error: \(error!.localizedDescription)")
-                return
-            }
-            guard let userState = userState else {
-                XCTFail("userState is unexpectedly empty initializing AWSMobileClient")
-                return
-            }
-            if userState != UserState.signedOut {
-                AWSMobileClient.default().signOut()
-            }
-            mobileClientIsInitialized.fulfill()
-        }
-        wait(for: [mobileClientIsInitialized], timeout: 100)
-        print("AWSMobileClient Initialized")
+//        let mobileClientIsInitialized = expectation(description: "AWSMobileClient is initialized")
+//        AWSMobileClient.default().initialize { userState, error in
+//            guard error == nil else {
+//                XCTFail("Error initializing AWSMobileClient. Error: \(error!.localizedDescription)")
+//                return
+//            }
+//            guard let userState = userState else {
+//                XCTFail("userState is unexpectedly empty initializing AWSMobileClient")
+//                return
+//            }
+//            if userState != UserState.signedOut {
+//                AWSMobileClient.default().signOut()
+//            }
+//            mobileClientIsInitialized.fulfill()
+//        }
+//        wait(for: [mobileClientIsInitialized], timeout: 100)
+//        print("AWSMobileClient Initialized")
 
         let analyticsConfig = AnalyticsCategoryConfiguration(
             plugins: [
                 "awsPinpointAnalyticsPlugin": [
                     "pinpointAnalytics": [
-                        "appId": "xxxxx",
-                        "region": "us-west-2"
+                        "appId": "676334c1e567430e8a624f34d6ad25f2",
+                        "region": "eu-west-1"
                     ],
                     "pinpointTargeting": [
-                        "region": "us-west-2"
+                        "region": "eu-west-1"
                     ],
                     "autoFlushEventsInterval": 10,
                     "trackAppSessions": true,
@@ -120,11 +122,22 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                 ]
             ])
 
-        let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig)
+        let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig, auth: authConfig)
 
         do {
+            try Amplify.add(plugin: AWSAuthPlugin())
             try Amplify.add(plugin: AWSPinpointAnalyticsPlugin())
             try Amplify.configure(amplifyConfig)
+
+            _ = Amplify.Auth.signOut(listener: { event in
+                switch event {
+                case .success:
+                    print("Sign out successfullt")
+                case .failure(let error):
+                    print("Failed to sign out: \(error)")
+                    XCTFail("Failed to sign out")
+                }
+            })
         } catch {
             XCTFail("Failed to initialize and configure Amplify")
         }
