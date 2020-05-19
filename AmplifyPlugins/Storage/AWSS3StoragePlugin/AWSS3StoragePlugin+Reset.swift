@@ -23,7 +23,6 @@ extension AWSS3StoragePlugin {
             storageService = nil
         }
         if authService != nil {
-            authService.reset()
             authService = nil
         }
 

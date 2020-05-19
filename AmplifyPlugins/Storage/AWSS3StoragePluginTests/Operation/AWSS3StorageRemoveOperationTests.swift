@@ -40,7 +40,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testRemoveOperationGetIdentityIdError() {
-        mockAuthService.getIdentityIdError = AuthError.identity("", "", "")
+        mockAuthService.getIdentityIdError = AuthError.service("", "", "")
 
         let options = StorageRemoveRequest.Options()
         let request = StorageRemoveRequest(key: testKey, options: options)

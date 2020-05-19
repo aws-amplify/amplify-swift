@@ -55,8 +55,12 @@ class GraphQLDeleteMutationTests: XCTestCase {
         XCTAssertEqual(document.name, "deletePost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "deletePost")
-        XCTAssert(document.variables["input"] != nil)
-        guard let input = document.variables["input"] as? [String: String] else {
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssert(variables["input"] != nil)
+        guard let input = variables["input"] as? [String: String] else {
             XCTFail("Could not get object at `input`")
             return
         }
@@ -100,8 +104,12 @@ class GraphQLDeleteMutationTests: XCTestCase {
         XCTAssertEqual(document.name, "deletePost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "deletePost")
-        XCTAssert(document.variables["input"] != nil)
-        guard let input = document.variables["input"] as? [String: Any] else {
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssert(variables["input"] != nil)
+        guard let input = variables["input"] as? [String: Any] else {
             XCTFail("Could not get object at `input`")
             return
         }

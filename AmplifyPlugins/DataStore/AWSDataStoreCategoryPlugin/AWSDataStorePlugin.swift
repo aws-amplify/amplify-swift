@@ -23,6 +23,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// The DataStore configuration
     let dataStoreConfiguration: DataStoreConfiguration
 
+    let validAPIPluginKey: String
     /// The local storage provider. Resolved during configuration phase
     var storageEngine: StorageEngineBehavior!
 
@@ -46,6 +47,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.modelRegistration = modelRegistration
         self.dataStoreConfiguration = dataStoreConfiguration
         self.isSyncEnabled = false
+        self.validAPIPluginKey =  "awsAPIPlugin"
         if #available(iOS 13.0, *) {
             self.dataStorePublisher = DataStorePublisher()
         } else {
@@ -57,12 +59,14 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     init(modelRegistration: AmplifyModelRegistration,
          configuration dataStoreConfiguration: DataStoreConfiguration = .default,
          storageEngine: StorageEngineBehavior,
-         dataStorePublisher: DataStoreSubscribeBehavior) {
+         dataStorePublisher: DataStoreSubscribeBehavior,
+         validAPIPluginKey: String) {
         self.modelRegistration = modelRegistration
         self.dataStoreConfiguration = dataStoreConfiguration
         self.isSyncEnabled = false
         self.storageEngine = storageEngine
         self.dataStorePublisher = dataStorePublisher
+        self.validAPIPluginKey = validAPIPluginKey
     }
 
     /// By the time this method gets called, DataStore will already have invoked
@@ -78,10 +82,24 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         let filter = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
         var token: UnsubscribeToken?
         token = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { _ in
-            self.storageEngine.startSync()
+            if self.hasValidAPIPlugin() {
+                self.storageEngine.startSync()
+            } else {
+                self.log.info("Unable to find suitable plugin for syncEngine.  syncEngine will not be started")
+            }
+
             if let token = token {
                 Amplify.Hub.removeListener(token)
             }
+        }
+    }
+
+    func hasValidAPIPlugin() -> Bool {
+        do {
+            _ = try Amplify.API.getPlugin(for: validAPIPluginKey)
+            return true
+        } catch {
+            return false
         }
     }
 

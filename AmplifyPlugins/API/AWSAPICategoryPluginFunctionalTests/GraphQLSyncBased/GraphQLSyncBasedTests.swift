@@ -358,7 +358,7 @@ class GraphQLSyncBasedTests: XCTestCase {
             return
         }
 
-        let conflictUnhandledError = expectation(description: "error should be conditional request failed")
+        let conflictUnhandledError = expectation(description: "error should be conflict unhandled")
         switch response {
         case .success(let mutationSync):
             XCTFail("success: \(mutationSync)")

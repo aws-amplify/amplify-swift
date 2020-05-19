@@ -23,7 +23,8 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
         tryOrFail {
             try setUpStorageAdapter()
-            try setUpDataStore(mutationQueue: OutgoingMutationQueue())
+            try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
+                                                                    dataStoreConfiguration: .default))
         }
 
         let post = Post(title: "Post title",
@@ -106,7 +107,8 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         }
 
         tryOrFail {
-            try setUpDataStore(mutationQueue: OutgoingMutationQueue())
+            try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
+                                                                    dataStoreConfiguration: .default))
             try startAmplify()
         }
 

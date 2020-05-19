@@ -24,7 +24,7 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
     public func reset() {
     }
 
-    public func getCognitoCredentialsProvider() -> AWSCognitoCredentialsProvider {
+    public func getCredentialsProvider() -> AWSCredentialsProvider {
         let cognitoCredentialsProvider = AWSCognitoCredentialsProvider()
         return cognitoCredentialsProvider
     }

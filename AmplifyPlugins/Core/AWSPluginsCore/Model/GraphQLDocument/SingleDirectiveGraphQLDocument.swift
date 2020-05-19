@@ -60,9 +60,13 @@ extension SingleDirectiveGraphQLDocument {
                          selectionSet: selectionSet ?? self.selectionSet)
     }
 
-    /// Returns an empty `variables` object when there are no `inputs` required, Otherwise, consolidates the `inputs`
+    /// Returns nil when there are no `inputs`. Otherwise, consolidates the `inputs`
     /// into a single object that can be used for the GraphQL request.
-    public var variables: [String: Any] {
+    public var variables: [String: Any]? {
+        if inputs.isEmpty {
+            return nil
+        }
+
         var variables = [String: Any]()
         inputs.forEach { input in
             switch input.value.value {

@@ -240,7 +240,9 @@ extension SyncMutationToCloudOperationTests {
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                  storageEngine: storageEngine,
-                                                 dataStorePublisher: dataStorePublisher)
+                                                 dataStorePublisher: dataStorePublisher,
+                                                 validAPIPluginKey: "MockAPICategoryPlugin")
+
         try Amplify.add(plugin: dataStorePlugin)
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
             "awsDataStorePlugin": true

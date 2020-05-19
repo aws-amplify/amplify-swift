@@ -15,3 +15,18 @@ type Comment @model {
     createdAt: AWSDateTime!
     post: Post @connection(name: "PostComment")
 }
+
+type Blog
+    @model
+    @auth(rules: [
+        { allow: owner, ownerField: "owner", operations: [create, read] },
+        { allow: groups, groups: ["Admin"] }
+    ]) {
+    id: ID!
+    content: String!
+    createdAt: AWSDateTime!
+    owner: String
+    authorsNotes: String @auth( rules: [
+        { allow: owner, ownerField: "owner", operations: [update] }
+    ])
+}

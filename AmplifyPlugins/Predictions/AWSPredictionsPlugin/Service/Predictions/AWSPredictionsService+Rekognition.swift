@@ -63,7 +63,7 @@ extension AWSPredictionsService: AWSRekognitionServiceBehavior {
                 }
 
                 guard let result = task.result else {
-                    onEvent(.failed( .unknown(AWSRekognitionErrorMessage.noResultFound.errorDescription,
+                    onEvent(.failed(.unknown(AWSRekognitionErrorMessage.noResultFound.errorDescription,
                                               AWSRekognitionErrorMessage.noResultFound.recoverySuggestion)))
                     return nil
                 }

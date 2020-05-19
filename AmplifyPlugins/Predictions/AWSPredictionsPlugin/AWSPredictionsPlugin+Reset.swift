@@ -18,7 +18,6 @@ extension AWSPredictionsPlugin {
         }
 
         if authService != nil {
-            authService.reset()
             authService = nil
         }
 

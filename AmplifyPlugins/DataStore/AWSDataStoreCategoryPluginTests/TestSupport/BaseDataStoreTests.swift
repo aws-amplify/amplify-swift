@@ -46,7 +46,8 @@ class BaseDataStoreTests: XCTestCase {
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                  storageEngine: storageEngine,
-                                                 dataStorePublisher: dataStorePublisher)
+                                                 dataStorePublisher: dataStorePublisher,
+                                                 validAPIPluginKey: "MockAPICategoryPlugin")
 
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
             "awsDataStorePlugin": true

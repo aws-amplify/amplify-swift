@@ -31,10 +31,10 @@ extension AWSPredictionsPlugin {
         let predictionsConfiguration = try JSONDecoder().decode(PredictionsPluginConfiguration.self,
                                                                 from: configurationData)
         let authService = AWSAuthService()
-        let cognitoCredentialsProvider = authService.getCognitoCredentialsProvider()
+        let credentialsProvider = authService.getCredentialsProvider()
         let coremlService = try CoreMLPredictionService(configuration: configuration)
         let predictionsService = try AWSPredictionsService(configuration: predictionsConfiguration,
-                                                           cognitoCredentialsProvider: cognitoCredentialsProvider,
+                                                           credentialsProvider: credentialsProvider,
                                                            identifier: key)
         configure(predictionsService: predictionsService,
                   coreMLSerivce: coremlService,

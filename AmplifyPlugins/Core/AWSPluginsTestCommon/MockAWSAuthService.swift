@@ -10,6 +10,7 @@ import Amplify
 import AWSPluginsCore
 
 public class MockAWSAuthService: AWSAuthServiceBehavior {
+
     var getIdentityIdError: AuthError?
     var getTokenError: AuthError?
     var identityId: String?
@@ -21,7 +22,7 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
     public func reset() {
     }
 
-    public func getCognitoCredentialsProvider() -> AWSCognitoCredentialsProvider {
+    public func getCredentialsProvider() -> AWSCredentialsProvider {
         let cognitoCredentialsProvider = AWSCognitoCredentialsProvider()
         return cognitoCredentialsProvider
     }

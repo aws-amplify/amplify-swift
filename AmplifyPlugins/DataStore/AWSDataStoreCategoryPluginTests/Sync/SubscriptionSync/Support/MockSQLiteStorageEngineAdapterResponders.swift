@@ -16,6 +16,7 @@ extension MockSQLiteStorageEngineAdapter {
         case queryMutationSyncMetadata
         case saveModelCompletion
         case saveUntypedModel
+        case deleteUntypedModel
     }
 }
 
@@ -31,3 +32,5 @@ typealias QueryMutationSyncMetadataResponder = ThrowingMockResponder<String, Mut
 typealias SaveModelCompletionResponder<M: Model> = MockResponder<(M, DataStoreCallback<M>), Void>
 
 typealias SaveUntypedModelResponder = MockResponder<(Model, DataStoreCallback<Model>), Void>
+
+typealias DeleteUntypedModelCompletionResponder = MockResponder<(Model.Type, String), Void>

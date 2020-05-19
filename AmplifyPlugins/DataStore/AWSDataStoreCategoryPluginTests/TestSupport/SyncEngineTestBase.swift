@@ -111,7 +111,8 @@ class SyncEngineTestBase: XCTestCase {
         let publisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: modelRegistration,
                                                  storageEngine: storageEngine,
-                                                 dataStorePublisher: publisher)
+                                                 dataStorePublisher: publisher,
+                                                 validAPIPluginKey: "MockAPICategoryPlugin")
 
         try Amplify.add(plugin: dataStorePlugin)
     }

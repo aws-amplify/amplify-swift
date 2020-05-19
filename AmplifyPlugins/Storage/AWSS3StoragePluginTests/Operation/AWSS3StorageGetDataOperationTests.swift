@@ -38,7 +38,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testDownloadDataOperationGetIdentityIdError() {
-        mockAuthService.getIdentityIdError = AuthError.identity("", "", "")
+        mockAuthService.getIdentityIdError = AuthError.service("", "", "")
         let request = StorageDownloadDataRequest(key: testKey, options: StorageDownloadDataRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageDownloadDataOperation(request,

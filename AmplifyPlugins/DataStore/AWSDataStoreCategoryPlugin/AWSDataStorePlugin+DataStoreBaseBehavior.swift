@@ -92,29 +92,17 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                  withId id: String,
                                  completion: @escaping DataStoreCallback<Void>) {
         reinitStorageEngineIfNeeded()
-        storageEngine.delete(modelType,
-                             withId: id,
-                             completion: completion)
+        storageEngine.delete(modelType, withId: id) { result in
+            self.onDeleteCompletion(result: result, completion: completion)
+        }
     }
 
     public func delete<M: Model>(_ model: M,
                                  completion: @escaping DataStoreCallback<Void>) {
         reinitStorageEngineIfNeeded()
-        let publishingCompletion: DataStoreCallback<Void> = { result in
-            switch result {
-            case .success:
-                // TODO: Handle errors from mutation event creation
-                self.publishMutationEvent(from: model, mutationType: .delete)
-            case .failure:
-                break
-            }
-
-            completion(result)
+        storageEngine.delete(type(of: model), withId: model.id) { result in
+            self.onDeleteCompletion(result: result, completion: completion)
         }
-
-        delete(type(of: model),
-               withId: model.id,
-               completion: publishingCompletion)
     }
 
     public func delete<M: Model>(_ modelType: M.Type,
@@ -155,6 +143,19 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     }
 
     // MARK: Private
+
+    private func onDeleteCompletion<M: Model>(result: DataStoreResult<M?>,
+                                              completion: @escaping DataStoreCallback<Void>) {
+        switch result {
+        case .success(let modelOptional):
+            if let model = modelOptional {
+                publishMutationEvent(from: model, mutationType: .delete)
+            }
+            completion(.emptyResult)
+        case .failure(let error):
+            completion(.failure(error))
+        }
+    }
 
     private func publishMutationEvent<M: Model>(from model: M,
                                                 mutationType: MutationEvent.MutationType) {
