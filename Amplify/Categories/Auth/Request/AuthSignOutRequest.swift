@@ -12,6 +12,7 @@ public struct AuthSignOutRequest: AmplifyOperationRequest {
     public var options: Options
 
     public init(options: Options) {
+
         self.options = options
     }
 }
@@ -25,7 +26,11 @@ public extension AuthSignOutRequest {
         /// key/values
         public let pluginOptions: Any?
 
-        public init(pluginOptions: Any? = nil) {
+        public let globalSignOut: Bool
+        
+        public init(globalSignOut: Bool = false,
+                    pluginOptions: Any? = nil) {
+            self.globalSignOut = globalSignOut
             self.pluginOptions = pluginOptions
         }
     }

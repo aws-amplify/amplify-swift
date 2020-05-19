@@ -12,12 +12,17 @@ extension AuthenticationProviderAdapter {
 
     func signOut(request: AuthSignOutRequest, completionHandler: @escaping (Result<Void, AuthError>) -> Void) {
 
-        // If user is signed in through HostedUI the signout require UI to complete. So calling this in main thread.
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
-                return
+        if (request.options.globalSignOut) {
+            // If user is signed in through HostedUI the signout require UI to complete. So calling this in main thread.
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                self.signOutWithUI(completionHandler)
             }
-            self.signOutWithUI(completionHandler)
+        } else {
+            awsMobileClient.signOutLocally()
+            completionHandler(.success(()))
         }
     }
 
@@ -35,7 +40,7 @@ extension AuthenticationProviderAdapter {
                 if case .notAuthorized(_, _, _) = authError {
                     // signOut globally might return notAuthorized when the current token is expired or invalidated
                     // In this case, we just signOut the user locally and return a success result back.
-                    self?.awsMobileClient.signOut()
+                    self?.awsMobileClient.signOutLocally()
                     completionHandler(.success(()))
                 } else {
                     completionHandler(.failure(authError))
