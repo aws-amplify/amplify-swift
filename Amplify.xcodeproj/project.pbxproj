@@ -246,7 +246,7 @@
 		B4D3853E236C97360014653D /* PredictionsCategory+HubPayloadEventName.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D3852A236C97350014653D /* PredictionsCategory+HubPayloadEventName.swift */; };
 		B4D3853F236C97360014653D /* PredictionsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D3852C236C97350014653D /* PredictionsError.swift */; };
 		B4D38540236C97360014653D /* PredictionsCategoryPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D3852D236C97350014653D /* PredictionsCategoryPlugin.swift */; };
-		B4EBEB64246204D000D06375 /* AuthAWSCredentisProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EBEB62246204AB00D06375 /* AuthAWSCredentisProvider.swift */; };
+		B4EBEB64246204D000D06375 /* AuthAWSCredentialsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EBEB62246204AB00D06375 /* AuthAWSCredentialsProvider.swift */; };
 		B4EBEB66246204E400D06375 /* AuthCognitoTokensProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EBEB65246204E400D06375 /* AuthCognitoTokensProvider.swift */; };
 		B4EBEB682462050B00D06375 /* AuthCognitoIdentityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EBEB672462050B00D06375 /* AuthCognitoIdentityProvider.swift */; };
 		B4F3E9F824314E2B00F23296 /* AuthCategoryConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F3E9F724314E2B00F23296 /* AuthCategoryConfigurationTests.swift */; };
@@ -950,7 +950,7 @@
 		B4D3852A236C97350014653D /* PredictionsCategory+HubPayloadEventName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PredictionsCategory+HubPayloadEventName.swift"; sourceTree = "<group>"; };
 		B4D3852C236C97350014653D /* PredictionsError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsError.swift; sourceTree = "<group>"; };
 		B4D3852D236C97350014653D /* PredictionsCategoryPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsCategoryPlugin.swift; sourceTree = "<group>"; };
-		B4EBEB62246204AB00D06375 /* AuthAWSCredentisProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAWSCredentisProvider.swift; sourceTree = "<group>"; };
+		B4EBEB62246204AB00D06375 /* AuthAWSCredentialsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAWSCredentialsProvider.swift; sourceTree = "<group>"; };
 		B4EBEB65246204E400D06375 /* AuthCognitoTokensProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCognitoTokensProvider.swift; sourceTree = "<group>"; };
 		B4EBEB672462050B00D06375 /* AuthCognitoIdentityProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCognitoIdentityProvider.swift; sourceTree = "<group>"; };
 		B4F3E9F724314E2B00F23296 /* AuthCategoryConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthCategoryConfigurationTests.swift; sourceTree = "<group>"; };
@@ -1550,7 +1550,7 @@
 			children = (
 				B42B3D34246AD960007211E0 /* AmplifyAWSCredentialsProvider.swift */,
 				21420A86237222A800FA140C /* APIKeyProvider.swift */,
-				B4EBEB62246204AB00D06375 /* AuthAWSCredentisProvider.swift */,
+				B4EBEB62246204AB00D06375 /* AuthAWSCredentialsProvider.swift */,
 				B4EBEB672462050B00D06375 /* AuthCognitoIdentityProvider.swift */,
 				B4EBEB65246204E400D06375 /* AuthCognitoTokensProvider.swift */,
 				21D79FE02377BF4B0057D00D /* AuthProvider.swift */,
@@ -3836,7 +3836,7 @@
 				219A888523EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift in Sources */,
 				219A88F123F3379900BBC5F2 /* GraphQLDocumentInput.swift in Sources */,
 				21420AA0237222A900FA140C /* AWSAuthorizationType.swift in Sources */,
-				B4EBEB64246204D000D06375 /* AuthAWSCredentisProvider.swift in Sources */,
+				B4EBEB64246204D000D06375 /* AuthAWSCredentialsProvider.swift in Sources */,
 				212CE6FC23E9E523007D8E71 /* SelectionSet.swift in Sources */,
 				2129BE1F2394806B006363A1 /* Model+GraphQL.swift in Sources */,
 				212CE70323E9E967007D8E71 /* GraphQLMutation.swift in Sources */,

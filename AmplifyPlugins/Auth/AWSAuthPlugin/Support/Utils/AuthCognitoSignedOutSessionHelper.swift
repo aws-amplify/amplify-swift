@@ -144,18 +144,16 @@ struct AuthCognitoSignedOutSessionHelper {
     }
 
     private static func makeUserSubSignedOutError() -> AuthError {
-        let userSubError = AuthError.service(
+        let userSubError = AuthError.signedOut(
             AuthPluginErrorConstants.userSubSignOutError.errorDescription,
-            AuthPluginErrorConstants.userSubSignOutError.recoverySuggestion,
-            AWSCognitoAuthError.signedOut)
+            AuthPluginErrorConstants.userSubSignOutError.recoverySuggestion)
         return userSubError
     }
 
     private static func makeCognitoTokensSignedOutError() -> AuthError {
-        let tokensError = AuthError.service(
+        let tokensError = AuthError.signedOut(
             AuthPluginErrorConstants.cognitoTokensSignOutError.errorDescription,
-            AuthPluginErrorConstants.cognitoTokensSignOutError.recoverySuggestion,
-            AWSCognitoAuthError.signedOut)
+            AuthPluginErrorConstants.cognitoTokensSignOutError.recoverySuggestion)
         return tokensError
     }
 }
