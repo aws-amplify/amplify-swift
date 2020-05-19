@@ -46,6 +46,7 @@ class GraphQLDeleteMutationTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -92,6 +93,7 @@ class GraphQLDeleteMutationTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename

@@ -19,6 +19,7 @@ extension Post {
     case updatedAt
     case draft
     case rating
+    case status
     case comments
   }
 
@@ -38,6 +39,7 @@ extension Post {
       .field(post.updatedAt, is: .optional, ofType: .dateTime),
       .field(post.draft, is: .optional, ofType: .bool),
       .field(post.rating, is: .optional, ofType: .double),
+      .field(post.status, is: .optional, ofType: .enum(type: PostStatus.self)),
       .hasMany(post.comments, is: .optional, ofType: Comment.self, associatedWith: Comment.keys.post)
     )
     }

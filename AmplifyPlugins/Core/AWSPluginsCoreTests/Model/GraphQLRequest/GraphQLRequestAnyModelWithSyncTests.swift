@@ -36,6 +36,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -74,6 +75,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -116,6 +118,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -158,6 +161,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -198,6 +202,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -235,6 +240,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
               createdAt
               draft
               rating
+              status
               title
               updatedAt
               __typename

@@ -1,3 +1,9 @@
+enum PostStatus {
+    PRIVATE
+    DRAFT
+    PUBLISHED
+}
+
 type Post @model {
     id: ID!
     title: String!
@@ -6,6 +12,7 @@ type Post @model {
     updatedAt: AWSDateTime
     draft: Boolean
     rating: Float
+    status: PostStatus
     comments: [Comment] @connection(name: "PostComment")
 }
 

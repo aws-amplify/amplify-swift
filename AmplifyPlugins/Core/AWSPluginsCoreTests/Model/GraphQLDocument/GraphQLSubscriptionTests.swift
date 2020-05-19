@@ -44,6 +44,7 @@ class GraphQLSubscriptionTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -68,6 +69,7 @@ class GraphQLSubscriptionTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -106,6 +108,7 @@ class GraphQLSubscriptionTests: XCTestCase {
               createdAt
               draft
               rating
+              status
               title
               updatedAt
               __typename
@@ -136,6 +139,7 @@ class GraphQLSubscriptionTests: XCTestCase {
               createdAt
               draft
               rating
+              status
               title
               updatedAt
               __typename
@@ -175,6 +179,7 @@ class GraphQLSubscriptionTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -199,6 +204,7 @@ class GraphQLSubscriptionTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -232,6 +238,7 @@ class GraphQLSubscriptionTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -256,6 +263,7 @@ class GraphQLSubscriptionTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename

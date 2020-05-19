@@ -46,6 +46,7 @@ class GraphQLUpdateMutationTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -93,6 +94,7 @@ class GraphQLUpdateMutationTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename

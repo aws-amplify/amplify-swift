@@ -291,6 +291,7 @@
 		B996FC4423FF2FA8006D0F68 /* Encodable+AnyEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B996FC4323FF2FA8006D0F68 /* Encodable+AnyEncodable.swift */; };
 		B996FC4D24059918006D0F68 /* Model+Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = B996FC4C24059918006D0F68 /* Model+Enum.swift */; };
 		B9A329CC243559BF00C5B80C /* TimeInterval+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A329CB243559BF00C5B80C /* TimeInterval+Helper.swift */; };
+		B9AA09F12473CA29000E6FBB /* PostStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AA09F02473CA29000E6FBB /* PostStatus.swift */; };
 		B9B64A9F23FCBF7E00730B68 /* ModelValueConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */; };
 		B9DCA263240F217C00075E22 /* AnyEncodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DCA262240F217C00075E22 /* AnyEncodableTests.swift */; };
 		B9FAA10B23878122009414B4 /* ModelField+Association.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FAA10A23878122009414B4 /* ModelField+Association.swift */; };
@@ -1007,6 +1008,7 @@
 		B996FC4323FF2FA8006D0F68 /* Encodable+AnyEncodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Encodable+AnyEncodable.swift"; sourceTree = "<group>"; };
 		B996FC4C24059918006D0F68 /* Model+Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+Enum.swift"; sourceTree = "<group>"; };
 		B9A329CB243559BF00C5B80C /* TimeInterval+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+Helper.swift"; sourceTree = "<group>"; };
+		B9AA09F02473CA29000E6FBB /* PostStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostStatus.swift; sourceTree = "<group>"; };
 		B9B64A9E23FCBF7E00730B68 /* ModelValueConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelValueConverter.swift; sourceTree = "<group>"; };
 		B9DCA262240F217C00075E22 /* AnyEncodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyEncodableTests.swift; sourceTree = "<group>"; };
 		B9FAA10A23878122009414B4 /* ModelField+Association.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelField+Association.swift"; sourceTree = "<group>"; };
@@ -2119,8 +2121,8 @@
 		B952182D237E21B900F53237 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				B952182F237E21B900F53237 /* schema.graphql */,
 				FAF512AD23986791001ADF4E /* AmplifyModels.swift */,
-				B9FAA10C23878BD6009414B4 /* Associations */,
 				210B3E35245CB86500F43848 /* Blog.swift */,
 				210B3E38245CB88D00F43848 /* Blog+Schema.swift */,
 				B9521830237E21B900F53237 /* Comment.swift */,
@@ -2129,7 +2131,8 @@
 				B9521832237E21B900F53237 /* Post.swift */,
 				B9521831237E21B900F53237 /* Post+Schema.swift */,
 				2129BE002394627B006363A1 /* PostCommentModelRegistration.swift */,
-				B952182F237E21B900F53237 /* schema.graphql */,
+				B9AA09F02473CA29000E6FBB /* PostStatus.swift */,
+				B9FAA10C23878BD6009414B4 /* Associations */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -2898,12 +2901,12 @@
 			isa = PBXGroup;
 			children = (
 				FACA36062327FBD4000E74F6 /* AmplifyTestCommon.h */,
-				FA9D6C20238DF06B00C7DD9F /* Helpers */,
 				FACA36072327FBD4000E74F6 /* Info.plist */,
-				FAC23577227A056F00424678 /* Mocks */,
-				B952182D237E21B900F53237 /* Models */,
 				21F40A3F23A295470074678E /* TestCommonConstants.swift */,
 				FACF52032329633500646E10 /* TestExtensions.swift */,
+				FA9D6C20238DF06B00C7DD9F /* Helpers */,
+				FAC23577227A056F00424678 /* Mocks */,
+				B952182D237E21B900F53237 /* Models */,
 			);
 			path = AmplifyTestCommon;
 			sourceTree = "<group>";
@@ -4334,6 +4337,7 @@
 				B9FAA11423878CEA009414B4 /* UserProfile+Schema.swift in Sources */,
 				FACA361D2327FC84000E74F6 /* MockAPICategoryPlugin.swift in Sources */,
 				B9FAA11023878C5E009414B4 /* UserProfile.swift in Sources */,
+				B9AA09F12473CA29000E6FBB /* PostStatus.swift in Sources */,
 				210B3E36245CB86500F43848 /* Blog.swift in Sources */,
 				B9FAA12023879BD0009414B4 /* BookAuthor+Schema.swift in Sources */,
 				21F40A4023A295470074678E /* TestCommonConstants.swift in Sources */,
