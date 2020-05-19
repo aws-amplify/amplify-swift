@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension DateScalar where Self: Hashable {
+extension TemporalSpec where Self: Hashable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(date)

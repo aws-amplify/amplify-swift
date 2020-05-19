@@ -10,7 +10,7 @@ import XCTest
 
 @testable import Amplify
 
-class DateScalarOperationTests: XCTestCase {
+class TemporalOperationTests: XCTestCase {
 
     // MARK: - Date
 
@@ -21,10 +21,10 @@ class DateScalarOperationTests: XCTestCase {
     ///   - it should return a new `Date` with the correct component added
     func testDateAdditionOperations() {
         do {
-            let date = try Date(iso8601String: "2020-01-20")
+            let date = try Temporal.Date(iso8601String: "2020-01-20")
             XCTAssertEqual((date + .days(3)).iso8601String, "2020-01-23Z")
             XCTAssertEqual((date + .weeks(2)).iso8601String, "2020-02-03Z")
-            XCTAssertEqual((date + .months(6)).iso8601String, "2020-07-19Z")
+            XCTAssertEqual((date + .months(6)).iso8601String, "2020-07-20Z")
             XCTAssertEqual((date + .years(4)).iso8601String, "2024-01-20Z")
         } catch {
             XCTFail(error.localizedDescription)
@@ -38,10 +38,10 @@ class DateScalarOperationTests: XCTestCase {
     ///   - it should return a new `Date` with the correct component subtracted
     func testDateSubtractionOperations() {
         do {
-            let date = try Date(iso8601String: "2020-01-20")
+            let date = try Temporal.Date(iso8601String: "2020-01-20")
             XCTAssertEqual((date - .days(3)).iso8601String, "2020-01-17Z")
             XCTAssertEqual((date - .weeks(2)).iso8601String, "2020-01-06Z")
-            XCTAssertEqual((date - .months(6)).iso8601String, "2019-07-19Z")
+            XCTAssertEqual((date - .months(6)).iso8601String, "2019-07-20Z")
             XCTAssertEqual((date - .years(4)).iso8601String, "2016-01-20Z")
         } catch {
             XCTFail(error.localizedDescription)
@@ -58,10 +58,10 @@ class DateScalarOperationTests: XCTestCase {
     ///   - it should return a new `DateTime` with the correct component added
     func testDateTimeAdditionOperations() {
         do {
-            let datetime = try DateTime(iso8601String: "2020-01-20T08:00:00")
+            let datetime = try Temporal.DateTime(iso8601String: "2020-01-20T08:00:00")
             XCTAssertEqual((datetime + .days(3)).iso8601String, "2020-01-23T08:00:00.000Z")
             XCTAssertEqual((datetime + .weeks(2)).iso8601String, "2020-02-03T08:00:00.000Z")
-            XCTAssertEqual((datetime + .months(6)).iso8601String, "2020-07-20T07:00:00.000Z")
+            XCTAssertEqual((datetime + .months(6)).iso8601String, "2020-07-20T08:00:00.000Z")
             XCTAssertEqual((datetime + .years(4)).iso8601String, "2024-01-20T08:00:00.000Z")
             XCTAssertEqual((datetime + .hours(4)).iso8601String, "2020-01-20T12:00:00.000Z")
             XCTAssertEqual((datetime + .minutes(20)).iso8601String, "2020-01-20T08:20:00.000Z")
@@ -80,10 +80,10 @@ class DateScalarOperationTests: XCTestCase {
     ///   - it should return a new `DateTime` with the correct component subtracted
     func testDateTimeSubtractionOperations() {
         do {
-            let datetime = try DateTime(iso8601String: "2020-01-20T08:00:00")
+            let datetime = try Temporal.DateTime(iso8601String: "2020-01-20T08:00:00")
             XCTAssertEqual((datetime - .days(3)).iso8601String, "2020-01-17T08:00:00.000Z")
             XCTAssertEqual((datetime - .weeks(2)).iso8601String, "2020-01-06T08:00:00.000Z")
-            XCTAssertEqual((datetime - .months(6)).iso8601String, "2019-07-20T07:00:00.000Z")
+            XCTAssertEqual((datetime - .months(6)).iso8601String, "2019-07-20T08:00:00.000Z")
             XCTAssertEqual((datetime - .years(4)).iso8601String, "2016-01-20T08:00:00.000Z")
             XCTAssertEqual((datetime - .hours(4)).iso8601String, "2020-01-20T04:00:00.000Z")
             XCTAssertEqual((datetime - .minutes(20)).iso8601String, "2020-01-20T07:40:00.000Z")
@@ -103,7 +103,7 @@ class DateScalarOperationTests: XCTestCase {
     ///   - it should return a new `Time` with the correct component added
     func testTimeAdditionOperations() {
         do {
-            let time = try Time(iso8601String: "08:00:00")
+            let time = try Temporal.Time(iso8601String: "08:00:00")
             XCTAssertEqual((time + .hours(4)).iso8601String, "12:00:00.000Z")
             XCTAssertEqual((time + .minutes(20)).iso8601String, "08:20:00.000Z")
             XCTAssertEqual((time + .seconds(35)).iso8601String, "08:00:35.000Z")
@@ -120,7 +120,7 @@ class DateScalarOperationTests: XCTestCase {
     ///   - it should return a new `Time` with the correct component subtracted
     func testTimeSubtractionOperations() {
         do {
-            let time = try Time(iso8601String: "08:00:00")
+            let time = try Temporal.Time(iso8601String: "08:00:00")
             XCTAssertEqual((time - .hours(4)).iso8601String, "04:00:00.000Z")
             XCTAssertEqual((time - .minutes(20)).iso8601String, "07:40:00.000Z")
             XCTAssertEqual((time - .seconds(35)).iso8601String, "07:59:25.000Z")

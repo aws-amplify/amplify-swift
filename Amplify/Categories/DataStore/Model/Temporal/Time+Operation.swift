@@ -7,13 +7,16 @@
 
 import Foundation
 
-
 public enum TimeUnit {
 
     case hours(_ value: Int)
     case minutes(_ value: Int)
     case seconds(_ value: Int)
     case nanoseconds(_ value: Int)
+
+    public static let oneSecond: TimeUnit = .seconds(1)
+    public static let oneMinute: TimeUnit = .minutes(1)
+    public static let oneHour: TimeUnit = .hours(1)
 
     public var calendarComponent: Calendar.Component {
         switch self {
@@ -48,7 +51,7 @@ public protocol TimeUnitOperable {
 
 }
 
-extension DateScalar where Self: TimeUnitOperable {
+extension TemporalSpec where Self: TimeUnitOperable {
 
     public static func + (left: Self, right: TimeUnit) -> Self {
         return left.add(value: right.value, to: right.calendarComponent)

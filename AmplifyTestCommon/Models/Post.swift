@@ -13,8 +13,8 @@ public struct Post: Model {
   public let id: String
   public var title: String
   public var content: String
-  public var createdAt: DateTime
-  public var updatedAt: DateTime?
+  public var createdAt: Temporal.DateTime
+  public var updatedAt: Temporal.DateTime?
   public var draft: Bool?
   public var rating: Double?
   public var comments: List<Comment>?
@@ -22,8 +22,8 @@ public struct Post: Model {
   public init(id: String = UUID().uuidString,
       title: String,
       content: String,
-      createdAt: DateTime,
-      updatedAt: DateTime? = nil,
+      createdAt: Temporal.DateTime,
+      updatedAt: Temporal.DateTime? = nil,
       draft: Bool? = nil,
       rating: Double? = nil,
       comments: List<Comment>? = []) {

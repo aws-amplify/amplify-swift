@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension DateScalarFormat {
+extension TemporalFormat {
 
     var timeFormat: String {
         switch self {

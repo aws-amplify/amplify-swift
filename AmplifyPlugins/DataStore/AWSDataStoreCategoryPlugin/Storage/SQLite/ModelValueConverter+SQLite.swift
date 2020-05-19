@@ -17,19 +17,13 @@ internal extension Bool {
 
 }
 
-internal extension String {
-
-    var iso8601Date: Date? {
-        try? Date(iso8601String: self)
-    }
-}
-
 public struct SQLiteModelValueConverter: ModelValueConverter {
 
     public typealias SourceType = Any?
     public typealias TargetType = Binding?
 
-    public static func convertToTarget(from source: Any?, fieldType: ModelFieldType) throws -> Binding? {
+    public static func convertToTarget(from source: Any?,
+                                       fieldType: ModelFieldType) throws -> Binding? {
         guard let value = source else {
             return nil
         }
@@ -41,7 +35,7 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
         case .double:
             return value as? Double
         case .date, .dateTime, .time:
-            return (value as? DateScalar)?.iso8601String
+            return (value as? TemporalSpec)?.iso8601String
         case .timestamp:
             return value as? Int
         case .bool:
@@ -62,19 +56,18 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
         }
     }
 
-    public static func convertToSource(from target: Binding?, fieldType: ModelFieldType) throws -> Any? {
+    public static func convertToSource(from target: Binding?,
+                                       fieldType: ModelFieldType) throws -> Any? {
         guard let value = target else {
             return nil
         }
         switch fieldType {
-        case .string, .dateTime, .time:
+        case .string, .date, .dateTime, .time:
             return value as? String
         case .int:
             return value as? Int64
         case .double:
             return value as? Double
-        case .date:
-            return (value as? String)?.iso8601Date?.iso8601String
         case .timestamp:
             return value as? Int64
         case .bool:

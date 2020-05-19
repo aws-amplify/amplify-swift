@@ -12,20 +12,20 @@ import XCTest
 
 let pst = TimeZone(secondsFromGMT: -28_800)!
 
-class DateScalarTests: XCTestCase {
+class TemporalTests: XCTestCase {
 
     // MARK: - DateTime
 
     /// - Given: a `DateTime` string
     /// - When:
-    ///   - the input format is `yyyy-MM-dd'T'HH:mm`
+    ///   - the input format is `yyyy-MM-dd'T'HH:mm'Z'`
     /// - Then:
     ///   - it should be parsed correctly in a `DateTime` instance
     ///   - it should use the `utc` TimeZone
-    ///   - it should output the correctly formatted string for each `DateScalarFormat`
+    ///   - it should output the correctly formatted string for each `TemporalFormat`
     func testShortDateTimeParsing() {
         do {
-            let datetime = try DateTime(iso8601String: "2020-01-20T08:00")
+            let datetime = try Temporal.DateTime(iso8601String: "2020-01-20T08:00:00Z")
             XCTAssertEqual(datetime.iso8601String, "2020-01-20T08:00:00.000Z")
             XCTAssertEqual(datetime.iso8601FormattedString(format: .short, timeZone: pst), "2020-01-20T00:00")
             XCTAssertEqual(datetime.iso8601FormattedString(format: .short, timeZone: .utc), "2020-01-20T08:00")
@@ -44,14 +44,14 @@ class DateScalarTests: XCTestCase {
 
     /// - Given: a `DateTime` string
     /// - When:
-    ///   - the input format is `yyyy-MM-dd'T'HH:mm:ss`
+    ///   - the input format is `yyyy-MM-dd'T'HH:mm:ss'Z'`
     /// - Then:
     ///   - it should be parsed correctly in a `DateTime` instance
     ///   - it should use the `utc` TimeZone
-    ///   - it should output the correctly formatted string for each `DateScalarFormat`
+    ///   - it should output the correctly formatted string for each `TemporalFormat`
     func testMediumDateTimeParsing() {
         do {
-            let datetime = try DateTime(iso8601String: "2020-01-20T08:00:00")
+            let datetime = try Temporal.DateTime(iso8601String: "2020-01-20T08:00:00Z")
             XCTAssertEqual(datetime.iso8601String, "2020-01-20T08:00:00.000Z")
             XCTAssertEqual(datetime.iso8601FormattedString(format: .short, timeZone: pst), "2020-01-20T00:00")
             XCTAssertEqual(datetime.iso8601FormattedString(format: .short, timeZone: .utc), "2020-01-20T08:00")
@@ -74,10 +74,10 @@ class DateScalarTests: XCTestCase {
     /// - Then:
     ///   - it should be parsed correctly in a `DateTime` instance
     ///   - it should use the `utc` TimeZone
-    ///   - it should output the correctly formatted string for each `DateScalarFormat`
+    ///   - it should output the correctly formatted string for each `TemporalFormat`
     func testLongDateTimeParsing() {
         do {
-            let datetime = try DateTime(iso8601String: "2020-01-20T08:00:00")
+            let datetime = try Temporal.DateTime(iso8601String: "2020-01-20T08:00:00Z")
             XCTAssertEqual(datetime.iso8601String, "2020-01-20T08:00:00.000Z")
             XCTAssertEqual(
                 datetime.iso8601FormattedString(format: .short, timeZone: pst),
@@ -114,10 +114,10 @@ class DateScalarTests: XCTestCase {
     /// - Then:
     ///   - it should be parsed correctly in a `DateTime` instance
     ///   - it should use the provided `utc` TimeZone
-    ///   - it should output the correctly formatted string for each `DateScalarFormat`
+    ///   - it should output the correctly formatted string for each `TemporalFormat`
     func testFullDateTimeParsingOnUTC() {
         do {
-            let datetime = try DateTime(iso8601String: "2020-01-20T08:00:00.180Z")
+            let datetime = try Temporal.DateTime(iso8601String: "2020-01-20T08:00:00.180Z")
             XCTAssertEqual(datetime.iso8601String, "2020-01-20T08:00:00.180Z")
             XCTAssertEqual(datetime.iso8601FormattedString(format: .short, timeZone: pst), "2020-01-20T00:00")
             XCTAssertEqual(datetime.iso8601FormattedString(format: .short, timeZone: .utc), "2020-01-20T08:00")
@@ -140,10 +140,10 @@ class DateScalarTests: XCTestCase {
     /// - Then:
     ///   - it should be parsed correctly in a `DateTime` instance
     ///   - it should use the provided `pst` TimeZone
-    ///   - it should output the correctly formatted string for each `DateScalarFormat`
+    ///   - it should output the correctly formatted string for each `TemporalFormat`
     func testFullDateTimeParsingOnPST() {
         do {
-            let datetime = try DateTime(iso8601String: "2020-01-20T08:00:00.180-08:00")
+            let datetime = try Temporal.DateTime(iso8601String: "2020-01-20T08:00:00.180-08:00")
             XCTAssertEqual(datetime.iso8601String, "2020-01-20T16:00:00.180Z")
             XCTAssertEqual(datetime.iso8601FormattedString(format: .short, timeZone: pst), "2020-01-20T08:00")
             XCTAssertEqual(datetime.iso8601FormattedString(format: .short, timeZone: .utc), "2020-01-20T16:00")
@@ -168,10 +168,10 @@ class DateScalarTests: XCTestCase {
     /// - Then:
     ///   - it should be parsed correctly in a `Date` instance
     ///   - it should use the `utc` TimeZone
-    ///   - it should output the correctly formatted string for each `DateScalarFormat`
+    ///   - it should output the correctly formatted string for each `TemporalFormat`
     func testShortDateParsing() {
         do {
-            let date = try Date(iso8601String: "2020-01-20")
+            let date = try Temporal.Date(iso8601String: "2020-01-20")
             XCTAssertEqual(date.iso8601String, "2020-01-20Z")
             XCTAssertEqual(date.iso8601FormattedString(format: .short, timeZone: pst), "2020-01-19")
             XCTAssertEqual(date.iso8601FormattedString(format: .short, timeZone: .utc), "2020-01-20")
@@ -192,10 +192,13 @@ class DateScalarTests: XCTestCase {
     /// - Then:
     ///   - it should be parsed correctly in a `Date` instance
     ///   - it should use the provided `utc` TimeZone
-    ///   - it should output the correctly formatted string for each `DateScalarFormat`
+    ///   - it should output the correctly formatted string for each `TemporalFormat`
     func testFullDateParsingOnUTC() {
         do {
-            let date = try Date(iso8601String: "2020-01-20Z")
+            let date = try Temporal.Date(iso8601String: "2020-01-20Z")
+            print("===============")
+            print(date)
+            print("===============")
             XCTAssertEqual(date.iso8601String, "2020-01-20Z")
             XCTAssertEqual(date.iso8601FormattedString(format: .short, timeZone: pst), "2020-01-19")
             XCTAssertEqual(date.iso8601FormattedString(format: .short, timeZone: .utc), "2020-01-20")
@@ -216,10 +219,10 @@ class DateScalarTests: XCTestCase {
     /// - Then:
     ///   - it should be parsed correctly in a `Date` instance
     ///   - it should use the provided `pst` TimeZone
-    ///   - it should output the correctly formatted string for each `DateScalarFormat`
+    ///   - it should output the correctly formatted string for each `TemporalFormat`
     func testFullDateParsingOnPST() {
         do {
-            let date = try Date(iso8601String: "2020-01-20-08:00")
+            let date = try Temporal.Date(iso8601String: "2020-01-20-08:00")
             XCTAssertEqual(date.iso8601String, "2020-01-20Z")
             XCTAssertEqual(date.iso8601FormattedString(format: .short, timeZone: pst), "2020-01-20")
             XCTAssertEqual(date.iso8601FormattedString(format: .short, timeZone: .utc), "2020-01-20")
@@ -242,10 +245,10 @@ class DateScalarTests: XCTestCase {
     /// - Then:
     ///   - it should be parsed correctly in a `Time` instance
     ///   - it should use the `utc` TimeZone
-    ///   - it should output the correctly formatted string for each `DateScalarFormat`
+    ///   - it should output the correctly formatted string for each `TemporalFormat`
     func testShortTimeParsing() {
         do {
-            let time = try Time(iso8601String: "08:00")
+            let time = try Temporal.Time(iso8601String: "08:00")
             XCTAssertEqual(time.iso8601String, "08:00:00.000Z")
             XCTAssertEqual(time.iso8601FormattedString(format: .short, timeZone: pst), "00:00")
             XCTAssertEqual(time.iso8601FormattedString(format: .short, timeZone: .utc), "08:00")
@@ -266,10 +269,10 @@ class DateScalarTests: XCTestCase {
     /// - Then:
     ///   - it should be parsed correctly in a `Time` instance
     ///   - it should use the `utc` TimeZone
-    ///   - it should output the correctly formatted string for each `DateScalarFormat`
+    ///   - it should output the correctly formatted string for each `TemporalFormat`
     func testMediumTimeParsing() {
         do {
-            let time = try Time(iso8601String: "08:00:00")
+            let time = try Temporal.Time(iso8601String: "08:00:00")
             XCTAssertEqual(time.iso8601String, "08:00:00.000Z")
             XCTAssertEqual(time.iso8601FormattedString(format: .short, timeZone: pst), "00:00")
             XCTAssertEqual(time.iso8601FormattedString(format: .short, timeZone: .utc), "08:00")
@@ -290,10 +293,10 @@ class DateScalarTests: XCTestCase {
     /// - Then:
     ///   - it should be parsed correctly in a `Time` instance
     ///   - it should use the `utc` TimeZone
-    ///   - it should output the correctly formatted string for each `DateScalarFormat`
+    ///   - it should output the correctly formatted string for each `TemporalFormat`
     func testLongTimeParsing() {
         do {
-            let time = try Time(iso8601String: "08:00:00.180")
+            let time = try Temporal.Time(iso8601String: "08:00:00.180Z")
             XCTAssertEqual(time.iso8601String, "08:00:00.180Z")
             XCTAssertEqual(time.iso8601FormattedString(format: .short, timeZone: pst), "00:00")
             XCTAssertEqual(time.iso8601FormattedString(format: .short, timeZone: .utc), "08:00")
@@ -314,10 +317,10 @@ class DateScalarTests: XCTestCase {
     /// - Then:
     ///   - it should be parsed correctly in a `Time` instance
     ///   - it should use the provided `utc` TimeZone
-    ///   - it should output the correctly formatted string for each `DateScalarFormat`
+    ///   - it should output the correctly formatted string for each `TemporalFormat`
     func testFullTimeParsingOnUTC() {
         do {
-            let time = try Time(iso8601String: "08:00:00.180Z")
+            let time = try Temporal.Time(iso8601String: "08:00:00.180Z")
             XCTAssertEqual(time.iso8601String, "08:00:00.180Z")
             XCTAssertEqual(time.iso8601FormattedString(format: .short, timeZone: pst), "00:00")
             XCTAssertEqual(time.iso8601FormattedString(format: .short, timeZone: .utc), "08:00")
@@ -338,10 +341,10 @@ class DateScalarTests: XCTestCase {
     /// - Then:
     ///   - it should be parsed correctly in a `Time` instance
     ///   - it should use the provided `pst` TimeZone
-    ///   - it should output the correctly formatted string for each `DateScalarFormat`
+    ///   - it should output the correctly formatted string for each `TemporalFormat`
     func testFullTimeParsingOnPST() {
         do {
-            let time = try Time(iso8601String: "08:00:00.180-08:00")
+            let time = try Temporal.Time(iso8601String: "08:00:00.180-08:00")
             XCTAssertEqual(time.iso8601String, "16:00:00.180Z")
             XCTAssertEqual(time.iso8601FormattedString(format: .short, timeZone: pst), "08:00")
             XCTAssertEqual(time.iso8601FormattedString(format: .short, timeZone: .utc), "16:00")

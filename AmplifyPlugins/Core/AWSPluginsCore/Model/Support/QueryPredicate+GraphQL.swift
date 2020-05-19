@@ -140,7 +140,7 @@ extension Persistable {
             return value
         }
 
-        if let value = value as? Date {
+        if let value = value as? Temporal.Date {
             return value.iso8601String
         }
 

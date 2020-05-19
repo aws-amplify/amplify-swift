@@ -26,7 +26,7 @@ public struct ExampleWithEveryType: Model {
     public var intField: Int
     public var doubleField: Double
     public var boolField: Bool
-    public var dateField: Date
+    public var dateField: Temporal.Date
     public var enumField: ExampleEnum
     public var nonModelField: ExampleNonModelType
     public var arrayOfStringsField: [String]

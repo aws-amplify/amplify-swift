@@ -293,7 +293,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
     }
 
     func testInsertSinglePostThenDeleteItByPredicate() {
-        let dateTestStart = DateTime.now()
+        let dateTestStart = Temporal.DateTime.now()
         let dateInFuture = dateTestStart + .seconds(10)
         let saveExpectation = expectation(description: "Saved")
         let deleteExpectation = expectation(description: "Deleted")

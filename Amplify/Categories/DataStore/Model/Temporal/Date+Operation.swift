@@ -14,6 +14,11 @@ public enum DateUnit {
     case months(_ value: Int)
     case years(_ value: Int)
 
+    public static let oneDay: DateUnit = .days(1)
+    public static let oneWeek: DateUnit = .weeks(1)
+    public static let oneMonth: DateUnit = .months(1)
+    public static let oneYear: DateUnit = .years(1)
+
     public var calendarComponent: Calendar.Component {
         switch self {
         case .days, .weeks:
@@ -46,7 +51,7 @@ public protocol DateUnitOperable {
 
 }
 
-extension DateScalar where Self: DateUnitOperable {
+extension TemporalSpec where Self: DateUnitOperable {
 
     public static func + (left: Self, right: DateUnit) -> Self {
         return left.add(value: right.value, to: right.calendarComponent)

@@ -57,7 +57,7 @@ class ModelRegistryTests: XCTestCase {
         XCTAssertEqual(decodedPost["title"] as? String, "title")
         XCTAssertEqual(decodedPost["content"] as? String, "content")
 
-        guard let createdAt = decodedPost["createdAt"] as? DateTime else {
+        guard let createdAt = decodedPost["createdAt"] as? Temporal.DateTime else {
             XCTFail("Could not decode createdAt from post")
             return
         }
