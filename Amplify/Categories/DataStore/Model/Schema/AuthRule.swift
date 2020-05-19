@@ -23,7 +23,6 @@ public typealias AuthRules = [AuthRule]
 
 public struct AuthRule {
     public let allow: AuthStrategy
-    public let field: CodingKey?
     public let ownerField: CodingKey?
     public let identityClaim: String?
     public let groupClaim: String?
@@ -32,7 +31,6 @@ public struct AuthRule {
     public let operations: [ModelOperation]
 
     public init(allow: AuthStrategy,
-                field: CodingKey? = nil,
                 ownerField: CodingKey? = nil,
                 identityClaim: String? = nil,
                 groupClaim: String? = nil,
@@ -40,7 +38,6 @@ public struct AuthRule {
                 groupsField: CodingKey? = nil,
                 operations: [ModelOperation] = []) {
         self.allow = allow
-        self.field = field
         self.ownerField = ownerField
         self.identityClaim = identityClaim
         self.groupClaim = groupClaim

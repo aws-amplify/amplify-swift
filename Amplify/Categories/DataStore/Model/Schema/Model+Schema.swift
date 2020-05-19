@@ -46,7 +46,6 @@ extension Model {
     }
 
     public static func rule(allow: AuthStrategy,
-                            field: CodingKey? = nil,
                             ownerField: CodingKey? = nil,
                             identityClaim: String? = nil,
                             groupClaim: String? = nil,
@@ -54,7 +53,6 @@ extension Model {
                             groupsField: CodingKey? = nil,
                             operations: [ModelOperation] = []) -> AuthRule {
         return AuthRule(allow: allow,
-                        field: field,
                         ownerField: ownerField,
                         identityClaim: identityClaim,
                         groupClaim: groupClaim,
