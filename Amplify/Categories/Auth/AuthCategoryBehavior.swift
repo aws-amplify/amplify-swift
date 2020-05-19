@@ -39,7 +39,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - confirmationCode: Confirmation code received to the user.
     ///   - options: Parameters specific to plugin behavior
     ///   - listener: Triggered when the operation completes.
-    func confirmSignUp(username: String,
+    func confirmSignUp(for username: String,
                        confirmationCode: String,
                        options: AuthConfirmSignUpOperation.Request.Options?,
                        listener: AuthConfirmSignUpOperation.ResultListener?) -> AuthConfirmSignUpOperation
@@ -50,7 +50,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - username: Username of the user to be confirmed.
     ///   - options: Parameters specific to plugin behavior.
     ///   - listener: Triggered when the operation completes.
-    func resendSignUpCode(username: String,
+    func resendSignUpCode(for username: String,
                           options: AuthResendSignUpCodeOperation.Request.Options?,
                           listener: AuthResendSignUpCodeOperation.ResultListener?) -> AuthResendSignUpCodeOperation
 
