@@ -17,6 +17,9 @@ import AWSPluginsCore
 @available(iOS 13.0, *)
 class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
 
+    typealias MutationSyncAPIRequest = GraphQLRequest<MutationSyncResult>
+    typealias MutationSyncCloudResult = GraphQLOperation<MutationSync<AnyModel>>.OperationResult
+
     private let dataStoreConfiguration: DataStoreConfiguration
     private let storageAdapter: StorageEngineAdapter
     private let mutationEvent: MutationEvent
@@ -220,7 +223,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
 
     // MARK: Sync to cloud
 
-    func makeAPIRequest(_ apiRequest: GraphQLRequest<MutationSync<AnyModel>>) {
+    func makeAPIRequest(_ apiRequest: MutationSyncAPIRequest) {
         guard !isCancelled else {
             let error = DataStoreError.unknown("Operation cancelled", "")
             finish(result: .failure(error))
@@ -234,26 +237,24 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             return
         }
         log.verbose("\(#function) sending mutation with data: \(apiRequest)")
-        mutationOperation = api.mutate(request: apiRequest) { asyncEvent in
-            self.log.verbose("sendMutationToCloud received asyncEvent: \(asyncEvent)")
-            self.validateResponseFromCloud(asyncEvent: asyncEvent, request: apiRequest)
+        mutationOperation = api.mutate(request: apiRequest) { result in
+            self.log.verbose("sendMutationToCloud received asyncEvent: \(result)")
+            self.validate(cloudResult: result, request: apiRequest)
         }
     }
 
-    private func validateResponseFromCloud(asyncEvent: AsyncEvent<Void,
-        GraphQLResponse<MutationSync<AnyModel>>, APIError>,
-                                           request: GraphQLRequest<MutationSync<AnyModel>>) {
+    private func validate(cloudResult: MutationSyncCloudResult, request: MutationSyncAPIRequest) {
         guard !isCancelled else {
             let error = DataStoreError.unknown("Operation cancelled", "")
             finish(result: .failure(error))
             return
         }
 
-        if case .failed(let error) = asyncEvent {
+        if case .failure(let error) = cloudResult {
             dataStoreConfiguration.errorHandler(error)
         }
 
-        if case .completed(let response) = asyncEvent,
+        if case .success(let response) = cloudResult,
             case .failure(let error) = response {
             dataStoreConfiguration.errorHandler(error)
         }
@@ -367,7 +368,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
     }
 
     private func finish(result: Result<MutationEvent?, Error>) {
-        mutationOperation?.removeListener()
+        mutationOperation?.removeResultListener()
         mutationOperation = nil
 
         DispatchQueue.global().async {

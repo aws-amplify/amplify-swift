@@ -45,27 +45,15 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber, Cancella
         subscription.request(.max(1))
     }
 
-    func receive(_ input: IncomingAsyncSubscriptionEventPublisher.Event) -> Subscribers.Demand {
-        log.verbose("\(#function): \(input)")
-
-        switch input {
-        case .completed:
-            log.debug("Received completed event: \(input)")
-            modelsFromSubscription.send(completion: .finished)
-        case .failed(let apiError):
-            let dataStoreError = DataStoreError.api(apiError)
-            log.error(error: dataStoreError)
-            modelsFromSubscription.send(completion: .failure(dataStoreError))
-        case .inProcess(let subscriptionEvent):
-            dispose(of: subscriptionEvent)
-        default:
-            break
-        }
+    func receive(_ subscriptionEvent: IncomingAsyncSubscriptionEventPublisher.Event) -> Subscribers.Demand {
+        log.verbose("\(#function): \(subscriptionEvent)")
+        dispose(of: subscriptionEvent)
         return .max(1)
     }
 
     func receive(completion: Subscribers.Completion<DataStoreError>) {
         log.info("Received completion: \(completion)")
+        modelsFromSubscription.send(completion: completion)
     }
 
     // MARK: - Event processing
@@ -74,8 +62,8 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber, Cancella
         log.verbose("dispose(of subscriptionEvent): \(subscriptionEvent)")
         switch subscriptionEvent {
         case .connection(let connectionState):
-            // Connection events are informational only at this level. The terminal state is represented at the
-            // AsyncEvent Completion/Error
+            // Connection events are informational only at this level. The terminal state is represented by the
+            // OperationResult.
             log.info("connectionState now \(connectionState)")
             switch connectionState {
             case .connected:

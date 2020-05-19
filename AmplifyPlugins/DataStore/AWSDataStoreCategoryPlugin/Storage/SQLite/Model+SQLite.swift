@@ -60,7 +60,6 @@ extension Model {
     internal func sqlValues(for fields: [ModelField]? = nil) -> [Binding?] {
         let modelType = type(of: self)
         let modelFields = fields ?? modelType.schema.sortedFields
-        let valueConverter = SQLiteModelValueConverter()
         let values: [Binding?] = modelFields.map { field in
 
             // self[field.name] subscript accessor returns an Any??, we need to do a few things:

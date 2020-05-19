@@ -42,8 +42,8 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         let post1 = Post(title: "post1", content: "content1", createdAt: Date())
         let mutationEvent = try MutationEvent(model: post1, mutationType: .create)
 
-        var listenerFromFirstRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.EventListener?
-        var listenerFromSecondRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.EventListener?
+        var listenerFromFirstRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
+        var listenerFromSecondRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
 
         var numberOfTimesEntered = 0
         let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { _, eventListener in
@@ -64,7 +64,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         }
         mockAPIPlugin.responders[.mutateRequestListener] = responder
 
-        let completion: GraphQLOperation<MutationSync<AnyModel>>.EventListener = { asyncEvent in
+        let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener = { asyncEvent in
             expectMutationRequestCompletion.fulfill()
         }
 
@@ -82,7 +82,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         }
 
         let urlError = URLError(URLError.notConnectedToInternet)
-        listenerFromFirstRequest(.failed(APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
+        listenerFromFirstRequest(.failure(APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
         wait(for: [expectSecondCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
 
         guard let listenerFromSecondRequest = listenerFromSecondRequestOptional else {
@@ -97,7 +97,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                                                       lastChangedAt: Date().unixSeconds,
                                                       version: 2)
         let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
-        listenerFromSecondRequest(.completed(.success(remoteMutationSync)))
+        listenerFromSecondRequest(.success(.success(remoteMutationSync)))
         //waitForExpectations(timeout: 1)
         wait(for: [expectMutationRequestCompletion], timeout: defaultAsyncWaitTimeout)
     }
@@ -113,8 +113,8 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         let post1 = Post(title: "post1", content: "content1", createdAt: Date())
         let mutationEvent = try MutationEvent(model: post1, mutationType: .create)
 
-        var listenerFromFirstRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.EventListener?
-        var listenerFromSecondRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.EventListener?
+        var listenerFromFirstRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
+        var listenerFromSecondRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
 
         var numberOfTimesEntered = 0
         let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { _, eventListener in
@@ -135,7 +135,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         }
         mockAPIPlugin.responders[.mutateRequestListener] = responder
 
-        let completion: GraphQLOperation<MutationSync<AnyModel>>.EventListener = { asyncEvent in
+        let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener = { asyncEvent in
             expectMutationRequestCompletion.fulfill()
         }
         let operation = SyncMutationToCloudOperation(mutationEvent: mutationEvent,
@@ -153,7 +153,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         }
 
         let urlError = URLError(URLError.notConnectedToInternet)
-        listenerFromFirstRequest(.failed(APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
+        listenerFromFirstRequest(.failure(APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
         reachabilityPublisher.send(ReachabilityUpdate(isOnline: true))
 
         wait(for: [expectSecondCallToAPIMutate], timeout: defaultAsyncWaitTimeout)
@@ -169,7 +169,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                                                       lastChangedAt: Date().unixSeconds,
                                                       version: 2)
         let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
-        listenerFromSecondRequest(.completed(.success(remoteMutationSync)))
+        listenerFromSecondRequest(.success(.success(remoteMutationSync)))
         wait(for: [expectMutationRequestCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
@@ -183,7 +183,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         let post1 = Post(title: "post1", content: "content1", createdAt: Date())
         let mutationEvent = try MutationEvent(model: post1, mutationType: .create)
 
-        var listenerFromFirstRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.EventListener?
+        var listenerFromFirstRequestOptional: GraphQLOperation<MutationSync<AnyModel>>.ResultListener?
 
         var numberOfTimesEntered = 0
         let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { _, eventListener in
@@ -201,9 +201,9 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         }
         mockAPIPlugin.responders[.mutateRequestListener] = responder
 
-        let completion: GraphQLOperation<MutationSync<AnyModel>>.EventListener = { asyncEvent in
+        let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener = { asyncEvent in
             switch asyncEvent {
-            case .failed:
+            case .failure:
                 expectMutationRequestFailed.fulfill()
             default:
                 break
@@ -224,7 +224,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         }
 
         let urlError = URLError(URLError.notConnectedToInternet)
-        listenerFromFirstRequest(.failed(APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
+        listenerFromFirstRequest(.failure(APIError.networkError("mock NotConnectedToInternetError", nil, urlError)))
 
         //At this point, we will be "waiting forever" to retry our request or until the operation is canceled
         operation.cancel()

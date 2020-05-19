@@ -13,7 +13,6 @@ import XCTest
 @testable import AWSPluginsCore
 @testable import AWSDataStoreCategoryPlugin
 
-
 class AWSIncomingEventReconciliationQueueTests: XCTestCase {
     var storageAdapter: MockSQLiteStorageEngineAdapter!
     var apiPlugin: MockAPICategoryPlugin!
@@ -43,7 +42,8 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             modelReconciliationQueueFactory: modelReconciliationQueueFactory)
         eventQueue.start()
 
-        let eventSync = eventQueue.publisher.sink(receiveCompletion: { _ in
+        // We need to keep this in scope for the duration of the test or else Combine will release the listeners.
+        let sink = eventQueue.publisher.sink(receiveCompletion: { _ in
             XCTFail("Not expecting this to call")
         }, receiveValue: { event  in
             switch event {
@@ -70,6 +70,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
         operationQueue.isSuspended = false
         waitForExpectations(timeout: 2)
 
+        // Take action on the sink to prevent compiler warnings about unused variables.
+        sink.cancel()
     }
 }
-
