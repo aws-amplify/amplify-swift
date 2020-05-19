@@ -1,6 +1,36 @@
-# Amplify for iOS - CHANGELOG
+# Changelog
 
-A declarative library for application development using cloud services.
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## 1.0.0-rc.1 (2020-05-20)
+
+### ⚠ BREAKING CHANGES
+
+* The `AsyncEvent` type has been removed. Listeners to most Amplify APIs will now be invoked with standard Swift `Result`s. APIs that deliver multiple values over time also include an "in process" listener.
+* **Auth** category error type is changed to `AuthError`. Current implementations that make use of `AmplifyAuthError` will break with build time error.
+  * As part of this work, we deleted `AuthError` in the **Storage** category.
+
+### Features
+
+* Added **Auth** category
+* Added AuthRule decorator to allow for granular ownership control of GraphQL models
+* Miscellaneous improvements to API semantics and ergonomics throughout
+* Increased test coverage throughout
+* **Datastore** now exposes configurable syncMaxRecords and syncPageSize ([#388](https://github.com/aws-amplify/amplify-ios/issues/388)) ([ca15e88](https://github.com/aws-amplify/amplify-ios/commit/ca15e881d7479020053b0db15a844cd2584b1db1))
+
+* [API] Merge non-GraphQL spec error fields into GraphQLError.extensions ([#401](https://github.com/aws-amplify/amplify-ios/issues/401)) ([b87811c](https://github.com/aws-amplify/amplify-ios/commit/b87811c5d1230c4d1f0a809192266a18bb3d7949))
+* Using config to decide base query or delta query ([#386](https://github.com/aws-amplify/amplify-ios/issues/386)) ([b02c3b7](https://github.com/aws-amplify/amplify-ios/commit/b02c3b7fc6400d558ab9e0213eda404ebb3bae37))
+
+### Bug Fixes
+
+* **amplify-tools:**
+  * Change the tools script to comply with amplify-app changes ([#445](https://github.com/aws-amplify/amplify-ios/issues/445)) ([67412ca](https://github.com/aws-amplify/amplify-ios/commit/67412ca1513057f7f6e473f37ec9b89230642655))
+  * Fix escaped json in shell script ([#452](https://github.com/aws-amplify/amplify-ios/issues/452)) ([5b4b9d2](https://github.com/aws-amplify/amplify-ios/commit/5b4b9d2f802eb299f3399c9cf27d435cb919815b))
+* **DataStore:**
+  * Only start the remote sync engine if we have awsapiplugin ([#442](https://github.com/aws-amplify/amplify-ios/issues/442)) ([532058a](https://github.com/aws-amplify/amplify-ios/commit/532058a5052bc3a0a5565595708964c063b3c28a))
+  * Bug where subscription connections happen at the same time ([#389](https://github.com/aws-amplify/amplify-ios/issues/389)) ([81e6111](https://github.com/aws-amplify/amplify-ios/commit/81e61116739aefa6b55b29e7e059edc0e51b5b94))
+  * Clear inProcess state on startup of outgoing mutation queue ([#391](https://github.com/aws-amplify/amplify-ios/issues/391)) ([352680b](https://github.com/aws-amplify/amplify-ios/commit/352680bd95c2c6c38d8263e870658f96bef9172a))
+  * Mark outgoing mutation as inProcess if nextEventPromise exists ([#392](https://github.com/aws-amplify/amplify-ios/issues/392)) ([3986cf5](https://github.com/aws-amplify/amplify-ios/commit/3986cf57bd042acdb2eb66bdce503616df05ed5f))
 
 ## 0.11.0
 
