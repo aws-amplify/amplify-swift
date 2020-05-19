@@ -10,6 +10,5 @@ import Foundation
 @testable import AWSPinpointAnalyticsPlugin
 
 public class MockAppSessionTracker: Tracker {
-    public init(trackAppSessions: Bool, autoSessionTrackingInterval: Int) {
-    }
+    public init(trackAppSessions _: Bool, autoSessionTrackingInterval _: Int) {}
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 /// All HTTP operations have the same underlying Operation type
-public protocol RESTOperation: AmplifyOperation<RESTOperationRequest, Void, Data, APIError> { }
+public protocol RESTOperation: AmplifyOperation<RESTOperationRequest, Data, APIError> { }
 
 /// Event names for HubPayloads emitted by this operation
 public extension HubPayload.EventName.API {

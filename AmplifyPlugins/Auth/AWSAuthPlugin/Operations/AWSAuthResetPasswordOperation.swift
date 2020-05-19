@@ -8,23 +8,23 @@
 import Foundation
 import Amplify
 
-public class AWSAuthResetPasswordOperation: AmplifyOperation<AuthResetPasswordRequest,
-    Void,
+public class AWSAuthResetPasswordOperation: AmplifyOperation<
+    AuthResetPasswordRequest,
     AuthResetPasswordResult,
-    AuthError>,
-AuthResetPasswordOperation {
+    AuthError
+>, AuthResetPasswordOperation {
 
     let authenticationProvider: AuthenticationProviderBehavior
 
     init(_ request: AuthResetPasswordRequest,
          authenticationProvider: AuthenticationProviderBehavior,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
 
         self.authenticationProvider = authenticationProvider
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.resetPassword,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
@@ -61,12 +61,12 @@ AuthResetPasswordOperation {
     }
 
     private func dispatch(_ result: AuthResetPasswordResult) {
-        let asyncEvent = AsyncEvent<Void, AuthResetPasswordResult, AuthError>.completed(result)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.success(result)
+        dispatch(result: result)
     }
 
     private func dispatch(_ error: AuthError) {
-        let asyncEvent = AsyncEvent<Void, AuthResetPasswordResult, AuthError>.failed(error)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.failure(error)
+        dispatch(result: result)
     }
 }

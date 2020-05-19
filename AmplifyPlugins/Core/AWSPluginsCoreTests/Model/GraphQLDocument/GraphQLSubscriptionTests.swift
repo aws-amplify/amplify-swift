@@ -11,6 +11,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 
+// swiftlint:disable type_body_length
 class GraphQLSubscriptionTests: XCTestCase {
 
     override func setUp() {

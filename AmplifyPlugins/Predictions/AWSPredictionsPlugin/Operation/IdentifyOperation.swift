@@ -10,28 +10,28 @@ import Amplify
 import AWSMobileClient
 import AWSPluginsCore
 
-public class IdentifyOperation: AmplifyOperation<PredictionsIdentifyRequest,
-    Void,
+public class IdentifyOperation: AmplifyOperation<
+    PredictionsIdentifyRequest,
     IdentifyResult,
-    PredictionsError>,
-PredictionsIdentifyOperation {
+    PredictionsError
+>, PredictionsIdentifyOperation {
 
     let multiService: IdentifyMultiService
 
     init(request: PredictionsIdentifyRequest,
          multiService: IdentifyMultiService,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
         self.multiService = multiService
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.identifyLabels,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
 
         if let error = request.validate() {
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
             return
         }
@@ -51,10 +51,10 @@ PredictionsIdentifyOperation {
     private func onServiceEvent(event: PredictionsEvent<IdentifyResult, PredictionsError>) {
         switch event {
         case .completed(let result):
-            dispatch(event: .completed(result))
+            dispatch(result: .success(result))
             finish()
         case .failed(let error):
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
         }
     }

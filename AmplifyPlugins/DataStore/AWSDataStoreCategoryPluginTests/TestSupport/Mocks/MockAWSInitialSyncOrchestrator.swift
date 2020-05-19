@@ -14,7 +14,8 @@ import Combine
 @testable import AWSDataStoreCategoryPlugin
 
 class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator {
-    static let factory: InitialSyncOrchestratorFactory = { dataStoreConfiguration, api, reconciliationQueue, storageAdapter in
+    static let factory: InitialSyncOrchestratorFactory = {
+        dataStoreConfiguration, api, reconciliationQueue, storageAdapter in
         MockAWSInitialSyncOrchestrator(dataStoreConfiguration: dataStoreConfiguration,
                                        api: api,
                                        reconciliationQueue: reconciliationQueue,

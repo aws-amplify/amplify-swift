@@ -26,15 +26,13 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                                                  path: key)
         let operation = Amplify.Storage.list(options: options) { event in
             switch event {
-            case .completed(let result):
+            case .success(let result):
                 XCTAssertNotNil(result)
                 XCTAssertNotNil(result.items)
                 XCTAssertEqual(result.items.count, 0)
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
         XCTAssertNotNil(operation)
@@ -52,18 +50,16 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                                                  path: key)
         let operation = Amplify.Storage.list(options: options) { event in
             switch event {
-            case .completed:
+            case .success:
                 XCTFail("Should not have completed")
-            case .failed(let error):
+            case .failure(let error):
                 // TODO: service error, check string?
-                guard case let .accessDenied(description, suggestion, _) = error else {
+                guard case let .accessDenied(description, _, _) = error else {
                     XCTFail("Expected accessDenied error")
                     return
                 }
                 XCTAssertEqual(description, StorageErrorConstants.accessDenied.errorDescription)
                 listFailedExpectation.fulfill()
-            default:
-                break
             }
         }
         XCTAssertNotNil(operation)
@@ -131,16 +127,14 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                                                targetIdentityId: nil)
         _ = Amplify.Storage.downloadData(key: key, options: getOptions) { event in
             switch event {
-            case .completed(let results):
+            case .success(let results):
                 XCTFail("Should not have completed with result \(results)")
-            case .failed(let error):
+            case .failure(let error):
                 guard case .keyNotFound = error else {
                     XCTFail("Expected notFound error")
                     return
                 }
                 getFailedExpectation.fulfill()
-            default:
-                break
             }
         }
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
@@ -203,16 +197,14 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                                             path: key)
         _ = Amplify.Storage.list(options: listOptions) { event in
             switch event {
-            case .completed:
+            case .success:
                 XCTFail("Should not have completed")
-            case .failed(let error):
-                guard case .validation(let field, let errorDescription, _, _) = error else {
-                    XCTFail("Expected validation error")
+            case .failure(let error):
+                guard case .validation = error else {
+                    XCTFail("Expected validation error, not \(error)")
                     return
                 }
                 listFailedExpectation.fulfill()
-            default:
-                break
             }
         }
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
@@ -223,16 +215,14 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                                                targetIdentityId: user1IdentityId)
         _ = Amplify.Storage.downloadData(key: key, options: getOptions) { event in
             switch event {
-            case .completed(let results):
-                XCTFail("Should not have completed")
-            case .failed(let error):
-                guard case .validation(let field, let errorDescription, _, _) = error else {
-                    XCTFail("Expected validation error")
+            case .success(let results):
+                XCTFail("Should not have completed, got \(results)")
+            case .failure(let error):
+                guard case .validation = error else {
+                    XCTFail("Expected validation error, not \(error)")
                     return
                 }
                 getFailedExpectation.fulfill()
-            default:
-                break
             }
         }
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
@@ -264,16 +254,14 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                                                targetIdentityId: nil)
         _ = Amplify.Storage.downloadData(key: key, options: getOptions) { event in
             switch event {
-            case .completed(let results):
+            case .success(let results):
                 XCTFail("Should not have completed with result \(results)")
-            case .failed(let error):
+            case .failure(let error):
                 guard case .keyNotFound = error else {
-                    XCTFail("Expected notFound error")
+                    XCTFail("Expected notFound error, not \(error)")
                     return
                 }
                 getFailedExpectation.fulfill()
-            default:
-                break
             }
         }
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
@@ -290,13 +278,11 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                                             path: path)
         _ = Amplify.Storage.list(options: listOptions) { event in
             switch event {
-            case .completed(let results):
+            case .success(let results):
                 items = results.items
                 listExpectation.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed to list with error \(error)")
-            default:
-                break
             }
         }
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
@@ -310,13 +296,11 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                                                targetIdentityId: targetIdentityId)
         _ = Amplify.Storage.downloadData(key: key, options: getOptions) { event in
             switch event {
-            case .completed(let result):
+            case .success(let result):
                 data = result
                 getExpectation.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed to get with error \(error)")
-            default:
-                break
             }
         }
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
@@ -328,12 +312,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let options = StorageUploadDataRequest.Options(accessLevel: accessLevel)
         _ = Amplify.Storage.uploadData(key: key, data: data.data(using: .utf8)!, options: options) { event in
             switch event {
-            case .completed:
+            case .success:
                 uploadExpectation.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed to put \(key) with error \(error)")
-            default:
-                break
             }
         }
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
@@ -344,12 +326,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let removeOptions = StorageRemoveRequest.Options(accessLevel: accessLevel)
         _ = Amplify.Storage.remove(key: key, options: removeOptions) { event in
             switch event {
-            case .completed(let key):
+            case .success:
                 removeExpectation.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed to remove with error \(error)")
-            default:
-                break
             }
         }
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)

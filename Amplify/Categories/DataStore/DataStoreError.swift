@@ -61,7 +61,7 @@ extension DataStoreError: AmplifyError {
             return error.recoverySuggestion
         case .conflict:
             return "See this error's associated value for the details of the conflict"
-        case .invalidDatabase(let path):
+        case .invalidDatabase(let path, _):
             return "Make sure the path \(path) is valid and the device has available storage space."
         case .invalidModelName(let modelName):
             // TODO: Is this the right command to run to generate models?

@@ -28,13 +28,11 @@ class InterpretBasicIntegrationTests: AWSPredictionsPluginTestBase {
         let interpretInvoked = expectation(description: "Interpret invoked")
         let operation = Amplify.Predictions.interpret(text: inputText) { event in
             switch event {
-            case .completed(let result):
+            case .success(let result):
                 interpretInvoked.fulfill()
                 XCTAssertNotNil(result, "Result should contain value")
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Should not receive error \(error)")
-            default:
-                break
             }
         }
         XCTAssertNotNil(operation)
@@ -54,13 +52,11 @@ class InterpretBasicIntegrationTests: AWSPredictionsPluginTestBase {
         let options = PredictionsInterpretRequest.Options(defaultNetworkPolicy: .offline, pluginOptions: nil)
         let operation = Amplify.Predictions.interpret(text: "Hello there how are you?", options: options) { event in
             switch event {
-            case .completed(let result):
+            case .success(let result):
                 interpretInvoked.fulfill()
                 XCTAssertNotNil(result, "Result should contain value")
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Should not receive error \(error)")
-            default:
-                break
             }
         }
         XCTAssertNotNil(operation)

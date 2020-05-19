@@ -19,7 +19,8 @@ public protocol AuthCategoryUserBehavior {
     ///   - options: Parameters specific to plugin behavior
     ///   - listener: Triggered when the operation completes.
     func fetchUserAttributes(options: AuthFetchUserAttributeOperation.Request.Options?,
-                         listener: AuthFetchUserAttributeOperation.EventListener?) -> AuthFetchUserAttributeOperation
+                             listener: AuthFetchUserAttributeOperation.ResultListener?)
+        -> AuthFetchUserAttributeOperation
 
     /// Update user attribute for the current user
     ///
@@ -29,7 +30,7 @@ public protocol AuthCategoryUserBehavior {
     ///   - listener: Triggered when the operation completes.
     func update(userAttribute: AuthUserAttribute,
                 options: AuthUpdateUserAttributeOperation.Request.Options?,
-                listener: AuthUpdateUserAttributeOperation.EventListener?) -> AuthUpdateUserAttributeOperation
+                listener: AuthUpdateUserAttributeOperation.ResultListener?) -> AuthUpdateUserAttributeOperation
 
     /// Update a list of user attributes for the current user
     ///
@@ -39,7 +40,7 @@ public protocol AuthCategoryUserBehavior {
     ///   - listener: Triggered when the operation completes.
     func update(userAttributes: [AuthUserAttribute],
                 options: AuthUpdateUserAttributesOperation.Request.Options?,
-                listener: AuthUpdateUserAttributesOperation.EventListener?) -> AuthUpdateUserAttributesOperation
+                listener: AuthUpdateUserAttributesOperation.ResultListener?) -> AuthUpdateUserAttributesOperation
 
     /// Resends the confirmation code required to verify an attribute
     ///
@@ -49,7 +50,7 @@ public protocol AuthCategoryUserBehavior {
     ///   - listener: Triggered when the operation completes.
     func resendConfirmationCode(for attributeKey: AuthUserAttributeKey,
                                 options: AuthAttributeResendConfirmationCodeOperation.Request.Options?,
-                                listener: AuthAttributeResendConfirmationCodeOperation.EventListener?)
+                                listener: AuthAttributeResendConfirmationCodeOperation.ResultListener?)
         -> AuthAttributeResendConfirmationCodeOperation
 
     /// Confirm an attribute using confirmation code
@@ -62,7 +63,7 @@ public protocol AuthCategoryUserBehavior {
     func confirm(userAttribute: AuthUserAttributeKey,
                  confirmationCode: String,
                  options: AuthConfirmUserAttributeOperation.Request.Options?,
-                 listener: AuthConfirmUserAttributeOperation.EventListener?) -> AuthConfirmUserAttributeOperation
+                 listener: AuthConfirmUserAttributeOperation.ResultListener?) -> AuthConfirmUserAttributeOperation
 
     /// Update the current logged in user's password
     ///
@@ -75,5 +76,5 @@ public protocol AuthCategoryUserBehavior {
     func update(oldPassword: String,
                 to newPassword: String,
                 options: AuthChangePasswordOperation.Request.Options?,
-                listener: AuthChangePasswordOperation.EventListener?) -> AuthChangePasswordOperation
+                listener: AuthChangePasswordOperation.ResultListener?) -> AuthChangePasswordOperation
 }

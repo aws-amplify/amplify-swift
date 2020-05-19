@@ -7,4 +7,4 @@
 
 import Amplify
 
-extension AWSPinpointAnalyticsPlugin: DefaultLogger { }
+extension AWSPinpointAnalyticsPlugin: DefaultLogger {}

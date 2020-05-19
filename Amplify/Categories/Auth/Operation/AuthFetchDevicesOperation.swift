@@ -7,10 +7,11 @@
 
 import Foundation
 
-public protocol AuthFetchDevicesOperation: AmplifyOperation<AuthFetchDevicesRequest,
-    Void,
+public protocol AuthFetchDevicesOperation: AmplifyOperation<
+    AuthFetchDevicesRequest,
     [AuthDevice],
-AuthError> {}
+    AuthError
+> {}
 
 public extension HubPayload.EventName.Auth {
 

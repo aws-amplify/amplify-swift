@@ -107,7 +107,6 @@ class PredictionsServiceTranslateTests: XCTestCase {
     ///    - I should get a successful result
     ///
     func testLanguageFromConfiguration() {
-        var service: AWSPredictionsService!
         let mockConfigurationJSON = """
         {
             "defaultRegion": "us-east-1",

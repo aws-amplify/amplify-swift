@@ -5,10 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public protocol AuthResendSignUpCodeOperation: AmplifyOperation<AuthResendSignUpCodeRequest,
-    Void,
+public protocol AuthResendSignUpCodeOperation: AmplifyOperation<
+    AuthResendSignUpCodeRequest,
     AuthCodeDeliveryDetails,
-AuthError> {}
+    AuthError
+> {}
 
 public extension HubPayload.EventName.Auth {
 

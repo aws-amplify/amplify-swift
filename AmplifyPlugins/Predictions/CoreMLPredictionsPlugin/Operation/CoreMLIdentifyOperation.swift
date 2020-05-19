@@ -8,22 +8,23 @@
 import Foundation
 import Amplify
 
-public class CoreMLIdentifyOperation: AmplifyOperation<PredictionsIdentifyRequest,
-    Void,
+public class CoreMLIdentifyOperation: AmplifyOperation<
+    PredictionsIdentifyRequest,
     IdentifyResult,
-PredictionsError>, PredictionsIdentifyOperation {
+    PredictionsError
+>, PredictionsIdentifyOperation {
 
     weak var coreMLVision: CoreMLVisionBehavior?
 
     init(_ request: PredictionsIdentifyRequest,
          coreMLVision: CoreMLVisionBehavior,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
 
         self.coreMLVision = coreMLVision
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.identifyLabels,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
@@ -42,7 +43,7 @@ PredictionsError>, PredictionsIdentifyOperation {
             let errorDescription = CoreMLPluginErrorString.operationNotSupported.errorDescription
             let recovery = CoreMLPluginErrorString.operationNotSupported.recoverySuggestion
             let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
-            dispatch(event: .failed(predictionsError))
+            dispatch(result: .failure(predictionsError))
             finish()
         case .detectText(let format):
             switch format {
@@ -50,18 +51,18 @@ PredictionsError>, PredictionsIdentifyOperation {
                 let errorDescription = CoreMLPluginErrorString.operationNotSupported.errorDescription
                 let recovery = CoreMLPluginErrorString.operationNotSupported.recoverySuggestion
                 let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
-                dispatch(event: .failed(predictionsError))
+                dispatch(result: .failure(predictionsError))
                 finish()
             case .plain:
                 guard  let result = coreMLVisionAdapter.detectText(request.image) else {
                     let errorDescription = CoreMLPluginErrorString.detectTextNoResult.errorDescription
                     let recovery = CoreMLPluginErrorString.detectTextNoResult.recoverySuggestion
                     let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
-                    dispatch(event: .failed(predictionsError))
+                    dispatch(result: .failure(predictionsError))
                     finish()
                     return
                 }
-                dispatch(event: .completed(result))
+                dispatch(result: .success(result))
                 finish()
             }
         case .detectEntities:
@@ -69,18 +70,18 @@ PredictionsError>, PredictionsIdentifyOperation {
                 let errorDescription = CoreMLPluginErrorString.detectEntitiesNoResult.errorDescription
                 let recovery = CoreMLPluginErrorString.detectEntitiesNoResult.recoverySuggestion
                 let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
-                dispatch(event: .failed(predictionsError))
+                dispatch(result: .failure(predictionsError))
                 finish()
                 return
             }
-            dispatch(event: .completed(result))
+            dispatch(result: .success(result))
             finish()
         case .detectLabels(let labelType):
             if labelType == .moderation { //coreml does not have an endpoint to detect moderation labels in images
                 let errorDescription = CoreMLPluginErrorString.operationNotSupported.errorDescription
                 let recovery = CoreMLPluginErrorString.operationNotSupported.recoverySuggestion
                 let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
-                dispatch(event: .failed(predictionsError))
+                dispatch(result: .failure(predictionsError))
                 finish()
                 return
             }
@@ -88,11 +89,11 @@ PredictionsError>, PredictionsIdentifyOperation {
                 let errorDescription = CoreMLPluginErrorString.detectLabelsNoResult.errorDescription
                 let recovery = CoreMLPluginErrorString.detectLabelsNoResult.recoverySuggestion
                 let predictionsError = PredictionsError.service(errorDescription, recovery, nil)
-                dispatch(event: .failed(predictionsError))
+                dispatch(result: .failure(predictionsError))
                 finish()
                 return
             }
-            dispatch(event: .completed(result))
+            dispatch(result: .success(result))
             finish()
         }
     }

@@ -25,15 +25,13 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
 
         let expires = 10
         let options = StorageGetURLRequest.Options(expires: expires)
-        let operation = Amplify.Storage.getURL(key: key, options: options) { event in
-            switch event {
-            case .completed(let result):
+        let operation = Amplify.Storage.getURL(key: key, options: options) { result in
+            switch result {
+            case .success(let result):
                 remoteURLOptional = result
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
         XCTAssertNotNil(operation)
@@ -102,12 +100,10 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
 
         let operation = Amplify.Storage.uploadData(key: key, data: data, options: options) { event in
             switch event {
-            case .completed:
+            case .success:
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
 

@@ -32,19 +32,19 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     func query<M>(from modelType: M.Type,
                   byId id: String,
-                  listener: GraphQLOperation<M?>.EventListener?) -> GraphQLOperation<M?> {
+                  listener: GraphQLOperation<M?>.ResultListener?) -> GraphQLOperation<M?> {
         fatalError("Not yet implemented")
     }
 
     func query<M>(from modelType: M.Type,
                   where predicate: QueryPredicate?,
-                  listener: GraphQLOperation<[M]>.EventListener?) -> GraphQLOperation<[M]> {
+                  listener: GraphQLOperation<[M]>.ResultListener?) -> GraphQLOperation<[M]> {
         fatalError("Not yet implemented")
     }
 
     func mutate<M: Model>(of model: M,
                           type: GraphQLMutationType,
-                          listener: GraphQLOperation<M>.EventListener?) -> GraphQLOperation<M> {
+                          listener: GraphQLOperation<M>.ResultListener?) -> GraphQLOperation<M> {
         notify("mutate(of:\(model.modelName)-\(model.id),type:\(type),listener:)")
         let options = GraphQLOperationRequest<M>.Options()
         let request = GraphQLOperationRequest<M>(apiName: nil,
@@ -59,7 +59,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     func mutate(ofAnyModel anyModel: AnyModel,
                 type: GraphQLMutationType,
-                listener: GraphQLOperation<AnyModel>.EventListener?) -> GraphQLOperation<AnyModel> {
+                listener: GraphQLOperation<AnyModel>.ResultListener?) -> GraphQLOperation<AnyModel> {
         notify("mutate(ofAnyModel:\(anyModel.modelName)-\(anyModel.id),type:\(type),listener:)")
 
         let options = GraphQLOperationRequest<AnyModel>.Options()
@@ -73,9 +73,11 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         return operation
     }
 
-    func subscribe<M>(from modelType: M.Type,
-                      type: GraphQLSubscriptionType,
-                      listener: GraphQLSubscriptionOperation<M>.EventListener?) -> GraphQLSubscriptionOperation<M> {
+    func subscribe<M: Model>(from modelType: M.Type,
+                             type: GraphQLSubscriptionType,
+                             valueListener: GraphQLSubscriptionOperation<M>.InProcessListener?,
+                             completionListener: GraphQLSubscriptionOperation<M>.ResultListener?
+    ) -> GraphQLSubscriptionOperation<M> {
         notify("subscribe(from:\(modelType),type:\(type),listener:)")
 
         let options = GraphQLOperationRequest<M>.Options()
@@ -91,8 +93,9 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     func subscribe(toAnyModelType modelType: Model.Type,
                    subscriptionType: GraphQLSubscriptionType,
-                   listener: GraphQLSubscriptionOperation<AnyModel>.EventListener?)
-        -> GraphQLSubscriptionOperation<AnyModel> {
+                   valueListener: GraphQLSubscriptionOperation<AnyModel>.InProcessListener?,
+                   completionListener: GraphQLSubscriptionOperation<AnyModel>.ResultListener?
+    ) -> GraphQLSubscriptionOperation<AnyModel> {
             notify("subscribe(toAnyModelType:\(modelType),subscriptionType:\(subscriptionType),listener:)")
             let options = GraphQLOperationRequest<AnyModel>.Options()
             let request = GraphQLOperationRequest<AnyModel>(apiName: nil,
@@ -108,7 +111,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     // MARK: - Request-based GraphQL methods
 
     func mutate<R>(request: GraphQLRequest<R>,
-                   listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
+                   listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> {
         // This is a really weighty notification message, but needed for tests to be able to assert that a particular
         // model is being mutated
         notify("mutate(request) document: \(request.document); variables: \(String(describing: request.variables))")
@@ -130,7 +133,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     }
 
     func query<R: Decodable>(request: GraphQLRequest<R>,
-                             listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
+                             listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> {
         notify("query(request:listener:) request: \(request)")
 
         if let responder = responders[.queryRequestListener] as? QueryRequestListenerResponder<R> {
@@ -152,8 +155,9 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
     }
 
     func subscribe<R: Decodable>(request: GraphQLRequest<R>,
-                                 listener: GraphQLSubscriptionOperation<R>.EventListener?) ->
-        GraphQLSubscriptionOperation<R> {
+                                 valueListener: GraphQLSubscriptionOperation<R>.InProcessListener?,
+                                 completionListener: GraphQLSubscriptionOperation<R>.ResultListener?)
+        -> GraphQLSubscriptionOperation<R> {
             notify(
                 """
                 subscribe(request:listener:) document: \(request.document); \
@@ -162,7 +166,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
             )
 
             if let responder = responders[.subscribeRequestListener] as? SubscribeRequestListenerResponder<R> {
-                if let operation = responder.callback((request, listener)) {
+                if let operation = responder.callback((request, valueListener, completionListener)) {
                     return operation
                 }
             }
@@ -190,7 +194,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
 
     // MARK: - REST methods
 
-    func get(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+    func get(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         notify("get")
         let operationRequest = RESTOperationRequest(apiName: request.apiName,
                                                     operationType: .get,
@@ -202,7 +206,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         return operation
     }
 
-    func put(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+    func put(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         notify("put")
         let request = RESTOperationRequest(apiName: request.apiName,
                                            operationType: .put,
@@ -214,7 +218,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         return operation
     }
 
-    func post(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+    func post(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         notify("post")
         let request = RESTOperationRequest(apiName: request.apiName,
                                            operationType: .post,
@@ -226,7 +230,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         return operation
     }
 
-    func delete(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+    func delete(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         notify("delete")
         let request = RESTOperationRequest(apiName: request.apiName,
                                            operationType: .delete,
@@ -238,7 +242,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         return operation
     }
 
-    func patch(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+    func patch(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         notify("patch")
         let request = RESTOperationRequest(apiName: request.apiName,
                                            operationType: .patch,
@@ -250,7 +254,7 @@ class MockAPICategoryPlugin: MessageReporter, APICategoryPlugin {
         return operation
     }
 
-    func head(request: RESTRequest, listener: RESTOperation.EventListener?) -> RESTOperation {
+    func head(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         notify("head")
         let request = RESTOperationRequest(apiName: request.apiName,
                                            operationType: .head,
@@ -304,7 +308,7 @@ class MockSubscriptionGraphQLOperation<R: Decodable>: GraphQLSubscriptionOperati
     }
 }
 
-class MockAPIOperation: AmplifyOperation<RESTOperationRequest, Void, Data, APIError>, RESTOperation {
+class MockAPIOperation: AmplifyOperation<RESTOperationRequest, Data, APIError>, RESTOperation {
     override func pause() {
     }
 

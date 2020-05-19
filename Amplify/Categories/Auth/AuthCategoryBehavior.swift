@@ -27,7 +27,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     func signUp(username: String,
                 password: String?,
                 options: AuthSignUpOperation.Request.Options?,
-                listener: AuthSignUpOperation.EventListener?) -> AuthSignUpOperation
+                listener: AuthSignUpOperation.ResultListener?) -> AuthSignUpOperation
 
     /// Confirms the `signUp` operation.
     ///
@@ -42,7 +42,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     func confirmSignUp(username: String,
                        confirmationCode: String,
                        options: AuthConfirmSignUpOperation.Request.Options?,
-                       listener: AuthConfirmSignUpOperation.EventListener?) -> AuthConfirmSignUpOperation
+                       listener: AuthConfirmSignUpOperation.ResultListener?) -> AuthConfirmSignUpOperation
 
     /// Resends the confirmation code to confirm the signUp process
     ///
@@ -52,7 +52,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - listener: Triggered when the operation completes.
     func resendSignUpCode(username: String,
                           options: AuthResendSignUpCodeOperation.Request.Options?,
-                          listener: AuthResendSignUpCodeOperation.EventListener?) -> AuthResendSignUpCodeOperation
+                          listener: AuthResendSignUpCodeOperation.ResultListener?) -> AuthResendSignUpCodeOperation
 
     /// SignIn to the authentication provider
     ///
@@ -67,7 +67,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     func signIn(username: String?,
                 password: String?,
                 options: AuthSignInOperation.Request.Options?,
-                listener: AuthSignInOperation.EventListener?) -> AuthSignInOperation
+                listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation
 
     /// SignIn using pre configured web UI.
     ///
@@ -79,7 +79,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - listener: Triggered when the operation completes.
     func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
                          options: AuthWebUISignInOperation.Request.Options?,
-                         listener: AuthWebUISignInOperation.EventListener?) -> AuthWebUISignInOperation
+                         listener: AuthWebUISignInOperation.ResultListener?) -> AuthWebUISignInOperation
 
     /// SignIn using an auth provider on a web UI
     ///
@@ -95,7 +95,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     func signInWithWebUI(for authProvider: AuthNProvider,
                          presentationAnchor: AuthUIPresentationAnchor,
                          options: AuthSocialWebUISignInOperation.Request.Options?,
-                         listener: AuthSocialWebUISignInOperation.EventListener?) -> AuthSocialWebUISignInOperation
+                         listener: AuthSocialWebUISignInOperation.ResultListener?) -> AuthSocialWebUISignInOperation
 
     /// Confirms a next step in signIn flow.
     ///
@@ -105,10 +105,10 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - listener: Triggered when the operation completes.
     func confirmSignIn(challengeResponse: String,
                        options: AuthConfirmSignInOperation.Request.Options?,
-                       listener: AuthConfirmSignInOperation.EventListener?) -> AuthConfirmSignInOperation
+                       listener: AuthConfirmSignInOperation.ResultListener?) -> AuthConfirmSignInOperation
 
     func signOut(options: AuthSignOutOperation.Request.Options?,
-                 listener: AuthSignOutOperation.EventListener?) -> AuthSignOutOperation
+                 listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation
 
     /// Fetch the current authentication session.
     ///
@@ -116,7 +116,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - options: Parameters specific to plugin behavior
     ///   - listener: Triggered when the operation completes.
     func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options?,
-                          listener: AuthFetchSessionOperation.EventListener?) -> AuthFetchSessionOperation
+                          listener: AuthFetchSessionOperation.ResultListener?) -> AuthFetchSessionOperation
 
     /// Initiate a reset password flow for the user
     ///
@@ -126,7 +126,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - listener: Triggered when the operation completes
     func resetPassword(for username: String,
                        options: AuthResetPasswordOperation.Request.Options?,
-                       listener: AuthResetPasswordOperation.EventListener?) -> AuthResetPasswordOperation
+                       listener: AuthResetPasswordOperation.ResultListener?) -> AuthResetPasswordOperation
 
     /// Confirms a reset password flow
     ///
@@ -140,7 +140,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
                               with newPassword: String,
                               confirmationCode: String,
                               options: AuthConfirmResetPasswordOperation.Request.Options?,
-                              listener: AuthConfirmResetPasswordOperation.EventListener?)
+                              listener: AuthConfirmResetPasswordOperation.ResultListener?)
         -> AuthConfirmResetPasswordOperation
 
 }

@@ -20,21 +20,21 @@ public protocol PredictionsCategoryBehavior {
                  language: LanguageType?,
                  targetLanguage: LanguageType?,
                  options: PredictionsTranslateTextRequest.Options?,
-                 listener: PredictionsTranslateTextOperation.EventListener?) -> PredictionsTranslateTextOperation
+                 listener: PredictionsTranslateTextOperation.ResultListener?) -> PredictionsTranslateTextOperation
 
     /// - Parameter textToSpeech: The text to be synthesized to audio
     /// - Parameter listener: Triggered when the event occurs
     /// - Parameter options: Parameters to specific plugin behavior
     func convert(textToSpeech: String,
                  options: PredictionsTextToSpeechRequest.Options?,
-                 listener: PredictionsTextToSpeechOperation.EventListener?) -> PredictionsTextToSpeechOperation
+                 listener: PredictionsTextToSpeechOperation.ResultListener?) -> PredictionsTextToSpeechOperation
 
     /// - Parameter speechToText: The url of the audio to be transcribed
     /// - Parameter listener: Triggered when the event occurs
     /// - Parameter options: Parameters to specific plugin behavior
     func convert(speechToText: URL,
                  options: PredictionsSpeechToTextRequest.Options?,
-                 listener: PredictionsSpeechToTextOperation.EventListener?) -> PredictionsSpeechToTextOperation
+                 listener: PredictionsSpeechToTextOperation.ResultListener?) -> PredictionsSpeechToTextOperation
 
     /// Translate the text to the language specified.
     /// - Parameter type: The type of image detection you want to perform
@@ -44,7 +44,7 @@ public protocol PredictionsCategoryBehavior {
     func identify(type: IdentifyAction,
                   image: URL,
                   options: PredictionsIdentifyRequest.Options?,
-                  listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation
+                  listener: PredictionsIdentifyOperation.ResultListener?) -> PredictionsIdentifyOperation
 
     /// Interpret the text and return sentiment analysis, entity detection, language detection,
     /// syntax detection, key phrases detection
@@ -53,5 +53,5 @@ public protocol PredictionsCategoryBehavior {
     /// - Parameter options:Parameters to specific plugin behavior
     func interpret(text: String,
                    options: PredictionsInterpretRequest.Options?,
-                   listener: PredictionsInterpretOperation.EventListener?) -> PredictionsInterpretOperation
+                   listener: PredictionsInterpretOperation.ResultListener?) -> PredictionsInterpretOperation
 }

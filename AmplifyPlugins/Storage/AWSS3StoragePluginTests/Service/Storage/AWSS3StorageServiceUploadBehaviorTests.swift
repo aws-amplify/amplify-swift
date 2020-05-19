@@ -8,4 +8,7 @@
 import XCTest
 
 class AWSS3StorageServiceUploadBehaviorTests: AWSS3StorageServiceTestBase {
+    func testClassMustNotBeEmpty() {
+        // Swift format crashes if a test class is empty
+    }
 }
