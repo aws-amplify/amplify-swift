@@ -20,7 +20,6 @@
 		2149E6C9238CA47500873955 /* AWSS3StoragePluginOptionsUsabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB7052375DA2200818CD2 /* AWSS3StoragePluginOptionsUsabilityTests.swift */; };
 		2149E6CA238CA47500873955 /* AWSS3StoragePluginConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FEB7042375DA2200818CD2 /* AWSS3StoragePluginConfigurationTests.swift */; };
 		21A3EFC423A939D70095D8E6 /* AWSS3StoragePluginTests-credentials.json in Resources */ = {isa = PBXBuildFile; fileRef = 21A3EFC323A939D70095D8E6 /* AWSS3StoragePluginTests-credentials.json */; };
-		21F40A3523A293DE0074678E /* AWSS3StoragePluginTests-awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 21F40A3323A293DE0074678E /* AWSS3StoragePluginTests-awsconfiguration.json */; };
 		21F40A3623A293DE0074678E /* AWSS3StoragePluginTests-amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 21F40A3423A293DE0074678E /* AWSS3StoragePluginTests-amplifyconfiguration.json */; };
 		4A615AC1A34E1BA883AE760F /* Pods_HostApp_AWSS3StoragePluginFunctionalTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC784A86501873255662D8C7 /* Pods_HostApp_AWSS3StoragePluginFunctionalTests.framework */; };
 		81E7E9D6821EF0A560A93627 /* Pods_AWSS3StoragePlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B046927AA82214FE8EBAD505 /* Pods_AWSS3StoragePlugin.framework */; };
@@ -145,7 +144,6 @@
 		2149E6B4238CA23900873955 /* AWSS3StoragePluginFunctionalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSS3StoragePluginFunctionalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2149E6B8238CA23900873955 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21A3EFC323A939D70095D8E6 /* AWSS3StoragePluginTests-credentials.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "AWSS3StoragePluginTests-credentials.json"; sourceTree = "<group>"; };
-		21F40A3323A293DE0074678E /* AWSS3StoragePluginTests-awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "AWSS3StoragePluginTests-awsconfiguration.json"; sourceTree = "<group>"; };
 		21F40A3423A293DE0074678E /* AWSS3StoragePluginTests-amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "AWSS3StoragePluginTests-amplifyconfiguration.json"; sourceTree = "<group>"; };
 		27E93DA4BD82FC2FD4DF47FF /* Pods-HostApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.debug.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.debug.xcconfig"; sourceTree = "<group>"; };
 		2A7357AE068121E124484319 /* Pods_AWSS3StoragePlugin_AWSS3StoragePluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSS3StoragePlugin_AWSS3StoragePluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -320,7 +318,6 @@
 				B4FEB7052375DA2200818CD2 /* AWSS3StoragePluginOptionsUsabilityTests.swift */,
 				B4FEB7012375DA2200818CD2 /* AWSS3StoragePluginTestBase.swift */,
 				21F40A3423A293DE0074678E /* AWSS3StoragePluginTests-amplifyconfiguration.json */,
-				21F40A3323A293DE0074678E /* AWSS3StoragePluginTests-awsconfiguration.json */,
 				21A3EFC323A939D70095D8E6 /* AWSS3StoragePluginTests-credentials.json */,
 				2149E6B8238CA23900873955 /* Info.plist */,
 				B4FEB7062375DA2200818CD2 /* README.md */,
@@ -853,7 +850,6 @@
 				B478F6E32374E0CF00C4F92B /* Main.storyboard in Resources */,
 				21A3EFC423A939D70095D8E6 /* AWSS3StoragePluginTests-credentials.json in Resources */,
 				21F40A3623A293DE0074678E /* AWSS3StoragePluginTests-amplifyconfiguration.json in Resources */,
-				21F40A3523A293DE0074678E /* AWSS3StoragePluginTests-awsconfiguration.json in Resources */,
 				B478F6E12374E0CF00C4F92B /* Assets.xcassets in Resources */,
 				B478F6E22374E0CF00C4F92B /* LaunchScreen.storyboard in Resources */,
 			);
