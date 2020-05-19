@@ -62,8 +62,8 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber, Cancella
         log.verbose("dispose(of subscriptionEvent): \(subscriptionEvent)")
         switch subscriptionEvent {
         case .connection(let connectionState):
-            // Connection events are informational only at this level. The terminal state is represented at the
-            // AsyncEvent Completion/Error
+            // Connection events are informational only at this level. The terminal state is represented by the
+            // OperationResult.
             log.info("connectionState now \(connectionState)")
             switch connectionState {
             case .connected:

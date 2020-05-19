@@ -60,7 +60,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         wait(for: [expectationListener], timeout: 2.0)
 
         guard let valueListener = valueListenerFromRequest else {
-                XCTFail("Incoming responder didn't set up listeners")
+                XCTFail("Incoming responder didn't set up listener")
                 return
         }
 
@@ -150,7 +150,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         wait(for: [expectationListener], timeout: 1.0)
 
         guard let valueListener = valueListenerFromRequest else {
-            XCTFail("Incoming responder didn't set up listeners")
+            XCTFail("Incoming responder didn't set up listener")
             return
         }
 
