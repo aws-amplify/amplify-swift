@@ -9,6 +9,7 @@ import XCTest
 import AWSPluginsCore
 import AWSAPICategoryPlugin
 import AWSMobileClient
+import AmplifyPlugins
 
 @testable import Amplify
 @testable import AWSAPICategoryPluginTestCommon
@@ -158,14 +159,20 @@ extension GraphQLAuthDirectiveIntegrationTests {
             XCTFail("Error should be operationError")
             return
         }
-
         guard let authError = underlyingError as? AuthError else {
             XCTFail("underlying error should be AuthError, but instead was \(underlyingError ?? "nil")")
             return
         }
-
-        guard case .notAuthenticated = authError else {
-            XCTFail("Error should be AuthError.notAuthenticated")
+        guard case let .service(_, _, underlyingAuthError) = authError else {
+            XCTFail("Error should be AuthError.service")
+            return
+        }
+        guard let awsCognitoAuthError = underlyingAuthError as? AWSCognitoAuthError else {
+            XCTFail("Error should be AWSCognitoAuthError")
+            return
+        }
+        guard case .signedOut = awsCognitoAuthError else {
+            XCTFail("Error should be .signedOut")
             return
         }
     }
