@@ -77,35 +77,17 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     override func setUp() {
         let authConfig = AuthCategoryConfiguration(
             plugins: [
-            "CredentialsProvider": [
-                "CognitoIdentity": [
-                    "Default": [
-                        "PoolId": "eu-west-2:8a882197-8039-45da-9a08-d9c76cbc6c93",
-                        "Region": "eu-west-2"
+                "awsCognitoAuthPlugin": [
+                    "CredentialsProvider": [
+                        "CognitoIdentity": [
+                            "Default": [
+                                "PoolId": "eu-west-2:8a882197-8039-45da-9a08-d9c76cbc6c93",
+                                "Region": "eu-west-2"
+                            ]
+                        ]
                     ]
                 ]
-            ]
         ])
-//        AWSInfo.configureDefaultAWSInfo(authConfig)
-
-//        let mobileClientIsInitialized = expectation(description: "AWSMobileClient is initialized")
-//        AWSMobileClient.default().initialize { userState, error in
-//            guard error == nil else {
-//                XCTFail("Error initializing AWSMobileClient. Error: \(error!.localizedDescription)")
-//                return
-//            }
-//            guard let userState = userState else {
-//                XCTFail("userState is unexpectedly empty initializing AWSMobileClient")
-//                return
-//            }
-//            if userState != UserState.signedOut {
-//                AWSMobileClient.default().signOut()
-//            }
-//            mobileClientIsInitialized.fulfill()
-//        }
-//        wait(for: [mobileClientIsInitialized], timeout: 100)
-//        print("AWSMobileClient Initialized")
-
         let analyticsConfig = AnalyticsCategoryConfiguration(
             plugins: [
                 "awsPinpointAnalyticsPlugin": [
@@ -129,16 +111,8 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
             try Amplify.add(plugin: AWSPinpointAnalyticsPlugin())
             try Amplify.configure(amplifyConfig)
 
-            _ = Amplify.Auth.signOut(listener: { event in
-                switch event {
-                case .success:
-                    print("Sign out successfullt")
-                case .failure(let error):
-                    print("Failed to sign out: \(error)")
-                    XCTFail("Failed to sign out")
-                }
-            })
         } catch {
+            print(error)
             XCTFail("Failed to initialize and configure Amplify")
         }
 
