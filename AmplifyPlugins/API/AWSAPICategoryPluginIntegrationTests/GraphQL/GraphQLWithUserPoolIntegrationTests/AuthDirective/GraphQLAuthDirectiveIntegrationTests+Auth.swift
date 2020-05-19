@@ -20,12 +20,10 @@ extension GraphQLAuthDirectiveIntegrationTests {
         let signInInvoked = expectation(description: "sign in completed")
         _ = Amplify.Auth.signIn(username: username, password: password) { event in
             switch event {
-            case .completed:
+            case .success:
                 signInInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed to Sign in user \(error)")
-            default:
-                XCTFail("Unexpected event")
             }
         }
         wait(for: [signInInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -35,13 +33,11 @@ extension GraphQLAuthDirectiveIntegrationTests {
         let signOutCompleted = expectation(description: "sign out completed")
         _ = Amplify.Auth.signOut { event in
             switch event {
-            case .completed:
+            case .success:
                 signOutCompleted.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 print("Could not sign out user \(error)")
                 signOutCompleted.fulfill()
-            default:
-                XCTFail("Unexpected event")
             }
         }
         wait(for: [signOutCompleted], timeout: TestCommonConstants.networkTimeout)
@@ -52,7 +48,7 @@ extension GraphQLAuthDirectiveIntegrationTests {
         var resultOptional: String?
         _ = Amplify.Auth.fetchAuthSession(listener: { event in
             switch event {
-            case .completed(let authSession):
+            case .success(let authSession):
                 guard let cognitoAuthSession = authSession as? AuthCognitoIdentityProvider else {
                     XCTFail("Could not get auth session as AuthCognitoIdentityProvider")
                     return
@@ -64,10 +60,8 @@ extension GraphQLAuthDirectiveIntegrationTests {
                 case .failure(let error):
                     XCTFail("Failed to get auth session \(error)")
                 }
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed to get auth session \(error)")
-            default:
-                XCTFail("Unexpected event")
             }
         })
         wait(for: [retrieveIdentityCompleted], timeout: TestCommonConstants.networkTimeout)
@@ -83,7 +77,7 @@ extension GraphQLAuthDirectiveIntegrationTests {
         var resultOptional: String?
         _ = Amplify.Auth.fetchAuthSession(listener: { event in
             switch event {
-            case .completed(let authSession):
+            case .success(let authSession):
                 guard let cognitoAuthSession = authSession as? AuthCognitoIdentityProvider else {
                     XCTFail("Could not get auth session as AuthCognitoIdentityProvider")
                     return
@@ -95,10 +89,8 @@ extension GraphQLAuthDirectiveIntegrationTests {
                 case .failure(let error):
                     XCTFail("Failed to get auth session \(error)")
                 }
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed to get auth session \(error)")
-            default:
-                XCTFail("Unexpected event")
             }
         })
         wait(for: [retrieveUserSubCompleted], timeout: TestCommonConstants.networkTimeout)
@@ -114,13 +106,11 @@ extension GraphQLAuthDirectiveIntegrationTests {
         var resultOptional: Bool?
         _ = Amplify.Auth.fetchAuthSession { event in
             switch event {
-            case .completed(let authSession):
+            case .success(let authSession):
                 resultOptional = authSession.isSignedIn
                 checkIsSignedInCompleted.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 fatalError("Failed to get auth session \(error)")
-            default:
-                fatalError("Unexpected event")
             }
         }
         wait(for: [checkIsSignedInCompleted], timeout: TestCommonConstants.networkTimeout)
@@ -131,4 +121,3 @@ extension GraphQLAuthDirectiveIntegrationTests {
         return result
     }
 }
-
