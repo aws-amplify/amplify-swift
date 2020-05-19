@@ -5,14 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
-import Foundation
 import AWSPinpoint
+import Foundation
+import XCTest
 
 @testable import AWSPinpointAnalyticsPlugin
 
 public class MockAWSPinpoint: AWSPinpointBehavior {
-
     let applicationId = "applicationId"
     let endpointId = "endpointId"
 
@@ -27,6 +26,7 @@ public class MockAWSPinpoint: AWSPinpointBehavior {
     var escapeHatchCalled = 0
 
     // MARK: Method arguments for AWSPinpointTargetingClient
+
     var updateEndpointProfileValue: AWSPinpointEndpointProfile?
     var addAttributeValue: [Any]?
     var addAttributeKey: String?
@@ -80,8 +80,7 @@ public class MockAWSPinpoint: AWSPinpointBehavior {
     var createVirtualMonetizationEventResult: AWSPinpointEvent?
     var submitEventsResult: AWSTask<AnyObject>?
 
-    public init() {
-    }
+    public init() {}
 
     public func getEscapeHatch() -> AWSPinpoint {
         escapeHatchCalled += 1

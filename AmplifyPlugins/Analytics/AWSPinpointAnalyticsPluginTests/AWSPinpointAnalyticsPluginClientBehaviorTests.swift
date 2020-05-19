@@ -5,14 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 import Amplify
-@testable import AWSPinpointAnalyticsPlugin
 import AWSPinpoint
+@testable import AWSPinpointAnalyticsPlugin
 import CwlPreconditionTesting
+import XCTest
 
+// swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginTestBase {
-
     let testName = "testName"
     let testIdentityId = "identityId"
     let testEmail = "testEmail"
@@ -84,9 +84,9 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.currentEndpoint and updateEndpoint methods are called
     ///     and Hub Analytics.identifyUser event is dispatched with an error
     func testIdentifyUserDispatchesErrorForPinpointError() {
-        mockPinpoint.updateEndpointProfileResult = AWSTask<AnyObject>.init(error: NSError.init(domain: "domain",
-                                                                                               code: 1,
-                                                                                               userInfo: nil))
+        mockPinpoint.updateEndpointProfileResult = AWSTask<AnyObject>.init(error: NSError(domain: "domain",
+                                                                                          code: 1,
+                                                                                          userInfo: nil))
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
 
         _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
@@ -168,9 +168,9 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.createEvent and record methods are called
     ///     and Hub Analytics.record event is dispatched with a error
     func testRecordEventDispatchesErrorForPinpointError() {
-        mockPinpoint.recordResult = AWSTask<AnyObject>.init(error: NSError.init(domain: "domain",
-                                                                                code: 1,
-                                                                                userInfo: nil))
+        mockPinpoint.recordResult = AWSTask<AnyObject>.init(error: NSError(domain: "domain",
+                                                                           code: 1,
+                                                                           userInfo: nil))
         let expectedPinpointEvent = AWSPinpointEvent(eventType: testName, session: AWSPinpointSession())
         mockPinpoint.createEventResult = expectedPinpointEvent
         expectedPinpointEvent.addProperties(testProperties)
@@ -244,9 +244,9 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.createEvent and record methods are called
     ///     and Hub Analytics.record event is dispatched with a error
     func testRecordEventWithNameDispatchesErrorForPinpointError() {
-        mockPinpoint.recordResult = AWSTask<AnyObject>.init(error: NSError.init(domain: "domain",
-                                                                                code: 1,
-                                                                                userInfo: nil))
+        mockPinpoint.recordResult = AWSTask<AnyObject>.init(error: NSError(domain: "domain",
+                                                                           code: 1,
+                                                                           userInfo: nil))
         let expectedPinpointEvent = AWSPinpointEvent(eventType: testName, session: AWSPinpointSession())
         mockPinpoint.createEventResult = expectedPinpointEvent
 
@@ -288,14 +288,13 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// When: AnalyticsPlugin.registerGlobalProperties is invoked
     /// Then: PreconditionFailure is thrown for invalid key
     func testRegisterGlobalPropertiesWithInvalidKeys() {
-        let keyTooLong = String.init(repeating: "1", count: 51)
+        let keyTooLong = String(repeating: "1", count: 51)
         let properties = [keyTooLong: "value"]
 
         let exception: BadInstructionException? = catchBadInstruction {
             self.analyticsPlugin.registerGlobalProperties(properties)
         }
         XCTAssertNotNil(exception)
-
     }
 
     // MARK: UnregisterGlobalProperties API
@@ -368,9 +367,9 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.submitEvents is invoked
     ///     and Hub Analytics.flushEvents event is dispatched with error
     func testFlushEventsDispatchesErrorForPinpointError() {
-        mockPinpoint.submitEventsResult = AWSTask<AnyObject>.init(error: NSError.init(domain: "domain",
-                                                                                      code: 1,
-                                                                                      userInfo: nil))
+        mockPinpoint.submitEventsResult = AWSTask<AnyObject>.init(error: NSError(domain: "domain",
+                                                                                 code: 1,
+                                                                                 userInfo: nil))
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
 
         _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in

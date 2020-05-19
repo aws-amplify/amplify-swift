@@ -5,23 +5,21 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import AWSPinpoint
 import AWSMobileClient
+import AWSPinpoint
 import AWSPluginsCore
+import Foundation
 
 /// Conforms to `AWSPinpointBehavior` by storing an instance of the `AWSPinpoint` to expose AWS Pinpoint functionality
 class AWSPinpointAdapter: AWSPinpointBehavior {
-
     let pinpoint: AWSPinpoint
-    //let eventRecorder: AWSPinpointEventRecorder
+    // let eventRecorder: AWSPinpointEventRecorder
 
     convenience init(pinpointAnalyticsAppId: String,
                      pinpointAnalyticsRegion: AWSRegionType,
                      pinpointTargetingRegion: AWSRegionType,
                      credentialsProvider: AWSCredentialsProvider) throws {
-
         let pinpointConfiguration = AWSPinpointConfiguration(appId: pinpointAnalyticsAppId, launchOptions: nil)
         let serviceConfiguration = AmplifyAWSServiceConfiguration(region: pinpointAnalyticsRegion,
                                                                   credentialsProvider: credentialsProvider)
@@ -39,10 +37,10 @@ class AWSPinpointAdapter: AWSPinpointBehavior {
 
     init(pinpoint: AWSPinpoint) {
         self.pinpoint = pinpoint
-        //self.eventRecorder = pinpoint.analyticsClient.eventRecorder
+        // self.eventRecorder = pinpoint.analyticsClient.eventRecorder
     }
 
     func getEscapeHatch() -> AWSPinpoint {
-        return pinpoint
+        pinpoint
     }
 }

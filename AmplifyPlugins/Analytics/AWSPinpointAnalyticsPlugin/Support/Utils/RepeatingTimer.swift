@@ -5,11 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 
 class RepeatingTimer {
-
     static func createRepeatingTimer(timeInterval: TimeInterval,
                                      eventHandler: @escaping BasicClosure) -> DispatchSourceTimer {
         let timer = DispatchSource.makeTimerSource(queue: DispatchQueue.global(qos: .background))

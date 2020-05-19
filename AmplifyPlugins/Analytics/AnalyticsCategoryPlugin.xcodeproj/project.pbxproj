@@ -463,10 +463,10 @@
 				DE75EF23119BC9907BA8D9A9 /* [CP] Check Pods Manifest.lock */,
 				B478F5F62374DBF400C4F92B /* Headers */,
 				B478F5F72374DBF400C4F92B /* Sources */,
-				B478F5F82374DBF400C4F92B /* Frameworks */,
-				B478F5F92374DBF400C4F92B /* Resources */,
 				B478F6602374DDAE00C4F92B /* Swift Format */,
 				B478F6612374DDE900C4F92B /* Swift Lint */,
+				B478F5F82374DBF400C4F92B /* Frameworks */,
+				B478F5F92374DBF400C4F92B /* Resources */,
 			);
 			buildRules = (
 			);
@@ -483,10 +483,10 @@
 			buildPhases = (
 				FF6A04A34E9D33E452FBAAE7 /* [CP] Check Pods Manifest.lock */,
 				B478F6452374DCE700C4F92B /* Sources */,
+				B478F6642374DE2B00C4F92B /* Swift Format */,
+				B478F6622374DE0100C4F92B /* Swift Lint */,
 				B478F6462374DCE700C4F92B /* Frameworks */,
 				B478F6472374DCE700C4F92B /* Resources */,
-				B478F6622374DE0100C4F92B /* Swift Lint */,
-				B478F6642374DE2B00C4F92B /* Swift Format */,
 				9C7CF358813B6E67D5E8EB6E /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
@@ -505,10 +505,10 @@
 			buildPhases = (
 				33B6A0041F706CB5D20DA581 /* [CP] Check Pods Manifest.lock */,
 				B478F6542374DD0D00C4F92B /* Sources */,
+				B478F6652374DE3700C4F92B /* Swift Format */,
+				B478F6632374DE1200C4F92B /* Swift Lint */,
 				B478F6552374DD0D00C4F92B /* Frameworks */,
 				B478F6562374DD0D00C4F92B /* Resources */,
-				B478F6632374DE1200C4F92B /* Swift Lint */,
-				B478F6652374DE3700C4F92B /* Swift Format */,
 				40279E4DF7857DB70CA07B3F /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
@@ -735,7 +735,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../../.swiftformat\" --swiftversion $SWIFT_VERSION \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		B478F6612374DDE900C4F92B /* Swift Lint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -753,7 +753,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		B478F6622374DE0100C4F92B /* Swift Lint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -771,7 +771,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		B478F6632374DE1200C4F92B /* Swift Lint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -789,7 +789,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		B478F6642374DE2B00C4F92B /* Swift Format */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -807,7 +807,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../../.swiftformat\" --swiftversion $SWIFT_VERSION \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		B478F6652374DE3700C4F92B /* Swift Format */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -825,7 +825,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" \"${SRCROOT}/$(PRODUCT_NAME)\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../../.swiftformat\" --swiftversion $SWIFT_VERSION \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		DE75EF23119BC9907BA8D9A9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1160,7 +1160,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.amazonaws.$(PRODUCT_NAME)/";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.amazonaws.$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1179,7 +1179,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.amazonaws.$(PRODUCT_NAME)/";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.amazonaws.$(PRODUCT_NAME)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

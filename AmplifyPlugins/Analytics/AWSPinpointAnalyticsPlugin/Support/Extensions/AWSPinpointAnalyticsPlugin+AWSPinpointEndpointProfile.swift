@@ -5,12 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPinpoint
+import Foundation
 
 extension AWSPinpointEndpointProfile {
-
     func addIdentityId(_ identityId: String) {
         let pinpointEndpointProfileUser = user ?? AWSPinpointEndpointProfileUser()
         pinpointEndpointProfileUser.userId = identityId
