@@ -29,7 +29,7 @@ extension Model {
             }
 
             switch field.type {
-            case .date, .dateTime:
+            case .date, .dateTime, .time:
                 if let date = value as? TemporalSpec {
                     input[name] = date.iso8601String
                 } else {
