@@ -42,6 +42,7 @@ class GraphQLGetQueryTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -71,6 +72,7 @@ class GraphQLGetQueryTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -116,6 +118,7 @@ class GraphQLGetQueryTests: XCTestCase {
               createdAt
               draft
               rating
+              status
               title
               updatedAt
               __typename
@@ -151,6 +154,7 @@ class GraphQLGetQueryTests: XCTestCase {
               createdAt
               draft
               rating
+              status
               title
               updatedAt
               __typename

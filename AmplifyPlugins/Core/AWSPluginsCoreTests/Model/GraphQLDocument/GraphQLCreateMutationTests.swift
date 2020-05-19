@@ -33,7 +33,10 @@ class GraphQLCreateMutationTests: XCTestCase {
     ///     - it contains an `input` of type `CreatePostInput`
     ///     - it has a list of fields with no nested models
     func testCreateGraphQLMutationFromSimpleModel() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title",
+                        content: "content",
+                        createdAt: Date(),
+                        status: .private)
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: post))
@@ -46,6 +49,7 @@ class GraphQLCreateMutationTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -64,8 +68,12 @@ class GraphQLCreateMutationTests: XCTestCase {
             XCTFail("The document variables property doesn't contain a valid input")
             return
         }
-        XCTAssert(input["title"] as? String == post.title)
-        XCTAssert(input["content"] as? String == post.content)
+        print("=====================")
+        print(input)
+        print("=====================")
+        XCTAssertEqual(input["title"] as? String, post.title)
+        XCTAssertEqual(input["content"] as? String, post.content)
+        XCTAssertEqual(input["status"] as? String, PostStatus.private.rawValue)
     }
 
     /// - Given: a `Model` instance
@@ -97,6 +105,7 @@ class GraphQLCreateMutationTests: XCTestCase {
               createdAt
               draft
               rating
+              status
               title
               updatedAt
               __typename
@@ -144,6 +153,7 @@ class GraphQLCreateMutationTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -200,6 +210,7 @@ class GraphQLCreateMutationTests: XCTestCase {
               createdAt
               draft
               rating
+              status
               title
               updatedAt
               __typename
