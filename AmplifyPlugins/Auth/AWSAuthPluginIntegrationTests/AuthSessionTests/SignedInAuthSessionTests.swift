@@ -24,8 +24,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
 
     func testSuccessfulSessionFetch() {
         let authSessionExpectation = expectation(description: "Received event result from fetchAuth")
-        _ = Amplify.Auth.fetchAuthSession {event in
-
+        _ = Amplify.Auth.fetchAuthSession { _ in
             authSessionExpectation.fulfill()
         }
         wait(for: [authSessionExpectation], timeout: 500)
