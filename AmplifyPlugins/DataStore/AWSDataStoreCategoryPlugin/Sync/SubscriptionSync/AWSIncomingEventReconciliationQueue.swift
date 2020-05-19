@@ -12,14 +12,21 @@ import Foundation
 
 //Used for testing:
 @available(iOS 13.0, *)
-typealias IncomingEventReconciliationQueueFactory =
-    ([Model.Type], APICategoryGraphQLBehavior, StorageEngineAdapter, ModelReconciliationQueueFactory?) -> IncomingEventReconciliationQueue
+typealias IncomingEventReconciliationQueueFactory = (
+    [Model.Type],
+    APICategoryGraphQLBehavior,
+    StorageEngineAdapter,
+    ModelReconciliationQueueFactory?
+) -> IncomingEventReconciliationQueue
 
 @available(iOS 13.0, *)
 final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
 
     static let factory: IncomingEventReconciliationQueueFactory = { modelTypes, api, storageAdapter, _ in
-        AWSIncomingEventReconciliationQueue(modelTypes: modelTypes, api: api, storageAdapter: storageAdapter, modelReconciliationQueueFactory: nil)
+        AWSIncomingEventReconciliationQueue(modelTypes: modelTypes,
+                                            api: api,
+                                            storageAdapter: storageAdapter,
+                                            modelReconciliationQueueFactory: nil)
     }
     private var modelReconciliationQueueSinks: [String: AnyCancellable]
 
@@ -45,7 +52,8 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
             AWSModelReconciliationQueue.init(modelType:storageAdapter:api:incomingSubscriptionEvents:)
         //TODO: Add target for SyncEngine system to help prevent thread explosion and increase performance
         // https://github.com/aws-amplify/amplify-ios/issues/399
-        self.connectionStatusSerialQueue = DispatchQueue(label: "com.amazonaws.DataStore.AWSIncomingEventReconciliationQueue")
+        self.connectionStatusSerialQueue
+            = DispatchQueue(label: "com.amazonaws.DataStore.AWSIncomingEventReconciliationQueue")
         for modelType in modelTypes {
             let modelName = modelType.modelName
             let queue = self.modelReconciliationQueueFactory(modelType, storageAdapter, api, nil)

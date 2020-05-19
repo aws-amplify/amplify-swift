@@ -824,10 +824,10 @@
 			buildConfigurationList = 2149E5A3238867E100873955 /* Build configuration list for PBXNativeTarget "AWSDataStoreCategoryPlugin" */;
 			buildPhases = (
 				85DA96279C68FE5809B48B1B /* [CP] Check Pods Manifest.lock */,
-				2149E63023886EE400873955 /* Swift Format */,
-				2149E62E23886EBA00873955 /* Swift Lint */,
 				2149E596238867E100873955 /* Headers */,
 				2149E597238867E100873955 /* Sources */,
+				2149E63023886EE400873955 /* Swift Format */,
+				2149E62E23886EBA00873955 /* Swift Lint */,
 				2149E598238867E100873955 /* Frameworks */,
 				2149E599238867E100873955 /* Resources */,
 			);
@@ -845,9 +845,9 @@
 			buildConfigurationList = 2149E5ED2388692E00873955 /* Build configuration list for PBXNativeTarget "AWSDataStoreCategoryPluginTests" */;
 			buildPhases = (
 				08289990D5BB11284752D2DC /* [CP] Check Pods Manifest.lock */,
+				2149E5DF2388692E00873955 /* Sources */,
 				FA9EB2C7238894B400BAADBD /* SwiftFormat */,
 				FA9EB2C8238894CB00BAADBD /* SwiftLint */,
-				2149E5DF2388692E00873955 /* Sources */,
 				2149E5E02388692E00873955 /* Frameworks */,
 				2149E5E12388692E00873955 /* Resources */,
 				C01946720C8E68541B329579 /* [CP] Embed Pods Frameworks */,
@@ -886,9 +886,9 @@
 			buildConfigurationList = 2149E62523886CEE00873955 /* Build configuration list for PBXNativeTarget "AWSDataStoreCategoryPluginIntegrationTests" */;
 			buildPhases = (
 				1713BE6ABCD8154CDEC377DD /* [CP] Check Pods Manifest.lock */,
+				2149E61923886CEE00873955 /* Sources */,
 				FA9EB2C52388949500BAADBD /* SwiftFormat */,
 				FA9EB2C6238894A800BAADBD /* SwiftLint */,
-				2149E61923886CEE00873955 /* Sources */,
 				2149E61A23886CEE00873955 /* Frameworks */,
 				2149E61B23886CEE00873955 /* Resources */,
 				ED8E6EC9BE2DB356A6000F74 /* [CP] Embed Pods Frameworks */,
@@ -945,8 +945,8 @@
 			projectRoot = "";
 			targets = (
 				2149E59A238867E100873955 /* AWSDataStoreCategoryPlugin */,
-				2149E61C23886CEE00873955 /* AWSDataStoreCategoryPluginIntegrationTests */,
 				2149E5E22388692E00873955 /* AWSDataStoreCategoryPluginTests */,
+				2149E61C23886CEE00873955 /* AWSDataStoreCategoryPluginIntegrationTests */,
 				2149E60423886C7B00873955 /* HostApp */,
 			);
 		};
@@ -1049,7 +1049,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSDataStoreCategoryPlugin\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/AWSDataStoreCategoryPlugin\"\n";
 		};
 		2149E63023886EE400873955 /* Swift Format */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1067,7 +1067,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AWSDataStoreCategoryPlugin\" --config \"${SRCROOT}/../../.swiftformat\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\"  --config \"${SRCROOT}/../../.swiftformat\" \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		50B9D3566132A3E54BA4C2F8 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1180,7 +1180,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AWSDataStoreCategoryPluginIntegrationTests\" --config \"${SRCROOT}/../../.swiftformat\"\n\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\"  --config \"${SRCROOT}/../../.swiftformat\" \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		FA9EB2C6238894A800BAADBD /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1198,7 +1198,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSDataStoreCategoryPluginIntegrationTests\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		FA9EB2C7238894B400BAADBD /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1216,7 +1216,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AWSDataStoreCategoryPluginTests\" --config \"${SRCROOT}/../../.swiftformat\"\n\n";
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\"  --config \"${SRCROOT}/../../.swiftformat\" \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		FA9EB2C8238894CB00BAADBD /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1234,7 +1234,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSDataStoreCategoryPluginTests\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

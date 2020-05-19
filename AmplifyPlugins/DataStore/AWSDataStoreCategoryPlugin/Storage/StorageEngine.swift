@@ -38,7 +38,8 @@ final class StorageEngine: StorageEngineBehavior {
             if iStorageEnginePublisher == nil {
                 iStorageEnginePublisher = PassthroughSubject<StorageEngineEvent, DataStoreError>()
             }
-            return iStorageEnginePublisher as! PassthroughSubject<StorageEngineEvent, DataStoreError> // swiftlint:disable:this force_cast
+            // swiftlint:disable:next force_cast
+            return iStorageEnginePublisher as! PassthroughSubject<StorageEngineEvent, DataStoreError>
         }
         set {
             iStorageEnginePublisher = newValue

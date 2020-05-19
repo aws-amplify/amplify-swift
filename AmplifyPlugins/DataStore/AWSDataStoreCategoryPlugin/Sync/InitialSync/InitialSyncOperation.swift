@@ -117,22 +117,21 @@ final class InitialSyncOperation: AsynchronousOperation {
                                                                 nextToken: nextToken,
                                                                 lastSync: lastSyncTime)
 
-        _ = api.query(request: request) { asyncEvent in
-            switch asyncEvent {
-            case .failed(let apiError):
+        _ = api.query(request: request) { result in
+            switch result {
+            case .failure(let apiError):
                 // TODO: Retry query on error
                 self.finish(result: .failure(DataStoreError.api(apiError)))
-            case .completed(let graphQLResult):
+            case .success(let graphQLResult):
                 self.handleQueryResults(lastSyncTime: lastSyncTime, graphQLResult: graphQLResult)
-            default:
-                break
             }
         }
     }
 
     /// Disposes of the query results: Stops if error, reconciles results if success, and kick off a new query if there
     /// is a next token
-    private func handleQueryResults(lastSyncTime: Int?, graphQLResult: Result<SyncQueryResult, GraphQLResponseError<SyncQueryResult>>) {
+    private func handleQueryResults(lastSyncTime: Int?,
+                                    graphQLResult: Result<SyncQueryResult, GraphQLResponseError<SyncQueryResult>>) {
         guard !isCancelled else {
             super.finish()
             return
