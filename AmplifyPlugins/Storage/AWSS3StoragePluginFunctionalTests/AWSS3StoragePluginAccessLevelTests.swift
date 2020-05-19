@@ -6,12 +6,12 @@
 //
 
 import XCTest
-import AWSMobileClient
 import Amplify
 @testable import AWSS3StoragePlugin
 import AWSS3
 import AWSCognitoIdentityProvider
 @testable import AmplifyTestCommon
+import AWSPluginsCore
 
 class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
@@ -100,16 +100,17 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let accessLevel: StorageAccessLevel = .guest
 
         // Sign into user1
-        AuthHelper.signIn(username: AWSS3StoragePluginTestBase.user1, password: AWSS3StoragePluginTestBase.password)
-        let user1IdentityId = AuthHelper.getIdentityId()
+        signIn(username: AWSS3StoragePluginTestBase.user1, password: AWSS3StoragePluginTestBase.password)
+
+        let user1IdentityId = getIdentityId()
 
         // Upload data
         upload(key: key, data: key, accessLevel: accessLevel)
 
         // Sign out of user1 and into user2
-        AuthHelper.signOut()
-        AuthHelper.signIn(username: AWSS3StoragePluginTestBase.user2, password: AWSS3StoragePluginTestBase.password)
-        let user2IdentityId = AuthHelper.getIdentityId()
+        signOut()
+        signIn(username: AWSS3StoragePluginTestBase.user2, password: AWSS3StoragePluginTestBase.password)
+        let user2IdentityId = getIdentityId()
         XCTAssertNotEqual(user1IdentityId, user2IdentityId)
 
         // list keys as user2
@@ -153,16 +154,16 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let accessLevel: StorageAccessLevel = .protected
 
         // Sign into user1
-        AuthHelper.signIn(username: AWSS3StoragePluginTestBase.user1, password: AWSS3StoragePluginTestBase.password)
-        let user1IdentityId = AuthHelper.getIdentityId()
+        signIn(username: AWSS3StoragePluginTestBase.user1, password: AWSS3StoragePluginTestBase.password)
+        let user1IdentityId = getIdentityId()
 
         // Upload
         upload(key: key, data: key, accessLevel: accessLevel)
 
         // Sign out of user1 and into user2
-        AuthHelper.signOut()
-        AuthHelper.signIn(username: AWSS3StoragePluginTestBase.user2, password: AWSS3StoragePluginTestBase.password)
-        let user2IdentityId = AuthHelper.getIdentityId()
+        signOut()
+        signIn(username: AWSS3StoragePluginTestBase.user2, password: AWSS3StoragePluginTestBase.password)
+        let user2IdentityId = getIdentityId()
         XCTAssertNotEqual(user1IdentityId, user2IdentityId)
 
         // list keys for user1 as user2
@@ -183,16 +184,16 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let accessLevel: StorageAccessLevel = .private
 
         // Sign into user1
-        AuthHelper.signIn(username: AWSS3StoragePluginTestBase.user1, password: AWSS3StoragePluginTestBase.password)
-        let user1IdentityId = AuthHelper.getIdentityId()
+        signIn(username: AWSS3StoragePluginTestBase.user1, password: AWSS3StoragePluginTestBase.password)
+        let user1IdentityId = getIdentityId()
 
         // Upload
         upload(key: key, data: key, accessLevel: accessLevel)
 
         // Sign out of user1 and into user2
-        AuthHelper.signOut()
-        AuthHelper.signIn(username: AWSS3StoragePluginTestBase.user2, password: AWSS3StoragePluginTestBase.password)
-        let user2IdentityId = AuthHelper.getIdentityId()
+        signOut()
+        signIn(username: AWSS3StoragePluginTestBase.user2, password: AWSS3StoragePluginTestBase.password)
+        let user2IdentityId = getIdentityId()
         XCTAssertNotEqual(user1IdentityId, user2IdentityId)
 
         // list keys for user1 as user2 - should fail with validation error
@@ -240,7 +241,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     // MARK: - Common test functions
 
     func putThenListThenGetThenRemoveForSingleUser(username: String, key: String, accessLevel: StorageAccessLevel) {
-        AuthHelper.signIn(username: username, password: AWSS3StoragePluginTestBase.password)
+        signIn(username: username, password: AWSS3StoragePluginTestBase.password)
 
         // Upload
         upload(key: key, data: key, accessLevel: accessLevel)
@@ -352,5 +353,68 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             }
         }
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+    }
+
+    // Auth Helpers
+
+    func signIn(username: String, password: String) {
+        let signInInvoked = expectation(description: "sign in completed")
+        _ = Amplify.Auth.signIn(username: username, password: password) { event in
+            switch event {
+            case .completed:
+                signInInvoked.fulfill()
+            case .failed(let error):
+                XCTFail("Failed to Sign in user \(error)")
+            default:
+                XCTFail("Unexpected event")
+            }
+        }
+        wait(for: [signInInvoked], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    func getIdentityId() -> String {
+        let retrieveIdentityCompleted = expectation(description: "retrieve identity completed")
+        var resultOptional: String?
+        _ = Amplify.Auth.fetchAuthSession(listener: { event in
+            switch event {
+            case .completed(let authSession):
+                guard let cognitoAuthSession = authSession as? AuthCognitoIdentityProvider else {
+                    XCTFail("Could not get auth session as AuthCognitoIdentityProvider")
+                    return
+                }
+                switch cognitoAuthSession.getIdentityId() {
+                case .success(let identityId):
+                    resultOptional = identityId
+                    retrieveIdentityCompleted.fulfill()
+                case .failure(let error):
+                    XCTFail("Failed to get auth session \(error)")
+                }
+            case .failed(let error):
+                XCTFail("Failed to get auth session \(error)")
+            default:
+                XCTFail("Unexpected event")
+            }
+        })
+        wait(for: [retrieveIdentityCompleted], timeout: TestCommonConstants.networkTimeout)
+        guard let result = resultOptional else {
+            fatalError("Could not get identityId for user")
+        }
+
+        return result
+    }
+
+    func signOut() {
+        let signOutCompleted = expectation(description: "sign out completed")
+        Amplify.Auth.signOut { event in
+            switch event {
+            case .completed:
+                signOutCompleted.fulfill()
+            case .failed(let error):
+                XCTFail("Could not sign out user \(error)")
+            default:
+                XCTFail("Unexpected event")
+            }
+        }
+        wait(for: [signOutCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 }
