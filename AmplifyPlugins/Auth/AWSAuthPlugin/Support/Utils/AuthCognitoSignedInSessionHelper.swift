@@ -38,25 +38,21 @@ struct AuthCognitoSignedInSessionHelper {
     }
 
     static func makeExpiredSignedInSession() -> AWSAuthCognitoSession {
-        let identityIdError = AuthError.service(
+        let identityIdError = AuthError.sessionExpired(
             AuthPluginErrorConstants.identityIdSessionExpiredError.errorDescription,
-            AuthPluginErrorConstants.identityIdSessionExpiredError.recoverySuggestion,
-            AWSCognitoAuthError.sessionExpired)
+            AuthPluginErrorConstants.identityIdSessionExpiredError.recoverySuggestion)
 
-        let awsCredentialsError = AuthError.service(
+        let awsCredentialsError = AuthError.sessionExpired(
             AuthPluginErrorConstants.awsCredentialsSessionExpiredError.errorDescription,
-            AuthPluginErrorConstants.awsCredentialsSessionExpiredError.recoverySuggestion,
-            AWSCognitoAuthError.sessionExpired)
+            AuthPluginErrorConstants.awsCredentialsSessionExpiredError.recoverySuggestion)
 
-        let tokensError = AuthError.service(
+        let tokensError = AuthError.sessionExpired(
             AuthPluginErrorConstants.cognitoTokensSessionExpiredError.errorDescription,
-            AuthPluginErrorConstants.cognitoTokensSessionExpiredError.recoverySuggestion,
-            AWSCognitoAuthError.sessionExpired)
+            AuthPluginErrorConstants.cognitoTokensSessionExpiredError.recoverySuggestion)
 
-        let userSubError = AuthError.service(
+        let userSubError = AuthError.sessionExpired(
             AuthPluginErrorConstants.usersubSessionExpiredError.errorDescription,
-            AuthPluginErrorConstants.usersubSessionExpiredError.recoverySuggestion,
-            AWSCognitoAuthError.sessionExpired)
+            AuthPluginErrorConstants.usersubSessionExpiredError.recoverySuggestion)
 
         let authSession = AWSAuthCognitoSession(isSignedIn: true,
                                                 userSubResult: .failure(userSubError),

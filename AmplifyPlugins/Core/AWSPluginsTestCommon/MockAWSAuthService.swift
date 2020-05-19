@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSMobileClient
+import AWSCore
 import Amplify
 import AWSPluginsCore
 
