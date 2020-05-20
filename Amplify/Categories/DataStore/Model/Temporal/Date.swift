@@ -15,20 +15,19 @@ extension Temporal {
     ///
     /// In those scenarios, the standard `Date` is formatted to ISO-8601 without the time.
     /// When the full date information is required, use `DateTime` instead.
-    ///
     public struct Date: TemporalSpec, DateUnitOperable {
 
         public static func now() -> Self {
             return Temporal.Date(Foundation.Date())
         }
 
-        public let date: Foundation.Date
+        public let foundationDate: Foundation.Date
 
         public init(iso8601String: String) throws {
             guard let date = Temporal.Date.iso8601Date(from: iso8601String) else {
                 throw DataStoreError.invalidDateFormat(iso8601String)
             }
-            self.date = date
+            self.foundationDate = date
         }
 
         public init(_ date: Foundation.Date) {
@@ -43,7 +42,7 @@ extension Temporal {
             components.minute = 0
             components.second = 0
             components.nanosecond = 0
-            self.date = calendar.date(from: components) ?? date
+            self.foundationDate = calendar.date(from: components) ?? date
         }
     }
 }

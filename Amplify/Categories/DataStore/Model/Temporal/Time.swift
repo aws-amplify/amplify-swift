@@ -11,9 +11,9 @@ extension Temporal {
 
     /// `Time` is an immutable `TemporalSpec` object that represents a time, often viewed
     /// as hour-minute-second (`HH:mm:ss`). Time can be represented to nanosecond precision.
-    /// For example, the value "13:45.30.1234". It can also hold a reference to a TimeZone.
+    /// For example, the value "13:45.30.123". It can also hold a reference to a TimeZone.
     ///
-    /// As all Date scalars, `Time` relies on the ISO8601 calendar and fixed format.
+    /// As all Temporal types, `Time` relies on the ISO8601 calendar and fixed format.
     public struct Time: TemporalSpec, TimeUnitOperable {
 
         public static var iso8601DateComponents: Set<Calendar.Component> {
@@ -24,7 +24,7 @@ extension Temporal {
             return Time(Foundation.Date())
         }
 
-        public let date: Foundation.Date
+        public let foundationDate: Foundation.Date
 
         public init(_ date: Foundation.Date) {
             // sets the date to a fixed instant so time-only operations are safe
@@ -36,14 +36,14 @@ extension Temporal {
             components.year = 2_000
             components.month = 1
             components.day = 1
-            self.date = calendar.date(from: components) ?? date
+            self.foundationDate = calendar.date(from: components) ?? date
         }
 
         public init(iso8601String: String) throws {
             guard let date = Time.iso8601Date(from: iso8601String) else {
                 throw DataStoreError.invalidDateFormat(iso8601String)
             }
-            self.date = date
+            self.foundationDate = date
         }
 
     }

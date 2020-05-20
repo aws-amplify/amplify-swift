@@ -12,21 +12,21 @@ import Foundation
 ///
 /// Core Types that conform to this protocol:
 /// - `Bool`
-/// - `Temporal.Date`
-/// - `Temporal.DateTime`
-/// - `Temporal.Time`
 /// - `Double`
 /// - `Int`
 /// - `String`
+/// - `Temporal.Date`
+/// - `Temporal.DateTime`
+/// - `Temporal.Time`
 public protocol Persistable {}
 
 extension Bool: Persistable {}
-extension Temporal.Date: Persistable {}
-extension Temporal.DateTime: Persistable {}
-extension Temporal.Time: Persistable {}
 extension Double: Persistable {}
 extension Int: Persistable {}
 extension String: Persistable {}
+extension Temporal.Date: Persistable {}
+extension Temporal.DateTime: Persistable {}
+extension Temporal.Time: Persistable {}
 
 struct PersistableHelper {
 

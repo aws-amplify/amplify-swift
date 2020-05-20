@@ -48,6 +48,20 @@ class TemporalOperationTests: XCTestCase {
         }
     }
 
+    /// - Given: `2020-02-28` which represents a leap year date
+    /// - When:
+    ///   - the operation adds one day (`.oneDay`)
+    /// - Then:
+    ///   - it should return `2020-02-29`
+    func testLeapYearOperation() {
+        do {
+            let date = try Temporal.Date(iso8601String: "2020-02-28")
+            XCTAssertEqual((date + .oneDay).iso8601String, "2020-02-29Z")
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
+
     // MARK: - DateTime
 
     /// - Given: a `DateTime` instance with a date/time value

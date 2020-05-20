@@ -14,7 +14,7 @@ public struct ModelDateFormatting {
             let container = try decoder.singleValueContainer()
             let dateString = try container.decode(String.self)
             let dateTime = try Temporal.DateTime(iso8601String: dateString)
-            return dateTime.date
+            return dateTime.foundationDate
         }
 
         return strategy
@@ -23,7 +23,7 @@ public struct ModelDateFormatting {
     public static let encodingStrategy: JSONEncoder.DateEncodingStrategy = {
         let strategy = JSONEncoder.DateEncodingStrategy.custom { date, encoder in
             var container = encoder.singleValueContainer()
-            try container.encode(Temporal.Date(date).iso8601String)
+            try container.encode(Temporal.DateTime(date).iso8601String)
         }
         return strategy
     }()

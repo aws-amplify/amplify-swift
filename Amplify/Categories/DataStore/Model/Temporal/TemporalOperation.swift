@@ -18,7 +18,7 @@ extension TemporalSpec {
         let calendar = Self.iso8601Calendar
         let result = calendar.date(byAdding: component,
                                    value: value,
-                                   to: self.date,
+                                   to: foundationDate,
                                    wrappingComponents: false)
         guard let date = result else {
             fatalError(
@@ -26,7 +26,7 @@ extension TemporalSpec {
                 The Date operation of the component \(component) and value \(value)
                 could not be completed. The operation is done on a ISO-8601 Calendar
                 and the values passed are not valid in an ISO-8601 context.
-                
+
                 This is likely caused by an invalid value in the operation. If you
                 use user input as values in the operation, make sure you validate them first.
                 """

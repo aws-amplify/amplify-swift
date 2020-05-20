@@ -12,6 +12,7 @@ public enum TimeUnit {
     case hours(_ value: Int)
     case minutes(_ value: Int)
     case seconds(_ value: Int)
+    case milliseconds(_ value: Int)
     case nanoseconds(_ value: Int)
 
     public static let oneSecond: TimeUnit = .seconds(1)
@@ -26,7 +27,7 @@ public enum TimeUnit {
             return .minute
         case .seconds:
             return .second
-        case .nanoseconds:
+        case .nanoseconds, .milliseconds:
             return .nanosecond
         }
     }
@@ -38,6 +39,8 @@ public enum TimeUnit {
              .seconds(let value),
              .nanoseconds(let value):
             return value
+        case .milliseconds(let value):
+            return value * 1_000_000
         }
     }
 

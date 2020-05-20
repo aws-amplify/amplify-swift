@@ -24,23 +24,23 @@ extension Temporal {
             return DateTime(Foundation.Date())
         }
 
-        public let date: Foundation.Date
+        public let foundationDate: Foundation.Date
 
         public var time: Time {
-            Time(date)
+            Time(foundationDate)
         }
 
         public init(_ date: Foundation.Date) {
             let calendar = DateTime.iso8601Calendar
             let components = calendar.dateComponents(DateTime.iso8601DateComponents, from: date)
-            self.date = components.date ?? date
+            self.foundationDate = components.date ?? date
         }
 
         public init(iso8601String: String) throws {
             guard let date = DateTime.iso8601Date(from: iso8601String) else {
                 throw DataStoreError.invalidDateFormat(iso8601String)
             }
-            self.date = date
+            self.foundationDate = date
         }
 
     }

@@ -93,6 +93,7 @@ class TemporalComparableTests: XCTestCase {
             let datetime1 = try Temporal.DateTime(iso8601String: "2020-01-20T08:00")
             let datetime2 = try Temporal.DateTime(iso8601String: "2020-01-20T09:00")
             XCTAssertTrue(datetime1 != datetime2)
+            XCTAssertFalse(datetime1 == datetime2)
             XCTAssertFalse(datetime1 > datetime2)
             XCTAssertFalse(datetime1 >= datetime2)
             XCTAssertTrue(datetime1 < datetime2)
@@ -114,8 +115,11 @@ class TemporalComparableTests: XCTestCase {
             let datetime1 = try Temporal.DateTime(iso8601String: "2020-01-20T16:00:00.0000Z")
             let datetime2 = try Temporal.DateTime(iso8601String: "2020-01-20T08:00:00.0000-08:00")
             XCTAssertTrue(datetime2 == datetime1)
+            XCTAssertFalse(datetime2 != datetime1)
             XCTAssertTrue(datetime1 <= datetime2)
+            XCTAssertFalse(datetime2 < datetime1)
             XCTAssertTrue(datetime2 >= datetime1)
+            XCTAssertFalse(datetime2 > datetime1)
         } catch {
             XCTFail(error.localizedDescription)
         }

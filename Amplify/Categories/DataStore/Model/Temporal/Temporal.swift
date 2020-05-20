@@ -29,7 +29,7 @@ public protocol TemporalSpec {
 
     /// The underlying `Date` object. All `TemporalSpec` implementations must be backed
     /// by a Foundation `Date` instance.
-    var date: Foundation.Date { get }
+    var foundationDate: Foundation.Date { get }
 
     /// The ISO-8601 formatted string in the UTC `TimeZone`.
     /// - seealso: iso8601FormattedString(TemporalFormat, TimeZone) -> String
@@ -85,7 +85,7 @@ extension TemporalSpec {
 
     static func iso8601Date(from iso8601String: String) -> Foundation.Date? {
         var date: Foundation.Date?
-        for format in TemporalFormat.allCases {
+        for format in TemporalFormat.sortedCasesForParsing {
             let formatter = Self.iso8601DateFormatter(format: format)
             if let convertedDate = formatter.date(from: iso8601String) {
                 date = convertedDate
@@ -98,7 +98,7 @@ extension TemporalSpec {
     public func iso8601FormattedString(format: TemporalFormat,
                                        timeZone: TimeZone = .utc) -> String {
         let formatter = Self.iso8601DateFormatter(format: format, timeZone: timeZone)
-        return formatter.string(from: date)
+        return formatter.string(from: foundationDate)
     }
 
     /// The ISO8601 representation of the scalar using `.full` as the format and `.utc` as `TimeZone`.

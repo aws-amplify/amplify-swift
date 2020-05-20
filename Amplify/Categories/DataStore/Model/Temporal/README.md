@@ -2,25 +2,26 @@
 
 `DataStore > Model > Temporal`
 
-Model-based programming aims to simplify data management on apps and enable developers to focus on the business and UI implementation while the technical aspects on persisting data are abstracted away from the core logic. Therefore, data types are a critical piece of it.
+Model-based programming aims to simplify data management on apps by abstracting away the complexities of data persistence from the core logic of the app. Therefore, data types are a critical piece of it.
 
-This module provides types that will complement the Swift provided ones when more control is needed over the persisted values.
+This module provides types that complements the Swift provided [`Date`](https://developer.apple.com/documentation/foundation/date) when more control over the date granularity when persisting values to a database (i.e. time-only, date-only, date+time).
 
 **Table of Contents**
 
-1. [Temporal](#temporal)
-   1. [Date, DateTime, Time](#date-datetime-time)
-   2. [ISO-8601](#iso-8601)
-   3. [The underlying `Date`](#the-underlying-date)
-   4. [Operations](#operations)
-   5. [References](#references)
+- [Custom Data Types](#custom-data-types)
+  - [1. Temporal](#1-temporal)
+    - [1.1. `Temporal.Date`, `Temporal.DateTime`, `Temporal.Time`](#11-temporaldate-temporaldatetime-temporaltime)
+    - [1.2. ISO-8601](#12-iso-8601)
+    - [1.3. The underlying `Date`](#13-the-underlying-date)
+    - [1.4. Operations](#14-operations)
+    - [1.5. References](#15-references)
 
 ### 1. Temporal
 
-The Swift foundation module provides the [Date](https://developer.apple.com/documentation/foundation/date) struct that represents a single point in time and can fit any precision, calendrical system or time zone. While that approach is concise and powerful, when it comes to representing persistent data its flexibility can result in ambiguity (i.e. should only the date portion be used or both date and time).
+The Swift foundation module provides the [`Date`](https://developer.apple.com/documentation/foundation/date) struct that represents a single point in time and can fit any precision, calendrical system or time zone. While that approach is concise and powerful, when it comes to representing persistent data its flexibility can result in ambiguity (i.e. should only the date portion be used or both date and time).
 
 
-#### 1.1. `Date`, `DateTime`, `Time`
+#### 1.1. `Temporal.Date`, `Temporal.DateTime`, `Temporal.Time`
 
 The `TemporalSpec` protocol was introduced to establish a more strict way to represent dates that make sense in a data persistence context.
 
@@ -34,7 +35,9 @@ Both `DateTime` and `Time` are backed by a [`Date`](https://developer.apple.com/
 
 #### 1.4. Operations
 
-Date operations are often needed when implementing business logic. Although Swift offers great support for complex date operations using [`Calendar`](https://developer.apple.com/documentation/foundation/calendar), simple use-cases often require several lines of code. The `TemporalSpec` implementation offers utilities that enable simple date operations to be defined in a readable and idiomatic way.
+Swift offers great support for complex date operations using [`Calendar`](https://developer.apple.com/documentation/foundation/calendar), but unfortunately simple use-cases often require several lines of code.
+
+The `TemporalSpec` implementation offers utilities that enable simple date operations to be defined in a readable and idiomatic way.
 
 Time:
 
