@@ -103,6 +103,10 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
         awsMobileClient.signOut(options: options, completionHandler: completionHandler)
     }
 
+    func signOutLocally() {
+        awsMobileClient.signOut()
+    }
+
     func username() -> String? {
         return awsMobileClient.username
     }
