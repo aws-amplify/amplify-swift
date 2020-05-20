@@ -7,7 +7,7 @@
 
 import Amplify
 
-extension AWSAuthPlugin {
+extension AWSCognitoAuthPlugin {
 
     public func fetchUserAttributes(options: AuthFetchUserAttributeOperation.Request.Options? = nil,
                                     listener: AuthFetchUserAttributeOperation.ResultListener?)

@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import Amplify
-@testable import AWSAuthPlugin
+@testable import AWSCognitoAuthPlugin
 
 class AuthHubEventHandlerTests: XCTestCase {
 

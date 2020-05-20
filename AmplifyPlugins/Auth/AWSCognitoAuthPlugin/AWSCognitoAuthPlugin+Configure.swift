@@ -10,9 +10,9 @@ import Amplify
 import AWSPluginsCore
 import AWSMobileClient
 
-extension AWSAuthPlugin {
+extension AWSCognitoAuthPlugin {
 
-    /// Configures AWSAuthPlugin with the specified configuration.
+    /// Configures AWSCognitoAuthPlugin with the specified configuration.
     ///
     /// - Parameter configuration: The configuration specified for this plugin
     /// - Throws:

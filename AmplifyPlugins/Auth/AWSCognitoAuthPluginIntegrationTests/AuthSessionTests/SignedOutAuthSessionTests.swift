@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import Amplify
-import AWSAuthPlugin
+import AWSCognitoAuthPlugin
 import AWSPluginsCore
 
 class SignedOutAuthSessionTests: AWSAuthBaseTest {

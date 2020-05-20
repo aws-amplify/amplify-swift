@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import Amplify
-import AWSAuthPlugin
+import AWSCognitoAuthPlugin
 
 class AWSAuthBaseTest: XCTestCase {
 
@@ -17,7 +17,7 @@ class AWSAuthBaseTest: XCTestCase {
 
         do {
             let configuration = try AuthConfigurationHelper.amplifyConfiguration()
-            let authPlugin = AWSAuthPlugin()
+            let authPlugin = AWSCognitoAuthPlugin()
             try Amplify.add(plugin: authPlugin)
             try Amplify.configure(configuration)
             print("Amplify configured with auth plugin")

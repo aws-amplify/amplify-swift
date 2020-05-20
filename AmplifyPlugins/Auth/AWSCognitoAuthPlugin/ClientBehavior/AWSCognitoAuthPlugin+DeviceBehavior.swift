@@ -7,7 +7,7 @@
 
 import Amplify
 
-extension AWSAuthPlugin {
+extension AWSCognitoAuthPlugin {
 
     public func fetchDevices(
         options: AuthFetchDevicesOperation.Request.Options? = nil,

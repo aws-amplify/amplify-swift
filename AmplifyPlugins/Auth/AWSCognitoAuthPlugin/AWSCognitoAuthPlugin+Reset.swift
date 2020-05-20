@@ -7,7 +7,7 @@
 
 import Amplify
 
-extension AWSAuthPlugin {
+extension AWSCognitoAuthPlugin {
 
     public func reset(onComplete: @escaping BasicClosure) {
 

@@ -47,7 +47,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     override func setUp() {
         do {
             Amplify.reset()
-            try Amplify.add(plugin: AWSAuthPlugin())
+            try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSS3StoragePlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: AWSS3StoragePluginTestBase.amplifyConfiguration)

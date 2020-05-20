@@ -38,22 +38,22 @@ target "HostApp" do
     end 
   
     target "GraphQLWithIAMIntegrationTests" do 
-      pod 'AmplifyPlugins/AWSAuthPlugin', :path => '../../'
+      pod 'AmplifyPlugins/AWSCognitoAuthPlugin', :path => '../../'
       inherit! :complete
     end
   
     target "GraphQLWithUserPoolIntegrationTests" do 
-      pod 'AmplifyPlugins/AWSAuthPlugin', :path => '../../'
+      pod 'AmplifyPlugins/AWSCognitoAuthPlugin', :path => '../../'
       inherit! :complete
     end
   
     target "RESTWithIAMIntegrationTests" do 
-      pod 'AmplifyPlugins/AWSAuthPlugin', :path => '../../'
+      pod 'AmplifyPlugins/AWSCognitoAuthPlugin', :path => '../../'
       inherit! :complete
     end
 
     target "RESTWithUserPoolIntegrationTests" do 
-      pod 'AmplifyPlugins/AWSAuthPlugin', :path => '../../'
+      pod 'AmplifyPlugins/AWSCognitoAuthPlugin', :path => '../../'
       inherit! :complete
     end
   end

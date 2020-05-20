@@ -7,7 +7,7 @@
 
 import XCTest
 import Amplify
-import AWSAuthPlugin
+import AWSCognitoAuthPlugin
 
 class AuthUserAttributeKeyTests: XCTestCase {
 
