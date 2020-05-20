@@ -157,16 +157,8 @@ extension GraphQLAuthDirectiveIntegrationTests {
             XCTFail("underlying error should be AuthError, but instead was \(underlyingError ?? "nil")")
             return
         }
-        guard case let .service(_, _, underlyingAuthError) = authError else {
+        guard case .signedOut = authError else {
             XCTFail("Error should be AuthError.service")
-            return
-        }
-        guard let awsCognitoAuthError = underlyingAuthError as? AWSCognitoAuthError else {
-            XCTFail("Error should be AWSCognitoAuthError")
-            return
-        }
-        guard case .signedOut = awsCognitoAuthError else {
-            XCTFail("Error should be .signedOut")
             return
         }
     }
