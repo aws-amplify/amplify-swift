@@ -14,102 +14,45 @@ import XCTest
 
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
-    /*
-     Set up
-     `amplify init`
-     `amplify add analytics`
-       * Apps need authorization to send analytics events. Do you want to allow guests and unauthenticated users to send
-         analytics events? (we recommend you allow this when getting started) `Yes`
-     `amplify push`
 
-     Pinpoint URL to track events
-     https://us-west-2.console.aws.amazon.com/pinpoint/home/?region=us-west-2#/apps/xxx/analytics/overview
-
-     awsconfiguration.json
-     {
-         "UserAgent": "aws-amplify/cli",
-         "Version": "0.1.0",
-         "IdentityManager": {
-             "Default": {}
-         },
-         "CredentialsProvider": {
-             "CognitoIdentity": {
-                 "Default": {
-                     "PoolId": "us-west-2:xxx",
-                     "Region": "us-west-2"
-                 }
-             }
-         },
-         "PinpointAnalytics": {
-             "Default": {
-                 "AppId": "xxx",
-                 "Region": "us-west-2"
-             }
-         },
-         "PinpointTargeting": {
-             "Default": {
-                 "Region": "us-west-2"
-             }
-         }
-     }
-
-     amplifyconfiguration.json
-     {
-         "UserAgent": "aws-amplify-cli/2.0",
-         "Version": "1.0",
-         "analytics": {
-             "plugins": {
-                 "awsPinpointAnalyticsPlugin": {
-                     "pinpointAnalytics": {
-                         "appId": "xxxx",
-                         "region": "us-west-2"
-                     },
-                     "pinpointTargeting": {
-                         "region": "us-west-2"
-                     }
-                 }
-             }
-         }
-     }
-     */
     let analyticsPluginKey = "awsPinpointAnalyticsPlugin"
 
     override func setUp() {
-        let authConfig = AuthCategoryConfiguration(
-            plugins: [
-                "awsCognitoAuthPlugin": [
-                    "CredentialsProvider": [
-                        "CognitoIdentity": [
-                            "Default": [
-                                "PoolId": "eu-west-2:8a882197-8039-45da-9a08-d9c76cbc6c93",
-                                "Region": "eu-west-2"
-                            ]
-                        ]
-                    ]
-                ]
-        ])
-        let analyticsConfig = AnalyticsCategoryConfiguration(
-            plugins: [
-                "awsPinpointAnalyticsPlugin": [
-                    "pinpointAnalytics": [
-                        "appId": "676334c1e567430e8a624f34d6ad25f2",
-                        "region": "eu-west-1"
-                    ],
-                    "pinpointTargeting": [
-                        "region": "eu-west-1"
-                    ],
-                    "autoFlushEventsInterval": 10,
-                    "trackAppSessions": true,
-                    "autoSessionTrackingInterval": 2
-                ]
-            ])
-
-        let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig, auth: authConfig)
+//        let authConfig = AuthCategoryConfiguration(
+//            plugins: [
+//                "awsCognitoAuthPlugin": [
+//                    "CredentialsProvider": [
+//                        "CognitoIdentity": [
+//                            "Default": [
+//                                "PoolId": "eu-west-2:8a882197-8039-45da-9a08-d9c76cbc6c93",
+//                                "Region": "eu-west-2"
+//                            ]
+//                        ]
+//                    ]
+//                ]
+//        ])
+//        let analyticsConfig = AnalyticsCategoryConfiguration(
+//            plugins: [
+//                "awsPinpointAnalyticsPlugin": [
+//                    "pinpointAnalytics": [
+//                        "appId": "676334c1e567430e8a624f34d6ad25f2",
+//                        "region": "eu-west-1"
+//                    ],
+//                    "pinpointTargeting": [
+//                        "region": "eu-west-1"
+//                    ],
+//                    "autoFlushEventsInterval": 10,
+//                    "trackAppSessions": true,
+//                    "autoSessionTrackingInterval": 2
+//                ]
+//            ])
+//
+//        let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig, auth: authConfig)
 
         do {
             try Amplify.add(plugin: AWSAuthPlugin())
             try Amplify.add(plugin: AWSPinpointAnalyticsPlugin())
-            try Amplify.configure(amplifyConfig)
+            try Amplify.configure()
 
         } catch {
             print(error)
