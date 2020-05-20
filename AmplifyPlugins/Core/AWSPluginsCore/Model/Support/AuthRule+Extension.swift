@@ -12,7 +12,7 @@ extension AuthRule {
         guard let ownerField = ownerField else {
             return "owner"
         }
-        return ownerField.stringValue
+        return ownerField
     }
 
     func getModelOperationsOrDefault() -> [ModelOperation] {

@@ -42,7 +42,7 @@ public struct ModelWithOwnerField: Model {
     public static let schema = defineSchema { model in
         let modelWithOwnerField = ModelWithOwnerField.keys
         model.authRules = [
-            rule(allow: .owner, ownerField: modelWithOwnerField.author)
+            rule(allow: .owner, ownerField: "author")
         ]
         model.fields(
             .id(),

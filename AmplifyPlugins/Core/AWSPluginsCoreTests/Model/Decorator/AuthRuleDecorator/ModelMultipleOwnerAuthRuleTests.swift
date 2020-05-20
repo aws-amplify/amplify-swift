@@ -44,7 +44,7 @@ public struct ModelMultipleOwner: Model {
         let modelMultipleOwner = ModelMultipleOwner.keys
         model.authRules = [
             rule(allow: .owner),
-            rule(allow: .owner, ownerField: modelMultipleOwner.editors, operations: [.update, .read])
+            rule(allow: .owner, ownerField: "editors", operations: [.update, .read])
         ]
         model.fields(
             .id(),
