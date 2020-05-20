@@ -51,7 +51,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-    public func signInWithWebUI(for authProvider: AuthNProvider,
+    public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthSocialWebUISignInOperation.Request.Options? = nil,
                                 listener: AuthSocialWebUISignInOperation.ResultListener?)

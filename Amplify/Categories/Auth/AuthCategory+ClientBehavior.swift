@@ -56,7 +56,7 @@ extension AuthCategory: AuthCategoryBehavior {
                                       listener: listener)
     }
 
-    public func signInWithWebUI(for authProvider: AuthNProvider,
+    public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthSocialWebUISignInOperation.Request.Options? = nil,
                                 listener: AuthSocialWebUISignInOperation.ResultListener?)

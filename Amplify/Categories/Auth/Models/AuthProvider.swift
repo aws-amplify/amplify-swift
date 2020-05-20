@@ -6,8 +6,8 @@
 //
 
 import Foundation
-// TODO: Rename when this issue is solved - https://github.com/aws-amplify/amplify-ios/issues/426
-public enum AuthNProvider {
+
+public enum AuthProvider {
 
     case amazon
 
