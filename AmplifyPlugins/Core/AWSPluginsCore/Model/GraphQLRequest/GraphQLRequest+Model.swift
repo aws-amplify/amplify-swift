@@ -99,7 +99,7 @@ protocol ModelGraphQLRequestFactory {
     ///
     /// - seealso: `GraphQLSubscription`, `GraphQLSubscriptionType`
     static func subscription<M: Model>(of: M.Type,
-                                       _ type: GraphQLSubscriptionType) -> GraphQLRequest<M>
+                                       type: GraphQLSubscriptionType) -> GraphQLRequest<M>
 }
 
 // MARK: - Extension
@@ -187,7 +187,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
     }
 
     public static func subscription<M: Model>(of modelType: M.Type,
-                                              _ type: GraphQLSubscriptionType) -> GraphQLRequest<M> {
+                                              type: GraphQLSubscriptionType) -> GraphQLRequest<M> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: modelType, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
         let document = documentBuilder.build()

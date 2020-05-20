@@ -38,7 +38,7 @@ class GraphQLRequestModelTests: XCTestCase {
         documentBuilder.add(decorator: ModelDecorator(model: post))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.mutation(of: post, type: .create)
+        let request = GraphQLRequest<Post>.create(post)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
@@ -52,7 +52,7 @@ class GraphQLRequestModelTests: XCTestCase {
         documentBuilder.add(decorator: ModelDecorator(model: post))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.mutation(of: post, type: .update)
+        let request = GraphQLRequest<Post>.update(post)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
@@ -66,7 +66,7 @@ class GraphQLRequestModelTests: XCTestCase {
         documentBuilder.add(decorator: ModelDecorator(model: post))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.mutation(of: post, type: .delete)
+        let request = GraphQLRequest<Post>.delete(post)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
@@ -79,7 +79,7 @@ class GraphQLRequestModelTests: XCTestCase {
         documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.query(from: Post.self, byId: "id")
+        let request = GraphQLRequest<Post>.get(Post.self, byId: "id")
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post?.self)
@@ -96,7 +96,7 @@ class GraphQLRequestModelTests: XCTestCase {
         documentBuilder.add(decorator: PaginationDecorator())
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.query(from: Post.self, where: predicate)
+        let request = GraphQLRequest<Post>.list(Post.self, where: predicate)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == [Post].self)

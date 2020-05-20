@@ -286,7 +286,7 @@ class GraphQLModelBasedTests: XCTestCase {
         progressInvoked.expectedFulfillmentCount = 2
 
         let operation = Amplify.API.subscribe(
-            request: .subscription(of: Post.self, .onCreate),
+            request: .subscription(of: Post.self, type: .onCreate),
             valueListener: { event in
                 switch event {
                 case .connection(let state):
@@ -342,7 +342,7 @@ class GraphQLModelBasedTests: XCTestCase {
         let progressInvoked = expectation(description: "progress invoked")
 
         let operation = Amplify.API.subscribe(
-            request: .subscription(of: Post.self, .onUpdate),
+            request: .subscription(of: Post.self, type: .onUpdate),
             valueListener: { event in
                 switch event {
                 case .connection(let state):
@@ -395,7 +395,7 @@ class GraphQLModelBasedTests: XCTestCase {
         let progressInvoked = expectation(description: "progress invoked")
 
         let operation = Amplify.API.subscribe(
-            request: .subscription(of: Post.self, .onDelete),
+            request: .subscription(of: Post.self, type: .onDelete),
             valueListener: { event in
                 switch event {
                 case .connection(let state):
@@ -448,7 +448,7 @@ class GraphQLModelBasedTests: XCTestCase {
         let progressInvoked = expectation(description: "progress invoked")
 
         let operation = Amplify.API.subscribe(
-            request: .subscription(of: Comment.self, .onCreate),
+            request: .subscription(of: Comment.self, type: .onCreate),
             valueListener: { event in
                 switch event {
                 case .connection(let state):
