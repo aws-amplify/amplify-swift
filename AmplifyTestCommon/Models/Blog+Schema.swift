@@ -28,7 +28,7 @@ extension Blog {
         model.pluralName = "Blogs"
 
         model.authRules = [
-            rule(allow: .owner, ownerField: blog.owner, operations: [.create, .read]),
+            rule(allow: .owner, ownerField: "owner", operations: [.create, .read]),
             rule(allow: .groups, groups: ["Admin"]),
         ]
 
@@ -40,7 +40,7 @@ extension Blog {
             .field(blog.authorNotes,
                    is: .optional,
                    ofType: .string,
-                   authRules: [rule(allow: .owner, ownerField: blog.owner, operations: [.update])]
+                   authRules: [rule(allow: .owner, ownerField: "owner", operations: [.update])]
             )
         )
     }

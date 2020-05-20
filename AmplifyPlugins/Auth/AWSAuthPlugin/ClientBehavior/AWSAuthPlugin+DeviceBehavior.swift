@@ -22,8 +22,8 @@ extension AWSAuthPlugin {
         return fetchDeviceOperation
     }
 
-    public func forget(
-        device: AuthDevice? = nil,
+    public func forgetDevice(
+        _ device: AuthDevice? = nil,
         options: AuthForgetDeviceOperation.Request.Options? = nil,
         listener: AuthForgetDeviceOperation.ResultListener?) -> AuthForgetDeviceOperation {
 

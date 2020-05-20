@@ -12,13 +12,6 @@ public enum AuthStrategy {
     case `public`
 }
 
-public enum AuthProvider {
-    case apiKey
-    case iam
-    case oidc
-    case userPools
-}
-
 public enum ModelOperation {
     case create
     case update
@@ -30,27 +23,21 @@ public typealias AuthRules = [AuthRule]
 
 public struct AuthRule {
     public let allow: AuthStrategy
-    public let field: CodingKey?
-    public let provider: AuthProvider?
-    public let ownerField: CodingKey?
+    public let ownerField: String?
     public let identityClaim: String?
     public let groupClaim: String?
     public let groups: [String]
-    public let groupsField: CodingKey?
+    public let groupsField: String?
     public let operations: [ModelOperation]
 
     public init(allow: AuthStrategy,
-                field: CodingKey? = nil,
-                provider: AuthProvider? = nil,
-                ownerField: CodingKey? = nil,
+                ownerField: String? = nil,
                 identityClaim: String? = nil,
                 groupClaim: String? = nil,
                 groups: [String] = [],
-                groupsField: CodingKey? = nil,
+                groupsField: String? = nil,
                 operations: [ModelOperation] = []) {
         self.allow = allow
-        self.field = field
-        self.provider = provider
         self.ownerField = ownerField
         self.identityClaim = identityClaim
         self.groupClaim = groupClaim

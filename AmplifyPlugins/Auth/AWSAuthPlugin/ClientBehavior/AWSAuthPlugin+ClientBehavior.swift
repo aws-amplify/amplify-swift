@@ -24,7 +24,7 @@ extension AWSAuthPlugin {
         return signUpOperation
     }
 
-    public func confirmSignUp(username: String,
+    public func confirmSignUp(for username: String,
                               confirmationCode: String,
                               options: AuthConfirmSignUpOperation.Request.Options?,
                               listener: AuthConfirmSignUpOperation.ResultListener?) -> AuthConfirmSignUpOperation {
@@ -37,7 +37,7 @@ extension AWSAuthPlugin {
         return operation
     }
 
-    public func resendSignUpCode(username: String,
+    public func resendSignUpCode(for username: String,
                                  options: AuthResendSignUpCodeOperation.Request.Options? = nil,
                                  listener: AuthResendSignUpCodeOperation.ResultListener?)
         -> AuthResendSignUpCodeOperation {
@@ -78,7 +78,7 @@ extension AWSAuthPlugin {
         return signInWithWebUIOperation
     }
 
-    public func signInWithWebUI(for authProvider: AuthNProvider,
+    public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthSocialWebUISignInOperation.Request.Options?,
                                 listener: AuthSocialWebUISignInOperation.ResultListener?)

@@ -12,12 +12,12 @@ public struct AuthWebUISignInRequest: AmplifyOperationRequest {
 
     public let presentationAnchor: AuthUIPresentationAnchor
 
-    public let authProvider: AuthNProvider?
+    public let authProvider: AuthProvider?
 
     public var options: Options
 
     public init(presentationAnchor: AuthUIPresentationAnchor,
-                authProvider: AuthNProvider? = nil,
+                authProvider: AuthProvider? = nil,
                 options: Options) {
         self.presentationAnchor = presentationAnchor
         self.authProvider = authProvider

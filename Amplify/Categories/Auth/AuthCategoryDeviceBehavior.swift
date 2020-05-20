@@ -23,8 +23,8 @@ public protocol AuthCategoryDeviceBehavior {
     ///   - authDevice: Device to be forgotten
     ///   - options: Parameters specific to plugin behavior.
     ///   - listener: Triggered when the operation completes.
-    func forget(
-        device: AuthDevice?,
+    func forgetDevice(
+        _ device: AuthDevice?,
         options: AuthForgetDeviceOperation.Request.Options?,
         listener: AuthForgetDeviceOperation.ResultListener?) -> AuthForgetDeviceOperation
 

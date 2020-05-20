@@ -24,14 +24,14 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-    public func confirmSignUp(username: String,
+    public func confirmSignUp(for username: String,
                               confirmationCode: String,
                               options: AuthConfirmSignUpOperation.Request.Options? = nil,
                               listener: AuthConfirmSignUpOperation.ResultListener?) -> AuthConfirmSignUpOperation {
         fatalError()
     }
 
-    public func resendSignUpCode(username: String,
+    public func resendSignUpCode(for username: String,
                                  options: AuthResendSignUpCodeOperation.Request.Options? = nil,
                                  listener: AuthResendSignUpCodeOperation.ResultListener?)
         -> AuthResendSignUpCodeOperation {
@@ -51,7 +51,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-    public func signInWithWebUI(for authProvider: AuthNProvider,
+    public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthSocialWebUISignInOperation.Request.Options? = nil,
                                 listener: AuthSocialWebUISignInOperation.ResultListener?)
@@ -148,8 +148,8 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-    public func forget(
-        device: AuthDevice? = nil,
+    public func forgetDevice(
+        _ device: AuthDevice? = nil,
         options: AuthForgetDeviceOperation.Request.Options? = nil,
         listener: AuthForgetDeviceOperation.ResultListener?) -> AuthForgetDeviceOperation {
         fatalError()
