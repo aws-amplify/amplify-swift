@@ -6,27 +6,60 @@
 //
 
 import XCTest
+import AmplifyPlugins
+import AWSDataStoreCategoryPlugin
+
+@testable import Amplify
+@testable import AmplifyTestCommon
 
 class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
 
+    struct User {
+        let username: String
+        let password: String
+    }
+
+    let amplifyConfigurationFile = "AWSDataStoreCategoryPluginAuthIntegrationTests-amplifyconfiguration"
+    let credentialsFile = "AWSDataStoreCategoryPluginAuthIntegrationTests-credentials"
+    var user1: User!
+    var user2: User!
+
     override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
+        do {
+            let credentials = try TestConfigHelper.retrieveCredentials(forResource: credentialsFile)
 
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
+            guard let user1 = credentials["user1"],
+                let user2 = credentials["user2"],
+                let passwordUser1 = credentials["passwordUser1"],
+                let passwordUser2 = credentials["passwordUser2"] else {
+                    XCTFail("Missing credentials.json data")
+                    return
+            }
 
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
+            self.user1 = User(username: user1, password: passwordUser1)
+            self.user2 = User(username: user2, password: passwordUser2)
 
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        measure {
-            // Put the code you want to measure the time of here.
+            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: SocialNoteModelRegistration()))
+            try Amplify.add(plugin: AWSAPIPlugin())
+            try Amplify.add(plugin: AWSAuthPlugin())
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
+            try Amplify.configure(amplifyConfig)
+        } catch {
+            XCTFail("Error during setup: \(error)")
+        }
+        if isSignedIn() {
+            signOut()
         }
     }
 
+    override func tearDown() {
+        signOut()
+        Amplify.reset()
+    }
+
+    func testExample() {
+        //
+        // This is an example of a functional test case.
+        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    }
 }

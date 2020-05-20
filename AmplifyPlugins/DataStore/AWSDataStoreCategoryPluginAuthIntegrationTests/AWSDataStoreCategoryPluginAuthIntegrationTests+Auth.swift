@@ -7,13 +7,11 @@
 
 import XCTest
 import AWSPluginsCore
-import AWSAPICategoryPlugin
+import Amplify
 
-@testable import Amplify
-@testable import AWSAPICategoryPluginTestCommon
 @testable import AmplifyTestCommon
 
-extension GraphQLAuthDirectiveIntegrationTests {
+extension AWSDataStoreCategoryPluginAuthIntegrationTests {
 
     func signIn(username: String, password: String) {
         let signInInvoked = expectation(description: "sign in completed")
@@ -120,3 +118,4 @@ extension GraphQLAuthDirectiveIntegrationTests {
         return result
     }
 }
+

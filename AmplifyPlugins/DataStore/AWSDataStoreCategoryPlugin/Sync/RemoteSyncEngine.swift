@@ -278,7 +278,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private func waitForAuthenticatedUser() {
         log.debug(#function)
         signInListener = Amplify.Hub.listen(to: .auth) { payload in
-            guard payload.eventName == HubPayload.EventName.Auth.signIn else {
+            guard payload.eventName == HubPayload.EventName.Auth.signedIn else {
                 return
             }
 
