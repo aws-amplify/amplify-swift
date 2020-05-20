@@ -7,37 +7,6 @@
 
 extension AmplifyAPICategory: APICategoryGraphQLBehavior {
 
-    // MARK: - Model-based GraphQL Operations
-
-    public func query<M: Model>(from modelType: M.Type,
-                                byId id: String,
-                                listener: GraphQLOperation<M?>.ResultListener?) -> GraphQLOperation<M?> {
-        plugin.query(from: modelType, byId: id, listener: listener)
-    }
-
-    public func query<M: Model>(from modelType: M.Type,
-                                where predicate: QueryPredicate?,
-                                listener: GraphQLOperation<[M]>.ResultListener?) -> GraphQLOperation<[M]> {
-        plugin.query(from: modelType, where: predicate, listener: listener)
-    }
-
-    public func mutate<M: Model>(of model: M,
-                                 type: GraphQLMutationType,
-                                 listener: GraphQLOperation<M>.ResultListener?) -> GraphQLOperation<M> {
-        plugin.mutate(of: model, type: type, listener: listener)
-    }
-
-    public func subscribe<M: Model>(from modelType: M.Type,
-                                    type: GraphQLSubscriptionType,
-                                    valueListener: GraphQLSubscriptionOperation<M>.InProcessListener?,
-                                    completionListener: GraphQLSubscriptionOperation<M>.ResultListener?)
-        -> GraphQLSubscriptionOperation<M> {
-            plugin.subscribe(from: modelType,
-                             type: type,
-                             valueListener: valueListener,
-                             completionListener: completionListener)
-    }
-
     // MARK: - Request-based GraphQL operations
 
     public func query<R: Decodable>(request: GraphQLRequest<R>,
