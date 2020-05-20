@@ -261,7 +261,8 @@ extension OutgoingMutationQueueMockStateTest {
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                  storageEngine: storageEngine,
                                                  dataStorePublisher: dataStorePublisher,
-                                                 validAPIPluginKey: "MockAPICategoryPlugin")
+                                                 validAPIPluginKey: "MockAPICategoryPlugin",
+                                                 validAuthPluginKey: "MockAuthCategoryPlugin")
         try Amplify.add(plugin: dataStorePlugin)
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
             "awsDataStorePlugin": true

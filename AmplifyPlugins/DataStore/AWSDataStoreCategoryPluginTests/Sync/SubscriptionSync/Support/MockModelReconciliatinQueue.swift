@@ -25,6 +25,7 @@ class MockModelReconciliationQueue: ModelReconciliationQueue {
     init(modelType: Model.Type,
          storageAdapter: StorageEngineAdapter?,
          api: APICategoryGraphQLBehavior,
+         auth: AuthCategoryBehavior?,
          incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
         self.modelReconciliationQueueSubject = PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>()
         self.modelType = modelType

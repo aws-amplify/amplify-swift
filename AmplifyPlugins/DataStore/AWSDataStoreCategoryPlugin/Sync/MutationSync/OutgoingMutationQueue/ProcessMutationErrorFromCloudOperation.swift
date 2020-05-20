@@ -55,7 +55,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             return
         }
 
-        if let apiError = apiError, isAuthServiceError(apiError: apiError) {
+        if let apiError = apiError, isAuthSignedOutError(apiError: apiError) {
             dataStoreConfiguration.errorHandler(DataStoreError.api(apiError, mutationEvent))
             finish(result: .success(nil))
             return
@@ -98,10 +98,10 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
         }
     }
 
-    private func isAuthServiceError(apiError: APIError) -> Bool {
+    private func isAuthSignedOutError(apiError: APIError) -> Bool {
         if case let .operationError(_, _, underlyingError) = apiError,
             let authError = underlyingError as? AuthError,
-            case .service = authError {
+            case .signedOut = authError {
             return true
         }
 

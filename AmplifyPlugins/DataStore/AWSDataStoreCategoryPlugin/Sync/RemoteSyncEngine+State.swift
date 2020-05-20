@@ -17,7 +17,9 @@ extension RemoteSyncEngine {
         case pausingSubscriptions
         case pausingMutationQueue
         case clearingStateOutgoingMutations(StorageEngineAdapter)
-        case initializingSubscriptions(APICategoryGraphQLBehavior, StorageEngineAdapter)
+        case checkIfAuthenticationRequired
+        case waitForAuthenticatedUser
+        case initializingSubscriptions(APICategoryGraphQLBehavior, StorageEngineAdapter, AuthCategoryBehavior? = nil)
         case performingInitialSync
         case activatingCloudSubscriptions
         case activatingMutationQueue(APICategoryGraphQLBehavior, MutationEventPublisher)
@@ -41,6 +43,10 @@ extension RemoteSyncEngine {
                 return "pausingMutationQueue"
             case .clearingStateOutgoingMutations:
                 return "clearingStateOutgoingMutations"
+            case .checkIfAuthenticationRequired:
+                return "checkIfAuthenticationRequired"
+            case .waitForAuthenticatedUser:
+                return "waitForAuthenticatedUser"
             case .initializingSubscriptions:
                 return "initializingSubscriptions"
             case .performingInitialSync:

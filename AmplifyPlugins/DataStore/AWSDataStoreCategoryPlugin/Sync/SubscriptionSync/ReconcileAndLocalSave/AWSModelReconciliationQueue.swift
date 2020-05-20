@@ -16,6 +16,7 @@ typealias ModelReconciliationQueueFactory = (
     Model.Type,
     StorageEngineAdapter,
     APICategoryGraphQLBehavior,
+    AuthCategoryBehavior?,
     IncomingSubscriptionEventPublisher?
 ) -> ModelReconciliationQueue
 
@@ -65,6 +66,9 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     private var incomingEventsSink: AnyCancellable?
     private var reconcileAndLocalSaveOperationSink: AnyCancellable?
 
+    private var signInListener: UnsubscribeToken?
+    private var ownerId: String?
+
     private let modelReconciliationQueueSubject: PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>
     var publisher: AnyPublisher<ModelReconciliationQueueEvent, DataStoreError> {
         return modelReconciliationQueueSubject.eraseToAnyPublisher()
@@ -73,6 +77,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     init(modelType: Model.Type,
          storageAdapter: StorageEngineAdapter?,
          api: APICategoryGraphQLBehavior,
+         auth: AuthCategoryBehavior?,
          incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
 
         self.modelName = modelType.modelName
@@ -94,7 +99,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         incomingSubscriptionEventQueue.isSuspended = true
 
         let resolvedIncomingSubscriptionEvents = incomingSubscriptionEvents ??
-            AWSIncomingSubscriptionEventPublisher(modelType: modelType, api: api)
+            AWSIncomingSubscriptionEventPublisher(modelType: modelType, api: api, auth: auth)
         self.incomingSubscriptionEvents = resolvedIncomingSubscriptionEvents
 
         self.incomingEventsSink = resolvedIncomingSubscriptionEvents

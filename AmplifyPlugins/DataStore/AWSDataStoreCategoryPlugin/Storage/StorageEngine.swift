@@ -320,7 +320,7 @@ final class StorageEngine: StorageEngineBehavior {
     }
 
     func startSync() {
-        syncEngine?.start(api: Amplify.API)
+        syncEngine?.start(api: Amplify.API, auth: Amplify.Auth)
     }
 
     func clear(completion: @escaping DataStoreCallback<Void>) {

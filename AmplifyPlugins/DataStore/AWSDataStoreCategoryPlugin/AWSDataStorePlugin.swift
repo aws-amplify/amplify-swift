@@ -24,6 +24,9 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     let dataStoreConfiguration: DataStoreConfiguration
 
     let validAPIPluginKey: String
+
+    let validAuthPluginKey: String
+
     /// The local storage provider. Resolved during configuration phase
     var storageEngine: StorageEngineBehavior!
 
@@ -48,6 +51,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         self.dataStoreConfiguration = dataStoreConfiguration
         self.isSyncEnabled = false
         self.validAPIPluginKey =  "awsAPIPlugin"
+        self.validAuthPluginKey = "awsCognitoAuthPlugin"
         if #available(iOS 13.0, *) {
             self.dataStorePublisher = DataStorePublisher()
         } else {
@@ -60,13 +64,15 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
          configuration dataStoreConfiguration: DataStoreConfiguration = .default,
          storageEngine: StorageEngineBehavior,
          dataStorePublisher: DataStoreSubscribeBehavior,
-         validAPIPluginKey: String) {
+         validAPIPluginKey: String,
+         validAuthPluginKey: String) {
         self.modelRegistration = modelRegistration
         self.dataStoreConfiguration = dataStoreConfiguration
         self.isSyncEnabled = false
         self.storageEngine = storageEngine
         self.dataStorePublisher = dataStorePublisher
         self.validAPIPluginKey = validAPIPluginKey
+        self.validAuthPluginKey = validAuthPluginKey
     }
 
     /// By the time this method gets called, DataStore will already have invoked
@@ -82,7 +88,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         let filter = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
         var token: UnsubscribeToken?
         token = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { _ in
-            if self.hasValidAPIPlugin() {
+            if self.hasRequiredPlugins() {
                 self.storageEngine.startSync()
             } else {
                 self.log.info("Unable to find suitable plugin for syncEngine.  syncEngine will not be started")
@@ -94,9 +100,41 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
     }
 
+    func hasRequiredPlugins() -> Bool {
+        guard hasValidAPIPlugin() else {
+            return false
+        }
+        if !requireAuthPlugin() {
+            return true
+        }
+
+        if requireAuthPlugin() && hasValidAuthPlugin() {
+            return true
+        }
+
+        return false
+    }
+
     func hasValidAPIPlugin() -> Bool {
         do {
             _ = try Amplify.API.getPlugin(for: validAPIPluginKey)
+            return true
+        } catch {
+            return false
+        }
+    }
+
+    func requireAuthPlugin() -> Bool {
+        let containsAuthEnabledSyncableModels = ModelRegistry.models.contains {
+            $0.schema.isSyncable && $0.schema.isAuthEnabled
+        }
+
+        return containsAuthEnabledSyncableModels
+    }
+
+    func hasValidAuthPlugin() -> Bool {
+        do {
+            _ = try Amplify.Auth.getPlugin(for: validAuthPluginKey)
             return true
         } catch {
             return false

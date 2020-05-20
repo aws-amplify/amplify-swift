@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol AuthCategoryDeviceBehavior {
+public protocol AuthCategoryDeviceBehavior: class {
 
     /// Fetch devices assigned to the current device
     /// - Parameters:

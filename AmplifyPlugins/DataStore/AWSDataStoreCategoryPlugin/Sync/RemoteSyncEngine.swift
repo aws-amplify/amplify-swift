@@ -18,6 +18,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     // Assigned at `start`
     weak var api: APICategoryGraphQLBehavior?
+    weak var auth: AuthCategoryBehavior?
 
     // Assigned and released inside `performInitialQueries`, but we maintain a reference so we can `reset`
     private var initialSyncOrchestrator: InitialSyncOrchestrator?
@@ -53,6 +54,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     var finishedCompletionBlock: DataStoreCallback<Void>?
 
+    var signInListener: UnsubscribeToken?
+
     /// Initializes the CloudSyncEngine with the specified storageAdapter as the provider for persistence of
     /// MutationEvents, sync metadata, and conflict resolution metadata. Immediately initializes the incoming mutation
     /// queue so it can begin accepting incoming mutations from DataStore.
@@ -69,7 +72,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         let outgoingMutationQueue = outgoingMutationQueue ??
             OutgoingMutationQueue(storageAdapter: storageAdapter, dataStoreConfiguration: dataStoreConfiguration)
         let reconciliationQueueFactory = reconciliationQueueFactory ??
-            AWSIncomingEventReconciliationQueue.init(modelTypes:api:storageAdapter:modelReconciliationQueueFactory:)
+            AWSIncomingEventReconciliationQueue.init(modelTypes:api:storageAdapter:auth:modelReconciliationQueueFactory:)
         let initialSyncOrchestratorFactory = initialSyncOrchestratorFactory ??
             AWSInitialSyncOrchestrator.init(dataStoreConfiguration:api:reconciliationQueue:storageAdapter:)
         let resolver = RemoteSyncEngine.Resolver.resolve(currentState:action:)
@@ -144,8 +147,12 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             pauseMutations()
         case .clearingStateOutgoingMutations(let storageAdapter):
             clearStateOutgoingMutations(storageAdapter: storageAdapter)
-        case .initializingSubscriptions(let api, let storageAdapter):
-            initializeSubscriptions(api: api, storageAdapter: storageAdapter)
+        case .checkIfAuthenticationRequired:
+            checkIfAuthenticationRequired()
+        case .waitForAuthenticatedUser:
+            waitForAuthenticatedUser()
+        case .initializingSubscriptions(let api, let storageAdapter, let auth):
+            initializeSubscriptions(api: api, storageAdapter: storageAdapter, auth: auth)
         case .performingInitialSync:
             performInitialSync()
         case .activatingCloudSubscriptions:
@@ -174,13 +181,14 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
     // swiftlint:enable cyclomatic_complexity
 
-    func start(api: APICategoryGraphQLBehavior = Amplify.API) {
+    func start(api: APICategoryGraphQLBehavior = Amplify.API, auth: AuthCategoryBehavior = Amplify.Auth) {
         guard storageAdapter != nil else {
             log.error(error: DataStoreError.nilStorageAdapter())
             remoteSyncTopicPublisher.send(completion: .failure(DataStoreError.nilStorageAdapter()))
             return
         }
         self.api = api
+        self.auth = auth
 
         remoteSyncTopicPublisher.send(.storageAdapterAvailable)
         stateMachine.notify(action: .receivedStart)
@@ -228,18 +236,100 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         log.debug(#function)
         let mutationEventClearState = MutationEventClearState(storageAdapter: storageAdapter)
         mutationEventClearState.clearStateOutgoingMutations {
-            if let api = self.api {
-                self.remoteSyncTopicPublisher.send(.clearedStateOutgoingMutations)
-                self.stateMachine.notify(action: .clearedStateOutgoingMutations(api, storageAdapter))
+            self.remoteSyncTopicPublisher.send(.clearedStateOutgoingMutations)
+            self.stateMachine.notify(action: .clearedStateOutgoingMutations)
+        }
+    }
+
+    private func checkIfAuthenticationRequired() {
+        log.debug(#function)
+        let containsAuthEnabledSyncableModels = ModelRegistry.models.contains {
+            $0.schema.isSyncable && $0.schema.isAuthEnabled
+        }
+
+        guard containsAuthEnabledSyncableModels else {
+            if let api = self.api, let storageAdapter = self.storageAdapter {
+                stateMachine.notify(action: .authenticationNotRequired(api, storageAdapter))
+            }
+            return
+        }
+
+        guard let auth = auth else {
+            let dataStoreError = DataStoreError.configuration("Missing auth with auth enabled models",
+                                                              "Configure Amplify.Auth")
+            stateMachine.notify(action: .errored(dataStoreError))
+            return
+        }
+
+        isSignedIn(auth: auth) { result in
+            switch result {
+            case .success(let isSignedIn):
+                if isSignedIn, let api = self.api, let storageAdapter = self.storageAdapter {
+                    self.stateMachine.notify(action: .authenticatedUser(api, storageAdapter, auth))
+                } else {
+                    self.stateMachine.notify(action: .requireAuthenticatedUser)
+                }
+            case .failure(let authError):
+                self.stateMachine.notify(action: .errored(authError))
+            }
+        }
+    }
+
+    private func waitForAuthenticatedUser() {
+        log.debug(#function)
+        signInListener = Amplify.Hub.listen(to: .auth) { payload in
+            guard payload.eventName == HubPayload.EventName.Auth.signIn else {
+                return
+            }
+
+            guard let auth = self.auth else {
+                let dataStoreError = DataStoreError.configuration("Missing auth with auth enabled models",
+                                                                  "Configure Amplify.Auth")
+                self.stateMachine.notify(action: .errored(dataStoreError))
+                return
+            }
+
+            self.isSignedIn(auth: auth) { result in
+                switch result {
+                case .success(let isSignedIn):
+                    if isSignedIn, let api = self.api, let storageAdapter = self.storageAdapter {
+                        self.removeSignInListener()
+                        self.stateMachine.notify(action: .authenticatedUser(api, storageAdapter, auth))
+                    }
+                case .failure(let authError):
+                    self.stateMachine.notify(action: .errored(authError))
+                }
+            }
+        }
+    }
+
+    private func removeSignInListener() {
+        if let listener = signInListener {
+            Amplify.Hub.removeListener(listener)
+        }
+    }
+
+    private func isSignedIn(auth: AuthCategoryBehavior, onComplete: @escaping (Result<Bool, AuthError>) -> Void) {
+        _ = auth.fetchAuthSession(options: nil) { event in
+            switch event {
+            case .success(let authSession):
+                if authSession.isSignedIn {
+                    onComplete(.success(true))
+                } else {
+                    onComplete(.success(false))
+                }
+            case .failure(let error):
+                onComplete(.failure(error))
             }
         }
     }
 
     private func initializeSubscriptions(api: APICategoryGraphQLBehavior,
-                                         storageAdapter: StorageEngineAdapter) {
+                                         storageAdapter: StorageEngineAdapter,
+                                         auth: AuthCategoryBehavior?) {
         log.debug(#function)
         let syncableModelTypes = ModelRegistry.models.filter { $0.schema.isSyncable }
-        reconciliationQueue = reconciliationQueueFactory(syncableModelTypes, api, storageAdapter, nil)
+        reconciliationQueue = reconciliationQueueFactory(syncableModelTypes, api, storageAdapter, auth, nil)
         reconciliationQueueSink = reconciliationQueue?.publisher.sink(
             receiveCompletion: onReceiveCompletion(receiveCompletion:),
             receiveValue: onReceive(receiveValue:))

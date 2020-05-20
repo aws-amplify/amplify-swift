@@ -54,7 +54,8 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                  storageEngine: storageEngine,
                                                  dataStorePublisher: dataStorePublisher,
-                                                 validAPIPluginKey: "MockAPICategoryPlugin")
+                                                 validAPIPluginKey: "MockAPICategoryPlugin",
+                                                 validAuthPluginKey: "MockAuthCategoryPlugin")
 
         let apiConfig = APICategoryConfiguration(plugins: [apiPlugin.key: true])
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [dataStorePlugin.key: true])

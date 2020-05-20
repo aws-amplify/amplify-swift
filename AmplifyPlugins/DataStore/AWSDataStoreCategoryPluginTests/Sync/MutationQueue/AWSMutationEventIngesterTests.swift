@@ -48,7 +48,8 @@ class AWSMutationEventIngesterTests: XCTestCase {
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                      storageEngine: storageEngine,
                                                      dataStorePublisher: publisher,
-                                                     validAPIPluginKey: "MockAPICategoryPlugin")
+                                                     validAPIPluginKey: "MockAPICategoryPlugin",
+                                                     validAuthPluginKey: "MockAuthCategoryPlugin")
 
             try Amplify.add(plugin: apiPlugin)
             try Amplify.add(plugin: dataStorePlugin)
