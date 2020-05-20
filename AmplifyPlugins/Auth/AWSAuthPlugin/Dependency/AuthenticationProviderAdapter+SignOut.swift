@@ -12,7 +12,7 @@ extension AuthenticationProviderAdapter {
 
     func signOut(request: AuthSignOutRequest, completionHandler: @escaping (Result<Void, AuthError>) -> Void) {
 
-        if (request.options.globalSignOut) {
+        if request.options.globalSignOut {
             // If user is signed in through HostedUI the signout require UI to complete. So calling this in main thread.
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else {

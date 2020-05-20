@@ -25,6 +25,7 @@
 		B41D0F2024746ACC0049D08D /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = B41B89672468DB0E0092F96D /* amplifyconfiguration.json */; };
 		B41D0F2324746B6B0049D08D /* AuthSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D0F2224746B6B0049D08D /* AuthSignUpTests.swift */; };
 		B41D0F26247476580049D08D /* AuthDeviceOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D0F25247476580049D08D /* AuthDeviceOperationTests.swift */; };
+		B41D0F2924758D4C0049D08D /* AuthHubEventHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D0F2824758D4C0049D08D /* AuthHubEventHandlerTests.swift */; };
 		B42B3D38246ADDAE007211E0 /* AWSAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42B3D37246ADDAE007211E0 /* AWSAuthService.swift */; };
 		B42B3D3D246AE2B6007211E0 /* AWSAuthPlugin+InvalidateCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42B3D3C246AE2B6007211E0 /* AWSAuthPlugin+InvalidateCredentials.swift */; };
 		B439F2AB2448836500C30CBB /* AuthSignInRequest+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B439F2AA2448836500C30CBB /* AuthSignInRequest+Validate.swift */; };
@@ -156,6 +157,7 @@
 		B41B896A2468DB700092F96D /* SignedOutAuthSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignedOutAuthSessionTests.swift; sourceTree = "<group>"; };
 		B41D0F2224746B6B0049D08D /* AuthSignUpTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignUpTests.swift; sourceTree = "<group>"; };
 		B41D0F25247476580049D08D /* AuthDeviceOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthDeviceOperationTests.swift; sourceTree = "<group>"; };
+		B41D0F2824758D4C0049D08D /* AuthHubEventHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHubEventHandlerTests.swift; sourceTree = "<group>"; };
 		B42B3D37246ADDAE007211E0 /* AWSAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthService.swift; sourceTree = "<group>"; };
 		B42B3D3C246AE2B6007211E0 /* AWSAuthPlugin+InvalidateCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSAuthPlugin+InvalidateCredentials.swift"; sourceTree = "<group>"; };
 		B439F2AA2448836500C30CBB /* AuthSignInRequest+Validate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthSignInRequest+Validate.swift"; sourceTree = "<group>"; };
@@ -344,6 +346,14 @@
 			path = AuthDeviceTests;
 			sourceTree = "<group>";
 		};
+		B41D0F2724758D330049D08D /* HubEventTests */ = {
+			isa = PBXGroup;
+			children = (
+				B41D0F2824758D4C0049D08D /* AuthHubEventHandlerTests.swift */,
+			);
+			path = HubEventTests;
+			sourceTree = "<group>";
+		};
 		B439F2A92448835700C30CBB /* Request */ = {
 			isa = PBXGroup;
 			children = (
@@ -420,6 +430,7 @@
 		B43DC7522410572400D40275 /* AWSAuthPluginTests */ = {
 			isa = PBXGroup;
 			children = (
+				B41D0F2724758D330049D08D /* HubEventTests */,
 				B4C8EDB6246B5ED800ED7484 /* Utils */,
 				B43DC7532410572400D40275 /* AWSAuthPluginTests.swift */,
 				B43DC7552410572400D40275 /* Info.plist */,
@@ -1216,6 +1227,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B43DC7542410572400D40275 /* AWSAuthPluginTests.swift in Sources */,
+				B41D0F2924758D4C0049D08D /* AuthHubEventHandlerTests.swift in Sources */,
 				B4C8EDB8246B5EFD00ED7484 /* AuthUserAttributeKeyTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
