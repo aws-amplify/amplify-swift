@@ -7,7 +7,7 @@
 
 import Amplify
 
-extension AWSAuthPlugin {
+extension AWSCognitoAuthPlugin {
 
     public func signUp(username: String,
                        password: String?,

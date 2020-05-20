@@ -5,22 +5,6 @@
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
-      <BuildActionEntries>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B43DC7442410572400D40275"
-               BuildableName = "AWSAuthPlugin.framework"
-               BlueprintName = "AWSAuthPlugin"
-               ReferencedContainer = "container:AWSAuthPlugin.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-      </BuildActionEntries>
    </BuildAction>
    <TestAction
       buildConfiguration = "Debug"
@@ -32,10 +16,10 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B43DC74D2410572400D40275"
-               BuildableName = "AWSAuthPluginTests.xctest"
-               BlueprintName = "AWSAuthPluginTests"
-               ReferencedContainer = "container:AWSAuthPlugin.xcodeproj">
+               BlueprintIdentifier = "B4F3EA05243A655900F23296"
+               BuildableName = "AWSCognitoAuthPluginIntegrationTests.xctest"
+               BlueprintName = "AWSCognitoAuthPluginIntegrationTests"
+               ReferencedContainer = "container:AWSCognitoAuthPlugin.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -57,15 +41,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B43DC7442410572400D40275"
-            BuildableName = "AWSAuthPlugin.framework"
-            BlueprintName = "AWSAuthPlugin"
-            ReferencedContainer = "container:AWSAuthPlugin.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

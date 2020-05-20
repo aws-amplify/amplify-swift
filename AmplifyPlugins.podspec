@@ -50,8 +50,8 @@ Pod::Spec.new do |s|
     ss.dependency 'AWSS3', AWS_SDK_VERSION
   end
 
-  s.subspec 'AWSAuthPlugin' do |ss|
-    ss.source_files = 'AmplifyPlugins/Auth/AWSAuthPlugin/**/*.swift'
+  s.subspec 'AWSCognitoAuthPlugin' do |ss|
+    ss.source_files = 'AmplifyPlugins/Auth/AWSCognitoAuthPlugin/**/*.swift'
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'AWSMobileClient', AWS_SDK_VERSION
   end

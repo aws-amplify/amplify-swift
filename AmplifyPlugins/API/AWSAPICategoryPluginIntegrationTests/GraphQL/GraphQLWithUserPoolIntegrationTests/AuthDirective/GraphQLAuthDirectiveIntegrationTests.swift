@@ -42,7 +42,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
             self.user2 = User(username: user2, password: passwordUser2)
 
             try Amplify.add(plugin: AWSAPIPlugin())
-            try Amplify.add(plugin: AWSAuthPlugin())
+            try Amplify.add(plugin: AWSCognitoAuthPlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
             try Amplify.configure(amplifyConfig)
 

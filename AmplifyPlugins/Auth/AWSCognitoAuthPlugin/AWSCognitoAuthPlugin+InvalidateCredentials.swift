@@ -7,7 +7,7 @@
 
 import AWSPluginsCore
 
-extension AWSAuthPlugin: AuthInvalidateCredentialBehavior {
+extension AWSCognitoAuthPlugin: AuthInvalidateCredentialBehavior {
 
     public func invalidateCachedTemporaryCredentials() {
         authorizationProvider.invalidateCachedTemporaryCredentials()
