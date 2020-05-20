@@ -4,7 +4,7 @@
 
 Model-based programming aims to simplify data management on apps by abstracting away the complexities of data persistence from the core logic of the app. Therefore, data types are a critical piece of it.
 
-This module provides types that complements the Swift provided [`Date`](https://developer.apple.com/documentation/foundation/date) when more control over the date granularity when persisting values to a database (i.e. time-only, date-only, date+time).
+This module provides types that complements the Swift provided [`Date`](https://developer.apple.com/documentation/foundation/date) with more control over the date granularity when persisting values to a database (i.e. time-only, date-only, date+time).
 
 **Table of Contents**
 

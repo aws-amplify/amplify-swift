@@ -28,7 +28,7 @@ extension TemporalFormat {
     /// - Note: if more formats are added to the enum, this property
     /// needs to be updated to reflect the expected parsing order.
     static var sortedCasesForParsing: [TemporalFormat] {
-        [.short, .medium, .long, .full]
+        [.full, .long, .medium, .short]
     }
 
     func getFormat(for type: TemporalSpec.Type) -> String {

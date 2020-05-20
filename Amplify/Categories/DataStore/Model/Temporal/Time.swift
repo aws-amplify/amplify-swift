@@ -11,7 +11,7 @@ extension Temporal {
 
     /// `Time` is an immutable `TemporalSpec` object that represents a time, often viewed
     /// as hour-minute-second (`HH:mm:ss`). Time can be represented to nanosecond precision.
-    /// For example, the value "13:45.30.123". It can also hold a reference to a TimeZone.
+    /// For example, the value "13:45:30.123". It can also hold a reference to a TimeZone.
     ///
     /// As all Temporal types, `Time` relies on the ISO8601 calendar and fixed format.
     public struct Time: TemporalSpec, TimeUnitOperable {
