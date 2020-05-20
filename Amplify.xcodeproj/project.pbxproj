@@ -1943,15 +1943,15 @@
 			children = (
 				B43CD8512411463000BF5A60 /* AuthCodeDeliveryDetails.swift */,
 				B468840F2460A85200221268 /* AuthDevice.swift */,
+				B4B1E0E424733687007F3261 /* AuthEventName.swift */,
+				B4C498F92415D24B00067992 /* AuthProvider.swift */,
 				B4507418241166580098F02D /* AuthSession.swift */,
 				B493E6A12453A29C00D9E521 /* AuthSignInStep.swift */,
 				B493E69D245394E200D9E521 /* AuthSignUpStep.swift */,
-				B4C498F92415D24B00067992 /* AuthProvider.swift */,
 				B4B5CCA82458A33F0019C783 /* AuthUpdateAttributeStep.swift */,
 				B43CD857241147F900BF5A60 /* AuthUser.swift */,
 				B493E69224524E8C00D9E521 /* AuthUserAttribute.swift */,
 				B493E69024524D3200D9E521 /* DeliveryDestination.swift */,
-				B4B1E0E424733687007F3261 /* AuthEventName.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
