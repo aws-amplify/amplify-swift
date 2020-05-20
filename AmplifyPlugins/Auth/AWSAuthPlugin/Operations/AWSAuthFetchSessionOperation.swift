@@ -25,7 +25,7 @@ public class AWSAuthFetchSessionOperation: AmplifyOperation<
         self.authenticationProvider = authenticationProvider
         self.authorizationProvider = authorizationProvider
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.fetchSession,
+                   eventName: HubPayload.EventName.Auth.fetchSessionAPI,
                    request: request,
                    resultListener: resultListener)
     }

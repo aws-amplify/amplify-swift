@@ -89,7 +89,7 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
         let authSessionExpectation = expectation(description: "Received event result from fetchAuth")
         let operation = Amplify.Auth.fetchAuthSession {event in
             switch event {
-            case .completed(let result):
+            case .success(let result):
                 XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
 
                 let tokensResult = (result as? AuthCognitoTokensProvider)?.getCognitoTokens()
@@ -98,10 +98,8 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
                         XCTFail("Should produce signedOut error.")
                         return
                 }
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Should not receive error \(error)")
-            default:
-                break
             }
             authSessionExpectation.fulfill()
         }

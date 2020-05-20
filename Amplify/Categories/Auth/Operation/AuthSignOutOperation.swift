@@ -16,5 +16,5 @@ public protocol AuthSignOutOperation: AmplifyOperation<
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let signOut = "Auth.signOut"
+    static let signOutAPI = "Auth.signOutAPI"
 }

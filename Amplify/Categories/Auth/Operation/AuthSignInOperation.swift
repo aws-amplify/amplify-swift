@@ -12,5 +12,5 @@ public protocol AuthSignInOperation: AmplifyOperation<AuthSignInRequest, AuthSig
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let signIn = "Auth.signIn"
+    static let signInAPI = "Auth.signInAPI"
 }

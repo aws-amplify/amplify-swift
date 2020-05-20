@@ -12,5 +12,5 @@ public protocol AuthFetchSessionOperation: AmplifyOperation<AuthFetchSessionRequ
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let fetchSession = "Auth.fetchSession"
+    static let fetchSessionAPI = "Auth.fetchSessionAPI"
 }

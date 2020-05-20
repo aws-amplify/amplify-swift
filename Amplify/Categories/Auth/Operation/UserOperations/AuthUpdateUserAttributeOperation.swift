@@ -14,5 +14,5 @@ public protocol AuthUpdateUserAttributeOperation: AmplifyOperation<
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let updateUserAttribute = "Auth.updateUserAttribute"
+    static let updateUserAttributeAPI = "Auth.updateUserAttributeAPI"
 }

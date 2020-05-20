@@ -21,7 +21,7 @@ public class AWSAuthConfirmUserAttributeOperation: AmplifyOperation<
 
         self.userService = userService
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.confirmUserAttributes,
+                   eventName: HubPayload.EventName.Auth.confirmUserAttributesAPI,
                    request: request,
                    resultListener: resultListener)
     }

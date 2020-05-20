@@ -98,7 +98,7 @@ class AuthHubEventHandlerTests: XCTestCase {
                                                  authProvider: .amazon,
                                                  options: AuthWebUISignInRequest.Options())
         let mockContext = AmplifyOperationContext(operationId: UUID(), request: mockRequest)
-        let mockPayload = HubPayload(eventName: HubPayload.EventName.Auth.socialWebUISignIn,
+        let mockPayload = HubPayload(eventName: HubPayload.EventName.Auth.socialWebUISignInAPI,
                                      context: mockContext,
                                      data: mockEvent)
         Amplify.Hub.dispatch(to: .auth, payload: mockPayload)
@@ -111,7 +111,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         let mockRequest = AuthWebUISignInRequest(presentationAnchor: UIWindow(),
                                                  options: AuthWebUISignInRequest.Options())
         let mockContext = AmplifyOperationContext(operationId: UUID(), request: mockRequest)
-        let mockPayload = HubPayload(eventName: HubPayload.EventName.Auth.webUISignIn,
+        let mockPayload = HubPayload(eventName: HubPayload.EventName.Auth.webUISignInAPI,
                                      context: mockContext,
                                      data: mockEvent)
         Amplify.Hub.dispatch(to: .auth, payload: mockPayload)
@@ -125,7 +125,7 @@ class AuthHubEventHandlerTests: XCTestCase {
                                             password: "password",
                                             options: AuthSignInRequest.Options())
         let mockContext = AmplifyOperationContext(operationId: UUID(), request: mockRequest)
-        let mockPayload = HubPayload(eventName: HubPayload.EventName.Auth.signIn,
+        let mockPayload = HubPayload(eventName: HubPayload.EventName.Auth.signInAPI,
                                      context: mockContext,
                                      data: mockEvent)
         Amplify.Hub.dispatch(to: .auth, payload: mockPayload)

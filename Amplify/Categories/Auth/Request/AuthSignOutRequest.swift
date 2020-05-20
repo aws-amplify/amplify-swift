@@ -27,7 +27,7 @@ public extension AuthSignOutRequest {
         public let pluginOptions: Any?
 
         public let globalSignOut: Bool
-        
+
         public init(globalSignOut: Bool = false,
                     pluginOptions: Any? = nil) {
             self.globalSignOut = globalSignOut

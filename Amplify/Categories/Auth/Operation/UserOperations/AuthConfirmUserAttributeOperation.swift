@@ -16,5 +16,5 @@ public protocol AuthConfirmUserAttributeOperation: AmplifyOperation<
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let confirmUserAttributes = "Auth.confirmUserAttributes"
+    static let confirmUserAttributesAPI = "Auth.confirmUserAttributesAPI"
 }
