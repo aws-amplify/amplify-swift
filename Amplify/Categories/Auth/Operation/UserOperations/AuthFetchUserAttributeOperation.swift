@@ -14,5 +14,5 @@ public protocol AuthFetchUserAttributeOperation: AmplifyOperation<
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let fetchUserAttributes = "Auth.fetchUserAttributes"
+    static let fetchUserAttributesAPI = "Auth.fetchUserAttributesAPI"
 }

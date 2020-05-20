@@ -12,5 +12,5 @@ public protocol AuthConfirmSignUpOperation: AmplifyOperation<AuthConfirmSignUpRe
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let confirmSignUp = "Auth.confirmSignUp"
+    static let confirmSignUpAPI = "Auth.confirmSignUpAPI"
 }
