@@ -26,7 +26,6 @@
 		2125E265231C2D3100B3DEB5 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 2125E2102318D73B00B3DEB5 /* awsconfiguration.json */; };
 		2129BE012394627B006363A1 /* PostCommentModelRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE002394627B006363A1 /* PostCommentModelRegistration.swift */; };
 		2129BE0F23948005006363A1 /* SingleDirectiveGraphQLDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE0823948005006363A1 /* SingleDirectiveGraphQLDocument.swift */; };
-		2129BE1723948065006363A1 /* GraphQLRequest+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE1523948065006363A1 /* GraphQLRequest+Model.swift */; };
 		2129BE1E2394806B006363A1 /* QueryPredicate+GraphQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE1A2394806B006363A1 /* QueryPredicate+GraphQL.swift */; };
 		2129BE1F2394806B006363A1 /* Model+GraphQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE1B2394806B006363A1 /* Model+GraphQL.swift */; };
 		2129BE212394806B006363A1 /* ModelSchema+GraphQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE1D2394806B006363A1 /* ModelSchema+GraphQL.swift */; };
@@ -281,6 +280,7 @@
 		B9521835237E21BA00F53237 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9521830237E21B900F53237 /* Comment.swift */; };
 		B9521836237E21BA00F53237 /* Post+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9521831237E21B900F53237 /* Post+Schema.swift */; };
 		B9521837237E21BA00F53237 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9521832237E21B900F53237 /* Post.swift */; };
+		B9675A2E24752621002FC843 /* GraphQLRequest+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2129BE1523948065006363A1 /* GraphQLRequest+Model.swift */; };
 		B98E9D0E2372236300934B51 /* ModelKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D062372236200934B51 /* ModelKey.swift */; };
 		B98E9D0F2372236300934B51 /* QueryOperator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D072372236200934B51 /* QueryOperator.swift */; };
 		B98E9D102372236300934B51 /* QueryPredicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98E9D082372236200934B51 /* QueryPredicate.swift */; };
@@ -2322,10 +2322,10 @@
 		FA131AAB2360FE070008381C /* AWSPluginsCore */ = {
 			isa = PBXGroup;
 			children = (
-				21C395B4245729F100597EA2 /* API */,
-				FA131ACB2360FE470008381C /* Auth */,
 				FA131AAC2360FE070008381C /* AWSPluginsCore.h */,
 				FA131AAD2360FE070008381C /* Info.plist */,
+				21C395B4245729F100597EA2 /* API */,
+				FA131ACB2360FE470008381C /* Auth */,
 				2129BE0223947FA3006363A1 /* Model */,
 				6BBECD6F23ADA7C100C8DFBE /* ServiceConfiguration */,
 				2129BE3F23948909006363A1 /* Sync */,
@@ -2465,8 +2465,8 @@
 				FA09337B23844E9F00C2FD5F /* GraphQLOperationRequest.swift */,
 				2142099223721F4400FA140C /* GraphQLOperationType.swift */,
 				21558E3D237BB4BF0032A5BB /* GraphQLRequest.swift */,
-				2142099323721F4400FA140C /* RESTOperationType.swift */,
 				2142099423721F4400FA140C /* RESTOperationRequest.swift */,
+				2142099323721F4400FA140C /* RESTOperationType.swift */,
 				217855C2237F84D700A30D19 /* RESTRequest.swift */,
 			);
 			path = Request;
@@ -3830,9 +3830,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				2129BE4423948951006363A1 /* MutationSyncMetadata.swift in Sources */,
+				B9675A2E24752621002FC843 /* GraphQLRequest+Model.swift in Sources */,
 				2129BE1E2394806B006363A1 /* QueryPredicate+GraphQL.swift in Sources */,
 				21420A8F237222A900FA140C /* AWSIAMConfiguration.swift in Sources */,
-				2129BE1723948065006363A1 /* GraphQLRequest+Model.swift in Sources */,
 				219A888523EB897700BBC5F2 /* GraphQLRequest+AnyModelWithSync.swift in Sources */,
 				219A88F123F3379900BBC5F2 /* GraphQLDocumentInput.swift in Sources */,
 				21420AA0237222A900FA140C /* AWSAuthorizationType.swift in Sources */,

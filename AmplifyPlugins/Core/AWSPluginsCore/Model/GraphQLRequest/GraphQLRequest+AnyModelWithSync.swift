@@ -11,9 +11,42 @@ import Foundation
 public typealias SyncQueryResult = PaginatedList<AnyModel>
 public typealias MutationSyncResult = MutationSync<AnyModel>
 
+/// TODO document this and change it to work in a way that these functions are not
+/// publicly exposed to developers
+protocol ModelSyncGraphQLRequestFactory {
+
+    static func query(modelName: String, byId id: String) -> GraphQLRequest<MutationSyncResult?>
+
+    static func createMutation(of model: Model,
+                               version: Int?) -> GraphQLRequest<MutationSyncResult>
+
+    static func updateMutation(of model: Model,
+                               where filter: GraphQLFilter?,
+                               version: Int?) -> GraphQLRequest<MutationSyncResult>
+
+    static func deleteMutation(modelName: String,
+                               id: Model.Identifier,
+                               where filter: GraphQLFilter?,
+                               version: Int?) -> GraphQLRequest<MutationSyncResult>
+
+    static func subscription(to modelType: Model.Type,
+                             subscriptionType: GraphQLSubscriptionType) -> GraphQLRequest<MutationSyncResult>
+
+    static func subscription(to modelType: Model.Type,
+                             subscriptionType: GraphQLSubscriptionType,
+                             ownerId: String) -> GraphQLRequest<MutationSyncResult>
+
+    static func syncQuery(modelType: Model.Type,
+                          where predicate: QueryPredicate?,
+                          limit: Int?,
+                          nextToken: String?,
+                          lastSync: Int?) -> GraphQLRequest<SyncQueryResult>
+
+}
+
 /// Extension methods that are useful for `DataStore`. The methods consist of conflict resolution related fields such
 /// as `version` and `lastSync` and returns a model that has been erased to `AnyModel`.
-extension GraphQLRequest {
+extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
     public static func query(modelName: String, byId id: String) -> GraphQLRequest<MutationSyncResult?> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelName, operationType: .query)
