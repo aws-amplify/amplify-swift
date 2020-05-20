@@ -28,6 +28,7 @@ class AuthHubEventHandler: AuthHubEventBehavior {
         dispatchAuthEvent(HubPayload.EventName.Auth.sessionExpired)
     }
 
+    // swiftlint:disable cyclomatic_complexity
     private func setupHubEvents() {
 
         _ = Amplify.Hub.listen(to: .auth) {[weak self] payload in
@@ -42,6 +43,20 @@ class AuthHubEventHandler: AuthHubEventBehavior {
 
             case HubPayload.EventName.Auth.confirmSignIn:
                 guard let event = payload.data as? AWSAuthConfirmSignInOperation.OperationResult,
+                    case let .success(result) = event else {
+                        return
+                }
+                self?.handleSignInEvent(result)
+
+            case HubPayload.EventName.Auth.webUISignIn:
+                guard let event = payload.data as? AWSAuthWebUISignInOperation.OperationResult,
+                    case let .success(result) = event else {
+                        return
+                }
+                self?.handleSignInEvent(result)
+
+            case HubPayload.EventName.Auth.socialWebUISignIn:
+                guard let event = payload.data as? AWSAuthSocialWebUISignInOperation.OperationResult,
                     case let .success(result) = event else {
                         return
                 }

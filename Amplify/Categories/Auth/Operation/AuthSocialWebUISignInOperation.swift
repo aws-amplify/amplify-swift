@@ -16,5 +16,5 @@ public protocol AuthSocialWebUISignInOperation: AmplifyOperation<
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let socialWebUISgnIn = "Auth.socialWebUISignIn"
+    static let socialWebUISignIn = "Auth.socialWebUISignIn"
 }
