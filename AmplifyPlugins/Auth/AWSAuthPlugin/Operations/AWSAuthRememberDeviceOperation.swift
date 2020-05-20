@@ -22,7 +22,7 @@ public class AWSAuthRememberDeviceOperation: AmplifyOperation<
 
         self.deviceService = deviceService
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.rememberDevice,
+                   eventName: HubPayload.EventName.Auth.rememberDeviceAPI,
                    request: request,
                    resultListener: resultListener)
     }

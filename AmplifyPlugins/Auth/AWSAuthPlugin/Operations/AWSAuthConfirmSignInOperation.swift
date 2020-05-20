@@ -23,7 +23,7 @@ public class AWSAuthConfirmSignInOperation: AmplifyOperation<
 
         self.authenticationProvider = authenticationProvider
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.confirmSignIn,
+                   eventName: HubPayload.EventName.Auth.confirmSignInAPI,
                    request: request,
                    resultListener: resultListener)
     }

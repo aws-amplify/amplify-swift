@@ -20,7 +20,7 @@ public class AWSAuthChangePasswordOperation: AmplifyOperation<
          resultListener: ResultListener?) {
         self.userService = userService
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.changePassword,
+                   eventName: HubPayload.EventName.Auth.changePasswordAPI,
                    request: request,
                    resultListener: resultListener)
     }

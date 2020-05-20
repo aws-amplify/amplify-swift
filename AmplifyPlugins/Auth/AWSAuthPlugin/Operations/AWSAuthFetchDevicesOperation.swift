@@ -22,7 +22,7 @@ public class AWSAuthFetchDevicesOperation: AmplifyOperation<
 
         self.deviceService = deviceService
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.fetchDevices,
+                   eventName: HubPayload.EventName.Auth.fetchDevicesAPI,
                    request: request,
                    resultListener: resultListener)
     }

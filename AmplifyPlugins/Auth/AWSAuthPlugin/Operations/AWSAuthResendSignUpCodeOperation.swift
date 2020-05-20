@@ -22,7 +22,7 @@ public class AWSAuthResendSignUpCodeOperation: AmplifyOperation<
 
         self.authenticationProvider = authenticationProvider
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.resendSignUpCode,
+                   eventName: HubPayload.EventName.Auth.resendSignUpCodeAPI,
                    request: request,
                    resultListener: resultListener)
     }

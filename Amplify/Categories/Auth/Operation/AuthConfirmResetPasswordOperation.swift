@@ -16,5 +16,5 @@ public protocol AuthConfirmResetPasswordOperation: AmplifyOperation<
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let confirmResetPassword = "Auth.confirmResetPassword"
+    static let confirmResetPasswordAPI = "Auth.confirmResetPasswordAPI"
 }

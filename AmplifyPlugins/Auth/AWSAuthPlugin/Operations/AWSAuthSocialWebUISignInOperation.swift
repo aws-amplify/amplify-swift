@@ -22,7 +22,7 @@ public class AWSAuthSocialWebUISignInOperation: AmplifyOperation<
 
         self.authenticationProvider = authenticationProvider
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.socialWebUISignIn,
+                   eventName: HubPayload.EventName.Auth.socialWebUISignInAPI,
                    request: request,
                    resultListener: resultListener)
     }

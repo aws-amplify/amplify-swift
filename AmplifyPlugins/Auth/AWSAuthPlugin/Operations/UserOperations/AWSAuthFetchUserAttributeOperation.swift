@@ -21,7 +21,7 @@ public class AWSAuthFetchUserAttributeOperation: AmplifyOperation<
 
         self.userService = userService
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.fetchUserAttributes,
+                   eventName: HubPayload.EventName.Auth.fetchUserAttributesAPI,
                    request: request,
                    resultListener: resultListener)
     }

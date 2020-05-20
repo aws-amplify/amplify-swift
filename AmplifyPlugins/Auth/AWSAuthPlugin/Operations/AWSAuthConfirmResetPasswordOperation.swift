@@ -22,7 +22,7 @@ public class AWSAuthConfirmResetPasswordOperation: AmplifyOperation<
 
         self.authenticationProvider = authenticationProvider
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.confirmResetPassword,
+                   eventName: HubPayload.EventName.Auth.confirmResetPasswordAPI,
                    request: request,
                    resultListener: resultListener)
     }

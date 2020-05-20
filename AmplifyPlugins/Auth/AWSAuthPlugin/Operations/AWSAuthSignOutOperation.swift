@@ -22,7 +22,7 @@ public class AWSAuthSignOutOperation: AmplifyOperation<
 
         self.authenticationProvider = authenticationProvider
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.signOut,
+                   eventName: HubPayload.EventName.Auth.signOutAPI,
                    request: request,
                    resultListener: resultListener)
     }

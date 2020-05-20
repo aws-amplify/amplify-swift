@@ -34,42 +34,42 @@ class AuthHubEventHandler: AuthHubEventBehavior {
         _ = Amplify.Hub.listen(to: .auth) {[weak self] payload in
             switch payload.eventName {
 
-            case HubPayload.EventName.Auth.signIn:
+            case HubPayload.EventName.Auth.signInAPI:
                 guard let event = payload.data as? AWSAuthSignInOperation.OperationResult,
                     case let .success(result) = event else {
                         return
                 }
                 self?.handleSignInEvent(result)
 
-            case HubPayload.EventName.Auth.confirmSignIn:
+            case HubPayload.EventName.Auth.confirmSignInAPI:
                 guard let event = payload.data as? AWSAuthConfirmSignInOperation.OperationResult,
                     case let .success(result) = event else {
                         return
                 }
                 self?.handleSignInEvent(result)
 
-            case HubPayload.EventName.Auth.webUISignIn:
+            case HubPayload.EventName.Auth.webUISignInAPI:
                 guard let event = payload.data as? AWSAuthWebUISignInOperation.OperationResult,
                     case let .success(result) = event else {
                         return
                 }
                 self?.handleSignInEvent(result)
 
-            case HubPayload.EventName.Auth.socialWebUISignIn:
+            case HubPayload.EventName.Auth.socialWebUISignInAPI:
                 guard let event = payload.data as? AWSAuthSocialWebUISignInOperation.OperationResult,
                     case let .success(result) = event else {
                         return
                 }
                 self?.handleSignInEvent(result)
 
-            case HubPayload.EventName.Auth.signOut:
+            case HubPayload.EventName.Auth.signOutAPI:
                 guard let event = payload.data as? AWSAuthSignOutOperation.OperationResult,
                     case .success(_) = event else {
                         return
                 }
                 self?.sendUserSignedOutEvent()
 
-            case HubPayload.EventName.Auth.fetchSession:
+            case HubPayload.EventName.Auth.fetchSessionAPI:
                 guard let event = payload.data as? AWSAuthFetchSessionOperation.OperationResult,
                     case let .success(result) = event else {
                         return

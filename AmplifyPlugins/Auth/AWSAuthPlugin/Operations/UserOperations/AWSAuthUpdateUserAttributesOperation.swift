@@ -21,7 +21,7 @@ public class AWSAuthUpdateUserAttributesOperation: AmplifyOperation<
 
         self.userService = userService
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.updateUserAttributes,
+                   eventName: HubPayload.EventName.Auth.updateUserAttributesAPI,
                    request: request,
                    resultListener: resultListener)
     }

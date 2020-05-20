@@ -22,7 +22,7 @@ public class AWSAuthResetPasswordOperation: AmplifyOperation<
 
         self.authenticationProvider = authenticationProvider
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.resetPassword,
+                   eventName: HubPayload.EventName.Auth.resetPasswordAPI,
                    request: request,
                    resultListener: resultListener)
     }

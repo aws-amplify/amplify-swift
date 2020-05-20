@@ -22,7 +22,7 @@ public class AWSAuthAttributeResendConfirmationCodeOperation: AmplifyOperation<
 
         self.userService = userService
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.attributeResendConfirmationCode,
+                   eventName: HubPayload.EventName.Auth.attributeResendConfirmationCodeAPI,
                    request: request,
                    resultListener: resultListener)
     }
