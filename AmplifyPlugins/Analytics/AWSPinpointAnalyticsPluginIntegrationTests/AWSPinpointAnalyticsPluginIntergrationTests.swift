@@ -5,65 +5,33 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import Amplify
-//import AWSMobileClient
+import XCTest
 import AmplifyPlugins
 import AWSPinpoint
+
+@testable import Amplify
 @testable import AWSPinpointAnalyticsPlugin
-import XCTest
+@testable import AmplifyTestCommon
 
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
 
-    let analyticsPluginKey = "awsPinpointAnalyticsPlugin"
+    static let amplifyConfiguration = "AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration"
+    static let analyticsPluginKey = "awsPinpointAnalyticsPlugin"
 
     override func setUp() {
-//        let authConfig = AuthCategoryConfiguration(
-//            plugins: [
-//                "awsCognitoAuthPlugin": [
-//                    "CredentialsProvider": [
-//                        "CognitoIdentity": [
-//                            "Default": [
-//                                "PoolId": "eu-west-2:8a882197-8039-45da-9a08-d9c76cbc6c93",
-//                                "Region": "eu-west-2"
-//                            ]
-//                        ]
-//                    ]
-//                ]
-//        ])
-//        let analyticsConfig = AnalyticsCategoryConfiguration(
-//            plugins: [
-//                "awsPinpointAnalyticsPlugin": [
-//                    "pinpointAnalytics": [
-//                        "appId": "676334c1e567430e8a624f34d6ad25f2",
-//                        "region": "eu-west-1"
-//                    ],
-//                    "pinpointTargeting": [
-//                        "region": "eu-west-1"
-//                    ],
-//                    "autoFlushEventsInterval": 10,
-//                    "trackAppSessions": true,
-//                    "autoSessionTrackingInterval": 2
-//                ]
-//            ])
-//
-//        let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig, auth: authConfig)
-
         do {
+            let config = try TestConfigHelper.retrieveAmplifyConfiguration(
+                forResource: AWSPinpointAnalyticsPluginIntergrationTests.amplifyConfiguration)
             try Amplify.add(plugin: AWSAuthPlugin())
             try Amplify.add(plugin: AWSPinpointAnalyticsPlugin())
-            try Amplify.configure()
-
+            try Amplify.configure(config)
         } catch {
-            print(error)
-            XCTFail("Failed to initialize and configure Amplify")
+            XCTFail("Failed to initialize and configure Amplify \(error)")
         }
-
-        print("Amplify initialized")
     }
 
     override func tearDown() {
-        print("Amplify reset")
         Amplify.reset()
     }
 
@@ -101,7 +69,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                                                properties: properties)
         Amplify.Analytics.identifyUser(userId, withProfile: userProfile)
 
-        wait(for: [identifyUserEvent], timeout: 20)
+        wait(for: [identifyUserEvent], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testRecordEventsAreFlushed() {
@@ -129,12 +97,14 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                           "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
+        Amplify.Analytics.flushEvents()
 
-        wait(for: [flushEventsInvoked], timeout: 20)
+        wait(for: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testGetEscapeHatch() throws {
-        let plugin = try Amplify.Analytics.getPlugin(for: analyticsPluginKey)
+        let plugin = try Amplify.Analytics.getPlugin(
+            for: AWSPinpointAnalyticsPluginIntergrationTests.analyticsPluginKey)
         guard let pinpointAnalyticsPlugin = plugin as? AWSPinpointAnalyticsPlugin else {
             XCTFail("Could not get plugin of type AWSPinpointAnalyticsPlugin")
             return

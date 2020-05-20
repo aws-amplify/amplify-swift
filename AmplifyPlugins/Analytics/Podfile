@@ -19,9 +19,10 @@ target "HostApp" do
     pod 'AmplifyTestCommon', :path => '../../'
     pod 'Amplify', :path => '../../'
     pod 'AWSPluginsCore', :path => '../../'
-    pod 'AmplifyPlugins/AWSAuthPlugin', :path => '../../'
-
+    
     target "AWSPinpointAnalyticsPluginIntegrationTests" do
+        pod 'AmplifyPlugins/AWSAuthPlugin', :path => '../../'
+
         inherit! :complete
     end
 
