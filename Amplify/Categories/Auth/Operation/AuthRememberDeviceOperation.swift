@@ -16,5 +16,5 @@ public protocol AuthRememberDeviceOperation: AmplifyOperation<
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let rememberDevice = "Auth.rememberDevice"
+    static let rememberDeviceAPI = "Auth.rememberDeviceAPI"
 }

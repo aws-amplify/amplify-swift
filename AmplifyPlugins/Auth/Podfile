@@ -6,12 +6,12 @@ AWS_SDK_VERSION = "2.13.0"
 pod 'SwiftFormat/CLI'
 pod 'SwiftLint'
 
-target 'AWSAuthPlugin' do
+target 'AWSCognitoAuthPlugin' do
   pod 'Amplify', :path => '../../'
   pod 'AWSPluginsCore', :path => '../../'
   pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
 
-  target "AWSAuthPluginTests" do
+  target "AWSCognitoAuthPluginTests" do
     inherit! :complete
 
     pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
@@ -27,7 +27,7 @@ target "HostApp" do
   pod 'AmplifyTestCommon', :path => '../../'
   pod 'Amplify', :path => '../../'
 
-  target "AWSAuthPluginIntegrationTests" do
+  target "AWSCognitoAuthPluginIntegrationTests" do
     inherit! :complete
   end
 end

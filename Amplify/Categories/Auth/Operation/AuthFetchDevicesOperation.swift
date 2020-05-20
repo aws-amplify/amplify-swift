@@ -16,5 +16,5 @@ public protocol AuthFetchDevicesOperation: AmplifyOperation<
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let fetchDevices = "Auth.fetchDevices"
+    static let fetchDevicesAPI = "Auth.fetchDevicesAPI"
 }

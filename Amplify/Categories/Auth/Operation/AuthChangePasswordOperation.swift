@@ -16,5 +16,5 @@ public protocol AuthChangePasswordOperation: AmplifyOperation<
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let changePassword = "Auth.changePassword"
+    static let changePasswordAPI = "Auth.changePasswordAPI"
 }
