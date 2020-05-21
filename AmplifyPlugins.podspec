@@ -9,27 +9,33 @@
 Pod::Spec.new do |s|
 
   s.name         = 'AmplifyPlugins'
-  s.version      = '0.11.0'
+  s.version      = '1.0.0-rc.1'
   s.summary      = 'Amazon Web Services Amplify for iOS.'
 
   s.description  = 'AWS Amplify for iOS provides a declarative library for application development using cloud services'
-  
-  s.homepage     = 'http://aws.amazon.com/mobile/sdk'
+
+  s.homepage     = 'https://aws.amazon.com/amplify/'
   s.license      = 'Apache License, Version 2.0'
   s.author       = { 'Amazon Web Services' => 'amazonwebservices' }
-  s.platform     = :ios, '11.0'
   s.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => s.version}
-  
-  s.requires_arc = true 
 
-  AWS_SDK_VERSION = '~> 2.13.0'
-  AMPLIFY_VERSION = '0.11.0'
-  
+  s.platform = :ios, '11.0'
+  s.swift_version = '5.0'
+
+  AWS_SDK_VERSION = '~> 2.13.4'
+  AMPLIFY_VERSION = '1.0.0-rc.1'
+
   s.subspec 'AWSAPIPlugin' do |ss|
     ss.source_files = 'AmplifyPlugins/API/AWSAPICategoryPlugin/**/*.swift'
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'ReachabilitySwift', '~> 5.0.0'
     ss.dependency 'AppSyncRealTimeClient', "~> 1.1.0"
+  end
+
+  s.subspec 'AWSCognitoAuthPlugin' do |ss|
+    ss.source_files = 'AmplifyPlugins/Auth/AWSCognitoAuthPlugin/**/*.swift'
+    ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
+    ss.dependency 'AWSMobileClient', AWS_SDK_VERSION
   end
 
   s.subspec 'AWSDataStorePlugin' do |ss|
@@ -48,12 +54,6 @@ Pod::Spec.new do |s|
     ss.source_files = 'AmplifyPlugins/Storage/AWSS3StoragePlugin/**/*.swift'
     ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
     ss.dependency 'AWSS3', AWS_SDK_VERSION
-  end
-
-  s.subspec 'AWSCognitoAuthPlugin' do |ss|
-    ss.source_files = 'AmplifyPlugins/Auth/AWSCognitoAuthPlugin/**/*.swift'
-    ss.dependency 'AWSPluginsCore', AMPLIFY_VERSION
-    ss.dependency 'AWSMobileClient', AWS_SDK_VERSION
   end
 
 end

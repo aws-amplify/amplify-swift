@@ -6,27 +6,30 @@
 #  To see working Podspecs in the CocoaPods repo see https://github.com/CocoaPods/Specs/
 #
 
-Pod::Spec.new do |spec|
+Pod::Spec.new do |s|
 
-  spec.name         = "AmplifyTestCommon"
-  spec.version      = "0.11.0"
-  spec.summary      = "Test resources used by different targets"
-  spec.description  = "Provides different test resources and mock methods"
+  s.name         = "AmplifyTestCommon"
+  s.version      = "1.0.0-rc.1"
+  s.summary      = "Test resources used by different targets"
 
-  spec.homepage     = "https://aws.amazon.com/amplify/"
-  spec.license      = 'Apache License, Version 2.0'
-  spec.author       = { 'Amazon Web Services' => 'amazonwebservices' }
-  spec.platform     = :ios, '11.0'
-  spec.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => spec.version}
-  
-  spec.requires_arc = true
+  s.description  = "Provides different test resources and mock methods"
 
-  spec.source_files = 'AmplifyTestCommon/**/*.swift'
-  spec.dependency 'Amplify', '0.11.0'
-  
-  spec.subspec 'AWSPluginsTestCommon' do |subspec|
-    subspec.source_files = 'AmplifyPlugins/Core/AWSPluginsTestCommon/**/*.swift'
-    subspec.dependency 'AWSPluginsCore', '0.11.0'
-    subspec.dependency 'AWSCore'
+  s.homepage     = "https://aws.amazon.com/amplify/"
+  s.license      = 'Apache License, Version 2.0'
+  s.author       = { 'Amazon Web Services' => 'amazonwebservices' }
+  s.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => s.version}
+
+  s.platform     = :ios, '11.0'
+  s.swift_version = '5.0'
+
+  s.source_files = 'AmplifyTestCommon/**/*.swift'
+
+  s.dependency 'Amplify', '1.0.0-rc.1'
+
+  s.subspec 'AWSPluginsTestCommon' do |ss|
+    ss.source_files = 'AmplifyPlugins/Core/AWSPluginsTestCommon/**/*.swift'
+    ss.dependency 'AWSPluginsCore', '1.0.0-rc.1'
+    ss.dependency 'AWSCore'
   end
+
 end
