@@ -60,7 +60,7 @@ Amplify requires Xcode 11 or higher to build.
             pod 'AWSPluginsCore'
             pod 'AWSPredictionsPlugin'
             pod 'CoreMLPredictionsPlugin'
-            pod 'AWSMobileClient'
+            pod 'AWSCognitoAuthPlugin'
         end
         
 3. Then run the following command:
