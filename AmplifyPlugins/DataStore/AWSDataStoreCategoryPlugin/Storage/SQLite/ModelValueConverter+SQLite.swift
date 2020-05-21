@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 import SQLite
 
-private extension Bool {
+internal extension Bool {
 
     var intValue: Int {
         return self ? Int(1) : Int(0)
@@ -35,7 +35,7 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
         case .double:
             return value as? Double
         case .date, .dateTime, .time:
-            return (value as? Date)?.iso8601String
+            return (value as? TemporalSpec)?.iso8601String
         case .timestamp:
             return value as? Int
         case .bool:
@@ -62,14 +62,12 @@ public struct SQLiteModelValueConverter: ModelValueConverter {
             return nil
         }
         switch fieldType {
-        case .string:
+        case .string, .date, .dateTime, .time:
             return value as? String
         case .int:
             return value as? Int64
         case .double:
             return value as? Double
-        case .date, .dateTime, .time:
-            return (value as? String)?.iso8601Date?.iso8601String
         case .timestamp:
             return value as? Int64
         case .bool:

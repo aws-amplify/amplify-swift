@@ -12,17 +12,21 @@ import Foundation
 ///
 /// Core Types that conform to this protocol:
 /// - `Bool`
-/// - `Date`
 /// - `Double`
 /// - `Int`
 /// - `String`
+/// - `Temporal.Date`
+/// - `Temporal.DateTime`
+/// - `Temporal.Time`
 public protocol Persistable {}
 
 extension Bool: Persistable {}
-extension Date: Persistable {}
 extension Double: Persistable {}
 extension Int: Persistable {}
 extension String: Persistable {}
+extension Temporal.Date: Persistable {}
+extension Temporal.DateTime: Persistable {}
+extension Temporal.Time: Persistable {}
 
 struct PersistableHelper {
 
@@ -43,7 +47,11 @@ struct PersistableHelper {
         switch (lhs, rhs) {
         case let (lhs, rhs) as (Bool, Bool):
             return lhs == rhs
-        case let (lhs, rhs) as (Date, Date):
+        case let (lhs, rhs) as (Temporal.Date, Temporal.Date):
+            return lhs == rhs
+        case let (lhs, rhs) as (Temporal.DateTime, Temporal.DateTime):
+            return lhs == rhs
+        case let (lhs, rhs) as (Temporal.Time, Temporal.Time):
             return lhs == rhs
         case let (lhs, rhs) as (Double, Double):
             return lhs == rhs

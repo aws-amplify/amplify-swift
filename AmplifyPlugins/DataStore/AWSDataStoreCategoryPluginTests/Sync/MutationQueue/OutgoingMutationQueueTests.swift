@@ -29,7 +29,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
         let post = Post(title: "Post title",
                         content: "Post content",
-                        createdAt: Date())
+                        createdAt: .now())
 
         let createMutationSent = expectation(description: "Create mutation sent to API category")
         apiPlugin.listeners.append { message in
@@ -72,7 +72,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
             let pendingPost = Post(id: postId,
                                    title: "pendingPost-\(id) title",
                 content: "pendingPost-\(id) content",
-                createdAt: Date())
+                createdAt: .now())
 
             let pendingPostJSON = try pendingPost.toJSON()
             let event = MutationEvent(id: "mutation-\(id)",
@@ -80,7 +80,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
                 modelName: Post.modelName,
                 json: pendingPostJSON,
                 mutationType: .create,
-                createdAt: Date())
+                createdAt: .now())
 
             storageAdapter.save(event) { result in
                 switch result {

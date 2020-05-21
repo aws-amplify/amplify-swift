@@ -117,7 +117,10 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         wait(for: [receivedSubscription], timeout: 200)
 
         //Mock incoming mutation event
-        let futureResult = try MutationEvent(model: Post(title: "title", content: "content", createdAt: Date()),
+        let post = Post(title: "title",
+                        content: "content",
+                        createdAt: .now())
+        let futureResult = try MutationEvent(model: post,
                                              mutationType: .create)
         eventSource.pushMutationEvent(futureResult: .success(futureResult))
 

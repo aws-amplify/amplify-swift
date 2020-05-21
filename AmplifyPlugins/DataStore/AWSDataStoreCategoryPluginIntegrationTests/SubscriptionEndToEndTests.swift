@@ -102,7 +102,7 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
                 "id": id,
                 "title": Optional("This is a new post I created"),
                 "content": content,
-                "createdAt": Date().iso8601String,
+                "createdAt": Temporal.DateTime.now().iso8601String,
                 "draft": nil,
                 "rating": nil,
                 "updatedAt": nil

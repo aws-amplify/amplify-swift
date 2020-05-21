@@ -21,7 +21,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     func testCreateMutateDelete() throws {
         try startAmplifyAndWaitForSync()
 
-        let date = Date()
+        let date = Temporal.DateTime.now()
 
         let newPost = Post(
             title: "This is a new post I created",
@@ -93,7 +93,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         try startAmplifyAndWaitForSync()
 
         let post = Post.keys
-        let date = Date()
+        let date = Temporal.DateTime.now()
         let title = "This is a new post I created"
         let newPost = Post(
             title: title,
@@ -156,11 +156,11 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         try startAmplifyAndWaitForSync()
 
         let post = Post.keys
-        let date = Date()
+        let date = Temporal.DateTime.now()
         let title = "This is a new post I created"
         let newPost = Post(
             title: title,
-            content: "Original content from DataStoreEndToEndTests at \(date)",
+            content: "Original content from DataStoreEndToEndTests at \(date.iso8601String)",
             createdAt: date)
 
         var updatedPost = newPost

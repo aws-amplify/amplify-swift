@@ -154,7 +154,7 @@ class SyncEngineTestBase: XCTestCase {
                                               modelName: post.modelName,
                                               json: post.toJSON(),
                                               mutationType: mutationType,
-                                              createdAt: Date(),
+                                              createdAt: .now(),
                                               inProcess: inProcess)
 
         let mutationEventSaved = expectation(description: "Preloaded mutation event saved")

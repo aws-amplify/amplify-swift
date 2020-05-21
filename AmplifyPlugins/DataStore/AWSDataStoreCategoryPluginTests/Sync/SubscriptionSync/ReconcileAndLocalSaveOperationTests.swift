@@ -28,7 +28,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
         }
         ModelRegistry.register(modelType: Post.self)
 
-        let testPost = Post(id: "1", title: "post1", content: "content", createdAt: Date())
+        let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now())
         let anyPost = AnyModel(testPost)
         anyPostMetadata = MutationSyncMetadata(id: "1",
                                                deleted: false,
@@ -36,7 +36,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                                                version: 1)
         anyPostMutationSync = MutationSync<AnyModel>(model: anyPost, syncMetadata: anyPostMetadata)
 
-        let testDelete = Post(id: "2", title: "post2", content: "content2", createdAt: Date())
+        let testDelete = Post(id: "2", title: "post2", content: "content2", createdAt: .now())
         let anyPostDelete = AnyModel(testDelete)
         let anyPostDeleteMetadata = MutationSyncMetadata(id: "2",
                                                          deleted: true,

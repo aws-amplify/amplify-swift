@@ -135,7 +135,7 @@ class SQLStatementTests: XCTestCase {
     func testInsertStatementFromModel() {
         let post = Post(title: "title",
                         content: "content",
-                        createdAt: Date(),
+                        createdAt: .now(),
                         status: .draft)
         let statement = InsertStatement(model: post)
 
@@ -160,8 +160,8 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the variables match the expected values
     ///   - check if the `postId` matches `post.id`
     func testInsertStatementFromModelWithForeignKey() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
-        let comment = Comment(content: "comment", createdAt: Date(), post: post)
+        let post = Post(title: "title", content: "content", createdAt: .now())
+        let comment = Comment(content: "comment", createdAt: .now(), post: post)
         let statement = InsertStatement(model: comment)
 
         let expectedStatement = """
@@ -184,7 +184,7 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the generated SQL statement is valid
     ///   - check if the variables match the expected values
     func testUpdateStatementFromModel() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         let statement = UpdateStatement(model: post)
 
         let expectedStatement = """
@@ -214,7 +214,7 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the generated SQL statement is valid
     ///   - check if the variables match the expected values
     func testUpdateStatementFromModelWithCondition() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         let condition = Post.keys.content == "content2"
         let statement = UpdateStatement(model: post, condition: condition)
 

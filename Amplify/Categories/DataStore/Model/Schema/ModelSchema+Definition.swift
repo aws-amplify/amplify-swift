@@ -45,9 +45,17 @@ public enum ModelFieldType {
         if type is Bool.Type {
             return .bool
         }
-        // TODO handle other DataScalar once the DateTime PR is merged
         if type is Date.Type {
             return .dateTime
+        }
+        if type is Temporal.Date.Type {
+            return .date
+        }
+        if type is Temporal.DateTime.Type {
+            return .dateTime
+        }
+        if type is Temporal.Time.Type {
+            return .time
         }
         if let enumType = type as? EnumPersistable.Type {
             return .enum(type: enumType)

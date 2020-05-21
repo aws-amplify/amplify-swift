@@ -13,7 +13,7 @@ public struct MutationEvent: Model {
     public var modelName: String
     public var json: String
     public var mutationType: String
-    public var createdAt: Date
+    public var createdAt: Temporal.DateTime
     public var version: Int?
     public var inProcess: Bool
     public var graphQLFilterJSON: String?
@@ -23,7 +23,7 @@ public struct MutationEvent: Model {
                 modelName: String,
                 json: String,
                 mutationType: MutationType,
-                createdAt: Date = Date(),
+                createdAt: Temporal.DateTime = .now(),
                 version: Int? = nil,
                 inProcess: Bool = false,
                 graphQLFilterJSON: String? = nil) {

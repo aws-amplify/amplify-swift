@@ -7,7 +7,7 @@ pod 'SwiftFormat/CLI'
 pod 'SwiftLint'
 
 target 'AWSDataStoreCategoryPlugin' do
-	pod 'Amplify', :path => '../../'
+  pod 'Amplify', :path => '../../'
   pod 'AWSPluginsCore', :path => '../../'
   pod "SQLite.swift", "~> 0.12.0"
 
