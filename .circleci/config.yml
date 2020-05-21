@@ -189,8 +189,8 @@ workflows:
       - plugin_unit_test:
           name: unit_test_auth
           path: Auth
-          workspace: AWSAuthPlugin
-          scheme: AWSAuthPlugin
+          workspace: AWSCognitoAuthPlugin
+          scheme: AWSCognitoAuthPlugin
           requires:
             - install_gems
       - plugin_unit_test:
