@@ -101,7 +101,7 @@ extension StorageEngine {
         }
         let filter = HubFilters.forEventName(HubPayload.EventName.Auth.signedOut)
         signOutListener = Amplify.Hub.listen(to: .auth, isIncluded: filter) { _ in
-            self.clear { result in
+            Amplify.DataStore.clear { result in
                 switch result {
                 case .success:
                     self.waitForAuthSignedIn(api: api, auth: auth)

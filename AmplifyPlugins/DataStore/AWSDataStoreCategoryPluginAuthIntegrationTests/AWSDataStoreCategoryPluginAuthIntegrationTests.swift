@@ -24,6 +24,10 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
     var user1: User!
     var user2: User!
 
+    let syncReceived = HubPayload.EventName.DataStore.syncReceived
+    let syncStarted = HubPayload.EventName.DataStore.syncStarted
+    let clearCompleted = HubPayload.EventName.DataStore.clearCompleted
+
     override func setUp() {
         Amplify.Logging.logLevel = .verbose
 
@@ -72,56 +76,69 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
     ///    - User retrieves the note again and now it contains the ownerId
     ///    - User signs out, the local store is cleared, then retrieving note returns nil
     func testUnauthenticatedSavesToLocalStoreIsReconciledWithCloudStoreAfterAuthentication() throws {
-        // 1
-        let id = UUID().uuidString
-        let note = SocialNote(id: id, content: "owner created content", owner: nil)
-        let savedNoteInvoked = expectation(description: "note was saved")
-        Amplify.DataStore.save(note) { result in
-            switch result {
-            case .success(let note):
-                print(note)
-                savedNoteInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("Failed to save note \(error)")
-            }
+        let savedLocalNote = saveNote(content: "owner saved note")
+        let queriedNoteOptional = queryNote(byId: savedLocalNote.id)
+        guard let note = queriedNoteOptional else {
+            XCTFail("Faled to query local note")
+            return
         }
-        wait(for: [savedNoteInvoked], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertNil(note.owner)
 
-        // 2
-        let queriedNoteInvoked = expectation(description: "note was queried")
-        Amplify.DataStore.query(SocialNote.self, byId: id) { result in
-            switch result {
-            case .success(let socialNoteOptional):
-                guard let note = socialNoteOptional else {
-                    XCTFail("Failed to query note")
+        let syncStartedInvoked = expectation(description: "Sync started after sign In")
+        let syncStartedListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncStarted) { _ in
+                syncStartedInvoked.fulfill()
+        }
+        guard try HubListenerTestUtilities.waitForListener(with: syncStartedListener, timeout: 5.0) else {
+            XCTFail("syncStartedListener not registered")
+            return
+        }
+
+        let syncReceivedInvoked = expectation(description: "Received SyncReceived event")
+        var remoteNoteOptional: SocialNote?
+        let syncReceivedListener = Amplify.Hub.listen(to: .dataStore, eventName: syncReceived) { payload in
+            guard let mutationEvent = payload.data as? MutationEvent,
+                let note = try? mutationEvent.decodeModel() as? SocialNote else {
+                    XCTFail("Can't cast payload as mutation event")
                     return
-                }
-                print(note)
-                XCTAssertNil(note.owner)
-                queriedNoteInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("Failed to save note \(error)")
+            }
+            if note.id == savedLocalNote.id {
+                remoteNoteOptional = note
+                syncReceivedInvoked.fulfill()
             }
         }
-        wait(for: [queriedNoteInvoked], timeout: TestCommonConstants.networkTimeout)
-
-        // 3
-        let syncStarted = expectation(description: "Sync started after sign In")
-        var token: UnsubscribeToken!
-        token = Amplify.Hub.listen(to: .dataStore,
-                                   eventName: HubPayload.EventName.DataStore.syncStarted) { _ in
-                                    syncStarted.fulfill()
-                                    Amplify.Hub.removeListener(token)
-
-        }
-
-        guard try HubListenerTestUtilities.waitForListener(with: token, timeout: 10.0) else {
-            XCTFail("Hub Listener not registered")
+        guard try HubListenerTestUtilities.waitForListener(with: syncReceivedListener, timeout: 5.0) else {
+            XCTFail("syncReceivedListener registered for hub")
             return
         }
 
         signIn(username: user1.username, password: user1.password)
-        wait(for: [syncStarted], timeout: TestCommonConstants.networkTimeout)
+
+        wait(for: [syncStartedInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [syncReceivedInvoked], timeout: TestCommonConstants.networkTimeout)
+        Amplify.Hub.removeListener(syncStartedListener)
+        Amplify.Hub.removeListener(syncReceivedListener)
+        guard let remoteNote = remoteNoteOptional else {
+            XCTFail("Should have received a SyncReceived event with the remote note reconciled to local store")
+            return
+        }
+        XCTAssertNotNil(remoteNote.owner)
+
+        let clearCompletedInvoked = expectation(description: "received clearCompleted invoked")
+        let clearCompletedListener = Amplify.Hub.listen(to: .dataStore, eventName: clearCompleted) { _ in
+            clearCompletedInvoked.fulfill()
+        }
+        guard try HubListenerTestUtilities.waitForListener(with: clearCompletedListener, timeout: 5.0) else {
+            XCTFail("clearCompletedListener not registered")
+            return
+        }
+
+        signOut()
+        wait(for: [clearCompletedInvoked], timeout: TestCommonConstants.networkTimeout)
+
+        let localNoteOptional = queryNote(byId: savedLocalNote.id)
+        XCTAssertNil(localNoteOptional)
     }
 
     /// A signed in user (the owner) creates some data in local store will be synced to cloud. After signing out,
@@ -134,7 +151,131 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
     ///    - Owner signs out, then retrieving the note returns nil
     ///    - The other user signs in, sync engine is started and does a full sync
     ///    - The other user is able to retrieve the owner's note
-    func testOwnerCreatedDataCanBeReadByOtherUsersForReadableModel() {
+    func testOwnerCreatedDataCanBeReadByOtherUsersForReadableModel() throws {
+        let syncStartedInvoked = expectation(description: "Sync started after sign In")
+        let syncStartedListener = Amplify.Hub.listen(to: .dataStore, eventName: syncStarted) { _ in
+            syncStartedInvoked.fulfill()
+        }
+        guard try HubListenerTestUtilities.waitForListener(with: syncStartedListener, timeout: 5.0) else {
+            XCTFail("syncStartedListener not registered")
+            return
+        }
+        signIn(username: user1.username, password: user1.password)
+        wait(for: [syncStartedInvoked], timeout: TestCommonConstants.networkTimeout)
+        Amplify.Hub.removeListener(syncStartedListener)
 
+        let id = UUID().uuidString
+        let localNote = SocialNote(id: id, content: "owner created content", owner: nil)
+        let localNoteSaveInvoked = expectation(description: "local note was saved")
+
+        let syncReceivedInvoked = expectation(description: "received SyncReceived event")
+        var remoteNoteOptional: SocialNote?
+        let syncReceivedListener = Amplify.Hub.listen(to: .dataStore, eventName: syncReceived) { payload in
+            guard let mutationEvent = payload.data as? MutationEvent,
+                let note = try? mutationEvent.decodeModel() as? SocialNote else {
+                    XCTFail("Can't cast payload as mutation event")
+                    return
+            }
+            if note.id == localNote.id {
+                remoteNoteOptional = note
+                syncReceivedInvoked.fulfill()
+            }
+        }
+        guard try HubListenerTestUtilities.waitForListener(with: syncReceivedListener, timeout: 5.0) else {
+            XCTFail("syncReceivedListener registered for hub")
+            return
+        }
+
+        Amplify.DataStore.save(localNote) { result in
+            switch result {
+            case .success(let note):
+                print(note)
+                localNoteSaveInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Failed to save note \(error)")
+            }
+        }
+        wait(for: [localNoteSaveInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [syncReceivedInvoked], timeout: TestCommonConstants.networkTimeout)
+        Amplify.Hub.removeListener(syncReceivedListener)
+        guard let remoteNote = remoteNoteOptional else {
+            XCTFail("Should have received a SyncReceived event with the remote note reconciled to local store")
+            return
+        }
+        guard let owner = remoteNote.owner else {
+            XCTFail("Could not retrieve owner value from remote note")
+            return
+        }
+
+        let clearCompletedInvoked = expectation(description: "received clearCompleted invoked")
+        let clearCompletedListener = Amplify.Hub.listen(to: .dataStore, eventName: clearCompleted) { _ in
+            clearCompletedInvoked.fulfill()
+        }
+        guard try HubListenerTestUtilities.waitForListener(with: clearCompletedListener, timeout: 5.0) else {
+            XCTFail("clearCompletedListener not registered")
+            return
+        }
+        signOut()
+        wait(for: [clearCompletedInvoked], timeout: TestCommonConstants.networkTimeout)
+        Amplify.Hub.removeListener(clearCompletedListener)
+
+        let localNoteOptional = queryNote(byId: id)
+        XCTAssertNil(localNoteOptional)
+
+        let syncStartedInvoked2 = expectation(description: "Sync started after other sign in")
+        let syncStartedListener2 = Amplify.Hub.listen(to: .dataStore, eventName: syncStarted) { _ in
+            syncStartedInvoked2.fulfill()
+        }
+        guard try HubListenerTestUtilities.waitForListener(with: syncStartedListener2, timeout: 5.0) else {
+            XCTFail("syncStartedListener2 not registered")
+            return
+        }
+
+        let syncReceivedInvoked2 = expectation(description: "received SyncReceived event for owner")
+        var remoteNoteOptional2: SocialNote?
+        let syncReceivedListener2 = Amplify.Hub.listen(to: .dataStore, eventName: syncReceived) { payload in
+            guard let mutationEvent = payload.data as? MutationEvent,
+                let note = try? mutationEvent.decodeModel() as? SocialNote else {
+                    XCTFail("Can't cast payload as mutation event")
+                    return
+            }
+            if note.id == localNote.id {
+                remoteNoteOptional2 = note
+                syncReceivedInvoked2.fulfill()
+            }
+        }
+        guard try HubListenerTestUtilities.waitForListener(with: syncReceivedListener2, timeout: 5.0) else {
+            XCTFail("syncReceivedListener2 registered for hub")
+            return
+        }
+        signIn(username: user2.username, password: user2.password)
+        guard let currentUser = Amplify.Auth.getCurrentUser() else {
+            XCTFail("Could not retrieve current user")
+            return
+        }
+        XCTAssertNotEqual(currentUser.username, owner)
+        wait(for: [syncStartedInvoked2], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [syncReceivedInvoked2], timeout: TestCommonConstants.networkTimeout)
+        Amplify.Hub.removeListener(syncStartedListener2)
+        Amplify.Hub.removeListener(syncReceivedListener2)
+        guard let ownerRemoteNote = remoteNoteOptional2, let remoteNoteOwner = ownerRemoteNote.owner else {
+            XCTFail("Should have received a SyncReceived event with the remote note reconciled to local store")
+            return
+        }
+
+        XCTAssertEqual(owner, remoteNoteOwner)
+
+        let clearCompletedInvoked2 = expectation(description: "received clearCompleted invoked")
+        let clearCompletedListener2 = Amplify.Hub.listen(to: .dataStore, eventName: clearCompleted) { _ in
+            clearCompletedInvoked2.fulfill()
+        }
+        guard try HubListenerTestUtilities.waitForListener(with: clearCompletedListener2, timeout: 5.0) else {
+            XCTFail("clearCompletedListener not registered")
+            return
+        }
+
+        signOut()
+        wait(for: [clearCompletedInvoked2], timeout: TestCommonConstants.networkTimeout)
+        Amplify.Hub.removeListener(clearCompletedListener2)
     }
 }
