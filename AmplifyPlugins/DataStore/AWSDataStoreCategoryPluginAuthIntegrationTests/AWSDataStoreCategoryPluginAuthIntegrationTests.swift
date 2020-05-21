@@ -25,6 +25,8 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
     var user2: User!
 
     override func setUp() {
+        Amplify.Logging.logLevel = .verbose
+
         do {
             let credentials = try TestConfigHelper.retrieveCredentials(forResource: credentialsFile)
 
@@ -44,6 +46,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
             try Amplify.add(plugin: AWSAuthPlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
             try Amplify.configure(amplifyConfig)
+
         } catch {
             XCTFail("Error during setup: \(error)")
         }
@@ -57,31 +60,81 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
         Amplify.reset()
     }
 
-    func testCreateNoteWhileNotAuthenticatedShouldTriggerErrorHandler() {
-
-    }
-
-    /// A note created by the owner should be synced to the other user
+    /// A user can persist data in the local store without signing in. Once the user signs in,
+    /// the sync engine will start and sync the mutations to the cloud. Once the reconcillation is complete, retrieving
+    /// the same data will contain ownerId
     ///
-    /// - Given: An auth enabled
+    /// - Given: A DataStore plugin configured with SocialNote model containing with auth rules
     /// - When:
-    ///    -
-    /// - Then:
-    ///    - 
-    ///
-    func testOwnerNoteShouldSyncToOtherOnlyAfterSignIn() {
+    ///    - User is not signed in, then user can successfully save a note to local store
+    ///    - User remains signed out, then user can successfully retrieve the saved note, with empty owner field
+    ///    - User signs in, then the sync engine is started and reconciles local store with the ownerId
+    ///    - User retrieves the note again and now it contains the ownerId
+    ///    - User signs out, the local store is cleared, then retrieving note returns nil
+    func testUnauthenticatedSavesToLocalStoreIsReconciledWithCloudStoreAfterAuthentication() throws {
+        // 1
+        let id = UUID().uuidString
+        let note = SocialNote(id: id, content: "owner created content", owner: nil)
+        let savedNoteInvoked = expectation(description: "note was saved")
+        Amplify.DataStore.save(note) { result in
+            switch result {
+            case .success(let note):
+                print(note)
+                savedNoteInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Failed to save note \(error)")
+            }
+        }
+        wait(for: [savedNoteInvoked], timeout: TestCommonConstants.networkTimeout)
 
+        // 2
+        let queriedNoteInvoked = expectation(description: "note was queried")
+        Amplify.DataStore.query(SocialNote.self, byId: id) { result in
+            switch result {
+            case .success(let socialNoteOptional):
+                guard let note = socialNoteOptional else {
+                    XCTFail("Failed to query note")
+                    return
+                }
+                print(note)
+                XCTAssertNil(note.owner)
+                queriedNoteInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Failed to save note \(error)")
+            }
+        }
+        wait(for: [queriedNoteInvoked], timeout: TestCommonConstants.networkTimeout)
+
+        // 3
+        let syncStarted = expectation(description: "Sync started after sign In")
+        var token: UnsubscribeToken!
+        token = Amplify.Hub.listen(to: .dataStore,
+                                   eventName: HubPayload.EventName.DataStore.syncStarted) { _ in
+                                    syncStarted.fulfill()
+                                    Amplify.Hub.removeListener(token)
+
+        }
+
+        guard try HubListenerTestUtilities.waitForListener(with: token, timeout: 10.0) else {
+            XCTFail("Hub Listener not registered")
+            return
+        }
+
+        signIn(username: user1.username, password: user1.password)
+        wait(for: [syncStarted], timeout: TestCommonConstants.networkTimeout)
     }
 
-
-    func testExample() {
-        // user 1 creates a note.
-
-        // user 1 signs out
-
-        // user 2 is not signed in, query for note, note does not exist
-        // user 2 signs in, sync engine starts, note exists.
-
-        // user 2
+    /// A signed in user (the owner) creates some data in local store will be synced to cloud. After signing out,
+    /// the data can no longer be retrieved. Signing back in with another user will update the local store with all
+    /// the data that can be read by that the user in the sync process. Then other user can read the owner's data.
+    ///
+    /// - Given: A DataStore plugin configured with auth enabled SocialNote model that can be read others.
+    /// - When:
+    ///    - The owner user is signed in, then user can save a note successfully
+    ///    - Owner signs out, then retrieving the note returns nil
+    ///    - The other user signs in, sync engine is started and does a full sync
+    ///    - The other user is able to retrieve the owner's note
+    func testOwnerCreatedDataCanBeReadByOtherUsersForReadableModel() {
+        
     }
 }

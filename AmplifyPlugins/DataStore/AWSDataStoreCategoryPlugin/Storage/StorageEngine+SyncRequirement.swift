@@ -81,6 +81,10 @@ extension StorageEngine {
 
     private func waitForAuthSignedIn(api: APICategoryGraphQLBehavior, auth: AuthCategoryBehavior) {
         log.debug("\(#function) Amplify.Hub.listen to Auth.signedIn event")
+        guard signInListener == nil else {
+            log.debug("\(#function) Already listening to Auth.signedIn event")
+            return
+        }
         let filter = HubFilters.forEventName(HubPayload.EventName.Auth.signedIn)
         signInListener = Amplify.Hub.listen(to: .auth, isIncluded: filter) { _ in
             self.syncEngine?.start(api: api, auth: auth)
@@ -90,7 +94,11 @@ extension StorageEngine {
     }
 
     private func waitForAuthSignedOut(api: APICategoryGraphQLBehavior, auth: AuthCategoryBehavior) {
-        log.debug("\(#function) Amplify.Hub.listen to Auth.signedIn event")
+        log.debug("\(#function) Amplify.Hub.listen to Auth.signedOut event")
+        guard signOutListener == nil else {
+            log.debug("\(#function) Already listening to Auth.signedOut event")
+            return
+        }
         let filter = HubFilters.forEventName(HubPayload.EventName.Auth.signedOut)
         signOutListener = Amplify.Hub.listen(to: .auth, isIncluded: filter) { _ in
             self.clear { result in

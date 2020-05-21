@@ -157,7 +157,7 @@ final class IncomingAsyncSubscriptionEventPublisher: Cancellable {
 
         let request: GraphQLRequest<Payload>
         if let auth = auth, let user = auth.getCurrentUser() {
-            // TODO: check model schema to see what is the identityClaim before adding it as ownerId
+            // TODO: check model schema to see what is the identityClaim before retrieving the right one adding it as ownerId
             request = GraphQLRequest<Payload>.subscription(to: modelType, subscriptionType: subscriptionType, ownerId: user.username)
         } else {
             request = GraphQLRequest<Payload>.subscription(to: modelType, subscriptionType: subscriptionType)
