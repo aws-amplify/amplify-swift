@@ -39,6 +39,6 @@ target "HostApp" do
     inherit! :complete
 
     pod 'AmplifyPlugins/AWSAPIPlugin', :path => '../../'
-    pod 'AmplifyPlugins/AWSAuthPlugin', :path => '../../'
+    pod 'AmplifyPlugins/AWSCognitoAuthPlugin', :path => '../../'
   end
 end

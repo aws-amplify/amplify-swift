@@ -43,7 +43,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
 
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: SocialNoteModelRegistration()))
             try Amplify.add(plugin: AWSAPIPlugin())
-            try Amplify.add(plugin: AWSAuthPlugin())
+            try Amplify.add(plugin: AWSCognitoAuthPlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
             try Amplify.configure(amplifyConfig)
 
@@ -135,6 +135,6 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
     ///    - The other user signs in, sync engine is started and does a full sync
     ///    - The other user is able to retrieve the owner's note
     func testOwnerCreatedDataCanBeReadByOtherUsersForReadableModel() {
-        
+
     }
 }
