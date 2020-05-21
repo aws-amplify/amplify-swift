@@ -31,7 +31,7 @@ protocol AuthenticationProviderBehavior {
     func signOut(request: AuthSignOutRequest,
                  completionHandler: @escaping (Result<Void, AuthError>) -> Void)
 
-    func signInUsername() -> Result<String, AuthError>
+    func getCurrentUser() -> AuthUser?
 
     func resetPassword(request: AuthResetPasswordRequest,
                        completionHandler: @escaping (Result<AuthResetPasswordResult, AuthError>) -> Void)
