@@ -18,8 +18,7 @@ extension TemporalSpec {
         let calendar = Self.iso8601Calendar
         let result = calendar.date(byAdding: component,
                                    value: value,
-                                   to: foundationDate,
-                                   wrappingComponents: false)
+                                   to: foundationDate)
         guard let date = result else {
             fatalError(
                 """

@@ -224,14 +224,9 @@ class TemporalTests: XCTestCase {
         do {
             let date = try Temporal.Date(iso8601String: "2020-01-20-08:00")
             XCTAssertEqual(date.iso8601String, "2020-01-20Z")
-            XCTAssertEqual(date.iso8601FormattedString(format: .short, timeZone: pst), "2020-01-20")
             XCTAssertEqual(date.iso8601FormattedString(format: .short, timeZone: .utc), "2020-01-20")
-            XCTAssertEqual(date.iso8601FormattedString(format: .medium, timeZone: pst), "2020-01-20-08:00")
             XCTAssertEqual(date.iso8601FormattedString(format: .medium, timeZone: .utc), "2020-01-20Z")
-            XCTAssertEqual(date.iso8601FormattedString(format: .long, timeZone: pst), "2020-01-20-08:00")
             XCTAssertEqual(date.iso8601FormattedString(format: .long, timeZone: .utc), "2020-01-20Z")
-            XCTAssertEqual(date.iso8601FormattedString(format: .full, timeZone: pst), "2020-01-20-08:00")
-            XCTAssertEqual(date.iso8601FormattedString(format: .full, timeZone: .utc), "2020-01-20Z")
         } catch {
             XCTFail(error.localizedDescription)
         }

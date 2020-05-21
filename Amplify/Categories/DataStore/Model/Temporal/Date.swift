@@ -27,22 +27,12 @@ extension Temporal {
             guard let date = Temporal.Date.iso8601Date(from: iso8601String) else {
                 throw DataStoreError.invalidDateFormat(iso8601String)
             }
-            self.foundationDate = date
+            self.init(date)
         }
 
         public init(_ date: Foundation.Date) {
             // sets the date to a fixed instant so date-only operations are safe
-            let calendar = Date.iso8601Calendar
-            var components = calendar.dateComponents(
-                [.year, .month, .day, .hour, .minute, .second, .nanosecond, .timeZone],
-                from: date
-            )
-            // reset time to a fixed time
-            components.hour = 12
-            components.minute = 0
-            components.second = 0
-            components.nanosecond = 0
-            self.foundationDate = calendar.date(from: components) ?? date
+            self.foundationDate = Date.iso8601Calendar.startOfDay(for: date)
         }
     }
 }

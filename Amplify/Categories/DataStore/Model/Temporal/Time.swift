@@ -33,6 +33,8 @@ extension Temporal {
                 [.year, .month, .day, .hour, .minute, .second, .nanosecond, .timeZone],
                 from: date
             )
+            // this is the same behavior of Foundation.Date when parsed from strings
+            // without year-month-day information
             components.year = 2_000
             components.month = 1
             components.day = 1
@@ -43,7 +45,7 @@ extension Temporal {
             guard let date = Time.iso8601Date(from: iso8601String) else {
                 throw DataStoreError.invalidDateFormat(iso8601String)
             }
-            self.foundationDate = date
+            self.init(date)
         }
 
     }
