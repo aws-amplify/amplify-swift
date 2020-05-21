@@ -88,56 +88,10 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         let filter = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
         var token: UnsubscribeToken?
         token = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { _ in
-            if self.hasRequiredPlugins() {
-                self.storageEngine.startSync()
-            } else {
-                self.log.info("Unable to find suitable plugin for syncEngine.  syncEngine will not be started")
-            }
-
+            self.storageEngine.tryStartSync()
             if let token = token {
                 Amplify.Hub.removeListener(token)
             }
-        }
-    }
-
-    func hasRequiredPlugins() -> Bool {
-        guard hasValidAPIPlugin() else {
-            return false
-        }
-        if !requireAuthPlugin() {
-            return true
-        }
-
-        if requireAuthPlugin() && hasValidAuthPlugin() {
-            return true
-        }
-
-        return false
-    }
-
-    func hasValidAPIPlugin() -> Bool {
-        do {
-            _ = try Amplify.API.getPlugin(for: validAPIPluginKey)
-            return true
-        } catch {
-            return false
-        }
-    }
-
-    func requireAuthPlugin() -> Bool {
-        let containsAuthEnabledSyncableModels = ModelRegistry.models.contains {
-            $0.schema.isSyncable && $0.schema.isAuthEnabled
-        }
-
-        return containsAuthEnabledSyncableModels
-    }
-
-    func hasValidAuthPlugin() -> Bool {
-        do {
-            _ = try Amplify.Auth.getPlugin(for: validAuthPluginKey)
-            return true
-        } catch {
-            return false
         }
     }
 
@@ -151,7 +105,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             }
             try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
             try storageEngine.setUp(models: ModelRegistry.models)
-            storageEngine.startSync()
+            storageEngine.tryStartSync()
         } catch {
             log.error(error: error)
         }
@@ -162,7 +116,10 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             return
         }
 
-        storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled, dataStoreConfiguration: dataStoreConfiguration)
+        storageEngine = try StorageEngine(isSyncEnabled: isSyncEnabled,
+                                          dataStoreConfiguration: dataStoreConfiguration,
+                                          validAPIPluginKey: validAPIPluginKey,
+                                          validAuthPluginKey: validAuthPluginKey)
         if #available(iOS 13.0, *) {
             setupStorageSink()
         }

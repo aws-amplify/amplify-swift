@@ -16,7 +16,7 @@ public extension ModelSchema {
         attributes.contains(.isSystem)
     }
 
-    var isAuthEnabled: Bool {
+    var hasAuth: Bool {
         return !authRules.isEmpty
     }
 }

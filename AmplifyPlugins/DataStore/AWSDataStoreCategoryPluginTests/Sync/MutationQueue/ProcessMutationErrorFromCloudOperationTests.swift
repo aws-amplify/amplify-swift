@@ -56,7 +56,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         let configuration = DataStoreConfiguration.custom(errorHandler: { error in
             guard let dataStoreError = error as? DataStoreError,
                 case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
-                    XCTFail("Expected API error wpith mutationEvent")
+                    XCTFail("Expected API error with mutationEvent")
                     return
             }
             guard let actualAPIError = amplifyError as? APIError,

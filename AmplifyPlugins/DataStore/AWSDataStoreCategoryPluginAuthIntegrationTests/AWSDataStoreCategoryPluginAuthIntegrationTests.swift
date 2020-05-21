@@ -57,9 +57,31 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
         Amplify.reset()
     }
 
+    func testCreateNoteWhileNotAuthenticatedShouldTriggerErrorHandler() {
+
+    }
+
+    /// A note created by the owner should be synced to the other user
+    ///
+    /// - Given: An auth enabled
+    /// - When:
+    ///    -
+    /// - Then:
+    ///    - 
+    ///
+    func testOwnerNoteShouldSyncToOtherOnlyAfterSignIn() {
+
+    }
+
+
     func testExample() {
-        //
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        // user 1 creates a note.
+
+        // user 1 signs out
+
+        // user 2 is not signed in, query for note, note does not exist
+        // user 2 signs in, sync engine starts, note exists.
+
+        // user 2
     }
 }

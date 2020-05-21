@@ -187,7 +187,7 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
         return PassthroughSubject<StorageEngineEvent, DataStoreError>().eraseToAnyPublisher()
     }
 
-    func startSync() {
+    func tryStartSync() {
     }
 
     func setUp(models: [Model.Type]) throws {

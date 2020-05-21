@@ -23,23 +23,17 @@ extension RemoteSyncEngine {
             case (.pausingMutationQueue, .pausedMutationQueue(let storageEngineAdapter)):
                 return .clearingStateOutgoingMutations(storageEngineAdapter)
 
-            case (.clearingStateOutgoingMutations, .clearedStateOutgoingMutations):
-                return .checkIfAuthenticationRequired
-            case (.checkIfAuthenticationRequired, .requireAuthenticatedUser):
-                return .waitForAuthenticatedUser
-            case (.waitForAuthenticatedUser, .authenticatedUser(let api,
-                                                                let storageEngineAdapter,
-                                                                let userId)):
-                return .initializingSubscriptions(api, storageEngineAdapter, userId)
-            case (.checkIfAuthenticationRequired, .authenticatedUser(let api,
-                                                                     let storageEngineAdapter,
-                                                                     let userId)):
-                return .initializingSubscriptions(api, storageEngineAdapter, userId)
-            case (.checkIfAuthenticationRequired, .authenticationNotRequired(let api, let storageEngineAdapter)):
+            case (.clearingStateOutgoingMutations, .clearedStateOutgoingMutations(let api, let storageEngineAdapter)):
                 return .initializingSubscriptions(api, storageEngineAdapter)
+
             case (.initializingSubscriptions, .initializedSubscriptions):
                 return .performingInitialSync
             case (.initializingSubscriptions, .errored(let error)):
+                return .cleaningUp(error)
+
+            case (.performingInitialSync, .performedInitialSync):
+                return .activatingCloudSubscriptions
+            case (.performingInitialSync, .errored(let error)):
                 return .cleaningUp(error)
 
             case (.performingInitialSync, .performedInitialSync):

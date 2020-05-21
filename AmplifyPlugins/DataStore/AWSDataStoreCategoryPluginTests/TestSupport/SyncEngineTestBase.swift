@@ -113,16 +113,21 @@ class SyncEngineTestBase: XCTestCase {
                     }
         })
 
+        let validAPIPluginKey = "MockAPICategoryPlugin"
+        let validAuthPluginKey = "MockAuthCategoryPlugin"
+
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           dataStoreConfiguration: .default,
-                                          syncEngine: syncEngine)
+                                          syncEngine: syncEngine,
+                                          validAPIPluginKey: validAPIPluginKey,
+                                          validAuthPluginKey: validAuthPluginKey)
 
         let publisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: modelRegistration,
                                                  storageEngine: storageEngine,
                                                  dataStorePublisher: publisher,
-                                                 validAPIPluginKey: "MockAPICategoryPlugin",
-                                                 validAuthPluginKey: "MockAuthCategoryPlugin")
+                                                 validAPIPluginKey: validAPIPluginKey,
+                                                 validAuthPluginKey: validAuthPluginKey)
 
         try Amplify.add(plugin: dataStorePlugin)
     }
