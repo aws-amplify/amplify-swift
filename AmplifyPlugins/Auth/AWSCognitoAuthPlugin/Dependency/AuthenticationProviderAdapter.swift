@@ -16,13 +16,14 @@ class AuthenticationProviderAdapter: AuthenticationProviderBehavior {
         self.awsMobileClient = awsMobileClient
     }
 
-    func signInUsername() -> Result<String, AuthError> {
+    func getCurrentUser() -> AuthUser? {
 
-        if let username = awsMobileClient.username() {
-            return .success(username)
+        guard let username = awsMobileClient.getUsername() else {
+            return nil
         }
-        // TODO: Fix the error here
-        return .failure(AuthError.unknown(""))
-
+        guard let sub = awsMobileClient.getUserSub() else {
+            return nil
+        }
+        return  AWSAuthUser(username: username, userId: sub)
     }
 }

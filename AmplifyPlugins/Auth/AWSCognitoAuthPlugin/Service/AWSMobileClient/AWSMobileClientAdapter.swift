@@ -107,8 +107,12 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
         awsMobileClient.signOut()
     }
 
-    func username() -> String? {
+    func getUsername() -> String? {
         return awsMobileClient.username
+    }
+
+    func getUserSub() -> String? {
+        return awsMobileClient.userSub
     }
 
     func verifyUserAttribute(attributeName: String,

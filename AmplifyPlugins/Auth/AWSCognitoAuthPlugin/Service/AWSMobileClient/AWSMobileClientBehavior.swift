@@ -52,7 +52,9 @@ protocol AWSMobileClientBehavior {
 
     func signOutLocally()
 
-    func username() -> String?
+    func getUsername() -> String?
+
+    func getUserSub() -> String?
 
     func verifyUserAttribute(attributeName: String,
                              completionHandler: @escaping ((UserCodeDeliveryDetails?, Error?) -> Void))

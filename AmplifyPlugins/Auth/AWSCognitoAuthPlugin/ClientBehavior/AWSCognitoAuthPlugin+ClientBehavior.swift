@@ -161,8 +161,4 @@ extension AWSCognitoAuthPlugin {
             queue.addOperation(operation)
             return operation
     }
-
-    public func getCurrentUser() -> AuthUser? {
-        return nil
-    }
 }

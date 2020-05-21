@@ -10,8 +10,9 @@ import AWSMobileClient
 
 /// Auth plugin that uses AWS Cognito UserPool and IdentityPool.
 ///
-/// The implicitly unwrapped optionals in this class are assigned in the `configure` method in `AWSCognitoAuthPlugin+Configure`
-/// extension. Make sure to call `Amplify.configure` after adding the plugin to `Amplify`.
+/// The implicitly unwrapped optionals in this class are assigned in the `configure` method in
+/// `AWSCognitoAuthPlugin+Configure` extension. Make sure to call `Amplify.configure` after adding the
+/// plugin to `Amplify`.
 final public class AWSCognitoAuthPlugin: AuthCategoryPlugin {
 
     /// A queue that regulates the execution of operations.
