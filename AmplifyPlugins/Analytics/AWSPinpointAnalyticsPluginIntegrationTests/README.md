@@ -18,7 +18,7 @@ The following steps demonstrate how to set up Analytics. Auth category is also r
 
 [temporary step]: Until Amplify CLI supports adding the auth section into amplifyconfiguation.json, copy `awsconfiguration.json`'s auth section over
 
-4. Copy `amplifyconfiguration.json` over to `~/AWSPinpointAnalyticPluginIntegrationTests/AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration.json`
+4. Copy `amplifyconfiguration.json` over to folder `AWSPinpointAnalyticPluginIntegrationTests` as `AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration.json`
 
 5. You can now run all of the integration tests. 
 
