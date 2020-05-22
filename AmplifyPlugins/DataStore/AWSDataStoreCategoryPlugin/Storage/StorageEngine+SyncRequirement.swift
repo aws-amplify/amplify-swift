@@ -51,7 +51,7 @@ extension StorageEngine {
 
     private func requiresAuthPlugin() -> Bool {
         let containsAuthEnabledSyncableModels = ModelRegistry.models.contains {
-            $0.schema.isSyncable && $0.schema.hasAuth
+            $0.schema.isSyncable && $0.schema.hasAuthenticationRules
         }
 
         return containsAuthEnabledSyncableModels
