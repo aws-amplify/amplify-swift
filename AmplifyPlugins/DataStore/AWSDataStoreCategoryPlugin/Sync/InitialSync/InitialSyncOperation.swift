@@ -120,6 +120,9 @@ final class InitialSyncOperation: AsynchronousOperation {
         _ = api.query(request: request) { result in
             switch result {
             case .failure(let apiError):
+                if self.isAuthSignedOutError(apiError: apiError) {
+                    self.dataStoreConfiguration.errorHandler(DataStoreError.api(apiError))
+                }
                 // TODO: Retry query on error
                 self.finish(result: .failure(DataStoreError.api(apiError)))
             case .success(let graphQLResult):
@@ -188,6 +191,16 @@ final class InitialSyncOperation: AsynchronousOperation {
                 self.finish(result: .successfulVoid)
             }
         }
+    }
+
+    private func isAuthSignedOutError(apiError: APIError) -> Bool {
+        if case let .operationError(_, _, underlyingError) = apiError,
+            let authError = underlyingError as? AuthError,
+            case .signedOut = authError {
+            return true
+        }
+
+        return false
     }
 
     private func finish(result: AWSInitialSyncOrchestrator.SyncOperationResult) {
