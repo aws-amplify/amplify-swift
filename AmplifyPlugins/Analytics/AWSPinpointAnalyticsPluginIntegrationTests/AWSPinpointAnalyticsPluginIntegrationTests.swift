@@ -5,135 +5,33 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import Amplify
-import AWSMobileClient
-import AWSPinpoint
-@testable import AWSPinpointAnalyticsPlugin
 import XCTest
+import AmplifyPlugins
+import AWSPinpoint
+
+@testable import Amplify
+@testable import AWSPinpointAnalyticsPlugin
+@testable import AmplifyTestCommon
 
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
-    /*
-     Set up
-     `amplify init`
-     `amplify add analytics`
-       * Apps need authorization to send analytics events. Do you want to allow guests and unauthenticated users to send
-         analytics events? (we recommend you allow this when getting started) `Yes`
-     `amplify push`
 
-     Pinpoint URL to track events
-     https://us-west-2.console.aws.amazon.com/pinpoint/home/?region=us-west-2#/apps/xxx/analytics/overview
-
-     awsconfiguration.json
-     {
-         "UserAgent": "aws-amplify/cli",
-         "Version": "0.1.0",
-         "IdentityManager": {
-             "Default": {}
-         },
-         "CredentialsProvider": {
-             "CognitoIdentity": {
-                 "Default": {
-                     "PoolId": "us-west-2:xxx",
-                     "Region": "us-west-2"
-                 }
-             }
-         },
-         "PinpointAnalytics": {
-             "Default": {
-                 "AppId": "xxx",
-                 "Region": "us-west-2"
-             }
-         },
-         "PinpointTargeting": {
-             "Default": {
-                 "Region": "us-west-2"
-             }
-         }
-     }
-
-     amplifyconfiguration.json
-     {
-         "UserAgent": "aws-amplify-cli/2.0",
-         "Version": "1.0",
-         "analytics": {
-             "plugins": {
-                 "awsPinpointAnalyticsPlugin": {
-                     "pinpointAnalytics": {
-                         "appId": "xxxx",
-                         "region": "us-west-2"
-                     },
-                     "pinpointTargeting": {
-                         "region": "us-west-2"
-                     }
-                 }
-             }
-         }
-     }
-     */
-    let analyticsPluginKey = "awsPinpointAnalyticsPlugin"
+    static let amplifyConfiguration = "AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration"
+    static let analyticsPluginKey = "awsPinpointAnalyticsPlugin"
 
     override func setUp() {
-        let config = [
-            "CredentialsProvider": [
-                "CognitoIdentity": [
-                    "Default": [
-                        "PoolId": "us-west-2:xxx",
-                        "Region": "us-west-2"
-                    ]
-                ]
-            ]
-        ]
-        AWSInfo.configureDefaultAWSInfo(config)
-
-        let mobileClientIsInitialized = expectation(description: "AWSMobileClient is initialized")
-        AWSMobileClient.default().initialize { userState, error in
-            guard error == nil else {
-                XCTFail("Error initializing AWSMobileClient. Error: \(error!.localizedDescription)")
-                return
-            }
-            guard let userState = userState else {
-                XCTFail("userState is unexpectedly empty initializing AWSMobileClient")
-                return
-            }
-            if userState != UserState.signedOut {
-                AWSMobileClient.default().signOut()
-            }
-            mobileClientIsInitialized.fulfill()
-        }
-        wait(for: [mobileClientIsInitialized], timeout: 100)
-        print("AWSMobileClient Initialized")
-
-        let analyticsConfig = AnalyticsCategoryConfiguration(
-            plugins: [
-                "awsPinpointAnalyticsPlugin": [
-                    "pinpointAnalytics": [
-                        "appId": "xxxxx",
-                        "region": "us-west-2"
-                    ],
-                    "pinpointTargeting": [
-                        "region": "us-west-2"
-                    ],
-                    "autoFlushEventsInterval": 10,
-                    "trackAppSessions": true,
-                    "autoSessionTrackingInterval": 2
-                ]
-            ])
-
-        let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig)
-
         do {
+            let config = try TestConfigHelper.retrieveAmplifyConfiguration(
+                forResource: AWSPinpointAnalyticsPluginIntergrationTests.amplifyConfiguration)
+            try Amplify.add(plugin: AWSAuthPlugin())
             try Amplify.add(plugin: AWSPinpointAnalyticsPlugin())
-            try Amplify.configure(amplifyConfig)
+            try Amplify.configure(config)
         } catch {
-            XCTFail("Failed to initialize and configure Amplify")
+            XCTFail("Failed to initialize and configure Amplify \(error)")
         }
-
-        print("Amplify initialized")
     }
 
     override func tearDown() {
-        print("Amplify reset")
         Amplify.reset()
     }
 
@@ -171,7 +69,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                                                properties: properties)
         Amplify.Analytics.identifyUser(userId, withProfile: userProfile)
 
-        wait(for: [identifyUserEvent], timeout: 20)
+        wait(for: [identifyUserEvent], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testRecordEventsAreFlushed() {
@@ -199,12 +97,14 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                           "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
+        Amplify.Analytics.flushEvents()
 
-        wait(for: [flushEventsInvoked], timeout: 20)
+        wait(for: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testGetEscapeHatch() throws {
-        let plugin = try Amplify.Analytics.getPlugin(for: analyticsPluginKey)
+        let plugin = try Amplify.Analytics.getPlugin(
+            for: AWSPinpointAnalyticsPluginIntergrationTests.analyticsPluginKey)
         guard let pinpointAnalyticsPlugin = plugin as? AWSPinpointAnalyticsPlugin else {
             XCTFail("Could not get plugin of type AWSPinpointAnalyticsPlugin")
             return

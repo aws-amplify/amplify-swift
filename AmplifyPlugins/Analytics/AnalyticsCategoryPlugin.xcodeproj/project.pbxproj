@@ -8,10 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		162EFDD55E53D5A773D62CF6 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4E592238332FBE98A8EFCC /* Pods_HostApp.framework */; };
+		21233DFA2475C8BB00039337 /* AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 21233DF92475C8BA00039337 /* AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration.json */; };
+		21233E042475CAD500039337 /* AWSPinpointAnalyticsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSPinpointAnalyticsPlugin.framework */; };
+		21233E0A2475CAED00039337 /* AWSPinpointAnalyticsPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F77B2375046300C4F92B /* AWSPinpointAnalyticsPluginIntegrationTests.swift */; };
 		2149E68F238A6D2900873955 /* RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E68E238A6D2900873955 /* RepeatingTimer.swift */; };
 		2149E695238B301500873955 /* RepeatingTimerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E694238B301500873955 /* RepeatingTimerTests.swift */; };
 		216201E523921B2B00AB2E10 /* AWSPinpointAnalyticsPlugin+DefaultLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216201E423921B2B00AB2E10 /* AWSPinpointAnalyticsPlugin+DefaultLogger.swift */; };
-		424A67D7A491ACAA7D14CDC4 /* Pods_HostApp_AWSPinpointAnalyticsPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A60E85A381AF542AD95CB1CA /* Pods_HostApp_AWSPinpointAnalyticsPluginIntegrationTests.framework */; };
+		40283B215EF26E753401A370 /* Pods_HostApp_AWSPinpointAnalyticsPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A60E85A381AF542AD95CB1CA /* Pods_HostApp_AWSPinpointAnalyticsPluginIntegrationTests.framework */; };
 		5C9B991B3AFD22109F283755 /* Pods_HostApp_AWSPinpointAnalyticsPluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B04C49F1D8E5EA613BBD5B5B /* Pods_HostApp_AWSPinpointAnalyticsPluginTests.framework */; };
 		B478F64E2374DCE700C4F92B /* AWSPinpointAnalyticsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSPinpointAnalyticsPlugin.framework */; };
 		B478F6DE2374E0CF00C4F92B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F6D12374E0CE00C4F92B /* ViewController.swift */; };
@@ -20,8 +23,6 @@
 		B478F6E12374E0CF00C4F92B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B478F6D52374E0CF00C4F92B /* Assets.xcassets */; };
 		B478F6E22374E0CF00C4F92B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B478F6D62374E0CF00C4F92B /* LaunchScreen.storyboard */; };
 		B478F6E32374E0CF00C4F92B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B478F6D82374E0CF00C4F92B /* Main.storyboard */; };
-		B478F6E52374E0CF00C4F92B /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = B478F6DC2374E0CF00C4F92B /* amplifyconfiguration.json */; };
-		B478F6E62374E0CF00C4F92B /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = B478F6DD2374E0CF00C4F92B /* awsconfiguration.json */; };
 		B478F7432375014E00C4F92B /* AWSPinpointAnalyticsPlugin+Reset.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F7252375014D00C4F92B /* AWSPinpointAnalyticsPlugin+Reset.swift */; };
 		B478F7442375014E00C4F92B /* AWSPinpointAnalyticsPluginConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F7272375014D00C4F92B /* AWSPinpointAnalyticsPluginConfiguration.swift */; };
 		B478F7452375014E00C4F92B /* AWSPinpointAnalyticsPlugin+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F7282375014D00C4F92B /* AWSPinpointAnalyticsPlugin+ClientBehavior.swift */; };
@@ -51,11 +52,24 @@
 		B478F771237503B800C4F92B /* AWSPinpointAnalyticsPluginResetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F764237503B700C4F92B /* AWSPinpointAnalyticsPluginResetTests.swift */; };
 		B478F773237503B800C4F92B /* AWSPinpointAnalyticsPluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F767237503B700C4F92B /* AWSPinpointAnalyticsPluginTestBase.swift */; };
 		B478F774237503B800C4F92B /* AWSPinpointAnalyticsPluginClientBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F768237503B700C4F92B /* AWSPinpointAnalyticsPluginClientBehaviorTests.swift */; };
-		B478F77E2375046300C4F92B /* AWSPinpointAnalyticsPluginIntergrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F77B2375046300C4F92B /* AWSPinpointAnalyticsPluginIntergrationTests.swift */; };
 		FB8873903D71340094621094 /* Pods_AWSPinpointAnalyticsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8D8803C0FB4C851C968A09A /* Pods_AWSPinpointAnalyticsPlugin.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		21233E052475CAD500039337 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B478F5FA2374DBF400C4F92B;
+			remoteInfo = AWSPinpointAnalyticsPlugin;
+		};
+		21233E0B2475CB0E00039337 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B478F6BB2374E0B500C4F92B;
+			remoteInfo = HostApp;
+		};
 		B478F64F2374DCE700C4F92B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
@@ -63,25 +77,14 @@
 			remoteGlobalIDString = B478F5FA2374DBF400C4F92B;
 			remoteInfo = PredictionsPlugin;
 		};
-		B478F7752375044100C4F92B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B478F6BB2374E0B500C4F92B;
-			remoteInfo = HostApp;
-		};
-		B478F77F2375048100C4F92B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B478F5F22374DBF400C4F92B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B478F5FA2374DBF400C4F92B;
-			remoteInfo = AWSPinpointAnalyticsPlugin;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		0E13BFF24658D710D2D705F9 /* Pods-HostApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp.release.xcconfig"; path = "Target Support Files/Pods-HostApp/Pods-HostApp.release.xcconfig"; sourceTree = "<group>"; };
 		1CC23DFF3F8AB7DF86A7A4C2 /* Pods-HostApp-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSPinpointAnalyticsPluginTests/Pods-HostApp-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
+		21233DF92475C8BA00039337 /* AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration.json"; sourceTree = "<group>"; };
+		21233DFF2475CAD400039337 /* AWSPinpointAnalyticsPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPinpointAnalyticsPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		21233E032475CAD500039337 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2149E68E238A6D2900873955 /* RepeatingTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatingTimer.swift; sourceTree = "<group>"; };
 		2149E694238B301500873955 /* RepeatingTimerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatingTimerTests.swift; sourceTree = "<group>"; };
 		216201E423921B2B00AB2E10 /* AWSPinpointAnalyticsPlugin+DefaultLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AWSPinpointAnalyticsPlugin+DefaultLogger.swift"; sourceTree = "<group>"; };
@@ -97,7 +100,6 @@
 		B04C49F1D8E5EA613BBD5B5B /* Pods_HostApp_AWSPinpointAnalyticsPluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HostApp_AWSPinpointAnalyticsPluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B478F5FB2374DBF400C4F92B /* AWSPinpointAnalyticsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AWSPinpointAnalyticsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B478F6492374DCE700C4F92B /* AWSPinpointAnalyticsPluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPinpointAnalyticsPluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B478F6582374DD0D00C4F92B /* AWSPinpointAnalyticsPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSPinpointAnalyticsPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B478F6BC2374E0B500C4F92B /* HostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B478F6D12374E0CE00C4F92B /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		B478F6D22374E0CE00C4F92B /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -106,8 +108,6 @@
 		B478F6D72374E0CF00C4F92B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B478F6D92374E0CF00C4F92B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B478F6DA2374E0CF00C4F92B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B478F6DC2374E0CF00C4F92B /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
-		B478F6DD2374E0CF00C4F92B /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		B478F7252375014D00C4F92B /* AWSPinpointAnalyticsPlugin+Reset.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSPinpointAnalyticsPlugin+Reset.swift"; sourceTree = "<group>"; };
 		B478F7272375014D00C4F92B /* AWSPinpointAnalyticsPluginConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginConfiguration.swift; sourceTree = "<group>"; };
 		B478F7282375014D00C4F92B /* AWSPinpointAnalyticsPlugin+ClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSPinpointAnalyticsPlugin+ClientBehavior.swift"; sourceTree = "<group>"; };
@@ -139,13 +139,21 @@
 		B478F766237503B700C4F92B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B478F767237503B700C4F92B /* AWSPinpointAnalyticsPluginTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginTestBase.swift; sourceTree = "<group>"; };
 		B478F768237503B700C4F92B /* AWSPinpointAnalyticsPluginClientBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginClientBehaviorTests.swift; sourceTree = "<group>"; };
-		B478F77A2375046300C4F92B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B478F77B2375046300C4F92B /* AWSPinpointAnalyticsPluginIntergrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginIntergrationTests.swift; sourceTree = "<group>"; };
+		B478F77B2375046300C4F92B /* AWSPinpointAnalyticsPluginIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginIntegrationTests.swift; sourceTree = "<group>"; };
 		E8D8803C0FB4C851C968A09A /* Pods_AWSPinpointAnalyticsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSPinpointAnalyticsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2499EEE6F1A16D91ABBEC87 /* Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPluginTests/Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		21233DFC2475CAD400039337 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				21233E042475CAD500039337 /* AWSPinpointAnalyticsPlugin.framework in Frameworks */,
+				40283B215EF26E753401A370 /* Pods_HostApp_AWSPinpointAnalyticsPluginIntegrationTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B478F5F82374DBF400C4F92B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -163,14 +171,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B478F6552374DD0D00C4F92B /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				424A67D7A491ACAA7D14CDC4 /* Pods_HostApp_AWSPinpointAnalyticsPluginIntegrationTests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		B478F6B92374E0B500C4F92B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -182,6 +182,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		21233E002475CAD500039337 /* AWSPinpointAnalyticsPluginIntegrationTests */ = {
+			isa = PBXGroup;
+			children = (
+				21233DF92475C8BA00039337 /* AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration.json */,
+				B478F77B2375046300C4F92B /* AWSPinpointAnalyticsPluginIntegrationTests.swift */,
+				21233E032475CAD500039337 /* Info.plist */,
+			);
+			path = AWSPinpointAnalyticsPluginIntegrationTests;
+			sourceTree = "<group>";
+		};
 		2149E692238B2FDB00873955 /* Support */ = {
 			isa = PBXGroup;
 			children = (
@@ -230,8 +240,8 @@
 			isa = PBXGroup;
 			children = (
 				B478F7242375014D00C4F92B /* AWSPinpointAnalyticsPlugin */,
-				B478F7772375046300C4F92B /* AWSPinpointAnalyticsPluginIntegrationTests */,
 				B478F759237503B700C4F92B /* AWSPinpointAnalyticsPluginTests */,
+				21233E002475CAD500039337 /* AWSPinpointAnalyticsPluginIntegrationTests */,
 				58AE86B816C1A3D8125AD432 /* Frameworks */,
 				B478F6BD2374E0B500C4F92B /* HostApp */,
 				88863618836AAA9F232BBC70 /* Pods */,
@@ -244,8 +254,8 @@
 			children = (
 				B478F5FB2374DBF400C4F92B /* AWSPinpointAnalyticsPlugin.framework */,
 				B478F6492374DCE700C4F92B /* AWSPinpointAnalyticsPluginTests.xctest */,
-				B478F6582374DD0D00C4F92B /* AWSPinpointAnalyticsPluginIntegrationTests.xctest */,
 				B478F6BC2374E0B500C4F92B /* HostApp.app */,
+				21233DFF2475CAD400039337 /* AWSPinpointAnalyticsPluginIntegrationTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -284,8 +294,6 @@
 		B478F6DB2374E0CF00C4F92B /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
-				B478F6DC2374E0CF00C4F92B /* amplifyconfiguration.json */,
-				B478F6DD2374E0CF00C4F92B /* awsconfiguration.json */,
 			);
 			path = Configuration;
 			sourceTree = "<group>";
@@ -426,23 +434,6 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		B478F7772375046300C4F92B /* AWSPinpointAnalyticsPluginIntegrationTests */ = {
-			isa = PBXGroup;
-			children = (
-				B478F77B2375046300C4F92B /* AWSPinpointAnalyticsPluginIntergrationTests.swift */,
-				B478F7792375046300C4F92B /* Resources */,
-			);
-			path = AWSPinpointAnalyticsPluginIntegrationTests;
-			sourceTree = "<group>";
-		};
-		B478F7792375046300C4F92B /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				B478F77A2375046300C4F92B /* Info.plist */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -456,6 +447,29 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		21233DFE2475CAD400039337 /* AWSPinpointAnalyticsPluginIntegrationTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 21233E072475CAD500039337 /* Build configuration list for PBXNativeTarget "AWSPinpointAnalyticsPluginIntegrationTests" */;
+			buildPhases = (
+				CC051301FE5CA63442F037C9 /* [CP] Check Pods Manifest.lock */,
+				21233DFB2475CAD400039337 /* Sources */,
+				21233E0F2475CB9C00039337 /* SwiftFormat */,
+				21233E102475CBA300039337 /* SwiftLint */,
+				21233DFC2475CAD400039337 /* Frameworks */,
+				21233DFD2475CAD400039337 /* Resources */,
+				9B013C08EE6FD7A9AE6AF10E /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				21233E062475CAD500039337 /* PBXTargetDependency */,
+				21233E0C2475CB0E00039337 /* PBXTargetDependency */,
+			);
+			name = AWSPinpointAnalyticsPluginIntegrationTests;
+			productName = AWSPinpointAnalyticsPluginIntegrationTests;
+			productReference = 21233DFF2475CAD400039337 /* AWSPinpointAnalyticsPluginIntegrationTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		B478F5FA2374DBF400C4F92B /* AWSPinpointAnalyticsPlugin */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B478F6032374DBF400C4F92B /* Build configuration list for PBXNativeTarget "AWSPinpointAnalyticsPlugin" */;
@@ -499,29 +513,6 @@
 			productReference = B478F6492374DCE700C4F92B /* AWSPinpointAnalyticsPluginTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		B478F6572374DD0D00C4F92B /* AWSPinpointAnalyticsPluginIntegrationTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B478F65F2374DD0D00C4F92B /* Build configuration list for PBXNativeTarget "AWSPinpointAnalyticsPluginIntegrationTests" */;
-			buildPhases = (
-				33B6A0041F706CB5D20DA581 /* [CP] Check Pods Manifest.lock */,
-				B478F6542374DD0D00C4F92B /* Sources */,
-				B478F6652374DE3700C4F92B /* Swift Format */,
-				B478F6632374DE1200C4F92B /* Swift Lint */,
-				B478F6552374DD0D00C4F92B /* Frameworks */,
-				B478F6562374DD0D00C4F92B /* Resources */,
-				40279E4DF7857DB70CA07B3F /* [CP] Embed Pods Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				B478F7802375048100C4F92B /* PBXTargetDependency */,
-				B478F7762375044100C4F92B /* PBXTargetDependency */,
-			);
-			name = AWSPinpointAnalyticsPluginIntegrationTests;
-			productName = IntegrationTest;
-			productReference = B478F6582374DD0D00C4F92B /* AWSPinpointAnalyticsPluginIntegrationTests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 		B478F6BB2374E0B500C4F92B /* HostApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B478F6CF2374E0B600C4F92B /* Build configuration list for PBXNativeTarget "HostApp" */;
@@ -547,19 +538,19 @@
 		B478F5F22374DBF400C4F92B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1110;
+				LastSwiftUpdateCheck = 1130;
 				LastUpgradeCheck = 1110;
 				ORGANIZATIONNAME = "Amazon Web Services";
 				TargetAttributes = {
+					21233DFE2475CAD400039337 = {
+						CreatedOnToolsVersion = 11.3.1;
+						TestTargetID = B478F6BB2374E0B500C4F92B;
+					};
 					B478F5FA2374DBF400C4F92B = {
 						CreatedOnToolsVersion = 11.1;
 					};
 					B478F6482374DCE700C4F92B = {
 						CreatedOnToolsVersion = 11.1;
-					};
-					B478F6572374DD0D00C4F92B = {
-						CreatedOnToolsVersion = 11.1;
-						TestTargetID = B478F6BB2374E0B500C4F92B;
 					};
 					B478F6BB2374E0B500C4F92B = {
 						CreatedOnToolsVersion = 11.1;
@@ -581,13 +572,20 @@
 			targets = (
 				B478F5FA2374DBF400C4F92B /* AWSPinpointAnalyticsPlugin */,
 				B478F6482374DCE700C4F92B /* AWSPinpointAnalyticsPluginTests */,
-				B478F6572374DD0D00C4F92B /* AWSPinpointAnalyticsPluginIntegrationTests */,
+				21233DFE2475CAD400039337 /* AWSPinpointAnalyticsPluginIntegrationTests */,
 				B478F6BB2374E0B500C4F92B /* HostApp */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		21233DFD2475CAD400039337 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B478F5F92374DBF400C4F92B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -602,20 +600,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B478F6562374DD0D00C4F92B /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		B478F6BA2374E0B500C4F92B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				B478F6E32374E0CF00C4F92B /* Main.storyboard in Resources */,
-				B478F6E62374E0CF00C4F92B /* awsconfiguration.json in Resources */,
-				B478F6E52374E0CF00C4F92B /* amplifyconfiguration.json in Resources */,
+				21233DFA2475C8BB00039337 /* AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration.json in Resources */,
 				B478F6E12374E0CF00C4F92B /* Assets.xcassets in Resources */,
 				B478F6E22374E0CF00C4F92B /* LaunchScreen.storyboard in Resources */,
 			);
@@ -641,7 +631,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HostApp/Pods-HostApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		33B6A0041F706CB5D20DA581 /* [CP] Check Pods Manifest.lock */ = {
+		21233E0F2475CB9C00039337 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -649,19 +639,33 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "[CP] Check Pods Manifest.lock";
+			name = SwiftFormat;
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-HostApp-AWSPinpointAnalyticsPluginIntegrationTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\"  --config \"${SRCROOT}/../../.swiftformat\" \"${SRCROOT}/${PRODUCT_NAME}\"\n";
+		};
+		21233E102475CBA300039337 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
 		3876F7212C861C13EC23C0F0 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -685,7 +689,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		40279E4DF7857DB70CA07B3F /* [CP] Embed Pods Frameworks */ = {
+		9B013C08EE6FD7A9AE6AF10E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -773,24 +777,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
-		B478F6632374DE1200C4F92B /* Swift Lint */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Swift Lint";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --config \"${SRCROOT}/../../.swiftlint.yml\" --path \"${SRCROOT}/${PRODUCT_NAME}\"\n";
-		};
 		B478F6642374DE2B00C4F92B /* Swift Format */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -809,7 +795,7 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../../.swiftformat\" --swiftversion $SWIFT_VERSION \"${SRCROOT}/${PRODUCT_NAME}\"\n";
 		};
-		B478F6652374DE3700C4F92B /* Swift Format */ = {
+		CC051301FE5CA63442F037C9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -817,15 +803,19 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "Swift Format";
+			name = "[CP] Check Pods Manifest.lock";
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-HostApp-AWSPinpointAnalyticsPluginIntegrationTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --config \"${SRCROOT}/../../.swiftformat\" --swiftversion $SWIFT_VERSION \"${SRCROOT}/${PRODUCT_NAME}\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 		DE75EF23119BC9907BA8D9A9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -874,6 +864,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		21233DFB2475CAD400039337 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				21233E0A2475CAED00039337 /* AWSPinpointAnalyticsPluginIntegrationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B478F5F72374DBF400C4F92B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -920,14 +918,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B478F6542374DD0D00C4F92B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B478F77E2375046300C4F92B /* AWSPinpointAnalyticsPluginIntergrationTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		B478F6B82374E0B500C4F92B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -941,20 +931,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		21233E062475CAD500039337 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B478F5FA2374DBF400C4F92B /* AWSPinpointAnalyticsPlugin */;
+			targetProxy = 21233E052475CAD500039337 /* PBXContainerItemProxy */;
+		};
+		21233E0C2475CB0E00039337 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B478F6BB2374E0B500C4F92B /* HostApp */;
+			targetProxy = 21233E0B2475CB0E00039337 /* PBXContainerItemProxy */;
+		};
 		B478F6502374DCE700C4F92B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B478F5FA2374DBF400C4F92B /* AWSPinpointAnalyticsPlugin */;
 			targetProxy = B478F64F2374DCE700C4F92B /* PBXContainerItemProxy */;
-		};
-		B478F7762375044100C4F92B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B478F6BB2374E0B500C4F92B /* HostApp */;
-			targetProxy = B478F7752375044100C4F92B /* PBXContainerItemProxy */;
-		};
-		B478F7802375048100C4F92B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B478F5FA2374DBF400C4F92B /* AWSPinpointAnalyticsPlugin */;
-			targetProxy = B478F77F2375048100C4F92B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -978,6 +968,48 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		21233E082475CAD500039337 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 74736155E8B4D97236D354DA /* Pods-HostApp-AWSPinpointAnalyticsPluginIntegrationTests.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				INFOPLIST_FILE = AWSPinpointAnalyticsPluginIntegrationTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.awsamazon.AWSPinpointAnalyticsPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HostApp.app/HostApp";
+			};
+			name = Debug;
+		};
+		21233E092475CAD500039337 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 57D186E0D4EB50090BFC4EF4 /* Pods-HostApp-AWSPinpointAnalyticsPluginIntegrationTests.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				INFOPLIST_FILE = AWSPinpointAnalyticsPluginIntegrationTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.awsamazon.AWSPinpointAnalyticsPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HostApp.app/HostApp";
+			};
+			name = Release;
+		};
 		B478F6012374DBF400C4F92B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1109,7 +1141,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "$(PRODUCT_NAME)/Resources/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1134,7 +1166,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "$(PRODUCT_NAME)/Resources/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1186,46 +1218,6 @@
 			};
 			name = Release;
 		};
-		B478F65D2374DD0D00C4F92B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 74736155E8B4D97236D354DA /* Pods-HostApp-AWSPinpointAnalyticsPluginIntegrationTests.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = "$(PRODUCT_NAME)/Resources/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.amazonaws.$(PRODUCT_NAME)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = HostApp;
-			};
-			name = Debug;
-		};
-		B478F65E2374DD0D00C4F92B /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 57D186E0D4EB50090BFC4EF4 /* Pods-HostApp-AWSPinpointAnalyticsPluginIntegrationTests.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = "$(PRODUCT_NAME)/Resources/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.amazonaws.$(PRODUCT_NAME)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = HostApp;
-			};
-			name = Release;
-		};
 		B478F6CD2374E0B600C4F92B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 27E93DA4BD82FC2FD4DF47FF /* Pods-HostApp.debug.xcconfig */;
@@ -1265,6 +1257,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		21233E072475CAD500039337 /* Build configuration list for PBXNativeTarget "AWSPinpointAnalyticsPluginIntegrationTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				21233E082475CAD500039337 /* Debug */,
+				21233E092475CAD500039337 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B478F5F52374DBF400C4F92B /* Build configuration list for PBXProject "AnalyticsCategoryPlugin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1288,15 +1289,6 @@
 			buildConfigurations = (
 				B478F6512374DCE700C4F92B /* Debug */,
 				B478F6522374DCE700C4F92B /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B478F65F2374DD0D00C4F92B /* Build configuration list for PBXNativeTarget "AWSPinpointAnalyticsPluginIntegrationTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B478F65D2374DD0D00C4F92B /* Debug */,
-				B478F65E2374DD0D00C4F92B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

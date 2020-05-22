@@ -7,22 +7,26 @@ pod 'SwiftFormat/CLI'
 pod 'SwiftLint'
 
 target 'AWSPinpointAnalyticsPlugin' do
-	pod 'Amplify', :path => '../../'
-  pod 'AWSPluginsCore', :path => '../../'
-  pod "AWSPinpoint", "~> #{AWS_SDK_VERSION}"
+    pod 'Amplify', :path => '../../'
+    pod 'AWSPluginsCore', :path => '../../'
+    pod "AWSPinpoint", "~> #{AWS_SDK_VERSION}"
 end
 
 target "HostApp" do
-  use_frameworks!
-  pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
-  pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
-  pod 'AmplifyTestCommon', :path => '../../'
+    use_frameworks!
+    pod "CwlPreconditionTesting", :git => "https://github.com/mattgallagher/CwlPreconditionTesting.git", :tag => "1.2.0"
+    pod "CwlCatchException", :git => "https://github.com/mattgallagher/CwlCatchException.git", :tag => "1.2.0"
+    pod 'AmplifyTestCommon', :path => '../../'
+    pod 'Amplify', :path => '../../'
+    pod 'AWSPluginsCore', :path => '../../'
+    
+    target "AWSPinpointAnalyticsPluginIntegrationTests" do
+        pod 'AmplifyPlugins/AWSCognitoAuthPlugin', :path => '../../'
 
-  target "AWSPinpointAnalyticsPluginIntegrationTests" do
-    inherit! :complete
-  end
+        inherit! :complete
+    end
 
-  target "AWSPinpointAnalyticsPluginTests" do
-    inherit! :complete
-  end
+    target "AWSPinpointAnalyticsPluginTests" do
+        inherit! :complete
+    end
 end

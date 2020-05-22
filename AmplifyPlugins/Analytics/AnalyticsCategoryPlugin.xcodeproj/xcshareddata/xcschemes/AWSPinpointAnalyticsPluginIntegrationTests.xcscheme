@@ -16,7 +16,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B478F6572374DD0D00C4F92B"
+               BlueprintIdentifier = "21233DFE2475CAD400039337"
                BuildableName = "AWSPinpointAnalyticsPluginIntegrationTests.xctest"
                BlueprintName = "AWSPinpointAnalyticsPluginIntegrationTests"
                ReferencedContainer = "container:AnalyticsCategoryPlugin.xcodeproj">

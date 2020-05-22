@@ -61,4 +61,25 @@ public extension CategoryType {
             return "Storage"
         }
     }
+    
+    var category: Category {
+        switch self {
+        case .analytics:
+            return Amplify.Analytics
+        case .api:
+            return Amplify.API
+        case .auth:
+            return Amplify.Auth
+        case .dataStore:
+            return Amplify.DataStore
+        case .hub:
+            return Amplify.Hub
+        case .logging:
+            return Amplify.Logging
+        case .predictions:
+            return Amplify.Predictions
+        case .storage:
+            return Amplify.Storage
+        }
+    }
 }
