@@ -9,7 +9,7 @@ import XCTest
 @testable import Amplify
 import AWSCognitoAuthPlugin
 
-class SignedInAuthSessionTests: AWSAuthBaseTest {
+class AuthUserTests: AWSAuthBaseTest {
 
     override func setUp() {
         super.setUp()
@@ -22,7 +22,29 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         sleep(2)
     }
 
-    func testSuccessfulSessionFetch() {
+    /// Test retreiving user in a signedout state
+    ///
+    /// - Given: Amplify Auth plugin in signedout state
+    /// - When:
+    ///    - I retreive the current user
+    /// - Then:
+    ///    - I should get a nil object
+    ///
+    func testUserInSignedOut() {
+        let user = Amplify.Auth.getCurrentUser()
+        XCTAssertNil(user, "In signedout state the user should be nil")
+    }
+
+    /// Test retreiving user in a signedIn state
+    ///
+    /// - Given: Amplify Auth plugin in signedIn state
+    /// - When:
+    ///    - I retreive the current user
+    /// - Then:
+    ///    - I should get a valid user
+    ///
+    func testUserInSignedIn() {
+
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
         let signInExpectation = expectation(description: "SignIn operation should complete")
@@ -32,18 +54,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         }
         wait(for: [signInExpectation], timeout: networkTimeout)
 
-        let authSessionExpectation = expectation(description: "Received event result from fetchAuth")
-        _ = Amplify.Auth.fetchAuthSession { result in
-            defer {
-                authSessionExpectation.fulfill()
-            }
-            switch result {
-            case .success(let session):
-                XCTAssertTrue(session.isSignedIn, "Session state should be signed In")
-            case .failure(let error):
-                XCTFail("Should not receive error \(error)")
-            }
-        }
-        wait(for: [authSessionExpectation], timeout: networkTimeout)
+        let user = Amplify.Auth.getCurrentUser()
+        XCTAssertNotNil(user, "In signedIn state the user should be nil")
     }
 }

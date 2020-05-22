@@ -11,7 +11,7 @@ import AWSCognitoAuthPlugin
 
 class AWSAuthBaseTest: XCTestCase {
 
-    let networkTimeout = TimeInterval(180) // 180 seconds to wait before network timeouts
+    let networkTimeout = TimeInterval(10)
 
      func initializeAmplify() {
 
