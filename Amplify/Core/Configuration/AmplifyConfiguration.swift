@@ -97,15 +97,15 @@ extension Amplify {
 
         let configuration = try Amplify.resolve(configuration: configuration)
 
-        // Always configure Logging and Hub first, so they are available to other categoories.
-        try configure(Logging, using: configuration)
-        try configure(Hub, using: configuration)
-
+        // Always configure Logging, Hub and Auth first, so they are available to other categoories.
         // Auth is a special case for other plugins which depend on using Auth when being configured themselves.
-        try configure(Auth, using: configuration)
+        let manuallyConfiguredCategories = [CategoryType.logging, .hub, .auth]
+        for categoryType in manuallyConfiguredCategories {
+            try configure(categoryType.category, using: configuration)
+        }
 
         // Looping through all categories to ensure we don't accidentally forget a category at some point in the future
-        let remainingCategories = CategoryType.allCases.filter { $0 != .hub && $0 != .logging && $0 != .auth }
+        let remainingCategories = CategoryType.allCases.filter { !manuallyConfiguredCategories.contains($0) }
         for categoryType in remainingCategories {
             switch categoryType {
             case .analytics:
