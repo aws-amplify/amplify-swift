@@ -263,7 +263,7 @@ class InitialSyncOperationTests: XCTestCase {
     /// - When:
     ///    - I invoke main() against an API that returns .signedOut error
     /// - Then:
-    ///    - The method submits the returned data to the reconciliation queue
+    ///    - The method completes with a failure result, error handler is called.
     func testQueriesAPIReturnSignedOutError() throws {
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
             let authError = AuthError.signedOut("", "", nil)

@@ -36,11 +36,6 @@ extension RemoteSyncEngine {
             case (.performingInitialSync, .errored(let error)):
                 return .cleaningUp(error)
 
-            case (.performingInitialSync, .performedInitialSync):
-                return .activatingCloudSubscriptions
-            case (.performingInitialSync, .errored(let error)):
-                return .cleaningUp(error)
-
             case (.activatingCloudSubscriptions, .activatedCloudSubscriptions(let api,
                                                                               let mutationEventPublisher)):
                 return .activatingMutationQueue(api, mutationEventPublisher)

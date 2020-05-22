@@ -127,8 +127,6 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func clear(completion: @escaping DataStoreCallback<Void>) {
         if storageEngine == nil {
-            Amplify.Hub.dispatch(to: .dataStore,
-                                 payload: HubPayload(eventName: HubPayload.EventName.DataStore.clearCompleted))
             completion(.successfulVoid)
             return
         }
@@ -140,8 +138,6 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                 }
             }
             self.dataStorePublisher = nil
-            Amplify.Hub.dispatch(to: .dataStore,
-                                 payload: HubPayload(eventName: HubPayload.EventName.DataStore.clearCompleted))
             completion(result)
         }
     }

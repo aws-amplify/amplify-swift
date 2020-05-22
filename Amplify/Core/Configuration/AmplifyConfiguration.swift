@@ -101,24 +101,23 @@ extension Amplify {
         try configure(Logging, using: configuration)
         try configure(Hub, using: configuration)
 
-        // Auth is a special case for other plugins which depend on using Auth when being configured themselves.
-        try configure(Auth, using: configuration)
-
         // Looping through all categories to ensure we don't accidentally forget a category at some point in the future
-        let remainingCategories = CategoryType.allCases.filter { $0 != .hub && $0 != .logging && $0 != .auth }
+        let remainingCategories = CategoryType.allCases.filter { $0 != .hub && $0 != .logging }
         for categoryType in remainingCategories {
             switch categoryType {
             case .analytics:
                 try configure(Analytics, using: configuration)
             case .api:
                 try configure(API, using: configuration)
+            case .auth:
+                try configure(Auth, using: configuration)
             case .dataStore:
                 try configure(DataStore, using: configuration)
             case .predictions:
                 try configure(Predictions, using: configuration)
             case .storage:
                 try configure(Storage, using: configuration)
-            case .hub, .logging, .auth:
+            case .hub, .logging:
                 // Already configured
                 break
             }

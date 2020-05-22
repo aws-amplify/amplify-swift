@@ -66,9 +66,6 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     private var incomingEventsSink: AnyCancellable?
     private var reconcileAndLocalSaveOperationSink: AnyCancellable?
 
-    private var signInListener: UnsubscribeToken?
-    private var ownerId: String?
-
     private let modelReconciliationQueueSubject: PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>
     var publisher: AnyPublisher<ModelReconciliationQueueEvent, DataStoreError> {
         return modelReconciliationQueueSubject.eraseToAnyPublisher()

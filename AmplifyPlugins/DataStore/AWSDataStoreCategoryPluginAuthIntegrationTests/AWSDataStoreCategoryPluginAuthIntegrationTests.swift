@@ -26,7 +26,6 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
 
     let syncReceived = HubPayload.EventName.DataStore.syncReceived
     let syncStarted = HubPayload.EventName.DataStore.syncStarted
-    let clearCompleted = HubPayload.EventName.DataStore.clearCompleted
 
     override func setUp() {
         Amplify.Logging.logLevel = .verbose
