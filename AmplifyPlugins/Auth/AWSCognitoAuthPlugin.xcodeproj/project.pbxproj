@@ -744,6 +744,8 @@
 			buildConfigurationList = B40F166024784AE300CDB920 /* Build configuration list for PBXNativeTarget "AWSCognitoAuthPluginIntegrationTests" */;
 			buildPhases = (
 				E4C251656AC1BC4DFCA202D6 /* [CP] Check Pods Manifest.lock */,
+				B40F168A24784DC200CDB920 /* SwiftFormat */,
+				B40F168B24784DE300CDB920 /* SwiftLint */,
 				B40F165424784AE300CDB920 /* Sources */,
 				B40F165524784AE300CDB920 /* Frameworks */,
 				B40F165624784AE300CDB920 /* Resources */,
@@ -865,8 +867,8 @@
 			targets = (
 				B43DC7442410572400D40275 /* AWSCognitoAuthPlugin */,
 				B43DC74D2410572400D40275 /* AWSCognitoAuthPluginTests */,
-				B4F3EA1F243A65BD00F23296 /* HostApp */,
 				B40F165724784AE300CDB920 /* AWSCognitoAuthPluginIntegrationTests */,
+				B4F3EA1F243A65BD00F23296 /* HostApp */,
 			);
 		};
 /* End PBXProject section */
@@ -985,6 +987,42 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		B40F168A24784DC200CDB920 /* SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftFormat;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftFormat/CommandLineTool/swiftformat\" --swiftversion \"$SWIFT_VERSION\" \"${SRCROOT}/AWSCognitoAuthPluginIntegrationTests\" --config \"${SRCROOT}/../../.swiftformat\"\n";
+		};
+		B40F168B24784DE300CDB920 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${SRCROOT}/AWSCognitoAuthPluginIntegrationTests\" --config \"${SRCROOT}/../../.swiftlint.yml\"\n";
 		};
 		B4F3EA34243A662500F23296 /* SwiftFormat */ = {
 			isa = PBXShellScriptBuildPhase;
