@@ -35,7 +35,7 @@ platform :ios do
 
     pods.each { |pod|
       UI.message("Pushing pod #{pod[:spec]}")
-      pod_push(path: pod[:spec], allow_warnings: true, swift_version: "5.1")
+      pod_push(path: pod[:spec], allow_warnings: true)
       if pod[:sleep]
         UI.message("Sleeping for #{COCOAPODS_PUSH_WAIT_TIME}s")
         sleep COCOAPODS_PUSH_WAIT_TIME
