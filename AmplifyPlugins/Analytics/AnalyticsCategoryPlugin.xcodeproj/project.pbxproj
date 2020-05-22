@@ -10,7 +10,7 @@
 		162EFDD55E53D5A773D62CF6 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C4E592238332FBE98A8EFCC /* Pods_HostApp.framework */; };
 		21233DFA2475C8BB00039337 /* AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 21233DF92475C8BA00039337 /* AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration.json */; };
 		21233E042475CAD500039337 /* AWSPinpointAnalyticsPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B478F5FB2374DBF400C4F92B /* AWSPinpointAnalyticsPlugin.framework */; };
-		21233E0A2475CAED00039337 /* AWSPinpointAnalyticsPluginIntergrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F77B2375046300C4F92B /* AWSPinpointAnalyticsPluginIntergrationTests.swift */; };
+		21233E0A2475CAED00039337 /* AWSPinpointAnalyticsPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478F77B2375046300C4F92B /* AWSPinpointAnalyticsPluginIntegrationTests.swift */; };
 		2149E68F238A6D2900873955 /* RepeatingTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E68E238A6D2900873955 /* RepeatingTimer.swift */; };
 		2149E695238B301500873955 /* RepeatingTimerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2149E694238B301500873955 /* RepeatingTimerTests.swift */; };
 		216201E523921B2B00AB2E10 /* AWSPinpointAnalyticsPlugin+DefaultLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216201E423921B2B00AB2E10 /* AWSPinpointAnalyticsPlugin+DefaultLogger.swift */; };
@@ -139,8 +139,7 @@
 		B478F766237503B700C4F92B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B478F767237503B700C4F92B /* AWSPinpointAnalyticsPluginTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginTestBase.swift; sourceTree = "<group>"; };
 		B478F768237503B700C4F92B /* AWSPinpointAnalyticsPluginClientBehaviorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginClientBehaviorTests.swift; sourceTree = "<group>"; };
-		B478F77B2375046300C4F92B /* AWSPinpointAnalyticsPluginIntergrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginIntergrationTests.swift; sourceTree = "<group>"; };
-		D83BC7702474AF4700FDE216 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = AWSPinpointAnalyticsPluginIntegrationTests/README.md; sourceTree = SOURCE_ROOT; };
+		B478F77B2375046300C4F92B /* AWSPinpointAnalyticsPluginIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSPinpointAnalyticsPluginIntegrationTests.swift; sourceTree = "<group>"; };
 		E8D8803C0FB4C851C968A09A /* Pods_AWSPinpointAnalyticsPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AWSPinpointAnalyticsPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2499EEE6F1A16D91ABBEC87 /* Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; path = "Target Support Files/Pods-AWSPinpointAnalyticsPluginTests/Pods-AWSPinpointAnalyticsPluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -187,7 +186,7 @@
 			isa = PBXGroup;
 			children = (
 				21233DF92475C8BA00039337 /* AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration.json */,
-				B478F77B2375046300C4F92B /* AWSPinpointAnalyticsPluginIntergrationTests.swift */,
+				B478F77B2375046300C4F92B /* AWSPinpointAnalyticsPluginIntegrationTests.swift */,
 				21233E032475CAD500039337 /* Info.plist */,
 			);
 			path = AWSPinpointAnalyticsPluginIntegrationTests;
@@ -869,7 +868,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				21233E0A2475CAED00039337 /* AWSPinpointAnalyticsPluginIntergrationTests.swift in Sources */,
+				21233E0A2475CAED00039337 /* AWSPinpointAnalyticsPluginIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
