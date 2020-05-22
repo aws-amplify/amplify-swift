@@ -317,16 +317,16 @@
 		B40F166324784B3400CDB920 /* AWSCognitoAuthPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
-				B40F166424784B3400CDB920 /* Configuration */,
-				B40F166624784B3400CDB920 /* Resources */,
 				B40F166824784B3400CDB920 /* README.md */,
-				B40F166924784B3400CDB920 /* Support */,
-				B40F166C24784B3400CDB920 /* AuthUserTests */,
-				B40F166E24784B3400CDB920 /* AuthSignUpTests */,
-				B40F167224784B3400CDB920 /* AuthSignInTests */,
-				B40F167424784B3400CDB920 /* AuthSessionTests */,
 				B40F167724784B3400CDB920 /* AWSAuthBaseTest.swift */,
 				B40F167824784B3400CDB920 /* AuthDeviceTests */,
+				B40F167424784B3400CDB920 /* AuthSessionTests */,
+				B40F167224784B3400CDB920 /* AuthSignInTests */,
+				B40F166E24784B3400CDB920 /* AuthSignUpTests */,
+				B40F166C24784B3400CDB920 /* AuthUserTests */,
+				B40F166424784B3400CDB920 /* Configuration */,
+				B40F166624784B3400CDB920 /* Resources */,
+				B40F166924784B3400CDB920 /* Support */,
 			);
 			path = AWSCognitoAuthPluginIntegrationTests;
 			sourceTree = "<group>";
@@ -350,8 +350,8 @@
 		B40F166924784B3400CDB920 /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				B40F166A24784B3400CDB920 /* AuthSignInHelper.swift */,
 				B40F166B24784B3400CDB920 /* AuthConfigurationHelper.swift */,
+				B40F166A24784B3400CDB920 /* AuthSignInHelper.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -367,9 +367,9 @@
 		B40F166E24784B3400CDB920 /* AuthSignUpTests */ = {
 			isa = PBXGroup;
 			children = (
-				B40F166F24784B3400CDB920 /* AuthSignUpTests.swift */,
 				B40F167024784B3400CDB920 /* AuthConfirmSignUpTests.swift */,
 				B40F167124784B3400CDB920 /* AuthResendSignUpCodeTests.swift */,
+				B40F166F24784B3400CDB920 /* AuthSignUpTests.swift */,
 			);
 			path = AuthSignUpTests;
 			sourceTree = "<group>";
@@ -385,8 +385,8 @@
 		B40F167424784B3400CDB920 /* AuthSessionTests */ = {
 			isa = PBXGroup;
 			children = (
-				B40F167524784B3400CDB920 /* SignedOutAuthSessionTests.swift */,
 				B40F167624784B3400CDB920 /* SignedInAuthSessionTests.swift */,
+				B40F167524784B3400CDB920 /* SignedOutAuthSessionTests.swift */,
 			);
 			path = AuthSessionTests;
 			sourceTree = "<group>";
