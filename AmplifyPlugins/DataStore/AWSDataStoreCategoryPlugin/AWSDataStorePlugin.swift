@@ -88,7 +88,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         let filter = HubFilters.forEventName(HubPayload.EventName.Amplify.configured)
         var token: UnsubscribeToken?
         token = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { _ in
-            self.storageEngine.tryStartSync()
+            self.storageEngine.startSync()
             if let token = token {
                 Amplify.Hub.removeListener(token)
             }
@@ -105,7 +105,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             }
             try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
             try storageEngine.setUp(models: ModelRegistry.models)
-            storageEngine.tryStartSync()
+            storageEngine.startSync()
         } catch {
             log.error(error: error)
         }

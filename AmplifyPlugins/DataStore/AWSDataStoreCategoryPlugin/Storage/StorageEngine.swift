@@ -18,7 +18,6 @@ final class StorageEngine: StorageEngineBehavior {
     let validAPIPluginKey: String
     let validAuthPluginKey: String
     var signInListener: UnsubscribeToken?
-    var signOutListener: UnsubscribeToken?
 
     var iSyncEngineSink: Any?
     @available(iOS 13.0, *)

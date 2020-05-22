@@ -72,9 +72,8 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
     /// - When:
     ///    - User is not signed in, then user can successfully save a note to local store
     ///    - User remains signed out, then user can successfully retrieve the saved note, with empty owner field
-    ///    - User signs in, then the sync engine is started and reconciles local store with the ownerId
-    ///    - User retrieves the note again and now it contains the ownerId
-    ///    - User signs out, the local store is cleared, then retrieving note returns nil
+    ///    - User signs in, retrieves note, sync engine is started and reconciles local store with the ownerId
+    ///    - The note now it contains the ownerId
     func testUnauthenticatedSavesToLocalStoreIsReconciledWithCloudStoreAfterAuthentication() throws {
         let savedLocalNote = saveNote(content: "owner saved note")
         let queriedNoteOptional = queryNote(byId: savedLocalNote.id)
@@ -83,17 +82,6 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
             return
         }
         XCTAssertNil(note.owner)
-
-        let syncStartedInvoked = expectation(description: "Sync started after sign In")
-        let syncStartedListener = Amplify.Hub.listen(
-            to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncStarted) { _ in
-                syncStartedInvoked.fulfill()
-        }
-        guard try HubListenerTestUtilities.waitForListener(with: syncStartedListener, timeout: 5.0) else {
-            XCTFail("syncStartedListener not registered")
-            return
-        }
 
         let syncReceivedInvoked = expectation(description: "Received SyncReceived event")
         var remoteNoteOptional: SocialNote?
@@ -115,54 +103,27 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
 
         signIn(username: user1.username, password: user1.password)
 
-        wait(for: [syncStartedInvoked], timeout: TestCommonConstants.networkTimeout)
         wait(for: [syncReceivedInvoked], timeout: TestCommonConstants.networkTimeout)
-        Amplify.Hub.removeListener(syncStartedListener)
         Amplify.Hub.removeListener(syncReceivedListener)
         guard let remoteNote = remoteNoteOptional else {
             XCTFail("Should have received a SyncReceived event with the remote note reconciled to local store")
             return
         }
         XCTAssertNotNil(remoteNote.owner)
-
-        let clearCompletedInvoked = expectation(description: "received clearCompleted invoked")
-        let clearCompletedListener = Amplify.Hub.listen(to: .dataStore, eventName: clearCompleted) { _ in
-            clearCompletedInvoked.fulfill()
-        }
-        guard try HubListenerTestUtilities.waitForListener(with: clearCompletedListener, timeout: 5.0) else {
-            XCTFail("clearCompletedListener not registered")
-            return
-        }
-
-        signOut()
-        wait(for: [clearCompletedInvoked], timeout: TestCommonConstants.networkTimeout)
-
-        let localNoteOptional = queryNote(byId: savedLocalNote.id)
-        XCTAssertNil(localNoteOptional)
     }
 
-    /// A signed in user (the owner) creates some data in local store will be synced to cloud. After signing out,
+    /// A signed in user (the owner) creates some data in local store will be synced to cloud. After `DataStore.clear`,
     /// the data can no longer be retrieved. Signing back in with another user will update the local store with all
     /// the data that can be read by that the user in the sync process. Then other user can read the owner's data.
     ///
     /// - Given: A DataStore plugin configured with auth enabled SocialNote model that can be read others.
     /// - When:
-    ///    - The owner user is signed in, then user can save a note successfully
-    ///    - Owner signs out, then retrieving the note returns nil
+    ///    - The owner user is signed in, user saves a note, syncReceived successfully
+    ///    - Owner signs out, `DataStore.clear`, then retrieving the note returns nil
     ///    - The other user signs in, sync engine is started and does a full sync
     ///    - The other user is able to retrieve the owner's note
     func testOwnerCreatedDataCanBeReadByOtherUsersForReadableModel() throws {
-        let syncStartedInvoked = expectation(description: "Sync started after sign In")
-        let syncStartedListener = Amplify.Hub.listen(to: .dataStore, eventName: syncStarted) { _ in
-            syncStartedInvoked.fulfill()
-        }
-        guard try HubListenerTestUtilities.waitForListener(with: syncStartedListener, timeout: 5.0) else {
-            XCTFail("syncStartedListener not registered")
-            return
-        }
         signIn(username: user1.username, password: user1.password)
-        wait(for: [syncStartedInvoked], timeout: TestCommonConstants.networkTimeout)
-        Amplify.Hub.removeListener(syncStartedListener)
 
         let id = UUID().uuidString
         let localNote = SocialNote(id: id, content: "owner created content", owner: nil)
@@ -207,17 +168,19 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
             return
         }
 
-        let clearCompletedInvoked = expectation(description: "received clearCompleted invoked")
-        let clearCompletedListener = Amplify.Hub.listen(to: .dataStore, eventName: clearCompleted) { _ in
-            clearCompletedInvoked.fulfill()
-        }
-        guard try HubListenerTestUtilities.waitForListener(with: clearCompletedListener, timeout: 5.0) else {
-            XCTFail("clearCompletedListener not registered")
-            return
-        }
         signOut()
+
+        let clearCompletedInvoked = expectation(description: "clear completed")
+        Amplify.DataStore.clear { result in
+            switch result {
+            case .success:
+                clearCompletedInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Failed to clear \(error)")
+            }
+        }
+
         wait(for: [clearCompletedInvoked], timeout: TestCommonConstants.networkTimeout)
-        Amplify.Hub.removeListener(clearCompletedListener)
 
         let localNoteOptional = queryNote(byId: id)
         XCTAssertNil(localNoteOptional)
@@ -264,18 +227,5 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
         }
 
         XCTAssertEqual(owner, remoteNoteOwner)
-
-        let clearCompletedInvoked2 = expectation(description: "received clearCompleted invoked")
-        let clearCompletedListener2 = Amplify.Hub.listen(to: .dataStore, eventName: clearCompleted) { _ in
-            clearCompletedInvoked2.fulfill()
-        }
-        guard try HubListenerTestUtilities.waitForListener(with: clearCompletedListener2, timeout: 5.0) else {
-            XCTFail("clearCompletedListener not registered")
-            return
-        }
-
-        signOut()
-        wait(for: [clearCompletedInvoked2], timeout: TestCommonConstants.networkTimeout)
-        Amplify.Hub.removeListener(clearCompletedListener2)
     }
 }
