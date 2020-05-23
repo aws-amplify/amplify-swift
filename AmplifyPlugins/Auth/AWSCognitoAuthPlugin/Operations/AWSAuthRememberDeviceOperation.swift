@@ -39,6 +39,11 @@ public class AWSAuthRememberDeviceOperation: AmplifyOperation<
             defer {
                 self.finish()
             }
+
+            if self.isCancelled {
+                return
+            }
+
             switch result {
             case .failure(let error):
                 self.dispatch(error)

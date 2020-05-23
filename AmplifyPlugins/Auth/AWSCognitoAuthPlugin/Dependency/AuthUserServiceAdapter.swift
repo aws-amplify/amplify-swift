@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSMobileClient
 
 class AuthUserServiceAdapter: AuthUserServiceBehavior {
 
@@ -19,8 +20,16 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
                          completionHandler: @escaping FetchUserAttributesCompletion) {
         awsMobileClient.getUserAttributes { result, error in
             guard error == nil else {
-                let authError = AuthErrorHelper.toAuthError(error!)
-                completionHandler(.failure(authError))
+                if let awsMobileClientError = error as? AWSMobileClientError,
+                    case .notSignedIn = awsMobileClientError {
+                    let authError = AuthError.signedOut(
+                        AuthPluginErrorConstants.fetchAttributeSignedOutError.errorDescription,
+                        AuthPluginErrorConstants.fetchAttributeSignedOutError.recoverySuggestion, nil)
+                    completionHandler(.failure(authError))
+                } else {
+                    let authError = AuthErrorHelper.toAuthError(error!)
+                    completionHandler(.failure(authError))
+                }
                 return
             }
             guard let result = result else {
@@ -66,8 +75,16 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
         awsMobileClient.verifyUserAttribute(attributeName: request.attributeKey.rawValue) { result, error in
 
             guard error == nil else {
-                let authError = AuthErrorHelper.toAuthError(error!)
-                completionHandler(.failure(authError))
+                if let awsMobileClientError = error as? AWSMobileClientError,
+                    case .notSignedIn = awsMobileClientError {
+                    let authError = AuthError.signedOut(
+                        AuthPluginErrorConstants.resendAttributeCodeSignedOutError.errorDescription,
+                        AuthPluginErrorConstants.resendAttributeCodeSignedOutError.recoverySuggestion, nil)
+                    completionHandler(.failure(authError))
+                } else {
+                    let authError = AuthErrorHelper.toAuthError(error!)
+                    completionHandler(.failure(authError))
+                }
                 return
             }
 
@@ -88,27 +105,45 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
     func confirmAttribute(request: AuthConfirmUserAttributeRequest,
                           completionHandler: @escaping ConfirmAttributeCompletion) {
 
-        awsMobileClient.confirmUpdateUserAttributes(attributeName: request.attributeKey.rawValue,
-                                                    code: request.confirmationCode) { error in
-                                                        guard let error = error else {
-                                                            completionHandler(.success(()))
-                                                            return
-                                                        }
-                                                        let authError = AuthErrorHelper.toAuthError(error)
-                                                        completionHandler(.failure(authError))
+        awsMobileClient.confirmUpdateUserAttributes(
+            attributeName: request.attributeKey.rawValue,
+            code: request.confirmationCode) { error in
+                guard let error = error else {
+                    completionHandler(.success(()))
+                    return
+                }
+                if let awsMobileClientError = error as? AWSMobileClientError,
+                    case .notSignedIn = awsMobileClientError {
+                    let authError = AuthError.signedOut(
+                        AuthPluginErrorConstants.confirmAttributeSignedOutError.errorDescription,
+                        AuthPluginErrorConstants.confirmAttributeSignedOutError.recoverySuggestion, nil)
+                    completionHandler(.failure(authError))
+                } else {
+                    let authError = AuthErrorHelper.toAuthError(error)
+                    completionHandler(.failure(authError))
+                }
         }
     }
 
     func changePassword(request: AuthChangePasswordRequest,
                         completionHandler: @escaping ChangePasswordCompletion) {
-        awsMobileClient.changePassword(currentPassword: request.oldPassword,
-                                       proposedPassword: request.newPassword) { error in
-                                        guard let error = error else {
-                                            completionHandler(.success(()))
-                                            return
-                                        }
-                                        let authError = AuthErrorHelper.toAuthError(error)
-                                        completionHandler(.failure(authError))
+        awsMobileClient.changePassword(
+            currentPassword: request.oldPassword,
+            proposedPassword: request.newPassword) { error in
+                guard let error = error else {
+                    completionHandler(.success(()))
+                    return
+                }
+                if let awsMobileClientError = error as? AWSMobileClientError,
+                    case .notSignedIn = awsMobileClientError {
+                    let authError = AuthError.signedOut(
+                        AuthPluginErrorConstants.changePasswordSignedOutError.errorDescription,
+                        AuthPluginErrorConstants.changePasswordSignedOutError.recoverySuggestion, nil)
+                    completionHandler(.failure(authError))
+                } else {
+                    let authError = AuthErrorHelper.toAuthError(error)
+                    completionHandler(.failure(authError))
+                }
         }
 
     }
@@ -121,8 +156,16 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
         }
         awsMobileClient.updateUserAttributes(attributeMap: attributeMap) { result, error in
             guard error == nil else {
-                let authError = AuthErrorHelper.toAuthError(error!)
-                completionHandler(.failure(authError))
+                if let awsMobileClientError = error as? AWSMobileClientError,
+                    case .notSignedIn = awsMobileClientError {
+                    let authError = AuthError.signedOut(
+                        AuthPluginErrorConstants.updateAttributeSignedOutError.errorDescription,
+                        AuthPluginErrorConstants.updateAttributeSignedOutError.recoverySuggestion, nil)
+                    completionHandler(.failure(authError))
+                } else {
+                    let authError = AuthErrorHelper.toAuthError(error!)
+                    completionHandler(.failure(authError))
+                }
                 return
             }
 

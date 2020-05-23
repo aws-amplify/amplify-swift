@@ -110,6 +110,26 @@ struct AuthPluginErrorConstants {
     static let signedInAWSCredentialsWithNoCIDPError: AuthPluginErrorString = (
         "Could not fetch AWS Credentials, AWS Cognito Identity Pool is not configured",
         "Follow the steps to configure AWS Cognito Identity Pool and try again")
+
+    static let fetchAttributeSignedOutError: AuthPluginErrorString = (
+    "Could not fetch attributes, there is no user signed in to the Auth category",
+    "SignIn to Auth category by using one of the sign in methods and then call user attributes apis")
+
+    static let updateAttributeSignedOutError: AuthPluginErrorString = (
+    "Could not update attributes, there is no user signed in to the Auth category",
+    "SignIn to Auth category by using one of the sign in methods and then call user attributes apis")
+
+    static let resendAttributeCodeSignedOutError: AuthPluginErrorString = (
+    "Could not resend attribute confirmation code, there is no user signed in to the Auth category",
+    "SignIn to Auth category by using one of the sign in methods and then call user attributes apis")
+
+    static let confirmAttributeSignedOutError: AuthPluginErrorString = (
+    "Could not confirm attribute, there is no user signed in to the Auth category",
+    "SignIn to Auth category by using one of the sign in methods and then call user attributes apis")
+
+    static let changePasswordSignedOutError: AuthPluginErrorString = (
+    "Could not change password, there is no user signed in to the Auth category",
+    "Change password require a user signed in to Auth category, use one of the signIn apis to signIn")
 }
 
 // Field validation errors
