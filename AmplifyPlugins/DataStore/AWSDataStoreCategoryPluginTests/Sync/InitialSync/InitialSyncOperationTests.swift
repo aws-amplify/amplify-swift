@@ -291,7 +291,7 @@ class InitialSyncOperationTests: XCTestCase {
                 case let .operationError(_, _, underlyingError) = actualAPIError,
                 let authError = underlyingError as? AuthError,
                 case .signedOut = authError else {
-                    XCTFail("Should be `signedOut` error but got \(actualAPIError)")
+                    XCTFail("Should be `signedOut` error but got \(amplifyError)")
                     return
             }
             expectErrorHandlerCalled.fulfill()
