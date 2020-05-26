@@ -77,10 +77,13 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
         let savedLocalNote = saveNote(content: "owner saved note")
         let queriedNoteOptional = queryNote(byId: savedLocalNote.id)
         guard let note = queriedNoteOptional else {
-            XCTFail("Faled to query local note")
+            XCTFail("Failed to query local note")
             return
         }
-        XCTAssertNil(note.owner)
+        guard note.owner == nil else {
+            XCTFail("Owner field in model is not automatically set on a local DataStore call. It should be empty")
+            return
+        }
 
         let syncReceivedInvoked = expectation(description: "Received SyncReceived event")
         var remoteNoteOptional: SocialNote?
@@ -108,12 +111,22 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: XCTestCase {
             XCTFail("Should have received a SyncReceived event with the remote note reconciled to local store")
             return
         }
-        XCTAssertNotNil(remoteNote.owner)
+        guard let remoteNoteOwner = remoteNote.owner else {
+            XCTFail("The synchronized model from remote should contain the owner field peristed")
+            return
+        }
+
+        guard let user = Amplify.Auth.getCurrentUser() else {
+            XCTFail("Couldn't get current user signed in user")
+            return
+        }
+        XCTAssertEqual(user.username, remoteNoteOwner)
     }
 
-    /// A signed in user (the owner) creates some data in local store will be synced to cloud. After `DataStore.clear`,
-    /// the data can no longer be retrieved. Signing back in with another user will update the local store with all
-    /// the data that can be read by that the user in the sync process. Then other user can read the owner's data.
+    /// User1, while signed in, creates some data, called "NewUser1Data" in a local store. We wait for this data to be
+    /// synced to the cloud and then call `DataStore.clear()` so that data will be destroyed in the local data store and
+    /// the remote sync engine will be halted. After this finishes, we sign out of user1 and sign in with user2, which
+    /// will restart the sync engine and read all of data from the backend including "NewUser1Data".
     ///
     /// - Given: A DataStore plugin configured with auth enabled SocialNote model that can be read others.
     /// - When:

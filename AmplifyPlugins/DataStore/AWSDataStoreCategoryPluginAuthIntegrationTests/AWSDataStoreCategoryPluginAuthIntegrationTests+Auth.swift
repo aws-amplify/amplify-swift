@@ -33,8 +33,7 @@ extension AWSDataStoreCategoryPluginAuthIntegrationTests {
             case .success:
                 signOutCompleted.fulfill()
             case .failure(let error):
-                print("Could not sign out user \(error)")
-                signOutCompleted.fulfill()
+                XCTFail("Could not sign out user \(error)")
             }
         }
         wait(for: [signOutCompleted], timeout: TestCommonConstants.networkTimeout)
@@ -63,7 +62,8 @@ extension AWSDataStoreCategoryPluginAuthIntegrationTests {
         })
         wait(for: [retrieveIdentityCompleted], timeout: TestCommonConstants.networkTimeout)
         guard let result = resultOptional else {
-            fatalError("Could not get identityId for user")
+            XCTFail("Could not get identityId for user")
+            return ""
         }
 
         return result
@@ -92,7 +92,8 @@ extension AWSDataStoreCategoryPluginAuthIntegrationTests {
         })
         wait(for: [retrieveUserSubCompleted], timeout: TestCommonConstants.networkTimeout)
         guard let result = resultOptional else {
-            fatalError("Could not get userSub for user")
+            XCTFail("Could not get userSub for user")
+            return ""
         }
 
         return result
@@ -112,10 +113,10 @@ extension AWSDataStoreCategoryPluginAuthIntegrationTests {
         }
         wait(for: [checkIsSignedInCompleted], timeout: TestCommonConstants.networkTimeout)
         guard let result = resultOptional else {
-            fatalError("Could not get isSignedIn for user")
+            XCTFail("Could not get isSignedIn for user")
+            return false
         }
 
         return result
     }
 }
-
