@@ -7,13 +7,11 @@
 
 import XCTest
 import AWSPluginsCore
-import AWSAPICategoryPlugin
+import Amplify
 
-@testable import Amplify
-@testable import AWSAPICategoryPluginTestCommon
 @testable import AmplifyTestCommon
 
-extension GraphQLAuthDirectiveIntegrationTests {
+extension AWSDataStoreCategoryPluginAuthIntegrationTests {
 
     func signIn(username: String, password: String) {
         let signInInvoked = expectation(description: "sign in completed")
@@ -35,8 +33,7 @@ extension GraphQLAuthDirectiveIntegrationTests {
             case .success:
                 signOutCompleted.fulfill()
             case .failure(let error):
-                print("Could not sign out user \(error)")
-                signOutCompleted.fulfill()
+                XCTFail("Could not sign out user \(error)")
             }
         }
         wait(for: [signOutCompleted], timeout: TestCommonConstants.networkTimeout)
@@ -65,7 +62,8 @@ extension GraphQLAuthDirectiveIntegrationTests {
         })
         wait(for: [retrieveIdentityCompleted], timeout: TestCommonConstants.networkTimeout)
         guard let result = resultOptional else {
-            fatalError("Could not get identityId for user")
+            XCTFail("Could not get identityId for user")
+            return ""
         }
 
         return result
@@ -94,7 +92,8 @@ extension GraphQLAuthDirectiveIntegrationTests {
         })
         wait(for: [retrieveUserSubCompleted], timeout: TestCommonConstants.networkTimeout)
         guard let result = resultOptional else {
-            fatalError("Could not get userSub for user")
+            XCTFail("Could not get userSub for user")
+            return ""
         }
 
         return result
@@ -114,7 +113,8 @@ extension GraphQLAuthDirectiveIntegrationTests {
         }
         wait(for: [checkIsSignedInCompleted], timeout: TestCommonConstants.networkTimeout)
         guard let result = resultOptional else {
-            fatalError("Could not get isSignedIn for user")
+            XCTFail("Could not get isSignedIn for user")
+            return false
         }
 
         return result

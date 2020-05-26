@@ -34,7 +34,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
 
         let modelReconciliationQueueFactory
-            = MockModelReconciliationQueue.init(modelType:storageAdapter:api:incomingSubscriptionEvents:)
+            = MockModelReconciliationQueue.init(modelType:storageAdapter:api:auth:incomingSubscriptionEvents:)
         let eventQueue = AWSIncomingEventReconciliationQueue(
             modelTypes: [Post.self, Comment.self],
             api: apiPlugin,

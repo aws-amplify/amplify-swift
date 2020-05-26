@@ -35,13 +35,13 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
 
     /// - Given: APIError
     /// - When:
-    ///    - APIError is .notAuthenticated
+    ///    - APIError contains AuthError indicating user is not authenticated
     /// - Then:
     ///    - `DataStoreErrorHandler` is called
-    func testProcessMutationErrorFromCloudOperationSuccessForAuthServiceAPIError() throws {
+    func testProcessMutationErrorFromCloudOperationSuccessForAuthErroor() throws {
         let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let mutationEvent = try MutationEvent(model: localPost, mutationType: .update)
-        let authError = AuthError.service("User is not authenticated", "Authenticate user", nil)
+        let authError = AuthError.signedOut("User is not authenticated", "Authenticate user", nil)
         let apiError = APIError.operationError("not signed in", "Sign In User", authError)
         let expectCompletion = expectation(description: "Expect to complete error processing")
         let completion: (Result<MutationEvent?, Error>) -> Void = { result in
@@ -62,8 +62,8 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             guard let actualAPIError = amplifyError as? APIError,
                 case let .operationError(_, _, underlyingError) = actualAPIError,
                 let authError = underlyingError as? AuthError,
-                case .service = authError else {
-                    XCTFail("Should be `service` error")
+                case .signedOut = authError else {
+                    XCTFail("Should be `signedOut` error")
                     return
             }
             guard let actualMutationEvent = mutationEventOptional else {
@@ -906,7 +906,8 @@ extension ProcessMutationErrorFromCloudOperationTests {
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                  storageEngine: storageEngine,
                                                  dataStorePublisher: dataStorePublisher,
-                                                 validAPIPluginKey: "MockAPICategoryPlugin")
+                                                 validAPIPluginKey: "MockAPICategoryPlugin",
+                                                 validAuthPluginKey: "MockAuthCategoryPlugin")
         try Amplify.add(plugin: dataStorePlugin)
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
             "awsDataStorePlugin": true

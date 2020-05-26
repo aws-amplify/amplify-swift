@@ -259,6 +259,65 @@ class InitialSyncOperationTests: XCTestCase {
         XCTAssertEqual(syncMetadata.lastSync, startDateMilliseconds)
     }
 
+    /// - Given: An InitialSyncOperation
+    /// - When:
+    ///    - I invoke main() against an API that returns .signedOut error
+    /// - Then:
+    ///    - The method completes with a failure result, error handler is called.
+    func testQueriesAPIReturnSignedOutError() throws {
+        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
+            let authError = AuthError.signedOut("", "", nil)
+            let apiError = APIError.operationError("", "", authError)
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .failure(apiError)
+            listener?(event)
+            return nil
+        }
+
+        let apiPlugin = MockAPICategoryPlugin()
+        apiPlugin.responders[.queryRequestListener] = responder
+
+        let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
+
+        let syncCallbackReceived = expectation(description: "Sync callback received, sync operation is complete")
+        let reconciliationQueue = MockReconciliationQueue()
+        let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
+        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+            guard let dataStoreError = error as? DataStoreError,
+                case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
+                    XCTFail("Expected API error with mutationEvent")
+                    return
+            }
+            guard let actualAPIError = amplifyError as? APIError,
+                case let .operationError(_, _, underlyingError) = actualAPIError,
+                let authError = underlyingError as? AuthError,
+                case .signedOut = authError else {
+                    XCTFail("Should be `signedOut` error but got \(amplifyError)")
+                    return
+            }
+            expectErrorHandlerCalled.fulfill()
+            XCTAssertNil(mutationEventOptional)
+        })
+        let operation = InitialSyncOperation(
+            modelType: MockSynced.self,
+            api: apiPlugin,
+            reconciliationQueue: reconciliationQueue,
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: configuration) { result in
+                switch result {
+                case .success:
+                    XCTFail("Should have failed")
+                case .failure:
+                    syncCallbackReceived.fulfill()
+                }
+
+        }
+
+        operation.main()
+
+        wait(for: [expectErrorHandlerCalled], timeout: 1.0)
+        wait(for: [syncCallbackReceived], timeout: 1.0)
+    }
+
     /// - Given: An InitialSyncOperation in a system with previous sync metadata
     /// - When:
     ///    - I invoke main()

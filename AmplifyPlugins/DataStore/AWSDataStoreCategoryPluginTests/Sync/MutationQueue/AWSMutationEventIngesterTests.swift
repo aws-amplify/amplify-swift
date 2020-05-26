@@ -40,15 +40,20 @@ class AWSMutationEventIngesterTests: XCTestCase {
             let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
                                                   dataStoreConfiguration: .default)
 
+            let validAPIPluginKey = "MockAPICategoryPlugin"
+            let validAuthPluginKey = "MockAuthCategoryPlugin"
             let storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                               dataStoreConfiguration: .default,
-                                              syncEngine: syncEngine)
+                                              syncEngine: syncEngine,
+                                              validAPIPluginKey: validAPIPluginKey,
+                                              validAuthPluginKey: validAuthPluginKey)
 
             let publisher = DataStorePublisher()
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                      storageEngine: storageEngine,
                                                      dataStorePublisher: publisher,
-                                                     validAPIPluginKey: "MockAPICategoryPlugin")
+                                                     validAPIPluginKey: validAPIPluginKey,
+                                                     validAuthPluginKey: validAuthPluginKey)
 
             try Amplify.add(plugin: apiPlugin)
             try Amplify.add(plugin: dataStorePlugin)

@@ -18,6 +18,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     // Assigned at `start`
     weak var api: APICategoryGraphQLBehavior?
+    weak var auth: AuthCategoryBehavior?
 
     // Assigned and released inside `performInitialQueries`, but we maintain a reference so we can `reset`
     private var initialSyncOrchestrator: InitialSyncOrchestrator?
@@ -69,7 +70,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         let outgoingMutationQueue = outgoingMutationQueue ??
             OutgoingMutationQueue(storageAdapter: storageAdapter, dataStoreConfiguration: dataStoreConfiguration)
         let reconciliationQueueFactory = reconciliationQueueFactory ??
-            AWSIncomingEventReconciliationQueue.init(modelTypes:api:storageAdapter:modelReconciliationQueueFactory:)
+            AWSIncomingEventReconciliationQueue.init(modelTypes:api:storageAdapter:auth:modelReconciliationQueueFactory:)
         let initialSyncOrchestratorFactory = initialSyncOrchestratorFactory ??
             AWSInitialSyncOrchestrator.init(dataStoreConfiguration:api:reconciliationQueue:storageAdapter:)
         let resolver = RemoteSyncEngine.Resolver.resolve(currentState:action:)
@@ -174,13 +175,14 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
     // swiftlint:enable cyclomatic_complexity
 
-    func start(api: APICategoryGraphQLBehavior = Amplify.API) {
+    func start(api: APICategoryGraphQLBehavior = Amplify.API, auth: AuthCategoryBehavior? = Amplify.Auth) {
         guard storageAdapter != nil else {
             log.error(error: DataStoreError.nilStorageAdapter())
             remoteSyncTopicPublisher.send(completion: .failure(DataStoreError.nilStorageAdapter()))
             return
         }
         self.api = api
+        self.auth = auth
 
         remoteSyncTopicPublisher.send(.storageAdapterAvailable)
         stateMachine.notify(action: .receivedStart)
@@ -239,7 +241,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                                          storageAdapter: StorageEngineAdapter) {
         log.debug(#function)
         let syncableModelTypes = ModelRegistry.models.filter { $0.schema.isSyncable }
-        reconciliationQueue = reconciliationQueueFactory(syncableModelTypes, api, storageAdapter, nil)
+        reconciliationQueue = reconciliationQueueFactory(syncableModelTypes, api, storageAdapter, auth, nil)
         reconciliationQueueSink = reconciliationQueue?.publisher.sink(
             receiveCompletion: onReceiveCompletion(receiveCompletion:),
             receiveValue: onReceive(receiveValue:))

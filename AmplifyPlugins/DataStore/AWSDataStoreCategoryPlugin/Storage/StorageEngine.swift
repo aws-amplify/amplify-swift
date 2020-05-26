@@ -14,8 +14,10 @@ final class StorageEngine: StorageEngineBehavior {
     // TODO: Make this private once we get a mutation flow that passes the type of mutation as needed
     let storageAdapter: StorageEngineAdapter
     private let dataStoreConfiguration: DataStoreConfiguration
-    private var syncEngine: RemoteSyncEngineBehavior?
-    private weak var api: APICategoryGraphQLBehavior?
+    var syncEngine: RemoteSyncEngineBehavior?
+    let validAPIPluginKey: String
+    let validAuthPluginKey: String
+    var signInListener: UnsubscribeToken?
 
     var iSyncEngineSink: Any?
     @available(iOS 13.0, *)
@@ -63,13 +65,20 @@ final class StorageEngine: StorageEngineBehavior {
     // storageAdapter must have already been set up with system models
     init(storageAdapter: StorageEngineAdapter,
          dataStoreConfiguration: DataStoreConfiguration,
-         syncEngine: RemoteSyncEngineBehavior?) {
+         syncEngine: RemoteSyncEngineBehavior?,
+         validAPIPluginKey: String,
+         validAuthPluginKey: String) {
         self.storageAdapter = storageAdapter
         self.dataStoreConfiguration = dataStoreConfiguration
         self.syncEngine = syncEngine
+        self.validAPIPluginKey = validAPIPluginKey
+        self.validAuthPluginKey = validAuthPluginKey
     }
 
-    convenience init(isSyncEnabled: Bool, dataStoreConfiguration: DataStoreConfiguration) throws {
+    convenience init(isSyncEnabled: Bool,
+                     dataStoreConfiguration: DataStoreConfiguration,
+                     validAPIPluginKey: String = "awsAPIPlugin",
+                     validAuthPluginKey: String = "awsCognitoAuthPlugin") throws {
         let key = kCFBundleNameKey as String
         let databaseName = Bundle.main.object(forInfoDictionaryKey: key) as? String
         let storageAdapter = try SQLiteStorageEngineAdapter(databaseName: databaseName ?? "app")
@@ -80,14 +89,18 @@ final class StorageEngine: StorageEngineBehavior {
                                                                    dataStoreConfiguration: dataStoreConfiguration) : nil
             self.init(storageAdapter: storageAdapter,
                       dataStoreConfiguration: dataStoreConfiguration,
-                      syncEngine: syncEngine)
+                      syncEngine: syncEngine,
+                      validAPIPluginKey: validAPIPluginKey,
+                      validAuthPluginKey: validAuthPluginKey)
             self.storageEnginePublisher = PassthroughSubject<StorageEngineEvent, DataStoreError>()
             sinkEngineSink = syncEngine?.publisher.sink(receiveCompletion: onReceiveCompletion(receiveCompletion:),
                                                         receiveValue: onReceive(receiveValue:))
         } else {
             self.init(storageAdapter: storageAdapter,
                       dataStoreConfiguration: dataStoreConfiguration,
-                      syncEngine: nil)
+                      syncEngine: nil,
+                      validAPIPluginKey: validAPIPluginKey,
+                      validAuthPluginKey: validAuthPluginKey)
         }
     }
 
@@ -317,10 +330,6 @@ final class StorageEngine: StorageEngineBehavior {
                                     predicate: predicate,
                                     paginationInput: paginationInput,
                                     completion: completion)
-    }
-
-    func startSync() {
-        syncEngine?.start(api: Amplify.API)
     }
 
     func clear(completion: @escaping DataStoreCallback<Void>) {

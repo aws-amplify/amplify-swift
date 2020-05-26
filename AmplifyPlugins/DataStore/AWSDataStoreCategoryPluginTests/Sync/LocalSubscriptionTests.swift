@@ -25,6 +25,8 @@ class LocalSubscriptionTests: XCTestCase {
         let storageAdapter: SQLiteStorageEngineAdapter
         let storageEngine: StorageEngine
         var stateMachine: MockStateMachine<RemoteSyncEngine.State, RemoteSyncEngine.Action>!
+        let validAPIPluginKey = "MockAPICategoryPlugin"
+        let validAuthPluginKey = "MockAuthCategoryPlugin"
         do {
             let connection = try Connection(.inMemory)
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
@@ -51,7 +53,9 @@ class LocalSubscriptionTests: XCTestCase {
 
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
                                           dataStoreConfiguration: .default,
-                                          syncEngine: syncEngine)
+                                          syncEngine: syncEngine,
+                                          validAPIPluginKey: validAPIPluginKey,
+                                          validAuthPluginKey: validAuthPluginKey)
         } catch {
             XCTFail(String(describing: error))
             return
@@ -61,7 +65,8 @@ class LocalSubscriptionTests: XCTestCase {
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                  storageEngine: storageEngine,
                                                  dataStorePublisher: dataStorePublisher,
-                                                 validAPIPluginKey: "MockAPICategoryPlugin")
+                                                 validAPIPluginKey: validAPIPluginKey,
+                                                 validAuthPluginKey: validAuthPluginKey)
 
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
             "awsDataStorePlugin": true
