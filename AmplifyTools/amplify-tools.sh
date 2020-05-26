@@ -9,7 +9,7 @@ set -e
 export PATH=$PATH:$(npm bin -g)
 
 if ! which node >/dev/null; then
-  echo "warning: Node is not installed. Vist https://nodejs.org/en/download/ to install it"
+  echo "warning: Node is not installed. Visit https://nodejs.org/en/download/ to install it"
   exit 1
 elif ! test -f ./amplifytools.xcconfig; then
   npx amplify-app --platform ios
@@ -28,7 +28,7 @@ if $amplifyModelgen; then
   echo "modelgen is set to true, generating Swift models from schema.graphql..."
   amplify codegen model
   # calls amplify-app again so the Xcode project is updated with the generated models
-  amplify-app --platform ios
+  npx amplify-app --platform ios
 fi
 
 if [ -z "$amplifyAccessKey" ] || [ -z "$amplifySecretKey" ] || [ -z "$amplifyRegion" ]; then
