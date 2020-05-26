@@ -42,6 +42,11 @@ public class AWSAuthFetchSessionOperation: AmplifyOperation<
             defer {
                 self.finish()
             }
+
+            if self.isCancelled {
+                return
+            }
+
             switch result {
             case .success(let session):
                 self.dispatch(session)

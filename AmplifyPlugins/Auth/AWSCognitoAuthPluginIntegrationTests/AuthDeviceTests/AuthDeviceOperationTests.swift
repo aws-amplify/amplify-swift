@@ -48,4 +48,5 @@ class AuthDeviceOperationTests: AWSAuthBaseTest {
         }
         wait(for: [forgetDeviceExpectation], timeout: networkTimeout)
     }
+
 }
