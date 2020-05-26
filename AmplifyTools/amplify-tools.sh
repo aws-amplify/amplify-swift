@@ -11,11 +11,11 @@ export PATH=$PATH:$(npm bin -g)
 if ! which node >/dev/null; then
   echo "warning: Node is not installed. Vist https://nodejs.org/en/download/ to install it"
   exit 1
-elif ! test -f ./amplifytools.xcconfig; then
+elif ! test -f ./amplifyxc.config; then
   npx amplify-app --platform ios
 fi
 
-. amplifytools.xcconfig
+. amplifyxc.config
 amplifyPush=$push
 amplifyModelgen=$modelgen
 amplifyProfile=$profile
