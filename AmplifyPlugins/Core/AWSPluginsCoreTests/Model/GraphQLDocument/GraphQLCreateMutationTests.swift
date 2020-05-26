@@ -35,7 +35,7 @@ class GraphQLCreateMutationTests: XCTestCase {
     func testCreateGraphQLMutationFromSimpleModel() {
         let post = Post(title: "title",
                         content: "content",
-                        createdAt: Date(),
+                        createdAt: .now(),
                         status: .private)
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
@@ -84,8 +84,8 @@ class GraphQLCreateMutationTests: XCTestCase {
     ///     - it contains an `input` of type `CreateCommentInput`
     ///     - it has a list of fields with a `postId`
     func testCreateGraphQLMutationFromModelWithAssociation() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
-        let comment = Comment(content: "comment", createdAt: Date(), post: post)
+        let post = Post(title: "title", content: "content", createdAt: .now())
+        let comment = Comment(content: "comment", createdAt: .now(), post: post)
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Comment.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: comment))
@@ -136,7 +136,7 @@ class GraphQLCreateMutationTests: XCTestCase {
     ///     - it contains an `input` of type `CreatePostInput`
     ///     - it has a list of fields with no nested models
     func testCreateGraphQLMutationFromSimpleModelWithSyncEnabled() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: post))
@@ -187,8 +187,8 @@ class GraphQLCreateMutationTests: XCTestCase {
     ///     - it contains an `input` of type `CreateCommentInput`
     ///     - it has a list of fields with a `postId`
     func testCreateGraphQLMutationFromModelWithAssociationWithSyncEnabled() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
-        let comment = Comment(content: "comment", createdAt: Date(), post: post)
+        let post = Post(title: "title", content: "content", createdAt: .now())
+        let comment = Comment(content: "comment", createdAt: .now(), post: post)
 
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Comment.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))

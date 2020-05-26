@@ -21,7 +21,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
     }
 
     func testQueryGraphQLRequest() throws {
-        let blog = Blog(content: "content", createdAt: Date(), owner: nil, authorNotes: nil)
+        let blog = Blog(content: "content", createdAt: .now(), owner: nil, authorNotes: nil)
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: blog.modelName, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: blog.id))
@@ -57,7 +57,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
     }
 
     func testCreateMutationGraphQLRequest() throws {
-        let blog = Blog(content: "content", createdAt: Date(), owner: nil, authorNotes: nil)
+        let blog = Blog(content: "content", createdAt: .now(), owner: nil, authorNotes: nil)
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: blog.modelName, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: blog))
@@ -98,7 +98,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
     }
 
     func testUpdateMutationGraphQLRequest() throws {
-        let blog = Blog(content: "content", createdAt: Date(), owner: nil, authorNotes: nil)
+        let blog = Blog(content: "content", createdAt: .now(), owner: nil, authorNotes: nil)
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: blog.modelName, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: ModelDecorator(model: blog))
@@ -138,7 +138,7 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
     }
 
     func testDeleteMutationGraphQLRequest() throws {
-        let blog = Blog(content: "content", createdAt: Date(), owner: nil, authorNotes: nil)
+        let blog = Blog(content: "content", createdAt: .now(), owner: nil, authorNotes: nil)
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: blog.modelName, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(id: blog.id))

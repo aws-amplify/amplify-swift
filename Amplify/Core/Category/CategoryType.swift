@@ -61,7 +61,7 @@ public extension CategoryType {
             return "Storage"
         }
     }
-    
+
     var category: Category {
         switch self {
         case .analytics:

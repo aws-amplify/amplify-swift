@@ -33,7 +33,7 @@ class GraphQLDeleteMutationTests: XCTestCase {
     ///     - it contains an `input` of type `ID!`
     ///     - it has a list of fields with no nested models
     func testDeleteGraphQLMutationFromSimpleModel() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
@@ -79,7 +79,7 @@ class GraphQLDeleteMutationTests: XCTestCase {
     ///     - it contains an `input` of type `ID!`
     ///     - it has a list of fields with no nested models
     func testDeleteGraphQLMutationFromSimpleModelWithVersion() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(id: post.id))

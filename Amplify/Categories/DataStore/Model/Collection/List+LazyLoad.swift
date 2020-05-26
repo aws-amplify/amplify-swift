@@ -45,7 +45,7 @@ extension List {
             name = targetName ?? name
         }
 
-        let predicate: QueryPredicateFactory = { field(name) == associatedId }
+        let predicate: QueryPredicate = field(name) == associatedId
         Amplify.DataStore.query(Element.self, where: predicate) {
             switch $0 {
             case .success(let elements):

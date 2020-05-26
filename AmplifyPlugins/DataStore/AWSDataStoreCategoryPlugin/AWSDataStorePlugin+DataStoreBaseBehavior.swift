@@ -61,7 +61,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                 byId id: String,
                                 completion: DataStoreCallback<M?>) {
         reinitStorageEngineIfNeeded()
-        let predicate: QueryPredicateFactory = { field("id") == id }
+        let predicate: QueryPredicate = field("id") == id
         query(modelType, where: predicate, paginate: .firstResult) {
             switch $0 {
             case .success(let models):
@@ -78,12 +78,12 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     }
 
     public func query<M: Model>(_ modelType: M.Type,
-                                where predicateFactory: QueryPredicateFactory? = nil,
+                                where predicate: QueryPredicate? = nil,
                                 paginate paginationInput: QueryPaginationInput? = nil,
                                 completion: DataStoreCallback<[M]>) {
         reinitStorageEngineIfNeeded()
         storageEngine.query(modelType,
-                            predicate: predicateFactory?(),
+                            predicate: predicate,
                             paginationInput: paginationInput,
                             completion: completion)
     }
@@ -98,15 +98,17 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     }
 
     public func delete<M: Model>(_ model: M,
+                                 where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) {
         reinitStorageEngineIfNeeded()
+        // TODO: handle query predicate like in the update flow
         storageEngine.delete(type(of: model), withId: model.id) { result in
             self.onDeleteCompletion(result: result, completion: completion)
         }
     }
 
     public func delete<M: Model>(_ modelType: M.Type,
-                                 where predicate: @escaping QueryPredicateFactory,
+                                 where predicate: QueryPredicate,
                                  completion: @escaping DataStoreCallback<Void>) {
         reinitStorageEngineIfNeeded()
         let onCompletion: DataStoreCallback<[M]> = { result in
@@ -121,7 +123,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
             }
         }
         storageEngine.delete(modelType,
-                             predicate: predicate(),
+                             predicate: predicate,
                              completion: onCompletion)
     }
 

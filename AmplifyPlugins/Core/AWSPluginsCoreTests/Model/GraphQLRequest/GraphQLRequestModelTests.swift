@@ -32,7 +32,7 @@ class GraphQLRequestModelTests: XCTestCase {
     ///     - the `responseType` is correct
     ///     - the `variables` is non-nil
     func testCreateMutationGraphQLRequest() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: post))
@@ -46,7 +46,7 @@ class GraphQLRequestModelTests: XCTestCase {
     }
 
     func testUpdateMutationGraphQLRequest() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: ModelDecorator(model: post))
@@ -60,7 +60,7 @@ class GraphQLRequestModelTests: XCTestCase {
     }
 
     func testDeleteMutationGraphQLRequest() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelDecorator(model: post))

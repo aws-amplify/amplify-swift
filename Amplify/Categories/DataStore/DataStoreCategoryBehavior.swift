@@ -7,8 +7,6 @@
 
 import Combine
 
-public typealias QueryPredicateFactory = () -> QueryPredicate
-
 public typealias DataStoreCategoryBehavior = DataStoreBaseBehavior & DataStoreSubscribeBehavior
 
 public protocol DataStoreBaseBehavior {
@@ -23,15 +21,12 @@ public protocol DataStoreBaseBehavior {
                          completion: DataStoreCallback<M?>)
 
     func query<M: Model>(_ modelType: M.Type,
-                         where predicate: QueryPredicateFactory?,
+                         where predicate: QueryPredicate?,
                          paginate paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>)
 
     func delete<M: Model>(_ model: M,
-                          completion: @escaping DataStoreCallback<Void>)
-
-    func delete<M: Model>(_ modelType: M.Type,
-                          where predicate: @escaping QueryPredicateFactory,
+                          where predicate: QueryPredicate?,
                           completion: @escaping DataStoreCallback<Void>)
 
     func delete<M: Model>(_ modelType: M.Type,
