@@ -41,7 +41,7 @@ class MockAnalyticsCategoryPlugin: MessageReporter, AnalyticsCategoryPlugin {
         notify("record(event:\(event.name))")
     }
 
-    func registerGlobalProperties(_ properties: [String: AnalyticsPropertyValue]) {
+    func registerGlobalProperties(_ properties: AnalyticsProperties) {
         notify("registerGlobalProperties")
     }
 

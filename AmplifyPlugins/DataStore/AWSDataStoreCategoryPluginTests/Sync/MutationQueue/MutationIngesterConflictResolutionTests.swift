@@ -33,7 +33,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
-                        createdAt: Date())
+                        createdAt: .now())
 
         tryOrFail {
             try setUpStorageAdapter(preCreating: [Post.self, Comment.self])
@@ -82,7 +82,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
-                        createdAt: Date())
+                        createdAt: .now())
 
         tryOrFail {
             try setUpStorageAdapter(preCreating: [Post.self, Comment.self])
@@ -138,7 +138,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
-                        createdAt: Date())
+                        createdAt: .now())
 
         tryOrFail {
             try setUpStorageAdapter(preCreating: [Post.self, Comment.self])
@@ -190,7 +190,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
-                        createdAt: Date())
+                        createdAt: .now())
 
         tryOrFail {
             try setUpStorageAdapter(preCreating: [Post.self, Comment.self])
@@ -241,7 +241,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
-                        createdAt: Date())
+                        createdAt: .now())
 
         tryOrFail {
             try setUpStorageAdapter(preCreating: [Post.self, Comment.self])
@@ -297,7 +297,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
-                        createdAt: Date())
+                        createdAt: .now())
 
         tryOrFail {
             try setUpStorageAdapter(preCreating: [Post.self, Comment.self])
@@ -353,7 +353,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
-                        createdAt: Date())
+                        createdAt: .now())
 
         tryOrFail {
             try setUpStorageAdapter(preCreating: [Post.self, Comment.self])
@@ -406,7 +406,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
-                        createdAt: Date())
+                        createdAt: .now())
 
         tryOrFail {
             try setUpStorageAdapter(preCreating: [Post.self, Comment.self])
@@ -463,7 +463,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
-                        createdAt: Date())
+                        createdAt: .now())
 
         tryOrFail {
             try setUpStorageAdapter(preCreating: [Post.self, Comment.self])
@@ -513,7 +513,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
-                        createdAt: Date())
+                        createdAt: .now())
 
         tryOrFail {
             try setUpStorageAdapter(preCreating: [Post.self, Comment.self])
@@ -564,7 +564,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
-                        createdAt: Date())
+                        createdAt: .now())
 
         tryOrFail {
             try setUpStorageAdapter(preCreating: [Post.self, Comment.self])
@@ -618,13 +618,13 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
-                        createdAt: Date())
+                        createdAt: .now())
 
         tryOrFail {
             try setUpStorageAdapter(preCreating: [Post.self, Comment.self])
-            try saveMutationEvent(of: .create, for: post, inProcess: true)
             try setUpDataStore()
             try startAmplifyAndWaitForSync()
+            try saveMutationEvent(of: .create, for: post, inProcess: true)
         }
 
         let saveResultReceived = expectation(description: "Save result received")
@@ -667,14 +667,14 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
-                        createdAt: Date())
+                        createdAt: .now())
 
         tryOrFail {
             try setUpStorageAdapter(preCreating: [Post.self, Comment.self])
-            try saveMutationEvent(of: .create, for: post, inProcess: true)
-            try savePost(post)
             try setUpDataStore()
             try startAmplifyAndWaitForSync()
+            try savePost(post)
+            try saveMutationEvent(of: .create, for: post, inProcess: true)
         }
 
         var mutatedPost = post
@@ -721,13 +721,14 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
-                        createdAt: Date())
+                        createdAt: .now())
 
         tryOrFail {
             try setUpStorageAdapter(preCreating: [Post.self, Comment.self])
-            try saveMutationEvent(of: .create, for: post, inProcess: true)
             try setUpDataStore()
             try startAmplifyAndWaitForSync()
+            try savePost(post)
+            try saveMutationEvent(of: .create, for: post, inProcess: true)
         }
 
         let deleteResultReceived = expectation(description: "Delete result received")

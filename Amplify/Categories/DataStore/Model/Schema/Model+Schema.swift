@@ -44,4 +44,20 @@ extension Model {
         define(&definition)
         return definition.build()
     }
+
+    public static func rule(allow: AuthStrategy,
+                            ownerField: String? = nil,
+                            identityClaim: String? = nil,
+                            groupClaim: String? = nil,
+                            groups: [String] = [],
+                            groupsField: String? = nil,
+                            operations: [ModelOperation] = []) -> AuthRule {
+        return AuthRule(allow: allow,
+                        ownerField: ownerField,
+                        identityClaim: identityClaim,
+                        groupClaim: groupClaim,
+                        groups: groups,
+                        groupsField: groupsField,
+                        operations: operations)
+    }
 }

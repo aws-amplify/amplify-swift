@@ -9,9 +9,9 @@ import Foundation
 
 public protocol PredictionsInterpretOperation: AmplifyOperation<
     PredictionsInterpretRequest,
-    Void,
     InterpretResult,
-PredictionsError> { }
+    PredictionsError
+> { }
 
 public extension HubPayload.EventName.Predictions {
     static let interpret = "Predictions.interpret"

@@ -8,12 +8,11 @@
 import Amplify
 import Foundation
 
-final public class AWSRESTOperation: AmplifyOperation<RESTOperationRequest,
-    Void,
+final public class AWSRESTOperation: AmplifyOperation<
+    RESTOperationRequest,
     Data,
     APIError
-    >,
-RESTOperation {
+>, RESTOperation {
 
     // Data received by the operation
     var data = Data()
@@ -26,7 +25,7 @@ RESTOperation {
          session: URLSessionBehavior,
          mapper: OperationTaskMapper,
          pluginConfig: AWSAPICategoryPluginConfiguration,
-         listener: AWSRESTOperation.EventListener?) {
+         resultListener: AWSRESTOperation.ResultListener?) {
 
         self.session = session
         self.mapper = mapper
@@ -35,7 +34,7 @@ RESTOperation {
         super.init(categoryType: .api,
                    eventName: request.operationType.hubEventName,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
 
     }
 
@@ -50,11 +49,11 @@ RESTOperation {
         do {
             try request.validate()
         } catch let error as APIError {
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
             return
         } catch {
-            dispatch(event: .failed(APIError.unknown("Could not validate request", "", nil)))
+            dispatch(result: .failure(APIError.unknown("Could not validate request", "", nil)))
             finish()
             return
         }
@@ -64,11 +63,11 @@ RESTOperation {
         do {
             endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .rest)
         } catch let error as APIError {
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
             return
         } catch {
-            dispatch(event: .failed(APIError.unknown("Could not get endpoint configuration", "", nil)))
+            dispatch(result: .failure(APIError.unknown("Could not get endpoint configuration", "", nil)))
             finish()
             return
         }
@@ -80,12 +79,12 @@ RESTOperation {
                                                              with: request.path,
                                                              with: request.queryParameters)
         } catch let error as APIError {
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
             return
         } catch {
             let apiError = APIError.operationError("Failed to construct URL", "", error)
-            dispatch(event: .failed(apiError))
+            dispatch(result: .failure(apiError))
             finish()
             return
         }
@@ -101,13 +100,13 @@ RESTOperation {
             do {
                 return try interceptor.intercept(request)
             } catch let error as APIError {
-                dispatch(event: .failed(error))
+                dispatch(result: .failure(error))
                 cancel()
                 return request
             } catch {
-                dispatch(event: .failed(APIError.operationError("Failed to intercept request fully.",
-                                                                "Something wrong with the interceptor",
-                                                                error)))
+                dispatch(result: .failure(APIError.operationError("Failed to intercept request fully.",
+                                                                  "Something wrong with the interceptor",
+                                                                  error)))
                 cancel()
                 return request
             }

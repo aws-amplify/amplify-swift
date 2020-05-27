@@ -5,13 +5,12 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import AWSPluginsCore
 import AWSPinpoint
+import AWSPluginsCore
+import Foundation
 
 extension AWSPinpointAnalyticsPlugin {
-
     /// Configures AWSPinpointAnalyticsPlugin with the specified configuration.
     ///
     /// This method will be invoked as part of the Amplify configuration flow.
@@ -20,11 +19,11 @@ extension AWSPinpointAnalyticsPlugin {
     /// - Throws:
     ///   - PluginError.pluginConfigurationError: If one of the configuration values is invalid or empty
     public func configure(using configuration: Any) throws {
-
         guard let config = configuration as? JSONValue else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.decodeConfigurationError.errorDescription,
-                AnalyticsPluginErrorConstant.decodeConfigurationError.recoverySuggestion)
+                AnalyticsPluginErrorConstant.decodeConfigurationError.recoverySuggestion
+            )
         }
 
         let pluginConfiguration = try AWSPinpointAnalyticsPluginConfiguration(config)
@@ -34,13 +33,14 @@ extension AWSPinpointAnalyticsPlugin {
     /// Configure AWSPinpointAnalyticsPlugin programatically using AWSPinpointAnalyticsPluginConfiguration
     public func configure(using configuration: AWSPinpointAnalyticsPluginConfiguration) throws {
         let authService = AWSAuthService()
-        let cognitoCredentialsProvider = authService.getCognitoCredentialsProvider()
+        let credentialsProvider = authService.getCredentialsProvider()
 
         let pinpoint = try AWSPinpointAdapter(
             pinpointAnalyticsAppId: configuration.appId,
             pinpointAnalyticsRegion: configuration.region,
             pinpointTargetingRegion: configuration.targetingRegion,
-            cognitoCredentialsProvider: cognitoCredentialsProvider)
+            credentialsProvider: credentialsProvider
+        )
 
         let appSessionTracker =
             AppSessionTracker(trackAppSessions: configuration.trackAppSessions,
@@ -49,10 +49,11 @@ extension AWSPinpointAnalyticsPlugin {
         var autoFlushEventsTimer: DispatchSourceTimer?
         if configuration.autoFlushEventsInterval != 0 {
             let timeInterval = TimeInterval(configuration.autoFlushEventsInterval)
-            autoFlushEventsTimer = RepeatingTimer.createRepeatingTimer(timeInterval: timeInterval,
-                                                                       eventHandler: { [weak self] in
-                self?.log.debug("AutoFlushTimer triggered, flushing events")
-                self?.flushEvents()
+            autoFlushEventsTimer = RepeatingTimer.createRepeatingTimer(
+                timeInterval: timeInterval,
+                eventHandler: { [weak self] in
+                    self?.log.debug("AutoFlushTimer triggered, flushing events")
+                    self?.flushEvents()
             })
         }
 

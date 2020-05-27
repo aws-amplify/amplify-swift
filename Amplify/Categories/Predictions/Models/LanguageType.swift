@@ -7,12 +7,11 @@
 
 import Foundation
 
+// swiftlint:disable file_length
+// swiftlint:disable type_body_length
 /// Language type supported by Predictions category
 ///
 /// The associated value represents the iso language code.
-
-// swiftlint:disable file_length
-// swiftlint:disable type_body_length
 public enum LanguageType: String {
     case afar = "aa"
     case abkhazian = "ab"

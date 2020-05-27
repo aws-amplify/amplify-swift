@@ -38,7 +38,7 @@ class GraphQLSyncQueryTests: XCTestCase {
 
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
-        documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))
+        documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
         documentBuilder.add(decorator: PaginationDecorator(limit: 100, nextToken: "token"))
         documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: 123))
         let document = documentBuilder.build()
@@ -51,6 +51,7 @@ class GraphQLSyncQueryTests: XCTestCase {
               createdAt
               draft
               rating
+              status
               title
               updatedAt
               __typename
@@ -66,13 +67,17 @@ class GraphQLSyncQueryTests: XCTestCase {
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "syncPosts")
         XCTAssertNotNil(document.variables)
-        XCTAssertNotNil(document.variables["limit"])
-        XCTAssertEqual(document.variables["limit"] as? Int, 100)
-        XCTAssertNotNil(document.variables["nextToken"])
-        XCTAssertEqual(document.variables["nextToken"] as? String, "token")
-        XCTAssertNotNil(document.variables["filter"])
-        XCTAssertNotNil(document.variables["lastSync"])
-        XCTAssertEqual(document.variables["lastSync"] as? Int, 123)
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertNotNil(variables["limit"])
+        XCTAssertEqual(variables["limit"] as? Int, 100)
+        XCTAssertNotNil(variables["nextToken"])
+        XCTAssertEqual(variables["nextToken"] as? String, "token")
+        XCTAssertNotNil(variables["filter"])
+        XCTAssertNotNil(variables["lastSync"])
+        XCTAssertEqual(variables["lastSync"] as? Int, 123)
     }
 
     func testSyncGraphQLQueryForComment() {
@@ -94,6 +99,7 @@ class GraphQLSyncQueryTests: XCTestCase {
                 createdAt
                 draft
                 rating
+                status
                 title
                 updatedAt
                 __typename
@@ -113,5 +119,4 @@ class GraphQLSyncQueryTests: XCTestCase {
         """
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
     }
-
 }

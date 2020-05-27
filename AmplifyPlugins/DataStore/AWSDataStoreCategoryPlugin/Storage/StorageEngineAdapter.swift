@@ -16,7 +16,7 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: Model.Identifier,
-                          completion: DataStoreCallback<Void>)
+                          completion: DataStoreCallback<M?>)
 
     func delete(untypedModelType modelType: Model.Type,
                 withId id: Model.Identifier,
@@ -38,7 +38,9 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
     // MARK: - Synchronous APIs
 
-    func exists(_ modelType: Model.Type, withId id: Model.Identifier) throws -> Bool
+    func exists(_ modelType: Model.Type,
+                withId id: Model.Identifier,
+                predicate: QueryPredicate?) throws -> Bool
 
     func queryMutationSync(for models: [Model]) throws -> [MutationSync<AnyModel>]
 

@@ -62,7 +62,15 @@ extension CodingKey where Self: ModelKey {
         return field(stringValue).eq(value)
     }
 
+    public func eq(_ value: EnumPersistable) -> QueryPredicateOperation {
+        return field(stringValue).eq(value)
+    }
+
     public static func == (key: Self, value: Persistable?) -> QueryPredicateOperation {
+        return key.eq(value)
+    }
+
+    public static func == (key: Self, value: EnumPersistable) -> QueryPredicateOperation {
         return key.eq(value)
     }
 
@@ -112,7 +120,15 @@ extension CodingKey where Self: ModelKey {
         return field(stringValue).ne(value)
     }
 
+    public func ne(_ value: EnumPersistable) -> QueryPredicateOperation {
+        return field(stringValue).ne(value)
+    }
+
     public static func != (key: Self, value: Persistable?) -> QueryPredicateOperation {
+        return key.ne(value)
+    }
+
+    public static func != (key: Self, value: EnumPersistable) -> QueryPredicateOperation {
         return key.ne(value)
     }
 

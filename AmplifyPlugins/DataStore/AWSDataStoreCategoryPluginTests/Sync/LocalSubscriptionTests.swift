@@ -25,6 +25,8 @@ class LocalSubscriptionTests: XCTestCase {
         let storageAdapter: SQLiteStorageEngineAdapter
         let storageEngine: StorageEngine
         var stateMachine: MockStateMachine<RemoteSyncEngine.State, RemoteSyncEngine.Action>!
+        let validAPIPluginKey = "MockAPICategoryPlugin"
+        let validAuthPluginKey = "MockAuthCategoryPlugin"
         do {
             let connection = try Connection(.inMemory)
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
@@ -33,20 +35,27 @@ class LocalSubscriptionTests: XCTestCase {
             let outgoingMutationQueue = NoOpMutationQueue()
             let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
             let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
-            stateMachine = MockStateMachine(initialState: .notStarted, resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
+            stateMachine = MockStateMachine(initialState: .notStarted,
+                                            resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
 
-            let syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
-                                             outgoingMutationQueue: outgoingMutationQueue,
-                                             mutationEventIngester: mutationDatabaseAdapter,
-                                             mutationEventPublisher: awsMutationEventPublisher,
-                                             initialSyncOrchestratorFactory: NoOpInitialSyncOrchestrator.factory,
-                                             reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
-                                             stateMachine: stateMachine,
-                                             networkReachabilityPublisher: nil,
-                                             requestRetryablePolicy: MockRequestRetryablePolicy())
+            let syncEngine = RemoteSyncEngine(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .default,
+                outgoingMutationQueue: outgoingMutationQueue,
+                mutationEventIngester: mutationDatabaseAdapter,
+                mutationEventPublisher: awsMutationEventPublisher,
+                initialSyncOrchestratorFactory: NoOpInitialSyncOrchestrator.factory,
+                reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
+                stateMachine: stateMachine,
+                networkReachabilityPublisher: nil,
+                requestRetryablePolicy: MockRequestRetryablePolicy()
+            )
 
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          syncEngine: syncEngine)
+                                          dataStoreConfiguration: .default,
+                                          syncEngine: syncEngine,
+                                          validAPIPluginKey: validAPIPluginKey,
+                                          validAuthPluginKey: validAuthPluginKey)
         } catch {
             XCTFail(String(describing: error))
             return
@@ -54,8 +63,10 @@ class LocalSubscriptionTests: XCTestCase {
 
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                                         storageEngine: storageEngine,
-                                                         dataStorePublisher: dataStorePublisher)
+                                                 storageEngine: storageEngine,
+                                                 dataStorePublisher: dataStorePublisher,
+                                                 validAPIPluginKey: validAPIPluginKey,
+                                                 validAuthPluginKey: validAuthPluginKey)
 
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
             "awsDataStorePlugin": true
@@ -100,7 +111,7 @@ class LocalSubscriptionTests: XCTestCase {
         let model = Post(id: UUID().uuidString,
                          title: "Test Post",
                          content: "Test Post Content",
-                         createdAt: Date(),
+                         createdAt: .now(),
                          updatedAt: nil,
                          draft: false,
                          rating: nil,
@@ -136,7 +147,7 @@ class LocalSubscriptionTests: XCTestCase {
         let model = Post(id: UUID().uuidString,
                          title: "Test Post",
                          content: "Test Post Content",
-                         createdAt: Date(),
+                         createdAt: .now(),
                          updatedAt: nil,
                          draft: false,
                          rating: nil,
@@ -158,7 +169,7 @@ class LocalSubscriptionTests: XCTestCase {
         let model = Post(id: UUID().uuidString,
                          title: "Test Post",
                          content: originalContent,
-                         createdAt: Date(),
+                         createdAt: .now(),
                          updatedAt: nil,
                          draft: false,
                          rating: nil,
@@ -174,7 +185,7 @@ class LocalSubscriptionTests: XCTestCase {
         let newContent = "Updated content as of \(Date())"
         var newModel = model
         newModel.content = newContent
-        newModel.updatedAt = Date()
+        newModel.updatedAt = .now()
 
         let receivedMutationEvent = expectation(description: "Received mutation event")
 
@@ -223,7 +234,7 @@ class LocalSubscriptionTests: XCTestCase {
 
         let model = Post(title: "Test Post",
                          content: "Test Post Content",
-                         createdAt: Date())
+                         createdAt: .now())
 
         Amplify.DataStore.save(model) { _ in }
         Amplify.DataStore.delete(model) { _ in }

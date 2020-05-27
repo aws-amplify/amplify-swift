@@ -1,13 +1,82 @@
-# Amplify for iOS - CHANGELOG
+# Changelog
 
-A declarative library for application development using cloud services.
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## 1.0.0 (2020-05-26)
+
+### Bug Fixes
+
+* Tools: Add npx to amplify-app and fix typo ([#486](https://github.com/aws-amplify/amplify-ios/issues/486)) ([c7d11a7](https://github.com/aws-amplify/amplify-ios/commit/c7d11a7b1291a2aa588fdcca5bf51e259490d9b5))
+
+### Misc
+
+Misc cleanup, improved test coverage from RC1:
+
+* **API:** Added SocialNote from codegen ([#469](https://github.com/aws-amplify/amplify-ios/issues/469)) ([79c6482](https://github.com/aws-amplify/amplify-ios/commit/79c648264d88683c7b2caa907f46984c811230e6))
+* **Auth:** Hub events for signedIn signedOut and sessionExpire ([#457](https://github.com/aws-amplify/amplify-ios/issues/457)) ([38e0513](https://github.com/aws-amplify/amplify-ios/commit/38e0513545b6e5a5127e233ae414f247d68749be))
+* **Auth:** Implementation of getCurrentUser api ([#455](https://github.com/aws-amplify/amplify-ios/issues/455)) ([59f6b18](https://github.com/aws-amplify/amplify-ios/commit/59f6b18651f1848d882c92203177981c5f195a9b))
+* **Core:** bootstrap Auth configuration before other categories, and fixed analytics integration tests ([#475](https://github.com/aws-amplify/amplify-ios/issues/475)) ([c33bf1b](https://github.com/aws-amplify/amplify-ios/commit/c33bf1b11fb7496227917670dc4b75fc3f10430e))
+* **DataStore:** StartSync with Auth ([#471](https://github.com/aws-amplify/amplify-ios/issues/471)) ([7cab76f](https://github.com/aws-amplify/amplify-ios/commit/7cab76fd785d7cd519280a912f8ab70fda87dc12))
+
+## 1.0.0-rc.1 (2020-05-21)
+
+### ⚠ BREAKING CHANGES
+
+* The `AsyncEvent` type has been removed. Listeners to most Amplify APIs will now be invoked with standard Swift `Result`s. APIs that deliver multiple values over time also include an "in process" listener.
+* **Auth** category error type is changed to `AuthError`. Current implementations that make use of `AmplifyAuthError` will break with build time error.
+  * As part of this work, we deleted `AuthError` in the **Storage** category.
+
+### Features
+
+* Added **Auth** category
+* Added AuthRule decorator to allow for granular ownership control of GraphQL models
+* Miscellaneous improvements to API semantics and ergonomics throughout
+* Increased test coverage throughout
+* **Datastore** now exposes configurable syncMaxRecords and syncPageSize ([#388](https://github.com/aws-amplify/amplify-ios/issues/388)) ([ca15e88](https://github.com/aws-amplify/amplify-ios/commit/ca15e881d7479020053b0db15a844cd2584b1db1))
+
+* [API] Merge non-GraphQL spec error fields into GraphQLError.extensions ([#401](https://github.com/aws-amplify/amplify-ios/issues/401)) ([b87811c](https://github.com/aws-amplify/amplify-ios/commit/b87811c5d1230c4d1f0a809192266a18bb3d7949))
+* Using config to decide base query or delta query ([#386](https://github.com/aws-amplify/amplify-ios/issues/386)) ([b02c3b7](https://github.com/aws-amplify/amplify-ios/commit/b02c3b7fc6400d558ab9e0213eda404ebb3bae37))
+
+### Bug Fixes
+
+* **amplify-tools:**
+  * Change the tools script to comply with amplify-app changes ([#445](https://github.com/aws-amplify/amplify-ios/issues/445)) ([67412ca](https://github.com/aws-amplify/amplify-ios/commit/67412ca1513057f7f6e473f37ec9b89230642655))
+  * Fix escaped json in shell script ([#452](https://github.com/aws-amplify/amplify-ios/issues/452)) ([5b4b9d2](https://github.com/aws-amplify/amplify-ios/commit/5b4b9d2f802eb299f3399c9cf27d435cb919815b))
+* **DataStore:**
+  * Only start the remote sync engine if we have awsapiplugin ([#442](https://github.com/aws-amplify/amplify-ios/issues/442)) ([532058a](https://github.com/aws-amplify/amplify-ios/commit/532058a5052bc3a0a5565595708964c063b3c28a))
+  * Bug where subscription connections happen at the same time ([#389](https://github.com/aws-amplify/amplify-ios/issues/389)) ([81e6111](https://github.com/aws-amplify/amplify-ios/commit/81e61116739aefa6b55b29e7e059edc0e51b5b94))
+  * Clear inProcess state on startup of outgoing mutation queue ([#391](https://github.com/aws-amplify/amplify-ios/issues/391)) ([352680b](https://github.com/aws-amplify/amplify-ios/commit/352680bd95c2c6c38d8263e870658f96bef9172a))
+  * Mark outgoing mutation as inProcess if nextEventPromise exists ([#392](https://github.com/aws-amplify/amplify-ios/issues/392)) ([3986cf5](https://github.com/aws-amplify/amplify-ios/commit/3986cf57bd042acdb2eb66bdce503616df05ed5f))
 
 ## 0.11.0
 
 ### New Features
 
 - **Predictions**
-  - Added the ability to transcribe text for both online and offline use cases. [#290](https://github.com/aws-amplify/amplify-ios/pull/290)
+  - Added the ability to transcribe text for both online and offline use cases. PR [#290](https://github.com/aws-amplify/amplify-ios/pull/290)
+- **API**
+  - Add GraphQLDocument builder classes for constructing Model-based GraphQL APIs. PR [#309](https://github.com/aws-amplify/amplify-ios/pull/309)
+  - Add support for REST API with Cognito User Pools. PR [#312](https://github.com/aws-amplify/amplify-ios/pull/312)
+- **DataStore**
+  - DataStore.save() now supports passing in condition. PR [#355](https://github.com/aws-amplify/amplify-ios/pull/355)
+  - Added reachability and retryability to remote sync engine. PRs [#321](https://github.com/aws-amplify/amplify-ios/pull/321) [#322](https://github.com/aws-amplify/amplify-ios/pull/322) [#323](https://github.com/aws-amplify/amplify-ios/pull/323) [#324](https://github.com/aws-amplify/amplify-ios/pull/324)
+  - Datastore.delete(modelType) with predicate. PR [#346](https://github.com/aws-amplify/amplify-ios/pull/346)
+  - Datastore.clear() async to remove local datastore. PR [#353](https://github.com/aws-amplify/amplify-ios/pull/353)
+  - Add pagination support to DataStore. PR [#365](https://github.com/aws-amplify/amplify-ios/pull/365)
+  - Add support for Enum and non-model types. PR [334](https://github.com/aws-amplify/amplify-ios/pull/334) Issues [#111](https://github.com/aws-amplify/amplify-ios/issues/111) [#240](https://github.com/aws-amplify/amplify-ios/issues/240) [#246](https://github.com/aws-amplify/amplify-ios/issues/246) [#318](https://github.com/aws-amplify/amplify-ios/issues/318) [#314](https://github.com/aws-amplify/amplify-ios/issues/314)
+
+### Bug Fixes
+
+- **DataStore**
+  - Fix out of bounds case when retry handler >= 57. PR [#338](https://github.com/aws-amplify/amplify-ios/pull/338)
+
+### Misc. Updates
+
+- **General**
+  - AWS iOS SDK Dependency upgrade to 2.13.x. PR [#360](https://github.com/aws-amplify/amplify-ios/pull/360)
+
+- **API**
+  - Migrate APIPlugin's websocket provider to use AppSyncRealTimeClient. PRs [#330](https://github.com/aws-amplify/amplify-ios/pull/330), [#341](https://github.com/aws-amplify/amplify-ios/pull/341), [#352](https://github.com/aws-amplify/amplify-ios/pull/352)
 
 ## 0.10.0
 

@@ -26,9 +26,9 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - It reads sync metadata from storage
     func testReadsMetadata() {
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startedAt = Int(Date().timeIntervalSince1970)
-            let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let startDateMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
+            let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startDateMilliseconds)
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             return nil
         }
@@ -47,7 +47,8 @@ class InitialSyncOperationTests: XCTestCase {
             modelType: MockSynced.self,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
-            storageAdapter: storageAdapter) { _ in }
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .default) { _ in }
 
         operation.main()
 
@@ -62,9 +63,9 @@ class InitialSyncOperationTests: XCTestCase {
     func testQueriesAPI() {
         let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startedAt = Int(Date().timeIntervalSince1970)
-            let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let startDateMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
+            let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startDateMilliseconds)
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             apiWasQueried.fulfill()
             return nil
@@ -81,7 +82,8 @@ class InitialSyncOperationTests: XCTestCase {
             modelType: MockSynced.self,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
-            storageAdapter: storageAdapter) { _ in }
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .default) { _ in }
 
         operation.main()
 
@@ -95,9 +97,9 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - The method invokes a completion callback when complete
     func testInvokesCompletionCallback() {
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startedAt = Int(Date().timeIntervalSince1970)
-            let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let startDateMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
+            let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startDateMilliseconds)
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             return nil
         }
@@ -114,7 +116,8 @@ class InitialSyncOperationTests: XCTestCase {
             modelType: MockSynced.self,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
-            storageAdapter: storageAdapter) { _ in
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .default) { _ in
                 syncCallbackReceived.fulfill()
         }
 
@@ -138,7 +141,7 @@ class InitialSyncOperationTests: XCTestCase {
             let startedAt = Int(Date().timeIntervalSince1970)
             let nextToken = nextTokens.isEmpty ? nil : nextTokens.removeFirst()
             let list = PaginatedList<AnyModel>(items: [], nextToken: nextToken, startedAt: startedAt)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             apiWasQueried.fulfill()
             return nil
@@ -155,7 +158,8 @@ class InitialSyncOperationTests: XCTestCase {
             modelType: MockSynced.self,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
-            storageAdapter: storageAdapter) { _ in }
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .default) { _ in }
 
         operation.main()
 
@@ -169,7 +173,7 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - The method submits the returned data to the reconciliation queue
     func testSubmitsToReconciliationQueue() {
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startedAt = Int(Date().timeIntervalSince1970)
+            let startedAtMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
             let model = MockSynced(id: "1")
             let anyModel = AnyModel(model)
             let metadata = MutationSyncMetadata(id: "1",
@@ -177,8 +181,8 @@ class InitialSyncOperationTests: XCTestCase {
                                                 lastChangedAt: Int(Date().timeIntervalSince1970),
                                                 version: 1)
             let mutationSync = MutationSync(model: anyModel, syncMetadata: metadata)
-            let list = PaginatedList<AnyModel>(items: [mutationSync], nextToken: nil, startedAt: startedAt)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let list = PaginatedList<AnyModel>(items: [mutationSync], nextToken: nil, startedAt: startedAtMilliseconds)
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             return nil
         }
@@ -203,7 +207,8 @@ class InitialSyncOperationTests: XCTestCase {
             modelType: MockSynced.self,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
-            storageAdapter: storageAdapter) { _ in }
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .default) { _ in }
 
         operation.main()
 
@@ -216,11 +221,11 @@ class InitialSyncOperationTests: XCTestCase {
     /// - Then:
     ///    - The method submits the returned data to the reconciliation queue
     func testUpdatesSyncMetadata() throws {
-        let startDateSeconds = Int(Date().timeIntervalSince1970)
+        let startDateMilliseconds = Int(Date().timeIntervalSince1970) * 1_000
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
-            let startedAt = startDateSeconds
+            let startedAt = startDateMilliseconds
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             return nil
         }
@@ -237,7 +242,8 @@ class InitialSyncOperationTests: XCTestCase {
             modelType: MockSynced.self,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
-            storageAdapter: storageAdapter) { _ in
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .default) { _ in
                 syncCallbackReceived.fulfill()
         }
 
@@ -250,7 +256,66 @@ class InitialSyncOperationTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(syncMetadata.lastSync, startDateSeconds)
+        XCTAssertEqual(syncMetadata.lastSync, startDateMilliseconds)
+    }
+
+    /// - Given: An InitialSyncOperation
+    /// - When:
+    ///    - I invoke main() against an API that returns .signedOut error
+    /// - Then:
+    ///    - The method completes with a failure result, error handler is called.
+    func testQueriesAPIReturnSignedOutError() throws {
+        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
+            let authError = AuthError.signedOut("", "", nil)
+            let apiError = APIError.operationError("", "", authError)
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .failure(apiError)
+            listener?(event)
+            return nil
+        }
+
+        let apiPlugin = MockAPICategoryPlugin()
+        apiPlugin.responders[.queryRequestListener] = responder
+
+        let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
+
+        let syncCallbackReceived = expectation(description: "Sync callback received, sync operation is complete")
+        let reconciliationQueue = MockReconciliationQueue()
+        let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
+        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+            guard let dataStoreError = error as? DataStoreError,
+                case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
+                    XCTFail("Expected API error with mutationEvent")
+                    return
+            }
+            guard let actualAPIError = amplifyError as? APIError,
+                case let .operationError(_, _, underlyingError) = actualAPIError,
+                let authError = underlyingError as? AuthError,
+                case .signedOut = authError else {
+                    XCTFail("Should be `signedOut` error but got \(amplifyError)")
+                    return
+            }
+            expectErrorHandlerCalled.fulfill()
+            XCTAssertNil(mutationEventOptional)
+        })
+        let operation = InitialSyncOperation(
+            modelType: MockSynced.self,
+            api: apiPlugin,
+            reconciliationQueue: reconciliationQueue,
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: configuration) { result in
+                switch result {
+                case .success:
+                    XCTFail("Should have failed")
+                case .failure:
+                    syncCallbackReceived.fulfill()
+                }
+
+        }
+
+        operation.main()
+
+        wait(for: [expectErrorHandlerCalled], timeout: 1.0)
+        wait(for: [syncCallbackReceived], timeout: 1.0)
     }
 
     /// - Given: An InitialSyncOperation in a system with previous sync metadata
@@ -260,12 +325,12 @@ class InitialSyncOperationTests: XCTestCase {
     ///    - It performs a sync query against the API category with a "lastSync" time from the last start time of
     ///      the stored metadata
     func testQueriesFromLastSync() throws {
-        let startDateSeconds = Int(Date().timeIntervalSince1970) - 100
+        let startDateMilliseconds = (Int(Date().timeIntervalSince1970) - 100) * 1_000
 
         let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
         try storageAdapter.setUp(models: StorageEngine.systemModels + [MockSynced.self])
 
-        let syncMetadata = ModelSyncMetadata(id: MockSynced.modelName, lastSync: startDateSeconds)
+        let syncMetadata = ModelSyncMetadata(id: MockSynced.modelName, lastSync: startDateMilliseconds)
         let syncMetadataSaved = expectation(description: "Sync metadata saved")
         storageAdapter.save(syncMetadata) { result in
             switch result {
@@ -280,10 +345,10 @@ class InitialSyncOperationTests: XCTestCase {
         let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
             let lastSync = request.variables?["lastSync"] as? Int
-            XCTAssertEqual(lastSync, startDateSeconds)
+            XCTAssertEqual(lastSync, startDateMilliseconds)
 
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: nil)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             apiWasQueried.fulfill()
             return nil
@@ -297,7 +362,92 @@ class InitialSyncOperationTests: XCTestCase {
             modelType: MockSynced.self,
             api: apiPlugin,
             reconciliationQueue: reconciliationQueue,
-            storageAdapter: storageAdapter) {_ in }
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: .default) {_ in }
+
+        operation.main()
+
+        wait(for: [apiWasQueried], timeout: 1.0)
+    }
+
+    func testBaseQueryWhenExpiredLastSync() throws {
+        //Set start date to 100 seconds in the past
+        let startDateMilliSeconds = (Int(Date().timeIntervalSince1970) - 100) * 1_000
+
+        let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
+        try storageAdapter.setUp(models: StorageEngine.systemModels + [MockSynced.self])
+
+        let syncMetadata = ModelSyncMetadata(id: MockSynced.modelName, lastSync: startDateMilliSeconds)
+        let syncMetadataSaved = expectation(description: "Sync metadata saved")
+        storageAdapter.save(syncMetadata) { result in
+            switch result {
+            case .failure(let dataStoreError):
+                XCTAssertNil(dataStoreError)
+            case .success:
+                syncMetadataSaved.fulfill()
+            }
+        }
+        wait(for: [syncMetadataSaved], timeout: 1.0)
+
+        let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")
+        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
+            let lastSync = request.variables?["lastSync"] as? Int
+            XCTAssertNil(lastSync)
+
+            let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: nil)
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
+            listener?(event)
+            apiWasQueried.fulfill()
+            return nil
+        }
+
+        let apiPlugin = MockAPICategoryPlugin()
+        apiPlugin.responders[.queryRequestListener] = responder
+
+        let reconciliationQueue = MockReconciliationQueue()
+        let configuration  = DataStoreConfiguration.custom(syncInterval: 60)
+        let operation = InitialSyncOperation(
+            modelType: MockSynced.self,
+            api: apiPlugin,
+            reconciliationQueue: reconciliationQueue,
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: configuration) {_ in }
+
+        operation.main()
+
+        wait(for: [apiWasQueried], timeout: 1.0)
+    }
+
+    func testBaseQueryWithCustomSyncPageSize() throws {
+        let storageAdapter = try SQLiteStorageEngineAdapter(connection: Connection(.inMemory))
+        try storageAdapter.setUp(models: StorageEngine.systemModels + [MockSynced.self])
+
+        let apiWasQueried = expectation(description: "API was queried for a PaginatedList of AnyModel")
+        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
+            let lastSync = request.variables?["lastSync"] as? Int
+            XCTAssertNil(lastSync)
+            XCTAssert(request.document.contains("limit: Int"))
+            let limitValue = request.variables?["limit"] as? Int
+            XCTAssertEqual(10, limitValue)
+
+            let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: nil)
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
+            listener?(event)
+            apiWasQueried.fulfill()
+            return nil
+        }
+
+        let apiPlugin = MockAPICategoryPlugin()
+        apiPlugin.responders[.queryRequestListener] = responder
+
+        let reconciliationQueue = MockReconciliationQueue()
+        let configuration  = DataStoreConfiguration.custom(syncPageSize: 10)
+        let operation = InitialSyncOperation(
+            modelType: MockSynced.self,
+            api: apiPlugin,
+            reconciliationQueue: reconciliationQueue,
+            storageAdapter: storageAdapter,
+            dataStoreConfiguration: configuration) {_ in }
 
         operation.main()
 

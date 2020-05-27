@@ -29,7 +29,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
             let startedAt = Int(Date().timeIntervalSince1970)
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             return nil
         }
@@ -43,7 +43,8 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator: InitialSyncOrchestrator =
-            AWSInitialSyncOrchestrator(api: apiPlugin,
+            AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+                                       api: apiPlugin,
                                        reconciliationQueue: reconciliationQueue,
                                        storageAdapter: storageAdapter)
 
@@ -74,7 +75,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
 
             let startedAt = Int(Date().timeIntervalSince1970)
             let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             return nil
         }
@@ -88,7 +89,8 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator: InitialSyncOrchestrator =
-            AWSInitialSyncOrchestrator(api: apiPlugin,
+            AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+                                       api: apiPlugin,
                                        reconciliationQueue: reconciliationQueue,
                                        storageAdapter: storageAdapter)
 
@@ -125,7 +127,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
             let startedAt = Int(Date().timeIntervalSince1970)
             let nextToken = nextTokens.isEmpty ? nil : nextTokens.removeFirst()
             let list = PaginatedList<AnyModel>(items: [], nextToken: nextToken, startedAt: startedAt)
-            let event: GraphQLOperation<PaginatedList<AnyModel>>.Event = .completed(.success(list))
+            let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
             listener?(event)
             return nil
         }
@@ -139,7 +141,8 @@ class InitialSyncOrchestratorTests: XCTestCase {
         let reconciliationQueue = MockReconciliationQueue()
 
         let orchestrator: InitialSyncOrchestrator =
-            AWSInitialSyncOrchestrator(api: apiPlugin,
+            AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+                                       api: apiPlugin,
                                        reconciliationQueue: reconciliationQueue,
                                        storageAdapter: storageAdapter)
 

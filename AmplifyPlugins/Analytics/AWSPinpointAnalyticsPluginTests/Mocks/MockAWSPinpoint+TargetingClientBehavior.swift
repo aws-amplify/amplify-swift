@@ -5,15 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
+import Foundation
 
 extension MockAWSPinpoint: AWSPinpointTargetingClientBehavior {
     public func currentEndpointProfile() -> AWSPinpointEndpointProfile {
         currentEndpointProfileCalled += 1
 
-        return AWSPinpointEndpointProfile.init(applicationId: applicationId, endpointId: endpointId)
+        return AWSPinpointEndpointProfile(applicationId: applicationId, endpointId: endpointId)
     }
 
     public func updateEndpointProfile() -> AWSTask<AnyObject> {
@@ -42,7 +42,6 @@ extension MockAWSPinpoint: AWSPinpointTargetingClientBehavior {
 
         addAttributeValue = theValue
         addAttributeKey = theKey
-
     }
 
     public func removeAttribute(forKey theKey: String) {

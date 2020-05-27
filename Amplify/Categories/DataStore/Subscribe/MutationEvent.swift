@@ -13,18 +13,20 @@ public struct MutationEvent: Model {
     public var modelName: String
     public var json: String
     public var mutationType: String
-    public var createdAt: Date
+    public var createdAt: Temporal.DateTime
     public var version: Int?
     public var inProcess: Bool
+    public var graphQLFilterJSON: String?
 
     public init(id: Identifier = UUID().uuidString,
                 modelId: String,
                 modelName: String,
                 json: String,
                 mutationType: MutationType,
-                createdAt: Date = Date(),
+                createdAt: Temporal.DateTime = .now(),
                 version: Int? = nil,
-                inProcess: Bool = false) {
+                inProcess: Bool = false,
+                graphQLFilterJSON: String? = nil) {
         self.id = id
         self.modelId = modelId
         self.modelName = modelName
@@ -33,18 +35,22 @@ public struct MutationEvent: Model {
         self.createdAt = createdAt
         self.version = version
         self.inProcess = inProcess
+        self.graphQLFilterJSON = graphQLFilterJSON
     }
 
     public init<M: Model>(model: M,
                           mutationType: MutationType,
-                          version: Int? = nil) throws {
+                          version: Int? = nil,
+                          graphQLFilterJSON: String? = nil) throws {
         let modelType = type(of: model)
         let json = try model.toJSON()
         self.init(modelId: model.id,
                   modelName: modelType.schema.name,
                   json: json,
                   mutationType: mutationType,
-                  version: version)
+                  version: version,
+                  graphQLFilterJSON: graphQLFilterJSON)
+
     }
 
     public func decodeModel() throws -> Model {

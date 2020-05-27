@@ -45,9 +45,17 @@ public enum ModelFieldType {
         if type is Bool.Type {
             return .bool
         }
-        // TODO handle other DataScalar once the DateTime PR is merged
         if type is Date.Type {
             return .dateTime
+        }
+        if type is Temporal.Date.Type {
+            return .date
+        }
+        if type is Temporal.DateTime.Type {
+            return .dateTime
+        }
+        if type is Temporal.Time.Type {
+            return .time
         }
         if let enumType = type as? EnumPersistable.Type {
             return .enum(type: enumType)
@@ -80,13 +88,18 @@ public struct ModelSchemaDefinition {
 
     internal let name: String
     public var pluralName: String?
+    public var authRules: AuthRules
     internal var fields: ModelFields
     internal var attributes: [ModelAttribute]
 
-    init(name: String, pluralName: String? = nil, attributes: [ModelAttribute] = []) {
+    init(name: String,
+         pluralName: String? = nil,
+         authRules: AuthRules = [],
+         attributes: [ModelAttribute] = []) {
         self.name = name
         self.pluralName = pluralName
         self.fields = [:] as ModelFields
+        self.authRules = authRules
         self.attributes = attributes
     }
 
@@ -102,7 +115,11 @@ public struct ModelSchemaDefinition {
     }
 
     internal func build() -> ModelSchema {
-        return ModelSchema(name: name, pluralName: pluralName, attributes: attributes, fields: fields)
+        return ModelSchema(name: name,
+                           pluralName: pluralName,
+                           authRules: authRules,
+                           attributes: attributes,
+                           fields: fields)
     }
 }
 
@@ -112,18 +129,21 @@ public enum ModelFieldDefinition {
                type: ModelFieldType,
                nullability: ModelFieldNullability,
                association: ModelAssociation?,
-               attributes: [ModelFieldAttribute])
+               attributes: [ModelFieldAttribute],
+               authRules: AuthRules)
 
     public static func field(_ key: CodingKey,
                              is nullability: ModelFieldNullability = .required,
                              ofType type: ModelFieldType = .string,
                              attributes: [ModelFieldAttribute] = [],
-                             association: ModelAssociation? = nil) -> ModelFieldDefinition {
+                             association: ModelAssociation? = nil,
+                             authRules: AuthRules = []) -> ModelFieldDefinition {
         return .field(name: key.stringValue,
                       type: type,
                       nullability: nullability,
                       association: association,
-                      attributes: attributes)
+                      attributes: attributes,
+                      authRules: authRules)
     }
 
     public static func id(_ key: CodingKey) -> ModelFieldDefinition {
@@ -135,7 +155,8 @@ public enum ModelFieldDefinition {
                       type: .string,
                       nullability: .required,
                       association: nil,
-                      attributes: [.primaryKey])
+                      attributes: [.primaryKey],
+                      authRules: [])
     }
 
     public static func hasMany(_ key: CodingKey,
@@ -174,7 +195,8 @@ public enum ModelFieldDefinition {
                               type,
                               nullability,
                               association,
-                              attributes) = self else {
+                              attributes,
+                              authRules) = self else {
             preconditionFailure("Unexpected enum value found: \(String(describing: self))")
         }
         return ModelField(name: name,
@@ -182,6 +204,7 @@ public enum ModelFieldDefinition {
                           isRequired: nullability.isRequired,
                           isArray: type.isArray,
                           attributes: attributes,
-                          association: association)
+                          association: association,
+                          authRules: authRules)
     }
 }

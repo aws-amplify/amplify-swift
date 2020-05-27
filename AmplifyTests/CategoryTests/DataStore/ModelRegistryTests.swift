@@ -43,7 +43,7 @@ class ModelRegistryTests: XCTestCase {
         XCTAssertEqual(decodedPost.title, "title")
         XCTAssertEqual(decodedPost.content, "content")
 
-        let actualMilliseconds = Int(decodedPost.createdAt.timeIntervalSince1970 * 1_000)
+        let actualMilliseconds = Int(decodedPost.createdAt.foundationDate.timeIntervalSince1970 * 1_000)
         XCTAssertEqual(actualMilliseconds, 1_577_755_425_678)
     }
 
@@ -57,12 +57,12 @@ class ModelRegistryTests: XCTestCase {
         XCTAssertEqual(decodedPost["title"] as? String, "title")
         XCTAssertEqual(decodedPost["content"] as? String, "content")
 
-        guard let createdAt = decodedPost["createdAt"] as? Date else {
+        guard let createdAt = decodedPost["createdAt"] as? Temporal.DateTime else {
             XCTFail("Could not decode createdAt from post")
             return
         }
 
-        let actualMilliseconds = Int(createdAt.timeIntervalSince1970 * 1_000)
+        let actualMilliseconds = Int(createdAt.foundationDate.timeIntervalSince1970 * 1_000)
         XCTAssertEqual(actualMilliseconds, 1_577_755_425_678)
     }
 

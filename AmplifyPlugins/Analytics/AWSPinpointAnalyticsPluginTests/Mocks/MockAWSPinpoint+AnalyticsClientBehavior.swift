@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
+import Foundation
 
 extension MockAWSPinpoint: AWSPinpointAnalyticsClientBehavior {
     public func addGlobalAttribute(_ theValue: String, forKey theKey: String) {
@@ -37,7 +37,7 @@ extension MockAWSPinpoint: AWSPinpointAnalyticsClientBehavior {
 
         addGlobalMetricValue = theValue
         addGlobalMetricKey = theKey
-        addGlobalMetricEventType  = theEventType
+        addGlobalMetricEventType = theEventType
     }
 
     public func removeGlobalAttribute(forKey theKey: String) {

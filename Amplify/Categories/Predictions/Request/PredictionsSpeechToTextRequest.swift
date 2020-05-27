@@ -31,9 +31,9 @@ extension PredictionsSpeechToTextRequest {
             ///the language of the audio file you are transcribing
             public let language: LanguageType?
 
-            /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
-            /// a way to utilize the underlying storage system's functionality. See plugin documentation for expected
-            /// key/values
+            /// Extra plugin specific options, only used in special circumstances when the existing options do not
+            /// provide a way to utilize the underlying storage system's functionality. See plugin documentation for
+            /// expected key/values
             public let pluginOptions: Any?
 
             public init(defaultNetworkPolicy: DefaultNetworkPolicy = .auto,

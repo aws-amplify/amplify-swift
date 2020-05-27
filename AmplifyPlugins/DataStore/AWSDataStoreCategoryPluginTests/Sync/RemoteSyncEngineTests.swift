@@ -30,11 +30,14 @@ class RemoteSyncEngineTests: XCTestCase {
         let mockOutgoingMutationQueue = MockOutgoingMutationQueue()
         mockRequestRetryablePolicy = MockRequestRetryablePolicy()
         do {
-            remoteSyncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
-                                                    outgoingMutationQueue: mockOutgoingMutationQueue,
-                                                    initialSyncOrchestratorFactory: MockAWSInitialSyncOrchestrator.factory,
-                                                    reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
-                                                    requestRetryablePolicy: mockRequestRetryablePolicy)
+            remoteSyncEngine = try RemoteSyncEngine(
+                storageAdapter: storageAdapter,
+                dataStoreConfiguration: .default,
+                outgoingMutationQueue: mockOutgoingMutationQueue,
+                initialSyncOrchestratorFactory: MockAWSInitialSyncOrchestrator.factory,
+                reconciliationQueueFactory: MockAWSIncomingEventReconciliationQueue.factory,
+                requestRetryablePolicy: mockRequestRetryablePolicy
+            )
         } catch {
             XCTFail("Failed to setup")
             return
@@ -56,12 +59,14 @@ class RemoteSyncEngineTests: XCTestCase {
         remoteSyncEngine.start()
 
         wait(for: [failureOnStorageAdapter], timeout: defaultAsyncWaitTimeout)
+        remoteSyncEngineSink.cancel()
     }
 
     func testFailureOnInitialSync() throws {
         let storageAdapterAvailable = expectation(description: "storageAdapterAvailable")
         let subscriptionsPaused = expectation(description: "subscriptionsPaused")
         let mutationsPaused = expectation(description: "mutationsPaused")
+        let stateMutationsCleared = expectation(description: "stateMutationsCleared")
         let subscriptionsInitialized = expectation(description: "subscriptionsInitialized")
         let cleanedup = expectation(description: "cleanedup")
         let failureOnInitialSync = expectation(description: "failureOnInitialSync")
@@ -74,7 +79,7 @@ class RemoteSyncEngineTests: XCTestCase {
         let remoteSyncEngineSink = remoteSyncEngine
             .publisher
             .sink(receiveCompletion: { _ in
-                currCount = self.checkAndFulfill(currCount, 6, expectation: failureOnInitialSync)
+                currCount = self.checkAndFulfill(currCount, 7, expectation: failureOnInitialSync)
             }, receiveValue: { event in
                 switch event {
                 case .storageAdapterAvailable:
@@ -86,12 +91,14 @@ class RemoteSyncEngineTests: XCTestCase {
                     DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
                         MockAWSIncomingEventReconciliationQueue.mockSend(event: .initialized)
                     }
+                case .clearedStateOutgoingMutations:
+                    currCount = self.checkAndFulfill(currCount, 4, expectation: stateMutationsCleared)
                 case .subscriptionsInitialized:
-                    currCount = self.checkAndFulfill(currCount, 4, expectation: subscriptionsInitialized)
+                    currCount = self.checkAndFulfill(currCount, 5, expectation: subscriptionsInitialized)
                 case .performedInitialSync:
                     XCTFail("performedInitialQueries should not be successful")
                 case .cleanedUp:
-                    currCount = self.checkAndFulfill(currCount, 5, expectation: cleanedup)
+                    currCount = self.checkAndFulfill(currCount, 6, expectation: cleanedup)
                 default:
                     XCTFail("Unexpected case gets hit")
                 }
@@ -104,15 +111,18 @@ class RemoteSyncEngineTests: XCTestCase {
         wait(for: [storageAdapterAvailable,
                    subscriptionsPaused,
                    mutationsPaused,
+                   stateMutationsCleared,
                    subscriptionsInitialized,
                    cleanedup,
                    failureOnInitialSync], timeout: defaultAsyncWaitTimeout)
+        remoteSyncEngineSink.cancel()
     }
 
     func testRemoteSyncEngineHappyPath() throws {
         let storageAdapterAvailable = expectation(description: "storageAdapterAvailable")
         let subscriptionsPaused = expectation(description: "subscriptionsPaused")
         let mutationsPaused = expectation(description: "mutationsPaused")
+        let stateMutationsCleared = expectation(description: "stateMutationsCleared")
         let subscriptionsInitialized = expectation(description: "subscriptionsInitialized")
         let performedInitialSync = expectation(description: "performedInitialSync")
         let subscriptionActivation = expectation(description: "failureOnSubscriptionActivation")
@@ -136,16 +146,18 @@ class RemoteSyncEngineTests: XCTestCase {
                     DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
                         MockAWSIncomingEventReconciliationQueue.mockSend(event: .initialized)
                     }
+                case .clearedStateOutgoingMutations:
+                    currCount = self.checkAndFulfill(currCount, 4, expectation: stateMutationsCleared)
                 case .subscriptionsInitialized:
-                    currCount = self.checkAndFulfill(currCount, 4, expectation: subscriptionsInitialized)
+                    currCount = self.checkAndFulfill(currCount, 5, expectation: subscriptionsInitialized)
                 case .performedInitialSync:
-                    currCount = self.checkAndFulfill(currCount, 5, expectation: performedInitialSync)
+                    currCount = self.checkAndFulfill(currCount, 6, expectation: performedInitialSync)
                 case .subscriptionsActivated:
-                    currCount = self.checkAndFulfill(currCount, 6, expectation: subscriptionActivation)
+                    currCount = self.checkAndFulfill(currCount, 7, expectation: subscriptionActivation)
                 case .mutationQueueStarted:
-                    currCount = self.checkAndFulfill(currCount, 7, expectation: mutationQueueStarted)
+                    currCount = self.checkAndFulfill(currCount, 8, expectation: mutationQueueStarted)
                 case .syncStarted:
-                    currCount = self.checkAndFulfill(currCount, 8, expectation: syncStarted)
+                    currCount = self.checkAndFulfill(currCount, 9, expectation: syncStarted)
                 default:
                     XCTFail("unexpected call")
                 }
@@ -156,17 +168,21 @@ class RemoteSyncEngineTests: XCTestCase {
         wait(for: [storageAdapterAvailable,
                    subscriptionsPaused,
                    mutationsPaused,
+                   stateMutationsCleared,
                    subscriptionsInitialized,
                    performedInitialSync,
                    subscriptionActivation,
                    mutationQueueStarted,
                    syncStarted], timeout: defaultAsyncWaitTimeout)
+        remoteSyncEngineSink.cancel()
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testCatastrophicErrorEndsRemoteSyncEngine() throws {
         let storageAdapterAvailable = expectation(description: "storageAdapterAvailable")
         let subscriptionsPaused = expectation(description: "subscriptionsPaused")
         let mutationsPaused = expectation(description: "mutationsPaused")
+        let stateMutationsCleared = expectation(description: "stateMutationsCleared")
         let subscriptionsInitialized = expectation(description: "subscriptionsInitialized")
         let performedInitialSync = expectation(description: "performedInitialSync")
         let subscriptionActivation = expectation(description: "failureOnSubscriptionActivation")
@@ -183,7 +199,7 @@ class RemoteSyncEngineTests: XCTestCase {
         let remoteSyncEngineSink = remoteSyncEngine
             .publisher
             .sink(receiveCompletion: { _ in
-                currCount = self.checkAndFulfill(currCount, 10, expectation: forceFailToNotRestartSyncEngine)
+                currCount = self.checkAndFulfill(currCount, 11, expectation: forceFailToNotRestartSyncEngine)
             }, receiveValue: { event in
                 switch event {
                 case .storageAdapterAvailable:
@@ -195,21 +211,24 @@ class RemoteSyncEngineTests: XCTestCase {
                     DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
                         MockAWSIncomingEventReconciliationQueue.mockSend(event: .initialized)
                     }
+                case .clearedStateOutgoingMutations:
+                    currCount = self.checkAndFulfill(currCount, 4, expectation: stateMutationsCleared)
                 case .subscriptionsInitialized:
-                    currCount = self.checkAndFulfill(currCount, 4, expectation: subscriptionsInitialized)
+                    currCount = self.checkAndFulfill(currCount, 5, expectation: subscriptionsInitialized)
                 case .performedInitialSync:
-                    currCount = self.checkAndFulfill(currCount, 5, expectation: performedInitialSync)
+                    currCount = self.checkAndFulfill(currCount, 6, expectation: performedInitialSync)
                 case .subscriptionsActivated:
-                    currCount = self.checkAndFulfill(currCount, 6, expectation: subscriptionActivation)
+                    currCount = self.checkAndFulfill(currCount, 7, expectation: subscriptionActivation)
                 case .mutationQueueStarted:
-                    currCount = self.checkAndFulfill(currCount, 7, expectation: mutationQueueStarted)
+                    currCount = self.checkAndFulfill(currCount, 8, expectation: mutationQueueStarted)
                 case .syncStarted:
-                    currCount = self.checkAndFulfill(currCount, 8, expectation: syncStarted)
+                    currCount = self.checkAndFulfill(currCount, 9, expectation: syncStarted)
                     DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
-                        MockAWSIncomingEventReconciliationQueue.mockSendCompletion(completion: .failure(DataStoreError.unknown("", "", nil)))
+                        MockAWSIncomingEventReconciliationQueue
+                            .mockSendCompletion(completion: .failure(DataStoreError.unknown("", "", nil)))
                     }
                 case .cleanedUp:
-                    currCount = self.checkAndFulfill(currCount, 9, expectation: cleanedUp)
+                    currCount = self.checkAndFulfill(currCount, 10, expectation: cleanedUp)
                 default:
                     XCTFail("unexpected call")
                 }
@@ -220,6 +239,7 @@ class RemoteSyncEngineTests: XCTestCase {
         wait(for: [storageAdapterAvailable,
                    subscriptionsPaused,
                    mutationsPaused,
+                   stateMutationsCleared,
                    subscriptionsInitialized,
                    performedInitialSync,
                    subscriptionActivation,
@@ -227,12 +247,15 @@ class RemoteSyncEngineTests: XCTestCase {
                    syncStarted,
                    cleanedUp,
                    forceFailToNotRestartSyncEngine], timeout: defaultAsyncWaitTimeout)
+        remoteSyncEngineSink.cancel()
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testStopEndsRemoteSyncEngine() throws {
         let storageAdapterAvailable = expectation(description: "storageAdapterAvailable")
         let subscriptionsPaused = expectation(description: "subscriptionsPaused")
         let mutationsPaused = expectation(description: "mutationsPaused")
+        let stateMutationsCleared = expectation(description: "stateMutationsCleared")
         let subscriptionsInitialized = expectation(description: "subscriptionsInitialized")
         let performedInitialSync = expectation(description: "performedInitialSync")
         let subscriptionActivation = expectation(description: "failureOnSubscriptionActivation")
@@ -250,7 +273,7 @@ class RemoteSyncEngineTests: XCTestCase {
         let remoteSyncEngineSink = remoteSyncEngine
             .publisher
             .sink(receiveCompletion: { _ in
-                currCount = self.checkAndFulfill(currCount, 10, expectation: forceFailToNotRestartSyncEngine)
+                currCount = self.checkAndFulfill(currCount, 11, expectation: forceFailToNotRestartSyncEngine)
             }, receiveValue: { event in
                 switch event {
                 case .storageAdapterAvailable:
@@ -262,25 +285,27 @@ class RemoteSyncEngineTests: XCTestCase {
                     DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
                         MockAWSIncomingEventReconciliationQueue.mockSend(event: .initialized)
                     }
+                case .clearedStateOutgoingMutations:
+                    currCount = self.checkAndFulfill(currCount, 4, expectation: stateMutationsCleared)
                 case .subscriptionsInitialized:
-                    currCount = self.checkAndFulfill(currCount, 4, expectation: subscriptionsInitialized)
+                    currCount = self.checkAndFulfill(currCount, 5, expectation: subscriptionsInitialized)
                 case .performedInitialSync:
-                    currCount = self.checkAndFulfill(currCount, 5, expectation: performedInitialSync)
+                    currCount = self.checkAndFulfill(currCount, 6, expectation: performedInitialSync)
                 case .subscriptionsActivated:
-                    currCount = self.checkAndFulfill(currCount, 6, expectation: subscriptionActivation)
+                    currCount = self.checkAndFulfill(currCount, 7, expectation: subscriptionActivation)
                 case .mutationQueueStarted:
-                    currCount = self.checkAndFulfill(currCount, 7, expectation: mutationQueueStarted)
+                    currCount = self.checkAndFulfill(currCount, 8, expectation: mutationQueueStarted)
                 case .syncStarted:
-                    currCount = self.checkAndFulfill(currCount, 8, expectation: syncStarted)
+                    currCount = self.checkAndFulfill(currCount, 9, expectation: syncStarted)
                     DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
                         self.remoteSyncEngine.stop(completion: { result in
                             if case .success = result {
-                                currCount = self.checkAndFulfill(currCount, 11, expectation: completionBlockCalled)
+                                currCount = self.checkAndFulfill(currCount, 12, expectation: completionBlockCalled)
                             }
                         })
                     }
                 case .cleanedUpForTermination:
-                    currCount = self.checkAndFulfill(currCount, 9, expectation: cleanedUpForTermination)
+                    currCount = self.checkAndFulfill(currCount, 10, expectation: cleanedUpForTermination)
                 default:
                     XCTFail("unexpected call")
                 }
@@ -291,6 +316,7 @@ class RemoteSyncEngineTests: XCTestCase {
         wait(for: [storageAdapterAvailable,
                    subscriptionsPaused,
                    mutationsPaused,
+                   stateMutationsCleared,
                    subscriptionsInitialized,
                    performedInitialSync,
                    subscriptionActivation,
@@ -299,6 +325,7 @@ class RemoteSyncEngineTests: XCTestCase {
                    cleanedUpForTermination,
                    completionBlockCalled,
                    forceFailToNotRestartSyncEngine], timeout: defaultAsyncWaitTimeout)
+        remoteSyncEngineSink.cancel()
     }
 
     private func checkAndFulfill(_ currCount: Int, _ expectedCount: Int, expectation: XCTestExpectation) -> Int {

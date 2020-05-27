@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import AWSMobileClient
 @testable import Amplify
 import AWSS3StoragePlugin
 import AWSS3
@@ -14,7 +13,6 @@ import var CommonCrypto.CC_MD5_DIGEST_LENGTH
 import func CommonCrypto.CC_MD5
 import typealias CommonCrypto.CC_LONG
 @testable import AmplifyTestCommon
-
 
 class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
@@ -28,12 +26,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
         let operation = Amplify.Storage.uploadData(key: key, data: data, options: nil) { event in
             switch event {
-            case .completed:
+            case .success:
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
 
@@ -51,12 +47,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
         let operation = Amplify.Storage.uploadData(key: key, data: data, options: nil) { event in
             switch event {
-            case .completed:
+            case .success:
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
 
@@ -77,12 +71,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let completeInvoked = expectation(description: "Completed is invoked")
         let operation = Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil) { event in
             switch event {
-            case .completed:
+            case .success:
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
 
@@ -102,12 +94,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let completeInvoked = expectation(description: "Completed is invoked")
         let operation = Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil) { event in
             switch event {
-            case .completed:
+            case .success:
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
 
@@ -126,12 +116,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
                                                 data: AWSS3StoragePluginTestBase.largeDataObject,
                                                 options: nil) { event in
             switch event {
-            case .completed:
+            case .success:
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
 
@@ -155,12 +143,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
         let operation = Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil) { event in
             switch event {
-            case .completed:
+            case .success:
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
 
@@ -179,12 +165,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
         let operation = Amplify.Storage.downloadData(key: key, options: options) { event in
             switch event {
-            case .completed:
+            case .success:
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
         XCTAssertNotNil(operation)
@@ -207,12 +191,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
         let operation = Amplify.Storage.downloadFile(key: key, local: fileURL, options: options) { event in
             switch event {
-            case .completed:
+            case .success:
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
         XCTAssertNotNil(operation)
@@ -241,13 +223,11 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
         let operation = Amplify.Storage.getURL(key: key, options: nil) { event in
             switch event {
-            case .completed(let result):
+            case .success(let result):
                 remoteURLOptional = result
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
         XCTAssertNotNil(operation)
@@ -259,8 +239,8 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 
         let dataTaskCompleteInvoked = expectation(description: "Completion of retrieving data at URL is invoked")
         let task = URLSession.shared.dataTask(with: remoteURL) { data, response, error in
-            guard error == nil else {
-                XCTFail("Failed to received data from url eith error \(error)")
+            if let error = error {
+                XCTFail("Failed to received data from url with error \(error)")
                 return
             }
 
@@ -296,7 +276,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
                                                  path: key)
         let operation = Amplify.Storage.list(options: options) { event in
             switch event {
-            case .completed(let result):
+            case .success(let result):
                 XCTAssertNotNil(result)
                 XCTAssertNotNil(result.items)
                 XCTAssertEqual(result.items.count, 1)
@@ -310,10 +290,8 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
                 }
 
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
         XCTAssertNotNil(operation)
@@ -331,15 +309,13 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
                                                  path: key)
         let operation = Amplify.Storage.list(options: options) { event in
             switch event {
-            case .completed(let result):
+            case .success(let result):
                 XCTAssertNotNil(result)
                 XCTAssertNotNil(result.items)
                 XCTAssertEqual(result.items.count, 0)
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
         XCTAssertNotNil(operation)
@@ -365,7 +341,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
                                                  path: folder)
         let operation = Amplify.Storage.list(options: options) { event in
             switch event {
-            case .completed(let result):
+            case .success(let result):
                 XCTAssertNotNil(result)
                 XCTAssertNotNil(result.items)
                 XCTAssertEqual(result.items.count, keys.count)
@@ -374,10 +350,8 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
                 }
 
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
         XCTAssertNotNil(operation)
@@ -404,7 +378,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
                                                  path: key1)
         let operation = Amplify.Storage.list(options: options) { event in
             switch event {
-            case .completed(let result):
+            case .success(let result):
                 XCTAssertNotNil(result)
                 XCTAssertNotNil(result.items)
                 XCTAssertEqual(result.items.count, keys.count)
@@ -412,10 +386,8 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
                     XCTAssertTrue(keys.contains(item.key), "The key that was uploaded should match the key listed")
                 }
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
         XCTAssertNotNil(operation)
@@ -432,12 +404,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let completeInvoked = expectation(description: "Completed is invoked")
         let removeOperation = Amplify.Storage.remove(key: key, options: nil) { event in
             switch event {
-            case .completed(let result):
+            case .success:
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
         XCTAssertNotNil(removeOperation)
@@ -453,12 +423,10 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let completeInvoked = expectation(description: "Completed is invoked")
         let removeOperation = Amplify.Storage.remove(key: key, options: nil) { event in
             switch event {
-            case .completed(let result):
+            case .success:
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Failed with \(error)")
-            default:
-                break
             }
         }
         XCTAssertNotNil(removeOperation)

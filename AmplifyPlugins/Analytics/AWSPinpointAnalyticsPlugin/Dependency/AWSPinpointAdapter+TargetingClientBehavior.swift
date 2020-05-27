@@ -5,21 +5,20 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSPinpoint
+import Foundation
 
 extension AWSPinpointAdapter: AWSPinpointTargetingClientBehavior {
-
     func currentEndpointProfile() -> AWSPinpointEndpointProfile {
-        return pinpoint.targetingClient.currentEndpointProfile()
+        pinpoint.targetingClient.currentEndpointProfile()
     }
 
     func updateEndpointProfile() -> AWSTask<AnyObject> {
-        return pinpoint.targetingClient.updateEndpointProfile()
+        pinpoint.targetingClient.updateEndpointProfile()
     }
 
     func update(_ endpointProfile: AWSPinpointEndpointProfile) -> AWSTask<AnyObject> {
-        return pinpoint.targetingClient.update(endpointProfile)
+        pinpoint.targetingClient.update(endpointProfile)
     }
 
     func addAttribute(_ theValue: [Any], forKey theKey: String) {

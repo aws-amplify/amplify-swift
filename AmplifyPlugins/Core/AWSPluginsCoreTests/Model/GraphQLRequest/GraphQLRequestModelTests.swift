@@ -32,13 +32,13 @@ class GraphQLRequestModelTests: XCTestCase {
     ///     - the `responseType` is correct
     ///     - the `variables` is non-nil
     func testCreateMutationGraphQLRequest() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: post))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.mutation(of: post, type: .create)
+        let request = GraphQLRequest<Post>.create(post)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
@@ -46,13 +46,13 @@ class GraphQLRequestModelTests: XCTestCase {
     }
 
     func testUpdateMutationGraphQLRequest() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: ModelDecorator(model: post))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.mutation(of: post, type: .update)
+        let request = GraphQLRequest<Post>.update(post)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
@@ -60,13 +60,13 @@ class GraphQLRequestModelTests: XCTestCase {
     }
 
     func testDeleteMutationGraphQLRequest() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelDecorator(model: post))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.mutation(of: post, type: .delete)
+        let request = GraphQLRequest<Post>.delete(post)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post.self)
@@ -79,7 +79,7 @@ class GraphQLRequestModelTests: XCTestCase {
         documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.query(from: Post.self, byId: "id")
+        let request = GraphQLRequest<Post>.get(Post.self, byId: "id")
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == Post?.self)
@@ -92,11 +92,11 @@ class GraphQLRequestModelTests: XCTestCase {
 
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
-        documentBuilder.add(decorator: PredicateDecorator(predicate: predicate))
+        documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter))
         documentBuilder.add(decorator: PaginationDecorator())
         let document = documentBuilder.build()
 
-        let request = GraphQLRequest<Post>.query(from: Post.self, where: predicate)
+        let request = GraphQLRequest<Post>.list(Post.self, where: predicate)
 
         XCTAssertEqual(document.stringValue, request.document)
         XCTAssert(request.responseType == [Post].self)

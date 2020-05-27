@@ -31,7 +31,6 @@ public enum QueryPredicateConstant: QueryPredicate {
 }
 
 public class QueryPredicateGroup: QueryPredicate {
-
     public internal(set) var type: QueryPredicateGroupType
     public internal(set) var predicates: [QueryPredicate]
 

@@ -21,10 +21,10 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour {
 
     convenience init(region: AWSRegionType,
                      bucket: String,
-                     cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
+                     credentialsProvider: AWSCredentialsProvider,
                      identifier: String) throws {
         let serviceConfiguration = AmplifyAWSServiceConfiguration(region: region,
-                                                                  credentialsProvider: cognitoCredentialsProvider)
+                                                                  credentialsProvider: credentialsProvider)
 
         AWSS3TransferUtility.register(with: serviceConfiguration, forKey: identifier)
         AWSS3PreSignedURLBuilder.register(with: serviceConfiguration, forKey: identifier)

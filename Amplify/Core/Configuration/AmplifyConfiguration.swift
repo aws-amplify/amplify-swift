@@ -12,6 +12,7 @@ public struct AmplifyConfiguration: Codable {
     enum CodingKeys: String, CodingKey {
         case analytics
         case api
+        case auth
         case dataStore
         case hub
         case logging
@@ -25,7 +26,10 @@ public struct AmplifyConfiguration: Codable {
     /// Configurations for the Amplify API category
     let api: APICategoryConfiguration?
 
-    /// Configurations for the Amplify API category
+    /// Configurations for the Amplify Auth category
+    let auth: AuthCategoryConfiguration?
+
+    /// Configurations for the Amplify DataStore category
     let dataStore: DataStoreCategoryConfiguration?
 
     /// Configurations for the Amplify Hub category
@@ -42,6 +46,7 @@ public struct AmplifyConfiguration: Codable {
 
     public init(analytics: AnalyticsCategoryConfiguration? = nil,
                 api: APICategoryConfiguration? = nil,
+                auth: AuthCategoryConfiguration? = nil,
                 dataStore: DataStoreCategoryConfiguration? = nil,
                 hub: HubCategoryConfiguration? = nil,
                 logging: LoggingCategoryConfiguration? = nil,
@@ -49,6 +54,7 @@ public struct AmplifyConfiguration: Codable {
                 storage: StorageCategoryConfiguration? = nil) {
         self.analytics = analytics
         self.api = api
+        self.auth = auth
         self.dataStore = dataStore
         self.hub = hub
         self.logging = logging
@@ -91,12 +97,15 @@ extension Amplify {
 
         let configuration = try Amplify.resolve(configuration: configuration)
 
-        // Always configure Logging and Hub first, so they are available to other categoories.
-        try configure(Logging, using: configuration)
-        try configure(Hub, using: configuration)
+        // Always configure Logging, Hub and Auth first, so they are available to other categories.
+        // Auth is a special case for other plugins which depend on using Auth when being configured themselves.
+        let manuallyConfiguredCategories = [CategoryType.logging, .hub, .auth]
+        for categoryType in manuallyConfiguredCategories {
+            try configure(categoryType.category, using: configuration)
+        }
 
         // Looping through all categories to ensure we don't accidentally forget a category at some point in the future
-        let remainingCategories = CategoryType.allCases.filter { $0 != .hub && $0 != .logging }
+        let remainingCategories = CategoryType.allCases.filter { !manuallyConfiguredCategories.contains($0) }
         for categoryType in remainingCategories {
             switch categoryType {
             case .analytics:
@@ -109,8 +118,7 @@ extension Amplify {
                 try configure(Predictions, using: configuration)
             case .storage:
                 try configure(Storage, using: configuration)
-
-            case .hub, .logging:
+            case .hub, .logging, .auth:
                 // Already configured
                 break
             }

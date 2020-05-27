@@ -17,8 +17,12 @@ class MockOutgoingMutationQueue: OutgoingMutationQueueBehavior {
         //no-op
     }
 
-    func startSyncingToCloud(api: APICategoryGraphQLBehavior, mutationEventPublisher: MutationEventPublisher) {
+    func startSyncingToCloud(api: APICategoryGraphQLBehavior,
+                             mutationEventPublisher: MutationEventPublisher) {
         //no-op
     }
 
+    var publisher: AnyPublisher<MutationEvent, Never> {
+        return PassthroughSubject<MutationEvent, Never>().eraseToAnyPublisher()
+    }
 }

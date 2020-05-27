@@ -13,5 +13,5 @@ public protocol AnalyticsEvent {
     var name: String { get }
 
     // Properties of the event
-    var properties: [String: AnalyticsPropertyValue]? { get }
+    var properties: AnalyticsProperties? { get }
 }

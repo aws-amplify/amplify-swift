@@ -10,11 +10,11 @@ import Amplify
 import AWSMobileClient
 import AWSPluginsCore
 
-public class AWSTranscribeOperation: AmplifyOperation<PredictionsSpeechToTextRequest,
-    Void,
+public class AWSTranscribeOperation: AmplifyOperation<
+    PredictionsSpeechToTextRequest,
     SpeechToTextResult,
-    PredictionsError>,
-PredictionsSpeechToTextOperation {
+    PredictionsError
+>, PredictionsSpeechToTextOperation {
 
     let multiService: TranscribeMultiService
     let requestInProcess: Bool
@@ -22,13 +22,13 @@ PredictionsSpeechToTextOperation {
     init(request: PredictionsSpeechToTextRequest,
          multiService: TranscribeMultiService,
          requestInProcess: Bool,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
         self.multiService = multiService
         self.requestInProcess = requestInProcess
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.speechToText,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func main() {
@@ -38,15 +38,17 @@ PredictionsSpeechToTextOperation {
          }
 
         if requestInProcess {
-            let error = PredictionsError.network("There is already a transcription request in process.",
-                                                 "Please wait for that to finish before calling another transcription request")
-            dispatch(event: .failed(error))
+            let error = PredictionsError.network(
+                "There is already a transcription request in process.",
+                "Please wait for that to finish before calling another transcription request"
+            )
+            dispatch(result: .failure(error))
             finish()
             return
         }
 
         if let error = request.validate() {
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
             return
         }
@@ -72,10 +74,10 @@ PredictionsSpeechToTextOperation {
 
         switch event {
         case .completed(let result):
-            dispatch(event: .completed(result))
+            dispatch(result: .success(result))
             finish()
         case .failed(let error):
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
         }
     }

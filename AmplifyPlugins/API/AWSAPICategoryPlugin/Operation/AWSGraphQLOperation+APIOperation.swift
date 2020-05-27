@@ -27,11 +27,11 @@ extension AWSGraphQLOperation: APIOperation {
         do {
             try apiOperationResponse.validate()
         } catch let error as APIError {
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
             return
         } catch {
-            dispatch(event: .failed(APIError.unknown("", "", error)))
+            dispatch(result: .failure(APIError.unknown("", "", error)))
             finish()
             return
         }
@@ -49,11 +49,11 @@ extension AWSGraphQLOperation: APIOperation {
         do {
             try apiOperationResponse.validate()
         } catch let error as APIError {
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
             return
         } catch {
-            dispatch(event: .failed(APIError.unknown("", "", error)))
+            dispatch(result: .failure(APIError.unknown("", "", error)))
             finish()
             return
         }
@@ -66,14 +66,14 @@ extension AWSGraphQLOperation: APIOperation {
                                                                     decodePath: request.decodePath,
                                                                     rawGraphQLResponse: graphQLResponseData)
 
-            dispatch(event: .completed(graphQLResponse))
+            dispatch(result: .success(graphQLResponse))
             finish()
         } catch let error as APIError {
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
         } catch {
             let apiError = APIError.operationError("failed to process graphqlResponseData", "", error)
-            dispatch(event: .failed(apiError))
+            dispatch(result: .failure(apiError))
             finish()
         }
     }

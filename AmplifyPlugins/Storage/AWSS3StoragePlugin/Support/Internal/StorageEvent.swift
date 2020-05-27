@@ -24,4 +24,9 @@ enum StorageEvent<InitiatedType, InProcessType, CompletedType, ErrorType: Amplif
     /// The StorageEvent failed. No further status updates will be emitted for this event. Any result values will be
     /// available in the StorageEvent `value`.
     case failed(ErrorType)
+
+}
+
+extension StorageEvent where CompletedType == Void {
+    static var completedVoid: StorageEvent { .completed(()) }
 }

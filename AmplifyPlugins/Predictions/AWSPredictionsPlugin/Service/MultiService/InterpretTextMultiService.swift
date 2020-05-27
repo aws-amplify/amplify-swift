@@ -25,7 +25,9 @@ class InterpretTextMultiService: MultiServiceBehavior {
     func fetchOnlineResult(callback: @escaping InterpretTextEventHandler) {
         guard let onlineService = predictionsService else {
             let message = InterpretMultiServiceErrorMessage.onlineInterpretServiceNotAvailable.errorDescription
-            let recoveryMessage = InterpretMultiServiceErrorMessage.onlineInterpretServiceNotAvailable.recoverySuggestion
+            let recoveryMessage = InterpretMultiServiceErrorMessage
+                .onlineInterpretServiceNotAvailable
+                .recoverySuggestion
             let predictionError = PredictionsError.service(message, recoveryMessage, nil)
             callback(.failed(predictionError))
             return
@@ -43,7 +45,9 @@ class InterpretTextMultiService: MultiServiceBehavior {
     func fetchOfflineResult(callback: @escaping InterpretTextEventHandler) {
         guard let offlineService = coreMLService else {
             let message = InterpretMultiServiceErrorMessage.offlineInterpretServiceNotAvailable.errorDescription
-            let recoveryMessage = InterpretMultiServiceErrorMessage.offlineInterpretServiceNotAvailable.recoverySuggestion
+            let recoveryMessage = InterpretMultiServiceErrorMessage
+                .offlineInterpretServiceNotAvailable
+                .recoverySuggestion
             let predictionError = PredictionsError.service(message, recoveryMessage, nil)
             callback(.failed(predictionError))
             return

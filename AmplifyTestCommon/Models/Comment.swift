@@ -12,12 +12,12 @@ import Foundation
 public struct Comment: Model {
   public let id: String
   public var content: String
-  public var createdAt: Date
+  public var createdAt: Temporal.DateTime
   public var post: Post
 
   public init(id: String = UUID().uuidString,
       content: String,
-      createdAt: Date,
+      createdAt: Temporal.DateTime,
       post: Post) {
       self.id = id
       self.content = content

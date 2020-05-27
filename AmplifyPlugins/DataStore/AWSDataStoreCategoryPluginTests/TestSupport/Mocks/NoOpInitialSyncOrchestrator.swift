@@ -9,7 +9,7 @@
 @testable import AWSDataStoreCategoryPlugin
 
 struct NoOpInitialSyncOrchestrator: InitialSyncOrchestrator {
-    static let factory: InitialSyncOrchestratorFactory = { _, _, _ in
+    static let factory: InitialSyncOrchestratorFactory = { _, _, _, _ in
         NoOpInitialSyncOrchestrator()
     }
 

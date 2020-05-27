@@ -11,101 +11,72 @@ import AWSMobileClient
 
 public class AWSAuthService: AWSAuthServiceBehavior {
 
-    var mobileClient: AWSMobileClientBehavior!
+    public init() {}
 
-    public convenience init() {
-        self.init(mobileClient: nil)
-    }
-
-    init(mobileClient: AWSMobileClientBehavior? = nil) {
-        let mobileClient = mobileClient ?? AWSMobileClientAdapter(AWSMobileClient.default())
-        self.mobileClient = mobileClient
-    }
-
-    public func getCognitoCredentialsProvider() -> AWSCognitoCredentialsProvider {
-        return mobileClient.getCognitoCredentialsProvider()
+    public func getCredentialsProvider() -> AWSCredentialsProvider {
+        return AmplifyAWSCredentialsProvider()
     }
 
     public func getIdentityId() -> Result<String, AuthError> {
-        let task = mobileClient.getIdentityId()
-        task.waitUntilFinished()
-
-        guard task.error == nil else {
-            if let error = task.error! as? AWSMobileClientError {
-                return .failure(map(error))
+        var result: Result<String, AuthError>?
+        let semaphore = DispatchSemaphore(value: 0)
+        _ = Amplify.Auth.fetchAuthSession { event in
+            defer {
+                semaphore.signal()
             }
 
-            return .failure(AuthError.unknown("Some error occuring retrieving the IdentityId."))
-        }
+            switch event {
+            case .success(let session):
+                result = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
+            case .failure(let error):
+                result = .failure(error)
 
-        guard let identityId = task.result else {
-            let error = AuthError.unknown("Got successful response but missing IdentityId in the result.")
-            return .failure(error)
+            }
         }
-
-        return .success(identityId as String)
+        semaphore.wait()
+        guard let validResult = result else {
+            return .failure(AuthError.unknown("""
+            Did not receive a valid response from fetchAuthSession for identityId.
+            """))
+        }
+        return validResult
     }
 
     public func getToken() -> Result<String, AuthError> {
-        var jwtToken: String?
-        var authError: AuthError?
-
+        var result: Result<String, AuthError>?
         let semaphore = DispatchSemaphore(value: 0)
-        mobileClient.getTokens { [weak self] tokens, error in
-            if let error = error as? AWSMobileClientError {
-                authError = self?.map(error)
-            } else if let token = tokens {
-                jwtToken = token.idToken?.tokenString
+        _ = Amplify.Auth.fetchAuthSession { [weak self] event in
+
+            defer {
+                semaphore.signal()
             }
 
-            semaphore.signal()
+            switch event {
+            case .success(let session):
+                result = self?.getTokenString(from: session)
+            case .failure(let error):
+                result = .failure(error)
+
+            }
         }
         semaphore.wait()
-        guard authError == nil else {
-            if let error = authError {
+        guard let validResult = result else {
+            return .failure(AuthError.unknown("""
+            Did not receive a valid response from fetchAuthSession for get token.
+            """))
+        }
+        return validResult
+    }
+
+    private func getTokenString(from authSession: AuthSession) -> Result<String, AuthError>? {
+        if let result = (authSession as? AuthCognitoTokensProvider)?.getCognitoTokens() {
+            switch result {
+            case .success(let tokens):
+                return .success(tokens.idToken)
+            case .failure(let error):
                 return .failure(error)
             }
-
-            return .failure(AuthError.unknown("not sure what happened trying to get failure for retrieving token"))
         }
-        guard let token = jwtToken else {
-            return .failure(AuthError.unknown("not sure what happened getting the jwtToken"))
-        }
-
-        return .success(token)
-    }
-
-    /// Used for testing only. Invoking this method outside of a testing scope has undefined behavior.
-    public func reset() {
-        mobileClient = nil
-    }
-
-    private func map(_ error: AWSMobileClientError) -> AuthError {
-        switch error {
-        case .identityIdUnavailable(let message):
-            return AuthError.identity("Identity Id is Unavailable",
-                                      message,
-                                      """
-                                      Check for network connectivity and try again.
-                                      """,
-                                      error)
-        case .guestAccessNotAllowed(let message):
-            return AuthError.notAuthorized(message,
-                                           """
-                                           Cognito was configured to disallow unauthenticated (guest) access.
-                                           Turn on guest access and try again.
-                                           """,
-                                           error)
-        case .notSignedIn(let message):
-            return AuthError.notAuthenticated(message,
-                                              "The user needs be authenticated to make this request",
-                                              error)
-        case .notAuthorized(let message):
-            return AuthError.notAuthorized(message,
-                                           "The user does not have the correct permissions to make this request",
-                                           error)
-        default:
-            return AuthError.unknown(error.message)
-        }
+        return nil
     }
 }

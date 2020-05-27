@@ -10,9 +10,10 @@ import Foundation
 // MARK: - Enum
 
 public enum DataStoreError: Error {
-    case api(AmplifyError)
+    case api(AmplifyError, MutationEvent? = nil)
     case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
     case conflict(DataStoreSyncConflict)
+    case invalidCondition(ErrorDescription, RecoverySuggestion, Error? = nil)
     case decodingError(ErrorDescription, RecoverySuggestion)
     case internalOperation(ErrorDescription, RecoverySuggestion, Error? = nil)
     case invalidDatabase(path: String, Error? = nil)
@@ -29,7 +30,7 @@ extension DataStoreError: AmplifyError {
 
     public var errorDescription: ErrorDescription {
         switch self {
-        case .api(let error):
+        case .api(let error, _):
             return error.errorDescription
         case .conflict:
             return "A conflict occurred syncing a local model with the remote API"
@@ -45,6 +46,7 @@ extension DataStoreError: AmplifyError {
             Only a single result was expected and the actual count was \(count).
             """
         case .configuration(let errorDescription, _, _),
+             .invalidCondition(let errorDescription, _, _),
              .decodingError(let errorDescription, _),
              .internalOperation(let errorDescription, _, _),
              .sync(let errorDescription, _, _),
@@ -55,11 +57,11 @@ extension DataStoreError: AmplifyError {
 
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
-        case .api(let error):
+        case .api(let error, _):
             return error.recoverySuggestion
         case .conflict:
             return "See this error's associated value for the details of the conflict"
-        case .invalidDatabase(let path):
+        case .invalidDatabase(let path, _):
             return "Make sure the path \(path) is valid and the device has available storage space."
         case .invalidModelName(let modelName):
             // TODO: Is this the right command to run to generate models?
@@ -72,6 +74,7 @@ extension DataStoreError: AmplifyError {
             as unique indexes and primary keys.
             """
         case .configuration(_, let recoverySuggestion, _),
+             .invalidCondition(_, let recoverySuggestion, _),
              .decodingError(_, let recoverySuggestion),
              .internalOperation(_, let recoverySuggestion, _),
              .sync(_, let recoverySuggestion, _),
@@ -82,9 +85,10 @@ extension DataStoreError: AmplifyError {
 
     public var underlyingError: Error? {
         switch self {
-        case .api(let amplifyError):
+        case .api(let amplifyError, _):
             return amplifyError
         case .configuration(_, _, let underlyingError),
+             .invalidCondition(_, _, let underlyingError),
              .internalOperation(_, _, let underlyingError),
              .invalidDatabase(_, let underlyingError),
              .invalidOperation(let underlyingError),

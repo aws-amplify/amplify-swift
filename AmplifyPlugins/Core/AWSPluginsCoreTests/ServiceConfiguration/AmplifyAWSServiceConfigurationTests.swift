@@ -9,7 +9,7 @@ import XCTest
 @testable import AWSPluginsCore
 
 class AmplifyAWSServiceConfigurationTests: XCTestCase {
-    let credentialProvider = AWSAuthService().getCognitoCredentialsProvider()
+    let credentialProvider = AWSAuthService().getCredentialsProvider()
     func testInstantiation() {
         let currentSystemName = UIDevice.current.systemName.replacingOccurrences(of: " ", with: "-")
         let currentSystemVersion = UIDevice.current.systemVersion

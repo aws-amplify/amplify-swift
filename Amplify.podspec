@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = 'Amplify'
-  s.version      = '0.10.0'
+  s.version      = '1.0.0'
   s.summary      = 'Amazon Web Services Amplify for iOS.'
 
   s.description  = 'AWS Amplify for iOS provides a declarative library for application development using cloud services'
@@ -17,10 +17,30 @@ Pod::Spec.new do |s|
   s.homepage     = 'https://aws.amazon.com/amplify/'
   s.license      = 'Apache License, Version 2.0'
   s.author       = { 'Amazon Web Services' => 'amazonwebservices' }
-  s.platform     = :ios, '11.0'
   s.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => s.version}
-  
-  s.requires_arc = true
+
+  s.platform     = :ios, '11.0'
+  s.swift_version = '5.0'
+
   s.source_files = 'Amplify/**/*.swift'
+  s.default_subspec = 'Default'
+
+  s.subspec 'Default' do |default|
+    default.preserve_path = 'AmplifyTools'
+    default.script_phase = {
+      :name => 'Default',
+      :script => 'echo "no-op"',
+      :execution_position => :before_compile
+    }
+  end
+
+  s.subspec 'Tools' do |ss|
+    ss.preserve_path = 'AmplifyTools'
+    ss.script_phase = {
+      :name => 'AmplifyTools',
+      :script => 'mkdir -p ${PODS_ROOT}/AmplifyTools; cp -vf "${PODS_TARGET_SRCROOT}/AmplifyTools/amplify-tools.sh" ${PODS_ROOT}/AmplifyTools/.',
+      :execution_position => :before_compile
+    }
+  end
 
 end

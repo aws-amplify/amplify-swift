@@ -53,6 +53,11 @@ struct GraphQLResponseDecoder {
 
         case (.some(let data), .some(let errors)):
             do {
+                if data.count == 1, let first = data.first, case .null = first.value {
+                    let responseErrors = try decodeErrors(graphQLErrors: errors)
+                    return GraphQLResponse<R>.failure(.error(responseErrors))
+                }
+
                 let jsonValue = JSONValue.object(data)
                 let responseData = try decode(graphQLData: jsonValue,
                                               into: responseType,
@@ -158,29 +163,6 @@ struct GraphQLResponseDecoder {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
         return try decoder.decode(responseType, from: serializedJSON)
-    }
-
-    private static func decodeErrors(graphQLErrors: [JSONValue]) throws -> [GraphQLError] {
-        var responseErrors = [GraphQLError]()
-        for error in graphQLErrors {
-            do {
-                let responseError = try decode(graphQLError: error)
-                responseErrors.append(responseError)
-            } catch let decodingError as DecodingError {
-                throw APIError(error: decodingError)
-            } catch {
-                throw APIError.operationError("", "", error)
-            }
-        }
-
-        return responseErrors
-    }
-
-    private static func decode(graphQLError: JSONValue) throws -> GraphQLError {
-        let serializedJSON = try JSONEncoder().encode(graphQLError)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
-        return try decoder.decode(GraphQLError.self, from: serializedJSON)
     }
 
     private static func serialize(graphQLData: JSONValue,

@@ -19,6 +19,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
     var stateMachine: MockStateMachine<OutgoingMutationQueue.State, OutgoingMutationQueue.Action>!
     var publisher: AWSMutationEventPublisher!
     var apiBehavior: MockAPICategoryPlugin!
+    var storageAdapter: StorageEngineAdapter!
     var eventSource: MockMutationEventSource!
     override func setUp() {
         do {
@@ -29,11 +30,13 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         ModelRegistry.register(modelType: Post.self)
         stateMachine = MockStateMachine(initialState: .notInitialized,
                                         resolver: OutgoingMutationQueue.Resolver.resolve(currentState:action:))
-        mutationQueue = OutgoingMutationQueue(stateMachine)
+        storageAdapter = MockSQLiteStorageEngineAdapter()
+        mutationQueue = OutgoingMutationQueue(stateMachine,
+                                              storageAdapter: storageAdapter,
+                                              dataStoreConfiguration: .default)
         eventSource = MockMutationEventSource()
         publisher = AWSMutationEventPublisher(eventSource: eventSource)
         apiBehavior = MockAPICategoryPlugin()
-
     }
 
     func testInitialState() {
@@ -43,7 +46,9 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             expect.fulfill()
         }
 
-        mutationQueue = OutgoingMutationQueue(stateMachine)
+        mutationQueue = OutgoingMutationQueue(stateMachine,
+                                              storageAdapter: storageAdapter,
+                                              dataStoreConfiguration: .default)
         waitForExpectations(timeout: 1)
 
         XCTAssertEqual(stateMachine.state, OutgoingMutationQueue.State.notInitialized)
@@ -112,7 +117,10 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         wait(for: [receivedSubscription], timeout: 200)
 
         //Mock incoming mutation event
-        let futureResult = try MutationEvent(model: Post(title: "title", content: "content", createdAt: Date()),
+        let post = Post(title: "title",
+                        content: "content",
+                        createdAt: .now())
+        let futureResult = try MutationEvent(model: post,
                                              mutationType: .create)
         eventSource.pushMutationEvent(futureResult: .success(futureResult))
 
@@ -122,7 +130,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             enqueueEvent.fulfill()
         }
         let mutateAPICallExpecation = expectation(description: "Call to api category for mutate")
-        var listenerFromRequest: GraphQLOperation<MutationSync<AnyModel>>.EventListener!
+        var listenerFromRequest: GraphQLOperation<MutationSync<AnyModel>>.ResultListener!
         let responder = MutateRequestListenerResponder<MutationSync<AnyModel>> { _, eventListener in
             mutateAPICallExpecation.fulfill()
             listenerFromRequest = eventListener
@@ -143,7 +151,8 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         let startRecievedAgain = expectation(description: "Start recieved again")
         let resumeSyncingToCloud = expectation(description: "Resume sync to cloud")
         stateMachine.pushExpectActionCriteria { action in
-            XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedStart(self.apiBehavior, self.publisher))
+            XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedStart(self.apiBehavior,
+                                                                              self.publisher))
             startRecievedAgain.fulfill()
         }
         stateMachine.pushExpectActionCriteria { action in
@@ -151,7 +160,8 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
             resumeSyncingToCloud.fulfill()
         }
 
-        mutationQueue.startSyncingToCloud(api: apiBehavior, mutationEventPublisher: publisher)
+        mutationQueue.startSyncingToCloud(api: apiBehavior,
+                                          mutationEventPublisher: publisher)
         stateMachine.state = .resumingMutationQueue
 
         wait(for: [startRecievedAgain, resumeSyncingToCloud], timeout: 1)
@@ -170,7 +180,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
                                                       lastChangedAt: Date().unixSeconds,
                                                       version: 2)
         let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
-        listenerFromRequest(.completed(.success(remoteMutationSync)))
+        listenerFromRequest(.success(.success(remoteMutationSync)))
 
         wait(for: [processEvent], timeout: 1)
     }
@@ -250,7 +260,9 @@ extension OutgoingMutationQueueMockStateTest {
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                  storageEngine: storageEngine,
-                                                 dataStorePublisher: dataStorePublisher)
+                                                 dataStorePublisher: dataStorePublisher,
+                                                 validAPIPluginKey: "MockAPICategoryPlugin",
+                                                 validAuthPluginKey: "MockAuthCategoryPlugin")
         try Amplify.add(plugin: dataStorePlugin)
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
             "awsDataStorePlugin": true

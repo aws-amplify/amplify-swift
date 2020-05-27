@@ -20,7 +20,10 @@ extension RemoteSyncEngine {
             case (.pausingSubscriptions, .pausedSubscriptions):
                 return .pausingMutationQueue
 
-            case (.pausingMutationQueue, .pausedMutationQueue(let api, let storageEngineAdapter)):
+            case (.pausingMutationQueue, .pausedMutationQueue(let storageEngineAdapter)):
+                return .clearingStateOutgoingMutations(storageEngineAdapter)
+
+            case (.clearingStateOutgoingMutations, .clearedStateOutgoingMutations(let api, let storageEngineAdapter)):
                 return .initializingSubscriptions(api, storageEngineAdapter)
 
             case (.initializingSubscriptions, .initializedSubscriptions):
@@ -33,7 +36,8 @@ extension RemoteSyncEngine {
             case (.performingInitialSync, .errored(let error)):
                 return .cleaningUp(error)
 
-            case (.activatingCloudSubscriptions, .activatedCloudSubscriptions(let api, let mutationEventPublisher)):
+            case (.activatingCloudSubscriptions, .activatedCloudSubscriptions(let api,
+                                                                              let mutationEventPublisher)):
                 return .activatingMutationQueue(api, mutationEventPublisher)
             case (.activatingCloudSubscriptions, .errored(let error)):
                 return .cleaningUp(error)

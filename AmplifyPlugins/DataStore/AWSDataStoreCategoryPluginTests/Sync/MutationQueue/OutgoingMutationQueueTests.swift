@@ -23,12 +23,13 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
         tryOrFail {
             try setUpStorageAdapter()
-            try setUpDataStore(mutationQueue: OutgoingMutationQueue())
+            try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
+                                                                    dataStoreConfiguration: .default))
         }
 
         let post = Post(title: "Post title",
                         content: "Post content",
-                        createdAt: Date())
+                        createdAt: .now())
 
         let createMutationSent = expectation(description: "Create mutation sent to API category")
         apiPlugin.listeners.append { message in
@@ -71,7 +72,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
             let pendingPost = Post(id: postId,
                                    title: "pendingPost-\(id) title",
                 content: "pendingPost-\(id) content",
-                createdAt: Date())
+                createdAt: .now())
 
             let pendingPostJSON = try pendingPost.toJSON()
             let event = MutationEvent(id: "mutation-\(id)",
@@ -79,7 +80,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
                 modelName: Post.modelName,
                 json: pendingPostJSON,
                 mutationType: .create,
-                createdAt: Date())
+                createdAt: .now())
 
             storageAdapter.save(event) { result in
                 switch result {
@@ -106,7 +107,8 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         }
 
         tryOrFail {
-            try setUpDataStore(mutationQueue: OutgoingMutationQueue())
+            try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
+                                                                    dataStoreConfiguration: .default))
             try startAmplify()
         }
 

@@ -23,7 +23,7 @@ class StorageAdapterMutationSyncTests: BaseDataStoreTests {
         let expect = expectation(description: "it should create posts and sync metadata")
         // insert some posts
         let posts = stride(from: 0, to: 3, by: 1).map {
-            Post(title: "title \($0)", content: "content \($0)", createdAt: Date())
+            Post(title: "title \($0)", content: "content \($0)", createdAt: .now())
         }
         populateData(posts)
 

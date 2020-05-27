@@ -22,6 +22,9 @@ class SyncEngineTestBase: XCTestCase {
     /// Mock used to listen for API calls; this is how we assert that syncEngine is delivering events to the API
     var apiPlugin: MockAPICategoryPlugin!
 
+    /// Mock used to listen for Auth calls; this is how we assert that syncEngine is checking authentication state
+    var authPlugin: MockAuthCategoryPlugin!
+
     /// Used for DB manipulation to mock starting data for tests
     var storageAdapter: SQLiteStorageEngineAdapter!
 
@@ -45,15 +48,21 @@ class SyncEngineTestBase: XCTestCase {
             "MockAPICategoryPlugin": true
         ])
 
+        let authConfig = AuthCategoryConfiguration(plugins: [
+            "MockAuthCategoryPlugin": true
+        ])
+
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
             "awsDataStorePlugin": true
         ])
 
-        amplifyConfig = AmplifyConfiguration(api: apiConfig, dataStore: dataStoreConfig)
+        amplifyConfig = AmplifyConfiguration(api: apiConfig, auth: authConfig, dataStore: dataStoreConfig)
 
         apiPlugin = MockAPICategoryPlugin()
+        authPlugin = MockAuthCategoryPlugin()
         tryOrFail {
             try Amplify.add(plugin: apiPlugin)
+            try Amplify.add(plugin: authPlugin)
         }
     }
 
@@ -80,6 +89,7 @@ class SyncEngineTestBase: XCTestCase {
                                     resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
 
         syncEngine = RemoteSyncEngine(storageAdapter: storageAdapter,
+                                      dataStoreConfiguration: .default,
                                       outgoingMutationQueue: mutationQueue,
                                       mutationEventIngester: mutationDatabaseAdapter,
                                       mutationEventPublisher: awsMutationEventPublisher,
@@ -103,13 +113,21 @@ class SyncEngineTestBase: XCTestCase {
                     }
         })
 
+        let validAPIPluginKey = "MockAPICategoryPlugin"
+        let validAuthPluginKey = "MockAuthCategoryPlugin"
+
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          syncEngine: syncEngine)
+                                          dataStoreConfiguration: .default,
+                                          syncEngine: syncEngine,
+                                          validAPIPluginKey: validAPIPluginKey,
+                                          validAuthPluginKey: validAuthPluginKey)
 
         let publisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: modelRegistration,
                                                  storageEngine: storageEngine,
-                                                 dataStorePublisher: publisher)
+                                                 dataStorePublisher: publisher,
+                                                 validAPIPluginKey: validAPIPluginKey,
+                                                 validAuthPluginKey: validAuthPluginKey)
 
         try Amplify.add(plugin: dataStorePlugin)
     }
@@ -151,7 +169,7 @@ class SyncEngineTestBase: XCTestCase {
                                               modelName: post.modelName,
                                               json: post.toJSON(),
                                               mutationType: mutationType,
-                                              createdAt: Date(),
+                                              createdAt: .now(),
                                               inProcess: inProcess)
 
         let mutationEventSaved = expectation(description: "Preloaded mutation event saved")

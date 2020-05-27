@@ -7,5 +7,4 @@
 
 import Foundation
 
-protocol Tracker {
-}
+protocol Tracker {}

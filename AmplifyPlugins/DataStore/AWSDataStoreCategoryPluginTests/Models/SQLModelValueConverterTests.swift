@@ -16,10 +16,11 @@ class SQLModelValueConverterTests: BaseDataStoreTests {
 
     private let testId = "df5dd4a4-34f8-4974-8a37-2617cf8dafe1"
 
-    private let testDateString = "2020-02-02T08:00:00.000Z"
+    private let testDateString = "2020-02-02Z"
 
-    private var testDate: Date {
-        return testDateString.iso8601Date!
+    private var testDate: Temporal.Date {
+        // swiftlint:disable:next force_try
+        return try! Temporal.Date(iso8601String: testDateString)
     }
 
     private var exampleModel: ExampleWithEveryType {

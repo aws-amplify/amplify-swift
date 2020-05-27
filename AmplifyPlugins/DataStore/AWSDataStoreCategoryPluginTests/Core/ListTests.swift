@@ -139,11 +139,11 @@ class ListTests: BaseDataStoreTests {
     // MARK: - Helpers
 
     func preparePostDataForTest() -> Model.Identifier {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         populateData([post])
         populateData([
-            Comment(content: "Comment 1", createdAt: Date(), post: post),
-            Comment(content: "Comment 2", createdAt: Date(), post: post)
+            Comment(content: "Comment 1", createdAt: .now(), post: post),
+            Comment(content: "Comment 2", createdAt: .now(), post: post)
         ])
         return post.id
     }

@@ -68,7 +68,7 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
                                      document: testDocument,
                                      variables: nil,
                                      responseType: JSONValue.self)
-        let operation = apiPlugin.subscribe(request: request, listener: nil)
+        let operation = apiPlugin.subscribe(request: request, valueListener: nil, completionListener: nil)
 
         XCTAssertNotNil(operation)
 

@@ -10,9 +10,11 @@ import Amplify
 import AWSPluginsCore
 import AWSPolly
 
-public class AWSPollyOperation: AmplifyOperation<PredictionsTextToSpeechRequest,
-    Void, TextToSpeechResult, PredictionsError>,
-PredictionsTextToSpeechOperation {
+public class AWSPollyOperation: AmplifyOperation<
+    PredictionsTextToSpeechRequest,
+    TextToSpeechResult,
+    PredictionsError
+>, PredictionsTextToSpeechOperation {
 
     let predictionsService: AWSPredictionsService
     let authService: AWSAuthServiceBehavior
@@ -20,13 +22,13 @@ PredictionsTextToSpeechOperation {
     init(_ request: PredictionsTextToSpeechRequest,
          predictionsService: AWSPredictionsService,
          authService: AWSAuthServiceBehavior,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
         self.predictionsService = predictionsService
         self.authService = authService
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.textToSpeech,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func cancel() {
@@ -40,7 +42,7 @@ PredictionsTextToSpeechOperation {
         }
 
         if let error = try? request.validate() {
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
             return
         }
@@ -58,10 +60,10 @@ PredictionsTextToSpeechOperation {
     private func onServiceEvent(event: PredictionsEvent<TextToSpeechResult, PredictionsError>) {
         switch event {
         case .completed(let result):
-            dispatch(event: .completed(result))
+            dispatch(result: .success(result))
             finish()
         case .failed(let error):
-            dispatch(event: .failed(error))
+            dispatch(result: .failure(error))
             finish()
 
         }
@@ -69,7 +71,8 @@ PredictionsTextToSpeechOperation {
 
     private func reconcileVoiceId(voicePassedIn: VoiceType?,
                                   config: PredictionsPluginConfiguration) -> AWSPollyVoiceId {
-        //we return a default if what is passed in doesn't resolve properly to our enum and config was empty for some odd reason.
+        // we return a default if what is passed in doesn't resolve properly to our enum
+        // and config was empty for some odd reason.
         let defaultVoiceId = AWSPollyVoiceId.ivy
 
         if let voicePassedIn = voicePassedIn {

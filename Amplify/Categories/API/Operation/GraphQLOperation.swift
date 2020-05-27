@@ -7,15 +7,16 @@
 
 public typealias GraphQLOperation<R: Decodable> = AmplifyOperation<
     GraphQLOperationRequest<R>,
-    Void,
     GraphQLResponse<R>,
-    APIError>
+    APIError
+>
 
-public typealias GraphQLSubscriptionOperation<R: Decodable> = AmplifyOperation<
+public typealias GraphQLSubscriptionOperation<R: Decodable> = AmplifyInProcessReportingOperation<
     GraphQLOperationRequest<R>,
     SubscriptionEvent<GraphQLResponse<R>>,
     Void,
-    APIError>
+    APIError
+>
 
 public extension HubPayload.EventName.API {
     /// eventName for HubPayloads emitted by this operation
