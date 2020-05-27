@@ -4,7 +4,7 @@ version: 2.1
 
 defaults: &defaults
   macos:
-    xcode: "11.2.1"
+    xcode: "11.4.0"
   working_directory: ~/amplify-ios
   environment:
       BUNDLE_PATH: vendor/bundle
@@ -157,13 +157,10 @@ jobs:
       - *restore_repo
       - restore_gems
       - check_bundle
-      # - run:
-      #     name: Bump pod versions
-      #     command: bundle exec fastlane bump_podspecs_patch
       - run:
           name: Release pods
           command: bundle exec fastlane release_pods
-
+          no_output_timeout: 20m
 
 workflows:
   build_test_deploy:
@@ -176,13 +173,6 @@ workflows:
           requires:
             - install_gems
       - plugin_unit_test:
-          name: unit_test_api
-          path: API
-          workspace: APICategoryPlugin
-          scheme: AWSAPICategoryPlugin
-          requires:
-            - install_gems
-      - plugin_unit_test:
           name: unit_test_analytics
           path: Analytics
           workspace: AnalyticsCategoryPlugin
@@ -190,17 +180,24 @@ workflows:
           requires:
             - install_gems
       - plugin_unit_test:
-          name: unit_test_storage
-          path: Storage
-          workspace: StoragePlugin
-          scheme: AWSS3StoragePlugin
+          name: unit_test_api
+          path: API
+          workspace: APICategoryPlugin
+          scheme: AWSAPICategoryPlugin
           requires:
             - install_gems
       - plugin_unit_test:
-          name: unit_test_predictions
-          path: Predictions
-          workspace: PredictionsCategoryPlugin
-          scheme: AWSPredictionsPlugin
+          name: unit_test_auth
+          path: Auth
+          workspace: AWSCognitoAuthPlugin
+          scheme: AWSCognitoAuthPlugin
+          requires:
+            - install_gems
+      - plugin_unit_test:
+          name: unit_test_datastore
+          path: DataStore
+          workspace: DataStoreCategoryPlugin
+          scheme: AWSDataStoreCategoryPlugin
           requires:
             - install_gems
       - plugin_unit_test:
@@ -211,10 +208,17 @@ workflows:
           requires:
             - install_gems
       - plugin_unit_test:
-          name: unit_test_datastore
-          path: DataStore
-          workspace: DataStoreCategoryPlugin
-          scheme: AWSDataStoreCategoryPlugin
+          name: unit_test_predictions
+          path: Predictions
+          workspace: PredictionsCategoryPlugin
+          scheme: AWSPredictionsPlugin
+          requires:
+            - install_gems
+      - plugin_unit_test:
+          name: unit_test_storage
+          path: Storage
+          workspace: StoragePlugin
+          scheme: AWSS3StoragePlugin
           requires:
             - install_gems
       - deploy:
@@ -224,8 +228,10 @@ workflows:
                 - release
           requires:
             - build_test_amplify
-            - unit_test_api
             - unit_test_analytics
-            - unit_test_storage
-            - unit_test_predictions
+            - unit_test_api
+            - unit_test_auth
+            - unit_test_core_ml
             - unit_test_datastore
+            - unit_test_predictions
+            - unit_test_storage

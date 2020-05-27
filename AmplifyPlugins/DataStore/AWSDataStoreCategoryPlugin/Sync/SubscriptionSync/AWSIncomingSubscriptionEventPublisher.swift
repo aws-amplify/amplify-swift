@@ -22,10 +22,11 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
         return subscriptionEventSubject.eraseToAnyPublisher()
     }
 
-    init(modelType: Model.Type, api: APICategoryGraphQLBehavior) {
+    init(modelType: Model.Type, api: APICategoryGraphQLBehavior, auth: AuthCategoryBehavior?) {
         self.subscriptionEventSubject = PassthroughSubject<IncomingSubscriptionEventPublisherEvent, DataStoreError>()
         self.asyncEvents = IncomingAsyncSubscriptionEventPublisher(modelType: modelType,
-                                                                   api: api)
+                                                                   api: api,
+                                                                   auth: auth)
 
         let mapper = IncomingAsyncSubscriptionEventToAnyModelMapper()
         self.mapper = mapper

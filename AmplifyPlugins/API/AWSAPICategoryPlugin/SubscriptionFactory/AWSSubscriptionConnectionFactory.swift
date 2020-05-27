@@ -54,7 +54,7 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
             let provider = AWSOIDCAuthProvider(authService: authService)
             authInterceptor = OIDCAuthInterceptor(provider)
         case .awsIAM(let awsIAMConfiguration):
-            authInterceptor = IAMAuthInterceptor(authService.getCognitoCredentialsProvider(),
+            authInterceptor = IAMAuthInterceptor(authService.getCredentialsProvider(),
                                                  region: awsIAMConfiguration.region)
         case .openIDConnect:
             // TODO: retrieve OIDC Token Provider from somewhere else that the developer added.

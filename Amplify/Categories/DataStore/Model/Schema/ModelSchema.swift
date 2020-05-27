@@ -26,6 +26,7 @@ public struct ModelField {
     public let isArray: Bool
     public let attributes: [ModelFieldAttribute]
     public let association: ModelAssociation?
+    public let authRules: AuthRules
 
     public var isPrimaryKey: Bool {
         return name == "id"
@@ -36,13 +37,15 @@ public struct ModelField {
          isRequired: Bool = false,
          isArray: Bool = false,
          attributes: [ModelFieldAttribute] = [],
-         association: ModelAssociation? = nil) {
+         association: ModelAssociation? = nil,
+         authRules: AuthRules = []) {
         self.name = name
         self.type = type
         self.isRequired = isRequired
         self.isArray = isArray
         self.attributes = attributes
         self.association = association
+        self.authRules = authRules
     }
 }
 
@@ -52,6 +55,7 @@ public struct ModelSchema {
 
     public let name: String
     public let pluralName: String?
+    public let authRules: AuthRules
     public let fields: ModelFields
     public let attributes: [ModelAttribute]
 
@@ -66,10 +70,12 @@ public struct ModelSchema {
 
     init(name: String,
          pluralName: String? = nil,
+         authRules: AuthRules = [],
          attributes: [ModelAttribute] = [],
          fields: ModelFields = [:]) {
         self.name = name
         self.pluralName = pluralName
+        self.authRules = authRules
         self.attributes = attributes
         self.fields = fields
 

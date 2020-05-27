@@ -28,14 +28,20 @@ class BaseDataStoreTests: XCTestCase {
         Amplify.reset()
         Amplify.Logging.logLevel = .warn
 
+        let validAPIPluginKey = "MockAPICategoryPlugin"
+        let validAuthPluginKey = "MockAuthCategoryPlugin"
         do {
             connection = try Connection(.inMemory)
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
             try storageAdapter.setUp(models: StorageEngine.systemModels)
 
-            let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter)
+            let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
+                                                  dataStoreConfiguration: .default)
             storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          syncEngine: syncEngine)
+                                          dataStoreConfiguration: .default,
+                                          syncEngine: syncEngine,
+                                          validAPIPluginKey: validAPIPluginKey,
+                                          validAuthPluginKey: validAuthPluginKey)
         } catch {
             XCTFail(String(describing: error))
             return
@@ -44,7 +50,9 @@ class BaseDataStoreTests: XCTestCase {
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
                                                  storageEngine: storageEngine,
-                                                 dataStorePublisher: dataStorePublisher)
+                                                 dataStorePublisher: dataStorePublisher,
+                                                 validAPIPluginKey: validAPIPluginKey,
+                                                 validAuthPluginKey: validAuthPluginKey)
 
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [
             "awsDataStorePlugin": true

@@ -5,9 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPinpoint
+import Foundation
 
 extension AWSPinpointEndpointProfileLocation {
     func addLocation(_ location: AnalyticsUserProfile.Location) {

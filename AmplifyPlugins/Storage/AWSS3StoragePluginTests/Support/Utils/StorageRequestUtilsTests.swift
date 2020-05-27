@@ -8,4 +8,7 @@
 import XCTest
 
 class StorageRequestUtilsTests: XCTestCase {
+    func testClassMustNotBeEmpty() {
+        // Swift format crashes if a test class is empty
+    }
 }

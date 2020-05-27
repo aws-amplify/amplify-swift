@@ -5,12 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPinpoint
+import Foundation
 
 public struct AWSPinpointAnalyticsPluginConfiguration {
-
     static let pinpointAnalyticsConfigKey = "pinpointAnalytics"
     static let pinpointTargetingConfigKey = "pinpointTargeting"
     static let autoFlushEventsIntervalKey = "autoFlushEventsInterval"
@@ -34,33 +33,39 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
         guard case let .object(configObject) = configuration else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.configurationObjectExpected.errorDescription,
-                AnalyticsPluginErrorConstant.configurationObjectExpected.recoverySuggestion)
+                AnalyticsPluginErrorConstant.configurationObjectExpected.recoverySuggestion
+            )
         }
 
         guard let pinpointAnalyticsConfig =
             configObject[AWSPinpointAnalyticsPluginConfiguration.pinpointAnalyticsConfigKey] else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.missingPinpointAnalyicsConfiguration.errorDescription,
-                AnalyticsPluginErrorConstant.missingPinpointAnalyicsConfiguration.recoverySuggestion)
+                AnalyticsPluginErrorConstant.missingPinpointAnalyicsConfiguration.recoverySuggestion
+            )
         }
 
         guard case let .object(pinpointAnalyticsConfigObject) = pinpointAnalyticsConfig else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.pinpointAnalyticsConfigurationExpected.errorDescription,
-                AnalyticsPluginErrorConstant.pinpointAnalyticsConfigurationExpected.recoverySuggestion)
+                AnalyticsPluginErrorConstant.pinpointAnalyticsConfigurationExpected.recoverySuggestion
+            )
         }
 
         guard let pinpointTargetingConfig = configObject[
-            AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey] else {
+            AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey
+        ] else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.missingPinpointTargetingConfiguration.errorDescription,
-                AnalyticsPluginErrorConstant.missingPinpointTargetingConfiguration.recoverySuggestion)
+                AnalyticsPluginErrorConstant.missingPinpointTargetingConfiguration.recoverySuggestion
+            )
         }
 
         guard case let .object(pinpointTargetingConfigObject) = pinpointTargetingConfig else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.pinpointTargetingConfigurationExpected.errorDescription,
-                AnalyticsPluginErrorConstant.pinpointTargetingConfigurationExpected.recoverySuggestion)
+                AnalyticsPluginErrorConstant.pinpointTargetingConfigurationExpected.recoverySuggestion
+            )
         }
 
         let appId = try AWSPinpointAnalyticsPluginConfiguration.getAppId(pinpointAnalyticsConfigObject)
@@ -98,19 +103,22 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
         guard let appId = configuration[appIdConfigKey] else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.missingAppId.errorDescription,
-                AnalyticsPluginErrorConstant.missingAppId.recoverySuggestion)
+                AnalyticsPluginErrorConstant.missingAppId.recoverySuggestion
+            )
         }
 
         guard case let .string(appIdValue) = appId else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.invalidAppId.errorDescription,
-                AnalyticsPluginErrorConstant.invalidAppId.recoverySuggestion)
+                AnalyticsPluginErrorConstant.invalidAppId.recoverySuggestion
+            )
         }
 
         if appIdValue.isEmpty {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.emptyAppId.errorDescription,
-                AnalyticsPluginErrorConstant.emptyAppId.recoverySuggestion)
+                AnalyticsPluginErrorConstant.emptyAppId.recoverySuggestion
+            )
         }
 
         return appIdValue
@@ -120,26 +128,30 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
         guard let region = configuration[regionConfigKey] else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.missingRegion.errorDescription,
-                AnalyticsPluginErrorConstant.missingRegion.recoverySuggestion)
+                AnalyticsPluginErrorConstant.missingRegion.recoverySuggestion
+            )
         }
 
         guard case let .string(regionValue) = region else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.invalidRegion.errorDescription,
-                AnalyticsPluginErrorConstant.invalidRegion.recoverySuggestion)
+                AnalyticsPluginErrorConstant.invalidRegion.recoverySuggestion
+            )
         }
 
         if regionValue.isEmpty {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.emptyRegion.errorDescription,
-                AnalyticsPluginErrorConstant.emptyRegion.recoverySuggestion)
+                AnalyticsPluginErrorConstant.emptyRegion.recoverySuggestion
+            )
         }
 
         let regionType = regionValue.aws_regionTypeValue()
         guard regionType != AWSRegionType.Unknown else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.invalidRegion.errorDescription,
-                AnalyticsPluginErrorConstant.invalidRegion.recoverySuggestion)
+                AnalyticsPluginErrorConstant.invalidRegion.recoverySuggestion
+            )
         }
 
         return regionType
@@ -153,13 +165,15 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
         guard case let .number(autoFlushEventsIntervalValue) = autoFlushEventsInterval else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.invalidAutoFlushEventsInterval.errorDescription,
-                AnalyticsPluginErrorConstant.invalidAutoFlushEventsInterval.recoverySuggestion)
+                AnalyticsPluginErrorConstant.invalidAutoFlushEventsInterval.recoverySuggestion
+            )
         }
 
         if autoFlushEventsIntervalValue < 0 {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.invalidAutoFlushEventsInterval.errorDescription,
-                AnalyticsPluginErrorConstant.invalidAutoFlushEventsInterval.recoverySuggestion)
+                AnalyticsPluginErrorConstant.invalidAutoFlushEventsInterval.recoverySuggestion
+            )
         }
 
         return Int(autoFlushEventsIntervalValue)
@@ -173,14 +187,14 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
         guard case let .boolean(trackAppSessionsValue) = trackAppSessions else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.invalidTrackAppSessions.errorDescription,
-                AnalyticsPluginErrorConstant.invalidTrackAppSessions.recoverySuggestion)
+                AnalyticsPluginErrorConstant.invalidTrackAppSessions.recoverySuggestion
+            )
         }
 
         return trackAppSessionsValue
     }
 
     private static func getAutoSessionTrackingInterval(_ configuration: [String: JSONValue]) throws -> Int {
-
         guard let autoSessionTrackingInterval = configuration[autoSessionTrackingIntervalKey] else {
             return AWSPinpointAnalyticsPluginConfiguration.defaultAutoSessionTrackingInterval
         }
@@ -188,14 +202,16 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
         guard case let .number(autoSessionTrackingIntervalValue) = autoSessionTrackingInterval else {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.invalidAutoSessionTrackingInterval.errorDescription,
-                AnalyticsPluginErrorConstant.invalidAutoSessionTrackingInterval.recoverySuggestion)
+                AnalyticsPluginErrorConstant.invalidAutoSessionTrackingInterval.recoverySuggestion
+            )
         }
 
         // TODO: more upper limit validation here due to some iOS background processing limitations
         if autoSessionTrackingIntervalValue < 0 {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.invalidAutoSessionTrackingInterval.errorDescription,
-                AnalyticsPluginErrorConstant.invalidAutoSessionTrackingInterval.recoverySuggestion)
+                AnalyticsPluginErrorConstant.invalidAutoSessionTrackingInterval.recoverySuggestion
+            )
         }
 
         return Int(autoSessionTrackingIntervalValue)

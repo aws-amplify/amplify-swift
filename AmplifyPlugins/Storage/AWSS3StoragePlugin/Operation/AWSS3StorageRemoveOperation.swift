@@ -10,8 +10,11 @@ import Amplify
 import AWSPluginsCore
 import AWSS3
 
-public class AWSS3StorageRemoveOperation: AmplifyOperation<StorageRemoveRequest, Void, String, StorageError>,
-    StorageRemoveOperation {
+public class AWSS3StorageRemoveOperation: AmplifyOperation<
+    StorageRemoveRequest,
+    String,
+    StorageError
+>, StorageRemoveOperation {
 
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
@@ -19,14 +22,14 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<StorageRemoveRequest,
     init(_ request: StorageRemoveRequest,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
 
         self.storageService = storageService
         self.authService = authService
         super.init(categoryType: .storage,
                    eventName: HubPayload.EventName.Storage.remove,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func cancel() {
@@ -83,12 +86,12 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<StorageRemoveRequest,
     }
 
     private func dispatch(_ result: String) {
-        let asyncEvent = AsyncEvent<Void, String, StorageError>.completed(result)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.success(result)
+        dispatch(result: result)
     }
 
     private func dispatch(_ error: StorageError) {
-        let asyncEvent = AsyncEvent<Void, String, StorageError>.failed(error)
-        dispatch(event: asyncEvent)
+        let result = OperationResult.failure(error)
+        dispatch(result: result)
     }
 }

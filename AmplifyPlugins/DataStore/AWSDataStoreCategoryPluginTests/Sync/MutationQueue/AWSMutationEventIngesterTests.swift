@@ -37,15 +37,23 @@ class AWSMutationEventIngesterTests: XCTestCase {
             storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
             try storageAdapter.setUp(models: StorageEngine.systemModels)
 
-            let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter)
+            let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
+                                                  dataStoreConfiguration: .default)
 
+            let validAPIPluginKey = "MockAPICategoryPlugin"
+            let validAuthPluginKey = "MockAuthCategoryPlugin"
             let storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                              syncEngine: syncEngine)
+                                              dataStoreConfiguration: .default,
+                                              syncEngine: syncEngine,
+                                              validAPIPluginKey: validAPIPluginKey,
+                                              validAuthPluginKey: validAuthPluginKey)
 
             let publisher = DataStorePublisher()
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                                             storageEngine: storageEngine,
-                                                             dataStorePublisher: publisher)
+                                                     storageEngine: storageEngine,
+                                                     dataStorePublisher: publisher,
+                                                     validAPIPluginKey: validAPIPluginKey,
+                                                     validAuthPluginKey: validAuthPluginKey)
 
             try Amplify.add(plugin: apiPlugin)
             try Amplify.add(plugin: dataStorePlugin)
@@ -63,7 +71,7 @@ class AWSMutationEventIngesterTests: XCTestCase {
     func testMutationQueueWritesSaveEvents() {
         let post = Post(title: "Post title",
                         content: "Post content",
-                        createdAt: Date())
+                        createdAt: .now())
 
         let saveCompleted = expectation(description: "Local save completed")
         Amplify.DataStore.save(post) { result in

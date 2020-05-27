@@ -10,6 +10,7 @@ import AWSComprehend
 
 extension AWSComprehendEntityType {
 
+    // swiftlint:disable:next cyclomatic_complexity
     func toAmplifyEntityType() -> EntityType {
         switch self {
         case .person:

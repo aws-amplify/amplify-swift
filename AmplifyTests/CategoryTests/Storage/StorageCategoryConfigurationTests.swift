@@ -117,7 +117,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        _ = Amplify.Storage.downloadData(key: "", options: nil, listener: nil)
+        _ = Amplify.Storage.downloadData(key: "", options: nil, resultListener: nil)
 
         waitForExpectations(timeout: 1.0)
     }
@@ -155,7 +155,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         _ = try Amplify.Storage.getPlugin(for: "MockSecondStorageCategoryPlugin")
-            .downloadData(key: "", options: nil, listener: nil)
+            .downloadData(key: "", options: nil, progressListener: nil, resultListener: nil)
         waitForExpectations(timeout: 1.0)
     }
 
@@ -178,7 +178,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         try Amplify.configure(amplifyConfig)
 
         let exception: BadInstructionException? = catchBadInstruction {
-            _ = Amplify.Storage.downloadData(key: "", options: nil, listener: nil)
+            _ = Amplify.Storage.downloadData(key: "", options: nil, resultListener: nil)
         }
         XCTAssertNotNil(exception)
     }
@@ -220,7 +220,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
         let exception: BadInstructionException? = catchBadInstruction {
-            _ = Amplify.Storage.downloadData(key: "foo", options: nil, listener: nil)
+            _ = Amplify.Storage.downloadData(key: "foo", options: nil, resultListener: nil)
         }
         XCTAssertNotNil(exception)
     }

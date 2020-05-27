@@ -16,4 +16,7 @@ public extension ModelSchema {
         attributes.contains(.isSystem)
     }
 
+    var hasAuthenticationRules: Bool {
+        return !authRules.isEmpty
+    }
 }

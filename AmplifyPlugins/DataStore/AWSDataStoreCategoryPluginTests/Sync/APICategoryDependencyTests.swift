@@ -67,14 +67,22 @@ extension APICategoryDependencyTests {
         storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
         try storageAdapter.setUp(models: StorageEngine.systemModels)
 
-        let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter)
+        let syncEngine = try RemoteSyncEngine(storageAdapter: storageAdapter,
+                                              dataStoreConfiguration: .default)
+        let validAPIPluginKey = "MockAPICategoryPlugin"
+        let validAuthPluginKey = "MockAuthCategoryPlugin"
         let storageEngine = StorageEngine(storageAdapter: storageAdapter,
-                                          syncEngine: syncEngine)
+                                          dataStoreConfiguration: .default,
+                                          syncEngine: syncEngine,
+                                          validAPIPluginKey: validAPIPluginKey,
+                                          validAuthPluginKey: validAuthPluginKey)
 
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
-                                                         storageEngine: storageEngine,
-                                                         dataStorePublisher: dataStorePublisher)
+                                                 storageEngine: storageEngine,
+                                                 dataStorePublisher: dataStorePublisher,
+                                                 validAPIPluginKey: validAPIPluginKey,
+                                                 validAuthPluginKey: validAuthPluginKey)
         try Amplify.add(plugin: dataStorePlugin)
 
         let dataStoreConfig = DataStoreCategoryConfiguration(plugins: [

@@ -73,10 +73,9 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
             return .saveCandidate
         }
 
-        // TODO: Handle conditional mutations, something like:
-        // if candidate.isConditional {
-        //     return MutationDisposition.saveCandidate
-        // }
+        if candidate.graphQLFilterJSON != nil {
+            return .saveCandidate
+        }
 
         guard let candidateMutationType = GraphQLMutationType(rawValue: candidate.mutationType) else {
             let dataStoreError =
@@ -203,7 +202,11 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
               completionPromise: @escaping Future<MutationEvent, DataStoreError>.Promise) {
 
         log.verbose("\(#function) mutationEvent: \(mutationEvent)")
-        storageAdapter.save(mutationEvent) { result in
+        var eventToPersist = mutationEvent
+        if nextEventPromise != nil {
+            eventToPersist.inProcess = true
+        }
+        storageAdapter.save(eventToPersist, condition: nil) { result in
             switch result {
             case .failure(let dataStoreError):
                 self.log.verbose("\(#function): Error saving mutation event: \(dataStoreError)")

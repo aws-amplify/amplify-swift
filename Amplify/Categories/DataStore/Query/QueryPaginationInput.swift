@@ -15,7 +15,7 @@ public struct QueryPaginationInput {
 
     /// The page number. It starts at 0.
     public let page: UInt
-    
+
     /// The number of results per page.
     public let limit: UInt
 

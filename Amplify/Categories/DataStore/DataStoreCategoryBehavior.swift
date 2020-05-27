@@ -7,14 +7,13 @@
 
 import Combine
 
-public typealias QueryPredicateFactory = () -> QueryPredicate
-
 public typealias DataStoreCategoryBehavior = DataStoreBaseBehavior & DataStoreSubscribeBehavior
 
 public protocol DataStoreBaseBehavior {
 
     /// Saves the model to storage. If sync is enabled, also initiates a sync of the mutation to the remote API
     func save<M: Model>(_ model: M,
+                        where condition: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>)
 
     func query<M: Model>(_ modelType: M.Type,
@@ -22,15 +21,12 @@ public protocol DataStoreBaseBehavior {
                          completion: DataStoreCallback<M?>)
 
     func query<M: Model>(_ modelType: M.Type,
-                         where predicate: QueryPredicateFactory?,
+                         where predicate: QueryPredicate?,
                          paginate paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>)
 
     func delete<M: Model>(_ model: M,
-                          completion: @escaping DataStoreCallback<Void>)
-
-    func delete<M: Model>(_ modelType: M.Type,
-                          where predicate: @escaping QueryPredicateFactory,
+                          where predicate: QueryPredicate?,
                           completion: @escaping DataStoreCallback<Void>)
 
     func delete<M: Model>(_ modelType: M.Type,

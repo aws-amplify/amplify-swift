@@ -14,6 +14,7 @@ protocol AWSS3StorageServiceBehaviour {
     typealias StorageServiceDownloadEvent =
         StorageEvent<StorageTaskReference, Progress, Data?, StorageError>
 
+    // swiftlint:disable:next type_name
     typealias StorageServiceGetPreSignedURLEventHandler = (StorageServiceGetPreSignedURLEvent) -> Void
     typealias StorageServiceGetPreSignedURLEvent = StorageEvent<Void, Void, URL, StorageError>
 
@@ -27,6 +28,7 @@ protocol AWSS3StorageServiceBehaviour {
     typealias StorageServiceUploadEvent =
         StorageEvent<StorageTaskReference, Progress, Void, StorageError>
 
+    // swiftlint:disable:next type_name
     typealias StorageServiceMultiPartUploadEventHandler = (StorageServiceMultiPartUploadEvent) -> Void
     typealias StorageServiceMultiPartUploadEvent =
         StorageEvent<StorageTaskReference, Progress, Void, StorageError>

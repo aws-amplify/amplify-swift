@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol PredictionsTranslateTextOperation: AmplifyOperation<PredictionsTranslateTextRequest,
-Void, TranslateTextResult, PredictionsError> { }
+TranslateTextResult, PredictionsError> { }
 
 public extension HubPayload.EventName.Predictions {
     static let translate = "Predictions.translate"

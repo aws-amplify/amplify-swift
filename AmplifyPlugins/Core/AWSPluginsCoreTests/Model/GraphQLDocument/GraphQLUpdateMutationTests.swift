@@ -33,7 +33,7 @@ class GraphQLUpdateMutationTests: XCTestCase {
     ///     - it contains an `input` of type `UpdatePostInput`
     ///     - it has a list of fields with no nested models
     func testUpdateGraphQLMutationFromSimpleModel() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: ModelDecorator(model: post))
@@ -46,6 +46,7 @@ class GraphQLUpdateMutationTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -55,8 +56,12 @@ class GraphQLUpdateMutationTests: XCTestCase {
         XCTAssertEqual(document.name, "updatePost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "updatePost")
-        XCTAssertNotNil(document.variables["input"])
-        guard let input = document.variables["input"] as? [String: Any] else {
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertNotNil(variables["input"])
+        guard let input = variables["input"] as? [String: Any] else {
             XCTFail("The document variables property doesn't contain a valid input")
             return
         }
@@ -75,7 +80,7 @@ class GraphQLUpdateMutationTests: XCTestCase {
     ///     - it contains an `input` of type `UpdatePostInput`
     ///     - it has a list of fields with no nested models
     func testUpdateGraphQLMutationFromSimpleModelWithVersion() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
         documentBuilder.add(decorator: ModelDecorator(model: post))
@@ -89,6 +94,7 @@ class GraphQLUpdateMutationTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -101,8 +107,12 @@ class GraphQLUpdateMutationTests: XCTestCase {
         XCTAssertEqual(document.name, "updatePost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "updatePost")
-        XCTAssertNotNil(document.variables["input"])
-        guard let input = document.variables["input"] as? [String: Any] else {
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertNotNil(variables["input"])
+        guard let input = variables["input"] as? [String: Any] else {
             XCTFail("The document variables property doesn't contain a valid input")
             return
         }

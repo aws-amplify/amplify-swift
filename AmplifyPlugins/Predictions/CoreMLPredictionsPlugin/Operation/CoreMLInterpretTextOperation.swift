@@ -8,22 +8,23 @@
 import Foundation
 import Amplify
 
-public class CoreMLInterpretTextOperation: AmplifyOperation<PredictionsInterpretRequest,
-    Void,
+public class CoreMLInterpretTextOperation: AmplifyOperation<
+    PredictionsInterpretRequest,
     InterpretResult,
-PredictionsError>, PredictionsInterpretOperation {
+    PredictionsError
+>, PredictionsInterpretOperation {
 
     weak var coreMLNaturalLanguage: CoreMLNaturalLanguageBehavior?
 
     init(_ request: PredictionsInterpretRequest,
          coreMLNaturalLanguage: CoreMLNaturalLanguageBehavior,
-         listener: EventListener?) {
+         resultListener: ResultListener?) {
 
         self.coreMLNaturalLanguage = coreMLNaturalLanguage
         super.init(categoryType: .predictions,
                    eventName: HubPayload.EventName.Predictions.interpret,
                    request: request,
-                   listener: listener)
+                   resultListener: resultListener)
     }
 
     override public func cancel() {
@@ -86,7 +87,7 @@ PredictionsError>, PredictionsInterpretOperation {
         }
 
         let interpretResult = interpretResultBuilder.build()
-        dispatch(event: .completed(interpretResult))
+        dispatch(result: .success(interpretResult))
         finish()
     }
 }

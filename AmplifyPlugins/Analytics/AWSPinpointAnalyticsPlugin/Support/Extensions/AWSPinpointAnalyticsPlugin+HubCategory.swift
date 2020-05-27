@@ -5,12 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
 import AWSPinpoint
+import Foundation
 
 extension HubCategory {
-
     func dispatchIdentifyUser(_ identityId: String, userProfile: AnalyticsUserProfile?) {
         let payload = HubPayload(eventName: HubPayload.EventName.Analytics.identifyUser,
                                  data: (identityId, userProfile))

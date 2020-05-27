@@ -33,7 +33,10 @@ class GraphQLCreateMutationTests: XCTestCase {
     ///     - it contains an `input` of type `CreatePostInput`
     ///     - it has a list of fields with no nested models
     func testCreateGraphQLMutationFromSimpleModel() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title",
+                        content: "content",
+                        createdAt: .now(),
+                        status: .private)
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: post))
@@ -46,6 +49,7 @@ class GraphQLCreateMutationTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -55,13 +59,18 @@ class GraphQLCreateMutationTests: XCTestCase {
         XCTAssertEqual(document.name, "createPost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "createPost")
-        XCTAssertNotNil(document.variables["input"])
-        guard let input = document.variables["input"] as? [String: Any] else {
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertNotNil(variables["input"])
+        guard let input = variables["input"] as? [String: Any] else {
             XCTFail("The document variables property doesn't contain a valid input")
             return
         }
-        XCTAssert(input["title"] as? String == post.title)
-        XCTAssert(input["content"] as? String == post.content)
+        XCTAssertEqual(input["title"] as? String, post.title)
+        XCTAssertEqual(input["content"] as? String, post.content)
+        XCTAssertEqual(input["status"] as? String, PostStatus.private.rawValue)
     }
 
     /// - Given: a `Model` instance
@@ -75,8 +84,8 @@ class GraphQLCreateMutationTests: XCTestCase {
     ///     - it contains an `input` of type `CreateCommentInput`
     ///     - it has a list of fields with a `postId`
     func testCreateGraphQLMutationFromModelWithAssociation() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
-        let comment = Comment(content: "comment", createdAt: Date(), post: post)
+        let post = Post(title: "title", content: "content", createdAt: .now())
+        let comment = Comment(content: "comment", createdAt: .now(), post: post)
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Comment.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: comment))
@@ -93,6 +102,7 @@ class GraphQLCreateMutationTests: XCTestCase {
               createdAt
               draft
               rating
+              status
               title
               updatedAt
               __typename
@@ -104,7 +114,11 @@ class GraphQLCreateMutationTests: XCTestCase {
         XCTAssertEqual(document.name, "createComment")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "createComment")
-        guard let input = document.variables["input"] as? GraphQLInput else {
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        guard let input = variables["input"] as? GraphQLInput else {
             XCTFail("Variables should contain a valid input")
             return
         }
@@ -122,7 +136,7 @@ class GraphQLCreateMutationTests: XCTestCase {
     ///     - it contains an `input` of type `CreatePostInput`
     ///     - it has a list of fields with no nested models
     func testCreateGraphQLMutationFromSimpleModelWithSyncEnabled() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
         documentBuilder.add(decorator: ModelDecorator(model: post))
@@ -136,6 +150,7 @@ class GraphQLCreateMutationTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -148,8 +163,12 @@ class GraphQLCreateMutationTests: XCTestCase {
         XCTAssertEqual(document.name, "createPost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "createPost")
-        XCTAssertNotNil(document.variables["input"])
-        guard let input = document.variables["input"] as? [String: Any] else {
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertNotNil(variables["input"])
+        guard let input = variables["input"] as? [String: Any] else {
             XCTFail("The document variables property doesn't contain a valid input")
             return
         }
@@ -168,8 +187,8 @@ class GraphQLCreateMutationTests: XCTestCase {
     ///     - it contains an `input` of type `CreateCommentInput`
     ///     - it has a list of fields with a `postId`
     func testCreateGraphQLMutationFromModelWithAssociationWithSyncEnabled() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
-        let comment = Comment(content: "comment", createdAt: Date(), post: post)
+        let post = Post(title: "title", content: "content", createdAt: .now())
+        let comment = Comment(content: "comment", createdAt: .now(), post: post)
 
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Comment.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
@@ -188,6 +207,7 @@ class GraphQLCreateMutationTests: XCTestCase {
               createdAt
               draft
               rating
+              status
               title
               updatedAt
               __typename
@@ -205,7 +225,11 @@ class GraphQLCreateMutationTests: XCTestCase {
         XCTAssertEqual(document.name, "createComment")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "createComment")
-        guard let input = document.variables["input"] as? GraphQLInput else {
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        guard let input = variables["input"] as? GraphQLInput else {
             XCTFail("Variables should contain a valid input")
             return
         }

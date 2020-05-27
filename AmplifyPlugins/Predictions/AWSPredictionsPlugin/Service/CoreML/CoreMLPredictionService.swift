@@ -22,12 +22,10 @@ class CoreMLPredictionService: CoreMLPredictionBehavior {
         _ = coreMLPlugin.interpret(text: text,
                                     options: PredictionsInterpretRequest.Options()) { event in
                                         switch event {
-                                        case .completed(let result):
+                                        case .success(let result):
                                             onEvent(.completed(result))
-                                        case .failed(let error):
+                                        case .failure(let error):
                                             onEvent(.failed(error))
-                                        default:
-                                            break
                                         }
         }
     }
@@ -39,25 +37,22 @@ class CoreMLPredictionService: CoreMLPredictionBehavior {
                                   image: imageURL,
                                   options: PredictionsIdentifyRequest.Options()) { event in
                                     switch event {
-                                    case .completed(let result):
+                                    case .success(let result):
                                         onEvent(.completed(result))
-                                    case .failed(let error):
+                                    case .failure(let error):
                                         onEvent(.failed(error))
-                                    default:
-                                        break
                                     }
         }
     }
 
     func transcribe(_ speechToText: URL, onEvent: @escaping TranscribeEventHandler) {
-        _ = coreMLPlugin.convert(speechToText: speechToText, options: PredictionsSpeechToTextRequest.Options()) { event in
+        _ = coreMLPlugin.convert(speechToText: speechToText,
+                                 options: PredictionsSpeechToTextRequest.Options()) { event in
             switch event {
-            case .completed(let result):
+            case .success(let result):
                 onEvent(.completed(result))
-            case .failed(let error):
+            case .failure(let error):
                 onEvent(.failed(error))
-            default:
-                break
             }
         }
     }

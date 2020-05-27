@@ -13,11 +13,22 @@ import SQLite
 struct UpdateStatement: SQLStatement {
 
     let modelType: Model.Type
+    let conditionStatement: ConditionStatement?
+
     private let model: Model
 
-    init(model: Model) {
+    init(model: Model, condition: QueryPredicate? = nil) {
         self.modelType = type(of: model)
         self.model = model
+
+        var conditionStatement: ConditionStatement?
+        if let condition = condition {
+            let statement = ConditionStatement(modelType: modelType,
+                                               predicate: condition)
+            conditionStatement = statement
+        }
+
+        self.conditionStatement = conditionStatement
     }
 
     var stringValue: String {
@@ -28,18 +39,29 @@ struct UpdateStatement: SQLStatement {
             "  \(column) = ?"
         }
 
-        // TODO add predicates to update
-        return """
+        var sql = """
         update \(schema.name)
         set
         \(columnsStatement.joined(separator: ",\n"))
         where \(schema.primaryKey.columnName()) = ?
         """
+
+        if let conditionStatement = conditionStatement {
+            sql = """
+            \(sql)
+            \(conditionStatement.stringValue)
+            """
+        }
+
+        return sql
     }
 
     var variables: [Binding?] {
         var bindings = model.sqlValues(for: updateColumns)
         bindings.append(model.id)
+        if let conditionStatement = conditionStatement {
+            bindings.append(contentsOf: conditionStatement.variables)
+        }
         return bindings
     }
 

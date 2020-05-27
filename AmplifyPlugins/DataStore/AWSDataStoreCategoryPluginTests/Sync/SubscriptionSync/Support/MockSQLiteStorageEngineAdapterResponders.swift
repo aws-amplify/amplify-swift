@@ -12,10 +12,12 @@ import AWSPluginsCore
 
 extension MockSQLiteStorageEngineAdapter {
     enum ResponderKeys {
+        // swiftlint:disable:next identifier_name
         case queryModelTypePredicateAdditionalStatements
         case queryMutationSyncMetadata
         case saveModelCompletion
         case saveUntypedModel
+        case deleteUntypedModel
     }
 }
 
@@ -31,3 +33,5 @@ typealias QueryMutationSyncMetadataResponder = ThrowingMockResponder<String, Mut
 typealias SaveModelCompletionResponder<M: Model> = MockResponder<(M, DataStoreCallback<M>), Void>
 
 typealias SaveUntypedModelResponder = MockResponder<(Model, DataStoreCallback<Model>), Void>
+
+typealias DeleteUntypedModelCompletionResponder = MockResponder<(Model.Type, String), Void>

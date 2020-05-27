@@ -32,8 +32,8 @@ struct AWSComprehendErrorMessage {
     static let limitExceeded: AWSComprehendErrorString = (
         "The request exceeded the service limits.",
         """
-        Decrease the number of calls you are making or make sure your request is below the service limits for your region.
-        Check the limits here:
+        Decrease the number of calls you are making or make sure your request is below the service limits for your
+        region. Check the limits here:
         https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html#limits_amazon_comprehend
         """)
 
@@ -43,7 +43,11 @@ struct AWSComprehendErrorMessage {
 
     static let unsupportedLanguage: AWSComprehendErrorString = (
         "Amazon Comprehend can't process the language of the input text.",
-        "For a list of supported languages, check here https://docs.aws.amazon.com/comprehend/latest/dg/supported-languages.html.")
+        """
+        For a list of supported languages, check:
+        https://docs.aws.amazon.com/comprehend/latest/dg/supported-languages.html.
+        """
+        )
 
     static func map(_ errorType: AWSComprehendErrorType) -> PredictionsError? {
         switch errorType {

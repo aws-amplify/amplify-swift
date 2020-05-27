@@ -31,7 +31,7 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
 
     /// - Given: An Amplify operation class
     /// - When: I pass an event listener with no other options to `Hub.listen(to:)`
-    /// - Then: The event listener is unsubscribed when it receives a terminal event (.completed)
+    /// - Then: The event listeners are unsubscribed when it receives a terminal event (.completed)
     func testHubListenToOperationUnsubscribesOnComplete() throws {
         let listenerWasInvokedForInProcess = expectation(description: "listener was invoked for in process event")
         listenerWasInvokedForInProcess.isInverted = true
@@ -41,31 +41,29 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
         let listenerWasInvokedForFailed = expectation(description: "listener was invoked for failed event")
         listenerWasInvokedForFailed.isInverted = true
 
-        let amplifyOperation = Amplify.Storage.list(listener: nil)
+        let amplifyOperation = Amplify.Storage.downloadData(key: "key", resultListener: nil)
 
-        _ = Amplify.Hub.listen(to: amplifyOperation) { event in
-            switch event {
-            case .inProcess:
-                listenerWasInvokedForInProcess.fulfill()
-            case .completed:
+        _ = Amplify.Hub.listenForInProcess(to: amplifyOperation) { _ in listenerWasInvokedForInProcess.fulfill() }
+
+        _ = Amplify.Hub.listenForResult(to: amplifyOperation) { result in
+            switch result {
+            case .success:
                 listenerWasInvokedForCompleted.fulfill()
-            case .failed:
+            case .failure:
                 listenerWasInvokedForFailed.fulfill()
-            default:
-                break
             }
         }
 
-        guard let operation = amplifyOperation as? MockDispatchingStorageListOperation else {
+        guard let operation = amplifyOperation as? MockDispatchingStorageDownloadDataOperation else {
             XCTFail("Unable to cast amplifyOperation as MockDispatchingStorageListOperation")
             return
         }
 
-        operation.doMockDispatch(event: .completed(StorageListResult(items: [])))
+        operation.doMockDispatch()
         wait(for: [listenerWasInvokedForCompleted], timeout: 0.1)
 
-        operation.doMockDispatch(event: .inProcess(()))
-        operation.doMockDispatch(event: .failed(StorageError.accessDenied("", "")))
+        operation.doMockProgress()
+        operation.doMockDispatch(result: .failure(StorageError.accessDenied("", "")))
         wait(for: [listenerWasInvokedForInProcess, listenerWasInvokedForFailed], timeout: 0.1)
     }
 
@@ -81,31 +79,29 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
 
         let listenerWasInvokedForFailed = expectation(description: "listener was invoked for failed event")
 
-        let amplifyOperation = Amplify.Storage.list(listener: nil)
+        let amplifyOperation = Amplify.Storage.downloadData(key: "key", resultListener: nil)
 
-        _ = Amplify.Hub.listen(to: amplifyOperation) { event in
-            switch event {
-            case .inProcess:
-                listenerWasInvokedForInProcess.fulfill()
-            case .completed:
+        _ = Amplify.Hub.listenForInProcess(to: amplifyOperation) { _ in listenerWasInvokedForInProcess.fulfill() }
+
+        _ = Amplify.Hub.listenForResult(to: amplifyOperation) { result in
+            switch result {
+            case .success:
                 listenerWasInvokedForCompleted.fulfill()
-            case .failed:
+            case .failure:
                 listenerWasInvokedForFailed.fulfill()
-            default:
-                break
             }
         }
 
-        guard let operation = amplifyOperation as? MockDispatchingStorageListOperation else {
+        guard let operation = amplifyOperation as? MockDispatchingStorageDownloadDataOperation else {
             XCTFail("Unable to cast amplifyOperation as MockDispatchingStorageListOperation")
             return
         }
 
-        operation.doMockDispatch(event: .failed(StorageError.accessDenied("", "")))
+        operation.doMockDispatch(result: .failure(StorageError.accessDenied("", "")))
         wait(for: [listenerWasInvokedForFailed], timeout: 0.1)
 
-        operation.doMockDispatch(event: .inProcess(()))
-        operation.doMockDispatch(event: .completed(StorageListResult(items: [])))
+        operation.doMockProgress()
+        operation.doMockDispatch()
         wait(for: [listenerWasInvokedForInProcess, listenerWasInvokedForCompleted], timeout: 0.1)
     }
 
@@ -121,18 +117,18 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
         let listenerWasInvokedForFailed = expectation(description: "listener was invoked for failed event")
         listenerWasInvokedForFailed.isInverted = true
 
-        let amplifyOperation = Amplify.Storage.list(listener: nil)
+        let amplifyOperation = Amplify.Storage.downloadData(key: "key", resultListener: nil)
 
-        let token = Amplify.Hub.listen(to: amplifyOperation) { event in
-            switch event {
-            case .inProcess:
-                listenerWasInvokedForInProcess.fulfill()
-            case .completed:
+        let inProcessToken = Amplify.Hub.listenForInProcess(to: amplifyOperation) { _ in
+            listenerWasInvokedForInProcess.fulfill()
+        }
+
+        let resultToken = Amplify.Hub.listenForResult(to: amplifyOperation) { result in
+            switch result {
+            case .success:
                 listenerWasInvokedForCompleted.fulfill()
-            case .failed:
+            case .failure:
                 listenerWasInvokedForFailed.fulfill()
-            default:
-                break
             }
         }
 
@@ -141,22 +137,27 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
             return
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: token, plugin: plugin, timeout: 1.0) else {
+        guard try HubListenerTestUtilities.waitForListener(with: inProcessToken, plugin: plugin, timeout: 1.0) else {
             XCTFail("Listener not registered")
             return
         }
 
-        guard let operation = amplifyOperation as? MockDispatchingStorageListOperation else {
+        guard try HubListenerTestUtilities.waitForListener(with: resultToken, plugin: plugin, timeout: 1.0) else {
+            XCTFail("Listener not registered")
+            return
+        }
+
+        guard let operation = amplifyOperation as? MockDispatchingStorageDownloadDataOperation else {
             XCTFail("Unable to cast amplifyOperation as MockDispatchingStorageListOperation")
             return
         }
 
-        operation.doMockDispatch(event: .inProcess(()))
+        operation.doMockProgress()
         wait(for: [listenerWasInvokedForInProcess], timeout: 0.1)
-        operation.doMockDispatch(event: .completed(StorageListResult(items: [])))
+        operation.doMockDispatch()
         wait(for: [listenerWasInvokedForCompleted], timeout: 0.1)
 
-        operation.doMockDispatch(event: .failed(StorageError.accessDenied("", "")))
+        operation.doMockDispatch(result: .failure(StorageError.accessDenied("", "")))
         wait(for: [listenerWasInvokedForFailed], timeout: 0.1)
     }
 
@@ -172,31 +173,46 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
 
         let listenerWasInvokedForFailed = expectation(description: "listener was invoked for failed event")
 
-        let amplifyOperation = Amplify.Storage.list(listener: nil)
+        let amplifyOperation = Amplify.Storage.downloadData(key: "key", resultListener: nil)
 
-        _ = Amplify.Hub.listen(to: amplifyOperation) { event in
-            switch event {
-            case .inProcess:
-                listenerWasInvokedForInProcess.fulfill()
-            case .completed:
+        let inProcessToken = Amplify.Hub.listenForInProcess(to: amplifyOperation) { _ in
+            listenerWasInvokedForInProcess.fulfill()
+        }
+
+        let resultToken = Amplify.Hub.listenForResult(to: amplifyOperation) { result in
+            switch result {
+            case .success:
                 listenerWasInvokedForCompleted.fulfill()
-            case .failed:
+            case .failure:
                 listenerWasInvokedForFailed.fulfill()
-            default:
-                break
             }
         }
 
-        guard let operation = amplifyOperation as? MockDispatchingStorageListOperation else {
+        guard let plugin = try? Amplify.Hub.getPlugin(for: "awsHubPlugin") as? AWSHubPlugin else {
+            XCTFail("Can't get plugin as AWSHubPlugin")
+            return
+        }
+
+        guard try HubListenerTestUtilities.waitForListener(with: inProcessToken, plugin: plugin, timeout: 1.0) else {
+            XCTFail("Listener not registered")
+            return
+        }
+
+        guard try HubListenerTestUtilities.waitForListener(with: resultToken, plugin: plugin, timeout: 1.0) else {
+            XCTFail("Listener not registered")
+            return
+        }
+
+        guard let operation = amplifyOperation as? MockDispatchingStorageDownloadDataOperation else {
             XCTFail("Unable to cast amplifyOperation as MockDispatchingStorageListOperation")
             return
         }
 
-        operation.doMockDispatch(event: .inProcess(()))
-        operation.doMockDispatch(event: .failed(StorageError.accessDenied("", "")))
+        operation.doMockProgress()
+        operation.doMockDispatch(result: .failure(StorageError.accessDenied("", "")))
         wait(for: [listenerWasInvokedForInProcess, listenerWasInvokedForFailed], timeout: 0.1)
 
-        operation.doMockDispatch(event: .completed(StorageListResult(items: [])))
+        operation.doMockDispatch()
         wait(for: [listenerWasInvokedForCompleted], timeout: 0.1)
     }
 

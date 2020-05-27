@@ -29,6 +29,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let queue = AWSModelReconciliationQueue(modelType: MockSynced.self,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
+                                                auth: authPlugin,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
 
         // We know this won't be nil, but we need to keep a reference to the queue in memory for the duration of the
@@ -75,6 +76,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let queue = AWSModelReconciliationQueue(modelType: MockSynced.self,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
+                                                auth: authPlugin,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
 
         for iteration in 1 ... 3 {
@@ -142,6 +144,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let queue = AWSModelReconciliationQueue(modelType: MockSynced.self,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
+                                                auth: authPlugin,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
         for iteration in 1 ... 3 {
             let model = try MockSynced(id: "id-\(iteration)").eraseToAnyModel()
@@ -187,6 +190,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let queue = AWSModelReconciliationQueue(modelType: MockSynced.self,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
+                                                auth: authPlugin,
                                                 incomingSubscriptionEvents: subscriptionEventsPublisher)
         for iteration in 1 ... 2 {
             let model = try MockSynced(id: "id-\(iteration)").eraseToAnyModel()

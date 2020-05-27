@@ -9,6 +9,7 @@ import XCTest
 @testable import AWSAPICategoryPlugin
 import AWSPluginsCore
 
+// swiftlint:disable:next type_name
 class AWSAPICategoryPluginInterceptorBehaviorTests: AWSAPICategoryPluginTestBase {
 
     // TODO: Fix test failure

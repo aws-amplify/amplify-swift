@@ -5,12 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSPinpoint
+import Foundation
 
 /// Methods copied from `AWSPinpointTargetingClient`
 protocol AWSPinpointTargetingClientBehavior {
-
     /**
      * Returns the current endpoint.
      * @return (id<AWSPinpointEndpoint>)

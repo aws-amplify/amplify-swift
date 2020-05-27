@@ -15,8 +15,7 @@ import Foundation
 /// implementation of a `dispatch` method that sends a contextualized payload to the Hub.
 ///
 /// Pausable/resumable tasks that do not require Hub dispatching should use AsynchronousOperation instead.
-open class AmplifyOperation<Request: AmplifyOperationRequest, InProcess, Completed,
-Error: AmplifyError>: AsynchronousOperation {
+open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: AmplifyError>: AsynchronousOperation {
 
     /// The concrete Request associated with this operation
     public typealias Request = Request
@@ -34,7 +33,7 @@ Error: AmplifyError>: AsynchronousOperation {
     /// All AmplifyOperations must declare a HubPayloadEventName
     public let eventName: HubPayloadEventName
 
-    private var unsubscribeToken: UnsubscribeToken?
+    private var resultListenerUnsubscribeToken: UnsubscribeToken?
 
     /// Creates an AmplifyOperation for the specified reequest.
     ///
@@ -45,8 +44,8 @@ Error: AmplifyError>: AsynchronousOperation {
     ///   See `HubPayload.EventName` for a list of pre-defined event names.
     /// - **`context`**: An `AmplifyOperationContext` whose `operationId` will be the ID of this operation, and whose
     ///   `request` will be the Request used to create the operation.
-    /// - **`data`**: The `AsyncEvent` that will be dispatched to an event listener. Event types for the listener are
-    ///   derived from the request.
+    /// - **`data`**: The `OperationResult` that will be dispatched to an event listener. Event types for the listener
+    ///   are derived from the request.
     ///
     /// A caller may specify a listener during a call to an
     /// Amplify category API:
@@ -61,20 +60,21 @@ Error: AmplifyError>: AsynchronousOperation {
     ///
     /// In either of these cases, Amplify creates a HubListener for the operation by:
     /// 1. Filtering messages by the operation's ID
-    /// 1. Extracting the HubPayload's `data` element and casts it to the expected `AsyncEvent` type for the listener
+    /// 1. Extracting the HubPayload's `data` element and casts it to the expected `OperationResult` type for the
+    ///    listener
     /// 1. Automatically unsubscribing the listener (by calling `Amplify.Hub.removeListener`) when the listener receives
-    ///    a `.completed` or `.failed` `AsyncEvent`
+    ///    a result
     ///
-    /// Callers can remove the listener at any time by calling `operation.removeListener()`.
+    /// Callers can remove the listener at any time by calling `operation.removeResultListener()`.
     ///
     /// - Parameter categoryType: The categoryType of this operation
     /// - Parameter eventName: The event name of this operation, used in HubPayload messages dispatched by the operation
     /// - Parameter request: The request used to generate this operation
-    /// - Parameter listener: The optional listener for the AsyncEvents associated with the operation
+    /// - Parameter resultListener: The optional listener for the OperationResults associated with the operation
     public init(categoryType: CategoryType,
                 eventName: HubPayloadEventName,
                 request: Request,
-                listener: EventListener? = nil) {
+                resultListener: ResultListener? = nil) {
         self.categoryType = categoryType
         self.eventName = eventName
         self.request = request
@@ -82,36 +82,31 @@ Error: AmplifyError>: AsynchronousOperation {
 
         super.init()
 
-        if let listener = listener {
-            self.unsubscribeToken = subscribe(listener: listener)
+        if let resultListener = resultListener {
+            self.resultListenerUnsubscribeToken = subscribe(resultListener: resultListener)
         }
     }
 
-    func subscribe(listener: @escaping EventListener) -> UnsubscribeToken {
+    func subscribe(resultListener: @escaping ResultListener) -> UnsubscribeToken {
         let channel = HubChannel(from: categoryType)
         let filterById = HubFilters.forOperation(self)
 
         var token: UnsubscribeToken?
-        let hubListener: HubListener = { payload in
-            guard let event = payload.data as? Event else {
+        let resultHubListener: HubListener = { payload in
+            guard let result = payload.data as? OperationResult else {
                 return
             }
-            listener(event)
 
-            // Automatically unsubscribe for terminal events
+            resultListener(result)
+
+            // Automatically unsubscribe when event is received
             guard let token = token else {
                 return
             }
-
-            switch event {
-            case .completed, .failed:
-                Amplify.Hub.removeListener(token)
-            default:
-                break
-            }
+            Amplify.Hub.removeListener(token)
         }
 
-        token = Amplify.Hub.listen(to: channel, isIncluded: filterById, listener: hubListener)
+        token = Amplify.Hub.listen(to: channel, isIncluded: filterById, listener: resultHubListener)
 
         // We know that `token` is assigned by `Amplify.Hub.listen` so it's safe to force-unwrap
         return token!
@@ -135,25 +130,25 @@ extension AmplifyOperation: HubPayloadEventNameable { }
 extension AmplifyOperation: Cancellable { }
 
 public extension AmplifyOperation {
-    /// Convenience typealias defining the AsyncEvents dispatched by this operation
-    typealias Event = AsyncEvent<InProcess, Completed, Error>
+    /// Convenience typealias defining the `Result`s dispatched by this operation
+    typealias OperationResult = Result<Success, Failure>
 
     /// Convenience typealias for the `listener` callback submitted during Operation creation
-    typealias EventListener = (Event) -> Void
+    typealias ResultListener = (OperationResult) -> Void
 
     /// Dispatches an event to the hub. Internally, creates an `AmplifyOperationContext` object from the
     /// operation's `id`, and `request`
-    /// - Parameter event: The AsyncEvent to dispatch to the hub as part of the HubPayload
-    func dispatch(event: Event) {
+    /// - Parameter result: The OperationResult to dispatch to the hub as part of the HubPayload
+    func dispatch(result: OperationResult) {
         let channel = HubChannel(from: categoryType)
         let context = AmplifyOperationContext(operationId: id, request: request)
-        let payload = HubPayload(eventName: eventName, context: context, data: event)
+        let payload = HubPayload(eventName: eventName, context: context, data: result)
         Amplify.Hub.dispatch(to: channel, payload: payload)
     }
 
     /// Removes the listener that was registered during operation instantiation
-    func removeListener() {
-        guard let unsubscribeToken = unsubscribeToken else {
+    func removeResultListener() {
+        guard let unsubscribeToken = resultListenerUnsubscribeToken else {
             return
         }
         Amplify.Hub.removeListener(unsubscribeToken)
@@ -168,22 +163,4 @@ public protocol AmplifyOperationRequest {
 
     /// Options to adjust the behavior of this request, including plugin options
     var options: Options { get }
-}
-
-public extension HubCategory {
-
-    /// Convenience method to allow callers to listen to Hub events for a particular operation. Internally, the listener
-    /// transforms the HubPayload into the Operation's expected AsyncEvent type, so callers may re-use their `listener`s
-    ///
-    /// - Parameter operation: The operation to listen to events for
-    /// - Parameter listener: The Operation-specific listener callback to be invoked when an AsyncEvent for that
-    ///   operation is received.
-    func listen<Request: AmplifyOperationRequest,
-        InProcess,
-        Completed,
-        Error: AmplifyError>(to operation: AmplifyOperation<Request, InProcess, Completed, Error>,
-                             listener: @escaping AmplifyOperation<Request, InProcess, Completed, Error>.EventListener)
-        -> UnsubscribeToken {
-            return operation.subscribe(listener: listener)
-    }
 }

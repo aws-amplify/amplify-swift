@@ -19,7 +19,8 @@ typealias SQLPredicate = (String, [Binding?])
 ///   - predicate: the query predicate
 /// - Returns: a tuple containing the SQL string and the associated values
 private func translateQueryPredicate(from modelType: Model.Type,
-                                     predicate: QueryPredicate) -> SQLPredicate {
+                                     predicate: QueryPredicate,
+                                     namespace: Substring? = nil) -> SQLPredicate {
     var sql: [String] = []
     var bindings: [Binding?] = []
     var groupType: QueryPredicateGroupType = .and
@@ -31,7 +32,8 @@ private func translateQueryPredicate(from modelType: Model.Type,
         let indent = String(repeating: indentPrefix, count: indentSize)
         if let operation = pred as? QueryPredicateOperation {
             let logicalOperator = groupOpened ? "" : "\(groupType.rawValue) "
-            let column = operation.operator.columnFor(field: operation.field)
+            let column = operation.operator.columnFor(field: operation.field,
+                                                      namespace: namespace)
             sql.append("\(indent)\(logicalOperator)\(column) \(operation.operator.sqlOperation)")
             bindings.append(contentsOf: operation.operator.bindings)
             groupOpened = false
@@ -67,10 +69,12 @@ struct ConditionStatement: SQLStatement {
     let stringValue: String
     let variables: [Binding?]
 
-    init(modelType: Model.Type, predicate: QueryPredicate) {
+    init(modelType: Model.Type, predicate: QueryPredicate, namespace: Substring? = nil) {
         self.modelType = modelType
 
-        let (sql, variables) = translateQueryPredicate(from: modelType, predicate: predicate)
+        let (sql, variables) = translateQueryPredicate(from: modelType,
+                                                       predicate: predicate,
+                                                       namespace: namespace)
         self.stringValue = sql
         self.variables = variables
     }

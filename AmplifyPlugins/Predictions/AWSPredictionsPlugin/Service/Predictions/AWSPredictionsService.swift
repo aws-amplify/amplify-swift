@@ -29,15 +29,15 @@ class AWSPredictionsService {
     let transcribeClientDelegate: NativeWSTranscribeStreamingClientDelegate!
 
     convenience init(configuration: PredictionsPluginConfiguration,
-                     cognitoCredentialsProvider: AWSCognitoCredentialsProvider,
+                     credentialsProvider: AWSCredentialsProvider,
                      identifier: String) throws {
 
         let interpretServiceConfiguration = AmplifyAWSServiceConfiguration(region: configuration.interpret.region,
-                                                                           credentialsProvider: cognitoCredentialsProvider)
+                                                                           credentialsProvider: credentialsProvider)
         let identifyServiceConfiguration = AmplifyAWSServiceConfiguration(region: configuration.identify.region,
-                                                                          credentialsProvider: cognitoCredentialsProvider)
+                                                                          credentialsProvider: credentialsProvider)
         let convertServiceConfiguration =  AmplifyAWSServiceConfiguration(region: configuration.convert.region,
-                                                                          credentialsProvider: cognitoCredentialsProvider)
+                                                                          credentialsProvider: credentialsProvider)
 
         let awsTranslateAdapter = AWSPredictionsService.makeAWSTranslate(
             serviceConfiguration: convertServiceConfiguration,
@@ -63,11 +63,16 @@ class AWSPredictionsService {
 
         let transcribeClientDelegate = NativeWSTranscribeStreamingClientDelegate()
 
-        let nativeWebSocketProvider = NativeWebSocketProvider(clientDelegate: transcribeClientDelegate, callbackQueue: transcribeCallbackQueue)
+        let nativeWebSocketProvider = NativeWebSocketProvider(
+            clientDelegate: transcribeClientDelegate,
+            callbackQueue: transcribeCallbackQueue
+        )
 
-        let awsTranscribeStreamingAdapter = AWSPredictionsService.makeTranscribeStreaming(nativeWebSocketProvider: nativeWebSocketProvider,
-                                                                                          serviceConfiguration: convertServiceConfiguration,
-                                                                                          identifier: identifier)
+        let awsTranscribeStreamingAdapter = AWSPredictionsService.makeTranscribeStreaming(
+            nativeWebSocketProvider: nativeWebSocketProvider,
+            serviceConfiguration: convertServiceConfiguration,
+            identifier: identifier
+        )
 
         self.init(identifier: identifier,
                   awsTranslate: awsTranslateAdapter,

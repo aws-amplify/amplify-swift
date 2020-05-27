@@ -41,12 +41,14 @@ class PredictionsErrorHelper {
             return PredictionsError.httpStatus(statusCode,
                                                "The request has failed due to a temporary failure of the server.")
         default:
-            return PredictionsError.httpStatus(statusCode,
-                                               """
-                                                Status code unrecognized, please refer
-                                                to the AWS Service error documentation.
-                                               https://docs.aws.amazon.com/directoryservice/latest/devguide/CommonErrors.html
-                                               """)
+            return PredictionsError.httpStatus(
+                statusCode,
+                """
+                Status code unrecognized, please refer
+                to the AWS Service error documentation.
+                https://docs.aws.amazon.com/directoryservice/latest/devguide/CommonErrors.html
+                """
+            )
         }
     }
    // swiftlint:disable cyclomatic_complexity

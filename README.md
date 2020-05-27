@@ -7,6 +7,8 @@ Our default implementation works with Amazon Web Services (AWS), but AWS Amplify
 - **Full Documentation**
   https://docs.amplify.aws/start?integration=ios
 
+[![Discord](https://img.shields.io/discord/308323056592486420?logo=discord)](https://discord.gg/jWVbPfC) 
+
 ## Features/APIs
 
 - [**Analytics**](https://docs.amplify.aws/lib/analytics/getting-started?platform=ios): Easily collect analytics data for your app. Analytics data includes user sessions and other custom events that you want to track in your app.
