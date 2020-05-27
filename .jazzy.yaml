@@ -1,5 +1,4 @@
 module: Amplify
-module_version: 1.0.0
 podspec: Amplify.podspec
 
 exclude:
