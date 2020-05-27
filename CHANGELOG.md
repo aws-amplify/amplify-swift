@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.0.0 (2020-05-26)
+
+### Bug Fixes
+
+* Tools: Add npx to amplify-app and fix typo ([#486](https://github.com/aws-amplify/amplify-ios/issues/486)) ([c7d11a7](https://github.com/aws-amplify/amplify-ios/commit/c7d11a7b1291a2aa588fdcca5bf51e259490d9b5))
+
+### Misc
+
+Misc cleanup, improved test coverage from RC1:
+
+* **API:** Added SocialNote from codegen ([#469](https://github.com/aws-amplify/amplify-ios/issues/469)) ([79c6482](https://github.com/aws-amplify/amplify-ios/commit/79c648264d88683c7b2caa907f46984c811230e6))
+* **Auth:** Hub events for signedIn signedOut and sessionExpire ([#457](https://github.com/aws-amplify/amplify-ios/issues/457)) ([38e0513](https://github.com/aws-amplify/amplify-ios/commit/38e0513545b6e5a5127e233ae414f247d68749be))
+* **Auth:** Implementation of getCurrentUser api ([#455](https://github.com/aws-amplify/amplify-ios/issues/455)) ([59f6b18](https://github.com/aws-amplify/amplify-ios/commit/59f6b18651f1848d882c92203177981c5f195a9b))
+* **Core:** bootstrap Auth configuration before other categories, and fixed analytics integration tests ([#475](https://github.com/aws-amplify/amplify-ios/issues/475)) ([c33bf1b](https://github.com/aws-amplify/amplify-ios/commit/c33bf1b11fb7496227917670dc4b75fc3f10430e))
+* **DataStore:** StartSync with Auth ([#471](https://github.com/aws-amplify/amplify-ios/issues/471)) ([7cab76f](https://github.com/aws-amplify/amplify-ios/commit/7cab76fd785d7cd519280a912f8ab70fda87dc12))
+
 ## 1.0.0-rc.1 (2020-05-21)
 
 ### ⚠ BREAKING CHANGES
