@@ -133,7 +133,6 @@ struct AuthErrorHelper {
         .unableToSignIn(let message), // Called in signout, releaseSignInWait.
         .idTokenNotIssued(let message), // Not used anywhere.
         .userPoolNotConfigured(let message):
-            // TODO: Hanlde the above errors inside the plugin #172336364
             return AuthError.unknown(message)
 
         case .badRequest(let message),
@@ -145,7 +144,6 @@ struct AuthErrorHelper {
             return AuthError.unknown(message)
 
         case .expiredRefreshToken(let message):
-            // TODO: Should be handled by Auth.fetchSession #172336364
             return AuthError.unknown(message)
 
         // These errors arise from the escape hatch methods.
