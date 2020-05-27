@@ -15,7 +15,12 @@ struct AuthSessionHelper {
         let bundleID = Bundle.main.bundleIdentifier
         let keychain = AWSUICKeyChainStore(service: "\(bundleID!).\(AWSCognitoIdentityUserPool.self)")
         let namespace = "\(AWSMobileClient.default().userPoolClient!.userPoolConfiguration.clientId).\(username)"
-        let key = "\(namespace).tokenExpiration"
-        keychain.removeItem(forKey: key)
+        let expirationKey = "\(namespace).tokenExpiration"
+        let refreshTokenKey = "\(namespace).refreshToken"
+        if keychain[expirationKey] == nil {
+            print("No expiration key found in keychain")
+        }
+        keychain[expirationKey] = "2020-05-27T21:01:03Z"
+        keychain[refreshTokenKey] = "invalid"
     }
 }
