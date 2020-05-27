@@ -12,13 +12,13 @@ import Foundation
 public struct Blog: Model {
     public let id: String
     public var content: String
-    public var createdAt: Date
+    public var createdAt: Temporal.DateTime
     public var owner: String?
     public var authorNotes: String?
 
     public init(id: String = UUID().uuidString,
                 content: String,
-                createdAt: Date,
+                createdAt: Temporal.DateTime,
                 owner: String?,
                 authorNotes: String?) {
         self.id = id

@@ -22,7 +22,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
     }
 
     func testQueryGraphQLRequest() throws {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName, operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
@@ -60,7 +60,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
     }
 
     func testCreateMutationGraphQLRequest() throws {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
@@ -103,7 +103,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
     }
 
     func testUpdateMutationGraphQLRequest() throws {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
@@ -146,7 +146,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
     }
 
     func testDeleteMutationGraphQLRequest() throws {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
