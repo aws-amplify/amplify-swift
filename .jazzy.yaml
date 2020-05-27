@@ -1,12 +1,17 @@
 module: Amplify
-module_version: 0.11.0
-author: Amazon Web Services
-github_url: https://github.com/aws-amplify/amplify-ios
+module_version: 1.0.0
+podspec: Amplify.podspec
 
 exclude:
 - Pods
 
+author: Amazon Web Services
+author_url: https://aws.amazon.com/amplify
 clean: true
-skip_undocumented: false
+github_file_prefix: https://github.com/aws-amplify/amplify-ios/tree/master
+github_url: https://github.com/aws-amplify/amplify-ios
+hide_documentation_coverage: false
+min_acl: public
 sdk: iphone
-theme: apple
+skip_undocumented: false
+theme: fullwidth
