@@ -68,7 +68,9 @@ class AuthConfirmSignUpTests: AWSAuthBaseTest {
                                                     }
                                                     switch result {
                                                     case .success:
-                                                        XCTFail("confirmSignUp with validation error should not succeed")
+                                                        XCTFail("""
+                                                    confirmSignUp with validation error should not succeed
+                                                    """)
                                                     case .failure(let error):
                                                         guard case .validation(_, _, _, _) = error else {
                                                             XCTFail("Should return validation error")
