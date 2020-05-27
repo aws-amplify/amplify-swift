@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## 1.0.0 (2020-05-26)
 
+### Bug Fixes
+
+* Tools: Add npx to amplify-app and fix typo - fixes #486 (#490) ([#486](https://github.com/aws-amplify/amplify-ios/issues/486)) ([c7d11a7](https://github.com/aws-amplify/amplify-ios/commit/c7d11a7b1291a2aa588fdcca5bf51e259490d9b5))
+
 ### Misc
 
 Misc cleanup, improved test coverage from RC1:
