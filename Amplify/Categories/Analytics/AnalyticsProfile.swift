@@ -23,13 +23,13 @@ public struct AnalyticsUserProfile {
     public var location: Location?
 
     /// Properties of the user profile
-    public var properties: [String: AnalyticsPropertyValue]?
+    public var properties: AnalyticsProperties?
 
     public init(name: String? = nil,
                 email: String? = nil,
                 plan: String? = nil,
                 location: Location?,
-                properties: [String: AnalyticsPropertyValue]? = nil) {
+                properties: AnalyticsProperties? = nil) {
         self.name = name
         self.email = email
         self.plan = plan

@@ -15,13 +15,17 @@ protocol InitialSyncOrchestrator {
 // For testing
 @available(iOS 13.0, *)
 typealias InitialSyncOrchestratorFactory =
-    (APICategoryGraphQLBehavior?, IncomingEventReconciliationQueue?, StorageEngineAdapter?) -> InitialSyncOrchestrator
+    (DataStoreConfiguration,
+    APICategoryGraphQLBehavior?,
+    IncomingEventReconciliationQueue?,
+    StorageEngineAdapter?) -> InitialSyncOrchestrator
 
 @available(iOS 13.0, *)
 final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     typealias SyncOperationResult = Result<Void, DataStoreError>
     typealias SyncOperationResultHandler = (SyncOperationResult) -> Void
 
+    private let dataStoreConfiguration: DataStoreConfiguration
     private weak var api: APICategoryGraphQLBehavior?
     private weak var reconciliationQueue: IncomingEventReconciliationQueue?
     private weak var storageAdapter: StorageEngineAdapter?
@@ -34,9 +38,11 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     // interdependencies
     private let syncOperationQueue: OperationQueue
 
-    init(api: APICategoryGraphQLBehavior?,
+    init(dataStoreConfiguration: DataStoreConfiguration,
+         api: APICategoryGraphQLBehavior?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
          storageAdapter: StorageEngineAdapter?) {
+        self.dataStoreConfiguration = dataStoreConfiguration
         self.api = api
         self.reconciliationQueue = reconciliationQueue
         self.storageAdapter = storageAdapter
@@ -91,6 +97,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
                                                        api: api,
                                                        reconciliationQueue: reconciliationQueue,
                                                        storageAdapter: storageAdapter,
+                                                       dataStoreConfiguration: dataStoreConfiguration,
                                                        completion: syncOperationCompletion)
 
         syncOperationQueue.addOperation(initialSyncForModel)

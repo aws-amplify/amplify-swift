@@ -1,4 +1,3 @@
-# Uncomment the next line to define a global platform for your project
 platform :ios, "11.0"
 
 AWS_SDK_VERSION = "2.13.0"
@@ -30,6 +29,7 @@ target "Amplify" do
     inherit! :complete
     use_frameworks!
 
+    pod "AWSCore", "~> #{AWS_SDK_VERSION}"
     pod "AWSMobileClient", "~> #{AWS_SDK_VERSION}"
 
     abstract_target "AWSPluginsTestConfigs" do

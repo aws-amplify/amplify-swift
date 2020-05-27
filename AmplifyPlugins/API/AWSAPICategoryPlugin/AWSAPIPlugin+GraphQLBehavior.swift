@@ -10,7 +10,7 @@ import Amplify
 public extension AWSAPIPlugin {
 
     func query<R: Decodable>(request: GraphQLRequest<R>,
-                             listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
+                             listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> {
         let operationRequest = getOperationRequest(request: request,
                                                    operationType: .query)
 
@@ -18,13 +18,13 @@ public extension AWSAPIPlugin {
                                             session: session,
                                             mapper: mapper,
                                             pluginConfig: pluginConfig,
-                                            listener: listener)
+                                            resultListener: listener)
         queue.addOperation(operation)
         return operation
     }
 
     func mutate<R: Decodable>(request: GraphQLRequest<R>,
-                              listener: GraphQLOperation<R>.EventListener?) -> GraphQLOperation<R> {
+                              listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> {
         let operationRequest = getOperationRequest(request: request,
                                                    operationType: .mutation)
 
@@ -32,15 +32,16 @@ public extension AWSAPIPlugin {
                                             session: session,
                                             mapper: mapper,
                                             pluginConfig: pluginConfig,
-                                            listener: listener)
+                                            resultListener: listener)
         queue.addOperation(operation)
         return operation
     }
 
-    func subscribe<R>(request: GraphQLRequest<R>,
-                      listener: GraphQLSubscriptionOperation<R>.EventListener?) ->
-        GraphQLSubscriptionOperation<R> {
-
+    func subscribe<R>(
+        request: GraphQLRequest<R>,
+        valueListener: GraphQLSubscriptionOperation<R>.InProcessListener?,
+        completionListener: GraphQLSubscriptionOperation<R>.ResultListener?
+    ) -> GraphQLSubscriptionOperation<R> {
             let operationRequest = getOperationRequest(request: request,
                                                        operationType: .subscription)
 
@@ -49,7 +50,8 @@ public extension AWSAPIPlugin {
                 pluginConfig: pluginConfig,
                 subscriptionConnectionFactory: subscriptionConnectionFactory,
                 authService: authService,
-                listener: listener)
+                inProcessListener: valueListener,
+                resultListener: completionListener)
             queue.addOperation(operation)
             return operation
     }

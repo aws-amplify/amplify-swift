@@ -46,14 +46,12 @@ class RESTWithIAMIntegrationTests: XCTestCase {
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.get(request: request) { event in
             switch event {
-            case .completed(let data):
+            case .success(let data):
                 let result = String(decoding: data, as: UTF8.self)
                 print(result)
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
 
@@ -65,9 +63,9 @@ class RESTWithIAMIntegrationTests: XCTestCase {
         let request = RESTRequest(path: "/invalidPath")
         _ = Amplify.API.get(request: request) { event in
             switch event {
-            case .completed(let data):
+            case .success(let data):
                 XCTFail("Unexpected .complted event: \(data)")
-            case .failed(let error):
+            case .failure(let error):
                 guard case let .httpStatusError(statusCode, _) = error else {
                     XCTFail("Error should be httpStatusError")
                     return
@@ -75,8 +73,6 @@ class RESTWithIAMIntegrationTests: XCTestCase {
 
                 XCTAssertEqual(statusCode, 403)
                 failedInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
 
@@ -88,14 +84,12 @@ class RESTWithIAMIntegrationTests: XCTestCase {
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.put(request: request) { event in
             switch event {
-            case .completed(let data):
+            case .success(let data):
                 let result = String(decoding: data, as: UTF8.self)
                 print(result)
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
 
@@ -107,14 +101,12 @@ class RESTWithIAMIntegrationTests: XCTestCase {
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.post(request: request) { event in
             switch event {
-            case .completed(let data):
+            case .success(let data):
                 let result = String(decoding: data, as: UTF8.self)
                 print(result)
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
 
@@ -126,14 +118,12 @@ class RESTWithIAMIntegrationTests: XCTestCase {
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.delete(request: request) { event in
             switch event {
-            case .completed(let data):
+            case .success(let data):
                 let result = String(decoding: data, as: UTF8.self)
                 print(result)
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
 
@@ -145,9 +135,9 @@ class RESTWithIAMIntegrationTests: XCTestCase {
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.head(request: request) { event in
             switch event {
-            case .completed(let data):
+            case .success(let data):
                 XCTFail("Unexpected .completed event: \(data)")
-            case .failed(let error):
+            case .failure(let error):
                 guard case let .httpStatusError(statusCode, _) = error else {
                     XCTFail("Error should be httpStatusError")
                     return
@@ -155,8 +145,6 @@ class RESTWithIAMIntegrationTests: XCTestCase {
 
                 XCTAssertEqual(statusCode, 403)
                 failedInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
 
@@ -168,9 +156,9 @@ class RESTWithIAMIntegrationTests: XCTestCase {
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.patch(request: request) { event in
             switch event {
-            case .completed(let data):
+            case .success(let data):
                 XCTFail("Unexpected .completed event: \(data)")
-            case .failed(let error):
+            case .failure(let error):
                 guard case let .httpStatusError(statusCode, _) = error else {
                     XCTFail("Error should be httpStatusError")
                     return
@@ -178,8 +166,6 @@ class RESTWithIAMIntegrationTests: XCTestCase {
 
                 XCTAssertEqual(statusCode, 404)
                 failedInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
         }
 

@@ -165,29 +165,6 @@ struct GraphQLResponseDecoder {
         return try decoder.decode(responseType, from: serializedJSON)
     }
 
-    private static func decodeErrors(graphQLErrors: [JSONValue]) throws -> [GraphQLError] {
-        var responseErrors = [GraphQLError]()
-        for error in graphQLErrors {
-            do {
-                let responseError = try decode(graphQLError: error)
-                responseErrors.append(responseError)
-            } catch let decodingError as DecodingError {
-                throw APIError(error: decodingError)
-            } catch {
-                throw APIError.operationError("", "", error)
-            }
-        }
-
-        return responseErrors
-    }
-
-    private static func decode(graphQLError: JSONValue) throws -> GraphQLError {
-        let serializedJSON = try JSONEncoder().encode(graphQLError)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
-        return try decoder.decode(GraphQLError.self, from: serializedJSON)
-    }
-
     private static func serialize(graphQLData: JSONValue,
                                   at decodePath: String?) throws -> Data {
         let modelJSON = try getModelJSONValue(from: graphQLData, at: decodePath)

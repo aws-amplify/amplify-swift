@@ -5,11 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import XCTest
 @testable import AWSPinpointAnalyticsPlugin
+import XCTest
 
 class RepeatingTimerTests: XCTestCase {
-
     func testRepeatingTimer() {
         let timerFired = expectation(description: "timer fired")
         timerFired.expectedFulfillmentCount = 4
@@ -20,7 +19,7 @@ class RepeatingTimerTests: XCTestCase {
         timer.resume()
         wait(for: [timerFired], timeout: 2)
 
-        timer.setEventHandler { }
+        timer.setEventHandler {}
         timer.cancel()
         XCTAssertTrue(timer.isCancelled)
     }

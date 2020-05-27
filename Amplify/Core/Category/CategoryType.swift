@@ -19,6 +19,9 @@ public enum CategoryType: String {
     /// Retrieve data from a remote service
     case api
 
+    /// Authentication
+    case auth
+
     /// Persist data
     case dataStore
 
@@ -44,6 +47,8 @@ public extension CategoryType {
             return "Analytics"
         case .api:
             return "API"
+        case .auth:
+            return "Authentication"
         case .dataStore:
             return "DataStore"
         case .hub:
@@ -54,6 +59,27 @@ public extension CategoryType {
             return "Predictions"
         case .storage:
             return "Storage"
+        }
+    }
+
+    var category: Category {
+        switch self {
+        case .analytics:
+            return Amplify.Analytics
+        case .api:
+            return Amplify.API
+        case .auth:
+            return Amplify.Auth
+        case .dataStore:
+            return Amplify.DataStore
+        case .hub:
+            return Amplify.Hub
+        case .logging:
+            return Amplify.Logging
+        case .predictions:
+            return Amplify.Predictions
+        case .storage:
+            return Amplify.Storage
         }
     }
 }

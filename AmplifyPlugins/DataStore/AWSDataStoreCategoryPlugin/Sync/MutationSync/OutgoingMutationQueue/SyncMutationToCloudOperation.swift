@@ -16,11 +16,13 @@ import AWSPluginsCore
 @available(iOS 13.0, *)
 class SyncMutationToCloudOperation: Operation {
 
+    typealias MutationSyncCloudResult = GraphQLOperation<MutationSync<AnyModel>>.OperationResult
+
     private weak var api: APICategoryGraphQLBehavior?
     private let mutationEvent: MutationEvent
     private var mutationOperation: GraphQLOperation<MutationSync<AnyModel>>?
     private var networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?
-    private let completion: GraphQLOperation<MutationSync<AnyModel>>.EventListener
+    private let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener
     private var mutationRetryNotifier: MutationRetryNotifier?
     private var requestRetryablePolicy: RequestRetryablePolicy
     private var currentAttemptNumber: Int
@@ -30,7 +32,7 @@ class SyncMutationToCloudOperation: Operation {
          networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
          currentAttemptNumber: Int = 1,
          requestRetryablePolicy: RequestRetryablePolicy? = RequestRetryablePolicy(),
-         completion: @escaping GraphQLOperation<MutationSync<AnyModel>>.EventListener) {
+         completion: @escaping GraphQLOperation<MutationSync<AnyModel>>.ResultListener) {
         self.mutationEvent = mutationEvent
         self.api = api
         self.networkReachabilityPublisher = networkReachabilityPublisher
@@ -46,7 +48,7 @@ class SyncMutationToCloudOperation: Operation {
         guard !isCancelled else {
             mutationOperation?.cancel()
             let apiError = APIError.unknown("Operation cancelled", "")
-            finish(result: .failed(apiError))
+            finish(result: .failure(apiError))
             return
         }
 
@@ -57,14 +59,14 @@ class SyncMutationToCloudOperation: Operation {
         mutationOperation?.cancel()
         mutationRetryNotifier?.cancel()
         let apiError = APIError.unknown("Operation cancelled", "")
-        finish(result: .failed(apiError))
+        finish(result: .failure(apiError))
     }
 
     private func sendMutationToCloud() {
         guard !isCancelled else {
             mutationOperation?.cancel()
             let apiError = APIError.unknown("Operation cancelled", "")
-            finish(result: .failed(apiError))
+            finish(result: .failure(apiError))
             return
         }
 
@@ -80,7 +82,7 @@ class SyncMutationToCloudOperation: Operation {
             )
             log.error(error: dataStoreError)
             let apiError = APIError.unknown("Invalid mutation type", "", dataStoreError)
-            finish(result: .failed(apiError))
+            finish(result: .failure(apiError))
             return
         }
 
@@ -115,7 +117,7 @@ class SyncMutationToCloudOperation: Operation {
             }
         } catch {
             let apiError = APIError.unknown("Couldn't decode model", "", error)
-            finish(result: .failed(apiError))
+            finish(result: .failure(apiError))
             return nil
         }
         return request
@@ -126,38 +128,37 @@ class SyncMutationToCloudOperation: Operation {
             // TODO: This should be part of our error handling routines
             log.error("\(#function): API unexpectedly nil")
             let apiError = APIError.unknown("API unexpectedly nil", "")
-            finish(result: .failed(apiError))
+            finish(result: .failure(apiError))
             return
         }
         log.verbose("\(#function) sending mutation with sync data: \(apiRequest)")
-        mutationOperation = api.mutate(request: apiRequest) { asyncEvent in
-            self.log.verbose("sendMutationToCloud received asyncEvent: \(asyncEvent)")
-            self.validateResponseFromCloud(asyncEvent: asyncEvent, request: apiRequest)
+        mutationOperation = api.mutate(request: apiRequest) { result in
+            self.log.verbose("sendMutationToCloud received result: \(result)")
+            self.validate(cloudResult: result, request: apiRequest)
         }
     }
 
-    private func validateResponseFromCloud(asyncEvent: AsyncEvent<Void,
-        GraphQLResponse<MutationSync<AnyModel>>, APIError>,
-                                           request: GraphQLRequest<MutationSync<AnyModel>>) {
+    private func validate(cloudResult: MutationSyncCloudResult,
+                          request: GraphQLRequest<MutationSync<AnyModel>>) {
         guard !isCancelled else {
             mutationOperation?.cancel()
             let apiError = APIError.unknown("Operation cancelled", "")
-            finish(result: .failed(apiError))
+            finish(result: .failure(apiError))
             return
         }
 
-        if case .failed(let error) = asyncEvent {
+        if case .failure(let error) = cloudResult {
             let advice = getRetryAdviceIfRetryable(error: error)
             if advice.shouldRetry {
                 resolveReachabilityPublisher(request: request)
                 self.scheduleRetry(advice: advice)
             } else {
-                self.finish(result: .failed(error))
+                self.finish(result: .failure(error))
             }
             return
         }
 
-        finish(result: asyncEvent)
+        finish(result: cloudResult)
     }
 
     private func resolveReachabilityPublisher(request: GraphQLRequest<MutationSync<AnyModel>>) {
@@ -202,8 +203,8 @@ class SyncMutationToCloudOperation: Operation {
         currentAttemptNumber += 1
     }
 
-    private func finish(result: AsyncEvent<Void, GraphQLResponse<MutationSync<AnyModel>>, APIError>) {
-        mutationOperation?.removeListener()
+    private func finish(result: MutationSyncCloudResult) {
+        mutationOperation?.removeResultListener()
         mutationOperation = nil
 
         DispatchQueue.global().async {

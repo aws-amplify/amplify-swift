@@ -33,7 +33,7 @@ class GraphQLDeleteMutationTests: XCTestCase {
     ///     - it contains an `input` of type `ID!`
     ///     - it has a list of fields with no nested models
     func testDeleteGraphQLMutationFromSimpleModel() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
@@ -46,6 +46,7 @@ class GraphQLDeleteMutationTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -55,8 +56,12 @@ class GraphQLDeleteMutationTests: XCTestCase {
         XCTAssertEqual(document.name, "deletePost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "deletePost")
-        XCTAssert(document.variables["input"] != nil)
-        guard let input = document.variables["input"] as? [String: String] else {
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssert(variables["input"] != nil)
+        guard let input = variables["input"] as? [String: String] else {
             XCTFail("Could not get object at `input`")
             return
         }
@@ -74,7 +79,7 @@ class GraphQLDeleteMutationTests: XCTestCase {
     ///     - it contains an `input` of type `ID!`
     ///     - it has a list of fields with no nested models
     func testDeleteGraphQLMutationFromSimpleModelWithVersion() {
-        let post = Post(title: "title", content: "content", createdAt: Date())
+        let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelType: Post.self, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
@@ -88,6 +93,7 @@ class GraphQLDeleteMutationTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -100,8 +106,12 @@ class GraphQLDeleteMutationTests: XCTestCase {
         XCTAssertEqual(document.name, "deletePost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
         XCTAssertEqual(document.name, "deletePost")
-        XCTAssert(document.variables["input"] != nil)
-        guard let input = document.variables["input"] as? [String: Any] else {
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssert(variables["input"] != nil)
+        guard let input = variables["input"] as? [String: Any] else {
             XCTFail("Could not get object at `input`")
             return
         }

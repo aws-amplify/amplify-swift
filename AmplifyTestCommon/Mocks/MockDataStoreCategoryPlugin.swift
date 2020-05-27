@@ -9,7 +9,7 @@ import Amplify
 import Combine
 
 class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
-    
+
     var key: String {
         return "MockDataStoreCategoryPlugin"
     }
@@ -36,15 +36,10 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     }
 
     func query<M: Model>(_ modelType: M.Type,
-                         where predicate: QueryPredicateFactory?,
+                         where predicate: QueryPredicate?,
                          paginate paginationInput: QueryPaginationInput?,
                          completion: (DataStoreResult<[M]>) -> Void) {
         notify("queryByPredicate")
-    }
-
-    func delete<M: Model>(_ model: M,
-                          completion: (DataStoreResult<Void>) -> Void) {
-        notify("deleteByModel")
     }
 
     func delete<M: Model>(_ modelType: M.Type,
@@ -53,8 +48,8 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("deleteById")
     }
 
-    func delete<M: Model>(_ model: M.Type,
-                          where predicate: @escaping QueryPredicateFactory,
+    func delete<M: Model>(_ model: M,
+                          where predicate: QueryPredicate? = nil,
                           completion: @escaping DataStoreCallback<Void>) {
         notify("deleteByPredicate")
     }
@@ -71,7 +66,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
                                               modelName: modelType.modelName,
                                               json: "",
                                               mutationType: .create,
-                                              createdAt: Date())
+                                              createdAt: .now())
             notify("publisher")
             return Result.Publisher(mutationEvent).eraseToAnyPublisher()
     }

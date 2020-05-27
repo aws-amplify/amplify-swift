@@ -22,8 +22,24 @@ public struct ModelDecorator: ModelBasedGraphQLDocumentDecorator {
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
                          modelType: Model.Type) -> SingleDirectiveGraphQLDocument {
         var inputs = document.inputs
+        var graphQLInput = model.graphQLInput
+
+        if !modelType.schema.authRules.isEmpty {
+            modelType.schema.authRules.forEach { authRule in
+                if authRule.allow == .owner {
+                    let ownerField = authRule.getOwnerFieldOrDefault()
+                    graphQLInput = graphQLInput.filter { (field, value) -> Bool in
+                        if field == ownerField, value == nil {
+                            return false
+                        }
+                        return true
+                    }
+                }
+            }
+        }
+
         inputs["input"] = GraphQLDocumentInput(type: "\(document.name.pascalCased())Input!",
-            value: .object(model.graphQLInput))
+            value: .object(graphQLInput))
         return document.copy(inputs: inputs)
     }
 }

@@ -6,11 +6,10 @@
 //
 
 import Amplify
-import Foundation
 import AWSPinpoint
+import Foundation
 
 extension AWSPinpointAnalyticsPlugin {
-
     public func identifyUser(_ identityId: String, withProfile userProfile: AnalyticsUserProfile?) {
         if !isEnabled {
             log.warn("Cannot identify user. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
@@ -62,7 +61,7 @@ extension AWSPinpointAnalyticsPlugin {
     }
 
     public func record(eventWithName eventName: String) {
-        let event = BasicAnalyticsEvent(eventName)
+        let event = BasicAnalyticsEvent(name: eventName)
         record(event: event)
     }
 
@@ -71,9 +70,9 @@ extension AWSPinpointAnalyticsPlugin {
         properties.forEach { key, _ in
             guard key.count >= 1, key.count <= 50 else {
                 preconditionFailure("""
-                                    The key `\(key)` is invalid.
-                                    Property keys must have a length from 1 to 50.
-                                    """)
+                The key `\(key)` is invalid.
+                Property keys must have a length from 1 to 50.
+                """)
             }
         }
 
@@ -81,7 +80,6 @@ extension AWSPinpointAnalyticsPlugin {
             globalProperties.updateValue(newValue, forKey: key)
             pinpoint.addGlobalProperty(withValue: newValue, forKey: key)
         }
-
     }
 
     public func unregisterGlobalProperties(_ keys: Set<String>?) {
@@ -137,6 +135,6 @@ extension AWSPinpointAnalyticsPlugin {
     ///
     /// - Returns: AWSPinpoint instance
     public func getEscapeHatch() -> AWSPinpoint {
-        return pinpoint.getEscapeHatch()
+        pinpoint.getEscapeHatch()
     }
 }

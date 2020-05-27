@@ -14,7 +14,7 @@ class QueryPredicateGraphQLTests: XCTestCase {
 
     func testPredicateToGraphQLValues() throws {
         let post = Post.keys
-        guard let date = "2019-11-23T02:06:50.689Z".iso8601Date else {
+        guard let date = try? Temporal.DateTime(iso8601String: "2019-11-23T02:06:50.689Z") else {
             XCTFail("Failed to set up date")
             return
         }

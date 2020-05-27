@@ -8,7 +8,6 @@
 import Foundation
 
 class AppSessionTracker: Tracker {
-
     /// Specifies whether to track application sessions
     var trackAppSessions: Bool!
 

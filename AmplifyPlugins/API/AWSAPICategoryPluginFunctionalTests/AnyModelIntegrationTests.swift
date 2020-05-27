@@ -50,17 +50,15 @@ class AnyModelIntegrationTests: XCTestCase {
 
         let callbackInvoked = expectation(description: "Callback invoked")
         var responseFromOperation: GraphQLResponse<AnyModel>?
-        _ = Amplify.API.mutate(of: anyPost, type: .create) { response in
+        _ = Amplify.API.mutate(request: .create(anyPost)) { response in
             defer {
                 callbackInvoked.fulfill()
             }
             switch response {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 responseFromOperation = graphQLResponse
-            case .failed(let apiError):
+            case .failure(let apiError):
                 XCTFail("\(apiError)")
-            default:
-                break
             }
         }
 
@@ -101,7 +99,7 @@ class AnyModelIntegrationTests: XCTestCase {
         let originalAnyPost = try originalPost.eraseToAnyModel()
 
         let createCallbackInvoked = expectation(description: "Create callback invoked")
-        _ = Amplify.API.mutate(of: originalAnyPost, type: .create) { _ in
+        _ = Amplify.API.mutate(request: .create(originalAnyPost)) { _ in
             createCallbackInvoked.fulfill()
         }
 
@@ -115,17 +113,15 @@ class AnyModelIntegrationTests: XCTestCase {
 
         let updateCallbackInvoked = expectation(description: "Update callback invoked")
         var responseFromOperation: GraphQLResponse<AnyModel>?
-        _ = Amplify.API.mutate(of: updatedAnyPost, type: .update) { response in
+        _ = Amplify.API.mutate(request: .update(updatedAnyPost)) { response in
             defer {
                 updateCallbackInvoked.fulfill()
             }
             switch response {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 responseFromOperation = graphQLResponse
-            case .failed(let apiError):
+            case .failure(let apiError):
                 XCTFail("\(apiError)")
-            default:
-                break
             }
         }
 
@@ -164,27 +160,23 @@ class AnyModelIntegrationTests: XCTestCase {
         let originalAnyPost = try originalPost.eraseToAnyModel()
 
         let createCallbackInvoked = expectation(description: "Create callback invoked")
-        _ = Amplify.API.mutate(of: originalAnyPost, type: .create) { _ in
+        _ = Amplify.API.mutate(request: .create(originalAnyPost)) { _ in
             createCallbackInvoked.fulfill()
         }
 
         wait(for: [createCallbackInvoked], timeout: networkTimeout)
 
-        let newContent = "Updated post content as of \(Date())"
-
         let deleteCallbackInvoked = expectation(description: "Delete callback invoked")
         var responseFromOperation: GraphQLResponse<AnyModel>?
-        _ = Amplify.API.mutate(of: originalAnyPost, type: .delete) { response in
+        _ = Amplify.API.mutate(request: .delete(originalAnyPost)) { response in
             defer {
                 deleteCallbackInvoked.fulfill()
             }
             switch response {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 responseFromOperation = graphQLResponse
-            case .failed(let apiError):
+            case .failure(let apiError):
                 XCTFail("\(apiError)")
-            default:
-                break
             }
         }
 

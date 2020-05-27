@@ -12,6 +12,7 @@ import XCTest
 @testable import AWSAPICategoryPluginTestCommon
 import AWSPluginsCore
 
+// swiftlint:disable type_body_length
 class GraphQLSyncBasedTests: XCTestCase {
 
     static let amplifyConfiguration = "GraphQLSyncBasedTests-amplifyconfiguration"
@@ -55,12 +56,10 @@ class GraphQLSyncBasedTests: XCTestCase {
                 completeInvoked.fulfill()
             }
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 responseFromOperation = graphQLResponse
-            case .failed(let apiError):
+            case .failure(let apiError):
                 XCTFail("\(apiError)")
-            default:
-                XCTFail("Could not get data back")
             }
         }
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -79,7 +78,7 @@ class GraphQLSyncBasedTests: XCTestCase {
                 case .error(let errors):
                     XCTFail("errors: \(errors)")
                 case .partial(let model, let errors):
-                    XCTFail("partial: \(model), \(errors)")
+                    XCTFail("partial: \(String(describing: model)), \(errors)")
                 case .transformationError(let rawResponse, let apiError):
                     XCTFail("transformationError: \(rawResponse), \(apiError)")
                 }
@@ -113,12 +112,10 @@ class GraphQLSyncBasedTests: XCTestCase {
                 completeInvoked.fulfill()
             }
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 responseFromOperation = graphQLResponse
-            case .failed(let apiError):
+            case .failure(let apiError):
                 XCTFail("\(apiError)")
-            default:
-                XCTFail("Could not get data back")
             }
         }
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -137,7 +134,7 @@ class GraphQLSyncBasedTests: XCTestCase {
                 case .error(let errors):
                     XCTFail("errors: \(errors)")
                 case .partial(let model, let errors):
-                    XCTFail("partial: \(model), \(errors)")
+                    XCTFail("partial: \(String(describing: model)), \(errors)")
                 case .transformationError(let rawResponse, let apiError):
                     XCTFail("transformationError: \(rawResponse), \(apiError)")
                 }
@@ -185,12 +182,10 @@ class GraphQLSyncBasedTests: XCTestCase {
                 completeInvoked.fulfill()
             }
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 responseFromOperation = graphQLResponse
-            case .failed(let apiError):
+            case .failure(let apiError):
                 XCTFail("\(apiError)")
-            default:
-                XCTFail("Could not get data back")
             }
         }
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -258,12 +253,10 @@ class GraphQLSyncBasedTests: XCTestCase {
                 completeInvoked.fulfill()
             }
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 responseFromOperation = graphQLResponse
-            case .failed(let apiError):
+            case .failure(let apiError):
                 XCTFail("\(apiError)")
-            default:
-                XCTFail("Could not get data back")
             }
         }
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -280,11 +273,16 @@ class GraphQLSyncBasedTests: XCTestCase {
         case .failure(let error):
             switch error {
             case .error(let errors):
-                errors.forEach { error in
-                    if error.message.contains("conditional request failed") {
-                        conditionalFailedError.fulfill()
-                    }
+                XCTAssertEqual(errors.count, 1)
+                guard let error = errors.first,
+                    let extensions = error.extensions,
+                    case let .string(errorTypeValue) = extensions["errorType"] else {
+                    XCTFail("Failed to get errorType from extensions of the GraphQL error")
+                    return
                 }
+                let errorType = AppSyncErrorType(errorTypeValue)
+                XCTAssertEqual(errorType, .conditionalCheck)
+                conditionalFailedError.fulfill()
             case .partial(let model, let errors):
                 XCTFail("partial: \(model), \(errors)")
             case .transformationError(let rawResponse, let apiError):
@@ -293,6 +291,100 @@ class GraphQLSyncBasedTests: XCTestCase {
         }
 
         wait(for: [conditionalFailedError], timeout: TestCommonConstants.networkTimeout)
+    }
+
+    // Given: A newly created post
+    // When: Call update mutation, with updated title and version 1, twice
+    // Then: The first mutation is successful, and second returns conflict unhandled exception due to older version.
+    func testCreatePostThenUpdateTwiceWithConflictUnhandledException() throws {
+        let uuid = UUID().uuidString
+        let testMethodName = String("\(#function)".dropLast(2))
+        let title = testMethodName + "Title"
+        guard let createdPost = createPost(id: uuid, title: title) else {
+            XCTFail("Failed to create post with version 1")
+            return
+        }
+        let updatedTitle = title + "Updated"
+        let modifiedPost = Post(id: createdPost.model["id"] as? String ?? "",
+                                title: updatedTitle,
+                                content: createdPost.model["content"] as? String ?? "",
+                                createdAt: Date())
+        let firstUpdateSuccess = expectation(description: "first update mutation should be successful")
+
+        let request = GraphQLRequest<MutationSyncResult>.updateMutation(of: modifiedPost,
+                                                                        version: 1)
+        _ = Amplify.API.mutate(request: request) { event in
+            switch event {
+            case .success:
+                firstUpdateSuccess.fulfill()
+            case .failure(let apiError):
+                XCTFail("\(apiError)")
+            }
+        }
+        wait(for: [firstUpdateSuccess], timeout: TestCommonConstants.networkTimeout)
+
+        var responseFromOperation: GraphQLResponse<MutationSync<AnyModel>>?
+        let secondUpdateFailed = expectation(
+            description: "second update mutatiion request should failed with ConflictUnhandled errorType")
+
+        _ = Amplify.API.mutate(request: request) { event in
+            defer {
+                secondUpdateFailed.fulfill()
+            }
+            switch event {
+            case .success(let graphQLResponse):
+                responseFromOperation = graphQLResponse
+            case .failure(let apiError):
+                XCTFail("\(apiError)")
+            }
+        }
+        wait(for: [secondUpdateFailed], timeout: TestCommonConstants.networkTimeout)
+
+        guard let response = responseFromOperation else {
+            XCTAssertNotNil(responseFromOperation)
+            return
+        }
+
+        let conflictUnhandledError = expectation(description: "error should be conflict unhandled")
+        switch response {
+        case .success(let mutationSync):
+            XCTFail("success: \(mutationSync)")
+        case .failure(let error):
+            switch error {
+            case .error(let errors):
+                XCTAssertEqual(errors.count, 1)
+                guard let error = errors.first, let extensions = error.extensions else {
+                    XCTFail("Failed to get extensions of the GraphQL error")
+                    return
+                }
+                guard case let .string(errorTypeValue) = extensions["errorType"] else {
+                    XCTFail("Missing errorType")
+                    return
+                }
+                let errorType = AppSyncErrorType(errorTypeValue)
+                XCTAssertEqual(errorType, .conflictUnhandled)
+
+                guard case let .object(dataObject) = extensions["data"] else {
+                    XCTFail("Missing data")
+                    return
+                }
+
+                let serializedJSON = try JSONEncoder().encode(dataObject)
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
+                let mutationSync = try decoder.decode(MutationSync<AmplifyTestCommon.Post>.self, from: serializedJSON)
+                XCTAssertEqual(mutationSync.model.title, updatedTitle)
+                XCTAssertEqual(mutationSync.model.content, createdPost.model["content"] as? String)
+                XCTAssertEqual(mutationSync.syncMetadata.version, 2)
+                conflictUnhandledError.fulfill()
+            case .partial(let model, let errors):
+                XCTFail("partial: \(model), \(errors)")
+            case .transformationError(let rawResponse, let apiError):
+                XCTFail("transformationError: \(rawResponse), \(apiError)")
+            }
+        }
+
+        wait(for: [conflictUnhandledError], timeout: TestCommonConstants.networkTimeout)
     }
 
     // Given: Two newly created posts
@@ -326,12 +418,10 @@ class GraphQLSyncBasedTests: XCTestCase {
                 completeInvoked.fulfill()
             }
             switch event {
-            case .completed(let graphQLResponse):
+            case .success(let graphQLResponse):
                 responseFromOperation = graphQLResponse
-            case .failed(let error):
+            case .failure(let error):
                 print(error)
-            default:
-                XCTFail("Could not get data back")
             }
         }
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -383,10 +473,10 @@ class GraphQLSyncBasedTests: XCTestCase {
         let progressInvoked = expectation(description: "Progress invoked")
         let request = GraphQLRequest<MutationSyncResult>.subscription(to: Post.self, subscriptionType: .onCreate)
 
-        let operation = Amplify.API.subscribe(request: request) { event in
-            switch event {
-            case .inProcess(let graphQLResponse):
-                switch graphQLResponse {
+        let operation = Amplify.API.subscribe(
+            request: request,
+            valueListener: { subscriptionEvent in
+                switch subscriptionEvent {
                 case .connection(let state):
                     switch state {
                     case .connecting:
@@ -407,14 +497,15 @@ class GraphQLSyncBasedTests: XCTestCase {
                     }
                     progressInvoked.fulfill()
                 }
-            case .failed(let error):
+        }, completionListener: { event in
+            switch event {
+            case .failure(let error):
                 print("Unexpected .failed event: \(error)")
-            case .completed:
+            case .success:
                 completedInvoked.fulfill()
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
-        }
+        })
+
         XCTAssertNotNil(operation)
         wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
 
@@ -443,7 +534,7 @@ class GraphQLSyncBasedTests: XCTestCase {
         let request = GraphQLRequest<MutationSyncResult>.createMutation(of: post)
         _ = Amplify.API.mutate(request: request, listener: { event in
             switch event {
-            case .completed(let data):
+            case .success(let data):
                 switch data {
                 case .success(let post):
                     result = post
@@ -451,10 +542,8 @@ class GraphQLSyncBasedTests: XCTestCase {
                     XCTFail("Failed to create post \(error)")
                 }
                 completeInvoked.fulfill()
-            case .failed(let error):
+            case .failure(let error):
                 print(error)
-            default:
-                XCTFail("Could not get data back")
             }
         })
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)

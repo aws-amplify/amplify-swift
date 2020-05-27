@@ -177,7 +177,9 @@ public extension AWSAPICategoryPluginConfiguration {
             return endpointType
         }
 
-        private static func getAuthorizationType(from endpointJSON: [String: JSONValue]) throws -> AWSAuthorizationType {
+        private static func getAuthorizationType(
+            from endpointJSON: [String: JSONValue]
+        ) throws -> AWSAuthorizationType {
             guard case .string(let authorizationTypeString) = endpointJSON["authorizationType"] else {
                 throw PluginError.pluginConfigurationError(
                     "Could not get `AuthorizationType` from plugin configuration",

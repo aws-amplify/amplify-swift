@@ -5,13 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
+import Foundation
 extension AWSPinpointAnalyticsPlugin {
-
     /// Resets the state of the plugin
     public func reset(onComplete: @escaping (() -> Void)) {
-
         if pinpoint != nil {
             pinpoint = nil
         }
@@ -21,7 +19,7 @@ extension AWSPinpointAnalyticsPlugin {
         }
 
         if autoFlushEventsTimer != nil {
-            autoFlushEventsTimer?.setEventHandler { }
+            autoFlushEventsTimer?.setEventHandler {}
             autoFlushEventsTimer?.cancel()
             autoFlushEventsTimer = nil
         }

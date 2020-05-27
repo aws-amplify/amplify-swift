@@ -5,12 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import AWSPinpoint
+import Foundation
 
 /// Methods copied from `AWSPinpointAnalyticsClient`
 protocol AWSPinpointAnalyticsClientBehavior {
-
     /**
      Returns the `AWSPinpointEventRecorder` which is the low level client used to record events to local storage.
 
@@ -18,7 +17,7 @@ protocol AWSPinpointAnalyticsClientBehavior {
 
      @returns the `AWSPinpointEventRecorder` used for storing events.
      */
-    //var eventRecorder: AWSPinpointEventRecorder { get }
+    // var eventRecorder: AWSPinpointEventRecorder { get }
 
     /**
      Adds the specified attribute to all subsequent recorded events.

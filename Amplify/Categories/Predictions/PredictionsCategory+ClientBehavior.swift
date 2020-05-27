@@ -7,11 +7,12 @@
 
 import Foundation
 
-extension PredictionsCategory: PredictionsCategoryClientBehavior {
+extension PredictionsCategory: PredictionsCategoryBehavior {
 
     public func convert(textToSpeech: String,
                         options: PredictionsTextToSpeechRequest.Options? = nil,
-                        listener: PredictionsTextToSpeechOperation.EventListener?) -> PredictionsTextToSpeechOperation {
+                        listener: PredictionsTextToSpeechOperation.ResultListener?
+    ) -> PredictionsTextToSpeechOperation {
         plugin.convert(textToSpeech: textToSpeech,
                        options: options,
                        listener: listener)
@@ -21,8 +22,8 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
                         language: LanguageType?,
                         targetLanguage: LanguageType?,
                         options: PredictionsTranslateTextRequest.Options? = nil,
-                        listener: PredictionsTranslateTextOperation.EventListener?)
-        -> PredictionsTranslateTextOperation {
+                        listener: PredictionsTranslateTextOperation.ResultListener?
+    ) -> PredictionsTranslateTextOperation {
         plugin.convert(textToTranslate: textToTranslate,
                            language: language,
                            targetLanguage: targetLanguage,
@@ -32,14 +33,16 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
 
     public func convert(speechToText: URL,
                         options: PredictionsSpeechToTextRequest.Options?,
-                        listener: PredictionsSpeechToTextOperation.EventListener?) -> PredictionsSpeechToTextOperation {
+                        listener: PredictionsSpeechToTextOperation.ResultListener?
+    ) -> PredictionsSpeechToTextOperation {
         plugin.convert(speechToText: speechToText, options: options, listener: listener)
     }
 
     public func identify(type: IdentifyAction,
                          image: URL,
                          options: PredictionsIdentifyRequest.Options? = nil,
-                         listener: PredictionsIdentifyOperation.EventListener?) -> PredictionsIdentifyOperation {
+                         listener: PredictionsIdentifyOperation.ResultListener?
+    ) -> PredictionsIdentifyOperation {
         plugin.identify(type: type,
                         image: image,
                         options: options,
@@ -48,7 +51,8 @@ extension PredictionsCategory: PredictionsCategoryClientBehavior {
 
     public func interpret(text: String,
                           options: PredictionsInterpretRequest.Options? = nil,
-                          listener: PredictionsInterpretOperation.EventListener?) -> PredictionsInterpretOperation {
+                          listener: PredictionsInterpretOperation.ResultListener?
+    ) -> PredictionsInterpretOperation {
         plugin.interpret(text: text,
                          options: options,
                          listener: listener)

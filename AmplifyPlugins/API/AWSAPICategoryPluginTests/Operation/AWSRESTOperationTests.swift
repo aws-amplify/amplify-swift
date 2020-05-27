@@ -90,13 +90,11 @@ class AWSRESTOperationTests: XCTestCase {
         let request = RESTRequest(apiName: "INVALID_API_NAME", path: "/path")
         _ = Amplify.API.get(request: request) { event in
             switch event {
-            case .completed(let data):
+            case .success(let data):
                 XCTFail("Unexpected completed event: \(data)")
-            case .failed:
+            case .failure:
                 // Expected failure
                 break
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
             callbackInvoked.fulfill()
         }
@@ -140,12 +138,10 @@ class AWSRESTOperationTests: XCTestCase {
         let request = RESTRequest(apiName: "Valid", path: "/path")
         _ = Amplify.API.get(request: request) { event in
             switch event {
-            case .completed(let data):
+            case .success(let data):
                 XCTAssertEqual(data, sentData)
-            case .failed(let error):
+            case .failure(let error):
                 XCTFail("Unexpected failure: \(error)")
-            default:
-                XCTFail("Unexpected event: \(event)")
             }
             callbackInvoked.fulfill()
         }

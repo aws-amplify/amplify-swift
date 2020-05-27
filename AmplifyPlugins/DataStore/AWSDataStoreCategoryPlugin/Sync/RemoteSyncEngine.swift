@@ -14,8 +14,11 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     weak var storageAdapter: StorageEngineAdapter?
 
+    private var dataStoreConfiguration: DataStoreConfiguration
+
     // Assigned at `start`
     weak var api: APICategoryGraphQLBehavior?
+    weak var auth: AuthCategoryBehavior?
 
     // Assigned and released inside `performInitialQueries`, but we maintain a reference so we can `reset`
     private var initialSyncOrchestrator: InitialSyncOrchestrator?
@@ -24,6 +27,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private let mutationEventIngester: MutationEventIngester
     let mutationEventPublisher: MutationEventPublisher
     private let outgoingMutationQueue: OutgoingMutationQueueBehavior
+    private var outgoingMutationQueueSink: AnyCancellable?
 
     private var reconciliationQueueSink: AnyCancellable?
 
@@ -54,6 +58,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     /// MutationEvents, sync metadata, and conflict resolution metadata. Immediately initializes the incoming mutation
     /// queue so it can begin accepting incoming mutations from DataStore.
     convenience init(storageAdapter: StorageEngineAdapter,
+                     dataStoreConfiguration: DataStoreConfiguration,
                      outgoingMutationQueue: OutgoingMutationQueueBehavior? = nil,
                      initialSyncOrchestratorFactory: InitialSyncOrchestratorFactory? = nil,
                      reconciliationQueueFactory: IncomingEventReconciliationQueueFactory? = nil,
@@ -62,17 +67,19 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                      requestRetryablePolicy: RequestRetryablePolicy? = nil) throws {
         let mutationDatabaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: storageAdapter)
         let awsMutationEventPublisher = AWSMutationEventPublisher(eventSource: mutationDatabaseAdapter)
-        let outgoingMutationQueue = outgoingMutationQueue ?? OutgoingMutationQueue()
+        let outgoingMutationQueue = outgoingMutationQueue ??
+            OutgoingMutationQueue(storageAdapter: storageAdapter, dataStoreConfiguration: dataStoreConfiguration)
         let reconciliationQueueFactory = reconciliationQueueFactory ??
-            AWSIncomingEventReconciliationQueue.init(modelTypes:api:storageAdapter:)
+            AWSIncomingEventReconciliationQueue.init(modelTypes:api:storageAdapter:auth:modelReconciliationQueueFactory:)
         let initialSyncOrchestratorFactory = initialSyncOrchestratorFactory ??
-            AWSInitialSyncOrchestrator.init(api:reconciliationQueue:storageAdapter:)
+            AWSInitialSyncOrchestrator.init(dataStoreConfiguration:api:reconciliationQueue:storageAdapter:)
+        let resolver = RemoteSyncEngine.Resolver.resolve(currentState:action:)
         let stateMachine = stateMachine ?? StateMachine(initialState: .notStarted,
-                                                        resolver: RemoteSyncEngine.Resolver.resolve(currentState:action:))
+                                                        resolver: resolver)
         let requestRetryablePolicy = requestRetryablePolicy ?? RequestRetryablePolicy()
 
-
         self.init(storageAdapter: storageAdapter,
+                  dataStoreConfiguration: dataStoreConfiguration,
                   outgoingMutationQueue: outgoingMutationQueue,
                   mutationEventIngester: mutationDatabaseAdapter,
                   mutationEventPublisher: awsMutationEventPublisher,
@@ -84,6 +91,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     init(storageAdapter: StorageEngineAdapter,
+         dataStoreConfiguration: DataStoreConfiguration,
          outgoingMutationQueue: OutgoingMutationQueueBehavior,
          mutationEventIngester: MutationEventIngester,
          mutationEventPublisher: MutationEventPublisher,
@@ -93,6 +101,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
          networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>?,
          requestRetryablePolicy: RequestRetryablePolicy) {
         self.storageAdapter = storageAdapter
+        self.dataStoreConfiguration = dataStoreConfiguration
         self.mutationEventIngester = mutationEventIngester
         self.mutationEventPublisher = mutationEventPublisher
         self.outgoingMutationQueue = outgoingMutationQueue
@@ -116,8 +125,13 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                     self.respond(to: newState)
                 }
         }
+
+        self.outgoingMutationQueueSink = self.outgoingMutationQueue.publisher.sink { mutationEvent in
+            self.remoteSyncTopicPublisher.send(.mutationEvent(mutationEvent))
+        }
     }
 
+    // swiftlint:disable cyclomatic_complexity
     /// Listens to incoming state changes and invokes the appropriate asynchronous methods in response.
     private func respond(to newState: State) {
         log.verbose("\(#function): \(newState)")
@@ -129,6 +143,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             pauseSubscriptions()
         case .pausingMutationQueue:
             pauseMutations()
+        case .clearingStateOutgoingMutations(let storageAdapter):
+            clearStateOutgoingMutations(storageAdapter: storageAdapter)
         case .initializingSubscriptions(let api, let storageAdapter):
             initializeSubscriptions(api: api, storageAdapter: storageAdapter)
         case .performingInitialSync:
@@ -157,14 +173,16 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             terminate()
         }
     }
+    // swiftlint:enable cyclomatic_complexity
 
-    func start(api: APICategoryGraphQLBehavior = Amplify.API) {
+    func start(api: APICategoryGraphQLBehavior = Amplify.API, auth: AuthCategoryBehavior? = Amplify.Auth) {
         guard storageAdapter != nil else {
             log.error(error: DataStoreError.nilStorageAdapter())
             remoteSyncTopicPublisher.send(completion: .failure(DataStoreError.nilStorageAdapter()))
             return
         }
         self.api = api
+        self.auth = auth
 
         remoteSyncTopicPublisher.send(.storageAdapterAvailable)
         stateMachine.notify(action: .receivedStart)
@@ -203,8 +221,19 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         outgoingMutationQueue.pauseSyncingToCloud()
 
         remoteSyncTopicPublisher.send(.mutationsPaused)
-        if let api = self.api, let storageAdapter = self.storageAdapter {
-            stateMachine.notify(action: .pausedMutationQueue(api, storageAdapter))
+        if let storageAdapter = self.storageAdapter {
+            stateMachine.notify(action: .pausedMutationQueue(storageAdapter))
+        }
+    }
+
+    private func clearStateOutgoingMutations(storageAdapter: StorageEngineAdapter) {
+        log.debug(#function)
+        let mutationEventClearState = MutationEventClearState(storageAdapter: storageAdapter)
+        mutationEventClearState.clearStateOutgoingMutations {
+            if let api = self.api {
+                self.remoteSyncTopicPublisher.send(.clearedStateOutgoingMutations)
+                self.stateMachine.notify(action: .clearedStateOutgoingMutations(api, storageAdapter))
+            }
         }
     }
 
@@ -212,7 +241,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                                          storageAdapter: StorageEngineAdapter) {
         log.debug(#function)
         let syncableModelTypes = ModelRegistry.models.filter { $0.schema.isSyncable }
-        reconciliationQueue = reconciliationQueueFactory(syncableModelTypes, api, storageAdapter)
+        reconciliationQueue = reconciliationQueueFactory(syncableModelTypes, api, storageAdapter, auth, nil)
         reconciliationQueueSink = reconciliationQueue?.publisher.sink(
             receiveCompletion: onReceiveCompletion(receiveCompletion:),
             receiveValue: onReceive(receiveValue:))
@@ -221,7 +250,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private func performInitialSync() {
         log.debug(#function)
 
-        let initialSyncOrchestrator = initialSyncOrchestratorFactory(api, reconciliationQueue, storageAdapter)
+        let initialSyncOrchestrator = initialSyncOrchestratorFactory(dataStoreConfiguration,
+                                                                     api,
+                                                                     reconciliationQueue,
+                                                                     storageAdapter)
 
         // Hold a reference so we can `reset` while initial sync is in process
         self.initialSyncOrchestrator = initialSyncOrchestrator

@@ -16,7 +16,7 @@ protocol StorageEngineAdapter: class, ModelStorageBehavior {
 
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: Model.Identifier,
-                          completion: DataStoreCallback<Void>)
+                          completion: DataStoreCallback<M?>)
 
     func delete(untypedModelType modelType: Model.Type,
                 withId id: Model.Identifier,

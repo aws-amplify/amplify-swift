@@ -26,7 +26,9 @@ Successfully added auth resource
 
 3. `amplify push`
 
-4. Copy `awsconfiguration.json` as `AWSS3StoragePluginTests-awsconfiguration.json` and `amplifyconfiguration.json` as `AWSS3StoragePluginTests-amplifyconfiguration.json`
+[temporary step]: Until Amplify CLI supports adding the auth section into amplifyconfiguation.json, copy `awsconfiguration.json`'s auth section over
+
+4. Copy `amplifyconfiguration.json` as `AWSS3StoragePluginTests-amplifyconfiguration.json`
 
 5. Create `AWSS3StoragePluginTests-credentials.json` with a json object containing `user1`, `user2`, and `password`, used to create the cognito user in the userpool. In step 2, the cognito userpool is configured to allow users to sign up with their email as the username.
 

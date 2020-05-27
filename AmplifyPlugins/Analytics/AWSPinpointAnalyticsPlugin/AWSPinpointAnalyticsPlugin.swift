@@ -5,14 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import Amplify
-import AWSPluginsCore
 import AWSPinpoint
+import AWSPluginsCore
+import Foundation
 
 /// The AWSPinpointAnalyticsPlugin implements the Analytics APIs for Pinpoint
-final public class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
-
+public final class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
     /// An instance of the AWS Pinpoint service
     var pinpoint: AWSPinpointBehavior!
 
@@ -34,10 +33,9 @@ final public class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
 
     /// The unique key of the plugin within the analytics category
     public var key: PluginKey {
-        return "awsPinpointAnalyticsPlugin"
+        "awsPinpointAnalyticsPlugin"
     }
 
     /// Instantiates an instance of the AWSPinpointAnalyticsPlugin
-    public init() {
-    }
+    public init() {}
 }

@@ -11,6 +11,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 
+// swiftlint:disable type_body_length
 class GraphQLSubscriptionTests: XCTestCase {
 
     override func setUp() {
@@ -43,6 +44,7 @@ class GraphQLSubscriptionTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -51,7 +53,7 @@ class GraphQLSubscriptionTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "onCreatePost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables.count, 0)
+        XCTAssertNil(document.variables)
     }
 
     func testOnCreateGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
@@ -67,6 +69,7 @@ class GraphQLSubscriptionTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -78,7 +81,7 @@ class GraphQLSubscriptionTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "onCreatePost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables.count, 0)
+        XCTAssertNil(document.variables)
     }
 
     /// - Given: a `Model` type
@@ -105,6 +108,7 @@ class GraphQLSubscriptionTests: XCTestCase {
               createdAt
               draft
               rating
+              status
               title
               updatedAt
               __typename
@@ -115,7 +119,7 @@ class GraphQLSubscriptionTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "onCreateComment")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables.count, 0)
+        XCTAssertNil(document.variables)
     }
 
     func testOnCreateGraphQLSubscriptionFromModelWithAssociationWithSyncEnabled() {
@@ -135,6 +139,7 @@ class GraphQLSubscriptionTests: XCTestCase {
               createdAt
               draft
               rating
+              status
               title
               updatedAt
               __typename
@@ -151,7 +156,7 @@ class GraphQLSubscriptionTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "onCreateComment")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables.count, 0)
+        XCTAssertNil(document.variables)
     }
 
     /// - Given: a `Model` type
@@ -174,6 +179,7 @@ class GraphQLSubscriptionTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -182,7 +188,7 @@ class GraphQLSubscriptionTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "onUpdatePost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables.count, 0)
+        XCTAssertNil(document.variables)
     }
 
     func testOnUpdateGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
@@ -198,6 +204,7 @@ class GraphQLSubscriptionTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -209,7 +216,7 @@ class GraphQLSubscriptionTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "onUpdatePost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables.count, 0)
+        XCTAssertNil(document.variables)
     }
 
     /// - Given: a `Model` type
@@ -231,6 +238,7 @@ class GraphQLSubscriptionTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -239,7 +247,7 @@ class GraphQLSubscriptionTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "onDeletePost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables.count, 0)
+        XCTAssertNil(document.variables)
     }
 
     func testOnDeleteGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
@@ -255,6 +263,7 @@ class GraphQLSubscriptionTests: XCTestCase {
             createdAt
             draft
             rating
+            status
             title
             updatedAt
             __typename
@@ -266,6 +275,6 @@ class GraphQLSubscriptionTests: XCTestCase {
         """
         XCTAssertEqual(document.name, "onDeletePost")
         XCTAssertEqual(document.stringValue, expectedQueryDocument)
-        XCTAssertEqual(document.variables.count, 0)
+        XCTAssertNil(document.variables)
     }
 }

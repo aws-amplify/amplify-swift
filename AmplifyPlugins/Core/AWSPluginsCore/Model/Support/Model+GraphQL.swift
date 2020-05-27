@@ -20,15 +20,23 @@ extension Model {
         schema.fields.forEach {
             let field = $0.value
             let name = field.graphQLName
-            let value = self[field.name]
+            let fieldValue = self[field.name]
+
+            // swiftlint:disable:next syntactic_sugar
+            guard case .some(Optional<Any>.some(let value)) = fieldValue ?? nil else {
+                input[name] = nil
+                return
+            }
 
             switch field.type {
-            case .date, .dateTime:
-                if let date = value as? Date {
+            case .date, .dateTime, .time:
+                if let date = value as? TemporalSpec {
                     input[name] = date.iso8601String
                 } else {
                     input[name] = value
                 }
+            case .enum:
+                input[name] = (value as? EnumPersistable)?.rawValue
             case .model:
                 // For Models, append the model name in front in case a targetName is not provided
                 // e.g. "comment" + "PostId"
@@ -39,6 +47,7 @@ extension Model {
                 input[fieldName] = (value as? Model)?.id
             case .collection:
                 // TODO how to handle associations of type "many" (i.e. cascade save)?
+                // This is not supported right now and might be added as a future feature
                 break
             default:
                 input[name] = value

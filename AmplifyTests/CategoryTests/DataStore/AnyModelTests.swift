@@ -72,4 +72,3 @@ class AnyModelTests: XCTestCase {
         XCTAssertEqual(anyModel.schema.name, tester.schema.name)
     }
 }
-

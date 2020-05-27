@@ -1,3 +1,9 @@
+enum PostStatus {
+    PRIVATE
+    DRAFT
+    PUBLISHED
+}
+
 type Post @model {
     id: ID!
     title: String!
@@ -6,6 +12,7 @@ type Post @model {
     updatedAt: AWSDateTime
     draft: Boolean
     rating: Float
+    status: PostStatus
     comments: [Comment] @connection(name: "PostComment")
 }
 
@@ -14,4 +21,19 @@ type Comment @model {
     content: String!
     createdAt: AWSDateTime!
     post: Post @connection(name: "PostComment")
+}
+
+type Blog
+    @model
+    @auth(rules: [
+        { allow: owner, ownerField: "owner", operations: [create, read] },
+        { allow: groups, groups: ["Admin"] }
+    ]) {
+    id: ID!
+    content: String!
+    createdAt: AWSDateTime!
+    owner: String
+    authorsNotes: String @auth( rules: [
+        { allow: owner, ownerField: "owner", operations: [update] }
+    ])
 }
