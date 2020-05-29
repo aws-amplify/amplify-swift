@@ -782,9 +782,9 @@
 			buildPhases = (
 				09AAE72ADC99633B8D9D11DD /* [CP] Check Pods Manifest.lock */,
 				B43DC7402410572400D40275 /* Headers */,
+				B43DC7412410572400D40275 /* Sources */,
 				B4F3EA34243A662500F23296 /* SwiftFormat */,
 				B4F3EA3C243A76BD00F23296 /* SwiftLint */,
-				B43DC7412410572400D40275 /* Sources */,
 				B43DC7422410572400D40275 /* Frameworks */,
 				B43DC7432410572400D40275 /* Resources */,
 			);
